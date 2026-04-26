@@ -31,3 +31,4 @@ Collate:
     'gamma_distrib.R'
     'gaussian_distrib.R'
     'invgauss_distrib.R'
+    'logistic_distrib.R'

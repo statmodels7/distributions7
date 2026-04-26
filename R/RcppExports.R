@@ -85,3 +85,15 @@ invgauss_expected_hessian_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_expected_hessian_cpp`, y, mu, phi)
 }
 
+logistic_gradient_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_logistic_gradient_cpp`, y, mu, sigma)
+}
+
+logistic_hessian_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_logistic_hessian_cpp`, y, mu, sigma)
+}
+
+logistic_expected_hessian_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_logistic_expected_hessian_cpp`, y, mu, sigma)
+}
+
