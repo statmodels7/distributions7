@@ -97,3 +97,15 @@ logistic_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_logistic_expected_hessian_cpp`, y, mu, sigma)
 }
 
+lognormal_gradient_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_gradient_cpp`, y, mu, sigma2)
+}
+
+lognormal_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_hessian_cpp`, y, mu, sigma2)
+}
+
+lognormal_expected_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_expected_hessian_cpp`, y, mu, sigma2)
+}
+

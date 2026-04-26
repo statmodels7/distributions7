@@ -32,3 +32,4 @@ Collate:
     'gaussian_distrib.R'
     'invgauss_distrib.R'
     'logistic_distrib.R'
+    'lognormal_distrib.R'
