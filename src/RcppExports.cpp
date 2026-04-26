@@ -319,42 +319,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lognormal_gradient_cpp
-List lognormal_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
-RcppExport SEXP _distributions7_lognormal_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+// poisson_gradient_cpp
+List poisson_gradient_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_poisson_gradient_cpp(SEXP ySEXP, SEXP muSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
-    rcpp_result_gen = Rcpp::wrap(lognormal_gradient_cpp(y, mu, sigma2));
+    rcpp_result_gen = Rcpp::wrap(poisson_gradient_cpp(y, mu));
     return rcpp_result_gen;
 END_RCPP
 }
-// lognormal_hessian_cpp
-List lognormal_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
-RcppExport SEXP _distributions7_lognormal_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+// poisson_hessian_cpp
+List poisson_hessian_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_poisson_hessian_cpp(SEXP ySEXP, SEXP muSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
-    rcpp_result_gen = Rcpp::wrap(lognormal_hessian_cpp(y, mu, sigma2));
+    rcpp_result_gen = Rcpp::wrap(poisson_hessian_cpp(y, mu));
     return rcpp_result_gen;
 END_RCPP
 }
-// lognormal_expected_hessian_cpp
-List lognormal_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
-RcppExport SEXP _distributions7_lognormal_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+// poisson_expected_hessian_cpp
+List poisson_expected_hessian_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_poisson_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
-    rcpp_result_gen = Rcpp::wrap(lognormal_expected_hessian_cpp(y, mu, sigma2));
+    rcpp_result_gen = Rcpp::wrap(poisson_expected_hessian_cpp(y, mu));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -384,9 +381,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_logistic_gradient_cpp", (DL_FUNC) &_distributions7_logistic_gradient_cpp, 3},
     {"_distributions7_logistic_hessian_cpp", (DL_FUNC) &_distributions7_logistic_hessian_cpp, 3},
     {"_distributions7_logistic_expected_hessian_cpp", (DL_FUNC) &_distributions7_logistic_expected_hessian_cpp, 3},
-    {"_distributions7_lognormal_gradient_cpp", (DL_FUNC) &_distributions7_lognormal_gradient_cpp, 3},
-    {"_distributions7_lognormal_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_hessian_cpp, 3},
-    {"_distributions7_lognormal_expected_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_expected_hessian_cpp, 3},
+    {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 2},
+    {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 2},
+    {"_distributions7_poisson_expected_hessian_cpp", (DL_FUNC) &_distributions7_poisson_expected_hessian_cpp, 2},
     {NULL, NULL, 0}
 };
 

@@ -97,15 +97,15 @@ logistic_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_logistic_expected_hessian_cpp`, y, mu, sigma)
 }
 
-lognormal_gradient_cpp <- function(y, mu, sigma2) {
-    .Call(`_distributions7_lognormal_gradient_cpp`, y, mu, sigma2)
+poisson_gradient_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_gradient_cpp`, y, mu)
 }
 
-lognormal_hessian_cpp <- function(y, mu, sigma2) {
-    .Call(`_distributions7_lognormal_hessian_cpp`, y, mu, sigma2)
+poisson_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_hessian_cpp`, y, mu)
 }
 
-lognormal_expected_hessian_cpp <- function(y, mu, sigma2) {
-    .Call(`_distributions7_lognormal_expected_hessian_cpp`, y, mu, sigma2)
+poisson_expected_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_expected_hessian_cpp`, y, mu)
 }
 
