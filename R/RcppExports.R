@@ -13,6 +13,18 @@ bernoulli_expected_hessian_cpp <- function(y, mu) {
     .Call(`_distributions7_bernoulli_expected_hessian_cpp`, y, mu)
 }
 
+beta_gradient_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_beta_gradient_cpp`, y, mu, phi)
+}
+
+beta_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_beta_hessian_cpp`, y, mu, phi)
+}
+
+beta_expected_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_beta_expected_hessian_cpp`, y, mu, phi)
+}
+
 binomial_gradient_cpp <- function(y, mu, size) {
     .Call(`_distributions7_binomial_gradient_cpp`, y, mu, size)
 }
