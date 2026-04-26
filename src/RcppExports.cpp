@@ -10,6 +10,81 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// bernoulli_gradient_cpp
+List bernoulli_gradient_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_bernoulli_gradient_cpp(SEXP ySEXP, SEXP muSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    rcpp_result_gen = Rcpp::wrap(bernoulli_gradient_cpp(y, mu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bernoulli_hessian_cpp
+List bernoulli_hessian_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_bernoulli_hessian_cpp(SEXP ySEXP, SEXP muSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    rcpp_result_gen = Rcpp::wrap(bernoulli_hessian_cpp(y, mu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bernoulli_expected_hessian_cpp
+List bernoulli_expected_hessian_cpp(NumericVector y, NumericVector mu);
+RcppExport SEXP _distributions7_bernoulli_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    rcpp_result_gen = Rcpp::wrap(bernoulli_expected_hessian_cpp(y, mu));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binomial_gradient_cpp
+List binomial_gradient_cpp(NumericVector y, NumericVector mu, NumericVector size);
+RcppExport SEXP _distributions7_binomial_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(binomial_gradient_cpp(y, mu, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binomial_hessian_cpp
+List binomial_hessian_cpp(NumericVector y, NumericVector mu, NumericVector size);
+RcppExport SEXP _distributions7_binomial_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(binomial_hessian_cpp(y, mu, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// binomial_expected_hessian_cpp
+List binomial_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector size);
+RcppExport SEXP _distributions7_binomial_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(binomial_expected_hessian_cpp(y, mu, size));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gaussian_gradient_cpp
 List gaussian_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
 RcppExport SEXP _distributions7_gaussian_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
@@ -51,6 +126,12 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_distributions7_bernoulli_gradient_cpp", (DL_FUNC) &_distributions7_bernoulli_gradient_cpp, 2},
+    {"_distributions7_bernoulli_hessian_cpp", (DL_FUNC) &_distributions7_bernoulli_hessian_cpp, 2},
+    {"_distributions7_bernoulli_expected_hessian_cpp", (DL_FUNC) &_distributions7_bernoulli_expected_hessian_cpp, 2},
+    {"_distributions7_binomial_gradient_cpp", (DL_FUNC) &_distributions7_binomial_gradient_cpp, 3},
+    {"_distributions7_binomial_hessian_cpp", (DL_FUNC) &_distributions7_binomial_hessian_cpp, 3},
+    {"_distributions7_binomial_expected_hessian_cpp", (DL_FUNC) &_distributions7_binomial_expected_hessian_cpp, 3},
     {"_distributions7_gaussian_gradient_cpp", (DL_FUNC) &_distributions7_gaussian_gradient_cpp, 3},
     {"_distributions7_gaussian_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_hessian_cpp, 3},
     {"_distributions7_gaussian_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_expected_hessian_cpp, 3},

@@ -20,7 +20,9 @@ Remotes:
     giovannitinervia9/linkfunctions
 Collate: 
     'RcppExports.R'
-    'distrib.R'
-    'distributions7-package.R'
     'generics.R'
+    'distrib.R'
+    'bernoulli_distrib.R'
+    'binomial_distrib.R'
+    'distributions7-package.R'
     'gaussian_distrib.R'
