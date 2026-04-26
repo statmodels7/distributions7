@@ -73,3 +73,15 @@ gaussian_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_expected_hessian_cpp`, y, mu, sigma)
 }
 
+invgauss_gradient_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_gradient_cpp`, y, mu, phi)
+}
+
+invgauss_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_hessian_cpp`, y, mu, phi)
+}
+
+invgauss_expected_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_expected_hessian_cpp`, y, mu, phi)
+}
+

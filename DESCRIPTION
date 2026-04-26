@@ -15,6 +15,7 @@ LinkingTo:
 Imports: 
     Rcpp,
     S7,
+    statmod,
     linkfunctions
 Remotes: 
     giovannitinervia9/linkfunctions
@@ -29,3 +30,4 @@ Collate:
     'distributions7-package.R'
     'gamma_distrib.R'
     'gaussian_distrib.R'
+    'invgauss_distrib.R'

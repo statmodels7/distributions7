@@ -241,6 +241,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// invgauss_gradient_cpp
+List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi);
+RcppExport SEXP _distributions7_invgauss_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(invgauss_gradient_cpp(y, mu, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invgauss_hessian_cpp
+List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi);
+RcppExport SEXP _distributions7_invgauss_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(invgauss_hessian_cpp(y, mu, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// invgauss_expected_hessian_cpp
+List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi);
+RcppExport SEXP _distributions7_invgauss_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP phiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type phi(phiSEXP);
+    rcpp_result_gen = Rcpp::wrap(invgauss_expected_hessian_cpp(y, mu, phi));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_bernoulli_gradient_cpp", (DL_FUNC) &_distributions7_bernoulli_gradient_cpp, 2},
@@ -261,6 +300,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gaussian_gradient_cpp", (DL_FUNC) &_distributions7_gaussian_gradient_cpp, 3},
     {"_distributions7_gaussian_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_hessian_cpp, 3},
     {"_distributions7_gaussian_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_expected_hessian_cpp, 3},
+    {"_distributions7_invgauss_gradient_cpp", (DL_FUNC) &_distributions7_invgauss_gradient_cpp, 3},
+    {"_distributions7_invgauss_hessian_cpp", (DL_FUNC) &_distributions7_invgauss_hessian_cpp, 3},
+    {"_distributions7_invgauss_expected_hessian_cpp", (DL_FUNC) &_distributions7_invgauss_expected_hessian_cpp, 3},
     {NULL, NULL, 0}
 };
 
