@@ -49,6 +49,18 @@ cauchy_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_cauchy_expected_hessian_cpp`, y, mu, sigma)
 }
 
+gamma_gradient_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_gradient_cpp`, y, mu, sigma2)
+}
+
+gamma_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_hessian_cpp`, y, mu, sigma2)
+}
+
+gamma_expected_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_expected_hessian_cpp`, y, mu, sigma2)
+}
+
 gaussian_gradient_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_gradient_cpp`, y, mu, sigma)
 }

@@ -27,4 +27,5 @@ Collate:
     'binomial_distrib.R'
     'cauchy_distrib.R'
     'distributions7-package.R'
+    'gamma_distrib.R'
     'gaussian_distrib.R'
