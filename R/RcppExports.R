@@ -37,6 +37,18 @@ binomial_expected_hessian_cpp <- function(y, mu, size) {
     .Call(`_distributions7_binomial_expected_hessian_cpp`, y, mu, size)
 }
 
+cauchy_gradient_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_gradient_cpp`, y, mu, sigma)
+}
+
+cauchy_hessian_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_hessian_cpp`, y, mu, sigma)
+}
+
+cauchy_expected_hessian_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_expected_hessian_cpp`, y, mu, sigma)
+}
+
 gaussian_gradient_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_gradient_cpp`, y, mu, sigma)
 }

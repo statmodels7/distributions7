@@ -25,5 +25,6 @@ Collate:
     'bernoulli_distrib.R'
     'beta_distrib.R'
     'binomial_distrib.R'
+    'cauchy_distrib.R'
     'distributions7-package.R'
     'gaussian_distrib.R'

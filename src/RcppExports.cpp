@@ -124,6 +124,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// cauchy_gradient_cpp
+List cauchy_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
+RcppExport SEXP _distributions7_cauchy_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cauchy_gradient_cpp(y, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cauchy_hessian_cpp
+List cauchy_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
+RcppExport SEXP _distributions7_cauchy_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cauchy_hessian_cpp(y, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// cauchy_expected_hessian_cpp
+List cauchy_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
+RcppExport SEXP _distributions7_cauchy_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(cauchy_expected_hessian_cpp(y, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gaussian_gradient_cpp
 List gaussian_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
 RcppExport SEXP _distributions7_gaussian_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
@@ -174,6 +213,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_binomial_gradient_cpp", (DL_FUNC) &_distributions7_binomial_gradient_cpp, 3},
     {"_distributions7_binomial_hessian_cpp", (DL_FUNC) &_distributions7_binomial_hessian_cpp, 3},
     {"_distributions7_binomial_expected_hessian_cpp", (DL_FUNC) &_distributions7_binomial_expected_hessian_cpp, 3},
+    {"_distributions7_cauchy_gradient_cpp", (DL_FUNC) &_distributions7_cauchy_gradient_cpp, 3},
+    {"_distributions7_cauchy_hessian_cpp", (DL_FUNC) &_distributions7_cauchy_hessian_cpp, 3},
+    {"_distributions7_cauchy_expected_hessian_cpp", (DL_FUNC) &_distributions7_cauchy_expected_hessian_cpp, 3},
     {"_distributions7_gaussian_gradient_cpp", (DL_FUNC) &_distributions7_gaussian_gradient_cpp, 3},
     {"_distributions7_gaussian_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_hessian_cpp, 3},
     {"_distributions7_gaussian_expected_hessian_cpp", (DL_FUNC) &_distributions7_gaussian_expected_hessian_cpp, 3},
