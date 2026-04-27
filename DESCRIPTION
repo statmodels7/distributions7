@@ -38,3 +38,6 @@ Collate:
     'poisson_distrib.R'
     'student_t_distrib.R'
     'utility_functions.R'
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

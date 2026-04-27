@@ -108,7 +108,12 @@ numerical_series <- function(f, start = 0, end = Inf, step = 1000, tol = 1e-10, 
 #' }
 #'
 #' @export
-expectation <- function(distrib, f, theta, ...) {
+expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib, f, theta, ...) {
+  S7::S7_dispatch()
+})
+
+#' @export
+S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
   # Capture extra arguments and check for name collisions
   dots <- list(...)
   if (any(names(dots) %in% names(theta))) {
@@ -121,20 +126,44 @@ expectation <- function(distrib, f, theta, ...) {
 
   # Define the worker function for a single set of parameters
   compute_single <- function(params) {
-    p_theta <- params[1:n_theta] 
-    p_dots <- if (length(params) > n_theta) params[-(1:n_theta)] else list()
+    p_theta <- as.list(params[1:n_theta])
+    p_dots <- if (length(params) > n_theta) as.list(params[-(1:n_theta)]) else list()
 
     integrand <- function(y) {
       val_f <- do.call(f, c(list(y = y, theta = p_theta), p_dots))
-      val_p <- distrib$pdf(y, p_theta, log = FALSE)
+      val_p <- distrib_pdf(distrib, y, p_theta, log = FALSE)
       val_f * val_p
     }
 
-    if (distrib$type == "continuous") {
-      stats::integrate(integrand, lower = distrib$bounds[1], upper = distrib$bounds[2])$value
-    } else {
-      numerical_series(integrand, start = distrib$bounds[1], end = distrib$bounds[2])
+    stats::integrate(integrand, lower = distrib@bounds[1], upper = distrib@bounds[2])$value
+  }
+  unname(sapply(transpose_params(expand_params(all_params)), compute_single))
+}
+
+#' @export
+S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {
+  # Capture extra arguments and check for name collisions
+  dots <- list(...)
+  if (any(names(dots) %in% names(theta))) {
+    stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
+  }
+
+  # Combine all parameters to handle vectorization
+  all_params <- c(theta, dots)
+  n_theta <- length(theta) 
+
+  # Define the worker function for a single set of parameters
+  compute_single <- function(params) {
+    p_theta <- as.list(params[1:n_theta])
+    p_dots <- if (length(params) > n_theta) as.list(params[-(1:n_theta)]) else list()
+
+    integrand <- function(y) {
+      val_f <- do.call(f, c(list(y = y, theta = p_theta), p_dots))
+      val_p <- distrib_pdf(distrib, y, p_theta, log = FALSE)
+      val_f * val_p
     }
+
+    numerical_series(integrand, start = distrib@bounds[1], end = distrib@bounds[2])
   }
   unname(sapply(transpose_params(expand_params(all_params)), compute_single))
 }
