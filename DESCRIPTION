@@ -13,6 +13,7 @@ BugReports: https://github.com/giovannitinervia9/distributions7/issues
 LinkingTo: 
     Rcpp
 Imports: 
+    purrr,
     Rcpp,
     S7,
     statmod,
@@ -36,3 +37,4 @@ Collate:
     'numerical_functions.R'
     'poisson_distrib.R'
     'student_t_distrib.R'
+    'utility_functions.R'

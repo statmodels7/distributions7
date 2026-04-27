@@ -4,6 +4,15 @@
 #' The function is designed to handle finite sums, one-sided infinite series, and
 #' doubly infinite series by automatically adapting its summation strategy.
 #'
+#' @param f A function taking a vector of integers `x` and returning a vector of numeric values.
+#'   **Must be vectorized**.
+#' @param start Numeric. Starting value. Can be finite, `Inf`, or `-Inf`. Defaults to `0`.
+#' @param end Numeric. Ending value. Can be finite, `Inf`, or `-Inf`. Defaults to `Inf`.
+#' @param step Integer. Number of terms to calculate in a single vectorized batch. Defaults to `1000`.
+#' @param tol Numeric. Tolerance threshold for convergence. Defaults to `1e-10`.
+#' @param maxit Integer. Safety limit for the maximum number of batch iterations. Defaults to `1000000`.
+#' @param reltol Logical. If `TRUE` (default), uses a hybrid relative tolerance.
+#'
 #' @details
 #' **1. Summation Strategies:**
 #' The function automatically detects the domain topology based on `start` and `end`:
@@ -20,16 +29,8 @@
 #' (divergence), or skips up to 50 empty chunks to protect from premature stopping
 #' when `f(x)` evaluates exactly to `0` at the start.
 #'
-#' @param f A function taking a vector of integers `x` and returning a vector of numeric values.
-#'   **Must be vectorized**.
-#' @param start Numeric. Starting value. Can be finite, `Inf`, or `-Inf`. Defaults to `0`.
-#' @param end Numeric. Ending value. Can be finite, `Inf`, or `-Inf`. Defaults to `Inf`.
-#' @param step Integer. Number of terms to calculate in a single vectorized batch. Defaults to `1000`.
-#' @param tol Numeric. Tolerance threshold for convergence. Defaults to `1e-10`.
-#' @param maxit Integer. Safety limit for the maximum number of batch iterations. Defaults to `1000000`.
-#' @param reltol Logical. If `TRUE` (default), uses a hybrid relative tolerance.
-#'
 #' @return A numeric scalar representing the calculated sum.
+#'
 #' @export
 numerical_series <- function(f, start = 0, end = Inf, step = 1000, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
   
@@ -56,4 +57,84 @@ numerical_series <- function(f, start = 0, end = Inf, step = 1000, tol = 1e-10, 
     step = as.integer(step), tol = as.numeric(tol), 
     maxit = as.integer(maxit), reltol = as.logical(reltol)
   )
+}
+
+#' Calculate the Expected Value of a Function
+#'
+#' Computes the expected value of a given function \eqn{f(y)} with respect to a probability distribution defined by \code{distrib}.
+#' It automatically handles continuous distributions (via numerical integration) and discrete distributions (via series summation).
+#'
+#' @param distrib An object of class \code{"distrib"}
+#' @param f A function representing the transformation of the random variable \eqn{y}.
+#'   **Signature:** It must accept arguments \code{y}, \code{theta}, and \code{...} (see Details).
+#' @param theta A named list of parameters for the distribution (e.g., \code{list(mu=10, sigma=2)}).
+#'   Vectors inside this list allow computing expectations for multiple distribution parametrizations at once.
+#' @param ... Additional arguments passed directly to the function \code{f}.
+#'   **Vectorization:** These arguments are fully vectorized. If vectors are provided, they are recycled
+#'   against the parameters in \code{theta} according to standard R recycling rules.
+#'
+#' @details
+#' The function calculates:
+#' \itemize{
+#'   \item \eqn{E[f(Y)] = \int_{lb}^{ub} f(y, \theta, \dots) \cdot p(y|\theta) \, dy} (Continuous)
+#'   \item \eqn{E[f(Y)] = \sum_{y=lb}^{ub} f(y, \theta, \dots) \cdot P(y|\theta)} (Discrete)
+#' }
+#'
+#' **Vectorization:**
+#' The function iterates over the longest vector found among \code{theta} and \code{...}.
+#' For example, if \code{theta$mu} has length 2 and you pass a vector of length 2 to \code{...},
+#' the function computes the expectation for the paired values. If lengths differ, standard R recycling applies.
+#'
+#' **Requirements for `f`:**
+#' The user-provided function \code{f} must be defined with the signature:
+#' \code{f(y, theta, ...)}
+#'
+#' @return A numeric vector containing the expected values. The length corresponds to the
+#'   maximum length among all vectors in \code{theta} and \code{...}.
+#'
+#' @importFrom stats integrate
+#'
+#' @examples
+#' \dontrun{
+#' distrib <- poisson_distrib()
+#'
+#' # Define f accepting y, theta, and extra parameter gamma
+#' f_pow <- function(y, theta, gamma = 1) {
+#'   y^gamma
+#' }
+#'
+#' # --- Example 1: Basic usage ---
+#' expectation(distrib, f_pow, theta = list(mu = 10), gamma = 2)
+#' }
+#'
+#' @export
+expectation <- function(distrib, f, theta, ...) {
+  # Capture extra arguments and check for name collisions
+  dots <- list(...)
+  if (any(names(dots) %in% names(theta))) {
+    stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
+  }
+
+  # Combine all parameters to handle vectorization
+  all_params <- c(theta, dots)
+  n_theta <- length(theta) 
+
+  # Define the worker function for a single set of parameters
+  compute_single <- function(params) {
+    p_theta <- params[1:n_theta] 
+    p_dots <- if (length(params) > n_theta) params[-(1:n_theta)] else list()
+
+    integrand <- function(y) {
+      val_f <- do.call(f, c(list(y = y, theta = p_theta), p_dots))
+      val_p <- distrib$pdf(y, p_theta, log = FALSE)
+      val_f * val_p
+    }
+
+    if (distrib$type == "continuous") {
+      stats::integrate(integrand, lower = distrib$bounds[1], upper = distrib$bounds[2])$value
+    } else {
+      numerical_series(integrand, start = distrib$bounds[1], end = distrib$bounds[2])
+    }
+  }
+  unname(sapply(transpose_params(expand_params(all_params)), compute_single))
 }
