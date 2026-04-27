@@ -355,6 +355,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// series_cpp
+double series_cpp(Function f, double start, double end, int step, double tol, int maxit, bool reltol);
+RcppExport SEXP _distributions7_series_cpp(SEXP fSEXP, SEXP startSEXP, SEXP endSEXP, SEXP stepSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP reltolSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Function >::type f(fSEXP);
+    Rcpp::traits::input_parameter< double >::type start(startSEXP);
+    Rcpp::traits::input_parameter< double >::type end(endSEXP);
+    Rcpp::traits::input_parameter< int >::type step(stepSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
+    Rcpp::traits::input_parameter< bool >::type reltol(reltolSEXP);
+    rcpp_result_gen = Rcpp::wrap(series_cpp(f, start, end, step, tol, maxit, reltol));
+    return rcpp_result_gen;
+END_RCPP
+}
 // student_t_gradient_cpp
 List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu);
 RcppExport SEXP _distributions7_student_t_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP nuSEXP) {
@@ -426,6 +443,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 2},
     {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 2},
     {"_distributions7_poisson_expected_hessian_cpp", (DL_FUNC) &_distributions7_poisson_expected_hessian_cpp, 2},
+    {"_distributions7_series_cpp", (DL_FUNC) &_distributions7_series_cpp, 7},
     {"_distributions7_student_t_gradient_cpp", (DL_FUNC) &_distributions7_student_t_gradient_cpp, 4},
     {"_distributions7_student_t_hessian_cpp", (DL_FUNC) &_distributions7_student_t_hessian_cpp, 4},
     {"_distributions7_student_t_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t_expected_hessian_cpp, 4},

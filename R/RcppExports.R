@@ -109,6 +109,10 @@ poisson_expected_hessian_cpp <- function(y, mu) {
     .Call(`_distributions7_poisson_expected_hessian_cpp`, y, mu)
 }
 
+series_cpp <- function(f, start, end, step = 1000L, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
+    .Call(`_distributions7_series_cpp`, f, start, end, step, tol, maxit, reltol)
+}
+
 student_t_gradient_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_student_t_gradient_cpp`, y, mu, sigma, nu)
 }

@@ -33,5 +33,6 @@ Collate:
     'invgauss_distrib.R'
     'logistic_distrib.R'
     'lognormal_distrib.R'
+    'numerical_functions.R'
     'poisson_distrib.R'
     'student_t_distrib.R'
