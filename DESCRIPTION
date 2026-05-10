@@ -7,7 +7,6 @@ Description: Provides a consistent S7 object-oriented infrastructure for probabi
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 URL: https://github.com/giovannitinervia9/distributions7
 BugReports: https://github.com/giovannitinervia9/distributions7/issues
 LinkingTo: 
@@ -42,3 +41,4 @@ Collate:
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
