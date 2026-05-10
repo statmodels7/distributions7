@@ -8,7 +8,7 @@ poisson_distrib(link_mu = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{PoissonDistrib} (inheriting from \code{discrete_distrib}) representing the Poisson distribution.

@@ -151,9 +151,9 @@ S7::method(distrib_expected_hessian, GammaDistrib) <- function(distrib, y, theta
 #' Creates a distribution object for the Gamma distribution parameterized by mean (\eqn{\mu}) and variance (\eqn{\sigma^2}).
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' @param link_sigma2 A link function object for the variance parameter \eqn{\sigma^2}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
 #' The Gamma distribution is reparameterized from the standard shape \eqn{(\alpha)} and rate \eqn{(\lambda)} parameters using:
@@ -178,7 +178,7 @@ S7::method(distrib_expected_hessian, GammaDistrib) <- function(distrib, y, theta
 #'
 #' @return An S7 object of class \code{GammaDistrib} (inheriting from \code{continuous_distrib}) representing the Gamma distribution.
 #'
-#' @importFrom linkfunctions log_link
+#' @importFrom linkfunctions7 log_link
 #' @importFrom stats dgamma pgamma qgamma rgamma
 #' @export
 gamma_distrib <- function(link_mu = log_link(), link_sigma2 = log_link()) {

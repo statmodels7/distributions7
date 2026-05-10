@@ -145,7 +145,7 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' Creates a distribution object for the Poisson distribution parameterized by the mean parameter \eqn{\mu}.
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @seealso
 #' \itemize{
@@ -160,7 +160,7 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #'
 #' @return An S7 object of class \code{PoissonDistrib} (inheriting from \code{discrete_distrib}) representing the Poisson distribution.
 #'
-#' @importFrom linkfunctions log_link
+#' @importFrom linkfunctions7 log_link
 #' @importFrom stats dpois ppois qpois rpois
 #' @export
 poisson_distrib <- function(link_mu = log_link()) {

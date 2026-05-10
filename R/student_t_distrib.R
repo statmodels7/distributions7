@@ -162,11 +162,11 @@ S7::method(distrib_expected_hessian, StudentTDistrib) <- function(distrib, y, th
 #' Creates a distribution object for the Student's t distribution parameterized by location (\eqn{\mu}), scale (\eqn{\sigma}), and degrees of freedom (\eqn{\nu}).
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{identity_link}}.
+#'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
 #' @param link_sigma A link function object for the scale parameter \eqn{\sigma}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' @param link_nu A link function object for the degrees of freedom parameter \eqn{\nu}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
 #' The probability density function is given by:
@@ -193,7 +193,7 @@ S7::method(distrib_expected_hessian, StudentTDistrib) <- function(distrib, y, th
 #'
 #' @return An S7 object of class \code{StudentTDistrib} (inheriting from \code{continuous_distrib}) representing the Student's t distribution.
 #'
-#' @importFrom linkfunctions identity_link log_link
+#' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats dt pt qt rt
 #' @export
 student_t_distrib <- function(link_mu = identity_link(), link_sigma = log_link(), link_nu = log_link()) {

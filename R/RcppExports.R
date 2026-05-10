@@ -97,6 +97,18 @@ logistic_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_logistic_expected_hessian_cpp`, y, mu, sigma)
 }
 
+lognormal_gradient_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_gradient_cpp`, y, mu, sigma2)
+}
+
+lognormal_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_hessian_cpp`, y, mu, sigma2)
+}
+
+lognormal_expected_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_expected_hessian_cpp`, y, mu, sigma2)
+}
+
 poisson_gradient_cpp <- function(y, mu) {
     .Call(`_distributions7_poisson_gradient_cpp`, y, mu)
 }
@@ -107,10 +119,6 @@ poisson_hessian_cpp <- function(y, mu) {
 
 poisson_expected_hessian_cpp <- function(y, mu) {
     .Call(`_distributions7_poisson_expected_hessian_cpp`, y, mu)
-}
-
-series_cpp <- function(f, start, end, step = 1000L, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
-    .Call(`_distributions7_series_cpp`, f, start, end, step, tol, maxit, reltol)
 }
 
 student_t_gradient_cpp <- function(y, mu, sigma, nu) {

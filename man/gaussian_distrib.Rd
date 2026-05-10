@@ -8,10 +8,10 @@ gaussian_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7]{identity_link}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{GaussianDistrib} (inheriting from \code{continuous_distrib}) representing the Gaussian distribution.

@@ -8,10 +8,10 @@ beta_distrib(link_mu = logit_link(), link_phi = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions]{logit_link}} to ensure the parameter stays within (0, 1).}
+Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).}
 
 \item{link_phi}{A link function object for the precision parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{BetaDistrib} (inheriting from \code{continuous_distrib}) representing the Beta distribution.

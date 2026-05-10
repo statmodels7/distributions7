@@ -149,7 +149,7 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' Creates a distribution object for the Bernoulli distribution parameterized by the probability of success \eqn{\mu}.
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu} (probability).
-#'   Defaults to \code{\link[linkfunctions]{logit_link}} to ensure the parameter stays within (0, 1).
+#'   Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).
 #'
 #' @details
 #' The Bernoulli distribution has the following probability mass function (PMF):
@@ -174,7 +174,7 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #'
 #' @return An S7 object of class \code{BernoulliDistrib} (inheriting from \code{discrete_distrib}) representing the Bernoulli distribution.
 #'
-#' @importFrom linkfunctions logit_link
+#' @importFrom linkfunctions7 logit_link
 #' @importFrom stats dbinom pbinom qbinom rbinom
 #' @export
 bernoulli_distrib <- function(link_mu = logit_link()) {

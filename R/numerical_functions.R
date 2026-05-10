@@ -1,4 +1,4 @@
-#' Numerical Summation of Discrete Series (Rcpp Accelerated)
+#' Numerical Summation of Discrete Series
 #'
 #' Calculates the sum of a function `f(x)` over a sequence of integers from `start` to `end`.
 #' The function is designed to handle finite sums, one-sided infinite series, and
@@ -21,7 +21,6 @@
 #' * **Doubly Infinite (Folding):** If `start == -Inf` and `end == Inf`, folds around 0.
 #'
 #' **2. Speed and Convergence:**
-#' Powered by Rcpp. The summation is performed in vectorized blocks of size `step`.
 #' It monitors convergence using the sum of absolute values in the current chunk, preventing premature stops on alternating series while maintaining high precision.
 #' 
 #' **3. Underflow & Divergence Detection:**
@@ -32,9 +31,9 @@
 #' @return A numeric scalar representing the calculated sum.
 #'
 #' @export
-numerical_series <- function(f, start = 0, end = Inf, step = 1000, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
+numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
   
-  # --- Setup Range and Direction in R to minimize C++ context switches ---
+  # --- Setup Range and Direction ---
   if (is.infinite(start) && start < 0 && is.infinite(end) && end > 0) {
     s_init <- f(0)
     start_internal <- 1
@@ -52,11 +51,80 @@ numerical_series <- function(f, start = 0, end = Inf, step = 1000, tol = 1e-10, 
     f_internal <- f
   }
   
-  s_init + series_cpp(
-    f = f_internal, start = as.numeric(start_internal), end = as.numeric(end_internal), 
-    step = as.integer(step), tol = as.numeric(tol), 
-    maxit = as.integer(maxit), reltol = as.logical(reltol)
-  )
+  s <- 0.0
+  it <- 0L
+  climbing <- TRUE
+  prev_max_abs <- Inf
+  divergence_counter <- 0L
+  flat_counter <- 0L
+  
+  while (climbing && it < maxit) {
+    it <- it + 1L
+    
+    # Upper limit of the current block
+    upper_limit <- min(start_internal + step - 1, end_internal)
+    
+    # Evaluate function in vectorized chunk (using ALTREP for the sequence)
+    x <- start_internal:upper_limit
+    vals <- f_internal(x)
+    
+    # Single pass to evaluate the chunk sum
+    chunk_sum <- sum(vals)
+    
+    s <- s + chunk_sum
+    
+    # 1. Explicit divergence check
+    if (is.infinite(s) || is.na(s)) {
+      warning("The series reached Inf or NaN. Stopping.")
+      return(s_init + s)
+    }
+    
+    # 2. Divergence Early-Exit (check only the last term to avoid full array scans)
+    last_val_abs <- abs(vals[length(vals)])
+    if (last_val_abs > prev_max_abs && last_val_abs > tol) {
+      divergence_counter <- divergence_counter + 1L
+      if (divergence_counter >= 3L) {
+        warning("The series seems to be divergent (terms are growing). Stopping early.")
+        return(s_init + s)
+      }
+    } else {
+      divergence_counter <- 0L
+    }
+    prev_max_abs <- last_val_abs
+    
+    # 3. Convergence or Underflow Protection
+    scaled_tol <- if (reltol) tol * max(abs(s), 1.0) else tol
+    
+    if (abs(chunk_sum) < scaled_tol) {
+      # Short-circuit logic: only perform full vector allocation and absolute sum 
+      # if the chunk sum is small, preventing false positives from alternating series.
+      chunk_abs_sum <- sum(abs(vals))
+      if (chunk_abs_sum < scaled_tol) {
+      flat_counter <- flat_counter + 1L
+      if (abs(s) > tol || flat_counter >= 50L) {
+        climbing <- FALSE
+      }
+      } else {
+        flat_counter <- 0L
+      }
+    } else {
+      flat_counter <- 0L
+    }
+    
+    # 4. Advancement
+    if (climbing) {
+      start_internal <- upper_limit + 1
+      if (start_internal > end_internal) {
+        climbing <- FALSE
+      }
+    }
+  }
+  
+  if (it >= maxit) {
+    warning("Maximum number of iterations reached.")
+  }
+  
+  s_init + s
 }
 
 #' Calculate the Expected Value of a Function

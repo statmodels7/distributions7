@@ -2,13 +2,13 @@
 % Please edit documentation in R/numerical_functions.R
 \name{numerical_series}
 \alias{numerical_series}
-\title{Numerical Summation of Discrete Series (Rcpp Accelerated)}
+\title{Numerical Summation of Discrete Series}
 \usage{
 numerical_series(
   f,
   start = 0,
   end = Inf,
-  step = 1000,
+  step = 10000,
   tol = 1e-10,
   maxit = 1000000L,
   reltol = TRUE
@@ -48,7 +48,6 @@ The function automatically detects the domain topology based on \code{start} and
 }
 
 \strong{2. Speed and Convergence:}
-Powered by Rcpp. The summation is performed in vectorized blocks of size \code{step}.
 It monitors convergence using the sum of absolute values in the current chunk, preventing premature stops on alternating series while maintaining high precision.
 
 \strong{3. Underflow & Divergence Detection:}

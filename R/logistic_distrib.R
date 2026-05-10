@@ -155,9 +155,9 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' and scale (\eqn{\sigma}).
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{identity_link}}.
+#'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
 #' @param link_sigma A link function object for the scale parameter \eqn{\sigma}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' 
 #' @seealso
 #' \itemize{
@@ -172,7 +172,7 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #'
 #' @return An S7 object of class \code{LogisticDistrib} (inheriting from \code{continuous_distrib}) representing the Logistic distribution.
 #'
-#' @importFrom linkfunctions identity_link log_link
+#' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats dlogis plogis qlogis rlogis
 #' @export
 logistic_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {

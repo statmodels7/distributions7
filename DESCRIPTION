@@ -17,9 +17,9 @@ Imports:
     Rcpp,
     S7,
     statmod,
-    linkfunctions
+    linkfunctions7
 Remotes: 
-    giovannitinervia9/linkfunctions
+    giovannitinervia9/linkfunctions7
 Collate: 
     'RcppExports.R'
     'generics.R'
@@ -34,6 +34,7 @@ Collate:
     'invgauss_distrib.R'
     'logistic_distrib.R'
     'lognormal_distrib.R'
+    'methods.R'
     'numerical_functions.R'
     'poisson_distrib.R'
     'student_t_distrib.R'

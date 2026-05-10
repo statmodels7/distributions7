@@ -8,7 +8,7 @@ bernoulli_distrib(link_mu = logit_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu} (probability).
-Defaults to \code{\link[linkfunctions]{logit_link}} to ensure the parameter stays within (0, 1).}
+Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).}
 }
 \value{
 An S7 object of class \code{BernoulliDistrib} (inheriting from \code{discrete_distrib}) representing the Bernoulli distribution.

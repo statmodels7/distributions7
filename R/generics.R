@@ -60,3 +60,11 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib")
 #' @param ... Additional arguments passed to the specific method (e.g., \code{y}, \code{theta}).
 #' @export
 distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib")
+
+#' Generate Random Parameters
+#'
+#' @description Generates sensible random parameters for a distribution based on its mathematical domain.
+#' @param distrib A distribution object inheriting from the \code{distrib} class.
+#' @param ... Additional arguments passed to the specific method.
+#' @export
+generate_random_theta <- S7::new_generic("generate_random_theta", "distrib")

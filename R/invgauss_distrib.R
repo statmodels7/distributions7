@@ -161,9 +161,9 @@ S7::method(distrib_expected_hessian, InvGaussDistrib) <- function(distrib, y, th
 #' Creates a distribution object for the Inverse-Gaussian distribution parameterized by mean (\eqn{\mu}) and dispersion (\eqn{\phi}).
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' @param link_phi A link function object for the dispersion parameter \eqn{\phi}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' 
 #' @seealso
 #' \itemize{
@@ -178,7 +178,7 @@ S7::method(distrib_expected_hessian, InvGaussDistrib) <- function(distrib, y, th
 #'
 #' @return An S7 object of class \code{InvGaussDistrib} (inheriting from \code{continuous_distrib}) representing the Inverse-Gaussian distribution.
 #'
-#' @importFrom linkfunctions log_link
+#' @importFrom linkfunctions7 log_link
 #' @importFrom statmod dinvgauss pinvgauss qinvgauss rinvgauss
 #' @export
 invgauss_distrib <- function(link_mu = log_link(), link_phi = log_link()) {

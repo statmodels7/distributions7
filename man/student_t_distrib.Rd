@@ -12,13 +12,13 @@ student_t_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7]{identity_link}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 
 \item{link_nu}{A link function object for the degrees of freedom parameter \eqn{\nu}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{StudentTDistrib} (inheriting from \code{continuous_distrib}) representing the Student's t distribution.

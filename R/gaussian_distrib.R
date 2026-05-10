@@ -156,9 +156,9 @@ S7::method(distrib_expected_hessian, GaussianDistrib) <- function(distrib, y, th
 #' Creates a distribution object for the Gaussian distribution parameterized by mean (\eqn{\mu}) and standard deviation (\eqn{\sigma}).
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{identity_link}}.
+#'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
 #' @param link_sigma A link function object for the scale parameter \eqn{\sigma}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
 #' The Gaussian distribution has the following density function:
@@ -183,7 +183,7 @@ S7::method(distrib_expected_hessian, GaussianDistrib) <- function(distrib, y, th
 #'
 #' @return An S7 object of class \code{GaussianDistrib} (inheriting from \code{continuous_distrib}) representing the Gaussian distribution.
 #'
-#' @importFrom linkfunctions identity_link log_link
+#' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats dnorm pnorm qnorm rnorm
 #' @export
 gaussian_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {

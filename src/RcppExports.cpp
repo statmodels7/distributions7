@@ -319,6 +319,45 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// lognormal_gradient_cpp
+List lognormal_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
+RcppExport SEXP _distributions7_lognormal_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal_gradient_cpp(y, mu, sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal_hessian_cpp
+List lognormal_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
+RcppExport SEXP _distributions7_lognormal_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal_hessian_cpp(y, mu, sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lognormal_expected_hessian_cpp
+List lognormal_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma2);
+RcppExport SEXP _distributions7_lognormal_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigma2SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma2(sigma2SEXP);
+    rcpp_result_gen = Rcpp::wrap(lognormal_expected_hessian_cpp(y, mu, sigma2));
+    return rcpp_result_gen;
+END_RCPP
+}
 // poisson_gradient_cpp
 List poisson_gradient_cpp(NumericVector y, NumericVector mu);
 RcppExport SEXP _distributions7_poisson_gradient_cpp(SEXP ySEXP, SEXP muSEXP) {
@@ -352,23 +391,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
     Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
     rcpp_result_gen = Rcpp::wrap(poisson_expected_hessian_cpp(y, mu));
-    return rcpp_result_gen;
-END_RCPP
-}
-// series_cpp
-double series_cpp(Function f, double start, double end, int step, double tol, int maxit, bool reltol);
-RcppExport SEXP _distributions7_series_cpp(SEXP fSEXP, SEXP startSEXP, SEXP endSEXP, SEXP stepSEXP, SEXP tolSEXP, SEXP maxitSEXP, SEXP reltolSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Function >::type f(fSEXP);
-    Rcpp::traits::input_parameter< double >::type start(startSEXP);
-    Rcpp::traits::input_parameter< double >::type end(endSEXP);
-    Rcpp::traits::input_parameter< int >::type step(stepSEXP);
-    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
-    Rcpp::traits::input_parameter< int >::type maxit(maxitSEXP);
-    Rcpp::traits::input_parameter< bool >::type reltol(reltolSEXP);
-    rcpp_result_gen = Rcpp::wrap(series_cpp(f, start, end, step, tol, maxit, reltol));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -440,10 +462,12 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_logistic_gradient_cpp", (DL_FUNC) &_distributions7_logistic_gradient_cpp, 3},
     {"_distributions7_logistic_hessian_cpp", (DL_FUNC) &_distributions7_logistic_hessian_cpp, 3},
     {"_distributions7_logistic_expected_hessian_cpp", (DL_FUNC) &_distributions7_logistic_expected_hessian_cpp, 3},
+    {"_distributions7_lognormal_gradient_cpp", (DL_FUNC) &_distributions7_lognormal_gradient_cpp, 3},
+    {"_distributions7_lognormal_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_hessian_cpp, 3},
+    {"_distributions7_lognormal_expected_hessian_cpp", (DL_FUNC) &_distributions7_lognormal_expected_hessian_cpp, 3},
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 2},
     {"_distributions7_poisson_hessian_cpp", (DL_FUNC) &_distributions7_poisson_hessian_cpp, 2},
     {"_distributions7_poisson_expected_hessian_cpp", (DL_FUNC) &_distributions7_poisson_expected_hessian_cpp, 2},
-    {"_distributions7_series_cpp", (DL_FUNC) &_distributions7_series_cpp, 7},
     {"_distributions7_student_t_gradient_cpp", (DL_FUNC) &_distributions7_student_t_gradient_cpp, 4},
     {"_distributions7_student_t_hessian_cpp", (DL_FUNC) &_distributions7_student_t_hessian_cpp, 4},
     {"_distributions7_student_t_expected_hessian_cpp", (DL_FUNC) &_distributions7_student_t_expected_hessian_cpp, 4},

@@ -156,7 +156,7 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' Creates a distribution object for the Binomial distribution parameterized by the probability of success \eqn{\mu} and a number of trials \eqn{n} (size).
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu} (probability).
-#'   Defaults to \code{\link[linkfunctions]{logit_link}} to ensure the parameter stays within (0, 1).
+#'   Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).
 #' @param size Integer or Numeric Vector. The number of trials \eqn{n}.
 #'   Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.
 #'
@@ -184,7 +184,7 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #'
 #' @return An S7 object of class \code{BinomialDistrib} (inheriting from \code{discrete_distrib}) representing the Binomial distribution.
 #'
-#' @importFrom linkfunctions logit_link
+#' @importFrom linkfunctions7 logit_link
 #' @importFrom stats dbinom pbinom qbinom rbinom
 #' @export
 binomial_distrib <- function(link_mu = logit_link(), size = 1) {

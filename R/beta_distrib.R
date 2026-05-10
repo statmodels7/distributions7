@@ -151,9 +151,9 @@ S7::method(distrib_expected_hessian, BetaDistrib) <- function(distrib, y, theta)
 #' Creates a distribution object for the Beta distribution parameterized by mean (\eqn{\mu}) and precision (\eqn{\phi}).
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions]{logit_link}} to ensure the parameter stays within (0, 1).
+#'   Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).
 #' @param link_phi A link function object for the precision parameter \eqn{\phi}.
-#'   Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.
+#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
 #' The Beta distribution is reparameterized from the standard shape parameters \eqn{\alpha} and \eqn{\beta} using:
@@ -179,7 +179,7 @@ S7::method(distrib_expected_hessian, BetaDistrib) <- function(distrib, y, theta)
 #'
 #' @return An S7 object of class \code{BetaDistrib} (inheriting from \code{continuous_distrib}) representing the Beta distribution.
 #'
-#' @importFrom linkfunctions logit_link log_link
+#' @importFrom linkfunctions7 logit_link log_link
 #' @importFrom stats dbeta pbeta qbeta rbeta
 #' @export
 beta_distrib <- function(link_mu = logit_link(), link_phi = log_link()) {

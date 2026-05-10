@@ -8,10 +8,10 @@ invgauss_distrib(link_mu = log_link(), link_phi = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 
 \item{link_phi}{A link function object for the dispersion parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{InvGaussDistrib} (inheriting from \code{continuous_distrib}) representing the Inverse-Gaussian distribution.
