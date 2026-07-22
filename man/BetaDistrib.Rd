@@ -39,6 +39,24 @@ BetaDistrib(
 A subclass of \code{continuous_distrib} representing the Beta distribution
 under the mean-precision parameterization.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.BetaDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.BetaDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.BetaDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.BetaDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.BetaDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.BetaDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.BetaDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.BetaDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.BetaDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.BetaDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.BetaDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{beta_distrib}}
 }

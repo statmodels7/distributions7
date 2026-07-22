@@ -38,3 +38,18 @@ discrete_distrib(
 \description{
 A subclass of \code{distrib} specifically for discrete probability distributions.
 }
+\section{Methods}{
+
+Defaults for discrete distributions, built from the probability mass function
+alone by accumulating it over the support; they require a finite lower bound,
+which every standard count distribution has.
+
+\code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf()}},
+\code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.discrete_distrib]{distrib_rng()}},
+\code{\link[=expectation]{expectation()}},
+\code{\link[=plot.discrete_distrib]{plot()}}
+
+Everything else is inherited from \code{\link{distrib}}.
+}
+

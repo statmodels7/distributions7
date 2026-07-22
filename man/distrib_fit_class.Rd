@@ -66,3 +66,14 @@ distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 Object returned by \code{\link{fit_distrib}}, holding the estimates on both the
 parameter and the link scale together with their uncertainty.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=coef.distrib_fit]{coef()}},
+\code{\link[=logLik.distrib_fit]{logLik()}},
+\code{\link[=plot.distrib_fit]{plot()}},
+\code{\link[=print.distrib_fit]{print()}},
+\code{\link[=simulate.distrib_fit]{simulate()}},
+\code{\link[=vcov.distrib_fit]{vcov()}}
+}
+

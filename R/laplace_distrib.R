@@ -8,6 +8,24 @@
 #' whose log-likelihood is \strong{not differentiable} in its location parameter.
 #' @inheritParams distrib
 #' @seealso \code{\link{laplace_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}},
+#'   \code{\link[=kurtosis]{kurtosis()}},
+#'   \code{\link[=mean.distrib]{mean()}},
+#'   \code{\link[=skewness]{skewness()}},
+#'   \code{\link[=variance]{variance()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

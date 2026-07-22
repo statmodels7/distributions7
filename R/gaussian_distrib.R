@@ -6,6 +6,22 @@
 #' @description A subclass of \code{continuous_distrib} representing the Gaussian (Normal) distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{gaussian_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.GaussianDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.GaussianDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.GaussianDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.GaussianDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.GaussianDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.GaussianDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.GaussianDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.GaussianDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.GaussianDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.GaussianDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.GaussianDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 GaussianDistrib <- S7::new_class("GaussianDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

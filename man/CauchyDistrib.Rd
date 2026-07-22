@@ -38,6 +38,24 @@ CauchyDistrib(
 \description{
 A subclass of \code{continuous_distrib} representing the Cauchy distribution.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.CauchyDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.CauchyDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.CauchyDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.CauchyDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.CauchyDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{cauchy_distrib}}
 }

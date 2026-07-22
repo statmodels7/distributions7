@@ -81,6 +81,15 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param converged Logical convergence flag.
 #' @param method Optimisation method actually used.
 #' @param level Confidence level.
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=coef.distrib_fit]{coef()}},
+#'   \code{\link[=logLik.distrib_fit]{logLik()}},
+#'   \code{\link[=plot.distrib_fit]{plot()}},
+#'   \code{\link[=print.distrib_fit]{print()}},
+#'   \code{\link[=simulate.distrib_fit]{simulate()}},
+#'   \code{\link[=vcov.distrib_fit]{vcov()}}
+#'
 #' @export
 distrib_fit <- S7::new_class("distrib_fit",
   properties = list(

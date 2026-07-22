@@ -43,6 +43,20 @@ A subclass of \code{discrete_distrib} representing the zero-inflated version of 
 wrapped discrete distribution: a mixture of a point mass at zero (with probability
 \eqn{\zeta}) and the original count distribution.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf()}},
+\code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.ZeroInflatedDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.ZeroInflatedDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{discrete_distrib}}.
+}
+
 \seealso{
 \code{\link{zero_inflated}}
 }

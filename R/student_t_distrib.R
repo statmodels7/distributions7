@@ -6,6 +6,22 @@
 #' @description A subclass of \code{continuous_distrib} representing the Student's t distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{student_t_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.StudentTDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.StudentTDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.StudentTDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.StudentTDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.StudentTDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.StudentTDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.StudentTDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.StudentTDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.StudentTDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.StudentTDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.StudentTDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 StudentTDistrib <- S7::new_class("StudentTDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

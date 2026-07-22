@@ -10,6 +10,18 @@
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
 #' @seealso \code{\link{zero_adjusted}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.ZeroAdjustedDiscreteDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.ZeroAdjustedDiscreteDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{discrete_distrib}}.
 ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -27,6 +39,19 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
 #' @seealso \code{\link{zero_adjusted}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.ZeroAdjustedContinuousDistrib]{distrib_rng()}},
+#'   \code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
   parent = continuous_distrib,
   properties = list(

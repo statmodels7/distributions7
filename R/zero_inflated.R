@@ -10,6 +10,18 @@
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
 #' @seealso \code{\link{zero_inflated}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.ZeroInflatedDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.ZeroInflatedDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{discrete_distrib}}.
 ZeroInflatedDistrib <- S7::new_class("ZeroInflatedDistrib",
   parent = discrete_distrib,
   properties = list(

@@ -43,6 +43,21 @@ A subclass of \code{continuous_distrib} representing the zero-adjusted version o
 wrapped continuous distribution: a point mass at zero with probability \eqn{\pi}
 (parameter \code{za}) mixed with the original continuous distribution.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
+\code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.ZeroAdjustedContinuousDistrib]{distrib_rng()}},
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{zero_adjusted}}
 }

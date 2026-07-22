@@ -38,3 +38,21 @@ continuous_distrib(
 \description{
 A subclass of \code{distrib} specifically for continuous probability distributions.
 }
+\section{Methods}{
+
+Defaults for continuous distributions, built from the density alone: the cdf by
+quadrature, the quantile function by root finding, and the generator by
+Generalized Ratio-of-Uniforms (\code{\link{rng_grou}}) or inverse transform when
+an analytical quantile is available.
+
+\code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf()}},
+\code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.continuous_distrib]{distrib_hess_y()}},
+\code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.continuous_distrib]{distrib_rng()}},
+\code{\link[=expectation]{expectation()}},
+\code{\link[=plot.continuous_distrib]{plot()}}
+
+Everything else is inherited from \code{\link{distrib}}.
+}
+

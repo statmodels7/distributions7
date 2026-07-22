@@ -46,6 +46,20 @@ A subclass of \code{continuous_distrib} representing the distribution of
 \eqn{Y = g(X)}, where \eqn{X} follows a wrapped continuous distribution and \eqn{g}
 is a bijective \code{\link{transformer}}.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf()}},
+\code{\link[=distrib_expected_hessian.TransformedDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.TransformedDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.TransformedDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.TransformedDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.TransformedDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{transformation}}
 }

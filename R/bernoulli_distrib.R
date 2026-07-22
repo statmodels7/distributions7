@@ -6,6 +6,20 @@
 #' @description A subclass of \code{discrete_distrib} representing the Bernoulli distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{bernoulli_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.BernoulliDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.BernoulliDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.BernoulliDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.BernoulliDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.BernoulliDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{discrete_distrib}}.
 BernoulliDistrib <- S7::new_class("BernoulliDistrib", parent = discrete_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

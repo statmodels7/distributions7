@@ -15,6 +15,27 @@
 #' @param params_smooth An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).
 #'
 #' @import S7
+#' @section Methods:
+#' Registered on the base class, so every distribution inherits them unless it
+#' registers something more specific. Those that compute derivatives do so by
+#' finite differences, which is why a subclass that implements nothing but
+#' \code{\link{distrib_pdf}} is already fully functional. Note that
+#' \code{distrib_pdf} itself has no default: the density is the one thing a
+#' distribution must supply.
+#'
+#'   \code{\link[=distrib_deriv3.distrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.distrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.distrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.distrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.distrib]{distrib_hessian()}},
+#'   \code{\link[=generate_random_theta.distrib]{generate_random_theta()}},
+#'   \code{\link[=kurtosis]{kurtosis()}},
+#'   \code{\link[=mean.distrib]{mean()}},
+#'   \code{\link[=print.distrib]{print()}},
+#'   \code{\link[=skewness]{skewness()}},
+#'   \code{\link[=std_dev]{std_dev()}},
+#'   \code{\link[=variance]{variance()}}
+#'
 #' @export
 distrib <- S7::new_class("distrib",
   properties = list(
@@ -111,6 +132,22 @@ param_smoothness <- function(distrib) {
 #' @description A subclass of \code{distrib} specifically for continuous probability distributions.
 #' @inheritParams distrib
 #' 
+#' @section Methods:
+#' Defaults for continuous distributions, built from the density alone: the cdf by
+#' quadrature, the quantile function by root finding, and the generator by
+#' Generalized Ratio-of-Uniforms (\code{\link{rng_grou}}) or inverse transform when
+#' an analytical quantile is available.
+#'
+#'   \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_hess_y.continuous_distrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.continuous_distrib]{distrib_rng()}},
+#'   \code{\link[=expectation]{expectation()}},
+#'   \code{\link[=plot.continuous_distrib]{plot()}}
+#'
+#' Everything else is inherited from \code{\link{distrib}}.
+#'
 #' @export
 continuous_distrib <- S7::new_class("continuous_distrib",
   parent = distrib
@@ -121,6 +158,19 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #' @description A subclass of \code{distrib} specifically for discrete probability distributions.
 #' @inheritParams distrib
 #' 
+#' @section Methods:
+#' Defaults for discrete distributions, built from the probability mass function
+#' alone by accumulating it over the support; they require a finite lower bound,
+#' which every standard count distribution has.
+#'
+#'   \code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.discrete_distrib]{distrib_rng()}},
+#'   \code{\link[=expectation]{expectation()}},
+#'   \code{\link[=plot.discrete_distrib]{plot()}}
+#'
+#' Everything else is inherited from \code{\link{distrib}}.
+#'
 #' @export
 discrete_distrib <- S7::new_class("discrete_distrib",
   parent = distrib

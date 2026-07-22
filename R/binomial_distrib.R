@@ -8,6 +8,20 @@
 #' @param size Integer or Numeric Vector. The number of trials \eqn{n}.
 #'   Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.
 #' @seealso \code{\link{binomial_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.BinomialDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.BinomialDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{discrete_distrib}}.
 BinomialDistrib <- S7::new_class("BinomialDistrib", 
   parent = discrete_distrib,
   properties = list(

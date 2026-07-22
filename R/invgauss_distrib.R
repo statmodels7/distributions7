@@ -6,6 +6,22 @@
 #' @description A subclass of \code{continuous_distrib} representing the Inverse-Gaussian distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{invgauss_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.InvGaussDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.InvGaussDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.InvGaussDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.InvGaussDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.InvGaussDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.InvGaussDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.InvGaussDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.InvGaussDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.InvGaussDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.InvGaussDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.InvGaussDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 InvGaussDistrib <- S7::new_class("InvGaussDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

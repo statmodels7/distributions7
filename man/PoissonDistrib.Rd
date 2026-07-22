@@ -38,6 +38,22 @@ PoissonDistrib(
 \description{
 A subclass of \code{discrete_distrib} representing the Poisson distribution.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.PoissonDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.PoissonDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.PoissonDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{discrete_distrib}}.
+}
+
 \seealso{
 \code{\link{poisson_distrib}}
 }

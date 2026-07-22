@@ -6,6 +6,24 @@
 #' @description A subclass of \code{discrete_distrib} representing the Negative Binomial distribution (NB2 parameterization).
 #' @inheritParams distrib
 #' @seealso \code{\link{negbin_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.NegBinDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.NegBinDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.NegBinDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.NegBinDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.NegBinDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.NegBinDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.NegBinDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.NegBinDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.NegBinDistrib]{distrib_rng()}},
+#'   \code{\link[=kurtosis]{kurtosis()}},
+#'   \code{\link[=mean.distrib]{mean()}},
+#'   \code{\link[=skewness]{skewness()}},
+#'   \code{\link[=variance]{variance()}}
+#'
+#' Everything else is inherited from \code{\link{discrete_distrib}}.
 NegBinDistrib <- S7::new_class("NegBinDistrib", parent = discrete_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

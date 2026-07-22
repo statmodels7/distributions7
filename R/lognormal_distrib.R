@@ -6,6 +6,22 @@
 #' @description A subclass of \code{continuous_distrib} representing the Lognormal distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{lognormal_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.LognormalDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.LognormalDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.LognormalDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.LognormalDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.LognormalDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.LognormalDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.LognormalDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.LognormalDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.LognormalDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.LognormalDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.LognormalDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 LognormalDistrib <- S7::new_class("LognormalDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

@@ -39,6 +39,24 @@ GammaDistrib(
 A subclass of \code{continuous_distrib} representing the Gamma distribution
 under the mean-variance parameterization.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.GammaDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.GammaDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GammaDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.GammaDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.GammaDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.GammaDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.GammaDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.GammaDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.GammaDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.GammaDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.GammaDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{gamma_distrib}}
 }

@@ -42,6 +42,22 @@ Can be a single scalar (default 1) or a vector of the same length as the observa
 \description{
 A subclass of \code{discrete_distrib} representing the Binomial distribution.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.BinomialDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.BinomialDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{discrete_distrib}}.
+}
+
 \seealso{
 \code{\link{binomial_distrib}}
 }

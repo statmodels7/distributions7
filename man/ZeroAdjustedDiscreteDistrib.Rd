@@ -43,6 +43,20 @@ A subclass of \code{discrete_distrib} representing the zero-adjusted (hurdle) ve
 of a wrapped discrete distribution: the probability mass at zero is \emph{replaced} by
 \eqn{\pi} (parameter \code{za}), and positive values follow the zero-truncated parent.
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf()}},
+\code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.ZeroAdjustedDiscreteDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.ZeroAdjustedDiscreteDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng()}}
+
+Everything else is inherited from \code{\link{discrete_distrib}}.
+}
+
 \seealso{
 \code{\link{zero_adjusted}}
 }

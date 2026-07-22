@@ -40,6 +40,28 @@ A subclass of \code{continuous_distrib} representing the Pseudo-Huber distributi
 whose density is defined by the Pseudo-Huber loss kernel (a special case of the
 Generalized Hyperbolic distribution).
 }
+\section{Methods}{
+
+Methods implemented for this class:
+\code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.PseudoHuberDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}},
+\code{\link[=kurtosis]{kurtosis()}},
+\code{\link[=mean.distrib]{mean()}},
+\code{\link[=skewness]{skewness()}},
+\code{\link[=variance]{variance()}}
+
+Everything else is inherited from \code{\link{continuous_distrib}}.
+}
+
 \seealso{
 \code{\link{pseudohuber_distrib}}
 }

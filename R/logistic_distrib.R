@@ -6,6 +6,22 @@
 #' @description A subclass of \code{continuous_distrib} representing the Logistic distribution.
 #' @inheritParams distrib
 #' @seealso \code{\link{logistic_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4()}},
+#'   \code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_grad_y.LogisticDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.LogisticDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.LogisticDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.LogisticDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---

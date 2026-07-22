@@ -19,6 +19,19 @@
 #' @param valid_support Checks whether a support is compatible with the transformation.
 #' @param decreasing Logical; \code{TRUE} for monotonically decreasing transformations.
 #'
+#' @section Methods:
+#' No method dispatches on this class: a \code{transformer} is a description of a
+#' change of variables, not a distribution. It is consumed by
+#' \code{\link{transformation}}, which returns a
+#' \code{\link{TransformedDistrib}} carrying the full set of distribution methods.
+#'
+#' Ready-made transformers: \code{\link{log_transform}}, \code{\link{exp_transform}},
+#' \code{\link{sqrt_transform}}, \code{\link{inverse_transform}},
+#' \code{\link{power_transform}}, \code{\link{bc_transform}},
+#' \code{\link{yj_transform}}, \code{\link{softplus_transform}},
+#' \code{\link{asinh_transform}}, \code{\link{logit_transform}},
+#' \code{\link{expit_transform}}, \code{\link{affine_transform}}.
+#'
 #' @seealso \code{\link{transformation}}
 #' @export
 transformer <- S7::new_class("transformer",
@@ -438,6 +451,18 @@ softplus_transform <- function(a = 1) {
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
 #' @param transformer The \code{\link{transformer}} defining \eqn{g}.
 #' @seealso \code{\link{transformation}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_expected_hessian.TransformedDistrib]{distrib_expected_hessian()}},
+#'   \code{\link[=distrib_gradient.TransformedDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hessian.TransformedDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_quantile.TransformedDistrib]{distrib_quantile()}},
+#'   \code{\link[=distrib_rng.TransformedDistrib]{distrib_rng()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}.
 TransformedDistrib <- S7::new_class("TransformedDistrib",
   parent = continuous_distrib,
   properties = list(

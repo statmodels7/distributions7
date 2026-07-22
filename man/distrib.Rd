@@ -39,3 +39,26 @@ distrib(
 A base class for probability distributions using the S7 object-oriented system.
 It encapsulates the essential metadata, parameter definitions, and boundaries of a distribution.
 }
+\section{Methods}{
+
+Registered on the base class, so every distribution inherits them unless it
+registers something more specific. Those that compute derivatives do so by
+finite differences, which is why a subclass that implements nothing but
+\code{\link{distrib_pdf}} is already fully functional. Note that
+\code{distrib_pdf} itself has no default: the density is the one thing a
+distribution must supply.
+
+\code{\link[=distrib_deriv3.distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.distrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_gradient.distrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.distrib]{distrib_hessian()}},
+\code{\link[=generate_random_theta.distrib]{generate_random_theta()}},
+\code{\link[=kurtosis]{kurtosis()}},
+\code{\link[=mean.distrib]{mean()}},
+\code{\link[=print.distrib]{print()}},
+\code{\link[=skewness]{skewness()}},
+\code{\link[=std_dev]{std_dev()}},
+\code{\link[=variance]{variance()}}
+}
+
