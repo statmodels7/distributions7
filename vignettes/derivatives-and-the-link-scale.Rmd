@@ -1,0 +1,178 @@
+---
+title: "Derivatives and the link scale"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Derivatives and the link scale}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+set.seed(1)
+```
+
+```{r setup}
+library(distributions7)
+```
+
+Most of what **distributions7** offers beyond densities is derivatives: the
+score, the information, and the third and fourth derivatives of the
+log-likelihood. This vignette explains what they are, the two scales you can ask
+for them on, and why the second scale --- the link scale --- is the one an
+optimiser wants.
+
+## The derivatives of the log-likelihood
+
+For one observation, write $\ell(\theta) = \log f(y; \theta)$. The package gives
+you its derivatives with respect to the parameters, per observation, as named
+lists:
+
+```{r}
+d <- gaussian_distrib()
+theta <- list(mu = 2, sigma = 3)
+y <- distrib_rng(d, 4, theta)
+
+distrib_gradient(d, y, theta)          # score: d ell / d theta
+```
+
+```{r}
+distrib_hessian(d, y, theta)           # observed: d^2 ell / d theta^2
+```
+
+The **expected** Hessian --- the negative Fisher information --- is a separate
+generic, because for a correct model it does not depend on $y$:
+
+```{r}
+distrib_expected_hessian(d, 0, theta)
+```
+
+Third and fourth derivatives are there too, keyed by their multi-index, for
+anything that needs curvature beyond the quadratic:
+
+```{r}
+distrib_deriv3(d, y, theta)
+```
+
+These are exact, computed by closed-form C++ kernels, not by differencing. A
+separate pair, `distrib_grad_y()` and `distrib_hess_y()`, differentiates with
+respect to the response $y$ instead of the parameters.
+
+## Two scales
+
+Every derivative generic takes a `scale` argument. The default,
+`scale = "parameter"`, is what you have seen: derivatives with respect to
+$\theta$ on its natural, constrained scale.
+
+`scale = "link"` instead gives derivatives with respect to the **unconstrained**
+parameter $\eta = g(\theta)$ behind each link. For the Gaussian the default link
+on $\sigma$ is the log, so $\eta_\sigma = \log\sigma$:
+
+```{r}
+distrib_gradient(d, y, theta, scale = "link")
+```
+
+Nothing was differentiated numerically to get this. The chain rule was applied
+to the parameter-scale derivatives, exactly. For a single parameter with link
+$g$, $\partial\ell/\partial\eta = (\partial\ell/\partial\theta)\,/\,g'(\theta)$;
+with the log link on $\sigma$ that factor is simply $\sigma$:
+
+```{r}
+g_par  <- distrib_gradient(d, y, theta)
+g_link <- distrib_gradient(d, y, theta, scale = "link")
+
+all.equal(g_par$sigma * theta$sigma, g_link$sigma)
+```
+
+Under an identity link the two scales coincide, as they must:
+
+```{r}
+d_id <- gaussian_distrib(
+  link_mu    = linkfunctions7::identity_link(),
+  link_sigma = linkfunctions7::identity_link()
+)
+all.equal(
+  distrib_gradient(d_id, y, theta),
+  distrib_gradient(d_id, y, theta, scale = "link")
+)
+```
+
+The transformation works at every order. The general rule is Faà di Bruno's
+formula --- the chain rule for higher derivatives --- applied with a diagonal
+Jacobian, since each parameter has its own link. It is written once, in the body
+of each generic, so `scale = "link"` is available uniformly:
+
+```{r}
+distrib_deriv3(d, y, theta, scale = "link")
+```
+
+## Why the link scale is the useful one
+
+A standard deviation is positive, a probability lives in $(0, 1)$, a shape
+parameter is positive. Maximising a likelihood over such constrained parameters
+means either fighting the boundary or bolting on constraints. Reparameterise
+through the link and the problem becomes unconstrained: $\eta$ ranges over the
+whole real line, and a Newton or Fisher-scoring step needs exactly the
+link-scale score and information this package computes in closed form.
+
+That is precisely what `fit_distrib()` does --- it optimises on the link scale
+and maps back --- and it is why its confidence intervals cannot leave a
+parameter's domain. See `vignette("fitting-a-model")` for that side of the story.
+
+The information transforms consistently. Because the score has zero expectation,
+the expected information on the link scale is the sandwich
+$\operatorname{diag}(g') \, \mathcal{I} \, \operatorname{diag}(g')$; for the log
+link on $\sigma$ that multiplies the $\sigma\sigma$ entry by $\sigma^2$:
+
+```{r}
+eh_par  <- distrib_expected_hessian(d, 0, theta)
+eh_link <- distrib_expected_hessian(d, 0, theta, scale = "link")
+
+c(parameter = eh_par$sigma_sigma[1],
+  scaled    = theta$sigma^2 * eh_par$sigma_sigma[1],
+  link      = eh_link$sigma_sigma[1])
+```
+
+## Expected higher derivatives, when there is no formula
+
+`distrib_deriv3()` and `distrib_deriv4()` also take `expected = TRUE`. Some
+distributions have closed-form expected derivatives; where they do not, the
+value is approximated, and `approx` chooses how:
+
+```{r}
+distrib_deriv3(gamma_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
+```
+
+The strategies are `"bartlett"`, `"integrate"` and `"mc"`, trading speed against
+robustness. They rest on one idea: the outer product of gradients is the
+order-two case of the Bartlett identities, and the general identity expresses an
+expected derivative of any order through products of lower-order ones. `?distrib_deriv3`
+has the details; the default is chosen to be both cheap and valid, including for
+models where the usual regularity assumptions fail.
+
+## A note for authors of derivative methods
+
+If you write your own analytical derivative method, its signature **must** include
+the `scale` argument, even if the method only ever returns the parameter scale:
+
+```{r eval = FALSE}
+S7::method(distrib_gradient, MyDist) <- function(distrib, y, theta,
+                                                 scale = c("parameter", "link"), ...) {
+  # ... return the parameter-scale gradient; the generic handles "link" itself
+}
+```
+
+S7 requires a method's formals to include the generic's named arguments, and the
+link-scale transformation lives in the generic, wrapping whatever the method
+returns. Omit `scale` and dispatch will fail. The numerical fallbacks and all
+built-in methods already follow this pattern.
+
+## Where to go next
+
+- `vignette("fitting-a-model")` --- the link scale put to work in estimation.
+- `vignette("defining-a-distribution")` --- adding a distribution that inherits
+  all of this.
+- `?distrib_gradient`, `?distrib_deriv3` --- the full reference.
