@@ -121,10 +121,30 @@ deriv_index_list <- function(p, order) {
 # eta = g(theta). Returns a list indexed by parameter position.
 inverse_link_derivs <- function(distrib, theta, order) {
   params <- distrib@params
+  links <- distrib@link_params   # one property read, not one per parameter
+
+  # The order-specific generics are called directly. linkinvderiv() is a
+  # convenience router: it dispatches on the link, then calls dlinkinv() and
+  # friends, which dispatch again. That second dispatch is a third of the cost of
+  # the call, and this function makes one call per parameter per order -- twelve
+  # of them for a three-parameter distribution at fourth order. Every link in
+  # linkfunctions7 implements the order-specific generics; they are what
+  # linkinvderiv() itself reaches for.
   lapply(seq_along(params), function(i) {
-    lk <- distrib@link_params[[params[i]]]
-    eta_i <- linkfunctions7::linkfun(lk, theta[[i]])
-    lapply(seq_len(order), function(k) linkfunctions7::linkinvderiv(lk, eta_i, order = k))
+    lk <- links[[params[i]]]
+    e <- linkfunctions7::linkfun(lk, theta[[i]])
+    switch(as.integer(order),
+      list(linkfunctions7::dlinkinv(lk, e)),
+      list(linkfunctions7::dlinkinv(lk, e),
+           linkfunctions7::d2linkinv(lk, e)),
+      list(linkfunctions7::dlinkinv(lk, e),
+           linkfunctions7::d2linkinv(lk, e),
+           linkfunctions7::d3linkinv(lk, e)),
+      list(linkfunctions7::dlinkinv(lk, e),
+           linkfunctions7::d2linkinv(lk, e),
+           linkfunctions7::d3linkinv(lk, e),
+           linkfunctions7::d4linkinv(lk, e))
+    )
   })
 }
 
