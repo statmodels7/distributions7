@@ -22,9 +22,17 @@
 # density centred far from the origin. The grid refinement instead stops on the
 # width of the bracket measured in y.
 find_pdf_anchor <- function(distrib, theta) {
-  b <- distrib@bounds
+  find_lp_anchor(
+    function(y) distrib_pdf(distrib, y, theta, log = TRUE),
+    distrib@bounds
+  )
+}
+
+# The same search expressed on a bare log-density over an interval, so that it
+# can also be applied to a reparameterised density that has no distrib object.
+find_lp_anchor <- function(lp_raw, b) {
   lp <- function(y) {
-    v <- distrib_pdf(distrib, y, theta, log = TRUE)
+    v <- lp_raw(y)
     v[is.na(v)] <- -Inf
     v
   }
@@ -250,13 +258,37 @@ has_analytic_quantile <- function(distrib) {
 #' unimodal kernel. Candidates are generated and filtered in vectorised batches whose
 #' size adapts to the observed acceptance rate.
 #'
+#' @section Unbounded densities:
+#' The method needs the supremum of the kernel to be attained, so a density that
+#' diverges at a finite edge of its support would have its acceptance region
+#' clipped. Rather than give up, such an edge is transformed away.
+#'
+#' If \eqn{f(y) \sim |y-a|^{\alpha-1}} near the edge \eqn{a}, with \eqn{\alpha < 1},
+#' then \eqn{X = |Y-a|^{1/\lambda}} has density proportional to
+#' \eqn{x^{\lambda\alpha-1}} there, which is bounded as soon as
+#' \eqn{\lambda\alpha > 1}. Sampling \eqn{X} and mapping back is exact: no
+#' quadrature and no inversion are involved. The exponent \eqn{\alpha} is read off
+#' the same probe that detects the divergence -- walking towards the edge in
+#' decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step -- and
+#' \eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
+#' sampled through \eqn{X = Y^{1/4}}.
+#'
+#' A density diverging at \emph{both} edges (a Beta with both shapes below one) is
+#' beyond a single power reparameterisation, and is refused; the default
+#' \code{\link{distrib_rng}} method then falls back to inverse transform sampling.
+#'
 #' @return A numeric vector of length \code{n}.
 #'
 #' @section Requirements:
-#' The density must be bounded (an unbounded mode, e.g. a Gamma with shape below one,
-#' makes \eqn{u_{\max}} infinite) and unimodal, and the parameters in \code{theta} must
-#' be scalars. The default \code{distrib_rng} method checks these conditions and falls
-#' back to inverse transform sampling when they fail.
+#' The kernel must be unimodal and the parameters in \code{theta} must be scalars.
+#' A density that diverges at one edge of its support is handled by the
+#' reparameterisation described below; one that diverges at both is refused, and
+#' the default \code{\link{distrib_rng}} method then falls back to inverse
+#' transform sampling.
+#'
+#' Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
+#' handles a Student's t with half a degree of freedom and a Pareto with infinite
+#' mean, and multimodal densities are usually accepted as well.
 #'
 #' @seealso \code{\link{distrib_rng}}, \code{\link{check_distrib}}
 #'
@@ -286,31 +318,80 @@ rng_grou <- function(distrib, n, theta, r = 2) {
   }
   if (n <= 0) return(numeric(0))
 
-  b <- distrib@bounds
   lp <- function(y) distrib_pdf(distrib, y, theta, log = TRUE)
+  b <- distrib@bounds
+  div <- lp_edge_divergence(lp, b)
 
-  m <- find_pdf_anchor(distrib, theta)
-  lp_max <- lp(m)
-  if (!is.finite(lp_max)) {
-    stop("GRoU needs a bounded density: the log-density at the mode is ", lp_max, ".", call. = FALSE)
+  if (all(is.na(div))) {
+    return(grou_core(lp, b, n, r))
+  }
+  if (sum(!is.na(div)) > 1L) {
+    stop("GRoU needs a bounded density: it diverges at both edges of the support, ",
+         "which a single power reparameterisation cannot repair.", call. = FALSE)
   }
 
-  # A density that diverges at a finite edge of its support has no attained
-  # supremum, so the bounding rectangle would clip the acceptance region and the
-  # draws would be silently biased. Detect it by walking towards each finite edge
-  # in decades: a bounded limit makes the log-density increments vanish, while a
-  # divergence keeps them bounded away from zero.
-  diverges_at <- function(edge, inward) {
+  # One divergent edge can be transformed away. If the density behaves like
+  # |y - a|^(alpha - 1) near the edge a, then X = |Y - a|^(1/lambda) has density
+  # proportional to x^(lambda*alpha - 1) there, which is bounded as soon as
+  # lambda*alpha > 1. Sampling X by GRoU and mapping back is exact -- no
+  # quadrature, no inversion -- and lambda follows from the exponent, which the
+  # same probe that detected the divergence already estimates.
+  at_lower <- !is.na(div[["lower"]])
+  edge <- if (at_lower) b[1] else b[2]
+  alpha <- if (at_lower) div[["lower"]] else div[["upper"]]
+  lambda <- ceiling(1 / alpha) + 1
+
+  to_y <- if (at_lower) function(x) edge + x^lambda else function(x) edge - x^lambda
+  width <- abs((if (at_lower) b[2] else b[1]) - edge)
+
+  lp_x <- function(x) {
+    out <- rep(-Inf, length(x))
+    # Once x is small enough that edge +- x^lambda rounds back onto the edge, the
+    # original density is evaluated exactly at its singularity and returns
+    # infinity, undoing the reparameterisation. The transformed density tends to
+    # zero there (lambda*alpha > 1 by construction), so -Inf is both the correct
+    # limit and the safe value.
+    ok <- is.finite(x) & x > 0 & to_y(x) != edge
+    if (any(ok)) {
+      v <- lp(to_y(x[ok])) + log(lambda) + (lambda - 1) * log(x[ok])
+      v[is.na(v)] <- -Inf
+      out[ok] <- v
+    }
+    out
+  }
+  b_x <- c(0, if (is.finite(width)) width^(1 / lambda) else Inf)
+
+  to_y(grou_core(lp_x, b_x, n, r))
+}
+
+# Internal: for each finite edge of the support, the exponent alpha of a
+# divergence f(y) ~ |y - edge|^(alpha - 1), or NA when the density stays bounded
+# there. Walking towards the edge in decades lifts the log-density by
+# (1 - alpha) * log(10) per step when it diverges, and by an amount that dies
+# away when it does not.
+lp_edge_divergence <- function(lp, b) {
+  probe <- function(edge, inward) {
     step <- inward * 1e-3 * max(abs(edge), 1) * 10^(-(0:11))
     v <- lp(edge + step)
     v <- v[is.finite(v)]
-    if (length(v) < 5L) return(FALSE)
+    if (length(v) < 5L) return(NA_real_)
     dv <- diff(v)
-    all(dv > 0) && min(dv[(length(dv) - 2L):length(dv)]) > 1e-6
+    if (!all(dv > 0) || min(dv[(length(dv) - 2L):length(dv)]) <= 1e-6) return(NA_real_)
+    alpha <- 1 - stats::median(dv) / log(10)
+    min(max(alpha, 1e-6), 1 - 1e-6)
   }
-  if (is.finite(b[1]) && diverges_at(b[1], 1) ||
-      is.finite(b[2]) && diverges_at(b[2], -1)) {
-    stop("GRoU needs a bounded density: it diverges at an edge of the support.", call. = FALSE)
+  c(lower = if (is.finite(b[1])) probe(b[1], 1) else NA_real_,
+    upper = if (is.finite(b[2])) probe(b[2], -1) else NA_real_)
+}
+
+# Internal: the Generalized Ratio-of-Uniforms itself, on a bare log-density over
+# an interval. Kept separate from the distrib object so that it can also be run
+# on a reparameterised density.
+grou_core <- function(lp, b, n, r) {
+  m <- find_lp_anchor(lp, b)
+  lp_max <- lp(m)
+  if (!is.finite(lp_max)) {
+    stop("GRoU needs a bounded density: the log-density at the mode is ", lp_max, ".", call. = FALSE)
   }
 
   # Log-kernel recentred at the mode and normalised to a maximum of 1
@@ -332,7 +413,7 @@ rng_grou <- function(distrib, n, theta, r = 2) {
   }
 
   # Typical width of the bulk of a unimodal density, as in the quantile fallback
-  scale_m <- 1 / max(distrib_pdf(distrib, m, theta), 1e-12)
+  scale_m <- 1 / max(exp(lp_max), 1e-12)
 
   # Expand away from the mode until h has turned back towards zero
   far_end <- function(bound, sgn) {
@@ -559,6 +640,25 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
   if (!lower.tail) p <- 1 - p
 
   b <- distrib@bounds
+
+  # Scalar parameters, which is the case that matters for simulation: build the
+  # cumulative table once and invert it for the whole vector in a single call.
+  # The step function is inverted exactly, so the loop below buys nothing here --
+  # it used to cost one R-level call per draw, which dominated everything else.
+  if (all(lengths(theta) <= 1L)) {
+    out <- rep(NaN, length(p))
+    ok <- !is.na(p) & p >= 0 & p <= 1
+    if (any(ok)) {
+      tab <- disc_cum_table(distrib, theta, need_p = max(p[ok]))
+      idx <- findInterval(p[ok], tab$cs, left.open = TRUE) + 1L
+      idx <- pmin(idx, length(tab$ks))
+      out[ok] <- tab$ks[idx]
+      out[ok & p == 0] <- b[1]
+      out[ok & p == 1] <- b[2]
+    }
+    return(out)
+  }
+
   all_params <- expand_params(c(list(.p = p), theta))
   rows <- transpose_params(all_params)
 
@@ -591,6 +691,13 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #' @description
 #' Fallback method: discrete distributions that do not implement a native RNG
 #' generate draws by inverse transform sampling on the cumulative pmf table.
+#'
+#' No rejection scheme is needed here, and none would help. Inverting the
+#' cumulative mass function is exact, because the distribution function of a
+#' lattice-valued variable is a step function: there is nothing to solve. The
+#' table is built once per distinct parameter value and the whole sample is
+#' located in it with a single binary search, which costs a fraction of a
+#' microsecond per draw.
 #' @param distrib An object inheriting from class \code{"discrete_distrib"}.
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters.

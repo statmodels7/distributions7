@@ -59,12 +59,38 @@ search over the resulting bracket; the box is enclosing by construction for a
 unimodal kernel. Candidates are generated and filtered in vectorised batches whose
 size adapts to the observed acceptance rate.
 }
+\section{Unbounded densities}{
+
+The method needs the supremum of the kernel to be attained, so a density that
+diverges at a finite edge of its support would have its acceptance region
+clipped. Rather than give up, such an edge is transformed away.
+
+If \eqn{f(y) \sim |y-a|^{\alpha-1}} near the edge \eqn{a}, with \eqn{\alpha < 1},
+then \eqn{X = |Y-a|^{1/\lambda}} has density proportional to
+\eqn{x^{\lambda\alpha-1}} there, which is bounded as soon as
+\eqn{\lambda\alpha > 1}. Sampling \eqn{X} and mapping back is exact: no
+quadrature and no inversion are involved. The exponent \eqn{\alpha} is read off
+the same probe that detects the divergence -- walking towards the edge in
+decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step -- and
+\eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
+sampled through \eqn{X = Y^{1/4}}.
+
+A density diverging at \emph{both} edges (a Beta with both shapes below one) is
+beyond a single power reparameterisation, and is refused; the default
+\code{\link{distrib_rng}} method then falls back to inverse transform sampling.
+}
+
 \section{Requirements}{
 
-The density must be bounded (an unbounded mode, e.g. a Gamma with shape below one,
-makes \eqn{u_{\max}} infinite) and unimodal, and the parameters in \code{theta} must
-be scalars. The default \code{distrib_rng} method checks these conditions and falls
-back to inverse transform sampling when they fail.
+The kernel must be unimodal and the parameters in \code{theta} must be scalars.
+A density that diverges at one edge of its support is handled by the
+reparameterisation described below; one that diverges at both is refused, and
+the default \code{\link{distrib_rng}} method then falls back to inverse
+transform sampling.
+
+Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
+handles a Student's t with half a degree of freedom and a Pareto with infinite
+mean, and multimodal densities are usually accepted as well.
 }
 
 \examples{

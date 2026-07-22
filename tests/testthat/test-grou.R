@@ -135,14 +135,72 @@ test_that("distributions with a native RNG are unaffected", {
   expect_equal(a, stats::rnorm(5))
 })
 
-test_that("an unbounded density is refused and falls back to inversion", {
-  d <- bare_gamma()
-  th <- list(a = 0.4, r = 1) # density diverges at zero
-  expect_error(rng_grou(d, 10, th), "bounded density")
+test_that("a density diverging at one edge is reparameterised, not refused", {
+  # f(y) ~ |y - a|^(alpha - 1) near the edge: sampling |Y - a|^(1/lambda) with
+  # lambda * alpha > 1 has a bounded density, and mapping back is exact.
   set.seed(107)
-  expect_warning(y <- distrib_rng(d, 100, th), "inverse transform")
-  expect_length(y, 100)
-  expect_gt(suppressWarnings(stats::ks.test(y, function(q) stats::pgamma(q, 0.4, 1)))$p.value, 0.001)
+  for (shape in c(0.1, 0.4, 0.85)) {
+    y <- rng_grou(bare_gamma(), 20000, list(a = shape, r = 1.5))
+    expect_length(y, 20000)
+    ks <- suppressWarnings(stats::ks.test(y, function(q) stats::pgamma(q, shape, 1.5)))
+    expect_gt(ks$p.value, 0.001)
+  }
+
+  # the divergence may sit at the upper edge instead
+  set.seed(108)
+  y <- rng_grou(bare_beta(), 20000, list(a = 2, b = 0.3))
+  ks <- suppressWarnings(stats::ks.test(y, function(q) stats::pbeta(q, 2, 0.3)))
+  expect_gt(ks$p.value, 0.001)
+
+  # and at the lower edge of a bounded support
+  set.seed(109)
+  y <- rng_grou(bare_beta(), 20000, list(a = 0.3, b = 2))
+  ks <- suppressWarnings(stats::ks.test(y, function(q) stats::pbeta(q, 0.3, 2)))
+  expect_gt(ks$p.value, 0.001)
+})
+
+test_that("a density diverging at both edges is refused and falls back to inversion", {
+  # A single power reparameterisation straightens one edge at the cost of the
+  # other, so this case is handed to inverse transform sampling.
+  d <- bare_beta()
+  th <- list(a = 0.5, b = 0.5)
+  expect_error(rng_grou(d, 10, th), "both edges")
+  set.seed(110)
+  expect_warning(y <- distrib_rng(d, 200, th), "inverse transform")
+  expect_length(y, 200)
+  expect_gt(suppressWarnings(stats::ks.test(y, function(q) stats::pbeta(q, 0.5, 0.5)))$p.value, 0.001)
+})
+
+test_that("the discrete fallback inverts the step cdf exactly and in one pass", {
+  # Nothing is solved numerically here: the cumulative mass function is a step
+  # function, so inversion is exact and a single binary search serves the whole
+  # sample.
+  DiscP <- S7::new_class("DiscPois", parent = discrete_distrib, package = NULL)
+  S7::method(distrib_pdf, DiscP) <- function(distrib, y, theta, log = FALSE) {
+    stats::dpois(y, theta[[1]], log = log)
+  }
+  d <- bare_instance(DiscP, "grou pois", c(0, Inf), "mu",
+    list(mu = c(0, Inf)), list(mu = lg_link))
+
+  p <- c(0, 0.001, 0.1, 0.5, 0.9, 0.999)
+  for (mu in c(0.5, 4, 250)) {
+    expect_equal(distrib_quantile(d, p, list(mu = mu)), stats::qpois(p, mu),
+      label = paste("mu =", mu))
+  }
+
+  # the draws follow the pmf (a continuous KS test would be invalid on ties)
+  set.seed(111)
+  y <- distrib_rng(d, 5e4, list(mu = 4))
+  obs <- as.numeric(table(factor(pmin(y, 15), levels = 0:15)))
+  expected <- 5e4 * c(stats::dpois(0:14, 4), stats::ppois(14, 4, lower.tail = FALSE))
+  chisq <- sum((obs - expected)^2 / expected)
+  expect_gt(stats::pchisq(chisq, df = 15, lower.tail = FALSE), 0.001)
+
+  # per-observation parameters still work
+  set.seed(112)
+  y <- distrib_rng(d, 4000, list(mu = rep(c(2, 60), each = 2000)))
+  expect_equal(mean(y[1:2000]), 2, tolerance = 0.2)
+  expect_equal(mean(y[2001:4000]), 60, tolerance = 2)
 })
 
 test_that("vector-valued theta is handled group by group", {
