@@ -1,12 +1,12 @@
 #' @include distrib.R generics.R
 
-#' Print Method for `distrib` Objects
-#'
+#' @title Print Method for `distrib` Objects
+#' @name print.distrib
 #' @description Custom S7 print method for objects inheriting from `distrib`.
 #' @param x An object inheriting from class \code{"distrib"}.
 #' @param ... Additional arguments (currently unused).
 #' @return The object \code{x} invisibly.
-#' @export
+#' @keywords internal
 S7::method(print, distrib) <- function(x, ...) {
   # Format the distribution name (Capitalize first letters)
   d_name <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", x@distrib_name, perl = TRUE)
@@ -27,43 +27,48 @@ S7::method(print, distrib) <- function(x, ...) {
   cat("\nParameters:\n")
   
   max_param_len <- max(nchar(x@params), na.rm = TRUE)
-  
+  smooth <- param_smoothness(x)
+
   for (i in seq_len(x@n_params)) {
     p_name <- x@params[i]
-    
-    interpretation <- if (!is.null(x@params_interpretation)) {
+
+    interpretation <- if (!is.na(x@params_interpretation[p_name])) {
       paste0("(", x@params_interpretation[[p_name]], ")")
     } else {
       ""
     }
-    
+
     link_obj <- x@link_params[[p_name]]
-    link_name <- if (is.null(link_obj)) "none" else link_obj$link_name
-    
+    link_name <- if (is.null(link_obj)) "none" else link_obj@link_name
+
     bounds <- x@params_bounds[[p_name]]
-    domain_str <- paste0("(", bounds[1], ", ", bounds[2], ")")
-    
+    domain_str <- if (is.null(bounds)) "(unspecified)" else paste0("(", bounds[1], ", ", bounds[2], ")")
+
+    smooth_str <- if (isFALSE(smooth[[p_name]])) "  [non-smooth log-likelihood]" else ""
+
     cat(sprintf(
-      "  %-*s %-20s | Link: %-10s | Domain: %s\n",
+      "  %-*s %-20s | Link: %-10s | Domain: %s%s\n",
       max_param_len, p_name,
       interpretation,
       link_name,
-      domain_str
+      domain_str,
+      smooth_str
     ))
   }
-  
+
   invisible(x)
 }
 
 #' Generate Random Parameters for `distrib` Objects
 #'
-#' @description 
+#' @name generate_random_theta.distrib
+#' @description
 #' Generates a named list of sensible random parameters based on the mathematical domain (\code{params_bounds}) of the given distribution.
 #' 
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #' @param ... Additional arguments (currently unused).
 #' @return A named list of randomly generated parameters.
-#' @export
+#' @keywords internal
 S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
   theta <- list()
   for (p in distrib@params) {
@@ -87,6 +92,7 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 
 #' Plot Method for Continuous Distributions
 #'
+#' @name plot.continuous_distrib
 #' @description
 #' Visualizes the Probability Density Function (PDF) of a continuous distribution object.
 #'
@@ -95,7 +101,7 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
 #' @param ... Additional arguments passed to the base \code{\link{plot}} function.
 #' @importFrom graphics plot
-#' @export
+#' @keywords internal
 S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL, ...) {
   if (missing(theta)) {
     theta <- generate_random_theta(x)
@@ -142,6 +148,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL, ...) {
 
 #' Plot Method for Discrete Distributions
 #'
+#' @name plot.discrete_distrib
 #' @description
 #' Visualizes the Probability Mass Function (PMF) of a discrete distribution object.
 #'
@@ -150,7 +157,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL, ...) {
 #' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
 #' @param ... Additional arguments passed to the base \code{\link{plot}} function.
 #' @importFrom graphics plot segments points
-#' @export
+#' @keywords internal
 S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL, ...) {
   if (missing(theta)) {
     theta <- generate_random_theta(x)

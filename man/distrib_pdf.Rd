@@ -4,12 +4,17 @@
 \alias{distrib_pdf}
 \title{Probability Density Function}
 \usage{
-distrib_pdf(distrib, ...)
+distrib_pdf(distrib, y, theta, ...)
 }
 \arguments{
 \item{distrib}{A distribution object inheriting from the \code{distrib} class.}
 
-\item{...}{Additional arguments passed to the specific method (e.g., \code{y}, \code{theta}, \code{log}).}
+\item{y}{A numeric vector of observations.}
+
+\item{theta}{A named list (or named numeric vector) of distribution parameters.
+If unnamed, parameters are taken in the order of \code{distrib@params}.}
+
+\item{...}{Additional arguments passed to the specific method (e.g., \code{log}).}
 }
 \description{
 Evaluates the probability density function (PDF) or probability mass function (PMF).

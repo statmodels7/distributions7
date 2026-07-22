@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Binomial distribution.
+Computes the quantile function for the Binomial distribution, the generalized
+inverse of the CDF:
+\deqn{Q(p; \mu, n) = \min\left\{y \in \{0, 1, \dots, n\} : F(y; \mu, n) \ge p\right\}}
 }
 \seealso{
 \code{\link{binomial_distrib}}

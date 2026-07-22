@@ -41,8 +41,9 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #' @title Binomial Cumulative Distribution Function
 #' @name distrib_cdf.BinomialDistrib
 #' @description
-#' Computes the cumulative distribution function for the Binomial distribution.
-#' 
+#' Computes the cumulative distribution function for the Binomial distribution:
+#' \deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
+#'
 #' @param distrib A \code{BinomialDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameter \code{mu}.
@@ -62,8 +63,10 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' @title Binomial Quantile Function
 #' @name distrib_quantile.BinomialDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Binomial distribution.
-#' 
+#' Computes the quantile function for the Binomial distribution, the generalized
+#' inverse of the CDF:
+#' \deqn{Q(p; \mu, n) = \min\left\{y \in \{0, 1, \dots, n\} : F(y; \mu, n) \ge p\right\}}
+#'
 #' @param distrib A \code{BinomialDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameter \code{mu}.
@@ -110,7 +113,7 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   binomial_gradient_cpp(y, theta[[1]], distrib@size)
 }
 
@@ -127,7 +130,7 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   binomial_hessian_cpp(y, theta[[1]], distrib@size)
 }
 
@@ -144,8 +147,36 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   binomial_expected_hessian_cpp(y, theta[[1]], distrib@size)
+}
+
+#' @title Binomial Analytical Third-Order Derivatives
+#' @name distrib_deriv3.BinomialDistrib
+#' @description Closed-form third-order derivative of the Binomial log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{BinomialDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
+#' @return A named list with the \code{mu_mu_mu} component.
+#' @seealso \code{\link{binomial_distrib}}
+S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) binomial_deriv3_expected_cpp(y, theta[[1]], distrib@size)
+  else binomial_deriv3_cpp(y, theta[[1]], distrib@size)
+}
+
+#' @title Binomial Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.BinomialDistrib
+#' @description Closed-form fourth-order derivative of the Binomial log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{BinomialDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
+#' @return A named list with the \code{mu_mu_mu_mu} component.
+#' @seealso \code{\link{binomial_distrib}}
+S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) binomial_deriv4_expected_cpp(y, theta[[1]], distrib@size)
+  else binomial_deriv4_cpp(y, theta[[1]], distrib@size)
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -161,16 +192,37 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #'   Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.
 #'
 #' @details
-#' The Binomial distribution has the following probability mass function (PMF):
-#' \deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}}
-#' for \eqn{y \in \{0, 1, \dots, n\}}.
+#' The Binomial distribution models the number of successes in \eqn{n} independent
+#' trials, each with success probability \eqn{\mu}. The number of trials \eqn{n} is
+#' fixed in the constructor (\code{size}) and treated as known.
 #'
-#' \strong{Parameter Domains:}
+#' \strong{Probability mass function:}
+#' \deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}, \quad y \in \{0, 1, \dots, n\}}
+#'
+#' \strong{Cumulative distribution function:}
+#' \deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
+#'
+#' \strong{Quantile function:} the generalized inverse
+#' \eqn{Q(p) = \min\{y : F(y) \ge p\}}.
+#'
+#' \strong{Score, observed and expected Hessian} (with respect to \eqn{\mu}):
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}, \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
+#'
+#' \strong{Moments:} mean \eqn{n\mu}, variance \eqn{n\mu(1-\mu)},
+#' skewness \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}, excess kurtosis
+#' \eqn{(1 - 6\mu(1-\mu))/(n\mu(1-\mu))}.
+#'
+#' \strong{Parameter domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (0, 1)}
-#'   \item \eqn{n \in \mathbb{Z}^+} (fixed in constructor, can vary per observation)
+#'   \item \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
 #' }
-#' 
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.BinomialDistrib}} for the probability mass function.

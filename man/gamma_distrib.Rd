@@ -20,14 +20,41 @@ An S7 object of class \code{GammaDistrib} (inheriting from \code{continuous_dist
 Creates a distribution object for the Gamma distribution parameterized by mean (\eqn{\mu}) and variance (\eqn{\sigma^2}).
 }
 \details{
-The Gamma distribution is reparameterized from the standard shape \eqn{(\alpha)} and rate \eqn{(\lambda)} parameters using:
-\deqn{\alpha = \dfrac{\mu^2}{\sigma^2}, \quad \lambda = \dfrac{\mu}{\sigma^2}}
+The Gamma distribution is given a mean/variance parameterization: \eqn{\mu} is
+the mean and \eqn{\sigma^2} the variance. The standard shape \eqn{\alpha} and
+rate \eqn{\lambda} are recovered as
+\deqn{\alpha = \dfrac{\mu^2}{\sigma^2}, \qquad \lambda = \dfrac{\mu}{\sigma^2}}
 
-\strong{Parameter Domains:}
+\strong{Probability density function:}
+\deqn{f(y; \mu, \sigma^2) = \dfrac{\lambda^\alpha}{\Gamma(\alpha)}\, y^{\alpha-1} e^{-\lambda y}, \quad y > 0}
+
+\strong{Cumulative distribution function} (\eqn{\gamma} the lower incomplete gamma function):
+\deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
+
+\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+
+\strong{Score} (\eqn{\psi} the digamma function):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{-2\mu\psi(\alpha) + 2\mu\log\lambda + \mu + 2\mu\log y - y}{\sigma^2}}
+\deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi(\alpha) + \mu + \mu(\log\lambda + \log y) - y\right]}{(\sigma^2)^2}}
+
+\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function):
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2}\right] = \dfrac{2\mu(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^3}}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^4}}
+The observed Hessian is available via \code{\link{distrib_hessian.GammaDistrib}}.
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2},
+skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (0, +\infty)}
 \item \eqn{\sigma^2 \in (0, +\infty)}
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+\code{\link{distrib_hess_y}}) are also available.
 }
 \seealso{
 \itemize{

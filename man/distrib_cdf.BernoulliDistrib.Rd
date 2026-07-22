@@ -15,7 +15,8 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Bernoulli distribution.
+Computes the cumulative distribution function for the Bernoulli distribution:
+\deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
 }
 \seealso{
 \code{\link{bernoulli_distrib}}

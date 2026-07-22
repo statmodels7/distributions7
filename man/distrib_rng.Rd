@@ -4,12 +4,17 @@
 \alias{distrib_rng}
 \title{Random Number Generator}
 \usage{
-distrib_rng(distrib, ...)
+distrib_rng(distrib, n, theta, ...)
 }
 \arguments{
 \item{distrib}{A distribution object inheriting from the \code{distrib} class.}
 
-\item{...}{Additional arguments passed to the specific method (e.g., \code{n}, \code{theta}).}
+\item{n}{Number of observations to generate.}
+
+\item{theta}{A named list (or named numeric vector) of distribution parameters.
+If unnamed, parameters are taken in the order of \code{distrib@params}.}
+
+\item{...}{Additional arguments passed to the specific method.}
 }
 \description{
 Generates random variates from the given distribution.

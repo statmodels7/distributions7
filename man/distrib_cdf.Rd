@@ -4,12 +4,17 @@
 \alias{distrib_cdf}
 \title{Cumulative Distribution Function}
 \usage{
-distrib_cdf(distrib, ...)
+distrib_cdf(distrib, q, theta, ...)
 }
 \arguments{
 \item{distrib}{A distribution object inheriting from the \code{distrib} class.}
 
-\item{...}{Additional arguments passed to the specific method (e.g., \code{q}, \code{theta}, \code{lower.tail}).}
+\item{q}{A numeric vector of quantiles.}
+
+\item{theta}{A named list (or named numeric vector) of distribution parameters.
+If unnamed, parameters are taken in the order of \code{distrib@params}.}
+
+\item{...}{Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).}
 }
 \description{
 Evaluates the cumulative distribution function (CDF) for a given distribution.

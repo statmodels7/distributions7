@@ -20,15 +20,36 @@ An S7 object of class \code{BinomialDistrib} (inheriting from \code{discrete_dis
 Creates a distribution object for the Binomial distribution parameterized by the probability of success \eqn{\mu} and a number of trials \eqn{n} (size).
 }
 \details{
-The Binomial distribution has the following probability mass function (PMF):
-\deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}}
-for \eqn{y \in \{0, 1, \dots, n\}}.
+The Binomial distribution models the number of successes in \eqn{n} independent
+trials, each with success probability \eqn{\mu}. The number of trials \eqn{n} is
+fixed in the constructor (\code{size}) and treated as known.
 
-\strong{Parameter Domains:}
+\strong{Probability mass function:}
+\deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}, \quad y \in \{0, 1, \dots, n\}}
+
+\strong{Cumulative distribution function:}
+\deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
+
+\strong{Quantile function:} the generalized inverse
+\eqn{Q(p) = \min\{y : F(y) \ge p\}}.
+
+\strong{Score, observed and expected Hessian} (with respect to \eqn{\mu}):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
+
+\strong{Moments:} mean \eqn{n\mu}, variance \eqn{n\mu(1-\mu)},
+skewness \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}, excess kurtosis
+\eqn{(1 - 6\mu(1-\mu))/(n\mu(1-\mu))}.
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (0, 1)}
-\item \eqn{n \in \mathbb{Z}^+} (fixed in constructor, can vary per observation)
+\item \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) are also available.
 }
 \seealso{
 \itemize{

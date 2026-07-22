@@ -19,6 +19,45 @@ An S7 object of class \code{InvGaussDistrib} (inheriting from \code{continuous_d
 \description{
 Creates a distribution object for the Inverse-Gaussian distribution parameterized by mean (\eqn{\mu}) and dispersion (\eqn{\phi}).
 }
+\details{
+The Inverse-Gaussian distribution is given a mean/dispersion parameterization,
+with mean \eqn{\mu} and dispersion \eqn{\phi}.
+
+\strong{Probability density function:}
+\deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}} \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}, \quad y > 0}
+
+\strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
+\deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}+1\right)\right)}
+
+\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+
+\strong{Score:}
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^3}, \qquad
+      \dfrac{\partial \ell}{\partial \phi} = \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2}}
+
+\strong{Observed Hessian:}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \quad
+      \dfrac{\partial^2 \ell}{\partial \phi^2} = \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \quad
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi} = -\dfrac{y - \mu}{\phi^2\mu^3}}
+
+\strong{Expected Hessian:}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\phi\mu^3}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = -\dfrac{1}{2\phi^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi}\right] = 0}
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\phi\mu^3},
+skewness \eqn{3\sqrt{\phi\mu}}, excess kurtosis \eqn{15\phi\mu}.
+
+\strong{Parameter domains:}
+\itemize{
+\item \eqn{\mu \in (0, +\infty)}
+\item \eqn{\phi \in (0, +\infty)}
+}
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+\code{\link{distrib_hess_y}}) are also available.
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.InvGaussDistrib}} for the probability density function.

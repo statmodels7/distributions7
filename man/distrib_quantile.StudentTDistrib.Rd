@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Student's t distribution.
+Computes the quantile function (inverse CDF) for the (location-scale) Student's t
+distribution:
+\deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)}
+where \eqn{T_\nu^{-1}} is the standard Student's t quantile function with \eqn{\nu} degrees of freedom.
 }
 \seealso{
 \code{\link{student_t_distrib}}

@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Inverse-Gaussian distribution.
+Computes the quantile function for the Inverse-Gaussian distribution as the
+inverse of the CDF, \eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no
+closed form; it is obtained numerically via \code{\link[statmod]{qinvgauss}}.
 }
 \seealso{
 \code{\link{invgauss_distrib}}

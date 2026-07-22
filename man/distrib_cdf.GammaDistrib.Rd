@@ -15,7 +15,11 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Gamma distribution.
+Computes the cumulative distribution function for the Gamma distribution, using
+the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
+\eqn{\lambda = \mu/\sigma^2}:
+\deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
+where \eqn{\gamma(\cdot, \cdot)} is the lower incomplete gamma function.
 }
 \seealso{
 \code{\link{gamma_distrib}}

@@ -4,13 +4,47 @@
 \alias{distrib_expected_hessian}
 \title{Analytical Expected Hessian}
 \usage{
-distrib_expected_hessian(distrib, ...)
+distrib_expected_hessian(
+  distrib,
+  y,
+  theta,
+  scale = c("parameter", "link"),
+  approx = c("bartlett", "integrate", "mc", "opg"),
+  nsim = 10000,
+  ...
+)
 }
 \arguments{
 \item{distrib}{A distribution object inheriting from the \code{distrib} class.}
 
-\item{...}{Additional arguments passed to the specific method (e.g., \code{y}, \code{theta}).}
+\item{y}{A numeric vector of observations.}
+
+\item{theta}{A named list (or named numeric vector) of distribution parameters.
+Each parameter must have length 1 or \code{length(y)}.}
+
+\item{scale}{Either \code{"parameter"} (default) for derivatives with respect to
+the parameters \eqn{\theta} on their natural (constrained) scale, or
+\code{"link"} for derivatives with respect to the unconstrained linear
+predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
+See \code{\link{link_scale_derivatives}}.}
+
+\item{approx}{How the expectation is approximated \strong{when the distribution
+has no closed-form expected Hessian}; ignored otherwise. One of
+\code{"bartlett"} (default, equivalently \code{"opg"}: the outer product of
+the score), \code{"integrate"} (quadrature/summation of the observed Hessian)
+or \code{"mc"} (Monte Carlo). See \code{\link{expected_derivative_methods}}
+for the accuracy/speed trade-offs.}
+
+\item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
+
+\item{...}{Additional arguments passed to the specific method.}
 }
 \description{
 Computes the analytical expected second derivatives of the log-likelihood with respect to the distribution's parameters.
+}
+\details{
+On the link scale the first-order term of the chain rule drops out because the
+score has zero expectation, so the expected Hessian transforms as the simple
+congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
+\eqn{h' = dg^{-1}/d\eta}.
 }

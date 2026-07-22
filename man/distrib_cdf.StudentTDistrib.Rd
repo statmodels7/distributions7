@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Student's t distribution.
+Computes the cumulative distribution function for the (location-scale) Student's t
+distribution:
+\deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
+where \eqn{T_\nu} is the CDF of the standard Student's t with \eqn{\nu} degrees of freedom.
 }
 \seealso{
 \code{\link{student_t_distrib}}

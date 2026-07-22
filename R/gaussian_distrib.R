@@ -106,7 +106,7 @@ S7::method(distrib_rng, GaussianDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{gaussian_distrib}}
-S7::method(distrib_gradient, GaussianDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, GaussianDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   gaussian_gradient_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -125,7 +125,7 @@ S7::method(distrib_gradient, GaussianDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{gaussian_distrib}}
-S7::method(distrib_hessian, GaussianDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, GaussianDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   gaussian_hessian_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -144,8 +144,75 @@ S7::method(distrib_hessian, GaussianDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{gaussian_distrib}}
-S7::method(distrib_expected_hessian, GaussianDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, GaussianDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   gaussian_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Gaussian Analytical Third-Order Derivatives
+#' @name distrib_deriv3.GaussianDistrib
+#' @description
+#' Computes the closed-form third-order partial derivatives of the Gaussian
+#' log-density with respect to \eqn{\mu} and \eqn{\sigma} (observed, or expected when
+#' \code{expected = TRUE}).
+#' @param distrib A \code{GaussianDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{gaussian_distrib}}
+S7::method(distrib_deriv3, GaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    gaussian_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  } else {
+    gaussian_deriv3_cpp(y, theta[[1]], theta[[2]])
+  }
+}
+
+#' @title Gaussian Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.GaussianDistrib
+#' @description
+#' Computes the closed-form fourth-order partial derivatives of the Gaussian
+#' log-density with respect to \eqn{\mu} and \eqn{\sigma} (observed, or expected when
+#' \code{expected = TRUE}).
+#' @param distrib A \code{GaussianDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{gaussian_distrib}}
+S7::method(distrib_deriv4, GaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    gaussian_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  } else {
+    gaussian_deriv4_cpp(y, theta[[1]], theta[[2]])
+  }
+}
+
+#' @title Gaussian Response Derivatives
+#' @name distrib_grad_y.GaussianDistrib
+#' @description
+#' Closed-form derivatives of the Gaussian log-density with respect to the response:
+#' \eqn{\partial \ell / \partial y = -(y-\mu)/\sigma^2} and
+#' \eqn{\partial^2 \ell / \partial y^2 = -1/\sigma^2}.
+#' @param distrib A \code{GaussianDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @return A numeric vector.
+#' @seealso \code{\link{gaussian_distrib}}
+S7::method(distrib_grad_y, GaussianDistrib) <- function(distrib, y, theta) {
+  -(y - theta[[1]]) / theta[[2]]^2
+}
+
+#' @title Gaussian Response Second Derivative
+#' @name distrib_hess_y.GaussianDistrib
+#' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = -1/\sigma^2}.
+#' @param distrib A \code{GaussianDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @return A numeric vector.
+#' @seealso \code{\link{gaussian_distrib}}
+S7::method(distrib_hess_y, GaussianDistrib) <- function(distrib, y, theta) {
+  rep(-1 / theta[[2]]^2, length.out = length(y))
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -161,15 +228,44 @@ S7::method(distrib_expected_hessian, GaussianDistrib) <- function(distrib, y, th
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
-#' The Gaussian distribution has the following density function:
-#' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
+#' The Gaussian (Normal) distribution is parameterized by its mean \eqn{\mu} and
+#' standard deviation \eqn{\sigma}.
 #'
-#' \strong{Parameter Domains:}
+#' \strong{Probability density function:}
+#' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\,\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
+#'
+#' \strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
+#' \deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
+#'
+#' \strong{Quantile function:}
+#' \deqn{Q(p; \mu, \sigma) = \mu + \sigma\,\Phi^{-1}(p)}
+#'
+#' \strong{Score} (gradient of the log-density):
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2}, \qquad
+#'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}}
+#'
+#' \strong{Observed Hessian:}
+#' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}, \quad
+#'       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y-\mu)^2}{\sigma^4}, \quad
+#'       \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{2(y-\mu)}{\sigma^3}}
+#'
+#' \strong{Expected Hessian} (negative Fisher information):
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+#'
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2}, skewness 0, excess kurtosis 0.
+#'
+#' \strong{Parameter domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (-\infty, +\infty)}
 #'   \item \eqn{\sigma \in (0, +\infty)}
 #' }
-#' 
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) and derivatives with respect to the response
+#' (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}) are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.GaussianDistrib}} for the density function.

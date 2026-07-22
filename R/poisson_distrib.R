@@ -33,8 +33,9 @@ S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FAL
 #' @title Poisson Cumulative Distribution Function
 #' @name distrib_cdf.PoissonDistrib
 #' @description
-#' Computes the cumulative distribution function for the Poisson distribution.
-#' 
+#' Computes the cumulative distribution function for the Poisson distribution:
+#' \deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
+#'
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameter \code{mu}.
@@ -53,8 +54,10 @@ S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tai
 #' @title Poisson Quantile Function
 #' @name distrib_quantile.PoissonDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Poisson distribution.
-#' 
+#' Computes the quantile function for the Poisson distribution, defined as the
+#' generalized inverse of the CDF:
+#' \deqn{Q(p; \mu) = \min\left\{y \in \mathbb{N}_0 : F(y; \mu) \ge p\right\}}
+#'
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameter \code{mu}.
@@ -99,7 +102,7 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   poisson_gradient_cpp(y, theta[[1]])
 }
 
@@ -116,7 +119,7 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   poisson_hessian_cpp(y, theta[[1]])
 }
 
@@ -133,8 +136,36 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   poisson_expected_hessian_cpp(y, theta[[1]])
+}
+
+#' @title Poisson Analytical Third-Order Derivatives
+#' @name distrib_deriv3.PoissonDistrib
+#' @description Closed-form third-order derivative of the Poisson log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{PoissonDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
+#' @return A named list with the \code{mu_mu_mu} component.
+#' @seealso \code{\link{poisson_distrib}}
+S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) poisson_deriv3_expected_cpp(y, theta[[1]])
+  else poisson_deriv3_cpp(y, theta[[1]])
+}
+
+#' @title Poisson Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.PoissonDistrib
+#' @description Closed-form fourth-order derivative of the Poisson log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{PoissonDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
+#' @return A named list with the \code{mu_mu_mu_mu} component.
+#' @seealso \code{\link{poisson_distrib}}
+S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) poisson_deriv4_expected_cpp(y, theta[[1]])
+  else poisson_deriv4_cpp(y, theta[[1]])
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -146,6 +177,35 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #'
 #' @param link_mu A link function object for the mean parameter \eqn{\mu}.
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'
+#' @details
+#' The Poisson distribution models counts \eqn{y \in \{0, 1, 2, \dots\}} with mean
+#' (and variance) \eqn{\mu}.
+#'
+#' \strong{Probability mass function:}
+#' \deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
+#'
+#' \strong{Cumulative distribution function:}
+#' \deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
+#'
+#' \strong{Quantile function:} the generalized inverse
+#' \eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
+#'
+#' \strong{Score, observed and expected Hessian:}
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}, \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
+#'
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu}, skewness \eqn{1/\sqrt{\mu}},
+#' excess kurtosis \eqn{1/\mu}.
+#'
+#' \strong{Parameter domains:}
+#' \itemize{
+#'   \item \eqn{\mu \in (0, +\infty)}
+#' }
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) are also available.
 #'
 #' @seealso
 #' \itemize{

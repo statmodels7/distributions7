@@ -16,6 +16,35 @@ An S7 object of class \code{PoissonDistrib} (inheriting from \code{discrete_dist
 \description{
 Creates a distribution object for the Poisson distribution parameterized by the mean parameter \eqn{\mu}.
 }
+\details{
+The Poisson distribution models counts \eqn{y \in \{0, 1, 2, \dots\}} with mean
+(and variance) \eqn{\mu}.
+
+\strong{Probability mass function:}
+\deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
+
+\strong{Cumulative distribution function:}
+\deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
+
+\strong{Quantile function:} the generalized inverse
+\eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
+
+\strong{Score, observed and expected Hessian:}
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu}, skewness \eqn{1/\sqrt{\mu}},
+excess kurtosis \eqn{1/\mu}.
+
+\strong{Parameter domains:}
+\itemize{
+\item \eqn{\mu \in (0, +\infty)}
+}
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) are also available.
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.PoissonDistrib}} for the probability mass function.

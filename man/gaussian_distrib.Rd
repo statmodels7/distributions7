@@ -20,14 +20,43 @@ An S7 object of class \code{GaussianDistrib} (inheriting from \code{continuous_d
 Creates a distribution object for the Gaussian distribution parameterized by mean (\eqn{\mu}) and standard deviation (\eqn{\sigma}).
 }
 \details{
-The Gaussian distribution has the following density function:
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
+The Gaussian (Normal) distribution is parameterized by its mean \eqn{\mu} and
+standard deviation \eqn{\sigma}.
 
-\strong{Parameter Domains:}
+\strong{Probability density function:}
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\,\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
+
+\strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
+\deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
+
+\strong{Quantile function:}
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma\,\Phi^{-1}(p)}
+
+\strong{Score} (gradient of the log-density):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}}
+
+\strong{Observed Hessian:}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}, \quad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y-\mu)^2}{\sigma^4}, \quad
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{2(y-\mu)}{\sigma^3}}
+
+\strong{Expected Hessian} (negative Fisher information):
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2}, skewness 0, excess kurtosis 0.
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (-\infty, +\infty)}
 \item \eqn{\sigma \in (0, +\infty)}
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) and derivatives with respect to the response
+(\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}) are also available.
 }
 \seealso{
 \itemize{

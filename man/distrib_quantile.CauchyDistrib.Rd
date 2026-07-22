@@ -15,7 +15,8 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Cauchy distribution.
+Computes the quantile function (inverse CDF) for the Cauchy distribution:
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\right)}
 }
 \seealso{
 \code{\link{cauchy_distrib}}

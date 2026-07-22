@@ -12,7 +12,8 @@ CauchyDistrib(
   params_interpretation = character(0),
   n_params = integer(0),
   params_bounds = list(),
-  link_params = list()
+  link_params = list(),
+  params_smooth = logical(0)
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ CauchyDistrib(
 \item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
+
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
 }
 \description{
 A subclass of \code{continuous_distrib} representing the Cauchy distribution.

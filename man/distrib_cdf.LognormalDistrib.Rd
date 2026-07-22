@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Lognormal distribution.
+Computes the cumulative distribution function for the Lognormal distribution
+(with \eqn{\sigma = \sqrt{\sigma^2}} on the log scale):
+\deqn{F(q; \mu, \sigma^2) = \Phi\left(\dfrac{\log q - \mu}{\sqrt{\sigma^2}}\right), \quad q > 0}
+where \eqn{\Phi} is the standard normal CDF.
 }
 \seealso{
 \code{\link{lognormal_distrib}}

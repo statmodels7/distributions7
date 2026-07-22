@@ -15,7 +15,8 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Logistic distribution.
+Computes the cumulative distribution function for the Logistic distribution:
+\deqn{F(q; \mu, \sigma) = \dfrac{1}{1 + \exp\left(-\dfrac{q-\mu}{\sigma}\right)}}
 }
 \seealso{
 \code{\link{logistic_distrib}}

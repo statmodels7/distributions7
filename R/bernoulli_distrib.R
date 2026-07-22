@@ -34,8 +34,9 @@ S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = F
 #' @title Bernoulli Cumulative Distribution Function
 #' @name distrib_cdf.BernoulliDistrib
 #' @description
-#' Computes the cumulative distribution function for the Bernoulli distribution.
-#' 
+#' Computes the cumulative distribution function for the Bernoulli distribution:
+#' \deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
+#'
 #' @param distrib A \code{BernoulliDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameter \code{mu}.
@@ -55,8 +56,10 @@ S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.t
 #' @title Bernoulli Quantile Function
 #' @name distrib_quantile.BernoulliDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Bernoulli distribution.
-#' 
+#' Computes the quantile function for the Bernoulli distribution, the generalized
+#' inverse of the CDF:
+#' \deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
+#'
 #' @param distrib A \code{BernoulliDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameter \code{mu}.
@@ -103,7 +106,7 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   bernoulli_gradient_cpp(y, theta[[1]])
 }
 
@@ -120,7 +123,7 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   bernoulli_hessian_cpp(y, theta[[1]])
 }
 
@@ -137,8 +140,36 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   bernoulli_expected_hessian_cpp(y, theta[[1]])
+}
+
+#' @title Bernoulli Analytical Third-Order Derivatives
+#' @name distrib_deriv3.BernoulliDistrib
+#' @description Closed-form third-order derivative of the Bernoulli log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{BernoulliDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
+#' @return A named list with the \code{mu_mu_mu} component.
+#' @seealso \code{\link{bernoulli_distrib}}
+S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) bernoulli_deriv3_expected_cpp(y, theta[[1]])
+  else bernoulli_deriv3_cpp(y, theta[[1]])
+}
+
+#' @title Bernoulli Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.BernoulliDistrib
+#' @description Closed-form fourth-order derivative of the Bernoulli log-mass (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{BernoulliDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameter \code{mu}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
+#' @return A named list with the \code{mu_mu_mu_mu} component.
+#' @seealso \code{\link{bernoulli_distrib}}
+S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) bernoulli_deriv4_expected_cpp(y, theta[[1]])
+  else bernoulli_deriv4_cpp(y, theta[[1]])
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -152,15 +183,35 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #'   Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).
 #'
 #' @details
-#' The Bernoulli distribution has the following probability mass function (PMF):
-#' \deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}}
-#' for \eqn{y \in \{0, 1\}}.
+#' The Bernoulli distribution models a binary outcome \eqn{y \in \{0, 1\}} with
+#' success probability \eqn{\mu}.
 #'
-#' \strong{Parameter Domains:}
+#' \strong{Probability mass function:}
+#' \deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}, \quad y \in \{0, 1\}}
+#'
+#' \strong{Cumulative distribution function:}
+#' \deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
+#'
+#' \strong{Quantile function} (generalized inverse):
+#' \deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
+#'
+#' \strong{Score, observed and expected Hessian:}
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}, \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1-\mu)}}
+#'
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1-\mu)},
+#' skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}, excess kurtosis
+#' \eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}.
+#'
+#' \strong{Parameter domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (0, 1)}
 #' }
-#' 
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.BernoulliDistrib}} for the probability mass function.

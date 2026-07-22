@@ -27,18 +27,37 @@ Collate:
     'beta_distrib.R'
     'binomial_distrib.R'
     'cauchy_distrib.R'
+    'y_derivatives.R'
+    'numerical_functions.R'
+    'utility_functions.R'
+    'numerical_derivatives.R'
+    'higher_derivatives.R'
+    'check_distrib.R'
     'distributions7-package.R'
+    'expected_derivatives.R'
+    'link_scale.R'
+    'fit_distrib.R'
     'gamma_distrib.R'
     'gaussian_distrib.R'
     'invgauss_distrib.R'
+    'laplace_distrib.R'
     'logistic_distrib.R'
     'lognormal_distrib.R'
     'methods.R'
-    'numerical_functions.R'
+    'pseudohuber_distrib.R'
+    'negbin_distrib.R'
+    'moments.R'
+    'numerical_fallbacks.R'
     'poisson_distrib.R'
     'student_t_distrib.R'
-    'utility_functions.R'
-Suggests: 
-    testthat (>= 3.0.0)
+    'transformations.R'
+    'zero_inflated.R'
+    'zero_adjusted.R'
+Suggests:
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
 Config/testthat/edition: 3
 Config/roxygen2/version: 8.0.0
+RoxygenNote: 7.3.3

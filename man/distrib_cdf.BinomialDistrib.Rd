@@ -15,7 +15,8 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Binomial distribution.
+Computes the cumulative distribution function for the Binomial distribution:
+\deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
 }
 \seealso{
 \code{\link{binomial_distrib}}

@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Beta distribution.
+Computes the quantile function for the Beta distribution as the inverse of the CDF,
+\eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no elementary closed form; it
+is obtained numerically (via \code{\link[stats]{qbeta}}) on the mean/precision
+reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}.
 }
 \seealso{
 \code{\link{beta_distrib}}

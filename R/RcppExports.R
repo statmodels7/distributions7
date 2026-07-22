@@ -13,6 +13,22 @@ bernoulli_expected_hessian_cpp <- function(y, mu) {
     .Call(`_distributions7_bernoulli_expected_hessian_cpp`, y, mu)
 }
 
+bernoulli_deriv3_cpp <- function(y, mu) {
+    .Call(`_distributions7_bernoulli_deriv3_cpp`, y, mu)
+}
+
+bernoulli_deriv3_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_bernoulli_deriv3_expected_cpp`, y, mu)
+}
+
+bernoulli_deriv4_cpp <- function(y, mu) {
+    .Call(`_distributions7_bernoulli_deriv4_cpp`, y, mu)
+}
+
+bernoulli_deriv4_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_bernoulli_deriv4_expected_cpp`, y, mu)
+}
+
 beta_gradient_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_beta_gradient_cpp`, y, mu, phi)
 }
@@ -23,6 +39,14 @@ beta_hessian_cpp <- function(y, mu, phi) {
 
 beta_expected_hessian_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_beta_expected_hessian_cpp`, y, mu, phi)
+}
+
+beta_deriv3_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_beta_deriv3_cpp`, y, mu, phi)
+}
+
+beta_deriv4_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_beta_deriv4_cpp`, y, mu, phi)
 }
 
 binomial_gradient_cpp <- function(y, mu, size) {
@@ -37,6 +61,22 @@ binomial_expected_hessian_cpp <- function(y, mu, size) {
     .Call(`_distributions7_binomial_expected_hessian_cpp`, y, mu, size)
 }
 
+binomial_deriv3_cpp <- function(y, mu, size) {
+    .Call(`_distributions7_binomial_deriv3_cpp`, y, mu, size)
+}
+
+binomial_deriv3_expected_cpp <- function(y, mu, size) {
+    .Call(`_distributions7_binomial_deriv3_expected_cpp`, y, mu, size)
+}
+
+binomial_deriv4_cpp <- function(y, mu, size) {
+    .Call(`_distributions7_binomial_deriv4_cpp`, y, mu, size)
+}
+
+binomial_deriv4_expected_cpp <- function(y, mu, size) {
+    .Call(`_distributions7_binomial_deriv4_expected_cpp`, y, mu, size)
+}
+
 cauchy_gradient_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_cauchy_gradient_cpp`, y, mu, sigma)
 }
@@ -47,6 +87,22 @@ cauchy_hessian_cpp <- function(y, mu, sigma) {
 
 cauchy_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_cauchy_expected_hessian_cpp`, y, mu, sigma)
+}
+
+cauchy_deriv3_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_deriv3_cpp`, y, mu, sigma)
+}
+
+cauchy_deriv3_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_deriv3_expected_cpp`, y, mu, sigma)
+}
+
+cauchy_deriv4_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_deriv4_cpp`, y, mu, sigma)
+}
+
+cauchy_deriv4_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_cauchy_deriv4_expected_cpp`, y, mu, sigma)
 }
 
 gamma_gradient_cpp <- function(y, mu, sigma2) {
@@ -61,6 +117,22 @@ gamma_expected_hessian_cpp <- function(y, mu, sigma2) {
     .Call(`_distributions7_gamma_expected_hessian_cpp`, y, mu, sigma2)
 }
 
+gamma_deriv3_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_deriv3_cpp`, y, mu, sigma2)
+}
+
+gamma_deriv3_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_deriv3_expected_cpp`, y, mu, sigma2)
+}
+
+gamma_deriv4_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_deriv4_cpp`, y, mu, sigma2)
+}
+
+gamma_deriv4_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gamma_deriv4_expected_cpp`, y, mu, sigma2)
+}
+
 gaussian_gradient_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_gradient_cpp`, y, mu, sigma)
 }
@@ -71,6 +143,22 @@ gaussian_hessian_cpp <- function(y, mu, sigma) {
 
 gaussian_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_expected_hessian_cpp`, y, mu, sigma)
+}
+
+gaussian_deriv3_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gaussian_deriv3_cpp`, y, mu, sigma)
+}
+
+gaussian_deriv3_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gaussian_deriv3_expected_cpp`, y, mu, sigma)
+}
+
+gaussian_deriv4_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gaussian_deriv4_cpp`, y, mu, sigma)
+}
+
+gaussian_deriv4_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gaussian_deriv4_expected_cpp`, y, mu, sigma)
 }
 
 invgauss_gradient_cpp <- function(y, mu, phi) {
@@ -85,6 +173,22 @@ invgauss_expected_hessian_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_expected_hessian_cpp`, y, mu, phi)
 }
 
+invgauss_deriv3_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_deriv3_cpp`, y, mu, phi)
+}
+
+invgauss_deriv3_expected_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_deriv3_expected_cpp`, y, mu, phi)
+}
+
+invgauss_deriv4_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_deriv4_cpp`, y, mu, phi)
+}
+
+invgauss_deriv4_expected_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_invgauss_deriv4_expected_cpp`, y, mu, phi)
+}
+
 logistic_gradient_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_logistic_gradient_cpp`, y, mu, sigma)
 }
@@ -95,6 +199,14 @@ logistic_hessian_cpp <- function(y, mu, sigma) {
 
 logistic_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_logistic_expected_hessian_cpp`, y, mu, sigma)
+}
+
+logistic_deriv3_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_logistic_deriv3_cpp`, y, mu, sigma)
+}
+
+logistic_deriv4_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_logistic_deriv4_cpp`, y, mu, sigma)
 }
 
 lognormal_gradient_cpp <- function(y, mu, sigma2) {
@@ -109,6 +221,50 @@ lognormal_expected_hessian_cpp <- function(y, mu, sigma2) {
     .Call(`_distributions7_lognormal_expected_hessian_cpp`, y, mu, sigma2)
 }
 
+lognormal_deriv3_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_deriv3_cpp`, y, mu, sigma2)
+}
+
+lognormal_deriv3_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_deriv3_expected_cpp`, y, mu, sigma2)
+}
+
+lognormal_deriv4_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_deriv4_cpp`, y, mu, sigma2)
+}
+
+lognormal_deriv4_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_lognormal_deriv4_expected_cpp`, y, mu, sigma2)
+}
+
+negbin_gradient_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_gradient_cpp`, y, mu, theta)
+}
+
+negbin_hessian_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_hessian_cpp`, y, mu, theta)
+}
+
+negbin_expected_hessian_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_expected_hessian_cpp`, y, mu, theta)
+}
+
+negbin_deriv3_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_deriv3_cpp`, y, mu, theta)
+}
+
+negbin_deriv3_expected_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_deriv3_expected_cpp`, y, mu, theta)
+}
+
+negbin_deriv4_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_deriv4_cpp`, y, mu, theta)
+}
+
+negbin_deriv4_expected_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin_deriv4_expected_cpp`, y, mu, theta)
+}
+
 poisson_gradient_cpp <- function(y, mu) {
     .Call(`_distributions7_poisson_gradient_cpp`, y, mu)
 }
@@ -121,6 +277,38 @@ poisson_expected_hessian_cpp <- function(y, mu) {
     .Call(`_distributions7_poisson_expected_hessian_cpp`, y, mu)
 }
 
+poisson_deriv3_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_deriv3_cpp`, y, mu)
+}
+
+poisson_deriv3_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_deriv3_expected_cpp`, y, mu)
+}
+
+poisson_deriv4_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_deriv4_cpp`, y, mu)
+}
+
+poisson_deriv4_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_poisson_deriv4_expected_cpp`, y, mu)
+}
+
+pseudohuber_gradient_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_pseudohuber_gradient_cpp`, y, mu, sigma, nu)
+}
+
+pseudohuber_hessian_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_pseudohuber_hessian_cpp`, y, mu, sigma, nu)
+}
+
+pseudohuber_deriv3_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_pseudohuber_deriv3_cpp`, y, mu, sigma, nu)
+}
+
+pseudohuber_deriv4_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_pseudohuber_deriv4_cpp`, y, mu, sigma, nu)
+}
+
 student_t_gradient_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_student_t_gradient_cpp`, y, mu, sigma, nu)
 }
@@ -131,5 +319,13 @@ student_t_hessian_cpp <- function(y, mu, sigma, nu) {
 
 student_t_expected_hessian_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_student_t_expected_hessian_cpp`, y, mu, sigma, nu)
+}
+
+student_t_deriv3_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_student_t_deriv3_cpp`, y, mu, sigma, nu)
+}
+
+student_t_deriv4_cpp <- function(y, mu, sigma, nu) {
+    .Call(`_distributions7_student_t_deriv4_cpp`, y, mu, sigma, nu)
 }
 

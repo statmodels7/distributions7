@@ -38,8 +38,11 @@ S7::method(distrib_pdf, StudentTDistrib) <- function(distrib, y, theta, log = FA
 #' @title Student's t Cumulative Distribution Function
 #' @name distrib_cdf.StudentTDistrib
 #' @description
-#' Computes the cumulative distribution function for the Student's t distribution.
-#' 
+#' Computes the cumulative distribution function for the (location-scale) Student's t
+#' distribution:
+#' \deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
+#' where \eqn{T_\nu} is the CDF of the standard Student's t with \eqn{\nu} degrees of freedom.
+#'
 #' @param distrib A \code{StudentTDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
@@ -58,8 +61,11 @@ S7::method(distrib_cdf, StudentTDistrib) <- function(distrib, q, theta, lower.ta
 #' @title Student's t Quantile Function
 #' @name distrib_quantile.StudentTDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Student's t distribution.
-#' 
+#' Computes the quantile function (inverse CDF) for the (location-scale) Student's t
+#' distribution:
+#' \deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)}
+#' where \eqn{T_\nu^{-1}} is the standard Student's t quantile function with \eqn{\nu} degrees of freedom.
+#'
 #' @param distrib A \code{StudentTDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
@@ -106,7 +112,7 @@ S7::method(distrib_rng, StudentTDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{student_t_distrib}}
-S7::method(distrib_gradient, StudentTDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, StudentTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   student_t_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
@@ -128,7 +134,7 @@ S7::method(distrib_gradient, StudentTDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{student_t_distrib}}
-S7::method(distrib_hessian, StudentTDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, StudentTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   student_t_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
@@ -150,8 +156,83 @@ S7::method(distrib_hessian, StudentTDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{student_t_distrib}}
-S7::method(distrib_expected_hessian, StudentTDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, StudentTDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   student_t_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+}
+
+#' @title Student's t Analytical Third-Order Derivatives
+#' @name distrib_deriv3.StudentTDistrib
+#' @description
+#' Closed-form observed third-order derivatives of the Student's t log-density. The
+#' expected third derivatives have no closed form, so \code{expected = TRUE} falls
+#' back to the numerical \code{\link{expectation}} of the observed derivatives.
+#' @param distrib A \code{StudentTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param expected Logical; if \code{TRUE}, returns the (numerically integrated) expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{student_t_distrib}}
+S7::method(distrib_deriv3, StudentTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    expected_derivative(distrib, y, theta, order = 3L,
+                        approx = match.arg(approx), nsim = nsim)
+  } else {
+    student_t_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+  }
+}
+
+#' @title Student's t Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.StudentTDistrib
+#' @description
+#' Closed-form observed fourth-order derivatives of the Student's t log-density. The
+#' expected fourth derivatives have no closed form, so \code{expected = TRUE} falls
+#' back to the numerical \code{\link{expectation}} of the observed derivatives.
+#' @param distrib A \code{StudentTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param expected Logical; if \code{TRUE}, returns the (numerically integrated) expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{student_t_distrib}}
+S7::method(distrib_deriv4, StudentTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    expected_derivative(distrib, y, theta, order = 4L,
+                        approx = match.arg(approx), nsim = nsim)
+  } else {
+    student_t_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+  }
+}
+
+#' @title Student's t Response Derivatives
+#' @name distrib_grad_y.StudentTDistrib
+#' @description
+#' Closed-form derivatives of the Student's t log-density with respect to the
+#' response. Let \eqn{r = y - \mu} and \eqn{d = \nu\sigma^2 + r^2}:
+#' \eqn{\partial \ell / \partial y = -(\nu+1)r/d} and
+#' \eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/d^2}.
+#' @param distrib A \code{StudentTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @return A numeric vector.
+#' @seealso \code{\link{student_t_distrib}}
+S7::method(distrib_grad_y, StudentTDistrib) <- function(distrib, y, theta) {
+  r <- y - theta[[1]]
+  nu <- theta[[3]]
+  -(nu + 1) * r / (nu * theta[[2]]^2 + r^2)
+}
+
+#' @title Student's t Response Second Derivative
+#' @name distrib_hess_y.StudentTDistrib
+#' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/(\nu\sigma^2 + r^2)^2}, \eqn{r = y - \mu}.
+#' @param distrib A \code{StudentTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @return A numeric vector.
+#' @seealso \code{\link{student_t_distrib}}
+S7::method(distrib_hess_y, StudentTDistrib) <- function(distrib, y, theta) {
+  r <- y - theta[[1]]
+  nu <- theta[[3]]
+  vs2 <- nu * theta[[2]]^2
+  (nu + 1) * (r^2 - vs2) / (vs2 + r^2)^2
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -169,17 +250,46 @@ S7::method(distrib_expected_hessian, StudentTDistrib) <- function(distrib, y, th
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
-#' The probability density function is given by:
-#' \deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
-#' for \eqn{y \in (-\infty, +\infty)}.
+#' The (location-scale) Student's t distribution has location \eqn{\mu}, scale
+#' \eqn{\sigma} and degrees of freedom \eqn{\nu}. Write \eqn{d = \nu\sigma^2 + (y-\mu)^2}.
 #'
-#' \strong{Parameter Domains:}
+#' \strong{Probability density function:}
+#' \deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
+#'
+#' \strong{Cumulative distribution function} (\eqn{T_\nu} the standard t CDF):
+#' \deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
+#'
+#' \strong{Quantile function:}
+#' \deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\,T_\nu^{-1}(p)}
+#'
+#' \strong{Score} (\eqn{\psi} the digamma function):
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)(y-\mu)}{d}, \qquad
+#'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left[(y-\mu)^2 - \sigma^2\right]}{\sigma d}}
+#' \deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[ -\dfrac{1}{\nu} - \psi\left(\dfrac{\nu}{2}\right) + \psi\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)(y-\mu)^2}{\nu d} - \log\left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right) \right]}
+#'
+#' \strong{Expected Hessian} (\eqn{\psi_1} the trigamma function; \eqn{\mu} is orthogonal to \eqn{\sigma, \nu}):
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma\,\partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
+#' The observed Hessian is available via \code{\link{distrib_hessian.StudentTDistrib}}.
+#'
+#' \strong{Moments} (defined for \eqn{\nu} large enough): mean \eqn{\mu} (\eqn{\nu>1}),
+#' variance \eqn{\sigma^2\nu/(\nu-2)} (\eqn{\nu>2}), skewness 0 (\eqn{\nu>3}),
+#' excess kurtosis \eqn{6/(\nu-4)} (\eqn{\nu>4}).
+#'
+#' \strong{Parameter domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (-\infty, +\infty)}
 #'   \item \eqn{\sigma \in (0, +\infty)}
 #'   \item \eqn{\nu \in (0, +\infty)}
 #' }
-#' 
+#'
+#' Analytical third- and fourth-order observed derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}; the expected ones use the numerical fallback) and
+#' response derivatives (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}})
+#' are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.StudentTDistrib}} for the probability density function.

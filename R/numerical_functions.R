@@ -100,10 +100,10 @@ numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10,
       # if the chunk sum is small, preventing false positives from alternating series.
       chunk_abs_sum <- sum(abs(vals))
       if (chunk_abs_sum < scaled_tol) {
-      flat_counter <- flat_counter + 1L
-      if (abs(s) > tol || flat_counter >= 50L) {
-        climbing <- FALSE
-      }
+        flat_counter <- flat_counter + 1L
+        if (abs(s) > tol || flat_counter >= 50L) {
+          climbing <- FALSE
+        }
       } else {
         flat_counter <- 0L
       }
@@ -203,7 +203,25 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
       val_f * val_p
     }
 
-    stats::integrate(integrand, lower = distrib@bounds[1], upper = distrib@bounds[2])$value
+    # `integrate` over (-Inf, Inf) transforms the domain around the origin and
+    # silently returns 0 when the probability mass sits far away (e.g. mu = 200).
+    # Splitting at the median anchors each half-range on the mass: for
+    # semi-infinite panels the quadrature concentrates its nodes near the
+    # finite endpoint, which by construction carries 50% of the mass.
+    m <- suppressWarnings(distrib_quantile(distrib, 0.5, p_theta))
+    knots <- c(distrib@bounds[1], distrib@bounds[2])
+    if (is.finite(m) && m > knots[1] && m < knots[2]) {
+      knots <- c(knots[1], m, knots[2])
+    }
+
+    sum(vapply(
+      seq_len(length(knots) - 1L),
+      function(k) stats::integrate(
+        integrand,
+        lower = knots[k], upper = knots[k + 1L]
+      )$value,
+      numeric(1)
+    ))
   }
   unname(sapply(transpose_params(expand_params(all_params)), compute_single))
 }

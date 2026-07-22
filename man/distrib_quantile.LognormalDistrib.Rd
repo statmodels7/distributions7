@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Lognormal distribution.
+Computes the quantile function (inverse CDF) for the Lognormal distribution:
+\deqn{Q(p; \mu, \sigma^2) = \exp\left(\mu + \sqrt{\sigma^2}\,\Phi^{-1}(p)\right)}
+where \eqn{\Phi^{-1}} is the standard normal quantile function.
 }
 \seealso{
 \code{\link{lognormal_distrib}}

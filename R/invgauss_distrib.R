@@ -34,8 +34,10 @@ S7::method(distrib_pdf, InvGaussDistrib) <- function(distrib, y, theta, log = FA
 #' @title Inverse-Gaussian Cumulative Distribution Function
 #' @name distrib_cdf.InvGaussDistrib
 #' @description
-#' Computes the cumulative distribution function for the Inverse-Gaussian distribution.
-#' 
+#' Computes the cumulative distribution function for the Inverse-Gaussian distribution:
+#' \deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}+1\right)\right)}
+#' where \eqn{\Phi} is the standard normal CDF.
+#'
 #' @param distrib An \code{InvGaussDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
@@ -55,8 +57,10 @@ S7::method(distrib_cdf, InvGaussDistrib) <- function(distrib, q, theta, lower.ta
 #' @title Inverse-Gaussian Quantile Function
 #' @name distrib_quantile.InvGaussDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Inverse-Gaussian distribution.
-#' 
+#' Computes the quantile function for the Inverse-Gaussian distribution as the
+#' inverse of the CDF, \eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no
+#' closed form; it is obtained numerically via \code{\link[statmod]{qinvgauss}}.
+#'
 #' @param distrib An \code{InvGaussDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
@@ -104,7 +108,7 @@ S7::method(distrib_rng, InvGaussDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{invgauss_distrib}}
-S7::method(distrib_gradient, InvGaussDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, InvGaussDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   invgauss_gradient_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -130,7 +134,7 @@ S7::method(distrib_gradient, InvGaussDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{invgauss_distrib}}
-S7::method(distrib_hessian, InvGaussDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, InvGaussDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   invgauss_hessian_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -149,8 +153,66 @@ S7::method(distrib_hessian, InvGaussDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{invgauss_distrib}}
-S7::method(distrib_expected_hessian, InvGaussDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, InvGaussDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   invgauss_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Inverse-Gaussian Analytical Third-Order Derivatives
+#' @name distrib_deriv3.InvGaussDistrib
+#' @description Closed-form third-order derivatives of the Inverse-Gaussian log-density (observed, or expected when \code{expected = TRUE}).
+#' @param distrib An \code{InvGaussDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{invgauss_distrib}}
+S7::method(distrib_deriv3, InvGaussDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) invgauss_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  else invgauss_deriv3_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Inverse-Gaussian Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.InvGaussDistrib
+#' @description Closed-form fourth-order derivatives of the Inverse-Gaussian log-density (observed, or expected when \code{expected = TRUE}).
+#' @param distrib An \code{InvGaussDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{invgauss_distrib}}
+S7::method(distrib_deriv4, InvGaussDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) invgauss_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  else invgauss_deriv4_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Inverse-Gaussian Response Derivatives
+#' @name distrib_grad_y.InvGaussDistrib
+#' @description
+#' Closed-form derivatives of the Inverse-Gaussian log-density with respect to the
+#' response:
+#' \eqn{\partial \ell / \partial y = -\dfrac{3}{2y} - \dfrac{y^2 - \mu^2}{2\phi\mu^2 y^2}} and
+#' \eqn{\partial^2 \ell / \partial y^2 = \dfrac{3}{2y^2} - \dfrac{1}{\phi y^3}}.
+#' @param distrib An \code{InvGaussDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @return A numeric vector.
+#' @seealso \code{\link{invgauss_distrib}}
+S7::method(distrib_grad_y, InvGaussDistrib) <- function(distrib, y, theta) {
+  mu <- theta[[1]]; phi <- theta[[2]]
+  -1.5 / y - (y^2 - mu^2) / (2 * phi * mu^2 * y^2)
+}
+
+#' @title Inverse-Gaussian Response Second Derivative
+#' @name distrib_hess_y.InvGaussDistrib
+#' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = 3/(2y^2) - 1/(\phi y^3)}.
+#' @param distrib An \code{InvGaussDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @return A numeric vector.
+#' @seealso \code{\link{invgauss_distrib}}
+S7::method(distrib_hess_y, InvGaussDistrib) <- function(distrib, y, theta) {
+  phi <- theta[[2]]
+  1.5 / y^2 - 1 / (phi * y^3)
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -164,7 +226,46 @@ S7::method(distrib_expected_hessian, InvGaussDistrib) <- function(distrib, y, th
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #' @param link_phi A link function object for the dispersion parameter \eqn{\phi}.
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
-#' 
+#'
+#' @details
+#' The Inverse-Gaussian distribution is given a mean/dispersion parameterization,
+#' with mean \eqn{\mu} and dispersion \eqn{\phi}.
+#'
+#' \strong{Probability density function:}
+#' \deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}} \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}, \quad y > 0}
+#'
+#' \strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
+#' \deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}+1\right)\right)}
+#'
+#' \strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+#'
+#' \strong{Score:}
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^3}, \qquad
+#'       \dfrac{\partial \ell}{\partial \phi} = \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2}}
+#'
+#' \strong{Observed Hessian:}
+#' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \quad
+#'       \dfrac{\partial^2 \ell}{\partial \phi^2} = \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \quad
+#'       \dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi} = -\dfrac{y - \mu}{\phi^2\mu^3}}
+#'
+#' \strong{Expected Hessian:}
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\phi\mu^3}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = -\dfrac{1}{2\phi^2}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi}\right] = 0}
+#'
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\phi\mu^3},
+#' skewness \eqn{3\sqrt{\phi\mu}}, excess kurtosis \eqn{15\phi\mu}.
+#'
+#' \strong{Parameter domains:}
+#' \itemize{
+#'   \item \eqn{\mu \in (0, +\infty)}
+#'   \item \eqn{\phi \in (0, +\infty)}
+#' }
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+#' \code{\link{distrib_hess_y}}) are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.InvGaussDistrib}} for the probability density function.

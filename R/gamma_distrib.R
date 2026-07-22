@@ -35,8 +35,12 @@ S7::method(distrib_pdf, GammaDistrib) <- function(distrib, y, theta, log = FALSE
 #' @title Gamma Cumulative Distribution Function
 #' @name distrib_cdf.GammaDistrib
 #' @description
-#' Computes the cumulative distribution function for the Gamma distribution.
-#' 
+#' Computes the cumulative distribution function for the Gamma distribution, using
+#' the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
+#' \eqn{\lambda = \mu/\sigma^2}:
+#' \deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
+#' where \eqn{\gamma(\cdot, \cdot)} is the lower incomplete gamma function.
+#'
 #' @param distrib A \code{GammaDistrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
@@ -56,8 +60,11 @@ S7::method(distrib_cdf, GammaDistrib) <- function(distrib, q, theta, lower.tail 
 #' @title Gamma Quantile Function
 #' @name distrib_quantile.GammaDistrib
 #' @description
-#' Computes the quantile function (inverse CDF) for the Gamma distribution.
-#' 
+#' Computes the quantile function for the Gamma distribution as the inverse of the
+#' CDF, \eqn{Q(p; \mu, \sigma^2) = F^{-1}(p; \mu, \sigma^2)}. There is no elementary
+#' closed form; it is obtained numerically (via \code{\link[stats]{qgamma}}) on the
+#' shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2}, \eqn{\lambda = \mu/\sigma^2}.
+#'
 #' @param distrib A \code{GammaDistrib} object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
@@ -105,7 +112,7 @@ S7::method(distrib_rng, GammaDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{gamma_distrib}}
-S7::method(distrib_gradient, GammaDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_gradient, GammaDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   gamma_gradient_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -120,7 +127,7 @@ S7::method(distrib_gradient, GammaDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{gamma_distrib}}
-S7::method(distrib_hessian, GammaDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hessian, GammaDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   gamma_hessian_cpp(y, theta[[1]], theta[[2]])
 }
 
@@ -139,8 +146,67 @@ S7::method(distrib_hessian, GammaDistrib) <- function(distrib, y, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{gamma_distrib}}
-S7::method(distrib_expected_hessian, GammaDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_expected_hessian, GammaDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   gamma_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Gamma Analytical Third-Order Derivatives
+#' @name distrib_deriv3.GammaDistrib
+#' @description Closed-form third-order derivatives of the Gamma log-density (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{GammaDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{gamma_distrib}}
+S7::method(distrib_deriv3, GammaDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) gamma_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  else gamma_deriv3_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Gamma Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.GammaDistrib
+#' @description Closed-form fourth-order derivatives of the Gamma log-density (observed, or expected when \code{expected = TRUE}).
+#' @param distrib A \code{GammaDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{gamma_distrib}}
+S7::method(distrib_deriv4, GammaDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) gamma_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  else gamma_deriv4_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Gamma Response Derivatives
+#' @name distrib_grad_y.GammaDistrib
+#' @description
+#' Closed-form derivatives of the Gamma log-density with respect to the response,
+#' using the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
+#' \eqn{\lambda = \mu/\sigma^2}:
+#' \eqn{\partial \ell / \partial y = (\alpha-1)/y - \lambda} and
+#' \eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2}.
+#' @param distrib A \code{GammaDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @return A numeric vector.
+#' @seealso \code{\link{gamma_distrib}}
+S7::method(distrib_grad_y, GammaDistrib) <- function(distrib, y, theta) {
+  mu <- theta[[1]]; s2 <- theta[[2]]
+  (mu^2 / s2 - 1) / y - mu / s2
+}
+
+#' @title Gamma Response Second Derivative
+#' @name distrib_hess_y.GammaDistrib
+#' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2}, \eqn{\alpha = \mu^2/\sigma^2}.
+#' @param distrib A \code{GammaDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @return A numeric vector.
+#' @seealso \code{\link{gamma_distrib}}
+S7::method(distrib_hess_y, GammaDistrib) <- function(distrib, y, theta) {
+  mu <- theta[[1]]; s2 <- theta[[2]]
+  -(mu^2 / s2 - 1) / y^2
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -156,15 +222,42 @@ S7::method(distrib_expected_hessian, GammaDistrib) <- function(distrib, y, theta
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
-#' The Gamma distribution is reparameterized from the standard shape \eqn{(\alpha)} and rate \eqn{(\lambda)} parameters using:
-#' \deqn{\alpha = \dfrac{\mu^2}{\sigma^2}, \quad \lambda = \dfrac{\mu}{\sigma^2}}
+#' The Gamma distribution is given a mean/variance parameterization: \eqn{\mu} is
+#' the mean and \eqn{\sigma^2} the variance. The standard shape \eqn{\alpha} and
+#' rate \eqn{\lambda} are recovered as
+#' \deqn{\alpha = \dfrac{\mu^2}{\sigma^2}, \qquad \lambda = \dfrac{\mu}{\sigma^2}}
 #'
-#' \strong{Parameter Domains:}
+#' \strong{Probability density function:}
+#' \deqn{f(y; \mu, \sigma^2) = \dfrac{\lambda^\alpha}{\Gamma(\alpha)}\, y^{\alpha-1} e^{-\lambda y}, \quad y > 0}
+#'
+#' \strong{Cumulative distribution function} (\eqn{\gamma} the lower incomplete gamma function):
+#' \deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
+#'
+#' \strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+#'
+#' \strong{Score} (\eqn{\psi} the digamma function):
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{-2\mu\psi(\alpha) + 2\mu\log\lambda + \mu + 2\mu\log y - y}{\sigma^2}}
+#' \deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi(\alpha) + \mu + \mu(\log\lambda + \log y) - y\right]}{(\sigma^2)^2}}
+#'
+#' \strong{Expected Hessian} (\eqn{\psi_1} the trigamma function):
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2}\right] = \dfrac{2\mu(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^3}}
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^4}}
+#' The observed Hessian is available via \code{\link{distrib_hessian.GammaDistrib}}.
+#'
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2},
+#' skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
+#'
+#' \strong{Parameter domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (0, +\infty)}
 #'   \item \eqn{\sigma^2 \in (0, +\infty)}
 #' }
-#' 
+#'
+#' Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+#' \code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+#' \code{\link{distrib_hess_y}}) are also available.
+#'
 #' @seealso
 #' \itemize{
 #'   \item \code{\link{distrib_pdf.GammaDistrib}} for the probability density function.

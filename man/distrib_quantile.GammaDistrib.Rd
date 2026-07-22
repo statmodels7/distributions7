@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Gamma distribution.
+Computes the quantile function for the Gamma distribution as the inverse of the
+CDF, \eqn{Q(p; \mu, \sigma^2) = F^{-1}(p; \mu, \sigma^2)}. There is no elementary
+closed form; it is obtained numerically (via \code{\link[stats]{qgamma}}) on the
+shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2}, \eqn{\lambda = \mu/\sigma^2}.
 }
 \seealso{
 \code{\link{gamma_distrib}}

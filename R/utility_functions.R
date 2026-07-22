@@ -1,3 +1,113 @@
+#' Align Parameters to the Distribution's Parameter Order
+#'
+#' @description
+#' Coerces `theta` to a list and, when it is named, reorders it to match
+#' `distrib@params`, so that methods can safely access parameters by position.
+#' This prevents silently wrong results when a user supplies a named list in a
+#' different order (e.g. `list(sigma = 2, mu = 0)` for a Gaussian).
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param theta A named list (or named numeric vector) of parameters, or an
+#'   unnamed list/vector given in the order of `distrib@params`.
+#'
+#' @return A list whose first `distrib@n_params` elements correspond to
+#'   `distrib@params`, in that order.
+#'
+#' @keywords internal
+#' @noRd
+align_theta <- function(distrib, theta) {
+  if (!is.list(theta)) theta <- as.list(theta)
+  nms <- names(theta)
+
+  # Unnamed: trust positional order, but require enough elements
+  if (is.null(nms) || !any(nzchar(nms))) {
+    if (length(theta) < distrib@n_params) {
+      stop(sprintf(
+        "'theta' has %d element(s) but %d parameter(s) are expected (%s).",
+        length(theta), distrib@n_params, paste(distrib@params, collapse = ", ")
+      ), call. = FALSE)
+    }
+    check_theta_bounds(distrib, theta)
+    return(theta)
+  }
+
+  # Named: all parameters must be present, then reorder (extras are dropped)
+  missing_p <- setdiff(distrib@params, nms)
+  if (length(missing_p) > 0) {
+    stop(sprintf(
+      "Missing parameter(s) in 'theta': %s. Expected: %s.",
+      paste(missing_p, collapse = ", "), paste(distrib@params, collapse = ", ")
+    ), call. = FALSE)
+  }
+  theta <- theta[distrib@params]
+  check_theta_bounds(distrib, theta)
+  theta
+}
+
+#' Check Parameter Values Against Their Domains
+#'
+#' @description
+#' Verifies that every supplied parameter value lies strictly inside the
+#' distribution's \code{params_bounds}, and is finite. Domains are treated as
+#' \strong{open} intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
+#' Bernoulli requires \eqn{0 < \mu < 1}, since the log-likelihood and its
+#' derivatives are not defined at the boundary.
+#'
+#' This is called automatically by every generic (through the internal
+#' \code{align_theta()}), so passing an out-of-domain value raises an informative
+#' error instead of silently producing \code{NaN}. It is exported so that it can
+#' also be used directly, e.g. when writing an optimizer.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param theta A list of parameter values, ordered as \code{distrib@params}.
+#'
+#' @return Invisibly \code{NULL}. Raises an error listing every offending
+#'   parameter, the offending value(s) and the expected domain.
+#'
+#' @examples
+#' d <- gaussian_distrib()
+#' check_theta_bounds(d, list(mu = 0, sigma = 1))
+#' \dontrun{
+#' check_theta_bounds(d, list(mu = 0, sigma = -1)) # error: sigma outside (0, Inf)
+#' }
+#'
+#' @export
+check_theta_bounds <- function(distrib, theta) {
+  params <- distrib@params
+  problems <- character()
+
+  for (i in seq_along(params)) {
+    p <- params[i]
+    b <- distrib@params_bounds[[p]]
+    if (is.null(b) || i > length(theta)) next
+    v <- theta[[i]]
+
+    if (!is.numeric(v)) {
+      problems <- c(problems, sprintf("  '%s' must be numeric (got %s)", p, class(v)[1]))
+      next
+    }
+
+    ok <- is.finite(v) & v > b[1] & v < b[2]
+    if (!all(ok)) {
+      offend <- unique(v[!ok])
+      shown <- paste(format(utils::head(offend, 3), trim = TRUE), collapse = ", ")
+      if (length(offend) > 3) shown <- paste0(shown, ", ...")
+      problems <- c(problems, sprintf(
+        "  '%s' = %s is outside its domain (%s, %s)",
+        p, shown, format(b[1]), format(b[2])
+      ))
+    }
+  }
+
+  if (length(problems) > 0) {
+    stop("Invalid parameter value(s) for the '", distrib@distrib_name,
+         "' distribution:\n", paste(problems, collapse = "\n"), call. = FALSE)
+  }
+
+  invisible(NULL)
+}
+
+
 #' Check Consistency of Parameter Dimensions
 #'
 #' Validates that all elements in the provided parameter list have compatible lengths.
@@ -54,13 +164,15 @@ check_params_dim <- function(theta, n) {
 
   if (length(mismatch_idx) > 0) {
     bad_params <- names(theta)[mismatch_idx]
+    if (is.null(bad_params)) bad_params <- paste0("[[", mismatch_idx, "]]")
     bad_lens <- len_theta[mismatch_idx]
 
-    error_msg <- paste0(
-      "Parameter dimension mismatch. All parameters should have length 1 or ", n, ".\n"
+    stop(
+      "Parameter dimension mismatch. All parameters should have length 1 or ", n, ".\n",
+      "  Offending: ",
+      paste0(bad_params, " (length ", bad_lens, ")", collapse = ", "),
+      call. = FALSE
     )
-
-    stop(error_msg, call. = FALSE)
   }
 
   invisible(NULL)
@@ -94,6 +206,74 @@ expand_params <- function(theta, n) {
   theta[idx_to_expand] <- lapply(theta[idx_to_expand], rep, times = n)
 
   theta
+}
+
+
+#' Generate Names for Hessian Matrix Components
+#'
+#' @description
+#' Generates the names of the unique second-order partial derivatives (Hessian
+#' components) for a vector of parameter names: first the diagonal elements
+#' (\code{"mu_mu"}, ...), then the upper-triangular off-diagonal elements in
+#' row-major order (\code{"mu_sigma"}, ...).
+#'
+#' @param params A character vector of parameter names (e.g., \code{c("mu", "sigma")}).
+#'
+#' @return A character vector of length \eqn{n + n(n-1)/2}.
+#'
+#' @examples
+#' hess_names(c("mu", "sigma"))
+#' # "mu_mu" "sigma_sigma" "mu_sigma"
+#'
+#' @export
+hess_names <- function(params) {
+  n_params <- length(params)
+  diagonal <- paste0(params, "_", params)
+  if (n_params < 2) {
+    return(diagonal)
+  }
+  off_diagonal <- character(0.5 * n_params * (n_params - 1))
+  k <- 1
+  for (i in 1:(n_params - 1)) {
+    for (j in (i + 1):n_params) {
+      off_diagonal[k] <- paste0(params[i], "_", params[j])
+      k <- k + 1
+    }
+  }
+  c(diagonal, off_diagonal)
+}
+
+
+#' Generate Names for Higher-Order Derivative Components
+#'
+#' @description
+#' Generates the names of the unique partial derivatives of a given \code{order}
+#' with respect to a vector of parameters. Because mixed partial derivatives are
+#' symmetric, only one representative per multi-index is listed, using
+#' non-decreasing parameter order (e.g. \code{"mu_mu_sigma"} but not
+#' \code{"mu_sigma_mu"}). For \code{order = 2} this coincides with the set of
+#' \code{\link{hess_names}} (though possibly in a different order).
+#'
+#' @param params A character vector of parameter names (e.g., \code{c("mu", "sigma")}).
+#' @param order A positive integer, the derivative order (e.g. \code{3} or \code{4}).
+#'
+#' @return A character vector of the \eqn{\binom{p + \text{order} - 1}{\text{order}}}
+#'   unique component names, where \eqn{p} is the number of parameters.
+#'
+#' @examples
+#' deriv_names(c("mu", "sigma"), 3)
+#' # "mu_mu_mu" "mu_mu_sigma" "mu_sigma_sigma" "sigma_sigma_sigma"
+#'
+#' @export
+deriv_names <- function(params, order) {
+  p <- length(params)
+  # Non-decreasing index tuples of length `order` over 1:p (combinations with
+  # repetition), enumerated in lexicographic order.
+  idx <- as.matrix(do.call(expand.grid, rep(list(seq_len(p)), order)))
+  idx <- idx[, rev(seq_len(order)), drop = FALSE]           # lexicographic
+  keep <- apply(idx, 1L, function(r) all(diff(r) >= 0))
+  idx <- idx[keep, , drop = FALSE]
+  apply(idx, 1L, function(r) paste(params[r], collapse = "_"))
 }
 
 

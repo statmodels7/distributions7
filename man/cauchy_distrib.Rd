@@ -21,17 +21,42 @@ Creates a distribution object for the Cauchy distribution, parameterized by loca
 and scale (\eqn{\sigma}).
 }
 \details{
-The Cauchy distribution is a continuous probability distribution with heavy tails and no
-defined mean or variance.
+The Cauchy distribution is a heavy-tailed location-scale distribution with
+location \eqn{\mu} and scale \eqn{\sigma}. Its moments (mean, variance, and
+higher) are \strong{undefined}.
 
-\strong{Density function:}
+\strong{Probability density function:}
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]}}
 
-\strong{Parameter Domains:}
+\strong{Cumulative distribution function:}
+\deqn{F(q; \mu, \sigma) = \dfrac{1}{2} + \dfrac{1}{\pi}\arctan\left(\dfrac{q-\mu}{\sigma}\right)}
+
+\strong{Quantile function:}
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \tfrac{1}{2}\right)\right)}
+
+\strong{Score} (with \eqn{d = \sigma^2 + (y-\mu)^2}):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2(y-\mu)}{d}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y-\mu)^2 - \sigma^2}{\sigma d}}
+
+\strong{Observed Hessian:}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(y-\mu)^2 - 2\sigma^2}{d^2}, \quad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 (y-\mu)^2 - (y-\mu)^4}{\sigma^2 d^2}, \quad
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{4\sigma(y-\mu)}{d^2}}
+
+\strong{Expected Hessian:}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (-\infty, +\infty)}
 \item \eqn{\sigma \in (0, +\infty)}
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+\code{\link{distrib_hess_y}}) are also available.
 }
 \seealso{
 \itemize{

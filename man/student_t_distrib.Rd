@@ -27,16 +27,45 @@ An S7 object of class \code{StudentTDistrib} (inheriting from \code{continuous_d
 Creates a distribution object for the Student's t distribution parameterized by location (\eqn{\mu}), scale (\eqn{\sigma}), and degrees of freedom (\eqn{\nu}).
 }
 \details{
-The probability density function is given by:
-\deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
-for \eqn{y \in (-\infty, +\infty)}.
+The (location-scale) Student's t distribution has location \eqn{\mu}, scale
+\eqn{\sigma} and degrees of freedom \eqn{\nu}. Write \eqn{d = \nu\sigma^2 + (y-\mu)^2}.
 
-\strong{Parameter Domains:}
+\strong{Probability density function:}
+\deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
+
+\strong{Cumulative distribution function} (\eqn{T_\nu} the standard t CDF):
+\deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
+
+\strong{Quantile function:}
+\deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\,T_\nu^{-1}(p)}
+
+\strong{Score} (\eqn{\psi} the digamma function):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)(y-\mu)}{d}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left[(y-\mu)^2 - \sigma^2\right]}{\sigma d}}
+\deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[ -\dfrac{1}{\nu} - \psi\left(\dfrac{\nu}{2}\right) + \psi\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)(y-\mu)^2}{\nu d} - \log\left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right) \right]}
+
+\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function; \eqn{\mu} is orthogonal to \eqn{\sigma, \nu}):
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma\,\partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
+The observed Hessian is available via \code{\link{distrib_hessian.StudentTDistrib}}.
+
+\strong{Moments} (defined for \eqn{\nu} large enough): mean \eqn{\mu} (\eqn{\nu>1}),
+variance \eqn{\sigma^2\nu/(\nu-2)} (\eqn{\nu>2}), skewness 0 (\eqn{\nu>3}),
+excess kurtosis \eqn{6/(\nu-4)} (\eqn{\nu>4}).
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (-\infty, +\infty)}
 \item \eqn{\sigma \in (0, +\infty)}
 \item \eqn{\nu \in (0, +\infty)}
 }
+
+Analytical third- and fourth-order observed derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}; the expected ones use the numerical fallback) and
+response derivatives (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}})
+are also available.
 }
 \seealso{
 \itemize{

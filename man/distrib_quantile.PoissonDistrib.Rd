@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Poisson distribution.
+Computes the quantile function for the Poisson distribution, defined as the
+generalized inverse of the CDF:
+\deqn{Q(p; \mu) = \min\left\{y \in \mathbb{N}_0 : F(y; \mu) \ge p\right\}}
 }
 \seealso{
 \code{\link{poisson_distrib}}

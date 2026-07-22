@@ -17,14 +17,34 @@ An S7 object of class \code{BernoulliDistrib} (inheriting from \code{discrete_di
 Creates a distribution object for the Bernoulli distribution parameterized by the probability of success \eqn{\mu}.
 }
 \details{
-The Bernoulli distribution has the following probability mass function (PMF):
-\deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}}
-for \eqn{y \in \{0, 1\}}.
+The Bernoulli distribution models a binary outcome \eqn{y \in \{0, 1\}} with
+success probability \eqn{\mu}.
 
-\strong{Parameter Domains:}
+\strong{Probability mass function:}
+\deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}, \quad y \in \{0, 1\}}
+
+\strong{Cumulative distribution function:}
+\deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
+
+\strong{Quantile function} (generalized inverse):
+\deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
+
+\strong{Score, observed and expected Hessian:}
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1-\mu)}}
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1-\mu)},
+skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}, excess kurtosis
+\eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}.
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (0, 1)}
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) are also available.
 }
 \seealso{
 \itemize{

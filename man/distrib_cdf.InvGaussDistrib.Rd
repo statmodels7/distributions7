@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Inverse-Gaussian distribution.
+Computes the cumulative distribution function for the Inverse-Gaussian distribution:
+\deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}+1\right)\right)}
+where \eqn{\Phi} is the standard normal CDF.
 }
 \seealso{
 \code{\link{invgauss_distrib}}

@@ -4,12 +4,23 @@
 \alias{distrib_gradient}
 \title{Analytical Gradient}
 \usage{
-distrib_gradient(distrib, ...)
+distrib_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
 \item{distrib}{A distribution object inheriting from the \code{distrib} class.}
 
-\item{...}{Additional arguments passed to the specific method (e.g., \code{y}, \code{theta}, \code{par}).}
+\item{y}{A numeric vector of observations.}
+
+\item{theta}{A named list (or named numeric vector) of distribution parameters.
+Each parameter must have length 1 or \code{length(y)}.}
+
+\item{scale}{Either \code{"parameter"} (default) for derivatives with respect to
+the parameters \eqn{\theta} on their natural (constrained) scale, or
+\code{"link"} for derivatives with respect to the unconstrained linear
+predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
+See \code{\link{link_scale_derivatives}}.}
+
+\item{...}{Additional arguments passed to the specific method.}
 }
 \description{
 Computes the analytical first derivatives of the log-likelihood with respect to the distribution's parameters.

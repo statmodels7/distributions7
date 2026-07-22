@@ -15,7 +15,10 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the cumulative distribution function for the Beta distribution.
+Computes the cumulative distribution function for the Beta distribution, using the
+mean/precision reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}:
+\deqn{F(q; \mu, \phi) = I_q(\alpha, \beta)}
+where \eqn{I_q(\cdot, \cdot)} is the regularized incomplete beta function.
 }
 \seealso{
 \code{\link{beta_distrib}}

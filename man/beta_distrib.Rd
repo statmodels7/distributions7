@@ -20,15 +20,40 @@ An S7 object of class \code{BetaDistrib} (inheriting from \code{continuous_distr
 Creates a distribution object for the Beta distribution parameterized by mean (\eqn{\mu}) and precision (\eqn{\phi}).
 }
 \details{
-The Beta distribution is reparameterized from the standard shape parameters \eqn{\alpha} and \eqn{\beta} using:
-\deqn{\alpha = \mu\phi, \quad \beta = (1-\mu)\phi}
-where \eqn{\phi = \alpha + \beta} acts as a precision parameter (or sample size proxy).
+The Beta distribution is given a mean/precision parameterization: \eqn{\mu} is
+the mean and \eqn{\phi} a precision parameter. The standard shapes are
+\deqn{\alpha = \mu\phi, \qquad \beta = (1-\mu)\phi}
 
-\strong{Parameter Domains:}
+\strong{Probability density function:}
+\deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\alpha)\Gamma(\beta)}\, y^{\alpha-1} (1-y)^{\beta-1}, \quad 0 < y < 1}
+
+\strong{Cumulative distribution function} (\eqn{I_q} the regularized incomplete beta function):
+\deqn{F(q; \mu, \phi) = I_q(\alpha, \beta)}
+
+\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+
+\strong{Score} (\eqn{\psi} the digamma function):
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \phi\left[\log\left(\dfrac{y}{1-y}\right) - \psi(\alpha) + \psi(\beta)\right]}
+\deqn{\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\alpha) - (1-\mu)\psi(\beta) + \mu\log y + (1-\mu)\log(1-y)}
+
+\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function; the observed and
+expected Hessians coincide, as they do not depend on \eqn{y}):
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\phi^2\left[\psi_1(\alpha) + \psi_1(\beta)\right], \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi} = -\phi\left[\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right]}
+\deqn{\dfrac{\partial^2 \ell}{\partial \phi^2} = \psi_1(\phi) - \mu^2\psi_1(\alpha) - (1-\mu)^2\psi_1(\beta)}
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1-\mu)/(\phi+1)},
+skewness \eqn{\dfrac{2(1-2\mu)\sqrt{\phi+1}}{(\phi+2)\sqrt{\mu(1-\mu)}}}.
+
+\strong{Parameter domains:}
 \itemize{
 \item \eqn{\mu \in (0, 1)}
 \item \eqn{\phi \in (0, +\infty)}
 }
+
+Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
+\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
+\code{\link{distrib_hess_y}}) are also available.
 }
 \seealso{
 \itemize{

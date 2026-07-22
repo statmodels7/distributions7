@@ -15,7 +15,8 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Logistic distribution.
+Computes the quantile function (inverse CDF) for the Logistic distribution:
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma \log\left(\dfrac{p}{1-p}\right)}
 }
 \seealso{
 \code{\link{logistic_distrib}}

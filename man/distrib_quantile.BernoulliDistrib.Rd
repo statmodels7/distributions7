@@ -15,7 +15,9 @@
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
 \description{
-Computes the quantile function (inverse CDF) for the Bernoulli distribution.
+Computes the quantile function for the Bernoulli distribution, the generalized
+inverse of the CDF:
+\deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
 }
 \seealso{
 \code{\link{bernoulli_distrib}}

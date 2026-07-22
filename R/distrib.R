@@ -12,6 +12,7 @@
 #' @param n_params A numeric value specifying the total number of parameters.
 #' @param params_bounds A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.
 #' @param link_params A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.
+#' @param params_smooth An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).
 #'
 #' @import S7
 #' @export
@@ -24,7 +25,8 @@ distrib <- S7::new_class("distrib",
     params_interpretation = S7::class_character,
     n_params              = S7::class_numeric,
     params_bounds         = S7::class_list,
-    link_params           = S7::class_list
+    link_params           = S7::class_list,
+    params_smooth         = S7::class_logical
   ),
   validator = function(self) {
     errors <- character()
@@ -41,10 +43,68 @@ distrib <- S7::new_class("distrib",
     if (self@n_params != length(self@params)) {
       errors <- c(errors, "Property 'n_params' must match the length of 'params'.")
     }
-    
+
+    missing_bounds <- setdiff(self@params, names(self@params_bounds))
+    if (length(missing_bounds) > 0) {
+      errors <- c(errors, paste0(
+        "Property 'params_bounds' is missing an entry for: ",
+        paste(missing_bounds, collapse = ", "), "."
+      ))
+    }
+
+    missing_links <- setdiff(self@params, names(self@link_params))
+    if (length(missing_links) > 0) {
+      errors <- c(errors, paste0(
+        "Property 'link_params' is missing an entry for: ",
+        paste(missing_links, collapse = ", "), "."
+      ))
+    }
+
+    bad_links <- names(which(!vapply(
+      self@link_params,
+      function(l) S7::S7_inherits(l, linkfunctions7::link),
+      logical(1)
+    )))
+    if (length(bad_links) > 0) {
+      errors <- c(errors, paste0(
+        "Property 'link_params' must contain 'linkfunctions7::link' objects. Not a link: ",
+        paste(bad_links, collapse = ", "), "."
+      ))
+    }
+
+    if (length(self@params_smooth) > 0) {
+      missing_smooth <- setdiff(self@params, names(self@params_smooth))
+      if (length(missing_smooth) > 0) {
+        errors <- c(errors, paste0(
+          "Property 'params_smooth', when supplied, must be named and cover every parameter. Missing: ",
+          paste(missing_smooth, collapse = ", "), "."
+        ))
+      }
+    }
+
     if (length(errors) > 0) errors else NULL
   }
 )
+
+#' Per-Parameter Smoothness of the Log-Likelihood
+#'
+#' @description
+#' Returns a named logical vector indicating, for each parameter of a distribution,
+#' whether the log-likelihood is differentiable with respect to it. This reads the
+#' \code{params_smooth} property, defaulting to all \code{TRUE} when the property was
+#' left empty.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @return A named logical vector, one entry per parameter.
+#' @export
+param_smoothness <- function(distrib) {
+  ps <- distrib@params_smooth
+  if (length(ps) == 0) {
+    stats::setNames(rep(TRUE, distrib@n_params), distrib@params)
+  } else {
+    ps[distrib@params]
+  }
+}
 
 #' S7 Class for Continuous Distributions
 #'

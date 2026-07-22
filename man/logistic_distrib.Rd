@@ -20,6 +20,50 @@ An S7 object of class \code{LogisticDistrib} (inheriting from \code{continuous_d
 Creates a distribution object for the Logistic distribution parameterized by location (\eqn{\mu})
 and scale (\eqn{\sigma}).
 }
+\details{
+The Logistic distribution is a location-scale distribution with location
+\eqn{\mu} and scale \eqn{\sigma}.
+
+\strong{Probability density function:}
+\deqn{f(y; \mu, \sigma) = \dfrac{\exp\left(-\dfrac{y-\mu}{\sigma}\right)}{\sigma\left[1 + \exp\left(-\dfrac{y-\mu}{\sigma}\right)\right]^2}}
+
+\strong{Cumulative distribution function:}
+\deqn{F(q; \mu, \sigma) = \dfrac{1}{1 + \exp\left(-\dfrac{q-\mu}{\sigma}\right)}}
+
+\strong{Quantile function:}
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma \log\left(\dfrac{p}{1-p}\right)}
+
+\strong{Score:}
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right), \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - \dfrac{y-\mu}{\sigma}\tanh\left(\dfrac{y-\mu}{2\sigma}\right)\right]}
+
+\strong{Expected Hessian:}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{3\sigma^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+The observed Hessian is available via \code{\link{distrib_hessian.LogisticDistrib}}.
+
+\strong{Moments:} mean \eqn{\mu}, variance \eqn{\pi^2\sigma^2/3}, skewness 0,
+excess kurtosis \eqn{6/5}.
+
+\strong{Parameter domains:}
+\itemize{
+\item \eqn{\mu \in (-\infty, +\infty)}
+\item \eqn{\sigma \in (0, +\infty)}
+}
+
+Response derivatives (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}})
+and observed third- and fourth-order parameter derivatives
+(\code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}) are available in
+closed form. The corresponding expected derivatives are not: they are obtained
+through \code{\link{expected_derivative_methods}}. Seven of the nine components are
+nonetheless known exactly, and the location-scale structure of the family forbids
+any of them from depending on \eqn{\mu}:
+\deqn{\mathbb{E}\left[\dfrac{\partial^3 \ell}{\partial \mu^2 \partial \sigma}\right] = \dfrac{1}{2\sigma^3}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^3 \ell}{\partial \sigma^3}\right] = \dfrac{\pi^2+2}{2\sigma^3}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^4 \ell}{\partial \mu^4}\right] = \dfrac{1}{15\sigma^4},}
+the remaining ones in that list being zero by symmetry.
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.LogisticDistrib}} for the probability density function.
@@ -29,5 +73,6 @@ and scale (\eqn{\sigma}).
 \item \code{\link{distrib_gradient.LogisticDistrib}} for the analytical gradient.
 \item \code{\link{distrib_hessian.LogisticDistrib}} for the analytical observed Hessian.
 \item \code{\link{distrib_expected_hessian.LogisticDistrib}} for the analytical expected Hessian.
+\item \code{\link{distrib_deriv3.LogisticDistrib}} and \code{\link{distrib_deriv4.LogisticDistrib}} for the observed higher-order derivatives.
 }
 }
