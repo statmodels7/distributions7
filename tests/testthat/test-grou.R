@@ -159,6 +159,51 @@ test_that("a density diverging at one edge is reparameterised, not refused", {
   expect_gt(ks$p.value, 0.001)
 })
 
+test_that("the reparameterisation does not care where the divergent edge sits", {
+  # The power is applied to |Y - edge|, the distance from the singular edge, not
+  # to Y itself; since a divergence can only occur at a finite edge that distance
+  # is non-negative wherever the edge lies. So the positivity restriction that
+  # would apply to a Box-Cox transform of the variable does not arise, and
+  # supports on the negative half-line work like any other.
+  shifted <- function(nm, pdf, bounds) {
+    cls <- S7::new_class(nm, parent = continuous_distrib, package = NULL)
+    S7::method(distrib_pdf, cls) <- pdf
+    cls(distrib_name = nm, dimension = "univariate", bounds = bounds,
+        params = "a", params_interpretation = c(a = "shape"), n_params = 1,
+        params_bounds = list(a = c(0, Inf)), link_params = list(a = lg_link))
+  }
+
+  # lower edge at -5
+  d1 <- shifted("ShiftGamma", function(distrib, y, theta, log = FALSE) {
+    stats::dgamma(y + 5, theta[[1]], 1, log = log)
+  }, c(-5, Inf))
+  set.seed(120)
+  y <- rng_grou(d1, 20000, list(a = 0.4))
+  expect_true(all(y > -5))
+  expect_gt(suppressWarnings(stats::ks.test(y, function(q) stats::pgamma(q + 5, 0.4, 1)))$p.value, 0.001)
+
+  # support entirely negative
+  d2 <- shifted("NegBeta", function(distrib, y, theta, log = FALSE) {
+    v <- stats::dbeta((y + 10) / 8, theta[[1]], 3, log = TRUE) - log(8)
+    if (log) v else exp(v)
+  }, c(-10, -2))
+  set.seed(121)
+  y <- rng_grou(d2, 20000, list(a = 0.35))
+  expect_true(all(y > -10 & y < -2))
+  expect_gt(suppressWarnings(stats::ks.test(y,
+    function(q) stats::pbeta((q + 10) / 8, 0.35, 3)))$p.value, 0.001)
+
+  # upper edge, on the negative half-line
+  d3 <- shifted("ReflGamma", function(distrib, y, theta, log = FALSE) {
+    stats::dgamma(-3 - y, theta[[1]], 1, log = log)
+  }, c(-Inf, -3))
+  set.seed(122)
+  y <- rng_grou(d3, 20000, list(a = 0.3))
+  expect_true(all(y < -3))
+  expect_gt(suppressWarnings(stats::ks.test(y,
+    function(q) stats::pgamma(-3 - q, 0.3, 1, lower.tail = FALSE)))$p.value, 0.001)
+})
+
 test_that("a density diverging at both edges is refused and falls back to inversion", {
   # A single power reparameterisation straightens one edge at the cost of the
   # other, so this case is handed to inverse transform sampling.
