@@ -1,0 +1,176 @@
+---
+title: "Fitting a distribution to data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fitting a distribution to data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 6,
+  fig.height = 4
+)
+set.seed(1)
+```
+
+```{r setup}
+library(distributions7)
+```
+
+This vignette walks through fitting a distribution to a sample by maximum
+likelihood, reading the result, checking it against the data, and simulating
+from it. It assumes you already know what a distribution object is; if not,
+`vignette("defining-a-distribution")` is the place to start.
+
+## A first fit
+
+Every distribution has a constructor. It takes the link functions for its
+parameters, but the defaults are sensible, so most of the time you call it with
+no arguments:
+
+```{r}
+d <- gamma_distrib()
+d
+```
+
+We simulate some data from a known parameter value and fit the distribution back
+to it. Parameters travel as a named list.
+
+```{r}
+y <- distrib_rng(d, 500, list(mu = 3, sigma2 = 2))
+fit <- fit_distrib(d, y)
+fit
+```
+
+The estimates recover the values we generated from, and the print method shows
+them twice: on the **parameter scale** you asked about, and on the **link scale**
+where the fitting actually happened. More on that split below.
+
+## Reading the fit
+
+`fit_distrib()` returns an object you interrogate with the familiar extractors:
+
+```{r}
+coef(fit)
+vcov(fit)
+logLik(fit)
+```
+
+`coef()` and `vcov()` also take a `scale` argument, in case you want the
+quantities on the unconstrained scale:
+
+```{r}
+coef(fit, scale = "link")
+```
+
+The object carries confidence intervals, the information criteria, the number of
+iterations, and the method that was actually used --- all visible in the print
+above.
+
+## Why the link scale
+
+A gamma's mean and variance are positive; a beta's probability lives in
+$(0, 1)$; a Gaussian's standard deviation is positive. Optimising those
+constrained parameters directly means fighting the boundary. Instead
+`fit_distrib()` optimises the **unconstrained** parameters behind each link ---
+$\log\mu$ and $\log\sigma^2$ for the gamma --- where there is no boundary to hit,
+using the exact score and information the package provides on that scale.
+
+The estimates are then mapped back, and so are the intervals. Because a
+confidence interval is built symmetrically on the link scale and pushed through
+$g^{-1}$, its endpoints can never leave the parameter's domain:
+
+```{r}
+b <- bernoulli_distrib()
+fit_distrib(b, rbinom(40, 1, 0.9))
+```
+
+Even with a probability estimate close to one and only forty observations, the
+interval stays inside $(0, 1)$ --- a symmetric interval on the probability scale
+would have spilled past it.
+
+## Choosing how it is optimised
+
+The default is Fisher scoring, which uses the *expected* information. Two other
+methods are available, and Fisher scoring and Newton fall back to BFGS if they
+fail to converge:
+
+```{r}
+fit_newton <- fit_distrib(d, y, method = "newton")
+fit_bfgs   <- fit_distrib(d, y, method = "bfgs")
+
+c(scoring = as.numeric(logLik(fit)),
+  newton  = as.numeric(logLik(fit_newton)),
+  bfgs    = as.numeric(logLik(fit_bfgs)))
+```
+
+They agree on the maximum. Fisher scoring is the default because it uses the
+expected information, which stays well-behaved even where the observed Hessian
+does not --- a point that matters for distributions with a non-smooth
+parameter, such as the Laplace.
+
+## Checking the fit against the data
+
+A fit remembers the data it came from, so it can be drawn over it. For a
+continuous distribution `plot()` shows a kernel density of the sample with the
+fitted density on top:
+
+```{r}
+plot(fit)
+```
+
+For a discrete distribution it shows the observed frequencies as bars with the
+fitted probability mass overlaid, because a kernel density would misrepresent
+counts:
+
+```{r}
+p <- poisson_distrib()
+yp <- distrib_rng(p, 300, list(mu = 4))
+plot(fit_distrib(p, yp))
+```
+
+## Simulating from the fit
+
+`simulate()` draws new samples from the fitted distribution. Each replicate has
+the same length as the original data, which makes it a one-liner to build a
+parametric bootstrap of any statistic:
+
+```{r}
+sims <- simulate(fit, 200, seed = 1)
+dim(sims)
+
+boot_median <- vapply(sims, median, numeric(1))
+quantile(boot_median, c(0.025, 0.975))
+```
+
+It follows the `stats::simulate()` contract: a supplied `seed` makes the draw
+reproducible and is reported back on the result, and the caller's random stream
+is left untouched.
+
+## Validating a distribution numerically
+
+Before trusting a fit --- and especially before trusting a distribution you
+wrote yourself --- `check_distrib()` puts it through thirteen numerical checks.
+It confirms that the density integrates to one, that the distribution function
+agrees with the density, that the quantile inverts it, that the generator
+follows it, and that every analytical derivative matches finite differences, on
+both the parameter and the link scale:
+
+```{r}
+invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
+```
+
+If you had made a mistake in an analytical derivative, the corresponding line
+would turn red, with the size of the discrepancy next to it. It is the fastest
+way to catch a wrong formula.
+
+## Where to go next
+
+- `vignette("defining-a-distribution")` --- add your own distribution, which
+  then works with everything shown here.
+- `?fit_distrib`, `?check_distrib` --- the full argument lists.
+- `?distrib_gradient` --- the derivatives, including what `scale = "link"` does.
