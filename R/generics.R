@@ -65,6 +65,17 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
 #' @export
 distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, theta, ...) {
   theta <- align_theta(distrib, theta)
+  # Recycle per-observation parameters up to n, as the base generators do
+  # (rnorm(4, c(0, 10)) draws two from each mean). Methods are free to index
+  # theta by draw; without this a shorter parameter vector either silently
+  # produces NAs, when the method subsets it by a longer logical, or is rejected
+  # outright, when the method delegates to distrib_quantile. Scalars are left
+  # alone so that the C++ kernels keep their fast path.
+  idx <- seq_len(distrib@n_params)
+  lens <- lengths(theta[idx])
+  if (any(lens > 1L) && !all(lens %in% c(1L, n))) {
+    theta[idx] <- lapply(theta[idx], function(x) if (length(x) == 1L) x else rep_len(x, n))
+  }
   S7::S7_dispatch()
 })
 
@@ -73,8 +84,18 @@ distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, th
 # vectorized. Returns list(y = ..., theta = ...).
 check_derivative_args <- function(distrib, y, theta) {
   theta <- align_theta(distrib, theta)
-  n <- max(length(y), lengths(theta[seq_len(distrib@n_params)]))
-  check_params_dim(theta[seq_len(distrib@n_params)], n = n)
+  pars <- theta[seq_len(distrib@n_params)]
+
+  # An empty y yields empty derivatives, the way dnorm(numeric(0)) yields
+  # numeric(0) and the way distrib_pdf already behaves. Without this the
+  # recycling check below rejects it with the nonsensical message
+  # "'y' must have length 1 or 1, not 0".
+  if (length(y) == 0L && all(lengths(pars) <= 1L)) {
+    return(list(y = y, theta = theta))
+  }
+
+  n <- max(length(y), lengths(pars))
+  check_params_dim(pars, n = n)
   if (length(y) != n) {
     if (length(y) != 1) {
       stop(sprintf("'y' must have length 1 or %d, not %d.", n, length(y)), call. = FALSE)
