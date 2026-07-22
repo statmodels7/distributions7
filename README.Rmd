@@ -1,0 +1,152 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/statmodels7/distributions7/graph/badge.svg)](https://app.codecov.io/gh/statmodels7/distributions7)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+library(distributions7)
+set.seed(1)
+```
+
+# distributions7
+
+`{distributions7}` describes probability distributions as S7 objects that carry
+not just the usual density, distribution and quantile functions, but the
+**exact analytical derivatives of the log-likelihood up to fourth order** —
+with respect to the parameters, with respect to the response, and with respect
+to the unconstrained parameters behind a link function.
+
+It is the distribution layer of [statmodels7](https://github.com/statmodels7),
+an S7 stack for statistical modelling, and it works alongside
+[linkfunctions7](https://github.com/statmodels7/linkfunctions7).
+
+## Installation
+
+```{r eval=FALSE}
+# install.packages("pak")
+pak::pak("statmodels7/distributions7")
+```
+
+## The usual functions
+
+Fourteen distributions ship with the package. Each constructor takes the link
+functions used for its parameters, and parameters travel as a named list.
+
+```{r}
+d <- gaussian_distrib()
+theta <- list(mu = 2, sigma = 3)
+
+distrib_pdf(d, c(0, 2, 4), theta)
+distrib_cdf(d, c(0, 2, 4), theta)
+distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
+```
+
+## Derivatives, which is the point
+
+The score, the observed and expected information, and third and fourth order
+derivatives are all closed form.
+
+```{r}
+y <- distrib_rng(d, 5, theta)
+
+distrib_gradient(d, y, theta)
+distrib_expected_hessian(d, 0, theta)
+```
+
+Ask for them on the **link scale** and you get derivatives with respect to the
+unconstrained parameters instead, through the chain rule rather than by
+differentiating numerically:
+
+```{r}
+distrib_gradient(d, y, theta, scale = "link")
+```
+
+## Fitting
+
+`fit_distrib()` maximises the likelihood on the link scale, where the
+parameters are unconstrained, then reports estimates back on their natural
+scale. Confidence intervals are built on the link scale and mapped through
+$g^{-1}$, so they can never leave a parameter's domain.
+
+```{r}
+y <- distrib_rng(gamma_distrib(), 500, list(mu = 3, sigma2 = 2))
+fit <- fit_distrib(gamma_distrib(), y)
+fit
+```
+
+The fit knows what it was estimated from, so it can be checked against the data
+and simulated from:
+
+```{r fit-plot, fig.height = 4, fig.width = 6}
+plot(fit)
+```
+
+```{r}
+sims <- simulate(fit, 100, seed = 1)
+quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
+```
+
+## A distribution of your own needs only its density
+
+Everything above has a numerical fallback registered on the base classes: the
+distribution function by quadrature, the quantile function by root finding, the
+generator by Generalized Ratio-of-Uniforms, and every derivative by finite
+differences. So a new distribution is a subclass and one method.
+
+```{r}
+MyLaplace <- S7::new_class("MyLaplace", parent = continuous_distrib)
+
+S7::method(distrib_pdf, MyLaplace) <- function(distrib, y, theta, log = FALSE) {
+  ld <- -log(2 * theta$b) - abs(y - theta$mu) / theta$b
+  if (log) ld else exp(ld)
+}
+
+d2 <- MyLaplace(
+  distrib_name = "my laplace", dimension = "univariate", bounds = c(-Inf, Inf),
+  params = c("mu", "b"), params_interpretation = c(mu = "location", b = "scale"),
+  n_params = 2, params_bounds = list(mu = c(-Inf, Inf), b = c(0, Inf)),
+  link_params = list(
+    mu = linkfunctions7::identity_link(),
+    b  = linkfunctions7::log_link()
+  )
+)
+
+# never implemented, yet available
+distrib_cdf(d2, 1, list(mu = 0, b = 2))
+distrib_gradient(d2, 1, list(mu = 0, b = 2))
+```
+
+See `vignette("defining-a-distribution")` for the full treatment, including
+what to do when a parameter is not differentiable.
+
+## Checking your work
+
+`check_distrib()` puts a distribution through thirteen numerical checks: that
+the density integrates to one, that the distribution function agrees with it,
+that the quantile function inverts it, that the generator follows it, and that
+every derivative order matches finite differences — on both scales.
+
+```{r}
+invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
+```
+
+## What is in the box
+
+| | |
+|---|---|
+| continuous | gaussian, cauchy, logistic, Student's t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
+| discrete | bernoulli, binomial, poisson, negative binomial |
+| wrappers | `zero_inflated()`, `zero_adjusted()`, `transformation()` with twelve transformers |
+| tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |
