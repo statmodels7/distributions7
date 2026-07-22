@@ -165,6 +165,16 @@ to_link_scale <- function(distrib, theta, nat, order) {
   p <- length(params)
   h <- inverse_link_derivs(distrib, theta, order)
 
+  # At first order the chain rule is a diagonal rescaling, dl/deta_i = (dl/dtheta_i)
+  # h_i'. Sending that through the general assembly below costs a few hundred
+  # microseconds to perform a multiplication, and it is the order evaluated most
+  # often, once per scoring iteration.
+  if (order == 1L) {
+    out <- lapply(seq_len(p), function(i) nat[[1L]][[params[i]]] * h[[i]][[1L]])
+    names(out) <- params
+    return(out)
+  }
+
   terms <- deriv_index_list(p, order)
   out <- vector("list", length(terms))
   nms <- character(length(terms))
@@ -174,14 +184,18 @@ to_link_scale <- function(distrib, theta, nat, order) {
     nms[t] <- paste(params[idx], collapse = "_")
 
     uniq <- unique(idx)
-    mult <- as.integer(table(factor(idx, levels = uniq)))
+    mult <- tabulate(match(idx, uniq), length(uniq))
 
-    # nested sum over j_t = 1..m_t
-    combos <- as.matrix(do.call(expand.grid, lapply(mult, seq_len)))
+    # Nested sum over j_t = 1..m_t. The combinations are enumerated by decoding a
+    # counter in mixed radix rather than built with expand.grid, which costs
+    # sixty microseconds a term here -- more than everything else in this loop
+    # put together, and paid once per component on every call.
+    n_comb <- prod(mult)
+    radix <- c(1L, cumprod(mult)[-length(mult)])
     acc <- 0
 
-    for (r in seq_len(nrow(combos))) {
-      j <- as.integer(combos[r, ])
+    for (r in seq_len(n_comb)) {
+      j <- as.integer(((r - 1L) %/% radix) %% mult + 1L)
       nat_idx <- sort(rep(uniq, times = j))
       key <- paste(params[nat_idx], collapse = "_")
       term <- nat[[length(nat_idx)]][[key]]

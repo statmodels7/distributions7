@@ -18,36 +18,49 @@
 align_theta <- function(distrib, theta) {
   if (!is.list(theta)) theta <- as.list(theta)
 
+  # Every generic funnels through here, so this runs on every call and its fixed
+  # cost is the package's fixed cost. Each S7 property read costs a couple of
+  # microseconds, so the two that are needed are read once and passed on rather
+  # than reached for again inside the bounds check.
+  params <- distrib@params
+  bounds <- distrib@params_bounds
+  nms <- names(theta)
+
   # Strip names from the values themselves. A parameter that has been through a
   # link function comes back carrying its own name, which is meaningless on a
   # numeric value and leaks into the results: distrib_pdf() would return a
-  # density labelled "nu". Normalising here keeps every consumer downstream from
-  # having to care.
-  theta <- lapply(theta, unname)
-  nms <- names(theta)
+  # density labelled "nu". Only worth a pass over the list when there is
+  # something to strip.
+  if (any(vapply(theta, function(x) !is.null(names(x)), logical(1)))) {
+    theta <- lapply(theta, unname)
+  }
 
   # Unnamed: trust positional order, but require enough elements
   if (is.null(nms) || !any(nzchar(nms))) {
     if (length(theta) < distrib@n_params) {
       stop(sprintf(
         "'theta' has %d element(s) but %d parameter(s) are expected (%s).",
-        length(theta), distrib@n_params, paste(distrib@params, collapse = ", ")
+        length(theta), distrib@n_params, paste(params, collapse = ", ")
       ), call. = FALSE)
     }
-    check_theta_bounds(distrib, theta)
+    check_bounds_fast(params, bounds, theta, distrib@distrib_name)
     return(theta)
   }
 
-  # Named: all parameters must be present, then reorder (extras are dropped)
-  missing_p <- setdiff(distrib@params, nms)
-  if (length(missing_p) > 0) {
-    stop(sprintf(
-      "Missing parameter(s) in 'theta': %s. Expected: %s.",
-      paste(missing_p, collapse = ", "), paste(distrib@params, collapse = ", ")
-    ), call. = FALSE)
+  # Named: all parameters must be present, then reorder (extras are dropped).
+  # The overwhelmingly common case is a list already in the right order, and
+  # identical() settles that in a fraction of a microsecond; setdiff() costs
+  # twenty even on two names, so it is kept for the branch that reports the error.
+  if (!identical(nms, params)) {
+    if (!all(params %in% nms)) {
+      stop(sprintf(
+        "Missing parameter(s) in 'theta': %s. Expected: %s.",
+        paste(setdiff(params, nms), collapse = ", "), paste(params, collapse = ", ")
+      ), call. = FALSE)
+    }
+    theta <- theta[params]
   }
-  theta <- theta[distrib@params]
-  check_theta_bounds(distrib, theta)
+  check_bounds_fast(params, bounds, theta, distrib@distrib_name)
   theta
 }
 
@@ -80,12 +93,18 @@ align_theta <- function(distrib, theta) {
 #'
 #' @export
 check_theta_bounds <- function(distrib, theta) {
-  params <- distrib@params
+  check_bounds_fast(distrib@params, distrib@params_bounds, theta, distrib@distrib_name)
+}
+
+# The same check, taking the properties it needs as arguments. align_theta calls
+# it on every generic invocation, and reading an S7 property costs a couple of
+# microseconds each time, which is material against a total budget of a few tens.
+check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
   problems <- character()
 
   for (i in seq_along(params)) {
     p <- params[i]
-    b <- distrib@params_bounds[[p]]
+    b <- param_bounds[[p]]
     if (is.null(b) || i > length(theta)) next
     v <- theta[[i]]
 
@@ -107,7 +126,7 @@ check_theta_bounds <- function(distrib, theta) {
   }
 
   if (length(problems) > 0) {
-    stop("Invalid parameter value(s) for the '", distrib@distrib_name,
+    stop("Invalid parameter value(s) for the '", distrib_name,
          "' distribution:\n", paste(problems, collapse = "\n"), call. = FALSE)
   }
 
