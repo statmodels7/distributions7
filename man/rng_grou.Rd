@@ -75,18 +75,31 @@ decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step -- and
 \eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
 sampled through \eqn{X = Y^{1/4}}.
 
-A density diverging at \emph{both} edges (a Beta with both shapes below one) is
-beyond a single power reparameterisation, and is refused; the default
-\code{\link{distrib_rng}} method then falls back to inverse transform sampling.
+A density diverging at \emph{both} edges, such as a Beta with both shapes below
+one, is beyond any single power: flattening one edge steepens the other. What
+does work is a map that behaves like a different power at each end,
+\deqn{T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U),}
+monotone from 0 to 1, with a closed-form derivative, and carrying the exponents
+\eqn{p\alpha - 1} and \eqn{q\beta - 1} at the two ends. Choosing
+\eqn{p\alpha > 1} and \eqn{q\beta > 1} makes the density of \eqn{U} vanish at
+both ends, turning a U-shaped density into a single-peaked one.
+
+Near an edge the variable itself stops being resolvable: at a non-zero edge the
+spacing of doubles is absolute, so a slab of \eqn{u} collapses onto the edge and
+the density evaluated there returns infinity. The distance from the edge is
+still exact on the \eqn{u} scale, so the power law is used there instead,
+calibrated once where the density can be evaluated. This keeps the mass rather
+than rejecting it. It cannot place it any more finely than the arithmetic
+allows -- for a Beta(0.9, 0.1) some 2.5\\% of the distribution lies within one
+unit in the last place of 1, and those draws come back equal to 1 exactly, which
+is also what \code{\link[stats]{rbeta}} does.
 }
 
 \section{Requirements}{
 
 The kernel must be unimodal and the parameters in \code{theta} must be scalars.
-A density that diverges at one edge of its support is handled by the
-reparameterisation described below; one that diverges at both is refused, and
-the default \code{\link{distrib_rng}} method then falls back to inverse
-transform sampling.
+Densities that diverge at one or at both edges of their support are handled by
+the reparameterisations described below.
 
 Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
 handles a Student's t with half a degree of freedom and a Pareto with infinite

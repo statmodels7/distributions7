@@ -273,18 +273,31 @@ has_analytic_quantile <- function(distrib) {
 #' \eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
 #' sampled through \eqn{X = Y^{1/4}}.
 #'
-#' A density diverging at \emph{both} edges (a Beta with both shapes below one) is
-#' beyond a single power reparameterisation, and is refused; the default
-#' \code{\link{distrib_rng}} method then falls back to inverse transform sampling.
+#' A density diverging at \emph{both} edges, such as a Beta with both shapes below
+#' one, is beyond any single power: flattening one edge steepens the other. What
+#' does work is a map that behaves like a different power at each end,
+#' \deqn{T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U),}
+#' monotone from 0 to 1, with a closed-form derivative, and carrying the exponents
+#' \eqn{p\alpha - 1} and \eqn{q\beta - 1} at the two ends. Choosing
+#' \eqn{p\alpha > 1} and \eqn{q\beta > 1} makes the density of \eqn{U} vanish at
+#' both ends, turning a U-shaped density into a single-peaked one.
+#'
+#' Near an edge the variable itself stops being resolvable: at a non-zero edge the
+#' spacing of doubles is absolute, so a slab of \eqn{u} collapses onto the edge and
+#' the density evaluated there returns infinity. The distance from the edge is
+#' still exact on the \eqn{u} scale, so the power law is used there instead,
+#' calibrated once where the density can be evaluated. This keeps the mass rather
+#' than rejecting it. It cannot place it any more finely than the arithmetic
+#' allows -- for a Beta(0.9, 0.1) some 2.5\% of the distribution lies within one
+#' unit in the last place of 1, and those draws come back equal to 1 exactly, which
+#' is also what \code{\link[stats]{rbeta}} does.
 #'
 #' @return A numeric vector of length \code{n}.
 #'
 #' @section Requirements:
 #' The kernel must be unimodal and the parameters in \code{theta} must be scalars.
-#' A density that diverges at one edge of its support is handled by the
-#' reparameterisation described below; one that diverges at both is refused, and
-#' the default \code{\link{distrib_rng}} method then falls back to inverse
-#' transform sampling.
+#' Densities that diverge at one or at both edges of their support are handled by
+#' the reparameterisations described below.
 #'
 #' Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
 #' handles a Student's t with half a degree of freedom and a Pareto with infinite
@@ -326,8 +339,7 @@ rng_grou <- function(distrib, n, theta, r = 2) {
     return(grou_core(lp, b, n, r))
   }
   if (sum(!is.na(div)) > 1L) {
-    stop("GRoU needs a bounded density: it diverges at both edges of the support, ",
-         "which a single power reparameterisation cannot repair.", call. = FALSE)
+    return(grou_two_sided(lp, b, div, n, r))
   }
 
   # One divergent edge can be transformed away. If the density behaves like
@@ -362,6 +374,89 @@ rng_grou <- function(distrib, n, theta, r = 2) {
   b_x <- c(0, if (is.finite(width)) width^(1 / lambda) else Inf)
 
   to_y(grou_core(lp_x, b_x, n, r))
+}
+
+# Internal: both edges of a (necessarily bounded) support diverge. A single
+# power cannot repair that, since raising to a power flattens one edge while
+# steepening the other. A map that behaves like a *different* power at each end
+# does:
+#
+#   T(u) = u^p / (u^p + (1-u)^q),      Y = a + (b - a) T(U)
+#
+# It increases monotonically from 0 to 1, behaves like u^p on the left and like
+# 1 - (1-u)^q on the right, and its derivative is available in closed form,
+#
+#   T'(u) = [p u^(p-1) (1-u)^q + q u^p (1-u)^(q-1)] / (u^p + (1-u)^q)^2 .
+#
+# The density of U therefore carries the exponents p*alpha - 1 and q*beta - 1 at
+# the two ends and is bounded as soon as p*alpha > 1 and q*beta > 1 -- indeed it
+# vanishes there, which turns the original U-shaped density into a single-peaked
+# one, exactly what the sampler wants. Both exponents come from the same probe
+# that detected the divergence, so nothing has to be searched for.
+grou_two_sided <- function(lp, b, div, n, r) {
+  a <- b[1]
+  bb <- b[2]
+  width <- bb - a
+  p <- ceiling(1 / div[["lower"]]) + 1
+  q <- ceiling(1 / div[["upper"]]) + 1
+
+  log_sum <- function(x, y) {
+    m <- pmax(x, y)
+    m + log(exp(x - m) + exp(y - m))
+  }
+  t_of_u <- function(u) {
+    la <- p * log(u)
+    lb <- q * log1p(-u)
+    exp(la - log_sum(la, lb))
+  }
+  log_dt <- function(u) {
+    lu <- log(u)
+    l1u <- log1p(-u)
+    log_sum(log(p) + (p - 1) * lu + q * l1u,
+            log(q) + p * lu + (q - 1) * l1u) - 2 * log_sum(p * lu, q * l1u)
+  }
+
+  # Distances from either edge, computed in u-space and therefore free of the
+  # cancellation that reconstructing y would suffer.
+  log_gap_lo <- function(u) log(width) + p * log(u) - log_sum(p * log(u), q * log1p(-u))
+  log_gap_hi <- function(u) log(width) + q * log1p(-u) - log_sum(p * log(u), q * log1p(-u))
+
+  al <- div[["lower"]]
+  be <- div[["upper"]]
+  tol_lo <- max(abs(a), 1) * 1e-12
+  tol_hi <- max(abs(bb), 1) * 1e-12
+  log_c_lo <- lp(a + tol_lo) - (al - 1) * log(tol_lo)
+  log_c_hi <- lp(bb - tol_hi) - (be - 1) * log(tol_hi)
+
+  lp_u <- function(u) {
+    out <- rep(-Inf, length(u))
+    ok <- is.finite(u) & u > 0 & u < 1
+    if (!any(ok)) return(out)
+    uu <- u[ok]
+    lgl <- log_gap_lo(uu)
+    lgh <- log_gap_hi(uu)
+    v <- numeric(length(uu))
+
+    # Near an edge, y itself is no longer resolvable -- at a non-zero edge the
+    # spacing of doubles is absolute, so a whole slab of u-space collapses onto
+    # the edge and evaluating the density there would return infinity. The gap
+    # from the edge, however, is exact in u-space, and the density is known there
+    # to behave like gap^(alpha - 1). Using that law, calibrated once at a point
+    # that *is* resolvable, keeps this mass instead of rejecting it.
+    near_lo <- lgl < log(tol_lo)
+    near_hi <- lgh < log(tol_hi)
+    mid <- !near_lo & !near_hi
+    if (any(mid)) v[mid] <- lp(a + width * t_of_u(uu[mid]))
+    if (any(near_lo)) v[near_lo] <- log_c_lo + (al - 1) * lgl[near_lo]
+    if (any(near_hi)) v[near_hi] <- log_c_hi + (be - 1) * lgh[near_hi]
+
+    v <- v + log(width) + log_dt(uu)
+    v[is.na(v)] <- -Inf
+    out[ok] <- v
+    out
+  }
+
+  a + width * t_of_u(grou_core(lp_u, c(0, 1), n, r))
 }
 
 # Internal: for each finite edge of the support, the exponent alpha of a

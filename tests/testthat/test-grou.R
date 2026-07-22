@@ -204,16 +204,32 @@ test_that("the reparameterisation does not care where the divergent edge sits", 
     function(q) stats::pgamma(-3 - q, 0.3, 1, lower.tail = FALSE)))$p.value, 0.001)
 })
 
-test_that("a density diverging at both edges is refused and falls back to inversion", {
-  # A single power reparameterisation straightens one edge at the cost of the
-  # other, so this case is handed to inverse transform sampling.
+test_that("a density diverging at both edges is handled by a two-sided map", {
+  # No single power straightens both edges, so a map behaving like a different
+  # power at each end is used instead.
   d <- bare_beta()
-  th <- list(a = 0.5, b = 0.5)
-  expect_error(rng_grou(d, 10, th), "both edges")
-  set.seed(110)
-  expect_warning(y <- distrib_rng(d, 200, th), "inverse transform")
-  expect_length(y, 200)
-  expect_gt(suppressWarnings(stats::ks.test(y, function(q) stats::pbeta(q, 0.5, 0.5)))$p.value, 0.001)
+  for (ab in list(c(0.5, 0.5), c(0.2, 0.3), c(0.05, 0.7), c(0.99, 0.99))) {
+    set.seed(110)
+    y <- rng_grou(d, 20000, list(a = ab[1], b = ab[2]))
+    expect_length(y, 20000)
+    expect_true(all(y >= 0 & y <= 1))
+    ks <- suppressWarnings(stats::ks.test(y, function(q) stats::pbeta(q, ab[1], ab[2])))
+    expect_gt(ks$p.value, 0.001,
+      label = sprintf("beta(%.2f, %.2f) KS p", ab[1], ab[2]))
+  }
+})
+
+test_that("mass that cannot be resolved lands on the edge instead of being lost", {
+  # Beta(0.9, 0.1) puts about 2.5% of its mass within one unit in the last place
+  # of 1. No sampler working in double precision can place it any more finely
+  # than at 1 itself, but it must not be dropped: rejecting those draws would
+  # quietly redistribute that mass over the rest of the distribution.
+  d <- bare_beta()
+  set.seed(113)
+  y <- rng_grou(d, 1e5, list(a = 0.9, b = 0.1))
+  target <- stats::pbeta(1 - .Machine$double.eps / 2, 0.9, 0.1, lower.tail = FALSE)
+  expect_equal(mean(y == 1), target, tolerance = 0.1)
+  expect_equal(max(y), 1)
 })
 
 test_that("the discrete fallback inverts the step cdf exactly and in one pass", {
