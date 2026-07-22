@@ -9,10 +9,11 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 URL: https://github.com/giovannitinervia9/distributions7
 BugReports: https://github.com/giovannitinervia9/distributions7/issues
-LinkingTo: 
+Depends:
+    R (>= 4.1.0)
+LinkingTo:
     Rcpp
-Imports: 
-    purrr,
+Imports:
     Rcpp,
     S7,
     statmod,

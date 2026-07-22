@@ -15,4 +15,7 @@ A \code{list} where each element has been transposed and simplified to an atomic
 \description{
 Transposes a list structure (swapping "columns" and "rows") and simplifies the
 inner elements into atomic vectors.
+
+Turns a list of \code{k} equal-length vectors into a list of \code{n} vectors of
+length \code{k}, one per observation, keeping the names.
 }

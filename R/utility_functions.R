@@ -17,6 +17,13 @@
 #' @noRd
 align_theta <- function(distrib, theta) {
   if (!is.list(theta)) theta <- as.list(theta)
+
+  # Strip names from the values themselves. A parameter that has been through a
+  # link function comes back carrying its own name, which is meaningless on a
+  # numeric value and leaks into the results: distrib_pdf() would return a
+  # density labelled "nu". Normalising here keeps every consumer downstream from
+  # having to care.
+  theta <- lapply(theta, unname)
   nms <- names(theta)
 
   # Unnamed: trust positional order, but require enough elements
@@ -283,11 +290,31 @@ deriv_names <- function(params, order) {
 #' Transposes a list structure (swapping "columns" and "rows") and simplifies the
 #' inner elements into atomic vectors.
 #'
+#' Turns a list of \code{k} equal-length vectors into a list of \code{n} vectors of
+#' length \code{k}, one per observation, keeping the names.
+#'
 #' @param theta A list to be transposed.
 #' @return A \code{list} where each element has been transposed and simplified to an atomic vector.
 #'
-#' @importFrom purrr transpose
 #' @export
 transpose_params <- function(theta) {
-  lapply(purrr::transpose(theta), unlist)
+  if (!length(theta)) return(list())
+
+  # A true transpose: the names of the outer list become the names inside each
+  # row, and the names inside the first element become the names of the result.
+  # Applying the function twice therefore returns the original structure.
+  #
+  # Deliberately independent of the *inner* names when splitting: parameter
+  # values that have travelled through a link function carry their own parameter
+  # name, and keying the rows by those names collapses a multi-parameter theta
+  # onto its first column.
+  n <- length(theta[[1L]])
+  inner <- names(theta)
+  outer <- names(theta[[1L]])
+
+  out <- lapply(seq_len(n), function(i) {
+    stats::setNames(vapply(theta, function(x) x[[i]], numeric(1)), inner)
+  })
+  names(out) <- outer
+  out
 }
