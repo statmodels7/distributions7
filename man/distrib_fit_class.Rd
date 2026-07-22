@@ -7,6 +7,7 @@
 \usage{
 distrib_fit(
   distrib = distrib(),
+  y = integer(0),
   n = integer(0),
   coefficients = integer(0),
   se = integer(0),
@@ -27,6 +28,9 @@ distrib_fit(
 }
 \arguments{
 \item{distrib}{The fitted \code{distrib} object.}
+
+\item{y}{The observations the fit was computed from, kept so that the fitted
+distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).}
 
 \item{n}{Number of observations.}
 

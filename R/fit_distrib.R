@@ -64,6 +64,8 @@ fit_loglik <- function(distrib, y, theta) {
 #' Object returned by \code{\link{fit_distrib}}, holding the estimates on both the
 #' parameter and the link scale together with their uncertainty.
 #' @param distrib The fitted \code{distrib} object.
+#' @param y The observations the fit was computed from, kept so that the fitted
+#'   distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 #' @param n Number of observations.
 #' @param coefficients Named estimates on the parameter scale.
 #' @param se Standard errors on the parameter scale (delta method).
@@ -83,6 +85,7 @@ fit_loglik <- function(distrib, y, theta) {
 distrib_fit <- S7::new_class("distrib_fit",
   properties = list(
     distrib      = distrib,
+    y            = S7::class_numeric,
     n            = S7::class_numeric,
     coefficients = S7::class_numeric,
     se           = S7::class_numeric,
@@ -179,7 +182,11 @@ fit_distrib <- function(distrib, y, start = NULL,
 
   nll <- function(eta) {
     th <- fit_theta_from_eta(distrib, eta)
-    v <- tryCatch(-fit_loglik(distrib, y, th), error = function(e) Inf)
+    # Trial points are probed all over the link scale, including places where a
+    # parameter overflows and the density warns ("NaNs produced"). Those
+    # warnings say nothing about the fit -- the point is simply rejected by
+    # returning Inf -- so they are not passed on to the user.
+    v <- suppressWarnings(tryCatch(-fit_loglik(distrib, y, th), error = function(e) Inf))
     if (!is.finite(v)) Inf else v
   }
 
@@ -315,7 +322,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   coefs <- stats::setNames(vapply(theta_hat, function(v) v[1], numeric(1)), params)
 
   distrib_fit(
-    distrib = distrib, n = n,
+    distrib = distrib, y = y, n = n,
     coefficients = coefs,
     se = stats::setNames(se_theta, params),
     ci = ci_theta,
@@ -406,4 +413,167 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
             df = length(object@coefficients),
             nobs = object@n,
             class = "logLik")
+}
+
+#' Simulate from a Fitted Distribution
+#'
+#' @name simulate.distrib_fit
+#'
+#' @description
+#' Draws new samples from the fitted distribution, evaluated at the maximum
+#' likelihood estimates. Each replicate has the same length as the data the model
+#' was fitted to, which makes the result directly comparable with the observations
+#' and suitable for a parametric bootstrap or a posterior-predictive style check.
+#'
+#' @param object A \code{\link{distrib_fit}} object.
+#' @param nsim Number of replicates to draw. Defaults to 1.
+#' @param seed Optional seed. If supplied it is used to initialise the generator,
+#'   and the state of \code{.Random.seed} in effect before the call is restored
+#'   afterwards, so that simulating does not disturb the calling stream. The seed
+#'   actually used is attached to the result as the \code{"seed"} attribute.
+#' @param ... Unused.
+#'
+#' @return A data frame with \code{nsim} columns named \code{sim_1}, ...,
+#'   \code{sim_nsim}, each holding one replicate of \code{object@n} draws.
+#'
+#' @seealso \code{\link{fit_distrib}}, \code{\link{plot.distrib_fit}}
+#'
+#' @examples
+#' set.seed(1)
+#' y <- rnorm(200, 3, 2)
+#' fit <- fit_distrib(gaussian_distrib(), y)
+#'
+#' sims <- simulate(fit, 20, seed = 42)
+#' dim(sims)
+#'
+#' # a parametric bootstrap of any statistic
+#' quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
+#'
+#' @importFrom stats simulate
+S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...) {
+  nsim <- as.integer(nsim)
+  if (length(nsim) != 1L || is.na(nsim) || nsim < 1L) {
+    stop("'nsim' must be a single positive integer.", call. = FALSE)
+  }
+
+  # The seed protocol of stats::simulate: honour `seed`, leave the caller's
+  # random stream exactly as it was, and report what was used.
+  if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+    stats::runif(1)
+  }
+  saved <- get(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
+  if (is.null(seed)) {
+    used <- saved
+  } else {
+    set.seed(seed)
+    used <- structure(seed, kind = as.list(RNGkind()))
+    on.exit(assign(".Random.seed", saved, envir = .GlobalEnv), add = TRUE)
+  }
+
+  theta <- as.list(object@coefficients)
+  out <- lapply(seq_len(nsim), function(i) distrib_rng(object@distrib, object@n, theta))
+  names(out) <- paste0("sim_", seq_len(nsim))
+
+  structure(as.data.frame(out), seed = used)
+}
+
+#' Plot a Fitted Distribution against the Data
+#'
+#' @name plot.distrib_fit
+#'
+#' @description
+#' Compares the fitted distribution with the sample it was estimated from. For a
+#' continuous distribution the observations are summarised by a kernel density
+#' estimate, with the fitted density drawn on top and a rug of the data
+#' underneath. For a discrete one the observed relative frequencies are drawn as
+#' bars with the fitted probability mass overlaid, since a kernel density would
+#' misrepresent a lattice-valued sample.
+#'
+#' @param x A \code{\link{distrib_fit}} object.
+#' @param n_grid Number of points at which the fitted density is evaluated
+#'   (continuous distributions only). Defaults to 512.
+#' @param rug Logical; draw a rug of the observations. Defaults to \code{TRUE}
+#'   when there are at most 2000 of them.
+#' @param legend Logical; add a legend. Defaults to \code{TRUE}.
+#' @param col_fit,col_data Colours of the fitted curve and of the empirical
+#'   summary.
+#' @param ... Further arguments passed to \code{\link[graphics]{plot}}, for
+#'   instance \code{main}, \code{xlab} or \code{xlim}.
+#'
+#' @return \code{x}, invisibly.
+#'
+#' @seealso \code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}}
+#'
+#' @examples
+#' set.seed(1)
+#' y <- rgamma(300, shape = 4, rate = 2)
+#' fit <- fit_distrib(gamma_distrib(), y)
+#' plot(fit)
+#'
+#' @importFrom graphics lines legend rug barplot points
+S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
+                                          legend = TRUE,
+                                          col_fit = "#B22222", col_data = "#4682B4",
+                                          ...) {
+  y <- x@y
+  if (!length(y)) {
+    stop("This fit carries no data to plot.", call. = FALSE)
+  }
+  theta <- as.list(x@coefficients)
+  d <- x@distrib
+  dots <- list(...)
+  if (is.null(dots$main)) {
+    dots$main <- paste0("Fitted ", d@distrib_name, " and observed data")
+  }
+  if (is.null(dots$xlab)) dots$xlab <- "y"
+
+  if (S7::S7_inherits(d, discrete_distrib)) {
+    ks <- seq(max(min(y), d@bounds[1]), min(max(y), d@bounds[2]))
+    obs <- as.numeric(table(factor(y, levels = ks))) / length(y)
+    fitted <- distrib_pdf(d, ks, theta)
+
+    if (is.null(dots$ylab)) dots$ylab <- "probability"
+    mids <- do.call(graphics::barplot,
+      c(list(obs, names.arg = ks, col = col_data, border = NA,
+             ylim = c(0, max(obs, fitted) * 1.1)), dots))
+    graphics::points(mids, fitted, col = col_fit, pch = 16)
+    graphics::lines(mids, fitted, col = col_fit, lwd = 2)
+    if (isTRUE(legend)) {
+      graphics::legend("topright", bty = "n",
+        legend = c("observed frequency", "fitted pmf"),
+        fill = c(col_data, NA), border = c(NA, NA),
+        lty = c(NA, 1), lwd = c(NA, 2), col = c(NA, col_fit))
+    }
+    return(invisible(x))
+  }
+
+  dens <- stats::density(y)
+  # Evaluate the fit strictly inside the support: a density is often unbounded or
+  # undefined exactly at the edge, and the kernel estimate spills across it.
+  b <- d@bounds
+  nudge <- function(v, into) if (is.finite(v)) v + into * 1e-8 * max(1, abs(v)) else v
+  lo <- max(dens$x[1], nudge(b[1], 1))
+  hi <- min(dens$x[length(dens$x)], nudge(b[2], -1))
+  grid <- seq(lo, hi, length.out = n_grid)
+  fitted <- distrib_pdf(d, grid, theta)
+  fitted[!is.finite(fitted)] <- NA_real_
+
+  if (is.null(dots$ylab)) dots$ylab <- "density"
+  if (is.null(dots$ylim)) dots$ylim <- c(0, max(c(dens$y, fitted), na.rm = TRUE) * 1.05)
+  if (is.null(dots$xlim)) dots$xlim <- range(dens$x)
+
+  do.call(graphics::plot,
+    c(list(dens$x, dens$y, type = "l", col = col_data, lwd = 2), dots))
+  graphics::lines(grid, fitted, col = col_fit, lwd = 2)
+
+  if (is.null(rug)) rug <- length(y) <= 2000
+  if (isTRUE(rug)) graphics::rug(y, col = col_data)
+
+  if (isTRUE(legend)) {
+    graphics::legend("topright", bty = "n", lwd = 2,
+      col = c(col_data, col_fit),
+      legend = c("kernel density", paste("fitted", d@distrib_name)))
+  }
+
+  invisible(x)
 }
