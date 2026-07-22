@@ -133,12 +133,20 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   })
 
   # --- rng -----------------------------------------------------------------
-  res[[length(res) + 1L]] <- safe_check("rng matches theoretical moments", {
+  # Compared against the cdf rather than against the first two moments: a mean
+  # and a variance are not available for every distribution (the Cauchy has
+  # neither), whereas the cdf always is, and matching it is the stronger claim.
+  # The comparison is valid for discrete distributions too, since both sides are
+  # P(Y <= q) at the same points.
+  res[[length(res) + 1L]] <- safe_check("rng matches the cdf", {
     ys <- distrib_rng(distrib, nsim, theta)
-    m_th <- mean(distrib, theta)
-    v_th <- variance(distrib, theta)
-    z_m <- abs(base::mean(ys) - m_th) / sqrt(v_th / nsim)
-    new_check("rng matches theoretical moments", z_m < 6, z_m)
+    probs <- seq(0.05, 0.95, by = 0.05)
+    q_th <- distrib_quantile(distrib, probs, theta)
+    p_th <- distrib_cdf(distrib, q_th, theta)
+    p_emp <- vapply(q_th, function(q) base::mean(ys <= q), numeric(1))
+    se <- sqrt(pmax(p_th * (1 - p_th), .Machine$double.eps) / nsim)
+    z <- max(abs(p_emp - p_th) / se)
+    new_check("rng matches the cdf", z < 6, z)
   })
 
   # --- parameter-scale derivatives ----------------------------------------

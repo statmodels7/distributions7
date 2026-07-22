@@ -252,10 +252,18 @@ fit_distrib <- function(distrib, y, start = NULL,
   res <- NULL
   for (eta0 in starts) {
     if (!is.finite(nll(eta0))) next
-    res <- switch(method,
-      fisher = run_scoring(eta0, expected = TRUE),
-      newton = run_scoring(eta0, expected = FALSE),
-      bfgs   = run_bfgs(eta0)
+    # An error raised inside the optimiser must be treated like a failure to
+    # converge, not propagated: at an awkward parameter value the quadrature
+    # behind a numerically-approximated expected Hessian can fail outright
+    # ("the integral is probably divergent"), and without this the random
+    # restarts and the BFGS fallback promised below never get their turn.
+    res <- tryCatch(
+      switch(method,
+        fisher = run_scoring(eta0, expected = TRUE),
+        newton = run_scoring(eta0, expected = FALSE),
+        bfgs   = run_bfgs(eta0)
+      ),
+      error = function(e) NULL
     )
     if (is.null(res) || !isTRUE(res$converged)) {
       alt <- tryCatch(run_bfgs(eta0), error = function(e) NULL)
@@ -272,8 +280,13 @@ fit_distrib <- function(distrib, y, start = NULL,
   eta_hat <- res$eta
   theta_hat <- fit_theta_from_eta(distrib, eta_hat)
 
-  I_eta <- -fit_hess_matrix(distrib, y, theta_hat,
-                            expected = !identical(method, "newton"))
+  # The estimates stand on their own; if the information cannot be evaluated at
+  # the optimum the fit is still returned, with a missing variance matrix rather
+  # than an error that throws the estimates away too.
+  I_eta <- tryCatch(
+    -fit_hess_matrix(distrib, y, theta_hat, expected = !identical(method, "newton")),
+    error = function(e) matrix(NA_real_, p, p, dimnames = list(params, params))
+  )
   V_eta <- tryCatch(solve(I_eta), error = function(e) matrix(NA_real_, p, p))
   dimnames(V_eta) <- list(params, params)
 
@@ -291,8 +304,10 @@ fit_distrib <- function(distrib, y, start = NULL,
   # map the link-scale interval through g^{-1}; sort in case the link decreases
   ci_theta <- t(vapply(seq_len(p), function(i) {
     lk <- distrib@link_params[[params[i]]]
+    # na.last keeps the pair at length two: sort() drops NAs by default, and an
+    # information matrix that could not be evaluated makes both ends missing.
     sort(c(linkfunctions7::linkinv(lk, ci_eta[i, 1]),
-           linkfunctions7::linkinv(lk, ci_eta[i, 2])))
+           linkfunctions7::linkinv(lk, ci_eta[i, 2])), na.last = TRUE)
   }, numeric(2)))
   dimnames(ci_theta) <- list(params, c("lower", "upper"))
 
