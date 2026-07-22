@@ -118,6 +118,28 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
               min(diff(Fv)))
   })
 
+  # Nothing above ties the cdf to the density, and the quantile round-trip cannot:
+  # when the quantile function is the numerical fallback it is derived from the
+  # cdf, so the two agree with each other however wrong the cdf is. A cdf shifted
+  # by a constant passes every other check. Comparing it against the density is
+  # what pins it down: F' = f for a continuous distribution, and F(k) - F(k-1) =
+  # P(Y = k) for a discrete one.
+  res[[length(res) + 1L]] <- safe_check("cdf agrees with the density", {
+    if (is_cont) {
+      grid <- distrib_quantile(distrib, seq(0.1, 0.9, length.out = 15), theta)
+      h <- pmax(abs(grid), 1) * 1e-5
+      d_num <- (distrib_cdf(distrib, grid + h, theta) -
+                distrib_cdf(distrib, grid - h, theta)) / (2 * h)
+      err <- rel(d_num, distrib_pdf(distrib, grid, theta))
+    } else {
+      ks <- distrib_quantile(distrib, seq(0.1, 0.9, length.out = 9), theta)
+      ks <- unique(ks[ks > b[1]])
+      err <- rel(distrib_cdf(distrib, ks, theta) - distrib_cdf(distrib, ks - 1, theta),
+                 distrib_pdf(distrib, ks, theta))
+    }
+    new_check("cdf agrees with the density", err < 1e-4, err)
+  })
+
   # --- quantile ------------------------------------------------------------
   res[[length(res) + 1L]] <- safe_check("quantile/cdf round-trip", {
     p <- c(0.05, 0.25, 0.5, 0.75, 0.95)

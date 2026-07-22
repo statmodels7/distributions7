@@ -16,6 +16,75 @@ test_that("built-in distributions pass every check", {
   }
 })
 
+test_that("check_distrib catches a defect injected into each component", {
+  # A validator that never fails is worth nothing. Break one thing at a time in
+  # an otherwise-correct gaussian and confirm the corresponding check goes red.
+  build <- function(nm, methods) {
+    cls <- S7::new_class(nm, parent = continuous_distrib, package = NULL)
+    S7::method(distrib_pdf, cls) <- function(distrib, y, theta, log = FALSE) {
+      stats::dnorm(y, theta[[1]], theta[[2]], log = log)
+    }
+    for (g in names(methods)) {
+      gen <- get(g)                      # S7's method<- mutates the generic
+      S7::method(gen, cls) <- methods[[g]]
+    }
+    cls(
+      distrib_name = nm, dimension = "univariate", bounds = c(-Inf, Inf),
+      params = c("mu", "sigma"), params_interpretation = c(mu = "m", sigma = "s"),
+      n_params = 2, params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+      link_params = list(
+        mu = linkfunctions7::identity_link(),
+        sigma = linkfunctions7::log_link()
+      )
+    )
+  }
+
+  defects <- list(
+    gradient = list(
+      m = list(distrib_gradient = function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+        r <- y - theta[[1]]
+        list(mu = 1.05 * r / theta[[2]]^2, sigma = (r^2 / theta[[2]]^2 - 1) / theta[[2]])
+      }),
+      hits = "gradient"),
+    # A cdf shifted by a constant satisfies every other check: it stays in [0,1],
+    # it is non-decreasing, and the quantile round-trip cannot see it because the
+    # numerical quantile is derived from that same cdf. Only the comparison with
+    # the density pins it down.
+    cdf = list(
+      m = list(distrib_cdf = function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+        stats::pnorm(q, theta[[1]] + 0.05, theta[[2]], lower.tail = lower.tail, log.p = log.p)
+      }),
+      hits = "cdf agrees with the density"),
+    rng = list(
+      m = list(distrib_rng = function(distrib, n, theta) {
+        stats::rnorm(n, theta[[1]] + 0.25 * theta[[2]], theta[[2]])
+      }),
+      hits = "rng"),
+    response = list(
+      m = list(distrib_grad_y = function(distrib, y, theta) {
+        -1.4 * (y - theta[[1]]) / theta[[2]]^2
+      }),
+      hits = "response")
+  )
+
+  for (nm in names(defects)) {
+    set.seed(51)
+    res <- check_distrib(build(paste0("Broken", nm), defects[[nm]]$m),
+                         list(mu = 1.5, sigma = 2), n = 60, nsim = 4e4, verbose = FALSE)
+    failed <- res$check[res$status != "OK"]
+    expect_true(any(grepl(defects[[nm]]$hits, failed)),
+      label = sprintf("defect '%s' should be caught (failed: %s)", nm,
+                      paste(failed, collapse = "; ")))
+  }
+
+  # and the same construction with nothing broken must pass everything
+  set.seed(51)
+  ok <- check_distrib(build("BrokenNone", list()), list(mu = 1.5, sigma = 2),
+                      n = 60, nsim = 4e4, verbose = FALSE)
+  expect_true(all(ok$status == "OK"),
+    label = paste("reference:", paste(ok$check[ok$status != "OK"], collapse = "; ")))
+})
+
 test_that("a deterministic score product does not fake an information mismatch", {
   # Regression: the Laplace score for mu is sign(y - mu)/b, so its square is
   # exactly 1/b^2 on every draw. The Monte Carlo standard error is then pure

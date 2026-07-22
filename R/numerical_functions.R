@@ -205,14 +205,22 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 
     # `integrate` over (-Inf, Inf) transforms the domain around the origin and
     # silently returns 0 when the probability mass sits far away (e.g. mu = 200).
-    # Splitting at the median anchors each half-range on the mass: for
-    # semi-infinite panels the quadrature concentrates its nodes near the
-    # finite endpoint, which by construction carries 50% of the mass.
-    m <- suppressWarnings(distrib_quantile(distrib, 0.5, p_theta))
-    knots <- c(distrib@bounds[1], distrib@bounds[2])
-    if (is.finite(m) && m > knots[1] && m < knots[2]) {
-      knots <- c(knots[1], m, knots[2])
-    }
+    # Splitting at quantiles anchors every panel on the mass, and for the
+    # semi-infinite ones the quadrature concentrates its nodes near the finite
+    # endpoint, which by construction carries a known share of the mass.
+    #
+    # Three knots, not more. Splitting further does extend the range of densities
+    # that can be integrated at all -- a Gamma of shape 0.05 needs nine -- but it
+    # also turns some failures into silent wrong answers: with nine knots that
+    # same Gamma at shape 0.02 returns -54.9 for a quantity that is exactly zero,
+    # where three knots simply report that the integral could not be computed. An
+    # error is worth more than a plausible number. Three is also the more accurate
+    # choice in the ordinary range, since each additional panel contributes its
+    # own quadrature error to the sum.
+    b <- distrib@bounds
+    qs <- suppressWarnings(distrib_quantile(distrib, c(0.1, 0.5, 0.9), p_theta))
+    qs <- unique(qs[is.finite(qs) & qs > b[1] & qs < b[2]])
+    knots <- sort(c(b[1], qs, b[2]))
 
     sum(vapply(
       seq_len(length(knots) - 1L),
