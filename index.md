@@ -200,9 +200,9 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         6.66e-01
+#>   [OK  ] expected information vs Monte Carlo         1.32e+00
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.28e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.07e-09
 #> 
 #> All 13 checks passed.
 ```
