@@ -150,11 +150,7 @@
 <p>The fit knows what it was estimated from, so it can be checked against the data and simulated from:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<div class="figure">
-<img src="reference/figures/README-fit-plot-1.png" alt="plot of chunk fit-plot" width="100%"><p class="caption">
-plot of chunk fit-plot
-</p>
-</div>
+<p><img src="reference/figures/README-fit-plot-1.png" alt="" width="100%"></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">sims</span>, <span class="va">median</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
@@ -214,9 +210,9 @@ plot of chunk fit-plot
 <span><span class="co">#&gt;   [OK  ] hessian vs finite differences               0.00e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                0.00e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         8.30e-01</span></span>
+<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         6.66e-01</span></span>
 <span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   3.24e-09</span></span>
+<span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   3.28e-09</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 13 checks passed.</span></span></code></pre></div>
 </div>
