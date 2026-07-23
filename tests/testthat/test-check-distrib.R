@@ -16,6 +16,84 @@ test_that("built-in distributions pass every check", {
   }
 })
 
+test_that("check_distrib is reproducible and survives a draw on a kink", {
+  # It used to call set.seed(NULL), discarding whatever seed the caller had set,
+  # so two runs never agreed and a failing check could not be reproduced.
+  set.seed(42)
+  a <- check_distrib(laplace_distrib(), list(mu = 1, b = 2), n = 40, nsim = 2e4,
+                     orders = 1:2, verbose = FALSE)
+  set.seed(42)
+  b <- check_distrib(laplace_distrib(), list(mu = 1, b = 2), n = 40, nsim = 2e4,
+                     orders = 1:2, verbose = FALSE)
+  expect_equal(a$statistic, b$statistic)
+
+  # The Laplace has no derivative at y = mu. An observation landing within a
+  # finite-difference step of it makes the FD *reference* wrong, not the
+  # analytical value, and the check used to report a failure for correct code --
+  # rarely and unpredictably, since the draws are random. This forces the worst
+  # case: one observation exactly on the kink and one a nanometre away.
+  Kinked <- S7::new_class("KinkedLap", parent = continuous_distrib, package = NULL)
+  S7::method(distrib_pdf, Kinked) <- function(distrib, y, theta, log = FALSE) {
+    ld <- -log(2 * theta[[2]]) - abs(y - theta[[1]]) / theta[[2]]
+    if (log) ld else exp(ld)
+  }
+  S7::method(distrib_gradient, Kinked) <- function(distrib, y, theta,
+                                                   scale = c("parameter", "link"), ...) {
+    r <- y - theta[[1]]
+    list(mu = sign(r) / theta[[2]], b = (abs(r) / theta[[2]] - 1) / theta[[2]])
+  }
+  S7::method(distrib_quantile, Kinked) <- function(distrib, p, theta,
+                                                   lower.tail = TRUE, log.p = FALSE) {
+    mu <- theta[[1]]; bb <- theta[[2]]
+    mu - bb * sign(p - 0.5) * log(1 - 2 * abs(p - 0.5))
+  }
+  S7::method(distrib_rng, Kinked) <- function(distrib, n, theta) {
+    y <- distrib_quantile(distrib, stats::runif(n), theta)
+    y[1] <- theta[[1]]           # exactly on the kink
+    y[2] <- theta[[1]] + 1e-9    # inside any finite-difference step
+    y
+  }
+  kink <- Kinked(
+    distrib_name = "kinked", dimension = "univariate", bounds = c(-Inf, Inf),
+    params = c("mu", "b"), params_interpretation = c(mu = "loc", b = "scale"),
+    n_params = 2, params_bounds = list(mu = c(-Inf, Inf), b = c(0, Inf)),
+    link_params = list(
+      mu = linkfunctions7::identity_link(),
+      b  = linkfunctions7::log_link()
+    ),
+    params_smooth = c(mu = FALSE, b = TRUE)
+  )
+
+  set.seed(3)
+  res <- check_distrib(kink, list(mu = 1, b = 2), n = 40, nsim = 2e4,
+                       orders = 1:2, verbose = FALSE)
+  expect_true(all(res$status == "OK"),
+    label = paste("kinked:", paste(res$check[res$status != "OK"], collapse = "; ")))
+
+  # and the guard must not blunt the check: the same kinked distribution with a
+  # gradient that is 5% wrong is still caught
+  KinkedBad <- S7::new_class("KinkedLapBad", parent = Kinked, package = NULL)
+  S7::method(distrib_gradient, KinkedBad) <- function(distrib, y, theta,
+                                                      scale = c("parameter", "link"), ...) {
+    r <- y - theta[[1]]
+    list(mu = 1.05 * sign(r) / theta[[2]], b = (abs(r) / theta[[2]] - 1) / theta[[2]])
+  }
+  kink_bad <- KinkedBad(
+    distrib_name = "kinked bad", dimension = "univariate", bounds = c(-Inf, Inf),
+    params = c("mu", "b"), params_interpretation = c(mu = "loc", b = "scale"),
+    n_params = 2, params_bounds = list(mu = c(-Inf, Inf), b = c(0, Inf)),
+    link_params = list(
+      mu = linkfunctions7::identity_link(),
+      b  = linkfunctions7::log_link()
+    ),
+    params_smooth = c(mu = FALSE, b = TRUE)
+  )
+  set.seed(5)
+  bad <- check_distrib(kink_bad, list(mu = 1, b = 2), n = 40, nsim = 2e4,
+                       orders = 1:2, verbose = FALSE)
+  expect_true(any(grepl("gradient", bad$check[bad$status != "OK"])))
+})
+
 test_that("check_distrib catches a defect injected into each component", {
   # A validator that never fails is worth nothing. Break one thing at a time in
   # an otherwise-correct gaussian and confirm the corresponding check goes red.

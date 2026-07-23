@@ -77,6 +77,40 @@ safe_check <- function(name, expr) {
 #' @seealso \code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
 #'   \code{\link{link_scale_derivatives}}
 #' @export
+# Internal: which observations the finite-difference reference can be trusted at.
+#
+# A log-likelihood with a kink -- the Laplace's location is the example the
+# package ships -- has no derivative exactly at the kink, and a central
+# difference straddling it returns a number that is simply wrong. An observation
+# landing within a step of that point therefore makes the *reference* invalid,
+# not the analytical value being tested, and comparing against it reports a
+# failure for code that is right. Because the draws are random, that happened
+# rarely and unpredictably.
+#
+# Rather than hard-code where a kink is, the reference is recomputed with the
+# step halved: where the two disagree, finite differencing has not converged and
+# that observation is dropped. For a smooth log-likelihood nothing is ever
+# dropped, so the check keeps its full strength.
+fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
+  n <- length(ref[[1L]])
+  if (isTRUE(smooth_all)) return(rep(TRUE, n))
+
+  half <- tryCatch(fd_at(h_rel / 2), error = function(e) NULL)
+  if (is.null(half)) return(rep(TRUE, n))
+
+  ok <- rep(TRUE, n)
+  for (k in names(ref)) {
+    # Measured against the estimates' own magnitude, not floored at one: near a
+    # kink both are small yet differ by a factor of two, which a denominator of
+    # one would flatten into apparent agreement.
+    d <- abs(ref[[k]] - half[[k]]) / pmax(abs(ref[[k]]), abs(half[[k]]), 1e-8)
+    ok <- ok & (is.finite(d) & d < 1e-3)
+  }
+  # Never discard everything: if no observation survives, the disagreement is
+  # systematic and should be reported rather than hidden.
+  if (!any(ok)) rep(TRUE, n) else ok
+}
+
 check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
                           orders = 1:4, tol = 1e-3, verbose = TRUE) {
   if (is.null(theta)) theta <- generate_random_theta(distrib)
@@ -85,6 +119,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   is_cont <- S7::S7_inherits(distrib, continuous_distrib)
   b <- distrib@bounds
   res <- list()
+  smooth_all <- all(param_smoothness(distrib))
 
   rel <- function(a, e) max(abs(a - e) / pmax(1, abs(e)))
 
@@ -172,14 +207,15 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   })
 
   # --- parameter-scale derivatives ----------------------------------------
-  set.seed(NULL)
   y <- distrib_rng(distrib, n, theta)
 
   if (1 %in% orders) {
     res[[length(res) + 1L]] <- safe_check("gradient vs finite differences", {
       a <- distrib_gradient(distrib, y, theta)
       e <- numerical_gradient(distrib, y, theta)
-      err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
+      keep <- fd_is_reliable(function(h) numerical_gradient(distrib, y, theta, h_rel = h),
+                             e, .Machine$double.eps^(1 / 3), smooth_all)
+      err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
       new_check("gradient vs finite differences", err < tol, err)
     })
   }
@@ -187,7 +223,9 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
     res[[length(res) + 1L]] <- safe_check("hessian vs finite differences", {
       a <- distrib_hessian(distrib, y, theta)
       e <- numerical_hessian(distrib, y, theta)
-      err <- max(vapply(names(a), function(k) rel(a[[k]], e[[k]]), numeric(1)))
+      keep <- fd_is_reliable(function(h) numerical_hessian(distrib, y, theta, h_rel = h),
+                             e, .Machine$double.eps^(1 / 4), smooth_all)
+      err <- max(vapply(names(a), function(k) rel(a[[k]][keep], e[[k]][keep]), numeric(1)))
       new_check("hessian vs finite differences", err < tol, err)
     })
   }
@@ -238,8 +276,15 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # --- response derivatives (continuous only) ------------------------------
   if (is_cont) {
     res[[length(res) + 1L]] <- safe_check("response derivatives vs finite differences", {
-      e1 <- rel(distrib_grad_y(distrib, y, theta), numerical_grad_y(distrib, y, theta))
-      e2 <- rel(distrib_hess_y(distrib, y, theta), numerical_hess_y(distrib, y, theta))
+      # Differencing in y crosses the same kink, so the same guard applies.
+      g_ref <- numerical_grad_y(distrib, y, theta)
+      k1 <- fd_is_reliable(function(h) list(v = numerical_grad_y(distrib, y, theta, h_rel = h)),
+                           list(v = g_ref), .Machine$double.eps^(1 / 3), smooth_all)
+      h_ref <- numerical_hess_y(distrib, y, theta)
+      k2 <- fd_is_reliable(function(h) list(v = numerical_hess_y(distrib, y, theta, h_rel = h)),
+                           list(v = h_ref), .Machine$double.eps^(1 / 4), smooth_all)
+      e1 <- rel(distrib_grad_y(distrib, y, theta)[k1], g_ref[k1])
+      e2 <- rel(distrib_hess_y(distrib, y, theta)[k2], h_ref[k2])
       err <- max(e1, e2)
       new_check("response derivatives vs finite differences", err < tol, err)
     })
@@ -259,15 +304,21 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
       out
     }
     a <- distrib_gradient(distrib, y, theta, scale = "link")
-    h <- 1e-4
-    worst <- 0
-    for (i in seq_along(params)) {
+    fd_eta <- function(i, h) {
       ep <- em <- eta
       ep[i] <- ep[i] + h
       em[i] <- em[i] - h
-      num <- (distrib_pdf(distrib, y, theta_of(ep), log = TRUE) -
-                distrib_pdf(distrib, y, theta_of(em), log = TRUE)) / (2 * h)
-      worst <- max(worst, rel(a[[i]], num))
+      (distrib_pdf(distrib, y, theta_of(ep), log = TRUE) -
+         distrib_pdf(distrib, y, theta_of(em), log = TRUE)) / (2 * h)
+    }
+    h <- 1e-4
+    worst <- 0
+    for (i in seq_along(params)) {
+      num <- fd_eta(i, h)
+      # Same guard as on the parameter scale: a step in eta_mu crosses the kink.
+      keep <- fd_is_reliable(function(hh) list(v = fd_eta(i, hh)),
+                             list(v = num), h, smooth_all)
+      worst <- max(worst, rel(a[[i]][keep], num[keep]))
     }
     new_check("link-scale gradient vs finite differences", worst < tol, worst)
   })
