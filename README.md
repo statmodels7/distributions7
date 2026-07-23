@@ -1,36 +1,37 @@
----
-output: github_document
----
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 <!-- badges: start -->
+
 [![R-CMD-check](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/statmodels7/distributions7/graph/badge.svg)](https://app.codecov.io/gh/statmodels7/distributions7)
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Codecov test
+coverage](https://codecov.io/gh/statmodels7/distributions7/graph/badge.svg)](https://app.codecov.io/gh/statmodels7/distributions7)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
-
-
 
 # distributions7 <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 Almost every R package that fits statistical models writes its own
-distributions, privately: a `switch` on a character string, a list of closures
-nobody outside can reach. So the same Gamma gets re-implemented again and again,
-and each time only as far as that package happened to need — the density and the
-score, sometimes the Hessian, rarely anything beyond.
+distributions, privately: a `switch` on a character string, a list of
+closures nobody outside can reach. So the same Gamma gets re-implemented
+again and again, and each time only as far as that package happened to
+need — the density and the score, sometimes the Hessian, rarely anything
+beyond.
 
-`{distributions7}` writes them once, as objects. Each carries the usual density,
-distribution and quantile functions, and the **exact derivatives of the
-log-likelihood up to fourth order** — with respect to the parameters, with
-respect to the response, and with respect to the unconstrained parameters behind
-a link function, which is the scale an optimiser actually works on.
+`{distributions7}` writes them once, as objects. Each carries the usual
+density, distribution and quantile functions, and the **exact
+derivatives of the log-likelihood up to fourth order** — with respect to
+the parameters, with respect to the response, and with respect to the
+unconstrained parameters behind a link function, which is the scale an
+optimiser actually works on.
 
-It is the distribution layer of [statmodels7](https://statmodels7.github.io),
-an S7 stack for statistical modelling, and works alongside
+It is the distribution layer of
+[statmodels7](https://statmodels7.github.io), an S7 stack for
+statistical modelling, and works alongside
 [linkfunctions7](https://statmodels7.github.io/linkfunctions7).
 
 ## Installation
-
 
 ``` r
 # install.packages("pak")
@@ -39,9 +40,9 @@ pak::pak("statmodels7/distributions7")
 
 ## The usual functions
 
-Fourteen distributions ship with the package. Each constructor takes the link
-functions used for its parameters, and parameters travel as a named list.
-
+Fourteen distributions ship with the package. Each constructor takes the
+link functions used for its parameters, and parameters travel as a named
+list.
 
 ``` r
 d <- gaussian_distrib()
@@ -57,9 +58,8 @@ distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
 
 ## Derivatives, which is the point
 
-The score, the observed and expected information, and third and fourth order
-derivatives are all closed form.
-
+The score, the observed and expected information, and third and fourth
+order derivatives are all closed form.
 
 ``` r
 y <- distrib_rng(d, 5, theta)
@@ -81,10 +81,9 @@ distrib_expected_hessian(d, 0, theta)
 #> [1] 0
 ```
 
-Ask for them on the **link scale** and you get derivatives with respect to the
-unconstrained parameters instead, through the chain rule rather than by
-differentiating numerically:
-
+Ask for them on the **link scale** and you get derivatives with respect
+to the unconstrained parameters instead, through the chain rule rather
+than by differentiating numerically:
 
 ``` r
 distrib_gradient(d, y, theta, scale = "link")
@@ -98,10 +97,9 @@ distrib_gradient(d, y, theta, scale = "link")
 ## Fitting
 
 `fit_distrib()` maximises the likelihood on the link scale, where the
-parameters are unconstrained, then reports estimates back on their natural
-scale. Confidence intervals are built on the link scale and mapped through
-$g^{-1}$, so they can never leave a parameter's domain.
-
+parameters are unconstrained, then reports estimates back on their
+natural scale. Confidence intervals are built on the link scale and
+mapped through $g^{-1}$, so they can never leave a parameter’s domain.
 
 ``` r
 y <- distrib_rng(gamma_distrib(), 500, list(mu = 3, sigma2 = 2))
@@ -122,19 +120,14 @@ fit
 #> sigma2   0.6875     0.0744
 ```
 
-The fit knows what it was estimated from, so it can be checked against the data
-and simulated from:
-
+The fit knows what it was estimated from, so it can be checked against
+the data and simulated from:
 
 ``` r
 plot(fit)
 ```
 
-<div class="figure">
-<img src="man/figures/README-fit-plot-1.png" alt="plot of chunk fit-plot" width="100%" />
-<p class="caption">plot of chunk fit-plot</p>
-</div>
-
+<img src="man/figures/README-fit-plot-1.png" alt="" width="100%" />
 
 ``` r
 sims <- simulate(fit, 100, seed = 1)
@@ -145,11 +138,11 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 
 ## A distribution of your own needs only its density
 
-Everything above has a numerical fallback registered on the base classes: the
-distribution function by quadrature, the quantile function by root finding, the
-generator by Generalized Ratio-of-Uniforms, and every derivative by finite
-differences. So a new distribution is a subclass and one method.
-
+Everything above has a numerical fallback registered on the base
+classes: the distribution function by quadrature, the quantile function
+by root finding, the generator by Generalized Ratio-of-Uniforms, and
+every derivative by finite differences. So a new distribution is a
+subclass and one method.
 
 ``` r
 MyLaplace <- S7::new_class("MyLaplace", parent = continuous_distrib)
@@ -180,16 +173,16 @@ distrib_gradient(d2, 1, list(mu = 0, b = 2))
 #> [1] -0.25
 ```
 
-See `vignette("defining-a-distribution")` for the full treatment, including
-what to do when a parameter is not differentiable.
+See `vignette("defining-a-distribution")` for the full treatment,
+including what to do when a parameter is not differentiable.
 
 ## Checking your work
 
-`check_distrib()` puts a distribution through thirteen numerical checks: that
-the density integrates to one, that the distribution function agrees with it,
-that the quantile function inverts it, that the generator follows it, and that
-every derivative order matches finite differences — on both scales.
-
+`check_distrib()` puts a distribution through thirteen numerical checks:
+that the density integrates to one, that the distribution function
+agrees with it, that the quantile function inverts it, that the
+generator follows it, and that every derivative order matches finite
+differences — on both scales.
 
 ``` r
 invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
@@ -207,18 +200,18 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         8.30e-01
+#>   [OK  ] expected information vs Monte Carlo         6.66e-01
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.24e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.28e-09
 #> 
 #> All 13 checks passed.
 ```
 
 ## What is in the box
 
-| | |
-|---|---|
-| continuous | gaussian, cauchy, logistic, Student's t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
+|  |  |
+|----|----|
+| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
 | wrappers | `zero_inflated()`, `zero_adjusted()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |
