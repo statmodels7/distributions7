@@ -9,12 +9,12 @@ template:
     code_font: {google: "JetBrains Mono"}
 
 home:
-  title: Distributions with exact derivatives
+  title: Distributions as reusable objects
   description: >
-    Probability distributions as S7 objects carrying exact analytical
-    derivatives of the log-likelihood to fourth order, on the parameter scale
-    and on the unconstrained link scale, with maximum likelihood estimation
-    and numerical validation.
+    Probability distributions written once, as objects any package can use,
+    carrying exact derivatives of the log-likelihood to fourth order — with
+    respect to the parameters, the response, and the unconstrained scale an
+    optimiser works on.
 
 navbar:
   structure:

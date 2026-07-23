@@ -13,15 +13,21 @@ output: github_document
 
 # distributions7 <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
-`{distributions7}` describes probability distributions as S7 objects that carry
-not just the usual density, distribution and quantile functions, but the
-**exact analytical derivatives of the log-likelihood up to fourth order** —
-with respect to the parameters, with respect to the response, and with respect
-to the unconstrained parameters behind a link function.
+Almost every R package that fits statistical models writes its own
+distributions, privately: a `switch` on a character string, a list of closures
+nobody outside can reach. So the same Gamma gets re-implemented again and again,
+and each time only as far as that package happened to need — the density and the
+score, sometimes the Hessian, rarely anything beyond.
 
-It is the distribution layer of [statmodels7](https://github.com/statmodels7),
-an S7 stack for statistical modelling, and it works alongside
-[linkfunctions7](https://github.com/statmodels7/linkfunctions7).
+`{distributions7}` writes them once, as objects. Each carries the usual density,
+distribution and quantile functions, and the **exact derivatives of the
+log-likelihood up to fourth order** — with respect to the parameters, with
+respect to the response, and with respect to the unconstrained parameters behind
+a link function, which is the scale an optimiser actually works on.
+
+It is the distribution layer of [statmodels7](https://statmodels7.github.io),
+an S7 stack for statistical modelling, and works alongside
+[linkfunctions7](https://statmodels7.github.io/linkfunctions7).
 
 ## Installation
 
@@ -201,9 +207,9 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         1.52e+00
+#>   [OK  ] expected information vs Monte Carlo         8.30e-01
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.01e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.24e-09
 #> 
 #> All 13 checks passed.
 ```
