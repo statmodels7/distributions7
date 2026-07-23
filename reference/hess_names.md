@@ -1,0 +1,30 @@
+# Generate Names for Hessian Matrix Components
+
+Generates the names of the unique second-order partial derivatives
+(Hessian components) for a vector of parameter names: first the diagonal
+elements (`"mu_mu"`, ...), then the upper-triangular off-diagonal
+elements in row-major order (`"mu_sigma"`, ...).
+
+## Usage
+
+``` r
+hess_names(params)
+```
+
+## Arguments
+
+- params:
+
+  A character vector of parameter names (e.g., `c("mu", "sigma")`).
+
+## Value
+
+A character vector of length \\n + n(n-1)/2\\.
+
+## Examples
+
+``` r
+hess_names(c("mu", "sigma"))
+#> [1] "mu_mu"       "sigma_sigma" "mu_sigma"   
+# "mu_mu" "sigma_sigma" "mu_sigma"
+```
