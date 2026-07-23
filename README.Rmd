@@ -2,7 +2,10 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd. Please edit that file, then
+     regenerate with devtools::build_readme(). Do not use knitr::knit(): it
+     processes the code but leaves this YAML header in the output as literal
+     text, which GitHub and pkgdown both render verbatim. -->
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/statmodels7/distributions7/actions/workflows/R-CMD-check.yaml)
 [![Codecov test coverage](https://codecov.io/gh/statmodels7/distributions7/graph/badge.svg)](https://app.codecov.io/gh/statmodels7/distributions7)
