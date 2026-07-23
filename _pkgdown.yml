@@ -1,0 +1,202 @@
+url: https://statmodels7.github.io/distributions7
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#0F2A3F"
+    base_font: {google: "Inter"}
+    heading_font: {google: "Inter"}
+    code_font: {google: "JetBrains Mono"}
+
+home:
+  title: Distributions with exact derivatives
+  description: >
+    Probability distributions as S7 objects carrying exact analytical
+    derivatives of the log-likelihood to fourth order, on the parameter scale
+    and on the unconstrained link scale, with maximum likelihood estimation
+    and numerical validation.
+
+navbar:
+  structure:
+    left:  [intro, reference, articles]
+    right: [search, statmodels7, github]
+  components:
+    statmodels7:
+      text: statmodels7
+      href: https://statmodels7.github.io
+
+articles:
+- title: Getting started
+  navbar: ~
+  contents:
+  - fitting-a-model
+  - defining-a-distribution
+  - derivatives-and-the-link-scale
+
+reference:
+- title: Distributions
+  desc: >
+    Each constructor returns a distribution object, taking the link function
+    used for each of its parameters.
+  contents:
+  - gaussian_distrib
+  - cauchy_distrib
+  - logistic_distrib
+  - student_t_distrib
+  - laplace_distrib
+  - pseudohuber_distrib
+  - gamma_distrib
+  - invgauss_distrib
+  - lognormal_distrib
+  - beta_distrib
+  - bernoulli_distrib
+  - binomial_distrib
+  - poisson_distrib
+  - negbin_distrib
+
+- title: Probability functions
+  desc: Density, distribution and quantile functions, and random generation.
+  contents:
+  - distrib_pdf
+  - distrib_cdf
+  - distrib_quantile
+  - distrib_rng
+  - rng_grou
+
+- title: Derivatives
+  desc: >
+    The score, the observed and expected information, and higher orders --- all
+    available on the parameter scale or, through `scale = "link"`, with respect
+    to the unconstrained parameters.
+  contents:
+  - distrib_gradient
+  - distrib_hessian
+  - distrib_expected_hessian
+  - distrib_deriv3
+  - distrib_deriv4
+  - distrib_grad_y
+  - distrib_hess_y
+  - link_scale_derivatives
+  - expected_derivative_methods
+
+- title: Estimation
+  contents:
+  - fit_distrib
+  - distrib_fit_class
+  - check_distrib
+
+- title: Moments
+  contents:
+  - expectation
+  - moment
+  - mean.distrib
+  - variance
+  - std_dev
+  - skewness
+  - kurtosis
+
+- title: Building on a distribution
+  desc: >
+    Wrappers that turn a distribution into another one: a mixture with a point
+    mass at zero, or the law of a transformed variable.
+  contents:
+  - zero_inflated
+  - zero_adjusted
+  - transformation
+  - transformer
+  - starts_with("log_transform")
+  - ends_with("_transform")
+
+- title: Classes
+  desc: The S7 classes; each page lists the methods that dispatch on it.
+  contents:
+  - distrib
+  - continuous_distrib
+  - discrete_distrib
+
+- title: Numerical fallbacks
+  desc: >
+    What a distribution gets for free when it implements only its density.
+    Rarely called directly, but useful as a reference for what is happening.
+  contents:
+  - numerical_gradient
+  - numerical_hessian
+  - numerical_deriv3
+  - numerical_deriv4
+  - numerical_grad_y
+  - numerical_hess_y
+  - numerical_series
+
+- title: Utilities
+  contents:
+  - check_theta_bounds
+  - check_params_dim
+  - expand_params
+  - transpose_params
+  - deriv_names
+  - hess_names
+  - param_smoothness
+  - generate_random_theta
+  - distrib_generics
+  - starts_with("coef.")
+  - starts_with("vcov.")
+  - starts_with("logLik.")
+  - starts_with("simulate.")
+  - starts_with("print.")
+  - starts_with("plot.")
+  - starts_with("mean.")
+  - starts_with("expectation.")
+
+# Per-distribution method pages. These carry the actual formulas -- the density,
+# the score, the expected information written out -- so they are indexed rather
+# than hidden, grouped by distribution because that is how one reads them: not
+# "every cdf method" but "everything about the gamma".
+- title: Gaussian
+  contents: [GaussianDistrib, ends_with(".GaussianDistrib")]
+- title: Cauchy
+  contents: [CauchyDistrib, ends_with(".CauchyDistrib")]
+- title: Logistic
+  contents: [LogisticDistrib, ends_with(".LogisticDistrib")]
+- title: Student's t
+  contents: [StudentTDistrib, ends_with(".StudentTDistrib")]
+- title: Laplace
+  contents: [LaplaceDistrib, ends_with(".LaplaceDistrib")]
+- title: Pseudo-Huber
+  contents: [PseudoHuberDistrib, ends_with(".PseudoHuberDistrib")]
+- title: Gamma
+  contents: [GammaDistrib, ends_with(".GammaDistrib")]
+- title: Inverse Gaussian
+  contents: [InvGaussDistrib, ends_with(".InvGaussDistrib")]
+- title: Lognormal
+  contents: [LognormalDistrib, ends_with(".LognormalDistrib")]
+- title: Beta
+  contents: [BetaDistrib, ends_with(".BetaDistrib")]
+- title: Bernoulli
+  contents: [BernoulliDistrib, ends_with(".BernoulliDistrib")]
+- title: Binomial
+  contents: [BinomialDistrib, ends_with(".BinomialDistrib")]
+- title: Poisson
+  contents: [PoissonDistrib, ends_with(".PoissonDistrib")]
+- title: Negative binomial
+  contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
+
+- title: Wrapper classes
+  desc: The methods of the zero-inflated, zero-adjusted and transformed wrappers.
+  contents:
+  - ZeroInflatedDistrib
+  - ends_with(".ZeroInflatedDistrib")
+  - ZeroAdjustedDiscreteDistrib
+  - ends_with(".ZeroAdjustedDiscreteDistrib")
+  - ZeroAdjustedContinuousDistrib
+  - ends_with(".ZeroAdjustedContinuousDistrib")
+  - TransformedDistrib
+  - ends_with(".TransformedDistrib")
+
+- title: Base-class defaults
+  desc: >
+    The methods registered on the base classes, which every distribution
+    inherits unless it registers something more specific.
+  contents:
+  - ends_with(".distrib")
+  - ends_with(".continuous_distrib")
+  - ends_with(".discrete_distrib")

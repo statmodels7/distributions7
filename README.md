@@ -11,7 +11,7 @@ output: github_document
 
 
 
-# distributions7
+# distributions7 <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 `{distributions7}` describes probability distributions as S7 objects that carry
 not just the usual density, distribution and quantile functions, but the
@@ -201,9 +201,9 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         1.44e+00
+#>   [OK  ] expected information vs Monte Carlo         1.52e+00
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.24e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.01e-09
 #> 
 #> All 13 checks passed.
 ```
