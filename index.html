@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Distributions with exact derivatives • distributions7</title>
+<title>Distributions as reusable objects • distributions7</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
 <link rel="icon" type="”image/svg+xml”" href="favicon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -17,10 +17,10 @@
 <link href="deps/JetBrains_Mono-0.4.10/font.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Distributions with exact derivatives">
-<meta name="description" content="Probability distributions as S7 objects carrying exact analytical derivatives of the log-likelihood to fourth order, on the parameter scale and on the unconstrained link scale, with maximum likelihood estimation and numerical validation.
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Distributions as reusable objects">
+<meta name="description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order — with respect to the parameters, the response, and the unconstrained scale an optimiser works on.
 ">
-<meta property="og:description" content="Probability distributions as S7 objects carrying exact analytical derivatives of the log-likelihood to fourth order, on the parameter scale and on the unconstrained link scale, with maximum likelihood estimation and numerical validation.
+<meta property="og:description" content="Probability distributions written once, as objects any package can use, carrying exact derivatives of the log-likelihood to fourth order — with respect to the parameters, the response, and the unconstrained scale an optimiser works on.
 ">
 <meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png">
 </head>
@@ -70,8 +70,9 @@
 <img src="logo.png" class="logo" alt=""><h1 id="distributions7-">distributions7 <a class="anchor" aria-label="anchor" href="#distributions7-"></a>
 </h1>
 </div>
-<p><a href="https://statmodels7.github.io/distributions7">distributions7</a> describes probability distributions as S7 objects that carry not just the usual density, distribution and quantile functions, but the <strong>exact analytical derivatives of the log-likelihood up to fourth order</strong> — with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function.</p>
-<p>It is the distribution layer of <a href="https://github.com/statmodels7" class="external-link">statmodels7</a>, an S7 stack for statistical modelling, and it works alongside <a href="https://github.com/statmodels7/linkfunctions7" class="external-link">linkfunctions7</a>.</p>
+<p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, a list of closures nobody outside can reach. So the same Gamma gets re-implemented again and again, and each time only as far as that package happened to need — the density and the score, sometimes the Hessian, rarely anything beyond.</p>
+<p><a href="https://statmodels7.github.io/distributions7">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, and the <strong>exact derivatives of the log-likelihood up to fourth order</strong> — with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimiser actually works on.</p>
+<p>It is the distribution layer of <a href="https://statmodels7.github.io" class="external-link">statmodels7</a>, an S7 stack for statistical modelling, and works alongside <a href="https://statmodels7.github.io/linkfunctions7" class="external-link">linkfunctions7</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -177,8 +178,8 @@ plot of chunk fit-plot
 <span>  params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"b"</span><span class="op">)</span>, params_interpretation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="st">"location"</span>, b <span class="op">=</span> <span class="st">"scale"</span><span class="op">)</span>,</span>
 <span>  n_params <span class="op">=</span> <span class="fl">2</span>, params_bounds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="cn">Inf</span>, <span class="cn">Inf</span><span class="op">)</span>, b <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="cn">Inf</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  link_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    mu <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/linkfunctions7/man/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    b  <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/linkfunctions7/man/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    mu <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    b  <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -213,9 +214,9 @@ plot of chunk fit-plot
 <span><span class="co">#&gt;   [OK  ] hessian vs finite differences               0.00e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                0.00e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         1.52e+00</span></span>
+<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         8.30e-01</span></span>
 <span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  0.00e+00</span></span>
-<span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   3.01e-09</span></span>
+<span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   3.24e-09</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 13 checks passed.</span></span></code></pre></div>
 </div>
