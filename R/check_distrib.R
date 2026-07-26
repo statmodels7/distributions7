@@ -67,6 +67,13 @@ safe_check <- function(name, expr) {
 #' corresponding derivative checks, since analytical and numerical values then
 #' coincide by construction.
 #'
+#' Mixed distributions --- a density with point masses on top of it, as produced by
+#' \code{\link{zero_adjusted}()} on a continuous parent --- are handled as long as they
+#' declare their atoms through \code{\link{distrib_atoms}}. The density is then expected
+#' to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
+#' are checked as generalized inverses rather than exact ones, and finite differences in
+#' \eqn{y} are kept away from the atoms, where no derivative exists.
+#'
 #' @examples
 #' \dontrun{
 #' check_distrib(gaussian_distrib())
@@ -77,40 +84,6 @@ safe_check <- function(name, expr) {
 #' @seealso \code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
 #'   \code{\link{link_scale_derivatives}}
 #' @export
-# Internal: which observations the finite-difference reference can be trusted at.
-#
-# A log-likelihood with a kink -- the Laplace's location is the example the
-# package ships -- has no derivative exactly at the kink, and a central
-# difference straddling it returns a number that is simply wrong. An observation
-# landing within a step of that point therefore makes the *reference* invalid,
-# not the analytical value being tested, and comparing against it reports a
-# failure for code that is right. Because the draws are random, that happened
-# rarely and unpredictably.
-#
-# Rather than hard-code where a kink is, the reference is recomputed with the
-# step halved: where the two disagree, finite differencing has not converged and
-# that observation is dropped. For a smooth log-likelihood nothing is ever
-# dropped, so the check keeps its full strength.
-fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
-  n <- length(ref[[1L]])
-  if (isTRUE(smooth_all)) return(rep(TRUE, n))
-
-  half <- tryCatch(fd_at(h_rel / 2), error = function(e) NULL)
-  if (is.null(half)) return(rep(TRUE, n))
-
-  ok <- rep(TRUE, n)
-  for (k in names(ref)) {
-    # Measured against the estimates' own magnitude, not floored at one: near a
-    # kink both are small yet differ by a factor of two, which a denominator of
-    # one would flatten into apparent agreement.
-    d <- abs(ref[[k]] - half[[k]]) / pmax(abs(ref[[k]]), abs(half[[k]]), 1e-8)
-    ok <- ok & (is.finite(d) & d < 1e-3)
-  }
-  # Never discard everything: if no observation survives, the disagreement is
-  # systematic and should be reported rather than hidden.
-  if (!any(ok)) rep(TRUE, n) else ok
-}
-
 check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
                           orders = 1:4, tol = 1e-3, verbose = TRUE) {
   if (is.null(theta)) theta <- generate_random_theta(distrib)
@@ -123,12 +96,33 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
 
   rel <- function(a, e) max(abs(a - e) / pmax(1, abs(e)))
 
+  # A mixed distribution -- zero_adjusted() of a continuous parent is the one the
+  # package ships -- is not covered by either branch below. Its density
+  # integrates to 1 minus the atomic mass, its cdf jumps, and a finite difference
+  # straddling an atom returns a number for a derivative that does not exist. Run
+  # as if it were purely continuous it fails four checks while being perfectly
+  # correct, which is worse than useless: a user validating their own mixed
+  # distribution would have no way to tell a real defect from this one. The atoms
+  # are asked for instead, and each check is told what to do about them.
+  atoms <- distrib_atoms(distrib, theta)
+  atom_mass <- if (length(atoms$y)) sum(atoms$p) else 0
+  # Points far enough from every atom that differencing does not cross one.
+  away_from_atoms <- function(x, rel_margin = 1e-3) {
+    if (!length(atoms$y)) return(rep(TRUE, length(x)))
+    keep <- rep(TRUE, length(x))
+    for (a in atoms$y) keep <- keep & abs(x - a) > rel_margin * max(1, abs(a))
+    keep
+  }
+
   # --- density -------------------------------------------------------------
   res[[length(res) + 1L]] <- safe_check("density integrates to 1", {
     total <- if (is_cont) {
       m <- suppressWarnings(distrib_quantile(distrib, 0.5, theta))
       knots <- if (is.finite(m) && m > b[1] && m < b[2]) c(b[1], m, b[2]) else b
-      sum(vapply(seq_len(length(knots) - 1L), function(k) {
+      # Integrate up to each atom and away from it again: the panels stay on one
+      # side of the jump, and the mass in the jump is added explicitly.
+      knots <- sort(unique(c(knots, atoms$y[atoms$y > b[1] & atoms$y < b[2]])))
+      atom_mass + sum(vapply(seq_len(length(knots) - 1L), function(k) {
         stats::integrate(function(t) distrib_pdf(distrib, t, theta),
                          knots[k], knots[k + 1L])$value
       }, numeric(1)))
@@ -162,6 +156,18 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   res[[length(res) + 1L]] <- safe_check("cdf agrees with the density", {
     if (is_cont) {
       grid <- distrib_quantile(distrib, seq(0.1, 0.9, length.out = 15), theta)
+      grid <- unique(grid[away_from_atoms(grid)])
+      # Everything below the highest atom collapsed onto it; take the grid from
+      # the continuous stretch above instead of reporting a failure.
+      if (length(grid) < 3 && length(atoms$y)) {
+        p_hi <- max(distrib_cdf(distrib, atoms$y, theta))
+        grid <- distrib_quantile(distrib, seq(p_hi + (1 - p_hi) * 0.1, 0.9, length.out = 15), theta)
+        grid <- unique(grid[away_from_atoms(grid)])
+      }
+      if (length(grid) < 3) {
+        stop("the atoms leave too little of the support to compare F' against f.",
+             call. = FALSE)
+      }
       h <- pmax(abs(grid), 1) * 1e-5
       d_num <- (distrib_cdf(distrib, grid + h, theta) -
                 distrib_cdf(distrib, grid - h, theta)) / (2 * h)
@@ -180,8 +186,15 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
     p <- c(0.05, 0.25, 0.5, 0.75, 0.95)
     q <- distrib_quantile(distrib, p, theta)
     if (is_cont) {
-      err <- max(abs(distrib_cdf(distrib, q, theta) - p))
-      new_check("quantile/cdf round-trip", err < 1e-5, err)
+      # F(Q(p)) = p only where F is continuous. A probability falling inside a
+      # jump maps to the atom, and F there is the top of the jump; the
+      # generalized inverse is still right, so those p are checked the discrete
+      # way and dropped from the equality.
+      inside <- !away_from_atoms(q)
+      ok_jump <- !any(inside) ||
+        all(distrib_cdf(distrib, q[inside], theta) >= p[inside] - 1e-10)
+      err <- if (all(inside)) 0 else max(abs(distrib_cdf(distrib, q[!inside], theta) - p[!inside]))
+      new_check("quantile/cdf round-trip", err < 1e-5 && ok_jump, err)
     } else {
       ok <- all(distrib_cdf(distrib, q, theta) >= p - 1e-10) &&
         all(distrib_cdf(distrib, q - 1, theta) < p + 1e-10)
@@ -276,6 +289,13 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # --- response derivatives (continuous only) ------------------------------
   if (is_cont) {
     res[[length(res) + 1L]] <- safe_check("response derivatives vs finite differences", {
+      # The log-density jumps at an atom, so no derivative in y exists there and
+      # the finite-difference reference is meaningless: those draws are dropped.
+      y <- y[away_from_atoms(y)]
+      if (length(y) < 5) {
+        stop("too few draws land away from the atoms to check the response derivatives.",
+             call. = FALSE)
+      }
       # Differencing in y crosses the same kink, so the same guard applies.
       g_ref <- numerical_grad_y(distrib, y, theta)
       k1 <- fd_is_reliable(function(h) list(v = numerical_grad_y(distrib, y, theta, h_rel = h)),
@@ -347,4 +367,41 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   }
 
   invisible(out)
+}
+
+# Internal: which observations the finite-difference reference can be trusted at.
+# Defined after check_distrib(), not before it: a roxygen block attaches to
+# whatever object follows it, so a helper slipped in between silently steals the
+# documentation of the function it belongs to.
+#
+# A log-likelihood with a kink -- the Laplace's location is the example the
+# package ships -- has no derivative exactly at the kink, and a central
+# difference straddling it returns a number that is simply wrong. An observation
+# landing within a step of that point therefore makes the *reference* invalid,
+# not the analytical value being tested, and comparing against it reports a
+# failure for code that is right. Because the draws are random, that happened
+# rarely and unpredictably.
+#
+# Rather than hard-code where a kink is, the reference is recomputed with the
+# step halved: where the two disagree, finite differencing has not converged and
+# that observation is dropped. For a smooth log-likelihood nothing is ever
+# dropped, so the check keeps its full strength.
+fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
+  n <- length(ref[[1L]])
+  if (isTRUE(smooth_all)) return(rep(TRUE, n))
+
+  half <- tryCatch(fd_at(h_rel / 2), error = function(e) NULL)
+  if (is.null(half)) return(rep(TRUE, n))
+
+  ok <- rep(TRUE, n)
+  for (k in names(ref)) {
+    # Measured against the estimates' own magnitude, not floored at one: near a
+    # kink both are small yet differ by a factor of two, which a denominator of
+    # one would flatten into apparent agreement.
+    d <- abs(ref[[k]] - half[[k]]) / pmax(abs(ref[[k]]), abs(half[[k]]), 1e-8)
+    ok <- ok & (is.finite(d) & d < 1e-3)
+  }
+  # Never discard everything: if no observation survives, the disagreement is
+  # systematic and should be reported rather than hidden.
+  if (!any(ok)) rep(TRUE, n) else ok
 }

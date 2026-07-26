@@ -164,7 +164,9 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' log-density. Because the log-likelihood is not differentiable in \eqn{\mu}, the
 #' second Bartlett identity fails: \eqn{\mathbb{E}[\partial^2 \ell / \partial \mu^2] = 0},
 #' yet the Fisher information for \eqn{\mu} is \eqn{1/b^2}. The expected Hessian is
-#' therefore defined here from the score variance (first Bartlett identity):
+#' therefore defined here from the variance of the score, which is what the Fisher
+#' information \emph{is} whenever the score exists, whether or not the identity
+#' relating it to \eqn{-\mathbb{E}[H]} holds:
 #'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{b^2}, \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial b}\right] = 0, \qquad
@@ -268,9 +270,10 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #'     \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
 #'     \eqn{\mu};
 #'   \item the \strong{expected Hessian} (\code{\link{distrib_expected_hessian}}) is
-#'     defined from the score variance (first Bartlett identity), giving the correct
+#'     implemented in closed form from the variance of the score, giving the correct
 #'     Fisher information \eqn{1/b^2} for \eqn{\mu} and making Fisher scoring the
-#'     appropriate estimation method.
+#'     appropriate estimation method. Because the closed form exists, the
+#'     \code{approx} argument is ignored for this distribution.
 #' }
 #'
 #' \strong{Parameter Domains:}

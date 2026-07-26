@@ -371,11 +371,12 @@ param_smoothness(d)
 ```
 
 Second, and most importantly, `distrib_expected_hessian` returns the **Fisher
-information** computed from the score variance (the first Bartlett identity,
-$I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]$) rather than from $-\mathbb{E}[H]$.
-The two coincide for regular models, but only the score-variance form stays valid
-when the second Bartlett identity fails, giving the correct information $1/b^2$ for
-the Laplace location where $-\mathbb{E}[H]$ would give a degenerate zero:
+information** computed from the variance of the score,
+$I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]$, rather than from $-\mathbb{E}[H]$.
+For a regular model the two coincide — that is the second Bartlett identity —
+but only the score-variance form stays valid when the identity fails, giving the
+correct information $1/b^2$ for the Laplace location where $-\mathbb{E}[H]$
+would give a degenerate zero:
 
 ```{r}
 th <- list(mu = 1, b = 2)

@@ -235,6 +235,7 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig <- distrib_hessian(parent, y, pars$orig)
   denom <- 1 - f0
+  pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
 
@@ -247,10 +248,9 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
   }
 
   # Block theta-theta with truncation correction
-  for (nm in names(h_orig)) {
-    parts <- strsplit(nm, "_")[[1]]
-    s1 <- grad_0[[parts[1]]]
-    s2 <- grad_0[[parts[length(parts)]]]
+  for (nm in names(pairs)) {
+    s1 <- grad_0[[pairs[[nm]][1]]]
+    s2 <- grad_0[[pairs[[nm]][2]]]
     h_log_0 <- hess_0_obs[[nm]]
 
     f_prime_1 <- f0 * s1
@@ -287,6 +287,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig)
   denom <- 1 - f0
+  pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
   res[[paste0(za_name, "_", za_name)]] <- rep(-1 / (za * (1 - za)), length.out = n)
@@ -295,10 +296,9 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
     res[[paste0(nm, "_", za_name)]] <- rep(0, n)
   }
 
-  for (nm in names(h_orig_exp)) {
-    parts <- strsplit(nm, "_")[[1]]
-    s1 <- grad_0[[parts[1]]]
-    s2 <- grad_0[[parts[length(parts)]]]
+  for (nm in names(pairs)) {
+    s1 <- grad_0[[pairs[[nm]][1]]]
+    s2 <- grad_0[[pairs[[nm]][2]]]
     h_log_0 <- hess_0_obs[[nm]]
 
     f_prime_1 <- f0 * s1
@@ -517,6 +517,65 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
   expand_params(res[hess_names(distrib@params)], n)
 }
 
+#' @title Atoms of a Zero-Adjusted Continuous Distribution
+#' @name distrib_atoms.ZeroAdjustedContinuousDistrib
+#' @description
+#' The single point mass at zero, with probability \eqn{\pi}. This is what makes the
+#' object a mixed distribution: its density integrates to \eqn{1 - \pi}, not to 1.
+#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @return A list with \code{y = 0} and \code{p = za}.
+#' @seealso \code{\link{zero_adjusted}}, \code{\link{distrib_atoms}}
+S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, theta) {
+  list(y = 0, p = unname(theta[[distrib@n_params]][1]))
+}
+
+# Internal: evaluate a response derivative of the parent away from the atom.
+# The log-density jumps at zero -- log(pi) on one side, log((1-pi) f(y)) on the
+# other -- so no derivative in y exists there, and the finite-difference default
+# inherited from continuous_distrib would happily straddle the jump and return a
+# number for it. Away from zero the (1-pi) factor is constant in y, so the
+# parent's own derivative is exact.
+za_y_deriv <- function(distrib, y, theta, fun) {
+  pars <- split_mix_theta(distrib, theta)
+  out <- rep(NaN, length(y))
+  nz <- y != 0
+  if (any(nz)) {
+    th_sub <- lapply(pars$orig, function(x) if (length(x) > 1) x[nz] else x)
+    out[nz] <- fun(distrib@parent_distrib, y[nz], th_sub)
+  }
+  out
+}
+
+#' @title Zero-Adjusted Continuous Response Gradient
+#' @name distrib_grad_y.ZeroAdjustedContinuousDistrib
+#' @description
+#' \eqn{\partial \ell / \partial y} equals the parent's for \eqn{y \neq 0}, since the
+#' factor \eqn{1-\pi} does not depend on \eqn{y}. At \eqn{y = 0} the log-density jumps
+#' to the atom and no derivative exists, so \code{NaN} is returned.
+#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @return A numeric vector.
+#' @seealso \code{\link{zero_adjusted}}
+S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
+  za_y_deriv(distrib, y, theta, distrib_grad_y)
+}
+
+#' @title Zero-Adjusted Continuous Response Hessian
+#' @name distrib_hess_y.ZeroAdjustedContinuousDistrib
+#' @description
+#' \eqn{\partial^2 \ell / \partial y^2} equals the parent's for \eqn{y \neq 0} and is
+#' \code{NaN} at the atom.
+#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @return A numeric vector.
+#' @seealso \code{\link{zero_adjusted}}
+S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
+  za_y_deriv(distrib, y, theta, distrib_hess_y)
+}
+
 #' @title Expectation for Zero-Adjusted Continuous Distributions
 #' @name expectation.ZeroAdjustedContinuousDistrib
 #' @description
@@ -551,38 +610,108 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' Zero-Adjusted Distribution Object
 #'
 #' @description
-#' Creates a zero-adjusted version of an existing distribution object, automatically
-#' dispatching on its type:
+#' Creates a zero-adjusted version of an existing distribution: the probability of a
+#' zero becomes a parameter of its own, \eqn{\pi} (parameter \code{za}), and everything
+#' else is left to the parent. What that means depends on the parent's type, and the
+#' constructor dispatches on it:
 #' \itemize{
-#'   \item \strong{Discrete} (support including 0): a hurdle model, where the probability
-#'     at zero is replaced by \eqn{\pi} and positive values follow the zero-truncated parent.
-#'   \item \strong{Continuous}: a mixed distribution with a point mass \eqn{\pi} at zero
-#'     and the original continuous density scaled by \eqn{1-\pi}.
+#'   \item \strong{Discrete} (support including 0): a \strong{hurdle} model. The mass the
+#'     parent puts at zero is removed, the parent is renormalised over the positive
+#'     values, and \eqn{\pi} takes its place.
+#'   \item \strong{Continuous}: a \strong{mixed} distribution. Nothing has to be removed,
+#'     since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the
+#'     density is scaled by \eqn{1-\pi}.
 #' }
-#' The mixture probability is exposed as parameter \code{za}.
 #'
-#' @param distrib An object inheriting from \code{discrete_distrib} or \code{continuous_distrib}.
+#' Zero-adjustment is the right wrapper when zeros come from their own mechanism ---
+#' no claim filed, no purchase made, no rainfall --- and the parent describes only what
+#' happens once that mechanism has been passed. When the zeros instead come partly from
+#' the parent itself and partly from a separate one, so that no single zero can be
+#' attributed, use \code{\link{zero_inflated}}.
+#'
+#' @param distrib An object inheriting from \code{discrete_distrib} (with 0 in its
+#'   support) or from \code{continuous_distrib}.
 #' @param link_za A link function object for the zero probability \eqn{\pi}.
 #'   Defaults to \code{\link[linkfunctions7]{logit_link}}.
+#'
+#' @details
+#' \strong{Discrete parent (hurdle).}
+#' \deqn{
+#' P(Y=y; \theta, \pi) =
+#' \begin{cases}
+#' \pi & y = 0 \\
+#' (1 - \pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y > 0
+#' \end{cases}
+#' }
+#' The division by \eqn{1 - f(0;\theta)} is the truncation: it is what distinguishes this
+#' from zero-inflation, and what makes \eqn{\theta} the parameters of a law on the
+#' positive integers rather than of the original count process. The log-likelihood
+#' separates into a Bernoulli part in \eqn{\pi} and a truncated part in \eqn{\theta}, so
+#' the mixed blocks of the information matrix are exactly zero and the two halves could
+#' in principle be fitted separately.
+#'
+#' \strong{Continuous parent (mixed).}
+#' \deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \neq 0)}
+#' Here \eqn{f_Y} is a density with respect to Lebesgue measure plus a point mass at
+#' zero, so it integrates to \eqn{1 - \pi}: the remainder is the atom, which
+#' \code{\link{distrib_atoms}} reports and \code{\link{check_distrib}} accounts for. The
+#' classical members of this family --- zero-adjusted gamma, inverse Gaussian or
+#' lognormal for semicontinuous data, zero-adjusted beta for proportions --- all have a
+#' parent supported on \eqn{(0, \infty)} or \eqn{(0,1)}, where zero sits on the boundary.
+#' A parent supported on the whole line is accepted too and gives a "spike at zero"
+#' model, but note that \eqn{y = 0} then no longer identifies its own mechanism: the
+#' atom sits where the density is positive.
+#'
+#' \strong{Choosing between the two wrappers.} Zero-inflation can only add zeros, since
+#' \eqn{P(Y=0) = \zeta + (1-\zeta)f(0) > f(0)}; the hurdle replaces \eqn{f(0)} outright
+#' and so also covers the case of \emph{fewer} zeros than the parent implies. Where both
+#' apply they are not nested, and they differ in interpretation more than in fit:
+#' zero-inflation keeps \eqn{\theta} as the parameters of the original count process,
+#' while the hurdle re-reads them as those of a truncated one. Prefer the hurdle when a
+#' zero is observable evidence of a distinct decision, and zero-inflation when the two
+#' kinds of zero are genuinely indistinguishable.
+#'
+#' \strong{What the parent must be.} A discrete parent must have 0 in its support: with
+#' \eqn{f(0) = 0} there is no mass to remove. Construction also fails when the result
+#' would not be identified:
+#' \itemize{
+#'   \item the parent already models a probability of zero --- zero-truncating a
+#'     zero-inflated or zero-adjusted distribution cancels its zero parameter out of the
+#'     likelihood entirely, leaving an identically zero score;
+#'   \item the support is too small to carry one more parameter: a distribution on
+#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least \code{n_params + 2}
+#'     support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
+#'     concentrated on \eqn{\{1\}}, and \code{mu} vanishes from the likelihood.
+#' }
+#' A continuous parent whose support does not reach zero (say \eqn{(2, 5)}) is accepted
+#' with a warning: the atom is then disconnected from the rest of the distribution,
+#' which is legitimate but rarely intended.
 #'
 #' @return An S7 object of class \code{ZeroAdjustedDiscreteDistrib} or
 #'   \code{ZeroAdjustedContinuousDistrib}.
 #'
 #' @examples
-#' \dontrun{
+#' # Hurdle Poisson: the mass at zero is exactly za, not dpois(0, mu)
 #' zap <- zero_adjusted(poisson_distrib())
 #' distrib_pdf(zap, 0:5, list(mu = 3, za = 0.3))
 #'
+#' # Semicontinuous data: a spike at zero and a gamma above it
 #' zagamma <- zero_adjusted(gamma_distrib())
-#' distrib_rng(zagamma, 10, list(mu = 2, sigma2 = 1, za = 0.3))
-#' }
+#' distrib_atoms(zagamma, list(mu = 2, sigma2 = 1, za = 0.3))
 #'
+#' # The truncated part of a zero-adjusted Bernoulli has no free parameter
+#' try(zero_adjusted(bernoulli_distrib()))
+#'
+#' @seealso \code{\link{zero_inflated}} for the mixture counterpart,
+#'   \code{\link{distrib_atoms}}, \code{\link{check_distrib}}.
 #' @importFrom linkfunctions7 logit_link
 #' @export
 zero_adjusted <- function(distrib, link_za = logit_link()) {
-  if ("za" %in% distrib@params) {
-    stop("The parent distribution already has a parameter named 'za'.", call. = FALSE)
+  if (!S7::S7_inherits(distrib, discrete_distrib) &&
+      !S7::S7_inherits(distrib, continuous_distrib)) {
+    stop("Input must inherit from 'discrete_distrib' or 'continuous_distrib'.", call. = FALSE)
   }
+  check_not_stacked(distrib, "zero_adjusted", "za")
 
   common <- list(
     parent_distrib = distrib,
@@ -592,17 +721,28 @@ zero_adjusted <- function(distrib, link_za = logit_link()) {
     params_interpretation = c(distrib@params_interpretation, za = "prob. of zero"),
     n_params = distrib@n_params + 1,
     params_bounds = c(distrib@params_bounds, list(za = c(0, 1))),
-    link_params = c(distrib@link_params, list(za = link_za))
+    link_params = c(distrib@link_params, list(za = link_za)),
+    params_smooth = c(param_smoothness(distrib), za = TRUE)
   )
 
   if (S7::S7_inherits(distrib, discrete_distrib)) {
     if (distrib@bounds[1] > 0) {
-      stop("zero_adjusted() requires a discrete distribution with 0 in its support.", call. = FALSE)
+      stop(sprintf(paste0(
+        "zero_adjusted() requires 0 in the support of '%s', which starts at %g.\n",
+        "  A hurdle model removes the mass the parent places at zero and replaces it\n",
+        "  by 'za'; with P(Y = 0) = 0 there is nothing to remove or to truncate."
+      ), distrib@distrib_name, distrib@bounds[1]), call. = FALSE)
     }
+    check_support_is_rich_enough(distrib, "zero_adjusted")
     do.call(ZeroAdjustedDiscreteDistrib, c(common, list(bounds = c(0, distrib@bounds[2]))))
-  } else if (S7::S7_inherits(distrib, continuous_distrib)) {
-    do.call(ZeroAdjustedContinuousDistrib, c(common, list(bounds = c(min(0, distrib@bounds[1]), distrib@bounds[2]))))
   } else {
-    stop("Input must inherit from 'discrete_distrib' or 'continuous_distrib'.", call. = FALSE)
+    if (distrib@bounds[1] > 0) {
+      warning(sprintf(paste0(
+        "The support of '%s' starts at %g, so the point mass at zero is disconnected ",
+        "from the rest of the distribution. This is well-defined but rarely intended: ",
+        "zero-adjustment is normally applied to a density that reaches down to zero."
+      ), distrib@distrib_name, distrib@bounds[1]), call. = FALSE)
+    }
+    do.call(ZeroAdjustedContinuousDistrib, c(common, list(bounds = c(min(0, distrib@bounds[1]), distrib@bounds[2]))))
   }
 }

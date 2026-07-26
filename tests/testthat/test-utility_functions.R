@@ -37,3 +37,23 @@ test_that("transpose_params swaps rows and columns and is symmetric", {
   # Inverse transformation (symmetry check)
   expect_equal(transpose_params(theta_rows), theta_cols)
 })
+test_that("hess_pairs inverts hess_names, underscores in names included", {
+  p <- c("mu", "sigma")
+  pairs <- hess_pairs(p)
+  expect_equal(names(pairs), hess_names(p))
+  expect_equal(pairs$mu_mu, c("mu", "mu"))
+  expect_equal(pairs$sigma_sigma, c("sigma", "sigma"))
+  expect_equal(pairs$mu_sigma, c("mu", "sigma"))
+
+  # The reason the helper exists: splitting the component name on "_" would
+  # turn "log_scale_log_scale" into c("log", "scale") and silently look up
+  # parameters that do not exist.
+  q <- c("mu", "log_scale")
+  pairs <- hess_pairs(q)
+  expect_equal(names(pairs), hess_names(q))
+  expect_equal(pairs$log_scale_log_scale, c("log_scale", "log_scale"))
+  expect_equal(pairs$mu_log_scale, c("mu", "log_scale"))
+
+  # One parameter: only the diagonal
+  expect_equal(hess_pairs("mu"), list(mu_mu = c("mu", "mu")))
+})

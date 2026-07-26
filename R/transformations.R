@@ -646,6 +646,9 @@ transformation <- function(distrib, transformer) {
     n_params = distrib@n_params,
 
     params_bounds = distrib@params_bounds,
-    link_params = distrib@link_params
+    link_params = distrib@link_params,
+    # g does not depend on theta, so a kink in the log-likelihood survives the
+    # change of variables untouched: affine(laplace) is still non-smooth in mu.
+    params_smooth = param_smoothness(distrib)
   )
 }

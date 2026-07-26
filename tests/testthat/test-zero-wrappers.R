@@ -119,8 +119,162 @@ test_that("wrapped expected hessians equal the expectation of the observed hessi
   }
 })
 
-test_that("wrapper constructors validate their input", {
-  expect_error(zero_inflated(gaussian_distrib()), "discrete")
-  expect_error(zero_inflated(zero_inflated(poisson_distrib())), "zi")
-  expect_error(zero_adjusted(zero_adjusted(poisson_distrib())), "za")
+test_that("zero_inflated() requires a discrete parent with mass at zero", {
+  # A continuous distribution has P(Y = 0) = 0: there is nothing to inflate, and
+  # the model the user is after is the zero-adjusted one.
+  expect_error(zero_inflated(gaussian_distrib()), "zero_adjusted")
+  expect_error(zero_inflated(gamma_distrib()), "zero_adjusted")
+
+  # A discrete distribution whose support starts above zero has no mass to add to.
+  d <- poisson_distrib()
+  d@bounds <- c(1, Inf)
+  expect_error(zero_inflated(d), "requires 0 in the support")
+  expect_error(zero_adjusted(d), "requires 0 in the support")
+})
+
+test_that("the wrappers refuse a support too small to identify the extra parameter", {
+  expect_error(zero_inflated(bernoulli_distrib()), "not\\s+identified")
+  expect_error(zero_adjusted(bernoulli_distrib()), "not\\s+identified")
+  expect_error(zero_inflated(binomial_distrib(size = 1)), "not\\s+identified")
+  expect_error(zero_adjusted(binomial_distrib(size = 1)), "not\\s+identified")
+
+  # Three support points are enough for one parent parameter plus the mixture one
+  expect_true(S7::S7_inherits(zero_inflated(binomial_distrib(size = 2)), ZeroInflatedDistrib))
+  expect_true(S7::S7_inherits(zero_adjusted(binomial_distrib(size = 2)), ZeroAdjustedDiscreteDistrib))
+})
+
+test_that("the refusal above is not pedantry: the parameters really are lost", {
+  # Built by hand, bypassing the constructor, to show what it protects against.
+  zab <- ZeroAdjustedDiscreteDistrib(
+    parent_distrib = bernoulli_distrib(),
+    distrib_name = "hand-built zero-adjusted bernoulli",
+    dimension = "univariate", bounds = c(0, 1),
+    params = c("mu", "za"),
+    params_interpretation = c(mu = "prob. of success", za = "prob. of zero"),
+    n_params = 2,
+    params_bounds = list(mu = c(0, 1), za = c(0, 1)),
+    link_params = list(mu = linkfunctions7::logit_link(), za = linkfunctions7::logit_link())
+  )
+  # Truncating {0, 1} away from 0 leaves everything on {1}: mu cannot be seen.
+  expect_equal(distrib_pdf(zab, 0:1, list(mu = 0.2, za = 0.3)),
+               distrib_pdf(zab, 0:1, list(mu = 0.9, za = 0.3)))
+  expect_equal(distrib_gradient(zab, c(0, 1), list(mu = 0.2, za = 0.3))$mu, c(0, 0))
+})
+
+test_that("the wrappers cannot be stacked on one another", {
+  zip <- zero_inflated(poisson_distrib())
+  zap <- zero_adjusted(poisson_distrib())
+  zag <- zero_adjusted(gamma_distrib())
+
+  expect_error(zero_adjusted(zip), "already models the probability of a zero")
+  expect_error(zero_inflated(zap), "already models the probability of a zero")
+  expect_error(zero_inflated(zip), "already models the probability of a zero")
+  expect_error(zero_adjusted(zap), "already models the probability of a zero")
+  expect_error(zero_adjusted(zag), "already models the probability of a zero")
+
+  # And, again, what that refusal is protecting: zero-truncating a zero-inflated
+  # distribution cancels zi out of the likelihood, leaving a zero score.
+  stacked <- ZeroAdjustedDiscreteDistrib(
+    parent_distrib = zip,
+    distrib_name = "hand-built hurdle over a zero-inflated poisson",
+    dimension = "univariate", bounds = c(0, Inf),
+    params = c("mu", "zi", "za"),
+    params_interpretation = c(mu = "mean", zi = "structural zero", za = "prob. of zero"),
+    n_params = 3,
+    params_bounds = list(mu = c(0, Inf), zi = c(0, 1), za = c(0, 1)),
+    link_params = list(mu = linkfunctions7::log_link(), zi = linkfunctions7::logit_link(),
+                       za = linkfunctions7::logit_link())
+  )
+  expect_equal(distrib_pdf(stacked, 0:6, list(mu = 3, zi = 0.2, za = 0.4)),
+               distrib_pdf(stacked, 0:6, list(mu = 3, zi = 0.7, za = 0.4)))
+  expect_equal(distrib_gradient(stacked, 0:4, list(mu = 3, zi = 0.2, za = 0.4))$zi,
+               rep(0, 5))
+})
+
+test_that("a continuous parent whose support misses zero is flagged", {
+  shifted <- transformation(gamma_distrib(), affine_transform(1, 2))
+  expect_warning(zero_adjusted(shifted), "disconnected")
+  # ... but is still built, and is a perfectly valid distribution
+  d <- suppressWarnings(zero_adjusted(shifted))
+  expect_equal(distrib_pdf(d, 0, list(mu = 3, sigma2 = 2, za = 0.3)), 0.3)
+
+  # A parent that reaches zero, boundary or interior, passes without comment
+  expect_silent(zero_adjusted(gamma_distrib()))
+  expect_silent(zero_adjusted(gaussian_distrib()))
+})
+
+test_that("the wrappers carry the parent's smoothness flags", {
+  # The Laplace has a kink in mu; a wrapper that forgot to say so would make
+  # check_distrib() and fit_distrib() treat the observed Hessian as usable.
+  expect_equal(param_smoothness(zero_adjusted(laplace_distrib())),
+               c(mu = FALSE, b = TRUE, za = TRUE))
+  expect_equal(param_smoothness(transformation(laplace_distrib(), affine_transform(2, 1))),
+               c(mu = FALSE, b = TRUE))
+  expect_equal(param_smoothness(zero_inflated(poisson_distrib())),
+               c(mu = TRUE, zi = TRUE))
+})
+
+test_that("only the zero-adjusted continuous wrapper declares an atom", {
+  expect_equal(distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1)),
+               list(y = numeric(0), p = numeric(0)))
+  expect_equal(distrib_atoms(zero_adjusted(poisson_distrib()), list(mu = 2, za = 0.3)),
+               list(y = numeric(0), p = numeric(0)))
+  expect_equal(distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3)),
+               list(y = 0, p = 0.3))
+})
+
+test_that("response derivatives of a mixed distribution stop at the atom", {
+  zag <- zero_adjusted(gamma_distrib())
+  th <- list(mu = 3, sigma2 = 2, za = 0.3)
+  y <- c(0, 0.5, 1, 4)
+  parent_g <- distrib_grad_y(gamma_distrib(), y[-1], list(mu = 3, sigma2 = 2))
+  parent_h <- distrib_hess_y(gamma_distrib(), y[-1], list(mu = 3, sigma2 = 2))
+
+  # The (1 - za) factor does not depend on y, so away from zero nothing changes
+  expect_equal(distrib_grad_y(zag, y, th), c(NaN, parent_g))
+  expect_equal(distrib_hess_y(zag, y, th), c(NaN, parent_h))
+})
+
+test_that("check_distrib validates every wrapper, atoms included", {
+  skip_on_cran()
+  set.seed(2024)
+  cases <- list(
+    list(d = zero_inflated(poisson_distrib()), th = list(mu = 3, zi = 0.25)),
+    list(d = zero_adjusted(poisson_distrib()), th = list(mu = 3, za = 0.4)),
+    list(d = zero_adjusted(gamma_distrib()), th = list(mu = 3, sigma2 = 2, za = 0.3)),
+    list(d = zero_adjusted(gaussian_distrib()), th = list(mu = 1, sigma = 2, za = 0.3))
+  )
+  for (cs in cases) {
+    out <- check_distrib(cs$d, theta = cs$th, n = 40, nsim = 5e4,
+                         orders = 1:2, verbose = FALSE)
+    expect_equal(out$status, rep("OK", nrow(out)),
+                 label = paste(cs$d@distrib_name, ":", paste(out$check[out$status == "FAIL"],
+                                                             collapse = ", ")))
+  }
+})
+
+test_that("atom-awareness has not blunted check_distrib", {
+  skip_on_cran()
+  set.seed(99)
+  # A deliberately wrong gradient on the mixed distribution must still be caught.
+  broken <- zero_adjusted(gamma_distrib())
+  # S7::method(gen, cls) <- fn mutates the generic in place, so the original has
+  # to be put back or the rest of the suite runs against the broken one.
+  old <- S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib)
+  on.exit(suppressMessages(
+    S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib) <- old
+  ), add = TRUE)
+
+  suppressMessages(
+    S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib) <-
+      function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+        g <- old(distrib, y, theta)
+        g[[1]] <- g[[1]] * 1.05
+        g
+      }
+  )
+
+  out <- check_distrib(broken, theta = list(mu = 3, sigma2 = 2, za = 0.3),
+                       n = 40, nsim = 5e4, orders = 1:2, verbose = FALSE)
+  expect_true("gradient vs finite differences" %in% out$check[out$status == "FAIL"])
 })

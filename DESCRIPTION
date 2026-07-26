@@ -55,6 +55,7 @@ Collate:
     'transformations.R'
     'zero_inflated.R'
     'zero_adjusted.R'
+    'truncated.R'
 Suggests:
     testthat (>= 3.0.0),
     knitr,

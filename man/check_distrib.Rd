@@ -72,6 +72,13 @@ differences of the log-likelihood in \eqn{\eta}.
 Distributions that rely on the numerical fallbacks will trivially pass the
 corresponding derivative checks, since analytical and numerical values then
 coincide by construction.
+
+Mixed distributions --- a density with point masses on top of it, as produced by
+\code{\link{zero_adjusted}()} on a continuous parent --- are handled as long as they
+declare their atoms through \code{\link{distrib_atoms}}. The density is then expected
+to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
+are checked as generalized inverses rather than exact ones, and finite differences in
+\eqn{y} are kept away from the atoms, where no derivative exists.
 }
 \examples{
 \dontrun{

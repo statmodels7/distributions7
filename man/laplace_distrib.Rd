@@ -62,9 +62,10 @@ everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/b};
 \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
 \eqn{\mu};
 \item the \strong{expected Hessian} (\code{\link{distrib_expected_hessian}}) is
-defined from the score variance (first Bartlett identity), giving the correct
+implemented in closed form from the variance of the score, giving the correct
 Fisher information \eqn{1/b^2} for \eqn{\mu} and making Fisher scoring the
-appropriate estimation method.
+appropriate estimation method. Because the closed form exists, the
+\code{approx} argument is ignored for this distribution.
 }
 
 \strong{Parameter Domains:}

@@ -107,6 +107,20 @@ distrib <- S7::new_class("distrib",
   }
 )
 
+#' @title Default Atoms: None
+#' @name distrib_atoms.distrib
+#' @description
+#' Ordinary distributions have nothing to declare here: a continuous one has no
+#' atoms and a discrete one is made of nothing else. Only a mixed distribution
+#' registers something more specific.
+#' @param distrib A \code{distrib} object.
+#' @param theta A named list of parameters.
+#' @return A list with empty \code{y} and \code{p}.
+#' @keywords internal
+S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
+  list(y = numeric(0), p = numeric(0))
+}
+
 #' Per-Parameter Smoothness of the Log-Likelihood
 #'
 #' @description

@@ -270,6 +270,30 @@ hess_names <- function(params) {
 }
 
 
+# Internal: invert hess_names(). Returns a named list mapping each Hessian
+# component name to the pair of parameters it differentiates with respect to.
+#
+# The wrappers need to go from "mu_sigma" back to c("mu", "sigma") in order to
+# combine the parent's score with its Hessian. Splitting the string on "_" is
+# the obvious way and it is wrong: a parameter whose own name contains an
+# underscore ("log_scale") makes "log_scale_log_scale" split into four pieces,
+# and taking the first and the last silently yields c("log", "scale"). Building
+# the map from the parameter vector cannot be fooled.
+hess_pairs <- function(params) {
+  nms <- hess_names(params)
+  n <- length(params)
+  pairs <- c(
+    lapply(params, function(p) c(p, p)),
+    if (n >= 2) {
+      unlist(lapply(seq_len(n - 1L), function(i) {
+        lapply((i + 1L):n, function(j) params[c(i, j)])
+      }), recursive = FALSE)
+    }
+  )
+  stats::setNames(pairs, nms)
+}
+
+
 #' Generate Names for Higher-Order Derivative Components
 #'
 #' @description

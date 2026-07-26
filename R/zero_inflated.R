@@ -35,6 +35,83 @@ split_mix_theta <- function(distrib, theta) {
   list(orig = theta[seq_len(n - 1L)], mix = theta[[n]])
 }
 
+# ---------------------------------------------------------------------------
+# Validation shared by zero_inflated() and zero_adjusted().
+#
+# Both wrappers add one parameter to a distribution and both are easy to apply
+# where the result is not a model at all. Neither failure is visible at run
+# time: the pmf still sums to one, check_distrib() still passes, and the fit
+# still converges -- to an arbitrary point of a flat ridge. The constructor is
+# the only place where they can be caught, so they are caught there.
+# ---------------------------------------------------------------------------
+
+# Number of points in the support of a lattice distribution, Inf when unbounded.
+n_support_points <- function(distrib) {
+  b <- distrib@bounds
+  if (!all(is.finite(b))) Inf else b[2] - b[1] + 1
+}
+
+# Is this distribution already carrying a probability of zero?
+is_zero_wrapper <- function(distrib) {
+  S7::S7_inherits(distrib, ZeroInflatedDistrib) ||
+    S7::S7_inherits(distrib, ZeroAdjustedDiscreteDistrib) ||
+    S7::S7_inherits(distrib, ZeroAdjustedContinuousDistrib)
+}
+
+# Two zero parameters cannot both be identified. Zero-truncating a distribution
+# that already has one removes it from the likelihood entirely (the factor
+# cancels between the numerator and the truncation constant), and mixing a
+# further point mass in only ever shifts the total mass at zero, which one
+# parameter already describes. The distributions this rejects are perfectly
+# well-defined -- they are simply not estimable.
+check_not_stacked <- function(distrib, fun, param) {
+  if (is_zero_wrapper(distrib)) {
+    stop(sprintf(
+      paste0(
+        "%s() cannot wrap '%s', which already models the probability of a zero.\n",
+        "  Stacking the two leaves only their combination identified: the second\n",
+        "  parameter has an identically zero score, and any optimizer will wander\n",
+        "  along that ridge. Apply exactly one zero wrapper to a plain distribution."
+      ),
+      fun, distrib@distrib_name
+    ), call. = FALSE)
+  }
+  if (param %in% distrib@params) {
+    stop(sprintf(
+      "The parent distribution already has a parameter named '%s'.", param
+    ), call. = FALSE)
+  }
+  invisible(NULL)
+}
+
+# A model with one more parameter than its support can distinguish. A
+# distribution on k points has k - 1 free probabilities; the wrapper spends
+# n_params + 1 of them. The Bernoulli is the case that matters: zero-inflating
+# it gives two parameters for the one free cell of {0, 1}, and zero-adjusting it
+# leaves the truncated part concentrated on {1}, with no free parameter at all,
+# so mu disappears from the likelihood.
+check_support_is_rich_enough <- function(distrib, fun) {
+  k <- n_support_points(distrib)
+  needed <- distrib@n_params + 2
+  if (k < needed) {
+    plural <- function(n, one, many) if (n == 1) one else many
+    stop(sprintf(
+      paste0(
+        "%s() cannot wrap '%s': its support has %g points, so the family has %g free\n",
+        "  %s, while the wrapped distribution would have %d %s. They are not\n",
+        "  identified -- different parameter values give exactly the same distribution.\n",
+        "  A support of at least %d points is required."
+      ),
+      fun, distrib@distrib_name, k, k - 1,
+      plural(k - 1, "probability", "probabilities"),
+      distrib@n_params + 1,
+      plural(distrib@n_params + 1, "parameter", "parameters"),
+      needed
+    ), call. = FALSE)
+  }
+  invisible(NULL)
+}
+
 #' @title Zero-Inflated Probability Mass Function
 #' @name distrib_pdf.ZeroInflatedDistrib
 #' @description
@@ -186,14 +263,14 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig <- distrib_hessian(parent, y, pars$orig)
+  pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
 
   # Block theta-theta: at y=0, w*H(0) + w(1-w)*S(0)S(0)'
-  for (nm in names(h_orig)) {
-    parts <- strsplit(nm, "_")[[1]]
-    p1 <- parts[1]
-    p2 <- parts[length(parts)]
+  for (nm in names(pairs)) {
+    p1 <- pairs[[nm]][1]
+    p2 <- pairs[[nm]][2]
     val_y0 <- w0 * hess_0_obs[[nm]] + w0 * (1 - w0) * grad_0[[p1]] * grad_0[[p2]]
     res[[nm]] <- ifelse(y == 0, val_y0, h_orig[[nm]])
   }
@@ -237,15 +314,15 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
   h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig)
+  pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
 
   # Block theta-theta:
   #   L0 * [w0 H(0) + w0(1-w0) S(0)S(0)'] + (1-zi) * (E[H] - f(0)H(0))
-  for (nm in names(h_orig_exp)) {
-    parts <- strsplit(nm, "_")[[1]]
-    p1 <- parts[1]
-    p2 <- parts[length(parts)]
+  for (nm in names(pairs)) {
+    p1 <- pairs[[nm]][1]
+    p2 <- pairs[[nm]][2]
     h_zi_0 <- w0 * hess_0_obs[[nm]] + w0 * (1 - w0) * grad_0[[p1]] * grad_0[[p2]]
     contrib_pos <- h_orig_exp[[nm]] - hess_0_obs[[nm]] * f0
     res[[nm]] <- l0 * h_zi_0 + (1 - zi) * contrib_pos
@@ -269,11 +346,18 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' Zero-Inflated Distribution Object (Discrete)
 #'
 #' @description
-#' Creates a zero-inflated version of an existing \strong{discrete} distribution object:
-#' a mixture of a point mass at zero (with probability \eqn{\zeta}, parameter \code{zi})
-#' and the original count distribution.
+#' Creates a zero-inflated version of an existing \strong{discrete} distribution: a
+#' mixture that keeps the parent intact and adds a second source of zeros, with
+#' probability \eqn{\zeta} (parameter \code{zi}).
 #'
-#' @param distrib An object inheriting from \code{discrete_distrib} whose support includes 0.
+#' Zero-inflation is the right wrapper when the data contain \emph{more} zeros than
+#' the parent can produce, and a zero can plausibly have come either from the count
+#' process or from a separate mechanism that switches it off. If instead the zeros
+#' come from one identifiable mechanism and the positive values from another, the
+#' model you want is the hurdle, \code{\link{zero_adjusted}}.
+#'
+#' @param distrib An object inheriting from \code{discrete_distrib} whose support
+#'   includes 0, e.g. \code{\link{poisson_distrib}()} or \code{\link{negbin_distrib}()}.
 #' @param link_zi A link function object for the zero-inflation probability \eqn{\zeta}.
 #'   Defaults to \code{\link[linkfunctions7]{logit_link}}.
 #'
@@ -286,6 +370,40 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' \end{cases}
 #' }
 #'
+#' \strong{Zero-inflation versus zero-adjustment.} The two wrappers differ in what
+#' they do to the mass the parent already places at zero. Zero-inflation
+#' \emph{adds} to it, so \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can
+#' only ever produce more zeros than the parent, never fewer, and the observed zeros
+#' are a mixture of structural and sampling ones that no single observation can be
+#' assigned to. Zero-adjustment (\code{\link{zero_adjusted}}) \emph{replaces} it: the
+#' parent is truncated away from zero and the mass at zero becomes a free parameter,
+#' which can be above or below \eqn{f(0)}. A hurdle model therefore also handles
+#' \emph{under}-dispersed zeros, and its likelihood factorises into a binary part and
+#' a positive-count part that can be read separately. Zero-inflation keeps the
+#' parent's interpretation --- \eqn{\theta} still describes the count process the
+#' non-structural observations come from --- while the hurdle re-interprets
+#' \eqn{\theta} as the parameters of a truncated law.
+#'
+#' \strong{What the parent must be.} Zero-inflation adds mass to a zero that already
+#' carries some, so it requires a discrete distribution with \eqn{0} in its support.
+#' A continuous distribution has \eqn{P(Y = 0) = 0} and nothing to inflate; putting a
+#' point mass at zero next to a density is zero-\emph{adjustment}, and
+#' \code{\link{zero_adjusted}} handles it. Constructing the object also fails when the
+#' result would not be identified:
+#' \itemize{
+#'   \item the parent already models a probability of zero (a wrapper cannot be
+#'     stacked on another wrapper: only the total mass at zero would be identified);
+#'   \item the support is too small for one more parameter --- a distribution on
+#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least
+#'     \code{n_params + 2} support points are needed. This rules out the Bernoulli
+#'     and \code{binomial_distrib(size = 1)}, where \code{mu} and \code{zi} between
+#'     them describe a single free cell.
+#' }
+#' A large support is necessary but not sufficient: with \eqn{\mu} large enough that
+#' \eqn{f(0)} underflows, or \eqn{\zeta} close to 0, the ridge reappears in the data
+#' rather than in the model. \code{\link{fit_distrib}} reports the standard errors
+#' that reveal it.
+#'
 #' The resulting object supports the full \code{distrib} API: pdf, cdf, quantile, rng,
 #' analytical gradient, observed and expected Hessian (all derived from the parent's),
 #' plus numerical moments via \code{\link{moment}}.
@@ -293,23 +411,39 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' @return An S7 object of class \code{ZeroInflatedDistrib} (inheriting from \code{discrete_distrib}).
 #'
 #' @examples
-#' \dontrun{
 #' zip <- zero_inflated(poisson_distrib())
 #' distrib_pdf(zip, 0:5, list(mu = 3, zi = 0.2))
-#' }
 #'
+#' # More mass at zero than the Poisson alone can put there
+#' distrib_pdf(zip, 0, list(mu = 3, zi = 0.2)) > dpois(0, 3)
+#'
+#' # A Bernoulli has no room for a second parameter
+#' try(zero_inflated(bernoulli_distrib()))
+#'
+#' @seealso \code{\link{zero_adjusted}} for the hurdle counterpart,
+#'   \code{\link{check_distrib}} to validate the result.
 #' @importFrom linkfunctions7 logit_link
 #' @export
 zero_inflated <- function(distrib, link_zi = logit_link()) {
+  if (S7::S7_inherits(distrib, continuous_distrib)) {
+    stop(paste0(
+      "zero_inflated() requires a discrete distribution: a continuous one has\n",
+      "  P(Y = 0) = 0, so there is no mass at zero to inflate. To place a point mass\n",
+      "  at zero alongside a density, use zero_adjusted()."
+    ), call. = FALSE)
+  }
   if (!S7::S7_inherits(distrib, discrete_distrib)) {
     stop("zero_inflated() requires a discrete distribution ('discrete_distrib').", call. = FALSE)
   }
+  check_not_stacked(distrib, "zero_inflated", "zi")
   if (distrib@bounds[1] > 0) {
-    stop("zero_inflated() requires a distribution with 0 in its support.", call. = FALSE)
+    stop(sprintf(paste0(
+      "zero_inflated() requires 0 in the support of '%s', which starts at %g.\n",
+      "  With P(Y = 0) = 0 there is nothing to inflate: the mixture would put all of\n",
+      "  its zeros in the added component, which is a zero-adjusted model."
+    ), distrib@distrib_name, distrib@bounds[1]), call. = FALSE)
   }
-  if ("zi" %in% distrib@params) {
-    stop("The parent distribution already has a parameter named 'zi'.", call. = FALSE)
-  }
+  check_support_is_rich_enough(distrib, "zero_inflated")
 
   ZeroInflatedDistrib(
     parent_distrib = distrib,
@@ -322,6 +456,7 @@ zero_inflated <- function(distrib, link_zi = logit_link()) {
     n_params = distrib@n_params + 1,
 
     params_bounds = c(distrib@params_bounds, list(zi = c(0, 1))),
-    link_params = c(distrib@link_params, list(zi = link_zi))
+    link_params = c(distrib@link_params, list(zi = link_zi)),
+    params_smooth = c(param_smoothness(distrib), zi = TRUE)
   )
 }

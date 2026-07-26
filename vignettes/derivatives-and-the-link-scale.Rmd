@@ -122,10 +122,13 @@ That is precisely what `fit_distrib()` does --- it optimises on the link scale
 and maps back --- and it is why its confidence intervals cannot leave a
 parameter's domain. See `vignette("fitting-a-model")` for that side of the story.
 
-The information transforms consistently. Because the score has zero expectation,
-the expected information on the link scale is the sandwich
-$\operatorname{diag}(g') \, \mathcal{I} \, \operatorname{diag}(g')$; for the log
-link on $\sigma$ that multiplies the $\sigma\sigma$ entry by $\sigma^2$:
+The information transforms consistently. Write $h = g^{-1}$, so that
+$h'(\eta) = 1/g'(\theta)$ is the derivative of the inverse link — the same
+factor that already appeared in the first-order rule above. Because the score
+has zero expectation, the expected information on the link scale is the
+sandwich $\operatorname{diag}(h') \, \mathcal{I} \, \operatorname{diag}(h')$;
+for the log link on $\sigma$ we have $h'(\eta) = e^{\eta} = \sigma$, so the
+$\sigma\sigma$ entry is multiplied by $\sigma^2$:
 
 ```{r}
 eh_par  <- distrib_expected_hessian(d, 0, theta)

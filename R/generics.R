@@ -54,6 +54,43 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
   S7::S7_dispatch()
 })
 
+#' Atoms of a Distribution
+#'
+#' @description
+#' Returns the locations and probabilities of the point masses a distribution
+#' places on individual values --- the discrete part of a \emph{mixed}
+#' distribution, one that is neither purely continuous nor supported on a lattice.
+#' \code{\link{zero_adjusted}} applied to a continuous distribution builds exactly
+#' such an object: a point mass at zero next to a density.
+#'
+#' @param distrib A distribution object inheriting from the \code{distrib} class.
+#' @param theta A named list (or named numeric vector) of distribution parameters,
+#'   with scalar entries.
+#' @param ... Additional arguments passed to the specific method.
+#'
+#' @return A list with components \code{y} (the locations) and \code{p} (their
+#'   probabilities), both numeric vectors of the same length, possibly of length
+#'   zero.
+#'
+#' @details
+#' The default returns no atoms, which is the right answer for every ordinary
+#' distribution: a continuous one has none, and a discrete one is made of nothing
+#' else, so listing them would be pointless. The generic exists for the case in
+#' between, where a routine written for densities has to be told that part of the
+#' mass is not in the integral --- \code{\link{check_distrib}} uses it to know
+#' that the density is expected to integrate to \eqn{1 - \sum p} rather than 1,
+#' and to keep its finite differences away from the jumps.
+#'
+#' @examples
+#' distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#' distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
+#'
+#' @export
+distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, theta, ...) {
+  theta <- align_theta(distrib, theta)
+  S7::S7_dispatch()
+})
+
 #' Random Number Generator
 #'
 #' @description Generates random variates from the given distribution.

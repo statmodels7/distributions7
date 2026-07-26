@@ -19,8 +19,11 @@ home:
 navbar:
   structure:
     left:  [intro, reference, articles]
-    right: [search, statmodels7, github]
+    right: [search, book, statmodels7, github]
   components:
+    book:
+      text: book
+      href: https://statmodels7.github.io/book/
     statmodels7:
       text: statmodels7
       href: https://statmodels7.github.io
@@ -61,6 +64,7 @@ reference:
   - distrib_cdf
   - distrib_quantile
   - distrib_rng
+  - distrib_atoms
   - rng_grou
 
 - title: Derivatives
@@ -98,10 +102,12 @@ reference:
 - title: Building on a distribution
   desc: >
     Wrappers that turn a distribution into another one: a mixture with a point
-    mass at zero, or the law of a transformed variable.
+    mass at zero, a restriction to an interval, or the law of a transformed
+    variable.
   contents:
   - zero_inflated
   - zero_adjusted
+  - truncated
   - transformation
   - transformer
   - starts_with("log_transform")
@@ -181,7 +187,9 @@ reference:
   contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
 
 - title: Wrapper classes
-  desc: The methods of the zero-inflated, zero-adjusted and transformed wrappers.
+  desc: >
+    The methods of the zero-inflated, zero-adjusted, truncated and transformed
+    wrappers.
   contents:
   - ZeroInflatedDistrib
   - ends_with(".ZeroInflatedDistrib")
@@ -189,6 +197,10 @@ reference:
   - ends_with(".ZeroAdjustedDiscreteDistrib")
   - ZeroAdjustedContinuousDistrib
   - ends_with(".ZeroAdjustedContinuousDistrib")
+  - TruncatedDiscreteDistrib
+  - ends_with(".TruncatedDiscreteDistrib")
+  - TruncatedContinuousDistrib
+  - ends_with(".TruncatedContinuousDistrib")
   - TransformedDistrib
   - ends_with(".TransformedDistrib")
 
