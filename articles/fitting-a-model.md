@@ -239,9 +239,9 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 #> All 13 checks passed.
 ```
 
-If you had made a mistake in an analytical derivative, the corresponding
-line would turn red, with the size of the discrepancy next to it. It is
-the fastest way to catch a wrong formula.
+Had a mistake crept into an analytical derivative, the corresponding
+line would read `FAIL`, with the size of the discrepancy printed next to
+it. It is the fastest way to catch a wrong formula.
 
 ## Where to go next
 

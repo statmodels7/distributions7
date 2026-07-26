@@ -24,6 +24,7 @@
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io/book/">book</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io">statmodels7</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/statmodels7/distributions7/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
@@ -180,6 +181,13 @@
 
         </dt>
         <dd>Random Number Generator</dd>
+
+        <dt>
+
+          <code><a href="distrib_atoms.html">distrib_atoms()</a></code>
+
+        </dt>
+        <dd>Atoms of a Distribution</dd>
 
         <dt>
 
@@ -350,7 +358,7 @@
       </dl></div><div class="section level2">
       <h2 id="building-on-a-distribution">Building on a distribution<a class="anchor" aria-label="anchor" href="#building-on-a-distribution"></a></h2>
 
-      <div class="section-desc"><p>Wrappers that turn a distribution into another one: a mixture with a point mass at zero, or the law of a transformed variable.</p></div>
+      <div class="section-desc"><p>Wrappers that turn a distribution into another one: a mixture with a point mass at zero, a restriction to an interval, or the law of a transformed variable.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -370,6 +378,13 @@
 
         </dt>
         <dd>Zero-Adjusted Distribution Object</dd>
+
+        <dt>
+
+          <code><a href="truncated.html">truncated()</a></code>
+
+        </dt>
+        <dd>Truncated Distribution Object</dd>
 
         <dt>
 
@@ -1905,7 +1920,7 @@
       </dl></div><div class="section level2">
       <h2 id="wrapper-classes">Wrapper classes<a class="anchor" aria-label="anchor" href="#wrapper-classes"></a></h2>
 
-      <div class="section-desc"><p>The methods of the zero-inflated, zero-adjusted and transformed wrappers.</p></div>
+      <div class="section-desc"><p>The methods of the zero-inflated, zero-adjusted, truncated and transformed wrappers.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -2033,6 +2048,13 @@
 
         <dt>
 
+          <code><a href="distrib_atoms.ZeroAdjustedContinuousDistrib.html">distrib_atoms.ZeroAdjustedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Atoms of a Zero-Adjusted Continuous Distribution</dd>
+
+        <dt>
+
           <code><a href="distrib_cdf.ZeroAdjustedContinuousDistrib.html">distrib_cdf.ZeroAdjustedContinuousDistrib</a></code>
 
         </dt>
@@ -2047,10 +2069,24 @@
 
         <dt>
 
+          <code><a href="distrib_grad_y.ZeroAdjustedContinuousDistrib.html">distrib_grad_y.ZeroAdjustedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Zero-Adjusted Continuous Response Gradient</dd>
+
+        <dt>
+
           <code><a href="distrib_gradient.ZeroAdjustedContinuousDistrib.html">distrib_gradient.ZeroAdjustedContinuousDistrib</a></code>
 
         </dt>
         <dd>Zero-Adjusted Continuous Analytical Gradient</dd>
+
+        <dt>
+
+          <code><a href="distrib_hess_y.ZeroAdjustedContinuousDistrib.html">distrib_hess_y.ZeroAdjustedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Zero-Adjusted Continuous Response Hessian</dd>
 
         <dt>
 
@@ -2079,6 +2115,139 @@
 
         </dt>
         <dd>Zero-Adjusted Continuous Random Number Generator</dd>
+
+        <dt>
+
+          <code><a href="TruncatedDiscreteDistrib.html">TruncatedDiscreteDistrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Truncated Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_cdf.TruncatedDiscreteDistrib.html">distrib_cdf.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Cumulative Distribution Function (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="distrib_expected_hessian.TruncatedDiscreteDistrib.html">distrib_expected_hessian.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Expected Hessian (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="distrib_gradient.TruncatedDiscreteDistrib.html">distrib_gradient.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Gradient (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="distrib_hessian.TruncatedDiscreteDistrib.html">distrib_hessian.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Observed Hessian (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="distrib_pdf.TruncatedDiscreteDistrib.html">distrib_pdf.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Probability Mass Function</dd>
+
+        <dt>
+
+          <code><a href="distrib_quantile.TruncatedDiscreteDistrib.html">distrib_quantile.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Quantile Function (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="distrib_rng.TruncatedDiscreteDistrib.html">distrib_rng.TruncatedDiscreteDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Random Number Generator (Discrete)</dd>
+
+        <dt>
+
+          <code><a href="TruncatedContinuousDistrib.html">TruncatedContinuousDistrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Truncated Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_atoms.TruncatedContinuousDistrib.html">distrib_atoms.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Atoms of a Truncated Continuous Distribution</dd>
+
+        <dt>
+
+          <code><a href="distrib_cdf.TruncatedContinuousDistrib.html">distrib_cdf.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Cumulative Distribution Function (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="distrib_expected_hessian.TruncatedContinuousDistrib.html">distrib_expected_hessian.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Expected Hessian (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="distrib_grad_y.TruncatedContinuousDistrib.html">distrib_grad_y.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Continuous Response Gradient</dd>
+
+        <dt>
+
+          <code><a href="distrib_gradient.TruncatedContinuousDistrib.html">distrib_gradient.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Gradient (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="distrib_hess_y.TruncatedContinuousDistrib.html">distrib_hess_y.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Continuous Response Hessian</dd>
+
+        <dt>
+
+          <code><a href="distrib_hessian.TruncatedContinuousDistrib.html">distrib_hessian.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Analytical Observed Hessian (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="distrib_pdf.TruncatedContinuousDistrib.html">distrib_pdf.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Probability Density Function</dd>
+
+        <dt>
+
+          <code><a href="distrib_quantile.TruncatedContinuousDistrib.html">distrib_quantile.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Quantile Function (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="distrib_rng.TruncatedContinuousDistrib.html">distrib_rng.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Truncated Random Number Generator (Continuous)</dd>
 
         <dt>
 

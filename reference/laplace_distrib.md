@@ -81,9 +81,10 @@ via `params_smooth = c(mu = FALSE, b = TRUE)` and handles it as follows:
 
 - the **expected Hessian**
   ([`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md))
-  is defined from the score variance (first Bartlett identity), giving
+  is implemented in closed form from the variance of the score, giving
   the correct Fisher information \\1/b^2\\ for \\\mu\\ and making Fisher
-  scoring the appropriate estimation method.
+  scoring the appropriate estimation method. Because the closed form
+  exists, the `approx` argument is ignored for this distribution.
 
 **Parameter Domains:**
 

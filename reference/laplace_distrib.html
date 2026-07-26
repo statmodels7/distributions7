@@ -30,6 +30,7 @@ parameter (\(\mu\)); see Details for how the package handles this."><meta proper
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io/book/">book</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io">statmodels7</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/statmodels7/distributions7/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
@@ -105,9 +106,10 @@ everywhere, equal to \(\mathrm{sign}(y-\mu)/b\);</p></li>
 \(\partial^2 \ell / \partial \mu^2 = 0\), so Newton-Raphson cannot update
 \(\mu\);</p></li>
 <li><p>the <strong>expected Hessian</strong> (<code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code>) is
-defined from the score variance (first Bartlett identity), giving the correct
+implemented in closed form from the variance of the score, giving the correct
 Fisher information \(1/b^2\) for \(\mu\) and making Fisher scoring the
-appropriate estimation method.</p></li>
+appropriate estimation method. Because the closed form exists, the
+<code>approx</code> argument is ignored for this distribution.</p></li>
 </ul><p><strong>Parameter Domains:</strong></p><ul><li><p>\(\mu \in (-\infty, +\infty)\)</p></li>
 <li><p>\(b \in (0, +\infty)\)</p></li>
 </ul></div>

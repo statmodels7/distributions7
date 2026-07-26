@@ -50,6 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io/book/">book</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io">statmodels7</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/statmodels7/distributions7/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
@@ -228,14 +229,21 @@ in closed form.</p>
 on the link scale and maps back — and it is why its confidence intervals
 cannot leave a parameter’s domain. See
 <code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code> for that side of the story.</p>
-<p>The information transforms consistently. Because the score has zero
+<p>The information transforms consistently. Write
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup></mrow><annotation encoding="application/x-tex">h = g^{-1}</annotation></semantics></math>,
+so that
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>1</mn><mi>/</mi><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>θ</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">h'(\eta) = 1/g'(\theta)</annotation></semantics></math>
+is the derivative of the inverse link — the same factor that already
+appeared in the first-order rule above. Because the score has zero
 expectation, the expected information on the link scale is the sandwich
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>ℐ</mi><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>g</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{diag}(g') \, \mathcal{I} \, \operatorname{diag}(g')</annotation></semantics></math>;
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>ℐ</mi><mspace width="0.167em"></mspace><mrow><mi mathvariant="normal">diag</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\operatorname{diag}(h') \, \mathcal{I} \, \operatorname{diag}(h')</annotation></semantics></math>;
 for the log link on
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>σ</mi><annotation encoding="application/x-tex">\sigma</annotation></semantics></math>
-that multiplies the
+we have
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>h</mi><mo>′</mo></msup><mo stretchy="false" form="prefix">(</mo><mi>η</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msup><mi>e</mi><mi>η</mi></msup><mo>=</mo><mi>σ</mi></mrow><annotation encoding="application/x-tex">h'(\eta) = e^{\eta} = \sigma</annotation></semantics></math>,
+so the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>σ</mi><mi>σ</mi></mrow><annotation encoding="application/x-tex">\sigma\sigma</annotation></semantics></math>
-entry by
+entry is multiplied by
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>σ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\sigma^2</annotation></semantics></math>:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eh_par</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distrib_expected_hessian.html">distrib_expected_hessian</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">0</span>, <span class="va">theta</span><span class="op">)</span></span>

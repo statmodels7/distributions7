@@ -109,6 +109,17 @@ Distributions that rely on the numerical fallbacks will trivially pass
 the corresponding derivative checks, since analytical and numerical
 values then coincide by construction.
 
+Mixed distributions — a density with point masses on top of it, as
+produced by
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+on a continuous parent — are handled as long as they declare their atoms
+through
+[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
+The density is then expected to integrate to one minus the atomic mass,
+quantiles falling inside a jump of the CDF are checked as generalized
+inverses rather than exact ones, and finite differences in \\y\\ are
+kept away from the atoms, where no derivative exists.
+
 ## See also
 
 [`numerical_gradient`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),

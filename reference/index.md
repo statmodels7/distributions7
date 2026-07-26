@@ -47,6 +47,8 @@ Density, distribution and quantile functions, and random generation.
   : Quantile Function
 - [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
   : Random Number Generator
+- [`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+  : Atoms of a Distribution
 - [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)
   : Generalized Ratio-of-Uniforms Sampling
 
@@ -104,12 +106,15 @@ respect to the unconstrained parameters.
 ## Building on a distribution
 
 Wrappers that turn a distribution into another one: a mixture with a
-point mass at zero, or the law of a transformed variable.
+point mass at zero, a restriction to an interval, or the law of a
+transformed variable.
 
 - [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
   : Zero-Inflated Distribution Object (Discrete)
 - [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
   : Zero-Adjusted Distribution Object
+- [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+  : Truncated Distribution Object
 - [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
   : Apply a Variable Transformation to a Distribution Object
 - [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)
@@ -564,8 +569,8 @@ Rarely called directly, but useful as a reference for what is happening.
 
 ## Wrapper classes
 
-The methods of the zero-inflated, zero-adjusted and transformed
-wrappers.
+The methods of the zero-inflated, zero-adjusted, truncated and
+transformed wrappers.
 
 - [`ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/ZeroInflatedDistrib.md)
   : S7 Class for Zero-Inflated Distributions
@@ -601,12 +606,18 @@ wrappers.
   : Zero-Adjusted Discrete Random Number Generator
 - [`ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedContinuousDistrib.md)
   : S7 Class for Zero-Adjusted Continuous Distributions
+- [`distrib_atoms.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md)
+  : Atoms of a Zero-Adjusted Continuous Distribution
 - [`distrib_cdf.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Cumulative Distribution Function
 - [`distrib_expected_hessian.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Analytical Expected Hessian
+- [`distrib_grad_y.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md)
+  : Zero-Adjusted Continuous Response Gradient
 - [`distrib_gradient.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Analytical Gradient
+- [`distrib_hess_y.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ZeroAdjustedContinuousDistrib.md)
+  : Zero-Adjusted Continuous Response Hessian
 - [`distrib_hessian.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Analytical Observed Hessian
 - [`distrib_pdf.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedContinuousDistrib.md)
@@ -615,6 +626,44 @@ wrappers.
   : Zero-Adjusted Continuous Quantile Function
 - [`distrib_rng.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Random Number Generator
+- [`TruncatedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/TruncatedDiscreteDistrib.md)
+  : S7 Class for Truncated Discrete Distributions
+- [`distrib_cdf.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedDiscreteDistrib.md)
+  : Truncated Cumulative Distribution Function (Discrete)
+- [`distrib_expected_hessian.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedDiscreteDistrib.md)
+  : Truncated Analytical Expected Hessian (Discrete)
+- [`distrib_gradient.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TruncatedDiscreteDistrib.md)
+  : Truncated Analytical Gradient (Discrete)
+- [`distrib_hessian.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.TruncatedDiscreteDistrib.md)
+  : Truncated Analytical Observed Hessian (Discrete)
+- [`distrib_pdf.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TruncatedDiscreteDistrib.md)
+  : Truncated Probability Mass Function
+- [`distrib_quantile.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedDiscreteDistrib.md)
+  : Truncated Quantile Function (Discrete)
+- [`distrib_rng.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TruncatedDiscreteDistrib.md)
+  : Truncated Random Number Generator (Discrete)
+- [`TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/TruncatedContinuousDistrib.md)
+  : S7 Class for Truncated Continuous Distributions
+- [`distrib_atoms.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.TruncatedContinuousDistrib.md)
+  : Atoms of a Truncated Continuous Distribution
+- [`distrib_cdf.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedContinuousDistrib.md)
+  : Truncated Cumulative Distribution Function (Continuous)
+- [`distrib_expected_hessian.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedContinuousDistrib.md)
+  : Truncated Analytical Expected Hessian (Continuous)
+- [`distrib_grad_y.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.TruncatedContinuousDistrib.md)
+  : Truncated Continuous Response Gradient
+- [`distrib_gradient.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TruncatedContinuousDistrib.md)
+  : Truncated Analytical Gradient (Continuous)
+- [`distrib_hess_y.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.TruncatedContinuousDistrib.md)
+  : Truncated Continuous Response Hessian
+- [`distrib_hessian.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.TruncatedContinuousDistrib.md)
+  : Truncated Analytical Observed Hessian (Continuous)
+- [`distrib_pdf.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.TruncatedContinuousDistrib.md)
+  : Truncated Probability Density Function
+- [`distrib_quantile.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.TruncatedContinuousDistrib.md)
+  : Truncated Quantile Function (Continuous)
+- [`distrib_rng.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TruncatedContinuousDistrib.md)
+  : Truncated Random Number Generator (Continuous)
 - [`TransformedDistrib()`](https://statmodels7.github.io/distributions7/reference/TransformedDistrib.md)
   : S7 Class for Transformed Distributions
 - [`distrib_cdf.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TransformedDistrib.md)

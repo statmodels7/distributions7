@@ -17,7 +17,11 @@ function, which is the scale an optimiser actually works on.
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 stack for
 statistical modelling, and works alongside
-[linkfunctions7](https://statmodels7.github.io/linkfunctions7).
+[linkfunctions7](https://statmodels7.github.io/linkfunctions7). The
+mathematics behind every formula — the likelihood theory, the change of
+scale, and the derivations for the zero-inflated, zero-adjusted,
+truncated and transformed wrappers — is worked out in full in [the
+statmodels7 book](https://statmodels7.github.io/book/).
 
 ## Installation
 
@@ -200,9 +204,9 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         1.32e+00
+#>   [OK  ] expected information vs Monte Carlo         1.90e+00
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.07e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.29e-09
 #> 
 #> All 13 checks passed.
 ```
@@ -213,5 +217,5 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
-| wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
+| wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |

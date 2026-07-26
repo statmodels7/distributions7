@@ -50,6 +50,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io/book/">book</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io">statmodels7</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/statmodels7/distributions7/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
@@ -591,14 +592,14 @@ metadata (shown in <code><a href="https://rdrr.io/r/base/print.html" class="exte
 <span><span class="co">#&gt;   mu    b </span></span>
 <span><span class="co">#&gt; TRUE TRUE</span></span></code></pre></div>
 <p>Second, and most importantly, <code>distrib_expected_hessian</code>
-returns the <strong>Fisher information</strong> computed from the score
-variance (the first Bartlett identity,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>∇</mi><mi>ℓ</mi><mspace width="0.167em"></mspace><mi>∇</mi><msup><mi>ℓ</mi><mi>⊤</mi></msup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]</annotation></semantics></math>)
+returns the <strong>Fisher information</strong> computed from the
+variance of the score,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>∇</mi><mi>ℓ</mi><mspace width="0.167em"></mspace><mi>∇</mi><msup><mi>ℓ</mi><mi>⊤</mi></msup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]</annotation></semantics></math>,
 rather than from
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>.
-The two coincide for regular models, but only the score-variance form
-stays valid when the second Bartlett identity fails, giving the correct
-information
+For a regular model the two coincide — that is the second Bartlett
+identity — but only the score-variance form stays valid when the
+identity fails, giving the correct information
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>b</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">1/b^2</annotation></semantics></math>
 for the Laplace location where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>

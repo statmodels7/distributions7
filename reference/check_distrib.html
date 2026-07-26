@@ -34,6 +34,7 @@ counterpart."><meta property="og:image" content="https://statmodels7.github.io/d
   </ul></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io/book/">book</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://statmodels7.github.io">statmodels7</a></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/statmodels7/distributions7/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul></div>
@@ -136,6 +137,12 @@ differences of the log-likelihood in \(\eta\).</p></li>
 </ul><p>Distributions that rely on the numerical fallbacks will trivially pass the
 corresponding derivative checks, since analytical and numerical values then
 coincide by construction.</p>
+<p>Mixed distributions — a density with point masses on top of it, as produced by
+<code><a href="zero_adjusted.html">zero_adjusted()</a></code> on a continuous parent — are handled as long as they
+declare their atoms through <code><a href="distrib_atoms.html">distrib_atoms</a></code>. The density is then expected
+to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
+are checked as generalized inverses rather than exact ones, and finite differences in
+\(y\) are kept away from the atoms, where no derivative exists.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
