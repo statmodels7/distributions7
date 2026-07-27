@@ -72,6 +72,10 @@ respect to the unconstrained parameters.
   : Gradient of the Log-Density with Respect to the Response
 - [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
   : Second Derivative of the Log-Density with Respect to the Response
+- [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+  : Gradient of the Log Distribution Function
+- [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
+  : Second Derivatives of the Log Distribution Function
 - [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
   : Derivatives on the Link (Real) Scale
 - [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
@@ -173,6 +177,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
   : Numerical Second Derivative of the Log-Density with Respect to the
   Response
+- [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
+  : Numerical Derivatives of the Distribution Function
 - [`numerical_series()`](https://statmodels7.github.io/distributions7/reference/numerical_series.md)
   : Numerical Summation of Discrete Series
 
@@ -221,10 +227,14 @@ Rarely called directly, but useful as a reference for what is happening.
   : Gaussian Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GaussianDistrib.md)
   : Gaussian Analytical Expected Hessian
+- [`distrib_grad_cdf.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GaussianDistrib.md)
+  : Gaussian Log-CDF Derivatives
 - [`distrib_grad_y.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GaussianDistrib.md)
   : Gaussian Response Derivatives
 - [`distrib_gradient.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GaussianDistrib.md)
   : Gaussian Analytical Gradient
+- [`distrib_hess_cdf.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.GaussianDistrib.md)
+  : Gaussian Log-CDF Second Derivatives
 - [`distrib_hess_y.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.GaussianDistrib.md)
   : Gaussian Response Second Derivative
 - [`distrib_hessian.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GaussianDistrib.md)
@@ -248,10 +258,14 @@ Rarely called directly, but useful as a reference for what is happening.
   : Cauchy Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.CauchyDistrib.md)
   : Cauchy Analytical Expected Hessian
+- [`distrib_grad_cdf.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.CauchyDistrib.md)
+  : Cauchy Log-CDF Derivatives
 - [`distrib_grad_y.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.CauchyDistrib.md)
   : Cauchy Response Derivatives
 - [`distrib_gradient.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.CauchyDistrib.md)
   : Cauchy Analytical Gradient
+- [`distrib_hess_cdf.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.CauchyDistrib.md)
+  : Cauchy Log-CDF Second Derivatives
 - [`distrib_hess_y.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.CauchyDistrib.md)
   : Cauchy Response Second Derivative
 - [`distrib_hessian.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.CauchyDistrib.md)
@@ -275,10 +289,14 @@ Rarely called directly, but useful as a reference for what is happening.
   : Logistic Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LogisticDistrib.md)
   : Logistic Analytical Expected Hessian
+- [`distrib_grad_cdf.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LogisticDistrib.md)
+  : Logistic Log-CDF Derivatives
 - [`distrib_grad_y.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LogisticDistrib.md)
   : Logistic Response Derivatives
 - [`distrib_gradient.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.LogisticDistrib.md)
   : Logistic Analytical Gradient
+- [`distrib_hess_cdf.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LogisticDistrib.md)
+  : Logistic Log-CDF Second Derivatives
 - [`distrib_hess_y.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.LogisticDistrib.md)
   : Logistic Response Second Derivative
 - [`distrib_hessian.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LogisticDistrib.md)
@@ -325,10 +343,14 @@ Rarely called directly, but useful as a reference for what is happening.
   : Laplace Cumulative Distribution Function
 - [`distrib_expected_hessian.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
   : Laplace Analytical Expected Hessian (Fisher Information)
+- [`distrib_grad_cdf.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LaplaceDistrib.md)
+  : Laplace Log-CDF Derivatives
 - [`distrib_grad_y.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LaplaceDistrib.md)
   : Laplace Response Derivatives
 - [`distrib_gradient.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.LaplaceDistrib.md)
   : Laplace Analytical Gradient
+- [`distrib_hess_cdf.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LaplaceDistrib.md)
+  : Laplace Log-CDF Second Derivatives
 - [`distrib_hess_y.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.LaplaceDistrib.md)
   : Laplace Response Second Derivative
 - [`distrib_hessian.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.md)

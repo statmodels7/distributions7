@@ -136,6 +136,13 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_fit_class.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_generics.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.CauchyDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LaplaceDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LogisticDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.BetaDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GammaDistrib.html</loc></url>
@@ -172,6 +179,13 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroInflatedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.CauchyDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.GaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LaplaceDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LogisticDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.discrete_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.BetaDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.GammaDistrib.html</loc></url>
@@ -302,6 +316,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moment.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv3.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv4.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_grad_y.html</loc></url>
