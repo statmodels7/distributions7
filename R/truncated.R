@@ -155,8 +155,109 @@ trunc_inside <- function(distrib, y) {
   y >= distrib@lower & y <= distrib@upper
 }
 
+# Derivatives of the retained mass, from the parent's cdf derivatives.
+#
+#   d^B Z = d^B F(U) - d^B F(L^-)
+#
+# which turns the truncated expectations E_T[d^B f / f] = d^B Z / Z into two
+# calls on the parent rather than one quadrature per component. The lower
+# endpoint keeps the same correction as the mass itself: F(L^-) = F(L) - P(Y = L),
+# so its derivatives lose the derivatives of that mass, which for a lattice
+# parent are f(L) l^(i)(L) and f(L)(l^(ij) + l^(i)l^(j)) at L.
+#
+# Returns NULL when the route should not be taken, and the caller falls back to
+# quadrature. Two situations call for that.
+#
+# The first is correctness: a mixed parent with an atom sitting exactly on the
+# lower endpoint, whose mass derivative is not the parent's pmf.
+#
+# The second is accuracy, and it is the reason this is a choice rather than a
+# replacement. When the parent has no closed-form cdf derivative the route above
+# differences its cdf, carrying roughly 1e-8 of relative error into the Hessian,
+# where the quadrature it replaces carried 1e-10. That is invisible in the
+# Hessian itself but not downstream: numerical_deriv4() differentiates the
+# analytical Hessian, so a noisier Hessian degrades the *reference* the
+# fourth-order check compares against, and the check fails on code that is
+# right. The route is therefore taken only where it is at least as accurate as
+# what it replaces -- a parent with a genuine closed form, or a lattice parent,
+# whose cdf derivatives are an exact finite sum.
+has_exact_cdf_deriv <- function(parent, order) {
+  if (S7::S7_inherits(parent, discrete_distrib)) return(TRUE)
+  gen <- if (order == 1L) distrib_grad_cdf else distrib_hess_cdf
+  m <- tryCatch(S7::method(gen, S7::S7_class(parent)), error = function(e) NULL)
+  if (is.null(m)) return(FALSE)
+  reg <- tryCatch(attr(m, "signature")[[1]], error = function(e) NULL)
+  # identical() on a method object does not answer "is this the fallback?" --
+  # S7 wraps it -- but the class it was registered on does.
+  !is.null(reg) && !identical(reg, continuous_distrib)
+}
+
+trunc_mass_derivs <- function(distrib, theta, order) {
+  if (!has_exact_cdf_deriv(distrib@parent_distrib, order)) return(NULL)
+  parent <- distrib@parent_distrib
+  params <- distrib@params
+  lo <- distrib@lower
+  up <- distrib@upper
+  is_disc <- S7::S7_inherits(distrib, TruncatedDiscreteDistrib)
+  nms <- if (order == 1L) params else hess_names(params)
+
+  if (!is_disc && is.finite(lo)) {
+    at <- distrib_atoms(parent, theta)
+    if (length(at$y) && any(at$y == lo)) return(NULL)
+  }
+
+  zero <- stats::setNames(lapply(nms, function(nm) 0), nms)
+  dU <- if (is.infinite(up)) zero else {
+    if (order == 1L) distrib_grad_cdf(parent, up, theta, log = FALSE)
+    else distrib_hess_cdf(parent, up, theta, log = FALSE)
+  }
+  dL <- if (is.infinite(lo)) zero else {
+    d <- if (order == 1L) distrib_grad_cdf(parent, lo, theta, log = FALSE)
+         else distrib_hess_cdf(parent, lo, theta, log = FALSE)
+    if (is_disc) {
+      f0 <- distrib_pdf(parent, lo, theta)
+      g <- distrib_gradient(parent, lo, theta)
+      if (order == 1L) {
+        for (nm in nms) d[[nm]] <- d[[nm]] - f0 * g[[nm]]
+      } else {
+        h <- distrib_hessian(parent, lo, theta)
+        pr <- hess_pairs(params)
+        for (nm in nms) {
+          d[[nm]] <- d[[nm]] - f0 * (h[[nm]] + g[[pr[[nm]][1]]] * g[[pr[[nm]][2]]])
+        }
+      }
+    }
+    d
+  }
+  stats::setNames(lapply(nms, function(nm) dU[[nm]] - dL[[nm]]), nms)
+}
+
 # E_T[s_i] for every parameter: the m_i of the header comment.
 trunc_score_mean <- function(distrib, theta) {
+  dZ <- trunc_mass_derivs(distrib, theta, 1L)
+  if (!is.null(dZ)) {
+    Z <- trunc_constants(distrib, theta)$Z
+    return(stats::setNames(lapply(distrib@params, function(p) dZ[[p]] / Z), distrib@params))
+  }
+  trunc_score_mean_quad(distrib, theta)
+}
+
+# E_T[H_ij + s_i s_j], the M_ij of the header comment, likewise.
+trunc_M <- function(distrib, theta) {
+  dZ <- trunc_mass_derivs(distrib, theta, 2L)
+  if (!is.null(dZ)) {
+    Z <- trunc_constants(distrib, theta)$Z
+    nms <- hess_names(distrib@params)
+    return(stats::setNames(lapply(nms, function(nm) dZ[[nm]] / Z), nms))
+  }
+  EH <- trunc_hess_mean(distrib, theta)
+  ES <- trunc_score_prod_mean(distrib, theta)
+  nms <- hess_names(distrib@params)
+  stats::setNames(lapply(nms, function(nm) EH[[nm]] + ES[[nm]]), nms)
+}
+
+# The original quadrature route, kept for the cases the cdf route cannot serve.
+trunc_score_mean_quad <- function(distrib, theta) {
   parent <- distrib@parent_distrib
   out <- lapply(distrib@params, function(p) {
     expectation(distrib, function(y, theta) distrib_gradient(parent, y, theta)[[p]], theta)
@@ -241,16 +342,14 @@ trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ..
 trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   n <- length(y)
   m <- trunc_score_mean(distrib, theta)
-  EH <- trunc_hess_mean(distrib, theta)
-  ES <- trunc_score_prod_mean(distrib, theta)
+  M <- trunc_M(distrib, theta)
   h <- distrib_hessian(distrib@parent_distrib, y, theta)
   pairs <- hess_pairs(distrib@params)
 
   res <- lapply(names(pairs), function(nm) {
     pr <- pairs[[nm]]
-    # M_ij = E_T[H_ij + s_i s_j];  d_ij log Z = M_ij - m_i m_j
-    M <- EH[[nm]] + ES[[nm]]
-    h[[nm]] - M + m[[pr[1]]] * m[[pr[2]]]
+    # d_ij log Z = M_ij - m_i m_j
+    h[[nm]] - M[[nm]] + m[[pr[1]]] * m[[pr[2]]]
   })
   expand_params(stats::setNames(res, names(pairs))[hess_names(distrib@params)], n)
 }

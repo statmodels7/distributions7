@@ -9,7 +9,8 @@ numerical_cdf_deriv(
   q,
   theta,
   order = 1L,
-  h_rel = .Machine$double.eps^(1/(order + 2))
+  h_rel = .Machine$double.eps^(1/(order + 2)),
+  which = NULL
 )
 }
 \arguments{
@@ -22,6 +23,11 @@ numerical_cdf_deriv(
 \item{order}{Either 1 or 2.}
 
 \item{h_rel}{Numeric. Relative finite-difference step.}
+
+\item{which}{Character vector of parameter names to differentiate, or
+\code{NULL} (default) for all of them. Used at first order by families that
+have a closed form for some parameters and not others, so that only the
+remaining ones cost a pair of cdf evaluations.}
 }
 \value{
 A named list of derivative components of \eqn{F}, not of its logarithm.

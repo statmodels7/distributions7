@@ -187,3 +187,105 @@ test_that("cdf derivatives are correct with vectorized parameters", {
     expect_equal(a$sigma[i], one$sigma, tolerance = 1e-10)
   }
 })
+
+test_that("the new closed forms agree with the partial expectation", {
+  # The partial-expectation integral is independent of every closed form below,
+  # and is the accurate reference where the cdf is itself numerical (the
+  # pseudo-Huber), which is exactly where differencing the cdf is poor.
+  cases <- list(
+    lognormal   = list(d = lognormal_distrib(), th = list(mu = 0.5, sigma2 = 1.3),
+                       q = c(0.4, 1.5, 4)),
+    invgauss    = list(d = invgauss_distrib(), th = list(mu = 2, phi = 0.7),
+                       q = c(0.6, 2, 5)),
+    student_t   = list(d = student_t_distrib(), th = list(mu = 0.5, sigma = 1.3, nu = 6),
+                       q = c(-1, 0.5, 2)),
+    pseudohuber = list(d = pseudohuber_distrib(), th = list(mu = 0.5, sigma = 1.2, nu = 3),
+                       q = c(-1, 0.5, 2))
+  )
+  for (nm in names(cases)) {
+    d <- cases[[nm]]$d; th <- cases[[nm]]$th; q <- cases[[nm]]$q
+    a <- distrib_grad_cdf(d, q, th, log = FALSE)
+    for (p in d@params) {
+      expect_equal(a[[p]], partial_score(d, q, th, p), tolerance = 1e-6,
+                   label = sprintf("%s dF/d%s", nm, p))
+    }
+  }
+})
+
+test_that("the location-scale identity holds where only two of three parameters are", {
+  # Student t and pseudo-Huber are location-scale in (mu, sigma) with a further
+  # shape; the first two derivatives are closed form, the third is differenced.
+  for (nm in c("student_t", "pseudohuber")) {
+    d <- if (nm == "student_t") student_t_distrib() else pseudohuber_distrib()
+    th <- list(mu = 0.5, sigma = 1.2, nu = 4)
+    names(th) <- d@params
+    q <- c(-1, 0.5, 2)
+    z <- (q - th[[1]]) / th[[2]]
+    f <- distrib_pdf(d, q, th)
+    a <- distrib_grad_cdf(d, q, th, log = FALSE)
+    expect_equal(a[[1]], -f, label = paste(nm, "dF/dmu"))
+    expect_equal(a[[2]], -z * f, label = paste(nm, "dF/dsigma"))
+  }
+})
+
+test_that("the discrete closed forms match their textbook identities", {
+  expect_equal(distrib_grad_cdf(poisson_distrib(), c(1, 4, 9), list(mu = 4), log = FALSE)$mu,
+               -dpois(c(1, 4, 9), 4))
+  expect_equal(distrib_grad_cdf(binomial_distrib(size = 10), c(2, 4, 7),
+                                list(mu = 0.35), log = FALSE)$mu,
+               -10 * dbinom(c(2, 4, 7), 9, 0.35))
+  # the negative binomial tends to the Poisson identity as theta grows
+  big <- distrib_grad_cdf(negbin_distrib(), c(1, 4, 9),
+                          list(mu = 4, theta = 1e7), log = FALSE)$mu
+  expect_equal(big, -dpois(c(1, 4, 9), 4), tolerance = 1e-5)
+})
+
+test_that("the gamma satisfies its exact parametrisation identity", {
+  # dF/dshape has no elementary form, but the two package parameters are tied:
+  # with alpha = mu^2/s2 and beta = mu/s2, the shape direction cancels from
+  #     dF/dmu + (2 s2/mu) dF/ds2 = -dF/dbeta / s2 = -y f(y) / mu.
+  d <- gamma_distrib()
+  for (th in list(list(mu = 3, sigma2 = 2), list(mu = 1.5, sigma2 = 0.4))) {
+    q <- c(0.5, th$mu, 3 * th$mu)
+    g <- distrib_grad_cdf(d, q, th, log = FALSE)
+    expect_equal(g$mu + (2 * th$sigma2 / th$mu) * g$sigma2,
+                 -q * distrib_pdf(d, q, th) / th$mu,
+                 tolerance = 1e-6,
+                 label = sprintf("gamma identity at mu=%g", th$mu))
+  }
+})
+
+test_that("truncation takes the cdf route only where it is at least as accurate", {
+  # A closed-form or lattice parent: the route is taken.
+  expect_false(is.null(distributions7:::trunc_mass_derivs(
+    truncated(gaussian_distrib(), -1, 2), list(mu = 0.5, sigma = 1.5), 2L)))
+  expect_false(is.null(distributions7:::trunc_mass_derivs(
+    truncated(poisson_distrib(), lower = 1), list(mu = 2.5), 1L)))
+
+  # A parent whose cdf derivative is differenced: quadrature is kept, because
+  # the noise would otherwise reach the reference of the fourth-order check.
+  expect_null(distributions7:::trunc_mass_derivs(
+    truncated(gamma_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 2L))
+
+  # A mixed parent with an atom on the lower endpoint: refused for correctness.
+  tz <- truncated(zero_adjusted(gamma_distrib()), upper = 5)
+  expect_null(distributions7:::trunc_mass_derivs(tz, list(mu = 3, sigma2 = 2, za = 0.3), 1L))
+})
+
+test_that("the cdf route gives the same truncated Hessian as quadrature", {
+  d <- truncated(gaussian_distrib(), -1, 2)
+  th <- list(mu = 0.5, sigma = 1.5)
+  y <- c(-0.5, 0.3, 1.6)
+
+  m <- distributions7:::trunc_score_mean_quad(d, th)
+  EH <- distributions7:::trunc_hess_mean(d, th)
+  ES <- distributions7:::trunc_score_prod_mean(d, th)
+  h <- distrib_hessian(gaussian_distrib(), y, th)
+  pr <- distributions7:::hess_pairs(d@params)
+  quad <- lapply(names(pr), function(nm)
+    h[[nm]] - (EH[[nm]] + ES[[nm]]) + m[[pr[[nm]][1]]] * m[[pr[[nm]][2]]])
+  names(quad) <- names(pr)
+
+  got <- distrib_hessian(d, y, th)
+  for (k in names(pr)) expect_equal(got[[k]], quad[[k]], tolerance = 1e-8, label = k)
+})
