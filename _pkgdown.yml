@@ -80,6 +80,8 @@ reference:
   - distrib_deriv4
   - distrib_grad_y
   - distrib_hess_y
+  - distrib_grad_cdf
+  - distrib_hess_cdf
   - link_scale_derivatives
   - expected_derivative_methods
 
@@ -131,6 +133,7 @@ reference:
   - numerical_deriv4
   - numerical_grad_y
   - numerical_hess_y
+  - numerical_cdf_deriv
   - numerical_series
 
 - title: Utilities

@@ -343,6 +343,86 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
   S7::S7_dispatch()
 })
 
+#' Gradient of the Log Distribution Function
+#'
+#' @description
+#' Computes the first derivatives, with respect to the parameters, of
+#' \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
+#' \code{lower.tail = FALSE}.
+#'
+#' These are what a \strong{censored} observation contributes to the score. An
+#' observation known only to be at most \eqn{q} contributes \eqn{\log F(q)}, one
+#' known only to exceed \eqn{q} contributes \eqn{\log(1-F(q))}, and an interval
+#' censored one contributes \eqn{\log(F(b) - F(a))}, which is assembled from the
+#' unlogged derivatives (\code{log = FALSE}) at the two endpoints. They are also
+#' what the delta method needs for the standard error of a quantile residual.
+#'
+#' @param distrib A distribution object inheriting from the \code{distrib} class.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list (or named numeric vector) of distribution parameters.
+#'   Each parameter must have length 1 or \code{length(q)}.
+#' @param lower.tail Logical; if \code{TRUE} (default), derivatives of
+#'   \eqn{\log F(q)}, otherwise of \eqn{\log(1 - F(q))}.
+#' @param log Logical; if \code{TRUE} (default), derivatives of the \emph{log}
+#'   tail probability. With \code{FALSE} the derivatives of the probability
+#'   itself are returned, which is what interval censoring and the truncation
+#'   constant are built from.
+#' @param ... Additional arguments passed to the specific method.
+#'
+#' @return A named list with one numeric vector per parameter.
+#'
+#' @details
+#' The mathematics is one exchange of derivative and integral. Since the region
+#' of integration does not depend on \eqn{\theta},
+#' \deqn{\frac{\partial F(q;\theta)}{\partial\theta_i}
+#'   = \int_{-\infty}^{q}\frac{\partial f}{\partial\theta_i}
+#'   = \int_{-\infty}^{q} f\,\ell^{(i)}
+#'   = F(q)\;\mathbb{E}\!\left[\ell^{(i)} \mid Y \leq q\right],}
+#' so the gradient of the log distribution function is a \emph{partial mean of
+#' the score}. For a discrete distribution the integral is a finite sum and the
+#' identity is exact, which is how the default method computes it there; for a
+#' continuous one the default differentiates \code{\link{distrib_cdf}}
+#' numerically, and distributions with a closed form register it directly.
+#'
+#' @seealso \code{\link{distrib_hess_cdf}}, \code{\link{distrib_gradient}}
+#' @export
+distrib_grad_cdf <- S7::new_generic("distrib_grad_cdf", "distrib", function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  args <- check_derivative_args(distrib, q, theta)
+  q <- args$y
+  theta <- args$theta
+  S7::S7_dispatch()
+})
+
+#' Second Derivatives of the Log Distribution Function
+#'
+#' @description
+#' Computes the second derivatives, with respect to the parameters, of
+#' \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
+#' \code{lower.tail = FALSE}. Together with \code{\link{distrib_grad_cdf}} these
+#' give the observed information of a censored observation.
+#'
+#' @inheritParams distrib_grad_cdf
+#' @param ... Additional arguments passed to the specific method.
+#'
+#' @return A named list keyed as \code{\link{hess_names}(distrib@params)}.
+#'
+#' @details
+#' By the same exchange as in \code{\link{distrib_grad_cdf}}, and using
+#' \eqn{\partial_{ij} f / f = \ell^{(ij)} + \ell^{(i)}\ell^{(j)}},
+#' \deqn{\frac{\partial^{2} F(q)}{\partial\theta_i\partial\theta_j}
+#'   = F(q)\;\mathbb{E}\!\left[\ell^{(ij)} + \ell^{(i)}\ell^{(j)} \mid Y \leq q\right],}
+#' and the log scale follows from
+#' \eqn{\partial_{ij}\log P = \partial_{ij}P/P - (\partial_i P/P)(\partial_j P/P)}.
+#'
+#' @seealso \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hessian}}
+#' @export
+distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+  args <- check_derivative_args(distrib, q, theta)
+  q <- args$y
+  theta <- args$theta
+  S7::S7_dispatch()
+})
+
 #' Generate Random Parameters
 #'
 #' @description Generates sensible random parameters for a distribution based on its mathematical domain.
