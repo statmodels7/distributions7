@@ -83,6 +83,12 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentTDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TransformedDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroInflatedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BernoulliDistrib.html</loc></url>
@@ -98,6 +104,12 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.StudentTDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TransformedDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TruncatedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TruncatedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroInflatedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BernoulliDistrib.html</loc></url>

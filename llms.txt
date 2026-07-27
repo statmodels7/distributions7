@@ -798,6 +798,10 @@ transformed wrappers.
   : S7 Class for Zero-Inflated Distributions
 - [`distrib_cdf.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroInflatedDistrib.md)
   : Zero-Inflated Cumulative Distribution Function
+- [`distrib_deriv3.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroInflatedDistrib.md)
+  : Zero-Inflated Third Derivatives
+- [`distrib_deriv4.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroInflatedDistrib.md)
+  : Zero-Inflated Fourth Derivatives
 - [`distrib_expected_hessian.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroInflatedDistrib.md)
   : Zero-Inflated Analytical Expected Hessian
 - [`distrib_gradient.ZeroInflatedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroInflatedDistrib.md)
@@ -814,6 +818,10 @@ transformed wrappers.
   : S7 Class for Zero-Adjusted Discrete (Hurdle) Distributions
 - [`distrib_cdf.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedDiscreteDistrib.md)
   : Zero-Adjusted Discrete Cumulative Distribution Function
+- [`distrib_deriv3.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedDiscreteDistrib.md)
+  : Hurdle Third Derivatives
+- [`distrib_deriv4.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedDiscreteDistrib.md)
+  : Hurdle Fourth Derivatives
 - [`distrib_expected_hessian.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedDiscreteDistrib.md)
   : Zero-Adjusted Discrete Analytical Expected Hessian
 - [`distrib_gradient.ZeroAdjustedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroAdjustedDiscreteDistrib.md)
@@ -832,6 +840,10 @@ transformed wrappers.
   : Atoms of a Zero-Adjusted Continuous Distribution
 - [`distrib_cdf.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Cumulative Distribution Function
+- [`distrib_deriv3.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedContinuousDistrib.md)
+  : Zero-Adjusted Continuous Third Derivatives
+- [`distrib_deriv4.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ZeroAdjustedContinuousDistrib.md)
+  : Zero-Adjusted Continuous Fourth Derivatives
 - [`distrib_expected_hessian.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedContinuousDistrib.md)
   : Zero-Adjusted Continuous Analytical Expected Hessian
 - [`distrib_grad_y.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md)
@@ -852,6 +864,10 @@ transformed wrappers.
   : S7 Class for Truncated Discrete Distributions
 - [`distrib_cdf.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedDiscreteDistrib.md)
   : Truncated Cumulative Distribution Function (Discrete)
+- [`distrib_deriv3.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedDiscreteDistrib.md)
+  : Truncated Third Derivatives (Discrete)
+- [`distrib_deriv4.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TruncatedDiscreteDistrib.md)
+  : Truncated Fourth Derivatives (Discrete)
 - [`distrib_expected_hessian.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedDiscreteDistrib.md)
   : Truncated Analytical Expected Hessian (Discrete)
 - [`distrib_gradient.TruncatedDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TruncatedDiscreteDistrib.md)
@@ -870,6 +886,10 @@ transformed wrappers.
   : Atoms of a Truncated Continuous Distribution
 - [`distrib_cdf.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedContinuousDistrib.md)
   : Truncated Cumulative Distribution Function (Continuous)
+- [`distrib_deriv3.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedContinuousDistrib.md)
+  : Truncated Third Derivatives (Continuous)
+- [`distrib_deriv4.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TruncatedContinuousDistrib.md)
+  : Truncated Fourth Derivatives (Continuous)
 - [`distrib_expected_hessian.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TruncatedContinuousDistrib.md)
   : Truncated Analytical Expected Hessian (Continuous)
 - [`distrib_grad_y.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.TruncatedContinuousDistrib.md)
@@ -890,6 +910,10 @@ transformed wrappers.
   : S7 Class for Transformed Distributions
 - [`distrib_cdf.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.TransformedDistrib.md)
   : Transformed Cumulative Distribution Function
+- [`distrib_deriv3.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TransformedDistrib.md)
+  : Transformed Third Derivatives
+- [`distrib_deriv4.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.TransformedDistrib.md)
+  : Transformed Fourth Derivatives
 - [`distrib_expected_hessian.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.TransformedDistrib.md)
   : Transformed Analytical Expected Hessian
 - [`distrib_gradient.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.TransformedDistrib.md)
