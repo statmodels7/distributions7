@@ -542,6 +542,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Student's t Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.StudentTDistrib.md)
   : Student's t Analytical Expected Hessian
+- [`distrib_grad_cdf.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentTDistrib.md)
+  : Student t Log-CDF Gradient
 - [`distrib_grad_y.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.StudentTDistrib.md)
   : Student's t Response Derivatives
 - [`distrib_gradient.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.StudentTDistrib.md)
@@ -596,6 +598,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Pseudo-Huber Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md)
   : Pseudo-Huber Analytical Expected Hessian
+- [`distrib_grad_cdf.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuberDistrib.md)
+  : Pseudo-Huber Log-CDF Gradient
 - [`distrib_grad_y.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.PseudoHuberDistrib.md)
   : Pseudo-Huber Response Derivatives
 - [`distrib_gradient.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuberDistrib.md)
@@ -650,6 +654,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Inverse-Gaussian Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.InvGaussDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGaussDistrib.md)
   : Inverse-Gaussian Analytical Expected Hessian
+- [`distrib_grad_cdf.InvGaussDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGaussDistrib.md)
+  : Inverse Gaussian Log-CDF Gradient
 - [`distrib_grad_y.InvGaussDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGaussDistrib.md)
   : Inverse-Gaussian Response Derivatives
 - [`distrib_gradient.InvGaussDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGaussDistrib.md)
@@ -677,6 +683,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Lognormal Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.LognormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LognormalDistrib.md)
   : Lognormal Analytical Expected Hessian
+- [`distrib_grad_cdf.LognormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LognormalDistrib.md)
+  : Lognormal Log-CDF Gradient
 - [`distrib_grad_y.LognormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LognormalDistrib.md)
   : Lognormal Response Derivatives
 - [`distrib_gradient.LognormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.LognormalDistrib.md)
@@ -731,6 +739,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Bernoulli Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BernoulliDistrib.md)
   : Bernoulli Analytical Expected Hessian
+- [`distrib_grad_cdf.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BernoulliDistrib.md)
+  : Bernoulli Log-CDF Gradient
 - [`distrib_gradient.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BernoulliDistrib.md)
   : Bernoulli Analytical Gradient
 - [`distrib_hessian.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BernoulliDistrib.md)
@@ -754,6 +764,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Binomial Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BinomialDistrib.md)
   : Binomial Analytical Expected Hessian
+- [`distrib_grad_cdf.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BinomialDistrib.md)
+  : Binomial Log-CDF Gradient
 - [`distrib_gradient.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BinomialDistrib.md)
   : Binomial Analytical Gradient
 - [`distrib_hessian.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BinomialDistrib.md)
@@ -777,6 +789,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Poisson Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PoissonDistrib.md)
   : Poisson Analytical Expected Hessian
+- [`distrib_grad_cdf.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PoissonDistrib.md)
+  : Poisson Log-CDF Gradient
 - [`distrib_gradient.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.PoissonDistrib.md)
   : Poisson Analytical Gradient
 - [`distrib_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.PoissonDistrib.md)
@@ -800,6 +814,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Negative Binomial Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBinDistrib.md)
   : Negative Binomial Analytical Expected Hessian
+- [`distrib_grad_cdf.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.NegBinDistrib.md)
+  : Negative Binomial Log-CDF Gradient
 - [`distrib_gradient.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBinDistrib.md)
   : Negative Binomial Analytical Gradient
 - [`distrib_hessian.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBinDistrib.md)

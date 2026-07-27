@@ -59,7 +59,8 @@ not supply a closed form.</p>
 <span>  <span class="va">q</span>,</span>
 <span>  <span class="va">theta</span>,</span>
 <span>  order <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  h_rel <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">order</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  h_rel <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="op">(</span><span class="va">order</span> <span class="op">+</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  which <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,6 +86,13 @@ not supply a closed form.</p>
 
 <dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
 <dd><p>Numeric. Relative finite-difference step.</p></dd>
+
+
+<dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
+<dd><p>Character vector of parameter names to differentiate, or
+<code>NULL</code> (default) for all of them. Used at first order by families that
+have a closed form for some parameters and not others, so that only the
+remaining ones cost a pair of cdf evaluations.</p></dd>
 
 </dl></div>
     <div class="section level2">

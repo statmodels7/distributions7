@@ -16,7 +16,8 @@ numerical_cdf_deriv(
   q,
   theta,
   order = 1L,
-  h_rel = .Machine$double.eps^(1/(order + 2))
+  h_rel = .Machine$double.eps^(1/(order + 2)),
+  which = NULL
 )
 ```
 
@@ -41,6 +42,13 @@ numerical_cdf_deriv(
 - h_rel:
 
   Numeric. Relative finite-difference step.
+
+- which:
+
+  Character vector of parameter names to differentiate, or `NULL`
+  (default) for all of them. Used at first order by families that have a
+  closed form for some parameters and not others, so that only the
+  remaining ones cost a pair of cdf evaluations.
 
 ## Value
 
