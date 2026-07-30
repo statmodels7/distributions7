@@ -62,7 +62,7 @@ distribution's <code>params_bounds</code>, and is finite. Domains are treated as
 Bernoulli requires \(0 &lt; \mu &lt; 1\), since the log-likelihood and its
 derivatives are not defined at the boundary.</p>
 <p>This is called automatically by every generic (through the internal
-<code>align_theta()</code>), so passing an out-of-domain value raises an informative
+<code><a href="align_theta.html">align_theta()</a></code>), so passing an out-of-domain value raises an informative
 error instead of silently producing <code>NaN</code>. It is exported so that it can
 also be used directly, e.g. when writing an optimizer.</p>
     </div>

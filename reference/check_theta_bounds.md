@@ -7,9 +7,10 @@ a Bernoulli requires \\0 \< \mu \< 1\\, since the log-likelihood and its
 derivatives are not defined at the boundary.
 
 This is called automatically by every generic (through the internal
-`align_theta()`), so passing an out-of-domain value raises an
-informative error instead of silently producing `NaN`. It is exported so
-that it can also be used directly, e.g. when writing an optimizer.
+[`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)),
+so passing an out-of-domain value raises an informative error instead of
+silently producing `NaN`. It is exported so that it can also be used
+directly, e.g. when writing an optimizer.
 
 ## Usage
 

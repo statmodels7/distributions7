@@ -7,7 +7,7 @@ again and again, and each time only as far as that package happened to
 need — the density and the score, sometimes the Hessian, rarely anything
 beyond.
 
-[distributions7](https://statmodels7.github.io/distributions7) writes
+[distributions7](https://statmodels7.github.io/distributions7/) writes
 them once, as objects. Each carries the usual density, distribution and
 quantile functions, and the **exact derivatives of the log-likelihood up
 to fourth order** — with respect to the parameters, with respect to the
@@ -1007,6 +1007,342 @@ inherits unless it registers something more specific.
   : Pseudo-Huber Distribution Object (Location-Scale Parameterization)
 - [`student_t_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)
   : Student's t Distribution Object (Location-Scale Parameterization)
+
+## Internals
+
+The machinery the exported functions are built from. None of it is
+exported, and none of it is needed to use the package — it is documented
+so that the derivations can be followed from the code that implements
+them: the set partitions behind the Bartlett identities and the wrapper
+derivatives, the Bell polynomials behind the link scale, the
+ratio-of-uniforms sampler and the transforms that make it work on a
+divergent density.
+
+- [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
+  : Align Parameters to the Distribution's Parameter Order
+
+- [`assemble_deriv()`](https://statmodels7.github.io/distributions7/reference/assemble_deriv.md)
+  : Assemble One Order of a Wrapper's Derivatives
+
+- [`bell_f_ratio()`](https://statmodels7.github.io/distributions7/reference/bell_f_ratio.md)
+  : Complete Bell Polynomial in the Parent's Log-Derivatives
+
+- [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
+  : Partial Bell Polynomials for Orders up to Four
+
+- [`canon_key()`](https://statmodels7.github.io/distributions7/reference/canon_key.md)
+  : Canonical Component Name of a Block
+
+- [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
+  : Put CDF Derivatives on the Requested Tail and Scale
+
+- [`check_bounds_fast()`](https://statmodels7.github.io/distributions7/reference/check_bounds_fast.md)
+  : Check Parameter Domains, Taking the Properties as Arguments
+
+- [`check_derivative_args()`](https://statmodels7.github.io/distributions7/reference/check_derivative_args.md)
+  : Shared Argument Handling for the Derivative Generics
+
+- [`check_not_stacked()`](https://statmodels7.github.io/distributions7/reference/check_not_stacked.md)
+  : Refuse to Stack Two Zero Parameters
+
+- [`check_support_is_rich_enough()`](https://statmodels7.github.io/distributions7/reference/check_support_is_rich_enough.md)
+  : Refuse a Model With More Parameters Than the Support Can Distinguish
+
+- [`check_truncation_points()`](https://statmodels7.github.io/distributions7/reference/check_truncation_points.md)
+  : Validate the Truncation Endpoints
+
+- [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
+  : Index Tuples Matching the Package's Component Naming
+
+- [`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
+  : Index Tuples Behind the Higher-Order Derivative Names
+
+- [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
+  : Cumulative Probability Table Over a Lattice Support
+
+- [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md)
+  : CDF Derivatives of a Lattice Distribution, Exactly
+
+- [`distrib_atoms.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.distrib.md)
+  : Default Atoms: None
+
+- [`distrib_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md)
+  : Default Numerical CDF for Continuous Distributions
+
+- [`distrib_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md)
+  : Default Numerical CDF for Discrete Distributions
+
+- [`distrib_deriv3.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.md)
+  :
+
+  Default Third-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv4.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.md)
+  :
+
+  Default Fourth-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
+  : One Component of the Parent's Derivative
+
+- [`distrib_expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.distrib.md)
+  :
+
+  Default Expected Hessian for `distrib` Objects
+
+- [`distrib_grad_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.md)
+  : Default Log-CDF Gradient for Continuous Distributions
+
+- [`distrib_grad_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.md)
+  : Log-CDF Gradient for Discrete Distributions
+
+- [`distrib_grad_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
+  : Default Response Gradient for Continuous Distributions
+
+- [`distrib_gradient.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.md)
+  :
+
+  Default Numerical Gradient for `distrib` Objects
+
+- [`distrib_hess_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.md)
+  : Default Log-CDF Hessian for Continuous Distributions
+
+- [`distrib_hess_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.discrete_distrib.md)
+  : Log-CDF Hessian for Discrete Distributions
+
+- [`distrib_hess_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.continuous_distrib.md)
+  : Default Response Hessian for Continuous Distributions
+
+- [`distrib_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.distrib.md)
+  :
+
+  Default Numerical Hessian for `distrib` Objects
+
+- [`distrib_quantile.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.continuous_distrib.md)
+  : Default Numerical Quantile Function for Continuous Distributions
+
+- [`distrib_quantile.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md)
+  : Default Numerical Quantile Function for Discrete Distributions
+
+- [`distrib_rng.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.continuous_distrib.md)
+  : Default Numerical RNG for Continuous Distributions
+
+- [`distrib_rng.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.discrete_distrib.md)
+  : Default Numerical RNG for Discrete Distributions
+
+- [`expectation.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
+  : Expectation for Truncated Continuous Distributions
+
+- [`expectation.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md)
+  : Expectation for Zero-Adjusted Continuous Distributions
+
+- [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
+  : Expected Derivatives by the Bartlett Identity
+
+- [`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md)
+  : Expected Derivatives by Numerical Integration
+
+- [`expected_by_mc()`](https://statmodels7.github.io/distributions7/reference/expected_by_mc.md)
+  : Expected Derivatives by Monte Carlo
+
+- [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
+  : Dispatch an Expected-Derivative Strategy
+
+- [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
+  : Which Observations the Finite-Difference Reference Can Be Trusted At
+
+- [`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
+  : Locate a High-Density Point of a Bare Log-Density
+
+- [`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)
+  : Locate an Interior High-Density Point
+
+- [`fit_dtheta_deta()`](https://statmodels7.github.io/distributions7/reference/fit_dtheta_deta.md)
+  : Jacobian of the Inverse Link at the Estimate
+
+- [`fit_eta_from_theta()`](https://statmodels7.github.io/distributions7/reference/fit_eta_from_theta.md)
+  : Map Parameters to the Link Scale
+
+- [`fit_hess_matrix()`](https://statmodels7.github.io/distributions7/reference/fit_hess_matrix.md)
+  : Summed Hessian on the Link Scale, as a Matrix
+
+- [`fit_loglik()`](https://statmodels7.github.io/distributions7/reference/fit_loglik.md)
+  : Total Log-Likelihood
+
+- [`fit_score()`](https://statmodels7.github.io/distributions7/reference/fit_score.md)
+  : Summed Score on the Link Scale
+
+- [`fit_theta_from_eta()`](https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.md)
+  : Map the Link Scale Back to Parameters
+
+- [`generate_random_theta.distrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.md)
+  :
+
+  Generate Random Parameters for `distrib` Objects
+
+- [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
+  : The Generalized Ratio-of-Uniforms Sampler
+
+- [`grou_two_sided()`](https://statmodels7.github.io/distributions7/reference/grou_two_sided.md)
+  : Ratio-of-Uniforms for a Density Diverging at Both Edges
+
+- [`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md)
+  : Does This Distribution Have a Real Quantile Method?
+
+- [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
+  : Can the Parent Supply Exact CDF Derivatives?
+
+- [`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
+  : Invert the Hessian Component Names
+
+- [`inverse_link_derivs()`](https://statmodels7.github.io/distributions7/reference/inverse_link_derivs.md)
+  : Inverse-Link Derivatives for Every Parameter
+
+- [`is_truncated()`](https://statmodels7.github.io/distributions7/reference/is_truncated.md)
+  : Is This Distribution Already Truncated?
+
+- [`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
+  : Does This Distribution Already Model a Probability of Zero?
+
+- [`link_scale_lower_orders()`](https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.md)
+  : Lower-Order Parameter-Scale Derivatives for the Chain Rule
+
+- [`loc_scale_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.md)
+  : CDF Derivatives of a Location-Scale Family
+
+- [`loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.md)
+  : Location-Scale CDF Gradient
+
+- [`loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.md)
+  : Location-Scale CDF Hessian
+
+- [`log_deriv()`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
+  : Derivatives of a Logarithm From the Ratios Alone
+
+- [`log_pow_deriv()`](https://statmodels7.github.io/distributions7/reference/log_pow_deriv.md)
+  : Derivatives of log(p) and log(1 - p)
+
+- [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
+  : Detect and Measure a Divergence at the Edges of the Support
+
+- [`mean.distrib`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
+  : Mean of a Distribution Object
+
+- [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
+  : Memoise a Ratio Function on Its Block
+
+- [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
+  : Number of Points in a Lattice Support
+
+- [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)
+  : Record One Check Result
+
+- [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
+  : Observed Derivatives of a Given Order
+
+- [`order_indices()`](https://statmodels7.github.io/distributions7/reference/order_indices.md)
+  : Multi-Indices of a Given Order, as Parameter Names
+
+- [`parent_ell()`](https://statmodels7.github.io/distributions7/reference/parent_ell.md)
+  : Look Up the Parent's Derivative Components by Block
+
+- [`parent_mass_at()`](https://statmodels7.github.io/distributions7/reference/parent_mass_at.md)
+  : Probability the Parent Puts on a Single Point
+
+- [`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
+  : CDF Gradient When Only Some Parameters Are Location-Scale
+
+- [`plot.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
+  : Plot Method for Continuous Distributions
+
+- [`plot.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
+  : Plot Method for Discrete Distributions
+
+- [`print.distrib`](https://statmodels7.github.io/distributions7/reference/print.distrib.md)
+  :
+
+  Print Method for `distrib` Objects
+
+- [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
+  : Run a Check, Turning an Error Into a Failure
+
+- [`set_partitions()`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
+  : All Set Partitions of a Finite Index Set
+
+- [`split_index()`](https://statmodels7.github.io/distributions7/reference/split_index.md)
+  : Split a Multi-Index Into Parent and Wrapper Parts
+
+- [`split_mix_theta()`](https://statmodels7.github.io/distributions7/reference/split_mix_theta.md)
+  : Split a Wrapper's Parameters From Its Parent's
+
+- [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+  : Convert Parameter-Scale Derivatives to the Link Scale
+
+- [`trans_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trans_deriv_k.md)
+  : Derivatives of a Transformed Distribution
+
+- [`trunc_M()`](https://statmodels7.github.io/distributions7/reference/trunc_M.md)
+  : Second-Order Truncated Moment of the Parent's Derivatives
+
+- [`trunc_cdf()`](https://statmodels7.github.io/distributions7/reference/trunc_cdf.md)
+  : Distribution Function of a Truncated Distribution
+
+- [`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
+  : The Truncation Constant and Lower Tail
+
+- [`trunc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)
+  : Derivatives of a Truncated Distribution
+
+- [`trunc_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_expected_hessian.md)
+  : Expected Hessian of a Truncated Distribution
+
+- [`trunc_gradient()`](https://statmodels7.github.io/distributions7/reference/trunc_gradient.md)
+  : Score of a Truncated Distribution
+
+- [`trunc_hess_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_hess_mean.md)
+  : Truncated Mean of the Parent's Hessian
+
+- [`trunc_hessian()`](https://statmodels7.github.io/distributions7/reference/trunc_hessian.md)
+  : Observed Hessian of a Truncated Distribution
+
+- [`trunc_inside()`](https://statmodels7.github.io/distributions7/reference/trunc_inside.md)
+  : Which Observations Lie in the Truncated Support
+
+- [`trunc_mass_derivs()`](https://statmodels7.github.io/distributions7/reference/trunc_mass_derivs.md)
+  : Derivatives of the Truncation Constant via the Parent's CDF
+
+- [`trunc_pdf()`](https://statmodels7.github.io/distributions7/reference/trunc_pdf.md)
+  : Density of a Truncated Distribution
+
+- [`trunc_quantile()`](https://statmodels7.github.io/distributions7/reference/trunc_quantile.md)
+  : Quantile Function of a Truncated Distribution
+
+- [`trunc_rng()`](https://statmodels7.github.io/distributions7/reference/trunc_rng.md)
+  : Random Generation From a Truncated Distribution
+
+- [`trunc_score_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean.md)
+  : Mean of the Parent's Score Under the Truncated Law
+
+- [`trunc_score_mean_quad()`](https://statmodels7.github.io/distributions7/reference/trunc_score_mean_quad.md)
+  : Truncated Score Mean by Quadrature
+
+- [`trunc_score_prod_mean()`](https://statmodels7.github.io/distributions7/reference/trunc_score_prod_mean.md)
+  : Truncated Mean of Products of Scores
+
+- [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
+  : Response Derivative of a Truncated Distribution
+
+- [`za_cont_deriv_k()`](https://statmodels7.github.io/distributions7/reference/za_cont_deriv_k.md)
+  : Derivatives of a Zero-Adjusted Continuous Distribution
+
+- [`za_disc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/za_disc_deriv_k.md)
+  : Derivatives of a Zero-Adjusted Discrete Distribution
+
+- [`za_y_deriv()`](https://statmodels7.github.io/distributions7/reference/za_y_deriv.md)
+  : Response Derivative of a Zero-Adjusted Distribution
+
+- [`zi_deriv_k()`](https://statmodels7.github.io/distributions7/reference/zi_deriv_k.md)
+  : Derivatives of a Zero-Inflated Distribution
 
 # Articles
 

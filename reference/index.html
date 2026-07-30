@@ -2656,6 +2656,743 @@
 
         </dt>
         <dd>Student's t Distribution Object (Location-Scale Parameterization)</dd>
+      </dl></div><div class="section level2">
+      <h2 id="internals">Internals<a class="anchor" aria-label="anchor" href="#internals"></a></h2>
+
+      <div class="section-desc"><p>The machinery the exported functions are built from. None of it is exported, and none of it is needed to use the package — it is documented so that the derivations can be followed from the code that implements them: the set partitions behind the Bartlett identities and the wrapper derivatives, the Bell polynomials behind the link scale, the ratio-of-uniforms sampler and the transforms that make it work on a divergent density.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="align_theta.html">align_theta()</a></code>
+
+        </dt>
+        <dd>Align Parameters to the Distribution's Parameter Order</dd>
+
+        <dt>
+
+          <code><a href="assemble_deriv.html">assemble_deriv()</a></code>
+
+        </dt>
+        <dd>Assemble One Order of a Wrapper's Derivatives</dd>
+
+        <dt>
+
+          <code><a href="bell_f_ratio.html">bell_f_ratio()</a></code>
+
+        </dt>
+        <dd>Complete Bell Polynomial in the Parent's Log-Derivatives</dd>
+
+        <dt>
+
+          <code><a href="bell_partial.html">bell_partial()</a></code>
+
+        </dt>
+        <dd>Partial Bell Polynomials for Orders up to Four</dd>
+
+        <dt>
+
+          <code><a href="canon_key.html">canon_key()</a></code>
+
+        </dt>
+        <dd>Canonical Component Name of a Block</dd>
+
+        <dt>
+
+          <code><a href="cdf_tail_scale.html">cdf_tail_scale()</a></code>
+
+        </dt>
+        <dd>Put CDF Derivatives on the Requested Tail and Scale</dd>
+
+        <dt>
+
+          <code><a href="check_bounds_fast.html">check_bounds_fast()</a></code>
+
+        </dt>
+        <dd>Check Parameter Domains, Taking the Properties as Arguments</dd>
+
+        <dt>
+
+          <code><a href="check_derivative_args.html">check_derivative_args()</a></code>
+
+        </dt>
+        <dd>Shared Argument Handling for the Derivative Generics</dd>
+
+        <dt>
+
+          <code><a href="check_not_stacked.html">check_not_stacked()</a></code>
+
+        </dt>
+        <dd>Refuse to Stack Two Zero Parameters</dd>
+
+        <dt>
+
+          <code><a href="check_support_is_rich_enough.html">check_support_is_rich_enough()</a></code>
+
+        </dt>
+        <dd>Refuse a Model With More Parameters Than the Support Can Distinguish</dd>
+
+        <dt>
+
+          <code><a href="check_truncation_points.html">check_truncation_points()</a></code>
+
+        </dt>
+        <dd>Validate the Truncation Endpoints</dd>
+
+        <dt>
+
+          <code><a href="deriv_index_list.html">deriv_index_list()</a></code>
+
+        </dt>
+        <dd>Index Tuples Matching the Package's Component Naming</dd>
+
+        <dt>
+
+          <code><a href="deriv_indices.html">deriv_indices()</a></code>
+
+        </dt>
+        <dd>Index Tuples Behind the Higher-Order Derivative Names</dd>
+
+        <dt>
+
+          <code><a href="disc_cum_table.html">disc_cum_table()</a></code>
+
+        </dt>
+        <dd>Cumulative Probability Table Over a Lattice Support</dd>
+
+        <dt>
+
+          <code><a href="discrete_cdf_deriv.html">discrete_cdf_deriv()</a></code>
+
+        </dt>
+        <dd>CDF Derivatives of a Lattice Distribution, Exactly</dd>
+
+        <dt>
+
+          <code><a href="distrib_atoms.distrib.html">distrib_atoms.distrib</a></code>
+
+        </dt>
+        <dd>Default Atoms: None</dd>
+
+        <dt>
+
+          <code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical CDF for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_cdf.discrete_distrib.html">distrib_cdf.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical CDF for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv3.distrib.html">distrib_deriv3.distrib</a></code>
+
+        </dt>
+        <dd>Default Third-Order Derivatives for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv4.distrib.html">distrib_deriv4.distrib</a></code>
+
+        </dt>
+        <dd>Default Fourth-Order Derivatives for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_deriv_component.html">distrib_deriv_component()</a></code>
+
+        </dt>
+        <dd>One Component of the Parent's Derivative</dd>
+
+        <dt>
+
+          <code><a href="distrib_expected_hessian.distrib.html">distrib_expected_hessian.distrib</a></code>
+
+        </dt>
+        <dd>Default Expected Hessian for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_grad_cdf.continuous_distrib.html">distrib_grad_cdf.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Log-CDF Gradient for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_grad_cdf.discrete_distrib.html">distrib_grad_cdf.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Log-CDF Gradient for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Response Gradient for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_gradient.distrib.html">distrib_gradient.distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical Gradient for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_hess_cdf.continuous_distrib.html">distrib_hess_cdf.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Log-CDF Hessian for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_hess_cdf.discrete_distrib.html">distrib_hess_cdf.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Log-CDF Hessian for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_hess_y.continuous_distrib.html">distrib_hess_y.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Response Hessian for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_hessian.distrib.html">distrib_hessian.distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical Hessian for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_quantile.continuous_distrib.html">distrib_quantile.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical Quantile Function for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_quantile.discrete_distrib.html">distrib_quantile.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical Quantile Function for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_rng.continuous_distrib.html">distrib_rng.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical RNG for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_rng.discrete_distrib.html">distrib_rng.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Default Numerical RNG for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="expectation.TruncatedContinuousDistrib.html">expectation.TruncatedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Expectation for Truncated Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="expectation.ZeroAdjustedContinuousDistrib.html">expectation.ZeroAdjustedContinuousDistrib</a></code>
+
+        </dt>
+        <dd>Expectation for Zero-Adjusted Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="expected_by_bartlett.html">expected_by_bartlett()</a></code>
+
+        </dt>
+        <dd>Expected Derivatives by the Bartlett Identity</dd>
+
+        <dt>
+
+          <code><a href="expected_by_integrate.html">expected_by_integrate()</a></code>
+
+        </dt>
+        <dd>Expected Derivatives by Numerical Integration</dd>
+
+        <dt>
+
+          <code><a href="expected_by_mc.html">expected_by_mc()</a></code>
+
+        </dt>
+        <dd>Expected Derivatives by Monte Carlo</dd>
+
+        <dt>
+
+          <code><a href="expected_derivative.html">expected_derivative()</a></code>
+
+        </dt>
+        <dd>Dispatch an Expected-Derivative Strategy</dd>
+
+        <dt>
+
+          <code><a href="fd_is_reliable.html">fd_is_reliable()</a></code>
+
+        </dt>
+        <dd>Which Observations the Finite-Difference Reference Can Be Trusted At</dd>
+
+        <dt>
+
+          <code><a href="find_lp_anchor.html">find_lp_anchor()</a></code>
+
+        </dt>
+        <dd>Locate a High-Density Point of a Bare Log-Density</dd>
+
+        <dt>
+
+          <code><a href="find_pdf_anchor.html">find_pdf_anchor()</a></code>
+
+        </dt>
+        <dd>Locate an Interior High-Density Point</dd>
+
+        <dt>
+
+          <code><a href="fit_dtheta_deta.html">fit_dtheta_deta()</a></code>
+
+        </dt>
+        <dd>Jacobian of the Inverse Link at the Estimate</dd>
+
+        <dt>
+
+          <code><a href="fit_eta_from_theta.html">fit_eta_from_theta()</a></code>
+
+        </dt>
+        <dd>Map Parameters to the Link Scale</dd>
+
+        <dt>
+
+          <code><a href="fit_hess_matrix.html">fit_hess_matrix()</a></code>
+
+        </dt>
+        <dd>Summed Hessian on the Link Scale, as a Matrix</dd>
+
+        <dt>
+
+          <code><a href="fit_loglik.html">fit_loglik()</a></code>
+
+        </dt>
+        <dd>Total Log-Likelihood</dd>
+
+        <dt>
+
+          <code><a href="fit_score.html">fit_score()</a></code>
+
+        </dt>
+        <dd>Summed Score on the Link Scale</dd>
+
+        <dt>
+
+          <code><a href="fit_theta_from_eta.html">fit_theta_from_eta()</a></code>
+
+        </dt>
+        <dd>Map the Link Scale Back to Parameters</dd>
+
+        <dt>
+
+          <code><a href="generate_random_theta.distrib.html">generate_random_theta.distrib</a></code>
+
+        </dt>
+        <dd>Generate Random Parameters for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="grou_core.html">grou_core()</a></code>
+
+        </dt>
+        <dd>The Generalized Ratio-of-Uniforms Sampler</dd>
+
+        <dt>
+
+          <code><a href="grou_two_sided.html">grou_two_sided()</a></code>
+
+        </dt>
+        <dd>Ratio-of-Uniforms for a Density Diverging at Both Edges</dd>
+
+        <dt>
+
+          <code><a href="has_analytic_quantile.html">has_analytic_quantile()</a></code>
+
+        </dt>
+        <dd>Does This Distribution Have a Real Quantile Method?</dd>
+
+        <dt>
+
+          <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code>
+
+        </dt>
+        <dd>Can the Parent Supply Exact CDF Derivatives?</dd>
+
+        <dt>
+
+          <code><a href="hess_pairs.html">hess_pairs()</a></code>
+
+        </dt>
+        <dd>Invert the Hessian Component Names</dd>
+
+        <dt>
+
+          <code><a href="inverse_link_derivs.html">inverse_link_derivs()</a></code>
+
+        </dt>
+        <dd>Inverse-Link Derivatives for Every Parameter</dd>
+
+        <dt>
+
+          <code><a href="is_truncated.html">is_truncated()</a></code>
+
+        </dt>
+        <dd>Is This Distribution Already Truncated?</dd>
+
+        <dt>
+
+          <code><a href="is_zero_wrapper.html">is_zero_wrapper()</a></code>
+
+        </dt>
+        <dd>Does This Distribution Already Model a Probability of Zero?</dd>
+
+        <dt>
+
+          <code><a href="link_scale_lower_orders.html">link_scale_lower_orders()</a></code>
+
+        </dt>
+        <dd>Lower-Order Parameter-Scale Derivatives for the Chain Rule</dd>
+
+        <dt>
+
+          <code><a href="loc_scale_cdf_deriv.html">loc_scale_cdf_deriv()</a></code>
+
+        </dt>
+        <dd>CDF Derivatives of a Location-Scale Family</dd>
+
+        <dt>
+
+          <code><a href="loc_scale_grad_cdf.html">loc_scale_grad_cdf()</a></code>
+
+        </dt>
+        <dd>Location-Scale CDF Gradient</dd>
+
+        <dt>
+
+          <code><a href="loc_scale_hess_cdf.html">loc_scale_hess_cdf()</a></code>
+
+        </dt>
+        <dd>Location-Scale CDF Hessian</dd>
+
+        <dt>
+
+          <code><a href="log_deriv.html">log_deriv()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Logarithm From the Ratios Alone</dd>
+
+        <dt>
+
+          <code><a href="log_pow_deriv.html">log_pow_deriv()</a></code>
+
+        </dt>
+        <dd>Derivatives of log(p) and log(1 - p)</dd>
+
+        <dt>
+
+          <code><a href="lp_edge_divergence.html">lp_edge_divergence()</a></code>
+
+        </dt>
+        <dd>Detect and Measure a Divergence at the Edges of the Support</dd>
+
+        <dt>
+
+          <code><a href="mean.distrib.html">mean.distrib</a></code>
+
+        </dt>
+        <dd>Mean of a Distribution Object</dd>
+
+        <dt>
+
+          <code><a href="memo_ratio.html">memo_ratio()</a></code>
+
+        </dt>
+        <dd>Memoise a Ratio Function on Its Block</dd>
+
+        <dt>
+
+          <code><a href="n_support_points.html">n_support_points()</a></code>
+
+        </dt>
+        <dd>Number of Points in a Lattice Support</dd>
+
+        <dt>
+
+          <code><a href="new_check.html">new_check()</a></code>
+
+        </dt>
+        <dd>Record One Check Result</dd>
+
+        <dt>
+
+          <code><a href="observed_deriv.html">observed_deriv()</a></code>
+
+        </dt>
+        <dd>Observed Derivatives of a Given Order</dd>
+
+        <dt>
+
+          <code><a href="order_indices.html">order_indices()</a></code>
+
+        </dt>
+        <dd>Multi-Indices of a Given Order, as Parameter Names</dd>
+
+        <dt>
+
+          <code><a href="parent_ell.html">parent_ell()</a></code>
+
+        </dt>
+        <dd>Look Up the Parent's Derivative Components by Block</dd>
+
+        <dt>
+
+          <code><a href="parent_mass_at.html">parent_mass_at()</a></code>
+
+        </dt>
+        <dd>Probability the Parent Puts on a Single Point</dd>
+
+        <dt>
+
+          <code><a href="partial_loc_scale_grad_cdf.html">partial_loc_scale_grad_cdf()</a></code>
+
+        </dt>
+        <dd>CDF Gradient When Only Some Parameters Are Location-Scale</dd>
+
+        <dt>
+
+          <code><a href="plot.continuous_distrib.html">plot.continuous_distrib</a></code>
+
+        </dt>
+        <dd>Plot Method for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="plot.discrete_distrib.html">plot.discrete_distrib</a></code>
+
+        </dt>
+        <dd>Plot Method for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="print.distrib.html">print.distrib</a></code>
+
+        </dt>
+        <dd>Print Method for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="safe_check.html">safe_check()</a></code>
+
+        </dt>
+        <dd>Run a Check, Turning an Error Into a Failure</dd>
+
+        <dt>
+
+          <code><a href="set_partitions.html">set_partitions()</a></code>
+
+        </dt>
+        <dd>All Set Partitions of a Finite Index Set</dd>
+
+        <dt>
+
+          <code><a href="split_index.html">split_index()</a></code>
+
+        </dt>
+        <dd>Split a Multi-Index Into Parent and Wrapper Parts</dd>
+
+        <dt>
+
+          <code><a href="split_mix_theta.html">split_mix_theta()</a></code>
+
+        </dt>
+        <dd>Split a Wrapper's Parameters From Its Parent's</dd>
+
+        <dt>
+
+          <code><a href="to_link_scale.html">to_link_scale()</a></code>
+
+        </dt>
+        <dd>Convert Parameter-Scale Derivatives to the Link Scale</dd>
+
+        <dt>
+
+          <code><a href="trans_deriv_k.html">trans_deriv_k()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Transformed Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_M.html">trunc_M()</a></code>
+
+        </dt>
+        <dd>Second-Order Truncated Moment of the Parent's Derivatives</dd>
+
+        <dt>
+
+          <code><a href="trunc_cdf.html">trunc_cdf()</a></code>
+
+        </dt>
+        <dd>Distribution Function of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_constants.html">trunc_constants()</a></code>
+
+        </dt>
+        <dd>The Truncation Constant and Lower Tail</dd>
+
+        <dt>
+
+          <code><a href="trunc_deriv_k.html">trunc_deriv_k()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_expected_hessian.html">trunc_expected_hessian()</a></code>
+
+        </dt>
+        <dd>Expected Hessian of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_gradient.html">trunc_gradient()</a></code>
+
+        </dt>
+        <dd>Score of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_hess_mean.html">trunc_hess_mean()</a></code>
+
+        </dt>
+        <dd>Truncated Mean of the Parent's Hessian</dd>
+
+        <dt>
+
+          <code><a href="trunc_hessian.html">trunc_hessian()</a></code>
+
+        </dt>
+        <dd>Observed Hessian of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_inside.html">trunc_inside()</a></code>
+
+        </dt>
+        <dd>Which Observations Lie in the Truncated Support</dd>
+
+        <dt>
+
+          <code><a href="trunc_mass_derivs.html">trunc_mass_derivs()</a></code>
+
+        </dt>
+        <dd>Derivatives of the Truncation Constant via the Parent's CDF</dd>
+
+        <dt>
+
+          <code><a href="trunc_pdf.html">trunc_pdf()</a></code>
+
+        </dt>
+        <dd>Density of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_quantile.html">trunc_quantile()</a></code>
+
+        </dt>
+        <dd>Quantile Function of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_rng.html">trunc_rng()</a></code>
+
+        </dt>
+        <dd>Random Generation From a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="trunc_score_mean.html">trunc_score_mean()</a></code>
+
+        </dt>
+        <dd>Mean of the Parent's Score Under the Truncated Law</dd>
+
+        <dt>
+
+          <code><a href="trunc_score_mean_quad.html">trunc_score_mean_quad()</a></code>
+
+        </dt>
+        <dd>Truncated Score Mean by Quadrature</dd>
+
+        <dt>
+
+          <code><a href="trunc_score_prod_mean.html">trunc_score_prod_mean()</a></code>
+
+        </dt>
+        <dd>Truncated Mean of Products of Scores</dd>
+
+        <dt>
+
+          <code><a href="trunc_y_deriv.html">trunc_y_deriv()</a></code>
+
+        </dt>
+        <dd>Response Derivative of a Truncated Distribution</dd>
+
+        <dt>
+
+          <code><a href="za_cont_deriv_k.html">za_cont_deriv_k()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Zero-Adjusted Continuous Distribution</dd>
+
+        <dt>
+
+          <code><a href="za_disc_deriv_k.html">za_disc_deriv_k()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Zero-Adjusted Discrete Distribution</dd>
+
+        <dt>
+
+          <code><a href="za_y_deriv.html">za_y_deriv()</a></code>
+
+        </dt>
+        <dd>Response Derivative of a Zero-Adjusted Distribution</dd>
+
+        <dt>
+
+          <code><a href="zi_deriv_k.html">zi_deriv_k()</a></code>
+
+        </dt>
+        <dd>Derivatives of a Zero-Inflated Distribution</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>

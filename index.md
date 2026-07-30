@@ -7,7 +7,7 @@ again and again, and each time only as far as that package happened to
 need — the density and the score, sometimes the Hessian, rarely anything
 beyond.
 
-[distributions7](https://statmodels7.github.io/distributions7) writes
+[distributions7](https://statmodels7.github.io/distributions7/) writes
 them once, as objects. Each carries the usual density, distribution and
 quantile functions, and the **exact derivatives of the log-likelihood up
 to fourth order** — with respect to the parameters, with respect to the
