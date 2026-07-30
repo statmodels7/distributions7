@@ -30,7 +30,7 @@ unconstrained parameters behind a link function, which is the scale an
 optimiser actually works on.
 
 It is the distribution layer of
-[statmodels7](https://statmodels7.github.io), an S7 stack for
+[statmodels7](https://statmodels7.github.io), an S7 toolkit for
 statistical modelling, and works alongside
 [linkfunctions7](https://statmodels7.github.io/linkfunctions7). The
 mathematics behind every formula — the likelihood theory, the change of
