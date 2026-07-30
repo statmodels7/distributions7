@@ -7,7 +7,7 @@ Description: Provides a consistent S7 object-oriented infrastructure for probabi
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-URL: https://statmodels7.github.io/distributions7,
+URL: https://statmodels7.github.io/distributions7/,
     https://github.com/statmodels7/distributions7
 BugReports: https://github.com/statmodels7/distributions7/issues
 Depends:
@@ -15,10 +15,13 @@ Depends:
 LinkingTo:
     Rcpp
 Imports:
+    graphics,
+    linkfunctions7,
     Rcpp,
     S7,
     statmod,
-    linkfunctions7
+    stats,
+    utils
 Remotes:
     statmodels7/linkfunctions7
 Collate: 
