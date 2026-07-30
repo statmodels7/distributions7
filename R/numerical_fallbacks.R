@@ -277,7 +277,7 @@ has_analytic_quantile <- function(distrib) {
     S7::method(distrib_quantile, S7::S7_class(distrib)),
     error = function(e) NULL
   )
-  !is.null(m) && !identical(attr(m, "signature")[[1]], continuous_distrib)
+  !is.null(m) && !is_class(attr(m, "signature")[[1]], continuous_distrib)
 }
 
 #' @title Generalized Ratio-of-Uniforms Sampling

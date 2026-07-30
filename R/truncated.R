@@ -290,7 +290,7 @@ has_exact_cdf_deriv <- function(parent, order) {
   reg <- tryCatch(attr(m, "signature")[[1]], error = function(e) NULL)
   # identical() on a method object does not answer "is this the fallback?" --
   # S7 wraps it -- but the class it was registered on does.
-  !is.null(reg) && !identical(reg, continuous_distrib)
+  !is.null(reg) && !is_class(reg, continuous_distrib)
 }
 
 #' Derivatives of the Truncation Constant via the Parent's CDF
