@@ -38,12 +38,16 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 3)
+  # Taken from the same enumeration that produced the names, never recovered by
+  # splitting them: see deriv_indices().
+  idx_of <- deriv_indices(params, 3)
 
   out <- vector("list", length(nms))
   names(out) <- nms
 
-  for (nm in nms) {
-    idx <- match(strsplit(nm, "_", fixed = TRUE)[[1]], params)
+  for (t in seq_along(nms)) {
+    nm <- nms[t]
+    idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]
     hk <- fd_steps(theta[[k]], bounds[[params[k]]], h_rel)
     hcomp <- paste(params[c(i, j)], collapse = "_")
@@ -89,14 +93,19 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
   params <- distrib@params
   bounds <- distrib@params_bounds
   nms <- deriv_names(params, 4)
+  idx_of <- deriv_indices(params, 4)
 
   out <- vector("list", length(nms))
   names(out) <- nms
 
   H <- function(th) distrib_hessian(distrib, y, th)
+  # The centre point of the three-point stencil does not move, so it is computed
+  # once rather than once per component with k == l.
+  H0 <- H(theta)
 
-  for (nm in nms) {
-    idx <- match(strsplit(nm, "_", fixed = TRUE)[[1]], params)
+  for (t in seq_along(nms)) {
+    nm <- nms[t]
+    idx <- idx_of[[t]]
     i <- idx[1]; j <- idx[2]; k <- idx[3]; l <- idx[4]
     hcomp <- paste(params[c(i, j)], collapse = "_")
     hk <- fd_steps(theta[[k]], bounds[[params[k]]], h_rel)
@@ -106,7 +115,7 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
       tp <- tm <- theta
       tp[[k]] <- theta[[k]] + hk
       tm[[k]] <- theta[[k]] - hk
-      out[[nm]] <- (H(tp)[[hcomp]] - 2 * H(theta)[[hcomp]] + H(tm)[[hcomp]]) / (hk^2)
+      out[[nm]] <- (H(tp)[[hcomp]] - 2 * H0[[hcomp]] + H(tm)[[hcomp]]) / (hk^2)
     } else {
       shift <- function(a, b) {
         th <- theta

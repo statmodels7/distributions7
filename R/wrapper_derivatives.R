@@ -34,19 +34,57 @@
 # truncated.R -- which is what makes those a check on this file and vice versa.
 # ===========================================================================
 
-# Set partitions of a multi-index, given as a character vector of parameter
-# names with repetition. Returns a list of partitions, each a list of blocks.
+#' Set Partitions of a Multi-Index
+#'
+#' @description
+#' Every way of splitting a multi-index into blocks, with the parameter names
+#' carried through rather than the positions.
+#'
+#' @param idx A character vector of parameter names, with repetition.
+#'
+#' @return A list of partitions, each a list of character-vector blocks.
+#'
+#' @seealso \code{\link{set_partitions}}
+#' @keywords internal
 index_partitions <- function(idx) {
   lapply(set_partitions(length(idx)), function(p) lapply(p, function(b) idx[b]))
 }
 
-# The canonical component name of a block: parameters in the order the
-# distribution declares them, joined by "_", exactly as deriv_names() builds it.
+#' Canonical Component Name of a Block
+#'
+#' @description
+#' Names a block of parameters the way \code{\link{deriv_names}} does: in the
+#' order the distribution declares them, joined by an underscore.
+#'
+#' @param block A character vector of parameter names.
+#' @param params The distribution's parameter names, in declaration order.
+#'
+#' @return A single string.
+#'
+#' @keywords internal
 canon_key <- function(block, params) {
   paste(block[order(match(block, params))], collapse = "_")
 }
 
-# (1) d^I f / f from the parent's log-derivatives.
+#' Complete Bell Polynomial in the Parent's Log-Derivatives
+#'
+#' @description
+#' Computes \eqn{d^I f / f} from the derivatives of \eqn{\log f}, as the sum over
+#' set partitions \eqn{\sum_\pi \prod_{B \in \pi} \ell^{(B)}}.
+#'
+#' @details
+#' This is the Bartlett lemma read backwards: instead of using the identity to
+#' eliminate a derivative, it uses it to build one. Every wrapper needs it,
+#' because each of their log-likelihoods is the parent's log-density plus, or
+#' instead of, \eqn{\log L} for some \eqn{\theta}-dependent \eqn{L}.
+#'
+#' @param idx A character vector of parameter names, with repetition.
+#' @param ell A function returning the parent's log-derivative for a block.
+#'
+#' @return A numeric vector.
+#'
+#' @seealso \code{\link{log_deriv}}, the companion identity.
+#' @keywords internal
 bell_f_ratio <- function(idx, ell) {
   total <- 0
   for (p in index_partitions(idx)) {
@@ -57,7 +95,26 @@ bell_f_ratio <- function(idx, ell) {
   total
 }
 
-# (2) d^I log L from the ratios d^B L / L.
+#' Derivatives of a Logarithm From the Ratios Alone
+#'
+#' @description
+#' Computes \eqn{d^I \log L} as
+#' \eqn{\sum_\pi (-1)^{|\pi|-1}(|\pi|-1)! \prod_{B \in \pi} (d^B L / L)}.
+#'
+#' @details
+#' The moment-to-cumulant relation. What makes it the right tool here is that
+#' only the \strong{ratios} \eqn{d^B L / L} are needed, never \eqn{L}'s own
+#' derivatives -- and the ratios are exactly what each wrapper can supply
+#' cheaply, a truncated expectation for truncation and an affine expression for
+#' the zero wrappers.
+#'
+#' @param idx A character vector of parameter names, with repetition.
+#' @param ratio A function returning \eqn{d^B L / L} for a block.
+#'
+#' @return A numeric vector.
+#'
+#' @seealso \code{\link{bell_f_ratio}}, the companion identity.
+#' @keywords internal
 log_deriv <- function(idx, ratio) {
   total <- 0
   for (p in index_partitions(idx)) {
@@ -69,8 +126,27 @@ log_deriv <- function(idx, ratio) {
   total
 }
 
-# The parent's derivative components to a given order, and a lookup keyed by
-# block. Orders are fetched once per call, not once per block.
+#' Look Up the Parent's Derivative Components by Block
+#'
+#' @description
+#' Fetches the parent's derivatives up to \code{max_order} and returns a function
+#' giving the component belonging to any block.
+#'
+#' @details
+#' The orders are fetched once per call rather than once per block. A partition
+#' sum at fourth order asks for the same handful of components repeatedly, and
+#' the parent's derivative may itself be expensive.
+#'
+#' @param parent The parent distribution.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of the parent's parameters.
+#' @param max_order The highest order needed, 1 to 4.
+#' @param params The parent's parameter names, in declaration order.
+#'
+#' @return A function of one block, returning that component's vector.
+#'
+#' @seealso \code{\link{canon_key}}
+#' @keywords internal
 parent_ell <- function(parent, y, theta, max_order, params) {
   d <- vector("list", max_order)
   d[[1]] <- distrib_gradient(parent, y, theta)
@@ -80,9 +156,24 @@ parent_ell <- function(parent, y, theta, max_order, params) {
   function(block) d[[length(block)]][[canon_key(block, params)]]
 }
 
-# Memoise a ratio function on the canonical key of its block: a partition of a
-# fourth-order index asks for the same small blocks many times over, and for the
-# truncated wrapper each distinct block costs a quadrature.
+#' Memoise a Ratio Function on Its Block
+#'
+#' @description
+#' Caches a ratio function by the canonical key of its block.
+#'
+#' @details
+#' A partition of a fourth-order index asks for the same small blocks many times
+#' over. For the truncated wrapper each distinct block costs a quadrature, so
+#' memoising across the partition sum is the difference between one integration
+#' per block and one per occurrence.
+#'
+#' @param f The ratio function to wrap.
+#' @param params The parameter names, in declaration order.
+#'
+#' @return A function with the same signature as \code{f}, backed by a cache.
+#'
+#' @seealso \code{\link{trunc_deriv_k}}
+#' @keywords internal
 memo_ratio <- function(f, params) {
   cache <- list()
   function(block) {
@@ -92,36 +183,85 @@ memo_ratio <- function(f, params) {
   }
 }
 
-# The multi-indices of a given order, in the order deriv_names() lists them.
-#
-# Built here rather than taken from deriv_index_list(), whose order-2 case is
-# deliberately ordered for hess_names() -- diagonal first -- while deriv_names()
-# is lexicographic. Pairing the two would silently attach the name "mu_sigma" to
-# the index (sigma, sigma). The orders actually registered are 3 and 4, where the
-# two agree, but a mismatch that only bites if someone reuses this helper is
-# exactly the kind worth removing rather than commenting on.
+#' Multi-Indices of a Given Order, as Parameter Names
+#'
+#' @description
+#' The multi-indices of a given order, in the order \code{\link{deriv_names}}
+#' lists them, expressed as parameter names.
+#'
+#' @details
+#' A thin wrapper on \code{\link{deriv_indices}}. It is deliberately not
+#' \code{deriv_index_list()} from \code{link_scale.R}, whose order-2 case is
+#' ordered for \code{\link{hess_names}} -- diagonal first -- while
+#' \code{deriv_names()} is lexicographic; pairing those would silently attach the
+#' name \code{"mu_sigma"} to the index \code{(sigma, sigma)}. The orders actually
+#' registered here are 3 and 4, where the two agree, but a mismatch that only
+#' bites when someone reuses the helper is the kind worth removing rather than
+#' commenting on.
+#'
+#' @param params A character vector of parameter names.
+#' @param order The derivative order.
+#'
+#' @return A list of character vectors, each of length \code{order}.
+#'
+#' @seealso \code{\link{deriv_indices}}, \code{\link{deriv_names}}
+#' @keywords internal
 order_indices <- function(params, order) {
-  p <- length(params)
-  idx <- as.matrix(do.call(expand.grid, rep(list(seq_len(p)), order)))
-  idx <- idx[, rev(seq_len(order)), drop = FALSE]
-  idx <- idx[apply(idx, 1L, function(r) all(diff(r) >= 0)), , drop = FALSE]
-  lapply(seq_len(nrow(idx)), function(k) params[idx[k, ]])
+  lapply(deriv_indices(params, order), function(i) params[i])
 }
 
-# d^k log(x) / dx^k evaluated through a chain of the form log(a + b*p): the two
-# cases the wrappers need are log(pi) and log(1 - pi).
+#' Derivatives of log(p) and log(1 - p)
+#'
+#' @description
+#' The two elementary logarithmic derivatives the zero wrappers need:
+#' \eqn{d^k \log p = (-1)^{k-1}(k-1)!/p^k} and
+#' \eqn{d^k \log(1-p) = -(k-1)!/(1-p)^k}.
+#'
+#' @param p A numeric vector of probabilities.
+#' @param k The derivative order.
+#' @param complement Logical; \code{TRUE} for \eqn{\log(1-p)}.
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
 log_pow_deriv <- function(p, k, complement = FALSE) {
   if (complement) -gamma(k) / (1 - p)^k        # d^k log(1-p) = -(k-1)!/(1-p)^k
   else (-1)^(k - 1) * gamma(k) / p^k           # d^k log(p)   = (-1)^{k-1}(k-1)!/p^k
 }
 
-# Split a multi-index into its parent part and the count of the wrapper's own
-# parameter, whose name is always the last one the wrapper declares.
+#' Split a Multi-Index Into Parent and Wrapper Parts
+#'
+#' @description
+#' Separates a multi-index into the parent's parameters and the number of times
+#' the wrapper's own parameter appears.
+#'
+#' @details
+#' The wrapper's parameter is always the last one it declares, so the split needs
+#' only its name.
+#'
+#' @param idx A character vector of parameter names, with repetition.
+#' @param mix_name The wrapper parameter's name.
+#'
+#' @return A list with \code{theta}, the parent part, and \code{n_mix}, a count.
+#'
+#' @keywords internal
 split_index <- function(idx, mix_name) {
   list(theta = idx[idx != mix_name], n_mix = sum(idx == mix_name))
 }
 
-# Shared skeleton: assemble one named list of components of the given order.
+#' Assemble One Order of a Wrapper's Derivatives
+#'
+#' @description
+#' The shared skeleton: builds the named list of components of a given order by
+#' calling \code{component} once per multi-index.
+#'
+#' @param distrib The wrapper distribution.
+#' @param order The derivative order.
+#' @param component A function of one multi-index returning that component.
+#'
+#' @return A named list of derivative component vectors.
+#'
+#' @keywords internal
 assemble_deriv <- function(distrib, order, component) {
   params <- distrib@params
   nms <- deriv_names(params, order)
@@ -138,6 +278,23 @@ assemble_deriv <- function(distrib, order, component) {
 # methods exist only so that the numerical fallback is never reached.
 # --------------------------------------------------------------------------
 
+#' Derivatives of a Transformed Distribution
+#'
+#' @description
+#' Builds the order-\code{k} derivative method for
+#' \code{\link{transformation}}.
+#'
+#' @details
+#' There is nothing to do. The Jacobian does not depend on \eqn{\theta}, so every
+#' derivative of the transformed log-likelihood is the parent's evaluated at
+#' \eqn{x = g^{-1}(y)}. The methods exist only so that the numerical fallback is
+#' never reached.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @keywords internal
 trans_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
            approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
@@ -163,6 +320,27 @@ trans_deriv_k <- function(order) {
 #   B with two or more   0
 # --------------------------------------------------------------------------
 
+#' Derivatives of a Zero-Inflated Distribution
+#'
+#' @description
+#' Builds the order-\code{k} derivative method for
+#' \code{\link{zero_inflated}}.
+#'
+#' @details
+#' At \eqn{y > 0} the likelihood separates, \eqn{\log(1 - \zeta) + \ell(y)}, so a
+#' mixed index gives zero and the pure ones are immediate. At \eqn{y = 0} it is
+#' \eqn{\log L_0} with \eqn{L_0 = \zeta + (1-\zeta) f_0}, which is \strong{affine
+#' in \eqn{\zeta}} -- so any block containing two or more \eqn{\zeta}'s
+#' contributes nothing, which is what keeps the partition sum small. Writing
+#' \eqn{w_0 = (1-\zeta) f_0 / L_0}, the ratios are \eqn{w_0 (d^A f_0/f_0)} for a
+#' block of parameters alone, and \eqn{-f_0 (d^A f_0/f_0)/L_0} for a block
+#' carrying one \eqn{\zeta}.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @keywords internal
 zi_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
            approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
@@ -208,7 +386,22 @@ zi_deriv_k <- function(order) {
   }
 }
 
-# One component of the parent's derivative of the given order, by canonical key.
+#' One Component of the Parent's Derivative
+#'
+#' @description
+#' Fetches a single component of the parent's derivative of a given order, by
+#' canonical key.
+#'
+#' @param parent The parent distribution.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of the parent's parameters.
+#' @param idx A character vector of parameter names, the multi-index.
+#' @param params The parent's parameter names, in declaration order.
+#' @param order The derivative order.
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
 distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
   key <- canon_key(idx, params)
   switch(as.character(order),
@@ -226,6 +419,23 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
 # log(1 - f0), whose ratios are d^B(1-f0)/(1-f0) = -(d^B f0/f0) f0/(1-f0).
 # --------------------------------------------------------------------------
 
+#' Derivatives of a Zero-Adjusted Discrete Distribution
+#'
+#' @description
+#' Builds the order-\code{k} derivative method for the hurdle form of
+#' \code{\link{zero_adjusted}}.
+#'
+#' @details
+#' The likelihood separates completely, so every mixed index vanishes at every
+#' order. At \eqn{y > 0} the parameter part is the parent's derivative minus that
+#' of \eqn{\log(1 - f_0)}, whose ratios are
+#' \eqn{d^B(1-f_0)/(1-f_0) = -(d^B f_0/f_0) f_0/(1-f_0)}.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @keywords internal
 za_disc_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
            approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
@@ -274,6 +484,22 @@ za_disc_deriv_k <- function(order) {
 # off at the atom.
 # --------------------------------------------------------------------------
 
+#' Derivatives of a Zero-Adjusted Continuous Distribution
+#'
+#' @description
+#' Builds the order-\code{k} derivative method for the mixed form of
+#' \code{\link{zero_adjusted}}.
+#'
+#' @details
+#' A continuous parent puts no mass at zero, so there is no truncation constant
+#' to correct for: the parameter part is simply the parent's derivative, switched
+#' off at the atom.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @keywords internal
 za_cont_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
            approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
@@ -312,6 +538,24 @@ za_cont_deriv_k <- function(order) {
 # one quadrature or summation, which is why they are memoised.
 # --------------------------------------------------------------------------
 
+#' Derivatives of a Truncated Distribution
+#'
+#' @description
+#' Builds the order-\code{k} derivative method for \code{\link{truncated}}.
+#'
+#' @details
+#' Here \eqn{\ell_T = \ell - \log Z}, and the ratios are truncated expectations
+#' of the same complete Bell quantity the other wrappers use,
+#' \eqn{d^B Z / Z = \mathbb{E}_T[d^B f / f]}. Each distinct block costs one
+#' quadrature or summation, which is why they are memoised across the partition
+#' sum.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @seealso \code{\link{memo_ratio}}
+#' @keywords internal
 trunc_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
            approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {

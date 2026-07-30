@@ -14,7 +14,6 @@
 #'   `distrib@params`, in that order.
 #'
 #' @keywords internal
-#' @noRd
 align_theta <- function(distrib, theta) {
   if (!is.list(theta)) theta <- as.list(theta)
 
@@ -96,9 +95,32 @@ check_theta_bounds <- function(distrib, theta) {
   check_bounds_fast(distrib@params, distrib@params_bounds, theta, distrib@distrib_name)
 }
 
-# The same check, taking the properties it needs as arguments. align_theta calls
-# it on every generic invocation, and reading an S7 property costs a couple of
-# microseconds each time, which is material against a total budget of a few tens.
+#' Check Parameter Domains, Taking the Properties as Arguments
+#'
+#' @description
+#' The body behind \code{\link{check_theta_bounds}}, differing only in that it
+#' receives the distribution's properties instead of reaching for them.
+#'
+#' @details
+#' \code{align_theta()} calls this on every generic invocation, so its fixed cost
+#' is the package's fixed cost. Reading an S7 property costs a couple of
+#' microseconds, which is material against a budget of a few tens, and the caller
+#' has already read the properties it needs.
+#'
+#' Every offending parameter is collected before anything is raised, so a call
+#' with two bad values reports both rather than one at a time. At most three
+#' distinct offending values are shown.
+#'
+#' @param params A character vector of parameter names.
+#' @param param_bounds A named list of length-2 domain vectors.
+#' @param theta A list of parameter values, ordered as \code{params}.
+#' @param distrib_name The distribution's name, used in the message.
+#'
+#' @return Invisibly \code{NULL}; raises an error if any value is outside its
+#'   open domain or not finite.
+#'
+#' @seealso \code{\link{check_theta_bounds}}
+#' @keywords internal
 check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
   problems <- character()
 
@@ -270,15 +292,31 @@ hess_names <- function(params) {
 }
 
 
-# Internal: invert hess_names(). Returns a named list mapping each Hessian
-# component name to the pair of parameters it differentiates with respect to.
-#
-# The wrappers need to go from "mu_sigma" back to c("mu", "sigma") in order to
-# combine the parent's score with its Hessian. Splitting the string on "_" is
-# the obvious way and it is wrong: a parameter whose own name contains an
-# underscore ("log_scale") makes "log_scale_log_scale" split into four pieces,
-# and taking the first and the last silently yields c("log", "scale"). Building
-# the map from the parameter vector cannot be fooled.
+#' Invert the Hessian Component Names
+#'
+#' @description
+#' Maps each name produced by \code{\link{hess_names}} back to the pair of
+#' parameters it differentiates with respect to.
+#'
+#' @details
+#' The wrappers need to go from \code{"mu_sigma"} back to
+#' \code{c("mu", "sigma")} in order to combine the parent's score with its
+#' Hessian. Splitting the string on \code{"_"} is the obvious way and it is
+#' wrong: a parameter whose own name contains an underscore
+#' (\code{"log_scale"}) makes \code{"log_scale_log_scale"} split into four
+#' pieces, and taking the first and the last silently yields
+#' \code{c("log", "scale")}. Building the map from the parameter vector cannot
+#' be fooled.
+#'
+#' \code{\link{deriv_indices}} is the same idea for orders above two.
+#'
+#' @param params A character vector of parameter names.
+#'
+#' @return A named list, parallel to \code{hess_names(params)}, each element a
+#'   character pair.
+#'
+#' @seealso \code{\link{hess_names}}, \code{\link{deriv_indices}}
+#' @keywords internal
 hess_pairs <- function(params) {
   nms <- hess_names(params)
   n <- length(params)
@@ -316,6 +354,45 @@ hess_pairs <- function(params) {
 #'
 #' @export
 deriv_names <- function(params, order) {
+  vapply(deriv_indices(params, order),
+         function(r) paste(params[r], collapse = "_"), character(1))
+}
+
+
+#' Index Tuples Behind the Higher-Order Derivative Names
+#'
+#' @description
+#' The multi-indices \code{\link{deriv_names}} names, in exactly the same order:
+#' non-decreasing tuples of length \code{order} over \code{seq_along(params)},
+#' enumerated lexicographically.
+#'
+#' @details
+#' This exists so that nothing has to recover an index tuple by splitting a
+#' component name back apart. That is the obvious route and it is wrong: a
+#' parameter whose own name contains an underscore makes
+#' \code{"mu_log_scale_log_scale"} split into five pieces, and matching those
+#' against \code{params} yields \code{NA}s. The failure is not subtle when it
+#' arrives -- the numerical third and fourth derivatives and the Bartlett
+#' expected Hessian all stopped with an error -- but it only arrives for a
+#' user-defined distribution, since none of the fourteen shipped here has an
+#' underscore in a parameter name. Generating the indices and the names from the
+#' same enumeration cannot be fooled.
+#'
+#' Note that this is \strong{not} interchangeable with
+#' \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match
+#' \code{\link{hess_names}} at order 2, which puts the diagonal first, whereas
+#' this one is lexicographic throughout to match \code{\link{deriv_names}}. At
+#' order 2 use \code{\link{hess_pairs}}.
+#'
+#' @param params A character vector of parameter names.
+#' @param order A positive integer, the derivative order.
+#'
+#' @return A list of integer vectors, each of length \code{order}, parallel to
+#'   \code{deriv_names(params, order)}.
+#'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_pairs}}
+#' @keywords internal
+deriv_indices <- function(params, order) {
   p <- length(params)
   # Non-decreasing index tuples of length `order` over 1:p (combinations with
   # repetition), enumerated in lexicographic order.
@@ -323,7 +400,7 @@ deriv_names <- function(params, order) {
   idx <- idx[, rev(seq_len(order)), drop = FALSE]           # lexicographic
   keep <- apply(idx, 1L, function(r) all(diff(r) >= 0))
   idx <- idx[keep, , drop = FALSE]
-  apply(idx, 1L, function(r) paste(params[r], collapse = "_"))
+  lapply(seq_len(nrow(idx)), function(k) as.integer(idx[k, ]))
 }
 
 
