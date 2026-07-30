@@ -530,12 +530,32 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
   list(y = 0, p = unname(theta[[distrib@n_params]][1]))
 }
 
-# Internal: evaluate a response derivative of the parent away from the atom.
-# The log-density jumps at zero -- log(pi) on one side, log((1-pi) f(y)) on the
-# other -- so no derivative in y exists there, and the finite-difference default
-# inherited from continuous_distrib would happily straddle the jump and return a
-# number for it. Away from zero the (1-pi) factor is constant in y, so the
-# parent's own derivative is exact.
+#' Response Derivative of a Zero-Adjusted Distribution
+#'
+#' @description
+#' Evaluates a response derivative of the parent away from the atom, and returns
+#' \code{NaN} at it.
+#'
+#' @details
+#' The log-density jumps at zero -- \eqn{\log \pi} on one side,
+#' \eqn{\log((1-\pi) f(y))} on the other -- so no derivative in \eqn{y} exists
+#' there. The finite-difference default inherited from
+#' \code{\link{continuous_distrib}} would happily straddle the jump and return a
+#' number for it, which is worse than refusing. Away from zero the \eqn{1-\pi}
+#' factor is constant in \eqn{y}, so the parent's own derivative is exact and
+#' nothing needs correcting.
+#'
+#' @param distrib A zero-adjusted distribution object.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters, including the atom probability.
+#' @param fun The parent's response-derivative function, e.g.
+#'   \code{\link{distrib_grad_y}}.
+#'
+#' @return A numeric vector as long as \code{y}, \code{NaN} wherever
+#'   \code{y == 0}.
+#'
+#' @seealso \code{\link{zero_adjusted}}
+#' @keywords internal
 za_y_deriv <- function(distrib, y, theta, fun) {
   pars <- split_mix_theta(distrib, theta)
   out <- rep(NaN, length(y))

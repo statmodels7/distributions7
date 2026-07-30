@@ -2,6 +2,7 @@
 #' @include gaussian_distrib.R logistic_distrib.R cauchy_distrib.R laplace_distrib.R
 #' @include lognormal_distrib.R invgauss_distrib.R poisson_distrib.R binomial_distrib.R
 #' @include bernoulli_distrib.R negbin_distrib.R student_t_distrib.R pseudohuber_distrib.R
+NULL
 
 # ===========================================================================
 # Derivatives of the distribution function with respect to the parameters.
@@ -24,9 +25,31 @@
 # distributions with a closed form register it.
 # ===========================================================================
 
-# Turn derivatives of F into derivatives of the requested tail, on the requested
-# scale. `dF1` is a named list of first derivatives of F, `dF2` (optional) the
-# second ones.
+#' Put CDF Derivatives on the Requested Tail and Scale
+#'
+#' @description
+#' Converts derivatives of \eqn{F} into derivatives of whichever tail was asked
+#' for, on the natural or the log scale.
+#'
+#' @details
+#' Every route to a cdf derivative in this file produces derivatives of \eqn{F}
+#' itself; the \code{lower.tail} and \code{log} arguments are handled once, here,
+#' rather than in each of them. Switching tail flips the sign, since
+#' \eqn{S = 1 - F}, and switching to the log scale divides by the probability,
+#' which for a second derivative brings in the familiar
+#' \eqn{d^2 \log P = d^2 P / P - (dP/P)(dP/P)}.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param Fq The cdf evaluated at the quantile.
+#' @param dF1 A named list of first derivatives of \eqn{F}.
+#' @param dF2 An optional named list of second derivatives of \eqn{F}.
+#' @param lower.tail Logical; whether the lower tail is wanted.
+#' @param log Logical; whether derivatives of the log probability are wanted.
+#'
+#' @return A named list of derivative component vectors.
+#'
+#' @seealso \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hess_cdf}}
+#' @keywords internal
 cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
   params <- distrib@params
   P <- if (lower.tail) Fq else 1 - Fq
@@ -56,6 +79,33 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 # The sum is finite whenever the support has a finite lower bound, which every
 # discrete distribution in the package has and the class requires.
 
+#' CDF Derivatives of a Lattice Distribution, Exactly
+#'
+#' @description
+#' Evaluates \eqn{d^I F(q)} for a discrete distribution as the finite sum
+#' \eqn{\sum_{y \le q} f(y) \, (d^I f / f)(y)}.
+#'
+#' @details
+#' This is the governing identity
+#' \eqn{d^I F(q) / F(q) = \mathbb{E}[d^I f / f \mid Y \le q]}
+#' written out. For a lattice family the conditional expectation is a finite sum
+#' whenever the support has a finite lower bound -- which the discrete class
+#' requires -- so the identity is exact rather than an approximation, and it is
+#' used directly.
+#'
+#' Note for anyone writing a test: checking this against the partial-expectation
+#' sum proves nothing, because it is the same sum computed twice. A discrete
+#' implementation has to be checked against finite differences of the cdf.
+#'
+#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters.
+#' @param order The derivative order, 1 or 2.
+#'
+#' @return A named list of derivative component vectors of \eqn{F}.
+#'
+#' @seealso \code{\link{cdf_tail_scale}}
+#' @keywords internal
 discrete_cdf_deriv <- function(distrib, q, theta, order) {
   params <- distrib@params
   lo <- distrib@bounds[1]
@@ -248,6 +298,33 @@ S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
 # needs nothing from the family beyond its density and response derivative,
 # both of which every distribution already provides.
 
+#' CDF Derivatives of a Location-Scale Family
+#'
+#' @description
+#' Closed-form derivatives of \eqn{F} for a family that is location-scale in its
+#' first two parameters.
+#'
+#' @details
+#' With \eqn{z = (q - \mu)/\sigma} and \eqn{\ell_y = \partial \log f/\partial y},
+#' \deqn{\partial F/\partial \mu = -f, \qquad \partial F/\partial \sigma = -z f}
+#' \deqn{\partial^2 F/\partial \mu^2 = f \ell_y, \qquad
+#'       \partial^2 F/\partial \mu \partial \sigma = f (z \ell_y + 1/\sigma), \qquad
+#'       \partial^2 F/\partial \sigma^2 = f (z^2 \ell_y + 2z/\sigma).}
+#'
+#' A family therefore only has to declare that it is location-scale; nothing is
+#' needed beyond its density and its response derivative, both of which every
+#' distribution already provides. This covers the censored-regression workhorses
+#' -- Gaussian, logistic, Cauchy, Laplace.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters, location first and scale second.
+#' @param order The derivative order, 1 or 2.
+#'
+#' @return A named list of derivative component vectors of \eqn{F}.
+#'
+#' @seealso \code{\link{loc_scale_grad_cdf}}, \code{\link{loc_scale_hess_cdf}}
+#' @keywords internal
 loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
   mu <- theta[[1]]
   s <- theta[[2]]
@@ -261,11 +338,41 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
   stats::setNames(vals, hess_names(distrib@params))
 }
 
+#' Location-Scale CDF Gradient
+#'
+#' @description
+#' The \code{\link{distrib_grad_cdf}} body shared by the location-scale families:
+#' \code{\link{loc_scale_cdf_deriv}} at order 1, put on the requested tail and
+#' scale.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters.
+#' @param lower.tail Logical; whether the lower tail is wanted.
+#' @param log Logical; whether derivatives of the log probability are wanted.
+#'
+#' @return A named list of gradient component vectors.
+#'
+#' @keywords internal
 loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  loc_scale_cdf_deriv(distrib, q, theta, 1L), NULL, lower.tail, log)
 }
 
+#' Location-Scale CDF Hessian
+#'
+#' @description
+#' The \code{\link{distrib_hess_cdf}} body shared by the location-scale families.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters.
+#' @param lower.tail Logical; whether the lower tail is wanted.
+#' @param log Logical; whether derivatives of the log probability are wanted.
+#'
+#' @return A named list of Hessian component vectors.
+#'
+#' @keywords internal
 loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  loc_scale_cdf_deriv(distrib, q, theta, 1L),
@@ -555,6 +662,31 @@ S7::method(distrib_grad_cdf, NegBinDistrib) <- function(distrib, q, theta,
 # further shape parameter nu. The two location-scale derivatives are closed
 # form; nu is a derivative of a hypergeometric-type integral and is differenced.
 
+#' CDF Gradient When Only Some Parameters Are Location-Scale
+#'
+#' @description
+#' For a family that is location-scale in \eqn{(\mu, \sigma)} but carries a
+#' further shape parameter: the two location-scale directions in closed form, the
+#' shape direction by finite differences.
+#'
+#' @details
+#' The Student t and the pseudo-Huber are the two. Their shape direction is a
+#' derivative of a hypergeometric-type integral with no elementary form, so it is
+#' differenced; the other two are exact.
+#'
+#' For the pseudo-Huber this is an \strong{accuracy} gain rather than merely a
+#' speed one. Its cdf is itself a quadrature, so differencing it is good to only
+#' about \code{1e-6}, whereas \eqn{\partial F/\partial \mu = -f} is exact.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters.
+#' @param lower.tail Logical; whether the lower tail is wanted.
+#' @param log Logical; whether derivatives of the log probability are wanted.
+#'
+#' @return A named list of gradient component vectors.
+#'
+#' @keywords internal
 partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
   params <- distrib@params
   z <- (q - theta[[1]]) / theta[[2]]

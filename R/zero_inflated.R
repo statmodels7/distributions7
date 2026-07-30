@@ -29,7 +29,24 @@ ZeroInflatedDistrib <- S7::new_class("ZeroInflatedDistrib",
   )
 )
 
-# Internal: split the full theta into the parent's parameters and the mixture one.
+#' Split a Wrapper's Parameters From Its Parent's
+#'
+#' @description
+#' Separates the full \code{theta} into the parent distribution's parameters and
+#' the single mixture parameter the wrapper adds.
+#'
+#' @details
+#' Both zero wrappers append their parameter last, so the split is positional and
+#' does not depend on what that parameter is called -- \code{zi} for inflation,
+#' \code{pi} for adjustment.
+#'
+#' @param distrib A zero-inflated or zero-adjusted distribution object.
+#' @param theta A named list of parameters, already aligned.
+#'
+#' @return A list with \code{orig}, the parent's parameters, and \code{mix},
+#'   the wrapper's own.
+#'
+#' @keywords internal
 split_mix_theta <- function(distrib, theta) {
   n <- distrib@n_params
   list(orig = theta[seq_len(n - 1L)], mix = theta[[n]])
@@ -45,25 +62,68 @@ split_mix_theta <- function(distrib, theta) {
 # the only place where they can be caught, so they are caught there.
 # ---------------------------------------------------------------------------
 
-# Number of points in the support of a lattice distribution, Inf when unbounded.
+#' Number of Points in a Lattice Support
+#'
+#' @description
+#' How many points the distribution's support contains, \code{Inf} when it is
+#' unbounded.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#'
+#' @return A single number.
+#'
+#' @seealso \code{\link{check_support_is_rich_enough}}
+#' @keywords internal
 n_support_points <- function(distrib) {
   b <- distrib@bounds
   if (!all(is.finite(b))) Inf else b[2] - b[1] + 1
 }
 
-# Is this distribution already carrying a probability of zero?
+#' Does This Distribution Already Model a Probability of Zero?
+#'
+#' @description
+#' \code{TRUE} for a distribution produced by \code{\link{zero_inflated}} or
+#' \code{\link{zero_adjusted}}, in either of its two forms.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{check_not_stacked}}
+#' @keywords internal
 is_zero_wrapper <- function(distrib) {
   S7::S7_inherits(distrib, ZeroInflatedDistrib) ||
     S7::S7_inherits(distrib, ZeroAdjustedDiscreteDistrib) ||
     S7::S7_inherits(distrib, ZeroAdjustedContinuousDistrib)
 }
 
-# Two zero parameters cannot both be identified. Zero-truncating a distribution
-# that already has one removes it from the likelihood entirely (the factor
-# cancels between the numerator and the truncation constant), and mixing a
-# further point mass in only ever shifts the total mass at zero, which one
-# parameter already describes. The distributions this rejects are perfectly
-# well-defined -- they are simply not estimable.
+#' Refuse to Stack Two Zero Parameters
+#'
+#' @description
+#' Rejects an attempt to wrap a distribution that already models the probability
+#' of a zero, and rejects a parameter name the parent has already used.
+#'
+#' @details
+#' Two zero parameters cannot both be identified. Zero-truncating a distribution
+#' that already has one removes it from the likelihood entirely -- the factor
+#' cancels between the numerator and the truncation constant, leaving its score
+#' identically zero -- and mixing a further point mass in only ever shifts the
+#' total mass at zero, which one parameter already describes.
+#'
+#' The distributions this rejects are perfectly well-defined; they are simply not
+#' estimable. That is why the constructor is the place to catch it: nothing goes
+#' wrong at run time. The pmf still sums to one, \code{\link{check_distrib}}
+#' still passes, and the fit still converges -- to an arbitrary point of a flat
+#' ridge.
+#'
+#' @param distrib The parent distribution being wrapped.
+#' @param fun The calling constructor's name, used in the message.
+#' @param param The name of the parameter the wrapper wants to add.
+#'
+#' @return Invisibly \code{NULL}; raises an error if either condition fails.
+#'
+#' @seealso \code{\link{zero_inflated}}, \code{\link{zero_adjusted}}
+#' @keywords internal
 check_not_stacked <- function(distrib, fun, param) {
   if (is_zero_wrapper(distrib)) {
     stop(sprintf(
@@ -84,12 +144,31 @@ check_not_stacked <- function(distrib, fun, param) {
   invisible(NULL)
 }
 
-# A model with one more parameter than its support can distinguish. A
-# distribution on k points has k - 1 free probabilities; the wrapper spends
-# n_params + 1 of them. The Bernoulli is the case that matters: zero-inflating
-# it gives two parameters for the one free cell of {0, 1}, and zero-adjusting it
-# leaves the truncated part concentrated on {1}, with no free parameter at all,
-# so mu disappears from the likelihood.
+#' Refuse a Model With More Parameters Than the Support Can Distinguish
+#'
+#' @description
+#' Enforces the counting rule that makes a zero wrapper identifiable.
+#'
+#' @details
+#' A lattice distribution on \eqn{k} points has \eqn{k-1} free probabilities,
+#' and either wrapper spends \code{n_params + 1} of them, so \eqn{k \ge}
+#' \code{n_params + 2} is necessary. The bound is the same for inflation and for
+#' adjustment.
+#'
+#' What it rules out is exactly the Bernoulli, and
+#' \code{binomial_distrib(size = 1)} with it. Zero-inflating a Bernoulli gives
+#' two parameters for the one free cell of \eqn{\{0, 1\}}; zero-adjusting it
+#' leaves the truncated part concentrated on \eqn{\{1\}} with no free parameter
+#' at all, so \eqn{\mu} disappears from the likelihood and the pmf is literally
+#' the same for \eqn{\mu = 0.2} and \eqn{\mu = 0.9}.
+#'
+#' @param distrib The parent distribution being wrapped.
+#' @param fun The calling constructor's name, used in the message.
+#'
+#' @return Invisibly \code{NULL}; raises an error when the support is too small.
+#'
+#' @seealso \code{\link{n_support_points}}, \code{\link{check_not_stacked}}
+#' @keywords internal
 check_support_is_rich_enough <- function(distrib, fun) {
   k <- n_support_points(distrib)
   needed <- distrib@n_params + 2

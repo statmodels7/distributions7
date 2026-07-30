@@ -215,3 +215,14 @@ reference:
   - ends_with(".distrib")
   - ends_with(".continuous_distrib")
   - ends_with(".discrete_distrib")
+
+- title: Internals
+  desc: >
+    The machinery the exported functions are built from. None of it is exported,
+    and none of it is needed to use the package — it is documented so that the
+    derivations can be followed from the code that implements them: the set
+    partitions behind the Bartlett identities and the wrapper derivatives, the
+    Bell polynomials behind the link scale, the ratio-of-uniforms sampler and
+    the transforms that make it work on a divergent density.
+  contents:
+  - has_keyword("internal")

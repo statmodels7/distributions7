@@ -1,7 +1,23 @@
 #' @include distrib.R generics.R utility_functions.R numerical_derivatives.R higher_derivatives.R y_derivatives.R
 NULL
 
-# Internal: accumulate one check result.
+#' Record One Check Result
+#'
+#' @description
+#' Builds the single-row data frame that \code{\link{check_distrib}} accumulates
+#' into its report.
+#'
+#' @param name The check's name, as it appears in the report.
+#' @param ok Logical; whether the check passed.
+#' @param stat The numeric statistic the check produced, typically a maximum
+#'   discrepancy.
+#' @param detail An optional message, used to carry the reason for a failure.
+#'
+#' @return A one-row data frame with columns \code{check}, \code{status},
+#'   \code{statistic} and \code{detail}.
+#'
+#' @seealso \code{\link{check_distrib}}, \code{\link{safe_check}}
+#' @keywords internal
 new_check <- function(name, ok, stat, detail = NA_character_) {
   data.frame(
     check = name, status = if (isTRUE(ok)) "OK" else "FAIL",
@@ -9,7 +25,26 @@ new_check <- function(name, ok, stat, detail = NA_character_) {
   )
 }
 
-# Internal: run an expression, turning an error into a failed check.
+#' Run a Check, Turning an Error Into a Failure
+#'
+#' @description
+#' Evaluates a check expression and converts any error into a failed row rather
+#' than letting it abort the report.
+#'
+#' @details
+#' A distribution under validation is by assumption possibly broken, so a check
+#' that throws is itself a result. Without this, the first component to raise
+#' would end the run and hide every check after it -- the least useful moment to
+#' stop being informative.
+#'
+#' @param name The check's name, used for the row built on failure.
+#' @param expr The expression to evaluate; normally returns a row from
+#'   \code{\link{new_check}}.
+#'
+#' @return The value of \code{expr}, or a failed row carrying the error message.
+#'
+#' @seealso \code{\link{check_distrib}}, \code{\link{new_check}}
+#' @keywords internal
 safe_check <- function(name, expr) {
   tryCatch(expr, error = function(e) new_check(name, FALSE, NA_real_, conditionMessage(e)))
 }
@@ -369,23 +404,54 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   invisible(out)
 }
 
-# Internal: which observations the finite-difference reference can be trusted at.
-# Defined after check_distrib(), not before it: a roxygen block attaches to
-# whatever object follows it, so a helper slipped in between silently steals the
-# documentation of the function it belongs to.
-#
-# A log-likelihood with a kink -- the Laplace's location is the example the
-# package ships -- has no derivative exactly at the kink, and a central
-# difference straddling it returns a number that is simply wrong. An observation
-# landing within a step of that point therefore makes the *reference* invalid,
-# not the analytical value being tested, and comparing against it reports a
-# failure for code that is right. Because the draws are random, that happened
-# rarely and unpredictably.
-#
-# Rather than hard-code where a kink is, the reference is recomputed with the
-# step halved: where the two disagree, finite differencing has not converged and
-# that observation is dropped. For a smooth log-likelihood nothing is ever
-# dropped, so the check keeps its full strength.
+#' Which Observations the Finite-Difference Reference Can Be Trusted At
+#'
+#' @description
+#' Flags the observations where a central difference has actually converged, so
+#' that \code{\link{check_distrib}} compares an analytical derivative only
+#' against a reference worth comparing to.
+#'
+#' @details
+#' A log-likelihood with a kink -- the Laplace's location is the example the
+#' package ships -- has no derivative exactly at the kink, and a central
+#' difference straddling it returns a number that is simply wrong. An observation
+#' landing within a step of that point therefore makes the \emph{reference}
+#' invalid, not the analytical value being tested, and comparing against it
+#' reports a failure for code that is right. Because the draws are random, that
+#' happened rarely and unpredictably.
+#'
+#' Rather than hard-code where a kink is, the reference is recomputed with the
+#' step halved: where the two disagree, finite differencing has not converged and
+#' that observation is dropped. For a smooth log-likelihood nothing is ever
+#' dropped, so the check keeps its full strength -- a gradient made 5\% wrong is
+#' still caught.
+#'
+#' Two details are load-bearing. The two estimates are compared \strong{relative
+#' to their own magnitude} rather than against a denominator floored at one: near
+#' a kink both are tiny yet differ by a factor of two, which a floor of one
+#' flattens into apparent agreement. And if no observation survives, all are kept:
+#' a systematic disagreement is a real failure and should be reported, not hidden
+#' by the guard meant to protect against a local one.
+#'
+#' Note the placement. This is defined \emph{after} \code{check_distrib()}, not
+#' before it: a roxygen block attaches to whatever object follows it, so a helper
+#' slipped in between silently steals the documentation of the function it
+#' belongs to -- which had already happened once here, leaving the package with a
+#' \code{fd_is_reliable.Rd} and no \code{check_distrib.Rd}.
+#'
+#' @param fd_at A function of one argument, the relative step, returning the
+#'   finite-difference reference computed with that step.
+#' @param ref The reference already computed at \code{h_rel}, a named list of
+#'   component vectors.
+#' @param h_rel The relative step \code{ref} was computed with.
+#' @param smooth_all Logical; \code{TRUE} when every parameter is declared
+#'   smooth, in which case no observation is ever dropped and the guard does not
+#'   run at all.
+#'
+#' @return A logical vector as long as the components of \code{ref}.
+#'
+#' @seealso \code{\link{check_distrib}}
+#' @keywords internal
 fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
   n <- length(ref[[1L]])
   if (isTRUE(smooth_all)) return(rep(TRUE, n))

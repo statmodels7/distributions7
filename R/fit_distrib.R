@@ -3,7 +3,24 @@ NULL
 
 # --- internal helpers ------------------------------------------------------
 
-# eta <- g(theta) and theta <- g^{-1}(eta), element-wise over the parameters.
+#' Map Parameters to the Link Scale
+#'
+#' @description
+#' Applies each parameter's link, \eqn{\eta_i = g_i(\theta_i)}.
+#'
+#' @details
+#' Optimization is carried out on \eqn{\eta}, which is unconstrained, so this is
+#' how a starting value expressed in natural parameters enters the optimizer.
+#' Only the first element of each parameter is taken: a fit estimates one
+#' \eqn{\theta} for the whole sample.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param theta A named list of parameters on the natural scale.
+#'
+#' @return A numeric vector of length \code{length(distrib@params)}.
+#'
+#' @seealso \code{\link{fit_theta_from_eta}}, the inverse.
+#' @keywords internal
 fit_eta_from_theta <- function(distrib, theta) {
   params <- distrib@params
   vapply(seq_along(params), function(i) {
@@ -11,6 +28,25 @@ fit_eta_from_theta <- function(distrib, theta) {
   }, numeric(1))
 }
 
+#' Map the Link Scale Back to Parameters
+#'
+#' @description
+#' Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)}.
+#'
+#' @details
+#' The inverse of \code{\link{fit_eta_from_theta}}. Because every link maps onto
+#' its parameter's domain by construction, a \eqn{\theta} obtained this way is
+#' admissible whatever the optimizer proposed -- which is the reason for working
+#' on the link scale at all, and the reason a confidence interval built there and
+#' mapped back cannot run outside the domain.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param eta A numeric vector of linear predictors, one per parameter.
+#'
+#' @return A named list of parameters on the natural scale.
+#'
+#' @seealso \code{\link{fit_eta_from_theta}}
+#' @keywords internal
 fit_theta_from_eta <- function(distrib, eta) {
   params <- distrib@params
   out <- lapply(seq_along(params), function(i) {
@@ -20,21 +56,72 @@ fit_theta_from_eta <- function(distrib, eta) {
   out
 }
 
-# First derivative of the inverse link at eta, one entry per parameter.
+#' Jacobian of the Inverse Link at the Estimate
+#'
+#' @description
+#' The first derivative \eqn{h_i'(\eta_i)} of each parameter's inverse link, one
+#' entry per parameter.
+#'
+#' @details
+#' This is the diagonal Jacobian the delta method needs to carry a standard error
+#' from the link scale, where it is computed, to the parameter scale, where it is
+#' reported.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param eta A numeric vector of linear predictors, one per parameter.
+#'
+#' @return A numeric vector of length \code{length(distrib@params)}.
+#'
+#' @seealso \code{\link{fit_distrib}}
+#' @keywords internal
 fit_dtheta_deta <- function(distrib, eta) {
   params <- distrib@params
   vapply(seq_along(params), function(i) {
-    linkfunctions7::linkinvderiv(distrib@link_params[[params[i]]], eta[i], order = 1)[1]
+    linkfunctions7::dlinkinv(distrib@link_params[[params[i]]], eta[i])[1]
   }, numeric(1))
 }
 
-# Summed score on the link scale (a p-vector).
+#' Summed Score on the Link Scale
+#'
+#' @description
+#' The gradient of the total log-likelihood with respect to \eqn{\eta}, summed
+#' over observations.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters on the natural scale.
+#'
+#' @return A numeric vector of length \code{length(distrib@params)}.
+#'
+#' @seealso \code{\link{fit_hess_matrix}}
+#' @keywords internal
 fit_score <- function(distrib, y, theta) {
   g <- distrib_gradient(distrib, y, theta, scale = "link")
   vapply(g, function(v) sum(v), numeric(1))
 }
 
-# Summed Hessian on the link scale as a symmetric p x p matrix.
+#' Summed Hessian on the Link Scale, as a Matrix
+#'
+#' @description
+#' Assembles the package's named list of Hessian components into the symmetric
+#' \eqn{p \times p} matrix an optimizer wants, summed over observations.
+#'
+#' @details
+#' Derivative components are stored one per unique index pair, since the Hessian
+#' is symmetric; this fills both triangles. Passing \code{expected = TRUE} gives
+#' the expected Hessian, which is what makes Fisher scoring possible -- and what
+#' allows a fit on a non-regular family such as the Laplace, where the observed
+#' Hessian is degenerate but the information is not.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters on the natural scale.
+#' @param expected Logical; whether to use the expected Hessian.
+#'
+#' @return A symmetric numeric matrix with dimnames taken from the parameters.
+#'
+#' @seealso \code{\link{fit_score}}, \code{\link{fit_distrib}}
+#' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected) {
   params <- distrib@params
   p <- length(params)
@@ -54,6 +141,20 @@ fit_hess_matrix <- function(distrib, y, theta, expected) {
   M
 }
 
+#' Total Log-Likelihood
+#'
+#' @description
+#' The sum of the log-density over the observations, the objective the fit
+#' maximises.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters on the natural scale.
+#'
+#' @return A single number.
+#'
+#' @seealso \code{\link{fit_distrib}}
+#' @keywords internal
 fit_loglik <- function(distrib, y, theta) {
   sum(distrib_pdf(distrib, y, theta, log = TRUE))
 }

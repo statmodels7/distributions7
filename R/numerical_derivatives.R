@@ -1,8 +1,33 @@
 #' @include distrib.R generics.R utility_functions.R numerical_functions.R
 
-# Internal: per-parameter finite-difference steps, scaled by the parameter
-# magnitude and shrunk so that theta +/- h stays strictly inside the
-# parameter's mathematical domain.
+#' Finite-Difference Steps That Respect a Parameter's Domain
+#'
+#' @description
+#' Builds the step \eqn{h} for a central difference in one parameter: scaled by
+#' the parameter's magnitude, then shrunk so that \eqn{\theta \pm h} stays
+#' strictly inside the parameter's mathematical domain.
+#'
+#' @details
+#' The domain clamp is what allows a finite-difference fallback to be offered at
+#' all. Parameter domains here are \strong{open} -- a scale parameter is positive,
+#' not non-negative -- so a step chosen from the magnitude alone will step a small
+#' \eqn{\sigma} straight through zero, and the log-density comes back \code{NaN}
+#' for reasons that look like a bug in the density. Clamping to 49\% of the
+#' distance to each finite boundary keeps both evaluation points inside.
+#'
+#' A parameter already on or outside its boundary cannot be rescued this way, and
+#' is reported rather than differentiated.
+#'
+#' @param theta_j A numeric vector, the values of one parameter.
+#' @param bounds_j A length-2 numeric vector giving that parameter's domain, or
+#'   \code{NULL}.
+#' @param h_rel The relative step size, typically a root of machine epsilon
+#'   chosen for the stencil in use.
+#'
+#' @return A numeric vector of steps, the same length as \code{theta_j}.
+#'
+#' @seealso \code{\link{numerical_gradient}}, \code{\link{numerical_hessian}}
+#' @keywords internal
 fd_steps <- function(theta_j, bounds_j, h_rel) {
   h <- h_rel * pmax(1, abs(theta_j))
   if (!is.null(bounds_j)) {

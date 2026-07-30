@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R
+NULL
 
 # =========================== CONTINUOUS FALLBACKS ===========================
 #
@@ -21,6 +22,34 @@
 # tolerance of about 1e-4 turns into an error of several hundred units in y for a
 # density centred far from the origin. The grid refinement instead stops on the
 # width of the bracket measured in y.
+
+#' Locate an Interior High-Density Point
+#'
+#' @description
+#' Finds an approximate mode, used to split integrals, to scale root-finding
+#' brackets and to recentre the ratio-of-uniforms kernel.
+#'
+#' @details
+#' The support is compactified to \eqn{(0, 1)} and the maximum found by
+#' repeatedly evaluating the log-density on a grid and keeping the two cells
+#' around the largest value: for a unimodal density that bracket provably still
+#' contains the mode, and it shrinks by a factor of 64 per pass.
+#'
+#' A golden-section search on the compactified scale is \emph{not} accurate
+#' enough here, which is worth knowing before anyone replaces this with one. Its
+#' tolerance is expressed in the compactified variable, and the derivative of the
+#' compactification can be enormous -- under the tangent map \eqn{dy/dt} is of
+#' order \eqn{y^2}, so a default tolerance of about \code{1e-4} became an error of
+#' 125 standard deviations for a density centred at 1000. The grid refinement
+#' instead stops on the width of the bracket measured in \eqn{y}.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param theta A named list of parameters.
+#'
+#' @return A single number, an interior point of high density.
+#'
+#' @seealso \code{\link{find_lp_anchor}}, \code{\link{rng_grou}}
+#' @keywords internal
 find_pdf_anchor <- function(distrib, theta) {
   find_lp_anchor(
     function(y) distrib_pdf(distrib, y, theta, log = TRUE),
@@ -30,6 +59,24 @@ find_pdf_anchor <- function(distrib, theta) {
 
 # The same search expressed on a bare log-density over an interval, so that it
 # can also be applied to a reparameterised density that has no distrib object.
+#' Locate a High-Density Point of a Bare Log-Density
+#'
+#' @description
+#' The search behind \code{\link{find_pdf_anchor}}, expressed on a plain
+#' log-density over an interval.
+#'
+#' @details
+#' Kept separate from the \code{distrib} object so that it can also be applied to
+#' a reparameterised density, which is what the divergence-removing transforms in
+#' this file produce and which has no distribution object of its own.
+#'
+#' @param lp_raw A function giving the log-density at a numeric vector.
+#' @param b A length-2 numeric vector, the interval to search.
+#'
+#' @return A single number.
+#'
+#' @seealso \code{\link{find_pdf_anchor}}
+#' @keywords internal
 find_lp_anchor <- function(lp_raw, b) {
   lp <- function(y) {
     v <- lp_raw(y)
@@ -202,6 +249,29 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
 # the class a method was registered on in the method's `signature` attribute, so
 # inherited fallbacks are recognised by that class being `continuous_distrib`
 # itself. Used to decide whether inverse transform sampling is cheap.
+#' Does This Distribution Have a Real Quantile Method?
+#'
+#' @description
+#' \code{TRUE} when the object gets its quantile function from a class-specific
+#' method rather than from the numerical fallback.
+#'
+#' @details
+#' Used to decide whether inverse transform sampling is cheap enough to prefer
+#' over the ratio-of-uniforms sampler: inverting a \emph{numerical} quantile costs
+#' a call to \code{uniroot} per draw.
+#'
+#' The test uses the documented S7 trick. S7 records the class a method was
+#' registered on in the method's \code{signature} attribute, so an inherited
+#' fallback is recognised by that class being \code{continuous_distrib} itself.
+#' Note that \code{identical()} does not work for this -- S7 wraps the method
+#' object, so comparing against the fallback fails even when it is the fallback.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{rng_grou}}
+#' @keywords internal
 has_analytic_quantile <- function(distrib) {
   m <- tryCatch(
     S7::method(distrib_quantile, S7::S7_class(distrib)),
@@ -393,6 +463,38 @@ rng_grou <- function(distrib, n, theta, r = 2) {
 # vanishes there, which turns the original U-shaped density into a single-peaked
 # one, exactly what the sampler wants. Both exponents come from the same probe
 # that detected the divergence, so nothing has to be searched for.
+#' Ratio-of-Uniforms for a Density Diverging at Both Edges
+#'
+#' @description
+#' Samples a density unbounded at \emph{both} ends of a finite support, by
+#' mapping the interval through a transform behaving like a different power at
+#' each end.
+#'
+#' @details
+#' A single power cannot repair a two-sided divergence, since raising to a power
+#' flattens one edge while steepening the other. This map does:
+#' \deqn{T(u) = \frac{u^p}{u^p + (1-u)^q}, \qquad Y = a + (b-a) T(U).}
+#' It increases monotonically from 0 to 1, behaves like \eqn{u^p} on the left and
+#' like \eqn{1 - (1-u)^q} on the right, and has a closed-form derivative.
+#'
+#' The density of \eqn{U} therefore carries the exponents \eqn{p\alpha - 1} and
+#' \eqn{q\beta - 1} at the two ends and is bounded as soon as \eqn{p\alpha > 1}
+#' and \eqn{q\beta > 1} -- indeed it vanishes there, turning the original
+#' U-shaped density into a single-peaked one, which is exactly what the sampler
+#' wants. Both exponents come from the same probe that detected the divergence,
+#' so nothing has to be searched for.
+#'
+#' @param lp A function giving the log-density.
+#' @param b A length-2 numeric vector, the support.
+#' @param div The exponents at the two edges, from
+#'   \code{\link{lp_edge_divergence}}.
+#' @param n The number of draws wanted.
+#' @param r The ratio-of-uniforms tuning parameter.
+#'
+#' @return A numeric vector of draws, or \code{NULL} if the sampler gives up.
+#'
+#' @seealso \code{\link{grou_core}}, \code{\link{lp_edge_divergence}}
+#' @keywords internal
 grou_two_sided <- function(lp, b, div, n, r) {
   a <- b[1]
   bb <- b[2]
@@ -464,6 +566,32 @@ grou_two_sided <- function(lp, b, div, n, r) {
 # there. Walking towards the edge in decades lifts the log-density by
 # (1 - alpha) * log(10) per step when it diverges, and by an amount that dies
 # away when it does not.
+#' Detect and Measure a Divergence at the Edges of the Support
+#'
+#' @description
+#' For each finite edge, the exponent \eqn{\alpha} of a divergence
+#' \eqn{f(y) \sim \lvert y - a \rvert^{\alpha - 1}}, or \code{NA} when the
+#' density stays bounded there.
+#'
+#' @details
+#' A density that diverges at an edge is the one case the ratio-of-uniforms
+#' sampler cannot handle directly, so it has to be detected -- and then removed
+#' by a change of variable, which needs the exponent.
+#'
+#' The neat part is that detecting and measuring are the same operation. Walking
+#' towards the edge in decades lifts the log-density by
+#' \eqn{(1 - \alpha)\log 10} per step when it diverges, and by an amount that
+#' dies away when it does not. So the probe establishing \emph{whether} the
+#' density diverges also reports \emph{how fast}, to about four decimals, with no
+#' search. That is what took Gamma shape 0.4 from 27 ms per draw to 0.8 us.
+#'
+#' @param lp A function giving the log-density.
+#' @param b A length-2 numeric vector, the support.
+#'
+#' @return A numeric vector of length 2, named \code{lower} and \code{upper}.
+#'
+#' @seealso \code{\link{grou_two_sided}}, \code{\link{rng_grou}}
+#' @keywords internal
 lp_edge_divergence <- function(lp, b) {
   probe <- function(edge, inward) {
     step <- inward * 1e-3 * max(abs(edge), 1) * 10^(-(0:11))
@@ -482,6 +610,32 @@ lp_edge_divergence <- function(lp, b) {
 # Internal: the Generalized Ratio-of-Uniforms itself, on a bare log-density over
 # an interval. Kept separate from the distrib object so that it can also be run
 # on a reparameterised density.
+#' The Generalized Ratio-of-Uniforms Sampler
+#'
+#' @description
+#' The sampler itself, on a bare log-density over an interval.
+#'
+#' @details
+#' Kept separate from the \code{distrib} object so that it can also be run on a
+#' reparameterised density, which is how the divergence transforms reuse it.
+#'
+#' Two devices make it safe. The kernel is \strong{recentred at the mode},
+#' without which a density located at \eqn{\mu = 1000} produces a degenerate
+#' bounding box; and it is \strong{normalised to a maximum of one}. With those it
+#' refuses far less often than expected: bimodal densities, a Student t with half
+#' a degree of freedom and a Pareto with infinite mean are all fine. The only
+#' genuine refusal is a density that diverges at an edge, which is handled by
+#' transforming it away.
+#'
+#' @param lp A function giving the log-density.
+#' @param b A length-2 numeric vector, the support.
+#' @param n The number of draws wanted.
+#' @param r The ratio-of-uniforms tuning parameter.
+#'
+#' @return A numeric vector of draws, or \code{NULL} if no bounding box is found.
+#'
+#' @seealso \code{\link{rng_grou}}, \code{\link{find_lp_anchor}}
+#' @keywords internal
 grou_core <- function(lp, b, n, r) {
   m <- find_lp_anchor(lp, b)
   lp_max <- lp(m)
@@ -650,6 +804,30 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 
 # Internal: cumulative pmf table from the lower bound, grown geometrically
 # until it covers probability `need_p` and support point `need_k`.
+#' Cumulative Probability Table Over a Lattice Support
+#'
+#' @description
+#' Builds the cumulative pmf from the support lower bound, growing the table
+#' geometrically until it covers the probability and the support point asked for.
+#'
+#' @details
+#' This is the whole of the discrete fallback: the cdf, the quantile function and
+#' the random generator are all lookups into it. No new algorithm was needed for
+#' discrete distributions, because the cdf of a lattice variable is a step
+#' function and inverting it is exact. The cost was one R-level call per draw,
+#' and vectorising the lookup took that from 12.6 us to 0.1.
+#'
+#' Requires a finite lower bound, which every standard count distribution has.
+#'
+#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param theta A named list of parameters.
+#' @param need_p Grow the table until it covers at least this probability.
+#' @param need_k Grow the table until it reaches at least this support point.
+#' @param kmax A ceiling on the table size, to bound a runaway request.
+#'
+#' @return A list holding the support points and their cumulative probabilities.
+#'
+#' @keywords internal
 disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 1e6) {
   b <- distrib@bounds
   if (!is.finite(b[1])) {

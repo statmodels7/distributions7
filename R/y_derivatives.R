@@ -5,8 +5,25 @@
 # form override these. For discrete distributions the derivative w.r.t. y is not
 # defined, so no default method is provided.
 
-# Internal: finite-difference step for y, scaled by magnitude and shrunk so that
-# y +/- h stays strictly inside the distribution's support.
+#' Finite-Difference Steps That Respect the Support
+#'
+#' @description
+#' The step for a central difference in the response: scaled by \eqn{|y|} and
+#' shrunk so that \eqn{y \pm h} stays strictly inside the distribution's support.
+#'
+#' @details
+#' The response counterpart of \code{\link{fd_steps}}, and clamped for the same
+#' reason: a Gamma observation close to zero would otherwise be differentiated
+#' using a point outside the support, where the density is not defined.
+#'
+#' @param y A numeric vector of observations.
+#' @param bounds A length-2 numeric vector, the distribution's support.
+#' @param h_rel The relative step size.
+#'
+#' @return A numeric vector of steps, the same length as \code{y}.
+#'
+#' @seealso \code{\link{fd_steps}}, \code{\link{numerical_grad_y}}
+#' @keywords internal
 fd_steps_y <- function(y, bounds, h_rel) {
   h <- h_rel * pmax(1, abs(y))
   if (is.finite(bounds[1])) h <- pmin(h, 0.49 * (y - bounds[1]))
