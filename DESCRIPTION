@@ -50,6 +50,10 @@ Collate:
     'numerical_derivatives.R'
     'higher_derivatives.R'
     'check_distrib.R'
+    'zero_inflated.R'
+    'zero_adjusted.R'
+    'truncated.R'
+    'cross_derivatives.R'
     'distributions7-package.R'
     'expected_derivatives.R'
     'link_scale.R'
@@ -60,9 +64,6 @@ Collate:
     'methods.R'
     'numerical_fallbacks.R'
     'transformations.R'
-    'zero_inflated.R'
-    'zero_adjusted.R'
-    'truncated.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),

@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R moments.R
+#' @include distrib.R generics.R utility_functions.R moments.R cross_derivatives.R
 NULL
 
 #' @title S7 Class for Distributions With Fixed Parameters (Continuous)
@@ -151,6 +151,16 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
 
   S7::method(distrib_hess_y, .fixed_cls) <- function(distrib, y, theta, ...) {
     distrib_hess_y(distrib@parent_distrib, y, fixed_full_theta(distrib, theta), ...)
+  }
+
+  S7::method(distrib_cross_y, .fixed_cls) <- function(distrib, y, theta,
+                                                      scale = c("parameter", "link"),
+                                                      ...) {
+    res <- distrib_cross_y(distrib@parent_distrib, y,
+      fixed_full_theta(distrib, theta),
+      scale = "parameter", ...
+    )
+    res[distrib@params]
   }
 
   S7::method(distrib_gradient, .fixed_cls) <- function(distrib, y, theta,

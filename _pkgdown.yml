@@ -80,6 +80,7 @@ reference:
   - distrib_deriv4
   - distrib_grad_y
   - distrib_hess_y
+  - distrib_cross_y
   - distrib_grad_cdf
   - distrib_hess_cdf
   - link_scale_derivatives
@@ -134,6 +135,7 @@ reference:
   - numerical_deriv4
   - numerical_grad_y
   - numerical_hess_y
+  - numerical_cross_y
   - numerical_cdf_deriv
   - numerical_series
 
