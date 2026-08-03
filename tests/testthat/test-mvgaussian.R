@@ -14,6 +14,28 @@ fd_grad <- function(f, x, h = 1e-5) {
   }, numeric(1))
 }
 
+# A second derivative from ONE stencil. Composing two first differences is the
+# obvious route and it is the one this toolkit forbids everywhere else: the
+# reference becomes the error of an error, and whether it lands inside a
+# tolerance is then a fact about the platform's arithmetic. Written out here
+# because a test must not reach into the package for the thing it is checking.
+fd_hess <- function(f, x, k, l, h = 1e-4) {
+  hk <- h * max(1, abs(x[k]))
+  hl <- h * max(1, abs(x[l]))
+  if (k == l) {
+    up <- dn <- x
+    up[k] <- x[k] + hk
+    dn[k] <- x[k] - hk
+    return((f(up) - 2 * f(x) + f(dn)) / hk^2)
+  }
+  pp <- pm <- mp <- mm <- x
+  pp[k] <- pp[k] + hk; pp[l] <- pp[l] + hl
+  pm[k] <- pm[k] + hk; pm[l] <- pm[l] - hl
+  mp[k] <- mp[k] - hk; mp[l] <- mp[l] + hl
+  mm[k] <- mm[k] - hk; mm[l] <- mm[l] - hl
+  (f(pp) - f(pm) - f(mp) + f(mm)) / (4 * hk * hl)
+}
+
 test_that("the constructor validates its arguments", {
   expect_error(mvgaussian_distrib(0), "positive integer")
   expect_error(mvgaussian_distrib(2.5), "positive integer")
@@ -128,9 +150,7 @@ test_that("the score and the Hessian agree with finite differences", {
   pr <- hess_pairs(d@params)
   for (nm in hess_names(d@params)) {
     k <- match(pr[[nm]], d@params)
-    fd <- fd_grad(function(v) {
-      fd_grad(ll, v)[k[1]]
-    }, v0)[k[2]]
+    fd <- fd_hess(ll, v0, k[1], k[2])
     expect_equal(sum(h[[nm]]), fd, tolerance = 1e-4, label = nm)
   }
 })
@@ -251,7 +271,7 @@ test_that("the precision form has correct derivatives of its own", {
   pr <- hess_pairs(do@params)
   for (nm in hess_names(do@params)) {
     k <- match(pr[[nm]], do@params)
-    fd <- fd_grad(function(v) fd_grad(ll, v)[k[1]], v0)[k[2]]
+    fd <- fd_hess(ll, v0, k[1], k[2])
     expect_equal(sum(h[[nm]]), fd, tolerance = 1e-4, label = nm)
   }
 })
@@ -267,22 +287,26 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
   expect_true(fit@converged)
   expect_identical(fit@n, 2000L)
 
-  est <- coef(fit)
   # The maximum likelihood estimator of a gaussian is the sample mean and the
-  # sample second moment about it, both in closed form.
+  # sample second moment about it, both in closed form. Newton stops on the
+  # gradient, so it reaches that point to machine precision and the comparison
+  # says something exact.
   mu_hat <- colMeans(y)
   s_hat <- crossprod(sweep(y, 2L, mu_hat)) / nrow(y)
-  expect_equal(unname(mv_mu(d, est)), unname(mu_hat), tolerance = 1e-4)
-  expect_equal(unname(mv_sigma(d, est)), unname(s_hat), tolerance = 1e-4)
-
-  # Newton stops on the gradient here and reaches the maximum exactly, which is
-  # the statement that does not depend on the optimiser's last step. The
-  # default criterion is crit_any(crit_grad, crit_rel_obj), an OR, so the
-  # weaker of the two rules can end the run first: measured, Fisher scoring
-  # stops at a score of about 8e-6 per observation while Newton reaches 1e-15.
   fit_n <- fit_distrib(d, y, method = "newton")
-  sc <- vapply(distrib_gradient(d, y, as.list(coef(fit_n))), sum, numeric(1))
+  est_n <- coef(fit_n)
+  expect_equal(unname(mv_mu(d, est_n)), unname(mu_hat), tolerance = 1e-8)
+  expect_equal(unname(mv_sigma(d, est_n)), unname(s_hat), tolerance = 1e-8)
+  sc <- vapply(distrib_gradient(d, y, as.list(est_n)), sum, numeric(1))
   expect_lt(max(abs(sc)) / nrow(y), 1e-9)
+
+  # The default reaches the same maximum. It is not asked for the same number
+  # of digits in the parameters: its criterion is
+  # crit_any(crit_grad, crit_rel_obj), an OR, so the weaker rule can end the
+  # run, and where it ends depends on the arithmetic of the machine. What it
+  # does promise is the value of the objective.
+  est <- coef(fit)
+  expect_equal(unname(mv_mu(d, est)), unname(mu_hat), tolerance = 1e-3)
   expect_equal(as.numeric(logLik(fit_n)), as.numeric(logLik(fit)),
     tolerance = 1e-8
   )
