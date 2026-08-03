@@ -24,12 +24,11 @@ repeatedly evaluating the log-density on a grid and keeping the two cells
 around the largest value: for a unimodal density that bracket provably still
 contains the mode, and it shrinks by a factor of 64 per pass.
 
-A golden-section search on the compactified scale is \emph{not} accurate
-enough here, which is worth knowing before anyone replaces this with one. Its
-tolerance is expressed in the compactified variable, and the derivative of the
-compactification can be enormous -- under the tangent map \eqn{dy/dt} is of
-order \eqn{y^2}, so a default tolerance of about \code{1e-4} became an error of
-125 standard deviations for a density centred at 1000. The grid refinement
+A golden-section search on the compactified scale is not accurate enough
+here: its tolerance is expressed in the compactified variable, whose
+derivative under the tangent map is of order \eqn{y^2}, so a fixed tolerance
+in \eqn{t} corresponds to an error in \eqn{y} that grows with the location
+of the mode. The grid refinement
 instead stops on the width of the bracket measured in \eqn{y}.
 }
 \seealso{

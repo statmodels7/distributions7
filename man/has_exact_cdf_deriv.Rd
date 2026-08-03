@@ -19,12 +19,11 @@ A single logical.
 given order, or is a discrete family whose cdf derivatives are an exact sum.
 }
 \details{
-This gate exists because of a regression. Replacing the quadrature for
-\eqn{d^B Z} with two calls on the parent's cdf derivative takes the truncated
-Gaussian Hessian from about 8 ms to 0.85, so it is worth doing -- but only
-where it is at least as accurate as what it replaces. When the parent has no
-closed form the route differences its cdf, carrying roughly \code{1e-8} of
-relative error into the Hessian where the quadrature carried \code{1e-10}.
+Replacing the quadrature for \eqn{d^B Z} with two calls on the parent's cdf
+derivative is roughly an order of magnitude faster, and is taken only where
+it is at least as accurate as what it replaces: when the parent has no
+closed form that route differences its cdf, carrying more relative error
+into the Hessian than the quadrature does.
 
 That is invisible in the Hessian itself but not downstream:
 \code{\link{numerical_deriv4}} differentiates the analytical Hessian, so a

@@ -25,7 +25,7 @@ Zero-inflation is the right wrapper when the data contain \emph{more} zeros than
 the parent can produce, and a zero can plausibly have come either from the count
 process or from a separate mechanism that switches it off. If instead the zeros
 come from one identifiable mechanism and the positive values from another, the
-model you want is the hurdle, \code{\link{zero_adjusted}}.
+appropriate model is the hurdle, \code{\link{zero_adjusted}}.
 }
 \details{
 \deqn{

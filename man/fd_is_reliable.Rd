@@ -25,7 +25,7 @@ A logical vector as long as the components of \code{ref}.
 \description{
 Flags the observations where a central difference has actually converged, so
 that \code{\link{check_distrib}} compares an analytical derivative only
-against a reference worth comparing to.
+against a reference that is itself reliable.
 }
 \details{
 A log-likelihood with a kink -- the Laplace's location is the example the

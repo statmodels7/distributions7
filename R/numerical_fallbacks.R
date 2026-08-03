@@ -35,12 +35,11 @@ NULL
 #' around the largest value: for a unimodal density that bracket provably still
 #' contains the mode, and it shrinks by a factor of 64 per pass.
 #'
-#' A golden-section search on the compactified scale is \emph{not} accurate
-#' enough here, which is worth knowing before anyone replaces this with one. Its
-#' tolerance is expressed in the compactified variable, and the derivative of the
-#' compactification can be enormous -- under the tangent map \eqn{dy/dt} is of
-#' order \eqn{y^2}, so a default tolerance of about \code{1e-4} became an error of
-#' 125 standard deviations for a density centred at 1000. The grid refinement
+#' A golden-section search on the compactified scale is not accurate enough
+#' here: its tolerance is expressed in the compactified variable, whose
+#' derivative under the tangent map is of order \eqn{y^2}, so a fixed tolerance
+#' in \eqn{t} corresponds to an error in \eqn{y} that grows with the location
+#' of the mode. The grid refinement
 #' instead stops on the width of the bracket measured in \eqn{y}.
 #'
 #' @param distrib An object inheriting from class \code{"distrib"}.
@@ -578,12 +577,13 @@ grou_two_sided <- function(lp, b, div, n, r) {
 #' sampler cannot handle directly, so it has to be detected -- and then removed
 #' by a change of variable, which needs the exponent.
 #'
-#' The neat part is that detecting and measuring are the same operation. Walking
+#' Detecting and measuring are the same operation. Walking
 #' towards the edge in decades lifts the log-density by
 #' \eqn{(1 - \alpha)\log 10} per step when it diverges, and by an amount that
 #' dies away when it does not. So the probe establishing \emph{whether} the
 #' density diverges also reports \emph{how fast}, to about four decimals, with no
-#' search. That is what took Gamma shape 0.4 from 27 ms per draw to 0.8 us.
+#' search, reducing the cost per draw by several orders of magnitude for
+#' strongly divergent shapes.
 #'
 #' @param lp A function giving the log-density.
 #' @param b A length-2 numeric vector, the support.
@@ -815,7 +815,7 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 #' the random generator are all lookups into it. No new algorithm was needed for
 #' discrete distributions, because the cdf of a discrete variable is a step
 #' function and inverting it is exact. The cost was one R-level call per draw,
-#' and vectorising the lookup took that from 12.6 us to 0.1.
+#' and the lookup is vectorised.
 #'
 #' Requires a finite lower bound, which every standard count distribution has.
 #'

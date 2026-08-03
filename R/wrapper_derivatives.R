@@ -195,9 +195,9 @@ memo_ratio <- function(f, params) {
 #' ordered for \code{\link{hess_names}} -- diagonal first -- while
 #' \code{deriv_names()} is lexicographic; pairing those would silently attach the
 #' name \code{"mu_sigma"} to the index \code{(sigma, sigma)}. The orders actually
-#' registered here are 3 and 4, where the two agree, but a mismatch that only
-#' bites when someone reuses the helper is the kind worth removing rather than
-#' commenting on.
+#' registered here are 3 and 4, where the two orderings agree; generating the
+#' indices locally removes the mismatch instead of depending on it never being
+#' reached.
 #'
 #' @param params A character vector of parameter names.
 #' @param order The derivative order.

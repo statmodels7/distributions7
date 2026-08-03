@@ -27,11 +27,11 @@ cancels between the numerator and the truncation constant, leaving its score
 identically zero -- and mixing a further point mass in only ever shifts the
 total mass at zero, which one parameter already describes.
 
-The distributions this rejects are perfectly well-defined; they are simply not
-estimable. That is why the constructor is the place to catch it: nothing goes
-wrong at run time. The pmf still sums to one, \code{\link{check_distrib}}
-still passes, and the fit still converges -- to an arbitrary point of a flat
-ridge.
+The distributions this rejects are well-defined but not estimable, and
+nothing detects that at run time: the pmf sums to one,
+\code{\link{check_distrib}} passes, and a fit converges to an arbitrary
+point of a flat ridge. The constructor is therefore the only place the
+condition can be enforced.
 }
 \seealso{
 \code{\link{zero_inflated}}, \code{\link{zero_adjusted}}

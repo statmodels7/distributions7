@@ -53,8 +53,7 @@ safe_check <- function(name, expr) {
 #'
 #' @description
 #' Runs a battery of numerical self-consistency checks on a \code{distrib} object.
-#' This is the recommended way to validate a distribution you have defined
-#' yourself: it verifies that the density integrates (or sums) to one, that the
+#' Validates a user-defined distribution: it verifies that the density integrates (or sums) to one, that the
 #' CDF, quantile function and random generator agree with each other and with the
 #' density, and that every analytical derivative matches its finite-difference
 #' counterpart.
@@ -409,7 +408,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
 #' @description
 #' Flags the observations where a central difference has actually converged, so
 #' that \code{\link{check_distrib}} compares an analytical derivative only
-#' against a reference worth comparing to.
+#' against a reference that is itself reliable.
 #'
 #' @details
 #' A log-likelihood with a kink -- the Laplace's location is the example the

@@ -110,11 +110,11 @@ is_zero_wrapper <- function(distrib) {
 #' identically zero -- and mixing a further point mass in only ever shifts the
 #' total mass at zero, which one parameter already describes.
 #'
-#' The distributions this rejects are perfectly well-defined; they are simply not
-#' estimable. That is why the constructor is the place to catch it: nothing goes
-#' wrong at run time. The pmf still sums to one, \code{\link{check_distrib}}
-#' still passes, and the fit still converges -- to an arbitrary point of a flat
-#' ridge.
+#' The distributions this rejects are well-defined but not estimable, and
+#' nothing detects that at run time: the pmf sums to one,
+#' \code{\link{check_distrib}} passes, and a fit converges to an arbitrary
+#' point of a flat ridge. The constructor is therefore the only place the
+#' condition can be enforced.
 #'
 #' @param distrib The parent distribution being wrapped.
 #' @param fun The calling constructor's name, used in the message.
@@ -433,7 +433,7 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' the parent can produce, and a zero can plausibly have come either from the count
 #' process or from a separate mechanism that switches it off. If instead the zeros
 #' come from one identifiable mechanism and the positive values from another, the
-#' model you want is the hurdle, \code{\link{zero_adjusted}}.
+#' appropriate model is the hurdle, \code{\link{zero_adjusted}}.
 #'
 #' @param distrib An object inheriting from \code{discrete_distrib} whose support
 #'   includes 0, e.g. \code{\link{poisson_distrib}()} or \code{\link{negbin_distrib}()}.

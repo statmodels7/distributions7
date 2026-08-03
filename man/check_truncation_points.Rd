@@ -21,7 +21,7 @@ Checks that the interval is well formed and that truncating this parent there
 leaves an identifiable model.
 }
 \details{
-The case worth naming is truncating zero away from a zero wrapper. The
+One case is rejected outright: truncating zero away from a zero wrapper. The
 \eqn{(1-\zeta)} factor then cancels between the numerator and \eqn{Z}, so
 \eqn{\zeta} leaves the likelihood entirely and its score is identically zero
 -- the same defect as stacking the two zero wrappers, arriving by a different
