@@ -58,18 +58,28 @@ scale** where the fitting actually happened. More on that split below.
 coef(fit)
 vcov(fit)
 logLik(fit)
+confint(fit)
 ```
 
-`coef()` and `vcov()` also take a `scale` argument, which returns the same
-quantities on the unconstrained scale:
+`coef()`, `vcov()` and `confint()` all take a `scale` argument, which returns
+the same quantities on the unconstrained scale:
 
 ```{r}
 coef(fit, scale = "link")
+confint(fit, scale = "link")
 ```
 
-The object carries confidence intervals, the information criteria, the number of
-iterations, and the method that was actually used --- all visible in the print
-above.
+The interval on the link scale is symmetric about the estimate, and the one on
+the parameter scale is its image under $g^{-1}$, which is why the second is not
+symmetric. `confint()` also takes a `level`, computed from the stored estimates
+and standard errors without refitting:
+
+```{r}
+confint(fit, level = 0.99)
+```
+
+The object also carries the information criteria, the number of iterations and
+the method that was actually used, all visible in the print above.
 
 ## Why the link scale
 

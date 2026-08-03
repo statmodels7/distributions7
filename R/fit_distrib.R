@@ -480,8 +480,12 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
 
   links <- vapply(x@distrib@params,
                   function(p) x@distrib@link_params[[p]]@link_name, character(1))
-  tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta)
-  cat("\nLink scale (", paste(links, collapse = ", "), "):\n", sep = "")
+  # The link-scale interval is the one actually computed; the table above is its
+  # image under g^{-1}, so showing both makes the mapping visible.
+  tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
+  colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
+  cat("\nLink scale (", paste(links, collapse = ", "), ", ", pct,
+      "% CI symmetric here):\n", sep = "")
   print(round(tab_eta, digits))
 
   invisible(x)
@@ -511,6 +515,59 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"), ...) {
   scale <- match.arg(scale)
   if (scale == "link") object@vcov_eta else object@vcov
+}
+
+#' Confidence Intervals for a Maximum-Likelihood Fit
+#'
+#' @name confint.distrib_fit
+#' @description
+#' Returns Wald intervals. They are built symmetrically on the link scale, where
+#' the parameters are unconstrained, and mapped through \eqn{g^{-1}} when the
+#' parameter scale is requested, so that a limit can never leave the parameter's
+#' domain. The two ends are sorted after mapping, because a link need not be
+#' increasing.
+#'
+#' @param object A \code{\link{distrib_fit}} object.
+#' @param parm Parameters to report, given by name or position. Defaults to all.
+#' @param level Confidence level. Defaults to the level the fit was computed at,
+#'   and any other value is obtained from the stored estimates and standard
+#'   errors without refitting.
+#' @param scale Either \code{"parameter"} (default) or \code{"link"}.
+#' @param ... Unused.
+#' @return A two-column matrix of confidence limits, one row per parameter.
+#' @importFrom stats confint qnorm
+S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
+                                             scale = c("parameter", "link"), ...) {
+  scale <- match.arg(scale)
+  params <- object@distrib@params
+
+  z <- stats::qnorm(1 - (1 - level) / 2)
+  ci_eta <- cbind(lower = object@eta - z * object@se_eta,
+                  upper = object@eta + z * object@se_eta)
+  rownames(ci_eta) <- params
+
+  out <- if (scale == "link") {
+    ci_eta
+  } else {
+    m <- t(vapply(seq_along(params), function(i) {
+      lk <- object@distrib@link_params[[params[i]]]
+      sort(c(linkfunctions7::linkinv(lk, ci_eta[i, 1]),
+             linkfunctions7::linkinv(lk, ci_eta[i, 2])), na.last = TRUE)
+    }, numeric(2)))
+    dimnames(m) <- list(params, c("lower", "upper"))
+    m
+  }
+
+  if (!missing(parm)) {
+    idx <- if (is.character(parm)) match(parm, params) else as.integer(parm)
+    if (anyNA(idx) || any(idx < 1L | idx > length(params))) {
+      stop("'parm' does not name a parameter of this fit.", call. = FALSE)
+    }
+    out <- out[idx, , drop = FALSE]
+  }
+  colnames(out) <- paste0(
+    format(c(1 - level, 1 + level) / 2 * 100, trim = TRUE), "%")
+  out
 }
 
 #' Log-Likelihood of a Maximum-Likelihood Fit

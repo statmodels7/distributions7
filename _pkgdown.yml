@@ -149,6 +149,7 @@ reference:
   - distrib_generics
   - starts_with("coef.")
   - starts_with("vcov.")
+  - starts_with("confint.")
   - starts_with("logLik.")
   - starts_with("simulate.")
   - starts_with("print.")

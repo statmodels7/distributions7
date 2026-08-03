@@ -204,3 +204,84 @@ test_that("a non-smooth distribution still fits, and quietly", {
   expect_equal(unname(coef(f)["b"]),
                mean(abs(y - unname(coef(f)["mu"]))), tolerance = 1e-6)
 })
+
+
+# --- confidence intervals ---------------------------------------------------
+
+test_that("confint() agrees with the intervals the fit computed", {
+  set.seed(31)
+  d <- gamma_distrib()
+  y <- distrib_rng(d, 400, list(mu = 4, sigma2 = 6))
+  f <- fit_distrib(d, y, start = list(mu = 4, sigma2 = 6))
+
+  expect_equal(unname(confint(f)), unname(f@ci))
+  expect_equal(unname(confint(f, scale = "link")), unname(f@ci_eta))
+
+  # the parameter-scale interval is the image of the link-scale one
+  ce <- confint(f, scale = "link")
+  mapped <- t(vapply(seq_along(d@params), function(i) {
+    lk <- d@link_params[[d@params[i]]]
+    sort(linkfunctions7::linkinv(lk, ce[i, ]))
+  }, numeric(2)))
+  expect_equal(unname(mapped), unname(confint(f)))
+})
+
+
+test_that("confint() honours level and parm", {
+  set.seed(32)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 300, list(mu = 1, sigma = 2))
+  f <- fit_distrib(d, y, start = list(mu = 1, sigma = 2))
+
+  wide <- confint(f, level = 0.99)
+  narrow <- confint(f, level = 0.95)
+  expect_true(all(wide[, 1] < narrow[, 1]))
+  expect_true(all(wide[, 2] > narrow[, 2]))
+
+  expect_equal(rownames(confint(f, "sigma")), "sigma")
+  expect_equal(rownames(confint(f, 1)), "mu")
+  expect_error(confint(f, "nope"), "does not name a parameter")
+})
+
+
+test_that("an interval never leaves the parameter's domain, either direction", {
+  # A bounded-above link is DECREASING, so mapping the two ends swaps them; the
+  # limits must still come back in order and inside the domain.
+  set.seed(33)
+  du <- gaussian_distrib(link_mu = linkfunctions7::bounded_link(upr = 10))
+  yu <- distrib_rng(du, 300, list(mu = 6, sigma = 2))
+  fu <- fit_distrib(du, yu, start = list(mu = 6, sigma = 2))
+
+  ci <- confint(fu)
+  expect_true(all(ci[, 1] < ci[, 2]))
+  expect_true(ci["mu", 2] < 10)
+  expect_true(ci["sigma", 1] > 0)
+
+  # and on the link scale the interval is symmetric about the estimate
+  ce <- confint(fu, scale = "link")
+  expect_equal(unname(ce[, 2] - fu@eta), unname(fu@eta - ce[, 1]))
+
+  # a probability stays inside (0, 1)
+  set.seed(34)
+  fb <- fit_distrib(bernoulli_distrib(), rbinom(60, 1, 0.9),
+                    start = list(mu = 0.5))
+  cb <- confint(fb)
+  expect_true(all(cb > 0 & cb < 1))
+})
+
+
+test_that("the print method shows the interval on both scales", {
+  set.seed(35)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 200, list(mu = 0, sigma = 1))
+  f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
+  out <- utils::capture.output(print(f))
+
+  # the link-scale block carries the two limit columns, not just the estimate
+  i <- grep("^Link scale", out)
+  expect_length(i, 1)
+  expect_match(out[i], "95% CI")
+  header <- out[i + 1]
+  expect_match(header, "2\\.5%")
+  expect_match(header, "97\\.5%")
+})
