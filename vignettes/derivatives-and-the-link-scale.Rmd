@@ -21,15 +21,15 @@ library(distributions7)
 
 Most of what **distributions7** offers beyond densities is derivatives: the
 score, the information, and the third and fourth derivatives of the
-log-likelihood. This vignette explains what they are, the two scales you can ask
-for them on, and why the second scale --- the link scale --- is the one an
-optimiser wants.
+log-likelihood. This vignette explains what they are, the two scales they are
+available on, and why the second scale --- the link scale --- is the one an
+optimiser needs.
 
 ## The derivatives of the log-likelihood
 
-For one observation, write $\ell(\theta) = \log f(y; \theta)$. The package gives
-you its derivatives with respect to the parameters, per observation, as named
-lists:
+For one observation, write $\ell(\theta) = \log f(y; \theta)$. The package
+returns its derivatives with respect to the parameters, per observation, as
+named lists:
 
 ```{r}
 d <- gaussian_distrib()
@@ -64,8 +64,8 @@ respect to the response $y$ instead of the parameters.
 ## Two scales
 
 Every derivative generic takes a `scale` argument. The default,
-`scale = "parameter"`, is what you have seen: derivatives with respect to
-$\theta$ on its natural, constrained scale.
+`scale = "parameter"`, is what the examples above used: derivatives with
+respect to $\theta$ on its natural, constrained scale.
 
 `scale = "link"` instead gives derivatives with respect to the **unconstrained**
 parameter $\eta = g(\theta)$ behind each link. For the Gaussian the default link
@@ -158,8 +158,9 @@ models where the usual regularity assumptions fail.
 
 ## A note for authors of derivative methods
 
-If you write your own analytical derivative method, its signature **must** include
-the `scale` argument, even if the method only ever returns the parameter scale:
+A user-written analytical derivative method **must** include the `scale`
+argument in its signature, even if the method only ever returns the parameter
+scale:
 
 ```{r eval = FALSE}
 S7::method(distrib_gradient, MyDist) <- function(distrib, y, theta,

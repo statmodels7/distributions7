@@ -17,26 +17,26 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 Almost every R package that fits statistical models writes its own
 distributions, privately: a `switch` on a character string, a list of
-closures nobody outside can reach. So the same Gamma gets re-implemented
-again and again, and each time only as far as that package happened to
-need — the density and the score, sometimes the Hessian, rarely anything
-beyond.
+closures nothing outside can reach. The same Gamma is therefore
+re-implemented again and again, each time only as far as that package
+happened to need it: the density and the score, sometimes the Hessian,
+rarely anything beyond.
 
 `{distributions7}` writes them once, as objects. Each carries the usual
-density, distribution and quantile functions, and the **exact
-derivatives of the log-likelihood up to fourth order** — with respect to
-the parameters, with respect to the response, and with respect to the
-unconstrained parameters behind a link function, which is the scale an
-optimiser actually works on.
+density, distribution and quantile functions, together with the **exact
+derivatives of the log-likelihood up to fourth order**. The derivatives
+are available with respect to the parameters, with respect to the
+response, and with respect to the unconstrained parameters behind a link
+function, which is the scale an optimiser works on.
 
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 toolkit for
 statistical modelling, and works alongside
 [linkfunctions7](https://statmodels7.github.io/linkfunctions7). The
-mathematics behind every formula — the likelihood theory, the change of
-scale, and the derivations for the zero-inflated, zero-adjusted,
-truncated and transformed wrappers — is worked out in full in [the
-statmodels7 book](https://statmodels7.github.io/book/).
+mathematics behind every formula, from the likelihood theory and the
+change of scale to the derivations for the zero-inflated, zero-adjusted,
+truncated and transformed wrappers, is worked out in [the statmodels7
+book](https://statmodels7.github.io/book/).
 
 ## Installation
 
@@ -63,10 +63,10 @@ distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
 #> [1] -3.879892  2.000000  7.879892
 ```
 
-## Derivatives, which is the point
+## Derivatives
 
-The score, the observed and expected information, and third and fourth
-order derivatives are all closed form.
+The score, the observed and expected information, and the third and
+fourth order derivatives are all closed form.
 
 ``` r
 y <- distrib_rng(d, 5, theta)
@@ -88,9 +88,9 @@ distrib_expected_hessian(d, 0, theta)
 #> [1] 0
 ```
 
-Ask for them on the **link scale** and you get derivatives with respect
-to the unconstrained parameters instead, through the chain rule rather
-than by differentiating numerically:
+On the **link scale** the same generics return derivatives with respect
+to the unconstrained parameters instead, computed through the chain rule
+rather than by differentiating numerically:
 
 ``` r
 distrib_gradient(d, y, theta, scale = "link")
@@ -143,7 +143,7 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 #> 2.570081 2.881259
 ```
 
-## A distribution of your own needs only its density
+## A user-defined distribution needs only its density
 
 Everything above has a numerical fallback registered on the base
 classes: the distribution function by quadrature, the quantile function
@@ -183,13 +183,13 @@ distrib_gradient(d2, 1, list(mu = 0, b = 2))
 See `vignette("defining-a-distribution")` for the full treatment,
 including what to do when a parameter is not differentiable.
 
-## Checking your work
+## Validating a distribution
 
-`check_distrib()` puts a distribution through thirteen numerical checks:
-that the density integrates to one, that the distribution function
-agrees with it, that the quantile function inverts it, that the
-generator follows it, and that every derivative order matches finite
-differences — on both scales.
+`check_distrib()` puts a distribution through thirteen numerical checks.
+It verifies that the density integrates to one, that the distribution
+function agrees with it, that the quantile function inverts it, and that
+the generator follows it. It also checks every derivative order against
+finite differences, on both scales.
 
 ``` r
 invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
