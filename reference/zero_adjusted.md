@@ -36,7 +36,7 @@ zero_adjusted(distrib, link_za = logit_link())
 - link_za:
 
   A link function object for the zero probability \\\pi\\. Defaults to
-  [`logit_link`](https://rdrr.io/pkg/linkfunctions7/man/logit_link.html).
+  [`logit_link`](https://statmodels7.github.io/linkfunctions7/reference/logit_link.html).
 
 ## Value
 

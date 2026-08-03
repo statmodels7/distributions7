@@ -153,6 +153,22 @@ values.
 - [`yj_transform()`](https://statmodels7.github.io/distributions7/reference/yj_transform.md)
   : Yeo-Johnson Transformation
 
+## Several dimensions
+
+Distributions whose observations are vectors. The response is a matrix
+with one row per observation, and the parameters stay scalars: a mean
+vector contributes one each, and a covariance contributes the free
+values of the covstructs7 structure that parametrises it, so every
+generic of the package indexes them as it always did.
+
+- [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+  : Construct a Multivariate Gaussian Distribution
+- [`mv_mu()`](https://statmodels7.github.io/distributions7/reference/mv_mu.md)
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_mu.md)
+  : The Mean Vector and Covariance a Parameter List Describes
+- [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
+  : How Many Observations a Response Holds
+
 ## Classes
 
 The S7 classes; each page lists the methods that dispatch on it.
@@ -163,6 +179,8 @@ The S7 classes; each page lists the methods that dispatch on it.
   : S7 Class for Continuous Distributions
 - [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
   : S7 Class for Discrete Distributions
+- [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+  : S7 Class for Multivariate Distributions
 
 ## Numerical fallbacks
 
@@ -228,6 +246,8 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`GaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/GaussianDistrib.md)
   : S7 Class for Gaussian Distribution
+- [`MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
+  : Multivariate Gaussian Distribution
 - [`distrib_cdf.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GaussianDistrib.md)
   : Gaussian Cumulative Distribution Function
 - [`distrib_deriv3.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GaussianDistrib.md)
@@ -614,6 +634,11 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBinDistrib.md)
   : Negative Binomial Random Number Generator
 
+## Multivariate gaussian
+
+- [`MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
+  : Multivariate Gaussian Distribution
+
 ## Wrapper classes
 
 The methods of the zero-inflated, zero-adjusted, truncated, transformed
@@ -790,6 +815,10 @@ inherits unless it registers something more specific.
   : Logistic Distribution Object
 - [`lognormal_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal_distrib.md)
   : Lognormal Distribution Object (Log-Scale Parameterization)
+- [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+  : S7 Class for Multivariate Distributions
+- [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+  : Construct a Multivariate Gaussian Distribution
 - [`negbin_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
   : Negative Binomial Distribution Object (NB2)
 - [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
@@ -812,6 +841,9 @@ divergent density.
 - [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
   : Align Parameters to the Distribution's Parameter Order
 
+- [`as_mv_matrix()`](https://statmodels7.github.io/distributions7/reference/as_mv_matrix.md)
+  : Coerce a Multivariate Response to a Matrix
+
 - [`assemble_deriv()`](https://statmodels7.github.io/distributions7/reference/assemble_deriv.md)
   : Assemble One Order of a Wrapper's Derivatives
 
@@ -832,6 +864,9 @@ divergent density.
 
 - [`check_derivative_args()`](https://statmodels7.github.io/distributions7/reference/check_derivative_args.md)
   : Shared Argument Handling for the Derivative Generics
+
+- [`check_distrib_mv()`](https://statmodels7.github.io/distributions7/reference/check_distrib_mv.md)
+  : Validate a Multivariate Distribution
 
 - [`check_not_stacked()`](https://statmodels7.github.io/distributions7/reference/check_not_stacked.md)
   : Refuse to Stack Two Zero Parameters
@@ -863,6 +898,9 @@ divergent density.
 - [`distrib_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md)
   : Default Numerical CDF for Discrete Distributions
 
+- [`distrib_cdf.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.md)
+  : No Distribution Function in Several Dimensions
+
 - [`distrib_cross_y.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GaussianDistrib.md)
   : Gaussian Mixed Derivatives
 
@@ -888,6 +926,9 @@ divergent density.
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
 
+- [`distrib_expected_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)
+  : Multivariate Gaussian Expected Hessian
+
 - [`distrib_expected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.distrib.md)
   :
 
@@ -899,8 +940,14 @@ divergent density.
 - [`distrib_grad_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.md)
   : Log-CDF Gradient for Discrete Distributions
 
+- [`distrib_grad_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvGaussianDistrib.md)
+  : Multivariate Gaussian Response Gradient
+
 - [`distrib_grad_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
   : Default Response Gradient for Continuous Distributions
+
+- [`distrib_gradient.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
+  : Multivariate Gaussian Score
 
 - [`distrib_gradient.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.md)
   :
@@ -913,19 +960,34 @@ divergent density.
 - [`distrib_hess_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.discrete_distrib.md)
   : Log-CDF Hessian for Discrete Distributions
 
+- [`distrib_hess_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvGaussianDistrib.md)
+  : Multivariate Gaussian Response Hessian
+
 - [`distrib_hess_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.continuous_distrib.md)
   : Default Response Hessian for Continuous Distributions
+
+- [`distrib_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvGaussianDistrib.md)
+  : Multivariate Gaussian Observed Hessian
 
 - [`distrib_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.distrib.md)
   :
 
   Default Numerical Hessian for `distrib` Objects
 
+- [`distrib_pdf.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md)
+  : Multivariate Gaussian Density
+
 - [`distrib_quantile.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.continuous_distrib.md)
   : Default Numerical Quantile Function for Continuous Distributions
 
 - [`distrib_quantile.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.discrete_distrib.md)
   : Default Numerical Quantile Function for Discrete Distributions
+
+- [`distrib_quantile.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.multivariate_distrib.md)
+  : No Quantile Function in Several Dimensions
+
+- [`distrib_rng.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvGaussianDistrib.md)
+  : Multivariate Gaussian Generator
 
 - [`distrib_rng.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.continuous_distrib.md)
   : Default Numerical RNG for Continuous Distributions
@@ -960,6 +1022,9 @@ divergent density.
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
   : Which Observations the Finite-Difference Reference Can Be Trusted At
 
+- [`fd_second()`](https://statmodels7.github.io/distributions7/reference/fd_second.md)
+  : A Second Derivative From One Stencil
+
 - [`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
   : Locate a High-Density Point of a Bare Log-Density
 
@@ -986,6 +1051,9 @@ divergent density.
 
 - [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
   : Splice the Fixed Values Back Into a Full Parameter List
+
+- [`generate_random_theta.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvGaussianDistrib.md)
+  : Random Parameters for a Multivariate Gaussian
 
 - [`generate_random_theta.distrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.md)
   :
@@ -1061,6 +1129,9 @@ divergent density.
 - [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
   : Mean of the Laplace Distribution
 
+- [`mean.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MvGaussianDistrib.md)
+  : Mean of a Multivariate Gaussian
+
 - [`mean.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/mean.NegBinDistrib.md)
   : Mean of the Negative Binomial Distribution
 
@@ -1073,11 +1144,29 @@ divergent density.
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
   : Memoise a Ratio Function on Its Block
 
+- [`mv_flat_theta()`](https://statmodels7.github.io/distributions7/reference/mv_flat_theta.md)
+  : Require Scalar Parameters
+
+- [`mv_hess_indices()`](https://statmodels7.github.io/distributions7/reference/mv_hess_indices.md)
+  : Index Pairs Behind the Hessian Keys of a Multivariate Distribution
+
+- [`mv_refuse()`](https://statmodels7.github.io/distributions7/reference/mv_refuse.md)
+  : Refuse a Quantity That Has No Multivariate Counterpart
+
+- [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
+  : The Pieces a Multivariate Gaussian Evaluates From
+
+- [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
+  : Residuals and Whitened Residuals
+
 - [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
   : Number of Points in a Discrete Support
 
 - [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)
   : Record One Check Result
+
+- [`numDeriv_grad()`](https://statmodels7.github.io/distributions7/reference/numDeriv_grad.md)
+  : A Central-Difference Gradient Without a Dependency
 
 - [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
   : Observed Derivatives of a Given Order
@@ -1104,6 +1193,9 @@ divergent density.
   :
 
   Print Method for `distrib` Objects
+
+- [`print_check_table()`](https://statmodels7.github.io/distributions7/reference/print_check_table.md)
+  : Print a Validation Table
 
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
@@ -1137,6 +1229,10 @@ divergent density.
 
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
+
+- [`struct_pair_lookup()`](https://statmodels7.github.io/distributions7/reference/struct_pair_lookup.md)
+  : Where Each Pair of Free Values Sits in a Structure's Second
+  Derivatives
 
 - [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
   : Convert Parameter-Scale Derivatives to the Link Scale
@@ -1197,6 +1293,9 @@ divergent density.
 
 - [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
   : Variance of the Laplace Distribution
+
+- [`variance.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md)
+  : Variance of a Multivariate Gaussian
 
 - [`variance.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/variance.NegBinDistrib.md)
   : Variance of the Negative Binomial Distribution

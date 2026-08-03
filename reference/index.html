@@ -512,6 +512,36 @@
         </dt>
         <dd>Yeo-Johnson Transformation</dd>
       </dl></div><div class="section level2">
+      <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a></h2>
+
+      <div class="section-desc"><p>Distributions whose observations are vectors. The response is a matrix with one row per observation, and the parameters stay scalars: a mean vector contributes one each, and a covariance contributes the free values of the covstructs7 structure that parametrises it, so every generic of the package indexes them as it always did.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>
+
+        </dt>
+        <dd>Construct a Multivariate Gaussian Distribution</dd>
+
+        <dt>
+
+          <code><a href="mv_mu.html">mv_mu()</a></code> <code><a href="mv_mu.html">mv_sigma()</a></code>
+
+        </dt>
+        <dd>The Mean Vector and Covariance a Parameter List Describes</dd>
+
+        <dt>
+
+          <code><a href="n_obs.html">n_obs()</a></code>
+
+        </dt>
+        <dd>How Many Observations a Response Holds</dd>
+      </dl></div><div class="section level2">
       <h2 id="classes">Classes<a class="anchor" aria-label="anchor" href="#classes"></a></h2>
 
       <div class="section-desc"><p>The S7 classes; each page lists the methods that dispatch on it.</p></div>
@@ -541,6 +571,13 @@
 
         </dt>
         <dd>S7 Class for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Multivariate Distributions</dd>
       </dl></div><div class="section level2">
       <h2 id="numerical-fallbacks">Numerical fallbacks<a class="anchor" aria-label="anchor" href="#numerical-fallbacks"></a></h2>
 
@@ -750,6 +787,13 @@
 
         </dt>
         <dd>S7 Class for Gaussian Distribution</dd>
+
+        <dt>
+
+          <code><a href="MvGaussianDistrib.html">MvGaussianDistrib()</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Distribution</dd>
 
         <dt>
 
@@ -2079,6 +2123,22 @@
         </dt>
         <dd>Negative Binomial Random Number Generator</dd>
       </dl></div><div class="section level2">
+      <h2 id="multivariate-gaussian">Multivariate gaussian<a class="anchor" aria-label="anchor" href="#multivariate-gaussian"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="MvGaussianDistrib.html">MvGaussianDistrib()</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Distribution</dd>
+      </dl></div><div class="section level2">
       <h2 id="wrapper-classes">Wrapper classes<a class="anchor" aria-label="anchor" href="#wrapper-classes"></a></h2>
 
       <div class="section-desc"><p>The methods of the zero-inflated, zero-adjusted, truncated, transformed and fixed-parameter wrappers.</p></div>
@@ -2673,6 +2733,20 @@
 
         <dt>
 
+          <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Multivariate Distributions</dd>
+
+        <dt>
+
+          <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>
+
+        </dt>
+        <dd>Construct a Multivariate Gaussian Distribution</dd>
+
+        <dt>
+
           <code><a href="negbin_distrib.html">negbin_distrib()</a></code>
 
         </dt>
@@ -2714,6 +2788,13 @@
 
         </dt>
         <dd>Align Parameters to the Distribution's Parameter Order</dd>
+
+        <dt>
+
+          <code><a href="as_mv_matrix.html">as_mv_matrix()</a></code>
+
+        </dt>
+        <dd>Coerce a Multivariate Response to a Matrix</dd>
 
         <dt>
 
@@ -2763,6 +2844,13 @@
 
         </dt>
         <dd>Shared Argument Handling for the Derivative Generics</dd>
+
+        <dt>
+
+          <code><a href="check_distrib_mv.html">check_distrib_mv()</a></code>
+
+        </dt>
+        <dd>Validate a Multivariate Distribution</dd>
 
         <dt>
 
@@ -2836,6 +2924,13 @@
 
         <dt>
 
+          <code><a href="distrib_cdf.multivariate_distrib.html">distrib_cdf.multivariate_distrib</a></code>
+
+        </dt>
+        <dd>No Distribution Function in Several Dimensions</dd>
+
+        <dt>
+
           <code><a href="distrib_cross_y.GaussianDistrib.html">distrib_cross_y.GaussianDistrib</a></code>
 
         </dt>
@@ -2885,6 +2980,13 @@
 
         <dt>
 
+          <code><a href="distrib_expected_hessian.MvGaussianDistrib.html">distrib_expected_hessian.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Expected Hessian</dd>
+
+        <dt>
+
           <code><a href="distrib_expected_hessian.distrib.html">distrib_expected_hessian.distrib</a></code>
 
         </dt>
@@ -2906,10 +3008,24 @@
 
         <dt>
 
+          <code><a href="distrib_grad_y.MvGaussianDistrib.html">distrib_grad_y.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Response Gradient</dd>
+
+        <dt>
+
           <code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y.continuous_distrib</a></code>
 
         </dt>
         <dd>Default Response Gradient for Continuous Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_gradient.MvGaussianDistrib.html">distrib_gradient.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Score</dd>
 
         <dt>
 
@@ -2934,6 +3050,13 @@
 
         <dt>
 
+          <code><a href="distrib_hess_y.MvGaussianDistrib.html">distrib_hess_y.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Response Hessian</dd>
+
+        <dt>
+
           <code><a href="distrib_hess_y.continuous_distrib.html">distrib_hess_y.continuous_distrib</a></code>
 
         </dt>
@@ -2941,10 +3064,24 @@
 
         <dt>
 
+          <code><a href="distrib_hessian.MvGaussianDistrib.html">distrib_hessian.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Observed Hessian</dd>
+
+        <dt>
+
           <code><a href="distrib_hessian.distrib.html">distrib_hessian.distrib</a></code>
 
         </dt>
         <dd>Default Numerical Hessian for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="distrib_pdf.MvGaussianDistrib.html">distrib_pdf.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Density</dd>
 
         <dt>
 
@@ -2959,6 +3096,20 @@
 
         </dt>
         <dd>Default Numerical Quantile Function for Discrete Distributions</dd>
+
+        <dt>
+
+          <code><a href="distrib_quantile.multivariate_distrib.html">distrib_quantile.multivariate_distrib</a></code>
+
+        </dt>
+        <dd>No Quantile Function in Several Dimensions</dd>
+
+        <dt>
+
+          <code><a href="distrib_rng.MvGaussianDistrib.html">distrib_rng.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Multivariate Gaussian Generator</dd>
 
         <dt>
 
@@ -3039,6 +3190,13 @@
 
         <dt>
 
+          <code><a href="fd_second.html">fd_second()</a></code>
+
+        </dt>
+        <dd>A Second Derivative From One Stencil</dd>
+
+        <dt>
+
           <code><a href="find_lp_anchor.html">find_lp_anchor()</a></code>
 
         </dt>
@@ -3099,6 +3257,13 @@
 
         </dt>
         <dd>Splice the Fixed Values Back Into a Full Parameter List</dd>
+
+        <dt>
+
+          <code><a href="generate_random_theta.MvGaussianDistrib.html">generate_random_theta.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Random Parameters for a Multivariate Gaussian</dd>
 
         <dt>
 
@@ -3270,6 +3435,13 @@
 
         <dt>
 
+          <code><a href="mean.MvGaussianDistrib.html">mean.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Mean of a Multivariate Gaussian</dd>
+
+        <dt>
+
           <code><a href="mean.NegBinDistrib.html">mean.NegBinDistrib</a></code>
 
         </dt>
@@ -3298,6 +3470,41 @@
 
         <dt>
 
+          <code><a href="mv_flat_theta.html">mv_flat_theta()</a></code>
+
+        </dt>
+        <dd>Require Scalar Parameters</dd>
+
+        <dt>
+
+          <code><a href="mv_hess_indices.html">mv_hess_indices()</a></code>
+
+        </dt>
+        <dd>Index Pairs Behind the Hessian Keys of a Multivariate Distribution</dd>
+
+        <dt>
+
+          <code><a href="mv_refuse.html">mv_refuse()</a></code>
+
+        </dt>
+        <dd>Refuse a Quantity That Has No Multivariate Counterpart</dd>
+
+        <dt>
+
+          <code><a href="mvg_pieces.html">mvg_pieces()</a></code>
+
+        </dt>
+        <dd>The Pieces a Multivariate Gaussian Evaluates From</dd>
+
+        <dt>
+
+          <code><a href="mvg_residuals.html">mvg_residuals()</a></code>
+
+        </dt>
+        <dd>Residuals and Whitened Residuals</dd>
+
+        <dt>
+
           <code><a href="n_support_points.html">n_support_points()</a></code>
 
         </dt>
@@ -3309,6 +3516,13 @@
 
         </dt>
         <dd>Record One Check Result</dd>
+
+        <dt>
+
+          <code><a href="numDeriv_grad.html">numDeriv_grad()</a></code>
+
+        </dt>
+        <dd>A Central-Difference Gradient Without a Dependency</dd>
 
         <dt>
 
@@ -3365,6 +3579,13 @@
 
         </dt>
         <dd>Print Method for <code>distrib</code> Objects</dd>
+
+        <dt>
+
+          <code><a href="print_check_table.html">print_check_table()</a></code>
+
+        </dt>
+        <dd>Print a Validation Table</dd>
 
         <dt>
 
@@ -3442,6 +3663,13 @@
 
         </dt>
         <dd>Sample Standard Deviation</dd>
+
+        <dt>
+
+          <code><a href="struct_pair_lookup.html">struct_pair_lookup()</a></code>
+
+        </dt>
+        <dd>Where Each Pair of Free Values Sits in a Structure's Second Derivatives</dd>
 
         <dt>
 
@@ -3582,6 +3810,13 @@
 
         </dt>
         <dd>Variance of the Laplace Distribution</dd>
+
+        <dt>
+
+          <code><a href="variance.MvGaussianDistrib.html">variance.MvGaussianDistrib</a></code>
+
+        </dt>
+        <dd>Variance of a Multivariate Gaussian</dd>
 
         <dt>
 
