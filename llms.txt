@@ -113,10 +113,10 @@ fit
 #> mu       2.9570     0.0631 2.8359 3.0832
 #> sigma2   1.9888     0.1480 1.7188 2.3011
 #> 
-#> Link scale (log, log):
-#>        Estimate Std. Error
-#> mu       1.0842     0.0213
-#> sigma2   0.6875     0.0744
+#> Link scale (log, log, 95% CI symmetric here):
+#>        Estimate Std. Error   2.5%  97.5%
+#> mu       1.0842     0.0213 1.0424 1.1260
+#> sigma2   0.6875     0.0744 0.5416 0.8334
 ```
 
 The fit knows what it was estimated from, so it can be checked against
@@ -445,6 +445,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Extract Estimates from a Maximum-Likelihood Fit
 - [`vcov.distrib_fit`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md)
   : Variance-Covariance Matrix of a Maximum-Likelihood Fit
+- [`confint.distrib_fit`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
+  : Confidence Intervals for a Maximum-Likelihood Fit
 - [`logLik.distrib_fit`](https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.md)
   : Log-Likelihood of a Maximum-Likelihood Fit
 - [`simulate.distrib_fit`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md)

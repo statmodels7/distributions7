@@ -48,10 +48,10 @@ fit
 #> mu       2.9706     0.0634 2.8488 3.0976
 #> sigma2   2.0120     0.1498 1.7388 2.3281
 #> 
-#> Link scale (log, log):
-#>        Estimate Std. Error
-#> mu       1.0888     0.0214
-#> sigma2   0.6991     0.0745
+#> Link scale (log, log, 95% CI symmetric here):
+#>        Estimate Std. Error   2.5%  97.5%
+#> mu       1.0888     0.0214 1.0469 1.1306
+#> sigma2   0.6991     0.0745 0.5532 0.8451
 ```
 
 The estimates recover the values the sample was generated from, and the
@@ -75,10 +75,15 @@ vcov(fit)
 #> sigma2 0.005451015 0.022443705
 logLik(fit)
 #> 'log Lik.' -844.0323 (df=2)
+confint(fit)
+#>            2.5%    97.5%
+#> mu     2.848824 3.097558
+#> sigma2 1.738803 2.328143
 ```
 
-[`coef()`](https://rdrr.io/r/stats/coef.html) and
-[`vcov()`](https://rdrr.io/r/stats/vcov.html) also take a `scale`
+[`coef()`](https://rdrr.io/r/stats/coef.html),
+[`vcov()`](https://rdrr.io/r/stats/vcov.html) and
+[`confint()`](https://rdrr.io/r/stats/confint.html) all take a `scale`
 argument, which returns the same quantities on the unconstrained scale:
 
 ``` r
@@ -86,11 +91,30 @@ argument, which returns the same quantities on the unconstrained scale:
 coef(fit, scale = "link")
 #>        mu    sigma2 
 #> 1.0887603 0.6991339
+confint(fit, scale = "link")
+#>             2.5%     97.5%
+#> mu     1.0469065 1.1306142
+#> sigma2 0.5531969 0.8450709
 ```
 
-The object carries confidence intervals, the information criteria, the
-number of iterations, and the method that was actually used — all
-visible in the print above.
+The interval on the link scale is symmetric about the estimate, and the
+one on the parameter scale is its image under $`g^{-1}`$, which is why
+the second is not symmetric.
+[`confint()`](https://rdrr.io/r/stats/confint.html) also takes a
+`level`, computed from the stored estimates and standard errors without
+refitting:
+
+``` r
+
+confint(fit, level = 0.99)
+#>            0.5%    99.5%
+#> mu     2.811604 3.138565
+#> sigma2 1.660868 2.437390
+```
+
+The object also carries the information criteria, the number of
+iterations and the method that was actually used, all visible in the
+print above.
 
 ## Why the link scale
 
@@ -121,9 +145,9 @@ fit_distrib(b, rbinom(40, 1, 0.9))
 #>    Estimate Std. Error   2.5%  97.5%
 #> mu    0.925     0.0416 0.7918 0.9756
 #> 
-#> Link scale (logit):
-#>    Estimate Std. Error
-#> mu   2.5123     0.6003
+#> Link scale (logit, 95% CI symmetric here):
+#>    Estimate Std. Error   2.5%  97.5%
+#> mu   2.5123     0.6003 1.3357 3.6889
 ```
 
 Even with a probability estimate close to one and only forty
@@ -190,7 +214,7 @@ density of the sample with the fitted density on top:
 plot(fit)
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-9-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-10-1.png)
 
 For a discrete distribution it shows the observed frequencies as bars
 with the fitted probability mass overlaid, because a kernel density
@@ -203,7 +227,7 @@ yp <- distrib_rng(p, 300, list(mu = 4))
 plot(fit_distrib(p, yp))
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-10-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-11-1.png)
 
 ## Simulating from the fit
 

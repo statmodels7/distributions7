@@ -113,10 +113,10 @@ fit
 #> mu       2.9570     0.0631 2.8359 3.0832
 #> sigma2   1.9888     0.1480 1.7188 2.3011
 #> 
-#> Link scale (log, log):
-#>        Estimate Std. Error
-#> mu       1.0842     0.0213
-#> sigma2   0.6875     0.0744
+#> Link scale (log, log, 95% CI symmetric here):
+#>        Estimate Std. Error   2.5%  97.5%
+#> mu       1.0842     0.0213 1.0424 1.1260
+#> sigma2   0.6875     0.0744 0.5416 0.8334
 ```
 
 The fit knows what it was estimated from, so it can be checked against

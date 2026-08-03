@@ -206,6 +206,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Extract Estimates from a Maximum-Likelihood Fit
 - [`vcov.distrib_fit`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md)
   : Variance-Covariance Matrix of a Maximum-Likelihood Fit
+- [`confint.distrib_fit`](https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.md)
+  : Confidence Intervals for a Maximum-Likelihood Fit
 - [`logLik.distrib_fit`](https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.md)
   : Log-Likelihood of a Maximum-Likelihood Fit
 - [`simulate.distrib_fit`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md)

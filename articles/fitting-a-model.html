@@ -112,10 +112,10 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="co">#&gt; mu       2.9706     0.0634 2.8488 3.0976</span></span>
 <span><span class="co">#&gt; sigma2   2.0120     0.1498 1.7388 2.3281</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Link scale (log, log):</span></span>
-<span><span class="co">#&gt;        Estimate Std. Error</span></span>
-<span><span class="co">#&gt; mu       1.0888     0.0214</span></span>
-<span><span class="co">#&gt; sigma2   0.6991     0.0745</span></span></code></pre></div>
+<span><span class="co">#&gt; Link scale (log, log, 95% CI symmetric here):</span></span>
+<span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
+<span><span class="co">#&gt; mu       1.0888     0.0214 1.0469 1.1306</span></span>
+<span><span class="co">#&gt; sigma2   0.6991     0.0745 0.5532 0.8451</span></span></code></pre></div>
 <p>The estimates recover the values the sample was generated from, and
 the print method shows them twice: on the <strong>parameter
 scale</strong>, and on the <strong>link scale</strong> where the fitting
@@ -135,17 +135,36 @@ familiar extractors:</p>
 <span><span class="co">#&gt; mu     0.004024019 0.005451015</span></span>
 <span><span class="co">#&gt; sigma2 0.005451015 0.022443705</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 'log Lik.' -844.0323 (df=2)</span></span></code></pre></div>
-<p><code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> also take a
-<code>scale</code> argument, which returns the same quantities on the
-unconstrained scale:</p>
+<span><span class="co">#&gt; 'log Lik.' -844.0323 (df=2)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            2.5%    97.5%</span></span>
+<span><span class="co">#&gt; mu     2.848824 3.097558</span></span>
+<span><span class="co">#&gt; sigma2 1.738803 2.328143</span></span></code></pre></div>
+<p><code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code>, <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> and <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code>
+all take a <code>scale</code> argument, which returns the same
+quantities on the unconstrained scale:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;        mu    sigma2 </span></span>
-<span><span class="co">#&gt; 1.0887603 0.6991339</span></span></code></pre></div>
-<p>The object carries confidence intervals, the information criteria,
-the number of iterations, and the method that was actually used — all
-visible in the print above.</p>
+<span><span class="co">#&gt; 1.0887603 0.6991339</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;             2.5%     97.5%</span></span>
+<span><span class="co">#&gt; mu     1.0469065 1.1306142</span></span>
+<span><span class="co">#&gt; sigma2 0.5531969 0.8450709</span></span></code></pre></div>
+<p>The interval on the link scale is symmetric about the estimate, and
+the one on the parameter scale is its image under
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">g^{-1}</annotation></semantics></math>,
+which is why the second is not symmetric. <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> also
+takes a <code>level</code>, computed from the stored estimates and
+standard errors without refitting:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">fit</span>, level <span class="op">=</span> <span class="fl">0.99</span><span class="op">)</span></span>
+<span><span class="co">#&gt;            0.5%    99.5%</span></span>
+<span><span class="co">#&gt; mu     2.811604 3.138565</span></span>
+<span><span class="co">#&gt; sigma2 1.660868 2.437390</span></span></code></pre></div>
+<p>The object also carries the information criteria, the number of
+iterations and the method that was actually used, all visible in the
+print above.</p>
 </div>
 <div class="section level2">
 <h2 id="why-the-link-scale">Why the link scale<a class="anchor" aria-label="anchor" href="#why-the-link-scale"></a>
@@ -167,7 +186,7 @@ a confidence interval is built symmetrically on the link scale and
 pushed through
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">g^{-1}</annotation></semantics></math>,
 its endpoints can never leave the parameter’s domain:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">b</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bernoulli_distrib.html">bernoulli_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: bernoulli</span></span>
@@ -178,9 +197,9 @@ its endpoints can never leave the parameter’s domain:</p>
 <span><span class="co">#&gt;    Estimate Std. Error   2.5%  97.5%</span></span>
 <span><span class="co">#&gt; mu    0.925     0.0416 0.7918 0.9756</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Link scale (logit):</span></span>
-<span><span class="co">#&gt;    Estimate Std. Error</span></span>
-<span><span class="co">#&gt; mu   2.5123     0.6003</span></span></code></pre></div>
+<span><span class="co">#&gt; Link scale (logit, 95% CI symmetric here):</span></span>
+<span><span class="co">#&gt;    Estimate Std. Error   2.5%  97.5%</span></span>
+<span><span class="co">#&gt; mu   2.5123     0.6003 1.3357 3.6889</span></span></code></pre></div>
 <p>Even with a probability estimate close to one and only forty
 observations, the interval stays inside
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>
@@ -193,7 +212,7 @@ it.</p>
 <p>The default is Fisher scoring, which uses the <em>expected</em>
 information. Two other methods are available, and Fisher scoring and
 Newton fall back to BFGS if they fail to converge:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_newton</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="st">"newton"</span><span class="op">)</span></span>
 <span><span class="va">fit_bfgs</span>   <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="st">"bfgs"</span><span class="op">)</span></span>
 <span></span>
@@ -210,7 +229,7 @@ non-smooth parameter such as the Laplace.</p>
 <code>method</code> also accepts an optimiser object from that package,
 which is then used as given. Choosing the optimiser this way also
 chooses its stopping rule, its line search and its iteration budget:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit_lbfgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/lbfgs.html" class="external-link">lbfgs</a></span><span class="op">(</span>criterion <span class="op">=</span> <span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">crit_grad</a></span><span class="op">(</span><span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -232,17 +251,17 @@ method reported is always the method that produced the estimates.</p>
 <p>A fit remembers the data it came from, so it can be drawn over it.
 For a continuous distribution <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows a kernel density
 of the sample with the fitted density on top:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="576"></p>
 <p>For a discrete distribution it shows the observed frequencies as bars
 with the fitted probability mass overlaid, because a kernel density
 would misrepresent counts:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">yp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">300</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">yp</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="simulating-from-the-fit">Simulating from the fit<a class="anchor" aria-label="anchor" href="#simulating-from-the-fit"></a>
@@ -251,7 +270,7 @@ would misrepresent counts:</p>
 distribution. Each replicate has the same length as the original data,
 which makes it a one-liner to build a parametric bootstrap of any
 statistic:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sims</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 500 200</span></span>
@@ -274,7 +293,7 @@ the distribution function agrees with the density, that the quantile
 inverts it, that the generator follows it, and that every analytical
 derivative matches finite differences, on both the parameter and the
 link scale:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: gamma</span></span>
 <span><span class="co">#&gt; Parameters:   mu = 3, sigma2 = 2</span></span>
