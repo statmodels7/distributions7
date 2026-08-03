@@ -372,7 +372,7 @@
       </dl></div><div class="section level2">
       <h2 id="building-on-a-distribution">Building on a distribution<a class="anchor" aria-label="anchor" href="#building-on-a-distribution"></a></h2>
 
-      <div class="section-desc"><p>Wrappers that turn a distribution into another one: a mixture with a point mass at zero, a restriction to an interval, or the law of a transformed variable.</p></div>
+      <div class="section-desc"><p>Wrappers that turn a distribution into another one: a mixture with a point mass at zero, a restriction to an interval, the law of a transformed variable, or the same law with some parameters held at known values.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -399,6 +399,13 @@
 
         </dt>
         <dd>Truncated Distribution Object</dd>
+
+        <dt>
+
+          <code><a href="fixed.html">fixed()</a></code>
+
+        </dt>
+        <dd>Fix Parameters of a Distribution at Known Values</dd>
 
         <dt>
 
@@ -2060,7 +2067,7 @@
       </dl></div><div class="section level2">
       <h2 id="wrapper-classes">Wrapper classes<a class="anchor" aria-label="anchor" href="#wrapper-classes"></a></h2>
 
-      <div class="section-desc"><p>The methods of the zero-inflated, zero-adjusted, truncated and transformed wrappers.</p></div>
+      <div class="section-desc"><p>The methods of the zero-inflated, zero-adjusted, truncated, transformed and fixed-parameter wrappers.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -2528,6 +2535,20 @@
 
         </dt>
         <dd>Transformed Random Number Generator</dd>
+
+        <dt>
+
+          <code><a href="FixedContinuousDistrib.html">FixedContinuousDistrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Distributions With Fixed Parameters (Continuous)</dd>
+
+        <dt>
+
+          <code><a href="FixedDiscreteDistrib.html">FixedDiscreteDistrib()</a></code>
+
+        </dt>
+        <dd>S7 Class for Distributions With Fixed Parameters (Discrete)</dd>
       </dl></div><div class="section level2">
       <h2 id="base-class-defaults">Base-class defaults<a class="anchor" aria-label="anchor" href="#base-class-defaults"></a></h2>
 
@@ -3032,6 +3053,13 @@
 
         <dt>
 
+          <code><a href="fixed_full_theta.html">fixed_full_theta()</a></code>
+
+        </dt>
+        <dd>Splice the Fixed Values Back Into a Full Parameter List</dd>
+
+        <dt>
+
           <code><a href="generate_random_theta.distrib.html">generate_random_theta.distrib</a></code>
 
         </dt>
@@ -3085,6 +3113,13 @@
 
         </dt>
         <dd>Is an S7 Class the Given Base Class?</dd>
+
+        <dt>
+
+          <code><a href="is_fixed.html">is_fixed()</a></code>
+
+        </dt>
+        <dd>Is This a Fixed-Parameter Wrapper?</dd>
 
         <dt>
 

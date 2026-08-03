@@ -110,8 +110,9 @@ respect to the unconstrained parameters.
 ## Building on a distribution
 
 Wrappers that turn a distribution into another one: a mixture with a
-point mass at zero, a restriction to an interval, or the law of a
-transformed variable.
+point mass at zero, a restriction to an interval, the law of a
+transformed variable, or the same law with some parameters held at known
+values.
 
 - [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
   : Zero-Inflated Distribution Object (Discrete)
@@ -119,6 +120,8 @@ transformed variable.
   : Zero-Adjusted Distribution Object
 - [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
   : Truncated Distribution Object
+- [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  : Fix Parameters of a Distribution at Known Values
 - [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
   : Apply a Variable Transformation to a Distribution Object
 - [`transformer()`](https://statmodels7.github.io/distributions7/reference/transformer.md)
@@ -609,8 +612,8 @@ Rarely called directly, but useful as a reference for what is happening.
 
 ## Wrapper classes
 
-The methods of the zero-inflated, zero-adjusted, truncated and
-transformed wrappers.
+The methods of the zero-inflated, zero-adjusted, truncated, transformed
+and fixed-parameter wrappers.
 
 - [`ZeroInflatedDistrib()`](https://statmodels7.github.io/distributions7/reference/ZeroInflatedDistrib.md)
   : S7 Class for Zero-Inflated Distributions
@@ -744,6 +747,10 @@ transformed wrappers.
   : Transformed Quantile Function
 - [`distrib_rng.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TransformedDistrib.md)
   : Transformed Random Number Generator
+- [`FixedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
+  : S7 Class for Distributions With Fixed Parameters (Continuous)
+- [`FixedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.md)
+  : S7 Class for Distributions With Fixed Parameters (Discrete)
 
 ## Base-class defaults
 
@@ -961,6 +968,9 @@ divergent density.
 - [`fit_theta_from_eta()`](https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.md)
   : Map the Link Scale Back to Parameters
 
+- [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
+  : Splice the Fixed Values Back Into a Full Parameter List
+
 - [`generate_random_theta.distrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.md)
   :
 
@@ -986,6 +996,9 @@ divergent density.
 
 - [`is_class()`](https://statmodels7.github.io/distributions7/reference/is_class.md)
   : Is an S7 Class the Given Base Class?
+
+- [`is_fixed()`](https://statmodels7.github.io/distributions7/reference/is_fixed.md)
+  : Is This a Fixed-Parameter Wrapper?
 
 - [`is_truncated()`](https://statmodels7.github.io/distributions7/reference/is_truncated.md)
   : Is This Distribution Already Truncated?

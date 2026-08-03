@@ -12,6 +12,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/BetaDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/CauchyDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/GammaDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/GaussianDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/InvGaussDistrib.html</loc></url>
@@ -337,6 +339,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/fit_loglik.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fit_score.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fit_theta_from_eta.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/fixed.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/fixed_full_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gamma_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gaussian_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.html</loc></url>
@@ -352,6 +356,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/inverse_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/invgauss_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_class.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/is_fixed.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_truncated.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.html</loc></url>
