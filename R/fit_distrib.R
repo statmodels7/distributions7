@@ -230,10 +230,16 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   scale}. If \code{NULL} (default) starting values are drawn with
 #'   \code{\link{generate_random_theta}}, with a few random restarts on failure;
 #'   supplying a sensible \code{start} makes convergence faster and more reliable.
-#' @param method Optimisation method. \code{"fisher"} (default) uses Fisher
-#'   scoring with the expected information, \code{"newton"} uses the observed
-#'   Hessian, and \code{"bfgs"} uses \code{\link[stats]{optim}} with the analytical
-#'   gradient. Fisher scoring and Newton fall back to BFGS if they fail to converge.
+#' @param method Optimisation method, either one of three named strategies or
+#'   an optimiser object from \pkg{optimizers7}. The named strategies are
+#'   \code{"fisher"} (default), which is Newton's method with the expected
+#'   information in place of the Hessian, \code{"newton"}, which uses the
+#'   observed Hessian, and \code{"bfgs"}, which uses the analytical gradient
+#'   alone; the first two fall back to BFGS if they fail to converge. Any
+#'   optimiser object is used as given, receiving the analytical gradient and
+#'   observed Hessian and no fallback, so that
+#'   \code{method = lbfgs(criterion = crit_grad(1e-12))} selects both the
+#'   algorithm and the stopping rule.
 #' @param maxit Maximum number of iterations. Defaults to 200.
 #' @param tol Convergence tolerance on the score and on the log-likelihood
 #'   increment. Defaults to \code{1e-10}.
@@ -279,13 +285,27 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' fit_distrib(b, rbinom(50, 1, 0.9))
 #' }
 #'
-#' @seealso \code{\link{link_scale_derivatives}}, \code{\link{check_distrib}}
-#' @importFrom stats optim qnorm setNames
+#' @seealso \code{\link{link_scale_derivatives}}, \code{\link{check_distrib}},
+#'   \code{\link[optimizers7]{minimize}}
+#' @importFrom stats qnorm setNames
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
                         method = c("fisher", "newton", "bfgs"),
                         maxit = 200, tol = 1e-10, level = 0.95, n_start = 5) {
-  method <- match.arg(method)
+  # `method` is either one of the three named strategies or an optimiser
+  # object, which is then used as given.
+  optimizer <- NULL
+  if (S7::S7_inherits(method, optimizers7::optimizer)) {
+    optimizer <- method
+    method <- "custom"
+    # A stopping rule the optimiser cannot evaluate is a mistake in the call,
+    # not a numerical failure, and it is raised here so that it reaches the
+    # caller with its own explanation rather than being caught by the restart
+    # loop below and reported as a fit that never converged.
+    optimizers7::check_criterion(optimizer)
+  } else {
+    method <- match.arg(method)
+  }
   params <- distrib@params
   p <- length(params)
   n <- length(y)
@@ -310,60 +330,45 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   # --- optimisation -------------------------------------------------------
-  run_bfgs <- function(eta0) {
-    gr <- function(eta) {
+  # The objective, its gradient and its Hessian are those of the NEGATIVE
+  # log-likelihood, since optimizers7 minimises. Fisher scoring is Newton's
+  # method with the expected information supplied in place of the observed
+  # Hessian, so the two named strategies differ only in that argument.
+  nll_gr <- function(eta) {
+    th <- fit_theta_from_eta(distrib, eta)
+    -fit_score(distrib, y, th)
+  }
+  nll_he <- function(expected) {
+    function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
-      -fit_score(distrib, y, th)
+      -fit_hess_matrix(distrib, y, th, expected = expected)
     }
-    op <- stats::optim(eta0, nll, gr, method = "BFGS",
-                       control = list(maxit = maxit, reltol = 1e-12))
-    list(eta = op$par, converged = op$convergence == 0,
-         iterations = if (is.null(op$counts[[1]])) NA_real_ else op$counts[[1]],
-         method = "BFGS")
   }
 
-  run_scoring <- function(eta0, expected) {
-    eta <- eta0
-    ll <- -nll(eta)
-    if (!is.finite(ll)) return(NULL)
-    conv <- FALSE
-    it <- 0L
+  # The two conditions the iteration used to test inline: the score is
+  # numerically zero, or the log-likelihood has stopped moving.
+  crit <- optimizers7::crit_any(optimizers7::crit_grad(tol),
+                                optimizers7::crit_rel_obj(tol))
 
-    for (it in seq_len(maxit)) {
-      th <- fit_theta_from_eta(distrib, eta)
-      U <- fit_score(distrib, y, th)
-      H <- fit_hess_matrix(distrib, y, th, expected = expected)
-      I <- -H                                       # information (should be PD)
+  run <- function(opt, eta0, he, label) {
+    r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, he = he)
+    list(eta = r@par, converged = isTRUE(r@converged),
+         iterations = r@iterations, method = label)
+  }
 
-      step <- tryCatch(solve(I, U), error = function(e) NULL)
-      if (is.null(step) || any(!is.finite(step))) return(NULL)
+  run_bfgs <- function(eta0) {
+    run(optimizers7::bfgs(criterion = crit, maxit = maxit), eta0, NULL, "BFGS")
+  }
 
-      # step halving on the log-likelihood
-      accepted <- FALSE
-      s <- 1
-      for (k in 1:30) {
-        cand <- eta + s * step
-        ll_new <- -nll(cand)
-        if (is.finite(ll_new) && ll_new >= ll - 1e-12) {
-          accepted <- TRUE
-          break
-        }
-        s <- s / 2
-      }
-      if (!accepted) return(NULL)
-
-      delta_ll <- ll_new - ll
-      eta <- cand
-      ll <- ll_new
-
-      if (max(abs(U)) < tol || abs(delta_ll) < tol * (abs(ll) + tol)) {
-        conv <- TRUE
-        break
-      }
-    }
-
-    list(eta = eta, converged = conv, iterations = it,
-         method = if (expected) "Fisher scoring" else "Newton-Raphson")
+  run_chosen <- function(eta0) {
+    switch(method,
+      fisher = run(optimizers7::newton(criterion = crit, maxit = maxit),
+                   eta0, nll_he(TRUE), "Fisher scoring"),
+      newton = run(optimizers7::newton(criterion = crit, maxit = maxit),
+                   eta0, nll_he(FALSE), "Newton-Raphson"),
+      bfgs   = run_bfgs(eta0),
+      custom = run(optimizer, eta0, nll_he(FALSE), optimizer@name)
+    )
   }
 
   res <- NULL
@@ -374,15 +379,12 @@ fit_distrib <- function(distrib, y, start = NULL,
     # behind a numerically-approximated expected Hessian can fail outright
     # ("the integral is probably divergent"), and without this the random
     # restarts and the BFGS fallback promised below never get their turn.
-    res <- tryCatch(
-      switch(method,
-        fisher = run_scoring(eta0, expected = TRUE),
-        newton = run_scoring(eta0, expected = FALSE),
-        bfgs   = run_bfgs(eta0)
-      ),
-      error = function(e) NULL
-    )
-    if (is.null(res) || !isTRUE(res$converged)) {
+    res <- tryCatch(run_chosen(eta0), error = function(e) NULL)
+    # An explicitly chosen optimiser is not silently replaced; the fallback
+    # belongs to the two named second-order strategies, which can fail on a
+    # Hessian the distribution cannot supply at that point.
+    if (method %in% c("fisher", "newton") &&
+        (is.null(res) || !isTRUE(res$converged))) {
       alt <- tryCatch(run_bfgs(eta0), error = function(e) NULL)
       if (!is.null(alt) && isTRUE(alt$converged)) res <- alt
     }

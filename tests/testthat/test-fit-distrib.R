@@ -111,3 +111,96 @@ test_that("the print method reports both scales", {
   expect_match(out, "Link scale")
   expect_match(out, "Fisher scoring")
 })
+
+
+# --- the optimisation is delegated to optimizers7 ---------------------------
+
+test_that("an optimizers7 optimiser can be passed as the method", {
+  set.seed(11)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 400, list(mu = 2, sigma = 3))
+
+  ref <- fit_distrib(d, y, start = list(mu = 1, sigma = 1))
+
+  for (o in list(optimizers7::lbfgs(), optimizers7::cg(),
+                 optimizers7::bb(), optimizers7::nelder_mead(maxit = 5000))) {
+    f <- fit_distrib(d, y, start = list(mu = 1, sigma = 1), method = o)
+    expect_true(f@converged, label = o@name)
+    expect_equal(f@loglik, ref@loglik, tolerance = 1e-6, label = o@name)
+    # the method reported is the one that actually ran
+    expect_identical(f@method, o@name)
+  }
+})
+
+
+test_that("the optimiser brings its own stopping rule", {
+  set.seed(12)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 300, list(mu = 0, sigma = 2))
+
+  # crit_never() can never fire, so the run must end on the iteration budget
+  # and report that it did not converge rather than claiming success.
+  f <- fit_distrib(d, y, start = list(mu = 0, sigma = 2),
+                   method = optimizers7::lbfgs(
+                     criterion = optimizers7::crit_never(), maxit = 3))
+  expect_false(f@converged)
+
+  # and a rule the method cannot evaluate is refused by optimizers7, not
+  # silently ignored
+  expect_error(
+    fit_distrib(d, y, start = list(mu = 0, sigma = 2),
+                method = optimizers7::nelder_mead(
+                  criterion = optimizers7::crit_grad())),
+    "does not provide"
+  )
+})
+
+
+test_that("an explicitly chosen optimiser is never replaced by the fallback", {
+  # fisher and newton fall back to BFGS; a supplied optimiser does not, so a
+  # run that fails is reported as a failure under its own name.
+  set.seed(13)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 200, list(mu = 1, sigma = 1))
+
+  f <- fit_distrib(d, y, start = list(mu = 1, sigma = 1),
+                   method = optimizers7::gd(maxit = 2))
+  expect_identical(f@method, optimizers7::gd()@name)
+  expect_false(f@converged)
+})
+
+
+test_that("the three named strategies agree with each other and the closed form", {
+  set.seed(14)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
+  st <- list(mu = 0, sigma = 1)
+
+  fits <- lapply(c("fisher", "newton", "bfgs"),
+                 function(m) fit_distrib(d, y, start = st, method = m))
+  for (f in fits) expect_true(f@converged)
+
+  lls <- vapply(fits, function(f) f@loglik, numeric(1))
+  expect_equal(max(lls) - min(lls), 0, tolerance = 1e-8)
+
+  # the Gaussian MLE is available in closed form
+  expect_equal(unname(coef(fits[[1]])["mu"]), mean(y), tolerance = 1e-6)
+  expect_equal(unname(coef(fits[[1]])["sigma"]),
+               sqrt(mean((y - mean(y))^2)), tolerance = 1e-6)
+})
+
+
+test_that("a non-smooth distribution still fits, and quietly", {
+  # The Laplace location sits at a kink. Fisher scoring uses the expected
+  # information and reaches the median; the gradient check optimizers7 runs on
+  # every call must not mistake the kink for an inconsistent gradient.
+  set.seed(15)
+  d <- laplace_distrib()
+  y <- distrib_rng(d, 400, list(mu = 1, b = 2))
+
+  expect_silent(f <- fit_distrib(d, y, start = list(mu = 0, b = 1)))
+  expect_true(f@converged)
+  expect_equal(unname(coef(f)["mu"]), stats::median(y), tolerance = 1e-3)
+  expect_equal(unname(coef(f)["b"]),
+               mean(abs(y - unname(coef(f)["mu"]))), tolerance = 1e-6)
+})

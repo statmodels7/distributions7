@@ -110,8 +110,29 @@ c(scoring = as.numeric(logLik(fit)),
 
 They agree on the maximum. Fisher scoring is the default because it uses the
 expected information, which stays well-behaved even where the observed Hessian
-does not --- a point that matters for distributions with a non-smooth
-parameter, such as the Laplace.
+does not, and that matters for distributions with a non-smooth parameter such
+as the Laplace.
+
+The optimisation runs through
+[optimizers7](https://statmodels7.github.io/optimizers7/), and `method` also
+accepts an optimiser object from that package, which is then used as given.
+Choosing the optimiser this way also chooses its stopping rule, its line
+search and its iteration budget:
+
+```{r}
+library(optimizers7)
+
+fit_lbfgs <- fit_distrib(d, y, method = lbfgs(criterion = crit_grad(1e-12)))
+fit_nm    <- fit_distrib(d, y, method = nelder_mead(maxit = 5000))
+
+c(lbfgs = as.numeric(logLik(fit_lbfgs)),
+  nelder_mead = as.numeric(logLik(fit_nm)))
+c(fit_lbfgs@method, fit_nm@method)
+```
+
+The three named strategies fall back to BFGS when they fail to converge; an
+optimiser supplied explicitly is never replaced, so the method reported is
+always the method that produced the estimates.
 
 ## Checking the fit against the data
 

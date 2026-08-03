@@ -17,13 +17,15 @@ LinkingTo:
 Imports:
     graphics,
     linkfunctions7,
+    optimizers7,
     Rcpp,
     S7,
     statmod,
     stats,
     utils
 Remotes:
-    statmodels7/linkfunctions7
+    statmodels7/linkfunctions7,
+    statmodels7/optimizers7
 Collate: 
     'RcppExports.R'
     'generics.R'

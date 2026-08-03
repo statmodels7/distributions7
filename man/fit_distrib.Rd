@@ -25,10 +25,16 @@ scale}. If \code{NULL} (default) starting values are drawn with
 \code{\link{generate_random_theta}}, with a few random restarts on failure;
 supplying a sensible \code{start} makes convergence faster and more reliable.}
 
-\item{method}{Optimisation method. \code{"fisher"} (default) uses Fisher
-scoring with the expected information, \code{"newton"} uses the observed
-Hessian, and \code{"bfgs"} uses \code{\link[stats]{optim}} with the analytical
-gradient. Fisher scoring and Newton fall back to BFGS if they fail to converge.}
+\item{method}{Optimisation method, either one of three named strategies or
+an optimiser object from \pkg{optimizers7}. The named strategies are
+\code{"fisher"} (default), which is Newton's method with the expected
+information in place of the Hessian, \code{"newton"}, which uses the
+observed Hessian, and \code{"bfgs"}, which uses the analytical gradient
+alone; the first two fall back to BFGS if they fail to converge. Any
+optimiser object is used as given, receiving the analytical gradient and
+observed Hessian and no fallback, so that
+\code{method = lbfgs(criterion = crit_grad(1e-12))} selects both the
+algorithm and the stopping rule.}
 
 \item{maxit}{Maximum number of iterations. Defaults to 200.}
 
@@ -88,5 +94,6 @@ fit_distrib(b, rbinom(50, 1, 0.9))
 
 }
 \seealso{
-\code{\link{link_scale_derivatives}}, \code{\link{check_distrib}}
+\code{\link{link_scale_derivatives}}, \code{\link{check_distrib}},
+\code{\link[optimizers7]{minimize}}
 }
