@@ -443,12 +443,12 @@ fit_distrib(d, y)
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
 #> Method: Fisher scoring (converged in 5 iterations)
 #> 
-#> Parameter scale (95% CI mapped from the link scale):
+#> Parameter scale:
 #>       Estimate Std. Error   2.5%  97.5%
 #> mu      2.0679     0.1356 1.8021 2.3338
 #> sigma   3.0327     0.0959 2.8505 3.2267
 #> 
-#> Link scale (identity, log, 95% CI symmetric here):
+#> Link scale (identity, log):
 #>       Estimate Std. Error   2.5%  97.5%
 #> mu      2.0679     0.1356 1.8021 2.3338
 #> sigma   1.1095     0.0316 1.0475 1.1714
@@ -467,11 +467,11 @@ fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
 #> Method: Fisher scoring (converged in 7 iterations)
 #> 
-#> Parameter scale (95% CI mapped from the link scale):
+#> Parameter scale:
 #>    Estimate Std. Error   2.5%  97.5%
 #> mu     0.86     0.0491 0.7343 0.9318
 #> 
-#> Link scale (logit, 95% CI symmetric here):
+#> Link scale (logit):
 #>    Estimate Std. Error   2.5%  97.5%
 #> mu   1.8153     0.4076 1.0165 2.6141
 ```
