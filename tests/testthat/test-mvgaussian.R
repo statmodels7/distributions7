@@ -288,28 +288,29 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
   expect_identical(fit@n, 2000L)
 
   # The maximum likelihood estimator of a gaussian is the sample mean and the
-  # sample second moment about it, both in closed form. Newton stops on the
-  # gradient, so it reaches that point to machine precision and the comparison
-  # says something exact.
+  # sample second moment about it, both in closed form, so the maximum of the
+  # log-likelihood is known without optimising anything.
   mu_hat <- colMeans(y)
   s_hat <- crossprod(sweep(y, 2L, mu_hat)) / nrow(y)
-  fit_n <- fit_distrib(d, y, method = "newton")
-  est_n <- coef(fit_n)
-  expect_equal(unname(mv_mu(d, est_n)), unname(mu_hat), tolerance = 1e-8)
-  expect_equal(unname(mv_sigma(d, est_n)), unname(s_hat), tolerance = 1e-8)
-  sc <- vapply(distrib_gradient(d, y, as.list(est_n)), sum, numeric(1))
-  expect_lt(max(abs(sc)) / nrow(y), 1e-9)
+  th_hat <- as.list(stats::setNames(
+    c(mu_hat, covstructs7::struct_free(d@struct, s_hat)), d@params
+  ))
+  ll_hat <- sum(distrib_pdf(d, y, th_hat, log = TRUE))
 
-  # The default reaches the same maximum. It is not asked for the same number
-  # of digits in the parameters: its criterion is
-  # crit_any(crit_grad, crit_rel_obj), an OR, so the weaker rule can end the
-  # run, and where it ends depends on the arithmetic of the machine. What it
-  # does promise is the value of the objective.
+  # What a fit promises is the value of the objective, and that is what is
+  # asked of it here. The point it stops AT is a different question: the
+  # criterion is crit_any(crit_grad, crit_rel_obj), an OR, so whichever rule
+  # fires first ends the run -- measured, Newton stops at a score of 1.3e-15
+  # per observation on one platform and 1.2e-8 on another, on the same data.
+  # The objective is flat near the maximum, which is why the criterion stops
+  # there and why this comparison is the stable one.
   est <- coef(fit)
-  expect_equal(unname(mv_mu(d, est)), unname(mu_hat), tolerance = 1e-3)
-  expect_equal(as.numeric(logLik(fit_n)), as.numeric(logLik(fit)),
-    tolerance = 1e-8
-  )
+  expect_equal(as.numeric(logLik(fit)), ll_hat, tolerance = 1e-8)
+  expect_equal(unname(mv_mu(d, est)), unname(mu_hat), tolerance = 1e-4)
+  expect_equal(unname(mv_sigma(d, est)), unname(s_hat), tolerance = 1e-4)
+
+  sc <- vapply(distrib_gradient(d, y, as.list(est)), sum, numeric(1))
+  expect_lt(max(abs(sc)) / nrow(y), 1e-4)
 
   # and the reported log-likelihood is the one the density gives there
   expect_equal(
