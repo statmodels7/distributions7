@@ -3,8 +3,8 @@
 Flags the observations where a central difference has actually
 converged, so that
 [`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-compares an analytical derivative only against a reference worth
-comparing to.
+compares an analytical derivative only against a reference that is
+itself reliable.
 
 ## Usage
 

@@ -1,8 +1,7 @@
 # S7 Class for Probability Distributions
 
-A base class for probability distributions using the S7 object-oriented
-system. It encapsulates the essential metadata, parameter definitions,
-and boundaries of a distribution.
+The base S7 class for probability distributions. It carries the name,
+the parameters with their domains and links, and the support.
 
 ## Usage
 

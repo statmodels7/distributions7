@@ -73,12 +73,11 @@ brackets and to recentre the ratio-of-uniforms kernel.</p>
 repeatedly evaluating the log-density on a grid and keeping the two cells
 around the largest value: for a unimodal density that bracket provably still
 contains the mode, and it shrinks by a factor of 64 per pass.</p>
-<p>A golden-section search on the compactified scale is <em>not</em> accurate
-enough here, which is worth knowing before anyone replaces this with one. Its
-tolerance is expressed in the compactified variable, and the derivative of the
-compactification can be enormous – under the tangent map \(dy/dt\) is of
-order \(y^2\), so a default tolerance of about <code>1e-4</code> became an error of
-125 standard deviations for a density centred at 1000. The grid refinement
+<p>A golden-section search on the compactified scale is not accurate enough
+here: its tolerance is expressed in the compactified variable, whose
+derivative under the tangent map is of order \(y^2\), so a fixed tolerance
+in \(t\) corresponds to an error in \(y\) that grows with the location
+of the mode. The grid refinement
 instead stops on the width of the bracket measured in \(y\).</p>
     </div>
     <div class="section level2">

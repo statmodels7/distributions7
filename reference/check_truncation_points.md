@@ -29,9 +29,9 @@ Invisibly `NULL`; raises an error on a bad interval.
 
 ## Details
 
-The case worth naming is truncating zero away from a zero wrapper. The
-\\(1-\zeta)\\ factor then cancels between the numerator and \\Z\\, so
-\\\zeta\\ leaves the likelihood entirely and its score is identically
+One case is rejected outright: truncating zero away from a zero wrapper.
+The \\(1-\zeta)\\ factor then cancels between the numerator and \\Z\\,
+so \\\zeta\\ leaves the likelihood entirely and its score is identically
 zero – the same defect as stacking the two zero wrappers, arriving by a
 different route. Truncating a zero wrapper anywhere else is fine, and
 the atom is carried through.

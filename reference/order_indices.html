@@ -74,9 +74,9 @@ lists them, expressed as parameter names.</p>
 ordered for <code><a href="hess_names.html">hess_names</a></code> – diagonal first – while
 <code><a href="deriv_names.html">deriv_names()</a></code> is lexicographic; pairing those would silently attach the
 name <code>"mu_sigma"</code> to the index <code>(sigma, sigma)</code>. The orders actually
-registered here are 3 and 4, where the two agree, but a mismatch that only
-bites when someone reuses the helper is the kind worth removing rather than
-commenting on.</p>
+registered here are 3 and 4, where the two orderings agree; generating the
+indices locally removes the mismatch instead of depending on it never being
+reached.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

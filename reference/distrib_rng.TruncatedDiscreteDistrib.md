@@ -1,6 +1,6 @@
 # Truncated Random Number Generator (Discrete)
 
-Inverse transform sampling on the parent, exact for a lattice cdf.
+Inverse transform sampling on the parent, exact for a discrete cdf.
 
 ## Arguments
 

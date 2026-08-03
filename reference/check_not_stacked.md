@@ -37,12 +37,11 @@ constant, leaving its score identically zero – and mixing a further
 point mass in only ever shifts the total mass at zero, which one
 parameter already describes.
 
-The distributions this rejects are perfectly well-defined; they are
-simply not estimable. That is why the constructor is the place to catch
-it: nothing goes wrong at run time. The pmf still sums to one,
+The distributions this rejects are well-defined but not estimable, and
+nothing detects that at run time: the pmf sums to one,
 [`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-still passes, and the fit still converges – to an arbitrary point of a
-flat ridge.
+passes, and a fit converges to an arbitrary point of a flat ridge. The
+constructor is therefore the only place the condition can be enforced.
 
 ## See also
 

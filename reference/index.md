@@ -93,7 +93,7 @@ respect to the unconstrained parameters.
 ## Moments
 
 - [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
-  : Calculate the Expected Value of a Function
+  : Expected Value of a Function of a Random Variable
 - [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
   : Raw and Central Moments of a Distribution
 - [`mean.distrib`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
@@ -836,10 +836,10 @@ divergent density.
   : Index Tuples Behind the Higher-Order Derivative Names
 
 - [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
-  : Cumulative Probability Table Over a Lattice Support
+  : Cumulative Probability Table for a Discrete Distribution
 
 - [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md)
-  : CDF Derivatives of a Lattice Distribution, Exactly
+  : CDF Derivatives of a Discrete Distribution
 
 - [`distrib_atoms.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.distrib.md)
   : Default Atoms: None
@@ -914,6 +914,12 @@ divergent density.
 - [`expectation.ZeroAdjustedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md)
   : Expectation for Zero-Adjusted Continuous Distributions
 
+- [`expectation.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/expectation.continuous_distrib.md)
+  : Expectation of a Continuous Distribution
+
+- [`expectation.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/expectation.discrete_distrib.md)
+  : Expectation of a Discrete Distribution
+
 - [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
   : Expected Derivatives by the Bartlett Identity
 
@@ -985,6 +991,21 @@ divergent density.
 - [`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
   : Does This Distribution Already Model a Probability of Zero?
 
+- [`kurtosis.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md)
+  : Kurtosis of the Laplace Distribution
+
+- [`kurtosis.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.NegBinDistrib.md)
+  : Kurtosis of the Negative Binomial Distribution
+
+- [`kurtosis.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.PseudoHuberDistrib.md)
+  : Kurtosis of the Pseudo-Huber Distribution
+
+- [`kurtosis.distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.distrib.md)
+  : Kurtosis of a Distribution
+
+- [`kurtosis.numeric`](https://statmodels7.github.io/distributions7/reference/kurtosis.numeric.md)
+  : Sample Kurtosis
+
 - [`link_scale_lower_orders()`](https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.md)
   : Lower-Order Parameter-Scale Derivatives for the Chain Rule
 
@@ -1006,6 +1027,15 @@ divergent density.
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
+- [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
+  : Mean of the Laplace Distribution
+
+- [`mean.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/mean.NegBinDistrib.md)
+  : Mean of the Negative Binomial Distribution
+
+- [`mean.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuberDistrib.md)
+  : Mean of the Pseudo-Huber Distribution
+
 - [`mean.distrib`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
   : Mean of a Distribution Object
 
@@ -1013,7 +1043,7 @@ divergent density.
   : Memoise a Ratio Function on Its Block
 
 - [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
-  : Number of Points in a Lattice Support
+  : Number of Points in a Discrete Support
 
 - [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)
   : Record One Check Result
@@ -1050,11 +1080,32 @@ divergent density.
 - [`set_partitions()`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
   : All Set Partitions of a Finite Index Set
 
+- [`skewness.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.LaplaceDistrib.md)
+  : Skewness of the Laplace Distribution
+
+- [`skewness.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.NegBinDistrib.md)
+  : Skewness of the Negative Binomial Distribution
+
+- [`skewness.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.PseudoHuberDistrib.md)
+  : Skewness of the Pseudo-Huber Distribution
+
+- [`skewness.distrib`](https://statmodels7.github.io/distributions7/reference/skewness.distrib.md)
+  : Skewness of a Distribution
+
+- [`skewness.numeric`](https://statmodels7.github.io/distributions7/reference/skewness.numeric.md)
+  : Sample Skewness
+
 - [`split_index()`](https://statmodels7.github.io/distributions7/reference/split_index.md)
   : Split a Multi-Index Into Parent and Wrapper Parts
 
 - [`split_mix_theta()`](https://statmodels7.github.io/distributions7/reference/split_mix_theta.md)
   : Split a Wrapper's Parameters From Its Parent's
+
+- [`std_dev.distrib`](https://statmodels7.github.io/distributions7/reference/std_dev.distrib.md)
+  : Standard Deviation of a Distribution
+
+- [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
+  : Sample Standard Deviation
 
 - [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
   : Convert Parameter-Scale Derivatives to the Link Scale
@@ -1112,6 +1163,21 @@ divergent density.
 
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
+
+- [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
+  : Variance of the Laplace Distribution
+
+- [`variance.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/variance.NegBinDistrib.md)
+  : Variance of the Negative Binomial Distribution
+
+- [`variance.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/variance.PseudoHuberDistrib.md)
+  : Variance of the Pseudo-Huber Distribution
+
+- [`variance.distrib`](https://statmodels7.github.io/distributions7/reference/variance.distrib.md)
+  : Variance of a Distribution
+
+- [`variance.numeric`](https://statmodels7.github.io/distributions7/reference/variance.numeric.md)
+  : Sample Variance
 
 - [`za_cont_deriv_k()`](https://statmodels7.github.io/distributions7/reference/za_cont_deriv_k.md)
   : Derivatives of a Zero-Adjusted Continuous Distribution

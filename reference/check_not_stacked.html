@@ -78,11 +78,11 @@ that already has one removes it from the likelihood entirely – the factor
 cancels between the numerator and the truncation constant, leaving its score
 identically zero – and mixing a further point mass in only ever shifts the
 total mass at zero, which one parameter already describes.</p>
-<p>The distributions this rejects are perfectly well-defined; they are simply not
-estimable. That is why the constructor is the place to catch it: nothing goes
-wrong at run time. The pmf still sums to one, <code><a href="check_distrib.html">check_distrib</a></code>
-still passes, and the fit still converges – to an arbitrary point of a flat
-ridge.</p>
+<p>The distributions this rejects are well-defined but not estimable, and
+nothing detects that at run time: the pmf sums to one,
+<code><a href="check_distrib.html">check_distrib</a></code> passes, and a fit converges to an arbitrary
+point of a flat ridge. The constructor is therefore the only place the
+condition can be enforced.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

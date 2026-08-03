@@ -38,10 +38,9 @@ The log-density jumps at zero – \\\log \pi\\ on one side, \\\log((1-\pi)
 f(y))\\ on the other – so no derivative in \\y\\ exists there. The
 finite-difference default inherited from
 [`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
-would happily straddle the jump and return a number for it, which is
-worse than refusing. Away from zero the \\1-\pi\\ factor is constant in
-\\y\\, so the parent's own derivative is exact and nothing needs
-correcting.
+would straddle the jump and return a number for it, which is worse than
+refusing. Away from zero the \\1-\pi\\ factor is constant in \\y\\, so
+the parent's own derivative is exact and nothing needs correcting.
 
 ## See also
 

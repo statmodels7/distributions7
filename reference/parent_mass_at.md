@@ -1,6 +1,6 @@
 # Probability the Parent Puts on a Single Point
 
-\\P(Y = x)\\ under the parent: the pmf for a lattice distribution, the
+\\P(Y = x)\\ under the parent: the pmf for a discrete distribution, the
 atom's probability for a mixed one, and zero for an ordinary continuous
 distribution.
 

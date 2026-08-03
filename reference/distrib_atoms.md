@@ -2,8 +2,8 @@
 
 Returns the locations and probabilities of the point masses a
 distribution places on individual values — the discrete part of a
-*mixed* distribution, one that is neither purely continuous nor
-supported on a lattice.
+*mixed* distribution, one that is neither purely continuous nor purely
+discrete.
 [`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
 applied to a continuous distribution builds exactly such an object: a
 point mass at zero next to a density.

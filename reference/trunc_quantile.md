@@ -40,5 +40,5 @@ A numeric vector of quantiles.
 
 Inverse transform on the parent: \\F_T(q) = p\\ exactly when \\F(q) =
 F(\ell^-) + pZ\\, so no root-finding of its own is needed. The
-generalized inverse of a lattice cdf satisfies the same relation, so the
-discrete case needs no separate treatment.
+generalized inverse of a discrete cdf satisfies the same relation, so
+the discrete case needs no separate treatment.

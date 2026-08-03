@@ -8,7 +8,7 @@ Zero-inflation is the right wrapper when the data contain *more* zeros
 than the parent can produce, and a zero can plausibly have come either
 from the count process or from a separate mechanism that switches it
 off. If instead the zeros come from one identifiable mechanism and the
-positive values from another, the model you want is the hurdle,
+positive values from another, the appropriate model is the hurdle,
 [`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md).
 
 ## Usage

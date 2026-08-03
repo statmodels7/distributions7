@@ -75,12 +75,13 @@ density stays bounded there.</p>
     <p>A density that diverges at an edge is the one case the ratio-of-uniforms
 sampler cannot handle directly, so it has to be detected – and then removed
 by a change of variable, which needs the exponent.</p>
-<p>The neat part is that detecting and measuring are the same operation. Walking
+<p>Detecting and measuring are the same operation. Walking
 towards the edge in decades lifts the log-density by
 \((1 - \alpha)\log 10\) per step when it diverges, and by an amount that
 dies away when it does not. So the probe establishing <em>whether</em> the
 density diverges also reports <em>how fast</em>, to about four decimals, with no
-search. That is what took Gamma shape 0.4 from 27 ms per draw to 0.8 us.</p>
+search, reducing the cost per draw by several orders of magnitude for
+strongly divergent shapes.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

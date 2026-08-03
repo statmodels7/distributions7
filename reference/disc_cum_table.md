@@ -1,4 +1,4 @@
-# Cumulative Probability Table Over a Lattice Support
+# Cumulative Probability Table for a Discrete Distribution
 
 Builds the cumulative pmf from the support lower bound, growing the
 table geometrically until it covers the probability and the support
@@ -41,9 +41,8 @@ A list holding the support points and their cumulative probabilities.
 This is the whole of the discrete fallback: the cdf, the quantile
 function and the random generator are all lookups into it. No new
 algorithm was needed for discrete distributions, because the cdf of a
-lattice variable is a step function and inverting it is exact. The cost
-was one R-level call per draw, and vectorising the lookup took that from
-12.6 us to 0.1.
+discrete variable is a step function and inverting it is exact. The cost
+was one R-level call per draw, and the lookup is vectorised.
 
 Requires a finite lower bound, which every standard count distribution
 has.

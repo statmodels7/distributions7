@@ -1,4 +1,4 @@
-# Number of Points in a Lattice Support
+# Number of Points in a Discrete Support
 
 How many points the distribution's support contains, `Inf` when it is
 unbounded.

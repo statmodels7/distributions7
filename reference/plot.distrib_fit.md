@@ -5,7 +5,7 @@ For a continuous distribution the observations are summarised by a
 kernel density estimate, with the fitted density drawn on top and a rug
 of the data underneath. For a discrete one the observed relative
 frequencies are drawn as bars with the fitted probability mass overlaid,
-since a kernel density would misrepresent a lattice-valued sample.
+since a kernel density would misrepresent a discrete sample.
 
 ## Arguments
 

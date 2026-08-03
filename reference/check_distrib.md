@@ -1,11 +1,10 @@
 # Numerically Validate a Distribution
 
 Runs a battery of numerical self-consistency checks on a `distrib`
-object. This is the recommended way to validate a distribution you have
-defined yourself: it verifies that the density integrates (or sums) to
-one, that the CDF, quantile function and random generator agree with
-each other and with the density, and that every analytical derivative
-matches its finite-difference counterpart.
+object. Validates a user-defined distribution: it verifies that the
+density integrates (or sums) to one, that the CDF, quantile function and
+random generator agree with each other and with the density, and that
+every analytical derivative matches its finite-difference counterpart.
 
 ## Usage
 

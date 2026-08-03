@@ -24,7 +24,7 @@ Invisibly `NULL`; raises an error when the support is too small.
 
 ## Details
 
-A lattice distribution on \\k\\ points has \\k-1\\ free probabilities,
+A discrete distribution on \\k\\ points has \\k-1\\ free probabilities,
 and either wrapper spends `n_params + 1` of them, so \\k \ge\\
 `n_params + 2` is necessary. The bound is the same for inflation and for
 adjustment.

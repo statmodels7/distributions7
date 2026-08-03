@@ -1,4 +1,4 @@
-# CDF Derivatives of a Lattice Distribution, Exactly
+# CDF Derivatives of a Discrete Distribution
 
 Evaluates \\d^I F(q)\\ for a discrete distribution as the finite sum
 \\\sum\_{y \le q} f(y) \\ (d^I f / f)(y)\\.
@@ -34,7 +34,7 @@ A named list of derivative component vectors of \\F\\.
 ## Details
 
 This is the governing identity \\d^I F(q) / F(q) = \mathbb{E}\[d^I f / f
-\mid Y \le q\]\\ written out. For a lattice family the conditional
+\mid Y \le q\]\\ written out. For a discrete family the conditional
 expectation is a finite sum whenever the support has a finite lower
 bound – which the discrete class requires – so the identity is exact
 rather than an approximation, and it is used directly.
