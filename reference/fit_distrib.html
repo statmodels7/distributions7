@@ -89,10 +89,16 @@ supplying a sensible <code>start</code> makes convergence faster and more reliab
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Optimisation method. <code>"fisher"</code> (default) uses Fisher
-scoring with the expected information, <code>"newton"</code> uses the observed
-Hessian, and <code>"bfgs"</code> uses <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> with the analytical
-gradient. Fisher scoring and Newton fall back to BFGS if they fail to converge.</p></dd>
+<dd><p>Optimisation method, either one of three named strategies or
+an optimiser object from <span class="pkg">optimizers7</span>. The named strategies are
+<code>"fisher"</code> (default), which is Newton's method with the expected
+information in place of the Hessian, <code>"newton"</code>, which uses the
+observed Hessian, and <code>"bfgs"</code>, which uses the analytical gradient
+alone; the first two fall back to BFGS if they fail to converge. Any
+optimiser object is used as given, receiving the analytical gradient and
+observed Hessian and no fallback, so that
+<code>method = lbfgs(criterion = crit_grad(1e-12))</code> selects both the
+algorithm and the stopping rule.</p></dd>
 
 
 <dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
@@ -139,7 +145,8 @@ symmetric interval on the parameter scale would not.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code>, <code><a href="check_distrib.html">check_distrib</a></code></p></div>
+    <div class="dont-index"><p><code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code>, <code><a href="check_distrib.html">check_distrib</a></code>,
+<code><a href="https://statmodels7.github.io/optimizers7/reference/minimize.html" class="external-link">minimize</a></code></p></div>
     </div>
 
     <div class="section level2">

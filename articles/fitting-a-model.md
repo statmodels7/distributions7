@@ -150,8 +150,33 @@ c(scoring = as.numeric(logLik(fit)),
 
 They agree on the maximum. Fisher scoring is the default because it uses
 the expected information, which stays well-behaved even where the
-observed Hessian does not — a point that matters for distributions with
-a non-smooth parameter, such as the Laplace.
+observed Hessian does not, and that matters for distributions with a
+non-smooth parameter such as the Laplace.
+
+The optimisation runs through
+[optimizers7](https://statmodels7.github.io/optimizers7/), and `method`
+also accepts an optimiser object from that package, which is then used
+as given. Choosing the optimiser this way also chooses its stopping
+rule, its line search and its iteration budget:
+
+``` r
+
+library(optimizers7)
+
+fit_lbfgs <- fit_distrib(d, y, method = lbfgs(criterion = crit_grad(1e-12)))
+fit_nm    <- fit_distrib(d, y, method = nelder_mead(maxit = 5000))
+
+c(lbfgs = as.numeric(logLik(fit_lbfgs)),
+  nelder_mead = as.numeric(logLik(fit_nm)))
+#>       lbfgs nelder_mead 
+#>   -844.0323   -844.0323
+c(fit_lbfgs@method, fit_nm@method)
+#> [1] "L-BFGS"      "nelder-mead"
+```
+
+The three named strategies fall back to BFGS when they fail to converge;
+an optimiser supplied explicitly is never replaced, so the method
+reported is always the method that produced the estimates.
 
 ## Checking the fit against the data
 
@@ -165,7 +190,7 @@ density of the sample with the fitted density on top:
 plot(fit)
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-8-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-9-1.png)
 
 For a discrete distribution it shows the observed frequencies as bars
 with the fitted probability mass overlaid, because a kernel density
@@ -178,7 +203,7 @@ yp <- distrib_rng(p, 300, list(mu = 4))
 plot(fit_distrib(p, yp))
 ```
 
-![](fitting-a-model_files/figure-html/unnamed-chunk-9-1.png)
+![](fitting-a-model_files/figure-html/unnamed-chunk-10-1.png)
 
 ## Simulating from the fit
 
@@ -227,12 +252,12 @@ invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
 #>   [OK  ] cdf agrees with the density                 2.32e-11
 #>   [OK  ] quantile/cdf round-trip                     5.55e-17
-#>   [OK  ] rng matches the cdf                         1.16e+00
+#>   [OK  ] rng matches the cdf                         1.17e+00
 #>   [OK  ] gradient vs finite differences              6.49e-11
 #>   [OK  ] hessian vs finite differences               5.78e-08
 #>   [OK  ] deriv3 vs finite differences                1.75e-10
-#>   [OK  ] deriv4 vs finite differences                7.01e-08
-#>   [OK  ] expected information vs Monte Carlo         1.76e+00
+#>   [OK  ] deriv4 vs finite differences                6.98e-08
+#>   [OK  ] expected information vs Monte Carlo         1.75e+00
 #>   [OK  ] response derivatives vs finite differences  2.70e-08
 #>   [OK  ] link-scale gradient vs finite differences   5.59e-08
 #> 

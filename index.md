@@ -18,7 +18,7 @@ the scale an optimiser works on.
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 toolkit for
 statistical modelling, and works alongside
-[linkfunctions7](https://statmodels7.github.io/linkfunctions7). The
+[linkfunctions7](https://statmodels7.github.io/linkfunctions7/). The
 mathematics behind every formula, from the likelihood theory and the
 change of scale to the derivations for the zero-inflated, zero-adjusted,
 truncated and transformed wrappers, is worked out in [the statmodels7
@@ -137,6 +137,21 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 #> 2.570081 2.881259
 ```
 
+The optimisation itself is delegated to
+[optimizers7](https://statmodels7.github.io/optimizers7/), so `method`
+takes any optimiser of that package as well as the three named
+strategies, and the object brings its own stopping rule:
+
+``` r
+
+fit2 <- fit_distrib(gamma_distrib(), y,
+                    method = optimizers7::lbfgs(
+                      criterion = optimizers7::crit_grad(1e-12)))
+c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))
+#>    fisher     lbfgs 
+#> -841.2326 -841.2326
+```
+
 ## A user-defined distribution needs only its density
 
 Everything above has a numerical fallback registered on the base
@@ -201,12 +216,12 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
 #>   [OK  ] cdf agrees with the density                 8.42e-06
 #>   [OK  ] quantile/cdf round-trip                     3.31e-10
-#>   [OK  ] rng matches the cdf                         1.75e+00
+#>   [OK  ] rng matches the cdf                         1.78e+00
 #>   [OK  ] gradient vs finite differences              0.00e+00
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         1.90e+00
+#>   [OK  ] expected information vs Monte Carlo         1.97e+00
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
 #>   [OK  ] link-scale gradient vs finite differences   3.29e-09
 #> 

@@ -42,11 +42,15 @@ fit_distrib(
 
 - method:
 
-  Optimisation method. `"fisher"` (default) uses Fisher scoring with the
-  expected information, `"newton"` uses the observed Hessian, and
-  `"bfgs"` uses [`optim`](https://rdrr.io/r/stats/optim.html) with the
-  analytical gradient. Fisher scoring and Newton fall back to BFGS if
-  they fail to converge.
+  Optimisation method, either one of three named strategies or an
+  optimiser object from optimizers7. The named strategies are `"fisher"`
+  (default), which is Newton's method with the expected information in
+  place of the Hessian, `"newton"`, which uses the observed Hessian, and
+  `"bfgs"`, which uses the analytical gradient alone; the first two fall
+  back to BFGS if they fail to converge. Any optimiser object is used as
+  given, receiving the analytical gradient and observed Hessian and no
+  fallback, so that `method = lbfgs(criterion = crit_grad(1e-12))`
+  selects both the algorithm and the stopping rule.
 
 - maxit:
 
@@ -101,7 +105,8 @@ scale would not.
 ## See also
 
 [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
+[`minimize`](https://statmodels7.github.io/optimizers7/reference/minimize.html)
 
 ## Examples
 

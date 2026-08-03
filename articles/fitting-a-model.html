@@ -204,8 +204,27 @@ Newton fall back to BFGS if they fail to converge:</p>
 <span><span class="co">#&gt; -844.0323 -844.0323 -844.0323</span></span></code></pre></div>
 <p>They agree on the maximum. Fisher scoring is the default because it
 uses the expected information, which stays well-behaved even where the
-observed Hessian does not — a point that matters for distributions with
-a non-smooth parameter, such as the Laplace.</p>
+observed Hessian does not, and that matters for distributions with a
+non-smooth parameter such as the Laplace.</p>
+<p>The optimisation runs through <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>, and
+<code>method</code> also accepts an optimiser object from that package,
+which is then used as given. Choosing the optimiser this way also
+chooses its stopping rule, its line search and its iteration budget:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit_lbfgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/lbfgs.html" class="external-link">lbfgs</a></span><span class="op">(</span>criterion <span class="op">=</span> <span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">crit_grad</a></span><span class="op">(</span><span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fit_nm</span>    <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/nelder_mead.html" class="external-link">nelder_mead</a></span><span class="op">(</span>maxit <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>lbfgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit_lbfgs</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  nelder_mead <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit_nm</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       lbfgs nelder_mead </span></span>
+<span><span class="co">#&gt;   -844.0323   -844.0323</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fit_lbfgs</span><span class="op">@</span><span class="va">method</span>, <span class="va">fit_nm</span><span class="op">@</span><span class="va">method</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "L-BFGS"      "nelder-mead"</span></span></code></pre></div>
+<p>The three named strategies fall back to BFGS when they fail to
+converge; an optimiser supplied explicitly is never replaced, so the
+method reported is always the method that produced the estimates.</p>
 </div>
 <div class="section level2">
 <h2 id="checking-the-fit-against-the-data">Checking the fit against the data<a class="anchor" aria-label="anchor" href="#checking-the-fit-against-the-data"></a>
@@ -213,17 +232,17 @@ a non-smooth parameter, such as the Laplace.</p>
 <p>A fit remembers the data it came from, so it can be drawn over it.
 For a continuous distribution <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> shows a kernel density
 of the sample with the fitted density on top:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="576"></p>
 <p>For a discrete distribution it shows the observed frequencies as bars
 with the fitted probability mass overlaid, because a kernel density
 would misrepresent counts:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/poisson_distrib.html">poisson_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">yp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">p</span>, <span class="fl">300</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">yp</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="576"></p>
+<p><img src="fitting-a-model_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="simulating-from-the-fit">Simulating from the fit<a class="anchor" aria-label="anchor" href="#simulating-from-the-fit"></a>
@@ -232,7 +251,7 @@ would misrepresent counts:</p>
 distribution. Each replicate has the same length as the original data,
 which makes it a one-liner to build a parametric bootstrap of any
 statistic:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fl">200</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">sims</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 500 200</span></span>
@@ -255,7 +274,7 @@ the distribution function agrees with the density, that the quantile
 inverts it, that the generator follows it, and that every analytical
 derivative matches finite differences, on both the parameter and the
 link scale:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: gamma</span></span>
 <span><span class="co">#&gt; Parameters:   mu = 3, sigma2 = 2</span></span>
@@ -266,12 +285,12 @@ link scale:</p>
 <span><span class="co">#&gt;   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02</span></span>
 <span><span class="co">#&gt;   [OK  ] cdf agrees with the density                 2.32e-11</span></span>
 <span><span class="co">#&gt;   [OK  ] quantile/cdf round-trip                     5.55e-17</span></span>
-<span><span class="co">#&gt;   [OK  ] rng matches the cdf                         1.16e+00</span></span>
+<span><span class="co">#&gt;   [OK  ] rng matches the cdf                         1.17e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] gradient vs finite differences              6.49e-11</span></span>
 <span><span class="co">#&gt;   [OK  ] hessian vs finite differences               5.78e-08</span></span>
 <span><span class="co">#&gt;   [OK  ] deriv3 vs finite differences                1.75e-10</span></span>
-<span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                7.01e-08</span></span>
-<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         1.76e+00</span></span>
+<span><span class="co">#&gt;   [OK  ] deriv4 vs finite differences                6.98e-08</span></span>
+<span><span class="co">#&gt;   [OK  ] expected information vs Monte Carlo         1.75e+00</span></span>
 <span><span class="co">#&gt;   [OK  ] response derivatives vs finite differences  2.70e-08</span></span>
 <span><span class="co">#&gt;   [OK  ] link-scale gradient vs finite differences   5.59e-08</span></span>
 <span><span class="co">#&gt; </span></span>
