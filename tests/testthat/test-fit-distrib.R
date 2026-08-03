@@ -277,11 +277,22 @@ test_that("the print method shows the interval on both scales", {
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
   out <- utils::capture.output(print(f))
 
-  # the link-scale block carries the two limit columns, not just the estimate
-  i <- grep("^Link scale", out)
-  expect_length(i, 1)
-  expect_match(out[i], "95% CI")
-  header <- out[i + 1]
-  expect_match(header, "2\\.5%")
-  expect_match(header, "97\\.5%")
+  # both blocks carry the two limit columns, not just the estimate
+  for (block in c("^Parameter scale", "^Link scale")) {
+    i <- grep(block, out)
+    expect_length(i, 1)
+    header <- out[i + 1]
+    expect_match(header, "2\\.5%")
+    expect_match(header, "97\\.5%")
+  }
+
+  # the headings name the scale and the links, and nothing else
+  expect_match(out[grep("^Parameter scale", out)], "^Parameter scale:$")
+  expect_match(out[grep("^Link scale", out)], "^Link scale \\(identity, log\\):$")
+
+  # a different level renames the columns
+  f90 <- fit_distrib(d, y, start = list(mu = 0, sigma = 1), level = 0.90)
+  out90 <- utils::capture.output(print(f90))
+  expect_match(out90[grep("^Link scale", out90) + 1], "95%")
+  expect_match(out90[grep("^Link scale", out90) + 1], "5%")
 })

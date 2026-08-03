@@ -460,7 +460,6 @@ fit_distrib <- function(distrib, y, start = NULL,
 #' @param ... Unused.
 #' @return \code{x}, invisibly.
 S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
-  pct <- format(100 * x@level, trim = TRUE)
   lo <- paste0(format((1 - x@level) / 2 * 100, trim = TRUE), "%")
   hi <- paste0(format((1 + x@level) / 2 * 100, trim = TRUE), "%")
 
@@ -475,7 +474,7 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
 
   tab <- cbind(Estimate = x@coefficients, `Std. Error` = x@se, x@ci)
   colnames(tab) <- c("Estimate", "Std. Error", lo, hi)
-  cat("Parameter scale (", pct, "% CI mapped from the link scale):\n", sep = "")
+  cat("Parameter scale:\n")
   print(round(tab, digits))
 
   links <- vapply(x@distrib@params,
@@ -484,8 +483,7 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   # image under g^{-1}, so showing both makes the mapping visible.
   tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
   colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
-  cat("\nLink scale (", paste(links, collapse = ", "), ", ", pct,
-      "% CI symmetric here):\n", sep = "")
+  cat("\nLink scale (", paste(links, collapse = ", "), "):\n", sep = "")
   print(round(tab_eta, digits))
 
   invisible(x)
