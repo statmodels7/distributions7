@@ -104,12 +104,13 @@ reference:
 - title: Building on a distribution
   desc: >
     Wrappers that turn a distribution into another one: a mixture with a point
-    mass at zero, a restriction to an interval, or the law of a transformed
-    variable.
+    mass at zero, a restriction to an interval, the law of a transformed
+    variable, or the same law with some parameters held at known values.
   contents:
   - zero_inflated
   - zero_adjusted
   - truncated
+  - fixed
   - transformation
   - transformer
   - starts_with("log_transform")
@@ -192,8 +193,8 @@ reference:
 
 - title: Wrapper classes
   desc: >
-    The methods of the zero-inflated, zero-adjusted, truncated and transformed
-    wrappers.
+    The methods of the zero-inflated, zero-adjusted, truncated, transformed
+    and fixed-parameter wrappers.
   contents:
   - ZeroInflatedDistrib
   - ends_with(".ZeroInflatedDistrib")
@@ -207,6 +208,10 @@ reference:
   - ends_with(".TruncatedContinuousDistrib")
   - TransformedDistrib
   - ends_with(".TransformedDistrib")
+  - FixedContinuousDistrib
+  - ends_with(".FixedContinuousDistrib")
+  - FixedDiscreteDistrib
+  - ends_with(".FixedDiscreteDistrib")
 
 - title: Base-class defaults
   desc: >

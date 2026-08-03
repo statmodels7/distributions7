@@ -234,5 +234,5 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
-| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `transformation()` with twelve transformers |
+| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |
