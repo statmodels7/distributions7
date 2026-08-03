@@ -308,7 +308,9 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
   params <- distrib@params
   p <- length(params)
-  n <- length(y)
+  # The row count for a multivariate response, its length otherwise: n is the
+  # number of OBSERVATIONS, which is what BIC and the printed summary mean.
+  n <- n_obs(distrib, y)
 
   nll <- function(eta) {
     th <- fit_theta_from_eta(distrib, eta)
@@ -480,11 +482,30 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   links <- vapply(x@distrib@params,
                   function(p) x@distrib@link_params[[p]]@link_name, character(1))
   # The link-scale interval is the one actually computed; the table above is its
-  # image under g^{-1}, so showing both makes the mapping visible.
-  tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
-  colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
-  cat("\nLink scale (", paste(links, collapse = ", "), "):\n", sep = "")
-  print(round(tab_eta, digits))
+  # image under g^{-1}, so showing both makes the mapping visible. When every
+  # link is the identity the two tables are the same numbers twice, which is
+  # what a multivariate distribution gives -- there the constraint lives in the
+  # covariance structure rather than in a link -- so the block is dropped and
+  # the reason said once.
+  if (all(links == "identity")) {
+    cat("\nThe link scale is the parameter scale: every link is the identity.\n")
+  } else {
+    tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
+    colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
+    cat("\nLink scale (", paste(links, collapse = ", "), "):\n", sep = "")
+    print(round(tab_eta, digits))
+  }
+
+  # For a multivariate fit the parameters above are the coordinates the
+  # optimiser works in; the mean vector and the covariance are what the model
+  # is about, so they are assembled and shown as well.
+  if (S7::S7_inherits(x@distrib, multivariate_distrib)) {
+    th <- as.list(x@coefficients)
+    cat("\nMean:\n")
+    print(round(mv_mu(x@distrib, th), digits))
+    cat("\nCovariance:\n")
+    print(round(mv_sigma(x@distrib, th), digits))
+  }
 
   invisible(x)
 }
@@ -685,6 +706,13 @@ S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
   y <- x@y
   if (!length(y)) {
     stop("This fit carries no data to plot.", call. = FALSE)
+  }
+  if (S7::S7_inherits(x@distrib, multivariate_distrib)) {
+    stop(paste0(
+      "There is no one picture of a fitted multivariate density. Plot a pair\n",
+      "  of coordinates, or a contour of the fitted density, with the mean and\n",
+      "  covariance from mv_mu() and mv_sigma()."
+    ), call. = FALSE)
   }
   theta <- as.list(x@coefficients)
   d <- x@distrib

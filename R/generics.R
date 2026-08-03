@@ -149,6 +149,14 @@ check_derivative_args <- function(distrib, y, theta) {
     return(list(y = y, theta = theta))
   }
 
+  # A multivariate response is a matrix, so the number of observations is its
+  # row count rather than its length, and there is nothing to recycle: the
+  # parameters of a multivariate distribution are scalars for the whole sample
+  # (see multivariate_distrib), so the conformability question does not arise.
+  if (S7::S7_inherits(distrib, multivariate_distrib)) {
+    return(list(y = y, theta = theta))
+  }
+
   n <- max(length(y), lengths(pars))
   check_params_dim(pars, n = n)
   if (length(y) != n) {

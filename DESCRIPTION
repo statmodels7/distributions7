@@ -16,6 +16,7 @@ LinkingTo:
     Rcpp
 Imports:
     graphics,
+    covstructs7,
     linkfunctions7,
     optimizers7,
     Rcpp,
@@ -24,6 +25,7 @@ Imports:
     stats,
     utils
 Remotes:
+    statmodels7/covstructs7,
     statmodels7/linkfunctions7,
     statmodels7/optimizers7
 Collate: 
@@ -50,6 +52,8 @@ Collate:
     'numerical_derivatives.R'
     'higher_derivatives.R'
     'check_distrib.R'
+    'multivariate.R'
+    'check_distrib_mv.R'
     'zero_inflated.R'
     'zero_adjusted.R'
     'truncated.R'
@@ -62,6 +66,7 @@ Collate:
     'fixed.R'
     'gamma_distrib.R'
     'methods.R'
+    'mvgaussian_distrib.R'
     'numerical_fallbacks.R'
     'transformations.R'
     'wrapper_derivatives.R'

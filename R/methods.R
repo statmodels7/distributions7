@@ -16,6 +16,8 @@ S7::method(print, distrib) <- function(x, ...) {
     "Continuous"
   } else if (S7::S7_inherits(x, discrete_distrib)) {
     "Discrete"
+  } else if (S7::S7_inherits(x, multivariate_distrib)) {
+    sprintf("Continuous, %d-dimensional", x@n_dim)
   } else {
     "Unknown"
   }

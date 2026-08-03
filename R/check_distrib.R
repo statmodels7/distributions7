@@ -123,6 +123,18 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   if (is.null(theta)) theta <- generate_random_theta(distrib)
   theta <- align_theta(distrib, theta)
 
+  # A multivariate distribution has no distribution function, no quantile
+  # function and no one-dimensional quadrature, so five of the checks below
+  # have no counterpart. Running them anyway reports refusals as failures,
+  # which is the mistake this function already learned not to make with mixed
+  # distributions: a user validating their own code could not tell a real
+  # defect from it. The battery that does generalise is a separate one.
+  if (S7::S7_inherits(distrib, multivariate_distrib)) {
+    out <- do.call(rbind, check_distrib_mv(distrib, theta, n, nsim, tol))
+    if (verbose) print_check_table(distrib, out, theta, n, nsim)
+    return(invisible(out))
+  }
+
   is_cont <- S7::S7_inherits(distrib, continuous_distrib)
   b <- distrib@bounds
   res <- list()
@@ -380,27 +392,46 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   out <- do.call(rbind, res)
   rownames(out) <- NULL
 
-  if (verbose) {
-    cat("Distribution: ", distrib@distrib_name, "\n", sep = "")
-    cat("Parameters:   ",
-        paste(names(theta), vapply(theta, function(v) format(v[1], digits = 4), character(1)),
-              sep = " = ", collapse = ", "), "\n", sep = "")
-    cat("Observations: ", n, "   Monte Carlo: ", format(nsim, scientific = FALSE), "\n\n", sep = "")
-    width <- max(nchar(out$check))
-    for (i in seq_len(nrow(out))) {
-      stat <- if (is.na(out$statistic[i])) "" else sprintf("  %.2e", out$statistic[i])
-      cat(sprintf("  [%-4s] %-*s%s\n", out$status[i], width, out$check[i], stat))
-      if (!is.na(out$detail[i])) cat("         ", out$detail[i], "\n", sep = "")
-    }
-    n_fail <- sum(out$status == "FAIL")
-    cat("\n", if (n_fail == 0) {
-      sprintf("All %d checks passed.\n", nrow(out))
-    } else {
-      sprintf("%d of %d checks FAILED.\n", n_fail, nrow(out))
-    }, sep = "")
-  }
+  if (verbose) print_check_table(distrib, out, theta, n, nsim)
 
   invisible(out)
+}
+
+#' Print a Validation Table
+#'
+#' @description
+#' Renders what \code{\link{check_distrib}} found, in the same shape for a
+#' univariate and a multivariate distribution.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param out The data frame of checks.
+#' @param theta The parameters the checks were run at.
+#' @param n The number of observations used.
+#' @param nsim The Monte Carlo sample size used.
+#'
+#' @return Invisibly \code{NULL}.
+#'
+#' @seealso \code{\link{check_distrib}}
+#' @keywords internal
+print_check_table <- function(distrib, out, theta, n, nsim) {
+  cat("Distribution: ", distrib@distrib_name, "\n", sep = "")
+  cat("Parameters:   ",
+      paste(names(theta), vapply(theta, function(v) format(v[1], digits = 4), character(1)),
+            sep = " = ", collapse = ", "), "\n", sep = "")
+  cat("Observations: ", n, "   Monte Carlo: ", format(nsim, scientific = FALSE), "\n\n", sep = "")
+  width <- max(nchar(out$check))
+  for (i in seq_len(nrow(out))) {
+    stat <- if (is.na(out$statistic[i])) "" else sprintf("  %.2e", out$statistic[i])
+    cat(sprintf("  [%-4s] %-*s%s\n", out$status[i], width, out$check[i], stat))
+    if (!is.na(out$detail[i])) cat("         ", out$detail[i], "\n", sep = "")
+  }
+  n_fail <- sum(out$status == "FAIL")
+  cat("\n", if (n_fail == 0) {
+    sprintf("All %d checks passed.\n", nrow(out))
+  } else {
+    sprintf("%d of %d checks FAILED.\n", n_fail, nrow(out))
+  }, sep = "")
+  invisible(NULL)
 }
 
 #' Which Observations the Finite-Difference Reference Can Be Trusted At

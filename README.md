@@ -234,5 +234,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
+| multivariate | `mvgaussian_distrib()`, parametrised by a covariance or a precision structure from [covstructs7](https://statmodels7.github.io/covstructs7/) |
 | wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |

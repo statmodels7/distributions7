@@ -117,12 +117,25 @@ reference:
   - starts_with("log_transform")
   - ends_with("_transform")
 
+- title: Several dimensions
+  desc: >
+    Distributions whose observations are vectors. The response is a matrix with
+    one row per observation, and the parameters stay scalars: a mean vector
+    contributes one each, and a covariance contributes the free values of the
+    covstructs7 structure that parametrises it, so every generic of the package
+    indexes them as it always did.
+  contents:
+  - mvgaussian_distrib
+  - mv_mu
+  - n_obs
+
 - title: Classes
   desc: The S7 classes; each page lists the methods that dispatch on it.
   contents:
   - distrib
   - continuous_distrib
   - discrete_distrib
+  - multivariate_distrib
 
 - title: Numerical fallbacks
   desc: >
@@ -193,6 +206,9 @@ reference:
 - title: Negative binomial
   contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
 
+- title: Multivariate gaussian
+  contents: [MvGaussianDistrib, ends_with(".MvGaussianDistrib")]
+
 - title: Wrapper classes
   desc: >
     The methods of the zero-inflated, zero-adjusted, truncated, transformed
@@ -223,6 +239,7 @@ reference:
   - ends_with(".distrib")
   - ends_with(".continuous_distrib")
   - ends_with(".discrete_distrib")
+  - ends_with(".multivariate_distrib")
 
 - title: Internals
   desc: >
