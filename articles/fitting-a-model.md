@@ -7,16 +7,16 @@ library(distributions7)
 
 This vignette walks through fitting a distribution to a sample by
 maximum likelihood, reading the result, checking it against the data,
-and simulating from it. It assumes you already know what a distribution
-object is; if not,
+and simulating from it. It assumes familiarity with distribution
+objects;
 [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md)
-is the place to start.
+is the place to start otherwise.
 
 ## A first fit
 
 Every distribution has a constructor. It takes the link functions for
-its parameters, but the defaults are sensible, so most of the time you
-call it with no arguments:
+its parameters, but the defaults are sensible, so most of the time it is
+called with no arguments:
 
 ``` r
 
@@ -54,15 +54,15 @@ fit
 #> sigma2   0.6991     0.0745
 ```
 
-The estimates recover the values we generated from, and the print method
-shows them twice: on the **parameter scale** you asked about, and on the
+The estimates recover the values the sample was generated from, and the
+print method shows them twice: on the **parameter scale**, and on the
 **link scale** where the fitting actually happened. More on that split
 below.
 
 ## Reading the fit
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-returns an object you interrogate with the familiar extractors:
+returns an object that answers the familiar extractors:
 
 ``` r
 
@@ -79,7 +79,7 @@ logLik(fit)
 
 [`coef()`](https://rdrr.io/r/stats/coef.html) and
 [`vcov()`](https://rdrr.io/r/stats/vcov.html) also take a `scale`
-argument, in case you want the quantities on the unconstrained scale:
+argument, which returns the same quantities on the unconstrained scale:
 
 ``` r
 
@@ -206,8 +206,8 @@ result, and the caller’s random stream is left untouched.
 
 ## Validating a distribution numerically
 
-Before trusting a fit — and especially before trusting a distribution
-you wrote yourself —
+Before a fit is trusted, and especially before a user-written
+distribution is,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 puts it through thirteen numerical checks. It confirms that the density
 integrates to one, that the distribution function agrees with the
@@ -243,10 +243,10 @@ Had a mistake crept into an analytical derivative, the corresponding
 line would read `FAIL`, with the size of the discrepancy printed next to
 it. It is the fastest way to catch a wrong formula.
 
-## Where to go next
+## Further reading
 
 - [`vignette("defining-a-distribution")`](https://statmodels7.github.io/distributions7/articles/defining-a-distribution.md)
-  — add your own distribution, which then works with everything shown
+  — defining a new distribution, which then works with everything shown
   here.
 - [`?fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
   [`?check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)

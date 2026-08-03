@@ -78,15 +78,15 @@
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statmodels7.github.io/distributions7/">distributions7</a></span><span class="op">)</span></span></code></pre></div>
 <p>This vignette walks through fitting a distribution to a sample by
 maximum likelihood, reading the result, checking it against the data,
-and simulating from it. It assumes you already know what a distribution
-object is; if not, <code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> is
-the place to start.</p>
+and simulating from it. It assumes familiarity with distribution
+objects; <code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> is the place
+to start otherwise.</p>
 <div class="section level2">
 <h2 id="a-first-fit">A first fit<a class="anchor" aria-label="anchor" href="#a-first-fit"></a>
 </h2>
 <p>Every distribution has a constructor. It takes the link functions for
-its parameters, but the defaults are sensible, so most of the time you
-call it with no arguments:</p>
+its parameters, but the defaults are sensible, so most of the time it is
+called with no arguments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gamma_distrib.html">gamma_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">d</span></span>
@@ -116,15 +116,15 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="co">#&gt;        Estimate Std. Error</span></span>
 <span><span class="co">#&gt; mu       1.0888     0.0214</span></span>
 <span><span class="co">#&gt; sigma2   0.6991     0.0745</span></span></code></pre></div>
-<p>The estimates recover the values we generated from, and the print
-method shows them twice: on the <strong>parameter scale</strong> you
-asked about, and on the <strong>link scale</strong> where the fitting
+<p>The estimates recover the values the sample was generated from, and
+the print method shows them twice: on the <strong>parameter
+scale</strong>, and on the <strong>link scale</strong> where the fitting
 actually happened. More on that split below.</p>
 </div>
 <div class="section level2">
 <h2 id="reading-the-fit">Reading the fit<a class="anchor" aria-label="anchor" href="#reading-the-fit"></a>
 </h2>
-<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> returns an object you interrogate with the
+<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> returns an object that answers the
 familiar extractors:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
@@ -137,7 +137,7 @@ familiar extractors:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt; 'log Lik.' -844.0323 (df=2)</span></span></code></pre></div>
 <p><code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> and <code><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov()</a></code> also take a
-<code>scale</code> argument, in case you want the quantities on the
+<code>scale</code> argument, which returns the same quantities on the
 unconstrained scale:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">fit</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
@@ -248,13 +248,13 @@ the result, and the caller’s random stream is left untouched.</p>
 <div class="section level2">
 <h2 id="validating-a-distribution-numerically">Validating a distribution numerically<a class="anchor" aria-label="anchor" href="#validating-a-distribution-numerically"></a>
 </h2>
-<p>Before trusting a fit — and especially before trusting a distribution
-you wrote yourself — <code><a href="../reference/check_distrib.html">check_distrib()</a></code> puts it through
-thirteen numerical checks. It confirms that the density integrates to
-one, that the distribution function agrees with the density, that the
-quantile inverts it, that the generator follows it, and that every
-analytical derivative matches finite differences, on both the parameter
-and the link scale:</p>
+<p>Before a fit is trusted, and especially before a user-written
+distribution is, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> puts it through thirteen
+numerical checks. It confirms that the density integrates to one, that
+the distribution function agrees with the density, that the quantile
+inverts it, that the generator follows it, and that every analytical
+derivative matches finite differences, on both the parameter and the
+link scale:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: gamma</span></span>
@@ -281,11 +281,11 @@ line would read <code>FAIL</code>, with the size of the discrepancy
 printed next to it. It is the fastest way to catch a wrong formula.</p>
 </div>
 <div class="section level2">
-<h2 id="where-to-go-next">Where to go next<a class="anchor" aria-label="anchor" href="#where-to-go-next"></a>
+<h2 id="further-reading">Further reading<a class="anchor" aria-label="anchor" href="#further-reading"></a>
 </h2>
 <ul>
 <li>
-<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> — add your own
+<code><a href="../articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> — defining a new
 distribution, which then works with everything shown here.</li>
 <li>
 <code><a href="../reference/fit_distrib.html">?fit_distrib</a></code>, <code><a href="../reference/check_distrib.html">?check_distrib</a></code> — the full

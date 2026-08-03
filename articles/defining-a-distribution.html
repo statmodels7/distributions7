@@ -79,14 +79,13 @@
 <div class="section level2">
 <h2 id="the-idea-in-one-sentence">The idea in one sentence<a class="anchor" aria-label="anchor" href="#the-idea-in-one-sentence"></a>
 </h2>
-<p>To add a new distribution to <strong>distributions7</strong> you only
-have to write its <strong>density</strong> (<code>distrib_pdf</code>).
-Everything else — cumulative distribution function, quantile function,
-random number generator, score (gradient), observed and expected
-Hessian, and the moments — is then available automatically through
-numerical fallbacks. If you later derive closed-form expressions, you
-drop them in as methods and they transparently take over, with no change
-to calling code.</p>
+<p>A new distribution in <strong>distributions7</strong> requires only
+its <strong>density</strong> (<code>distrib_pdf</code>). Everything else
+— cumulative distribution function, quantile function, random number
+generator, score (gradient), observed and expected Hessian, and the
+moments — is then available automatically through numerical fallbacks. A
+closed-form expression derived later is registered as a method and
+transparently takes over, with no change to calling code.</p>
 </div>
 <div class="section level2">
 <h2 id="how-dispatch-makes-this-work">How dispatch makes this work<a class="anchor" aria-label="anchor" href="#how-dispatch-makes-this-work"></a>
@@ -157,21 +156,21 @@ parameters</td>
 <p>Default methods for all of these (except <code>distrib_pdf</code>)
 are registered on the <strong>base classes</strong>
 <code>continuous_distrib</code> and <code>discrete_distrib</code>.
-Because S7 always selects the most specific applicable method, your
-subclass inherits those defaults until you register something more
-specific. The defaults are:</p>
+Because S7 always selects the most specific applicable method, a
+subclass inherits those defaults until something more specific is
+registered. The defaults are:</p>
 <ul>
 <li>
 <code>distrib_cdf</code> — numerical integration (continuous) or
-summation of the pmf (discrete) of your density;</li>
+summation of the pmf (discrete) of the density;</li>
 <li>
 <code>distrib_quantile</code> — root-finding / table inversion on
 the CDF;</li>
 <li>
 <code>distrib_rng</code> — Generalized Ratio-of-Uniforms
-(<code><a href="../reference/rng_grou.html">rng_grou()</a></code>), which needs nothing but your density;
+(<code><a href="../reference/rng_grou.html">rng_grou()</a></code>), which needs nothing but the density;
 inverse-transform sampling, <code>distrib_quantile(runif(n))</code>, is
-used instead whenever you supply an analytical quantile function;</li>
+used instead whenever an analytical quantile function is supplied;</li>
 <li>
 <code>distrib_gradient</code>, <code>distrib_hessian</code> —
 central finite differences of the log-density (see
@@ -232,13 +231,13 @@ with <code>y</code>):</p>
 <span>  <span class="va">log_d</span> <span class="op">&lt;-</span> <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">b</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">y</span> <span class="op">-</span> <span class="va">mu</span><span class="op">)</span> <span class="op">/</span> <span class="va">b</span></span>
 <span>  <span class="kw">if</span> <span class="op">(</span><span class="va">log</span><span class="op">)</span> <span class="va">log_d</span> <span class="kw">else</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">log_d</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Two conventions matter: index <code>theta</code> positionally
-(<code>theta[[1]]</code>, <code>theta[[2]]</code>) so the parameter
-<em>names</em> are free, and always implement the <code>log</code>
-branch — the numerical machinery evaluates the density on the log scale
-for stability.</p>
+<p>Two conventions matter. <code>theta</code> is indexed positionally
+(<code>theta[[1]]</code>, <code>theta[[2]]</code>) so that the parameter
+<em>names</em> stay free, and the <code>log</code> branch is always
+implemented, because the numerical machinery evaluates the density on
+the log scale for stability.</p>
 <p><strong>Step 3 — the constructor.</strong> A plain function returning
-an object of your class with the metadata filled in:</p>
+an object of the class with the metadata filled in:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">laplace_distrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">link_mu</span> <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                            <span class="va">link_b</span>  <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
@@ -360,10 +359,10 @@ table from that lower bound, growing it geometrically as needed.</p>
 <h2 id="adding-closed-forms-for-performance">Adding closed forms for performance<a class="anchor" aria-label="anchor" href="#adding-closed-forms-for-performance"></a>
 </h2>
 <p>The numerical fallbacks are convenient but slower and less precise
-than analytical formulas. Whenever you can derive a closed form,
-register it as a method and it takes over automatically — existing code
-keeps working. There is no need to override everything: add only what
-you have.</p>
+than analytical formulas. Whenever a closed form is available,
+registering it as a method makes it take over automatically, and
+existing code keeps working. There is no need to override everything:
+any subset of the methods can be supplied.</p>
 <p>For the Laplace, all of these are available in closed form. For
 instance the CDF, quantile and score:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
@@ -394,8 +393,8 @@ instance the CDF, quantile and score:</p>
 <span><span class="op">}</span></span></code></pre></div>
 <p>Note the signature of the derivative method: it must mirror the
 generic, which carries a <code>scale</code> argument (and
-<code>...</code>). <strong>Your method always returns parameter-scale
-derivatives</strong> — you never implement the chain rule yourself. The
+<code>...</code>). <strong>A method always returns parameter-scale
+derivatives</strong>; the chain rule is never implemented by hand. The
 generic applies the link-scale transformation afterwards when the caller
 asks for <code>scale = "link"</code>. The same applies to
 <code>distrib_hessian</code>, <code>distrib_expected_hessian</code>,
@@ -425,18 +424,18 @@ built-in distributions do, helps further.</li>
 optimisation and standard errors.</li>
 <li>
 <strong><code>distrib_cdf</code> / <code>distrib_quantile</code> /
-<code>distrib_rng</code></strong> — if you need fast or high-volume
-simulation or tail probabilities.</li>
+<code>distrib_rng</code></strong> — for fast or high-volume simulation
+and tail probabilities.</li>
 <li>
 <strong><code>distrib_expected_hessian</code></strong> and
-<strong>analytical moments</strong> — if a closed form exists and you
-use Fisher scoring or need exact moments.</li>
+<strong>analytical moments</strong> — when a closed form exists and the
+fitting method is Fisher scoring, or exact moments are needed.</li>
 </ol>
 </div>
 <div class="section level2">
-<h2 id="checking-your-analytical-derivatives">Checking your analytical derivatives<a class="anchor" aria-label="anchor" href="#checking-your-analytical-derivatives"></a>
+<h2 id="checking-analytical-derivatives">Checking analytical derivatives<a class="anchor" aria-label="anchor" href="#checking-analytical-derivatives"></a>
 </h2>
-<p>When you do write analytical derivatives, verify them against the
+<p>Hand-written analytical derivatives should be verified against the
 numerical reference implementations, which are exported for exactly this
 purpose:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -455,13 +454,13 @@ the finite-difference estimates, so a component-by-component comparison
 is a one-liner.</p>
 </div>
 <div class="section level2">
-<h2 id="validating-your-distribution">Validating your distribution<a class="anchor" aria-label="anchor" href="#validating-your-distribution"></a>
+<h2 id="validating-the-distribution">Validating the distribution<a class="anchor" aria-label="anchor" href="#validating-the-distribution"></a>
 </h2>
-<p>Once you have defined a distribution, <code><a href="../reference/check_distrib.html">check_distrib()</a></code>
-runs a battery of numerical self-consistency checks: it verifies that
-the density integrates (or sums) to one, that the CDF, quantile function
-and RNG agree with each other, and that every analytical derivative
-matches finite differences.</p>
+<p>Once a distribution is defined, <code><a href="../reference/check_distrib.html">check_distrib()</a></code> runs a
+battery of numerical self-consistency checks: it verifies that the
+density integrates (or sums) to one, that the CDF, quantile function and
+RNG agree with each other, and that every analytical derivative matches
+finite differences.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="fu"><a href="../reference/laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span>, theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>              n <span class="op">=</span> <span class="fl">40</span>, nsim <span class="op">=</span> <span class="fl">2e4</span>, orders <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
@@ -483,9 +482,8 @@ matches finite differences.</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; All 11 checks passed.</span></span></code></pre></div>
 <p>This is the fastest way to catch a mistake in a hand-derived score or
-Hessian: if you supply an analytical <code>distrib_gradient</code> that
-disagrees with the density, the corresponding row comes back
-<code>FAIL</code>.</p>
+Hessian: an analytical <code>distrib_gradient</code> that disagrees with
+the density makes the corresponding row come back <code>FAIL</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="derivatives-on-the-link-scale">Derivatives on the link scale<a class="anchor" aria-label="anchor" href="#derivatives-on-the-link-scale"></a>
@@ -597,11 +595,11 @@ variance of the score,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mo>=</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>∇</mi><mi>ℓ</mi><mspace width="0.167em"></mspace><mi>∇</mi><msup><mi>ℓ</mi><mi>⊤</mi></msup><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]</annotation></semantics></math>,
 rather than from
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>.
-For a regular model the two coincide — that is the second Bartlett
-identity — but only the score-variance form stays valid when the
-identity fails, giving the correct information
+For a regular model the two coincide, by the second Bartlett identity,
+but only the score-variance form stays valid when the identity fails. It
+gives the correct information
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mi>/</mi><msup><mi>b</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">1/b^2</annotation></semantics></math>
-for the Laplace location where
+for the Laplace location, where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><mi>H</mi><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">-\mathbb{E}[H]</annotation></semantics></math>
 would give a degenerate zero:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
@@ -627,8 +625,8 @@ example.</p>
 <code>distrib_pdf</code> method, and a constructor with the metadata.
 (Discrete distributions additionally need a finite lower support
 bound.)</li>
-<li>From the density alone you get the CDF, quantile function, RNG,
-score, observed and expected Hessian, and all moments, via numerical
+<li>The density alone yields the CDF, quantile function, RNG, score,
+observed and expected Hessian, and all moments, via numerical
 fallbacks.</li>
 <li>Register analytical methods incrementally for speed and precision;
 they override the fallbacks automatically through S7 dispatch.</li>

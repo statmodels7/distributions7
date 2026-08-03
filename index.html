@@ -71,9 +71,9 @@
 <img src="logo.png" class="logo" alt=""><h1 id="distributions7-">distributions7 <a class="anchor" aria-label="anchor" href="#distributions7-"></a>
 </h1>
 </div>
-<p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, a list of closures nobody outside can reach. So the same Gamma gets re-implemented again and again, and each time only as far as that package happened to need — the density and the score, sometimes the Hessian, rarely anything beyond.</p>
-<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, and the <strong>exact derivatives of the log-likelihood up to fourth order</strong> — with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimiser actually works on.</p>
-<p>It is the distribution layer of <a href="https://statmodels7.github.io" class="external-link">statmodels7</a>, an S7 toolkit for statistical modelling, and works alongside <a href="https://statmodels7.github.io/linkfunctions7" class="external-link">linkfunctions7</a>. The mathematics behind every formula — the likelihood theory, the change of scale, and the derivations for the zero-inflated, zero-adjusted, truncated and transformed wrappers — is worked out in full in <a href="https://statmodels7.github.io/book/" class="external-link">the statmodels7 book</a>.</p>
+<p>Almost every R package that fits statistical models writes its own distributions, privately: a <code>switch</code> on a character string, a list of closures nothing outside can reach. The same Gamma is therefore re-implemented again and again, each time only as far as that package happened to need it: the density and the score, sometimes the Hessian, rarely anything beyond.</p>
+<p><a href="https://statmodels7.github.io/distributions7/">distributions7</a> writes them once, as objects. Each carries the usual density, distribution and quantile functions, together with the <strong>exact derivatives of the log-likelihood up to fourth order</strong>. The derivatives are available with respect to the parameters, with respect to the response, and with respect to the unconstrained parameters behind a link function, which is the scale an optimiser works on.</p>
+<p>It is the distribution layer of <a href="https://statmodels7.github.io" class="external-link">statmodels7</a>, an S7 toolkit for statistical modelling, and works alongside <a href="https://statmodels7.github.io/linkfunctions7" class="external-link">linkfunctions7</a>. The mathematics behind every formula, from the likelihood theory and the change of scale to the derivations for the zero-inflated, zero-adjusted, truncated and transformed wrappers, is worked out in <a href="https://statmodels7.github.io/book/" class="external-link">the statmodels7 book</a>.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -97,9 +97,9 @@
 <span><span class="co">#&gt; [1] -3.879892  2.000000  7.879892</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="derivatives-which-is-the-point">Derivatives, which is the point<a class="anchor" aria-label="anchor" href="#derivatives-which-is-the-point"></a>
+<h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a>
 </h2>
-<p>The score, the observed and expected information, and third and fourth order derivatives are all closed form.</p>
+<p>The score, the observed and expected information, and the third and fourth order derivatives are all closed form.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span></span>
 <span></span>
@@ -118,7 +118,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $mu_sigma</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
-<p>Ask for them on the <strong>link scale</strong> and you get derivatives with respect to the unconstrained parameters instead, through the chain rule rather than by differentiating numerically:</p>
+<p>On the <strong>link scale</strong> the same generics return derivatives with respect to the unconstrained parameters instead, computed through the chain rule rather than by differentiating numerically:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mu</span></span>
@@ -159,7 +159,7 @@
 <span><span class="co">#&gt; 2.570081 2.881259</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="a-distribution-of-your-own-needs-only-its-density">A distribution of your own needs only its density<a class="anchor" aria-label="anchor" href="#a-distribution-of-your-own-needs-only-its-density"></a>
+<h2 id="a-user-defined-distribution-needs-only-its-density">A user-defined distribution needs only its density<a class="anchor" aria-label="anchor" href="#a-user-defined-distribution-needs-only-its-density"></a>
 </h2>
 <p>Everything above has a numerical fallback registered on the base classes: the distribution function by quadrature, the quantile function by root finding, the generator by Generalized Ratio-of-Uniforms, and every derivative by finite differences. So a new distribution is a subclass and one method.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -192,9 +192,9 @@
 <p>See <code><a href="articles/defining-a-distribution.html">vignette("defining-a-distribution")</a></code> for the full treatment, including what to do when a parameter is not differentiable.</p>
 </div>
 <div class="section level2">
-<h2 id="checking-your-work">Checking your work<a class="anchor" aria-label="anchor" href="#checking-your-work"></a>
+<h2 id="validating-a-distribution">Validating a distribution<a class="anchor" aria-label="anchor" href="#validating-a-distribution"></a>
 </h2>
-<p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a distribution through thirteen numerical checks: that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, that the generator follows it, and that every derivative order matches finite differences — on both scales.</p>
+<p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a distribution through thirteen numerical checks. It verifies that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, and that the generator follows it. It also checks every derivative order against finite differences, on both scales.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, nsim <span class="op">=</span> <span class="fl">2e4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: my laplace</span></span>

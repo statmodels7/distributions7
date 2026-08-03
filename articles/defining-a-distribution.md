@@ -7,13 +7,13 @@ library(distributions7)
 
 ## The idea in one sentence
 
-To add a new distribution to **distributions7** you only have to write
-its **density** (`distrib_pdf`). Everything else — cumulative
-distribution function, quantile function, random number generator, score
-(gradient), observed and expected Hessian, and the moments — is then
-available automatically through numerical fallbacks. If you later derive
-closed-form expressions, you drop them in as methods and they
-transparently take over, with no change to calling code.
+A new distribution in **distributions7** requires only its **density**
+(`distrib_pdf`). Everything else — cumulative distribution function,
+quantile function, random number generator, score (gradient), observed
+and expected Hessian, and the moments — is then available automatically
+through numerical fallbacks. A closed-form expression derived later is
+registered as a method and transparently takes over, with no change to
+calling code.
 
 ## How dispatch makes this work
 
@@ -35,18 +35,18 @@ distribution object:
 
 Default methods for all of these (except `distrib_pdf`) are registered
 on the **base classes** `continuous_distrib` and `discrete_distrib`.
-Because S7 always selects the most specific applicable method, your
-subclass inherits those defaults until you register something more
-specific. The defaults are:
+Because S7 always selects the most specific applicable method, a
+subclass inherits those defaults until something more specific is
+registered. The defaults are:
 
 - `distrib_cdf` — numerical integration (continuous) or summation of the
-  pmf (discrete) of your density;
+  pmf (discrete) of the density;
 - `distrib_quantile` — root-finding / table inversion on the CDF;
 - `distrib_rng` — Generalized Ratio-of-Uniforms
   ([`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)),
-  which needs nothing but your density; inverse-transform sampling,
-  `distrib_quantile(runif(n))`, is used instead whenever you supply an
-  analytical quantile function;
+  which needs nothing but the density; inverse-transform sampling,
+  `distrib_quantile(runif(n))`, is used instead whenever an analytical
+  quantile function is supplied;
 - `distrib_gradient`, `distrib_hessian` — central finite differences of
   the log-density (see
   [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md)
@@ -108,13 +108,13 @@ S7::method(distrib_pdf, Laplace) <- function(distrib, y, theta, log = FALSE) {
 }
 ```
 
-Two conventions matter: index `theta` positionally (`theta[[1]]`,
-`theta[[2]]`) so the parameter *names* are free, and always implement
-the `log` branch — the numerical machinery evaluates the density on the
-log scale for stability.
+Two conventions matter. `theta` is indexed positionally (`theta[[1]]`,
+`theta[[2]]`) so that the parameter *names* stay free, and the `log`
+branch is always implemented, because the numerical machinery evaluates
+the density on the log scale for stability.
 
 **Step 3 — the constructor.** A plain function returning an object of
-your class with the metadata filled in:
+the class with the metadata filled in:
 
 ``` r
 
@@ -257,10 +257,10 @@ c(mean = mean(g, list(p = 0.6)))                        # p / (1 - p) = 1.5
 ## Adding closed forms for performance
 
 The numerical fallbacks are convenient but slower and less precise than
-analytical formulas. Whenever you can derive a closed form, register it
-as a method and it takes over automatically — existing code keeps
-working. There is no need to override everything: add only what you
-have.
+analytical formulas. Whenever a closed form is available, registering it
+as a method makes it take over automatically, and existing code keeps
+working. There is no need to override everything: any subset of the
+methods can be supplied.
 
 For the Laplace, all of these are available in closed form. For instance
 the CDF, quantile and score:
@@ -295,11 +295,11 @@ S7::method(distrib_gradient, Laplace) <- function(distrib, y, theta,
 ```
 
 Note the signature of the derivative method: it must mirror the generic,
-which carries a `scale` argument (and `...`). **Your method always
-returns parameter-scale derivatives** — you never implement the chain
-rule yourself. The generic applies the link-scale transformation
-afterwards when the caller asks for `scale = "link"`. The same applies
-to `distrib_hessian`, `distrib_expected_hessian`, `distrib_deriv3` and
+which carries a `scale` argument (and `...`). **A method always returns
+parameter-scale derivatives**; the chain rule is never implemented by
+hand. The generic applies the link-scale transformation afterwards when
+the caller asks for `scale = "link"`. The same applies to
+`distrib_hessian`, `distrib_expected_hessian`, `distrib_deriv3` and
 `distrib_deriv4`; the probability-function methods (`distrib_pdf`,
 `distrib_cdf`, `distrib_quantile`, `distrib_rng`) keep their plain
 signatures.
@@ -325,14 +325,15 @@ A practical suggestion for the order in which to add closed forms:
     helps further.
 2.  **`distrib_hessian`** — for Newton-type optimisation and standard
     errors.
-3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`** — if you need
-    fast or high-volume simulation or tail probabilities.
-4.  **`distrib_expected_hessian`** and **analytical moments** — if a
-    closed form exists and you use Fisher scoring or need exact moments.
+3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`** — for fast or
+    high-volume simulation and tail probabilities.
+4.  **`distrib_expected_hessian`** and **analytical moments** — when a
+    closed form exists and the fitting method is Fisher scoring, or
+    exact moments are needed.
 
-## Checking your analytical derivatives
+## Checking analytical derivatives
 
-When you do write analytical derivatives, verify them against the
+Hand-written analytical derivatives should be verified against the
 numerical reference implementations, which are exported for exactly this
 purpose:
 
@@ -355,9 +356,9 @@ take the same `(distrib, y, theta)` arguments as the generics and return
 the finite-difference estimates, so a component-by-component comparison
 is a one-liner.
 
-## Validating your distribution
+## Validating the distribution
 
-Once you have defined a distribution,
+Once a distribution is defined,
 [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 runs a battery of numerical self-consistency checks: it verifies that
 the density integrates (or sums) to one, that the CDF, quantile function
@@ -388,8 +389,8 @@ check_distrib(laplace_distrib(), theta = list(mu = 1, b = 2),
 ```
 
 This is the fastest way to catch a mistake in a hand-derived score or
-Hessian: if you supply an analytical `distrib_gradient` that disagrees
-with the density, the corresponding row comes back `FAIL`.
+Hessian: an analytical `distrib_gradient` that disagrees with the
+density makes the corresponding row come back `FAIL`.
 
 ## Derivatives on the link scale
 
@@ -501,11 +502,10 @@ param_smoothness(d)
 Second, and most importantly, `distrib_expected_hessian` returns the
 **Fisher information** computed from the variance of the score,
 $`I=\mathbb{E}[\nabla\ell\,\nabla\ell^\top]`$, rather than from
-$`-\mathbb{E}[H]`$. For a regular model the two coincide — that is the
-second Bartlett identity — but only the score-variance form stays valid
-when the identity fails, giving the correct information $`1/b^2`$ for
-the Laplace location where $`-\mathbb{E}[H]`$ would give a degenerate
-zero:
+$`-\mathbb{E}[H]`$. For a regular model the two coincide, by the second
+Bartlett identity, but only the score-variance form stays valid when the
+identity fails. It gives the correct information $`1/b^2`$ for the
+Laplace location, where $`-\mathbb{E}[H]`$ would give a degenerate zero:
 
 ``` r
 
@@ -529,7 +529,7 @@ for the full worked example.
   `continuous_distrib` or `discrete_distrib`, a `distrib_pdf` method,
   and a constructor with the metadata. (Discrete distributions
   additionally need a finite lower support bound.)
-- From the density alone you get the CDF, quantile function, RNG, score,
+- The density alone yields the CDF, quantile function, RNG, score,
   observed and expected Hessian, and all moments, via numerical
   fallbacks.
 - Register analytical methods incrementally for speed and precision;
