@@ -1,8 +1,8 @@
 #' S7 Class for Probability Distributions
 #'
 #' @description
-#' A base class for probability distributions using the S7 object-oriented system.
-#' It encapsulates the essential metadata, parameter definitions, and boundaries of a distribution.
+#' The base S7 class for probability distributions.
+#' It carries the name, the parameters with their domains and links, and the support.
 #'
 #' @param distrib_name A single character string specifying the name of the distribution (e.g., \code{"student t"}).
 #' @param dimension A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).
@@ -51,7 +51,7 @@ distrib <- S7::new_class("distrib",
   ),
   validator = function(self) {
     errors <- character()
-    
+
     if (!self@dimension %in% c("univariate", "multivariate")) {
       errors <- c(errors, "Property 'dimension' must be 'univariate' or 'multivariate'.")
     }
@@ -145,7 +145,7 @@ param_smoothness <- function(distrib) {
 #'
 #' @description A subclass of \code{distrib} specifically for continuous probability distributions.
 #' @inheritParams distrib
-#' 
+#'
 #' @section Methods:
 #' Defaults for continuous distributions, built from the density alone: the cdf by
 #' quadrature, the quantile function by root finding, and the generator by
@@ -171,7 +171,7 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #'
 #' @description A subclass of \code{distrib} specifically for discrete probability distributions.
 #' @inheritParams distrib
-#' 
+#'
 #' @section Methods:
 #' Defaults for discrete distributions, built from the probability mass function
 #' alone by accumulating it over the support; they require a finite lower bound,
