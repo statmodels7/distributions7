@@ -165,7 +165,6 @@ expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib,
 #' @param ... Further arguments passed to \code{f}.
 #' @return A numeric vector of expected values.
 #' @keywords internal
-#' @export
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
   # Capture extra arguments and check for name collisions
   dots <- list(...)
@@ -220,7 +219,6 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 #' @param ... Further arguments passed to \code{f}.
 #' @return A numeric vector of expected values.
 #' @keywords internal
-#' @export
 S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {
   # Capture extra arguments and check for name collisions
   dots <- list(...)
