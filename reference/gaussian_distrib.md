@@ -14,13 +14,13 @@ gaussian_distrib(link_mu = identity_link(), link_sigma = log_link())
 - link_mu:
 
   A link function object for the location parameter \\\mu\\. Defaults to
-  [`identity_link`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html).
+  [`identity_link`](https://rdrr.io/pkg/linkfunctions7/man/identity_link.html).
 
 - link_sigma:
 
   A link function object for the scale parameter \\\sigma\\. Defaults to
-  [`log_link`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html)
-  to ensure positivity.
+  [`log_link`](https://rdrr.io/pkg/linkfunctions7/man/log_link.html) to
+  ensure positivity.
 
 ## Value
 

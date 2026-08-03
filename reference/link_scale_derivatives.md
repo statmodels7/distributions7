@@ -45,7 +45,7 @@ score has zero expectation, so the information transforms as the
 congruence \\\mathrm{diag}(h')\\\mathbb{E}\[H\]\\\mathrm{diag}(h')\\.
 
 The inverse-link derivatives \\h', h'', h''', h''''\\ are obtained from
-[`linkinvderiv`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
+[`linkinvderiv`](https://rdrr.io/pkg/linkfunctions7/man/linkinvderiv.html),
 so link-scale derivatives are available up to order 4 for every link in
 linkfunctions7.
 

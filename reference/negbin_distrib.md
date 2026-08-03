@@ -14,13 +14,13 @@ negbin_distrib(link_mu = log_link(), link_theta = log_link())
 - link_mu:
 
   A link function object for the mean parameter \\\mu\\. Defaults to
-  [`log_link`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html).
+  [`log_link`](https://rdrr.io/pkg/linkfunctions7/man/log_link.html).
 
 - link_theta:
 
   A link function object for the dispersion parameter \\\theta\\.
   Defaults to
-  [`log_link`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html).
+  [`log_link`](https://rdrr.io/pkg/linkfunctions7/man/log_link.html).
 
 ## Value
 

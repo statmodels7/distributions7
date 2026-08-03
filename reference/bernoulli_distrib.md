@@ -15,7 +15,7 @@ bernoulli_distrib(link_mu = logit_link())
 
   A link function object for the mean parameter \\\mu\\ (probability).
   Defaults to
-  [`logit_link`](https://statmodels7.github.io/linkfunctions7/reference/logit_link.html)
+  [`logit_link`](https://rdrr.io/pkg/linkfunctions7/man/logit_link.html)
   to ensure the parameter stays within (0, 1).
 
 ## Value

@@ -31,7 +31,7 @@ zero_inflated(distrib, link_zi = logit_link())
 
   A link function object for the zero-inflation probability \\\zeta\\.
   Defaults to
-  [`logit_link`](https://statmodels7.github.io/linkfunctions7/reference/logit_link.html).
+  [`logit_link`](https://rdrr.io/pkg/linkfunctions7/man/logit_link.html).
 
 ## Value
 

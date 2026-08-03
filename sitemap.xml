@@ -88,6 +88,11 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.StudentTDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.TruncatedContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.continuous_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BinomialDistrib.html</loc></url>
@@ -389,6 +394,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/new_check.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_cross_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv3.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv4.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_grad_y.html</loc></url>

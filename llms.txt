@@ -311,6 +311,8 @@ respect to the unconstrained parameters.
   : Gradient of the Log-Density with Respect to the Response
 - [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
   : Second Derivative of the Log-Density with Respect to the Response
+- [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+  : Mixed Response-Parameter Derivatives of the Log-Density
 - [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
   : Gradient of the Log Distribution Function
 - [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
@@ -419,6 +421,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
   : Numerical Second Derivative of the Log-Density with Respect to the
   Response
+- [`numerical_cross_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md)
+  : Numerical Mixed Response-Parameter Derivatives
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
   : Numerical Derivatives of the Distribution Function
 - [`numerical_series()`](https://statmodels7.github.io/distributions7/reference/numerical_series.md)
@@ -1097,6 +1101,18 @@ divergent density.
 
 - [`distrib_cdf.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.discrete_distrib.md)
   : Default Numerical CDF for Discrete Distributions
+
+- [`distrib_cross_y.GaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GaussianDistrib.md)
+  : Gaussian Mixed Derivatives
+
+- [`distrib_cross_y.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.StudentTDistrib.md)
+  : Student's t Mixed Derivatives
+
+- [`distrib_cross_y.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.TruncatedContinuousDistrib.md)
+  : Mixed Derivatives of a Truncated Distribution
+
+- [`distrib_cross_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.continuous_distrib.md)
+  : Default Mixed Derivatives for Continuous Distributions
 
 - [`distrib_deriv3.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.md)
   :
