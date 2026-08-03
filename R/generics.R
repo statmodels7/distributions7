@@ -59,7 +59,7 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
 #' @description
 #' Returns the locations and probabilities of the point masses a distribution
 #' places on individual values --- the discrete part of a \emph{mixed}
-#' distribution, one that is neither purely continuous nor supported on a lattice.
+#' distribution, one that is neither purely continuous nor purely discrete.
 #' \code{\link{zero_adjusted}} applied to a continuous distribution builds exactly
 #' such an object: a point mass at zero next to a density.
 #'

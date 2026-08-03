@@ -16,7 +16,7 @@ A single logical.
 }
 \description{
 \code{TRUE} when the parent has a genuine closed-form cdf derivative of the
-given order, or is a lattice family whose cdf derivatives are an exact sum.
+given order, or is a discrete family whose cdf derivatives are an exact sum.
 }
 \details{
 This gate exists because of a regression. Replacing the quadrature for

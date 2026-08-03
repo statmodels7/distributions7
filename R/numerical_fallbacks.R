@@ -804,7 +804,7 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 
 # Internal: cumulative pmf table from the lower bound, grown geometrically
 # until it covers probability `need_p` and support point `need_k`.
-#' Cumulative Probability Table Over a Lattice Support
+#' Cumulative Probability Table for a Discrete Distribution
 #'
 #' @description
 #' Builds the cumulative pmf from the support lower bound, growing the table
@@ -813,7 +813,7 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 #' @details
 #' This is the whole of the discrete fallback: the cdf, the quantile function and
 #' the random generator are all lookups into it. No new algorithm was needed for
-#' discrete distributions, because the cdf of a lattice variable is a step
+#' discrete distributions, because the cdf of a discrete variable is a step
 #' function and inverting it is exact. The cost was one R-level call per draw,
 #' and vectorising the lookup took that from 12.6 us to 0.1.
 #'
@@ -967,7 +967,7 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #'
 #' No rejection scheme is needed here, and none would help. Inverting the
 #' cumulative mass function is exact, because the distribution function of a
-#' lattice-valued variable is a step function: there is nothing to solve. The
+#' discrete variable is a step function: there is nothing to solve. The
 #' table is built once per distinct parameter value and the whole sample is
 #' located in it with a single binary search, which costs a fraction of a
 #' microsecond per draw.

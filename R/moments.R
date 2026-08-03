@@ -79,12 +79,27 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #' @export
 variance <- S7::new_generic("variance", "x")
 
-# distrib method: theta is a named list of parameters
+#' @title Variance of a Distribution
+#' @name variance.distrib
+#' @description Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the centre.
+#' @param x A \code{distrib} object.
+#' @param theta A named list of parameters.
+#' @param ... Passed to \code{\link{moment}}.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(variance, distrib) <- function(x, theta, ...) {
   m <- moment(x, theta, p = 1, central = FALSE, ...)
   moment(x, theta, p = 2, central = TRUE, mu = m, ...)
 }
 
+#' @title Sample Variance
+#' @name variance.numeric
+#' @description The sample variance of a numeric vector, delegated to \code{\link[stats]{var}}.
+#' @param x A numeric vector.
+#' @param na.rm Remove missing values first?
+#' @param ... Unused.
+#' @return A single number.
+#' @keywords internal
 S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
   stats::var(x, na.rm = na.rm)
 }
@@ -102,11 +117,26 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @export
 std_dev <- S7::new_generic("std_dev", "x")
 
-# distrib method: theta is a named list of parameters
+#' @title Standard Deviation of a Distribution
+#' @name std_dev.distrib
+#' @description The square root of \code{\link{variance}}.
+#' @param x A \code{distrib} object.
+#' @param theta A named list of parameters.
+#' @param ... Passed to \code{\link{moment}}.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(std_dev, distrib) <- function(x, theta, ...) {
   sqrt(variance(x, theta, ...))
 }
 
+#' @title Sample Standard Deviation
+#' @name std_dev.numeric
+#' @description The sample standard deviation of a numeric vector, delegated to \code{\link[stats]{sd}}.
+#' @param x A numeric vector.
+#' @param na.rm Remove missing values first?
+#' @param ... Unused.
+#' @return A single number.
+#' @keywords internal
 S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
   stats::sd(x, na.rm = na.rm)
 }
@@ -126,6 +156,14 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 skewness <- S7::new_generic("skewness", "x")
 
 # distrib method: theta is a named list of parameters
+#' @title Skewness of a Distribution
+#' @name skewness.distrib
+#' @description Computes the standardised third central moment through \code{\link{moment}}.
+#' @param x A \code{distrib} object.
+#' @param theta A named list of parameters.
+#' @param ... Passed to \code{\link{moment}}.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(skewness, distrib) <- function(x, theta, ...) {
   m <- moment(x, theta, p = 1, central = FALSE, ...)
   m2 <- moment(x, theta, p = 2, central = TRUE, mu = m, ...)
@@ -133,6 +171,13 @@ S7::method(skewness, distrib) <- function(x, theta, ...) {
   m3 / m2^1.5
 }
 
+#' @title Sample Skewness
+#' @name skewness.numeric
+#' @description The sample skewness of a numeric vector, computed from the sample's central moments.
+#' @param x A numeric vector.
+#' @param ... Unused.
+#' @return A single number.
+#' @keywords internal
 S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)]
   m <- base::mean(x)
@@ -155,6 +200,14 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 kurtosis <- S7::new_generic("kurtosis", "x")
 
 # distrib method: theta is a named list of parameters
+#' @title Kurtosis of a Distribution
+#' @name kurtosis.distrib
+#' @description Computes the excess kurtosis, the standardised fourth central moment minus three through \code{\link{moment}}.
+#' @param x A \code{distrib} object.
+#' @param theta A named list of parameters.
+#' @param ... Passed to \code{\link{moment}}.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(kurtosis, distrib) <- function(x, theta, ...) {
   m <- moment(x, theta, p = 1, central = FALSE, ...)
   m2 <- moment(x, theta, p = 2, central = TRUE, mu = m, ...)
@@ -162,6 +215,13 @@ S7::method(kurtosis, distrib) <- function(x, theta, ...) {
   m4 / m2^2 - 3
 }
 
+#' @title Sample Kurtosis
+#' @name kurtosis.numeric
+#' @description The sample excess kurtosis of a numeric vector, computed from the sample's central moments.
+#' @param x A numeric vector.
+#' @param ... Unused.
+#' @return A single number.
+#' @keywords internal
 S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
   if (na.rm) x <- x[!is.na(x)]
   m <- base::mean(x)
@@ -174,16 +234,40 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 # needlessly slow (or are used internally, e.g. the Pseudo-Huber quantile
 # bracket relies on its analytical variance).
 
+#' @title Mean of the Negative Binomial Distribution
+#' @name mean.NegBinDistrib
+#' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+#' @param x A \code{NegBinDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(mean, NegBinDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(theta[[1]], length.out = max(lengths(theta[seq_len(2)])))
 }
 
+#' @title Variance of the Negative Binomial Distribution
+#' @name variance.NegBinDistrib
+#' @description Closed form, replacing the numerical default: \eqn{Var(Y) = \mu + \mu^2/\theta}.
+#' @param x A \code{NegBinDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(variance, NegBinDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[1]] + theta[[1]]^2 / theta[[2]]
 }
 
+#' @title Skewness of the Negative Binomial Distribution
+#' @name skewness.NegBinDistrib
+#' @description Closed form, replacing the numerical default: \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}.
+#' @param x A \code{NegBinDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(skewness, NegBinDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   mu <- theta[[1]]
@@ -191,6 +275,14 @@ S7::method(skewness, NegBinDistrib) <- function(x, theta, ...) {
   (th + 2 * mu) / sqrt(mu * th * (th + mu))
 }
 
+#' @title Kurtosis of the Negative Binomial Distribution
+#' @name kurtosis.NegBinDistrib
+#' @description Closed form, replacing the numerical default: \eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
+#' @param x A \code{NegBinDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(kurtosis, NegBinDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   mu <- theta[[1]]
@@ -198,11 +290,27 @@ S7::method(kurtosis, NegBinDistrib) <- function(x, theta, ...) {
   6 / th + th / (mu * (th + mu))
 }
 
+#' @title Mean of the Pseudo-Huber Distribution
+#' @name mean.PseudoHuberDistrib
+#' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}, by symmetry.
+#' @param x A \code{PseudoHuberDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(theta[[1]], length.out = max(lengths(theta[seq_len(3)])))
 }
 
+#' @title Variance of the Pseudo-Huber Distribution
+#' @name variance.PseudoHuberDistrib
+#' @description Closed form, replacing the numerical default: a closed form in exponentially scaled Bessel functions.
+#' @param x A \code{PseudoHuberDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   sq_nu <- sqrt(theta[[3]])
@@ -211,11 +319,27 @@ S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
   theta[[2]]^2 * sq_nu * ratio
 }
 
+#' @title Skewness of the Pseudo-Huber Distribution
+#' @name skewness.PseudoHuberDistrib
+#' @description Closed form, replacing the numerical default: zero, by symmetry.
+#' @param x A \code{PseudoHuberDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(0, length.out = max(lengths(theta[seq_len(3)])))
 }
 
+#' @title Kurtosis of the Pseudo-Huber Distribution
+#' @name kurtosis.PseudoHuberDistrib
+#' @description Closed form, replacing the numerical default: a closed form in exponentially scaled Bessel functions.
+#' @param x A \code{PseudoHuberDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(kurtosis, PseudoHuberDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   sq_nu <- sqrt(theta[[3]])
@@ -225,21 +349,53 @@ S7::method(kurtosis, PseudoHuberDistrib) <- function(x, theta, ...) {
   3 * (k3 * k1) / (k2^2) - 3
 }
 
+#' @title Mean of the Laplace Distribution
+#' @name mean.LaplaceDistrib
+#' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+#' @param x A \code{LaplaceDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(theta[[1]], length.out = max(lengths(theta[seq_len(2)])))
 }
 
+#' @title Variance of the Laplace Distribution
+#' @name variance.LaplaceDistrib
+#' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2b^2}.
+#' @param x A \code{LaplaceDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(variance, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   2 * theta[[2]]^2
 }
 
+#' @title Skewness of the Laplace Distribution
+#' @name skewness.LaplaceDistrib
+#' @description Closed form, replacing the numerical default: zero, by symmetry.
+#' @param x A \code{LaplaceDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(0, length.out = max(lengths(theta[seq_len(2)])))
 }
 
+#' @title Kurtosis of the Laplace Distribution
+#' @name kurtosis.LaplaceDistrib
+#' @description Closed form, replacing the numerical default: \eqn{3} (excess).
+#' @param x A \code{LaplaceDistrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
 S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(3, length.out = max(lengths(theta[seq_len(2)])))

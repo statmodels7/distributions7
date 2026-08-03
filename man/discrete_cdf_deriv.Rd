@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{discrete_cdf_deriv}
 \alias{discrete_cdf_deriv}
-\title{CDF Derivatives of a Lattice Distribution, Exactly}
+\title{CDF Derivatives of a Discrete Distribution}
 \usage{
 discrete_cdf_deriv(distrib, q, theta, order)
 }
@@ -25,7 +25,7 @@ Evaluates \eqn{d^I F(q)} for a discrete distribution as the finite sum
 \details{
 This is the governing identity
 \eqn{d^I F(q) / F(q) = \mathbb{E}[d^I f / f \mid Y \le q]}
-written out. For a lattice family the conditional expectation is a finite sum
+written out. For a discrete family the conditional expectation is a finite sum
 whenever the support has a finite lower bound -- which the discrete class
 requires -- so the identity is exact rather than an approximation, and it is
 used directly.

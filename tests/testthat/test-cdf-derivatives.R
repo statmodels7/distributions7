@@ -256,7 +256,7 @@ test_that("the gamma satisfies its exact parametrisation identity", {
 })
 
 test_that("truncation takes the cdf route only where it is at least as accurate", {
-  # A closed-form or lattice parent: the route is taken.
+  # A closed-form or discrete parent: the route is taken.
   expect_false(is.null(distributions7:::trunc_mass_derivs(
     truncated(gaussian_distrib(), -1, 2), list(mu = 0.5, sigma = 1.5), 2L)))
   expect_false(is.null(distributions7:::trunc_mass_derivs(

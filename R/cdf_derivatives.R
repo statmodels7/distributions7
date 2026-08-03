@@ -73,13 +73,13 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
   }), names(pairs))
 }
 
-# --- the exact route, for lattice distributions ----------------------------
+# --- the exact route, for discrete distributions ----------------------------
 #
 # d^I F(q) = sum over the support up to q of  f(y) * (d^I f / f)(y).
 # The sum is finite whenever the support has a finite lower bound, which every
 # discrete distribution in the package has and the class requires.
 
-#' CDF Derivatives of a Lattice Distribution, Exactly
+#' CDF Derivatives of a Discrete Distribution
 #'
 #' @description
 #' Evaluates \eqn{d^I F(q)} for a discrete distribution as the finite sum
@@ -88,7 +88,7 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #' @details
 #' This is the governing identity
 #' \eqn{d^I F(q) / F(q) = \mathbb{E}[d^I f / f \mid Y \le q]}
-#' written out. For a lattice family the conditional expectation is a finite sum
+#' written out. For a discrete family the conditional expectation is a finite sum
 #' whenever the support has a finite lower bound -- which the discrete class
 #' requires -- so the identity is exact rather than an approximation, and it is
 #' used directly.
@@ -566,7 +566,7 @@ S7::method(distrib_grad_cdf, InvGaussDistrib) <- function(distrib, q, theta,
                  list(mu = d_mu, phi = d_ph), NULL, lower.tail, log)
 }
 
-# --- lattice families ------------------------------------------------------
+# --- discrete families ------------------------------------------------------
 #
 # For the Poisson the sum defining F telescopes:
 #   d/dmu sum_{j<=k} e^-mu mu^j/j!  =  sum_j [-f(j) + f(j-1)]  =  -f(k),

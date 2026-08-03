@@ -11,7 +11,7 @@
 \item{theta}{A named list of the parent's parameters.}
 }
 \description{
-Inverse transform sampling on the parent, exact for a lattice cdf.
+Inverse transform sampling on the parent, exact for a discrete cdf.
 }
 \seealso{
 \code{\link{truncated}}

@@ -71,7 +71,7 @@ TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
 #'
 #' @description
 #' A subclass of \code{discrete_distrib} representing a discrete distribution
-#' restricted to the lattice points in \eqn{[\ell, u]} and renormalised. Both
+#' restricted to the support points in \eqn{[\ell, u]} and renormalised. Both
 #' endpoints are \strong{included}.
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
@@ -122,7 +122,7 @@ is_truncated <- function(distrib) {
     S7::S7_inherits(distrib, TruncatedDiscreteDistrib)
 }
 
-# P(Y = x) under the parent: the pmf for a lattice distribution, the atom's
+# P(Y = x) under the parent: the pmf for a discrete distribution, the atom's
 # probability for a mixed one, and zero for an ordinary continuous distribution.
 #
 # This is the one quantity that separates the two truncation classes, and getting
@@ -134,7 +134,7 @@ is_truncated <- function(distrib) {
 #' Probability the Parent Puts on a Single Point
 #'
 #' @description
-#' \eqn{P(Y = x)} under the parent: the pmf for a lattice distribution, the
+#' \eqn{P(Y = x)} under the parent: the pmf for a discrete distribution, the
 #' atom's probability for a mixed one, and zero for an ordinary continuous
 #' distribution.
 #'
@@ -232,7 +232,7 @@ trunc_inside <- function(distrib, y) {
 # which turns the truncated expectations E_T[d^B f / f] = d^B Z / Z into two
 # calls on the parent rather than one quadrature per component. The lower
 # endpoint keeps the same correction as the mass itself: F(L^-) = F(L) - P(Y = L),
-# so its derivatives lose the derivatives of that mass, which for a lattice
+# so its derivatives lose the derivatives of that mass, which for a discrete distribution
 # parent are f(L) l^(i)(L) and f(L)(l^(ij) + l^(i)l^(j)) at L.
 #
 # Returns NULL when the route should not be taken, and the caller falls back to
@@ -249,13 +249,13 @@ trunc_inside <- function(distrib, y) {
 # analytical Hessian, so a noisier Hessian degrades the *reference* the
 # fourth-order check compares against, and the check fails on code that is
 # right. The route is therefore taken only where it is at least as accurate as
-# what it replaces -- a parent with a genuine closed form, or a lattice parent,
+# what it replaces -- a parent with a genuine closed form, or a discrete parent,
 # whose cdf derivatives are an exact finite sum.
 #' Can the Parent Supply Exact CDF Derivatives?
 #'
 #' @description
 #' \code{TRUE} when the parent has a genuine closed-form cdf derivative of the
-#' given order, or is a lattice family whose cdf derivatives are an exact sum.
+#' given order, or is a discrete family whose cdf derivatives are an exact sum.
 #'
 #' @details
 #' This gate exists because of a regression. Replacing the quadrature for
@@ -530,7 +530,7 @@ trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
 #' @details
 #' Inverse transform on the parent: \eqn{F_T(q) = p} exactly when
 #' \eqn{F(q) = F(\ell^-) + pZ}, so no root-finding of its own is needed. The
-#' generalized inverse of a lattice cdf satisfies the same relation, so the
+#' generalized inverse of a discrete cdf satisfies the same relation, so the
 #' discrete case needs no separate treatment.
 #'
 #' @param distrib A truncated distribution object.
@@ -556,7 +556,7 @@ trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) 
 
   cs <- trunc_constants(distrib, th)
   # Inverse transform on the parent: F_T(q) = p  <=>  F(q) = F(lower^-) + p Z.
-  # The generalized inverse of a lattice cdf satisfies the same relation, so the
+  # The generalized inverse of a discrete cdf satisfies the same relation, so the
   # discrete case needs no separate treatment.
   distrib_quantile(distrib@parent_distrib, pmin(pmax(cs$Fl + p * cs$Z, 0), 1), th)
 }
@@ -755,7 +755,7 @@ S7::method(distrib_rng, TruncatedContinuousDistrib) <- trunc_rng
 
 #' @title Truncated Random Number Generator (Discrete)
 #' @name distrib_rng.TruncatedDiscreteDistrib
-#' @description Inverse transform sampling on the parent, exact for a lattice cdf.
+#' @description Inverse transform sampling on the parent, exact for a discrete cdf.
 #' @param distrib A \code{TruncatedDiscreteDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A named list of the parent's parameters.
@@ -966,7 +966,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
     }
     if (is_disc && is.finite(v) && v != round(v)) {
       stop(sprintf(paste0(
-        "'%s' = %s is not a lattice point. A discrete distribution is supported on\n",
+        "'%s' = %s is not a point of the support. A discrete distribution is supported on\n",
         "  the integers, so a non-integer truncation point is ambiguous: use %s or %s."
       ), arg, format(v), format(floor(v)), format(ceiling(v))), call. = FALSE)
     }

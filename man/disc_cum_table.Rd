@@ -2,7 +2,7 @@
 % Please edit documentation in R/numerical_fallbacks.R
 \name{disc_cum_table}
 \alias{disc_cum_table}
-\title{Cumulative Probability Table Over a Lattice Support}
+\title{Cumulative Probability Table for a Discrete Distribution}
 \usage{
 disc_cum_table(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 1e+06)
 }
@@ -27,7 +27,7 @@ geometrically until it covers the probability and the support point asked for.
 \details{
 This is the whole of the discrete fallback: the cdf, the quantile function and
 the random generator are all lookups into it. No new algorithm was needed for
-discrete distributions, because the cdf of a lattice variable is a step
+discrete distributions, because the cdf of a discrete variable is a step
 function and inverting it is exact. The cost was one R-level call per draw,
 and vectorising the lookup took that from 12.6 us to 0.1.
 

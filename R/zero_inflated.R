@@ -62,7 +62,7 @@ split_mix_theta <- function(distrib, theta) {
 # the only place where they can be caught, so they are caught there.
 # ---------------------------------------------------------------------------
 
-#' Number of Points in a Lattice Support
+#' Number of Points in a Discrete Support
 #'
 #' @description
 #' How many points the distribution's support contains, \code{Inf} when it is
@@ -150,7 +150,7 @@ check_not_stacked <- function(distrib, fun, param) {
 #' Enforces the counting rule that makes a zero wrapper identifiable.
 #'
 #' @details
-#' A lattice distribution on \eqn{k} points has \eqn{k-1} free probabilities,
+#' A discrete distribution on \eqn{k} points has \eqn{k-1} free probabilities,
 #' and either wrapper spends \code{n_params + 1} of them, so \eqn{k \ge}
 #' \code{n_params + 2} is necessary. The bound is the same for inflation and for
 #' adjustment.

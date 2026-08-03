@@ -2,7 +2,7 @@
 % Please edit documentation in R/zero_inflated.R
 \name{n_support_points}
 \alias{n_support_points}
-\title{Number of Points in a Lattice Support}
+\title{Number of Points in a Discrete Support}
 \usage{
 n_support_points(distrib)
 }

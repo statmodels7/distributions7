@@ -26,7 +26,7 @@ Inverts \code{\link{trunc_cdf}} through the parent's quantile function.
 \details{
 Inverse transform on the parent: \eqn{F_T(q) = p} exactly when
 \eqn{F(q) = F(\ell^-) + pZ}, so no root-finding of its own is needed. The
-generalized inverse of a lattice cdf satisfies the same relation, so the
+generalized inverse of a discrete cdf satisfies the same relation, so the
 discrete case needs no separate treatment.
 }
 \keyword{internal}

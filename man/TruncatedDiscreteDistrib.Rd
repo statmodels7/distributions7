@@ -44,7 +44,7 @@ TruncatedDiscreteDistrib(
 }
 \description{
 A subclass of \code{discrete_distrib} representing a discrete distribution
-restricted to the lattice points in \eqn{[\ell, u]} and renormalised. Both
+restricted to the support points in \eqn{[\ell, u]} and renormalised. Both
 endpoints are \strong{included}.
 }
 \section{Methods}{

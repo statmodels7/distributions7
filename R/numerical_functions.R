@@ -127,59 +127,44 @@ numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10,
   s_init + s
 }
 
-#' Calculate the Expected Value of a Function
+#' Expected Value of a Function of a Random Variable
 #'
-#' Computes the expected value of a given function \eqn{f(y)} with respect to a probability distribution defined by \code{distrib}.
-#' It automatically handles continuous distributions (via numerical integration) and discrete distributions (via series summation).
+#' @description
+#' Computes \eqn{E[f(Y)]} under the distribution: by numerical integration for a
+#' continuous distribution and by series summation for a discrete one, with the
+#' methods described on their own pages.
 #'
-#' @param distrib An object of class \code{"distrib"}
-#' @param f A function representing the transformation of the random variable \eqn{y}.
-#'   **Signature:** It must accept arguments \code{y}, \code{theta}, and \code{...} (see Details).
-#' @param theta A named list of parameters for the distribution (e.g., \code{list(mu=10, sigma=2)}).
-#'   Vectors inside this list allow computing expectations for multiple distribution parametrizations at once.
-#' @param ... Additional arguments passed directly to the function \code{f}.
-#'   **Vectorization:** These arguments are fully vectorized. If vectors are provided, they are recycled
-#'   against the parameters in \code{theta} according to standard R recycling rules.
+#' @param distrib An object inheriting from \code{\link{distrib}}.
+#' @param f The function whose expectation is taken, with signature
+#'   \code{f(y, theta, ...)}.
+#' @param theta A named list of parameters. Vectors are supported and are
+#'   recycled against any vectors in \code{...}, so several parameter values can
+#'   be handled in one call.
+#' @param ... Further arguments passed to \code{f}; their names must not clash
+#'   with those of \code{theta}.
 #'
-#' @details
-#' The function calculates:
-#' \itemize{
-#'   \item \eqn{E[f(Y)] = \int_{lb}^{ub} f(y, \theta, \dots) \cdot p(y|\theta) \, dy} (Continuous)
-#'   \item \eqn{E[f(Y)] = \sum_{y=lb}^{ub} f(y, \theta, \dots) \cdot P(y|\theta)} (Discrete)
-#' }
-#'
-#' **Vectorization:**
-#' The function iterates over the longest vector found among \code{theta} and \code{...}.
-#' For example, if \code{theta$mu} has length 2 and you pass a vector of length 2 to \code{...},
-#' the function computes the expectation for the paired values. If lengths differ, standard R recycling applies.
-#'
-#' **Requirements for `f`:**
-#' The user-provided function \code{f} must be defined with the signature:
-#' \code{f(y, theta, ...)}
-#'
-#' @return A numeric vector containing the expected values. The length corresponds to the
-#'   maximum length among all vectors in \code{theta} and \code{...}.
+#' @return A numeric vector of expected values, one per parameter combination.
 #'
 #' @importFrom stats integrate
 #'
 #' @examples
-#' \dontrun{
-#' distrib <- poisson_distrib()
-#'
-#' # Define f accepting y, theta, and extra parameter gamma
-#' f_pow <- function(y, theta, gamma = 1) {
-#'   y^gamma
-#' }
-#'
-#' # --- Example 1: Basic usage ---
-#' expectation(distrib, f_pow, theta = list(mu = 10), gamma = 2)
-#' }
+#' expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
+#'             theta = list(mu = 10), k = 2)
 #'
 #' @export
 expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib, f, theta, ...) {
   S7::S7_dispatch()
 })
 
+#' @title Expectation of a Continuous Distribution
+#' @name expectation.continuous_distrib
+#' @description Evaluates \eqn{E[f(Y)] = \int f(y)\,p(y;\theta)\,dy} by adaptive quadrature (\code{\link[stats]{integrate}}). The domain is split at the 0.1, 0.5 and 0.9 quantiles of the distribution and each panel is integrated separately, which anchors the quadrature nodes on the probability mass wherever it sits; the panels are then summed.
+#' @param distrib A \code{continuous_distrib}.
+#' @param f The function whose expectation is taken.
+#' @param theta A named list of parameters.
+#' @param ... Further arguments passed to \code{f}.
+#' @return A numeric vector of expected values.
+#' @keywords internal
 #' @export
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
   # Capture extra arguments and check for name collisions
@@ -204,19 +189,11 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
     }
 
     # `integrate` over (-Inf, Inf) transforms the domain around the origin and
-    # silently returns 0 when the probability mass sits far away (e.g. mu = 200).
-    # Splitting at quantiles anchors every panel on the mass, and for the
-    # semi-infinite ones the quadrature concentrates its nodes near the finite
-    # endpoint, which by construction carries a known share of the mass.
-    #
-    # Three knots, not more. Splitting further does extend the range of densities
-    # that can be integrated at all -- a Gamma of shape 0.05 needs nine -- but it
-    # also turns some failures into silent wrong answers: with nine knots that
-    # same Gamma at shape 0.02 returns -54.9 for a quantity that is exactly zero,
-    # where three knots simply report that the integral could not be computed. An
-    # error is worth more than a plausible number. Three is also the more accurate
-    # choice in the ordinary range, since each additional panel contributes its
-    # own quadrature error to the sum.
+    # can silently return 0 when the probability mass sits far from it.
+    # Splitting the domain at the 0.1/0.5/0.9 quantiles anchors every panel on
+    # the mass. Exactly three knots: more panels extend the range of extreme
+    # shapes that integrate at all, but convert loud failures into silent wrong
+    # answers and add each panel's quadrature error in the ordinary range.
     b <- distrib@bounds
     qs <- suppressWarnings(distrib_quantile(distrib, c(0.1, 0.5, 0.9), p_theta))
     qs <- unique(qs[is.finite(qs) & qs > b[1] & qs < b[2]])
@@ -234,6 +211,15 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
   unname(sapply(transpose_params(expand_params(all_params)), compute_single))
 }
 
+#' @title Expectation of a Discrete Distribution
+#' @name expectation.discrete_distrib
+#' @description Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by direct summation over the support, truncating the series once the accumulated tail contribution falls below tolerance.
+#' @param distrib A \code{discrete_distrib}.
+#' @param f The function whose expectation is taken.
+#' @param theta A named list of parameters.
+#' @param ... Further arguments passed to \code{f}.
+#' @return A numeric vector of expected values.
+#' @keywords internal
 #' @export
 S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {
   # Capture extra arguments and check for name collisions

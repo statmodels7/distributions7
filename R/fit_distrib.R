@@ -597,7 +597,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' estimate, with the fitted density drawn on top and a rug of the data
 #' underneath. For a discrete one the observed relative frequencies are drawn as
 #' bars with the fitted probability mass overlaid, since a kernel density would
-#' misrepresent a lattice-valued sample.
+#' misrepresent a discrete sample.
 #'
 #' @param x A \code{\link{distrib_fit}} object.
 #' @param n_grid Number of points at which the fitted density is evaluated

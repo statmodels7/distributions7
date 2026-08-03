@@ -136,12 +136,12 @@ test_that("truncation refuses points that remove no mass", {
   expect_error(truncated(poisson_distrib(), 3, 3), "strictly less")
 })
 
-test_that("truncation requires at least one endpoint, and lattice points when discrete", {
+test_that("truncation requires at least one endpoint, and support points when discrete", {
   expect_error(truncated(poisson_distrib()), "at least one")
   expect_error(truncated(gaussian_distrib()), "at least one")
 
-  expect_error(truncated(poisson_distrib(), lower = 1.5), "not a lattice point")
-  expect_error(truncated(negbin_distrib(), upper = 7.2), "not a lattice point")
+  expect_error(truncated(poisson_distrib(), lower = 1.5), "not a point of the support")
+  expect_error(truncated(negbin_distrib(), upper = 7.2), "not a point of the support")
   # A continuous parent has no such restriction
   expect_no_error(truncated(gaussian_distrib(), lower = 1.5))
 })

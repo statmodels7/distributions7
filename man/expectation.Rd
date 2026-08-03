@@ -2,58 +2,33 @@
 % Please edit documentation in R/numerical_functions.R
 \name{expectation}
 \alias{expectation}
-\title{Calculate the Expected Value of a Function}
+\title{Expected Value of a Function of a Random Variable}
 \usage{
 expectation(distrib, f, theta, ...)
 }
 \arguments{
-\item{distrib}{An object of class \code{"distrib"}}
+\item{distrib}{An object inheriting from \code{\link{distrib}}.}
 
-\item{f}{A function representing the transformation of the random variable \eqn{y}.
-\strong{Signature:} It must accept arguments \code{y}, \code{theta}, and \code{...} (see Details).}
+\item{f}{The function whose expectation is taken, with signature
+\code{f(y, theta, ...)}.}
 
-\item{theta}{A named list of parameters for the distribution (e.g., \code{list(mu=10, sigma=2)}).
-Vectors inside this list allow computing expectations for multiple distribution parametrizations at once.}
+\item{theta}{A named list of parameters. Vectors are supported and are
+recycled against any vectors in \code{...}, so several parameter values can
+be handled in one call.}
 
-\item{...}{Additional arguments passed directly to the function \code{f}.
-\strong{Vectorization:} These arguments are fully vectorized. If vectors are provided, they are recycled
-against the parameters in \code{theta} according to standard R recycling rules.}
+\item{...}{Further arguments passed to \code{f}; their names must not clash
+with those of \code{theta}.}
 }
 \value{
-A numeric vector containing the expected values. The length corresponds to the
-maximum length among all vectors in \code{theta} and \code{...}.
+A numeric vector of expected values, one per parameter combination.
 }
 \description{
-Computes the expected value of a given function \eqn{f(y)} with respect to a probability distribution defined by \code{distrib}.
-It automatically handles continuous distributions (via numerical integration) and discrete distributions (via series summation).
-}
-\details{
-The function calculates:
-\itemize{
-\item \eqn{E[f(Y)] = \int_{lb}^{ub} f(y, \theta, \dots) \cdot p(y|\theta) \, dy} (Continuous)
-\item \eqn{E[f(Y)] = \sum_{y=lb}^{ub} f(y, \theta, \dots) \cdot P(y|\theta)} (Discrete)
-}
-
-\strong{Vectorization:}
-The function iterates over the longest vector found among \code{theta} and \code{...}.
-For example, if \code{theta$mu} has length 2 and you pass a vector of length 2 to \code{...},
-the function computes the expectation for the paired values. If lengths differ, standard R recycling applies.
-
-\strong{Requirements for \code{f}:}
-The user-provided function \code{f} must be defined with the signature:
-\code{f(y, theta, ...)}
+Computes \eqn{E[f(Y)]} under the distribution: by numerical integration for a
+continuous distribution and by series summation for a discrete one, with the
+methods described on their own pages.
 }
 \examples{
-\dontrun{
-distrib <- poisson_distrib()
-
-# Define f accepting y, theta, and extra parameter gamma
-f_pow <- function(y, theta, gamma = 1) {
-  y^gamma
-}
-
-# --- Example 1: Basic usage ---
-expectation(distrib, f_pow, theta = list(mu = 10), gamma = 2)
-}
+expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
+            theta = list(mu = 10), k = 2)
 
 }

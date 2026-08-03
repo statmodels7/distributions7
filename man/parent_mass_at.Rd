@@ -17,7 +17,7 @@ parent_mass_at(distrib, x, theta)
 A numeric vector of probabilities.
 }
 \description{
-\eqn{P(Y = x)} under the parent: the pmf for a lattice distribution, the
+\eqn{P(Y = x)} under the parent: the pmf for a discrete distribution, the
 atom's probability for a mixed one, and zero for an ordinary continuous
 distribution.
 }
