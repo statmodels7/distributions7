@@ -659,6 +659,8 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #' @param distrib An object inheriting from \code{continuous_distrib}.
 #' @param transformer A \code{\link{transformer}} object (e.g. \code{\link{log_transform}()},
 #'   \code{\link{bc_transform}(0.5)}, \code{\link{affine_transform}(1, 2)}).
+#' @param new_name A single string naming the result, or \code{NULL} (the
+#'   default) to compose the parent's name with the transformer's.
 #'
 #' @details
 #' The density follows the change-of-variables formula
@@ -667,6 +669,14 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #' decreasing transformations). Since \eqn{g} does not depend on the parameters, the
 #' score, observed Hessian and expected Hessian coincide with the parent's, evaluated at
 #' \eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link{moment}}.
+#'
+#' Several standard families are a transformation of one already here, and
+#' \code{new_name} lets the result carry the name it is known by rather than
+#' the recipe that produced it: the inverse of a Gamma is an inverse Gamma, the
+#' exponential of a logistic a log-logistic, the exponential of an exponential
+#' a Pareto. Only the printed name changes; nothing about the distribution
+#' depends on it, and the default composes the parent's name with the
+#' transformer's as before.
 #'
 #' @return An S7 object of class \code{TransformedDistrib} (inheriting from \code{continuous_distrib}).
 #'
@@ -678,15 +688,25 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #' dlnorm(2, 0, 1)
 #' }
 #'
+#' # the inverse of a Gamma is an inverse Gamma, and can say so
+#' ig <- transformation(gamma_distrib(), inverse_transform(),
+#'                      new_name = "inverse gamma")
+#' ig@distrib_name
+#'
 #' @seealso \code{\link{transformer}}, \code{\link{log_transform}}, \code{\link{exp_transform}},
 #'   \code{\link{affine_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}
 #' @export
-transformation <- function(distrib, transformer) {
+transformation <- function(distrib, transformer, new_name = NULL) {
   if (!S7::S7_inherits(distrib, continuous_distrib)) {
     stop("transformation() currently supports only continuous distributions.", call. = FALSE)
   }
   if (!S7::S7_inherits(transformer, distributions7::transformer)) {
     stop("Argument 'transformer' must be a 'transformer' object.", call. = FALSE)
+  }
+  if (!is.null(new_name) &&
+      (!is.character(new_name) || length(new_name) != 1L || is.na(new_name) ||
+       !nzchar(new_name))) {
+    stop("'new_name' must be NULL or a single non-empty string.", call. = FALSE)
   }
   if (!transformer@valid_support(distrib@bounds)) {
     stop(sprintf(
@@ -701,7 +721,11 @@ transformation <- function(distrib, transformer) {
   TransformedDistrib(
     parent_distrib = distrib,
     transformer = transformer,
-    distrib_name = paste0(transformer@name, "(", distrib@distrib_name, ")"),
+    distrib_name = if (is.null(new_name)) {
+      paste0(transformer@name, "(", distrib@distrib_name, ")")
+    } else {
+      new_name
+    },
     dimension = distrib@dimension,
     bounds = transformer@bounds_fun(distrib@bounds),
 

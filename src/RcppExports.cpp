@@ -159,6 +159,62 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// betabinom_gradient_cpp
+List betabinom_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, double size);
+RcppExport SEXP _distributions7_betabinom_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom_gradient_cpp(y, mu, sigma, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom_hessian_cpp
+List betabinom_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, double size);
+RcppExport SEXP _distributions7_betabinom_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom_hessian_cpp(y, mu, sigma, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom_expected_hessian_cpp
+List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, double size);
+RcppExport SEXP _distributions7_betabinom_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom_expected_hessian_cpp(y, mu, sigma, size));
+    return rcpp_result_gen;
+END_RCPP
+}
+// betabinom_logpmf_cpp
+NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu, NumericVector sigma, double size);
+RcppExport SEXP _distributions7_betabinom_logpmf_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP sizeSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type size(sizeSEXP);
+    rcpp_result_gen = Rcpp::wrap(betabinom_logpmf_cpp(y, mu, sigma, size));
+    return rcpp_result_gen;
+END_RCPP
+}
 // binomial_gradient_cpp
 List binomial_gradient_cpp(NumericVector y, NumericVector mu, NumericVector size);
 RcppExport SEXP _distributions7_binomial_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sizeSEXP) {
@@ -1485,6 +1541,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_beta_expected_hessian_cpp", (DL_FUNC) &_distributions7_beta_expected_hessian_cpp, 3},
     {"_distributions7_beta_deriv3_cpp", (DL_FUNC) &_distributions7_beta_deriv3_cpp, 3},
     {"_distributions7_beta_deriv4_cpp", (DL_FUNC) &_distributions7_beta_deriv4_cpp, 3},
+    {"_distributions7_betabinom_gradient_cpp", (DL_FUNC) &_distributions7_betabinom_gradient_cpp, 4},
+    {"_distributions7_betabinom_hessian_cpp", (DL_FUNC) &_distributions7_betabinom_hessian_cpp, 4},
+    {"_distributions7_betabinom_expected_hessian_cpp", (DL_FUNC) &_distributions7_betabinom_expected_hessian_cpp, 4},
+    {"_distributions7_betabinom_logpmf_cpp", (DL_FUNC) &_distributions7_betabinom_logpmf_cpp, 4},
     {"_distributions7_binomial_gradient_cpp", (DL_FUNC) &_distributions7_binomial_gradient_cpp, 3},
     {"_distributions7_binomial_hessian_cpp", (DL_FUNC) &_distributions7_binomial_hessian_cpp, 3},
     {"_distributions7_binomial_expected_hessian_cpp", (DL_FUNC) &_distributions7_binomial_expected_hessian_cpp, 3},

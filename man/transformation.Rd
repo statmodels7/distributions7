@@ -4,13 +4,16 @@
 \alias{transformation}
 \title{Apply a Variable Transformation to a Distribution Object}
 \usage{
-transformation(distrib, transformer)
+transformation(distrib, transformer, new_name = NULL)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{continuous_distrib}.}
 
 \item{transformer}{A \code{\link{transformer}} object (e.g. \code{\link{log_transform}()},
 \code{\link{bc_transform}(0.5)}, \code{\link{affine_transform}(1, 2)}).}
+
+\item{new_name}{A single string naming the result, or \code{NULL} (the
+default) to compose the parent's name with the transformer's.}
 }
 \value{
 An S7 object of class \code{TransformedDistrib} (inheriting from \code{continuous_distrib}).
@@ -27,6 +30,14 @@ CDF, quantiles and RNG are obtained by mapping through \eqn{g} (with tails swapp
 decreasing transformations). Since \eqn{g} does not depend on the parameters, the
 score, observed Hessian and expected Hessian coincide with the parent's, evaluated at
 \eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link{moment}}.
+
+Several standard families are a transformation of one already here, and
+\code{new_name} lets the result carry the name it is known by rather than
+the recipe that produced it: the inverse of a Gamma is an inverse Gamma, the
+exponential of a logistic a log-logistic, the exponential of an exponential
+a Pareto. Only the printed name changes; nothing about the distribution
+depends on it, and the default composes the parent's name with the
+transformer's as before.
 }
 \examples{
 \dontrun{
@@ -35,6 +46,11 @@ logn <- transformation(gaussian_distrib(), exp_transform())
 distrib_pdf(logn, 2, list(mu = 0, sigma = 1))
 dlnorm(2, 0, 1)
 }
+
+# the inverse of a Gamma is an inverse Gamma, and can say so
+ig <- transformation(gamma_distrib(), inverse_transform(),
+                     new_name = "inverse gamma")
+ig@distrib_name
 
 }
 \seealso{

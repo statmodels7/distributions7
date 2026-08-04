@@ -63,6 +63,7 @@ reference:
   - poisson_distrib
   - negbin_distrib
   - geometric_distrib
+  - betabinom_distrib
 
 - title: Probability functions
   desc: Density, distribution and quantile functions, and random generation.
@@ -232,6 +233,8 @@ reference:
   contents: [PoissonDistrib, ends_with(".PoissonDistrib")]
 - title: Negative binomial
   contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
+- title: Beta-binomial
+  contents: [BetaBinomDistrib, ends_with(".BetaBinomDistrib")]
 - title: Geometric
   contents: [GeometricDistrib, ends_with(".GeometricDistrib")]
 

@@ -49,6 +49,22 @@ beta_deriv4_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_beta_deriv4_cpp`, y, mu, phi)
 }
 
+betabinom_gradient_cpp <- function(y, mu, sigma, size) {
+    .Call(`_distributions7_betabinom_gradient_cpp`, y, mu, sigma, size)
+}
+
+betabinom_hessian_cpp <- function(y, mu, sigma, size) {
+    .Call(`_distributions7_betabinom_hessian_cpp`, y, mu, sigma, size)
+}
+
+betabinom_expected_hessian_cpp <- function(y, mu, sigma, size) {
+    .Call(`_distributions7_betabinom_expected_hessian_cpp`, y, mu, sigma, size)
+}
+
+betabinom_logpmf_cpp <- function(y, mu, sigma, size) {
+    .Call(`_distributions7_betabinom_logpmf_cpp`, y, mu, sigma, size)
+}
+
 binomial_gradient_cpp <- function(y, mu, size) {
     .Call(`_distributions7_binomial_gradient_cpp`, y, mu, size)
 }

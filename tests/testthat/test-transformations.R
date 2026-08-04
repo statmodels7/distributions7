@@ -132,3 +132,43 @@ test_that("transformations compose", {
   y <- c(-1, 0, 2)
   expect_equal(distrib_pdf(d, y, th), dnorm(y, 0.4, 1.1), tolerance = 1e-12)
 })
+
+
+test_that("a transformed distribution can carry the name it is known by", {
+  # Several standard families are a transformation of one already here, and
+  # the recipe is not what a reader wants printed.
+  ig <- transformation(gamma_distrib(), inverse_transform(),
+                       new_name = "inverse gamma")
+  expect_identical(ig@distrib_name, "inverse gamma")
+
+  # the default is unchanged
+  plain <- transformation(gamma_distrib(), inverse_transform())
+  expect_identical(plain@distrib_name, "inverse(gamma)")
+
+  # and only the name differs: the distribution is the same object
+  th <- list(mu = 2, sigma2 = 1)
+  y <- c(0.3, 0.8, 1.5)
+  expect_identical(distrib_pdf(ig, y, th), distrib_pdf(plain, y, th))
+  expect_identical(distrib_gradient(ig, y, th), distrib_gradient(plain, y, th))
+  expect_identical(ig@params, plain@params)
+  expect_identical(ig@bounds, plain@bounds)
+
+  expect_error(transformation(gamma_distrib(), inverse_transform(), new_name = ""),
+               "single non-empty string")
+  expect_error(transformation(gamma_distrib(), inverse_transform(),
+                              new_name = c("a", "b")),
+               "single non-empty string")
+})
+
+
+test_that("the inverse gamma really is the inverse gamma", {
+  # Written out by hand from the shape/rate form, which the package reaches
+  # through (mu, sigma2) = (a/b, a/b^2).
+  a <- 4
+  b <- 2
+  ig <- transformation(gamma_distrib(), inverse_transform(),
+                       new_name = "inverse gamma")
+  y <- c(0.3, 0.8, 1.5)
+  expect_equal(distrib_pdf(ig, y, list(mu = a / b, sigma2 = a / b^2)),
+               b^a / gamma(a) * y^(-a - 1) * exp(-b / y))
+})
