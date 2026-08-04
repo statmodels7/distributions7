@@ -178,7 +178,7 @@ c(iterations = f4@iterations, converged = f4@converged)
 
 A multivariate distribution carries a mean vector and a matrix, and the
 matrix comes from a structure of
-[covstructs7](https://statmodels7.github.io/covstructs7/). Its free
+[parameters7](https://statmodels7.github.io/parameters7/). Its free
 values are scalars, so the parameter vector is a named list of numbers
 exactly as above and every generic here applies unchanged,
 `fit_distrib()` included. The names say which matrix the structure
@@ -311,6 +311,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, inverse gaussian, lognormal, Weibull, Gumbel, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
-| multivariate | `mvgaussian_distrib()`, parametrised by a covariance or a precision structure from [covstructs7](https://statmodels7.github.io/covstructs7/), and `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
+| multivariate | `mvgaussian_distrib()`, parametrised by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/), and `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
 | wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |
