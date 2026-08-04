@@ -20,10 +20,10 @@ Carlo. See \code{\link{expected_derivative_methods}}.}
 
 \item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
 
-\item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} to
-use the one \code{fit_distrib()} builds from its \code{tol}.}
+\item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} for
+the default of \code{\link[optimizers7]{newton}}.}
 
-\item{maxit}{An iteration limit, or \code{NULL} to use the fit's.}
+\item{maxit}{An iteration limit, or \code{NULL} for the same default.}
 }
 \value{
 An object of class \code{\link{FisherScoring}}.
@@ -54,10 +54,11 @@ closed form --- and that is what this object holds. A family that does
 supply one ignores \code{approx} entirely, and \code{fit_distrib()} refuses
 the argument in that case rather than accepting something it will not use.
 
-\code{criterion} and \code{maxit} default to \code{NULL}, meaning the values
-\code{fit_distrib()} was given through its own \code{tol} and \code{maxit}.
-Setting them here overrides those, in the way an optimiser object's own
-settings already do.
+Fisher scoring is Newton's method with one matrix replaced, so how the run
+stops and how long it may take are set here, as they would be on any other
+optimiser. Both default to \code{NULL}, meaning the defaults of
+\code{\link[optimizers7]{newton}} and \code{\link[optimizers7]{crit_grad}}
+stand.
 }
 \examples{
 set.seed(1)

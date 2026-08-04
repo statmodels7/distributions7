@@ -259,9 +259,10 @@ test_that("both skew families are fitted by maximum likelihood", {
   sc <- vapply(
     distrib_gradient(d, y, as.list(coef(fit)), scale = "link"), sum, numeric(1)
   )
-  # The bound follows fit_distrib()'s own default, which is a tolerance on
-  # the score per observation.
-  expect_lt(max(abs(sc)) / length(y), 1e-6)
+  # The bound follows the stopping rule's own default, which is a tolerance on
+  # the score per observation; naming the constant here instead would go stale
+  # the moment the default moved.
+  expect_lt(max(abs(sc)) / length(y), eval(formals(optimizers7::crit_grad)$tol))
 
   # The skew t's score in nu carries a finite difference, whose error on the
   # score per observation is around 1e-11, so the default tolerance of 1e-6 is
@@ -275,7 +276,7 @@ test_that("both skew families are fitted by maximum likelihood", {
 
   # and at the default tolerance the fit is still RETURNED rather than raising:
   # a run that reached a point is not a run that failed
-  fit_default <- fit_distrib(dt4, y4, maxit = 40)
+  fit_default <- fit_distrib(dt4, y4, method = fisher_scoring(maxit = 40))
   expect_s3_class(coef(fit_default), NA)
   expect_equal(as.numeric(logLik(fit_default)), as.numeric(logLik(fit4)),
     tolerance = 1e-4

@@ -275,29 +275,16 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'       strategies. The first two fall back to BFGS if they fail to converge;
 #'       an optimiser the caller chose is never silently replaced.
 #'   }
-#' @param maxit Maximum number of iterations. Defaults to 200. An optimiser
-#'   object or a \code{fisher_scoring()} carrying its own \code{maxit}
-#'   overrides it.
-#' @param tol Convergence tolerance on the score \strong{per observation}.
-#'   Defaults to \code{1e-6}. The optimiser is handed the \emph{mean} negative
-#'   log-likelihood, so this is what \code{crit_grad(tol)} tests, and a
-#'   criterion supplied through \code{method} is measured on the same scale. A
-#'   method object carrying its own stopping rule overrides this one.
-#'
-#'   The default is not arbitrary. A line search accepts a step only when the
-#'   objective decreases by a definite amount, and near the maximum that
-#'   decrease is about \eqn{\lVert U/n \rVert^2 / (2\lambda)} for a curvature
-#'   \eqn{\lambda}. Once it falls below the rounding of the objective itself,
-#'   about \eqn{\varepsilon \lvert \ell/n \rvert}, no step can be verified and
-#'   the search stops, so the reachable floor is near
-#'   \eqn{\sqrt{2 \lambda \varepsilon \lvert \ell/n \rvert}} --- of order
-#'   \code{1e-8} for an objective of order one. Measured over several
-#'   families, methods and samples that floor is usually near \code{1e-15} but
-#'   reaches \code{1e-8}, so the default sits about two orders above it. A
-#'   tighter tolerance asks for accuracy the arithmetic cannot certify, and
-#'   whether a given run reaches it then depends on the platform. Nothing
-#'   statistical is lost: a score of \code{1e-6} per observation places the
-#'   estimate within a small fraction of a standard error of the maximum.
+#'   The iteration limit and the stopping rule belong to the method and are
+#'   set there: on an optimiser object through its own \code{maxit} and
+#'   \code{criterion}, on \code{\link{fisher_scoring}()} through the same two
+#'   arguments, and otherwise left at the defaults of
+#'   \code{\link[optimizers7]{crit_grad}} and of the optimiser. The objective
+#'   handed to the optimiser is the \emph{mean} negative log-likelihood, so a
+#'   tolerance on its gradient is a tolerance on the score \strong{per
+#'   observation} whatever the sample size, and
+#'   \code{\link[optimizers7]{crit_grad}} documents why its default sits where
+#'   it does.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
 #' @param n_start How many starting values to ask \code{\link{distrib_start}}
 #'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
@@ -347,7 +334,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
-                        maxit = 200, tol = 1e-6, level = 0.95, n_start = 5) {
+                        level = 0.95, n_start = 5) {
   # One argument says how to optimise, and it takes one of three things: a
   # fisher_scoring() specification, an optimizers7 optimiser, or the name of
   # one of the three ready-made strategies. How the expected information is to
@@ -364,7 +351,6 @@ fit_distrib <- function(distrib, y, start = NULL,
     method <- "fisher"
     approx <- fs@approx
     nsim <- fs@nsim
-    if (!is.null(fs@maxit)) maxit <- fs@maxit
   } else if (S7::S7_inherits(method, optimizers7::optimizer)) {
     optimizer <- method
     method <- "custom"
@@ -468,15 +454,17 @@ fit_distrib <- function(distrib, y, start = NULL,
     }
   }
 
-  # A fit is at a maximum when its score vanishes, so the rule is on the score
-  # and on nothing else. It used to be an OR with crit_rel_obj(tol), and the
-  # weaker rule ended the run: near a maximum the objective goes flat while the
-  # gradient is still measurable. The objective the rule sees is the mean, so
-  # tol is a tolerance per observation without the rule having to know n.
-  crit <- if (!is.null(fs) && !is.null(fs@criterion)) {
-    fs@criterion
-  } else {
-    optimizers7::crit_grad(tol)
+  # How the run stops and how long it may take are properties of the method,
+  # so they are read off the method and nowhere else. Whatever the caller did
+  # not set stays at the optimiser's own default, which is the only place the
+  # constant is written down: a copy of it here would keep its old value the
+  # day the default moved. The objective the rule sees is the mean negative
+  # log-likelihood, so a tolerance on its gradient is a tolerance on the score
+  # per observation without the rule having to know n.
+  opt_args <- list()
+  if (!is.null(fs)) {
+    if (!is.null(fs@criterion)) opt_args$criterion <- fs@criterion
+    if (!is.null(fs@maxit)) opt_args$maxit <- fs@maxit
   }
 
   # Time is accumulated over every attempt rather than taken from the run that
@@ -498,15 +486,18 @@ fit_distrib <- function(distrib, y, start = NULL,
          score = if (length(r@gradient)) max(abs(r@gradient)) else NA_real_)
   }
 
+  # The fallback inherits the rule and the budget of the method it stands in
+  # for: a run reported under a stopping rule the caller did not ask for would
+  # be a different fit under the same name.
   run_bfgs <- function(eta0) {
-    run(optimizers7::bfgs(criterion = crit, maxit = maxit), eta0, NULL, "BFGS")
+    run(do.call(optimizers7::bfgs, opt_args), eta0, NULL, "BFGS")
   }
 
   run_chosen <- function(eta0) {
     switch(method,
-      fisher = run(optimizers7::newton(criterion = crit, maxit = maxit),
+      fisher = run(do.call(optimizers7::newton, opt_args),
                    eta0, nll_he(TRUE), "Fisher scoring"),
-      newton = run(optimizers7::newton(criterion = crit, maxit = maxit),
+      newton = run(do.call(optimizers7::newton, opt_args),
                    eta0, nll_he(FALSE), "Newton-Raphson"),
       bfgs   = run_bfgs(eta0),
       custom = run(optimizer, eta0, nll_he(FALSE), optimizer@name)

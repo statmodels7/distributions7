@@ -324,7 +324,7 @@ test_that("the fit carries what the optimiser reported about the run", {
                sum, numeric(1))
   expect_equal(f@score, max(abs(sc)) / length(y), tolerance = 1e-8)
   # and it is below the rule that stopped the run
-  expect_lt(f@score, eval(formals(fit_distrib)$tol))
+  expect_lt(f@score, eval(formals(optimizers7::crit_grad)$tol))
 
   out <- paste(utils::capture.output(print(f)), collapse = "\n")
   expect_match(out, "time: ")
@@ -345,4 +345,37 @@ test_that("a run that did not converge prints how close it got", {
   expect_false(f@converged)
   out <- paste(utils::capture.output(print(f)), collapse = "\n")
   expect_match(out, "Score per observation")
+})
+
+
+test_that("the method governs the budget and the rule, and nothing else does", {
+  set.seed(31)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
+
+  # An iteration limit set on the method is the one that binds. Before the
+  # arguments were removed from fit_distrib(), a limit passed beside the
+  # method was accepted and silently ignored, so a caller could believe a run
+  # had been bounded when it had not.
+  slow <- fit_distrib(d, y, start = list(mu = 6, sigma = 6),
+                      method = optimizers7::gd(maxit = 3))
+  expect_identical(slow@iterations, 3L)
+  expect_false(slow@converged)
+
+  # and the same through fisher_scoring(), which is Newton with one matrix
+  # replaced and therefore carries the same two settings
+  fs <- fit_distrib(d, y, start = list(mu = 6, sigma = 6),
+                    method = fisher_scoring(maxit = 2))
+  expect_identical(fs@iterations, 2L)
+  expect_false(fs@converged)
+
+  # a stopping rule set on the method is the rule the run reports
+  loose <- fit_distrib(d, y,
+                       method = fisher_scoring(criterion = optimizers7::crit_grad(1e-2)))
+  expect_true(loose@converged)
+  expect_match(loose@criterion, "gradient")
+
+  # neither argument survives on fit_distrib() itself
+  expect_false(any(c("tol", "maxit") %in% names(formals(fit_distrib))))
+  expect_error(fit_distrib(d, y, maxit = 10), "unused argument")
 })
