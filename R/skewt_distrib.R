@@ -117,11 +117,9 @@ skewt_nu_step <- function(nu) {
 #' \eqn{\nu} of a fitted likelihood. Its truncation error is \eqn{O(h^2)} per
 #' observation and does \strong{not} cancel when the observations are summed,
 #' because it is a bias rather than noise: on a sample of a few thousand it
-#' leaves the summed score at about \eqn{10^{-9}}, which is above the default
-#' gradient tolerance of \code{\link{fit_distrib}} and would make the fit run
-#' to its iteration limit and report failure at a point that is in fact the
-#' maximum. The five-point stencil is \eqn{O(h^4)} and takes that to the level
-#' of rounding, at the cost of two more evaluations.
+#' leaves the summed score at about \eqn{10^{-8}}, an order of magnitude worse
+#' than the five-point stencil, which is \eqn{O(h^4)} and reaches the level of
+#' rounding at the cost of two more evaluations.
 #'
 #' This is one stencil applied to an analytic quantity, not a difference of a
 #' difference.
@@ -419,14 +417,12 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' \strong{The tolerance a fit can ask for.} The score in \eqn{\nu} cannot be
 #' computed more accurately than the table above, so a stopping rule on the
 #' gradient cannot be satisfied below that level however good the optimiser is.
-#' \code{\link{fit_distrib}} defaults to \code{tol = 1e-10} on the summed
-#' gradient, which is at or under the floor: on a sample of a few thousand the
-#' fit reaches the maximum, drives the three closed-form components to
-#' \eqn{10^{-13}}, and then runs to its iteration limit reporting
-#' \code{converged = FALSE} at a point that is in fact the maximum. Pass
-#' \code{tol = 1e-8} for this family. The limit is arithmetic and not a defect:
-#' a score containing a finite difference cannot be driven below the
-#' difference's own error.
+#' \code{\link{fit_distrib}} tests the score \strong{per observation}, and its
+#' default of \eqn{10^{-10}} leaves room: on samples of 500 to 4000 the summed
+#' score reaches \eqn{10^{-10}} to \eqn{3 \times 10^{-9}}, which is
+#' \eqn{10^{-13}} per observation, and the fit converges in four or five
+#' iterations. A rule expressed on the summed gradient at that tolerance would
+#' not be attainable, which is why the tolerance is not expressed that way.
 #'
 #' \strong{Distribution function.} There is no elementary form, so the base
 #' class integrates the density and inverts the result by root finding.
@@ -483,12 +479,12 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' c(skew_t = skewness(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5)),
 #'   skew_normal_bound = 0.9953)
 #'
-#' # A fit asks for a tolerance the score in nu can actually reach, and uses
-#' # the observed Hessian: this family has no closed-form expected information,
-#' # so Fisher scoring would approximate it by quadrature at every step.
+#' # The observed Hessian is the cheap route here: this family has no
+#' # closed-form expected information, so Fisher scoring would approximate it
+#' # by quadrature at every step.
 #' set.seed(1)
 #' y <- distrib_rng(d, 200, theta)
-#' coef(fit_distrib(d, y, method = "newton", tol = 1e-8, start = theta))
+#' coef(fit_distrib(d, y, method = optimizers7::newton(), start = theta))
 #'
 #' @export
 skewt_distrib <- function(link_mu = identity_link(),

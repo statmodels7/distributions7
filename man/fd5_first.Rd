@@ -25,11 +25,9 @@ The three-point stencil is not accurate enough for the derivative in
 \eqn{\nu} of a fitted likelihood. Its truncation error is \eqn{O(h^2)} per
 observation and does \strong{not} cancel when the observations are summed,
 because it is a bias rather than noise: on a sample of a few thousand it
-leaves the summed score at about \eqn{10^{-9}}, which is above the default
-gradient tolerance of \code{\link{fit_distrib}} and would make the fit run
-to its iteration limit and report failure at a point that is in fact the
-maximum. The five-point stencil is \eqn{O(h^4)} and takes that to the level
-of rounding, at the cost of two more evaluations.
+leaves the summed score at about \eqn{10^{-8}}, an order of magnitude worse
+than the five-point stencil, which is \eqn{O(h^4)} and reaches the level of
+rounding at the cost of two more evaluations.
 
 This is one stencil applied to an analytic quantity, not a difference of a
 difference.

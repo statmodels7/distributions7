@@ -36,8 +36,14 @@ expect_derivatives_ok <- function(d, th, y, tol_g = 1e-8, tol_h = 1e-5) {
   ll <- function(v) {
     sum(distrib_pdf(d, y, as.list(stats::setNames(v, d@params)), log = TRUE))
   }
+  # Richardson extrapolation, not the plain central difference of fd_grad():
+  # a three-point stencil is good to about the two-thirds power of machine
+  # precision, which is 1e-11 relative at best and worse than that once the
+  # log-likelihood is summed over a sample. Asking a plain difference to agree
+  # to 1e-8 is asking it for digits it does not have, and the same comparison
+  # passed on Windows and failed on macOS.
   g <- vapply(distrib_gradient(d, y, th), sum, numeric(1))
-  expect_equal(unname(g), fd_grad(ll, v0), tolerance = tol_g)
+  expect_equal(unname(g), numDeriv::grad(ll, v0), tolerance = tol_g)
 
   h <- distrib_hessian(d, y, th)
   expect_named(h, hess_names(d@params))

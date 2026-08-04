@@ -272,9 +272,12 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @param maxit Maximum number of iterations. Defaults to 200. An optimiser
 #'   object or a \code{fisher_scoring()} carrying its own \code{maxit}
 #'   overrides it.
-#' @param tol Convergence tolerance on the score, used to build
-#'   \code{crit_grad(tol)}. Defaults to \code{1e-10}. A method object carrying
-#'   its own stopping rule overrides it.
+#' @param tol Convergence tolerance on the score \strong{per observation}.
+#'   Defaults to \code{1e-10}. The rule handed to the optimiser is
+#'   \code{crit_grad(tol * n)}, since the gradient it sees is summed over the
+#'   sample and its attainable floor grows with \eqn{n}; a bound on the sum
+#'   would mean something different for every sample size. A method object
+#'   carrying its own stopping rule overrides this.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
 #' @param n_start How many starting values to ask \code{\link{distrib_start}}
 #'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
@@ -419,20 +422,24 @@ fit_distrib <- function(distrib, y, start = NULL,
     }
   }
 
-  # The score is numerically zero. The rule used to be an OR with
-  # crit_rel_obj(tol), which is what the routine tested inline before it
-  # delegated, and the OR let the weaker rule end the run: near a maximum the
-  # objective goes flat while the gradient is still measurable, so the run
-  # stopped at a gradient of order sqrt(|loglik| * tol * n) -- a bound that
-  # loosens as the sample grows, and that lands in a different place on
-  # different machines. Measured on one multivariate fit, Newton stopped at a
-  # score of 1.3e-15 per observation on one platform and 1.2e-8 on another,
-  # from rounding alone. A fit is at a maximum when its gradient vanishes, so
-  # that is what is asked.
+  # A fit is at a maximum when its score vanishes, so the rule is on the score
+  # and on nothing else. It used to be an OR with crit_rel_obj(tol), and the
+  # weaker rule ended the run: near a maximum the objective goes flat while the
+  # gradient is still measurable.
+  #
+  # The tolerance is on the score PER OBSERVATION. The gradient optimizers7
+  # sees is summed over the sample, so its attainable floor grows with n --
+  # roughly n times the rounding error of one log-density divided by the step
+  # -- and an absolute bound on the sum therefore means something different for
+  # every sample size. At 1e-10 on the sum it is not attainable at all for a
+  # few thousand observations: the same fits met it on Windows and missed it on
+  # macOS, which is a fact about the arithmetic and not about the fit. The
+  # score per observation is the quantity of order one, so that is what is
+  # tested, and crit_grad() receives tol * n.
   crit <- if (!is.null(fs) && !is.null(fs@criterion)) {
     fs@criterion
   } else {
-    optimizers7::crit_grad(tol)
+    optimizers7::crit_grad(tol * max(1, n))
   }
 
   run <- function(opt, eta0, he, label) {

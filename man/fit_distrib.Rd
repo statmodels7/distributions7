@@ -46,9 +46,12 @@ an optimiser the caller chose is never silently replaced.
 object or a \code{fisher_scoring()} carrying its own \code{maxit}
 overrides it.}
 
-\item{tol}{Convergence tolerance on the score, used to build
-\code{crit_grad(tol)}. Defaults to \code{1e-10}. A method object carrying
-its own stopping rule overrides it.}
+\item{tol}{Convergence tolerance on the score \strong{per observation}.
+Defaults to \code{1e-10}. The rule handed to the optimiser is
+\code{crit_grad(tol * n)}, since the gradient it sees is summed over the
+sample and its attainable floor grows with \eqn{n}; a bound on the sum
+would mean something different for every sample size. A method object
+carrying its own stopping rule overrides this.}
 
 \item{level}{Confidence level for the intervals. Defaults to 0.95.}
 

@@ -268,7 +268,7 @@ test_that("both skew families are fitted by maximum likelihood", {
   dt4 <- skewt_distrib()
   set.seed(58)
   y4 <- distrib_rng(dt4, 2000, list(mu = 1, sigma = 2, alpha = 4, nu = 6))
-  fit4 <- fit_distrib(dt4, y4, tol = 1e-8)
+  fit4 <- fit_distrib(dt4, y4)
   expect_true(fit4@converged)
   expect_equal(unname(coef(fit4))[1:3], c(1, 2, 4), tolerance = 0.4)
 

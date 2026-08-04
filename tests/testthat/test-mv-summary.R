@@ -231,7 +231,7 @@ test_that("print shows the interpretable blocks rather than only the coordinates
   yt <- distrib_rng(dt, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                                   sigma_log_L2 = 0, sigma_L2.1 = 0.3, nu = 6))
   out_t <- utils::capture.output(
-    print(fit_distrib(dt, yt, method = "newton", tol = 1e-8))
+    print(fit_distrib(dt, yt, method = optimizers7::newton()))
   )
   expect_true(any(grepl("^Scale standard deviations:", out_t)))
   expect_false(any(grepl("^Standard deviations:", out_t)))
