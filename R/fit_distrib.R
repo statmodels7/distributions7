@@ -665,7 +665,10 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   if (!is.null(x@counts) && all(c("f", "g") %in% names(x@counts))) {
     cat("   evaluations: f ", x@counts[["f"]], ", g ", x@counts[["g"]], sep = "")
   }
-  if (length(x@elapsed) && is.finite(x@elapsed) && x@elapsed > 0) {
+  # Printed whenever it was measured, zero included: on a coarse clock a fast
+  # fit really does report 0, and that is the reading rather than the absence
+  # of one.
+  if (length(x@elapsed) && is.finite(x@elapsed)) {
     cat("   time: ", fit_format_elapsed(x@elapsed), sep = "")
   }
   cat("\n")
