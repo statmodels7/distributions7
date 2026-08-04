@@ -29,6 +29,8 @@ distrib_fit(
   criterion = character(0),
   note = character(0),
   counts = NULL,
+  score = integer(0),
+  elapsed = integer(0),
   level = integer(0)
 )
 ```
@@ -112,6 +114,16 @@ distrib_fit(
 - counts:
 
   How many times the objective and its gradient were evaluated.
+
+- score:
+
+  The max-norm of the score **per observation** at the reported optimum,
+  which is the quantity the stopping rule tested.
+
+- elapsed:
+
+  Seconds spent optimising, summed over every starting value and every
+  fallback attempted.
 
 - level:
 

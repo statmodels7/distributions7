@@ -1197,6 +1197,9 @@ divergent density.
 - [`fit_eta_from_theta()`](https://statmodels7.github.io/distributions7/reference/fit_eta_from_theta.md)
   : Map Parameters to the Link Scale
 
+- [`fit_format_elapsed()`](https://statmodels7.github.io/distributions7/reference/fit_format_elapsed.md)
+  : Render a Duration With a Unit Matched to Its Size
+
 - [`fit_hess_matrix()`](https://statmodels7.github.io/distributions7/reference/fit_hess_matrix.md)
   : Summed Hessian on the Link Scale, as a Matrix
 

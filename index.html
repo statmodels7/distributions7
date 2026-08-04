@@ -137,8 +137,8 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 18   evaluations: f 19, g 19</span></span>
-<span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-10)</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms</span></span>
+<span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
@@ -171,9 +171,6 @@
 <code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">f4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d4</span>, <span class="va">y4</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: 'gr' does not appear to be the gradient of 'fn': along the gradient direction at 'par',</span></span>
-<span><span class="co">#&gt;   'fn' changes at rate -8.03e-06 where 'gr' predicts 3.91e-12. Check that the two</span></span>
-<span><span class="co">#&gt;   compute the same model. options(optimizers7.check_gradient = FALSE) turns this check off.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>iterations <span class="op">=</span> <span class="va">f4</span><span class="op">@</span><span class="va">iterations</span>, converged <span class="op">=</span> <span class="va">f4</span><span class="op">@</span><span class="va">converged</span><span class="op">)</span></span>
 <span><span class="co">#&gt; iterations  converged </span></span>
 <span><span class="co">#&gt;          1          1</span></span></code></pre></div>
@@ -197,10 +194,10 @@
 <p>Those free values are coordinates an optimiser moves in, not quantities anybody reads, and they are not what the fit prints. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the ones that are, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrisation reports the same standard deviations and correlations — they are properties of the law — and adds the conditional variances and partial correlations, which are what it describes directly.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mv_summary.html">mv_summary</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span>
-<span><span class="co">#&gt;            Estimate Std. Error      2.5%    97.5%</span></span>
-<span><span class="co">#&gt; sd_v1     1.0235702 0.02104077 0.9831507 1.065651</span></span>
-<span><span class="co">#&gt; sd_v2     1.2401892 0.02652677 1.1892724 1.293286</span></span>
-<span><span class="co">#&gt; cor_v1_v2 0.5729534 0.01981918 0.5328237 0.610512</span></span></code></pre></div>
+<span><span class="co">#&gt;            Estimate Std. Error      2.5%     97.5%</span></span>
+<span><span class="co">#&gt; sd_v1     1.0235702 0.03236813 0.9620558 1.0890178</span></span>
+<span><span class="co">#&gt; sd_v2     1.2401892 0.03921823 1.1656565 1.3194875</span></span>
+<span><span class="co">#&gt; cor_v1_v2 0.5729534 0.03004043 0.5111287 0.6288798</span></span></code></pre></div>
 <p>Up to three coordinates the fit can be drawn, each panel showing a marginal: the fitted density against a kernel estimate on the diagonal, and contours against the observations below it.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>

@@ -69,6 +69,8 @@ parameter and the link scale together with their uncertainty.</p>
 <span>  criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  note <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  counts <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  score <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
+<span>  elapsed <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  level <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -152,6 +154,16 @@ distribution can be compared with the data (see <code><a href="plot.distrib_fit.
 
 <dt id="arg-counts">counts<a class="anchor" aria-label="anchor" href="#arg-counts"></a></dt>
 <dd><p>How many times the objective and its gradient were evaluated.</p></dd>
+
+
+<dt id="arg-score">score<a class="anchor" aria-label="anchor" href="#arg-score"></a></dt>
+<dd><p>The max-norm of the score <strong>per observation</strong> at the
+reported optimum, which is the quantity the stopping rule tested.</p></dd>
+
+
+<dt id="arg-elapsed">elapsed<a class="anchor" aria-label="anchor" href="#arg-elapsed"></a></dt>
+<dd><p>Seconds spent optimising, summed over every starting value
+and every fallback attempted.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>

@@ -106,8 +106,8 @@ fit <- fit_distrib(gamma_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 18   evaluations: f 19, g 19
-#> Converged: yes (gradient (max-norm) < 1e-10)
+#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error   2.5%  97.5%
@@ -168,9 +168,6 @@ one that says nothing gets random draws.
 d4 <- mvgaussian_distrib(4)
 y4 <- as.matrix(iris[, 1:4])
 f4 <- fit_distrib(d4, y4)
-#> Warning: 'gr' does not appear to be the gradient of 'fn': along the gradient direction at 'par',
-#>   'fn' changes at rate -8.03e-06 where 'gr' predicts 3.91e-12. Check that the two
-#>   compute the same model. options(optimizers7.check_gradient = FALSE) turns this check off.
 c(iterations = f4@iterations, converged = f4@converged)
 #> iterations  converged 
 #>          1          1
@@ -217,10 +214,10 @@ describes directly.
 ``` r
 
 mv_summary(fitm)
-#>            Estimate Std. Error      2.5%    97.5%
-#> sd_v1     1.0235702 0.02104077 0.9831507 1.065651
-#> sd_v2     1.2401892 0.02652677 1.1892724 1.293286
-#> cor_v1_v2 0.5729534 0.01981918 0.5328237 0.610512
+#>            Estimate Std. Error      2.5%     97.5%
+#> sd_v1     1.0235702 0.03236813 0.9620558 1.0890178
+#> sd_v2     1.2401892 0.03921823 1.1656565 1.3194875
+#> cor_v1_v2 0.5729534 0.03004043 0.5111287 0.6288798
 ```
 
 Up to three coordinates the fit can be drawn, each panel showing a
