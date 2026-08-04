@@ -2,12 +2,12 @@
 
 The gaussian distribution on \\\mathbb{R}^p\\, with the mean a vector of
 \\p\\ free parameters and the matrix carried by a structure from
-covstructs7.
+parameters7.
 
 ## Usage
 
 ``` r
-mvgaussian_distrib(n_dim, struct_sigma = NULL, struct_omega = NULL)
+mvgaussian_distrib(n_dim, sigma = NULL, omega = NULL)
 ```
 
 ## Arguments
@@ -16,14 +16,14 @@ mvgaussian_distrib(n_dim, struct_sigma = NULL, struct_omega = NULL)
 
   The dimension \\p\\.
 
-- struct_sigma:
+- sigma:
 
-  A covstructs7 structure for the covariance. Defaults to
-  `covstructs7::log_cholesky(n_dim)` when neither structure is given.
+  A parameters7 structure for the covariance. Defaults to
+  `parameters7::log_cholesky(n_dim)` when neither structure is given.
 
-- struct_omega:
+- omega:
 
-  A covstructs7 structure for the precision.
+  A parameters7 structure for the precision.
 
 ## Value
 
@@ -32,10 +32,10 @@ An object of class
 
 ## Details
 
-Exactly one of `struct_sigma` and `struct_omega` may be given, and the
-name of the argument decides which side of the model the structure
-parametrises: the covariance in the first case, the precision in the
-second. One constructor returns one of two behaviours, in the manner of
+Exactly one of `sigma` and `omega` may be given, and the name of the
+argument decides which side of the model the structure parametrises: the
+covariance in the first case, the precision in the second. One
+constructor returns one of two behaviours, in the manner of
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md),
 which chooses between its continuous and discrete classes from the
 arguments it is handed.
@@ -43,7 +43,7 @@ arguments it is handed.
 The precision form is the cheaper one and is worth preferring where the
 modelling allows it. Written in \\\Omega\\, the log-density, the score
 and the Hessian are multiplications, and the first term of the score is
-the structure's own `struct_dlogdet()`; written in \\\Sigma\\ the same
+the structure's own `param_dlogdet()`; written in \\\Sigma\\ the same
 quantities need a solve at every step.
 
 **Parameters.** The mean contributes `mu1`, ..., `mup`, and the
@@ -88,7 +88,7 @@ plain vector of length \\p\\ is read as a single observation.
 
 [`gaussian_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md),
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
-[`log_cholesky`](https://statmodels7.github.io/covstructs7/reference/log_cholesky.html)
+[`log_cholesky`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
 
 ## Examples
 
@@ -118,10 +118,10 @@ mv_sigma(d, theta)
 #> v2 0.5 1.25
 
 # a diagonal covariance: two variances instead of three free values
-mvgaussian_distrib(2, struct_sigma = covstructs7::diag_struct(2))@params
+mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 #> [1] "mu1"      "mu2"      "sigma_d1" "sigma_d2"
 
 # or the precision, which is the cheaper parametrisation
-mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))@params
+mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 #> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  
 ```

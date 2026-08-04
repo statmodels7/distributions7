@@ -51,7 +51,7 @@ A list with
 
 ## Details
 
-The free values of a covstructs7 structure are coordinates chosen so
+The free values of a parameters7 structure are coordinates chosen so
 that an optimiser can move freely; they are not quantities anyone reads.
 The logarithm of the third diagonal entry of a Cholesky factor has an
 estimate and a standard error, and neither answers a question. This

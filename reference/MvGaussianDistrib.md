@@ -1,7 +1,7 @@
 # Multivariate Gaussian Distribution
 
 The S7 class of multivariate gaussian distributions, parametrised by a
-mean vector and by a covstructs7 structure for the covariance or the
+mean vector and by a parameters7 structure for the covariance or the
 precision. Constructed by
 [`mvgaussian_distrib`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
 
@@ -19,7 +19,7 @@ MvGaussianDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  struct = covstructs7::covstruct(),
+  param = parameters7::parameter(),
   inverted = logical(0)
 )
 ```
@@ -81,9 +81,9 @@ MvGaussianDistrib(
 
   The dimension \\p\\ of an observation.
 
-- struct:
+- param:
 
-  The covstructs7 structure carrying the matrix.
+  The parameters7 structure carrying the matrix.
 
 - inverted:
 

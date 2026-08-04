@@ -140,7 +140,7 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 2 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:

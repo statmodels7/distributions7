@@ -6,7 +6,7 @@ derivative of \\\Sigma\\ in the \\k\\-th free value of the structure,
 \ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
 \log\|\Sigma\|}{\partial \eta_k} + \frac{1}{2} w^\top A_k w.\$\$ The
 first term of the second expression is the structure's own
-`struct_dlogdet()`, so no trace is formed here.
+`param_dlogdet()`, so no trace is formed here.
 
 ## Arguments
 

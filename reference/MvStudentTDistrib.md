@@ -1,7 +1,7 @@
 # Multivariate Student's t Distribution
 
 The S7 class of multivariate Student t distributions: a mean vector, a
-covstructs7 structure for the scale matrix, and a degrees-of-freedom
+parameters7 structure for the scale matrix, and a degrees-of-freedom
 parameter. Constructed by
 [`mvstudent_t_distrib`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
 
@@ -19,7 +19,7 @@ MvStudentTDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  struct = covstructs7::covstruct()
+  param = parameters7::parameter()
 )
 ```
 
@@ -80,9 +80,9 @@ MvStudentTDistrib(
 
   The dimension \\p\\ of an observation.
 
-- struct:
+- param:
 
-  The covstructs7 structure carrying the scale matrix.
+  The parameters7 structure carrying the scale matrix.
 
 ## Value
 

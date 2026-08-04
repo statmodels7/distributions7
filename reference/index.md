@@ -172,7 +172,7 @@ values.
 Distributions whose observations are vectors. The response is a matrix
 with one row per observation, and the parameters stay scalars: a mean
 vector contributes one each, and a covariance contributes the free
-values of the covstructs7 structure that parametrises it, so every
+values of the parameters7 structure that parametrises it, so every
 generic of the package indexes them as it always did.
 
 - [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
@@ -1054,10 +1054,16 @@ divergent density.
 - [`distrib_cross_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.continuous_distrib.md)
   : Default Mixed Derivatives for Continuous Distributions
 
+- [`distrib_deriv3.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.md)
+  : Multivariate Gaussian Third Derivatives
+
 - [`distrib_deriv3.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.distrib.md)
   :
 
   Default Third-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv4.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvGaussianDistrib.md)
+  : Multivariate Gaussian Fourth Derivatives
 
 - [`distrib_deriv4.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.md)
   :
@@ -1422,6 +1428,9 @@ divergent density.
 - [`mv_moment_start()`](https://statmodels7.github.io/distributions7/reference/mv_moment_start.md)
   : The Moment Estimates a Multivariate Family Starts From
 
+- [`mv_ordered_partitions()`](https://statmodels7.github.io/distributions7/reference/mv_ordered_partitions.md)
+  : Ordered Partitions of a Set of Positions
+
 - [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
   : Draw the Panel Matrix of a Multivariate Density
 
@@ -1443,8 +1452,14 @@ divergent density.
 - [`mv_sigma_derivs()`](https://statmodels7.github.io/distributions7/reference/mv_sigma_derivs.md)
   : Derivatives of the Covariance with Respect to Every Parameter
 
+- [`mvg_higher()`](https://statmodels7.github.io/distributions7/reference/mvg_higher.md)
+  : The Closed-Form Higher Derivatives of a Multivariate Gaussian
+
 - [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
   : The Pieces a Multivariate Gaussian Evaluates From
+
+- [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md)
+  : Precision Derivative Tensors of a Multivariate Gaussian
 
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals

@@ -1,7 +1,7 @@
 # Derivatives of the Covariance with Respect to Every Parameter
 
 Returns \\\partial\Sigma/\partial\theta_k\\ for each parameter of a
-multivariate distribution built on a covstructs7 structure, as a list
+multivariate distribution built on a parameters7 structure, as a list
 aligned with `distrib@params` and `NULL` where the covariance does not
 depend on the parameter.
 
@@ -15,7 +15,7 @@ mv_sigma_derivs(distrib, theta, n_before)
 
 - distrib:
 
-  A distribution carrying a `struct` property.
+  A distribution carrying a `param` property.
 
 - theta:
 

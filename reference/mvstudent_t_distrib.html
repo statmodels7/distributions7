@@ -51,11 +51,7 @@ $$f(y) \propto |\Sigma|^{-1/2}
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mvstudent_t_distrib</span><span class="op">(</span></span>
-<span>  <span class="va">n_dim</span>,</span>
-<span>  struct_sigma <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  link_nu <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mvstudent_t_distrib</span><span class="op">(</span><span class="va">n_dim</span>, sigma <span class="op">=</span> <span class="cn">NULL</span>, link_nu <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/log_link.html" class="external-link">log_link</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,9 +62,9 @@ $$f(y) \propto |\Sigma|^{-1/2}
 <dd><p>The dimension \(p\).</p></dd>
 
 
-<dt id="arg-struct-sigma">struct_sigma<a class="anchor" aria-label="anchor" href="#arg-struct-sigma"></a></dt>
-<dd><p>A <span class="pkg">covstructs7</span> structure for the scale matrix.
-Defaults to <code>covstructs7::log_cholesky(n_dim)</code>.</p></dd>
+<dt id="arg-sigma">sigma<a class="anchor" aria-label="anchor" href="#arg-sigma"></a></dt>
+<dd><p>A <span class="pkg">parameters7</span> structure for the scale matrix.
+Defaults to <code>parameters7::log_cholesky(n_dim)</code>.</p></dd>
 
 
 <dt id="arg-link-nu">link_nu<a class="anchor" aria-label="anchor" href="#arg-link-nu"></a></dt>

@@ -13,7 +13,7 @@ struct_free_or_fit(s, m)
 
 - s:
 
-  A covstructs7 structure.
+  A parameters7 structure.
 
 - m:
 
@@ -25,7 +25,7 @@ A numeric vector of length `s@n_free`.
 
 ## Details
 
-[`struct_free`](https://statmodels7.github.io/covstructs7/reference/struct_free.html)
+[`param_free`](https://statmodels7.github.io/parameters7/reference/param_free.html)
 is exact or refused: a structure that cannot represent the matrix says
 so rather than returning something plausible. That is the right contract
 for reporting an estimate and the wrong one for choosing where to begin,

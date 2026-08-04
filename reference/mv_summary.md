@@ -31,7 +31,7 @@ A data frame with one row per quantity and the columns `Estimate`,
 
 ## Details
 
-A multivariate fit estimates the free values of a covstructs7 structure,
+A multivariate fit estimates the free values of a parameters7 structure,
 and those are coordinates rather than quantities: the estimate and
 standard error of `sigma_log_L2` answer no question anybody asked. This
 function carries the fit's variance matrix onto the quantities that do,

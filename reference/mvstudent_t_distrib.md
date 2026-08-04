@@ -7,11 +7,7 @@ The elliptical \\t\\ on \\\mathbb{R}^p\\, with density \$\$f(y) \propto
 ## Usage
 
 ``` r
-mvstudent_t_distrib(
-  n_dim,
-  struct_sigma = NULL,
-  link_nu = linkfunctions7::log_link()
-)
+mvstudent_t_distrib(n_dim, sigma = NULL, link_nu = linkfunctions7::log_link())
 ```
 
 ## Arguments
@@ -20,10 +16,10 @@ mvstudent_t_distrib(
 
   The dimension \\p\\.
 
-- struct_sigma:
+- sigma:
 
-  A covstructs7 structure for the scale matrix. Defaults to
-  `covstructs7::log_cholesky(n_dim)`.
+  A parameters7 structure for the scale matrix. Defaults to
+  `parameters7::log_cholesky(n_dim)`.
 
 - link_nu:
 
