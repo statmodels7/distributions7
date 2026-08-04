@@ -22,3 +22,17 @@ transpose_params(theta)
 
 A `list` where each element has been transposed and simplified to an
 atomic vector.
+
+## Examples
+
+``` r
+transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
+#> [[1]]
+#>    mu sigma 
+#>     0     1 
+#> 
+#> [[2]]
+#>    mu sigma 
+#>     1     2 
+#> 
+```

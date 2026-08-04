@@ -27,6 +27,10 @@ P(Y=k; \mu, \theta)\$\$
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)

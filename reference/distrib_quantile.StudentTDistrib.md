@@ -28,6 +28,10 @@ quantile function with \\\nu\\ degrees of freedom.
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`student_t_distrib`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)

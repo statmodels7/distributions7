@@ -35,3 +35,30 @@ distrib_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 - ...:
 
   Additional arguments passed to the specific method.
+
+## Value
+
+A named list with one numeric vector per parameter, keyed by
+`distrib@params`.
+
+## Examples
+
+``` r
+d <- gaussian_distrib()
+distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $sigma
+#> [1]  0 -1  0
+#> 
+
+# the same score with respect to the unconstrained parameters
+distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $sigma
+#> [1]  0 -1  0
+#> 
+```

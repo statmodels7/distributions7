@@ -27,6 +27,10 @@ distribution: \$\$Q(p; \mu, \sigma) = \mu + \sigma
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`logistic_distrib`](https://statmodels7.github.io/distributions7/reference/logistic_distrib.md)

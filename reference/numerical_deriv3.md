@@ -50,3 +50,21 @@ parameter-domain boundaries.
 
 [`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
 [`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+
+## Examples
+
+``` r
+numerical_deriv3(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+#> $mu_mu_mu
+#> [1] 0
+#> 
+#> $mu_mu_sigma
+#> [1] 2
+#> 
+#> $mu_sigma_sigma
+#> [1] 0
+#> 
+#> $sigma_sigma_sigma
+#> [1] -2
+#> 
+```

@@ -100,3 +100,22 @@ are also available.
 
 - [`distrib_expected_hessian.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBinDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- negbin_distrib()
+d@params
+#> [1] "mu"    "theta"
+
+theta <- list(mu = 3, theta = 2)
+distrib_pdf(d, 0:5, theta)
+#> [1] 0.1600000 0.1920000 0.1728000 0.1382400 0.1036800 0.0746496
+distrib_gradient(d, 0:5, theta)
+#> $mu
+#> [1] -0.4000000 -0.2666667 -0.1333333  0.0000000  0.1333333  0.2666667
+#> 
+#> $theta
+#> [1] -0.31629073 -0.01629073  0.11704260  0.16704260  0.16704260  0.13370927
+#> 
+```

@@ -27,6 +27,10 @@ distribution: \$\$F(q; \mu) = \sum\_{k=0}^{\lfloor q \rfloor}
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`poisson_distrib`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)

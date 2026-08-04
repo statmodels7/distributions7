@@ -69,7 +69,25 @@ If unnamed, parameters are taken in the order of <code>distrib@params</code>.</p
 <dd><p>Additional arguments passed to the specific method.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <p>A numeric vector of <code>n</code> draws for a univariate distribution, and
+an \(n \times p\) matrix for a multivariate one.</p>
+    </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">distrib_rng</span><span class="op">(</span><span class="fu"><a href="gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.6264538  0.1836433 -0.8356286  1.5952808  0.3295078</span>
+<span class="r-in"><span><span class="fu">distrib_rng</span><span class="op">(</span><span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="fl">3</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
+<span class="r-in"><span>  sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              v1          v2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] -0.8204684  0.16554716</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]  0.4874291 -0.06167386</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,]  0.7383247  1.88094352</span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

@@ -89,15 +89,29 @@ modelling allows it. Written in \(\Omega\), the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
 structure's own <code>struct_dlogdet()</code>; written in \(\Sigma\) the same
 quantities need a solve at every step.</p>
-<p><strong>Parameters.</strong> The mean contributes <code>mu1</code>, ..., <code>mup</code> and
-the structure contributes its own free values under their own names, so a
-two-dimensional gaussian on an unstructured covariance has five parameters:
-<code>mu1</code>, <code>mu2</code>, <code>log_L1</code>, <code>log_L2</code>, <code>L2.1</code>. All of
-them are unconstrained, and their links are therefore the identity: the
-constraint that makes the matrix positive definite lives inside the
-structure, which is why it needs no link to express it. A consequence worth
-knowing is that the parameter scale and the link scale coincide here, so
-<code>scale = "link"</code> changes nothing.</p>
+<p><strong>Parameters.</strong> The mean contributes <code>mu1</code>, ..., <code>mup</code>, and
+the structure contributes its free values prefixed by the matrix they
+describe: <code>sigma_</code> for a covariance and <code>omega_</code> for a precision.
+A two-dimensional gaussian on an unstructured covariance therefore has five
+parameters, <code>mu1</code>, <code>mu2</code>, <code>sigma_log_L1</code>,
+<code>sigma_log_L2</code> and <code>sigma_L2.1</code>, while the same structure on the
+precision gives <code>omega_log_L1</code> and the rest. The prefix is what
+distinguishes the two models in a printed table, since the name of a free
+value says how the matrix is built and not which matrix it is.</p>
+<p>All of the parameters are unconstrained, and their links are therefore the
+identity: the constraint that makes the matrix positive definite lives
+inside the structure, which is why it needs no link to express it. A
+consequence worth knowing is that the parameter scale and the link scale
+coincide here, so <code>scale = "link"</code> changes nothing.</p>
+<p><strong>Reading a fit.</strong> The free values are coordinates, not quantities
+anybody reads. <code><a href="mv_summary.html">mv_summary</a></code> carries the fit's variance matrix
+onto the standard deviations and correlations by the delta method, and
+<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows them; a precision parametrisation also reports the
+conditional variances and the partial correlations, which are what it
+describes directly. The conditional variance is
+\(1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})\), and its ratio to the
+marginal variance is \(1 - R_j^2\) for the regression of that coordinate
+on all the others.</p>
 <p><strong>Rank.</strong> A rank-deficient structure is refused. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
 measure, and a singular precision gives a quadratic form that is flat along
@@ -123,30 +137,30 @@ observation.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions:   multivariate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Parameters:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mu1    (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   mu2    (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log_L1 (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log_L2 (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   L2.1   (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mu1          (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   mu2          (mean)               | Link: identity   | Domain: (-Inf, Inf)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma_log_L1 (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma_log_L2 (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   sigma_L2.1   (covariance)         | Link: identity   | Domain: (-Inf, Inf)</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, log_L1 <span class="op">=</span> <span class="fl">0</span>, log_L2 <span class="op">=</span> <span class="fl">0</span>, L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.837877 -3.462877</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the covariance the free values describe</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="mv_mu.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="mv_location.html">mv_sigma</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     v1   v2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> v1 1.0 0.50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> v2 0.5 1.25</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># a diagonal covariance: two variances instead of three free values</span></span></span>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, struct_sigma <span class="op">=</span> <span class="fu">covstructs7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/covstructs7/reference/diag_struct.html" class="external-link">diag_struct</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1" "mu2" "d1"  "d2" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"      "mu2"      "sigma_d1" "sigma_d2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or the precision, which is the cheaper parametrisation</span></span></span>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, struct_omega <span class="op">=</span> <span class="fu">covstructs7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/covstructs7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"    "mu2"    "log_L1" "log_L2" "L2.1"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

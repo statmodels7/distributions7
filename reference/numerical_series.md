@@ -79,3 +79,11 @@ alternating series while maintaining high precision.
 early if the sequence starts growing in absolute terms (divergence), or
 skips up to 50 empty chunks to protect from premature stopping when
 `f(x)` evaluates exactly to `0` at the start.
+
+## Examples
+
+``` r
+# the mean of a Poisson, summed over its support
+numerical_series(function(y) y * distrib_pdf(poisson_distrib(), y, list(mu = 2)))
+#> [1] 2
+```

@@ -25,6 +25,10 @@ quantile at \\u(1-f(0)) + f(0)\\ with \\u = (p-\pi)/(1-\pi)\\.
 
   Logical; if `TRUE`, probabilities are given as logs.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)

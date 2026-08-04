@@ -22,3 +22,7 @@ exactly as \$\$E\[f(Y)\] = \pi f(0) + (1-\pi) E_W\[f(W)\]\$\$
 - ...:
 
   Additional arguments passed to `f`.
+
+## Value
+
+A numeric scalar, the expectation of `f` under the distribution.

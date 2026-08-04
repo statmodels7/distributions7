@@ -89,3 +89,19 @@ are also available.
 
 - [`distrib_expected_hessian.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BinomialDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- binomial_distrib(size = 5)
+d@params
+#> [1] "mu"
+
+theta <- list(mu = 0.3)
+distrib_pdf(d, 0:5, theta)
+#> [1] 0.16807 0.36015 0.30870 0.13230 0.02835 0.00243
+distrib_gradient(d, 0:5, theta)
+#> $mu
+#> [1] -7.142857 -2.380952  2.380952  7.142857 11.904762 16.666667
+#> 
+```

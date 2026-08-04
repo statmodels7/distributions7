@@ -110,3 +110,22 @@ symmetry.
   and
   [`distrib_deriv4.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LogisticDistrib.md)
   for the observed higher-order derivatives.
+
+## Examples
+
+``` r
+d <- logistic_distrib()
+d@params
+#> [1] "mu"    "sigma"
+
+theta <- list(mu = 0, sigma = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+#> [1] 0.1966119 0.2500000 0.1966119
+distrib_gradient(d, c(-1, 0, 1), theta)
+#> $mu
+#> [1] -0.4621172  0.0000000  0.4621172
+#> 
+#> $sigma
+#> [1] -0.5378828 -1.0000000 -0.5378828
+#> 
+```

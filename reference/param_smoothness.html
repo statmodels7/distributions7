@@ -70,6 +70,19 @@ left empty.</p>
     <p>A named logical vector, one entry per parameter.</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">param_smoothness</span><span class="op">(</span><span class="fu"><a href="gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mu sigma </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  TRUE  TRUE </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the Laplace location is a kink, so it is not smooth</span></span></span>
+<span class="r-in"><span><span class="fu">param_smoothness</span><span class="op">(</span><span class="fu"><a href="laplace_distrib.html">laplace_distrib</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    mu     b </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> FALSE  TRUE </span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

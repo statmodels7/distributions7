@@ -72,6 +72,10 @@ distrib(
   than from \\-\mathbb{E}\[H\]\\ (see
   [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
+## Value
+
+An object of class `distrib`.
+
 ## Methods
 
 Registered on the base class, so every distribution inherits them unless
@@ -94,3 +98,20 @@ default: the density is the one thing a distribution must supply.
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md),
 [`std_dev()`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+
+## Examples
+
+``` r
+d <- gaussian_distrib()
+S7::S7_inherits(d, distrib)
+#> [1] TRUE
+d@params
+#> [1] "mu"    "sigma"
+d@params_bounds
+#> $mu
+#> [1] -Inf  Inf
+#> 
+#> $sigma
+#> [1]   0 Inf
+#> 
+```

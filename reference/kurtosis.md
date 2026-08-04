@@ -27,3 +27,12 @@ kurtosis(x, ...)
 ## Value
 
 A numeric vector.
+
+## Examples
+
+``` r
+kurtosis(gaussian_distrib(), list(mu = 0, sigma = 1))
+#> [1] 2.876117e-10
+kurtosis(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#> [1] 1.5
+```

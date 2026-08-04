@@ -7,7 +7,7 @@ observations.
 ## Usage
 
 ``` r
-fit_hess_matrix(distrib, y, theta, expected)
+fit_hess_matrix(distrib, y, theta, expected, approx = "bartlett", nsim = 10000)
 ```
 
 ## Arguments
@@ -27,6 +27,16 @@ fit_hess_matrix(distrib, y, theta, expected)
 - expected:
 
   Logical; whether to use the expected Hessian.
+
+- approx:
+
+  How the expectation is approximated when the distribution has no
+  closed form for it. Ignored when it has one, and when `expected` is
+  `FALSE`.
+
+- nsim:
+
+  Monte Carlo sample size, used when `approx = "mc"`.
 
 ## Value
 

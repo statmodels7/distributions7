@@ -17,6 +17,10 @@ inverse-transform sampling.
 
   A list containing the parameters `mu` and `b`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)

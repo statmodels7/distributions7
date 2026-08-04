@@ -86,6 +86,12 @@ when there are at most 2000 of them.</p></dd>
 summary.</p></dd>
 
 
+<dt id="arg-mv-which">mv_which<a class="anchor" aria-label="anchor" href="#arg-mv-which"></a></dt>
+<dd><p>For a multivariate fit, which coordinates to show. Defaults
+to all of them, and at most three are drawn: above that the panel matrix
+stops being readable.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Further arguments passed to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></code>, for
 instance <code>main</code>, <code>xlab</code> or <code>xlim</code>.</p></dd>
@@ -96,8 +102,17 @@ instance <code>main</code>, <code>xlab</code> or <code>xlim</code>.</p></dd>
     <p><code>x</code>, invisibly.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>A univariate fit is drawn as the fitted density over a histogram or, for a
+discrete family, over the observed proportions. A multivariate one is drawn
+as a panel matrix: the fitted marginal density and a kernel estimate of the
+data on the diagonal, the fitted contours over the observations below it,
+and the fitted correlation above.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="fit_distrib.html">fit_distrib</a></code>, <code><a href="simulate.distrib_fit.html">simulate.distrib_fit</a></code></p></div>
+    <div class="dont-index"><p><code><a href="fit_distrib.html">fit_distrib</a></code>, <code><a href="simulate.distrib_fit.html">simulate.distrib_fit</a></code>,
+<code><a href="plot.multivariate_distrib.html">plot.multivariate_distrib</a></code></p></div>
     </div>
 
     <div class="section level2">

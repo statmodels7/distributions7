@@ -27,3 +27,12 @@ variance(x, ...)
 ## Value
 
 A numeric vector.
+
+## Examples
+
+``` r
+variance(gaussian_distrib(), list(mu = 0, sigma = 2))
+#> [1] 4
+variance(poisson_distrib(), list(mu = 3))
+#> [1] 3
+```

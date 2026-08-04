@@ -25,3 +25,7 @@ in
 - ...:
 
   Additional arguments passed to `f`.
+
+## Value
+
+A numeric scalar, the expectation of `f` under the distribution.

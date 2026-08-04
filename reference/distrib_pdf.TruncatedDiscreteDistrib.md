@@ -23,6 +23,10 @@ added back because the endpoint is included.
 
   Logical; if `TRUE`, returns the log-probability.
 
+## Value
+
+A numeric vector of density values.
+
 ## See also
 
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md)

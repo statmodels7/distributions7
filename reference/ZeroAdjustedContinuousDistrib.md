@@ -79,6 +79,10 @@ ZeroAdjustedContinuousDistrib(
 
   The wrapped `continuous_distrib` object.
 
+## Value
+
+An object of class `ZeroAdjustedContinuousDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

@@ -27,6 +27,10 @@ distribution: \$\$Q(p; \mu, \sigma) = \mu + \sigma
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`cauchy_distrib`](https://statmodels7.github.io/distributions7/reference/cauchy_distrib.md)

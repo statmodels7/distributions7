@@ -91,3 +91,22 @@ via `params_smooth = c(mu = FALSE, b = TRUE)` and handles it as follows:
 - \\\mu \in (-\infty, +\infty)\\
 
 - \\b \in (0, +\infty)\\
+
+## Examples
+
+``` r
+d <- laplace_distrib()
+d@params
+#> [1] "mu" "b" 
+
+theta <- list(mu = 0, b = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+#> [1] 0.1839397 0.5000000 0.1839397
+distrib_gradient(d, c(-1, 0, 1), theta)
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $b
+#> [1]  0 -1  0
+#> 
+```

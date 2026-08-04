@@ -34,9 +34,9 @@ pak::pak("statmodels7/distributions7")
 
 ## The usual functions
 
-Fourteen distributions ship with the package. Each constructor takes the
-link functions used for its parameters, and parameters travel as a named
-list.
+Eighteen univariate distributions and two multivariate ones ship with
+the package. Each constructor takes the link functions used for its
+parameters, and parameters travel as a named list.
 
 ``` r
 
@@ -106,14 +106,15 @@ fit <- fit_distrib(gamma_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring (converged in 17 iterations)
+#> Method: Fisher scoring   iterations: 18   evaluations: f 19, g 19
+#> Converged: yes (gradient (max-norm) < 1e-10)
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error   2.5%  97.5%
 #> mu       2.9570     0.0631 2.8359 3.0832
 #> sigma2   1.9888     0.1480 1.7188 2.3011
 #> 
-#> Link scale (log, log):
+#> Link scale:
 #>        Estimate Std. Error   2.5%  97.5%
 #> mu       1.0842     0.0213 1.0424 1.1260
 #> sigma2   0.6875     0.0744 0.5416 0.8334
@@ -138,9 +139,13 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 ```
 
 The optimisation itself is delegated to
-[optimizers7](https://statmodels7.github.io/optimizers7/), so `method`
-takes any optimiser of that package as well as the three named
-strategies, and the object brings its own stopping rule:
+[optimizers7](https://statmodels7.github.io/optimizers7/). One argument
+says how to optimise, and it takes either an optimiser of that package,
+which brings its own stopping rule, or
+[`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
+which is Newton’s method with the expected information and carries how
+that information is to be obtained when the family has no closed form
+for it.
 
 ``` r
 
@@ -151,6 +156,93 @@ c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))
 #>    fisher     lbfgs 
 #> -841.2326 -841.2326
 ```
+
+Where a fit starts matters more than it looks, so a family is asked for
+its own starting value through
+[`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md).
+A family that knows an estimator returns it and the fit begins there;
+one that says nothing gets random draws.
+
+``` r
+
+d4 <- mvgaussian_distrib(4)
+y4 <- as.matrix(iris[, 1:4])
+f4 <- fit_distrib(d4, y4)
+#> Warning: 'gr' does not appear to be the gradient of 'fn': along the gradient direction at 'par',
+#>   'fn' changes at rate -8.03e-06 where 'gr' predicts 3.91e-12. Check that the two
+#>   compute the same model. options(optimizers7.check_gradient = FALSE) turns this check off.
+c(iterations = f4@iterations, converged = f4@converged)
+#> iterations  converged 
+#>          1          1
+```
+
+## Several dimensions
+
+A multivariate distribution carries a mean vector and a matrix, and the
+matrix comes from a structure of
+[covstructs7](https://statmodels7.github.io/covstructs7/). Its free
+values are scalars, so the parameter vector is a named list of numbers
+exactly as above and every generic here applies unchanged,
+[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+included. The names say which matrix the structure describes, `sigma_`
+for a covariance and `omega_` for a precision, because the same
+structure on the two sides is two different models.
+
+``` r
+
+dm <- mvgaussian_distrib(2)
+dm@params
+#> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"
+
+ym <- distrib_rng(dm, 500, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
+                                sigma_L2.1 = 0.7))
+fitm <- fit_distrib(dm, ym)
+mv_sigma(dm, coef(fitm))
+#>           v1        v2
+#> v1 1.0476959 0.7273189
+#> v2 0.7273189 1.5380692
+```
+
+Those free values are coordinates an optimiser moves in, not quantities
+anybody reads, and they are not what the fit prints.
+[`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+carries the fit’s variance matrix onto the ones that are, by the delta
+method, and builds each interval on the scale that keeps it in its own
+set: a standard deviation on the log scale, a correlation on Fisher’s
+*z*. A precision parametrisation reports the same standard deviations
+and correlations — they are properties of the law — and adds the
+conditional variances and partial correlations, which are what it
+describes directly.
+
+``` r
+
+mv_summary(fitm)
+#>            Estimate Std. Error      2.5%    97.5%
+#> sd_v1     1.0235702 0.02104077 0.9831507 1.065651
+#> sd_v2     1.2401892 0.02652677 1.1892724 1.293286
+#> cor_v1_v2 0.5729534 0.01981918 0.5328237 0.610512
+```
+
+Up to three coordinates the fit can be drawn, each panel showing a
+marginal: the fitted density against a kernel estimate on the diagonal,
+and contours against the observations below it.
+
+``` r
+
+plot(fitm)
+```
+
+![](reference/figures/README-mv-plot-1.png)
+
+[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+is the heavy-tailed alternative, with the degrees of freedom estimated
+alongside everything else. Its
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
+is the **scale** matrix and its
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+the covariance, which differ by $`\nu/(\nu-2)`$ and which the family
+keeps apart so that it remains usable below two degrees of freedom,
+where the covariance does not exist.
 
 ## A user-defined distribution needs only its density
 
@@ -216,14 +308,14 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
 #>   [OK  ] cdf agrees with the density                 8.42e-06
 #>   [OK  ] quantile/cdf round-trip                     3.31e-10
-#>   [OK  ] rng matches the cdf                         1.78e+00
+#>   [OK  ] rng matches the cdf                         1.68e+00
 #>   [OK  ] gradient vs finite differences              0.00e+00
 #>   [OK  ] hessian vs finite differences               0.00e+00
 #>   [OK  ] deriv3 vs finite differences                0.00e+00
 #>   [OK  ] deriv4 vs finite differences                0.00e+00
-#>   [OK  ] expected information vs Monte Carlo         1.97e+00
+#>   [OK  ] expected information vs Monte Carlo         2.30e+00
 #>   [OK  ] response derivatives vs finite differences  0.00e+00
-#>   [OK  ] link-scale gradient vs finite differences   3.29e-09
+#>   [OK  ] link-scale gradient vs finite differences   3.24e-09
 #> 
 #> All 13 checks passed.
 ```
@@ -232,8 +324,8 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 
 |  |  |
 |----|----|
-| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, gamma, inverse gaussian, lognormal, beta |
+| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, inverse gaussian, lognormal, Weibull, Gumbel, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
-| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrised by a covariance or a precision structure from [covstructs7](https://statmodels7.github.io/covstructs7/) |
+| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrised by a covariance or a precision structure from [covstructs7](https://statmodels7.github.io/covstructs7/), and [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
 | wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |

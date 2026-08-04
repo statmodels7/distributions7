@@ -30,6 +30,10 @@ reparameterization \\\alpha = \mu^2/\sigma^2\\, \\\lambda =
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`gamma_distrib`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md)

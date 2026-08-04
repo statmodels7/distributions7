@@ -26,3 +26,10 @@ std_dev(x, ...)
 ## Value
 
 A numeric vector.
+
+## Examples
+
+``` r
+std_dev(gaussian_distrib(), list(mu = 0, sigma = 2))
+#> [1] 2
+```

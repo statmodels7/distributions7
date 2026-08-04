@@ -33,6 +33,12 @@ since a kernel density would misrepresent a discrete sample.
 
   Colours of the fitted curve and of the empirical summary.
 
+- mv_which:
+
+  For a multivariate fit, which coordinates to show. Defaults to all of
+  them, and at most three are drawn: above that the panel matrix stops
+  being readable.
+
 - ...:
 
   Further arguments passed to
@@ -43,10 +49,19 @@ since a kernel density would misrepresent a discrete sample.
 
 `x`, invisibly.
 
+## Details
+
+A univariate fit is drawn as the fitted density over a histogram or, for
+a discrete family, over the observed proportions. A multivariate one is
+drawn as a panel matrix: the fitted marginal density and a kernel
+estimate of the data on the diagonal, the fitted contours over the
+observations below it, and the fitted correlation above.
+
 ## See also
 
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
-[`simulate.distrib_fit`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md)
+[`simulate.distrib_fit`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md),
+[`plot.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
 
 ## Examples
 

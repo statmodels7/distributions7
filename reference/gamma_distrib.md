@@ -102,3 +102,22 @@ are also available.
 
 - [`distrib_expected_hessian.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GammaDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- gamma_distrib()
+d@params
+#> [1] "mu"     "sigma2"
+
+theta <- list(mu = 2, sigma2 = 1)
+distrib_pdf(d, c(0.5, 1, 2), theta)
+#> [1] 0.1226265 0.3608941 0.3907336
+distrib_gradient(d, c(0.5, 1, 2), theta)
+#> $mu
+#> [1] -3.5244707 -1.2518820  0.5207068
+#> 
+#> $sigma2
+#> [1]  2.0244707  0.2518820 -0.5207068
+#> 
+```

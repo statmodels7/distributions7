@@ -84,6 +84,10 @@ TruncatedDiscreteDistrib(
 
   The truncation points, included in the support.
 
+## Value
+
+An object of class `TruncatedDiscreteDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

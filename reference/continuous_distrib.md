@@ -72,6 +72,10 @@ continuous_distrib(
   than from \\-\mathbb{E}\[H\]\\ (see
   [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
+## Value
+
+An object of class `continuous_distrib`.
+
 ## Methods
 
 Defaults for continuous distributions, built from the density alone: the
@@ -90,3 +94,12 @@ or inverse transform when an analytical quantile is available.
 
 Everything else is inherited from
 [`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
+
+## Examples
+
+``` r
+S7::S7_inherits(gaussian_distrib(), continuous_distrib)
+#> [1] TRUE
+S7::S7_inherits(poisson_distrib(), continuous_distrib)
+#> [1] FALSE
+```

@@ -17,6 +17,11 @@ are taken with respect to:
   stored in `distrib@link_params`. This is the scale on which
   optimization is normally carried out, since \\\eta \in \mathbb{R}^p\\.
 
+## Value
+
+Nothing. This page documents the `scale` argument shared by the
+derivative generics named above; the value returned is theirs.
+
 ## Details
 
 Write \\h_i = g_i^{-1}\\, so that \\\theta_i = h_i(\eta_i)\\. Because

@@ -35,3 +35,25 @@ distrib_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 - ...:
 
   Additional arguments passed to the specific method.
+
+## Value
+
+A named list of numeric vectors, keyed as
+[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)`(distrib@params)`
+(e.g. `"mu_sigma"`).
+
+## Examples
+
+``` r
+d <- gaussian_distrib()
+distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu_mu
+#> [1] -1 -1 -1
+#> 
+#> $sigma_sigma
+#> [1] -2  1 -2
+#> 
+#> $mu_sigma
+#> [1]  2  0 -2
+#> 
+```

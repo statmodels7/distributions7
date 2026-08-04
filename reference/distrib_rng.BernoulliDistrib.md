@@ -16,6 +16,10 @@ Generates random numbers from the Bernoulli distribution.
 
   A list containing the parameter `mu`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`bernoulli_distrib`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)

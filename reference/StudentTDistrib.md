@@ -72,6 +72,10 @@ StudentTDistrib(
   than from \\-\mathbb{E}\[H\]\\ (see
   [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
+## Value
+
+An object of class `StudentTDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

@@ -121,3 +121,25 @@ are also available.
 
 - [`distrib_expected_hessian.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.StudentTDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- student_t_distrib()
+d@params
+#> [1] "mu"    "sigma" "nu"   
+
+theta <- list(mu = 0, sigma = 1, nu = 5)
+distrib_pdf(d, c(-1, 0, 1), theta)
+#> [1] 0.2196798 0.3796067 0.2196798
+distrib_gradient(d, c(-1, 0, 1), theta)
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $sigma
+#> [1]  0 -1  0
+#> 
+#> $nu
+#> [1] 0.018653069 0.009813847 0.018653069
+#> 
+```

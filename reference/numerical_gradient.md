@@ -49,3 +49,15 @@ and less precise than an analytical implementation.
 
 [`numerical_hessian`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
 [`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+
+## Examples
+
+``` r
+numerical_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $sigma
+#> [1]  5.500279e-11 -1.000000e+00  5.500279e-11
+#> 
+```

@@ -95,3 +95,22 @@ are also available.
 
 - [`distrib_expected_hessian.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.CauchyDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- cauchy_distrib()
+d@params
+#> [1] "mu"    "sigma"
+
+theta <- list(mu = 0, sigma = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+#> [1] 0.1591549 0.3183099 0.1591549
+distrib_gradient(d, c(-1, 0, 1), theta)
+#> $mu
+#> [1] -1  0  1
+#> 
+#> $sigma
+#> [1]  0 -1  0
+#> 
+```

@@ -22,6 +22,10 @@ Computed in log space; singular log-densities are clamped to avoid
 
   Logical; if `TRUE`, returns the log-density.
 
+## Value
+
+A numeric vector of density values.
+
 ## See also
 
 [`transformation`](https://statmodels7.github.io/distributions7/reference/transformation.md)

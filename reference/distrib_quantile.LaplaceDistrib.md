@@ -27,6 +27,10 @@ distribution: \$\$Q(p; \mu, b) = \mu - b\\\mathrm{sign}(p -
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)

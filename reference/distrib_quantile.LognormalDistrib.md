@@ -28,6 +28,10 @@ standard normal quantile function.
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`lognormal_distrib`](https://statmodels7.github.io/distributions7/reference/lognormal_distrib.md)

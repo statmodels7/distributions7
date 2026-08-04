@@ -26,6 +26,10 @@ distribution: \$\$Q(p; \mu, \sigma) = \mu + \sigma \Phi^{-1}(p)\$\$
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`gaussian_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md)

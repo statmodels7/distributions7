@@ -27,3 +27,12 @@ skewness(x, ...)
 ## Value
 
 A numeric vector.
+
+## Examples
+
+``` r
+skewness(gaussian_distrib(), list(mu = 0, sigma = 1))
+#> [1] 0
+skewness(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#> [1] 1
+```

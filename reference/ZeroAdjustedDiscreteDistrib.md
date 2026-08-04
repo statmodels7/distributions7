@@ -79,6 +79,10 @@ ZeroAdjustedDiscreteDistrib(
 
   The wrapped `discrete_distrib` object.
 
+## Value
+
+An object of class `ZeroAdjustedDiscreteDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

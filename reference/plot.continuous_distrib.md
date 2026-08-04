@@ -21,3 +21,7 @@ distribution object.
 
   Additional arguments passed to the base
   [`plot`](https://rdrr.io/r/graphics/plot.default.html) function.
+
+## Value
+
+The distribution, invisibly.

@@ -18,6 +18,10 @@ it always terminates in one pass however small \\Z\\ is.
 
   A named list of the parent's parameters.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md)

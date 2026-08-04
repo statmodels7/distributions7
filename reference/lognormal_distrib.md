@@ -80,3 +80,22 @@ and response derivatives
 ([`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
 [`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md))
 are also available.
+
+## Examples
+
+``` r
+d <- lognormal_distrib()
+d@params
+#> [1] "mu"     "sigma2"
+
+theta <- list(mu = 0, sigma2 = 1)
+distrib_pdf(d, c(0.5, 1, 2), theta)
+#> [1] 0.6274961 0.3989423 0.1568740
+distrib_gradient(d, c(0.5, 1, 2), theta)
+#> $mu
+#> [1] -0.6931472  0.0000000  0.6931472
+#> 
+#> $sigma2
+#> [1] -0.2597735 -0.5000000 -0.2597735
+#> 
+```

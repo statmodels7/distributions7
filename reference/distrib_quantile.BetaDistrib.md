@@ -29,6 +29,10 @@ reparameterization \\\alpha = \mu\phi\\, \\\beta = (1-\mu)\phi\\.
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`beta_distrib`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)

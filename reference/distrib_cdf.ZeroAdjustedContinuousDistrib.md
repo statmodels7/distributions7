@@ -24,6 +24,10 @@
 
   Logical; if `TRUE`, probabilities are returned as logs.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)

@@ -17,6 +17,12 @@ used for each of its parameters.
   : Laplace Distribution Object
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution Object (Location-Scale Parameterization)
+- [`skewnormal_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal_distrib.md)
+  : Skew Normal Distribution Object
+- [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  : Skew t Distribution Object
+- [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
+  : Gumbel Distribution Object
 - [`gamma_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md)
   : Gamma Distribution Object (Mean-Variance Parameterization)
 - [`invgauss_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)
@@ -24,6 +30,8 @@ used for each of its parameters.
   Parameterization)
 - [`lognormal_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal_distrib.md)
   : Lognormal Distribution Object (Log-Scale Parameterization)
+- [`weibull_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
+  : Weibull Distribution Object
 - [`beta_distrib()`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)
   : Beta Distribution Object (Mean-Precision Parameterization)
 - [`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
@@ -87,6 +95,12 @@ respect to the unconstrained parameters.
 
 - [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
   : Maximum-Likelihood Estimation
+- [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+  : Fisher Scoring, With Its Own Settings
+- [`FisherScoring()`](https://statmodels7.github.io/distributions7/reference/FisherScoring.md)
+  : Fisher Scoring as an Object
+- [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  : A Starting Value Drawn from the Data
 - [`distrib_fit()`](https://statmodels7.github.io/distributions7/reference/distrib_fit_class.md)
   : S7 Class for Maximum-Likelihood Fits
 - [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
@@ -163,9 +177,17 @@ generic of the package indexes them as it always did.
 
 - [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
   : Construct a Multivariate Gaussian Distribution
-- [`mv_mu()`](https://statmodels7.github.io/distributions7/reference/mv_mu.md)
-  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_mu.md)
+- [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+  : Construct a Multivariate Student's t Distribution
+- [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
+  [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
   : The Mean Vector and Covariance a Parameter List Describes
+- [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  : A Marginal of a Multivariate Distribution
+- [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
+  : Interpretable Quantities of a Multivariate Distribution
+- [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  : Interpretable Estimates of a Multivariate Fit
 - [`n_obs()`](https://statmodels7.github.io/distributions7/reference/n_obs.md)
   : How Many Observations a Response Holds
 
@@ -341,6 +363,8 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`StudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/StudentTDistrib.md)
   : S7 Class for Student's t Distribution
+- [`MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
+  : Multivariate Student's t Distribution
 - [`distrib_cdf.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.StudentTDistrib.md)
   : Student's t Cumulative Distribution Function
 - [`distrib_deriv3.StudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentTDistrib.md)
@@ -421,6 +445,88 @@ Rarely called directly, but useful as a reference for what is happening.
   : Pseudo-Huber Quantile Function
 - [`distrib_rng.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md)
   : Pseudo-Huber Random Number Generator
+
+## Skew normal
+
+- [`SkewNormalDistrib()`](https://statmodels7.github.io/distributions7/reference/SkewNormalDistrib.md)
+  : S7 Class for the Skew Normal Distribution
+- [`distrib_cdf.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormalDistrib.md)
+  : Skew Normal Cumulative Distribution Function
+- [`distrib_grad_y.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormalDistrib.md)
+  : Skew Normal Response Derivative
+- [`distrib_gradient.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormalDistrib.md)
+  : Skew Normal Analytical Gradient
+- [`distrib_hess_y.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormalDistrib.md)
+  : Skew Normal Response Second Derivative
+- [`distrib_hessian.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormalDistrib.md)
+  : Skew Normal Analytical Observed Hessian
+- [`distrib_pdf.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormalDistrib.md)
+  : Skew Normal Probability Density Function
+- [`distrib_rng.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormalDistrib.md)
+  : Skew Normal Random Number Generator
+
+## Skew t
+
+- [`SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/SkewTDistrib.md)
+  : S7 Class for the Skew t Distribution
+- [`distrib_grad_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md)
+  : Skew t Response Derivative
+- [`distrib_gradient.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
+  : Skew t Analytical Gradient
+- [`distrib_hess_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md)
+  : Skew t Response Second Derivative
+- [`distrib_hessian.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md)
+  : Skew t Analytical Observed Hessian
+- [`distrib_pdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md)
+  : Skew t Probability Density Function
+- [`distrib_rng.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewTDistrib.md)
+  : Skew t Random Number Generator
+
+## Gumbel
+
+- [`GumbelDistrib()`](https://statmodels7.github.io/distributions7/reference/GumbelDistrib.md)
+  : S7 Class for the Gumbel Distribution
+- [`distrib_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GumbelDistrib.md)
+  : Gumbel Cumulative Distribution Function
+- [`distrib_expected_hessian.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GumbelDistrib.md)
+  : Gumbel Analytical Expected Hessian
+- [`distrib_grad_y.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GumbelDistrib.md)
+  : Gumbel Response Derivative
+- [`distrib_gradient.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GumbelDistrib.md)
+  : Gumbel Analytical Gradient
+- [`distrib_hess_y.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.GumbelDistrib.md)
+  : Gumbel Response Second Derivative
+- [`distrib_hessian.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GumbelDistrib.md)
+  : Gumbel Analytical Observed Hessian
+- [`distrib_pdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GumbelDistrib.md)
+  : Gumbel Probability Density Function
+- [`distrib_quantile.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GumbelDistrib.md)
+  : Gumbel Quantile Function
+- [`distrib_rng.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GumbelDistrib.md)
+  : Gumbel Random Number Generator
+
+## Weibull
+
+- [`WeibullDistrib()`](https://statmodels7.github.io/distributions7/reference/WeibullDistrib.md)
+  : S7 Class for the Weibull Distribution
+- [`distrib_cdf.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.WeibullDistrib.md)
+  : Weibull Cumulative Distribution Function
+- [`distrib_expected_hessian.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.WeibullDistrib.md)
+  : Weibull Analytical Expected Hessian
+- [`distrib_grad_y.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.WeibullDistrib.md)
+  : Weibull Response Derivative
+- [`distrib_gradient.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.WeibullDistrib.md)
+  : Weibull Analytical Gradient
+- [`distrib_hess_y.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.WeibullDistrib.md)
+  : Weibull Response Second Derivative
+- [`distrib_hessian.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.WeibullDistrib.md)
+  : Weibull Analytical Observed Hessian
+- [`distrib_pdf.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.WeibullDistrib.md)
+  : Weibull Probability Density Function
+- [`distrib_quantile.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.WeibullDistrib.md)
+  : Weibull Quantile Function
+- [`distrib_rng.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.WeibullDistrib.md)
+  : Weibull Random Number Generator
 
 ## Gamma
 
@@ -639,6 +745,11 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   : Multivariate Gaussian Distribution
 
+## Multivariate Student t
+
+- [`MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
+  : Multivariate Student's t Distribution
+
 ## Wrapper classes
 
 The methods of the zero-inflated, zero-adjusted, truncated, transformed
@@ -806,6 +917,8 @@ inherits unless it registers something more specific.
   : Gamma Distribution Object (Mean-Variance Parameterization)
 - [`gaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md)
   : Gaussian Distribution Object (Standard Deviation Parameterization)
+- [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
+  : Gumbel Distribution Object
 - [`invgauss_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)
   : Inverse-Gaussian Distribution Object (Mean-Dispersion
   Parameterization)
@@ -819,14 +932,22 @@ inherits unless it registers something more specific.
   : S7 Class for Multivariate Distributions
 - [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
   : Construct a Multivariate Gaussian Distribution
+- [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+  : Construct a Multivariate Student's t Distribution
 - [`negbin_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
   : Negative Binomial Distribution Object (NB2)
 - [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
   : Poisson Distribution Object
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution Object (Location-Scale Parameterization)
+- [`skewnormal_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal_distrib.md)
+  : Skew Normal Distribution Object
+- [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  : Skew t Distribution Object
 - [`student_t_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)
   : Student's t Distribution Object (Location-Scale Parameterization)
+- [`weibull_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
+  : Weibull Distribution Object
 
 ## Internals
 
@@ -934,6 +1055,9 @@ divergent density.
 
   Default Expected Hessian for `distrib` Objects
 
+- [`distrib_expected_hessian.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.multivariate_distrib.md)
+  : Expected Information of a Multivariate Distribution
+
 - [`distrib_grad_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.md)
   : Default Log-CDF Gradient for Continuous Distributions
 
@@ -943,11 +1067,17 @@ divergent density.
 - [`distrib_grad_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvGaussianDistrib.md)
   : Multivariate Gaussian Response Gradient
 
+- [`distrib_grad_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvStudentTDistrib.md)
+  : Multivariate Student t Response Gradient
+
 - [`distrib_grad_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
   : Default Response Gradient for Continuous Distributions
 
 - [`distrib_gradient.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
   : Multivariate Gaussian Score
+
+- [`distrib_gradient.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md)
+  : Multivariate Student t Score
 
 - [`distrib_gradient.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.distrib.md)
   :
@@ -969,6 +1099,9 @@ divergent density.
 - [`distrib_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvGaussianDistrib.md)
   : Multivariate Gaussian Observed Hessian
 
+- [`distrib_hessian.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.md)
+  : Multivariate Student t Observed Hessian
+
 - [`distrib_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.distrib.md)
   :
 
@@ -976,6 +1109,9 @@ divergent density.
 
 - [`distrib_pdf.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvGaussianDistrib.md)
   : Multivariate Gaussian Density
+
+- [`distrib_pdf.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.md)
+  : Multivariate Student t Density
 
 - [`distrib_quantile.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.continuous_distrib.md)
   : Default Numerical Quantile Function for Continuous Distributions
@@ -989,11 +1125,23 @@ divergent density.
 - [`distrib_rng.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvGaussianDistrib.md)
   : Multivariate Gaussian Generator
 
+- [`distrib_rng.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvStudentTDistrib.md)
+  : Multivariate Student t Generator
+
 - [`distrib_rng.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.continuous_distrib.md)
   : Default Numerical RNG for Continuous Distributions
 
 - [`distrib_rng.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.discrete_distrib.md)
   : Default Numerical RNG for Discrete Distributions
+
+- [`distrib_start.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.MvGaussianDistrib.md)
+  : The Maximum Likelihood Estimate as a Starting Value
+
+- [`distrib_start.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.MvStudentTDistrib.md)
+  : The Gaussian Estimate as a Starting Value for a t
+
+- [`distrib_start.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.distrib.md)
+  : Random Starting Values
 
 - [`expectation.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
   : Expectation for Truncated Continuous Distributions
@@ -1019,11 +1167,23 @@ divergent density.
 - [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   : Dispatch an Expected-Derivative Strategy
 
+- [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md)
+  : A Five-Point First Derivative
+
+- [`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md)
+  : A Five-Point Second Derivative
+
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
   : Which Observations the Finite-Difference Reference Can Be Trusted At
 
 - [`fd_second()`](https://statmodels7.github.io/distributions7/reference/fd_second.md)
   : A Second Derivative From One Stencil
+
+- [`fd_steps()`](https://statmodels7.github.io/distributions7/reference/fd_steps.md)
+  : Finite-Difference Steps That Respect a Parameter's Domain
+
+- [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
+  : Finite-Difference Steps That Respect the Support
 
 - [`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
   : Locate a High-Density Point of a Bare Log-Density
@@ -1055,6 +1215,9 @@ divergent density.
 - [`generate_random_theta.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvGaussianDistrib.md)
   : Random Parameters for a Multivariate Gaussian
 
+- [`generate_random_theta.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvStudentTDistrib.md)
+  : Random Parameters for a Multivariate Student t
+
 - [`generate_random_theta.distrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.distrib.md)
   :
 
@@ -1072,8 +1235,14 @@ divergent density.
 - [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
   : Can the Parent Supply Exact CDF Derivatives?
 
+- [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
+  : Does This Distribution Compute Its Expected Information Exactly?
+
 - [`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
   : Invert the Hessian Component Names
+
+- [`index_partitions()`](https://statmodels7.github.io/distributions7/reference/index_partitions.md)
+  : Set Partitions of a Multi-Index
 
 - [`inverse_link_derivs()`](https://statmodels7.github.io/distributions7/reference/inverse_link_derivs.md)
   : Inverse-Link Derivatives for Every Parameter
@@ -1090,6 +1259,9 @@ divergent density.
 - [`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
   : Does This Distribution Already Model a Probability of Zero?
 
+- [`kurtosis.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GumbelDistrib.md)
+  : Kurtosis of the Gumbel Distribution
+
 - [`kurtosis.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md)
   : Kurtosis of the Laplace Distribution
 
@@ -1098,6 +1270,15 @@ divergent density.
 
 - [`kurtosis.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.PseudoHuberDistrib.md)
   : Kurtosis of the Pseudo-Huber Distribution
+
+- [`kurtosis.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewNormalDistrib.md)
+  : Kurtosis of the Skew Normal Distribution
+
+- [`kurtosis.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewTDistrib.md)
+  : Kurtosis of the Skew t Distribution
+
+- [`kurtosis.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.WeibullDistrib.md)
+  : Kurtosis of the Weibull Distribution
 
 - [`kurtosis.distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.distrib.md)
   : Kurtosis of a Distribution
@@ -1126,11 +1307,17 @@ divergent density.
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
+- [`mean.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GumbelDistrib.md)
+  : Mean of the Gumbel Distribution
+
 - [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
   : Mean of the Laplace Distribution
 
 - [`mean.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MvGaussianDistrib.md)
   : Mean of a Multivariate Gaussian
+
+- [`mean.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md)
+  : Mean of a Multivariate Student t
 
 - [`mean.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/mean.NegBinDistrib.md)
   : Mean of the Negative Binomial Distribution
@@ -1138,11 +1325,35 @@ divergent density.
 - [`mean.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuberDistrib.md)
   : Mean of the Pseudo-Huber Distribution
 
+- [`mean.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/mean.SkewNormalDistrib.md)
+  : Mean of the Skew Normal Distribution
+
+- [`mean.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md)
+  : Mean of the Skew t Distribution
+
+- [`mean.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/mean.WeibullDistrib.md)
+  : Mean of the Weibull Distribution
+
 - [`mean.distrib`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md)
   : Mean of a Distribution Object
 
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
   : Memoise a Ratio Function on Its Block
+
+- [`mills_ratio()`](https://statmodels7.github.io/distributions7/reference/mills_ratio.md)
+  : The Inverse Mills Ratio and Its Derivative
+
+- [`mv_derived.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
+  : Standard Deviations and Correlations of a Multivariate Gaussian
+
+- [`mv_derived.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md)
+  : Scale Standard Deviations and Correlations of a Multivariate t
+
+- [`mv_derived.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
+  : Matrix Entries as the Default Interpretable Quantities
+
+- [`mv_entry_index()`](https://statmodels7.github.io/distributions7/reference/mv_entry_index.md)
+  : Distinct Entries of a Symmetric Matrix, and Their Labels
 
 - [`mv_flat_theta()`](https://statmodels7.github.io/distributions7/reference/mv_flat_theta.md)
   : Require Scalar Parameters
@@ -1150,14 +1361,62 @@ divergent density.
 - [`mv_hess_indices()`](https://statmodels7.github.io/distributions7/reference/mv_hess_indices.md)
   : Index Pairs Behind the Hessian Keys of a Multivariate Distribution
 
+- [`mv_leading_location()`](https://statmodels7.github.io/distributions7/reference/mv_leading_location.md)
+  : The First p Parameters, Read as a Location
+
+- [`mv_location.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_location.MvGaussianDistrib.md)
+  : Mean of a Multivariate Gaussian
+
+- [`mv_location.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_location.MvStudentTDistrib.md)
+  : Location of a Multivariate Student t
+
+- [`mv_location.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_location.multivariate_distrib.md)
+  : No Location Without a Family That Has One
+
+- [`mv_marginal.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvGaussianDistrib.md)
+  : Marginal of a Multivariate Gaussian
+
+- [`mv_marginal.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.md)
+  : Marginal of a Multivariate Student t
+
+- [`mv_marginal.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.multivariate_distrib.md)
+  : No Marginal Without a Closed Form
+
+- [`mv_moment_start()`](https://statmodels7.github.io/distributions7/reference/mv_moment_start.md)
+  : The Moment Estimates a Multivariate Family Starts From
+
+- [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
+  : Draw the Panel Matrix of a Multivariate Density
+
+- [`mv_prefixed_names()`](https://statmodels7.github.io/distributions7/reference/mv_prefixed_names.md)
+  : Prefix a Structure's Free Names with the Matrix They Describe
+
 - [`mv_refuse()`](https://statmodels7.github.io/distributions7/reference/mv_refuse.md)
   : Refuse a Quantity That Has No Multivariate Counterpart
+
+- [`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
+  : Standard Deviations and Correlations of a Structured Matrix
+
+- [`mv_sigma.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvGaussianDistrib.md)
+  : The Covariance a Multivariate Gaussian Carries
+
+- [`mv_sigma.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
+  : The Scale Matrix of a Multivariate Student t
+
+- [`mv_sigma_derivs()`](https://statmodels7.github.io/distributions7/reference/mv_sigma_derivs.md)
+  : Derivatives of the Covariance with Respect to Every Parameter
 
 - [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
   : The Pieces a Multivariate Gaussian Evaluates From
 
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals
+
+- [`mvt_pieces()`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
+  : The Pieces a Multivariate t Evaluates From
+
+- [`mvt_weights()`](https://statmodels7.github.io/distributions7/reference/mvt_weights.md)
+  : The Weight a Multivariate t Gives Each Observation
 
 - [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
   : Number of Points in a Discrete Support
@@ -1174,6 +1433,9 @@ divergent density.
 - [`order_indices()`](https://statmodels7.github.io/distributions7/reference/order_indices.md)
   : Multi-Indices of a Given Order, as Parameter Names
 
+- [`owen_t()`](https://statmodels7.github.io/distributions7/reference/owen_t.md)
+  : Owen's T Function
+
 - [`parent_ell()`](https://statmodels7.github.io/distributions7/reference/parent_ell.md)
   : Look Up the Parent's Derivative Components by Block
 
@@ -1189,6 +1451,12 @@ divergent density.
 - [`plot.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
   : Plot Method for Discrete Distributions
 
+- [`plot.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
+  : Panels of a Multivariate Density
+
+- [`print.FisherScoring`](https://statmodels7.github.io/distributions7/reference/print.FisherScoring.md)
+  : Print a Fisher Scoring Specification
+
 - [`print.distrib`](https://statmodels7.github.io/distributions7/reference/print.distrib.md)
   :
 
@@ -1203,6 +1471,9 @@ divergent density.
 - [`set_partitions()`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
   : All Set Partitions of a Finite Index Set
 
+- [`skewness.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GumbelDistrib.md)
+  : Skewness of the Gumbel Distribution
+
 - [`skewness.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.LaplaceDistrib.md)
   : Skewness of the Laplace Distribution
 
@@ -1212,11 +1483,32 @@ divergent density.
 - [`skewness.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.PseudoHuberDistrib.md)
   : Skewness of the Pseudo-Huber Distribution
 
+- [`skewness.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.SkewNormalDistrib.md)
+  : Skewness of the Skew Normal Distribution
+
+- [`skewness.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.SkewTDistrib.md)
+  : Skewness of the Skew t Distribution
+
+- [`skewness.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.WeibullDistrib.md)
+  : Skewness of the Weibull Distribution
+
 - [`skewness.distrib`](https://statmodels7.github.io/distributions7/reference/skewness.distrib.md)
   : Skewness of a Distribution
 
 - [`skewness.numeric`](https://statmodels7.github.io/distributions7/reference/skewness.numeric.md)
   : Sample Skewness
+
+- [`skewnormal_delta()`](https://statmodels7.github.io/distributions7/reference/skewnormal_delta.md)
+  : The Shape a Skew Normal's Moments Depend On
+
+- [`skewt_moment_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_moment_pieces.md)
+  : The Quantities a Skew t's Moments Are Built From
+
+- [`skewt_nu_step()`](https://statmodels7.github.io/distributions7/reference/skewt_nu_step.md)
+  : The Step a Skew t Differences the Degrees of Freedom With
+
+- [`skewt_pieces()`](https://statmodels7.github.io/distributions7/reference/skewt_pieces.md)
+  : The Pieces a Skew t Evaluates From
 
 - [`split_index()`](https://statmodels7.github.io/distributions7/reference/split_index.md)
   : Split a Multi-Index Into Parent and Wrapper Parts
@@ -1229,6 +1521,9 @@ divergent density.
 
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
+
+- [`struct_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/struct_free_or_fit.md)
+  : Project a Matrix onto What a Structure Can Represent
 
 - [`struct_pair_lookup()`](https://statmodels7.github.io/distributions7/reference/struct_pair_lookup.md)
   : Where Each Pair of Free Values Sits in a Structure's Second
@@ -1291,11 +1586,17 @@ divergent density.
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
 
+- [`variance.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GumbelDistrib.md)
+  : Variance of the Gumbel Distribution
+
 - [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
   : Variance of the Laplace Distribution
 
 - [`variance.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md)
   : Variance of a Multivariate Gaussian
+
+- [`variance.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
+  : Covariance of a Multivariate Student t
 
 - [`variance.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/variance.NegBinDistrib.md)
   : Variance of the Negative Binomial Distribution
@@ -1303,11 +1604,26 @@ divergent density.
 - [`variance.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/variance.PseudoHuberDistrib.md)
   : Variance of the Pseudo-Huber Distribution
 
+- [`variance.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/variance.SkewNormalDistrib.md)
+  : Variance of the Skew Normal Distribution
+
+- [`variance.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/variance.SkewTDistrib.md)
+  : Variance of the Skew t Distribution
+
+- [`variance.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/variance.WeibullDistrib.md)
+  : Variance of the Weibull Distribution
+
 - [`variance.distrib`](https://statmodels7.github.io/distributions7/reference/variance.distrib.md)
   : Variance of a Distribution
 
 - [`variance.numeric`](https://statmodels7.github.io/distributions7/reference/variance.numeric.md)
   : Sample Variance
+
+- [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
+  : Gamma Factors of a Weibull's Moments
+
+- [`weibull_pieces()`](https://statmodels7.github.io/distributions7/reference/weibull_pieces.md)
+  : The Pieces a Weibull Evaluates From
 
 - [`za_cont_deriv_k()`](https://statmodels7.github.io/distributions7/reference/za_cont_deriv_k.md)
   : Derivatives of a Zero-Adjusted Continuous Distribution

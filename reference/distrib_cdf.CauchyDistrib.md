@@ -27,6 +27,10 @@ distribution: \$\$F(q; \mu, \sigma) = \dfrac{1}{2} +
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`cauchy_distrib`](https://statmodels7.github.io/distributions7/reference/cauchy_distrib.md)

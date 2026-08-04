@@ -84,6 +84,10 @@ FixedContinuousDistrib(
 
   A named list of the fixed parameter values.
 
+## Value
+
+An object of class `FixedContinuousDistrib`.
+
 ## Details
 
 The free parameters are the parent's minus the fixed ones, in the

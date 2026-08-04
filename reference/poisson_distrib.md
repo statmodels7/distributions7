@@ -76,3 +76,19 @@ are also available.
 
 - [`distrib_expected_hessian.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PoissonDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- poisson_distrib()
+d@params
+#> [1] "mu"
+
+theta <- list(mu = 2)
+distrib_pdf(d, 0:5, theta)
+#> [1] 0.13533528 0.27067057 0.27067057 0.18044704 0.09022352 0.03608941
+distrib_gradient(d, 0:5, theta)
+#> $mu
+#> [1] -1.0 -0.5  0.0  0.5  1.0  1.5
+#> 
+```

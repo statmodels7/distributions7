@@ -46,15 +46,33 @@ and the Hessian are multiplications, and the first term of the score is
 the structure's own `struct_dlogdet()`; written in \\\Sigma\\ the same
 quantities need a solve at every step.
 
-**Parameters.** The mean contributes `mu1`, ..., `mup` and the structure
-contributes its own free values under their own names, so a
-two-dimensional gaussian on an unstructured covariance has five
-parameters: `mu1`, `mu2`, `log_L1`, `log_L2`, `L2.1`. All of them are
-unconstrained, and their links are therefore the identity: the
-constraint that makes the matrix positive definite lives inside the
-structure, which is why it needs no link to express it. A consequence
-worth knowing is that the parameter scale and the link scale coincide
-here, so `scale = "link"` changes nothing.
+**Parameters.** The mean contributes `mu1`, ..., `mup`, and the
+structure contributes its free values prefixed by the matrix they
+describe: `sigma_` for a covariance and `omega_` for a precision. A
+two-dimensional gaussian on an unstructured covariance therefore has
+five parameters, `mu1`, `mu2`, `sigma_log_L1`, `sigma_log_L2` and
+`sigma_L2.1`, while the same structure on the precision gives
+`omega_log_L1` and the rest. The prefix is what distinguishes the two
+models in a printed table, since the name of a free value says how the
+matrix is built and not which matrix it is.
+
+All of the parameters are unconstrained, and their links are therefore
+the identity: the constraint that makes the matrix positive definite
+lives inside the structure, which is why it needs no link to express it.
+A consequence worth knowing is that the parameter scale and the link
+scale coincide here, so `scale = "link"` changes nothing.
+
+**Reading a fit.** The free values are coordinates, not quantities
+anybody reads.
+[`mv_summary`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+carries the fit's variance matrix onto the standard deviations and
+correlations by the delta method, and
+[`print()`](https://rdrr.io/r/base/print.html) shows them; a precision
+parametrisation also reports the conditional variances and the partial
+correlations, which are what it describes directly. The conditional
+variance is \\1/\Omega\_{jj} = \mathrm{Var}(Y_j \mid Y\_{-j})\\, and its
+ratio to the marginal variance is \\1 - R_j^2\\ for the regression of
+that coordinate on all the others.
 
 **Rank.** A rank-deficient structure is refused. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
@@ -82,13 +100,13 @@ d
 #> Dimensions:   multivariate
 #> 
 #> Parameters:
-#>   mu1    (mean)               | Link: identity   | Domain: (-Inf, Inf)
-#>   mu2    (mean)               | Link: identity   | Domain: (-Inf, Inf)
-#>   log_L1 (covariance)         | Link: identity   | Domain: (-Inf, Inf)
-#>   log_L2 (covariance)         | Link: identity   | Domain: (-Inf, Inf)
-#>   L2.1   (covariance)         | Link: identity   | Domain: (-Inf, Inf)
+#>   mu1          (mean)               | Link: identity   | Domain: (-Inf, Inf)
+#>   mu2          (mean)               | Link: identity   | Domain: (-Inf, Inf)
+#>   sigma_log_L1 (covariance)         | Link: identity   | Domain: (-Inf, Inf)
+#>   sigma_log_L2 (covariance)         | Link: identity   | Domain: (-Inf, Inf)
+#>   sigma_L2.1   (covariance)         | Link: identity   | Domain: (-Inf, Inf)
 
-theta <- list(mu1 = 0, mu2 = 0, log_L1 = 0, log_L2 = 0, L2.1 = 0.5)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 y <- rbind(c(0, 0), c(1, -1))
 distrib_pdf(d, y, theta, log = TRUE)
 #> [1] -1.837877 -3.462877
@@ -101,9 +119,9 @@ mv_sigma(d, theta)
 
 # a diagonal covariance: two variances instead of three free values
 mvgaussian_distrib(2, struct_sigma = covstructs7::diag_struct(2))@params
-#> [1] "mu1" "mu2" "d1"  "d2" 
+#> [1] "mu1"      "mu2"      "sigma_d1" "sigma_d2"
 
 # or the precision, which is the cheaper parametrisation
 mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))@params
-#> [1] "mu1"    "mu2"    "log_L1" "log_L2" "L2.1"  
+#> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  
 ```

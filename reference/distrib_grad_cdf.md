@@ -71,3 +71,19 @@ numerically, and distributions with a closed form register it directly.
 
 [`distrib_hess_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
 [`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+
+## Examples
+
+``` r
+d <- gaussian_distrib()
+theta <- list(mu = 0, sigma = 1)
+
+# what a right-censored observation at q = 1 contributes to the score
+distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
+#> $mu
+#> [1] 1.525135
+#> 
+#> $sigma
+#> [1] 1.525135
+#> 
+```

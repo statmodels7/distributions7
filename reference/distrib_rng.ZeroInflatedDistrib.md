@@ -17,6 +17,10 @@ Bernoulli(\\\zeta\\) fraction of the draws with structural zeros.
 
   A list with the parent's parameters followed by `zi`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)

@@ -16,6 +16,10 @@ Generates random numbers from the Gamma distribution.
 
   A list containing the parameters `mu` and `sigma2`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`gamma_distrib`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md)

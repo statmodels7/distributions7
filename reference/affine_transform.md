@@ -25,3 +25,11 @@ affine_transform(loc = 0, scale = 1)
 A
 [`transformer`](https://statmodels7.github.io/distributions7/reference/transformer.md)
 object.
+
+## Examples
+
+``` r
+d <- transformation(gaussian_distrib(), affine_transform(loc = 1, scale = 2))
+distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+#> [1] 0.1994711
+```

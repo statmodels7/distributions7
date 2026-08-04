@@ -16,6 +16,10 @@ Generates random numbers from the Inverse-Gaussian distribution.
 
   A list containing the parameters `mu` and `phi`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`invgauss_distrib`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)

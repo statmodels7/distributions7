@@ -50,3 +50,18 @@ Accuracy is roughly `sqrt(eps)`.
 
 [`numerical_gradient`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
 [`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
+
+## Examples
+
+``` r
+numerical_hessian(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu_mu
+#> [1] -1 -1 -1
+#> 
+#> $sigma_sigma
+#> [1] -2  1 -2
+#> 
+#> $mu_sigma
+#> [1]  2  0 -2
+#> 
+```

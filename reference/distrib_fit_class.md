@@ -26,6 +26,9 @@ distrib_fit(
   iterations = integer(0),
   converged = logical(0),
   method = character(0),
+  criterion = character(0),
+  note = character(0),
+  counts = NULL,
   level = integer(0)
 )
 ```
@@ -98,9 +101,25 @@ distrib_fit(
 
   Optimisation method actually used.
 
+- criterion:
+
+  Which stopping rule ended the run, as optimizers7 reports it.
+
+- note:
+
+  Any remark the optimiser attached to the run.
+
+- counts:
+
+  How many times the objective and its gradient were evaluated.
+
 - level:
 
   Confidence level.
+
+## Value
+
+An object of class `distrib_fit`.
 
 ## Methods
 
@@ -111,3 +130,18 @@ Methods implemented for this class:
 [`print()`](https://statmodels7.github.io/distributions7/reference/print.distrib_fit.md),
 [`simulate()`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md),
 [`vcov()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md)
+
+## Examples
+
+``` r
+set.seed(1)
+y <- distrib_rng(gaussian_distrib(), 200, list(mu = 1, sigma = 2))
+fit <- fit_distrib(gaussian_distrib(), y)
+S7::S7_inherits(fit, distrib_fit)
+#> [1] TRUE
+coef(fit)
+#>       mu    sigma 
+#> 1.071079 1.853543 
+logLik(fit)
+#> 'log Lik.' -407.2075 (df=2)
+```

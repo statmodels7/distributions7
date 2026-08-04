@@ -27,6 +27,10 @@ q \< 1 \\ 1 & q \ge 1 \end{cases}\$\$
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`bernoulli_distrib`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)

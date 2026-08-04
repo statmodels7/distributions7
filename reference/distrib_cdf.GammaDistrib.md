@@ -29,6 +29,10 @@ distribution, using the shape/rate reparameterization \\\alpha =
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`gamma_distrib`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md)

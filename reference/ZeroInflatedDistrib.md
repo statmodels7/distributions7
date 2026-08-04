@@ -78,6 +78,10 @@ ZeroInflatedDistrib(
 
   The wrapped `discrete_distrib` object.
 
+## Value
+
+An object of class `ZeroInflatedDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

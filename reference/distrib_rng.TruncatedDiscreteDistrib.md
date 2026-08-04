@@ -16,6 +16,10 @@ Inverse transform sampling on the parent, exact for a discrete cdf.
 
   A named list of the parent's parameters.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md)

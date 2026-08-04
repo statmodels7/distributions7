@@ -24,3 +24,15 @@ expand_params(theta, n)
 ## Value
 
 A list where all elements have length `n`.
+
+## Examples
+
+``` r
+expand_params(list(mu = 0, sigma = 1), n = 3)
+#> $mu
+#> [1] 0 0 0
+#> 
+#> $sigma
+#> [1] 1 1 1
+#> 
+```

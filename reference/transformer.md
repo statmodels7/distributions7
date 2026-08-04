@@ -64,6 +64,10 @@ transformer(
 
   Logical; `TRUE` for monotonically decreasing transformations.
 
+## Value
+
+An object of class `transformer`.
+
 ## Methods
 
 No method dispatches on this class: a `transformer` is a description of
@@ -90,3 +94,17 @@ Ready-made transformers:
 ## See also
 
 [`transformation`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+
+## Examples
+
+``` r
+tr <- log_transform()
+S7::S7_inherits(tr, transformer)
+#> [1] TRUE
+tr@name
+#> [1] "log"
+
+# a transformer is consumed by transformation(), which is where it acts
+distrib_pdf(transformation(gamma_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
+#> [1] 0.3608941
+```

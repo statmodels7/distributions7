@@ -84,6 +84,10 @@ FixedDiscreteDistrib(
 
   A named list of the fixed parameter values.
 
+## Value
+
+An object of class `FixedDiscreteDistrib`.
+
 ## Details
 
 Identical in behaviour to

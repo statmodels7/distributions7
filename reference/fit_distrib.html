@@ -61,7 +61,7 @@ parameter scale and reported with standard errors and confidence intervals.</p>
 <span>  <span class="va">distrib</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  start <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fisher"</span>, <span class="st">"newton"</span>, <span class="st">"bfgs"</span><span class="op">)</span>,</span>
+<span>  method <span class="op">=</span> <span class="fu"><a href="fisher_scoring.html">fisher_scoring</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  maxit <span class="op">=</span> <span class="fl">200</span>,</span>
 <span>  tol <span class="op">=</span> <span class="fl">1e-10</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -83,31 +83,38 @@ parameter scale and reported with standard errors and confidence intervals.</p>
 
 <dt id="arg-start">start<a class="anchor" aria-label="anchor" href="#arg-start"></a></dt>
 <dd><p>Optional named list of starting values <strong>on the parameter
-scale</strong>. If <code>NULL</code> (default) starting values are drawn with
-<code><a href="generate_random_theta.html">generate_random_theta</a></code>, with a few random restarts on failure;
-supplying a sensible <code>start</code> makes convergence faster and more reliable.</p></dd>
+scale</strong>. If <code>NULL</code> (default) they come from
+<code><a href="distrib_start.html">distrib_start</a></code>, which lets a family compute them from the
+data; families that do not say otherwise fall back to random draws, with
+restarts.</p></dd>
 
 
 <dt id="arg-method">method<a class="anchor" aria-label="anchor" href="#arg-method"></a></dt>
-<dd><p>Optimisation method, either one of three named strategies or
-an optimiser object from <span class="pkg">optimizers7</span>. The named strategies are
-<code>"fisher"</code> (default), which is Newton's method with the expected
-information in place of the Hessian, <code>"newton"</code>, which uses the
-observed Hessian, and <code>"bfgs"</code>, which uses the analytical gradient
-alone; the first two fall back to BFGS if they fail to converge. Any
-optimiser object is used as given, receiving the analytical gradient and
-observed Hessian and no fallback, so that
-<code>method = lbfgs(criterion = crit_grad(1e-12))</code> selects both the
-algorithm and the stopping rule.</p></dd>
+<dd><p>How to optimise. One argument, taking one of three things:</p><ul><li><p><code><a href="fisher_scoring.html">fisher_scoring()</a></code>, the default — Newton's method
+with the <strong>expected</strong> information in place of the Hessian, the
+object carrying how that information is to be obtained when the family
+has no closed form for it;</p></li>
+<li><p>an optimiser object from <span class="pkg">optimizers7</span>, used as given and
+receiving the analytical gradient and the <strong>observed</strong> Hessian,
+so that <code>method = lbfgs(criterion = crit_grad(1e-12))</code> selects
+both the algorithm and the stopping rule;</p></li>
+<li><p>one of the strings <code>"fisher"</code>, <code>"newton"</code> or
+<code>"bfgs"</code>, kept as short names for the three ready-made
+strategies. The first two fall back to BFGS if they fail to converge;
+an optimiser the caller chose is never silently replaced.</p></li>
+</ul></dd>
 
 
 <dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
-<dd><p>Maximum number of iterations. Defaults to 200.</p></dd>
+<dd><p>Maximum number of iterations. Defaults to 200. An optimiser
+object or a <code><a href="fisher_scoring.html">fisher_scoring()</a></code> carrying its own <code>maxit</code>
+overrides it.</p></dd>
 
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
-<dd><p>Convergence tolerance on the score and on the log-likelihood
-increment. Defaults to <code>1e-10</code>.</p></dd>
+<dd><p>Convergence tolerance on the score, used to build
+<code>crit_grad(tol)</code>. Defaults to <code>1e-10</code>. A method object carrying
+its own stopping rule overrides it.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
@@ -115,8 +122,9 @@ increment. Defaults to <code>1e-10</code>.</p></dd>
 
 
 <dt id="arg-n-start">n_start<a class="anchor" aria-label="anchor" href="#arg-n-start"></a></dt>
-<dd><p>Number of random restarts attempted when <code>start</code> is
-<code>NULL</code> and the first attempt fails. Defaults to 5.</p></dd>
+<dd><p>How many starting values to ask <code><a href="distrib_start.html">distrib_start</a></code>
+for when <code>start</code> is <code>NULL</code>. Defaults to 5. A family that returns
+its own estimate returns one and ignores this.</p></dd>
 
 </dl></div>
     <div class="section level2">

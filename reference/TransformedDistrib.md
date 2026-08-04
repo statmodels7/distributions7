@@ -86,6 +86,10 @@ TransformedDistrib(
   [`transformer`](https://statmodels7.github.io/distributions7/reference/transformer.md)
   defining \\g\\.
 
+## Value
+
+An object of class `TransformedDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

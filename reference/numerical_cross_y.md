@@ -50,3 +50,15 @@ the way nested differences in the same variable do.
 
 [`numerical_grad_y`](https://statmodels7.github.io/distributions7/reference/numerical_grad_y.md),
 [`distrib_cross_y`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+
+## Examples
+
+``` r
+numerical_cross_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu
+#> [1] 1 1 1
+#> 
+#> $sigma
+#> [1] -2  0  2
+#> 
+```

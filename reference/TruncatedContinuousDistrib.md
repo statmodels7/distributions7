@@ -83,6 +83,10 @@ TruncatedContinuousDistrib(
 
   The truncation points.
 
+## Value
+
+An object of class `TruncatedContinuousDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

@@ -18,6 +18,10 @@ draws).
 
   A list containing the parameters `mu`, `sigma` and `nu`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`pseudohuber_distrib`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)

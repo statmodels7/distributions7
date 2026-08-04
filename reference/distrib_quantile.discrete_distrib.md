@@ -26,3 +26,7 @@ p\\.
 - log.p:
 
   Logical; if `TRUE`, probabilities are given as logs.
+
+## Value
+
+A numeric vector of quantiles.

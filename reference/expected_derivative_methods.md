@@ -10,6 +10,11 @@ therefore accept an `approx` argument selecting *how* the expectation is
 taken. The argument is **ignored** when the distribution provides an
 analytical method (which is always preferred).
 
+## Value
+
+Nothing. This page documents the `approx` argument shared by the three
+generics named above; the value returned is theirs.
+
 ## Details
 
 Let \\\ell\\ be the log-density and \\\ell\_{i}, \ell\_{ij}, \dots\\ its

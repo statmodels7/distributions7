@@ -78,6 +78,10 @@ BinomialDistrib(
   scalar (default 1) or a vector of the same length as the observations
   \\y\\.
 
+## Value
+
+An object of class `BinomialDistrib`.
+
 ## Methods
 
 Methods implemented for this class:

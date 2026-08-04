@@ -24,3 +24,7 @@ microsecond per draw.
 - theta:
 
   A named list of parameters.
+
+## Value
+
+A numeric vector of random draws.

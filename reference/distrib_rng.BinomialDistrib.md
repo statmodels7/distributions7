@@ -16,6 +16,10 @@ Generates random numbers from the Binomial distribution.
 
   A list containing the parameter `mu`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`binomial_distrib`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)

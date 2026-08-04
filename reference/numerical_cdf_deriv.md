@@ -57,3 +57,15 @@ A named list of derivative components of \\F\\, not of its logarithm.
 ## See also
 
 [`distrib_grad_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+
+## Examples
+
+``` r
+numerical_cdf_deriv(gaussian_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
+#> $mu
+#> [1] -0.2419707
+#> 
+#> $sigma
+#> [1] -0.2419707
+#> 
+```

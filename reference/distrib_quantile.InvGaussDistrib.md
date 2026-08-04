@@ -28,6 +28,10 @@ There is no closed form; it is obtained numerically via
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`invgauss_distrib`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)

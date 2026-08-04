@@ -20,3 +20,16 @@ param_smoothness(distrib)
 ## Value
 
 A named logical vector, one entry per parameter.
+
+## Examples
+
+``` r
+param_smoothness(gaussian_distrib())
+#>    mu sigma 
+#>  TRUE  TRUE 
+
+# the Laplace location is a kink, so it is not smooth
+param_smoothness(laplace_distrib())
+#>    mu     b 
+#> FALSE  TRUE 
+```

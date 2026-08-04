@@ -16,6 +16,10 @@ Generates random numbers from the Student's t distribution.
 
   A list containing the parameters `mu`, `sigma`, and `nu`.
 
+## Value
+
+A numeric vector of random draws.
+
 ## See also
 
 [`student_t_distrib`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)

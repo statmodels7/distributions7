@@ -101,3 +101,22 @@ are also available.
 
 - [`distrib_expected_hessian.InvGaussDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGaussDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- invgauss_distrib()
+d@params
+#> [1] "mu"  "phi"
+
+theta <- list(mu = 1, phi = 2)
+distrib_pdf(d, c(0.5, 1, 2), theta)
+#> [1] 0.70413065 0.28209479 0.08801633
+distrib_gradient(d, c(0.5, 1, 2), theta)
+#> $mu
+#> [1] -0.25  0.00  0.50
+#> 
+#> $phi
+#> [1] -0.1875 -0.2500 -0.1875
+#> 
+```

@@ -28,6 +28,10 @@ where \\I_q(\cdot, \cdot)\\ is the regularized incomplete beta function.
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`beta_distrib`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)

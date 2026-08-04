@@ -28,3 +28,7 @@ mass is.
 - log.p:
 
   Logical; if `TRUE`, probabilities are returned as logs.
+
+## Value
+
+A numeric vector of cumulative probabilities.

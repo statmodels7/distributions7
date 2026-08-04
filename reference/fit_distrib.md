@@ -14,7 +14,7 @@ fit_distrib(
   distrib,
   y,
   start = NULL,
-  method = c("fisher", "newton", "bfgs"),
+  method = fisher_scoring(),
   maxit = 200,
   tol = 1e-10,
   level = 0.95,
@@ -35,31 +35,42 @@ fit_distrib(
 - start:
 
   Optional named list of starting values **on the parameter scale**. If
-  `NULL` (default) starting values are drawn with
-  [`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md),
-  with a few random restarts on failure; supplying a sensible `start`
-  makes convergence faster and more reliable.
+  `NULL` (default) they come from
+  [`distrib_start`](https://statmodels7.github.io/distributions7/reference/distrib_start.md),
+  which lets a family compute them from the data; families that do not
+  say otherwise fall back to random draws, with restarts.
 
 - method:
 
-  Optimisation method, either one of three named strategies or an
-  optimiser object from optimizers7. The named strategies are `"fisher"`
-  (default), which is Newton's method with the expected information in
-  place of the Hessian, `"newton"`, which uses the observed Hessian, and
-  `"bfgs"`, which uses the analytical gradient alone; the first two fall
-  back to BFGS if they fail to converge. Any optimiser object is used as
-  given, receiving the analytical gradient and observed Hessian and no
-  fallback, so that `method = lbfgs(criterion = crit_grad(1e-12))`
-  selects both the algorithm and the stopping rule.
+  How to optimise. One argument, taking one of three things:
+
+  - [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
+    the default — Newton's method with the **expected** information in
+    place of the Hessian, the object carrying how that information is to
+    be obtained when the family has no closed form for it;
+
+  - an optimiser object from optimizers7, used as given and receiving
+    the analytical gradient and the **observed** Hessian, so that
+    `method = lbfgs(criterion = crit_grad(1e-12))` selects both the
+    algorithm and the stopping rule;
+
+  - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, kept as short
+    names for the three ready-made strategies. The first two fall back
+    to BFGS if they fail to converge; an optimiser the caller chose is
+    never silently replaced.
 
 - maxit:
 
-  Maximum number of iterations. Defaults to 200.
+  Maximum number of iterations. Defaults to 200. An optimiser object or
+  a
+  [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
+  carrying its own `maxit` overrides it.
 
 - tol:
 
-  Convergence tolerance on the score and on the log-likelihood
-  increment. Defaults to `1e-10`.
+  Convergence tolerance on the score, used to build `crit_grad(tol)`.
+  Defaults to `1e-10`. A method object carrying its own stopping rule
+  overrides it.
 
 - level:
 
@@ -67,8 +78,10 @@ fit_distrib(
 
 - n_start:
 
-  Number of random restarts attempted when `start` is `NULL` and the
-  first attempt fails. Defaults to 5.
+  How many starting values to ask
+  [`distrib_start`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  for when `start` is `NULL`. Defaults to 5. A family that returns its
+  own estimate returns one and ignores this.
 
 ## Value
 

@@ -27,6 +27,10 @@ the generalized inverse of the CDF: \$\$Q(p; \mu, \theta) = \min\left\\y
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)

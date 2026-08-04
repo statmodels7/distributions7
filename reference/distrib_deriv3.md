@@ -71,3 +71,21 @@ distrib_deriv3(
 A named list of derivative-component vectors, keyed as in
 [`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)`(distrib@params, 3)`
 (e.g. `"mu_mu_sigma"`).
+
+## Examples
+
+``` r
+distrib_deriv3(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> $mu_mu_mu
+#> [1] 0 0 0
+#> 
+#> $mu_mu_sigma
+#> [1] 2 2 2
+#> 
+#> $mu_sigma_sigma
+#> [1] -6  0  6
+#> 
+#> $sigma_sigma_sigma
+#> [1] 10 -2 10
+#> 
+```

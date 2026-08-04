@@ -78,3 +78,19 @@ are also available.
 
 - [`distrib_expected_hessian.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BernoulliDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- bernoulli_distrib()
+d@params
+#> [1] "mu"
+
+theta <- list(mu = 0.3)
+distrib_pdf(d, c(0, 1), theta)
+#> [1] 0.7 0.3
+distrib_gradient(d, c(0, 1), theta)
+#> $mu
+#> [1] -1.428571  3.333333
+#> 
+```

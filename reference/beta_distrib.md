@@ -98,3 +98,22 @@ are also available.
 
 - [`distrib_expected_hessian.BetaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaDistrib.md)
   for the analytical expected Hessian.
+
+## Examples
+
+``` r
+d <- beta_distrib()
+d@params
+#> [1] "mu"  "phi"
+
+theta <- list(mu = 0.4, phi = 5)
+distrib_pdf(d, c(0.2, 0.5, 0.8), theta)
+#> [1] 1.536 1.500 0.384
+distrib_gradient(d, c(0.2, 0.5, 0.8), theta)
+#> $mu
+#> [1] -4.431472  2.500000  9.431472
+#> 
+#> $phi
+#> [1]  0.005672038  0.090186153 -0.271586835
+#> 
+```

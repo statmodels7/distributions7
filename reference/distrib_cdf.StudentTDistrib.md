@@ -28,6 +28,10 @@ CDF of the standard Student's t with \\\nu\\ degrees of freedom.
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`student_t_distrib`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)

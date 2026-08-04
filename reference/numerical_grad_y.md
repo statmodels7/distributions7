@@ -38,3 +38,10 @@ A numeric vector of the same length as `y`.
 
 [`numerical_hess_y`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md),
 [`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+
+## Examples
+
+``` r
+numerical_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#> [1]  1  0 -1
+```

@@ -25,6 +25,10 @@ clamped to \\\[0,1\]\\.
 
   Logical; if `TRUE`, probabilities are returned as logs.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md)

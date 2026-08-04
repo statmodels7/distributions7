@@ -107,3 +107,25 @@ derivatives use the numerical fallback.
 
 - [`distrib_expected_hessian.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PseudoHuberDistrib.md)
   for the expected Hessian.
+
+## Examples
+
+``` r
+d <- pseudohuber_distrib()
+d@params
+#> [1] "mu"    "sigma" "nu"   
+
+theta <- list(mu = 0, sigma = 1, nu = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+#> [1] 0.2019553 0.3055948 0.2019553
+distrib_gradient(d, c(-1, 0, 1), theta)
+#> $mu
+#> [1] -0.7071068  0.0000000  0.7071068
+#> 
+#> $sigma
+#> [1] -0.2928932 -1.0000000 -0.2928932
+#> 
+#> $nu
+#> [1] -0.003811423 -0.150258032 -0.003811423
+#> 
+```

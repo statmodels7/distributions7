@@ -27,6 +27,10 @@ generalized inverse of the CDF: \$\$Q(p; \mu) = \begin{cases} 0 & p \le
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`bernoulli_distrib`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)

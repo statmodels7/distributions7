@@ -27,6 +27,10 @@ distribution: \$\$F(q; \mu, \sigma) =
 
   Logical; if `TRUE`, probabilities \\p\\ are given as \\\log(p)\\.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`gaussian_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md)

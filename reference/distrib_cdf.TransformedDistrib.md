@@ -25,6 +25,10 @@ transformations.
 
   Logical; if `TRUE`, probabilities are returned as logs.
 
+## Value
+
+A numeric vector of cumulative probabilities.
+
 ## See also
 
 [`transformation`](https://statmodels7.github.io/distributions7/reference/transformation.md)

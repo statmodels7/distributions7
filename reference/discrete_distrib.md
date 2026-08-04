@@ -72,6 +72,10 @@ discrete_distrib(
   than from \\-\mathbb{E}\[H\]\\ (see
   [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
+## Value
+
+An object of class `discrete_distrib`.
+
 ## Methods
 
 Defaults for discrete distributions, built from the probability mass
@@ -86,3 +90,12 @@ finite lower bound, which every standard count distribution has.
 
 Everything else is inherited from
 [`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
+
+## Examples
+
+``` r
+S7::S7_inherits(poisson_distrib(), discrete_distrib)
+#> [1] TRUE
+S7::S7_inherits(gaussian_distrib(), discrete_distrib)
+#> [1] FALSE
+```

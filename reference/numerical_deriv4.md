@@ -49,3 +49,24 @@ stencil when \\k = l\\, a four-point cross stencil otherwise.
 
 [`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
 [`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+
+## Examples
+
+``` r
+numerical_deriv4(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+#> $mu_mu_mu_mu
+#> [1] 0
+#> 
+#> $mu_mu_mu_sigma
+#> [1] 0
+#> 
+#> $mu_mu_sigma_sigma
+#> [1] -6
+#> 
+#> $mu_sigma_sigma_sigma
+#> [1] 0
+#> 
+#> $sigma_sigma_sigma_sigma
+#> [1] 6
+#> 
+```

@@ -26,6 +26,10 @@ Inverts the mixture CDF: the quantile is 0 for \\p \le \zeta +
 
   Logical; if `TRUE`, probabilities are given as logs.
 
+## Value
+
+A numeric vector of quantiles.
+
 ## See also
 
 [`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
