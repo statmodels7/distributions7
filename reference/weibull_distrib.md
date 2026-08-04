@@ -74,10 +74,10 @@ mean \\\mu\\, and \\\sigma = 2\\ the Rayleigh distribution. The hazard
 is increasing for \\\sigma \> 1\\ and decreasing for \\\sigma \< 1\\,
 which is what the family is used for.
 
-**Higher orders.** Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-([`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-[`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)).
+**Higher orders.** Third and fourth derivatives are closed form,
+observed and expected: with \\u = (y/\mu)^{\sigma}\\ and \\L =
+\log(y/\mu)\\, every derivative is a polynomial in \\u\\ and \\Lu\\, and
+every expectation is a derivative of \\\Gamma\\ at 2.
 
 **Parameter Domains:**
 

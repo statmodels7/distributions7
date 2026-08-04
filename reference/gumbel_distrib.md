@@ -79,10 +79,10 @@ family to \\-Y\\, or use
 with
 [`affine_transform`](https://statmodels7.github.io/distributions7/reference/affine_transform.md)`(scale = -1)`.
 
-**Higher orders.** Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-([`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-[`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)).
+**Higher orders.** Third and fourth derivatives are closed form,
+observed and expected: with \\z = (y-\mu)/\sigma\\ and \\w = e^{-z}\\,
+every derivative is a polynomial in \\z\\ and \\z^j w\\, and every
+expectation is a derivative of \\\Gamma\\ at 2.
 
 **Parameter Domains:**
 

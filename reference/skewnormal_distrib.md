@@ -83,10 +83,11 @@ a different object, not a reparametrisation this class performs.
 \\(-0.9953, 0.9953)\\ whatever \\\alpha\\ is, which is the limitation of
 the family and the reason the skew \\t\\ exists.
 
-**Higher orders.** Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-([`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-[`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)).
+**Higher orders.** The observed third and fourth derivatives are closed
+form, every derivative of \\\log\Phi(t)\\ being a polynomial in \\t\\
+and the inverse Mills ratio through \\R' = -R(t+R)\\; their expected
+values share the obstruction of the expected information and are
+approximated numerically.
 
 **Parameter Domains:**
 

@@ -85,6 +85,8 @@ Methods implemented for this class:
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewTDistrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewTDistrib.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewTDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewTDistrib.md),
 [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md),

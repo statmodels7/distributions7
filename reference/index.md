@@ -396,6 +396,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for Laplace Distribution
 - [`distrib_cdf.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.LaplaceDistrib.md)
   : Laplace Cumulative Distribution Function
+- [`distrib_deriv3.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.md)
+  : Laplace Analytical Third-Order Derivatives
+- [`distrib_deriv4.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LaplaceDistrib.md)
+  : Laplace Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
   : Laplace Analytical Expected Hessian (Fisher Information)
 - [`distrib_grad_cdf.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LaplaceDistrib.md)
@@ -452,6 +456,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Skew Normal Distribution
 - [`distrib_cdf.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormalDistrib.md)
   : Skew Normal Cumulative Distribution Function
+- [`distrib_deriv3.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormalDistrib.md)
+  : Skew Normal Analytical Third-Order Derivatives
+- [`distrib_deriv4.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormalDistrib.md)
+  : Skew Normal Analytical Fourth-Order Derivatives
 - [`distrib_grad_y.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormalDistrib.md)
   : Skew Normal Response Derivative
 - [`distrib_gradient.SkewNormalDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormalDistrib.md)
@@ -469,6 +477,10 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`SkewTDistrib()`](https://statmodels7.github.io/distributions7/reference/SkewTDistrib.md)
   : S7 Class for the Skew t Distribution
+- [`distrib_deriv3.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewTDistrib.md)
+  : Skew t Third-Order Derivatives
+- [`distrib_deriv4.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewTDistrib.md)
+  : Skew t Fourth-Order Derivatives
 - [`distrib_grad_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewTDistrib.md)
   : Skew t Response Derivative
 - [`distrib_gradient.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewTDistrib.md)
@@ -488,6 +500,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Gumbel Distribution
 - [`distrib_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GumbelDistrib.md)
   : Gumbel Cumulative Distribution Function
+- [`distrib_deriv3.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GumbelDistrib.md)
+  : Gumbel Analytical Third-Order Derivatives
+- [`distrib_deriv4.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GumbelDistrib.md)
+  : Gumbel Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GumbelDistrib.md)
   : Gumbel Analytical Expected Hessian
 - [`distrib_grad_y.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GumbelDistrib.md)
@@ -511,6 +527,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Weibull Distribution
 - [`distrib_cdf.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.WeibullDistrib.md)
   : Weibull Cumulative Distribution Function
+- [`distrib_deriv3.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.WeibullDistrib.md)
+  : Weibull Analytical Third-Order Derivatives
+- [`distrib_deriv4.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.WeibullDistrib.md)
+  : Weibull Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.WeibullDistrib.md)
   : Weibull Analytical Expected Hessian
 - [`distrib_grad_y.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.WeibullDistrib.md)
@@ -1073,6 +1093,11 @@ divergent density.
 - [`distrib_grad_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.md)
   : Default Response Gradient for Continuous Distributions
 
+- [`distrib_grad_y.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md)
+  [`distrib_hess_y.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md)
+  [`distrib_cross_y.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md)
+  : Response Derivatives of a Multivariate Distribution
+
 - [`distrib_gradient.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
   : Multivariate Gaussian Score
 
@@ -1092,6 +1117,9 @@ divergent density.
 
 - [`distrib_hess_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvGaussianDistrib.md)
   : Multivariate Gaussian Response Hessian
+
+- [`distrib_hess_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvStudentTDistrib.md)
+  : Multivariate Student t Response Hessian
 
 - [`distrib_hess_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.continuous_distrib.md)
   : Default Response Hessian for Continuous Distributions
@@ -1170,8 +1198,14 @@ divergent density.
 - [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md)
   : A Five-Point First Derivative
 
+- [`fd5_fourth()`](https://statmodels7.github.io/distributions7/reference/fd5_fourth.md)
+  : A Five-Point Fourth Derivative
+
 - [`fd5_second()`](https://statmodels7.github.io/distributions7/reference/fd5_second.md)
   : A Five-Point Second Derivative
+
+- [`fd5_third()`](https://statmodels7.github.io/distributions7/reference/fd5_third.md)
+  : A Five-Point Third Derivative
 
 - [`fd_is_reliable()`](https://statmodels7.github.io/distributions7/reference/fd_is_reliable.md)
   : Which Observations the Finite-Difference Reference Can Be Trusted At

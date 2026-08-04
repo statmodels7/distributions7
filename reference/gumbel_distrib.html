@@ -112,9 +112,10 @@ matrices.</p>
 <p><strong>Minima.</strong> The distribution of minima is the reflection: fit this
 family to \(-Y\), or use <code><a href="transformation.html">transformation</a></code> with
 <code><a href="affine_transform.html">affine_transform</a>(scale = -1)</code>.</p>
-<p><strong>Higher orders.</strong> Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-(<code><a href="numerical_deriv3.html">numerical_deriv3</a></code>, <code><a href="numerical_deriv4.html">numerical_deriv4</a></code>).</p>
+<p><strong>Higher orders.</strong> Third and fourth derivatives are closed form,
+observed and expected: with \(z = (y-\mu)/\sigma\) and \(w = e^{-z}\),
+every derivative is a polynomial in \(z\) and \(z^j w\), and every
+expectation is a derivative of \(\Gamma\) at 2.</p>
 <p><strong>Parameter Domains:</strong></p><ul><li><p>\(\mu \in (-\infty, +\infty)\)</p></li>
 <li><p>\(\sigma \in (0, +\infty)\)</p></li>
 </ul></div>

@@ -116,9 +116,11 @@ reparametrisation this class performs.</p>
 variance \(\sigma^2(1 - b^2\delta^2)\). The skewness is bounded: it lies in
 \((-0.9953, 0.9953)\) whatever \(\alpha\) is, which is the limitation of
 the family and the reason the skew \(t\) exists.</p>
-<p><strong>Higher orders.</strong> Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-(<code><a href="numerical_deriv3.html">numerical_deriv3</a></code>, <code><a href="numerical_deriv4.html">numerical_deriv4</a></code>).</p>
+<p><strong>Higher orders.</strong> The observed third and fourth derivatives are
+closed form, every derivative of \(\log\Phi(t)\) being a polynomial in
+\(t\) and the inverse Mills ratio through \(R' = -R(t+R)\); their
+expected values share the obstruction of the expected information and are
+approximated numerically.</p>
 <p><strong>Parameter Domains:</strong></p><ul><li><p>\(\mu \in (-\infty, +\infty)\)</p></li>
 <li><p>\(\sigma \in (0, +\infty)\)</p></li>
 <li><p>\(\alpha \in (-\infty, +\infty)\)</p></li>
