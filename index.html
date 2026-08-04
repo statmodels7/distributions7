@@ -178,7 +178,7 @@
 <div class="section level2">
 <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a>
 </h2>
-<p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/covstructs7/" class="external-link">covstructs7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, <code><a href="reference/fit_distrib.html">fit_distrib()</a></code> included. The names say which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
+<p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, <code><a href="reference/fit_distrib.html">fit_distrib()</a></code> included. The names say which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">dm</span><span class="op">@</span><span class="va">params</span></span>
@@ -283,7 +283,7 @@
 <tr>
 <td>multivariate</td>
 <td>
-<code><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, parametrised by a covariance or a precision structure from <a href="https://statmodels7.github.io/covstructs7/" class="external-link">covstructs7</a>, and <code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist</td>
+<code><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, parametrised by a covariance or a precision structure from <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>, and <code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist</td>
 </tr>
 <tr>
 <td>wrappers</td>

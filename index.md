@@ -177,7 +177,7 @@ c(iterations = f4@iterations, converged = f4@converged)
 
 A multivariate distribution carries a mean vector and a matrix, and the
 matrix comes from a structure of
-[covstructs7](https://statmodels7.github.io/covstructs7/). Its free
+[parameters7](https://statmodels7.github.io/parameters7/). Its free
 values are scalars, so the parameter vector is a named list of numbers
 exactly as above and every generic here applies unchanged,
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
@@ -323,6 +323,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, inverse gaussian, lognormal, Weibull, Gumbel, beta |
 | discrete | bernoulli, binomial, poisson, negative binomial |
-| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrised by a covariance or a precision structure from [covstructs7](https://statmodels7.github.io/covstructs7/), and [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
+| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrised by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/), and [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
 | wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |
