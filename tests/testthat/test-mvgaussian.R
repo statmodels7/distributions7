@@ -80,7 +80,8 @@ test_that("the parameters are the mean components and the structure's free value
 
   # a diagonal structure contributes fewer of them
   dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
-  expect_identical(dd@params, c("mu1", "mu2", "mu3", "sigma_d1", "sigma_d2", "sigma_d3"))
+  expect_identical(dd@params,
+    c("mu1", "mu2", "mu3", "sigma_log_d1", "sigma_log_d2", "sigma_log_d3"))
 })
 
 test_that("the density is the formula, written out by hand", {
@@ -333,8 +334,9 @@ test_that("a diagonal covariance is fitted with fewer parameters", {
   dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
   set.seed(29)
   y <- distrib_rng(dd, 1500, list(mu1 = 0, mu2 = 1, mu3 = -1,
-                                  sigma_d1 = log(2), sigma_d2 = log(0.5),
-                                  sigma_d3 = 0))
+                                  sigma_log_d1 = log(2),
+                                  sigma_log_d2 = log(0.5),
+                                  sigma_log_d3 = 0))
   fit <- fit_distrib(dd, y)
 
   expect_true(fit@converged)

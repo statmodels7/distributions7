@@ -28,7 +28,7 @@ test_that("the parameter names say which matrix the structure describes", {
   # a diagonal structure carries its own labels through the same prefix
   expect_identical(
     mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))@params,
-    c("mu1", "mu2", "mu3", "sigma_d1", "sigma_d2", "sigma_d3")
+    c("mu1", "mu2", "mu3", "sigma_log_d1", "sigma_log_d2", "sigma_log_d3")
   )
 })
 
@@ -311,4 +311,79 @@ test_that("the two parametrisations report the same uncertainty", {
   expect_equal(a[common, "Std. Error"], b[common, "Std. Error"],
     tolerance = 1e-4
   )
+})
+
+
+test_that("a structured matrix reports the quantities the family is about", {
+  set.seed(77)
+  d <- mvgaussian_distrib(6, sigma = parameters7::autoregressive(6, order = 2))
+  th <- as.list(stats::setNames(
+    c(rep(0, 6), log(3), atanh(0.7), atanh(-0.3)), d@params
+  ))
+  y <- distrib_rng(d, 400, th)
+  fit <- fit_distrib(d, y)
+  s <- mv_summary(fit)
+  blk <- attr(s, "block")
+
+  expect_true("Autoregressive structure" %in% blk)
+  rows <- rownames(s)[blk == "Autoregressive structure"]
+  expect_identical(rows, c("scale", "pacf1", "pacf2", "phi1", "phi2"))
+
+  # The block is not a restatement of the covariance: the lag-one correlation
+  # IS the first partial autocorrelation, and the two must agree to the digit,
+  # while the coefficients appear nowhere else in the summary.
+  expect_equal(s["pacf1", "Estimate"], s["cor_v1_v2", "Estimate"],
+    tolerance = 1e-10)
+  expect_equal(s["pacf1", "Std. Error"], s["cor_v1_v2", "Std. Error"],
+    tolerance = 1e-10)
+  expect_false(any(grepl("^phi", rownames(s)[blk != "Autoregressive structure"])))
+
+  # an order-q autoregression has phi_q = r_q whatever the data
+  expect_equal(s["phi2", "Estimate"], s["pacf2", "Estimate"], tolerance = 1e-10)
+
+  # every interval stays in the set its quantity lives in, which is what
+  # building it on the declared scale is for
+  expect_gt(s["scale", "2.5%"], 0)
+  expect_gt(s["pacf1", "2.5%"], -1)
+  expect_lt(s["pacf1", "97.5%"], 1)
+  expect_lt(s["pacf2", "97.5%"], 1)
+})
+
+
+test_that("the delta method behind the block agrees with a numerical Jacobian", {
+  # The Jacobian comes from the Levinson-Durbin recursion in jets; the
+  # reference differentiates the map from the free vector to the quantities,
+  # which shares nothing with it.
+  skip_if_not_installed("numDeriv")
+  d <- mvgaussian_distrib(5, sigma = parameters7::autoregressive(5, order = 2))
+  th <- as.list(stats::setNames(
+    c(0.2, -0.1, 0.4, 0, 0.3, log(2), atanh(0.6), atanh(-0.25)), d@params
+  ))
+  der <- mv_derived(d, th)
+  keep <- attr(der$block, "names")[der$block == "Autoregressive structure"]
+  v <- unlist(th, use.names = FALSE)
+  num <- numDeriv::jacobian(function(x) {
+    mv_derived(d, as.list(stats::setNames(x, d@params)))$value[keep]
+  }, v)
+  expect_equal(unname(der$jacobian[keep, ]), num, tolerance = 1e-7)
+})
+
+
+test_that("a precision parametrisation says which matrix the block describes", {
+  d <- mvgaussian_distrib(4, omega = parameters7::ar1(4))
+  th <- as.list(stats::setNames(c(0, 0, 0, 0, log(2), atanh(0.5)), d@params))
+  der <- mv_derived(d, th)
+  expect_true("Autoregressive structure (precision)" %in% der$block)
+  # and the quantities are those of Omega, not of its inverse
+  expect_equal(unname(der$value[["rho"]]), 0.5, tolerance = 1e-12)
+})
+
+
+test_that("an unstructured matrix adds no block and is unchanged", {
+  d <- mvgaussian_distrib(3)
+  th <- as.list(stats::setNames(c(0, 0, 0, 0.1, -0.2, 0.05, 0.4, 0.3, -0.1),
+                                d@params))
+  der <- mv_derived(d, th)
+  expect_setequal(unique(der$block),
+                  c("Standard deviations", "Correlations"))
 })

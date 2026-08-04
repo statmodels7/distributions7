@@ -100,6 +100,80 @@ mv_entry_index <- function(p, prefix) {
 #' @param ... Unused.
 #' @return A list as described in \code{\link{mv_derived}}.
 #' @keywords internal
+#' The Quantities the Matrix Parameter Is About
+#'
+#' @description
+#' The block a \pkg{parameters7} family declares through
+#' \code{\link[parameters7]{param_readable}}, with its Jacobian widened from
+#' the free vector to the whole parameter vector of the distribution.
+#'
+#' @details
+#' The free values of the structure occupy a contiguous stretch of
+#' \code{distrib@params}, after the means and before anything the family adds
+#' of its own, so widening the Jacobian is placing its columns in that stretch
+#' and leaving the rest at zero: the quantities depend on no other parameter.
+#' A family that declares nothing yields \code{NULL} and the summary is what
+#' it was.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#'
+#' @return A list in the shape of \code{\link{mv_derived}}, or \code{NULL}.
+#'
+#' @keywords internal
+mv_param_block <- function(distrib, theta) {
+  # A family written outside the package inherits from multivariate_distrib
+  # directly and need not be built on a parameters7 structure at all, so the
+  # property is asked for rather than assumed.
+  if (!"param" %in% S7::prop_names(distrib)) return(NULL)
+  s <- distrib@param
+  p <- distrib@n_dim
+  v <- mv_flat_theta(distrib, theta)
+  r <- parameters7::param_readable(s, v[p + seq_len(s@n_free)])
+  if (is.null(r)) return(NULL)
+
+  nm <- names(r$value)
+  jac <- matrix(0, length(nm), distrib@n_params,
+                dimnames = list(nm, distrib@params))
+  jac[, p + seq_len(s@n_free)] <- r$jacobian
+  # Which matrix the family describes is the distribution's business, not the
+  # structure's: the same structure carries a covariance on one side of a
+  # model and a precision on the other.
+  label <- if (isTRUE(distrib@inverted)) {
+    paste(r$label, "(precision)")
+  } else {
+    r$label
+  }
+  list(value = r$value, jacobian = jac, transform = r$transform,
+       block = stats::setNames(rep(label, length(nm)), nm))
+}
+
+
+#' Append One Block of Derived Quantities to Another
+#'
+#' @description
+#' Concatenates two lists in the shape of \code{\link{mv_derived}}, returning
+#' the first unchanged when the second is \code{NULL}.
+#'
+#' @param out A list as described in \code{\link{mv_derived}}.
+#' @param extra A list of the same shape, or \code{NULL}.
+#'
+#' @return A list as described in \code{\link{mv_derived}}.
+#'
+#' @seealso \code{\link{mv_param_block}}
+#'
+#' @keywords internal
+mv_append_block <- function(out, extra) {
+  if (is.null(extra)) return(out)
+  list(
+    value = c(out$value, extra$value),
+    jacobian = rbind(out$jacobian, extra$jacobian),
+    transform = c(out$transform, extra$transform),
+    block = c(out$block, extra$block)
+  )
+}
+
+
 S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
   v <- mv_flat_theta(distrib, theta)
@@ -119,7 +193,7 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
     dn[k] <- v[k] - h
     jac[, k] <- (at(up) - at(dn)) / (2 * h)
   }
-  list(
+  mv_append_block(list(
     value = stats::setNames(val, idx$name),
     jacobian = jac,
     transform = stats::setNames(
@@ -128,7 +202,7 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
     block = stats::setNames(
       ifelse(idx$i == idx$j, "Variances", "Covariances"), idx$name
     )
-  )
+  ), mv_param_block(distrib, theta))
 }
 
 
@@ -281,7 +355,9 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
   a <- mv_sigma_derivs(distrib, theta, n_before = p)
   out <- mv_sd_cor(sigma, a, distrib@params)
 
-  if (!isTRUE(distrib@inverted)) return(out)
+  if (!isTRUE(distrib@inverted)) {
+    return(mv_append_block(out, mv_param_block(distrib, theta)))
+  }
 
   # The precision's own reading. Omega and its derivatives are the matrix parameter's
   # matrix directly, with no inversion, so they are taken from it rather than
@@ -317,7 +393,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
     jac_cvar[, l] <- -diag(aw[[l]]) / diag(omega)^2
   }
 
-  list(
+  mv_append_block(list(
     value = c(out$value,
               stats::setNames(cvar, nm_cvar),
               stats::setNames(-pc$value[keep],
@@ -336,7 +412,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
               stats::setNames(rep("Conditional variances", p), nm_cvar),
               stats::setNames(rep("Partial correlations", sum(keep)),
                               sub("^cor_", "pcor_", names(pc$value)[keep])))
-  )
+  ), mv_param_block(distrib, theta))
 }
 
 
@@ -357,8 +433,11 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
   sigma <- unname(mv_sigma(distrib, theta))
   a <- mv_sigma_derivs(distrib, theta, n_before = p)
-  mv_sd_cor(sigma, a, distrib@params,
-            sd_label = "scale_sd", sd_block = "Scale standard deviations")
+  mv_append_block(
+    mv_sd_cor(sigma, a, distrib@params,
+              sd_label = "scale_sd", sd_block = "Scale standard deviations"),
+    mv_param_block(distrib, theta)
+  )
 }
 
 
@@ -429,8 +508,10 @@ mv_summary <- function(object, level = object@level) {
 
   z <- stats::qnorm(1 - (1 - level) / 2)
   est <- der$value
-  fwd <- list(identity = identity, log = log, atanh = atanh)
-  inv <- list(identity = identity, log = exp, atanh = tanh)
+  fwd <- list(identity = identity, log = log, atanh = atanh,
+              logit = stats::qlogis)
+  inv <- list(identity = identity, log = exp, atanh = tanh,
+              logit = stats::plogis)
 
   lo <- hi <- numeric(length(est))
   for (i in seq_along(est)) {
@@ -440,7 +521,8 @@ mv_summary <- function(object, level = object@level) {
     d_tr <- switch(tr,
       identity = 1,
       log = 1 / est[i],
-      atanh = 1 / (1 - est[i]^2)
+      atanh = 1 / (1 - est[i]^2),
+      logit = 1 / (est[i] * (1 - est[i]))
     )
     e_tr <- fwd[[tr]](est[i])
     s_tr <- se[i] * abs(d_tr)

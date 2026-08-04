@@ -2,7 +2,11 @@
 % Please edit documentation in R/mv_summary.R
 \name{mv_derived.multivariate_distrib}
 \alias{mv_derived.multivariate_distrib}
+\alias{mv_param_block}
 \title{Matrix Entries as the Default Interpretable Quantities}
+\usage{
+mv_param_block(distrib, theta)
+}
 \arguments{
 \item{distrib}{A \code{\link{multivariate_distrib}} object.}
 
@@ -12,11 +16,32 @@
 }
 \value{
 A list as described in \code{\link{mv_derived}}.
+
+A list in the shape of \code{\link{mv_derived}}, or \code{NULL}.
 }
 \description{
 The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
 Jacobian from one central difference in each parameter. This is what a
 family gets when it says nothing more specific: the matrix on its own scale,
 named after the coordinates, rather than the matrix parameter's coordinates.
+
+The block a \pkg{parameters7} family declares through
+\code{\link[parameters7]{param_readable}}, with its Jacobian widened from
+the free vector to the whole parameter vector of the distribution.
 }
+\details{
+The free values of the structure occupy a contiguous stretch of
+\code{distrib@params}, after the means and before anything the family adds
+of its own, so widening the Jacobian is placing its columns in that stretch
+and leaving the rest at zero: the quantities depend on no other parameter.
+A family that declares nothing yields \code{NULL} and the summary is what
+it was.
+}
+\keyword{About}
+\keyword{Is}
+\keyword{Matrix}
+\keyword{Parameter}
+\keyword{Quantities}
+\keyword{The}
 \keyword{internal}
+\keyword{the}

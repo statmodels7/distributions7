@@ -1,6 +1,7 @@
 # Documentation invariants that R CMD check does not enforce. The same file
-# lives in linkfunctions7 and optimizers7; a guard that lives in two packages
-# out of five is not a guard, so it is here as well.
+# lives in all five packages of the toolkit, byte for byte apart from the
+# package name: three of them once carried a weaker version, and the two
+# weakest could not see the objects the strongest one found.
 
 test_that("every exported object appears in the pkgdown index", {
   # pkgdown refuses to build a site with a topic missing from the reference
@@ -87,9 +88,16 @@ test_that("every exported topic has a value and an executable example", {
   expect_equal(setdiff(exported, unlist(lapply(info, `[[`, "aliases"))),
                character())
 
+  # A package's landing page is not a function and by convention has no
+  # \value; asking it for one would be asking what `?distributions7` returns.
+  # Two packages of the toolkit generate such a page and three do not, so the
+  # exclusion is by what the page is rather than by whether it exists.
+  is_pkg_page <- vapply(info, function(i) any(grepl("-package$", i$aliases)),
+                        logical(1))
   is_exp <- vapply(info, function(i) any(i$aliases %in% exported), logical(1))
-  no_value <- vapply(info, function(i) !i$value, logical(1))
-  no_example <- is_exp & vapply(info, function(i) !i$example, logical(1))
+  no_value <- !is_pkg_page & vapply(info, function(i) !i$value, logical(1))
+  no_example <- is_exp & !is_pkg_page &
+    vapply(info, function(i) !i$example, logical(1))
 
   expect_equal(vapply(info[no_value], `[[`, character(1), "file"), character())
   expect_equal(vapply(info[no_example], `[[`, character(1), "file"),
