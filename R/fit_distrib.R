@@ -191,6 +191,10 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param criterion Which stopping rule ended the run, as optimizers7 reports it.
 #' @param note Any remark the optimiser attached to the run.
 #' @param counts How many times the objective and its gradient were evaluated.
+#' @param score The max-norm of the score \strong{per observation} at the
+#'   reported optimum, which is the quantity the stopping rule tested.
+#' @param elapsed Seconds spent optimising, summed over every starting value
+#'   and every fallback attempted.
 #' @param level Confidence level.
 #' @section Methods:
 #' Methods implemented for this class:
@@ -234,6 +238,8 @@ distrib_fit <- S7::new_class("distrib_fit",
     criterion    = S7::class_character,
     note         = S7::class_character,
     counts       = S7::class_any,
+    score        = S7::class_numeric,
+    elapsed      = S7::class_numeric,
     level        = S7::class_numeric
   )
 )
@@ -473,12 +479,23 @@ fit_distrib <- function(distrib, y, start = NULL,
     optimizers7::crit_grad(tol)
   }
 
+  # Time is accumulated over every attempt rather than taken from the run that
+  # is kept: what a caller wants to know is what the fit cost, and the restarts
+  # and the fallback are part of that.
+  spent <- 0
+
   run <- function(opt, eta0, he, label) {
     r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, he = he)
+    if (length(r@elapsed) && is.finite(r@elapsed)) spent <<- spent + r@elapsed
+    # The optimiser's gradient is that of -l(eta)/n, so its max-norm IS the
+    # score per observation the stopping rule tested. Keeping it means the
+    # object can say how close to stationary it ended, which is the one number
+    # a run that did not converge is worth reading for.
     list(eta = r@par, converged = isTRUE(r@converged),
          iterations = r@iterations, method = label,
          value = r@value, criterion_met = r@criterion_met,
-         message = r@message, counts = r@counts)
+         message = r@message, counts = r@counts,
+         score = if (length(r@gradient)) max(abs(r@gradient)) else NA_real_)
   }
 
   run_bfgs <- function(eta0) {
@@ -596,8 +613,30 @@ fit_distrib <- function(distrib, y, start = NULL,
     criterion = if (is.null(res$criterion_met)) "" else res$criterion_met,
     note = if (is.null(res$message)) "" else res$message,
     counts = res$counts,
+    score = if (is.null(res$score)) NA_real_ else res$score,
+    elapsed = spent,
     level = level
   )
+}
+
+#' Render a Duration With a Unit Matched to Its Size
+#'
+#' @description
+#' Formats a time in seconds using milliseconds below a second, seconds below a
+#' minute, and minutes and seconds above, so that the figure a fit prints stays
+#' readable whatever the sample size.
+#'
+#' @param sec A single non-negative number of seconds.
+#'
+#' @return A character string.
+#'
+#' @seealso \code{\link{print.distrib_fit}}
+#' @keywords internal
+fit_format_elapsed <- function(sec) {
+  if (!length(sec) || !is.finite(sec)) return(NA_character_)
+  if (sec < 1)  return(sprintf("%.3g ms", sec * 1000))
+  if (sec < 60) return(sprintf("%.3g s", sec))
+  sprintf("%d min %02d s", as.integer(sec %/% 60), as.integer(round(sec %% 60)))
 }
 
 #' Print Method for Maximum-Likelihood Fits
@@ -626,9 +665,19 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   if (!is.null(x@counts) && all(c("f", "g") %in% names(x@counts))) {
     cat("   evaluations: f ", x@counts[["f"]], ", g ", x@counts[["g"]], sep = "")
   }
+  if (length(x@elapsed) && is.finite(x@elapsed) && x@elapsed > 0) {
+    cat("   time: ", fit_format_elapsed(x@elapsed), sep = "")
+  }
   cat("\n")
   crit <- if (length(x@criterion) && nzchar(x@criterion)) x@criterion else "no rule reported"
   cat(if (x@converged) "Converged: yes (" else "Converged: NO (", crit, ")\n", sep = "")
+  # A run that did not converge is worth reading for one number: how close to
+  # stationary it ended. Printing it beside the failure saves the reader from
+  # recomputing the score to find out whether the point is usable.
+  if (!x@converged && length(x@score) && is.finite(x@score)) {
+    cat("Score per observation at the reported point: ",
+        format(x@score, digits = 3), "\n", sep = "")
+  }
   if (length(x@note) && nzchar(x@note)) cat("Note: ", x@note, "\n", sep = "")
   cat("\n")
 

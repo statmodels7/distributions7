@@ -26,6 +26,8 @@ distrib_fit(
   criterion = character(0),
   note = character(0),
   counts = NULL,
+  score = integer(0),
+  elapsed = integer(0),
   level = integer(0)
 )
 }
@@ -68,6 +70,12 @@ distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 \item{note}{Any remark the optimiser attached to the run.}
 
 \item{counts}{How many times the objective and its gradient were evaluated.}
+
+\item{score}{The max-norm of the score \strong{per observation} at the
+reported optimum, which is the quantity the stopping rule tested.}
+
+\item{elapsed}{Seconds spent optimising, summed over every starting value
+and every fallback attempted.}
 
 \item{level}{Confidence level.}
 }

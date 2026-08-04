@@ -305,3 +305,44 @@ test_that("the print method shows the interval on both scales", {
   expect_match(out90[grep("^Link scale", out90) + 1], "95%")
   expect_match(out90[grep("^Link scale", out90) + 1], "5%")
 })
+
+
+test_that("the fit carries what the optimiser reported about the run", {
+  # minimize() reports the time it took and the gradient it ended at, and both
+  # used to be discarded. The score is that of -l(eta)/n, so its max-norm is
+  # the quantity the stopping rule tested and can be checked against the
+  # distribution's own gradient.
+  set.seed(21)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
+  f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
+
+  expect_true(is.finite(f@elapsed) && f@elapsed >= 0)
+  expect_true(is.finite(f@score))
+
+  sc <- vapply(distrib_gradient(d, y, as.list(coef(f)), scale = "link"),
+               sum, numeric(1))
+  expect_equal(f@score, max(abs(sc)) / length(y), tolerance = 1e-8)
+  # and it is below the rule that stopped the run
+  expect_lt(f@score, eval(formals(fit_distrib)$tol))
+
+  out <- paste(utils::capture.output(print(f)), collapse = "\n")
+  expect_match(out, "time: ")
+
+  # the duration is rendered in a unit matched to its size
+  expect_match(fit_format_elapsed(0.0123), "ms$")
+  expect_match(fit_format_elapsed(12.3), "s$")
+  expect_match(fit_format_elapsed(125), "^2 min 05 s$")
+})
+
+
+test_that("a run that did not converge prints how close it got", {
+  set.seed(22)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 300, list(mu = 0, sigma = 2))
+  f <- fit_distrib(d, y, start = list(mu = 5, sigma = 5),
+                   method = optimizers7::gd(maxit = 2))
+  expect_false(f@converged)
+  out <- paste(utils::capture.output(print(f)), collapse = "\n")
+  expect_match(out, "Score per observation")
+})
