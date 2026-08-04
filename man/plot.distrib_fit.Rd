@@ -17,6 +17,10 @@ when there are at most 2000 of them.}
 \item{col_fit, col_data}{Colours of the fitted curve and of the empirical
 summary.}
 
+\item{mv_which}{For a multivariate fit, which coordinates to show. Defaults
+to all of them, and at most three are drawn: above that the panel matrix
+stops being readable.}
+
 \item{...}{Further arguments passed to \code{\link[graphics]{plot}}, for
 instance \code{main}, \code{xlab} or \code{xlim}.}
 }
@@ -31,6 +35,13 @@ underneath. For a discrete one the observed relative frequencies are drawn as
 bars with the fitted probability mass overlaid, since a kernel density would
 misrepresent a discrete sample.
 }
+\details{
+A univariate fit is drawn as the fitted density over a histogram or, for a
+discrete family, over the observed proportions. A multivariate one is drawn
+as a panel matrix: the fitted marginal density and a kernel estimate of the
+data on the diagonal, the fitted contours over the observations below it,
+and the fitted correlation above.
+}
 \examples{
 set.seed(1)
 y <- rgamma(300, shape = 4, rate = 2)
@@ -39,5 +50,6 @@ plot(fit)
 
 }
 \seealso{
-\code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}}
+\code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}},
+\code{\link{plot.multivariate_distrib}}
 }

@@ -51,3 +51,6 @@ respect to the distribution's parameters. Distributions with a closed-form
 implementation provide it directly (in C++); the others fall back to finite
 differences of the Hessian (see \code{\link{numerical_deriv3}}).
 }
+\examples{
+distrib_deriv3(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+}

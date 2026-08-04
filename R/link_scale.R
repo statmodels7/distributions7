@@ -47,6 +47,9 @@ NULL
 #' \code{\link[linkfunctions7]{linkinvderiv}}, so link-scale derivatives are
 #' available up to order 4 for every link in \pkg{linkfunctions7}.
 #'
+#' @return Nothing. This page documents the \code{scale} argument shared by the
+#'   derivative generics named above; the value returned is theirs.
+#'
 #' @seealso \code{\link{distrib_gradient}}, \code{\link{distrib_hessian}},
 #'   \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
 NULL

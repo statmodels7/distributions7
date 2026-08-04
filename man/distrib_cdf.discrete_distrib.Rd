@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Fallback method: discrete distributions that do not implement an analytical CDF
 get one by summing the pmf from the (finite) lower bound of the support up to

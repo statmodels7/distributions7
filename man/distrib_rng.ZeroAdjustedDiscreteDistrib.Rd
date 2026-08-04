@@ -10,6 +10,9 @@
 
 \item{theta}{A list with the parent's parameters followed by \code{za}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Draws zeros with probability \eqn{\pi} and otherwise samples from the zero-truncated
 parent via inverse transform sampling.

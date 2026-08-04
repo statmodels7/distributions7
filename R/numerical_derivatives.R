@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R numerical_functions.R
+NULL
 
 #' Finite-Difference Steps That Respect a Parameter's Domain
 #'
@@ -65,6 +66,9 @@ fd_steps <- function(theta_j, bounds_j, h_rel) {
 #' than an analytical implementation.
 #'
 #' @seealso \code{\link{numerical_hessian}}, \code{\link{distrib_gradient}}
+#' @examples
+#' numerical_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
   params <- distrib@params
@@ -107,6 +111,9 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #' \code{\link{numerical_gradient}}. Accuracy is roughly \code{sqrt(eps)}.
 #'
 #' @seealso \code{\link{numerical_gradient}}, \code{\link{distrib_hessian}}
+#' @examples
+#' numerical_hessian(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
   params <- distrib@params

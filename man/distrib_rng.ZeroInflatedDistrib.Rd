@@ -10,6 +10,9 @@
 
 \item{theta}{A list with the parent's parameters followed by \code{zi}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Draws from the wrapped distribution, then replaces a Bernoulli(\eqn{\zeta}) fraction
 of the draws with structural zeros.

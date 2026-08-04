@@ -13,3 +13,8 @@ A \code{\link{transformer}} object.
 Transformer for \eqn{Y = \text{plogis}(X)}: maps the real line to \eqn{(0, 1)}.
 Inverse \eqn{X = \text{logit}(Y)}, Jacobian \eqn{|J| = 1/(Y(1-Y))}.
 }
+\examples{
+d <- transformation(gaussian_distrib(), expit_transform())
+distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
+
+}

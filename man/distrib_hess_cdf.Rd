@@ -41,6 +41,10 @@ By the same exchange as in \code{\link{distrib_grad_cdf}}, and using
 and the log scale follows from
 \eqn{\partial_{ij}\log P = \partial_{ij}P/P - (\partial_i P/P)(\partial_j P/P)}.
 }
+\examples{
+distrib_hess_cdf(gaussian_distrib(), 1, list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hessian}}
 }

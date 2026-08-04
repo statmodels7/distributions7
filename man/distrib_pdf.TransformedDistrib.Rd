@@ -12,6 +12,9 @@
 
 \item{log}{Logical; if \code{TRUE}, returns the log-density.}
 }
+\value{
+A numeric vector of density values.
+}
 \description{
 Change of variables: \eqn{f_Y(y) = f_X(g^{-1}(y)) \cdot |J(y)|}. Computed in log space;
 singular log-densities are clamped to avoid \code{Inf - Inf} during integration.

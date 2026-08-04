@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Computes the quantile function (inverse CDF) for the (location-scale) Student's t
 distribution:

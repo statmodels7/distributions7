@@ -10,6 +10,9 @@
 
 \item{theta}{A named list of the parent's parameters.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Inverse transform sampling on the parent: \eqn{Y = Q(F(\ell^-) + U Z)} with
 \eqn{U \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always

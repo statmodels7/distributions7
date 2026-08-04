@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Computes the cumulative distribution function for the Negative Binomial distribution:
 \deqn{F(q; \mu, \theta) = \sum_{k=0}^{\lfloor q \rfloor} P(Y=k; \mu, \theta)}

@@ -18,3 +18,7 @@ A list where all elements have length \code{n}.
 Expands scalar parameters in a list to match the maximum length found (or a specified length),
 ensuring all vectors are ready for element-wise operations.
 }
+\examples{
+expand_params(list(mu = 0, sigma = 1), n = 3)
+
+}

@@ -39,6 +39,11 @@ for the accuracy/speed trade-offs.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
+\value{
+A named list of numeric vectors, keyed as
+\code{\link{hess_names}(distrib@params)}, holding the expected second
+derivatives, that is minus the Fisher information.
+}
 \description{
 Computes the analytical expected second derivatives of the log-likelihood with respect to the distribution's parameters.
 }
@@ -47,4 +52,14 @@ On the link scale the first-order term of the chain rule drops out because the
 score has zero expectation, so the expected Hessian transforms as the simple
 congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
 \eqn{h' = dg^{-1}/d\eta}.
+}
+\examples{
+d <- gaussian_distrib()
+distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
+
+# a family with no closed form uses the strategy named by 'approx'
+distrib_expected_hessian(
+  pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
+  approx = "integrate"
+)
 }

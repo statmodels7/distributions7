@@ -12,6 +12,9 @@
 
 \item{...}{Additional arguments passed to \code{f}.}
 }
+\value{
+A numeric scalar, the expectation of \code{f} under the distribution.
+}
 \description{
 The inherited continuous method integrates the density over
 \eqn{[\ell, u]}, which is correct unless the parent carries point masses ---

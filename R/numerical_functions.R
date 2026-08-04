@@ -30,6 +30,10 @@
 #'
 #' @return A numeric scalar representing the calculated sum.
 #'
+#' @examples
+#' # the mean of a Poisson, summed over its support
+#' numerical_series(function(y) y * distrib_pdf(poisson_distrib(), y, list(mu = 2)))
+#'
 #' @export
 numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
   

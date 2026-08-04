@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Student's t distribution.
 }

@@ -38,6 +38,9 @@ ZeroAdjustedDiscreteDistrib(
 
 \item{parent_distrib}{The wrapped \code{discrete_distrib} object.}
 }
+\value{
+An object of class \code{ZeroAdjustedDiscreteDistrib}.
+}
 \description{
 A subclass of \code{discrete_distrib} representing the zero-adjusted (hurdle) version
 of a wrapped discrete distribution: the probability mass at zero is \emph{replaced} by

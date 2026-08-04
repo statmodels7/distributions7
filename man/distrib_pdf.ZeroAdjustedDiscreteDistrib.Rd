@@ -12,6 +12,9 @@
 
 \item{log}{Logical; if \code{TRUE}, returns the log-probability.}
 }
+\value{
+A numeric vector of density values.
+}
 \description{
 \deqn{P(Y=0) = \pi, \qquad P(Y=y) = (1-\pi)\dfrac{f(y;\theta)}{1-f(0;\theta)} \ \ (y>0)}
 }

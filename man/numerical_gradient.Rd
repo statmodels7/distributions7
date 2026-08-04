@@ -33,6 +33,10 @@ inside the parameter domain. Accuracy is roughly \code{eps^(2/3)} (about 8
 significant digits): sufficient for optimization, but slower and less precise
 than an analytical implementation.
 }
+\examples{
+numerical_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_hessian}}, \code{\link{distrib_gradient}}
 }

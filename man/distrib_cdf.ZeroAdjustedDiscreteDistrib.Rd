@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 \deqn{F_{ZA}(q) = \pi + (1-\pi)\dfrac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge 0)}
 }

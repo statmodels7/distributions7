@@ -24,6 +24,10 @@ Computes \eqn{\partial^2 \ell / \partial y^2} by a central three-point stencil o
 \code{distrib_pdf(..., log = TRUE)}. Powers the default \code{\link{distrib_hess_y}}
 method for continuous distributions without a closed form.
 }
+\examples{
+numerical_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_grad_y}}, \code{\link{distrib_hess_y}}
 }

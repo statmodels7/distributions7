@@ -55,3 +55,8 @@ Includes heuristics to stop early if the sequence starts growing in absolute ter
 (divergence), or skips up to 50 empty chunks to protect from premature stopping
 when \code{f(x)} evaluates exactly to \code{0} at the start.
 }
+\examples{
+# the mean of a Poisson, summed over its support
+numerical_series(function(y) y * distrib_pdf(poisson_distrib(), y, list(mu = 2)))
+
+}

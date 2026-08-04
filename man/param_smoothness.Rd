@@ -18,3 +18,10 @@ whether the log-likelihood is differentiable with respect to it. This reads the
 \code{params_smooth} property, defaulting to all \code{TRUE} when the property was
 left empty.
 }
+\examples{
+param_smoothness(gaussian_distrib())
+
+# the Laplace location is a kink, so it is not smooth
+param_smoothness(laplace_distrib())
+
+}

@@ -62,7 +62,7 @@ test_that("the constructor validates its arguments", {
 test_that("the parameters are the mean components and the structure's free values", {
   d <- mvgaussian_distrib(2)
 
-  expect_identical(d@params, c("mu1", "mu2", "log_L1", "log_L2", "L2.1"))
+  expect_identical(d@params, c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1"))
   expect_identical(d@n_params, 5L)
   expect_identical(d@n_dim, 2L)
   expect_identical(d@dimension, "multivariate")
@@ -80,15 +80,15 @@ test_that("the parameters are the mean components and the structure's free value
 
   # a diagonal structure contributes fewer of them
   dd <- mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3))
-  expect_identical(dd@params, c("mu1", "mu2", "mu3", "d1", "d2", "d3"))
+  expect_identical(dd@params, c("mu1", "mu2", "mu3", "sigma_d1", "sigma_d2", "sigma_d3"))
 })
 
 test_that("the density is the formula, written out by hand", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.5, mu2 = -0.3, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.4)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   y <- rbind(c(0, 0), c(1, -1), c(-0.5, 0.8))
 
-  mu <- mv_mu(d, th)
+  mu <- mv_location(d, th)
   s <- mv_sigma(d, th)
   want <- apply(y, 1, function(row) {
     r <- row - mu
@@ -109,31 +109,31 @@ test_that("the density is the formula, written out by hand", {
 
 test_that("the mean and the covariance come back in the shapes they belong to", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 1, mu2 = -1, log_L1 = 0, log_L2 = 0, L2.1 = 0.5)
+  th <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 
-  expect_equal(unname(mv_mu(d, th)), c(1, -1))
+  expect_equal(unname(mv_location(d, th)), c(1, -1))
   s <- mv_sigma(d, th)
   expect_identical(dim(s), c(2L, 2L))
   # Sigma = L L' with the factor the structure assembles: L is LOWER
-  # triangular, so the free value L2.1 sits below the diagonal and the variance
+  # triangular, so the free value sigma_L2.1 sits below the diagonal and the variance
   # it inflates is the second one.
   l <- matrix(c(1, 0, 0.5, 1), 2, 2, byrow = TRUE)
   expect_equal(unname(s), tcrossprod(l))
   expect_equal(unname(s), matrix(c(1, 0.5, 0.5, 1.25), 2, 2))
 
-  expect_equal(mean(d, th), mv_mu(d, th))
+  expect_equal(mean(d, th), mv_location(d, th))
   expect_equal(variance(d, th), s)
 })
 
 test_that("a parameter that varies by observation is refused", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = c(0, 1), mu2 = 0, log_L1 = 0, log_L2 = 0, L2.1 = 0)
+  th <- list(mu1 = c(0, 1), mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
   expect_error(distrib_pdf(d, rbind(c(0, 0), c(1, 1)), th), "belong to a model")
 })
 
 test_that("the score and the Hessian agree with finite differences", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.5, mu2 = -0.3, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.4)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(21)
   y <- distrib_rng(d, 40, th)
   v0 <- unlist(th)
@@ -157,7 +157,7 @@ test_that("the score and the Hessian agree with finite differences", {
 
 test_that("the expected information is exact and block diagonal", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.5, mu2 = -0.3, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.4)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(22)
   big <- distrib_rng(d, 2e5, th)
 
@@ -171,8 +171,8 @@ test_that("the expected information is exact and block diagonal", {
 
   # The mean and the matrix parameters are orthogonal: E[w] = 0 kills the mixed
   # block exactly, not approximately.
-  expect_equal(eh[["mu1_log_L1"]][1], 0)
-  expect_equal(eh[["mu2_L2.1"]][1], 0)
+  expect_equal(eh[["mu1_sigma_log_L1"]][1], 0)
+  expect_equal(eh[["mu2_sigma_L2.1"]][1], 0)
 
   # and the mean block is -Sigma^{-1}
   si <- solve(mv_sigma(d, th))
@@ -182,30 +182,30 @@ test_that("the expected information is exact and block diagonal", {
 
 test_that("the generator matches the first two moments", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 1.5, mu2 = -0.5, log_L1 = 0.2, log_L2 = -0.1, L2.1 = 0.6)
+  th <- list(mu1 = 1.5, mu2 = -0.5, sigma_log_L1 = 0.2, sigma_log_L2 = -0.1, sigma_L2.1 = 0.6)
   set.seed(23)
   r <- distrib_rng(d, 2e5, th)
 
   expect_identical(dim(r), c(200000L, 2L))
-  expect_equal(unname(colMeans(r)), unname(mv_mu(d, th)), tolerance = 0.02)
+  expect_equal(unname(colMeans(r)), unname(mv_location(d, th)), tolerance = 0.02)
   expect_equal(unname(stats::cov(r)), unname(mv_sigma(d, th)), tolerance = 0.02)
 })
 
 test_that("the response derivatives are closed form", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.5, mu2 = -0.3, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.4)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   y <- rbind(c(0, 0), c(1, -1))
   si <- solve(mv_sigma(d, th))
 
   gy <- distrib_grad_y(d, y, th)
-  want <- -sweep(y, 2L, mv_mu(d, th)) %*% si
+  want <- -sweep(y, 2L, mv_location(d, th)) %*% si
   expect_equal(unname(gy), unname(want))
   expect_equal(unname(distrib_hess_y(d, y, th)), unname(-si))
 })
 
 test_that("the link scale is the parameter scale", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.5, mu2 = -0.3, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.4)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(24)
   y <- distrib_rng(d, 20, th)
 
@@ -221,7 +221,7 @@ test_that("the link scale is the parameter scale", {
 
 test_that("the one-dimensional quantities are refused rather than approximated", {
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0, mu2 = 0, log_L1 = 0, log_L2 = 0, L2.1 = 0)
+  th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
 
   expect_error(distrib_cdf(d, rbind(c(0, 0)), th), "orthant")
   expect_error(distrib_quantile(d, 0.5, th), "ordering")
@@ -233,7 +233,7 @@ test_that("the precision form describes the same law as the covariance form", {
   ds <- mvgaussian_distrib(2)
   do <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
 
-  th_s <- list(mu1 = 0.3, mu2 = -0.4, log_L1 = 0.1, log_L2 = -0.2, L2.1 = 0.5)
+  th_s <- list(mu1 = 0.3, mu2 = -0.4, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.5)
   sigma <- mv_sigma(ds, th_s)
   # the free values of the precision that give this covariance
   eta_o <- covstructs7::struct_free(do@struct, solve(sigma))
@@ -256,7 +256,8 @@ test_that("the precision form describes the same law as the covariance form", {
 
 test_that("the precision form has correct derivatives of its own", {
   do <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
-  th <- list(mu1 = 0.2, mu2 = -0.1, log_L1 = 0.15, log_L2 = -0.05, L2.1 = 0.3)
+  th <- list(mu1 = 0.2, mu2 = -0.1, omega_log_L1 = 0.15, omega_log_L2 = -0.05,
+             omega_L2.1 = 0.3)
   set.seed(26)
   y <- distrib_rng(do, 40, th)
   v0 <- unlist(th)
@@ -278,8 +279,8 @@ test_that("the precision form has correct derivatives of its own", {
 
 test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
   d <- mvgaussian_distrib(2)
-  true <- list(mu1 = 1.5, mu2 = -0.5, log_L1 = log(1.2), log_L2 = log(0.8),
-               L2.1 = 0.6)
+  true <- list(mu1 = 1.5, mu2 = -0.5, sigma_log_L1 = log(1.2), sigma_log_L2 = log(0.8),
+               sigma_L2.1 = 0.6)
   set.seed(27)
   y <- distrib_rng(d, 2000, true)
 
@@ -299,14 +300,12 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
 
   # What a fit promises is the value of the objective, and that is what is
   # asked of it here. The point it stops AT is a different question: the
-  # criterion is crit_any(crit_grad, crit_rel_obj), an OR, so whichever rule
-  # fires first ends the run -- measured, Newton stops at a score of 1.3e-15
-  # per observation on one platform and 1.2e-8 on another, on the same data.
-  # The objective is flat near the maximum, which is why the criterion stops
-  # there and why this comparison is the stable one.
+  # objective is flat near the maximum, so the last steps move the point much
+  # more than they move the value, and how far they get is a fact about the
+  # platform's arithmetic. The comparison on the value is the stable one.
   est <- coef(fit)
   expect_equal(as.numeric(logLik(fit)), ll_hat, tolerance = 1e-8)
-  expect_equal(unname(mv_mu(d, est)), unname(mu_hat), tolerance = 1e-4)
+  expect_equal(unname(mv_location(d, est)), unname(mu_hat), tolerance = 1e-4)
   expect_equal(unname(mv_sigma(d, est)), unname(s_hat), tolerance = 1e-4)
 
   sc <- vapply(distrib_gradient(d, y, as.list(est)), sum, numeric(1))
@@ -322,8 +321,8 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
 test_that("the three fitting methods reach the same optimum", {
   d <- mvgaussian_distrib(2)
   set.seed(28)
-  y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 1, log_L1 = 0, log_L2 = 0,
-                                L2.1 = 0.4))
+  y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0, sigma_log_L2 = 0,
+                                sigma_L2.1 = 0.4))
   lls <- vapply(c("fisher", "newton", "bfgs"), function(m) {
     as.numeric(logLik(fit_distrib(d, y, method = m)))
   }, numeric(1))
@@ -334,7 +333,8 @@ test_that("a diagonal covariance is fitted with fewer parameters", {
   dd <- mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3))
   set.seed(29)
   y <- distrib_rng(dd, 1500, list(mu1 = 0, mu2 = 1, mu3 = -1,
-                                  d1 = log(2), d2 = log(0.5), d3 = 0))
+                                  sigma_d1 = log(2), sigma_d2 = log(0.5),
+                                  sigma_d3 = 0))
   fit <- fit_distrib(dd, y)
 
   expect_true(fit@converged)
@@ -347,29 +347,43 @@ test_that("a diagonal covariance is fitted with fewer parameters", {
   )
 })
 
-test_that("the fit prints the mean and the covariance, and not the scale twice", {
+test_that("the fit prints the quantities a reader reads, and each once", {
   d <- mvgaussian_distrib(2)
   set.seed(30)
-  y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, log_L1 = 0, log_L2 = 0,
-                                L2.1 = 0.3))
+  y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+                                sigma_L2.1 = 0.3))
   fit <- fit_distrib(d, y)
 
   out <- utils::capture.output(print(fit))
-  expect_true(any(grepl("^Mean:", out)))
-  expect_true(any(grepl("^Covariance:", out)))
-  # Every link is the identity, so the link-scale table would repeat the
-  # parameter-scale one line for line.
-  expect_true(any(grepl("link scale is the parameter scale", out)))
-  expect_false(any(grepl("^Link scale \\(", out)))
+  expect_true(any(grepl("^Location:", out)))
+  expect_true(any(grepl("^Standard deviations:", out)))
+  expect_true(any(grepl("^Correlations:", out)))
 
-  # and there is no one picture of a fitted multivariate density
-  expect_error(plot(fit), "no one picture")
+  # The mean and the covariance used to be printed a second time as bare
+  # matrices, next to the same numbers with their standard errors. One table
+  # per quantity.
+  expect_false(any(grepl("^Mean:", out)))
+  expect_false(any(grepl("^Covariance:", out)))
+
+  # and the coordinates of the structure are not a parameter table anybody
+  # needs to see
+  expect_false(any(grepl("^Parameter scale:", out)))
+  expect_false(any(grepl("^sigma_log_L1", out)))
+
+  # Every link is the identity, so the link-scale table would repeat the
+  # numbers above line for line.
+  expect_true(any(grepl("link scale is the parameter scale", out)))
+  expect_false(any(grepl("^Link scale", out)))
+
+  # what the optimiser did is information, and is kept
+  expect_true(any(grepl("^Method: .*iterations:", out)))
+  expect_true(any(grepl("^Converged: yes \\(", out)))
 })
 
 test_that("check_distrib runs the multivariate battery", {
   set.seed(31)
   d <- mvgaussian_distrib(2)
-  th <- list(mu1 = 0.4, mu2 = -0.2, log_L1 = 0.1, log_L2 = -0.1, L2.1 = 0.35)
+  th <- list(mu1 = 0.4, mu2 = -0.2, sigma_log_L1 = 0.1, sigma_log_L2 = -0.1, sigma_L2.1 = 0.35)
   res <- check_distrib(d, theta = th, nsim = 5e4, verbose = FALSE)
 
   expect_true(all(res$status == "OK"))
@@ -400,7 +414,7 @@ test_that("check_distrib catches a deliberately wrong component", {
     inverted = good@inverted
   )
 
-  th <- list(mu1 = 0.4, mu2 = -0.2, log_L1 = 0.1, log_L2 = -0.1, L2.1 = 0.35)
+  th <- list(mu1 = 0.4, mu2 = -0.2, sigma_log_L1 = 0.1, sigma_log_L2 = -0.1, sigma_L2.1 = 0.35)
   set.seed(32)
   res_bad <- check_distrib(bad, theta = th, nsim = 5e4, verbose = FALSE)
   expect_identical(

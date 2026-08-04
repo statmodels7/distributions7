@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Computes the cumulative distribution function for the Laplace distribution:
 \deqn{F(q; \mu, b) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{b}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{b}\right) & q \ge \mu \end{cases}}

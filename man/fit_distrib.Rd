@@ -8,7 +8,7 @@ fit_distrib(
   distrib,
   y,
   start = NULL,
-  method = c("fisher", "newton", "bfgs"),
+  method = fisher_scoring(),
   maxit = 200,
   tol = 1e-10,
   level = 0.95,
@@ -21,30 +21,40 @@ fit_distrib(
 \item{y}{A numeric vector of observations.}
 
 \item{start}{Optional named list of starting values \strong{on the parameter
-scale}. If \code{NULL} (default) starting values are drawn with
-\code{\link{generate_random_theta}}, with a few random restarts on failure;
-supplying a sensible \code{start} makes convergence faster and more reliable.}
+scale}. If \code{NULL} (default) they come from
+\code{\link{distrib_start}}, which lets a family compute them from the
+data; families that do not say otherwise fall back to random draws, with
+restarts.}
 
-\item{method}{Optimisation method, either one of three named strategies or
-an optimiser object from \pkg{optimizers7}. The named strategies are
-\code{"fisher"} (default), which is Newton's method with the expected
-information in place of the Hessian, \code{"newton"}, which uses the
-observed Hessian, and \code{"bfgs"}, which uses the analytical gradient
-alone; the first two fall back to BFGS if they fail to converge. Any
-optimiser object is used as given, receiving the analytical gradient and
-observed Hessian and no fallback, so that
-\code{method = lbfgs(criterion = crit_grad(1e-12))} selects both the
-algorithm and the stopping rule.}
+\item{method}{How to optimise. One argument, taking one of three things:
+\itemize{
+\item \code{\link{fisher_scoring}()}, the default --- Newton's method
+with the \strong{expected} information in place of the Hessian, the
+object carrying how that information is to be obtained when the family
+has no closed form for it;
+\item an optimiser object from \pkg{optimizers7}, used as given and
+receiving the analytical gradient and the \strong{observed} Hessian,
+so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
+both the algorithm and the stopping rule;
+\item one of the strings \code{"fisher"}, \code{"newton"} or
+\code{"bfgs"}, kept as short names for the three ready-made
+strategies. The first two fall back to BFGS if they fail to converge;
+an optimiser the caller chose is never silently replaced.
+}}
 
-\item{maxit}{Maximum number of iterations. Defaults to 200.}
+\item{maxit}{Maximum number of iterations. Defaults to 200. An optimiser
+object or a \code{fisher_scoring()} carrying its own \code{maxit}
+overrides it.}
 
-\item{tol}{Convergence tolerance on the score and on the log-likelihood
-increment. Defaults to \code{1e-10}.}
+\item{tol}{Convergence tolerance on the score, used to build
+\code{crit_grad(tol)}. Defaults to \code{1e-10}. A method object carrying
+its own stopping rule overrides it.}
 
 \item{level}{Confidence level for the intervals. Defaults to 0.95.}
 
-\item{n_start}{Number of random restarts attempted when \code{start} is
-\code{NULL} and the first attempt fails. Defaults to 5.}
+\item{n_start}{How many starting values to ask \code{\link{distrib_start}}
+for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
+its own estimate returns one and ignores this.}
 }
 \value{
 An object of class \code{\link{distrib_fit}}; see its documentation for

@@ -23,6 +23,9 @@ distrib_fit(
   iterations = integer(0),
   converged = logical(0),
   method = character(0),
+  criterion = character(0),
+  note = character(0),
+  counts = NULL,
   level = integer(0)
 )
 }
@@ -60,7 +63,16 @@ distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 
 \item{method}{Optimisation method actually used.}
 
+\item{criterion}{Which stopping rule ended the run, as optimizers7 reports it.}
+
+\item{note}{Any remark the optimiser attached to the run.}
+
+\item{counts}{How many times the objective and its gradient were evaluated.}
+
 \item{level}{Confidence level.}
+}
+\value{
+An object of class \code{distrib_fit}.
 }
 \description{
 Object returned by \code{\link{fit_distrib}}, holding the estimates on both the
@@ -77,3 +89,12 @@ Methods implemented for this class:
 \code{\link[=vcov.distrib_fit]{vcov()}}
 }
 
+\examples{
+set.seed(1)
+y <- distrib_rng(gaussian_distrib(), 200, list(mu = 1, sigma = 2))
+fit <- fit_distrib(gaussian_distrib(), y)
+S7::S7_inherits(fit, distrib_fit)
+coef(fit)
+logLik(fit)
+
+}

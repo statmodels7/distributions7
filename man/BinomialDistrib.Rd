@@ -39,6 +39,9 @@ BinomialDistrib(
 \item{size}{Integer or Numeric Vector. The number of trials \eqn{n}.
 Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.}
 }
+\value{
+An object of class \code{BinomialDistrib}.
+}
 \description{
 A subclass of \code{discrete_distrib} representing the Binomial distribution.
 }

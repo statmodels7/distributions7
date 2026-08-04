@@ -3,6 +3,8 @@
 #' operations on probability distributions.
 #' @import S7
 #' @name distrib_generics
+#' @return Nothing. This page is the index of the generics documented on their
+#'   own pages; the value returned is theirs.
 NULL
 
 # All generics normalize `theta` before dispatch (see align_theta() in
@@ -20,6 +22,10 @@ NULL
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   If unnamed, parameters are taken in the order of \code{distrib@params}.
 #' @param ... Additional arguments passed to the specific method (e.g., \code{log}).
+#' @return A numeric vector of density values, one per observation.
+#' @examples
+#' distrib_pdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 #' @export
 distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -34,6 +40,10 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   If unnamed, parameters are taken in the order of \code{distrib@params}.
 #' @param ... Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).
+#' @return A numeric vector of cumulative probabilities.
+#' @examples
+#' distrib_cdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 #' @export
 distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -48,6 +58,10 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   If unnamed, parameters are taken in the order of \code{distrib@params}.
 #' @param ... Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).
+#' @return A numeric vector of quantiles.
+#' @examples
+#' distrib_quantile(gaussian_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
+#' distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 #' @export
 distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(distrib, p, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -99,6 +113,13 @@ distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, t
 #' @param theta A named list (or named numeric vector) of distribution parameters.
 #'   If unnamed, parameters are taken in the order of \code{distrib@params}.
 #' @param ... Additional arguments passed to the specific method.
+#' @return A numeric vector of \code{n} draws for a univariate distribution, and
+#'   an \eqn{n \times p} matrix for a multivariate one.
+#' @examples
+#' set.seed(1)
+#' distrib_rng(gaussian_distrib(), 5, list(mu = 0, sigma = 1))
+#' distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
+#'   sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #' @export
 distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -181,6 +202,14 @@ check_derivative_args <- function(distrib, y, theta) {
 #'   predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 #'   See \code{\link{link_scale_derivatives}}.
 #' @param ... Additional arguments passed to the specific method.
+#' @return A named list with one numeric vector per parameter, keyed by
+#'   \code{distrib@params}.
+#' @examples
+#' d <- gaussian_distrib()
+#' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
+#' # the same score with respect to the unconstrained parameters
+#' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 #' @export
 distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -200,6 +229,11 @@ distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(dist
 #'   Each parameter must have length 1 or \code{length(y)}.
 #' @inheritParams distrib_gradient
 #' @param ... Additional arguments passed to the specific method.
+#' @return A named list of numeric vectors, keyed as
+#'   \code{\link{hess_names}(distrib@params)} (e.g. \code{"mu_sigma"}).
+#' @examples
+#' d <- gaussian_distrib()
+#' distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -236,6 +270,18 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' score has zero expectation, so the expected Hessian transforms as the simple
 #' congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
 #' \eqn{h' = dg^{-1}/d\eta}.
+#' @return A named list of numeric vectors, keyed as
+#'   \code{\link{hess_names}(distrib@params)}, holding the expected second
+#'   derivatives, that is minus the Fisher information.
+#' @examples
+#' d <- gaussian_distrib()
+#' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
+#'
+#' # a family with no closed form uses the strategy named by 'approx'
+#' distrib_expected_hessian(
+#'   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
+#'   approx = "integrate"
+#' )
 #' @export
 distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -275,6 +321,8 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
 #'   \code{\link{deriv_names}(distrib@params, 3)} (e.g. \code{"mu_mu_sigma"}).
+#' @examples
+#' distrib_deriv3(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -312,6 +360,8 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' @param ... Additional arguments passed to the specific method.
 #' @return A named list of derivative-component vectors, keyed as in
 #'   \code{\link{deriv_names}(distrib@params, 4)} (e.g. \code{"mu_mu_sigma_sigma"}).
+#' @examples
+#' distrib_deriv4(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -340,6 +390,8 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #'   Each parameter must have length 1 or \code{length(y)}.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A numeric vector of the same length as \code{y}.
+#' @examples
+#' distrib_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -361,6 +413,8 @@ distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib,
 #'   Each parameter must have length 1 or \code{length(y)}.
 #' @param ... Additional arguments passed to the specific method.
 #' @return A numeric vector of the same length as \code{y}.
+#' @examples
+#' distrib_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -410,6 +464,13 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' continuous one the default differentiates \code{\link{distrib_cdf}}
 #' numerically, and distributions with a closed form register it directly.
 #'
+#' @examples
+#' d <- gaussian_distrib()
+#' theta <- list(mu = 0, sigma = 1)
+#'
+#' # what a right-censored observation at q = 1 contributes to the score
+#' distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
+#'
 #' @seealso \code{\link{distrib_hess_cdf}}, \code{\link{distrib_gradient}}
 #' @export
 distrib_grad_cdf <- S7::new_generic("distrib_grad_cdf", "distrib", function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
@@ -440,6 +501,9 @@ distrib_grad_cdf <- S7::new_generic("distrib_grad_cdf", "distrib", function(dist
 #' and the log scale follows from
 #' \eqn{\partial_{ij}\log P = \partial_{ij}P/P - (\partial_i P/P)(\partial_j P/P)}.
 #'
+#' @examples
+#' distrib_hess_cdf(gaussian_distrib(), 1, list(mu = 0, sigma = 1))
+#'
 #' @seealso \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hessian}}
 #' @export
 distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
@@ -454,5 +518,10 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' @description Generates sensible random parameters for a distribution based on its mathematical domain.
 #' @param distrib A distribution object inheriting from the \code{distrib} class.
 #' @param ... Additional arguments passed to the specific method.
+#' @return A named list of parameter values, one per element of
+#'   \code{distrib@params}, each inside that parameter's bounds.
+#' @examples
+#' set.seed(1)
+#' generate_random_theta(gamma_distrib())
 #' @export
 generate_random_theta <- S7::new_generic("generate_random_theta", "distrib")

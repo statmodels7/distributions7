@@ -16,6 +16,13 @@ If unnamed, parameters are taken in the order of \code{distrib@params}.}
 
 \item{...}{Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Evaluates the cumulative distribution function (CDF) for a given distribution.
+}
+\examples{
+distrib_cdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 }

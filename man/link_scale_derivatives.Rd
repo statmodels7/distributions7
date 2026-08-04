@@ -3,6 +3,10 @@
 \name{link_scale_derivatives}
 \alias{link_scale_derivatives}
 \title{Derivatives on the Link (Real) Scale}
+\value{
+Nothing. This page documents the \code{scale} argument shared by the
+derivative generics named above; the value returned is theirs.
+}
 \description{
 The derivative generics of the package (\code{\link{distrib_gradient}},
 \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}},

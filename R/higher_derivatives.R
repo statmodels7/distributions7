@@ -33,6 +33,9 @@ NULL
 #' shrunk near parameter-domain boundaries.
 #'
 #' @seealso \code{\link{numerical_deriv4}}, \code{\link{distrib_deriv3}}
+#' @examples
+#' numerical_deriv3(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
   params <- distrib@params
@@ -88,6 +91,9 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' when \eqn{k = l}, a four-point cross stencil otherwise.
 #'
 #' @seealso \code{\link{numerical_deriv3}}, \code{\link{distrib_deriv4}}
+#' @examples
+#' numerical_deriv4(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
   params <- distrib@params

@@ -22,6 +22,17 @@ See \code{\link{link_scale_derivatives}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
+\value{
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}.
+}
 \description{
 Computes the analytical first derivatives of the log-likelihood with respect to the distribution's parameters.
+}
+\examples{
+d <- gaussian_distrib()
+distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+# the same score with respect to the unconstrained parameters
+distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 }

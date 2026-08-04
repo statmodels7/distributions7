@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R
+NULL
 
 #' @title S7 Class for Zero-Inflated Distributions
 #' @name ZeroInflatedDistrib
@@ -9,6 +10,7 @@
 #' \eqn{\zeta}) and the original count distribution.
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
+#' @return An object of class \code{ZeroInflatedDistrib}.
 #' @seealso \code{\link{zero_inflated}}
 #'
 #' @section Methods:
@@ -200,6 +202,7 @@ check_support_is_rich_enough <- function(distrib, fun) {
 #' @param y A numeric vector of observations.
 #' @param theta A list with the parent's parameters followed by \code{zi}.
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_inflated}}
 S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -220,6 +223,7 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 #' @param theta A list with the parent's parameters followed by \code{zi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{zero_inflated}}
 S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -242,6 +246,7 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 #' @param theta A list with the parent's parameters followed by \code{zi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{zero_inflated}}
 S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -281,6 +286,7 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
 #' @param distrib A \code{ZeroInflatedDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list with the parent's parameters followed by \code{zi}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{zero_inflated}}
 S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)

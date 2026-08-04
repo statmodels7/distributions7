@@ -19,3 +19,7 @@ inner elements into atomic vectors.
 Turns a list of \code{k} equal-length vectors into a list of \code{n} vectors of
 length \code{k}, one per observation, keeping the names.
 }
+\examples{
+transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
+
+}

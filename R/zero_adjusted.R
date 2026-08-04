@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R numerical_functions.R zero_inflated.R
+NULL
 
 #' @title S7 Class for Zero-Adjusted Discrete (Hurdle) Distributions
 #' @name ZeroAdjustedDiscreteDistrib
@@ -9,6 +10,7 @@
 #' \eqn{\pi} (parameter \code{za}), and positive values follow the zero-truncated parent.
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
+#' @return An object of class \code{ZeroAdjustedDiscreteDistrib}.
 #' @seealso \code{\link{zero_adjusted}}
 #'
 #' @section Methods:
@@ -38,6 +40,7 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #' (parameter \code{za}) mixed with the original continuous distribution.
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
+#' @return An object of class \code{ZeroAdjustedContinuousDistrib}.
 #' @seealso \code{\link{zero_adjusted}}
 #'
 #' @section Methods:
@@ -69,6 +72,7 @@ ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
 #' @param y A numeric vector of observations.
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, log = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -92,6 +96,7 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -120,6 +125,7 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -157,6 +163,7 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list with the parent's parameters followed by \code{za}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)
@@ -324,6 +331,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
 #' @param y A numeric vector of observations.
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, log = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -344,6 +352,7 @@ S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, t
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -367,6 +376,7 @@ S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, t
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
@@ -416,6 +426,7 @@ S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list with the parent's parameters followed by \code{za}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{zero_adjusted}}
 S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)
@@ -607,6 +618,7 @@ S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #' @param theta A list with the parent's parameters followed by \code{za}.
 #' @param ... Additional arguments passed to \code{f}.
 #' @keywords internal
+#' @return A numeric scalar, the expectation of \code{f} under the distribution.
 S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, theta, ...) {
   pars <- split_mix_theta(distrib, theta)
   za_name <- distrib@params[distrib@n_params]

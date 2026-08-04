@@ -17,3 +17,8 @@ Transformer for the Yeo-Johnson transformation, extending Box-Cox to
 negative values: Box-Cox of \eqn{X+1} (parameter \eqn{\lambda}) for \eqn{X \ge 0},
 and negated Box-Cox of \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
 }
+\examples{
+d <- transformation(gaussian_distrib(), yj_transform(lambda = 0.5))
+distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+
+}

@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Inverts the hurdle CDF: 0 for \eqn{p \le \pi}, otherwise the parent quantile at
 \eqn{u(1-f(0)) + f(0)} with \eqn{u = (p-\pi)/(1-\pi)}.

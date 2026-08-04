@@ -16,6 +16,16 @@ If unnamed, parameters are taken in the order of \code{distrib@params}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
+\value{
+A numeric vector of \code{n} draws for a univariate distribution, and
+an \eqn{n \times p} matrix for a multivariate one.
+}
 \description{
 Generates random variates from the given distribution.
+}
+\examples{
+set.seed(1)
+distrib_rng(gaussian_distrib(), 5, list(mu = 0, sigma = 1))
+distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
+  sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 }

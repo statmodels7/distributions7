@@ -16,6 +16,13 @@ If unnamed, parameters are taken in the order of \code{distrib@params}.}
 
 \item{...}{Additional arguments passed to the specific method (e.g., \code{log}).}
 }
+\value{
+A numeric vector of density values, one per observation.
+}
 \description{
 Evaluates the probability density function (PDF) or probability mass function (PMF).
+}
+\examples{
+distrib_pdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 }

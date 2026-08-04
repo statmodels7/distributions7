@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Binomial Distribution
 #' @name BinomialDistrib
@@ -7,6 +8,7 @@
 #' @inheritParams distrib
 #' @param size Integer or Numeric Vector. The number of trials \eqn{n}.
 #'   Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.
+#' @return An object of class \code{BinomialDistrib}.
 #' @seealso \code{\link{binomial_distrib}}
 #'
 #' @section Methods:
@@ -63,6 +65,7 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{binomial_distrib}}
 S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pbinom(
@@ -86,6 +89,7 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{binomial_distrib}}
 S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qbinom(
@@ -105,6 +109,7 @@ S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, low
 #' @param distrib A \code{BinomialDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter \code{mu}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{binomial_distrib}}
 S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta) {
   stats::rbinom(
@@ -252,6 +257,14 @@ S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expec
 #'
 #' @importFrom linkfunctions7 logit_link
 #' @importFrom stats dbinom pbinom qbinom rbinom
+#' @examples
+#' d <- binomial_distrib(size = 5)
+#' d@params
+#'
+#' theta <- list(mu = 0.3)
+#' distrib_pdf(d, 0:5, theta)
+#' distrib_gradient(d, 0:5, theta)
+#'
 #' @export
 binomial_distrib <- function(link_mu = logit_link(), size = 1) {
   

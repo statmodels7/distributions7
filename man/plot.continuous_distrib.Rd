@@ -12,6 +12,9 @@
 
 \item{...}{Additional arguments passed to the base \code{\link{plot}} function.}
 }
+\value{
+The distribution, invisibly.
+}
 \description{
 Visualizes the Probability Density Function (PDF) of a continuous distribution object.
 }

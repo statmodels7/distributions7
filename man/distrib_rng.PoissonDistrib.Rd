@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameter \code{mu}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Poisson distribution.
 }

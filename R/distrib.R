@@ -36,6 +36,14 @@
 #'   \code{\link[=std_dev]{std_dev()}},
 #'   \code{\link[=variance]{variance()}}
 #'
+#' @return An object of class \code{distrib}.
+#'
+#' @examples
+#' d <- gaussian_distrib()
+#' S7::S7_inherits(d, distrib)
+#' d@params
+#' d@params_bounds
+#'
 #' @export
 distrib <- S7::new_class("distrib",
   properties = list(
@@ -131,6 +139,12 @@ S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
 #'
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #' @return A named logical vector, one entry per parameter.
+#' @examples
+#' param_smoothness(gaussian_distrib())
+#'
+#' # the Laplace location is a kink, so it is not smooth
+#' param_smoothness(laplace_distrib())
+#'
 #' @export
 param_smoothness <- function(distrib) {
   ps <- distrib@params_smooth
@@ -162,6 +176,12 @@ param_smoothness <- function(distrib) {
 #'
 #' Everything else is inherited from \code{\link{distrib}}.
 #'
+#' @return An object of class \code{continuous_distrib}.
+#'
+#' @examples
+#' S7::S7_inherits(gaussian_distrib(), continuous_distrib)
+#' S7::S7_inherits(poisson_distrib(), continuous_distrib)
+#'
 #' @export
 continuous_distrib <- S7::new_class("continuous_distrib",
   parent = distrib
@@ -184,6 +204,12 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #'   \code{\link[=plot.discrete_distrib]{plot()}}
 #'
 #' Everything else is inherited from \code{\link{distrib}}.
+#'
+#' @return An object of class \code{discrete_distrib}.
+#'
+#' @examples
+#' S7::S7_inherits(poisson_distrib(), discrete_distrib)
+#' S7::S7_inherits(gaussian_distrib(), discrete_distrib)
 #'
 #' @export
 discrete_distrib <- S7::new_class("discrete_distrib",

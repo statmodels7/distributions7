@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Computes the quantile function for the Gamma distribution as the inverse of the
 CDF, \eqn{Q(p; \mu, \sigma^2) = F^{-1}(p; \mu, \sigma^2)}. There is no elementary

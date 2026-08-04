@@ -35,6 +35,9 @@ discrete_distrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
 }
+\value{
+An object of class \code{discrete_distrib}.
+}
 \description{
 A subclass of \code{distrib} specifically for discrete probability distributions.
 }
@@ -53,3 +56,8 @@ which every standard count distribution has.
 Everything else is inherited from \code{\link{distrib}}.
 }
 
+\examples{
+S7::S7_inherits(poisson_distrib(), discrete_distrib)
+S7::S7_inherits(gaussian_distrib(), discrete_distrib)
+
+}

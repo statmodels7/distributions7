@@ -41,6 +41,9 @@ FixedDiscreteDistrib(
 
 \item{fixed_params}{A named list of the fixed parameter values.}
 }
+\value{
+An object of class \code{FixedDiscreteDistrib}.
+}
 \description{
 A subclass of \code{discrete_distrib} representing a discrete distribution
 in which some parameters of the wrapped distribution are held at known

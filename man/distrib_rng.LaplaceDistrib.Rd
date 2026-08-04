@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameters \code{mu} and \code{b}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Laplace distribution by inverse-transform
 sampling.

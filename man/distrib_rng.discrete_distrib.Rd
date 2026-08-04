@@ -10,6 +10,9 @@
 
 \item{theta}{A named list of parameters.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Fallback method: discrete distributions that do not implement a native RNG
 generate draws by inverse transform sampling on the cumulative pmf table.

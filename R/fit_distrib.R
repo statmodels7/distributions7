@@ -117,16 +117,23 @@ fit_score <- function(distrib, y, theta) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters on the natural scale.
 #' @param expected Logical; whether to use the expected Hessian.
+#' @param approx How the expectation is approximated when the distribution has
+#'   no closed form for it. Ignored when it has one, and when \code{expected}
+#'   is \code{FALSE}.
+#' @param nsim Monte Carlo sample size, used when \code{approx = "mc"}.
 #'
 #' @return A symmetric numeric matrix with dimnames taken from the parameters.
 #'
 #' @seealso \code{\link{fit_score}}, \code{\link{fit_distrib}}
 #' @keywords internal
-fit_hess_matrix <- function(distrib, y, theta, expected) {
+fit_hess_matrix <- function(distrib, y, theta, expected,
+                            approx = "bartlett", nsim = 10000) {
   params <- distrib@params
   p <- length(params)
   h <- if (expected) {
-    distrib_expected_hessian(distrib, y, theta, scale = "link")
+    distrib_expected_hessian(distrib, y, theta,
+      scale = "link", approx = approx, nsim = nsim
+    )
   } else {
     distrib_hessian(distrib, y, theta, scale = "link")
   }
@@ -181,6 +188,9 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param iterations Number of iterations used.
 #' @param converged Logical convergence flag.
 #' @param method Optimisation method actually used.
+#' @param criterion Which stopping rule ended the run, as optimizers7 reports it.
+#' @param note Any remark the optimiser attached to the run.
+#' @param counts How many times the objective and its gradient were evaluated.
 #' @param level Confidence level.
 #' @section Methods:
 #' Methods implemented for this class:
@@ -190,6 +200,16 @@ fit_loglik <- function(distrib, y, theta) {
 #'   \code{\link[=print.distrib_fit]{print()}},
 #'   \code{\link[=simulate.distrib_fit]{simulate()}},
 #'   \code{\link[=vcov.distrib_fit]{vcov()}}
+#'
+#' @return An object of class \code{distrib_fit}.
+#'
+#' @examples
+#' set.seed(1)
+#' y <- distrib_rng(gaussian_distrib(), 200, list(mu = 1, sigma = 2))
+#' fit <- fit_distrib(gaussian_distrib(), y)
+#' S7::S7_inherits(fit, distrib_fit)
+#' coef(fit)
+#' logLik(fit)
 #'
 #' @export
 distrib_fit <- S7::new_class("distrib_fit",
@@ -211,6 +231,9 @@ distrib_fit <- S7::new_class("distrib_fit",
     iterations   = S7::class_numeric,
     converged    = S7::class_logical,
     method       = S7::class_character,
+    criterion    = S7::class_character,
+    note         = S7::class_character,
+    counts       = S7::class_any,
     level        = S7::class_numeric
   )
 )
@@ -227,25 +250,35 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #' @param y A numeric vector of observations.
 #' @param start Optional named list of starting values \strong{on the parameter
-#'   scale}. If \code{NULL} (default) starting values are drawn with
-#'   \code{\link{generate_random_theta}}, with a few random restarts on failure;
-#'   supplying a sensible \code{start} makes convergence faster and more reliable.
-#' @param method Optimisation method, either one of three named strategies or
-#'   an optimiser object from \pkg{optimizers7}. The named strategies are
-#'   \code{"fisher"} (default), which is Newton's method with the expected
-#'   information in place of the Hessian, \code{"newton"}, which uses the
-#'   observed Hessian, and \code{"bfgs"}, which uses the analytical gradient
-#'   alone; the first two fall back to BFGS if they fail to converge. Any
-#'   optimiser object is used as given, receiving the analytical gradient and
-#'   observed Hessian and no fallback, so that
-#'   \code{method = lbfgs(criterion = crit_grad(1e-12))} selects both the
-#'   algorithm and the stopping rule.
-#' @param maxit Maximum number of iterations. Defaults to 200.
-#' @param tol Convergence tolerance on the score and on the log-likelihood
-#'   increment. Defaults to \code{1e-10}.
+#'   scale}. If \code{NULL} (default) they come from
+#'   \code{\link{distrib_start}}, which lets a family compute them from the
+#'   data; families that do not say otherwise fall back to random draws, with
+#'   restarts.
+#' @param method How to optimise. One argument, taking one of three things:
+#'   \itemize{
+#'     \item \code{\link{fisher_scoring}()}, the default --- Newton's method
+#'       with the \strong{expected} information in place of the Hessian, the
+#'       object carrying how that information is to be obtained when the family
+#'       has no closed form for it;
+#'     \item an optimiser object from \pkg{optimizers7}, used as given and
+#'       receiving the analytical gradient and the \strong{observed} Hessian,
+#'       so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
+#'       both the algorithm and the stopping rule;
+#'     \item one of the strings \code{"fisher"}, \code{"newton"} or
+#'       \code{"bfgs"}, kept as short names for the three ready-made
+#'       strategies. The first two fall back to BFGS if they fail to converge;
+#'       an optimiser the caller chose is never silently replaced.
+#'   }
+#' @param maxit Maximum number of iterations. Defaults to 200. An optimiser
+#'   object or a \code{fisher_scoring()} carrying its own \code{maxit}
+#'   overrides it.
+#' @param tol Convergence tolerance on the score, used to build
+#'   \code{crit_grad(tol)}. Defaults to \code{1e-10}. A method object carrying
+#'   its own stopping rule overrides it.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
-#' @param n_start Number of random restarts attempted when \code{start} is
-#'   \code{NULL} and the first attempt fails. Defaults to 5.
+#' @param n_start How many starting values to ask \code{\link{distrib_start}}
+#'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
+#'   its own estimate returns one and ignores this.
 #'
 #' @return An object of class \code{\link{distrib_fit}}; see its documentation for
 #'   the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
@@ -290,12 +323,26 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @importFrom stats qnorm setNames
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
-                        method = c("fisher", "newton", "bfgs"),
+                        method = fisher_scoring(),
                         maxit = 200, tol = 1e-10, level = 0.95, n_start = 5) {
-  # `method` is either one of the three named strategies or an optimiser
-  # object, which is then used as given.
+  # One argument says how to optimise, and it takes one of three things: a
+  # fisher_scoring() specification, an optimizers7 optimiser, or the name of
+  # one of the three ready-made strategies. How the expected information is to
+  # be approximated is a property of Fisher scoring and lives on that object,
+  # not among fit_distrib()'s own arguments, where it would sit next to
+  # optimisers that never look at it.
   optimizer <- NULL
-  if (S7::S7_inherits(method, optimizers7::optimizer)) {
+  approx <- "bartlett"
+  nsim <- 10000
+  fs <- NULL
+
+  if (S7::S7_inherits(method, FisherScoring)) {
+    fs <- method
+    method <- "fisher"
+    approx <- fs@approx
+    nsim <- fs@nsim
+    if (!is.null(fs@maxit)) maxit <- fs@maxit
+  } else if (S7::S7_inherits(method, optimizers7::optimizer)) {
     optimizer <- method
     method <- "custom"
     # A stopping rule the optimiser cannot evaluate is a mistake in the call,
@@ -304,8 +351,21 @@ fit_distrib <- function(distrib, y, start = NULL,
     # loop below and reported as a fit that never converged.
     optimizers7::check_criterion(optimizer)
   } else {
-    method <- match.arg(method)
+    method <- match.arg(method, c("fisher", "newton", "bfgs"))
   }
+
+  # A strategy chosen where it will be ignored is a mistake in the call rather
+  # than a harmless redundancy: silently accepting it is how a caller comes to
+  # believe a fit used a method it did not.
+  if (!is.null(fs) && !identical(fs@approx, "bartlett") &&
+      has_exact_expected_hessian(distrib)) {
+    stop(sprintf(paste0(
+      "'%s' computes its expected information in closed form, so the 'approx'\n",
+      "  of fisher_scoring() would be ignored. Use fisher_scoring() with no\n",
+      "  arguments: the fit will take the exact expression."
+    ), distrib@distrib_name), call. = FALSE)
+  }
+
   params <- distrib@params
   p <- length(params)
   # The row count for a multivariate response, its length otherwise: n is the
@@ -323,11 +383,21 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   # --- starting values ----------------------------------------------------
+  # distrib_start() lets a family compute a start from the DATA. The default
+  # draws at random from the parameter domains, as before, but a family that
+  # knows its own estimator says so: the four-dimensional gaussian of the iris
+  # measurements never converges from the origin and converges in one iteration
+  # from the sample mean and covariance.
   starts <- if (!is.null(start)) {
     list(fit_eta_from_theta(distrib, align_theta(distrib, start)))
   } else {
-    lapply(seq_len(max(1L, n_start)), function(i) {
-      fit_eta_from_theta(distrib, generate_random_theta(distrib))
+    th0 <- distrib_start(distrib, y, n_start = max(1L, n_start))
+    if (!is.list(th0) || !length(th0)) {
+      stop("distrib_start() must return a non-empty list of parameter lists.",
+           call. = FALSE)
+    }
+    lapply(th0, function(th) {
+      fit_eta_from_theta(distrib, align_theta(distrib, th))
     })
   }
 
@@ -343,19 +413,34 @@ fit_distrib <- function(distrib, y, start = NULL,
   nll_he <- function(expected) {
     function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
-      -fit_hess_matrix(distrib, y, th, expected = expected)
+      -fit_hess_matrix(distrib, y, th,
+        expected = expected, approx = approx, nsim = nsim
+      )
     }
   }
 
-  # The two conditions the iteration used to test inline: the score is
-  # numerically zero, or the log-likelihood has stopped moving.
-  crit <- optimizers7::crit_any(optimizers7::crit_grad(tol),
-                                optimizers7::crit_rel_obj(tol))
+  # The score is numerically zero. The rule used to be an OR with
+  # crit_rel_obj(tol), which is what the routine tested inline before it
+  # delegated, and the OR let the weaker rule end the run: near a maximum the
+  # objective goes flat while the gradient is still measurable, so the run
+  # stopped at a gradient of order sqrt(|loglik| * tol * n) -- a bound that
+  # loosens as the sample grows, and that lands in a different place on
+  # different machines. Measured on one multivariate fit, Newton stopped at a
+  # score of 1.3e-15 per observation on one platform and 1.2e-8 on another,
+  # from rounding alone. A fit is at a maximum when its gradient vanishes, so
+  # that is what is asked.
+  crit <- if (!is.null(fs) && !is.null(fs@criterion)) {
+    fs@criterion
+  } else {
+    optimizers7::crit_grad(tol)
+  }
 
   run <- function(opt, eta0, he, label) {
     r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, he = he)
     list(eta = r@par, converged = isTRUE(r@converged),
-         iterations = r@iterations, method = label)
+         iterations = r@iterations, method = label,
+         value = r@value, criterion_met = r@criterion_met,
+         message = r@message, counts = r@counts)
   }
 
   run_bfgs <- function(eta0) {
@@ -381,14 +466,34 @@ fit_distrib <- function(distrib, y, start = NULL,
     # behind a numerically-approximated expected Hessian can fail outright
     # ("the integral is probably divergent"), and without this the random
     # restarts and the BFGS fallback promised below never get their turn.
-    res <- tryCatch(run_chosen(eta0), error = function(e) NULL)
+    this <- tryCatch(run_chosen(eta0), error = function(e) NULL)
     # An explicitly chosen optimiser is not silently replaced; the fallback
     # belongs to the two named second-order strategies, which can fail on a
     # Hessian the distribution cannot supply at that point.
     if (method %in% c("fisher", "newton") &&
-        (is.null(res) || !isTRUE(res$converged))) {
+        (is.null(this) || !isTRUE(this$converged))) {
       alt <- tryCatch(run_bfgs(eta0), error = function(e) NULL)
-      if (!is.null(alt) && isTRUE(alt$converged)) res <- alt
+      # The fallback is preferred when it converges, and kept as a last resort
+      # when the chosen method raised: discarding a run that reached a point
+      # merely because it did not satisfy the stopping rule reports "failed
+      # from every starting value" for a fit that exists. A family whose score
+      # contains a finite difference cannot drive the gradient below the
+      # difference's own error, so this is reachable on correct code.
+      if (!is.null(alt) && (isTRUE(alt$converged) || is.null(this))) this <- alt
+    }
+    # Keep the BEST run, not the last one. Several starting values exist
+    # precisely because one of them may end somewhere poor, and overwriting on
+    # every pass reported whichever start happened to come last -- which on a
+    # four-dimensional gaussian meant a random start's answer instead of the
+    # maximum likelihood estimate. Convergence comes first and the objective
+    # breaks ties: a converged run is what the fit promises, and a lower value
+    # reached without meeting the stopping rule does not replace one.
+    if (!is.null(this)) {
+      better <- is.null(res) ||
+        (isTRUE(this$converged) && !isTRUE(res$converged)) ||
+        (isTRUE(this$converged) == isTRUE(res$converged) &&
+           this$value < res$value)
+      if (better) res <- this
     }
     if (!is.null(res) && isTRUE(res$converged)) break
   }
@@ -450,6 +555,9 @@ fit_distrib <- function(distrib, y, start = NULL,
     iterations = res$iterations,
     converged = isTRUE(res$converged),
     method = res$method,
+    criterion = if (is.null(res$criterion_met)) "" else res$criterion_met,
+    note = if (is.null(res$message)) "" else res$message,
+    counts = res$counts,
     level = level
   )
 }
@@ -464,47 +572,107 @@ fit_distrib <- function(distrib, y, start = NULL,
 S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   lo <- paste0(format((1 - x@level) / 2 * 100, trim = TRUE), "%")
   hi <- paste0(format((1 + x@level) / 2 * 100, trim = TRUE), "%")
+  mv <- S7::S7_inherits(x@distrib, multivariate_distrib)
 
   cat("Maximum-likelihood fit: ", x@distrib@distrib_name, "\n", sep = "")
   cat("Observations: ", x@n,
       "   Log-likelihood: ", format(x@loglik, digits = digits),
       "   AIC: ", format(x@aic, digits = digits),
       "   BIC: ", format(x@bic, digits = digits), "\n", sep = "")
-  cat("Method: ", x@method,
-      if (x@converged) sprintf(" (converged in %s iterations)", x@iterations)
-      else " (DID NOT CONVERGE)", "\n\n", sep = "")
 
-  tab <- cbind(Estimate = x@coefficients, `Std. Error` = x@se, x@ci)
-  colnames(tab) <- c("Estimate", "Std. Error", lo, hi)
-  cat("Parameter scale:\n")
-  print(round(tab, digits))
+  # What the optimiser did, in the shape optimizers7 reports it. The stopping
+  # rule that ended the run is the thing that says what "converged" means here,
+  # and a run that stopped without meeting one is worth reading for the same
+  # reason.
+  cat("Method: ", x@method, "   iterations: ", x@iterations, sep = "")
+  if (!is.null(x@counts) && all(c("f", "g") %in% names(x@counts))) {
+    cat("   evaluations: f ", x@counts[["f"]], ", g ", x@counts[["g"]], sep = "")
+  }
+  cat("\n")
+  crit <- if (length(x@criterion) && nzchar(x@criterion)) x@criterion else "no rule reported"
+  cat(if (x@converged) "Converged: yes (" else "Converged: NO (", crit, ")\n", sep = "")
+  if (length(x@note) && nzchar(x@note)) cat("Note: ", x@note, "\n", sep = "")
+  cat("\n")
 
+  # --- the estimates -------------------------------------------------------
+  # For a multivariate family the parameters are coordinates of a covariance
+  # structure, and nobody reads a Cholesky coordinate. What goes here is what
+  # the model is about, which mv_summary() assembles from mv_derived(): the
+  # location, and whatever the structure's matrix decomposes into. A structure
+  # with fewer free values produces fewer quantities, so the block is as small
+  # as the model is.
+  if (mv) {
+    tab_mv <- tryCatch(mv_summary(x), error = function(e) NULL)
+  } else {
+    tab_mv <- NULL
+  }
+
+  if (!is.null(tab_mv)) {
+    loc <- tryCatch(
+      {
+        th <- as.list(x@coefficients)
+        v <- mv_location(x@distrib, th)
+        p <- x@distrib@n_dim
+        m <- cbind(
+          Estimate = unname(v), `Std. Error` = unname(x@se[seq_len(p)]),
+          unname(x@ci[seq_len(p), , drop = FALSE])
+        )
+        rownames(m) <- names(v)
+        colnames(m) <- c("Estimate", "Std. Error", lo, hi)
+        m
+      },
+      error = function(e) NULL
+    )
+    if (!is.null(loc)) {
+      cat("Location:\n")
+      print(round(loc, digits))
+      cat("\n")
+    }
+    names(tab_mv)[3:4] <- c(lo, hi)
+    blocks <- attr(tab_mv, "block")
+    for (b in unique(blocks)) {
+      cat(b, ":\n", sep = "")
+      print(round(tab_mv[blocks == b, , drop = FALSE], digits))
+      cat("\n")
+    }
+    # Any parameter the structure does not account for -- the degrees of
+    # freedom of a t, for instance -- still belongs in the table.
+    extra <- setdiff(
+      x@distrib@params,
+      c(paste0("mu", seq_len(x@distrib@n_dim)),
+        grep("^(sigma|omega)_", x@distrib@params, value = TRUE))
+    )
+    if (length(extra)) {
+      tab_x <- cbind(Estimate = x@coefficients[extra],
+                     `Std. Error` = x@se[extra], x@ci[extra, , drop = FALSE])
+      colnames(tab_x) <- c("Estimate", "Std. Error", lo, hi)
+      cat("Other parameters:\n")
+      print(round(tab_x, digits))
+      cat("\n")
+    }
+  } else {
+    tab <- cbind(Estimate = x@coefficients, `Std. Error` = x@se, x@ci)
+    colnames(tab) <- c("Estimate", "Std. Error", lo, hi)
+    cat("Parameter scale:\n")
+    print(round(tab, digits))
+    cat("\n")
+  }
+
+  # --- the scale the fit was actually computed on --------------------------
+  # The link-scale interval is the one computed; everything above is its image.
+  # Showing it makes the mapping visible. When every link is the identity the
+  # two tables would be the same numbers twice, so the block is dropped and the
+  # reason said once -- which is what a multivariate gaussian gives, its
+  # constraint living in the structure rather than in a link.
   links <- vapply(x@distrib@params,
-                  function(p) x@distrib@link_params[[p]]@link_name, character(1))
-  # The link-scale interval is the one actually computed; the table above is its
-  # image under g^{-1}, so showing both makes the mapping visible. When every
-  # link is the identity the two tables are the same numbers twice, which is
-  # what a multivariate distribution gives -- there the constraint lives in the
-  # covariance structure rather than in a link -- so the block is dropped and
-  # the reason said once.
+                  function(pp) x@distrib@link_params[[pp]]@link_name, character(1))
   if (all(links == "identity")) {
-    cat("\nThe link scale is the parameter scale: every link is the identity.\n")
+    cat("The link scale is the parameter scale: every link is the identity.\n")
   } else {
     tab_eta <- cbind(Estimate = x@eta, `Std. Error` = x@se_eta, x@ci_eta)
     colnames(tab_eta) <- c("Estimate", "Std. Error", lo, hi)
-    cat("\nLink scale (", paste(links, collapse = ", "), "):\n", sep = "")
+    cat("Link scale:\n")
     print(round(tab_eta, digits))
-  }
-
-  # For a multivariate fit the parameters above are the coordinates the
-  # optimiser works in; the mean vector and the covariance are what the model
-  # is about, so they are assembled and shown as well.
-  if (S7::S7_inherits(x@distrib, multivariate_distrib)) {
-    th <- as.list(x@coefficients)
-    cat("\nMean:\n")
-    print(round(mv_mu(x@distrib, th), digits))
-    cat("\nCovariance:\n")
-    print(round(mv_sigma(x@distrib, th), digits))
   }
 
   invisible(x)
@@ -685,12 +853,23 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @param legend Logical; add a legend. Defaults to \code{TRUE}.
 #' @param col_fit,col_data Colours of the fitted curve and of the empirical
 #'   summary.
+#' @param mv_which For a multivariate fit, which coordinates to show. Defaults
+#'   to all of them, and at most three are drawn: above that the panel matrix
+#'   stops being readable.
 #' @param ... Further arguments passed to \code{\link[graphics]{plot}}, for
 #'   instance \code{main}, \code{xlab} or \code{xlim}.
 #'
+#' @details
+#' A univariate fit is drawn as the fitted density over a histogram or, for a
+#' discrete family, over the observed proportions. A multivariate one is drawn
+#' as a panel matrix: the fitted marginal density and a kernel estimate of the
+#' data on the diagonal, the fitted contours over the observations below it,
+#' and the fitted correlation above.
+#'
 #' @return \code{x}, invisibly.
 #'
-#' @seealso \code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}}
+#' @seealso \code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}},
+#'   \code{\link{plot.multivariate_distrib}}
 #'
 #' @examples
 #' set.seed(1)
@@ -702,20 +881,26 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
                                           legend = TRUE,
                                           col_fit = "#B22222", col_data = "#4682B4",
+                                          mv_which = NULL,
                                           ...) {
   y <- x@y
   if (!length(y)) {
     stop("This fit carries no data to plot.", call. = FALSE)
   }
-  if (S7::S7_inherits(x@distrib, multivariate_distrib)) {
-    stop(paste0(
-      "There is no one picture of a fitted multivariate density. Plot a pair\n",
-      "  of coordinates, or a contour of the fitted density, with the mean and\n",
-      "  covariance from mv_mu() and mv_sigma()."
-    ), call. = FALSE)
-  }
   theta <- as.list(x@coefficients)
   d <- x@distrib
+
+  # A fitted multivariate density is a panel matrix rather than a curve: the
+  # fitted marginal against a kernel estimate on the diagonal, and the fitted
+  # contours over the observations off it. The kernel estimate is the
+  # comparison that does not assume the model.
+  if (S7::S7_inherits(d, multivariate_distrib)) {
+    mv_pairs_panels(d, align_theta(d, theta), which = mv_which,
+      n_grid = 80L, col_fit = col_fit,
+      data = as_mv_matrix(d, y), col_data = col_data
+    )
+    return(invisible(x))
+  }
   dots <- list(...)
   if (is.null(dots$main)) {
     dots$main <- paste0("Fitted ", d@distrib_name, " and observed data")

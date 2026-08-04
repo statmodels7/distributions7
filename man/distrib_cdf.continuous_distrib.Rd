@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Fallback method: continuous distributions that do not implement an analytical
 CDF get one by numerical integration of \code{distrib_pdf}. An approximate mode

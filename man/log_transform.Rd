@@ -13,3 +13,8 @@ A \code{\link{transformer}} object.
 Transformer for \eqn{Y = \log(X)}: maps \eqn{(0, \infty)} to the real line.
 Inverse \eqn{X = e^Y}, Jacobian \eqn{|J| = e^Y}.
 }
+\examples{
+d <- transformation(gamma_distrib(), log_transform())
+distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
+
+}

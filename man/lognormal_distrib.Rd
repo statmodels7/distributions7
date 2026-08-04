@@ -61,3 +61,12 @@ Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
 \code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
 \code{\link{distrib_hess_y}}) are also available.
 }
+\examples{
+d <- lognormal_distrib()
+d@params
+
+theta <- list(mu = 0, sigma2 = 1)
+distrib_pdf(d, c(0.5, 1, 2), theta)
+distrib_gradient(d, c(0.5, 1, 2), theta)
+
+}

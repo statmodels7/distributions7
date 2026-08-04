@@ -39,6 +39,9 @@ transformer(
 
 \item{decreasing}{Logical; \code{TRUE} for monotonically decreasing transformations.}
 }
+\value{
+An object of class \code{transformer}.
+}
 \description{
 A \code{transformer} object defines the mathematical rules for transforming a random
 variable \eqn{Y = g(X)}. It is used as input to \code{\link{transformation}}.
@@ -58,6 +61,15 @@ Ready-made transformers: \code{\link{log_transform}}, \code{\link{exp_transform}
 \code{\link{expit_transform}}, \code{\link{affine_transform}}.
 }
 
+\examples{
+tr <- log_transform()
+S7::S7_inherits(tr, transformer)
+tr@name
+
+# a transformer is consumed by transformation(), which is where it acts
+distrib_pdf(transformation(gamma_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
+
+}
 \seealso{
 \code{\link{transformation}}
 }

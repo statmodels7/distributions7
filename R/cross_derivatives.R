@@ -84,6 +84,9 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @return A named list with one numeric vector per parameter.
 #'
 #' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_cross_y}}
+#' @examples
+#' numerical_cross_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
   params <- distrib@params

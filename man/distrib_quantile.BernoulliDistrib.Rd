@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Computes the quantile function for the Bernoulli distribution, the generalized
 inverse of the CDF:

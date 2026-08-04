@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Lognormal Distribution
 #' @name LognormalDistrib
 #' 
 #' @description A subclass of \code{continuous_distrib} representing the Lognormal distribution.
 #' @inheritParams distrib
+#' @return An object of class \code{LognormalDistrib}.
 #' @seealso \code{\link{lognormal_distrib}}
 #'
 #' @section Methods:
@@ -60,6 +62,7 @@ S7::method(distrib_pdf, LognormalDistrib) <- function(distrib, y, theta, log = F
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{lognormal_distrib}}
 S7::method(distrib_cdf, LognormalDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::plnorm(
@@ -83,6 +86,7 @@ S7::method(distrib_cdf, LognormalDistrib) <- function(distrib, q, theta, lower.t
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{lognormal_distrib}}
 S7::method(distrib_quantile, LognormalDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qlnorm(
@@ -102,6 +106,7 @@ S7::method(distrib_quantile, LognormalDistrib) <- function(distrib, p, theta, lo
 #' @param distrib A \code{LognormalDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{lognormal_distrib}}
 S7::method(distrib_rng, LognormalDistrib) <- function(distrib, n, theta) {
   stats::rlnorm(
@@ -274,6 +279,14 @@ S7::method(distrib_hess_y, LognormalDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats dlnorm plnorm qlnorm rlnorm
+#' @examples
+#' d <- lognormal_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0, sigma2 = 1)
+#' distrib_pdf(d, c(0.5, 1, 2), theta)
+#' distrib_gradient(d, c(0.5, 1, 2), theta)
+#'
 #' @export
 lognormal_distrib <- function(link_mu = identity_link(), link_sigma2 = log_link()) {
   

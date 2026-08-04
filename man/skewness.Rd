@@ -20,3 +20,8 @@ Computes the skewness (third standardized moment). For \code{distrib} objects it
 evaluated numerically via \code{\link{moment}}; for numeric vectors the sample
 skewness (population denominator) is returned.
 }
+\examples{
+skewness(gaussian_distrib(), list(mu = 0, sigma = 1))
+skewness(gamma_distrib(), list(mu = 2, sigma2 = 1))
+
+}

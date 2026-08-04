@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R numerical_functions.R zero_inflated.R zero_adjusted.R
+NULL
 
 # ===========================================================================
 # Truncation.
@@ -40,6 +41,7 @@
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
 #' @param lower,upper The truncation points.
+#' @return An object of class \code{TruncatedContinuousDistrib}.
 #' @seealso \code{\link{truncated}}
 #'
 #' @section Methods:
@@ -76,6 +78,7 @@ TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
 #' @param lower,upper The truncation points, included in the support.
+#' @return An object of class \code{TruncatedDiscreteDistrib}.
 #' @seealso \code{\link{truncated}}
 #'
 #' @section Methods:
@@ -680,6 +683,7 @@ trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "li
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
 #' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_pdf, TruncatedContinuousDistrib) <- trunc_pdf
 
@@ -693,6 +697,7 @@ S7::method(distrib_pdf, TruncatedContinuousDistrib) <- trunc_pdf
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_pdf, TruncatedDiscreteDistrib) <- trunc_pdf
 
@@ -704,6 +709,7 @@ S7::method(distrib_pdf, TruncatedDiscreteDistrib) <- trunc_pdf
 #' @param theta A named list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_cdf, TruncatedContinuousDistrib) <- trunc_cdf
 
@@ -715,6 +721,7 @@ S7::method(distrib_cdf, TruncatedContinuousDistrib) <- trunc_cdf
 #' @param theta A named list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_cdf, TruncatedDiscreteDistrib) <- trunc_cdf
 
@@ -726,6 +733,7 @@ S7::method(distrib_cdf, TruncatedDiscreteDistrib) <- trunc_cdf
 #' @param theta A named list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_quantile, TruncatedContinuousDistrib) <- trunc_quantile
 
@@ -737,6 +745,7 @@ S7::method(distrib_quantile, TruncatedContinuousDistrib) <- trunc_quantile
 #' @param theta A named list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_quantile, TruncatedDiscreteDistrib) <- trunc_quantile
 
@@ -749,6 +758,7 @@ S7::method(distrib_quantile, TruncatedDiscreteDistrib) <- trunc_quantile
 #' @param distrib A \code{TruncatedContinuousDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A named list of the parent's parameters.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_rng, TruncatedContinuousDistrib) <- trunc_rng
 
@@ -758,6 +768,7 @@ S7::method(distrib_rng, TruncatedContinuousDistrib) <- trunc_rng
 #' @param distrib A \code{TruncatedDiscreteDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A named list of the parent's parameters.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_rng, TruncatedDiscreteDistrib) <- trunc_rng
 
@@ -863,6 +874,7 @@ S7::method(distrib_atoms, TruncatedContinuousDistrib) <- function(distrib, theta
 #' @param theta A named list of the parent's parameters.
 #' @param ... Additional arguments passed to \code{f}.
 #' @keywords internal
+#' @return A numeric scalar, the expectation of \code{f} under the distribution.
 S7::method(expectation, TruncatedContinuousDistrib) <- function(distrib, f, theta, ...) {
   cont <- S7::method(expectation, continuous_distrib)(distrib, f, theta, ...)
   at <- distrib_atoms(distrib, theta)

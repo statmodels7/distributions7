@@ -51,15 +51,31 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' structure's own \code{struct_dlogdet()}; written in \eqn{\Sigma} the same
 #' quantities need a solve at every step.
 #'
-#' \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup} and
-#' the structure contributes its own free values under their own names, so a
-#' two-dimensional gaussian on an unstructured covariance has five parameters:
-#' \code{mu1}, \code{mu2}, \code{log_L1}, \code{log_L2}, \code{L2.1}. All of
-#' them are unconstrained, and their links are therefore the identity: the
-#' constraint that makes the matrix positive definite lives inside the
-#' structure, which is why it needs no link to express it. A consequence worth
-#' knowing is that the parameter scale and the link scale coincide here, so
-#' \code{scale = "link"} changes nothing.
+#' \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
+#' the structure contributes its free values prefixed by the matrix they
+#' describe: \code{sigma_} for a covariance and \code{omega_} for a precision.
+#' A two-dimensional gaussian on an unstructured covariance therefore has five
+#' parameters, \code{mu1}, \code{mu2}, \code{sigma_log_L1},
+#' \code{sigma_log_L2} and \code{sigma_L2.1}, while the same structure on the
+#' precision gives \code{omega_log_L1} and the rest. The prefix is what
+#' distinguishes the two models in a printed table, since the name of a free
+#' value says how the matrix is built and not which matrix it is.
+#'
+#' All of the parameters are unconstrained, and their links are therefore the
+#' identity: the constraint that makes the matrix positive definite lives
+#' inside the structure, which is why it needs no link to express it. A
+#' consequence worth knowing is that the parameter scale and the link scale
+#' coincide here, so \code{scale = "link"} changes nothing.
+#'
+#' \strong{Reading a fit.} The free values are coordinates, not quantities
+#' anybody reads. \code{\link{mv_summary}} carries the fit's variance matrix
+#' onto the standard deviations and correlations by the delta method, and
+#' \code{print()} shows them; a precision parametrisation also reports the
+#' conditional variances and the partial correlations, which are what it
+#' describes directly. The conditional variance is
+#' \eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, and its ratio to the
+#' marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
+#' on all the others.
 #'
 #' \strong{Rank.} A rank-deficient structure is refused. A singular covariance
 #' gives a law supported on a subspace, with no density against Lebesgue
@@ -87,7 +103,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' d <- mvgaussian_distrib(2)
 #' d
 #'
-#' theta <- list(mu1 = 0, mu2 = 0, log_L1 = 0, log_L2 = 0, L2.1 = 0.5)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 #' y <- rbind(c(0, 0), c(1, -1))
 #' distrib_pdf(d, y, theta, log = TRUE)
 #'
@@ -139,7 +155,8 @@ mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) 
   }
 
   mu_names <- paste0("mu", seq_len(p))
-  clash <- intersect(mu_names, s@free_names)
+  free_names <- mv_prefixed_names(s@free_names, inverted)
+  clash <- intersect(mu_names, free_names)
   if (length(clash)) {
     stop(sprintf(paste0(
       "The structure's free value '%s' has the same name as a mean component.\n",
@@ -148,7 +165,7 @@ mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) 
     ), clash[1L]), call. = FALSE)
   }
 
-  params <- c(mu_names, s@free_names)
+  params <- c(mu_names, free_names)
   n_par <- length(params)
 
   MvGaussianDistrib(
@@ -273,36 +290,101 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 #' @details
 #' The parameters of a multivariate distribution are scalars, so that every
 #' generic of the package can index them, and these two functions put them back
-#' into the shapes a reader thinks in. \code{mv_sigma()} returns the covariance
-#' whichever side the structure parametrises.
+#' into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
+#' PARAMETRISATION carries, whichever side the structure describes: the
+#' covariance for a gaussian, and the scale matrix for a Student t, whose
+#' covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
+#' of freedom. The moment is \code{\link{variance}}, and keeping the two apart
+#' is what lets a heavy-tailed family be described at all.
 #'
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list or vector of parameters.
 #'
-#' @return A numeric vector of length \eqn{p} for \code{mv_mu()}, and a
+#' Both are generics whose base-class method refuses: not every multivariate
+#' family has a location, and one that does not should say so rather than
+#' hand back its first p parameters under a name that does not fit them.
+#'
+#' @return A numeric vector of length \eqn{p} for \code{mv_location()}, and a
 #'   \eqn{p \times p} matrix for \code{mv_sigma()}.
 #'
 #' @seealso \code{\link{mvgaussian_distrib}}
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)
-#' theta <- list(mu1 = 1, mu2 = -1, log_L1 = 0, log_L2 = 0, L2.1 = 0.5)
-#' mv_mu(d, theta)
+#' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+#' mv_location(d, theta)
 #' mv_sigma(d, theta)
 #'
 #' @export
-mv_mu <- function(distrib, theta) {
+mv_location <- S7::new_generic("mv_location", "distrib", function(distrib, theta) {
   theta <- align_theta(distrib, theta)
+  S7::S7_dispatch()
+})
+
+#' @title No Location Without a Family That Has One
+#' @name mv_location.multivariate_distrib
+#' @description
+#' Refused. Not every multivariate family has a location: a Dirichlet is
+#' described by concentrations and a Wishart by a scale and a count, and
+#' handing back the first \eqn{p} parameters under the name of a mean would be
+#' a wrong answer in the shape of a right one.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @return Never returns; raises an error.
+#' @keywords internal
+S7::method(mv_location, multivariate_distrib) <- function(distrib, theta) {
+  mv_refuse(
+    distrib, "mv_location",
+    "this family has no location parameter. A family that has one registers a method."
+  )
+}
+
+#' The First p Parameters, Read as a Location
+#'
+#' @description
+#' The helper the elliptical families implement \code{\link{mv_location}} with:
+#' the first \eqn{p} entries of the flat parameter vector, labelled by
+#' coordinate.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters, already aligned.
+#'
+#' @return A named numeric vector of length \eqn{p}.
+#'
+#' @keywords internal
+mv_leading_location <- function(distrib, theta) {
   v <- mv_flat_theta(distrib, theta)
   stats::setNames(
     unname(v[seq_len(distrib@n_dim)]), paste0("v", seq_len(distrib@n_dim))
   )
 }
 
-#' @rdname mv_mu
+#' @title Mean of a Multivariate Gaussian
+#' @name mv_location.MvGaussianDistrib
+#' @description The first \eqn{p} parameters, which are the mean vector.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param theta A named list of parameters.
+#' @return A named numeric vector of length \eqn{p}.
+#' @keywords internal
+S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
+
+#' @rdname mv_location
 #' @export
-mv_sigma <- function(distrib, theta) {
+mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
   theta <- align_theta(distrib, theta)
+  S7::S7_dispatch()
+})
+
+#' @title The Covariance a Multivariate Gaussian Carries
+#' @name mv_sigma.MvGaussianDistrib
+#' @description
+#' The covariance, assembled from the structure and inverted first when the
+#' structure parametrises the precision.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param theta A named list of parameters.
+#' @return A \eqn{p \times p} numeric matrix.
+#' @keywords internal
+S7::method(mv_sigma, MvGaussianDistrib) <- function(distrib, theta) {
   pc <- mvg_pieces(distrib, theta)
   nm <- paste0("v", seq_len(distrib@n_dim))
   dimnames(pc$sigma) <- list(nm, nm)
@@ -627,7 +709,7 @@ S7::method(distrib_hess_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' @return A numeric vector of length \eqn{p}.
 #' @keywords internal
 S7::method(mean, MvGaussianDistrib) <- function(x, theta, ...) {
-  mv_mu(x, theta)
+  mv_location(x, theta)
 }
 
 

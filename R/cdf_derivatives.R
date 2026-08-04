@@ -157,6 +157,9 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #'   remaining ones cost a pair of cdf evaluations.
 #' @return A named list of derivative components of \eqn{F}, not of its logarithm.
 #' @seealso \code{\link{distrib_grad_cdf}}
+#' @examples
+#' numerical_cdf_deriv(gaussian_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
+#'
 #' @export
 numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
                                 h_rel = .Machine$double.eps^(1 / (order + 2)),

@@ -25,3 +25,6 @@ variable \eqn{y}, \eqn{\partial^2 \ell / \partial y^2}. Defined for continuous
 distributions; distributions with a closed form provide it directly, the others
 fall back to finite differences of the log-density.
 }
+\examples{
+distrib_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+}

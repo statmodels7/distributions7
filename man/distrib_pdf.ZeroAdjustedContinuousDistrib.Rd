@@ -12,6 +12,9 @@
 
 \item{log}{Logical; if \code{TRUE}, returns the log-density.}
 }
+\value{
+A numeric vector of density values.
+}
 \description{
 \deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \ \ (y \neq 0)}
 (mixed density: point mass at 0 plus scaled continuous density).

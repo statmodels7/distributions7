@@ -1,4 +1,5 @@
-#' @include distrib.R generics.R numerical_functions.R negbin_distrib.R pseudohuber_distrib.R laplace_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull_distrib.R gumbel_distrib.R skewnormal_distrib.R skewt_distrib.R
+NULL
 
 #' @title Raw and Central Moments of a Distribution
 #' @name moment
@@ -76,6 +77,10 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #' @param ... For \code{distrib} objects: \code{theta} (a named list of parameters) and
 #'   further arguments passed to \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
+#' @examples
+#' variance(gaussian_distrib(), list(mu = 0, sigma = 2))
+#' variance(poisson_distrib(), list(mu = 3))
+#'
 #' @export
 variance <- S7::new_generic("variance", "x")
 
@@ -114,6 +119,9 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
+#' @examples
+#' std_dev(gaussian_distrib(), list(mu = 0, sigma = 2))
+#'
 #' @export
 std_dev <- S7::new_generic("std_dev", "x")
 
@@ -152,6 +160,10 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
+#' @examples
+#' skewness(gaussian_distrib(), list(mu = 0, sigma = 1))
+#' skewness(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#'
 #' @export
 skewness <- S7::new_generic("skewness", "x")
 
@@ -196,6 +208,10 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
+#' @examples
+#' kurtosis(gaussian_distrib(), list(mu = 0, sigma = 1))
+#' kurtosis(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#'
 #' @export
 kurtosis <- S7::new_generic("kurtosis", "x")
 
@@ -399,4 +415,340 @@ S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
 S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(3, length.out = max(lengths(theta[seq_len(2)])))
+}
+
+# --- WEIBULL ----------------------------------------------------------------
+#
+# Every moment of a Weibull is the scale to a power times a gamma function of
+# the shape: with g_k = Gamma(1 + k/sigma), E[Y^k] = mu^k g_k. The four
+# quantities below are the standardised combinations of those, so only the
+# first depends on mu at all.
+
+#' Gamma Factors of a Weibull's Moments
+#'
+#' @description
+#' Returns \eqn{g_k = \Gamma(1 + k/\sigma)} for \eqn{k = 1, \ldots, 4}, from
+#' which every moment of a Weibull follows as \eqn{E[Y^k] = \mu^k g_k}.
+#'
+#' @param sigma The shape parameter.
+#' @param k How many factors to return.
+#'
+#' @return A list of numeric vectors, \code{g1} to \code{gk}.
+#'
+#' @keywords internal
+weibull_gamma_factors <- function(sigma, k = 4L) {
+  out <- lapply(seq_len(k), function(j) gamma(1 + j / sigma))
+  names(out) <- paste0("g", seq_len(k))
+  out
+}
+
+#' @title Mean of the Weibull Distribution
+#' @name mean.WeibullDistrib
+#' @description Closed form: \eqn{\mu\,\Gamma(1 + 1/\sigma)}. The scale
+#'   \eqn{\mu} is not the mean, which is what this method reports.
+#' @param x A \code{\link{WeibullDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, WeibullDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[1]] * gamma(1 + 1 / theta[[2]])
+}
+
+#' @title Variance of the Weibull Distribution
+#' @name variance.WeibullDistrib
+#' @description Closed form: \eqn{\mu^2\left(g_2 - g_1^2\right)} with
+#'   \eqn{g_k = \Gamma(1 + k/\sigma)}.
+#' @param x A \code{\link{WeibullDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, WeibullDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  g <- weibull_gamma_factors(theta[[2]], 2L)
+  theta[[1]]^2 * (g$g2 - g$g1^2)
+}
+
+#' @title Skewness of the Weibull Distribution
+#' @name skewness.WeibullDistrib
+#' @description Closed form:
+#'   \eqn{(g_3 - 3g_1g_2 + 2g_1^3)/(g_2 - g_1^2)^{3/2}}, free of the scale.
+#' @param x A \code{\link{WeibullDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, WeibullDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  g <- weibull_gamma_factors(theta[[2]], 3L)
+  v <- g$g2 - g$g1^2
+  (g$g3 - 3 * g$g1 * g$g2 + 2 * g$g1^3) / v^1.5
+}
+
+#' @title Kurtosis of the Weibull Distribution
+#' @name kurtosis.WeibullDistrib
+#' @description Closed form, excess:
+#'   \eqn{(g_4 - 4g_1g_3 + 6g_1^2g_2 - 3g_1^4)/(g_2 - g_1^2)^2 - 3}, free of
+#'   the scale.
+#' @param x A \code{\link{WeibullDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, WeibullDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  g <- weibull_gamma_factors(theta[[2]], 4L)
+  v <- g$g2 - g$g1^2
+  (g$g4 - 4 * g$g1 * g$g3 + 6 * g$g1^2 * g$g2 - 3 * g$g1^4) / v^2 - 3
+}
+
+
+# --- GUMBEL -----------------------------------------------------------------
+#
+# A location-scale family with a FIXED shape: the third and fourth standardised
+# moments are constants, which is the substantive statement here rather than an
+# arithmetic convenience.
+
+#' @title Mean of the Gumbel Distribution
+#' @name mean.GumbelDistrib
+#' @description Closed form: \eqn{\mu + \gamma\sigma}, with \eqn{\gamma} the
+#'   Euler-Mascheroni constant.
+#' @param x A \code{\link{GumbelDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[1]] + (-digamma(1)) * theta[[2]]
+}
+
+#' @title Variance of the Gumbel Distribution
+#' @name variance.GumbelDistrib
+#' @description Closed form: \eqn{\pi^2\sigma^2/6}.
+#' @param x A \code{\link{GumbelDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  pi^2 * theta[[2]]^2 / 6
+}
+
+#' @title Skewness of the Gumbel Distribution
+#' @name skewness.GumbelDistrib
+#' @description Closed form: \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395},
+#'   the same for every location and scale.
+#' @param x A \code{\link{GumbelDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, GumbelDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  # zeta(3), Apery's constant, written out rather than reached for: no base R
+  # function returns it and one more dependency for one number is not worth it.
+  zeta3 <- 1.2020569031595942854
+  rep(12 * sqrt(6) * zeta3 / pi^3, length.out = max(lengths(theta[seq_len(2)])))
+}
+
+#' @title Kurtosis of the Gumbel Distribution
+#' @name kurtosis.GumbelDistrib
+#' @description Closed form, excess: \eqn{12/5}, the same for every location
+#'   and scale.
+#' @param x A \code{\link{GumbelDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  rep(12 / 5, length.out = max(lengths(theta[seq_len(2)])))
+}
+
+
+# --- SKEW NORMAL ------------------------------------------------------------
+#
+# Every standardised moment is a function of delta = alpha/sqrt(1 + alpha^2)
+# alone, which is the quantity the shape enters through. As |alpha| grows delta
+# tends to 1, so the skewness and the kurtosis the family can reach are bounded
+# -- that bound is the reason the skew t exists.
+
+#' The Shape a Skew Normal's Moments Depend On
+#'
+#' @description
+#' Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and the product
+#' \eqn{b\delta} with \eqn{b = \sqrt{2/\pi}}, from which every moment of a skew
+#' normal follows.
+#'
+#' @param alpha The shape parameter.
+#'
+#' @return A list with \code{delta} and \code{bd}.
+#'
+#' @keywords internal
+skewnormal_delta <- function(alpha) {
+  delta <- alpha / sqrt(1 + alpha^2)
+  list(delta = delta, bd = sqrt(2 / pi) * delta)
+}
+
+#' @title Mean of the Skew Normal Distribution
+#' @name mean.SkewNormalDistrib
+#' @description Closed form: \eqn{\mu + \sigma b \delta} with
+#'   \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}.
+#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, SkewNormalDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[1]] + theta[[2]] * skewnormal_delta(theta[[3]])$bd
+}
+
+#' @title Variance of the Skew Normal Distribution
+#' @name variance.SkewNormalDistrib
+#' @description Closed form: \eqn{\sigma^2\left(1 - b^2\delta^2\right)}.
+#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, SkewNormalDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[2]]^2 * (1 - skewnormal_delta(theta[[3]])$bd^2)
+}
+
+#' @title Skewness of the Skew Normal Distribution
+#' @name skewness.SkewNormalDistrib
+#' @description Closed form:
+#'   \eqn{\tfrac{4-\pi}{2}(b\delta)^3/(1 - b^2\delta^2)^{3/2}}. Its range is
+#'   \eqn{(-0.9953, 0.9953)}, whatever the shape.
+#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, SkewNormalDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  bd <- skewnormal_delta(theta[[3]])$bd
+  ((4 - pi) / 2) * bd^3 / (1 - bd^2)^1.5
+}
+
+#' @title Kurtosis of the Skew Normal Distribution
+#' @name kurtosis.SkewNormalDistrib
+#' @description Closed form, excess:
+#'   \eqn{2(\pi - 3)(b\delta)^4/(1 - b^2\delta^2)^2}. It is non-negative and
+#'   bounded above by about \eqn{0.8692}.
+#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, SkewNormalDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  bd <- skewnormal_delta(theta[[3]])$bd
+  2 * (pi - 3) * bd^4 / (1 - bd^2)^2
+}
+
+
+# --- SKEW t -----------------------------------------------------------------
+#
+# The moments exist only up to order nu, and each is NaN below its threshold.
+# The density is perfectly well defined there, so a family that reported a
+# number would be reporting one that does not exist.
+
+#' The Quantities a Skew t's Moments Are Built From
+#'
+#' @description
+#' Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
+#' \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
+#' \eqn{\mu_z = \delta b_\nu} and the variance \eqn{\sigma_z^2} of the
+#' standardised variable.
+#'
+#' @details
+#' \eqn{b_\nu} is finite only for \eqn{\nu > 1} and \eqn{\sigma_z^2} only for
+#' \eqn{\nu > 2}; each is \code{NaN} otherwise, and the moments that use it
+#' inherit that.
+#'
+#' @param alpha The shape parameter.
+#' @param nu The degrees of freedom.
+#'
+#' @return A list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}.
+#'
+#' @keywords internal
+skewt_moment_pieces <- function(alpha, nu) {
+  delta <- alpha / sqrt(1 + alpha^2)
+  bnu <- ifelse(nu > 1, sqrt(nu / pi) * exp(lgamma((nu - 1) / 2) - lgamma(nu / 2)), NaN)
+  mz <- delta * bnu
+  vz <- ifelse(nu > 2, nu / (nu - 2) - mz^2, NaN)
+  list(delta = delta, bnu = bnu, mz = mz, vz = vz)
+}
+
+#' @title Mean of the Skew t Distribution
+#' @name mean.SkewTDistrib
+#' @description Closed form for \eqn{\nu > 1}: \eqn{\mu + \sigma\delta b_\nu};
+#'   \code{NaN} otherwise, the mean not existing there.
+#' @param x A \code{\link{SkewTDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  p <- skewt_moment_pieces(theta[[3]], theta[[4]])
+  theta[[1]] + theta[[2]] * p$mz
+}
+
+#' @title Variance of the Skew t Distribution
+#' @name variance.SkewTDistrib
+#' @description Closed form for \eqn{\nu > 2}:
+#'   \eqn{\sigma^2\{\nu/(\nu-2) - \mu_z^2\}}; \code{NaN} otherwise.
+#' @param x A \code{\link{SkewTDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[2]]^2 * skewt_moment_pieces(theta[[3]], theta[[4]])$vz
+}
+
+#' @title Skewness of the Skew t Distribution
+#' @name skewness.SkewTDistrib
+#' @description Closed form for \eqn{\nu > 3}, from Azzalini and Capitanio
+#'   (2003); \code{NaN} otherwise. Unlike the skew normal's, it is unbounded.
+#' @param x A \code{\link{SkewTDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  nu <- theta[[4]]
+  p <- skewt_moment_pieces(theta[[3]], nu)
+  val <- (p$mz / p$vz^1.5) *
+    (nu * (3 - p$delta^2) / (nu - 3) - 3 * nu / (nu - 2) + 2 * p$mz^2)
+  ifelse(nu > 3, val, NaN)
+}
+
+#' @title Kurtosis of the Skew t Distribution
+#' @name kurtosis.SkewTDistrib
+#' @description Closed form, excess, for \eqn{\nu > 4}, from Azzalini and
+#'   Capitanio (2003); \code{NaN} otherwise.
+#' @param x A \code{\link{SkewTDistrib}}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  nu <- theta[[4]]
+  p <- skewt_moment_pieces(theta[[3]], nu)
+  val <- (3 * nu^2 / ((nu - 2) * (nu - 4)) -
+    4 * p$mz^2 * nu * (3 - p$delta^2) / (nu - 3) +
+    6 * p$mz^2 * nu / (nu - 2) - 3 * p$mz^4) / p$vz^2 - 3
+  ifelse(nu > 4, val, NaN)
 }

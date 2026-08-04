@@ -42,6 +42,9 @@ TruncatedContinuousDistrib(
 
 \item{lower, upper}{The truncation points.}
 }
+\value{
+An object of class \code{TruncatedContinuousDistrib}.
+}
 \description{
 A subclass of \code{continuous_distrib} representing a continuous distribution
 restricted to \eqn{[\ell, u]} and renormalised.

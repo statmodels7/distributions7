@@ -16,6 +16,13 @@ If unnamed, parameters are taken in the order of \code{distrib@params}.}
 
 \item{...}{Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Evaluates the quantile function for a given distribution.
+}
+\examples{
+distrib_quantile(gaussian_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
+distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 }

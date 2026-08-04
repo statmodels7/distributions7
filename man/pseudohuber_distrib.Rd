@@ -63,6 +63,15 @@ distributions in the package. Response derivatives (\code{\link{distrib_grad_y}}
 \code{\link{distrib_hess_y}}) are available in closed form; third- and
 fourth-order parameter derivatives use the numerical fallback.
 }
+\examples{
+d <- pseudohuber_distrib()
+d@params
+
+theta <- list(mu = 0, sigma = 1, nu = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+distrib_gradient(d, c(-1, 0, 1), theta)
+
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.PseudoHuberDistrib}} for the density function.

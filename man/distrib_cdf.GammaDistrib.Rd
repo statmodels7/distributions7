@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 Computes the cumulative distribution function for the Gamma distribution, using
 the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},

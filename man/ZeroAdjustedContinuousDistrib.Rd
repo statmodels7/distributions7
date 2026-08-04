@@ -38,6 +38,9 @@ ZeroAdjustedContinuousDistrib(
 
 \item{parent_distrib}{The wrapped \code{continuous_distrib} object.}
 }
+\value{
+An object of class \code{ZeroAdjustedContinuousDistrib}.
+}
 \description{
 A subclass of \code{continuous_distrib} representing the zero-adjusted version of a
 wrapped continuous distribution: a point mass at zero with probability \eqn{\pi}

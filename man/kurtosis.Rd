@@ -20,3 +20,8 @@ Computes the excess kurtosis (fourth standardized moment minus 3). For
 \code{distrib} objects it is evaluated numerically via \code{\link{moment}}; for
 numeric vectors the sample excess kurtosis (population denominator) is returned.
 }
+\examples{
+kurtosis(gaussian_distrib(), list(mu = 0, sigma = 1))
+kurtosis(gamma_distrib(), list(mu = 2, sigma2 = 1))
+
+}

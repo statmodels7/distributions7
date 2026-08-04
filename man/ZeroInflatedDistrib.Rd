@@ -38,6 +38,9 @@ ZeroInflatedDistrib(
 
 \item{parent_distrib}{The wrapped \code{discrete_distrib} object.}
 }
+\value{
+An object of class \code{ZeroInflatedDistrib}.
+}
 \description{
 A subclass of \code{discrete_distrib} representing the zero-inflated version of a
 wrapped discrete distribution: a mixture of a point mass at zero (with probability

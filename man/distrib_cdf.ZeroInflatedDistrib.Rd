@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 \deqn{F_{ZI}(q) = (1-\zeta) F(q; \theta) + \zeta\,\mathbb{I}(q \ge 0)}
 }

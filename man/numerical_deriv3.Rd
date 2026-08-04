@@ -32,6 +32,10 @@ Each component \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\t
 \eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by \code{max(1, |theta|)} and
 shrunk near parameter-domain boundaries.
 }
+\examples{
+numerical_deriv3(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_deriv4}}, \code{\link{distrib_deriv3}}
 }

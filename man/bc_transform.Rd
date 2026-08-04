@@ -17,3 +17,8 @@ Transformer for the one-parameter Box-Cox transformation
 \eqn{Y = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
 Requires \eqn{X > 0}.
 }
+\examples{
+d <- transformation(gamma_distrib(), bc_transform(lambda = 0.5))
+distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+
+}

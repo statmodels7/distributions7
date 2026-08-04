@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
 }
+\value{
+A numeric vector of cumulative probabilities.
+}
 \description{
 \eqn{F_Y(q) = F_X(g^{-1}(q))}, with tails swapped for decreasing transformations.
 }

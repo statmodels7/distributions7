@@ -12,6 +12,9 @@
 
 \item{...}{Additional arguments passed to the base \code{\link{plot}} function.}
 }
+\value{
+The distribution, invisibly.
+}
 \description{
 Visualizes the Probability Mass Function (PMF) of a discrete distribution object.
 }

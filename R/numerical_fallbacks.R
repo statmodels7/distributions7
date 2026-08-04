@@ -129,6 +129,7 @@ find_lp_anchor <- function(lp_raw, b) {
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
 #' @keywords internal
+#' @return A numeric vector of cumulative probabilities.
 S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   b <- distrib@bounds
   all_params <- expand_params(c(list(.q = q), theta))
@@ -176,6 +177,7 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
 #' @keywords internal
+#' @return A numeric vector of quantiles.
 S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
@@ -763,6 +765,7 @@ grou_core <- function(lp, b, n, r) {
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters.
 #' @keywords internal
+#' @return A numeric vector of random draws.
 S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
   if (has_analytic_quantile(distrib)) {
     return(distrib_quantile(distrib, stats::runif(n), theta))
@@ -866,6 +869,7 @@ disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
 #' @keywords internal
+#' @return A numeric vector of cumulative probabilities.
 S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   b <- distrib@bounds
   all_params <- expand_params(c(list(.q = q), theta))
@@ -908,6 +912,7 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
 #' @keywords internal
+#' @return A numeric vector of quantiles.
 S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
@@ -975,6 +980,56 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters.
 #' @keywords internal
+#' @return A numeric vector of random draws.
 S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
+}
+
+
+#' Does This Distribution Compute Its Expected Information Exactly?
+#'
+#' @description
+#' \code{TRUE} when the distribution registers its own
+#' \code{\link{distrib_expected_hessian}} method, rather than inheriting the
+#' one that approximates the expectation.
+#'
+#' @details
+#' The question decides whether the \code{approx} argument means anything. A
+#' family with a closed form ignores it, and \code{\link{fit_distrib}} refuses
+#' the argument in that case instead of accepting it and doing something else:
+#' the Laplace is the example the package already documents, where
+#' \code{approx} has no effect at all because
+#' \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
+#'
+#' The comparison goes through \code{\link{is_class}} rather than
+#' \code{identical()}, for the reason recorded there.
+#'
+#' The argument is called \code{x} and not \code{distrib}, which is not a
+#' matter of taste. The base class of this package is itself named
+#' \code{distrib}, so an argument of that name SHADOWS it, and the comparison
+#' against the base class then compared the owning class with the distribution
+#' object instead. The consequence was silent and exactly backwards: every
+#' family whose expected information comes from the base class -- which is the
+#' whole set this predicate exists to identify -- was reported as having a
+#' closed form.
+#'
+#' @param x An object inheriting from class \code{"distrib"}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{has_analytic_quantile}}, \code{\link{is_class}}
+#' @keywords internal
+has_exact_expected_hessian <- function(x) {
+  m <- tryCatch(
+    S7::method(distrib_expected_hessian, S7::S7_class(x)),
+    error = function(e) NULL
+  )
+  if (is.null(m)) return(FALSE)
+  owner <- attr(m, "signature")[[1]]
+  # The base classes carry the approximating method; every other registration
+  # is a family that wrote the expectation out.
+  !is_class(owner, distrib) &&
+    !is_class(owner, continuous_distrib) &&
+    !is_class(owner, discrete_distrib) &&
+    !is_class(owner, multivariate_distrib)
 }

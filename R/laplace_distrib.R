@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Laplace Distribution
 #' @name LaplaceDistrib
@@ -7,6 +8,7 @@
 #' (double-exponential) distribution. It is the canonical example of a distribution
 #' whose log-likelihood is \strong{not differentiable} in its location parameter.
 #' @inheritParams distrib
+#' @return An object of class \code{LaplaceDistrib}.
 #' @seealso \code{\link{laplace_distrib}}
 #'
 #' @section Methods:
@@ -58,6 +60,7 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #' @param theta A list containing the parameters \code{mu} and \code{b}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   mu <- theta[[1]]
@@ -77,6 +80,7 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 #' @param theta A list containing the parameters \code{mu} and \code{b}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   mu <- theta[[1]]
@@ -94,6 +98,7 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
@@ -286,6 +291,14 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats runif
+#' @examples
+#' d <- laplace_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0, b = 1)
+#' distrib_pdf(d, c(-1, 0, 1), theta)
+#' distrib_gradient(d, c(-1, 0, 1), theta)
+#'
 #' @export
 laplace_distrib <- function(link_mu = identity_link(), link_b = log_link()) {
   LaplaceDistrib(

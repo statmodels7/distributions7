@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Inverse-Gaussian Distribution
 #' @name InvGaussDistrib
 #' 
 #' @description A subclass of \code{continuous_distrib} representing the Inverse-Gaussian distribution.
 #' @inheritParams distrib
+#' @return An object of class \code{InvGaussDistrib}.
 #' @seealso \code{\link{invgauss_distrib}}
 #'
 #' @section Methods:
@@ -59,6 +61,7 @@ S7::method(distrib_pdf, InvGaussDistrib) <- function(distrib, y, theta, log = FA
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{invgauss_distrib}}
 S7::method(distrib_cdf, InvGaussDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   statmod::pinvgauss(
@@ -82,6 +85,7 @@ S7::method(distrib_cdf, InvGaussDistrib) <- function(distrib, q, theta, lower.ta
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{invgauss_distrib}}
 S7::method(distrib_quantile, InvGaussDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   statmod::qinvgauss(
@@ -101,6 +105,7 @@ S7::method(distrib_quantile, InvGaussDistrib) <- function(distrib, p, theta, low
 #' @param distrib An \code{InvGaussDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{invgauss_distrib}}
 S7::method(distrib_rng, InvGaussDistrib) <- function(distrib, n, theta) {
   statmod::rinvgauss(
@@ -297,6 +302,14 @@ S7::method(distrib_hess_y, InvGaussDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom statmod dinvgauss pinvgauss qinvgauss rinvgauss
+#' @examples
+#' d <- invgauss_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 1, phi = 2)
+#' distrib_pdf(d, c(0.5, 1, 2), theta)
+#' distrib_gradient(d, c(0.5, 1, 2), theta)
+#'
 #' @export
 invgauss_distrib <- function(link_mu = log_link(), link_phi = log_link()) {
   InvGaussDistrib(

@@ -1,0 +1,403 @@
+#' @include distrib.R generics.R
+NULL
+
+#' @title S7 Class for the Skew Normal Distribution
+#' @name SkewNormalDistrib
+#'
+#' @description A subclass of \code{continuous_distrib} representing Azzalini's
+#' skew normal distribution: a gaussian with a shape parameter controlling the
+#' asymmetry.
+#' @inheritParams distrib
+#' @return An object of class \code{SkewNormalDistrib}.
+#' @seealso \code{\link{skewnormal_distrib}}
+#'
+#' @section Methods:
+#' Methods implemented for this class:
+#'   \code{\link[=distrib_cdf.SkewNormalDistrib]{distrib_cdf()}},
+#'   \code{\link[=distrib_grad_y.SkewNormalDistrib]{distrib_grad_y()}},
+#'   \code{\link[=distrib_gradient.SkewNormalDistrib]{distrib_gradient()}},
+#'   \code{\link[=distrib_hess_y.SkewNormalDistrib]{distrib_hess_y()}},
+#'   \code{\link[=distrib_hessian.SkewNormalDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_pdf.SkewNormalDistrib]{distrib_pdf()}},
+#'   \code{\link[=distrib_rng.SkewNormalDistrib]{distrib_rng()}},
+#'   \code{\link[=kurtosis]{kurtosis()}},
+#'   \code{\link[=mean.distrib]{mean()}},
+#'   \code{\link[=skewness]{skewness()}},
+#'   \code{\link[=variance]{variance()}}
+#'
+#' Everything else is inherited from \code{\link{continuous_distrib}}, including
+#' the quantile function, which is obtained by root finding on the distribution
+#' function, and the expected information, which has no closed form here.
+SkewNormalDistrib <- S7::new_class("SkewNormalDistrib", parent = continuous_distrib)
+
+# --- S7 METHODS IMPLEMENTATION ---
+
+#' The Inverse Mills Ratio and Its Derivative
+#'
+#' @description
+#' Returns \eqn{R(t) = \phi(t)/\Phi(t)} and \eqn{R'(t) = -R(t)\{t + R(t)\}},
+#' the two quantities every derivative of a skew normal log-density is built
+#' from.
+#'
+#' @details
+#' The ratio is formed on the log scale. Written directly it is \eqn{0/0} for
+#' \eqn{t} below about \eqn{-38}, where both the density and the distribution
+#' function underflow, while the ratio itself is finite there and close to
+#' \eqn{-t}. The identity for \eqn{R'} follows from differentiating the
+#' quotient and using \eqn{\phi'(t) = -t\phi(t)}.
+#'
+#' @param t A numeric vector.
+#'
+#' @return A list with \code{r} and \code{dr}.
+#'
+#' @keywords internal
+mills_ratio <- function(t) {
+  r <- exp(stats::dnorm(t, log = TRUE) - stats::pnorm(t, log.p = TRUE))
+  list(r = r, dr = -r * (t + r))
+}
+
+#' Owen's T Function
+#'
+#' @description
+#' Computes \eqn{T(h, a) = \dfrac{1}{2\pi}\displaystyle\int_0^{a}
+#'   \dfrac{e^{-h^2(1 + x^2)/2}}{1 + x^2}\,dx}, which is what the skew normal
+#' distribution function is written in.
+#'
+#' @details
+#' The integral is one-dimensional over a finite range with a bounded, smooth
+#' integrand, so adaptive quadrature evaluates it to near machine precision.
+#' That is a better object to integrate than the density over a semi-infinite
+#' range, which is what the base class would otherwise do.
+#'
+#' Two identities keep the extremes exact rather than quadrature-bound:
+#' \eqn{T(h, a) = -T(h, -a)}, and \eqn{T(h, \infty) = \tfrac{1}{2}\Phi(-|h|)}.
+#'
+#' @param h A numeric vector.
+#' @param a A numeric vector, recycled against \code{h}.
+#'
+#' @return A numeric vector.
+#'
+#' @references
+#' Owen, D. B. (1956). Tables for computing bivariate normal probabilities.
+#' \emph{Annals of Mathematical Statistics} 27, 1075-1090.
+#'
+#' @keywords internal
+owen_t <- function(h, a) {
+  n <- max(length(h), length(a))
+  h <- rep_len(h, n)
+  a <- rep_len(a, n)
+  vapply(seq_len(n), function(i) {
+    hi <- h[i]
+    ai <- a[i]
+    if (!is.finite(hi)) return(0)
+    if (ai == 0) return(0)
+    sgn <- sign(ai)
+    ai <- abs(ai)
+    val <- if (is.infinite(ai)) {
+      0.5 * stats::pnorm(-abs(hi))
+    } else {
+      stats::integrate(
+        function(x) exp(-hi^2 * (1 + x^2) / 2) / (1 + x^2),
+        lower = 0, upper = ai, rel.tol = 1e-12
+      )$value / (2 * pi)
+    }
+    sgn * val
+  }, numeric(1))
+}
+
+#' @title Skew Normal Probability Density Function
+#' @name distrib_pdf.SkewNormalDistrib
+#' @description
+#' Computes the probability density function, with \eqn{z = (y-\mu)/\sigma}:
+#' \deqn{f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\,\phi(z)\,\Phi(\alpha z)}
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @return A numeric vector of density values.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_pdf, SkewNormalDistrib) <- function(distrib, y, theta, log = FALSE) {
+  mu <- theta[[1]]
+  sigma <- theta[[2]]
+  alpha <- theta[[3]]
+  z <- (y - mu) / sigma
+  # The two logarithms are taken separately, so the far tail of the skewed side
+  # gives a large negative number rather than log(0).
+  log_d <- log(2) - log(sigma) + stats::dnorm(z, log = TRUE) +
+    stats::pnorm(alpha * z, log.p = TRUE)
+  if (log) log_d else exp(log_d)
+}
+
+#' @title Skew Normal Cumulative Distribution Function
+#' @name distrib_cdf.SkewNormalDistrib
+#' @description
+#' Computes the distribution function through Owen's T function:
+#' \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha),
+#'       \qquad z = (q - \mu)/\sigma.}
+#' @details
+#' The identity is Azzalini's. Evaluating it costs one bounded one-dimensional
+#' quadrature per observation, which is cheaper and more accurate than the base
+#' class's route of integrating the density over a semi-infinite range.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
+#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_cdf, SkewNormalDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+  z <- (q - theta[[1]]) / theta[[2]]
+  res <- stats::pnorm(z) - 2 * owen_t(z, theta[[3]])
+  res <- pmin(pmax(res, 0), 1)
+  if (!lower.tail) res <- 1 - res
+  if (log.p) log(res) else res
+}
+
+#' @title Skew Normal Random Number Generator
+#' @name distrib_rng.SkewNormalDistrib
+#' @description
+#' Generates draws exactly, from the stochastic representation
+#' \eqn{Z = \delta|U_0| + \sqrt{1-\delta^2}\,U_1} with \eqn{U_0, U_1}
+#' independent standard normal and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}.
+#' No inversion or rejection is involved.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param n Number of observations to generate.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @return A numeric vector of random draws.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_rng, SkewNormalDistrib) <- function(distrib, n, theta) {
+  alpha <- theta[[3]]
+  delta <- alpha / sqrt(1 + alpha^2)
+  z <- delta * abs(stats::rnorm(n)) + sqrt(1 - delta^2) * stats::rnorm(n)
+  theta[[1]] + theta[[2]] * z
+}
+
+#' @title Skew Normal Analytical Gradient
+#' @name distrib_gradient.SkewNormalDistrib
+#' @description
+#' Closed-form first derivatives, with \eqn{z = (y-\mu)/\sigma},
+#' \eqn{t = \alpha z} and \eqn{R = \phi(t)/\Phi(t)}:
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{z - \alpha R}{\sigma},
+#'       \qquad
+#'       \dfrac{\partial \ell}{\partial \sigma}
+#'         = \dfrac{z^2 - 1 - \alpha z R}{\sigma},
+#'       \qquad
+#'       \dfrac{\partial \ell}{\partial \alpha} = z R.}
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param ... Unused.
+#' @return A named list of first derivatives.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_gradient, SkewNormalDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  mu <- theta[[1]]
+  sigma <- theta[[2]]
+  alpha <- theta[[3]]
+  z <- (y - mu) / sigma
+  m <- mills_ratio(alpha * z)
+  list(
+    mu = (z - alpha * m$r) / sigma,
+    sigma = (z^2 - 1 - alpha * z * m$r) / sigma,
+    alpha = z * m$r
+  )
+}
+
+#' @title Skew Normal Analytical Observed Hessian
+#' @name distrib_hessian.SkewNormalDistrib
+#' @description
+#' Closed-form second derivatives, with \eqn{R' = -R(t + R)}:
+#' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{\alpha^2 R' - 1}{\sigma^2},
+#'       \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
+#'         = \dfrac{\alpha^2 z R' - 2z + \alpha R}{\sigma^2},
+#'       \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \alpha}
+#'         = -\dfrac{R + \alpha z R'}{\sigma},}
+#' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2}
+#'         = \dfrac{1 - 3z^2 + 2\alpha z R + \alpha^2 z^2 R'}{\sigma^2},
+#'       \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \alpha}
+#'         = -\dfrac{z R + \alpha z^2 R'}{\sigma},
+#'       \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param ... Unused.
+#' @return A named list of second derivatives.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_hessian, SkewNormalDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  mu <- theta[[1]]
+  sigma <- theta[[2]]
+  alpha <- theta[[3]]
+  z <- (y - mu) / sigma
+  m <- mills_ratio(alpha * z)
+  r <- m$r
+  dr <- m$dr
+  s2 <- sigma^2
+  list(
+    mu_mu = (alpha^2 * dr - 1) / s2,
+    sigma_sigma = (1 - 3 * z^2 + 2 * alpha * z * r + alpha^2 * z^2 * dr) / s2,
+    alpha_alpha = z^2 * dr,
+    mu_sigma = (alpha^2 * z * dr - 2 * z + alpha * r) / s2,
+    mu_alpha = -(r + alpha * z * dr) / sigma,
+    sigma_alpha = -(z * r + alpha * z^2 * dr) / sigma
+  )
+}
+
+#' @title Skew Normal Response Derivative
+#' @name distrib_grad_y.SkewNormalDistrib
+#' @description
+#' Closed form: \eqn{\partial \ell / \partial y = (\alpha R - z)/\sigma}, which
+#' is minus the derivative in \eqn{\mu}, as it must be for a location family.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @return A numeric vector.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_grad_y, SkewNormalDistrib) <- function(distrib, y, theta) {
+  sigma <- theta[[2]]
+  alpha <- theta[[3]]
+  z <- (y - theta[[1]]) / sigma
+  (alpha * mills_ratio(alpha * z)$r - z) / sigma
+}
+
+#' @title Skew Normal Response Second Derivative
+#' @name distrib_hess_y.SkewNormalDistrib
+#' @description
+#' Closed form: \eqn{\partial^2 \ell / \partial y^2 = (\alpha^2 R' - 1)/\sigma^2}.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @return A numeric vector.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_hess_y, SkewNormalDistrib) <- function(distrib, y, theta) {
+  sigma <- theta[[2]]
+  alpha <- theta[[3]]
+  z <- (y - theta[[1]]) / sigma
+  (alpha^2 * mills_ratio(alpha * z)$dr - 1) / sigma^2
+}
+
+# --- CONSTRUCTOR WRAPPER ---
+
+#' Skew Normal Distribution Object
+#'
+#' @description
+#' Creates a distribution object for Azzalini's skew normal distribution, with
+#' location \eqn{\mu}, scale \eqn{\sigma} and shape \eqn{\alpha}. The gaussian
+#' is the special case \eqn{\alpha = 0}.
+#'
+#' @param link_mu A link function object for the location \eqn{\mu}. Defaults to
+#'   \code{\link[linkfunctions7]{identity_link}}.
+#' @param link_sigma A link function object for the scale \eqn{\sigma}. Defaults
+#'   to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#' @param link_alpha A link function object for the shape \eqn{\alpha}, which is
+#'   unconstrained. Defaults to \code{\link[linkfunctions7]{identity_link}}.
+#'
+#' @details
+#' \strong{Probability density function}, with \eqn{z = (y-\mu)/\sigma}:
+#' \deqn{f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\,\phi(z)\,\Phi(\alpha z)}
+#' The factor \eqn{2\Phi(\alpha z)} tilts the gaussian: it is above one where
+#' \eqn{\alpha z > 0} and below one where \eqn{\alpha z < 0}, so positive
+#' \eqn{\alpha} skews the density to the right. At \eqn{\alpha = 0} it is
+#' identically one and the family reduces to the gaussian.
+#'
+#' \strong{Cumulative distribution function:}
+#' \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha)}
+#' with \eqn{T} Owen's T function; see \code{\link{owen_t}}. The quantile
+#' function has no closed form and comes from the base class by root finding.
+#'
+#' \strong{Score and observed Hessian} are closed form, written in the inverse
+#' Mills ratio \eqn{R(t) = \phi(t)/\Phi(t)} at \eqn{t = \alpha z} and its
+#' derivative \eqn{R' = -R(t+R)}; see
+#' \code{\link{distrib_gradient.SkewNormalDistrib}} and
+#' \code{\link{distrib_hessian.SkewNormalDistrib}}.
+#'
+#' \strong{Expected information.} There is no elementary closed form, so none
+#' is registered and \code{\link{distrib_expected_hessian}} approximates it by
+#' the strategy named in \code{approx}, the default being the score variance.
+#'
+#' \strong{Singularity at the gaussian.} At \eqn{\alpha = 0} the expected
+#' information of this parametrisation is \strong{singular}: the derivative in
+#' \eqn{\alpha} becomes collinear with the derivative in \eqn{\mu}, so the two
+#' cannot be separated there. This is a property of the family and not of the
+#' implementation, and it is why the profile log-likelihood in \eqn{\alpha} is
+#' flat at the origin. A fit whose true shape is near zero will report a large
+#' standard error for \eqn{\alpha}; the centred parametrisation of Azzalini and
+#' Capitanio removes the singularity and is a different object, not a
+#' reparametrisation this class performs.
+#'
+#' \strong{Moments.} With \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
+#' \eqn{b = \sqrt{2/\pi}}, the mean is \eqn{\mu + \sigma b \delta} and the
+#' variance \eqn{\sigma^2(1 - b^2\delta^2)}. The skewness is bounded: it lies in
+#' \eqn{(-0.9953, 0.9953)} whatever \eqn{\alpha} is, which is the limitation of
+#' the family and the reason the skew \eqn{t} exists.
+#'
+#' \strong{Higher orders.} Third and fourth derivatives are not registered in
+#' closed form and come from the numerical fallbacks
+#' (\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+#'
+#' \strong{Parameter Domains:}
+#' \itemize{
+#'   \item \eqn{\mu \in (-\infty, +\infty)}
+#'   \item \eqn{\sigma \in (0, +\infty)}
+#'   \item \eqn{\alpha \in (-\infty, +\infty)}
+#' }
+#'
+#' @return An S7 object of class \code{\link{SkewNormalDistrib}} (inheriting from
+#'   \code{continuous_distrib}).
+#'
+#' @references
+#' Azzalini, A. (1985). A class of distributions which includes the normal ones.
+#' \emph{Scandinavian Journal of Statistics} 12, 171-178.
+#'
+#' Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
+#' Families}. Cambridge University Press.
+#'
+#' @importFrom linkfunctions7 identity_link log_link
+#' @importFrom stats dnorm pnorm rnorm integrate
+#'
+#' @examples
+#' d <- skewnormal_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0, sigma = 1, alpha = 3)
+#' distrib_pdf(d, c(-1, 0, 1), theta)
+#' distrib_gradient(d, c(-1, 0, 1), theta)
+#'
+#' # shape zero is the gaussian
+#' max(abs(distrib_pdf(d, c(-1, 0, 1), list(mu = 0, sigma = 1, alpha = 0)) -
+#'         stats::dnorm(c(-1, 0, 1))))
+#'
+#' # the skewness the family can reach is bounded
+#' c(alpha_3 = skewness(d, theta),
+#'   alpha_50 = skewness(d, list(mu = 0, sigma = 1, alpha = 50)))
+#'
+#' @export
+skewnormal_distrib <- function(link_mu = identity_link(),
+                               link_sigma = log_link(),
+                               link_alpha = identity_link()) {
+  SkewNormalDistrib(
+    distrib_name = "skew normal",
+    dimension = "univariate",
+    bounds = c(-Inf, Inf),
+
+    params = c("mu", "sigma", "alpha"),
+    params_interpretation = c(mu = "location", sigma = "scale", alpha = "shape"),
+    n_params = 3,
+
+    params_bounds = list(
+      mu = c(-Inf, Inf),
+      sigma = c(0, Inf),
+      alpha = c(-Inf, Inf)
+    ),
+
+    link_params = list(
+      mu = link_mu,
+      sigma = link_sigma,
+      alpha = link_alpha
+    )
+  )
+}

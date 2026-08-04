@@ -12,6 +12,9 @@
 
 \item{...}{Additional arguments passed to \code{f}.}
 }
+\value{
+A numeric scalar, the expectation of \code{f} under the distribution.
+}
 \description{
 The zero-adjusted continuous distribution has a point mass at 0 that plain numerical
 integration would miss. The expectation decomposes exactly as

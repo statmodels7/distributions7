@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Lognormal distribution.
 }

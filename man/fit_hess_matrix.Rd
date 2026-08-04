@@ -4,7 +4,7 @@
 \alias{fit_hess_matrix}
 \title{Summed Hessian on the Link Scale, as a Matrix}
 \usage{
-fit_hess_matrix(distrib, y, theta, expected)
+fit_hess_matrix(distrib, y, theta, expected, approx = "bartlett", nsim = 10000)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}
@@ -14,6 +14,12 @@ fit_hess_matrix(distrib, y, theta, expected)
 \item{theta}{A named list of parameters on the natural scale.}
 
 \item{expected}{Logical; whether to use the expected Hessian.}
+
+\item{approx}{How the expectation is approximated when the distribution has
+no closed form for it. Ignored when it has one, and when \code{expected}
+is \code{FALSE}.}
+
+\item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
 }
 \value{
 A symmetric numeric matrix with dimnames taken from the parameters.

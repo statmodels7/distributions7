@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Negative Binomial Distribution (NB2)
 #' @name NegBinDistrib
 #'
 #' @description A subclass of \code{discrete_distrib} representing the Negative Binomial distribution (NB2 parameterization).
 #' @inheritParams distrib
+#' @return An object of class \code{NegBinDistrib}.
 #' @seealso \code{\link{negbin_distrib}}
 #'
 #' @section Methods:
@@ -60,6 +62,7 @@ S7::method(distrib_pdf, NegBinDistrib) <- function(distrib, y, theta, log = FALS
 #' @param theta A list containing the parameters \code{mu} and \code{theta}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{negbin_distrib}}
 S7::method(distrib_cdf, NegBinDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pnbinom(
@@ -83,6 +86,7 @@ S7::method(distrib_cdf, NegBinDistrib) <- function(distrib, q, theta, lower.tail
 #' @param theta A list containing the parameters \code{mu} and \code{theta}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{negbin_distrib}}
 S7::method(distrib_quantile, NegBinDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qnbinom(
@@ -102,6 +106,7 @@ S7::method(distrib_quantile, NegBinDistrib) <- function(distrib, p, theta, lower
 #' @param distrib A \code{NegBinDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{theta}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{negbin_distrib}}
 S7::method(distrib_rng, NegBinDistrib) <- function(distrib, n, theta) {
   stats::rnbinom(
@@ -273,6 +278,14 @@ S7::method(distrib_deriv4, NegBinDistrib) <- function(distrib, y, theta, expecte
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats dnbinom pnbinom qnbinom rnbinom
+#' @examples
+#' d <- negbin_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 3, theta = 2)
+#' distrib_pdf(d, 0:5, theta)
+#' distrib_gradient(d, 0:5, theta)
+#'
 #' @export
 negbin_distrib <- function(link_mu = log_link(), link_theta = log_link()) {
 

@@ -24,6 +24,10 @@ Computes \eqn{\partial \ell / \partial y} by central finite differences of
 \code{distrib_pdf(..., log = TRUE)}. Powers the default \code{\link{distrib_grad_y}}
 method for continuous distributions without a closed form.
 }
+\examples{
+numerical_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_hess_y}}, \code{\link{distrib_grad_y}}
 }

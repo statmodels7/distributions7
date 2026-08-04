@@ -12,6 +12,9 @@
 
 \item{log}{Logical; if \code{TRUE}, returns the log-probability.}
 }
+\value{
+A numeric vector of density values.
+}
 \description{
 \deqn{P(Y=y) = \zeta\,\mathbb{I}(y=0) + (1-\zeta) f(y; \theta)}
 where \eqn{f} is the PMF of the wrapped distribution.

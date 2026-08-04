@@ -41,6 +41,9 @@ TransformedDistrib(
 
 \item{transformer}{The \code{\link{transformer}} defining \eqn{g}.}
 }
+\value{
+An object of class \code{TransformedDistrib}.
+}
 \description{
 A subclass of \code{continuous_distrib} representing the distribution of
 \eqn{Y = g(X)}, where \eqn{X} follows a wrapped continuous distribution and \eqn{g}

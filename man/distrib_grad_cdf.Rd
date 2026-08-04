@@ -52,6 +52,14 @@ identity is exact, which is how the default method computes it there; for a
 continuous one the default differentiates \code{\link{distrib_cdf}}
 numerically, and distributions with a closed form register it directly.
 }
+\examples{
+d <- gaussian_distrib()
+theta <- list(mu = 0, sigma = 1)
+
+# what a right-censored observation at q = 1 contributes to the score
+distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
+
+}
 \seealso{
 \code{\link{distrib_hess_cdf}}, \code{\link{distrib_gradient}}
 }

@@ -64,6 +64,15 @@ any of them from depending on \eqn{\mu}:
       \mathbb{E}\left[\dfrac{\partial^4 \ell}{\partial \mu^4}\right] = \dfrac{1}{15\sigma^4},}
 the remaining ones in that list being zero by symmetry.
 }
+\examples{
+d <- logistic_distrib()
+d@params
+
+theta <- list(mu = 0, sigma = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+distrib_gradient(d, c(-1, 0, 1), theta)
+
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.LogisticDistrib}} for the probability density function.

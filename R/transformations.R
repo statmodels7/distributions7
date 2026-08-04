@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Variable Transformers
 #' @name transformer
@@ -32,6 +33,16 @@
 #' \code{\link{asinh_transform}}, \code{\link{logit_transform}},
 #' \code{\link{expit_transform}}, \code{\link{affine_transform}}.
 #'
+#' @return An object of class \code{transformer}.
+#'
+#' @examples
+#' tr <- log_transform()
+#' S7::S7_inherits(tr, transformer)
+#' tr@name
+#'
+#' # a transformer is consumed by transformation(), which is where it acts
+#' distrib_pdf(transformation(gamma_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
+#'
 #' @seealso \code{\link{transformation}}
 #' @export
 transformer <- S7::new_class("transformer",
@@ -56,6 +67,10 @@ transformer <- S7::new_class("transformer",
 #' @description Transformer for \eqn{Y = \log(X)}: maps \eqn{(0, \infty)} to the real line.
 #' Inverse \eqn{X = e^Y}, Jacobian \eqn{|J| = e^Y}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), log_transform())
+#' distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 log_transform <- function() {
   transformer(
@@ -81,6 +96,10 @@ log_transform <- function() {
 #' @description Transformer for \eqn{Y = e^X}: maps the real line to \eqn{(0, \infty)}.
 #' Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gaussian_distrib(), exp_transform())
+#' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+#'
 #' @export
 exp_transform <- function() {
   transformer(
@@ -102,6 +121,10 @@ exp_transform <- function() {
 #' @description Transformer for \eqn{Y = 1/X} (monotonically decreasing on a support not
 #' containing 0). Inverse \eqn{X = 1/Y}, Jacobian \eqn{|J| = 1/Y^2}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), inverse_transform())
+#' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 inverse_transform <- function() {
   transformer(
@@ -123,6 +146,10 @@ inverse_transform <- function() {
 #' @description Transformer for \eqn{Y = \sqrt{X}} (requires \eqn{X \ge 0}).
 #' Inverse \eqn{X = Y^2}, Jacobian \eqn{|J| = 2Y}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), sqrt_transform())
+#' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 sqrt_transform <- function() {
   transformer(
@@ -146,6 +173,10 @@ sqrt_transform <- function() {
 #' non-negative support; even integer powers require a support that does not straddle 0.
 #' @param p Numeric. The exponent. Defaults to 2.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), power_transform(p = 2))
+#' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 power_transform <- function(p = 2) {
   transformer(
@@ -187,6 +218,10 @@ power_transform <- function(p = 2) {
 #' @description Transformer for \eqn{Y = \text{asinh}(X)}, a log-like transformation that
 #' handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gaussian_distrib(), asinh_transform())
+#' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+#'
 #' @export
 asinh_transform <- function() {
   transformer(
@@ -214,6 +249,10 @@ asinh_transform <- function() {
 #' Requires \eqn{X > 0}.
 #' @param lambda Numeric. The transformation parameter.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), bc_transform(lambda = 0.5))
+#' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 bc_transform <- function(lambda) {
   if (abs(lambda) < 1e-10) {
@@ -257,6 +296,10 @@ bc_transform <- function(lambda) {
 #' and negated Box-Cox of \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
 #' @param lambda Numeric. The transformation parameter.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gaussian_distrib(), yj_transform(lambda = 0.5))
+#' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+#'
 #' @export
 yj_transform <- function(lambda) {
   lam2 <- 2 - lambda
@@ -336,6 +379,10 @@ yj_transform <- function(lambda) {
 #' @param loc Numeric. The location shift. Defaults to 0.
 #' @param scale Numeric. The scale multiplier (non-zero). Defaults to 1.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gaussian_distrib(), affine_transform(loc = 1, scale = 2))
+#' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+#'
 #' @export
 affine_transform <- function(loc = 0, scale = 1) {
   if (scale == 0) {
@@ -367,6 +414,10 @@ affine_transform <- function(loc = 0, scale = 1) {
 #' @description Transformer for \eqn{Y = \text{logit}(X)}: maps \eqn{(0, 1)} to the real line.
 #' Inverse \eqn{X = \text{plogis}(Y)}, Jacobian \eqn{|J| = \text{dlogis}(Y)}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(beta_distrib(), logit_transform())
+#' distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
+#'
 #' @export
 logit_transform <- function() {
   transformer(
@@ -388,6 +439,10 @@ logit_transform <- function() {
 #' @description Transformer for \eqn{Y = \text{plogis}(X)}: maps the real line to \eqn{(0, 1)}.
 #' Inverse \eqn{X = \text{logit}(Y)}, Jacobian \eqn{|J| = 1/(Y(1-Y))}.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gaussian_distrib(), expit_transform())
+#' distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
+#'
 #' @export
 expit_transform <- function() {
   transformer(
@@ -414,6 +469,10 @@ expit_transform <- function() {
 #' \eqn{X = \frac{1}{a}\log(1 + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
 #' @param a Numeric. Positive scale parameter. Defaults to 1.
 #' @return A \code{\link{transformer}} object.
+#' @examples
+#' d <- transformation(gamma_distrib(), softplus_transform(a = 1))
+#' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
+#'
 #' @export
 softplus_transform <- function(a = 1) {
   if (a <= 0) {
@@ -450,6 +509,7 @@ softplus_transform <- function(a = 1) {
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
 #' @param transformer The \code{\link{transformer}} defining \eqn{g}.
+#' @return An object of class \code{TransformedDistrib}.
 #' @seealso \code{\link{transformation}}
 #'
 #' @section Methods:
@@ -480,6 +540,7 @@ TransformedDistrib <- S7::new_class("TransformedDistrib",
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
 #' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @return A numeric vector of density values.
 #' @seealso \code{\link{transformation}}
 S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log = FALSE) {
   tr <- distrib@transformer
@@ -505,6 +566,7 @@ S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log =
 #' @param theta A list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{transformation}}
 S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   tr <- distrib@transformer
@@ -521,6 +583,7 @@ S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower
 #' @param theta A list of the parent's parameters.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{transformation}}
 S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   tr <- distrib@transformer
@@ -534,6 +597,7 @@ S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, 
 #' @param distrib A \code{TransformedDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list of the parent's parameters.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{transformation}}
 S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta) {
   distrib@transformer@trans_fun(distrib_rng(distrib@parent_distrib, n, theta))

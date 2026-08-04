@@ -67,6 +67,9 @@ NULL
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate.
 #'
+#' @return Nothing. This page documents the \code{approx} argument shared by
+#'   the three generics named above; the value returned is theirs.
+#'
 #' @seealso \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}},
 #'   \code{\link{distrib_deriv4}}
 NULL

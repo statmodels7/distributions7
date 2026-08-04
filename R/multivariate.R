@@ -229,3 +229,101 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
     "a quantile inverts an ordering of the line, and there is none in several dimensions."
   )
 }
+
+
+#' @title Expected Information of a Multivariate Distribution
+#' @name distrib_expected_hessian.multivariate_distrib
+#'
+#' @description
+#' Fallback for a multivariate family with no closed form: the expectation is
+#' taken over draws from the distribution itself.
+#'
+#' @details
+#' The one-dimensional routes do not survive the move to \eqn{p} dimensions.
+#' \code{"integrate"} builds its quadrature over an interval and is refused
+#' here; \code{"bartlett"} in the univariate package reaches
+#' \code{\link{expectation}}, which is that same quadrature. What does
+#' generalise is sampling, so both remaining routes draw from the family's own
+#' generator and differ in what they average:
+#'
+#' \code{"mc"} averages the observed Hessian, \eqn{\mathbb{E}[\ell^{(ij)}]}
+#' directly. \code{"bartlett"} and \code{"opg"} average the outer product of
+#' the score and negate it, which is the second Bartlett identity
+#' \eqn{\mathcal{I} = \mathbb{E}[s s^\top]}; it needs no second derivative at
+#' all, and is the only route that survives a family whose observed Hessian is
+#' degenerate.
+#'
+#' Both are Monte Carlo, so both carry an error of order
+#' \eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
+#' scoring with a noisy information. That is a deliberate choice a caller
+#' makes, which is why \code{\link{fit_distrib}} refuses the argument for a
+#' family that has an exact expression.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations; only its row count is
+#'   used, the expectation being over the distribution rather than the data.
+#' @param theta A named list of parameters.
+#' @param scale Handled by the generic before dispatch.
+#' @param approx One of \code{"bartlett"} (equivalently \code{"opg"}) or
+#'   \code{"mc"}; \code{"integrate"} is refused.
+#' @param nsim Monte Carlo sample size.
+#' @param ... Unused.
+#'
+#' @return A named list keyed as \code{\link{hess_names}(distrib@params)}.
+#' @keywords internal
+S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+  approx <- match.arg(approx)
+  if (identical(approx, "integrate")) {
+    mv_refuse(
+      distrib, "distrib_expected_hessian",
+      'approx = "integrate" builds a quadrature over an interval, which has no counterpart in several dimensions. Use "mc" or "bartlett".'
+    )
+  }
+
+  n <- n_obs(distrib, y)
+  params <- distrib@params
+  nm <- hess_names(params)
+  big <- distrib_rng(distrib, nsim, theta)
+
+  vals <- if (identical(approx, "mc")) {
+    h <- distrib_hessian(distrib, big, theta)
+    vapply(nm, function(k) mean(h[[k]]), numeric(1))
+  } else {
+    s <- do.call(cbind, distrib_gradient(distrib, big, theta))
+    pr <- hess_pairs(params)
+    vapply(nm, function(k) {
+      ij <- match(pr[[k]], params)
+      -mean(s[, ij[1L]] * s[, ij[2L]])
+    }, numeric(1))
+  }
+
+  stats::setNames(lapply(vals, function(v) rep(v, n)), nm)
+}
+
+#' Prefix a Structure's Free Names with the Matrix They Describe
+#'
+#' @description
+#' Returns the structure's free names with \code{"sigma_"} or \code{"omega_"}
+#' in front, according to which side of the model the structure parametrises.
+#'
+#' @details
+#' The name of a free value says how the matrix is built, not which matrix it
+#' is, so a covariance structure and a precision structure of the same family
+#' produce identical names. They are different models --- the inverse of a
+#' compound-symmetry matrix is compound symmetry while the inverse of an AR(1)
+#' is not AR(1) --- and a printed table that does not distinguish them leaves
+#' the reader to guess. The prefix is applied by the distribution rather than
+#' by the structure, because the structure does not know which side it has been
+#' handed to.
+#'
+#' @param free_names The structure's free names.
+#' @param inverted Whether the structure parametrises the precision.
+#'
+#' @return A character vector.
+#'
+#' @keywords internal
+mv_prefixed_names <- function(free_names, inverted = FALSE) {
+  paste0(if (isTRUE(inverted)) "omega_" else "sigma_", free_names)
+}

@@ -13,3 +13,8 @@ A \code{\link{transformer}} object.
 Transformer for \eqn{Y = \text{asinh}(X)}, a log-like transformation that
 handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
 }
+\examples{
+d <- transformation(gaussian_distrib(), asinh_transform())
+distrib_pdf(d, 1, list(mu = 0, sigma = 1))
+
+}

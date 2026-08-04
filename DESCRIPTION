@@ -60,19 +60,30 @@ Collate:
     'cross_derivatives.R'
     'distributions7-package.R'
     'expected_derivatives.R'
+    'fisher_scoring.R'
     'link_scale.R'
     'fit_distrib.R'
+    'skewnormal_distrib.R'
+    'skewt_distrib.R'
+    'gumbel_distrib.R'
+    'weibull_distrib.R'
     'moments.R'
     'fixed.R'
     'gamma_distrib.R'
     'methods.R'
     'mvgaussian_distrib.R'
+    'mv_plot.R'
+    'mvstudent_t_distrib.R'
+    'mv_summary.R'
     'numerical_fallbacks.R'
+    'starting_values.R'
     'transformations.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),
     knitr,
+    numDeriv,
+    pkgdown,
     rmarkdown
 VignetteBuilder: knitr
 Config/testthat/edition: 3

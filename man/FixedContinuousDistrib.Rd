@@ -41,6 +41,9 @@ FixedContinuousDistrib(
 
 \item{fixed_params}{A named list of the fixed parameter values.}
 }
+\value{
+An object of class \code{FixedContinuousDistrib}.
+}
 \description{
 A subclass of \code{continuous_distrib} representing a continuous
 distribution in which some parameters of the wrapped distribution are held

@@ -10,6 +10,9 @@
 
 \item{theta}{A named list of parameters.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Fallback method for continuous distributions that do not implement a native RNG.
 Two strategies are available and the method picks between them automatically:

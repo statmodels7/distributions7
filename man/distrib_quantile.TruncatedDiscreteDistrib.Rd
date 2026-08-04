@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 \deqn{Q_T(p) = Q\!\left(F(\ell^-;\theta) + p\,Z(\theta)\right)}
 }

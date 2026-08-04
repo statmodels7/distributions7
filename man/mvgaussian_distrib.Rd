@@ -37,15 +37,31 @@ the Hessian are multiplications, and the first term of the score is the
 structure's own \code{struct_dlogdet()}; written in \eqn{\Sigma} the same
 quantities need a solve at every step.
 
-\strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup} and
-the structure contributes its own free values under their own names, so a
-two-dimensional gaussian on an unstructured covariance has five parameters:
-\code{mu1}, \code{mu2}, \code{log_L1}, \code{log_L2}, \code{L2.1}. All of
-them are unconstrained, and their links are therefore the identity: the
-constraint that makes the matrix positive definite lives inside the
-structure, which is why it needs no link to express it. A consequence worth
-knowing is that the parameter scale and the link scale coincide here, so
-\code{scale = "link"} changes nothing.
+\strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
+the structure contributes its free values prefixed by the matrix they
+describe: \code{sigma_} for a covariance and \code{omega_} for a precision.
+A two-dimensional gaussian on an unstructured covariance therefore has five
+parameters, \code{mu1}, \code{mu2}, \code{sigma_log_L1},
+\code{sigma_log_L2} and \code{sigma_L2.1}, while the same structure on the
+precision gives \code{omega_log_L1} and the rest. The prefix is what
+distinguishes the two models in a printed table, since the name of a free
+value says how the matrix is built and not which matrix it is.
+
+All of the parameters are unconstrained, and their links are therefore the
+identity: the constraint that makes the matrix positive definite lives
+inside the structure, which is why it needs no link to express it. A
+consequence worth knowing is that the parameter scale and the link scale
+coincide here, so \code{scale = "link"} changes nothing.
+
+\strong{Reading a fit.} The free values are coordinates, not quantities
+anybody reads. \code{\link{mv_summary}} carries the fit's variance matrix
+onto the standard deviations and correlations by the delta method, and
+\code{print()} shows them; a precision parametrisation also reports the
+conditional variances and the partial correlations, which are what it
+describes directly. The conditional variance is
+\eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, and its ratio to the
+marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
+on all the others.
 
 \strong{Rank.} A rank-deficient structure is refused. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
@@ -62,7 +78,7 @@ observation.
 d <- mvgaussian_distrib(2)
 d
 
-theta <- list(mu1 = 0, mu2 = 0, log_L1 = 0, log_L2 = 0, L2.1 = 0.5)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 y <- rbind(c(0, 0), c(1, -1))
 distrib_pdf(d, y, theta, log = TRUE)
 

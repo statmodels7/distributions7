@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Fallback method: continuous distributions that do not implement an analytical
 quantile function get one by root-finding on \code{\link{distrib_cdf}} (which may

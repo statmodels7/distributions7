@@ -74,3 +74,12 @@ appropriate estimation method. Because the closed form exists, the
 \item \eqn{b \in (0, +\infty)}
 }
 }
+\examples{
+d <- laplace_distrib()
+d@params
+
+theta <- list(mu = 0, b = 1)
+distrib_pdf(d, c(-1, 0, 1), theta)
+distrib_gradient(d, c(-1, 0, 1), theta)
+
+}

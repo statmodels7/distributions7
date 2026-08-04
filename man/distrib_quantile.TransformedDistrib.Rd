@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 \eqn{Q_Y(p) = g(Q_X(p))}, with tails swapped for decreasing transformations.
 }

@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Beta Distribution
 #' @name BetaDistrib
@@ -6,6 +7,7 @@
 #' @description A subclass of \code{continuous_distrib} representing the Beta distribution 
 #' under the mean-precision parameterization.
 #' @inheritParams distrib
+#' @return An object of class \code{BetaDistrib}.
 #' @seealso \code{\link{beta_distrib}}
 #'
 #' @section Methods:
@@ -61,6 +63,7 @@ S7::method(distrib_pdf, BetaDistrib) <- function(distrib, y, theta, log = FALSE)
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{beta_distrib}}
 S7::method(distrib_cdf, BetaDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pbeta(
@@ -85,6 +88,7 @@ S7::method(distrib_cdf, BetaDistrib) <- function(distrib, q, theta, lower.tail =
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{beta_distrib}}
 S7::method(distrib_quantile, BetaDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qbeta(
@@ -104,6 +108,7 @@ S7::method(distrib_quantile, BetaDistrib) <- function(distrib, p, theta, lower.t
 #' @param distrib A \code{BetaDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{beta_distrib}}
 S7::method(distrib_rng, BetaDistrib) <- function(distrib, n, theta) {
   stats::rbeta(
@@ -291,6 +296,14 @@ S7::method(distrib_hess_y, BetaDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 logit_link log_link
 #' @importFrom stats dbeta pbeta qbeta rbeta
+#' @examples
+#' d <- beta_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0.4, phi = 5)
+#' distrib_pdf(d, c(0.2, 0.5, 0.8), theta)
+#' distrib_gradient(d, c(0.2, 0.5, 0.8), theta)
+#'
 #' @export
 beta_distrib <- function(link_mu = logit_link(), link_phi = log_link()) {
   

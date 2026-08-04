@@ -32,6 +32,10 @@ Diagonal components use the three-point stencil
 the four-point cross stencil. Steps are scaled and clamped as in
 \code{\link{numerical_gradient}}. Accuracy is roughly \code{sqrt(eps)}.
 }
+\examples{
+numerical_hessian(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_gradient}}, \code{\link{distrib_hessian}}
 }

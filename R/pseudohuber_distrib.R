@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R numerical_functions.R
+NULL
 
 #' @title S7 Class for Pseudo-Huber Distribution
 #' @name PseudoHuberDistrib
@@ -7,6 +8,7 @@
 #' whose density is defined by the Pseudo-Huber loss kernel (a special case of the
 #' Generalized Hyperbolic distribution).
 #' @inheritParams distrib
+#' @return An object of class \code{PseudoHuberDistrib}.
 #' @seealso \code{\link{pseudohuber_distrib}}
 #'
 #' @section Methods:
@@ -72,6 +74,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{pseudohuber_distrib}}
 S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   all_params <- expand_params(c(list(.q = q), theta))
@@ -115,6 +118,7 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{pseudohuber_distrib}}
 S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) p <- exp(p)
@@ -166,6 +170,7 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' @param distrib A \code{PseudoHuberDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{pseudohuber_distrib}}
 S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
@@ -386,6 +391,14 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats runif uniroot
+#' @examples
+#' d <- pseudohuber_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0, sigma = 1, nu = 1)
+#' distrib_pdf(d, c(-1, 0, 1), theta)
+#' distrib_gradient(d, c(-1, 0, 1), theta)
+#'
 #' @export
 pseudohuber_distrib <- function(link_mu = identity_link(), link_sigma = log_link(), link_nu = log_link()) {
 

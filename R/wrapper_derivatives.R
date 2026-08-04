@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R utility_functions.R expected_derivatives.R link_scale.R
+NULL
 
 # ===========================================================================
 # Third and fourth derivatives for the wrappers.

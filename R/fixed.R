@@ -20,6 +20,7 @@ NULL
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{continuous_distrib} object.
 #' @param fixed_params A named list of the fixed parameter values.
+#' @return An object of class \code{FixedContinuousDistrib}.
 #' @seealso \code{\link{fixed}}
 FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
   parent = continuous_distrib,
@@ -45,6 +46,7 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @inheritParams distrib
 #' @param parent_distrib The wrapped \code{discrete_distrib} object.
 #' @param fixed_params A named list of the fixed parameter values.
+#' @return An object of class \code{FixedDiscreteDistrib}.
 #' @seealso \code{\link{fixed}}
 FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
   parent = discrete_distrib,

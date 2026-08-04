@@ -33,6 +33,10 @@ Each component
 Hessian entry \eqn{(i, j)} along \eqn{(\theta_k, \theta_l)}: a three-point stencil
 when \eqn{k = l}, a four-point cross stencil otherwise.
 }
+\examples{
+numerical_deriv4(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_deriv3}}, \code{\link{distrib_deriv4}}
 }

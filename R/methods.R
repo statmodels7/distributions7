@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title Print Method for `distrib` Objects
 #' @name print.distrib
@@ -104,6 +105,7 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #' @param ... Additional arguments passed to the base \code{\link{plot}} function.
 #' @importFrom graphics plot
 #' @keywords internal
+#' @return The distribution, invisibly.
 S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL, ...) {
   if (missing(theta)) {
     theta <- generate_random_theta(x)
@@ -160,6 +162,7 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL, ...) {
 #' @param ... Additional arguments passed to the base \code{\link{plot}} function.
 #' @importFrom graphics plot segments points
 #' @keywords internal
+#' @return The distribution, invisibly.
 S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL, ...) {
   if (missing(theta)) {
     theta <- generate_random_theta(x)

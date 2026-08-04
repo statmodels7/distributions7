@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Logistic distribution.
 }

@@ -236,6 +236,9 @@ check_params_dim <- function(theta, n) {
 #' @param n (Optional) The target length. If missing, defaults to `max(lengths(theta))`.
 #'
 #' @return A list where all elements have length `n`.
+#' @examples
+#' expand_params(list(mu = 0, sigma = 1), n = 3)
+#'
 #' @export
 expand_params <- function(theta, n) {
   lens <- lengths(theta)
@@ -450,6 +453,9 @@ deriv_indices <- function(params, order) {
 #'
 #' @param theta A list to be transposed.
 #' @return A \code{list} where each element has been transposed and simplified to an atomic vector.
+#'
+#' @examples
+#' transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
 #'
 #' @export
 transpose_params <- function(theta) {

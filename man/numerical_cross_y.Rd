@@ -34,6 +34,10 @@ on the log-density -- the two differences act on different variables, so
 they commute into a single stencil rather than compounding the way nested
 differences in the same variable do.
 }
+\examples{
+numerical_cross_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+
+}
 \seealso{
 \code{\link{numerical_grad_y}}, \code{\link{distrib_cross_y}}
 }

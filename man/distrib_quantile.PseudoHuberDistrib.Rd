@@ -14,6 +14,9 @@
 
 \item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
 }
+\value{
+A numeric vector of quantiles.
+}
 \description{
 Computes the quantile function for the Pseudo-Huber distribution by root-finding
 on the numerical CDF. Symmetry around \eqn{\mu} is exploited: \eqn{Q(1/2) = \mu} and

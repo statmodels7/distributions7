@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Bernoulli Distribution
 #' @name BernoulliDistrib
 #' 
 #' @description A subclass of \code{discrete_distrib} representing the Bernoulli distribution.
 #' @inheritParams distrib
+#' @return An object of class \code{BernoulliDistrib}.
 #' @seealso \code{\link{bernoulli_distrib}}
 #'
 #' @section Methods:
@@ -56,6 +58,7 @@ S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = F
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{bernoulli_distrib}}
 S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pbinom(
@@ -79,6 +82,7 @@ S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.t
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{bernoulli_distrib}}
 S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qbinom(
@@ -98,6 +102,7 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' @param distrib A \code{BernoulliDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter \code{mu}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{bernoulli_distrib}}
 S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta) {
   stats::rbinom(
@@ -241,6 +246,14 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #'
 #' @importFrom linkfunctions7 logit_link
 #' @importFrom stats dbinom pbinom qbinom rbinom
+#' @examples
+#' d <- bernoulli_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0.3)
+#' distrib_pdf(d, c(0, 1), theta)
+#' distrib_gradient(d, c(0, 1), theta)
+#'
 #' @export
 bernoulli_distrib <- function(link_mu = logit_link()) {
   

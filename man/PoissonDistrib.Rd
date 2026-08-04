@@ -35,6 +35,9 @@ PoissonDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
 }
+\value{
+An object of class \code{PoissonDistrib}.
+}
 \description{
 A subclass of \code{discrete_distrib} representing the Poisson distribution.
 }

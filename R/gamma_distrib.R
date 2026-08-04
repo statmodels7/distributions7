@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Gamma Distribution
 #' @name GammaDistrib
@@ -6,6 +7,7 @@
 #' @description A subclass of \code{continuous_distrib} representing the Gamma distribution 
 #' under the mean-variance parameterization.
 #' @inheritParams distrib
+#' @return An object of class \code{GammaDistrib}.
 #' @seealso \code{\link{gamma_distrib}}
 #'
 #' @section Methods:
@@ -62,6 +64,7 @@ S7::method(distrib_pdf, GammaDistrib) <- function(distrib, y, theta, log = FALSE
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{gamma_distrib}}
 S7::method(distrib_cdf, GammaDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pgamma(
@@ -86,6 +89,7 @@ S7::method(distrib_cdf, GammaDistrib) <- function(distrib, q, theta, lower.tail 
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{gamma_distrib}}
 S7::method(distrib_quantile, GammaDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qgamma(
@@ -105,6 +109,7 @@ S7::method(distrib_quantile, GammaDistrib) <- function(distrib, p, theta, lower.
 #' @param distrib A \code{GammaDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{gamma_distrib}}
 S7::method(distrib_rng, GammaDistrib) <- function(distrib, n, theta) {
   stats::rgamma(
@@ -289,6 +294,14 @@ S7::method(distrib_hess_y, GammaDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats dgamma pgamma qgamma rgamma
+#' @examples
+#' d <- gamma_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 2, sigma2 = 1)
+#' distrib_pdf(d, c(0.5, 1, 2), theta)
+#' distrib_gradient(d, c(0.5, 1, 2), theta)
+#'
 #' @export
 gamma_distrib <- function(link_mu = log_link(), link_sigma2 = log_link()) {
   

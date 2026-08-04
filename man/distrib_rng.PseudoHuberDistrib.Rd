@@ -10,6 +10,9 @@
 
 \item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Generates random numbers from the Pseudo-Huber distribution via inverse transform
 sampling (numerical quantile function applied to uniform draws).

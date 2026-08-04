@@ -12,6 +12,9 @@
 
 \item{log}{Logical; if \code{TRUE}, returns the log-density.}
 }
+\value{
+A numeric vector of density values.
+}
 \description{
 \deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (\ell \le y \le u), \qquad 0 \text{ otherwise}}
 with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta)}.

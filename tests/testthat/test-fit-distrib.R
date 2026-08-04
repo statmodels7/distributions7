@@ -286,9 +286,11 @@ test_that("the print method shows the interval on both scales", {
     expect_match(header, "97\\.5%")
   }
 
-  # the headings name the scale and the links, and nothing else
+  # The headings name the scale and nothing else. They used to list every
+  # link in brackets, which for a fourteen-parameter fit is a line of the word
+  # "identity" fourteen times and tells the reader nothing they cannot see.
   expect_match(out[grep("^Parameter scale", out)], "^Parameter scale:$")
-  expect_match(out[grep("^Link scale", out)], "^Link scale \\(identity, log\\):$")
+  expect_match(out[grep("^Link scale", out)], "^Link scale:$")
 
   # a different level renames the columns
   f90 <- fit_distrib(d, y, start = list(mu = 0, sigma = 1), level = 0.90)

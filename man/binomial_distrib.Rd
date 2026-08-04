@@ -51,6 +51,15 @@ skewness \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}, excess kurtosis
 Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
 \code{\link{distrib_deriv4}}) are also available.
 }
+\examples{
+d <- binomial_distrib(size = 5)
+d@params
+
+theta <- list(mu = 0.3)
+distrib_pdf(d, 0:5, theta)
+distrib_gradient(d, 0:5, theta)
+
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.BinomialDistrib}} for the probability mass function.

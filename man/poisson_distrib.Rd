@@ -45,6 +45,15 @@ excess kurtosis \eqn{1/\mu}.
 Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
 \code{\link{distrib_deriv4}}) are also available.
 }
+\examples{
+d <- poisson_distrib()
+d@params
+
+theta <- list(mu = 2)
+distrib_pdf(d, 0:5, theta)
+distrib_gradient(d, 0:5, theta)
+
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.PoissonDistrib}} for the probability mass function.

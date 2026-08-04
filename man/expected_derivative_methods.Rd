@@ -3,6 +3,10 @@
 \name{expected_derivative_methods}
 \alias{expected_derivative_methods}
 \title{Strategies for Expected Derivatives}
+\value{
+Nothing. This page documents the \code{approx} argument shared by
+the three generics named above; the value returned is theirs.
+}
 \description{
 When a distribution does not supply a closed-form expected derivative, the
 expectation has to be approximated. The generics

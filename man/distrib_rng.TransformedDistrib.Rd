@@ -10,6 +10,9 @@
 
 \item{theta}{A list of the parent's parameters.}
 }
+\value{
+A numeric vector of random draws.
+}
 \description{
 Draws from the parent distribution and applies \eqn{g}.
 }

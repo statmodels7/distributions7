@@ -1,4 +1,5 @@
 #' @include distrib.R generics.R
+NULL
 
 # Derivatives of the log-density with respect to the response y (not the
 # parameters). Registered on continuous_distrib; distributions with a closed
@@ -45,6 +46,9 @@ fd_steps_y <- function(y, bounds, h_rel) {
 #'   \code{.Machine$double.eps^(1/3)}.
 #' @return A numeric vector of the same length as \code{y}.
 #' @seealso \code{\link{numerical_hess_y}}, \code{\link{distrib_grad_y}}
+#' @examples
+#' numerical_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
   h <- fd_steps_y(y, distrib@bounds, h_rel)
@@ -66,6 +70,9 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'   \code{.Machine$double.eps^(1/4)}.
 #' @return A numeric vector of the same length as \code{y}.
 #' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_hess_y}}
+#' @examples
+#' numerical_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#'
 #' @export
 numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {
   h <- fd_steps_y(y, distrib@bounds, h_rel)

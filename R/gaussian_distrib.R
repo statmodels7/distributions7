@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Gaussian Distribution
 #' @name GaussianDistrib
 #' 
 #' @description A subclass of \code{continuous_distrib} representing the Gaussian (Normal) distribution.
 #' @inheritParams distrib
+#' @return An object of class \code{GaussianDistrib}.
 #' @seealso \code{\link{gaussian_distrib}}
 #'
 #' @section Methods:
@@ -58,6 +60,7 @@ S7::method(distrib_pdf, GaussianDistrib) <- function(distrib, y, theta, log = FA
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{gaussian_distrib}}
 S7::method(distrib_cdf, GaussianDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pnorm(
@@ -80,6 +83,7 @@ S7::method(distrib_cdf, GaussianDistrib) <- function(distrib, q, theta, lower.ta
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{gaussian_distrib}}
 S7::method(distrib_quantile, GaussianDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qnorm(
@@ -99,6 +103,7 @@ S7::method(distrib_quantile, GaussianDistrib) <- function(distrib, p, theta, low
 #' @param distrib A \code{GaussianDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{gaussian_distrib}}
 S7::method(distrib_rng, GaussianDistrib) <- function(distrib, n, theta) {
   stats::rnorm(
@@ -297,6 +302,14 @@ S7::method(distrib_hess_y, GaussianDistrib) <- function(distrib, y, theta) {
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats dnorm pnorm qnorm rnorm
+#' @examples
+#' d <- gaussian_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 0, sigma = 1)
+#' distrib_pdf(d, c(-1, 0, 1), theta)
+#' distrib_gradient(d, c(-1, 0, 1), theta)
+#'
 #' @export
 gaussian_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {
   

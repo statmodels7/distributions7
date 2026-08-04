@@ -1,10 +1,12 @@
 #' @include distrib.R generics.R
+NULL
 
 #' @title S7 Class for Poisson Distribution
 #' @name PoissonDistrib
 #' 
 #' @description A subclass of \code{discrete_distrib} representing the Poisson distribution.
 #' @inheritParams distrib
+#' @return An object of class \code{PoissonDistrib}.
 #' @seealso \code{\link{poisson_distrib}}
 #'
 #' @section Methods:
@@ -55,6 +57,7 @@ S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FAL
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of cumulative probabilities.
 #' @seealso \code{\link{poisson_distrib}}
 S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::ppois(
@@ -77,6 +80,7 @@ S7::method(distrib_cdf, PoissonDistrib) <- function(distrib, q, theta, lower.tai
 #' @param theta A list containing the parameter \code{mu}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @return A numeric vector of quantiles.
 #' @seealso \code{\link{poisson_distrib}}
 S7::method(distrib_quantile, PoissonDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qpois(
@@ -95,6 +99,7 @@ S7::method(distrib_quantile, PoissonDistrib) <- function(distrib, p, theta, lowe
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter \code{mu}.
+#' @return A numeric vector of random draws.
 #' @seealso \code{\link{poisson_distrib}}
 S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta) {
   stats::rpois(
@@ -236,6 +241,14 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats dpois ppois qpois rpois
+#' @examples
+#' d <- poisson_distrib()
+#' d@params
+#'
+#' theta <- list(mu = 2)
+#' distrib_pdf(d, 0:5, theta)
+#' distrib_gradient(d, 0:5, theta)
+#'
 #' @export
 poisson_distrib <- function(link_mu = log_link()) {
   PoissonDistrib(

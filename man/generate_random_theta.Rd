@@ -11,6 +11,14 @@ generate_random_theta(distrib, ...)
 
 \item{...}{Additional arguments passed to the specific method.}
 }
+\value{
+A named list of parameter values, one per element of
+\code{distrib@params}, each inside that parameter's bounds.
+}
 \description{
 Generates sensible random parameters for a distribution based on its mathematical domain.
+}
+\examples{
+set.seed(1)
+generate_random_theta(gamma_distrib())
 }
