@@ -55,3 +55,20 @@ fd_hessian_ref <- function(d, y, theta, h = 1e-4) {
   }
   out
 }
+
+
+# What a fit actually did, as one line. A test that asserts convergence and
+# fails prints only FALSE, which says nothing about whether the run stopped a
+# hair above its tolerance or never approached it; passing this as `info` puts
+# the number in the report, on whichever platform the failure happens.
+fit_report <- function(fit, distrib, y) {
+  sc <- tryCatch(
+    max(abs(vapply(
+      distrib_gradient(distrib, y, as.list(coef(fit)), scale = "link"),
+      sum, numeric(1)
+    ))) / n_obs(distrib, y),
+    error = function(e) NA_real_
+  )
+  sprintf("method %s, %d iterations, criterion '%s', note '%s', score/n %.3e",
+          fit@method, fit@iterations, fit@criterion, fit@note, sc)
+}

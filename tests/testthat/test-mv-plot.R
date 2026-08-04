@@ -115,7 +115,7 @@ test_that("a family without a closed form still fits by Fisher scoring", {
   y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
   fit <- fit_distrib(d, y, method = "fisher")
-  expect_true(fit@converged)
+  expect_true(fit@converged, info = fit_report(fit, d, y))
 })
 
 

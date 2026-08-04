@@ -109,7 +109,9 @@ test_that("the print method reports both scales", {
   expect_match(out, "Maximum-likelihood fit")
   expect_match(out, "Parameter scale")
   expect_match(out, "Link scale")
-  expect_match(out, "Fisher scoring")
+  # The method is reported only if Fisher scoring converged; if it fell back to
+  # BFGS the interesting quantity is how close it got, not that it did not.
+  expect_match(out, "Fisher scoring", info = fit_report(f, d, y))
 })
 
 
@@ -178,7 +180,7 @@ test_that("the three named strategies agree with each other and the closed form"
 
   fits <- lapply(c("fisher", "newton", "bfgs"),
                  function(m) fit_distrib(d, y, start = st, method = m))
-  for (f in fits) expect_true(f@converged)
+  for (f in fits) expect_true(f@converged, info = fit_report(f, d, y))
 
   lls <- vapply(fits, function(f) f@loglik, numeric(1))
   expect_equal(max(lls) - min(lls), 0, tolerance = 1e-8)
