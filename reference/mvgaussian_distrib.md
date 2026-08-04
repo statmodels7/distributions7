@@ -119,7 +119,7 @@ mv_sigma(d, theta)
 
 # a diagonal covariance: two variances instead of three free values
 mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
-#> [1] "mu1"      "mu2"      "sigma_d1" "sigma_d2"
+#> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"
 
 # or the precision, which is the cheaper parametrisation
 mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params

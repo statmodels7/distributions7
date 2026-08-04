@@ -76,12 +76,12 @@ Carlo. See <code><a href="expected_derivative_methods.html">expected_derivative_
 
 
 <dt id="arg-criterion">criterion<a class="anchor" aria-label="anchor" href="#arg-criterion"></a></dt>
-<dd><p>A stopping rule from <span class="pkg">optimizers7</span>, or <code>NULL</code> to
-use the one <code><a href="fit_distrib.html">fit_distrib()</a></code> builds from its <code>tol</code>.</p></dd>
+<dd><p>A stopping rule from <span class="pkg">optimizers7</span>, or <code>NULL</code> for
+the default of <code><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></code>.</p></dd>
 
 
 <dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
-<dd><p>An iteration limit, or <code>NULL</code> to use the fit's.</p></dd>
+<dd><p>An iteration limit, or <code>NULL</code> for the same default.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -102,10 +102,11 @@ how that matrix is to be obtained when the family does not supply it in
 closed form — and that is what this object holds. A family that does
 supply one ignores <code>approx</code> entirely, and <code><a href="fit_distrib.html">fit_distrib()</a></code> refuses
 the argument in that case rather than accepting something it will not use.</p>
-<p><code>criterion</code> and <code>maxit</code> default to <code>NULL</code>, meaning the values
-<code><a href="fit_distrib.html">fit_distrib()</a></code> was given through its own <code>tol</code> and <code>maxit</code>.
-Setting them here overrides those, in the way an optimiser object's own
-settings already do.</p>
+<p>Fisher scoring is Newton's method with one matrix replaced, so how the run
+stops and how long it may take are set here, as they would be on any other
+optimiser. Both default to <code>NULL</code>, meaning the defaults of
+<code><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></code> and <code><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">crit_grad</a></code>
+stand.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

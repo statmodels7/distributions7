@@ -15,8 +15,6 @@ fit_distrib(
   y,
   start = NULL,
   method = fisher_scoring(),
-  maxit = 200,
-  tol = 1e-06,
   level = 0.95,
   n_start = 5
 )
@@ -59,35 +57,18 @@ fit_distrib(
     to BFGS if they fail to converge; an optimiser the caller chose is
     never silently replaced.
 
-- maxit:
-
-  Maximum number of iterations. Defaults to 200. An optimiser object or
-  a
+  The iteration limit and the stopping rule belong to the method and are
+  set there: on an optimiser object through its own `maxit` and
+  `criterion`, on
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
-  carrying its own `maxit` overrides it.
-
-- tol:
-
-  Convergence tolerance on the score **per observation**. Defaults to
-  `1e-6`. The optimiser is handed the *mean* negative log-likelihood, so
-  this is what `crit_grad(tol)` tests, and a criterion supplied through
-  `method` is measured on the same scale. A method object carrying its
-  own stopping rule overrides this one.
-
-  The default is not arbitrary. A line search accepts a step only when
-  the objective decreases by a definite amount, and near the maximum
-  that decrease is about \\\lVert U/n \rVert^2 / (2\lambda)\\ for a
-  curvature \\\lambda\\. Once it falls below the rounding of the
-  objective itself, about \\\varepsilon \lvert \ell/n \rvert\\, no step
-  can be verified and the search stops, so the reachable floor is near
-  \\\sqrt{2 \lambda \varepsilon \lvert \ell/n \rvert}\\ — of order
-  `1e-8` for an objective of order one. Measured over several families,
-  methods and samples that floor is usually near `1e-15` but reaches
-  `1e-8`, so the default sits about two orders above it. A tighter
-  tolerance asks for accuracy the arithmetic cannot certify, and whether
-  a given run reaches it then depends on the platform. Nothing
-  statistical is lost: a score of `1e-6` per observation places the
-  estimate within a small fraction of a standard error of the maximum.
+  through the same two arguments, and otherwise left at the defaults of
+  [`crit_grad`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+  and of the optimiser. The objective handed to the optimiser is the
+  *mean* negative log-likelihood, so a tolerance on its gradient is a
+  tolerance on the score **per observation** whatever the sample size,
+  and
+  [`crit_grad`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+  documents why its default sits where it does.
 
 - level:
 

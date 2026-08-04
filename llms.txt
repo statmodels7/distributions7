@@ -1715,13 +1715,16 @@ divergent density.
 - [`mills_ratio()`](https://statmodels7.github.io/distributions7/reference/mills_ratio.md)
   : The Inverse Mills Ratio and Its Derivative
 
+- [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
+  : Append One Block of Derived Quantities to Another
+
 - [`mv_derived.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.md)
   : Standard Deviations and Correlations of a Multivariate Gaussian
 
 - [`mv_derived.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md)
   : Scale Standard Deviations and Correlations of a Multivariate t
 
-- [`mv_derived.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
+- [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
   : Matrix Entries as the Default Interpretable Quantities
 
 - [`mv_entry_index()`](https://statmodels7.github.io/distributions7/reference/mv_entry_index.md)

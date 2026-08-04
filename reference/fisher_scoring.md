@@ -32,13 +32,12 @@ fisher_scoring(
 
 - criterion:
 
-  A stopping rule from optimizers7, or `NULL` to use the one
-  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-  builds from its `tol`.
+  A stopping rule from optimizers7, or `NULL` for the default of
+  [`newton`](https://statmodels7.github.io/optimizers7/reference/newton.html).
 
 - maxit:
 
-  An iteration limit, or `NULL` to use the fit's.
+  An iteration limit, or `NULL` for the same default.
 
 ## Value
 
@@ -68,10 +67,13 @@ that does supply one ignores `approx` entirely, and
 refuses the argument in that case rather than accepting something it
 will not use.
 
-`criterion` and `maxit` default to `NULL`, meaning the values
-[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-was given through its own `tol` and `maxit`. Setting them here overrides
-those, in the way an optimiser object's own settings already do.
+Fisher scoring is Newton's method with one matrix replaced, so how the
+run stops and how long it may take are set here, as they would be on any
+other optimiser. Both default to `NULL`, meaning the defaults of
+[`newton`](https://statmodels7.github.io/optimizers7/reference/newton.html)
+and
+[`crit_grad`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+stand.
 
 ## See also
 

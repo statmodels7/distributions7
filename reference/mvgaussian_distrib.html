@@ -156,7 +156,7 @@ observation.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># a diagonal covariance: two variances instead of three free values</span></span></span>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, sigma <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">diagonal_matrix</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"      "mu2"      "sigma_d1" "sigma_d2"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># or the precision, which is the cheaper parametrisation</span></span></span>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
