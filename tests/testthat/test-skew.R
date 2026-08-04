@@ -259,12 +259,13 @@ test_that("both skew families are fitted by maximum likelihood", {
   sc <- vapply(
     distrib_gradient(d, y, as.list(coef(fit)), scale = "link"), sum, numeric(1)
   )
-  expect_lt(max(abs(sc)) / length(y), 1e-8)
+  # The bound follows fit_distrib()'s own default, which is a tolerance on
+  # the score per observation.
+  expect_lt(max(abs(sc)) / length(y), 1e-6)
 
-  # The skew t needs a tolerance its score in nu can reach. The default is
-  # 1e-10 on the summed gradient, and the finite difference behind that one
-  # component cannot go below about 1e-9, so the run would end at its
-  # iteration limit at a point that is nonetheless the maximum.
+  # The skew t's score in nu carries a finite difference, whose error on the
+  # score per observation is around 1e-11, so the default tolerance of 1e-6 is
+  # comfortably above it and the run stops where it should.
   dt4 <- skewt_distrib()
   set.seed(58)
   y4 <- distrib_rng(dt4, 2000, list(mu = 1, sigma = 2, alpha = 4, nu = 6))

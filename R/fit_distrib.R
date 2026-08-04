@@ -273,10 +273,25 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   object or a \code{fisher_scoring()} carrying its own \code{maxit}
 #'   overrides it.
 #' @param tol Convergence tolerance on the score \strong{per observation}.
-#'   Defaults to \code{1e-10}. The optimiser is handed the \emph{mean} negative
+#'   Defaults to \code{1e-6}. The optimiser is handed the \emph{mean} negative
 #'   log-likelihood, so this is what \code{crit_grad(tol)} tests, and a
 #'   criterion supplied through \code{method} is measured on the same scale. A
 #'   method object carrying its own stopping rule overrides this one.
+#'
+#'   The default is not arbitrary. A line search accepts a step only when the
+#'   objective decreases by a definite amount, and near the maximum that
+#'   decrease is about \eqn{\lVert U/n \rVert^2 / (2\lambda)} for a curvature
+#'   \eqn{\lambda}. Once it falls below the rounding of the objective itself,
+#'   about \eqn{\varepsilon \lvert \ell/n \rvert}, no step can be verified and
+#'   the search stops, so the reachable floor is near
+#'   \eqn{\sqrt{2 \lambda \varepsilon \lvert \ell/n \rvert}} --- of order
+#'   \code{1e-8} for an objective of order one. Measured over several
+#'   families, methods and samples that floor is usually near \code{1e-15} but
+#'   reaches \code{1e-8}, so the default sits about two orders above it. A
+#'   tighter tolerance asks for accuracy the arithmetic cannot certify, and
+#'   whether a given run reaches it then depends on the platform. Nothing
+#'   statistical is lost: a score of \code{1e-6} per observation places the
+#'   estimate within a small fraction of a standard error of the maximum.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
 #' @param n_start How many starting values to ask \code{\link{distrib_start}}
 #'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
@@ -326,7 +341,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
-                        maxit = 200, tol = 1e-10, level = 0.95, n_start = 5) {
+                        maxit = 200, tol = 1e-6, level = 0.95, n_start = 5) {
   # One argument says how to optimise, and it takes one of three things: a
   # fisher_scoring() specification, an optimizers7 optimiser, or the name of
   # one of the three ready-made strategies. How the expected information is to
@@ -386,6 +401,15 @@ fit_distrib <- function(distrib, y, start = NULL,
   # and it means it for a criterion the CALLER supplies as much as for the
   # default -- which scaling the tolerance instead of the objective would not
   # have done.
+  #
+  # The scaling settles what a threshold MEANS but not how small one can be.
+  # A line search accepts a step only when the objective decreases by a
+  # definite amount, and near the maximum that decrease, of order
+  # |U/n|^2 / (2 lambda), sinks below the rounding of the objective itself.
+  # The search then rejects every step whatever the direction, so the smallest
+  # gradient a run can reach is around sqrt(2 lambda eps |l/n|). Measured over
+  # several families, methods and samples it is usually near 1e-15 and reaches
+  # 1e-8, which is why the default tolerance is 1e-6 and not tighter.
   #
   # The reported quantities are the ordinary ones: loglik, the information and
   # the standard errors are all recomputed below from the unscaled likelihood.

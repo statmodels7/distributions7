@@ -8,8 +8,11 @@ test_that("gaussian fit reproduces the closed-form MLE and its standard errors",
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
 
   expect_true(f@converged)
-  expect_equal(unname(coef(f)["mu"]), mean(y), tolerance = 1e-6)
-  expect_equal(unname(coef(f)["sigma"]), sqrt(mean((y - mean(y))^2)), tolerance = 1e-6)
+  # The tolerances follow the stopping rule rather than the arithmetic: the run
+  # ends on a score of 1e-6 per observation, which leaves the estimate within
+  # about that divided by the curvature.
+  expect_equal(unname(coef(f)["mu"]), mean(y), tolerance = 1e-5)
+  expect_equal(unname(coef(f)["sigma"]), sqrt(mean((y - mean(y))^2)), tolerance = 1e-5)
 
   # se(mu_hat) = sigma / sqrt(n)
   expect_equal(unname(f@se["mu"]), unname(coef(f)["sigma"]) / sqrt(length(y)), tolerance = 1e-4)
@@ -23,7 +26,9 @@ test_that("poisson fit reproduces the closed-form MLE and information", {
   f <- fit_distrib(d, y, start = list(mu = 1))
 
   expect_true(f@converged)
-  expect_equal(unname(coef(f)), mean(y), tolerance = 1e-7)
+  # The fit stops on a score of 1e-6 per observation, which for a Poisson is
+  # (ybar - mu)/mu, so the estimate sits within about mu * 1e-6 of the mean.
+  expect_equal(unname(coef(f)), mean(y), tolerance = 1e-5)
   expect_equal(unname(f@se), sqrt(mean(y) / length(y)), tolerance = 1e-5)
 })
 
@@ -34,7 +39,7 @@ test_that("bernoulli fit is exact and its interval respects the (0,1) domain", {
   f <- fit_distrib(d, y, start = list(mu = 0.5))
 
   expect_true(f@converged)
-  expect_equal(unname(coef(f)), mean(y), tolerance = 1e-7)
+  expect_equal(unname(coef(f)), mean(y), tolerance = 1e-5)
   expect_true(all(f@ci > 0 & f@ci < 1))
   expect_lt(f@ci[1, "lower"], coef(f)[[1]])
   expect_gt(f@ci[1, "upper"], coef(f)[[1]])
@@ -186,9 +191,9 @@ test_that("the three named strategies agree with each other and the closed form"
   expect_equal(max(lls) - min(lls), 0, tolerance = 1e-8)
 
   # the Gaussian MLE is available in closed form
-  expect_equal(unname(coef(fits[[1]])["mu"]), mean(y), tolerance = 1e-6)
+  expect_equal(unname(coef(fits[[1]])["mu"]), mean(y), tolerance = 1e-5)
   expect_equal(unname(coef(fits[[1]])["sigma"]),
-               sqrt(mean((y - mean(y))^2)), tolerance = 1e-6)
+               sqrt(mean((y - mean(y))^2)), tolerance = 1e-5)
 })
 
 

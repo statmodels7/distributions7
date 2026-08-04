@@ -10,7 +10,7 @@ fit_distrib(
   start = NULL,
   method = fisher_scoring(),
   maxit = 200,
-  tol = 1e-10,
+  tol = 1e-06,
   level = 0.95,
   n_start = 5
 )
@@ -47,11 +47,25 @@ object or a \code{fisher_scoring()} carrying its own \code{maxit}
 overrides it.}
 
 \item{tol}{Convergence tolerance on the score \strong{per observation}.
-Defaults to \code{1e-10}. The rule handed to the optimiser is
-\code{crit_grad(tol * n)}, since the gradient it sees is summed over the
-sample and its attainable floor grows with \eqn{n}; a bound on the sum
-would mean something different for every sample size. A method object
-carrying its own stopping rule overrides this.}
+Defaults to \code{1e-6}. The optimiser is handed the \emph{mean} negative
+log-likelihood, so this is what \code{crit_grad(tol)} tests, and a
+criterion supplied through \code{method} is measured on the same scale. A
+method object carrying its own stopping rule overrides this one.
+
+The default is not arbitrary. A line search accepts a step only when the
+objective decreases by a definite amount, and near the maximum that
+decrease is about \eqn{\lVert U/n \rVert^2 / (2\lambda)} for a curvature
+\eqn{\lambda}. Once it falls below the rounding of the objective itself,
+about \eqn{\varepsilon \lvert \ell/n \rvert}, no step can be verified and
+the search stops, so the reachable floor is near
+\eqn{\sqrt{2 \lambda \varepsilon \lvert \ell/n \rvert}} --- of order
+\code{1e-8} for an objective of order one. Measured over several
+families, methods and samples that floor is usually near \code{1e-15} but
+reaches \code{1e-8}, so the default sits about two orders above it. A
+tighter tolerance asks for accuracy the arithmetic cannot certify, and
+whether a given run reaches it then depends on the platform. Nothing
+statistical is lost: a score of \code{1e-6} per observation places the
+estimate within a small fraction of a standard error of the maximum.}
 
 \item{level}{Confidence level for the intervals. Defaults to 0.95.}
 
