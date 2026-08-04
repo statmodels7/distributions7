@@ -32,6 +32,10 @@ used for each of its parameters.
   : Lognormal Distribution Object (Log-Scale Parameterization)
 - [`weibull_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
   : Weibull Distribution Object
+- [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+  : Exponential Distribution Object
+- [`chisq_distrib()`](https://statmodels7.github.io/distributions7/reference/chisq_distrib.md)
+  : Chi-Squared Distribution Object
 - [`beta_distrib()`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)
   : Beta Distribution Object (Mean-Precision Parameterization)
 - [`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
@@ -42,6 +46,8 @@ used for each of its parameters.
   : Poisson Distribution Object
 - [`negbin_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
   : Negative Binomial Distribution Object (NB2)
+- [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+  : Geometric Distribution Object
 
 ## Probability functions
 
@@ -136,6 +142,8 @@ values.
   : Zero-Adjusted Distribution Object
 - [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
   : Truncated Distribution Object
+- [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+  : Fold a Distribution at Zero
 - [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
   : Fix Parameters of a Distribution at Known Values
 - [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
@@ -548,6 +556,60 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.WeibullDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.WeibullDistrib.md)
   : Weibull Random Number Generator
 
+## Exponential
+
+- [`ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/ExponentialDistrib.md)
+  : S7 Class for the Exponential Distribution
+- [`distrib_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ExponentialDistrib.md)
+  : Exponential Distribution Function
+- [`distrib_deriv3.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.md)
+  : Exponential Analytical Third-Order Derivative
+- [`distrib_deriv4.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ExponentialDistrib.md)
+  : Exponential Analytical Fourth-Order Derivative
+- [`distrib_expected_hessian.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ExponentialDistrib.md)
+  : Exponential Analytical Expected Hessian
+- [`distrib_grad_y.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ExponentialDistrib.md)
+  : Exponential Response Gradient
+- [`distrib_gradient.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ExponentialDistrib.md)
+  : Exponential Analytical Gradient
+- [`distrib_hess_y.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ExponentialDistrib.md)
+  : Exponential Response Hessian
+- [`distrib_hessian.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md)
+  : Exponential Analytical Observed Hessian
+- [`distrib_pdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ExponentialDistrib.md)
+  : Exponential Density
+- [`distrib_quantile.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ExponentialDistrib.md)
+  : Exponential Quantile Function
+- [`distrib_rng.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ExponentialDistrib.md)
+  : Exponential Random Generation
+
+## Chi-squared
+
+- [`ChisqDistrib()`](https://statmodels7.github.io/distributions7/reference/ChisqDistrib.md)
+  : S7 Class for the Chi-Squared Distribution
+- [`distrib_cdf.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ChisqDistrib.md)
+  : Chi-Squared Distribution Function
+- [`distrib_deriv3.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.md)
+  : Chi-Squared Analytical Third-Order Derivative
+- [`distrib_deriv4.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ChisqDistrib.md)
+  : Chi-Squared Analytical Fourth-Order Derivative
+- [`distrib_expected_hessian.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ChisqDistrib.md)
+  : Chi-Squared Analytical Expected Hessian
+- [`distrib_grad_y.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ChisqDistrib.md)
+  : Chi-Squared Response Gradient
+- [`distrib_gradient.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ChisqDistrib.md)
+  : Chi-Squared Analytical Gradient
+- [`distrib_hess_y.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ChisqDistrib.md)
+  : Chi-Squared Response Hessian
+- [`distrib_hessian.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ChisqDistrib.md)
+  : Chi-Squared Analytical Observed Hessian
+- [`distrib_pdf.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ChisqDistrib.md)
+  : Chi-Squared Density
+- [`distrib_quantile.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ChisqDistrib.md)
+  : Chi-Squared Quantile Function
+- [`distrib_rng.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ChisqDistrib.md)
+  : Chi-Squared Random Generation
+
 ## Gamma
 
 - [`GammaDistrib()`](https://statmodels7.github.io/distributions7/reference/GammaDistrib.md)
@@ -760,6 +822,29 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBinDistrib.md)
   : Negative Binomial Random Number Generator
 
+## Geometric
+
+- [`GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/GeometricDistrib.md)
+  : S7 Class for the Geometric Distribution
+- [`distrib_cdf.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GeometricDistrib.md)
+  : Geometric Cumulative Distribution Function
+- [`distrib_deriv3.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md)
+  : Geometric Analytical Third-Order Derivative
+- [`distrib_deriv4.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GeometricDistrib.md)
+  : Geometric Analytical Fourth-Order Derivative
+- [`distrib_expected_hessian.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GeometricDistrib.md)
+  : Geometric Analytical Expected Hessian
+- [`distrib_gradient.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GeometricDistrib.md)
+  : Geometric Analytical Gradient
+- [`distrib_hessian.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GeometricDistrib.md)
+  : Geometric Analytical Observed Hessian
+- [`distrib_pdf.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GeometricDistrib.md)
+  : Geometric Probability Mass Function
+- [`distrib_quantile.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GeometricDistrib.md)
+  : Geometric Quantile Function
+- [`distrib_rng.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GeometricDistrib.md)
+  : Geometric Random Generation
+
 ## Multivariate gaussian
 
 - [`MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
@@ -907,6 +992,26 @@ and fixed-parameter wrappers.
   : Transformed Quantile Function
 - [`distrib_rng.TransformedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.TransformedDistrib.md)
   : Transformed Random Number Generator
+- [`FoldedDistrib()`](https://statmodels7.github.io/distributions7/reference/FoldedDistrib.md)
+  : S7 Class for Folded Distributions
+- [`distrib_cdf.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.FoldedDistrib.md)
+  : Folded Distribution Function
+- [`distrib_deriv3.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.md)
+  : Folded Analytical Third-Order Derivatives
+- [`distrib_deriv4.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.FoldedDistrib.md)
+  : Folded Analytical Fourth-Order Derivatives
+- [`distrib_grad_y.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.FoldedDistrib.md)
+  : Folded Response Gradient
+- [`distrib_gradient.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.FoldedDistrib.md)
+  : Folded Analytical Gradient
+- [`distrib_hess_y.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.FoldedDistrib.md)
+  : Folded Response Hessian
+- [`distrib_hessian.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.FoldedDistrib.md)
+  : Folded Analytical Observed Hessian
+- [`distrib_pdf.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.FoldedDistrib.md)
+  : Folded Density
+- [`distrib_rng.FoldedDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.FoldedDistrib.md)
+  : Folded Random Generation
 - [`FixedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
   : S7 Class for Distributions With Fixed Parameters (Continuous)
 - [`FixedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.md)
@@ -927,16 +1032,22 @@ inherits unless it registers something more specific.
   : Cauchy Distribution Object
 - [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
   : Numerically Validate a Distribution
+- [`chisq_distrib()`](https://statmodels7.github.io/distributions7/reference/chisq_distrib.md)
+  : Chi-Squared Distribution Object
 - [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
   : S7 Class for Continuous Distributions
 - [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
   : S7 Class for Discrete Distributions
+- [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+  : Exponential Distribution Object
 - [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
   : Maximum-Likelihood Estimation
 - [`gamma_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md)
   : Gamma Distribution Object (Mean-Variance Parameterization)
 - [`gaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md)
   : Gaussian Distribution Object (Standard Deviation Parameterization)
+- [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+  : Geometric Distribution Object
 - [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
   : Gumbel Distribution Object
 - [`invgauss_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)
@@ -1017,6 +1128,9 @@ divergent density.
 
 - [`check_truncation_points()`](https://statmodels7.github.io/distributions7/reference/check_truncation_points.md)
   : Validate the Truncation Endpoints
+
+- [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
+  : Does a Distribution Declare Atoms
 
 - [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
   : Index Tuples Matching the Package's Component Naming
@@ -1259,6 +1373,15 @@ divergent density.
 - [`fixed_full_theta()`](https://statmodels7.github.io/distributions7/reference/fixed_full_theta.md)
   : Splice the Fixed Values Back Into a Full Parameter List
 
+- [`fold_deriv_k()`](https://statmodels7.github.io/distributions7/reference/fold_deriv_k.md)
+  : Derivatives of a Folded Distribution
+
+- [`fold_parts()`](https://statmodels7.github.io/distributions7/reference/fold_parts.md)
+  : The Two Preimages of a Folded Point
+
+- [`fold_ratio()`](https://statmodels7.github.io/distributions7/reference/fold_ratio.md)
+  : The Block Ratios of a Folded Density
+
 - [`generate_random_theta.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvGaussianDistrib.md)
   : Random Parameters for a Multivariate Gaussian
 
@@ -1269,6 +1392,9 @@ divergent density.
   :
 
   Generate Random Parameters for `distrib` Objects
+
+- [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
+  : The Success Probability Behind a Geometric Mean
 
 - [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
   : The Generalized Ratio-of-Uniforms Sampler
