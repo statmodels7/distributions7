@@ -121,6 +121,7 @@ reference:
   - zero_inflated
   - zero_adjusted
   - truncated
+  - folded
   - fixed
   - transformation
   - transformer
@@ -257,6 +258,8 @@ reference:
   - ends_with(".TruncatedContinuousDistrib")
   - TransformedDistrib
   - ends_with(".TransformedDistrib")
+  - FoldedDistrib
+  - ends_with(".FoldedDistrib")
   - FixedContinuousDistrib
   - ends_with(".FixedContinuousDistrib")
   - FixedDiscreteDistrib

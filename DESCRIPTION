@@ -71,6 +71,7 @@ Collate:
     'weibull_distrib.R'
     'moments.R'
     'fixed.R'
+    'folded.R'
     'gamma_distrib.R'
     'geometric_distrib.R'
     'methods.R'

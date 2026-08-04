@@ -731,3 +731,4 @@ S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 #' @return A named list of derivative components.
 #' @seealso \code{\link{truncated}}
 S7::method(distrib_deriv4, TruncatedDiscreteDistrib) <- trunc_deriv_k(4L)
+
