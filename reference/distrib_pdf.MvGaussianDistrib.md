@@ -2,8 +2,8 @@
 
 \$\$\ell = -\frac{p}{2}\log 2\pi - \frac{1}{2}\log\|\Sigma\| -
 \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),\$\$ evaluated row by row.
-The quadratic form goes through the structure's own factor rather than
-through an explicit inverse.
+The quadratic form goes through the matrix parameter's own factor rather
+than through an explicit inverse.
 
 ## Arguments
 

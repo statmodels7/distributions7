@@ -1,7 +1,8 @@
 # Prefix a Structure's Free Names with the Matrix They Describe
 
-Returns the structure's free names with `"sigma_"` or `"omega_"` in
-front, according to which side of the model the structure parametrises.
+Returns the matrix parameter's free names with `"sigma_"` or `"omega_"`
+in front, according to which side of the model the matrix parameter
+parametrises.
 
 ## Usage
 
@@ -13,11 +14,11 @@ mv_prefixed_names(free_names, inverted = FALSE)
 
 - free_names:
 
-  The structure's free names.
+  The matrix parameter's free names.
 
 - inverted:
 
-  Whether the structure parametrises the precision.
+  Whether the matrix parameter parametrises the precision.
 
 ## Value
 
@@ -31,5 +32,5 @@ family produce identical names. They are different models — the inverse
 of a compound-symmetry matrix is compound symmetry while the inverse of
 an AR(1) is not AR(1) — and a printed table that does not distinguish
 them leaves the reader to guess. The prefix is applied by the
-distribution rather than by the structure, because the structure does
-not know which side it has been handed to.
+distribution rather than by the matrix parameter, because the matrix
+parameter does not know which side it has been handed to.

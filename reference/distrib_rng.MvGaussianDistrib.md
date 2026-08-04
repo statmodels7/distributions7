@@ -1,8 +1,8 @@
 # Multivariate Gaussian Generator
 
 \\\mu + L z\\ with \\z\\ standard normal and \\LL^\top = \Sigma\\, the
-factor taken from the structure where it parametrises the covariance and
-from a factorisation of the inverse otherwise.
+factor taken from the matrix parameter where it parametrises the
+covariance and from a factorisation of the inverse otherwise.
 
 ## Arguments
 

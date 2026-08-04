@@ -1817,6 +1817,13 @@ divergent density.
 - [`owen_t()`](https://statmodels7.github.io/distributions7/reference/owen_t.md)
   : Owen's T Function
 
+- [`param_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/param_free_or_fit.md)
+  : Project a Matrix onto What a Structure Can Represent
+
+- [`param_pair_lookup()`](https://statmodels7.github.io/distributions7/reference/param_pair_lookup.md)
+  : Where Each Pair of Free Values Sits in a Structure's Second
+  Derivatives
+
 - [`parent_ell()`](https://statmodels7.github.io/distributions7/reference/parent_ell.md)
   : Look Up the Parent's Derivative Components by Block
 
@@ -1902,13 +1909,6 @@ divergent density.
 
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
-
-- [`struct_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/struct_free_or_fit.md)
-  : Project a Matrix onto What a Structure Can Represent
-
-- [`struct_pair_lookup()`](https://statmodels7.github.io/distributions7/reference/struct_pair_lookup.md)
-  : Where Each Pair of Free Values Sits in a Structure's Second
-  Derivatives
 
 - [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
   : Convert Parameter-Scale Derivatives to the Link Scale

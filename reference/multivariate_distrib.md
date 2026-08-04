@@ -94,7 +94,7 @@ bookkeeping –
 the Hessian keys, the link scale,
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 – needs no special case. The constraint on the matrix lives inside the
-structure rather than in a link, which is why the links of a
+matrix parameter rather than in a link, which is why the links of a
 multivariate distribution are all the identity: the free values are
 already unconstrained.
 

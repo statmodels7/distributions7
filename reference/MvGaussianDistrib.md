@@ -87,8 +87,8 @@ MvGaussianDistrib(
 
 - inverted:
 
-  Whether the structure parametrises the precision rather than the
-  covariance.
+  Whether the matrix parameter parametrises the precision rather than
+  the covariance.
 
 ## Value
 

@@ -33,9 +33,9 @@ An object of class
 ## Details
 
 Exactly one of `sigma` and `omega` may be given, and the name of the
-argument decides which side of the model the structure parametrises: the
-covariance in the first case, the precision in the second. One
-constructor returns one of two behaviours, in the manner of
+argument decides which side of the model the matrix parameter
+parametrises: the covariance in the first case, the precision in the
+second. One constructor returns one of two behaviours, in the manner of
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md),
 which chooses between its continuous and discrete classes from the
 arguments it is handed.
@@ -43,11 +43,11 @@ arguments it is handed.
 The precision form is the cheaper one and is worth preferring where the
 modelling allows it. Written in \\\Omega\\, the log-density, the score
 and the Hessian are multiplications, and the first term of the score is
-the structure's own `param_dlogdet()`; written in \\\Sigma\\ the same
+the parameter's own `param_dlogdet()`; written in \\\Sigma\\ the same
 quantities need a solve at every step.
 
-**Parameters.** The mean contributes `mu1`, ..., `mup`, and the
-structure contributes its free values prefixed by the matrix they
+**Parameters.** The mean contributes `mu1`, ..., `mup`, and the matrix
+parameter contributes its free values prefixed by the matrix they
 describe: `sigma_` for a covariance and `omega_` for a precision. A
 two-dimensional gaussian on an unstructured covariance therefore has
 five parameters, `mu1`, `mu2`, `sigma_log_L1`, `sigma_log_L2` and
@@ -58,9 +58,9 @@ matrix is built and not which matrix it is.
 
 All of the parameters are unconstrained, and their links are therefore
 the identity: the constraint that makes the matrix positive definite
-lives inside the structure, which is why it needs no link to express it.
-A consequence worth knowing is that the parameter scale and the link
-scale coincide here, so `scale = "link"` changes nothing.
+lives inside the matrix parameter, which is why it needs no link to
+express it. A consequence worth knowing is that the parameter scale and
+the link scale coincide here, so `scale = "link"` changes nothing.
 
 **Reading a fit.** The free values are coordinates, not quantities
 anybody reads.

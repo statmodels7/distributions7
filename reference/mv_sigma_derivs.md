@@ -23,7 +23,7 @@ mv_sigma_derivs(distrib, theta, n_before)
 
 - n_before:
 
-  How many parameters precede the structure's free values.
+  How many parameters precede the matrix parameter's free values.
 
 ## Value
 
@@ -33,5 +33,6 @@ A list of matrices and `NULL`s, of length `distrib@n_params`.
 
 The mean components and, for a Student \\t\\, the degrees of freedom
 leave the matrix alone, so those entries are `NULL` and cost nothing.
-When the structure parametrises the precision the chain rule of an
-inverse applies, \\\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma\\.
+When the matrix parameter parametrises the precision the chain rule of
+an inverse applies, \\\partial\Sigma/\partial\eta_k = -\Sigma A_k
+\Sigma\\.

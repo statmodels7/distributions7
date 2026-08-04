@@ -38,10 +38,10 @@ p\\ matrix for `mv_sigma()`.
 The parameters of a multivariate distribution are scalars, so that every
 generic of the package can index them, and these two functions put them
 back into the shapes a reader thinks in. `mv_sigma()` returns the matrix
-the PARAMETRISATION carries, whichever side the structure describes: the
-covariance for a gaussian, and the scale matrix for a Student t, whose
-covariance is \\\nu\Sigma/(\nu-2)\\ and does not exist below two degrees
-of freedom. The moment is
+the PARAMETRISATION carries, whichever side the matrix parameter
+describes: the covariance for a gaussian, and the scale matrix for a
+Student t, whose covariance is \\\nu\Sigma/(\nu-2)\\ and does not exist
+below two degrees of freedom. The moment is
 [`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
 and keeping the two apart is what lets a heavy-tailed family be
 described at all.

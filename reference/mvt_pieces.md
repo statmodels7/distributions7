@@ -2,7 +2,7 @@
 
 Assembles the location, the scale matrix, its inverse, the
 log-determinant and the degrees of freedom from a flat parameter vector,
-with the structure's derivative matrices when they are needed.
+with the parameter's derivative matrices when they are needed.
 
 ## Usage
 

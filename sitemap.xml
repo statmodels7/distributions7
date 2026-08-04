@@ -540,6 +540,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/observed_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/order_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/owen_t.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/param_free_or_fit.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/param_pair_lookup.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/param_smoothness.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_ell.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_mass_at.html</loc></url>
@@ -582,8 +584,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/std_dev.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/std_dev.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/std_dev.numeric.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/struct_free_or_fit.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/struct_pair_lookup.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/to_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/trans_deriv_k.html</loc></url>

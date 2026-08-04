@@ -70,7 +70,7 @@ not depend on the parameter.</p>
 
 
 <dt id="arg-n-before">n_before<a class="anchor" aria-label="anchor" href="#arg-n-before"></a></dt>
-<dd><p>How many parameters precede the structure's free values.</p></dd>
+<dd><p>How many parameters precede the matrix parameter's free values.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -82,7 +82,7 @@ not depend on the parameter.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The mean components and, for a Student \(t\), the degrees of freedom leave
 the matrix alone, so those entries are <code>NULL</code> and cost nothing. When
-the structure parametrises the precision the chain rule of an inverse
+the matrix parameter parametrises the precision the chain rule of an inverse
 applies, \(\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma\).</p>
     </div>
 

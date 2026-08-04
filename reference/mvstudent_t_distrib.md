@@ -46,10 +46,10 @@ lets a fit run at \\\nu = 1.5\\.
 
 **Parameters.** The mean contributes `mu1`, ..., `mup`, the structure
 contributes its free values under the `sigma_` prefix, and `nu` is added
-last. The mean and the structure are unconstrained and carry identity
-links; `nu` is positive and carries a log link by default, so unlike the
-multivariate gaussian this family's link scale is not its parameter
-scale.
+last. The mean and the matrix parameter are unconstrained and carry
+identity links; `nu` is positive and carries a log link by default, so
+unlike the multivariate gaussian this family's link scale is not its
+parameter scale.
 
 **Reading a fit.**
 [`mv_summary`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
@@ -87,7 +87,7 @@ d@params
 
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.4, nu = 5)
 
-# the scale matrix is what the structure carries; the covariance is a moment
+# the scale matrix is what the matrix parameter carries; the covariance is a moment
 mv_sigma(d, theta)
 #>     v1   v2
 #> v1 1.0 0.40

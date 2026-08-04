@@ -1,11 +1,11 @@
 # Multivariate Gaussian Score
 
 Closed form. With \\w = \Sigma^{-1}(y - \mu)\\ and \\A_k\\ the
-derivative of \\\Sigma\\ in the \\k\\-th free value of the structure,
-\$\$\frac{\partial \ell}{\partial \mu} = w, \qquad \frac{\partial
-\ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
+derivative of \\\Sigma\\ in the \\k\\-th free value of the matrix
+parameter, \$\$\frac{\partial \ell}{\partial \mu} = w, \qquad
+\frac{\partial \ell}{\partial \eta_k} = -\frac{1}{2}\frac{\partial
 \log\|\Sigma\|}{\partial \eta_k} + \frac{1}{2} w^\top A_k w.\$\$ The
-first term of the second expression is the structure's own
+first term of the second expression is the matrix parameter's own
 `param_dlogdet()`, so no trace is formed here.
 
 ## Arguments
