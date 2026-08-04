@@ -70,9 +70,10 @@ matrices.
 family to \eqn{-Y}, or use \code{\link{transformation}} with
 \code{\link{affine_transform}(scale = -1)}.
 
-\strong{Higher orders.} Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-(\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+\strong{Higher orders.} Third and fourth derivatives are closed form,
+observed and expected: with \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
+every derivative is a polynomial in \eqn{z} and \eqn{z^j w}, and every
+expectation is a derivative of \eqn{\Gamma} at 2.
 
 \strong{Parameter Domains:}
 \itemize{

@@ -52,6 +52,8 @@ Methods implemented for this class:
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian()}},
+\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}},

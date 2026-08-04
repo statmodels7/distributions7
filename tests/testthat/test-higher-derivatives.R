@@ -28,7 +28,11 @@ analytic_hd_cases <- function() {
     lognormal = list(d = lognormal_distrib(), theta = list(mu = 0.5, sigma2 = 1.3)),
     poisson   = list(d = poisson_distrib(),   theta = list(mu = 4)),
     negbin    = list(d = negbin_distrib(),    theta = list(mu = 4, theta = 1.7)),
-    pseudohuber = list(d = pseudohuber_distrib(), theta = list(mu = 0.5, sigma = 1.4, nu = 2.5))
+    pseudohuber = list(d = pseudohuber_distrib(), theta = list(mu = 0.5, sigma = 1.4, nu = 2.5)),
+    weibull    = list(d = weibull_distrib(),    theta = list(mu = 2, sigma = 1.6)),
+    gumbel     = list(d = gumbel_distrib(),     theta = list(mu = 1, sigma = 2.5)),
+    laplace    = list(d = laplace_distrib(),    theta = list(mu = 0.5, b = 1.3)),
+    skewnormal = list(d = skewnormal_distrib(), theta = list(mu = 0.3, sigma = 1.4, alpha = 3))
   )
 }
 
@@ -65,6 +69,7 @@ test_that("closed-form expected derivatives match a Monte Carlo mean of the obse
   cases$student_t <- NULL
   cases$pseudohuber <- NULL
   cases$logistic <- NULL
+  cases$skewnormal <- NULL
   set.seed(2)
 
   for (nm in names(cases)) {

@@ -51,6 +51,8 @@ Methods implemented for this class:
 \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian()}},
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}},

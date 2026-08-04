@@ -68,9 +68,11 @@ variance \eqn{\sigma^2(1 - b^2\delta^2)}. The skewness is bounded: it lies in
 \eqn{(-0.9953, 0.9953)} whatever \eqn{\alpha} is, which is the limitation of
 the family and the reason the skew \eqn{t} exists.
 
-\strong{Higher orders.} Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-(\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+\strong{Higher orders.} The observed third and fourth derivatives are
+closed form, every derivative of \eqn{\log\Phi(t)} being a polynomial in
+\eqn{t} and the inverse Mills ratio through \eqn{R' = -R(t+R)}; their
+expected values share the obstruction of the expected information and are
+approximated numerically.
 
 \strong{Parameter Domains:}
 \itemize{

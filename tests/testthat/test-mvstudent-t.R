@@ -316,3 +316,83 @@ test_that("Fisher scoring works on a family whose information is sampled", {
   # estimated by sampling.
   expect_equal(as.numeric(logLik(ff)), as.numeric(logLik(fn)), tolerance = 1e-4)
 })
+
+
+test_that("the response Hessian is the reweighted gaussian expression", {
+  d <- mvstudent_t_distrib(2)
+  th <- list(mu1 = 0.4, mu2 = -0.3, sigma_log_L1 = 0.2, sigma_log_L2 = -0.1,
+             sigma_L2.1 = 0.5, nu = 5)
+  set.seed(3)
+  y <- distrib_rng(d, 6, th)
+
+  # one central stencil on the closed-form response gradient, per coordinate
+  H <- distrib_hess_y(d, y, th)
+  expect_equal(dim(H), c(2L, 2L, 6L))
+  h <- 1e-6
+  for (j in 1:2) {
+    yp <- y; ym <- y
+    yp[, j] <- y[, j] + h
+    ym[, j] <- y[, j] - h
+    fd <- (distrib_grad_y(d, yp, th) - distrib_grad_y(d, ym, th)) / (2 * h)
+    for (i in seq_len(nrow(y))) {
+      expect_equal(H[, j, i], fd[i, ], tolerance = 1e-6)
+    }
+  }
+
+  # and in the nu -> infinity limit it is the gaussian's -Sigma^{-1}
+  th_big <- th; th_big$nu <- 1e8
+  Hb <- distrib_hess_y(d, y, th_big)
+  Hg <- distrib_hess_y(mvgaussian_distrib(2), y, th[names(th) != "nu"])
+  expect_equal(Hb[, , 1], Hg, tolerance = 1e-6, ignore_attr = TRUE)
+})
+
+
+test_that("response derivatives without a closed form are refused, not guessed", {
+  # The base class refuses rather than serving the univariate fallback, whose
+  # stencils difference along a line and would return numbers of the wrong
+  # shape for a matrix response.
+  d <- mvgaussian_distrib(2)
+  th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+             sigma_L2.1 = 0.3)
+  y <- distrib_rng(d, 3, th)
+  expect_error(distrib_cross_y(d, y, th), "not defined")
+  expect_error(
+    distrib_cross_y(mvstudent_t_distrib(2), cbind(y, 0)[, 1:2], c(th, nu = 5)),
+    "not defined"
+  )
+})
+
+
+test_that("third and fourth parameter derivatives work on a matrix response", {
+  # The fallbacks stencil along the parameters, so a matrix response passes
+  # through untouched; checked against a Richardson jacobian of the summed
+  # analytic Hessian, which shares nothing with the single stencil.
+  d <- mvgaussian_distrib(2)
+  th <- list(mu1 = 0.3, mu2 = -0.2, sigma_log_L1 = 0.1, sigma_log_L2 = -0.1,
+             sigma_L2.1 = 0.4)
+  set.seed(4)
+  y <- distrib_rng(d, 4, th)
+
+  n3 <- distrib_deriv3(d, y, th)
+  expect_setequal(names(n3), deriv_names(d@params, 3))
+  expect_true(all(lengths(n3) == nrow(y)))
+
+  hess_sum <- function(v) {
+    th2 <- as.list(stats::setNames(v, d@params))
+    vapply(distrib_hessian(d, y, th2), sum, numeric(1))
+  }
+  J <- numDeriv::jacobian(hess_sum, unlist(th))
+  hn <- hess_names(d@params)
+  idx <- deriv_indices(d@params, 3)
+  for (t in seq_along(n3)) {
+    hcomp <- paste(d@params[idx[[t]][1:2]], collapse = "_")
+    expect_equal(sum(n3[[t]]), J[match(hcomp, hn), idx[[t]][3]],
+      tolerance = 1e-6, label = names(n3)[t]
+    )
+  }
+
+  n4 <- distrib_deriv4(d, y, th)
+  expect_setequal(names(n4), deriv_names(d@params, 4))
+  expect_true(all(lengths(n4) == nrow(y)))
+  expect_true(all(is.finite(unlist(n4))))
+})

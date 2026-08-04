@@ -18,6 +18,8 @@ NULL
 #'   \code{\link[=distrib_gradient.SkewNormalDistrib]{distrib_gradient()}},
 #'   \code{\link[=distrib_hess_y.SkewNormalDistrib]{distrib_hess_y()}},
 #'   \code{\link[=distrib_hessian.SkewNormalDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_deriv3.SkewNormalDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.SkewNormalDistrib]{distrib_deriv4()}},
 #'   \code{\link[=distrib_pdf.SkewNormalDistrib]{distrib_pdf()}},
 #'   \code{\link[=distrib_rng.SkewNormalDistrib]{distrib_rng()}},
 #'   \code{\link[=kurtosis]{kurtosis()}},
@@ -247,6 +249,57 @@ S7::method(distrib_hessian, SkewNormalDistrib) <- function(distrib, y, theta, sc
   )
 }
 
+#' @title Skew Normal Analytical Third-Order Derivatives
+#' @name distrib_deriv3.SkewNormalDistrib
+#' @description
+#' Closed-form third-order derivatives of the skew normal log-density. With
+#' \eqn{t = \alpha z} and \eqn{R} the inverse Mills ratio, the derivatives of
+#' \eqn{\log \Phi(t)} follow from \eqn{R' = -R(t+R)} and stay polynomials in
+#' \eqn{t} and \eqn{R}, so every component is elementary. The expected
+#' derivatives have no closed form (the same integrals as the expected
+#' information) and come from \code{expected_derivative()}.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param expected Logical; if \code{TRUE}, the expectation is approximated
+#'   numerically.
+#' @param approx Strategy for the expectation; see \code{\link{distrib_deriv3}}.
+#' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_deriv3, SkewNormalDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    expected_derivative(distrib, y, theta, order = 3L,
+                        approx = match.arg(approx), nsim = nsim)
+  } else {
+    skewnormal_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+  }
+}
+
+#' @title Skew Normal Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.SkewNormalDistrib
+#' @description
+#' Closed-form fourth-order derivatives of the skew normal log-density, in the
+#' notation of \code{\link{distrib_deriv3.SkewNormalDistrib}}. The expected
+#' derivatives are approximated numerically, as at third order.
+#' @param distrib A \code{SkewNormalDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param expected Logical; if \code{TRUE}, the expectation is approximated
+#'   numerically.
+#' @param approx Strategy for the expectation; see \code{\link{distrib_deriv4}}.
+#' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{skewnormal_distrib}}
+S7::method(distrib_deriv4, SkewNormalDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    expected_derivative(distrib, y, theta, order = 4L,
+                        approx = match.arg(approx), nsim = nsim)
+  } else {
+    skewnormal_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+  }
+}
+
 #' @title Skew Normal Response Derivative
 #' @name distrib_grad_y.SkewNormalDistrib
 #' @description
@@ -335,9 +388,11 @@ S7::method(distrib_hess_y, SkewNormalDistrib) <- function(distrib, y, theta) {
 #' \eqn{(-0.9953, 0.9953)} whatever \eqn{\alpha} is, which is the limitation of
 #' the family and the reason the skew \eqn{t} exists.
 #'
-#' \strong{Higher orders.} Third and fourth derivatives are not registered in
-#' closed form and come from the numerical fallbacks
-#' (\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+#' \strong{Higher orders.} The observed third and fourth derivatives are
+#' closed form, every derivative of \eqn{\log\Phi(t)} being a polynomial in
+#' \eqn{t} and the inverse Mills ratio through \eqn{R' = -R(t+R)}; their
+#' expected values share the obstruction of the expected information and are
+#' approximated numerically.
 #'
 #' \strong{Parameter Domains:}
 #' \itemize{

@@ -51,6 +51,8 @@ Methods implemented for this class:
 \code{\link[=distrib_gradient.WeibullDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.WeibullDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.WeibullDistrib]{distrib_hessian()}},
+\code{\link[=distrib_deriv3.WeibullDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.WeibullDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.WeibullDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.WeibullDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.WeibullDistrib]{distrib_rng()}},

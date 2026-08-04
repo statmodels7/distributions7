@@ -18,6 +18,8 @@ NULL
 #'   \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient()}},
 #'   \code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y()}},
 #'   \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}},
 #'   \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
 #'   \code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile()}},
 #'   \code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}},
@@ -212,6 +214,43 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
   )
 }
 
+#' @title Gumbel Analytical Third-Order Derivatives
+#' @name distrib_deriv3.GumbelDistrib
+#' @description
+#' Closed-form third-order derivatives of the Gumbel log-density (observed, or
+#' expected when \code{expected = TRUE}). With \eqn{z = (y-\mu)/\sigma} and
+#' \eqn{w = e^{-z}}, every derivative is a polynomial in \eqn{z} and
+#' \eqn{z^j w}; the expected values use \eqn{E[z^k w] = (-1)^k \Gamma^{(k)}(2)}
+#' and \eqn{E[z] = \gamma}, since \eqn{w} is standard exponential under the
+#' model.
+#' @param distrib A \code{GumbelDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{gumbel_distrib}}
+S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) gumbel_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  else gumbel_deriv3_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Gumbel Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.GumbelDistrib
+#' @description
+#' Closed-form fourth-order derivatives of the Gumbel log-density (observed,
+#' or expected when \code{expected = TRUE}), in the notation of
+#' \code{\link{distrib_deriv3.GumbelDistrib}}.
+#' @param distrib A \code{GumbelDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{gumbel_distrib}}
+S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]])
+}
+
 #' @title Gumbel Response Derivative
 #' @name distrib_grad_y.GumbelDistrib
 #' @description
@@ -303,9 +342,10 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta) {
 #' family to \eqn{-Y}, or use \code{\link{transformation}} with
 #' \code{\link{affine_transform}(scale = -1)}.
 #'
-#' \strong{Higher orders.} Third and fourth derivatives are not registered in
-#' closed form and come from the numerical fallbacks
-#' (\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+#' \strong{Higher orders.} Third and fourth derivatives are closed form,
+#' observed and expected: with \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
+#' every derivative is a polynomial in \eqn{z} and \eqn{z^j w}, and every
+#' expectation is a derivative of \eqn{\Gamma} at 2.
 #'
 #' \strong{Parameter Domains:}
 #' \itemize{

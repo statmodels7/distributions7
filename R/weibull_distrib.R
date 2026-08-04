@@ -18,6 +18,8 @@ NULL
 #'   \code{\link[=distrib_gradient.WeibullDistrib]{distrib_gradient()}},
 #'   \code{\link[=distrib_hess_y.WeibullDistrib]{distrib_hess_y()}},
 #'   \code{\link[=distrib_hessian.WeibullDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_deriv3.WeibullDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.WeibullDistrib]{distrib_deriv4()}},
 #'   \code{\link[=distrib_pdf.WeibullDistrib]{distrib_pdf()}},
 #'   \code{\link[=distrib_quantile.WeibullDistrib]{distrib_quantile()}},
 #'   \code{\link[=distrib_rng.WeibullDistrib]{distrib_rng()}},
@@ -220,6 +222,41 @@ S7::method(distrib_expected_hessian, WeibullDistrib) <- function(distrib, y, the
   )
 }
 
+#' @title Weibull Analytical Third-Order Derivatives
+#' @name distrib_deriv3.WeibullDistrib
+#' @description
+#' Closed-form third-order derivatives of the Weibull log-density (observed, or
+#' expected when \code{expected = TRUE}). With \eqn{u = (y/\mu)^{\sigma}} and
+#' \eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
+#' \eqn{L u}; the expected values use \eqn{E[u L^k] = \Gamma^{(k)}(2)/\sigma^k}.
+#' @param distrib A \code{WeibullDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{weibull_distrib}}
+S7::method(distrib_deriv3, WeibullDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) weibull_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  else weibull_deriv3_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Weibull Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.WeibullDistrib
+#' @description
+#' Closed-form fourth-order derivatives of the Weibull log-density (observed,
+#' or expected when \code{expected = TRUE}), in the notation of
+#' \code{\link{distrib_deriv3.WeibullDistrib}}.
+#' @param distrib A \code{WeibullDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{weibull_distrib}}
+S7::method(distrib_deriv4, WeibullDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) weibull_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  else weibull_deriv4_cpp(y, theta[[1]], theta[[2]])
+}
+
 #' @title Weibull Response Derivative
 #' @name distrib_grad_y.WeibullDistrib
 #' @description
@@ -312,9 +349,10 @@ S7::method(distrib_hess_y, WeibullDistrib) <- function(distrib, y, theta) {
 #' increasing for \eqn{\sigma > 1} and decreasing for \eqn{\sigma < 1}, which is
 #' what the family is used for.
 #'
-#' \strong{Higher orders.} Third and fourth derivatives are not registered in
-#' closed form and come from the numerical fallbacks
-#' (\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+#' \strong{Higher orders.} Third and fourth derivatives are closed form,
+#' observed and expected: with \eqn{u = (y/\mu)^{\sigma}} and
+#' \eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
+#' \eqn{Lu}, and every expectation is a derivative of \eqn{\Gamma} at 2.
 #'
 #' \strong{Parameter Domains:}
 #' \itemize{

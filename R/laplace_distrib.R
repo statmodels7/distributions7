@@ -19,6 +19,8 @@ NULL
 #'   \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient()}},
 #'   \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
 #'   \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}},
 #'   \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
 #'   \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}},
 #'   \code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}},
@@ -190,6 +192,46 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
     b_b = rep(-1 / b^2, length.out = n),
     mu_b = rep(0, n)
   )
+}
+
+#' @title Laplace Analytical Third-Order Derivatives
+#' @name distrib_deriv3.LaplaceDistrib
+#' @description
+#' Closed-form third-order derivatives of the Laplace log-density, almost
+#' everywhere (observed, or expected when \code{expected = TRUE}). With
+#' \eqn{s = \mathrm{sign}(y-\mu)} and \eqn{a = \lvert y-\mu \rvert}, the only
+#' non-zero components are
+#' \eqn{\ell^{(\mu b b)} = 2s/b^3} and
+#' \eqn{\ell^{(bbb)} = -2/b^3 + 6a/b^4}; the kink at \eqn{y = \mu} is the same
+#' one the gradient carries, and \code{params_smooth} records it.
+#' @param distrib A \code{LaplaceDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{laplace_distrib}}
+S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) laplace_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+  else laplace_deriv3_cpp(y, theta[[1]], theta[[2]])
+}
+
+#' @title Laplace Analytical Fourth-Order Derivatives
+#' @name distrib_deriv4.LaplaceDistrib
+#' @description
+#' Closed-form fourth-order derivatives of the Laplace log-density, almost
+#' everywhere (observed, or expected when \code{expected = TRUE}), in the
+#' notation of \code{\link{distrib_deriv3.LaplaceDistrib}}: the non-zero
+#' components are \eqn{\ell^{(\mu bbb)} = -6s/b^4} and
+#' \eqn{\ell^{(bbbb)} = 6/b^4 - 24a/b^5}.
+#' @param distrib A \code{LaplaceDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{laplace_distrib}}
+S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) laplace_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+  else laplace_deriv4_cpp(y, theta[[1]], theta[[2]])
 }
 
 #' @title Laplace Response Derivatives

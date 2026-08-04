@@ -18,6 +18,8 @@ NULL
 #'   \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient()}},
 #'   \code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}},
 #'   \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian()}},
+#'   \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3()}},
+#'   \code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}},
 #'   \code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf()}},
 #'   \code{\link[=distrib_rng.SkewTDistrib]{distrib_rng()}},
 #'   \code{\link[=kurtosis]{kurtosis()}},
@@ -151,6 +153,44 @@ fd5_first <- function(f, x, h) {
 fd5_second <- function(f, x, h) {
   (-f(x - 2 * h) + 16 * f(x - h) - 30 * f(x) + 16 * f(x + h) - f(x + 2 * h)) /
     (12 * h^2)
+}
+
+#' A Five-Point Third Derivative
+#'
+#' @description
+#' Returns \eqn{(-f(x-2h)/2 + f(x-h) - f(x+h) + f(x+2h)/2)/h^3}, the
+#' second-order central stencil for the third derivative. One stencil applied
+#' to an analytic quantity, never a difference of differences.
+#'
+#' @param f A function of one scalar, returning a numeric vector.
+#' @param x The point to differentiate at.
+#' @param h The step.
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
+fd5_third <- function(f, x, h) {
+  (-f(x - 2 * h) / 2 + f(x - h) - f(x + h) + f(x + 2 * h) / 2) / h^3
+}
+
+#' A Five-Point Fourth Derivative
+#'
+#' @description
+#' Returns \eqn{(f(x-2h) - 4f(x-h) + 6f(x) - 4f(x+h) + f(x+2h))/h^4}, the
+#' second-order central stencil for the fourth derivative. Rounding is
+#' amplified by \eqn{h^{-4}}, so with the family's relative step this is
+#' accurate to roughly four significant digits, which the pages that rely on
+#' it state.
+#'
+#' @param f A function of one scalar, returning a numeric vector.
+#' @param x The point to differentiate at.
+#' @param h The step.
+#'
+#' @return A numeric vector.
+#'
+#' @keywords internal
+fd5_fourth <- function(f, x, h) {
+  (f(x - 2 * h) - 4 * f(x - h) + 6 * f(x) - 4 * f(x + h) + f(x + 2 * h)) / h^4
 }
 
 #' @title Skew t Probability Density Function
@@ -327,6 +367,99 @@ S7::method(distrib_hessian, SkewTDistrib) <- function(distrib, y, theta, scale =
     sigma_nu = gnu[, "sigma"],
     alpha_nu = gnu[, "alpha"]
   )
+}
+
+#' @title Skew t Third-Order Derivatives
+#' @name distrib_deriv3.SkewTDistrib
+#' @description
+#' Third-order derivatives assembled so that no finite difference is ever
+#' applied to another finite difference. Components whose Hessian entry is
+#' closed form -- both indices in \eqn{(\mu, \sigma, \alpha)}, or one index
+#' equal to \eqn{\nu} with the stencil taken along a different variable --
+#' come from the generic construction, one stencil on an analytic quantity.
+#' The components the generic construction would nest are replaced:
+#' \eqn{(i, \nu, \nu)} is one five-point second-difference of the closed-form
+#' score component \eqn{i}, and \eqn{(\nu, \nu, \nu)} is one five-point
+#' third-difference of the log-density itself. The derivative of a Student t
+#' distribution function in its degrees of freedom has no elementary form, so
+#' this is the same obstruction, and the same remedy, as the Hessian's.
+#' @param distrib A \code{SkewTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.
+#' @param expected Logical; if \code{TRUE}, the expectation is approximated
+#'   numerically.
+#' @param approx Strategy for the expectation; see \code{\link{distrib_deriv3}}.
+#' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{skewt_distrib}}
+S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 3L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  out <- numerical_deriv3(distrib, y, theta)
+  nu <- theta[[4]]
+  h <- skewt_nu_step(nu)
+  grad_at <- function(v, comp) {
+    th <- theta; th[[4]] <- v
+    distrib_gradient(distrib, y, th)[[comp]]
+  }
+  for (p in c("mu", "sigma", "alpha")) {
+    out[[paste0(p, "_nu_nu")]] <- fd5_second(function(v) grad_at(v, p), nu, h)
+  }
+  ll_at <- function(v) {
+    th <- theta; th[[4]] <- v
+    distrib_pdf(distrib, y, th, log = TRUE)
+  }
+  out[["nu_nu_nu"]] <- fd5_third(ll_at, nu, h)
+  out
+}
+
+#' @title Skew t Fourth-Order Derivatives
+#' @name distrib_deriv4.SkewTDistrib
+#' @description
+#' Fourth-order derivatives assembled with the discipline of
+#' \code{\link{distrib_deriv3.SkewTDistrib}}: the generic construction serves
+#' every component whose Hessian entry is closed form, and the ones it would
+#' nest are replaced by one stencil each -- \eqn{(i, \nu, \nu, \nu)} by a
+#' third-difference of the closed-form score component \eqn{i}, and
+#' \eqn{(\nu, \nu, \nu, \nu)} by a fourth-difference of the log-density. The
+#' pure-\eqn{\nu} component is the least accurate quantity the family reports,
+#' at roughly four significant digits.
+#' @param distrib A \code{SkewTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.
+#' @param expected Logical; if \code{TRUE}, the expectation is approximated
+#'   numerically.
+#' @param approx Strategy for the expectation; see \code{\link{distrib_deriv4}}.
+#' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
+#' @return A named list of fourth-derivative component vectors.
+#' @seealso \code{\link{skewt_distrib}}
+S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 4L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  out <- numerical_deriv4(distrib, y, theta)
+  nu <- theta[[4]]
+  h <- skewt_nu_step(nu)
+  grad_at <- function(v, comp) {
+    th <- theta; th[[4]] <- v
+    distrib_gradient(distrib, y, th)[[comp]]
+  }
+  for (p in c("mu", "sigma", "alpha")) {
+    out[[paste0(p, "_nu_nu_nu")]] <- fd5_third(function(v) grad_at(v, p), nu, h)
+  }
+  ll_at <- function(v) {
+    th <- theta; th[[4]] <- v
+    distrib_pdf(distrib, y, th, log = TRUE)
+  }
+  # The fourth difference amplifies rounding by h^-4, so its step is measured
+  # separately: at the family's base step the per-observation noise is near
+  # 1e-2 relative, at ten times that it is negligible and the h^2 truncation,
+  # about 6e-4, is what remains.
+  out[["nu_nu_nu_nu"]] <- fd5_fourth(ll_at, nu, 10 * h)
+  out
 }
 
 #' @title Skew t Response Derivative

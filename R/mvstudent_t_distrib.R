@@ -428,6 +428,38 @@ S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...
 }
 
 
+#' @title Multivariate Student t Response Hessian
+#' @name distrib_hess_y.MvStudentTDistrib
+#' @description
+#' Closed form. With \eqn{w = \Sigma^{-1}(y-\mu)}, \eqn{q = (y-\mu)^\top w} and
+#' \eqn{c = (\nu+p)/(\nu+q)},
+#' \deqn{\dfrac{\partial^2 \ell}{\partial y \, \partial y^\top}
+#'   = -c\,\Sigma^{-1} + \dfrac{2c}{\nu+q}\, w w^\top,}
+#' which depends on the observation through \eqn{c} and \eqn{w} --- unlike the
+#' gaussian's, which is \eqn{-\Sigma^{-1}} everywhere --- so one matrix is
+#' returned per row.
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A \eqn{p \times p \times n} numeric array.
+#' @keywords internal
+S7::method(distrib_hess_y, MvStudentTDistrib) <- function(distrib, y, theta, ...) {
+  y <- as_mv_matrix(distrib, y)
+  pc <- mvt_pieces(distrib, theta)
+  z <- mvt_weights(y, pc)
+  n <- nrow(y)
+  p <- pc$p
+  out <- array(0, dim = c(p, p, n))
+  for (i in seq_len(n)) {
+    wi <- z$w[i, ]
+    out[, , i] <- -z$cw[i] * pc$sigma_inv +
+      (2 * z$cw[i] / (pc$nu + z$q[i])) * tcrossprod(wi)
+  }
+  out
+}
+
+
 #' @title Mean of a Multivariate Student t
 #' @name mean.MvStudentTDistrib
 #' @description

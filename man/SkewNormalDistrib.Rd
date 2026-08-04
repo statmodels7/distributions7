@@ -51,6 +51,8 @@ Methods implemented for this class:
 \code{\link[=distrib_gradient.SkewNormalDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.SkewNormalDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.SkewNormalDistrib]{distrib_hessian()}},
+\code{\link[=distrib_deriv3.SkewNormalDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.SkewNormalDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.SkewNormalDistrib]{distrib_pdf()}},
 \code{\link[=distrib_rng.SkewNormalDistrib]{distrib_rng()}},
 \code{\link[=kurtosis]{kurtosis()}},

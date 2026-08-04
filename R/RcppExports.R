@@ -161,6 +161,22 @@ gaussian_deriv4_expected_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_deriv4_expected_cpp`, y, mu, sigma)
 }
 
+gumbel_deriv3_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gumbel_deriv3_cpp`, y, mu, sigma)
+}
+
+gumbel_deriv3_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gumbel_deriv3_expected_cpp`, y, mu, sigma)
+}
+
+gumbel_deriv4_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gumbel_deriv4_cpp`, y, mu, sigma)
+}
+
+gumbel_deriv4_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_gumbel_deriv4_expected_cpp`, y, mu, sigma)
+}
+
 invgauss_gradient_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_gradient_cpp`, y, mu, phi)
 }
@@ -187,6 +203,22 @@ invgauss_deriv4_cpp <- function(y, mu, phi) {
 
 invgauss_deriv4_expected_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_deriv4_expected_cpp`, y, mu, phi)
+}
+
+laplace_deriv3_cpp <- function(y, mu, b) {
+    .Call(`_distributions7_laplace_deriv3_cpp`, y, mu, b)
+}
+
+laplace_deriv3_expected_cpp <- function(y, mu, b) {
+    .Call(`_distributions7_laplace_deriv3_expected_cpp`, y, mu, b)
+}
+
+laplace_deriv4_cpp <- function(y, mu, b) {
+    .Call(`_distributions7_laplace_deriv4_cpp`, y, mu, b)
+}
+
+laplace_deriv4_expected_cpp <- function(y, mu, b) {
+    .Call(`_distributions7_laplace_deriv4_expected_cpp`, y, mu, b)
 }
 
 logistic_gradient_cpp <- function(y, mu, sigma) {
@@ -309,6 +341,14 @@ pseudohuber_deriv4_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_pseudohuber_deriv4_cpp`, y, mu, sigma, nu)
 }
 
+skewnormal_deriv3_cpp <- function(y, mu, sigma, alpha) {
+    .Call(`_distributions7_skewnormal_deriv3_cpp`, y, mu, sigma, alpha)
+}
+
+skewnormal_deriv4_cpp <- function(y, mu, sigma, alpha) {
+    .Call(`_distributions7_skewnormal_deriv4_cpp`, y, mu, sigma, alpha)
+}
+
 student_t_gradient_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_student_t_gradient_cpp`, y, mu, sigma, nu)
 }
@@ -327,5 +367,21 @@ student_t_deriv3_cpp <- function(y, mu, sigma, nu) {
 
 student_t_deriv4_cpp <- function(y, mu, sigma, nu) {
     .Call(`_distributions7_student_t_deriv4_cpp`, y, mu, sigma, nu)
+}
+
+weibull_deriv3_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_weibull_deriv3_cpp`, y, mu, sigma)
+}
+
+weibull_deriv3_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_weibull_deriv3_expected_cpp`, y, mu, sigma)
+}
+
+weibull_deriv4_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_weibull_deriv4_cpp`, y, mu, sigma)
+}
+
+weibull_deriv4_expected_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_weibull_deriv4_expected_cpp`, y, mu, sigma)
 }
 

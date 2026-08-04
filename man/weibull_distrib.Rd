@@ -69,9 +69,10 @@ mean \eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh distribution. The hazard is
 increasing for \eqn{\sigma > 1} and decreasing for \eqn{\sigma < 1}, which is
 what the family is used for.
 
-\strong{Higher orders.} Third and fourth derivatives are not registered in
-closed form and come from the numerical fallbacks
-(\code{\link{numerical_deriv3}}, \code{\link{numerical_deriv4}}).
+\strong{Higher orders.} Third and fourth derivatives are closed form,
+observed and expected: with \eqn{u = (y/\mu)^{\sigma}} and
+\eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
+\eqn{Lu}, and every expectation is a derivative of \eqn{\Gamma} at 2.
 
 \strong{Parameter Domains:}
 \itemize{

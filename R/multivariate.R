@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R
+#' @include distrib.R generics.R utility_functions.R cross_derivatives.R
 NULL
 
 #' S7 Class for Multivariate Distributions
@@ -227,6 +227,45 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
   mv_refuse(
     distrib, "distrib_quantile",
     "a quantile inverts an ordering of the line, and there is none in several dimensions."
+  )
+}
+
+#' @title Response Derivatives of a Multivariate Distribution
+#' @name distrib_grad_y.multivariate_distrib
+#' @description
+#' Refused on the base class rather than served numerically: the univariate
+#' fallbacks difference along a line, and the derivative of a multivariate
+#' log-density in its response is a vector (a matrix at second order) whose
+#' shape the base class cannot guess. A family that has the closed form
+#' registers it, as the gaussian and the Student t do.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return No return value; called for its error.
+#' @keywords internal
+S7::method(distrib_grad_y, multivariate_distrib) <- function(distrib, y, theta, ...) {
+  mv_refuse(
+    distrib, "distrib_grad_y",
+    "the univariate numerical fallback differences along a line; register a closed form on the family."
+  )
+}
+
+#' @rdname distrib_grad_y.multivariate_distrib
+#' @name distrib_hess_y.multivariate_distrib
+S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, ...) {
+  mv_refuse(
+    distrib, "distrib_hess_y",
+    "the univariate numerical fallback differences along a line; register a closed form on the family."
+  )
+}
+
+#' @rdname distrib_grad_y.multivariate_distrib
+#' @name distrib_cross_y.multivariate_distrib
+S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+  mv_refuse(
+    distrib, "distrib_cross_y",
+    "the mixed response-parameter block of a multivariate family is a matrix per observation, and no consumer fixes its shape yet."
   )
 }
 
