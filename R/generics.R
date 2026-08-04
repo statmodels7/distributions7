@@ -291,7 +291,13 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
   res <- S7::S7_dispatch()
   if (scale == "link") {
     zero1 <- stats::setNames(
-      lapply(distrib@params, function(p) rep(0, length(y))), distrib@params
+      # n_obs(), not length(y): for a matrix response length(y) counts entries,
+      # so this vector came out n*p long. Recycled against the p-long
+      # components of the expected Hessian it inflated every DIAGONAL entry of
+      # the information by a factor of p -- the first-order term of the
+      # order-2 chain rule appears only there -- and every standard error of a
+      # multivariate fit came out a factor of sqrt(p) too small.
+      lapply(distrib@params, function(p) rep(0, n_obs(distrib, y))), distrib@params
     )
     to_link_scale(distrib, theta, list(zero1, res), 2L)
   } else {

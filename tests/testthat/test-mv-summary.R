@@ -236,3 +236,79 @@ test_that("print shows the interpretable blocks rather than only the coordinates
   expect_true(any(grepl("^Scale standard deviations:", out_t)))
   expect_false(any(grepl("^Standard deviations:", out_t)))
 })
+
+
+test_that("the expected information of a multivariate fit is the right size", {
+  # The link-scale branch of distrib_expected_hessian() built its first-order
+  # term with rep(0, length(y)), and for a matrix response length(y) counts
+  # ENTRIES. Recycled against the components it inflated every diagonal entry
+  # of the information by a factor of p -- the first-order term of the order-2
+  # chain rule appears only on the diagonal -- so every standard error of a
+  # multivariate fit came out sqrt(p) times too small. The observed Hessian was
+  # correct throughout, which is why a fit by Newton disagreed with a fit by
+  # Fisher scoring on the same data.
+  set.seed(81)
+  for (p in 2:4) {
+    d <- mvgaussian_distrib(p)
+    th <- generate_random_theta(d)
+    n <- 500
+    y <- distrib_rng(d, n, th)
+    s <- unname(mv_sigma(d, th))
+
+    # the mean block of the expected information is n * Sigma^{-1}, exactly
+    info <- -distributions7:::fit_hess_matrix(d, y, th, expected = TRUE)
+    expect_equal(unname(info[seq_len(p), seq_len(p)]), n * solve(s),
+      tolerance = 1e-8, label = paste("p =", p)
+    )
+
+    # and the expected and observed informations agree in the mean block,
+    # which for a gaussian they do exactly
+    obs <- -distributions7:::fit_hess_matrix(d, y, th, expected = FALSE)
+    expect_equal(unname(obs[seq_len(p), seq_len(p)]),
+      unname(info[seq_len(p), seq_len(p)]),
+      tolerance = 1e-8, label = paste("p =", p)
+    )
+  }
+})
+
+test_that("the reported standard errors match the asymptotic ones", {
+  # Two facts about the multivariate gaussian MLE, neither computed anywhere in
+  # the package: se(mu_j) = sd_j / sqrt(n), and Var(S_jj) = 2 Sigma_jj^2 / n,
+  # so se(sd_j) = sd_j / sqrt(2n). They hold whatever p and whatever the
+  # correlations, which makes them a check on the whole chain from the
+  # information to the delta method.
+  set.seed(82)
+  for (p in c(2L, 4L)) {
+    d <- mvgaussian_distrib(p)
+    n <- 2000
+    y <- distrib_rng(d, n, generate_random_theta(d))
+    fit <- fit_distrib(d, y)
+    tab <- mv_summary(fit)
+
+    sd1 <- tab["sd_v1", "Estimate"]
+    expect_equal(tab["sd_v1", "Std. Error"], sd1 / sqrt(2 * n),
+      tolerance = 1e-6, label = paste("sd, p =", p)
+    )
+    expect_equal(unname(fit@se[["mu1"]]), sd1 / sqrt(n),
+      tolerance = 1e-6, label = paste("mu, p =", p)
+    )
+  }
+})
+
+test_that("the two parametrisations report the same uncertainty", {
+  # They are the same model, so a derived quantity has the same standard error
+  # under either. A disagreement means one of the two informations is wrong.
+  set.seed(83)
+  ds <- mvgaussian_distrib(3)
+  th <- generate_random_theta(ds)
+  y <- distrib_rng(ds, 1000, th)
+  do <- mvgaussian_distrib(3, struct_omega = covstructs7::log_cholesky(3))
+
+  a <- mv_summary(fit_distrib(ds, y))
+  b <- mv_summary(fit_distrib(do, y))
+  common <- rownames(a)
+  expect_equal(a[common, "Estimate"], b[common, "Estimate"], tolerance = 1e-5)
+  expect_equal(a[common, "Std. Error"], b[common, "Std. Error"],
+    tolerance = 1e-4
+  )
+})

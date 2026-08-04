@@ -273,11 +273,10 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   object or a \code{fisher_scoring()} carrying its own \code{maxit}
 #'   overrides it.
 #' @param tol Convergence tolerance on the score \strong{per observation}.
-#'   Defaults to \code{1e-10}. The rule handed to the optimiser is
-#'   \code{crit_grad(tol * n)}, since the gradient it sees is summed over the
-#'   sample and its attainable floor grows with \eqn{n}; a bound on the sum
-#'   would mean something different for every sample size. A method object
-#'   carrying its own stopping rule overrides this.
+#'   Defaults to \code{1e-10}. The optimiser is handed the \emph{mean} negative
+#'   log-likelihood, so this is what \code{crit_grad(tol)} tests, and a
+#'   criterion supplied through \code{method} is measured on the same scale. A
+#'   method object carrying its own stopping rule overrides this one.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
 #' @param n_start How many starting values to ask \code{\link{distrib_start}}
 #'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
@@ -375,6 +374,23 @@ fit_distrib <- function(distrib, y, start = NULL,
   # number of OBSERVATIONS, which is what BIC and the printed summary mean.
   n <- n_obs(distrib, y)
 
+  # The optimiser is handed the MEAN negative log-likelihood, and its gradient
+  # and Hessian divided by n with it. Scaling an objective by a positive
+  # constant leaves the maximum and every Newton step where they were --
+  # H^{-1}g is unchanged when both are divided by n -- so nothing about the
+  # path changes; what changes is what a stopping rule means. A criterion on
+  # the gradient of the SUMMED log-likelihood tests a quantity whose attainable
+  # floor grows with the sample, so the same fit met a bound of 1e-10 on one
+  # platform and missed it on another. The score per observation is of order
+  # one whatever n is, so a tolerance on it means the same thing everywhere,
+  # and it means it for a criterion the CALLER supplies as much as for the
+  # default -- which scaling the tolerance instead of the objective would not
+  # have done.
+  #
+  # The reported quantities are the ordinary ones: loglik, the information and
+  # the standard errors are all recomputed below from the unscaled likelihood.
+  scale_n <- max(1, n)
+
   nll <- function(eta) {
     th <- fit_theta_from_eta(distrib, eta)
     # Trial points are probed all over the link scale, including places where a
@@ -382,7 +398,7 @@ fit_distrib <- function(distrib, y, start = NULL,
     # warnings say nothing about the fit -- the point is simply rejected by
     # returning Inf -- so they are not passed on to the user.
     v <- suppressWarnings(tryCatch(-fit_loglik(distrib, y, th), error = function(e) Inf))
-    if (!is.finite(v)) Inf else v
+    if (!is.finite(v)) Inf else v / scale_n
   }
 
   # --- starting values ----------------------------------------------------
@@ -411,35 +427,26 @@ fit_distrib <- function(distrib, y, start = NULL,
   # Hessian, so the two named strategies differ only in that argument.
   nll_gr <- function(eta) {
     th <- fit_theta_from_eta(distrib, eta)
-    -fit_score(distrib, y, th)
+    -fit_score(distrib, y, th) / scale_n
   }
   nll_he <- function(expected) {
     function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
       -fit_hess_matrix(distrib, y, th,
         expected = expected, approx = approx, nsim = nsim
-      )
+      ) / scale_n
     }
   }
 
   # A fit is at a maximum when its score vanishes, so the rule is on the score
   # and on nothing else. It used to be an OR with crit_rel_obj(tol), and the
   # weaker rule ended the run: near a maximum the objective goes flat while the
-  # gradient is still measurable.
-  #
-  # The tolerance is on the score PER OBSERVATION. The gradient optimizers7
-  # sees is summed over the sample, so its attainable floor grows with n --
-  # roughly n times the rounding error of one log-density divided by the step
-  # -- and an absolute bound on the sum therefore means something different for
-  # every sample size. At 1e-10 on the sum it is not attainable at all for a
-  # few thousand observations: the same fits met it on Windows and missed it on
-  # macOS, which is a fact about the arithmetic and not about the fit. The
-  # score per observation is the quantity of order one, so that is what is
-  # tested, and crit_grad() receives tol * n.
+  # gradient is still measurable. The objective the rule sees is the mean, so
+  # tol is a tolerance per observation without the rule having to know n.
   crit <- if (!is.null(fs) && !is.null(fs@criterion)) {
     fs@criterion
   } else {
-    optimizers7::crit_grad(tol * max(1, n))
+    optimizers7::crit_grad(tol)
   }
 
   run <- function(opt, eta0, he, label) {
