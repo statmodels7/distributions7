@@ -38,15 +38,15 @@ th2 <- function() {
 
 test_that("the constructor validates its arguments", {
   expect_error(mvstudent_t_distrib(0), "positive integer")
-  expect_error(mvstudent_t_distrib(2, struct_sigma = diag(2)), "covstruct")
+  expect_error(mvstudent_t_distrib(2, sigma = diag(2)), "parameter")
   expect_error(
-    mvstudent_t_distrib(3, struct_sigma = covstructs7::log_cholesky(2)),
+    mvstudent_t_distrib(3, sigma = parameters7::log_cholesky(2)),
     "dimension 2 but the distribution has dimension 3"
   )
   expect_error(mvstudent_t_distrib(2, link_nu = "log"), "link object")
 
-  pen <- covstructs7::scaled_struct(crossprod(diff(diag(5), differences = 2)))
-  expect_error(mvstudent_t_distrib(5, struct_sigma = pen), "rank deficient")
+  pen <- parameters7::scaled_matrix(crossprod(diff(diag(5), differences = 2)))
+  expect_error(mvstudent_t_distrib(5, sigma = pen), "rank deficient")
 })
 
 test_that("the degrees of freedom are a parameter of their own", {

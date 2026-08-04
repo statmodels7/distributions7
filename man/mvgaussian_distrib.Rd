@@ -4,16 +4,16 @@
 \alias{mvgaussian_distrib}
 \title{Construct a Multivariate Gaussian Distribution}
 \usage{
-mvgaussian_distrib(n_dim, struct_sigma = NULL, struct_omega = NULL)
+mvgaussian_distrib(n_dim, sigma = NULL, omega = NULL)
 }
 \arguments{
 \item{n_dim}{The dimension \eqn{p}.}
 
-\item{struct_sigma}{A \pkg{covstructs7} structure for the covariance.
-Defaults to \code{covstructs7::log_cholesky(n_dim)} when neither structure
+\item{sigma}{A \pkg{parameters7} structure for the covariance.
+Defaults to \code{parameters7::log_cholesky(n_dim)} when neither structure
 is given.}
 
-\item{struct_omega}{A \pkg{covstructs7} structure for the precision.}
+\item{omega}{A \pkg{parameters7} structure for the precision.}
 }
 \value{
 An object of class \code{\link{MvGaussianDistrib}}.
@@ -21,10 +21,10 @@ An object of class \code{\link{MvGaussianDistrib}}.
 \description{
 The gaussian distribution on \eqn{\mathbb{R}^p}, with the mean a vector of
 \eqn{p} free parameters and the matrix carried by a structure from
-\pkg{covstructs7}.
+\pkg{parameters7}.
 }
 \details{
-Exactly one of \code{struct_sigma} and \code{struct_omega} may be given, and
+Exactly one of \code{sigma} and \code{omega} may be given, and
 the name of the argument decides which side of the model the structure
 parametrises: the covariance in the first case, the precision in the second.
 One constructor returns one of two behaviours, in the manner of
@@ -34,7 +34,7 @@ classes from the arguments it is handed.
 The precision form is the cheaper one and is worth preferring where the
 modelling allows it. Written in \eqn{\Omega}, the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
-structure's own \code{struct_dlogdet()}; written in \eqn{\Sigma} the same
+structure's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
 quantities need a solve at every step.
 
 \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
@@ -86,13 +86,13 @@ distrib_pdf(d, y, theta, log = TRUE)
 mv_sigma(d, theta)
 
 # a diagonal covariance: two variances instead of three free values
-mvgaussian_distrib(2, struct_sigma = covstructs7::diag_struct(2))@params
+mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 
 # or the precision, which is the cheaper parametrisation
-mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))@params
+mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 
 }
 \seealso{
 \code{\link{gaussian_distrib}}, \code{\link{fit_distrib}},
-\code{\link[covstructs7]{log_cholesky}}
+\code{\link[parameters7]{log_cholesky}}
 }

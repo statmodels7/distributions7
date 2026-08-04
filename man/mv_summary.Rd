@@ -22,7 +22,7 @@ Reports the standard deviations, correlations and whatever else
 standard error and confidence interval.
 }
 \details{
-A multivariate fit estimates the free values of a \pkg{covstructs7}
+A multivariate fit estimates the free values of a \pkg{parameters7}
 structure, and those are coordinates rather than quantities: the estimate
 and standard error of \code{sigma_log_L2} answer no question anybody asked.
 This function carries the fit's variance matrix onto the quantities that do,

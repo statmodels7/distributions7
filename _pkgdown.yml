@@ -129,7 +129,7 @@ reference:
     Distributions whose observations are vectors. The response is a matrix with
     one row per observation, and the parameters stay scalars: a mean vector
     contributes one each, and a covariance contributes the free values of the
-    covstructs7 structure that parametrises it, so every generic of the package
+    parameters7 structure that parametrises it, so every generic of the package
     indexes them as it always did.
   contents:
   - mvgaussian_distrib

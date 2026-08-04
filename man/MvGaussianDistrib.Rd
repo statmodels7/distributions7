@@ -15,7 +15,7 @@ MvGaussianDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  struct = covstructs7::covstruct(),
+  param = parameters7::parameter(),
   inverted = logical(0)
 )
 }
@@ -40,7 +40,7 @@ MvGaussianDistrib(
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
-\item{struct}{The \pkg{covstructs7} structure carrying the matrix.}
+\item{param}{The \pkg{parameters7} structure carrying the matrix.}
 
 \item{inverted}{Whether the structure parametrises the precision rather than
 the covariance.}
@@ -50,7 +50,7 @@ An object of class \code{MvGaussianDistrib}.
 }
 \description{
 The S7 class of multivariate gaussian distributions, parametrised by a mean
-vector and by a \pkg{covstructs7} structure for the covariance or the
+vector and by a \pkg{parameters7} structure for the covariance or the
 precision. Constructed by \code{\link{mvgaussian_distrib}}.
 }
 \examples{

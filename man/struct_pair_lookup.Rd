@@ -7,17 +7,17 @@
 struct_pair_lookup(s)
 }
 \arguments{
-\item{s}{A \pkg{covstructs7} structure.}
+\item{s}{A \pkg{parameters7} structure.}
 }
 \value{
 A named list of integers, keyed \code{"k:l"} with \eqn{k \le l}.
 }
 \description{
 A lookup from a pair of free-value positions to the position of the
-corresponding component of \code{struct_d2matrix()}.
+corresponding component of \code{param_d2()}.
 }
 \details{
-Built from \pkg{covstructs7}'s own enumeration rather than by taking a
+Built from \pkg{parameters7}'s own enumeration rather than by taking a
 component key apart, for the reason that package documents: a free value
 whose label contains the separator splits into the wrong number of pieces.
 }

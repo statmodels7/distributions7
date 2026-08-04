@@ -7,7 +7,7 @@
 struct_free_or_fit(s, m)
 }
 \arguments{
-\item{s}{A \pkg{covstructs7} structure.}
+\item{s}{A \pkg{parameters7} structure.}
 
 \item{m}{The matrix to represent.}
 }
@@ -19,7 +19,7 @@ Returns the free vector of the structure whose matrix is closest to the one
 supplied, or the structure's own inverse map when it has one.
 }
 \details{
-\code{\link[covstructs7]{struct_free}} is exact or refused: a structure that
+\code{\link[parameters7]{param_free}} is exact or refused: a structure that
 cannot represent the matrix says so rather than returning something
 plausible. That is the right contract for reporting an estimate and the
 wrong one for choosing where to begin, so a refusal here falls back to a

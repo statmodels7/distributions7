@@ -7,7 +7,7 @@
 mv_sigma_derivs(distrib, theta, n_before)
 }
 \arguments{
-\item{distrib}{A distribution carrying a \code{struct} property.}
+\item{distrib}{A distribution carrying a \code{param} property.}
 
 \item{theta}{A named list of parameters, already aligned.}
 
@@ -19,7 +19,7 @@ A list of matrices and \code{NULL}s, of length
 }
 \description{
 Returns \eqn{\partial\Sigma/\partial\theta_k} for each parameter of a
-multivariate distribution built on a \pkg{covstructs7} structure, as a list
+multivariate distribution built on a \pkg{parameters7} structure, as a list
 aligned with \code{distrib@params} and \code{NULL} where the covariance does
 not depend on the parameter.
 }

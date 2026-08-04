@@ -10,7 +10,7 @@ NULL
 #' errors onto them.
 #'
 #' @details
-#' The free values of a \pkg{covstructs7} structure are coordinates chosen so
+#' The free values of a \pkg{parameters7} structure are coordinates chosen so
 #' that an optimiser can move freely; they are not quantities anyone reads.
 #' The logarithm of the third diagonal entry of a Cholesky factor has an
 #' estimate and a standard error, and neither answers a question. This generic
@@ -226,7 +226,7 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #'
 #' @description
 #' Returns \eqn{\partial\Sigma/\partial\theta_k} for each parameter of a
-#' multivariate distribution built on a \pkg{covstructs7} structure, as a list
+#' multivariate distribution built on a \pkg{parameters7} structure, as a list
 #' aligned with \code{distrib@params} and \code{NULL} where the covariance does
 #' not depend on the parameter.
 #'
@@ -236,7 +236,7 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #' the structure parametrises the precision the chain rule of an inverse
 #' applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 #'
-#' @param distrib A distribution carrying a \code{struct} property.
+#' @param distrib A distribution carrying a \code{param} property.
 #' @param theta A named list of parameters, already aligned.
 #' @param n_before How many parameters precede the structure's free values.
 #'
@@ -245,10 +245,10 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #'
 #' @keywords internal
 mv_sigma_derivs <- function(distrib, theta, n_before) {
-  s <- distrib@struct
+  s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   eta <- v[n_before + seq_len(s@n_free)]
-  d <- covstructs7::struct_dmatrix(s, eta)
+  d <- parameters7::param_d1(s, eta)
   inverted <- isTRUE(S7::prop_exists(distrib, "inverted")) &&
     isTRUE(distrib@inverted)
   if (inverted) {
@@ -286,13 +286,13 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
   # The precision's own reading. Omega and its derivatives are the structure's
   # matrix directly, with no inversion, so they are taken from it rather than
   # from the covariance computed above.
-  s <- distrib@struct
+  s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   eta <- v[p + seq_len(s@n_free)]
-  omega <- unname(covstructs7::struct_matrix(s, eta))
+  omega <- unname(parameters7::param_value(s, eta))
   aw <- vector("list", distrib@n_params)
   aw[p + seq_len(s@n_free)] <- lapply(
-    covstructs7::struct_dmatrix(s, eta), unname
+    parameters7::param_d1(s, eta), unname
   )
 
   # A partial correlation is minus the correlation of the precision, so its
@@ -370,7 +370,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #' standard error and confidence interval.
 #'
 #' @details
-#' A multivariate fit estimates the free values of a \pkg{covstructs7}
+#' A multivariate fit estimates the free values of a \pkg{parameters7}
 #' structure, and those are coordinates rather than quantities: the estimate
 #' and standard error of \code{sigma_log_L2} answer no question anybody asked.
 #' This function carries the fit's variance matrix onto the quantities that do,

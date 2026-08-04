@@ -15,7 +15,7 @@ MvStudentTDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  struct = covstructs7::covstruct()
+  param = parameters7::parameter()
 )
 }
 \arguments{
@@ -39,14 +39,14 @@ MvStudentTDistrib(
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
-\item{struct}{The \pkg{covstructs7} structure carrying the scale matrix.}
+\item{param}{The \pkg{parameters7} structure carrying the scale matrix.}
 }
 \value{
 An object of class \code{MvStudentTDistrib}.
 }
 \description{
 The S7 class of multivariate Student t distributions: a mean vector, a
-\pkg{covstructs7} structure for the scale matrix, and a degrees-of-freedom
+\pkg{parameters7} structure for the scale matrix, and a degrees-of-freedom
 parameter. Constructed by \code{\link{mvstudent_t_distrib}}.
 }
 \examples{

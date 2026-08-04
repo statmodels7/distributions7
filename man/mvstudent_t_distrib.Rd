@@ -4,17 +4,13 @@
 \alias{mvstudent_t_distrib}
 \title{Construct a Multivariate Student's t Distribution}
 \usage{
-mvstudent_t_distrib(
-  n_dim,
-  struct_sigma = NULL,
-  link_nu = linkfunctions7::log_link()
-)
+mvstudent_t_distrib(n_dim, sigma = NULL, link_nu = linkfunctions7::log_link())
 }
 \arguments{
 \item{n_dim}{The dimension \eqn{p}.}
 
-\item{struct_sigma}{A \pkg{covstructs7} structure for the scale matrix.
-Defaults to \code{covstructs7::log_cholesky(n_dim)}.}
+\item{sigma}{A \pkg{parameters7} structure for the scale matrix.
+Defaults to \code{parameters7::log_cholesky(n_dim)}.}
 
 \item{link_nu}{The link for the degrees of freedom. Defaults to
 \code{linkfunctions7::log_link()}.}

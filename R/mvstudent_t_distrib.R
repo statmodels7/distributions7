@@ -5,11 +5,11 @@ NULL
 #'
 #' @description
 #' The S7 class of multivariate Student t distributions: a mean vector, a
-#' \pkg{covstructs7} structure for the scale matrix, and a degrees-of-freedom
+#' \pkg{parameters7} structure for the scale matrix, and a degrees-of-freedom
 #' parameter. Constructed by \code{\link{mvstudent_t_distrib}}.
 #'
 #' @inheritParams multivariate_distrib
-#' @param struct The \pkg{covstructs7} structure carrying the scale matrix.
+#' @param param The \pkg{parameters7} structure carrying the scale matrix.
 #'
 #' @return An object of class \code{MvStudentTDistrib}.
 #'
@@ -21,7 +21,7 @@ NULL
 #' @export
 MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
   parent = multivariate_distrib,
-  properties = list(struct = covstructs7::covstruct)
+  properties = list(param = parameters7::parameter)
 )
 
 
@@ -66,8 +66,8 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #' \code{approx}, which it refuses for a family that computes it exactly.
 #'
 #' @param n_dim The dimension \eqn{p}.
-#' @param struct_sigma A \pkg{covstructs7} structure for the scale matrix.
-#'   Defaults to \code{covstructs7::log_cholesky(n_dim)}.
+#' @param sigma A \pkg{parameters7} structure for the scale matrix.
+#'   Defaults to \code{parameters7::log_cholesky(n_dim)}.
 #' @param link_nu The link for the degrees of freedom. Defaults to
 #'   \code{linkfunctions7::log_link()}.
 #'
@@ -92,17 +92,17 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #' variance(d, theta)
 #'
 #' @export
-mvstudent_t_distrib <- function(n_dim, struct_sigma = NULL,
+mvstudent_t_distrib <- function(n_dim, sigma = NULL,
                                 link_nu = linkfunctions7::log_link()) {
   if (!is.numeric(n_dim) || length(n_dim) != 1L || !is.finite(n_dim) ||
     n_dim < 1 || n_dim != round(n_dim)) {
     stop("'n_dim' must be a single positive integer.", call. = FALSE)
   }
   p <- as.integer(n_dim)
-  s <- if (is.null(struct_sigma)) covstructs7::log_cholesky(p) else struct_sigma
+  s <- if (is.null(sigma)) parameters7::log_cholesky(p) else sigma
 
-  if (!S7::S7_inherits(s, covstructs7::covstruct)) {
-    stop("The structure must be a covstructs7 'covstruct' object.", call. = FALSE)
+  if (!S7::S7_inherits(s, parameters7::parameter)) {
+    stop("The structure must be a parameters7 'parameter' object.", call. = FALSE)
   }
   if (s@dimension != p) {
     stop(sprintf(
@@ -138,7 +138,7 @@ mvstudent_t_distrib <- function(n_dim, struct_sigma = NULL,
   ident <- linkfunctions7::identity_link()
 
   MvStudentTDistrib(
-    distrib_name = sprintf("multivariate student t [%dd, sigma=%s]", p, s@struct_name),
+    distrib_name = sprintf("multivariate student t [%dd, sigma=%s]", p, s@param_name),
     dimension = "multivariate",
     n_dim = p,
     bounds = c(-Inf, Inf),
@@ -154,7 +154,7 @@ mvstudent_t_distrib <- function(n_dim, struct_sigma = NULL,
     link_params = stats::setNames(
       c(rep(list(ident), n_par - 1L), list(link_nu)), params
     ),
-    struct = s
+    param = s
   )
 }
 
@@ -178,7 +178,7 @@ mvstudent_t_distrib <- function(n_dim, struct_sigma = NULL,
 #' @keywords internal
 mvt_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
   p <- distrib@n_dim
-  s <- distrib@struct
+  s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   mu <- unname(v[seq_len(p)])
   eta <- unname(v[p + seq_len(s@n_free)])
@@ -186,15 +186,15 @@ mvt_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 
   out <- list(
     mu = mu, eta = eta, nu = nu, p = p, s = s,
-    sigma = unname(covstructs7::struct_matrix(s, eta)),
-    sigma_inv = unname(covstructs7::struct_solve(s, eta)),
-    logdet = covstructs7::struct_logdet(s, eta)
+    sigma = unname(parameters7::param_value(s, eta)),
+    sigma_inv = unname(parameters7::param_solve(s, eta)),
+    logdet = parameters7::param_logdet(s, eta)
   )
   if (derivs || derivs2) {
-    out$a <- lapply(covstructs7::struct_dmatrix(s, eta), unname)
+    out$a <- lapply(parameters7::param_d1(s, eta), unname)
   }
   if (derivs2) {
-    out$a2 <- lapply(covstructs7::struct_d2matrix(s, eta), unname)
+    out$a2 <- lapply(parameters7::param_d2(s, eta), unname)
   }
   out
 }
@@ -317,7 +317,7 @@ S7::method(distrib_gradient, MvStudentTDistrib) <- function(distrib, y, theta,
   names(out) <- distrib@params
   for (j in seq_len(p)) out[[j]] <- z$cw * z$w[, j]
 
-  dld <- covstructs7::struct_dlogdet(pc$s, pc$eta)
+  dld <- parameters7::param_dlogdet(pc$s, pc$eta)
   for (k in seq_along(pc$a)) {
     out[[p + k]] <- -0.5 * dld[[k]] +
       0.5 * z$cw * rowSums((z$w %*% pc$a[[k]]) * z$w)
@@ -360,7 +360,7 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
   cw <- z$cw
   den <- nu + z$q
 
-  d2ld <- covstructs7::struct_d2logdet(pc$s, pc$eta)
+  d2ld <- parameters7::param_d2logdet(pc$s, pc$eta)
   spair <- struct_pair_lookup(pc$s)
   sa <- lapply(pc$a, function(ak) si %*% ak)
   # w' A_k w at every observation, once: it is the derivative of q in the
@@ -519,7 +519,7 @@ S7::method(mv_marginal, MvStudentTDistrib) <- function(distrib, theta, which, ..
   sg <- mv_sigma(distrib, theta)[which, which, drop = FALSE]
   nu <- mv_flat_theta(distrib, align_theta(distrib, theta))[[distrib@n_params]]
   md <- mvstudent_t_distrib(length(which))
-  eta <- covstructs7::struct_free(md@struct, unname(sg))
+  eta <- parameters7::param_free(md@param, unname(sg))
   list(
     distrib = md,
     theta = as.list(stats::setNames(c(mu, unname(eta), nu), md@params))
@@ -557,7 +557,7 @@ S7::method(mv_sigma, MvStudentTDistrib) <- function(distrib, theta) {
 #' @keywords internal
 S7::method(generate_random_theta, MvStudentTDistrib) <- function(distrib, ...) {
   p <- distrib@n_dim
-  s <- distrib@struct
+  s <- distrib@param
   as.list(stats::setNames(
     c(stats::runif(p, -1, 1), stats::runif(s@n_free, -0.4, 0.4),
       stats::runif(1, 3, 12)),

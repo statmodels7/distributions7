@@ -5,11 +5,11 @@ NULL
 #'
 #' @description
 #' The S7 class of multivariate gaussian distributions, parametrised by a mean
-#' vector and by a \pkg{covstructs7} structure for the covariance or the
+#' vector and by a \pkg{parameters7} structure for the covariance or the
 #' precision. Constructed by \code{\link{mvgaussian_distrib}}.
 #'
 #' @inheritParams multivariate_distrib
-#' @param struct The \pkg{covstructs7} structure carrying the matrix.
+#' @param param The \pkg{parameters7} structure carrying the matrix.
 #' @param inverted Whether the structure parametrises the precision rather than
 #'   the covariance.
 #'
@@ -24,7 +24,7 @@ NULL
 MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
   parent = multivariate_distrib,
   properties = list(
-    struct = covstructs7::covstruct,
+    param = parameters7::parameter,
     inverted = S7::class_logical
   )
 )
@@ -35,10 +35,10 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' @description
 #' The gaussian distribution on \eqn{\mathbb{R}^p}, with the mean a vector of
 #' \eqn{p} free parameters and the matrix carried by a structure from
-#' \pkg{covstructs7}.
+#' \pkg{parameters7}.
 #'
 #' @details
-#' Exactly one of \code{struct_sigma} and \code{struct_omega} may be given, and
+#' Exactly one of \code{sigma} and \code{omega} may be given, and
 #' the name of the argument decides which side of the model the structure
 #' parametrises: the covariance in the first case, the precision in the second.
 #' One constructor returns one of two behaviours, in the manner of
@@ -48,7 +48,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' The precision form is the cheaper one and is worth preferring where the
 #' modelling allows it. Written in \eqn{\Omega}, the log-density, the score and
 #' the Hessian are multiplications, and the first term of the score is the
-#' structure's own \code{struct_dlogdet()}; written in \eqn{\Sigma} the same
+#' structure's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
 #' quantities need a solve at every step.
 #'
 #' \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
@@ -89,15 +89,15 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' observation.
 #'
 #' @param n_dim The dimension \eqn{p}.
-#' @param struct_sigma A \pkg{covstructs7} structure for the covariance.
-#'   Defaults to \code{covstructs7::log_cholesky(n_dim)} when neither structure
+#' @param sigma A \pkg{parameters7} structure for the covariance.
+#'   Defaults to \code{parameters7::log_cholesky(n_dim)} when neither structure
 #'   is given.
-#' @param struct_omega A \pkg{covstructs7} structure for the precision.
+#' @param omega A \pkg{parameters7} structure for the precision.
 #'
 #' @return An object of class \code{\link{MvGaussianDistrib}}.
 #'
 #' @seealso \code{\link{gaussian_distrib}}, \code{\link{fit_distrib}},
-#'   \code{\link[covstructs7]{log_cholesky}}
+#'   \code{\link[parameters7]{log_cholesky}}
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)
@@ -111,32 +111,32 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' mv_sigma(d, theta)
 #'
 #' # a diagonal covariance: two variances instead of three free values
-#' mvgaussian_distrib(2, struct_sigma = covstructs7::diag_struct(2))@params
+#' mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 #'
 #' # or the precision, which is the cheaper parametrisation
-#' mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))@params
+#' mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 #'
 #' @export
-mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) {
+mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
   if (!is.numeric(n_dim) || length(n_dim) != 1L || !is.finite(n_dim) ||
     n_dim < 1 || n_dim != round(n_dim)) {
     stop("'n_dim' must be a single positive integer.", call. = FALSE)
   }
   p <- as.integer(n_dim)
 
-  if (!is.null(struct_sigma) && !is.null(struct_omega)) {
+  if (!is.null(sigma) && !is.null(omega)) {
     stop(paste0(
-      "Give at most one of 'struct_sigma' and 'struct_omega'. They name the\n",
+      "Give at most one of 'sigma' and 'omega'. They name the\n",
       "  two sides of the same model, and a distribution parametrised by both\n",
       "  would be over-determined."
     ), call. = FALSE)
   }
-  inverted <- !is.null(struct_omega)
-  s <- if (inverted) struct_omega else struct_sigma
-  if (is.null(s)) s <- covstructs7::log_cholesky(p)
+  inverted <- !is.null(omega)
+  s <- if (inverted) omega else sigma
+  if (is.null(s)) s <- parameters7::log_cholesky(p)
 
-  if (!S7::S7_inherits(s, covstructs7::covstruct)) {
-    stop("The structure must be a covstructs7 'covstruct' object.", call. = FALSE)
+  if (!S7::S7_inherits(s, parameters7::parameter)) {
+    stop("The structure must be a parameters7 'parameter' object.", call. = FALSE)
   }
   if (s@dimension != p) {
     stop(sprintf(
@@ -174,7 +174,7 @@ mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) 
     # not what the structure is called. Same convention as truncated().
     distrib_name = sprintf(
       "multivariate gaussian [%dd, %s=%s]", p,
-      if (inverted) "omega" else "sigma", s@struct_name
+      if (inverted) "omega" else "sigma", s@param_name
     ),
     dimension = "multivariate",
     n_dim = p,
@@ -197,7 +197,7 @@ mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) 
     link_params = stats::setNames(
       rep(list(linkfunctions7::identity_link()), n_par), params
     ),
-    struct = s,
+    param = s,
     inverted = inverted
   )
 }
@@ -229,22 +229,22 @@ mvgaussian_distrib <- function(n_dim, struct_sigma = NULL, struct_omega = NULL) 
 #' @keywords internal
 mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
   p <- distrib@n_dim
-  s <- distrib@struct
+  s <- distrib@param
   v <- mv_flat_theta(distrib, theta)
   mu <- v[seq_len(p)]
   eta <- v[p + seq_len(s@n_free)]
 
-  m <- covstructs7::struct_matrix(s, eta)
-  ld <- covstructs7::struct_logdet(s, eta)
+  m <- parameters7::param_value(s, eta)
+  ld <- parameters7::param_logdet(s, eta)
 
   if (distrib@inverted) {
     omega <- m
-    sigma <- covstructs7::struct_solve(s, eta)
+    sigma <- parameters7::param_solve(s, eta)
     sigma_inv <- omega
     logdet <- -ld
   } else {
     sigma <- m
-    sigma_inv <- covstructs7::struct_solve(s, eta)
+    sigma_inv <- parameters7::param_solve(s, eta)
     logdet <- ld
   }
 
@@ -254,7 +254,7 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
   )
 
   if (derivs || derivs2) {
-    d <- covstructs7::struct_dmatrix(s, eta)
+    d <- parameters7::param_d1(s, eta)
     if (distrib@inverted) {
       # dSigma/deta = -Sigma (dOmega/deta) Sigma, the derivative of an inverse.
       d <- lapply(d, function(ak) -(sigma %*% ak %*% sigma))
@@ -262,10 +262,10 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
     out$a <- lapply(d, unname)
   }
   if (derivs2) {
-    d2 <- covstructs7::struct_d2matrix(s, eta)
+    d2 <- parameters7::param_d2(s, eta)
     if (distrib@inverted) {
-      idx <- covstructs7::struct_pair_indices(s)
-      om1 <- covstructs7::struct_dmatrix(s, eta)
+      idx <- parameters7::param_tuple_indices(s)
+      om1 <- parameters7::param_d1(s, eta)
       d2 <- lapply(seq_along(idx), function(i) {
         k <- idx[[i]][1L]
         l <- idx[[i]][2L]
@@ -273,7 +273,7 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
         sigma %*% (om1[[l]] %*% sigma %*% om1[[k]] +
           om1[[k]] %*% sigma %*% om1[[l]] - d2[[i]]) %*% sigma
       })
-      names(d2) <- covstructs7::struct_pair_names(s)
+      names(d2) <- parameters7::param_tuple_names(s)
     }
     out$a2 <- lapply(d2, unname)
   }
@@ -471,7 +471,7 @@ S7::method(distrib_rng, MvGaussianDistrib) <- function(distrib, n, theta, ...) {
 #'   -\frac{1}{2}\frac{\partial \log|\Sigma|}{\partial \eta_k}
 #'   + \frac{1}{2} w^\top A_k w.}
 #' The first term of the second expression is the structure's own
-#' \code{struct_dlogdet()}, so no trace is formed here.
+#' \code{param_dlogdet()}, so no trace is formed here.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
@@ -492,7 +492,7 @@ S7::method(distrib_gradient, MvGaussianDistrib) <- function(distrib, y, theta,
   names(out) <- distrib@params
   for (j in seq_len(pc$p)) out[[j]] <- w[, j]
 
-  dld <- covstructs7::struct_dlogdet(pc$s, pc$eta)
+  dld <- parameters7::param_dlogdet(pc$s, pc$eta)
   if (distrib@inverted) dld <- -dld
   for (k in seq_along(pc$a)) {
     out[[pc$p + k]] <- -0.5 * dld[[k]] +
@@ -529,7 +529,7 @@ S7::method(distrib_hessian, MvGaussianDistrib) <- function(distrib, y, theta,
   w <- mvg_residuals(y, pc)$w
   si <- pc$sigma_inv
 
-  d2ld <- covstructs7::struct_d2logdet(pc$s, pc$eta)
+  d2ld <- parameters7::param_d2logdet(pc$s, pc$eta)
   if (distrib@inverted) d2ld <- -d2ld
   # Sigma^{-1} A_k, formed once: it appears in the mixed block and again in the
   # matrix block.
@@ -589,20 +589,20 @@ mv_hess_indices <- function(distrib) {
 #'
 #' @description
 #' A lookup from a pair of free-value positions to the position of the
-#' corresponding component of \code{struct_d2matrix()}.
+#' corresponding component of \code{param_d2()}.
 #'
 #' @details
-#' Built from \pkg{covstructs7}'s own enumeration rather than by taking a
+#' Built from \pkg{parameters7}'s own enumeration rather than by taking a
 #' component key apart, for the reason that package documents: a free value
 #' whose label contains the separator splits into the wrong number of pieces.
 #'
-#' @param s A \pkg{covstructs7} structure.
+#' @param s A \pkg{parameters7} structure.
 #'
 #' @return A named list of integers, keyed \code{"k:l"} with \eqn{k \le l}.
 #'
 #' @keywords internal
 struct_pair_lookup <- function(s) {
-  idx <- covstructs7::struct_pair_indices(s)
+  idx <- parameters7::param_tuple_indices(s)
   keys <- vapply(idx, function(kl) {
     paste(min(kl), max(kl), sep = ":")
   }, character(1))
@@ -743,9 +743,240 @@ S7::method(variance, MvGaussianDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(generate_random_theta, MvGaussianDistrib) <- function(distrib, ...) {
   p <- distrib@n_dim
-  s <- distrib@struct
+  s <- distrib@param
   as.list(stats::setNames(
     c(stats::runif(p, -1, 1), stats::runif(s@n_free, -0.4, 0.4)),
     distrib@params
   ))
+}
+
+
+#' Precision Derivative Tensors of a Multivariate Gaussian
+#'
+#' @description
+#' The precision's derivative tensors in the structure's free values, orders 1
+#' to 4, keyed by index tuple. For a precision parametrisation they are the
+#' structure's own derivatives; for a covariance they follow from repeated
+#' differentiation of the inverse, so no expanded formula is transcribed and
+#' no term can be dropped.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param theta A named list of parameters.
+#' @param order The highest order wanted.
+#' @return A list with the accessor \code{get}, the log-determinant sign and
+#'   the pieces.
+#' @keywords internal
+mvg_ptensors <- function(distrib, theta, order) {
+  pc <- mvg_pieces(distrib, theta)
+  s <- pc$s
+  eta <- pc$eta
+  a <- list(parameters7::param_d1(s, eta))
+  if (order >= 2L) a[[2L]] <- parameters7::param_d2(s, eta)
+  if (order >= 3L) a[[3L]] <- parameters7::param_d3(s, eta)
+  if (order >= 4L) a[[4L]] <- parameters7::param_d4(s, eta)
+
+  key <- function(t) paste(sort(t), collapse = ",")
+  amap <- list()
+  for (o in seq_len(order)) {
+    idx <- if (o == 1L) {
+      lapply(seq_len(s@n_free), identity)
+    } else {
+      parameters7::param_tuple_indices(s, o)
+    }
+    for (i in seq_along(idx)) {
+      amap[[paste0(o, ":", key(idx[[i]]))]] <- unname(a[[o]][[i]])
+    }
+  }
+  aget <- function(t) amap[[paste0(length(t), ":", key(t))]]
+
+  if (distrib@inverted) {
+    return(list(get = aget, sign_ld = 0.5, pc = pc))
+  }
+
+  P <- pc$sigma_inv
+  pmap <- new.env(parent = emptyenv())
+  pget <- function(t) {
+    k <- key(t)
+    got <- pmap[[k]]
+    if (!is.null(got)) return(got)
+    # P_t = sum over ORDERED partitions (B1, ..., Bq) of the multiset t into
+    # nonempty blocks of (-1)^q P A_{B1} P A_{B2} ... A_{Bq} P: the expansion
+    # of the derivative of an inverse, checked at order one (-P A_k P) and
+    # order two (P A_k P A_l P + P A_l P A_k P - P A_kl P).
+    acc <- matrix(0, nrow(P), ncol(P))
+    for (blocks in mv_ordered_partitions(seq_along(t))) {
+      term <- P
+      for (b in blocks) term <- term %*% aget(t[b]) %*% P
+      acc <- acc + (-1)^length(blocks) * term
+    }
+    pmap[[k]] <- acc
+    acc
+  }
+  list(get = pget, sign_ld = -0.5, pc = pc)
+}
+
+
+#' Ordered Partitions of a Set of Positions
+#'
+#' @description
+#' All ordered partitions of a set of positions into nonempty blocks: the set
+#' partitions, each in every ordering of its blocks. This is how the
+#' derivative of an inverse distributes its differentiations,
+#' \eqn{P_t = \sum (-1)^q P A_{B_1} P \cdots A_{B_q} P}.
+#' @param pos An integer vector of positions.
+#' @return A list of lists of integer vectors.
+#' @keywords internal
+mv_ordered_partitions <- function(pos) {
+  if (length(pos) == 1L) return(list(list(pos)))
+  # set partitions by recursive insertion of the last element
+  set_parts <- function(v) {
+    if (length(v) == 1L) return(list(list(v)))
+    prev <- set_parts(v[-length(v)])
+    out <- list()
+    x <- v[length(v)]
+    for (pp in prev) {
+      for (j in seq_along(pp)) {
+        q <- pp
+        q[[j]] <- c(q[[j]], x)
+        out[[length(out) + 1L]] <- q
+      }
+      out[[length(out) + 1L]] <- c(pp, list(x))
+    }
+    out
+  }
+  perms <- function(n) {
+    if (n == 1L) return(list(1L))
+    out <- list()
+    for (pr in perms(n - 1L)) {
+      for (j in seq_len(n)) {
+        out[[length(out) + 1L]] <- append(pr, n, after = j - 1L)
+      }
+    }
+    out
+  }
+  out <- list()
+  for (pp in set_parts(pos)) {
+    q <- length(pp)
+    for (pr in perms(q)) {
+      out[[length(out) + 1L]] <- pp[pr]
+    }
+  }
+  out
+}
+
+
+#' The Closed-Form Higher Derivatives of a Multivariate Gaussian
+#'
+#' @description
+#' Shared engine for the third and fourth derivatives: enumerates the
+#' parameter tuples the way \code{\link{deriv_names}} does, splits each into
+#' mean and structure indices, and reads the surviving cases off the
+#' gaussian's algebra.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param y An \eqn{n 	imes p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param order 3 or 4.
+#' @return A named list of derivative component vectors.
+#' @keywords internal
+mvg_higher <- function(distrib, y, theta, order) {
+  y <- as_mv_matrix(distrib, y)
+  n <- nrow(y)
+  p <- distrib@n_dim
+  pt <- mvg_ptensors(distrib, theta, order)
+  pc <- pt$pc
+  s <- pc$s
+  r <- sweep(y, 2L, pc$mu, "-")
+
+  ldfun <- switch(order - 2L,
+    parameters7::param_d3logdet, parameters7::param_d4logdet
+  )
+  ld <- ldfun(s, pc$eta)
+  ldkey <- vapply(
+    parameters7::param_tuple_indices(s, order),
+    function(t) paste(sort(t), collapse = ","), character(1)
+  )
+
+  idx <- deriv_indices(distrib@params, order)
+  nms <- deriv_names(distrib@params, order)
+  out <- vector("list", length(idx))
+  names(out) <- nms
+
+  for (i in seq_along(idx)) {
+    t <- idx[[i]]
+    is_mu <- t <= p
+    n_mu <- sum(is_mu)
+    if (n_mu >= 3L) {
+      # the quadratic form is quadratic in mu, so a third mean derivative,
+      # whatever else the tuple carries, is zero
+      out[[i]] <- rep(0, n)
+      next
+    }
+    et <- t[!is_mu] - p
+    if (n_mu == 0L) {
+      pt_mat <- pt$get(et)
+      quad <- rowSums((r %*% pt_mat) * r)
+      ldc <- ld[[match(paste(sort(et), collapse = ","), ldkey)]]
+      out[[i]] <- rep(pt$sign_ld * ldc, n) - 0.5 * quad
+    } else if (n_mu == 1L) {
+      iu <- t[is_mu]
+      vecs <- r %*% pt$get(et)
+      out[[i]] <- vecs[, iu]
+    } else {
+      ij <- t[is_mu]
+      out[[i]] <- rep(-pt$get(et)[ij[1L], ij[2L]], n)
+    }
+  }
+  out
+}
+
+
+#' @title Multivariate Gaussian Third Derivatives
+#' @name distrib_deriv3.MvGaussianDistrib
+#' @description
+#' Closed form, built on the structure's own third derivatives from
+#' \pkg{parameters7}. A component with three mean indices vanishes, the
+#' quadratic form being quadratic; one mean index gives
+#' \eqn{(P_{klm} r)_i}; two give \eqn{-P_{kl}[i, j]}; none gives
+#' \eqn{\mp\tfrac{1}{2}\,\partial^3 \log|M| - \tfrac{1}{2} r^\top P_{klm} r}.
+#' The precision's derivative tensors \eqn{P_t} come directly from the
+#' structure under a precision parametrisation, and by the Leibniz recursion
+#' on \eqn{P_k = -P A_k P} under a covariance one.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param expected Logical; the expectation is approximated by sampling, as
+#'   for the Hessian.
+#' @param approx Strategy label; sampling is the only multivariate route.
+#' @param nsim Monte Carlo sample size.
+#' @return A named list of third-derivative component vectors.
+#' @keywords internal
+S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    big <- distrib_rng(distrib, nsim, theta)
+    ob <- mvg_higher(distrib, big, theta, 3L)
+    n <- n_obs(distrib, y)
+    return(lapply(ob, function(v) rep(mean(v), n)))
+  }
+  mvg_higher(distrib, y, theta, 3L)
+}
+
+#' @title Multivariate Gaussian Fourth Derivatives
+#' @name distrib_deriv4.MvGaussianDistrib
+#' @description Closed form; the same algebra as
+#'   \code{\link{distrib_deriv3.MvGaussianDistrib}} one order up.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param expected Logical; the expectation is approximated by sampling.
+#' @param approx Strategy label; sampling is the only multivariate route.
+#' @param nsim Monte Carlo sample size.
+#' @return A named list of fourth-derivative component vectors.
+#' @keywords internal
+S7::method(distrib_deriv4, MvGaussianDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+  if (expected) {
+    big <- distrib_rng(distrib, nsim, theta)
+    ob <- mvg_higher(distrib, big, theta, 4L)
+    n <- n_obs(distrib, y)
+    return(lapply(ob, function(v) rep(mean(v), n)))
+  }
+  mvg_higher(distrib, y, theta, 4L)
 }

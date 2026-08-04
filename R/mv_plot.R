@@ -294,7 +294,7 @@ S7::method(mv_marginal, MvGaussianDistrib) <- function(distrib, theta, which, ..
   mu <- as.numeric(mv_location(distrib, theta))[which]
   sg <- mv_sigma(distrib, theta)[which, which, drop = FALSE]
   md <- mvgaussian_distrib(length(which))
-  eta <- covstructs7::struct_free(md@struct, unname(sg))
+  eta <- parameters7::param_free(md@param, unname(sg))
   list(
     distrib = md,
     theta = as.list(stats::setNames(c(mu, unname(eta)), md@params))

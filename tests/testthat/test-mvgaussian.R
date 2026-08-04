@@ -41,22 +41,22 @@ test_that("the constructor validates its arguments", {
   expect_error(mvgaussian_distrib(2.5), "positive integer")
   expect_error(
     mvgaussian_distrib(2,
-      struct_sigma = covstructs7::log_cholesky(2),
-      struct_omega = covstructs7::log_cholesky(2)
+      sigma = parameters7::log_cholesky(2),
+      omega = parameters7::log_cholesky(2)
     ),
     "at most one"
   )
-  expect_error(mvgaussian_distrib(2, struct_sigma = diag(2)), "covstruct")
+  expect_error(mvgaussian_distrib(2, sigma = diag(2)), "parameter")
   expect_error(
-    mvgaussian_distrib(3, struct_sigma = covstructs7::log_cholesky(2)),
+    mvgaussian_distrib(3, sigma = parameters7::log_cholesky(2)),
     "dimension 2 but the distribution has dimension 3"
   )
 
   # A rank-deficient structure is a penalty, not a density, and the refusal is
   # the same whichever side it parametrises.
-  pen <- covstructs7::scaled_struct(crossprod(diff(diag(5), differences = 2)))
-  expect_error(mvgaussian_distrib(5, struct_sigma = pen), "rank deficient")
-  expect_error(mvgaussian_distrib(5, struct_omega = pen), "rank deficient")
+  pen <- parameters7::scaled_matrix(crossprod(diff(diag(5), differences = 2)))
+  expect_error(mvgaussian_distrib(5, sigma = pen), "rank deficient")
+  expect_error(mvgaussian_distrib(5, omega = pen), "rank deficient")
 })
 
 test_that("the parameters are the mean components and the structure's free values", {
@@ -79,7 +79,7 @@ test_that("the parameters are the mean components and the structure's free value
   expect_true(all(vapply(d@params_bounds, function(b) all(!is.finite(b)), logical(1))))
 
   # a diagonal structure contributes fewer of them
-  dd <- mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3))
+  dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
   expect_identical(dd@params, c("mu1", "mu2", "mu3", "sigma_d1", "sigma_d2", "sigma_d3"))
 })
 
@@ -231,12 +231,12 @@ test_that("the precision form describes the same law as the covariance form", {
   # Omega = Sigma^{-1} through a structure on the other side: the density, the
   # score and the Hessian must agree once the two are matched.
   ds <- mvgaussian_distrib(2)
-  do <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
+  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
 
   th_s <- list(mu1 = 0.3, mu2 = -0.4, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.5)
   sigma <- mv_sigma(ds, th_s)
   # the free values of the precision that give this covariance
-  eta_o <- covstructs7::struct_free(do@struct, solve(sigma))
+  eta_o <- parameters7::param_free(do@param, solve(sigma))
   th_o <- as.list(stats::setNames(c(0.3, -0.4, unname(eta_o)), do@params))
 
   expect_equal(mv_sigma(do, th_o), sigma, tolerance = 1e-10)
@@ -255,7 +255,7 @@ test_that("the precision form describes the same law as the covariance form", {
 })
 
 test_that("the precision form has correct derivatives of its own", {
-  do <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
+  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
   th <- list(mu1 = 0.2, mu2 = -0.1, omega_log_L1 = 0.15, omega_log_L2 = -0.05,
              omega_L2.1 = 0.3)
   set.seed(26)
@@ -294,7 +294,7 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
   mu_hat <- colMeans(y)
   s_hat <- crossprod(sweep(y, 2L, mu_hat)) / nrow(y)
   th_hat <- as.list(stats::setNames(
-    c(mu_hat, covstructs7::struct_free(d@struct, s_hat)), d@params
+    c(mu_hat, parameters7::param_free(d@param, s_hat)), d@params
   ))
   ll_hat <- sum(distrib_pdf(d, y, th_hat, log = TRUE))
 
@@ -330,7 +330,7 @@ test_that("the three fitting methods reach the same optimum", {
 })
 
 test_that("a diagonal covariance is fitted with fewer parameters", {
-  dd <- mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3))
+  dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
   set.seed(29)
   y <- distrib_rng(dd, 1500, list(mu1 = 0, mu2 = 1, mu3 = -1,
                                   sigma_d1 = log(2), sigma_d2 = log(0.5),
@@ -410,7 +410,7 @@ test_that("check_distrib catches a deliberately wrong component", {
     bounds = good@bounds, params = good@params,
     params_interpretation = good@params_interpretation,
     n_params = good@n_params, params_bounds = good@params_bounds,
-    link_params = good@link_params, struct = good@struct,
+    link_params = good@link_params, param = good@param,
     inverted = good@inverted
   )
 
@@ -433,4 +433,28 @@ test_that("n_obs counts observations rather than entries", {
   # a bare vector is one observation
   expect_identical(n_obs(mvgaussian_distrib(3), c(1, 2, 3)), 1L)
   expect_identical(n_obs(mvgaussian_distrib(2), matrix(numeric(0), 0, 2)), 0L)
+})
+
+
+test_that("closed-form third and fourth derivatives match one stencil", {
+  for (inv in c(FALSE, TRUE)) {
+    d <- if (inv) mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+         else mvgaussian_distrib(2)
+    set.seed(2)
+    th <- generate_random_theta(d)
+    y <- distrib_rng(d, 6, th)
+    a3 <- distrib_deriv3(d, y, th)
+    n3 <- numerical_deriv3(d, y, th)
+    expect_setequal(names(a3), deriv_names(d@params, 3))
+    for (k in names(a3)) {
+      expect_equal(a3[[k]], n3[[k]], tolerance = 1e-5,
+        label = paste(if (inv) "omega" else "sigma", "d3", k))
+    }
+    a4 <- distrib_deriv4(d, y, th)
+    n4 <- numerical_deriv4(d, y, th)
+    for (k in names(a4)) {
+      expect_equal(a4[[k]], n4[[k]], tolerance = 1e-3,
+        label = paste(if (inv) "omega" else "sigma", "d4", k))
+    }
+  }
 })

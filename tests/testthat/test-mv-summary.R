@@ -7,7 +7,7 @@
 
 test_that("the parameter names say which matrix the structure describes", {
   ds <- mvgaussian_distrib(2)
-  do <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
+  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
 
   expect_identical(
     ds@params, c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")
@@ -27,7 +27,7 @@ test_that("the parameter names say which matrix the structure describes", {
 
   # a diagonal structure carries its own labels through the same prefix
   expect_identical(
-    mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3))@params,
+    mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))@params,
     c("mu1", "mu2", "mu3", "sigma_d1", "sigma_d2", "sigma_d3")
   )
 })
@@ -51,8 +51,8 @@ test_that("the derived quantities are the decomposition, written out by hand", {
 test_that("the derived Jacobian is closed form and agrees with an independent one", {
   for (d in list(mvgaussian_distrib(2),
                  mvgaussian_distrib(3),
-                 mvgaussian_distrib(3, struct_sigma = covstructs7::diag_struct(3)),
-                 mvgaussian_distrib(3, struct_omega = covstructs7::log_cholesky(3)),
+                 mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3)),
+                 mvgaussian_distrib(3, omega = parameters7::log_cholesky(3)),
                  mvstudent_t_distrib(2))) {
     set.seed(61)
     th <- generate_random_theta(d)
@@ -69,12 +69,12 @@ test_that("the derived Jacobian is closed form and agrees with an independent on
 
 test_that("a precision parametrisation reports what it describes directly", {
   ds <- mvgaussian_distrib(3)
-  do <- mvgaussian_distrib(3, struct_omega = covstructs7::log_cholesky(3))
+  do <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
 
   set.seed(62)
   ths <- generate_random_theta(ds)
   sigma <- mv_sigma(ds, ths)
-  eta <- covstructs7::struct_free(do@struct, solve(unname(sigma)))
+  eta <- parameters7::param_free(do@param, solve(unname(sigma)))
   tho <- as.list(stats::setNames(
     c(unlist(ths)[1:3], unname(eta)), do@params
   ))
@@ -98,7 +98,7 @@ test_that("a precision parametrisation reports what it describes directly", {
 
   # in two dimensions there is nothing to condition on, so the partial
   # correlation would repeat the correlation and is not printed
-  d2 <- mvgaussian_distrib(2, struct_omega = covstructs7::log_cholesky(2))
+  d2 <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
   set.seed(63)
   v2 <- mv_derived(d2, generate_random_theta(d2))$value
   expect_false(any(grepl("^pcor_", names(v2))))
@@ -179,7 +179,7 @@ test_that("the correlation's standard error matches the known asymptotic one", {
   d <- mvgaussian_distrib(2)
   rho <- 0.6
   s <- matrix(c(1, rho, rho, 1), 2, 2)
-  eta <- covstructs7::struct_free(d@struct, s)
+  eta <- parameters7::param_free(d@param, s)
   true <- as.list(stats::setNames(c(0, 0, unname(eta)), d@params))
 
   n <- 4000
@@ -302,7 +302,7 @@ test_that("the two parametrisations report the same uncertainty", {
   ds <- mvgaussian_distrib(3)
   th <- generate_random_theta(ds)
   y <- distrib_rng(ds, 1000, th)
-  do <- mvgaussian_distrib(3, struct_omega = covstructs7::log_cholesky(3))
+  do <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
 
   a <- mv_summary(fit_distrib(ds, y))
   b <- mv_summary(fit_distrib(do, y))

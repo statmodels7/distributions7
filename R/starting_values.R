@@ -115,27 +115,27 @@ mv_moment_start <- function(y, p) {
 #' supplied, or the structure's own inverse map when it has one.
 #'
 #' @details
-#' \code{\link[covstructs7]{struct_free}} is exact or refused: a structure that
+#' \code{\link[parameters7]{param_free}} is exact or refused: a structure that
 #' cannot represent the matrix says so rather than returning something
 #' plausible. That is the right contract for reporting an estimate and the
 #' wrong one for choosing where to begin, so a refusal here falls back to a
 #' short numerical search over the free values, which is allowed to be
 #' approximate because a starting value is.
 #'
-#' @param s A \pkg{covstructs7} structure.
+#' @param s A \pkg{parameters7} structure.
 #' @param m The matrix to represent.
 #'
 #' @return A numeric vector of length \code{s@n_free}.
 #'
 #' @keywords internal
 struct_free_or_fit <- function(s, m) {
-  eta <- tryCatch(covstructs7::struct_free(s, m), error = function(e) NULL)
+  eta <- tryCatch(parameters7::param_free(s, m), error = function(e) NULL)
   if (!is.null(eta) && all(is.finite(eta))) return(unname(eta))
 
   # Least squares on the entries, from the zero vector. This is a starting
   # value for a starting value, and its accuracy does not matter.
   obj <- function(v) {
-    mm <- tryCatch(covstructs7::struct_matrix(s, v), error = function(e) NULL)
+    mm <- tryCatch(parameters7::param_value(s, v), error = function(e) NULL)
     if (is.null(mm) || anyNA(mm)) return(1e10)
     sum((mm - m)^2)
   }
@@ -169,7 +169,7 @@ S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5
   p <- distrib@n_dim
   m <- mv_moment_start(y, p)
   target <- if (isTRUE(distrib@inverted)) solve(m$sigma) else m$sigma
-  eta <- struct_free_or_fit(distrib@struct, target)
+  eta <- struct_free_or_fit(distrib@param, target)
   list(as.list(stats::setNames(c(m$mu, eta), distrib@params)))
 }
 
@@ -195,6 +195,6 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
   p <- distrib@n_dim
   m <- mv_moment_start(y, p)
   nu0 <- 8
-  eta <- struct_free_or_fit(distrib@struct, m$sigma * (nu0 - 2) / nu0)
+  eta <- struct_free_or_fit(distrib@param, m$sigma * (nu0 - 2) / nu0)
   list(as.list(stats::setNames(c(m$mu, eta, nu0), distrib@params)))
 }

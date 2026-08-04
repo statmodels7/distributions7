@@ -16,7 +16,7 @@ LinkingTo:
     Rcpp
 Imports:
     graphics,
-    covstructs7,
+    parameters7,
     linkfunctions7,
     optimizers7,
     Rcpp,
@@ -25,7 +25,7 @@ Imports:
     stats,
     utils
 Remotes:
-    statmodels7/covstructs7,
+    statmodels7/parameters7,
     statmodels7/linkfunctions7,
     statmodels7/optimizers7
 Collate: 
