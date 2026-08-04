@@ -34,7 +34,7 @@ at \eqn{\nu = 1.5}.
 
 \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, the
 structure contributes its free values under the \code{sigma_} prefix, and
-\code{nu} is added last. The mean and the structure are unconstrained and
+\code{nu} is added last. The mean and the matrix parameter are unconstrained and
 carry identity links; \code{nu} is positive and carries a log link by
 default, so unlike the multivariate gaussian this family's link scale is not
 its parameter scale.
@@ -62,7 +62,7 @@ d@params
 
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.4, nu = 5)
 
-# the scale matrix is what the structure carries; the covariance is a moment
+# the scale matrix is what the matrix parameter carries; the covariance is a moment
 mv_sigma(d, theta)
 variance(d, theta)
 

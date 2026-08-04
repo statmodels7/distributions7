@@ -19,12 +19,12 @@ A named list with one numeric vector per parameter.
 }
 \description{
 Closed form. With \eqn{w = \Sigma^{-1}(y - \mu)} and \eqn{A_k} the
-derivative of \eqn{\Sigma} in the \eqn{k}-th free value of the structure,
+derivative of \eqn{\Sigma} in the \eqn{k}-th free value of the matrix parameter,
 \deqn{\frac{\partial \ell}{\partial \mu} = w, \qquad
   \frac{\partial \ell}{\partial \eta_k} =
   -\frac{1}{2}\frac{\partial \log|\Sigma|}{\partial \eta_k}
   + \frac{1}{2} w^\top A_k w.}
-The first term of the second expression is the structure's own
+The first term of the second expression is the matrix parameter's own
 \code{param_dlogdet()}, so no trace is formed here.
 }
 \keyword{internal}

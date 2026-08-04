@@ -11,7 +11,7 @@ mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 
 \item{theta}{A named list of parameters, already aligned.}
 
-\item{derivs}{Whether the structure's first derivative matrices are needed.}
+\item{derivs}{Whether the matrix parameter's first derivative matrices are needed.}
 
 \item{derivs2}{Whether its second derivatives are needed as well.}
 }
@@ -22,13 +22,13 @@ derivatives of the covariance with respect to the free values.
 }
 \description{
 Assembles, once per call, the mean, the covariance, its inverse and its
-log-determinant from a flat parameter vector, together with the structure's
+log-determinant from a flat parameter vector, together with the matrix parameter's
 derivative matrices when they are asked for.
 }
 \details{
-Whichever side the structure parametrises, the arithmetic below is written
+Whichever side the matrix parameter parametrises, the arithmetic below is written
 in the covariance, so a precision structure is inverted once here rather
-than at every use. The log-determinant follows the structure's own, with its
+than at every use. The log-determinant follows the matrix parameter's own, with its
 sign flipped for a precision, which is the one place the two forms differ in
 anything but cost.
 }

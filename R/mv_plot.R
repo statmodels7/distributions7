@@ -175,7 +175,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
   # The range each coordinate is drawn over, from its own marginal: two and a
   # half standard deviations either side of the mean covers the shape without
   # flattening it into the axis.
-  # The spread comes from the matrix the structure carries rather than from
+  # The spread comes from the matrix the matrix parameter carries rather than from
   # variance(): a Student t with nu <= 2 has no variance, and that is precisely
   # the shape worth drawing. The two agree up to a factor for an elliptical
   # family, which is all a plotting range needs.

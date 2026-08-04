@@ -94,7 +94,7 @@ mv_entry_index <- function(p, prefix) {
 #' The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
 #' Jacobian from one central difference in each parameter. This is what a
 #' family gets when it says nothing more specific: the matrix on its own scale,
-#' named after the coordinates, rather than the structure's coordinates.
+#' named after the coordinates, rather than the matrix parameter's coordinates.
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -233,12 +233,12 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #' @details
 #' The mean components and, for a Student \eqn{t}, the degrees of freedom leave
 #' the matrix alone, so those entries are \code{NULL} and cost nothing. When
-#' the structure parametrises the precision the chain rule of an inverse
+#' the matrix parameter parametrises the precision the chain rule of an inverse
 #' applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 #'
 #' @param distrib A distribution carrying a \code{param} property.
 #' @param theta A named list of parameters, already aligned.
-#' @param n_before How many parameters precede the structure's free values.
+#' @param n_before How many parameters precede the matrix parameter's free values.
 #'
 #' @return A list of matrices and \code{NULL}s, of length
 #'   \code{distrib@n_params}.
@@ -283,7 +283,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 
   if (!isTRUE(distrib@inverted)) return(out)
 
-  # The precision's own reading. Omega and its derivatives are the structure's
+  # The precision's own reading. Omega and its derivatives are the matrix parameter's
   # matrix directly, with no inversion, so they are taken from it rather than
   # from the covariance computed above.
   s <- distrib@param

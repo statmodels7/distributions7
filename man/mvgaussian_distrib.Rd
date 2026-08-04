@@ -25,7 +25,7 @@ The gaussian distribution on \eqn{\mathbb{R}^p}, with the mean a vector of
 }
 \details{
 Exactly one of \code{sigma} and \code{omega} may be given, and
-the name of the argument decides which side of the model the structure
+the name of the argument decides which side of the model the matrix parameter
 parametrises: the covariance in the first case, the precision in the second.
 One constructor returns one of two behaviours, in the manner of
 \code{\link{truncated}}, which chooses between its continuous and discrete
@@ -34,11 +34,11 @@ classes from the arguments it is handed.
 The precision form is the cheaper one and is worth preferring where the
 modelling allows it. Written in \eqn{\Omega}, the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
-structure's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
+parameter's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
 quantities need a solve at every step.
 
 \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
-the structure contributes its free values prefixed by the matrix they
+the matrix parameter contributes its free values prefixed by the matrix they
 describe: \code{sigma_} for a covariance and \code{omega_} for a precision.
 A two-dimensional gaussian on an unstructured covariance therefore has five
 parameters, \code{mu1}, \code{mu2}, \code{sigma_log_L1},
@@ -49,7 +49,7 @@ value says how the matrix is built and not which matrix it is.
 
 All of the parameters are unconstrained, and their links are therefore the
 identity: the constraint that makes the matrix positive definite lives
-inside the structure, which is why it needs no link to express it. A
+inside the matrix parameter, which is why it needs no link to express it. A
 consequence worth knowing is that the parameter scale and the link scale
 coincide here, so \code{scale = "link"} changes nothing.
 

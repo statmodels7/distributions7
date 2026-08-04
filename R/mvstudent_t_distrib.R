@@ -43,7 +43,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, the
 #' structure contributes its free values under the \code{sigma_} prefix, and
-#' \code{nu} is added last. The mean and the structure are unconstrained and
+#' \code{nu} is added last. The mean and the matrix parameter are unconstrained and
 #' carry identity links; \code{nu} is positive and carries a log link by
 #' default, so unlike the multivariate gaussian this family's link scale is not
 #' its parameter scale.
@@ -81,7 +81,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.4, nu = 5)
 #'
-#' # the scale matrix is what the structure carries; the covariance is a moment
+#' # the scale matrix is what the matrix parameter carries; the covariance is a moment
 #' mv_sigma(d, theta)
 #' variance(d, theta)
 #'
@@ -102,17 +102,17 @@ mvstudent_t_distrib <- function(n_dim, sigma = NULL,
   s <- if (is.null(sigma)) parameters7::log_cholesky(p) else sigma
 
   if (!S7::S7_inherits(s, parameters7::parameter)) {
-    stop("The structure must be a parameters7 'parameter' object.", call. = FALSE)
+    stop("The matrix parameter must be a parameters7 'parameter' object.", call. = FALSE)
   }
   if (s@dimension != p) {
     stop(sprintf(
-      "The structure has dimension %d but the distribution has dimension %d.",
+      "The matrix parameter has dimension %d but the distribution has dimension %d.",
       s@dimension, p
     ), call. = FALSE)
   }
   if (s@rank < s@dimension) {
     stop(sprintf(paste0(
-      "The structure is rank deficient (%d of %d), so it does not describe a\n",
+      "The matrix parameter is rank deficient (%d of %d), so it does not describe a\n",
       "  density: the law would be supported on a subspace. Such a structure is\n",
       "  a penalty, not a distribution."
     ), s@rank, s@dimension), call. = FALSE)
@@ -128,7 +128,7 @@ mvstudent_t_distrib <- function(n_dim, sigma = NULL,
   clash <- intersect(c(mu_names, "nu"), free_names)
   if (length(clash)) {
     stop(sprintf(paste0(
-      "The structure's free value '%s' collides with a parameter name.\n",
+      "The matrix parameter's free value '%s' collides with a parameter name.\n",
       "  Every derivative component is keyed by these, so they must be unique."
     ), clash[1L]), call. = FALSE)
   }
@@ -164,7 +164,7 @@ mvstudent_t_distrib <- function(n_dim, sigma = NULL,
 #' @description
 #' Assembles the location, the scale matrix, its inverse, the log-determinant
 #' and the degrees of freedom from a flat parameter vector, with the
-#' structure's derivative matrices when they are needed.
+#' parameter's derivative matrices when they are needed.
 #'
 #' @param distrib A \code{\link{MvStudentTDistrib}} object.
 #' @param theta A named list of parameters, already aligned.
@@ -361,7 +361,7 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
   den <- nu + z$q
 
   d2ld <- parameters7::param_d2logdet(pc$s, pc$eta)
-  spair <- struct_pair_lookup(pc$s)
+  spair <- param_pair_lookup(pc$s)
   sa <- lapply(pc$a, function(ak) si %*% ak)
   # w' A_k w at every observation, once: it is the derivative of q in the
   # matrix directions and appears in three of the blocks.

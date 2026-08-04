@@ -14,7 +14,7 @@
 A \eqn{p \times p} numeric matrix.
 }
 \description{
-The covariance matrix, which the structure carries. The return is a matrix
+The covariance matrix, which the matrix parameter carries. The return is a matrix
 rather than the numeric vector a univariate distribution gives, since that
 is what the second moment of a vector is.
 }

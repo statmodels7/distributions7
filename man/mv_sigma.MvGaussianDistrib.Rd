@@ -12,7 +12,7 @@
 A \eqn{p \times p} numeric matrix.
 }
 \description{
-The covariance, assembled from the structure and inverted first when the
+The covariance, assembled from the matrix parameter and inverted first when the
 structure parametrises the precision.
 }
 \keyword{internal}

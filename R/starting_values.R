@@ -111,8 +111,8 @@ mv_moment_start <- function(y, p) {
 #' Project a Matrix onto What a Structure Can Represent
 #'
 #' @description
-#' Returns the free vector of the structure whose matrix is closest to the one
-#' supplied, or the structure's own inverse map when it has one.
+#' Returns the free vector of the matrix parameter whose matrix is closest to the one
+#' supplied, or the matrix parameter's own inverse map when it has one.
 #'
 #' @details
 #' \code{\link[parameters7]{param_free}} is exact or refused: a structure that
@@ -128,7 +128,7 @@ mv_moment_start <- function(y, p) {
 #' @return A numeric vector of length \code{s@n_free}.
 #'
 #' @keywords internal
-struct_free_or_fit <- function(s, m) {
+param_free_or_fit <- function(s, m) {
   eta <- tryCatch(parameters7::param_free(s, m), error = function(e) NULL)
   if (!is.null(eta) && all(is.finite(eta))) return(unname(eta))
 
@@ -154,11 +154,11 @@ struct_free_or_fit <- function(s, m) {
 #' The sample mean and the sample covariance, which for an unstructured
 #' covariance are the maximum likelihood estimate itself, so the fit begins at
 #' the answer and confirms it in one step. For a structured covariance they are
-#' the closest thing the structure can represent, which is a good deal nearer
+#' the closest thing the matrix parameter can represent, which is a good deal nearer
 #' than the origin.
 #' @details
-#' When the structure parametrises the precision the sample covariance is
-#' inverted first, since that is the matrix the structure has to represent.
+#' When the matrix parameter parametrises the precision the sample covariance is
+#' inverted first, since that is the matrix the matrix parameter has to represent.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param y The response.
 #' @param n_start Unused; one starting value is enough when it is the estimate.
@@ -169,7 +169,7 @@ S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5
   p <- distrib@n_dim
   m <- mv_moment_start(y, p)
   target <- if (isTRUE(distrib@inverted)) solve(m$sigma) else m$sigma
-  eta <- struct_free_or_fit(distrib@param, target)
+  eta <- param_free_or_fit(distrib@param, target)
   list(as.list(stats::setNames(c(m$mu, eta), distrib@params)))
 }
 
@@ -195,6 +195,6 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
   p <- distrib@n_dim
   m <- mv_moment_start(y, p)
   nu0 <- 8
-  eta <- struct_free_or_fit(distrib@param, m$sigma * (nu0 - 2) / nu0)
+  eta <- param_free_or_fit(distrib@param, m$sigma * (nu0 - 2) / nu0)
   list(as.list(stats::setNames(c(m$mu, eta, nu0), distrib@params)))
 }

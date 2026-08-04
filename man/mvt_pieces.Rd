@@ -23,6 +23,6 @@ A list with \code{mu}, \code{sigma}, \code{sigma_inv},
 \description{
 Assembles the location, the scale matrix, its inverse, the log-determinant
 and the degrees of freedom from a flat parameter vector, with the
-structure's derivative matrices when they are needed.
+parameter's derivative matrices when they are needed.
 }
 \keyword{internal}

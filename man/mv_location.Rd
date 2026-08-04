@@ -30,7 +30,7 @@ distribution from its flat parameter list.
 The parameters of a multivariate distribution are scalars, so that every
 generic of the package can index them, and these two functions put them back
 into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
-PARAMETRISATION carries, whichever side the structure describes: the
+PARAMETRISATION carries, whichever side the matrix parameter describes: the
 covariance for a gaussian, and the scale matrix for a Student t, whose
 covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
 of freedom. The moment is \code{\link{variance}}, and keeping the two apart

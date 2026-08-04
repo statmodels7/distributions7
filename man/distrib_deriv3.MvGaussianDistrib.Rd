@@ -21,7 +21,7 @@ for the Hessian.}
 A named list of third-derivative component vectors.
 }
 \description{
-Closed form, built on the structure's own third derivatives from
+Closed form, built on the matrix parameter's own third derivatives from
 \pkg{parameters7}. A component with three mean indices vanishes, the
 quadratic form being quadratic; one mean index gives
 \eqn{(P_{klm} r)_i}; two give \eqn{-P_{kl}[i, j]}; none gives

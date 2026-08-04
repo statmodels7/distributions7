@@ -42,7 +42,7 @@ MvGaussianDistrib(
 
 \item{param}{The \pkg{parameters7} structure carrying the matrix.}
 
-\item{inverted}{Whether the structure parametrises the precision rather than
+\item{inverted}{Whether the matrix parameter parametrises the precision rather than
 the covariance.}
 }
 \value{

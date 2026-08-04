@@ -7,16 +7,16 @@
 mv_prefixed_names(free_names, inverted = FALSE)
 }
 \arguments{
-\item{free_names}{The structure's free names.}
+\item{free_names}{The matrix parameter's free names.}
 
-\item{inverted}{Whether the structure parametrises the precision.}
+\item{inverted}{Whether the matrix parameter parametrises the precision.}
 }
 \value{
 A character vector.
 }
 \description{
-Returns the structure's free names with \code{"sigma_"} or \code{"omega_"}
-in front, according to which side of the model the structure parametrises.
+Returns the matrix parameter's free names with \code{"sigma_"} or \code{"omega_"}
+in front, according to which side of the model the matrix parameter parametrises.
 }
 \details{
 The name of a free value says how the matrix is built, not which matrix it
@@ -25,7 +25,7 @@ produce identical names. They are different models --- the inverse of a
 compound-symmetry matrix is compound symmetry while the inverse of an AR(1)
 is not AR(1) --- and a printed table that does not distinguish them leaves
 the reader to guess. The prefix is applied by the distribution rather than
-by the structure, because the structure does not know which side it has been
+by the matrix parameter, because the matrix parameter does not know which side it has been
 handed to.
 }
 \keyword{internal}

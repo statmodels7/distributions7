@@ -16,7 +16,7 @@ NULL
 #' the named list of numbers every generic already understands, and the
 #' derivative bookkeeping -- \code{\link{deriv_names}}, the Hessian keys, the
 #' link scale, \code{\link{fit_distrib}} -- needs no special case. The
-#' constraint on the matrix lives inside the structure rather than in a link,
+#' constraint on the matrix lives inside the matrix parameter rather than in a link,
 #' which is why the links of a multivariate distribution are all the identity:
 #' the free values are already unconstrained.
 #'
@@ -344,8 +344,8 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #' Prefix a Structure's Free Names with the Matrix They Describe
 #'
 #' @description
-#' Returns the structure's free names with \code{"sigma_"} or \code{"omega_"}
-#' in front, according to which side of the model the structure parametrises.
+#' Returns the matrix parameter's free names with \code{"sigma_"} or \code{"omega_"}
+#' in front, according to which side of the model the matrix parameter parametrises.
 #'
 #' @details
 #' The name of a free value says how the matrix is built, not which matrix it
@@ -354,11 +354,11 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #' compound-symmetry matrix is compound symmetry while the inverse of an AR(1)
 #' is not AR(1) --- and a printed table that does not distinguish them leaves
 #' the reader to guess. The prefix is applied by the distribution rather than
-#' by the structure, because the structure does not know which side it has been
+#' by the matrix parameter, because the matrix parameter does not know which side it has been
 #' handed to.
 #'
-#' @param free_names The structure's free names.
-#' @param inverted Whether the structure parametrises the precision.
+#' @param free_names The matrix parameter's free names.
+#' @param inverted Whether the matrix parameter parametrises the precision.
 #'
 #' @return A character vector.
 #'

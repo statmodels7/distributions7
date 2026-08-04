@@ -17,6 +17,6 @@ A list as described in \code{\link{mv_derived}}.
 The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
 Jacobian from one central difference in each parameter. This is what a
 family gets when it says nothing more specific: the matrix on its own scale,
-named after the coordinates, rather than the structure's coordinates.
+named after the coordinates, rather than the matrix parameter's coordinates.
 }
 \keyword{internal}

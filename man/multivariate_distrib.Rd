@@ -54,7 +54,7 @@ far as the rest of the package is concerned. A mean vector contributes
 the named list of numbers every generic already understands, and the
 derivative bookkeeping -- \code{\link{deriv_names}}, the Hessian keys, the
 link scale, \code{\link{fit_distrib}} -- needs no special case. The
-constraint on the matrix lives inside the structure rather than in a link,
+constraint on the matrix lives inside the matrix parameter rather than in a link,
 which is why the links of a multivariate distribution are all the identity:
 the free values are already unconstrained.
 

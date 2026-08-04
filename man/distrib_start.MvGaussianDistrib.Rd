@@ -19,11 +19,11 @@ A list with one named parameter list.
 The sample mean and the sample covariance, which for an unstructured
 covariance are the maximum likelihood estimate itself, so the fit begins at
 the answer and confirms it in one step. For a structured covariance they are
-the closest thing the structure can represent, which is a good deal nearer
+the closest thing the matrix parameter can represent, which is a good deal nearer
 than the origin.
 }
 \details{
-When the structure parametrises the precision the sample covariance is
-inverted first, since that is the matrix the structure has to represent.
+When the matrix parameter parametrises the precision the sample covariance is
+inverted first, since that is the matrix the matrix parameter has to represent.
 }
 \keyword{internal}

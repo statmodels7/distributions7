@@ -11,7 +11,7 @@ mv_sigma_derivs(distrib, theta, n_before)
 
 \item{theta}{A named list of parameters, already aligned.}
 
-\item{n_before}{How many parameters precede the structure's free values.}
+\item{n_before}{How many parameters precede the matrix parameter's free values.}
 }
 \value{
 A list of matrices and \code{NULL}s, of length
@@ -26,7 +26,7 @@ not depend on the parameter.
 \details{
 The mean components and, for a Student \eqn{t}, the degrees of freedom leave
 the matrix alone, so those entries are \code{NULL} and cost nothing. When
-the structure parametrises the precision the chain rule of an inverse
+the matrix parameter parametrises the precision the chain rule of an inverse
 applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 }
 \keyword{internal}
