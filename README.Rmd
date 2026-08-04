@@ -53,6 +53,13 @@ and transformed wrappers, is worked out in
 pak::pak("statmodels7/distributions7")
 ```
 
+Or the whole toolkit at once, which also installs the four sibling
+packages:
+
+```{r eval=FALSE}
+pak::pak("statmodels7/statmodels7")
+```
+
 ## The usual functions
 
 Eighteen univariate distributions and two multivariate ones ship with the

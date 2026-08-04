@@ -45,6 +45,13 @@ book](https://statmodels7.github.io/book/).
 pak::pak("statmodels7/distributions7")
 ```
 
+Or the whole toolkit at once, which also installs the four sibling
+packages:
+
+``` r
+pak::pak("statmodels7/statmodels7")
+```
+
 ## The usual functions
 
 Eighteen univariate distributions and two multivariate ones ship with
@@ -115,7 +122,7 @@ fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
 #> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms
-#> Converged: yes (gradient (max-norm) < 1e-06)
+#> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error   2.5%  97.5%
