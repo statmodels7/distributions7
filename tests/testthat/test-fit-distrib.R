@@ -379,3 +379,27 @@ test_that("the method governs the budget and the rule, and nothing else does", {
   expect_false(any(c("tol", "maxit") %in% names(formals(fit_distrib))))
   expect_error(fit_distrib(d, y, maxit = 10), "unused argument")
 })
+
+
+test_that("an optimiser passed positionally is named, not coerced", {
+  # 'start' is the third argument and 'method' the fourth, so an optimiser
+  # written positionally lands in 'start'. Before this check the caller saw
+  # align_theta() refusing to coerce an S7 object, several frames down, with
+  # neither the argument nor the mistake named.
+  set.seed(42)
+  d <- gaussian_distrib()
+  y <- distrib_rng(d, 200, list(mu = 0, sigma = 1))
+
+  expect_error(fit_distrib(d, y, optimizers7::lbfgs()),
+               "'start' must be NULL or a named list")
+  expect_error(fit_distrib(d, y, optimizers7::lbfgs()), "method = ")
+  expect_error(fit_distrib(d, y, fisher_scoring()), "method = ")
+
+  # anything else that is not a list is refused too, without the hint
+  expect_error(fit_distrib(d, y, "mu"), "'start' must be NULL or a named list")
+
+  # and the call the caller meant works
+  f <- fit_distrib(d, y, method = optimizers7::lbfgs())
+  expect_true(S7::S7_inherits(f, distrib_fit))
+  expect_identical(f@method, optimizers7::lbfgs()@name)
+})

@@ -335,6 +335,24 @@ distrib_fit <- S7::new_class("distrib_fit",
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
                         level = 0.95, n_start = 5) {
+  # 'start' comes before 'method' in the signature, so an optimiser passed
+  # positionally lands in it. What the caller then sees, several frames down,
+  # is align_theta() refusing to coerce an S7 object to a list -- an error
+  # that names neither the argument nor the mistake. The check is here, where
+  # both are known.
+  if (!is.null(start) && !is.list(start)) {
+    hint <- if (S7::S7_inherits(start, optimizers7::optimizer) ||
+                S7::S7_inherits(start, FisherScoring)) {
+      "\n  It looks like an optimiser: pass it as 'method = ', since 'start'\n  is the third argument and 'method' the fourth."
+    } else {
+      ""
+    }
+    stop(sprintf(paste0(
+      "'start' must be NULL or a named list of parameter values, and it is ",
+      "'%s'.%s"
+    ), paste(class(start), collapse = "/"), hint), call. = FALSE)
+  }
+
   # One argument says how to optimise, and it takes one of three things: a
   # fisher_scoring() specification, an optimizers7 optimiser, or the name of
   # one of the three ready-made strategies. How the expected information is to
