@@ -77,11 +77,9 @@ fourth-order central stencil.</p>
 \(\nu\) of a fitted likelihood. Its truncation error is \(O(h^2)\) per
 observation and does <strong>not</strong> cancel when the observations are summed,
 because it is a bias rather than noise: on a sample of a few thousand it
-leaves the summed score at about \(10^{-9}\), which is above the default
-gradient tolerance of <code><a href="fit_distrib.html">fit_distrib</a></code> and would make the fit run
-to its iteration limit and report failure at a point that is in fact the
-maximum. The five-point stencil is \(O(h^4)\) and takes that to the level
-of rounding, at the cost of two more evaluations.</p>
+leaves the summed score at about \(10^{-8}\), an order of magnitude worse
+than the five-point stencil, which is \(O(h^4)\) and reaches the level of
+rounding at the cost of two more evaluations.</p>
 <p>This is one stencil applied to an analytic quantity, not a difference of a
 difference.</p>
     </div>

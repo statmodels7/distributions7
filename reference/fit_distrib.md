@@ -68,9 +68,12 @@ fit_distrib(
 
 - tol:
 
-  Convergence tolerance on the score, used to build `crit_grad(tol)`.
-  Defaults to `1e-10`. A method object carrying its own stopping rule
-  overrides it.
+  Convergence tolerance on the score **per observation**. Defaults to
+  `1e-10`. The rule handed to the optimiser is `crit_grad(tol * n)`,
+  since the gradient it sees is summed over the sample and its
+  attainable floor grows with \\n\\; a bound on the sum would mean
+  something different for every sample size. A method object carrying
+  its own stopping rule overrides this.
 
 - level:
 

@@ -112,9 +112,12 @@ overrides it.</p></dd>
 
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
-<dd><p>Convergence tolerance on the score, used to build
-<code>crit_grad(tol)</code>. Defaults to <code>1e-10</code>. A method object carrying
-its own stopping rule overrides it.</p></dd>
+<dd><p>Convergence tolerance on the score <strong>per observation</strong>.
+Defaults to <code>1e-10</code>. The rule handed to the optimiser is
+<code>crit_grad(tol * n)</code>, since the gradient it sees is summed over the
+sample and its attainable floor grows with \(n\); a bound on the sum
+would mean something different for every sample size. A method object
+carrying its own stopping rule overrides this.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>

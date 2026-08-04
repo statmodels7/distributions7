@@ -82,13 +82,12 @@ computed more accurately than the table above, so a stopping rule on the
 gradient cannot be satisfied below that level however good the optimiser
 is.
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-defaults to `tol = 1e-10` on the summed gradient, which is at or under
-the floor: on a sample of a few thousand the fit reaches the maximum,
-drives the three closed-form components to \\10^{-13}\\, and then runs
-to its iteration limit reporting `converged = FALSE` at a point that is
-in fact the maximum. Pass `tol = 1e-8` for this family. The limit is
-arithmetic and not a defect: a score containing a finite difference
-cannot be driven below the difference's own error.
+tests the score **per observation**, and its default of \\10^{-10}\\
+leaves room: on samples of 500 to 4000 the summed score reaches
+\\10^{-10}\\ to \\3 \times 10^{-9}\\, which is \\10^{-13}\\ per
+observation, and the fit converges in four or five iterations. A rule
+expressed on the summed gradient at that tolerance would not be
+attainable, which is why the tolerance is not expressed that way.
 
 **Distribution function.** There is no elementary form, so the base
 class integrates the density and inverts the result by root finding.
@@ -164,12 +163,12 @@ c(skew_t = skewness(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5)),
 #>            skew_t skew_normal_bound 
 #>          2.477531          0.995300 
 
-# A fit asks for a tolerance the score in nu can actually reach, and uses
-# the observed Hessian: this family has no closed-form expected information,
-# so Fisher scoring would approximate it by quadrature at every step.
+# The observed Hessian is the cheap route here: this family has no
+# closed-form expected information, so Fisher scoring would approximate it
+# by quadrature at every step.
 set.seed(1)
 y <- distrib_rng(d, 200, theta)
-coef(fit_distrib(d, y, method = "newton", tol = 1e-8, start = theta))
+coef(fit_distrib(d, y, method = optimizers7::newton(), start = theta))
 #>          mu       sigma       alpha          nu 
 #> -0.02273189  0.95605544  2.98317484  3.77234947 
 ```

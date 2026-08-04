@@ -117,14 +117,12 @@ score</td><td>about \(10^{-8}\)</td></tr><tr><td>\(\nu\) twice</td><td>five-poin
 \(10^{-6}\)</td></tr></table><p><strong>The tolerance a fit can ask for.</strong> The score in \(\nu\) cannot be
 computed more accurately than the table above, so a stopping rule on the
 gradient cannot be satisfied below that level however good the optimiser is.
-<code><a href="fit_distrib.html">fit_distrib</a></code> defaults to <code>tol = 1e-10</code> on the summed
-gradient, which is at or under the floor: on a sample of a few thousand the
-fit reaches the maximum, drives the three closed-form components to
-\(10^{-13}\), and then runs to its iteration limit reporting
-<code>converged = FALSE</code> at a point that is in fact the maximum. Pass
-<code>tol = 1e-8</code> for this family. The limit is arithmetic and not a defect:
-a score containing a finite difference cannot be driven below the
-difference's own error.</p>
+<code><a href="fit_distrib.html">fit_distrib</a></code> tests the score <strong>per observation</strong>, and its
+default of \(10^{-10}\) leaves room: on samples of 500 to 4000 the summed
+score reaches \(10^{-10}\) to \(3 \times 10^{-9}\), which is
+\(10^{-13}\) per observation, and the fit converges in four or five
+iterations. A rule expressed on the summed gradient at that tolerance would
+not be attainable, which is why the tolerance is not expressed that way.</p>
 <p><strong>Distribution function.</strong> There is no elementary form, so the base
 class integrates the density and inverts the result by root finding.</p>
 <p><strong>Expected information</strong> has no closed form either and is approximated
@@ -187,12 +185,12 @@ perturbation of symmetry with emphasis on a multivariate skew t distribution.
 <span class="r-out co"><span class="r-pr">#&gt;</span>            skew_t skew_normal_bound </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          2.477531          0.995300 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A fit asks for a tolerance the score in nu can actually reach, and uses</span></span></span>
-<span class="r-in"><span><span class="co"># the observed Hessian: this family has no closed-form expected information,</span></span></span>
-<span class="r-in"><span><span class="co"># so Fisher scoring would approximate it by quadrature at every step.</span></span></span>
+<span class="r-in"><span><span class="co"># The observed Hessian is the cheap route here: this family has no</span></span></span>
+<span class="r-in"><span><span class="co"># closed-form expected information, so Fisher scoring would approximate it</span></span></span>
+<span class="r-in"><span><span class="co"># by quadrature at every step.</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">200</span>, <span class="va">theta</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="st">"newton"</span>, tol <span class="op">=</span> <span class="fl">1e-8</span>, start <span class="op">=</span> <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton</a></span><span class="op">(</span><span class="op">)</span>, start <span class="op">=</span> <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          mu       sigma       alpha          nu </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.02273189  0.95605544  2.98317484  3.77234947 </span>
 <span class="r-in"><span></span></span>
