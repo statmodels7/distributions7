@@ -63,7 +63,7 @@ parameter scale and reported with standard errors and confidence intervals.</p>
 <span>  start <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="fisher_scoring.html">fisher_scoring</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  maxit <span class="op">=</span> <span class="fl">200</span>,</span>
-<span>  tol <span class="op">=</span> <span class="fl">1e-10</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-06</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  n_start <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -113,11 +113,24 @@ overrides it.</p></dd>
 
 <dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
 <dd><p>Convergence tolerance on the score <strong>per observation</strong>.
-Defaults to <code>1e-10</code>. The rule handed to the optimiser is
-<code>crit_grad(tol * n)</code>, since the gradient it sees is summed over the
-sample and its attainable floor grows with \(n\); a bound on the sum
-would mean something different for every sample size. A method object
-carrying its own stopping rule overrides this.</p></dd>
+Defaults to <code>1e-6</code>. The optimiser is handed the <em>mean</em> negative
+log-likelihood, so this is what <code>crit_grad(tol)</code> tests, and a
+criterion supplied through <code>method</code> is measured on the same scale. A
+method object carrying its own stopping rule overrides this one.</p>
+<p>The default is not arbitrary. A line search accepts a step only when the
+objective decreases by a definite amount, and near the maximum that
+decrease is about \(\lVert U/n \rVert^2 / (2\lambda)\) for a curvature
+\(\lambda\). Once it falls below the rounding of the objective itself,
+about \(\varepsilon \lvert \ell/n \rvert\), no step can be verified and
+the search stops, so the reachable floor is near
+\(\sqrt{2 \lambda \varepsilon \lvert \ell/n \rvert}\) — of order
+<code>1e-8</code> for an objective of order one. Measured over several
+families, methods and samples that floor is usually near <code>1e-15</code> but
+reaches <code>1e-8</code>, so the default sits about two orders above it. A
+tighter tolerance asks for accuracy the arithmetic cannot certify, and
+whether a given run reaches it then depends on the platform. Nothing
+statistical is lost: a score of <code>1e-6</code> per observation places the
+estimate within a small fraction of a standard error of the maximum.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>

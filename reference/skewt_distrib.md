@@ -170,5 +170,5 @@ set.seed(1)
 y <- distrib_rng(d, 200, theta)
 coef(fit_distrib(d, y, method = optimizers7::newton(), start = theta))
 #>          mu       sigma       alpha          nu 
-#> -0.02273189  0.95605544  2.98317484  3.77234947 
+#> -0.02273172  0.95605508  2.98317264  3.77234496 
 ```

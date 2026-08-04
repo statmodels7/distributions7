@@ -100,8 +100,8 @@ sn <- skewnormal_distrib()
 set.seed(2)
 ys <- distrib_rng(sn, 300, list(mu = 0, sigma = 1, alpha = 3))
 coef(fit_distrib(sn, ys, method = fisher_scoring(approx = "opg")))
-#>        mu     sigma     alpha 
-#> 0.0906292 1.0198691 3.1571434 
+#>         mu      sigma      alpha 
+#> 0.09063071 1.01986793 3.15712508 
 
 try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
 #> Error : 'gaussian' computes its expected information in closed form, so the 'approx'

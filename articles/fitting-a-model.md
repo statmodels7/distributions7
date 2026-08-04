@@ -41,8 +41,8 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 4   evaluations: f 5, g 5
-#> Converged: yes (gradient (max-norm) < 1e-10)
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error   2.5%  97.5%
@@ -73,7 +73,7 @@ coef(fit)
 vcov(fit)
 #>                 mu      sigma2
 #> mu     0.004024019 0.005451015
-#> sigma2 0.005451015 0.022443705
+#> sigma2 0.005451015 0.022443706
 logLik(fit)
 #> 'log Lik.' -844.0323 (df=2)
 confint(fit)
@@ -140,8 +140,8 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 4   evaluations: f 5, g 5
-#> Converged: yes (gradient (max-norm) < 1e-10)
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>    Estimate Std. Error   2.5%  97.5%
