@@ -55,11 +55,14 @@ reference:
   - invgauss_distrib
   - lognormal_distrib
   - weibull_distrib
+  - exponential_distrib
+  - chisq_distrib
   - beta_distrib
   - bernoulli_distrib
   - binomial_distrib
   - poisson_distrib
   - negbin_distrib
+  - geometric_distrib
 
 - title: Probability functions
   desc: Density, distribution and quantile functions, and random generation.
@@ -208,6 +211,10 @@ reference:
   contents: [GumbelDistrib, ends_with(".GumbelDistrib")]
 - title: Weibull
   contents: [WeibullDistrib, ends_with(".WeibullDistrib")]
+- title: Exponential
+  contents: [ExponentialDistrib, ends_with(".ExponentialDistrib")]
+- title: Chi-squared
+  contents: [ChisqDistrib, ends_with(".ChisqDistrib")]
 - title: Gamma
   contents: [GammaDistrib, ends_with(".GammaDistrib")]
 - title: Inverse Gaussian
@@ -224,6 +231,8 @@ reference:
   contents: [PoissonDistrib, ends_with(".PoissonDistrib")]
 - title: Negative binomial
   contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
+- title: Geometric
+  contents: [GeometricDistrib, ends_with(".GeometricDistrib")]
 
 - title: Multivariate gaussian
   contents: [MvGaussianDistrib, ends_with(".MvGaussianDistrib")]

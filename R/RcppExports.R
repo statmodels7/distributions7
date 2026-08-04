@@ -105,6 +105,50 @@ cauchy_deriv4_expected_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_cauchy_deriv4_expected_cpp`, y, mu, sigma)
 }
 
+chisq_gradient_cpp <- function(y, mu) {
+    .Call(`_distributions7_chisq_gradient_cpp`, y, mu)
+}
+
+chisq_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_chisq_hessian_cpp`, y, mu)
+}
+
+chisq_deriv3_cpp <- function(y, mu) {
+    .Call(`_distributions7_chisq_deriv3_cpp`, y, mu)
+}
+
+chisq_deriv4_cpp <- function(y, mu) {
+    .Call(`_distributions7_chisq_deriv4_cpp`, y, mu)
+}
+
+exponential_gradient_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_gradient_cpp`, y, mu)
+}
+
+exponential_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_hessian_cpp`, y, mu)
+}
+
+exponential_expected_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_expected_hessian_cpp`, y, mu)
+}
+
+exponential_deriv3_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_deriv3_cpp`, y, mu)
+}
+
+exponential_deriv3_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_deriv3_expected_cpp`, y, mu)
+}
+
+exponential_deriv4_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_deriv4_cpp`, y, mu)
+}
+
+exponential_deriv4_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_exponential_deriv4_expected_cpp`, y, mu)
+}
+
 gamma_gradient_cpp <- function(y, mu, sigma2) {
     .Call(`_distributions7_gamma_gradient_cpp`, y, mu, sigma2)
 }
@@ -159,6 +203,34 @@ gaussian_deriv4_cpp <- function(y, mu, sigma) {
 
 gaussian_deriv4_expected_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_deriv4_expected_cpp`, y, mu, sigma)
+}
+
+geometric_gradient_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_gradient_cpp`, y, mu)
+}
+
+geometric_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_hessian_cpp`, y, mu)
+}
+
+geometric_expected_hessian_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_expected_hessian_cpp`, y, mu)
+}
+
+geometric_deriv3_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_deriv3_cpp`, y, mu)
+}
+
+geometric_deriv3_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_deriv3_expected_cpp`, y, mu)
+}
+
+geometric_deriv4_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_deriv4_cpp`, y, mu)
+}
+
+geometric_deriv4_expected_cpp <- function(y, mu) {
+    .Call(`_distributions7_geometric_deriv4_expected_cpp`, y, mu)
 }
 
 gumbel_deriv3_cpp <- function(y, mu, sigma) {
