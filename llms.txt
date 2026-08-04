@@ -1506,6 +1506,10 @@ divergent density.
 - [`distrib_start.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.distrib.md)
   : Random Starting Values
 
+- [`distributions7`](https://statmodels7.github.io/distributions7/reference/distributions7-package.md)
+  [`distributions7-package`](https://statmodels7.github.io/distributions7/reference/distributions7-package.md)
+  : distributions7: S7 Framework for Probability Distributions
+
 - [`expectation.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
   : Expectation for Truncated Continuous Distributions
 
