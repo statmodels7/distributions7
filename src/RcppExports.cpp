@@ -1185,6 +1185,58 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// negbin1_logpmf_cpp
+NumericVector negbin1_logpmf_cpp(NumericVector y, NumericVector mu, NumericVector theta);
+RcppExport SEXP _distributions7_negbin1_logpmf_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_logpmf_cpp(y, mu, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// negbin1_gradient_cpp
+List negbin1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta);
+RcppExport SEXP _distributions7_negbin1_gradient_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_gradient_cpp(y, mu, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// negbin1_hessian_cpp
+List negbin1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta);
+RcppExport SEXP _distributions7_negbin1_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_hessian_cpp(y, mu, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// negbin1_expected_hessian_cpp
+List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta);
+RcppExport SEXP _distributions7_negbin1_expected_hessian_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type theta(thetaSEXP);
+    rcpp_result_gen = Rcpp::wrap(negbin1_expected_hessian_cpp(y, mu, theta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // negbin_deriv3_cpp
 List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta);
 RcppExport SEXP _distributions7_negbin_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP thetaSEXP) {
@@ -1621,6 +1673,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_negbin_gradient_cpp", (DL_FUNC) &_distributions7_negbin_gradient_cpp, 3},
     {"_distributions7_negbin_hessian_cpp", (DL_FUNC) &_distributions7_negbin_hessian_cpp, 3},
     {"_distributions7_negbin_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin_expected_hessian_cpp, 3},
+    {"_distributions7_negbin1_logpmf_cpp", (DL_FUNC) &_distributions7_negbin1_logpmf_cpp, 3},
+    {"_distributions7_negbin1_gradient_cpp", (DL_FUNC) &_distributions7_negbin1_gradient_cpp, 3},
+    {"_distributions7_negbin1_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_hessian_cpp, 3},
+    {"_distributions7_negbin1_expected_hessian_cpp", (DL_FUNC) &_distributions7_negbin1_expected_hessian_cpp, 3},
     {"_distributions7_negbin_deriv3_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_cpp, 3},
     {"_distributions7_negbin_deriv3_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_expected_cpp, 3},
     {"_distributions7_negbin_deriv4_cpp", (DL_FUNC) &_distributions7_negbin_deriv4_cpp, 3},

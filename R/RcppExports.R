@@ -369,6 +369,22 @@ negbin_expected_hessian_cpp <- function(y, mu, theta) {
     .Call(`_distributions7_negbin_expected_hessian_cpp`, y, mu, theta)
 }
 
+negbin1_logpmf_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin1_logpmf_cpp`, y, mu, theta)
+}
+
+negbin1_gradient_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin1_gradient_cpp`, y, mu, theta)
+}
+
+negbin1_hessian_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin1_hessian_cpp`, y, mu, theta)
+}
+
+negbin1_expected_hessian_cpp <- function(y, mu, theta) {
+    .Call(`_distributions7_negbin1_expected_hessian_cpp`, y, mu, theta)
+}
+
 negbin_deriv3_cpp <- function(y, mu, theta) {
     .Call(`_distributions7_negbin_deriv3_cpp`, y, mu, theta)
 }

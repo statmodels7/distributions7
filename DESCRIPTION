@@ -80,6 +80,7 @@ Collate:
     'mv_plot.R'
     'mvstudent_t_distrib.R'
     'mv_summary.R'
+    'negbin1_distrib.R'
     'numerical_fallbacks.R'
     'starting_values.R'
     'transformations.R'
