@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R invgauss2_distrib.R beta2_distrib.R betabinom2_distrib.R
 NULL
 
 #' @title Raw and Central Moments of a Distribution
@@ -2097,4 +2097,178 @@ S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
 S7::method(kurtosis, Gamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   6 * theta[[2]] + moment_const(theta, 2L, 0)
+}
+
+# --- invgauss2, beta2, betabinom2 ------------------------------------------
+
+#' @title Mean of the Inverse Gaussian in Mean and Shape
+#' @name mean.InvGauss2Distrib
+#' @description Closed form: \eqn{\mu}.
+#' @param x An \code{InvGauss2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, InvGauss2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
+}
+
+#' @title Variance of the Inverse Gaussian in Mean and Shape
+#' @name variance.InvGauss2Distrib
+#' @description Closed form: \eqn{\mu^3/\lambda}.
+#' @param x An \code{InvGauss2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, InvGauss2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[1]]^3 / theta[[2]]
+}
+
+#' @title Skewness of the Inverse Gaussian in Mean and Shape
+#' @name skewness.InvGauss2Distrib
+#' @description Closed form: \eqn{3\sqrt{\mu/\lambda}}.
+#' @param x An \code{InvGauss2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, InvGauss2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  3 * sqrt(theta[[1]] / theta[[2]])
+}
+
+#' @title Kurtosis of the Inverse Gaussian in Mean and Shape
+#' @name kurtosis.InvGauss2Distrib
+#' @description Closed form: excess \eqn{15\mu/\lambda}.
+#' @param x An \code{InvGauss2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, InvGauss2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  15 * theta[[1]] / theta[[2]]
+}
+
+#' @title Mean of the Beta in Its Shapes
+#' @name mean.Beta2Distrib
+#' @description Closed form: \eqn{\alpha/(\alpha+\beta)}.
+#' @param x A \code{Beta2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[1]] / (theta[[1]] + theta[[2]])
+}
+
+#' @title Variance of the Beta in Its Shapes
+#' @name variance.Beta2Distrib
+#' @description Closed form:
+#'   \eqn{\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}}.
+#' @param x A \code{Beta2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  a <- theta[[1]]
+  b <- theta[[2]]
+  a * b / ((a + b)^2 * (a + b + 1))
+}
+
+#' @title Skewness of the Beta in Its Shapes
+#' @name skewness.Beta2Distrib
+#' @description Closed form:
+#'   \eqn{2(\beta-\alpha)\sqrt{\alpha+\beta+1}/
+#'        \{(\alpha+\beta+2)\sqrt{\alpha\beta}\}}.
+#' @param x A \code{Beta2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, Beta2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  a <- theta[[1]]
+  b <- theta[[2]]
+  2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b))
+}
+
+#' @title Kurtosis of the Beta in Its Shapes
+#' @name kurtosis.Beta2Distrib
+#' @description Closed form; excess.
+#' @param x A \code{Beta2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  a <- theta[[1]]
+  b <- theta[[2]]
+  6 * ((a - b)^2 * (a + b + 1) - a * b * (a + b + 2)) /
+    (a * b * (a + b + 2) * (a + b + 3))
+}
+
+#' @title Mean of the Beta-Binomial in Its Shapes
+#' @name mean.BetaBinom2Distrib
+#' @description Closed form: \eqn{n\alpha/(\alpha+\beta)}.
+#' @param x A \code{BetaBinom2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
+                    1 / (theta[[1]] + theta[[2]]), x@size)$mean
+}
+
+#' @title Variance of the Beta-Binomial in Its Shapes
+#' @name variance.BetaBinom2Distrib
+#' @description Closed form, from the falling factorial moments.
+#' @param x A \code{BetaBinom2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
+                    1 / (theta[[1]] + theta[[2]]), x@size)$c2
+}
+
+#' @title Skewness of the Beta-Binomial in Its Shapes
+#' @name skewness.BetaBinom2Distrib
+#' @description Closed form, from the falling factorial moments.
+#' @param x A \code{BetaBinom2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  m <- betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
+                         1 / (theta[[1]] + theta[[2]]), x@size)
+  m$c3 / m$c2^1.5
+}
+
+#' @title Kurtosis of the Beta-Binomial in Its Shapes
+#' @name kurtosis.BetaBinom2Distrib
+#' @description Closed form, from the falling factorial moments; excess.
+#' @param x A \code{BetaBinom2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  m <- betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
+                         1 / (theta[[1]] + theta[[2]]), x@size)
+  m$c4 / m$c2^2 - 3
 }

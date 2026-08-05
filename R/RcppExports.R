@@ -385,6 +385,26 @@ invgauss_expected_hessian_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_expected_hessian_cpp`, y, mu, phi)
 }
 
+invgauss2_gradient_cpp <- function(y, mu, lambda) {
+    .Call(`_distributions7_invgauss2_gradient_cpp`, y, mu, lambda)
+}
+
+invgauss2_hessian_cpp <- function(y, mu, lambda) {
+    .Call(`_distributions7_invgauss2_hessian_cpp`, y, mu, lambda)
+}
+
+invgauss2_expected_hessian_cpp <- function(y, mu, lambda) {
+    .Call(`_distributions7_invgauss2_expected_hessian_cpp`, y, mu, lambda)
+}
+
+invgauss2_deriv3_cpp <- function(y, mu, lambda, expected) {
+    .Call(`_distributions7_invgauss2_deriv3_cpp`, y, mu, lambda, expected)
+}
+
+invgauss2_deriv4_cpp <- function(y, mu, lambda, expected) {
+    .Call(`_distributions7_invgauss2_deriv4_cpp`, y, mu, lambda, expected)
+}
+
 invgauss_deriv3_cpp <- function(y, mu, phi) {
     .Call(`_distributions7_invgauss_deriv3_cpp`, y, mu, phi)
 }

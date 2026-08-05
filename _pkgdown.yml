@@ -56,17 +56,20 @@ reference:
   - gamma1_distrib
   - gamma2_distrib
   - invgauss1_distrib
+  - invgauss2_distrib
   - lognormal1_distrib
   - weibull1_distrib
   - exponential_distrib
   - chisq_distrib
   - beta1_distrib
+  - beta2_distrib
   - bernoulli_distrib
   - binomial_distrib
   - poisson_distrib
   - negbin2_distrib
   - geometric_distrib
   - betabinom1_distrib
+  - betabinom2_distrib
   - negbin1_distrib
   - gpd_distrib
   - vonmises1_distrib
@@ -244,10 +247,14 @@ reference:
   contents: [Gamma1Distrib, ends_with(".Gamma1Distrib"), gamma1_shape_rate]
 - title: Inverse Gaussian
   contents: [InvGauss1Distrib, ends_with(".InvGauss1Distrib")]
+- title: Inverse Gaussian in mean and shape
+  contents: [InvGauss2Distrib, ends_with(".InvGauss2Distrib")]
 - title: Lognormal
   contents: [Lognormal1Distrib, ends_with(".Lognormal1Distrib")]
 - title: Beta
   contents: [Beta1Distrib, ends_with(".Beta1Distrib")]
+- title: Beta in its shapes
+  contents: [Beta2Distrib, ends_with(".Beta2Distrib"), beta2_higher]
 - title: Bernoulli
   contents: [BernoulliDistrib, ends_with(".BernoulliDistrib")]
 - title: Binomial
@@ -266,6 +273,9 @@ reference:
   contents: [NegBin1Distrib, ends_with(".NegBin1Distrib")]
 - title: Beta-binomial
   contents: [BetaBinom1Distrib, ends_with(".BetaBinom1Distrib")]
+- title: Beta-binomial in its shapes
+  contents: [BetaBinom2Distrib, ends_with(".BetaBinom2Distrib"),
+             betabinom2_component, betabinom2_derivs, betabinom2_expected]
 - title: Geometric
   contents: [GeometricDistrib, ends_with(".GeometricDistrib")]
 
