@@ -16,7 +16,7 @@ LinkingTo:
     Rcpp
 Imports:
     graphics,
-    parameters7,
+    parameters7 (>= 0.4.0),
     linkfunctions7,
     optimizers7,
     Rcpp,
