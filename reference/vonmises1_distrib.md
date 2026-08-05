@@ -43,6 +43,22 @@ I_0(\kappa)}\$\$ The normalising constant is a modified Bessel function,
 and it is evaluated exponentially scaled with the exponent added back,
 so a concentration past \\\kappa = 700\\ does not overflow.
 
+**Moments.** [`mean`](https://rdrr.io/r/base/mean.html),
+[`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md)
+and
+[`kurtosis`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
+are the ordinary moments of \\Y\\ as a number on \\\[-\pi, \pi)\\, and
+they are obtained numerically. They are not the circular quantities and
+they are not what \\\mu\\ and \\\kappa\\ describe: \\\mu\\ is the mean
+*direction*, and \\\mathbb{E}\[Y\] \ne \mu\\ whenever \\\mu \ne 0\\,
+because the interval is cut at \\\pm\pi\\ rather than at \\\mu \pm \pi\\
+and the density is not symmetric about \\\mu\\ on it. At \\\mu = 1.2\\
+and \\\kappa = 2\\ the ordinary mean is 1.079. The circular mean is
+\\\mu\\ and the mean resultant length is \\\rho =
+I_1(\kappa)/I_0(\kappa)\\, both closed form, and neither is returned by
+a generic whose name means something else.
+
 **Score, observed and expected Hessian.** Writing \\A(\kappa) =
 I_1(\kappa)/I_0(\kappa)\\ for the derivative of \\\log I_0\\,
 \$\$\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad

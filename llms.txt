@@ -2072,6 +2072,9 @@ divergent density.
 - [`kurtosis.distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.distrib.md)
   : Kurtosis of a Distribution
 
+- [`kurtosis.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.multivariate_distrib.md)
+  : No Kurtosis Without Saying Which One
+
 - [`kurtosis.numeric`](https://statmodels7.github.io/distributions7/reference/kurtosis.numeric.md)
   : Sample Kurtosis
 
@@ -2440,6 +2443,9 @@ divergent density.
 
 - [`skewness.distrib`](https://statmodels7.github.io/distributions7/reference/skewness.distrib.md)
   : Skewness of a Distribution
+
+- [`skewness.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/skewness.multivariate_distrib.md)
+  : No Skewness Without Saying Which One
 
 - [`skewness.numeric`](https://statmodels7.github.io/distributions7/reference/skewness.numeric.md)
   : Sample Skewness

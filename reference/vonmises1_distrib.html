@@ -86,6 +86,18 @@ $$f(y) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)}$$
 The normalising constant is a modified Bessel function, and it is evaluated
 exponentially scaled with the exponent added back, so a concentration past
 \(\kappa = 700\) does not overflow.</p>
+<p><strong>Moments.</strong> <code><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></code>, <code><a href="variance.html">variance</a></code>,
+<code><a href="skewness.html">skewness</a></code> and <code><a href="kurtosis.html">kurtosis</a></code> are the ordinary moments
+of \(Y\) as a number on \([-\pi, \pi)\), and they are obtained
+numerically. They are not the circular quantities and they are not what
+\(\mu\) and \(\kappa\) describe: \(\mu\) is the mean <em>direction</em>,
+and \(\mathbb{E}[Y] \ne \mu\) whenever \(\mu \ne 0\), because the
+interval is cut at \(\pm\pi\) rather than at \(\mu \pm \pi\) and the
+density is not symmetric about \(\mu\) on it. At \(\mu = 1.2\) and
+\(\kappa = 2\) the ordinary mean is 1.079. The circular mean is
+\(\mu\) and the mean resultant length is
+\(\rho = I_1(\kappa)/I_0(\kappa)\), both closed form, and neither is
+returned by a generic whose name means something else.</p>
 <p><strong>Score, observed and expected Hessian.</strong> Writing
 \(A(\kappa) = I_1(\kappa)/I_0(\kappa)\) for the derivative of
 \(\log I_0\),
