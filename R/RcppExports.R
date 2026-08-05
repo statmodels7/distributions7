@@ -221,6 +221,22 @@ gaussian_deriv4_expected_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_deriv4_expected_cpp`, y, mu, sigma)
 }
 
+gengamma_logpdf_cpp <- function(y, a, d, p) {
+    .Call(`_distributions7_gengamma_logpdf_cpp`, y, a, d, p)
+}
+
+gengamma_gradient_cpp <- function(y, a, d, p) {
+    .Call(`_distributions7_gengamma_gradient_cpp`, y, a, d, p)
+}
+
+gengamma_hessian_cpp <- function(y, a, d, p) {
+    .Call(`_distributions7_gengamma_hessian_cpp`, y, a, d, p)
+}
+
+gengamma_expected_hessian_cpp <- function(y, a, d, p) {
+    .Call(`_distributions7_gengamma_expected_hessian_cpp`, y, a, d, p)
+}
+
 geometric_gradient_cpp <- function(y, mu) {
     .Call(`_distributions7_geometric_gradient_cpp`, y, mu)
 }

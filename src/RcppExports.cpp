@@ -711,6 +711,62 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gengamma_logpdf_cpp
+NumericVector gengamma_logpdf_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p);
+RcppExport SEXP _distributions7_gengamma_logpdf_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_logpdf_cpp(y, a, d, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_gradient_cpp
+List gengamma_gradient_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p);
+RcppExport SEXP _distributions7_gengamma_gradient_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_gradient_cpp(y, a, d, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_hessian_cpp
+List gengamma_hessian_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p);
+RcppExport SEXP _distributions7_gengamma_hessian_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_hessian_cpp(y, a, d, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gengamma_expected_hessian_cpp
+List gengamma_expected_hessian_cpp(NumericVector y, NumericVector a, NumericVector d, NumericVector p);
+RcppExport SEXP _distributions7_gengamma_expected_hessian_cpp(SEXP ySEXP, SEXP aSEXP, SEXP dSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type a(aSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type d(dSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(gengamma_expected_hessian_cpp(y, a, d, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // geometric_gradient_cpp
 List geometric_gradient_cpp(NumericVector y, NumericVector mu);
 RcppExport SEXP _distributions7_geometric_gradient_cpp(SEXP ySEXP, SEXP muSEXP) {
@@ -1688,6 +1744,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_gaussian_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gaussian_deriv3_expected_cpp, 3},
     {"_distributions7_gaussian_deriv4_cpp", (DL_FUNC) &_distributions7_gaussian_deriv4_cpp, 3},
     {"_distributions7_gaussian_deriv4_expected_cpp", (DL_FUNC) &_distributions7_gaussian_deriv4_expected_cpp, 3},
+    {"_distributions7_gengamma_logpdf_cpp", (DL_FUNC) &_distributions7_gengamma_logpdf_cpp, 4},
+    {"_distributions7_gengamma_gradient_cpp", (DL_FUNC) &_distributions7_gengamma_gradient_cpp, 4},
+    {"_distributions7_gengamma_hessian_cpp", (DL_FUNC) &_distributions7_gengamma_hessian_cpp, 4},
+    {"_distributions7_gengamma_expected_hessian_cpp", (DL_FUNC) &_distributions7_gengamma_expected_hessian_cpp, 4},
     {"_distributions7_geometric_gradient_cpp", (DL_FUNC) &_distributions7_geometric_gradient_cpp, 2},
     {"_distributions7_geometric_hessian_cpp", (DL_FUNC) &_distributions7_geometric_hessian_cpp, 2},
     {"_distributions7_geometric_expected_hessian_cpp", (DL_FUNC) &_distributions7_geometric_expected_hessian_cpp, 2},

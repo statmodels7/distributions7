@@ -74,6 +74,7 @@ Collate:
     'fixed.R'
     'folded.R'
     'gamma_distrib.R'
+    'gengamma_distrib.R'
     'geometric_distrib.R'
     'gpd_distrib.R'
     'methods.R'
