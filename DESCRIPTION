@@ -94,6 +94,7 @@ Collate:
     'numerical_fallbacks.R'
     'reparametrize.R'
     'reparametrized_families.R'
+    'skewnormal2_distrib.R'
     'starting_values.R'
     'transformations.R'
     'vonmises1_distrib.R'

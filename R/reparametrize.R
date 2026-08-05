@@ -159,13 +159,44 @@ reparam_jets <- function(distrib, theta, n) {
 #'
 #' @keywords internal
 reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
-  parent <- distrib@parent_distrib
   theta <- align_theta(distrib, theta)
-  th_par <- reparam_theta(distrib, theta)
+  n <- max(n_obs(distrib@parent_distrib, y), 1L)
+  chain_derivatives(
+    parent = distrib@parent_distrib,
+    y = y,
+    th_par = reparam_theta(distrib, theta),
+    jt = reparam_jets(distrib, theta, n),
+    new_params = distrib@params,
+    order = order,
+    expected = expected
+  )
+}
+
+#' The Partition Sum Itself
+#'
+#' @description
+#' Carries the parent's derivatives into new coordinates, given the jets of the
+#' map. Separated from \code{\link{reparam_chain}} so that a family written in
+#' its own right, rather than obtained through \code{\link{reparametrize}},
+#' can use the same machinery instead of a second copy of it.
+#'
+#' @param parent The distribution whose derivatives are being carried.
+#' @param y The response.
+#' @param th_par The parent's parameters, as plain numbers.
+#' @param jt The jets of the map, as \code{\link{reparam_jets}} returns them.
+#' @param new_params The names of the new parameters.
+#' @param order The derivative order, 1 to 4.
+#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
+#'
+#' @return A named list of component vectors.
+#'
+#' @seealso \code{\link{reparametrize}}
+#'
+#' @keywords internal
+chain_derivatives <- function(parent, y, th_par, jt, new_params, order,
+                              expected = FALSE) {
   p <- parent@n_params
   n <- max(n_obs(parent, y), 1L)
-
-  jt <- reparam_jets(distrib, theta, n)
   lay <- jt$lay
 
   # The parent's derivatives of every order up to the one asked for. Under
@@ -210,8 +241,8 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
     as.matrix(expand.grid(rep(list(seq_len(p)), nb)))
   })
 
-  idx <- deriv_indices(distrib@params, order)
-  nm <- deriv_names(distrib@params, order)
+  idx <- deriv_indices(new_params, order)
+  nm <- deriv_names(new_params, order)
 
   out <- lapply(seq_along(nm), function(m) {
     I <- idx[[m]]

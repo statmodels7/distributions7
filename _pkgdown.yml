@@ -48,9 +48,11 @@ reference:
   - cauchy_distrib
   - logistic_distrib
   - student_t1_distrib
+  - student_t2_distrib
   - laplace_distrib
   - pseudohuber_distrib
   - skewnormal1_distrib
+  - skewnormal2_distrib
   - skewt_distrib
   - gumbel_distrib
   - gamma1_distrib
@@ -58,7 +60,9 @@ reference:
   - invgauss1_distrib
   - invgauss2_distrib
   - lognormal1_distrib
+  - lognormal2_distrib
   - weibull1_distrib
+  - weibull3_distrib
   - exponential_distrib
   - chisq_distrib
   - beta1_distrib
@@ -73,7 +77,9 @@ reference:
   - negbin1_distrib
   - gpd_distrib
   - vonmises1_distrib
+  - vonmises2_distrib
   - gengamma1_distrib
+  - gengamma2_distrib
 
 - title: Probability functions
   desc: Density, distribution and quantile functions, and random generation.
@@ -138,6 +144,7 @@ reference:
   - zero_adjusted
   - truncated
   - folded
+  - reparametrize
   - fixed
   - transformation
   - transformer
@@ -231,6 +238,9 @@ reference:
   contents: [PseudoHuberDistrib, ends_with(".PseudoHuberDistrib")]
 - title: Skew normal
   contents: [SkewNormal1Distrib, ends_with(".SkewNormal1Distrib")]
+- title: Skew normal, centred
+  contents: [SkewNormal2Distrib, ends_with(".SkewNormal2Distrib"),
+             sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta, sn2_jets, sn2_chain]
 - title: Skew t
   contents: [SkewTDistrib, ends_with(".SkewTDistrib")]
 - title: Gumbel
@@ -267,6 +277,9 @@ reference:
   contents: [GenGamma1Distrib, ends_with(".GenGamma1Distrib")]
 - title: von Mises
   contents: [VonMises1Distrib, ends_with(".VonMises1Distrib")]
+- title: von Mises in its resultant length
+  contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"),
+             vm_A_derivs, vm_kappa_of_rho, vm2_parts]
 - title: Generalised Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: NB1 negative binomial
@@ -335,3 +348,19 @@ reference:
     the transforms that make it work on a divergent density.
   contents:
   - has_keyword("internal")
+
+- title: Reparametrized distributions
+  desc: >
+    The wrapper reparametrize() returns and the machinery behind it. The map
+    is written in ordinary R and its derivatives come from running the same
+    expression on jets, so every order the parent has in closed form survives.
+  contents:
+  - ReparamContinuousDistrib
+  - ends_with(".ReparamContinuousDistrib")
+  - ends_with(".ReparamDiscreteDistrib")
+  - reparam_theta
+  - reparam_jets
+  - reparam_chain
+  - chain_derivatives
+  - is_reparam
+  - invgauss2_by_reparam
