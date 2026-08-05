@@ -107,7 +107,7 @@ S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta) {
 #' @return A matrix with \code{choose(n + p - 1, p - 1)} rows.
 #' @seealso \code{\link{multinomial_distrib}}
 S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
-  compositions(distrib@size, distrib@n_dim)
+  numericals7::compositions(distrib@size, distrib@n_dim)
 }
 
 #' @title Multinomial Analytical Gradient

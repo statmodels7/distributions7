@@ -109,12 +109,12 @@ reparam_theta <- function(distrib, theta) {
 reparam_jets <- function(distrib, theta, n) {
   q <- distrib@n_params
   psi <- theta[seq_len(q)]
-  lay <- parameters7::jet_layout(q)
+  lay <- numericals7::jet_layout(q)
   rows <- if (any(lengths(psi) > 1L)) seq_len(n) else 1L
   th <- lapply(rows, function(r) {
     vars <- lapply(seq_len(q), function(k) {
       v <- psi[[k]]
-      parameters7::jet_var(k, list(v[[min(r, length(v))]], 1, 0, 0, 0), lay)
+      numericals7::jet_var(k, list(v[[min(r, length(v))]], 1, 0, 0, 0), lay)
     })
     names(vars) <- distrib@params
     distrib@reparam_map(vars)
@@ -236,7 +236,7 @@ chain_derivatives <- function(parent, y, th_par, jt, new_params, order,
     D[[k]][[paste(parent@params[sort(ids)], collapse = "_")]]
   }
 
-  parts <- parameters7::set_partitions(order)
+  parts <- numericals7::set_partitions(order)
   assign_grid <- lapply(seq_len(order), function(nb) {
     as.matrix(expand.grid(rep(list(seq_len(p)), nb)))
   })

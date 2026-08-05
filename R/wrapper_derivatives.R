@@ -45,10 +45,10 @@ NULL
 #'
 #' @return A list of partitions, each a list of character-vector blocks.
 #'
-#' @seealso \code{\link{set_partitions}}
+#' @seealso \code{\link[numericals7]{set_partitions}}
 #' @keywords internal
 index_partitions <- function(idx) {
-  lapply(set_partitions(length(idx)), function(p) lapply(p, function(b) idx[b]))
+  lapply(numericals7::set_partitions(length(idx)), function(p) lapply(p, function(b) idx[b]))
 }
 
 #' Canonical Component Name of a Block

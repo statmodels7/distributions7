@@ -17,6 +17,6 @@ Every way of splitting a multi-index into blocks, with the parameter names
 carried through rather than the positions.
 }
 \seealso{
-\code{\link{set_partitions}}
+\code{\link[numericals7]{set_partitions}}
 }
 \keyword{internal}

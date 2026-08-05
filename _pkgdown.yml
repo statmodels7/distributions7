@@ -167,7 +167,6 @@ reference:
   - mv_marginal
   - mv_support
   - mv_reference_draw
-  - compositions
   - mv_derived
   - mv_summary
   - n_obs

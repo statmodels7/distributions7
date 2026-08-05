@@ -40,5 +40,5 @@ nrow(mv_support(d, list(probs_alr1 = 0, probs_alr2 = 0)))
 
 }
 \seealso{
-\code{\link{multinomial_distrib}}, \code{\link{compositions}}
+\code{\link{multinomial_distrib}}, \code{\link[numericals7]{compositions}}
 }

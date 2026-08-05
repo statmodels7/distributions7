@@ -8,6 +8,7 @@ test_that("the support is enumerated and carries the whole mass", {
   supp <- mv_support(d, th)
 
   expect_identical(nrow(supp), as.integer(choose(5 + 3 - 1, 3 - 1)))
+  expect_identical(supp, numericals7::compositions(5L, 3L))
   expect_true(all(rowSums(supp) == 5))
   expect_true(all(supp >= 0))
   expect_equal(sum(distrib_pdf(d, supp, th)), 1, tolerance = 1e-12)
@@ -20,19 +21,6 @@ test_that("the support is enumerated and carries the whole mass", {
   # a point off the support has no mass
   expect_identical(distrib_pdf(d, matrix(c(2, 2, 2), 1), th), 0)
   expect_identical(distrib_pdf(d, matrix(c(2.5, 1.5, 1), 1), th), 0)
-})
-
-
-test_that("compositions enumerates every way to split an integer", {
-  expect_identical(nrow(compositions(3, 2)), 4L)
-  expect_identical(compositions(3, 2),
-                   matrix(c(0L, 1L, 2L, 3L, 3L, 2L, 1L, 0L), ncol = 2))
-  for (n in 0:5) for (k in 1:4) {
-    m <- compositions(n, k)
-    expect_identical(nrow(m), as.integer(choose(n + k - 1, k - 1)))
-    expect_true(all(rowSums(m) == n))
-    expect_identical(anyDuplicated(m), 0L)
-  }
 })
 
 

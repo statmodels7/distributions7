@@ -159,12 +159,12 @@ sn2_theta <- function(theta) {
 #' @keywords internal
 sn2_jets <- function(theta, n) {
   psi <- theta[1:3]
-  lay <- parameters7::jet_layout(3L)
+  lay <- numericals7::jet_layout(3L)
   rows <- if (any(lengths(psi) > 1L)) seq_len(n) else 1L
   th <- lapply(rows, function(r) {
     v <- vapply(psi, function(z) z[[min(r, length(z))]], numeric(1))
     js <- lapply(1:3, function(k) {
-      parameters7::jet_var(k, list(v[[k]], 1, 0, 0, 0), lay)
+      numericals7::jet_var(k, list(v[[k]], 1, 0, 0, 0), lay)
     })
     sn_cp_to_dp(js[[1]], js[[2]], js[[3]], if (v[[3]] >= 0) 1 else -1)
   })

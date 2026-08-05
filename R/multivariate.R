@@ -394,7 +394,7 @@ mv_prefixed_names <- function(free_names, inverted = FALSE) {
 #' @return A matrix with one row per support point and one column per
 #'   coordinate.
 #'
-#' @seealso \code{\link{multinomial_distrib}}, \code{\link{compositions}}
+#' @seealso \code{\link{multinomial_distrib}}, \code{\link[numericals7]{compositions}}
 #'
 #' @examples
 #' d <- multinomial_distrib(3, size = 4)
@@ -500,40 +500,6 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 }
 
 
-#' Every Way to Write an Integer as an Ordered Sum
-#'
-#' @description
-#' The weak compositions of \code{n} into \code{k} parts: every vector of
-#' \code{k} non-negative integers summing to \code{n}, one per row.
-#'
-#' @details
-#' Built by recursion on the number of parts, which is what keeps the result in
-#' a fixed order and avoids generating and filtering a full grid. There are
-#' \code{choose(n + k - 1, k - 1)} of them, so the enumeration is only
-#' practical for a moderate size: at \code{n = 20} and \code{k = 5} it is 10626
-#' rows, and at \code{k = 10} it is 10015005.
-#'
-#' @param n The total, a non-negative integer.
-#' @param k The number of parts, a positive integer.
-#'
-#' @return An integer matrix with \code{k} columns.
-#'
-#' @seealso \code{\link{mv_support}}
-#'
-#' @examples
-#' compositions(3, 2)
-#'
-#' @export
-compositions <- function(n, k) {
-  n <- as.integer(n)
-  k <- as.integer(k)
-  if (k == 1L) return(matrix(n, nrow = 1L, ncol = 1L))
-  out <- lapply(0:n, function(first) {
-    rest <- compositions(n - first, k - 1L)
-    cbind(first, rest, deparse.level = 0L)
-  })
-  do.call(rbind, out)
-}
 
 
 #' The Mean Vector and Covariance a Parameter List Describes

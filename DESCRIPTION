@@ -16,7 +16,8 @@ LinkingTo:
     Rcpp
 Imports:
     graphics,
-    parameters7 (>= 0.4.0),
+    numericals7,
+    parameters7 (>= 0.5.0),
     linkfunctions7,
     optimizers7,
     Rcpp,
@@ -25,6 +26,7 @@ Imports:
     stats,
     utils
 Remotes:
+    statmodels7/numericals7,
     statmodels7/parameters7,
     statmodels7/linkfunctions7,
     statmodels7/optimizers7

@@ -121,9 +121,10 @@ test_that("integrate fails informatively on a purely numerical high-order deriva
   }
 })
 
-test_that("set_partitions enumerates the Bell numbers", {
-  expect_length(set_partitions(1), 1)
-  expect_length(set_partitions(2), 2)
-  expect_length(set_partitions(3), 5)
-  expect_length(set_partitions(4), 15)
+test_that("the partition enumeration comes from numericals7", {
+  # The local copy is gone -- it was one of the two independent copies whose
+  # existence motivated numericals7 -- so what remains to check here is that
+  # the Bartlett machinery reaches the shared one.
+  expect_identical(lengths(lapply(1:4, numericals7::set_partitions)),
+                   c(1L, 2L, 5L, 15L))
 })

@@ -74,47 +74,6 @@ NULL
 #'   \code{\link{distrib_deriv4}}
 NULL
 
-#' All Set Partitions of a Finite Index Set
-#'
-#' @description
-#' Every way of splitting \code{{1, ..., n}} into disjoint non-empty blocks, as a
-#' list of lists of integer vectors. There are \eqn{B_n} of them, the Bell number.
-#'
-#' @details
-#' Built by the usual recursion: take each partition of \code{{1, ..., n-1}} and
-#' either add \code{n} to one of its existing blocks or open a new block for it.
-#'
-#' This is what makes the Bartlett identities work at arbitrary order. The
-#' identity of order \eqn{k} says that summing, over all partitions \eqn{\pi} of
-#' the index set, the expectation of \eqn{\prod_{B \in \pi} \ell_B} gives zero;
-#' the single-block partition is the term wanted, so it follows from all the
-#' others. Enumerating the partitions is therefore the whole content of
-#' \code{\link{expected_by_bartlett}}.
-#'
-#' @param n A positive integer, the size of the index set.
-#'
-#' @return A list of partitions. Each partition is a list of integer vectors, the
-#'   blocks.
-#'
-#' @seealso \code{\link{expected_by_bartlett}}
-#' @keywords internal
-set_partitions <- function(n) {
-  if (n <= 1L) return(list(list(1L)))
-  prev <- set_partitions(n - 1L)
-  out <- vector("list", 0L)
-  for (p in prev) {
-    for (b in seq_along(p)) {
-      q <- p
-      q[[b]] <- c(q[[b]], n)
-      out[[length(out) + 1L]] <- q
-    }
-    q <- p
-    q[[length(q) + 1L]] <- n
-    out[[length(out) + 1L]] <- q
-  }
-  out
-}
-
 #' Observed Derivatives of a Given Order
 #'
 #' @description
@@ -259,7 +218,7 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
 #' the sum running over every partition \eqn{\pi} of the index set. The
 #' single-block partition is the target, so it equals minus the sum of all the
-#' others -- which is why \code{\link{set_partitions}} is the whole algorithm and
+#' others -- which is why \code{\link[numericals7]{set_partitions}} is the whole algorithm and
 #' why the top-order derivative is never needed.
 #'
 #' At order 2 this reduces to the outer product of gradients,
@@ -277,7 +236,7 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
 #' @return A named list of expected derivative component vectors, each of length
 #'   \code{length(y)}.
 #'
-#' @seealso \code{\link{expected_derivative_methods}}, \code{\link{set_partitions}}
+#' @seealso \code{\link{expected_derivative_methods}}, \code{\link[numericals7]{set_partitions}}
 #' @keywords internal
 expected_by_bartlett <- function(distrib, y, theta, order) {
   params <- distrib@params
@@ -296,7 +255,7 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
   }
 
   # every partition except the single-block one (that is the target term)
-  parts <- Filter(function(pp) length(pp) > 1L, set_partitions(order))
+  parts <- Filter(function(pp) length(pp) > 1L, numericals7::set_partitions(order))
 
   out <- vector("list", length(nms))
   for (t in seq_along(nms)) {
