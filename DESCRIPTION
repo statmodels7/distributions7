@@ -85,6 +85,7 @@ Collate:
     'numerical_fallbacks.R'
     'starting_values.R'
     'transformations.R'
+    'vonmises_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),
