@@ -116,6 +116,11 @@ reference:
   - std_dev
   - skewness
   - kurtosis
+  - moment_const
+  - gengamma_raw_moments
+  - betabinom_factorial_moments
+  - central_from_factorial
+  - betabinom_central
 
 - title: Building on a distribution
   desc: >
