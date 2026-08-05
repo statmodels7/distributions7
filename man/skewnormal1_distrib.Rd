@@ -39,7 +39,7 @@ identically one and the family reduces to the gaussian.
 
 \strong{Cumulative distribution function:}
 \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha)}
-with \eqn{T} Owen's T function; see \code{\link{owen_t}}. The quantile
+with \eqn{T} Owen's T function; see \code{\link[numericals7]{owen_t}}. The quantile
 function has no closed form and comes from the base class by root finding.
 
 \strong{Score and observed Hessian} are closed form, written in the inverse

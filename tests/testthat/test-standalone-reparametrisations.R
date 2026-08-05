@@ -6,59 +6,10 @@
 # compute as a difference of large numbers.
 
 
-test_that("the von Mises inverse is an inverse", {
-  rho <- c(0.05, 0.2, 0.5, 0.7, 0.9, 0.99)
-  k <- vm_kappa_of_rho(rho)$kappa
-  expect_equal(vm_A(k), rho, tolerance = 1e-10)
-  expect_true(all(diff(k) > 0))
-  # outside (0, 1) there is no concentration to find
-  expect_true(is.na(vm_kappa_of_rho(0)$kappa))
-  expect_true(is.na(vm_kappa_of_rho(1)$kappa))
-})
-
-
-test_that("the derivatives of A come from the recurrences", {
-  skip_if_not_installed("numDeriv")
-  # Each order against ONE Richardson pass on the analytic order below, which
-  # is the rule everywhere in this package.
-  for (k in c(0.5, 2, 10)) {
-    a <- vm_A_derivs(k)
-    expect_equal(a$d1, numDeriv::grad(vm_A, k), tolerance = 1e-8)
-    expect_equal(a$d2, numDeriv::grad(function(z) vm_A_derivs(z)$d1, k),
-                 tolerance = 1e-7, label = paste("A''", k))
-    expect_equal(a$d3, numDeriv::grad(function(z) vm_A_derivs(z)$d2, k),
-                 tolerance = 1e-6, label = paste("A'''", k))
-    expect_equal(a$d4, numDeriv::grad(function(z) vm_A_derivs(z)$d3, k),
-                 tolerance = 1e-6, label = paste("A''''", k))
-  }
-  # A' is the variance of cos(Y - mu) and so is strictly positive, which is
-  # what keeps the inverse function rule from dividing by zero
-  expect_true(all(vm_A_derivs(c(0.01, 1, 100))$d1 > 0))
-})
-
-
-test_that("the derivatives of the von Mises inverse follow the inverse rule", {
-  skip_if_not_installed("numDeriv")
-  for (r in c(0.2, 0.5, 0.8)) {
-    k <- vm_kappa_of_rho(r)
-    expect_equal(k$d1, numDeriv::grad(function(z) vm_kappa_of_rho(z)$kappa, r),
-                 tolerance = 1e-6, label = paste("k'", r))
-    expect_equal(k$d2, numDeriv::grad(function(z) vm_kappa_of_rho(z)$d1, r),
-                 tolerance = 1e-6, label = paste("k''", r))
-    expect_equal(k$d3, numDeriv::grad(function(z) vm_kappa_of_rho(z)$d2, r),
-                 tolerance = 1e-5, label = paste("k'''", r))
-    expect_equal(k$d4, numDeriv::grad(function(z) vm_kappa_of_rho(z)$d3, r),
-                 tolerance = 1e-4, label = paste("k''''", r))
-    # the first derivative is the reciprocal of A', by construction
-    expect_equal(k$d1, 1 / vm_A_derivs(k$kappa)$d1)
-  }
-})
-
-
 test_that("vonmises2 is the von Mises at the matching concentration", {
   d <- vonmises2_distrib()
   th <- list(mu = 0.5, rho = 0.7)
-  k <- vm_kappa_of_rho(0.7)$kappa
+  k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
   set.seed(2)
   y <- distrib_rng(d, 200, th)
   expect_identical(distrib_pdf(d, y, th),
@@ -74,7 +25,7 @@ test_that("vonmises2 is the von Mises at the matching concentration", {
   # the expected information in rho is the inverse of the one in kappa, which
   # is what a one-to-one change of a single parameter must give
   eh <- distrib_expected_hessian(d, 0, th)
-  expect_equal(eh[["rho_rho"]][1], -1 / vm_A_derivs(k)$d1, tolerance = 1e-10)
+  expect_equal(eh[["rho_rho"]][1], -1 / numericals7::bessel_i_ratio_derivs(k)$d1, tolerance = 1e-10)
   expect_identical(eh[["mu_rho"]][1], 0)
 
   set.seed(9)

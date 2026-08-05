@@ -279,8 +279,7 @@ reference:
 - title: von Mises
   contents: [VonMises1Distrib, ends_with(".VonMises1Distrib")]
 - title: von Mises in its resultant length
-  contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"),
-             vm_A_derivs, vm_kappa_of_rho, vm2_parts]
+  contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"), vm2_parts]
 - title: Generalised Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: NB1 negative binomial

@@ -25,51 +25,6 @@ NULL
 #' bounded support.
 VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distrib)
 
-#' The Mean Resultant Length of a von Mises
-#'
-#' @description
-#' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}, the expected cosine of the
-#' deviation from the location.
-#'
-#' @details
-#' Both Bessel functions are taken exponentially scaled, so the factor
-#' \eqn{e^{\kappa}} they share cancels in the ratio and the result stays
-#' finite for a concentration of any size, where the unscaled functions
-#' overflow past about \eqn{\kappa = 700}.
-#'
-#' @param kappa The concentration, a positive numeric vector.
-#'
-#' @return A numeric vector in \eqn{(0, 1)}.
-#'
-#' @seealso \code{\link{vonmises1_distrib}}, \code{\link{vm_dA}}
-#'
-#' @keywords internal
-vm_A <- function(kappa) {
-  besselI(kappa, 1, expon.scaled = TRUE) /
-    besselI(kappa, 0, expon.scaled = TRUE)
-}
-
-#' The Derivative of the Mean Resultant Length
-#'
-#' @description
-#' \eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2}, which is also the
-#' variance of \eqn{\cos(Y - \mu)} and therefore positive.
-#'
-#' @details
-#' The identity follows from \eqn{I_0' = I_1} and
-#' \eqn{I_1' = I_0 - I_1/\kappa}, so no further Bessel evaluation is needed.
-#'
-#' @param kappa The concentration, a positive numeric vector.
-#' @param A The value of \code{\link{vm_A}} at \code{kappa}, passed in when it
-#'   has already been computed.
-#'
-#' @return A numeric vector.
-#'
-#' @seealso \code{\link{vonmises1_distrib}}, \code{\link{vm_A}}
-#'
-#' @keywords internal
-vm_dA <- function(kappa, A = vm_A(kappa)) 1 - A / kappa - A * A
-
 # --- S7 METHODS IMPLEMENTATION ---
 
 #' @title von Mises Density
@@ -142,7 +97,7 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta) {
 S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ...) {
   d <- y - theta[[1]]
-  list(mu = theta[[2]] * sin(d), kappa = cos(d) - vm_A(theta[[2]]))
+  list(mu = theta[[2]] * sin(d), kappa = cos(d) - numericals7::bessel_i_ratio(theta[[2]]))
 }
 
 #' @title von Mises Analytical Observed Hessian
@@ -165,7 +120,7 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
   d <- y - theta[[1]]
   k <- theta[[2]]
   list(mu_mu = -k * cos(d), mu_kappa = sin(d),
-       kappa_kappa = rep_len(-vm_dA(k), length(d)))
+       kappa_kappa = rep_len(-numericals7::bessel_i_ratio_derivs(k)$d1, length(d)))
 }
 
 #' @title von Mises Analytical Expected Hessian
@@ -191,10 +146,10 @@ S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, t
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
                                                                    nsim = 10000, ...) {
   k <- theta[[2]]
-  A <- vm_A(k)
+  a <- numericals7::bessel_i_ratio_derivs(k)
   n <- length(y)
-  list(mu_mu = rep_len(-k * A, n), mu_kappa = rep_len(0, n),
-       kappa_kappa = rep_len(-vm_dA(k, A), n))
+  list(mu_mu = rep_len(-k * a$A, n), mu_kappa = rep_len(0, n),
+       kappa_kappa = rep_len(-a$d1, n))
 }
 
 #' @title von Mises Response Gradient

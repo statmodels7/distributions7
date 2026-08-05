@@ -4,109 +4,9 @@ NULL
 # The von Mises in its mean resultant length. The concentration and the
 # resultant length are related by rho = A(kappa) = I_1(kappa)/I_0(kappa), a
 # strictly increasing bijection from (0, Inf) onto (0, 1) whose inverse has no
-# closed form. It is obtained by root finding and differentiated by the inverse
-# function rule, which needs A' to A'''' -- and those come from the Bessel
-# recurrences rather than from four more Bessel evaluations.
-
-#' Higher Derivatives of the Mean Resultant Length
-#'
-#' @description
-#' \eqn{A''}, \eqn{A'''} and \eqn{A''''} at \eqn{\kappa}, obtained by
-#' differentiating \eqn{A' = 1 - A/\kappa - A^2} repeatedly.
-#'
-#' @details
-#' Each order is written in the orders below it, so the whole table costs the
-#' two Bessel functions \code{\link{vm_A}} already evaluates and nothing more:
-#' \deqn{A'' = -\dfrac{A'}{\kappa} + \dfrac{A}{\kappa^2} - 2AA'}
-#' and so on. The alternative, evaluating a Bessel function of higher order for
-#' each derivative, costs more and is less accurate at large \eqn{\kappa},
-#' where the functions themselves overflow and only their ratio does not.
-#'
-#' @param kappa The concentration.
-#'
-#' @return A named list with \code{A} and its four derivatives.
-#'
-#' @seealso \code{\link{vonmises2_distrib}}, \code{\link{vm_A}}
-#'
-#' @keywords internal
-vm_A_derivs <- function(kappa) {
-  k <- kappa
-  A <- vm_A(k)
-  d1 <- 1 - A / k - A * A
-  d2 <- -d1 / k + A / k^2 - 2 * A * d1
-  d3 <- -d2 / k + 2 * d1 / k^2 - 2 * A / k^3 - 2 * d1^2 - 2 * A * d2
-  d4 <- -d3 / k + 3 * d2 / k^2 - 6 * d1 / k^3 + 6 * A / k^4 -
-    6 * d1 * d2 - 2 * A * d3
-  list(A = A, d1 = d1, d2 = d2, d3 = d3, d4 = d4)
-}
-
-#' The Concentration a Mean Resultant Length Implies
-#'
-#' @description
-#' \eqn{\kappa = A^{-1}(\rho)}, by root finding, together with the four
-#' derivatives of the inverse.
-#'
-#' @details
-#' \eqn{A} has no elementary inverse, so \eqn{\kappa} is found by bisection on
-#' \eqn{\log\kappa}, where the function is well conditioned over the whole
-#' range. The derivatives then come from the inverse function rule, which needs
-#' no further root finding:
-#' \deqn{\kappa' = \dfrac{1}{A'}, \qquad
-#'       \kappa'' = -\dfrac{A''}{(A')^3}, \qquad
-#'       \kappa''' = \dfrac{3(A'')^2 - A'A'''}{(A')^5},}
-#' and the fourth in the same pattern. \eqn{A'} is the variance of
-#' \eqn{\cos(Y-\mu)} and therefore strictly positive, so none of these divides
-#' by zero in the interior.
-#'
-#' @param rho The mean resultant length, in \eqn{(0, 1)}.
-#'
-#' @return A named list with \code{kappa} and its four derivatives in
-#'   \code{rho}.
-#'
-#' @seealso \code{\link{vonmises2_distrib}}
-#'
-#' @keywords internal
-vm_kappa_of_rho <- function(rho) {
-  one <- function(r) {
-    if (!is.finite(r) || r <= 0 || r >= 1) return(NA_real_)
-    # A starting value from the usual approximation, then a bracket widened
-    # around it. A blind bracket is not an option: the scaled Bessel functions
-    # underflow past about kappa = 1e15 and their ratio comes back NaN, so the
-    # search has to stay where A can be evaluated at all.
-    g <- if (r < 0.53) {
-      2 * r + r^3 + 5 * r^5 / 6
-    } else if (r < 0.85) {
-      -0.4 + 1.39 * r + 0.43 / (1 - r)
-    } else {
-      1 / (r^3 - 4 * r^2 + 3 * r)
-    }
-    g <- min(max(g, 1e-8), 1e12)
-    f <- function(k) vm_A(k) - r
-    lo <- g / 2
-    hi <- g * 2
-    it <- 0L
-    while (f(lo) > 0 && lo > 1e-10 && it < 60L) {
-      lo <- lo / 2
-      it <- it + 1L
-    }
-    it <- 0L
-    while (f(hi) < 0 && hi < 1e13 && it < 60L) {
-      hi <- hi * 2
-      it <- it + 1L
-    }
-    stats::uniroot(f, c(lo, hi), tol = .Machine$double.eps^0.75)$root
-  }
-  k <- vapply(rho, one, numeric(1))
-  a <- vm_A_derivs(k)
-  p1 <- a$d1
-  list(
-    kappa = k,
-    d1 = 1 / p1,
-    d2 = -a$d2 / p1^3,
-    d3 = (3 * a$d2^2 - p1 * a$d3) / p1^5,
-    d4 = (-15 * a$d2^3 + 10 * p1 * a$d2 * a$d3 - p1^2 * a$d4) / p1^7
-  )
-}
+# closed form. numericals7::bessel_i_ratio_inverse() obtains it by root
+# finding and differentiates it by the inverse function rule, with A' to
+# A'''' from the Bessel recurrences rather than four more evaluations.
 
 #' @title S7 Class for the von Mises Distribution in Its Resultant Length
 #' @name VonMises2Distrib
@@ -142,8 +42,8 @@ VonMises2Distrib <- S7::new_class("VonMises2Distrib", parent = continuous_distri
 #'
 #' @keywords internal
 vm2_parts <- function(theta) {
-  kd <- vm_kappa_of_rho(theta[[2]])
-  list(kappa = kd$kappa, kd = kd, ad = vm_A_derivs(kd$kappa))
+  kd <- numericals7::bessel_i_ratio_inverse(theta[[2]])
+  list(kappa = kd$kappa, kd = kd, ad = numericals7::bessel_i_ratio_derivs(kd$kappa))
 }
 
 # --- S7 METHODS IMPLEMENTATION ---

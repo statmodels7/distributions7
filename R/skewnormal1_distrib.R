@@ -34,79 +34,6 @@ SkewNormal1Distrib <- S7::new_class("SkewNormal1Distrib", parent = continuous_di
 
 # --- S7 METHODS IMPLEMENTATION ---
 
-#' The Inverse Mills Ratio and Its Derivative
-#'
-#' @description
-#' Returns \eqn{R(t) = \phi(t)/\Phi(t)} and \eqn{R'(t) = -R(t)\{t + R(t)\}},
-#' the two quantities every derivative of a skew normal log-density is built
-#' from.
-#'
-#' @details
-#' The ratio is formed on the log scale. Written directly it is \eqn{0/0} for
-#' \eqn{t} below about \eqn{-38}, where both the density and the distribution
-#' function underflow, while the ratio itself is finite there and close to
-#' \eqn{-t}. The identity for \eqn{R'} follows from differentiating the
-#' quotient and using \eqn{\phi'(t) = -t\phi(t)}.
-#'
-#' @param t A numeric vector.
-#'
-#' @return A list with \code{r} and \code{dr}.
-#'
-#' @keywords internal
-mills_ratio <- function(t) {
-  r <- exp(stats::dnorm(t, log = TRUE) - stats::pnorm(t, log.p = TRUE))
-  list(r = r, dr = -r * (t + r))
-}
-
-#' Owen's T Function
-#'
-#' @description
-#' Computes \eqn{T(h, a) = \dfrac{1}{2\pi}\displaystyle\int_0^{a}
-#'   \dfrac{e^{-h^2(1 + x^2)/2}}{1 + x^2}\,dx}, which is what the skew normal
-#' distribution function is written in.
-#'
-#' @details
-#' The integral is one-dimensional over a finite range with a bounded, smooth
-#' integrand, so adaptive quadrature evaluates it to near machine precision.
-#' That is a better object to integrate than the density over a semi-infinite
-#' range, which is what the base class would otherwise do.
-#'
-#' Two identities keep the extremes exact rather than quadrature-bound:
-#' \eqn{T(h, a) = -T(h, -a)}, and \eqn{T(h, \infty) = \tfrac{1}{2}\Phi(-|h|)}.
-#'
-#' @param h A numeric vector.
-#' @param a A numeric vector, recycled against \code{h}.
-#'
-#' @return A numeric vector.
-#'
-#' @references
-#' Owen, D. B. (1956). Tables for computing bivariate normal probabilities.
-#' \emph{Annals of Mathematical Statistics} 27, 1075-1090.
-#'
-#' @keywords internal
-owen_t <- function(h, a) {
-  n <- max(length(h), length(a))
-  h <- rep_len(h, n)
-  a <- rep_len(a, n)
-  vapply(seq_len(n), function(i) {
-    hi <- h[i]
-    ai <- a[i]
-    if (!is.finite(hi)) return(0)
-    if (ai == 0) return(0)
-    sgn <- sign(ai)
-    ai <- abs(ai)
-    val <- if (is.infinite(ai)) {
-      0.5 * stats::pnorm(-abs(hi))
-    } else {
-      stats::integrate(
-        function(x) exp(-hi^2 * (1 + x^2) / 2) / (1 + x^2),
-        lower = 0, upper = ai, rel.tol = 1e-12
-      )$value / (2 * pi)
-    }
-    sgn * val
-  }, numeric(1))
-}
-
 #' @title Skew Normal Probability Density Function
 #' @name distrib_pdf.SkewNormal1Distrib
 #' @description
@@ -149,7 +76,7 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' @seealso \code{\link{skewnormal1_distrib}}
 S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   z <- (q - theta[[1]]) / theta[[2]]
-  res <- stats::pnorm(z) - 2 * owen_t(z, theta[[3]])
+  res <- stats::pnorm(z) - 2 * numericals7::owen_t(z, theta[[3]])
   res <- pmin(pmax(res, 0), 1)
   if (!lower.tail) res <- 1 - res
   if (log.p) log(res) else res
@@ -197,7 +124,7 @@ S7::method(distrib_gradient, SkewNormal1Distrib) <- function(distrib, y, theta, 
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - mu) / sigma
-  m <- mills_ratio(alpha * z)
+  m <- numericals7::mills_ratio(alpha * z)
   list(
     mu = (z - alpha * m$r) / sigma,
     sigma = (z^2 - 1 - alpha * z * m$r) / sigma,
@@ -235,7 +162,7 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - mu) / sigma
-  m <- mills_ratio(alpha * z)
+  m <- numericals7::mills_ratio(alpha * z)
   r <- m$r
   dr <- m$dr
   s2 <- sigma^2
@@ -314,7 +241,7 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - theta[[1]]) / sigma
-  (alpha * mills_ratio(alpha * z)$r - z) / sigma
+  (alpha * numericals7::mills_ratio(alpha * z)$r - z) / sigma
 }
 
 #' @title Skew Normal Response Second Derivative
@@ -330,7 +257,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - theta[[1]]) / sigma
-  (alpha^2 * mills_ratio(alpha * z)$dr - 1) / sigma^2
+  (alpha^2 * numericals7::mills_ratio(alpha * z)$dr - 1) / sigma^2
 }
 
 # --- CONSTRUCTOR WRAPPER ---
@@ -359,7 +286,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
 #'
 #' \strong{Cumulative distribution function:}
 #' \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha)}
-#' with \eqn{T} Owen's T function; see \code{\link{owen_t}}. The quantile
+#' with \eqn{T} Owen's T function; see \code{\link[numericals7]{owen_t}}. The quantile
 #' function has no closed form and comes from the base class by root finding.
 #'
 #' \strong{Score and observed Hessian} are closed form, written in the inverse

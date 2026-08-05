@@ -71,7 +71,7 @@ test_that("the direction and the concentration are orthogonal", {
     }
 
     # A'(kappa) is the variance of cos(Y - mu), hence positive
-    expect_gt(vm_dA(th$kappa), 0)
+    expect_gt(numericals7::bessel_i_ratio_derivs(th$kappa)$d1, 0)
   }
 })
 
@@ -84,7 +84,7 @@ test_that("the generator reproduces the direction and the resultant length", {
 
   expect_true(all(y >= -pi & y < pi + 1e-9))
   expect_equal(atan2(mean(sin(y)), mean(cos(y))), th$mu, tolerance = 0.02)
-  expect_equal(sqrt(mean(cos(y))^2 + mean(sin(y))^2), vm_A(th$kappa),
+  expect_equal(sqrt(mean(cos(y))^2 + mean(sin(y))^2), numericals7::bessel_i_ratio(th$kappa),
                tolerance = 0.01)
 })
 

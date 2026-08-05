@@ -67,7 +67,7 @@ skewt_pieces <- function(y, mu, sigma, alpha, nu) {
   s <- nu + z^2
   cc <- sqrt(m / s)
   w <- alpha * z * cc
-  # Q is formed on the log scale for the same reason mills_ratio() is: both the
+  # Q is formed on the log scale for the same reason numericals7::mills_ratio() is: both the
   # density and the distribution function underflow in the far left tail while
   # their ratio stays finite.
   q <- exp(stats::dt(w, df = m, log = TRUE) - stats::pt(w, df = m, log.p = TRUE))

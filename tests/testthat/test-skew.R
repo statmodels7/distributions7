@@ -55,26 +55,6 @@ test_that("Owen's T gives the same distribution function as quadrature", {
     stats::integrate(function(t) distrib_pdf(d, t, th), -Inf, q)$value
   }, numeric(1))
   expect_equal(distrib_cdf(d, y, th), num, tolerance = 1e-8)
-
-  # the two identities the implementation relies on
-  expect_equal(owen_t(c(0.5, -1.2), 0), c(0, 0))
-  expect_equal(owen_t(1.3, Inf), 0.5 * stats::pnorm(-1.3))
-  expect_equal(owen_t(1.3, -2), -owen_t(1.3, 2))
-})
-
-test_that("the inverse Mills ratio survives the tail both densities underflow in", {
-  # phi(t) and Phi(t) both underflow below about t = -38, while their ratio is
-  # finite there and close to -t. Formed directly it would be 0/0.
-  m <- mills_ratio(c(-60, -40, -10, 0, 10))
-  expect_true(all(is.finite(m$r)))
-  expect_true(all(is.finite(m$dr)))
-  expect_equal(m$r[1], 60, tolerance = 1e-3)
-  expect_equal(m$r[4], sqrt(2 / pi))
-
-  # R' = -R(t + R), checked against a difference of R itself
-  h <- 1e-5
-  num <- (mills_ratio(-2 + h)$r - mills_ratio(-2 - h)$r) / (2 * h)
-  expect_equal(mills_ratio(-2)$dr, num, tolerance = 1e-7)
 })
 
 test_that("the skew normal derivatives agree with an independent reference", {
