@@ -89,8 +89,11 @@ is the mistake a validator makes when it does not know about a case, and it
 is worse than not checking, because a user validating their own distribution
 cannot tell a real defect from it.</p>
 <p>What replaces them are checks that do generalise:</p><ol><li><p><strong>the density is positive and finite</strong> on a sample;</p></li>
-<li><p><strong>the density integrates to one</strong>, by importance sampling from a
-gaussian with the same mean and an inflated covariance. The proposal is
+<li><p><strong>the density integrates to one</strong>. For a family that enumerates
+its support through <code><a href="mv_support.html">mv_support</a></code> this is an exact sum over
+that support; otherwise it is importance sampling from the proposal
+<code><a href="mv_reference_draw.html">mv_reference_draw</a></code> supplies, which by default is a gaussian
+with the same mean and an inflated covariance. The proposal is
 deliberately not the distribution itself, which would make the ratio
 identically one and the check vacuous;</p></li>
 <li><p><strong>the score has mean zero</strong>, the first Bartlett identity, under
@@ -104,7 +107,13 @@ second Bartlett identity;</p></li>
 <li><p><strong>the generator</strong> against the first two moments;</p></li>
 <li><p><strong>the response derivatives</strong> against finite differences in
 \(y\).</p></li>
-</ol></div>
+</ol><p>The last of these is emitted only when it applies, as the univariate battery
+already omits the checks that a discrete family has no counterpart for. A
+family with an enumerable support is discrete and has no derivative in the
+response, and the multivariate base class refuses
+<code><a href="distrib_grad_y.html">distrib_grad_y</a></code> by design, so a family that has not registered
+one has made a choice rather than left a gap.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="check_distrib.html">check_distrib</a></code></p></div>

@@ -28,4 +28,4 @@ A list as described in
 
 ## See also
 
-[`mv_param_block`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
+[`mv_param_block`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md)

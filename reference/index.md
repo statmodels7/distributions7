@@ -197,11 +197,21 @@ generic of the package indexes them as it always did.
   : Construct a Multivariate Gaussian Distribution
 - [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
   : Construct a Multivariate Student's t Distribution
+- [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
+  : Dirichlet Distribution Object
+- [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
+  : Multinomial Distribution Object
 - [`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
   [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
   : The Mean Vector and Covariance a Parameter List Describes
 - [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
   : A Marginal of a Multivariate Distribution
+- [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
+  : The Support Points of a Discrete Multivariate Distribution
+- [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
+  : A Proposal for Integrating a Multivariate Density
+- [`compositions()`](https://statmodels7.github.io/distributions7/reference/compositions.md)
+  : Every Way to Write an Integer as an Ordered Sum
 - [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
   : Interpretable Quantities of a Multivariate Distribution
 - [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
@@ -976,6 +986,50 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   : Multivariate Student's t Distribution
 
+## Dirichlet
+
+- [`DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/DirichletDistrib.md)
+  : S7 Class for the Dirichlet Distribution
+- [`distrib_expected_hessian.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.DirichletDistrib.md)
+  : Dirichlet Analytical Expected Hessian
+- [`distrib_gradient.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.DirichletDistrib.md)
+  : Dirichlet Analytical Gradient
+- [`distrib_hessian.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.DirichletDistrib.md)
+  : Dirichlet Analytical Observed Hessian
+- [`distrib_pdf.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.DirichletDistrib.md)
+  : Dirichlet Density
+- [`distrib_rng.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.DirichletDistrib.md)
+  : Dirichlet Random Generation
+- [`mv_location.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mv_location.DirichletDistrib.md)
+  : Dirichlet Mean Vector
+- [`mv_marginal.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.DirichletDistrib.md)
+  : Dirichlet Marginal
+- [`mv_sigma.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mv_sigma.DirichletDistrib.md)
+  : Dirichlet Covariance Matrix
+
+## Multinomial
+
+- [`MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/MultinomialDistrib.md)
+  : S7 Class for the Multinomial Distribution
+- [`distrib_expected_hessian.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md)
+  : Multinomial Analytical Expected Hessian
+- [`distrib_gradient.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md)
+  : Multinomial Analytical Gradient
+- [`distrib_hessian.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MultinomialDistrib.md)
+  : Multinomial Analytical Observed Hessian
+- [`distrib_pdf.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MultinomialDistrib.md)
+  : Multinomial Probability Mass Function
+- [`distrib_rng.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MultinomialDistrib.md)
+  : Multinomial Random Generation
+- [`mv_location.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mv_location.MultinomialDistrib.md)
+  : Multinomial Mean Vector
+- [`mv_marginal.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MultinomialDistrib.md)
+  : Multinomial Marginal
+- [`mv_sigma.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md)
+  : Multinomial Covariance Matrix
+- [`mv_support.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.md)
+  : The Support Points of a Multinomial
+
 ## Wrapper classes
 
 The methods of the zero-inflated, zero-adjusted, truncated, transformed
@@ -1159,6 +1213,8 @@ inherits unless it registers something more specific.
   : Chi-Squared Distribution Object
 - [`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
   : S7 Class for Continuous Distributions
+- [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
+  : Dirichlet Distribution Object
 - [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
   : S7 Class for Discrete Distributions
 - [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
@@ -1186,6 +1242,8 @@ inherits unless it registers something more specific.
   : Logistic Distribution Object
 - [`lognormal_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal_distrib.md)
   : Lognormal Distribution Object (Log-Scale Parameterization)
+- [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
+  : Multinomial Distribution Object
 - [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
   : S7 Class for Multivariate Distributions
 - [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
@@ -1268,6 +1326,12 @@ divergent density.
 
 - [`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
   : Index Tuples Behind the Higher-Order Derivative Names
+
+- [`dir_b_index()`](https://statmodels7.github.io/distributions7/reference/dir_b_index.md)
+  : The Position of a Second-Derivative Block
+
+- [`dir_parts()`](https://statmodels7.github.io/distributions7/reference/dir_parts.md)
+  : The Pieces a Dirichlet Derivative Needs
 
 - [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
   : Cumulative Probability Table for a Discrete Distribution
@@ -1545,6 +1609,12 @@ divergent density.
 - [`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
   : Does This Distribution Compute Its Expected Information Exactly?
 
+- [`has_mv_grad_y()`](https://statmodels7.github.io/distributions7/reference/has_mv_grad_y.md)
+  : Whether a Multivariate Family Implements Its Response Derivatives
+
+- [`has_mv_support()`](https://statmodels7.github.io/distributions7/reference/has_mv_support.md)
+  : Whether a Multivariate Family Enumerates Its Support
+
 - [`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
   : Invert the Hessian Component Names
 
@@ -1614,11 +1684,17 @@ divergent density.
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
+- [`mean.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mean.DirichletDistrib.md)
+  : Mean of a Dirichlet
+
 - [`mean.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GumbelDistrib.md)
   : Mean of the Gumbel Distribution
 
 - [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
   : Mean of the Laplace Distribution
+
+- [`mean.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MultinomialDistrib.md)
+  : Mean of a Multinomial
 
 - [`mean.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MvGaussianDistrib.md)
   : Mean of a Multivariate Gaussian
@@ -1650,6 +1726,9 @@ divergent density.
 - [`mills_ratio()`](https://statmodels7.github.io/distributions7/reference/mills_ratio.md)
   : The Inverse Mills Ratio and Its Derivative
 
+- [`mn_parts()`](https://statmodels7.github.io/distributions7/reference/mn_parts.md)
+  : The Pieces a Multinomial Derivative Needs
+
 - [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
   : Append One Block of Derived Quantities to Another
 
@@ -1659,7 +1738,7 @@ divergent density.
 - [`mv_derived.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.MvStudentTDistrib.md)
   : Scale Standard Deviations and Correlations of a Multivariate t
 
-- [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
+- [`mv_derived.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.md)
   : Matrix Entries as the Default Interpretable Quantities
 
 - [`mv_entry_index()`](https://statmodels7.github.io/distributions7/reference/mv_entry_index.md)
@@ -1701,8 +1780,17 @@ divergent density.
 - [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
   : Draw the Panel Matrix of a Multivariate Density
 
+- [`mv_param_block()`](https://statmodels7.github.io/distributions7/reference/mv_param_block.md)
+  : The Quantities the Matrix Parameter Is About
+
 - [`mv_prefixed_names()`](https://statmodels7.github.io/distributions7/reference/mv_prefixed_names.md)
   : Prefix a Structure's Free Names with the Matrix They Describe
+
+- [`mv_reference_draw.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.DirichletDistrib.md)
+  : A Uniform Proposal on the Simplex
+
+- [`mv_reference_draw.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.multivariate_distrib.md)
+  : An Inflated Gaussian Proposal
 
 - [`mv_refuse()`](https://statmodels7.github.io/distributions7/reference/mv_refuse.md)
   : Refuse a Quantity That Has No Multivariate Counterpart
@@ -1718,6 +1806,9 @@ divergent density.
 
 - [`mv_sigma_derivs()`](https://statmodels7.github.io/distributions7/reference/mv_sigma_derivs.md)
   : Derivatives of the Covariance with Respect to Every Parameter
+
+- [`mv_support.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_support.multivariate_distrib.md)
+  : No Enumerable Support
 
 - [`mvg_higher()`](https://statmodels7.github.io/distributions7/reference/mvg_higher.md)
   : The Closed-Form Higher Derivatives of a Multivariate Gaussian
@@ -1911,11 +2002,17 @@ divergent density.
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
 
+- [`variance.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/variance.DirichletDistrib.md)
+  : Variance of a Dirichlet
+
 - [`variance.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GumbelDistrib.md)
   : Variance of the Gumbel Distribution
 
 - [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
   : Variance of the Laplace Distribution
+
+- [`variance.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MultinomialDistrib.md)
+  : Variance of a Multinomial
 
 - [`variance.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MvGaussianDistrib.md)
   : Variance of a Multivariate Gaussian

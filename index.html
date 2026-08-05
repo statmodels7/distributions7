@@ -140,7 +140,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -206,12 +206,18 @@
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mv-plot-1.png" alt="" width="100%"></p>
 <p><code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_location.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math> and which the family keeps apart so that it remains usable below two degrees of freedom, where the covariance does not exist.</p>
+<p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector — a <code>parameters7</code> simplex — and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalisation and its expected information are exact sums rather than samples.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
+<span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="reference/distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">dm</span>, <span class="fu"><a href="reference/mv_support.html">mv_support</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="a-user-defined-distribution-needs-only-its-density">A user-defined distribution needs only its density<a class="anchor" aria-label="anchor" href="#a-user-defined-distribution-needs-only-its-density"></a>
 </h2>
 <p>Everything above has a numerical fallback registered on the base classes: the distribution function by quadrature, the quantile function by root finding, the generator by Generalized Ratio-of-Uniforms, and every derivative by finite differences. So a new distribution is a subclass and one method.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyLaplace</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"MyLaplace"</span>, parent <span class="op">=</span> <span class="va">continuous_distrib</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_pdf</span>, <span class="va">MyLaplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">log</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
@@ -244,7 +250,7 @@
 <h2 id="validating-a-distribution">Validating a distribution<a class="anchor" aria-label="anchor" href="#validating-a-distribution"></a>
 </h2>
 <p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a distribution through thirteen numerical checks. It verifies that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, and that the generator follows it. It also checks every derivative order against finite differences, on both scales.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, nsim <span class="op">=</span> <span class="fl">2e4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: my laplace</span></span>
 <span><span class="co">#&gt; Parameters:   mu = 0, b = 2</span></span>
@@ -277,21 +283,21 @@
 <tbody>
 <tr>
 <td>continuous</td>
-<td>gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, inverse gaussian, lognormal, Weibull, Gumbel, beta</td>
+<td>gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalised gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalised Pareto, beta, von Mises</td>
 </tr>
 <tr>
 <td>discrete</td>
-<td>bernoulli, binomial, poisson, negative binomial</td>
+<td>bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrisation</td>
 </tr>
 <tr>
 <td>multivariate</td>
 <td>
-<code><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, parametrised by a covariance or a precision structure from <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>, and <code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist</td>
+<code><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, parametrised by a covariance or a precision structure from <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>; <code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> on the simplex, whose marginals are beta; and <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code>, whose support is enumerated by <code><a href="reference/mv_support.html">mv_support()</a></code> so that every expectation is an exact sum</td>
 </tr>
 <tr>
 <td>wrappers</td>
 <td>
-<code><a href="reference/zero_inflated.html">zero_inflated()</a></code>, <code><a href="reference/zero_adjusted.html">zero_adjusted()</a></code>, <code><a href="reference/truncated.html">truncated()</a></code>, <code><a href="reference/fixed.html">fixed()</a></code>, <code><a href="reference/transformation.html">transformation()</a></code> with twelve transformers</td>
+<code><a href="reference/zero_inflated.html">zero_inflated()</a></code>, <code><a href="reference/zero_adjusted.html">zero_adjusted()</a></code>, <code><a href="reference/truncated.html">truncated()</a></code>, <code><a href="reference/folded.html">folded()</a></code>, <code><a href="reference/fixed.html">fixed()</a></code>, <code><a href="reference/transformation.html">transformation()</a></code> with twelve transformers</td>
 </tr>
 <tr>
 <td>tools</td>
