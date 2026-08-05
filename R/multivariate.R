@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R cross_derivatives.R
+#' @include distrib.R generics.R utility_functions.R cross_derivatives.R moments.R
 NULL
 
 #' S7 Class for Multivariate Distributions
@@ -692,5 +692,48 @@ S7::method(mv_marginal, multivariate_distrib) <- function(distrib, theta, which,
   mv_refuse(
     distrib, "mv_marginal",
     "integrating out the other coordinates has no closed form for this family, and a numerical marginal would not be the same object."
+  )
+}
+
+
+#' @title No Skewness Without Saying Which One
+#' @name skewness.multivariate_distrib
+#' @description
+#' Refused. A scalar skewness for a vector response is not one quantity but a
+#' choice among several -- Mardia's, Malkovich-Afifi's, or the vector of
+#' coordinatewise marginal skewnesses -- and they do not agree. Returning any
+#' of them under the bare name would be a wrong answer in the shape of a right
+#' one, so the caller names the quantity it wants instead. Note that
+#' \code{\link{mv_marginal}} is not a way round this for an elliptical family,
+#' whose marginal is a smaller multivariate distribution and refuses in turn;
+#' it is for the Dirichlet and the multinomial, whose marginals are univariate.
+#' @param x A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return Never returns; raises an error.
+#' @seealso \code{\link{mv_marginal}}
+#' @keywords internal
+S7::method(skewness, multivariate_distrib) <- function(x, theta, ...) {
+  mv_refuse(
+    x, "skewness",
+    "a vector response has no single skewness: Mardia's, Malkovich-Afifi's and the vector of coordinatewise marginal skewnesses are different quantities. Ask a univariate family instead."
+  )
+}
+
+#' @title No Kurtosis Without Saying Which One
+#' @name kurtosis.multivariate_distrib
+#' @description
+#' Refused, for the reason given at
+#' \code{\link[=skewness.multivariate_distrib]{skewness()}}.
+#' @param x A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return Never returns; raises an error.
+#' @seealso \code{\link{mv_marginal}}
+#' @keywords internal
+S7::method(kurtosis, multivariate_distrib) <- function(x, theta, ...) {
+  mv_refuse(
+    x, "kurtosis",
+    "a vector response has no single kurtosis: Mardia's, Malkovich-Afifi's and the vector of coordinatewise marginal kurtosises are different quantities. Ask a univariate family instead."
   )
 }

@@ -251,6 +251,19 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' exponentially scaled with the exponent added back, so a concentration past
 #' \eqn{\kappa = 700} does not overflow.
 #'
+#' \strong{Moments.} \code{\link{mean}}, \code{\link{variance}},
+#' \code{\link{skewness}} and \code{\link{kurtosis}} are the ordinary moments
+#' of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, and they are obtained
+#' numerically. They are not the circular quantities and they are not what
+#' \eqn{\mu} and \eqn{\kappa} describe: \eqn{\mu} is the mean \emph{direction},
+#' and \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the
+#' interval is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the
+#' density is not symmetric about \eqn{\mu} on it. At \eqn{\mu = 1.2} and
+#' \eqn{\kappa = 2} the ordinary mean is 1.079. The circular mean is
+#' \eqn{\mu} and the mean resultant length is
+#' \eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form, and neither is
+#' returned by a generic whose name means something else.
+#'
 #' \strong{Score, observed and expected Hessian.} Writing
 #' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} for the derivative of
 #' \eqn{\log I_0},

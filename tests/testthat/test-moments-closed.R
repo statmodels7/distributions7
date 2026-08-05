@@ -194,3 +194,47 @@ test_that("a wrong closed form would be caught", {
                                 unname(num_moments(d, th)[["var"]]),
                                 tolerance = 1e-5)))
 })
+
+
+test_that("a multivariate family refuses a scalar skewness by name", {
+  # The refusal used to surface as "Can't find method for expectation(...)",
+  # which names the quadrature the base class fell through to rather than the
+  # reason. Mardia's skewness, Malkovich-Afifi's and the vector of marginal
+  # skewnesses are three different quantities, so the bare name is refused.
+  for (d in list(mvgaussian_distrib(2), mvstudent_t_distrib(2),
+                 dirichlet_distrib(3), multinomial_distrib(3, size = 4))) {
+    th <- generate_random_theta(d)
+    expect_error(skewness(d, th), "no single skewness")
+    expect_error(kurtosis(d, th), "no single kurtosis")
+  }
+
+  # mv_marginal() is not a way round it for an elliptical family: the marginal
+  # of one coordinate is a one-dimensional MULTIVARIATE gaussian, which refuses
+  # in turn. It is a way round it for the two families whose marginals change
+  # family, and there the univariate answer is the one to have.
+  d <- mvgaussian_distrib(2)
+  th <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
+             sigma_L2.1 = 0.3)
+  m <- mv_marginal(d, th, which = 1L)
+  expect_true(S7::S7_inherits(m$distrib, multivariate_distrib))
+  expect_error(skewness(m$distrib, m$theta), "no single skewness")
+
+  dd <- dirichlet_distrib(3)
+  thd <- list(mean_alr1 = 0.2, mean_alr2 = -0.1, phi = 8)
+  md <- mv_marginal(dd, thd, which = 1L)
+  expect_true(S7::S7_inherits(md$distrib, Beta1Distrib))
+  expect_equal(skewness(md$distrib, md$theta),
+               skewness(beta1_distrib(), md$theta))
+})
+
+
+test_that("the von Mises mean is not its mean direction", {
+  # mu is the mean DIRECTION. The ordinary expectation of Y as a number on
+  # [-pi, pi) differs from it whenever mu is not zero, because the interval is
+  # cut at +/- pi rather than at mu +/- pi, and that is what mean() returns.
+  d <- vonmises1_distrib()
+  expect_equal(mean(d, list(mu = 0, kappa = 2)), 0, tolerance = 1e-6)
+  em <- mean(d, list(mu = 1.2, kappa = 2))
+  expect_lt(em, 1.2)
+  expect_equal(em, 1.079, tolerance = 1e-3)
+})
