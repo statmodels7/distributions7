@@ -10,11 +10,15 @@ expectation(distrib, f, theta, ...)
 \item{distrib}{An object inheriting from \code{\link{distrib}}.}
 
 \item{f}{The function whose expectation is taken, with signature
-\code{f(y, theta, ...)}.}
+\code{f(y, theta, ...)}. It is evaluated elementwise: \code{y} arrives as
+a numeric vector and every component of \code{theta}, like every argument
+passed through \code{...}, as a vector of the same length, so \code{f}
+must be vectorized in all of them jointly -- which any expression built
+from arithmetic and the \code{distrib_*} generics already is.}
 
 \item{theta}{A named list of parameters. Vectors are supported and are
 recycled against any vectors in \code{...}, so several parameter values can
-be handled in one call.}
+be handled in one call; all combinations share one batched evaluation.}
 
 \item{...}{Further arguments passed to \code{f}; their names must not clash
 with those of \code{theta}.}

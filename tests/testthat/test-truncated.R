@@ -17,8 +17,9 @@ test_that("the zero-truncated Poisson matches its closed form", {
 
   expect_equal(distrib_pdf(ztp, 0, th), 0)
   expect_equal(distrib_pdf(ztp, 1:5, th), dpois(1:5, 2) / (1 - dpois(0, 2)))
-  expect_equal(numerical_series(function(k) distrib_pdf(ztp, k, th), 1, Inf), 1,
-               tolerance = 1e-10)
+  # a direct finite sum is the independent normalization reference: at mu = 2
+  # the mass beyond k = 200 is far below the tolerance
+  expect_equal(sum(distrib_pdf(ztp, 1:200, th)), 1, tolerance = 1e-10)
   expect_equal(mean(ztp, th), 2 / (1 - exp(-2)), tolerance = 1e-8)
 
   # The support really starts at 1

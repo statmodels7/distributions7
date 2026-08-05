@@ -173,7 +173,8 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
                          knots[k], knots[k + 1L])$value
       }, numeric(1)))
     } else {
-      numerical_series(function(k) distrib_pdf(distrib, k, theta), b[1], b[2])
+      discrete_support_sum(function(k, i) distrib_pdf(distrib, k, theta),
+                           b[1], b[2], 1L)
     }
     new_check("density integrates to 1", abs(total - 1) < 1e-5, abs(total - 1))
   })

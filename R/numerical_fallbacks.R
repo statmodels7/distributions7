@@ -122,7 +122,8 @@ find_lp_anchor <- function(lp_raw, b) {
 #' CDF get one by numerical integration of \code{distrib_pdf}. An approximate mode
 #' is located first and the integral is taken over the side of the mode containing
 #' \eqn{q} (using the complement for the other side), so that the quadrature nodes
-#' concentrate where the probability mass is.
+#' concentrate where the probability mass is. All quantiles are integrated in one
+#' batched call to \code{\link[numericals7]{quad_vec}}, one row per quantile.
 #' @param distrib An object inheriting from class \code{"continuous_distrib"}.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
@@ -133,31 +134,43 @@ find_lp_anchor <- function(lp_raw, b) {
 S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   b <- distrib@bounds
   all_params <- expand_params(c(list(.q = q), theta))
-  rows <- transpose_params(all_params)
+  qv <- all_params$.q
+  th_cols <- all_params[distrib@params]
+  n <- length(qv)
 
-  prev_th <- NULL
-  m <- NULL
+  res <- rep(NA_real_, n)
+  res[!is.na(qv) & qv <= b[1]] <- 0
+  res[!is.na(qv) & qv >= b[2]] <- 1
+  todo <- which(is.na(res) & !is.na(qv))
 
-  res <- vapply(rows, function(r) {
-    r <- as.list(r)
-    th <- r[distrib@params]
-    qi <- r$.q
+  if (length(todo)) {
+    # one anchor per distinct parameter configuration, then every remaining
+    # quantile becomes one row of a single batched quadrature
+    key <- do.call(paste, c(lapply(th_cols, function(v) v[todo]), sep = "\r"))
+    first <- !duplicated(key)
+    anchor_u <- vapply(todo[first], function(j) {
+      find_pdf_anchor(distrib, lapply(th_cols, function(v) v[j]))
+    }, numeric(1))
+    anchor <- anchor_u[match(key, key[first])]
 
-    if (is.na(qi)) return(NA_real_)
-    if (qi <= b[1]) return(0)
-    if (qi >= b[2]) return(1)
+    left <- qv[todo] <= anchor
+    lo <- ifelse(left, b[1], qv[todo])
+    up <- ifelse(left, qv[todo], b[2])
 
-    if (!identical(th, prev_th)) {
-      m <<- find_pdf_anchor(distrib, th)
-      prev_th <<- th
+    integrand <- function(x, i) {
+      xv <- as.numeric(x)
+      idx <- rep(todo[i], times = ncol(x))
+      distrib_pdf(distrib, xv, lapply(th_cols, function(v) v[idx]), log = FALSE)
     }
-
-    if (qi <= m) {
-      stats::integrate(function(t) distrib_pdf(distrib, t, th), b[1], qi)$value
-    } else {
-      1 - stats::integrate(function(t) distrib_pdf(distrib, t, th), qi, b[2])$value
+    vals <- quad_rows(integrand, lo, up)
+    if (anyNA(vals)) {
+      stop(sprintf(
+        "The cdf quadrature did not reach the requested accuracy at quantile(s) %s.",
+        paste(todo[is.na(vals)], collapse = ", ")
+      ), call. = FALSE)
     }
-  }, numeric(1))
+    res[todo] <- ifelse(left, vals, 1 - vals)
+  }
 
   res <- pmin(pmax(res, 0), 1)
   if (!lower.tail) res <- 1 - res

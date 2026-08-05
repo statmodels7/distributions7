@@ -16,14 +16,16 @@ test_that("wrapped pmfs/pdfs are normalized and place the right mass at zero", {
   th <- list(mu = 3, zi = 0.25)
   expect_equal(distrib_pdf(zip, 0, th), 0.25 + 0.75 * dpois(0, 3))
   expect_equal(distrib_pdf(zip, 2, th), 0.75 * dpois(2, 3))
-  expect_equal(numerical_series(function(k) distrib_pdf(zip, k, th), 0, Inf), 1, tolerance = 1e-9)
+  # direct finite sums are the independent normalization reference: at mu = 3
+  # the mass beyond k = 200 is far below the tolerance
+  expect_equal(sum(distrib_pdf(zip, 0:200, th)), 1, tolerance = 1e-9)
 
   # ZAP (hurdle): P(0) = za exactly, positives renormalized
   zap <- zero_adjusted(poisson_distrib())
   th <- list(mu = 3, za = 0.4)
   expect_equal(distrib_pdf(zap, 0, th), 0.4)
   expect_equal(distrib_pdf(zap, 2, th), 0.6 * dpois(2, 3) / (1 - dpois(0, 3)))
-  expect_equal(numerical_series(function(k) distrib_pdf(zap, k, th), 0, Inf), 1, tolerance = 1e-9)
+  expect_equal(sum(distrib_pdf(zap, 0:200, th)), 1, tolerance = 1e-9)
 
   # ZA gamma: P(0) = za, continuous part scaled by (1-za)
   zag <- zero_adjusted(gamma2_distrib())

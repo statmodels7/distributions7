@@ -1,134 +1,91 @@
-#' Numerical Summation of Discrete Series
+# The quadrature and summation engines live in numericals7; this file owns
+# what is distributions7's business -- the split of the domain at quantiles,
+# the handling of the support's endpoints, and the contract expectation()
+# offers its integrand.
+
+#' Batched Quadrature with Refusal
 #'
-#' Calculates the sum of a function `f(x)` over a sequence of integers from `start` to `end`.
-#' The function is designed to handle finite sums, one-sided infinite series, and
-#' doubly infinite series by automatically adapting its summation strategy.
+#' @description
+#' Calls \code{\link[numericals7]{quad_vec}} with its warning muffled and
+#' returns the per-row integrals, \code{NA} where the accuracy was not
+#' reached; the caller decides what a failed row means and names it.
 #'
-#' @param f A function taking a vector of integers `x` and returning a vector of numeric values.
-#'   **Must be vectorized**.
-#' @param start Numeric. Starting value. Can be finite, `Inf`, or `-Inf`. Defaults to `0`.
-#' @param end Numeric. Ending value. Can be finite, `Inf`, or `-Inf`. Defaults to `Inf`.
-#' @param step Integer. Number of terms to calculate in a single vectorized batch. Defaults to `1000`.
-#' @param tol Numeric. Tolerance threshold for convergence. Defaults to `1e-10`.
-#' @param maxit Integer. Safety limit for the maximum number of batch iterations. Defaults to `1000000`.
-#' @param reltol Logical. If `TRUE` (default), uses a hybrid relative tolerance.
-#'
-#' @details
-#' **1. Summation Strategies:**
-#' The function automatically detects the domain topology based on `start` and `end`:
-#' * **Forward (Standard):** If `start <= end` (e.g., `1` to `Inf`).
-#' * **Backward (Reflection):** If `start > end` (e.g., `-1` to `-Inf`), evaluates `f(-x)`.
-#' * **Doubly Infinite (Folding):** If `start == -Inf` and `end == Inf`, folds around 0.
-#'
-#' **2. Speed and Convergence:**
-#' It monitors convergence using the sum of absolute values in the current chunk, preventing premature stops on alternating series while maintaining high precision.
-#' 
-#' **3. Underflow & Divergence Detection:**
-#' Includes heuristics to stop early if the sequence starts growing in absolute terms
-#' (divergence), or skips up to 50 empty chunks to protect from premature stopping
-#' when `f(x)` evaluates exactly to `0` at the start.
-#'
-#' @return A numeric scalar representing the calculated sum.
-#'
-#' @examples
-#' # the mean of a Poisson, summed over its support
-#' numerical_series(function(y) y * distrib_pdf(poisson_distrib(), y, list(mu = 2)))
-#'
-#' @export
-numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10, maxit = 1000000L, reltol = TRUE) {
-  
-  # --- Setup Range and Direction ---
-  if (is.infinite(start) && start < 0 && is.infinite(end) && end > 0) {
-    s_init <- f(0)
-    start_internal <- 1
-    end_internal <- Inf
-    f_internal <- function(x) f(x) + f(-x)
-  } else if (end < start) {
-    s_init <- 0
-    start_internal <- -start
-    end_internal <- -end
-    f_internal <- function(x) f(-x)
-  } else {
-    s_init <- 0
-    start_internal <- start
-    end_internal <- end
-    f_internal <- f
-  }
-  
-  s <- 0.0
-  it <- 0L
-  climbing <- TRUE
-  prev_max_abs <- Inf
-  divergence_counter <- 0L
-  flat_counter <- 0L
-  
-  while (climbing && it < maxit) {
-    it <- it + 1L
-    
-    # Upper limit of the current block
-    upper_limit <- min(start_internal + step - 1, end_internal)
-    
-    # Evaluate function in vectorized chunk (using ALTREP for the sequence)
-    x <- start_internal:upper_limit
-    vals <- f_internal(x)
-    
-    # Single pass to evaluate the chunk sum
-    chunk_sum <- sum(vals)
-    
-    s <- s + chunk_sum
-    
-    # 1. Explicit divergence check
-    if (is.infinite(s) || is.na(s)) {
-      warning("The series reached Inf or NaN. Stopping.")
-      return(s_init + s)
-    }
-    
-    # 2. Divergence Early-Exit (check only the last term to avoid full array scans)
-    last_val_abs <- abs(vals[length(vals)])
-    if (last_val_abs > prev_max_abs && last_val_abs > tol) {
-      divergence_counter <- divergence_counter + 1L
-      if (divergence_counter >= 3L) {
-        warning("The series seems to be divergent (terms are growing). Stopping early.")
-        return(s_init + s)
-      }
-    } else {
-      divergence_counter <- 0L
-    }
-    prev_max_abs <- last_val_abs
-    
-    # 3. Convergence or Underflow Protection
-    scaled_tol <- if (reltol) tol * max(abs(s), 1.0) else tol
-    
-    if (abs(chunk_sum) < scaled_tol) {
-      # Short-circuit logic: only perform full vector allocation and absolute sum 
-      # if the chunk sum is small, preventing false positives from alternating series.
-      chunk_abs_sum <- sum(abs(vals))
-      if (chunk_abs_sum < scaled_tol) {
-        flat_counter <- flat_counter + 1L
-        if (abs(s) > tol || flat_counter >= 50L) {
-          climbing <- FALSE
-        }
-      } else {
-        flat_counter <- 0L
-      }
-    } else {
-      flat_counter <- 0L
-    }
-    
-    # 4. Advancement
-    if (climbing) {
-      start_internal <- upper_limit + 1
-      if (start_internal > end_internal) {
-        climbing <- FALSE
+#' @param integrand The integrand, in \code{quad_vec}'s matrix contract.
+#' @param lower,upper Numeric vectors of panel endpoints.
+#' @return A numeric vector of integrals, \code{NA} for failed rows.
+#' @keywords internal
+quad_rows <- function(integrand, lower, upper) {
+  withCallingHandlers(
+    numericals7::quad_vec(integrand, lower, upper),
+    warning = function(w) {
+      if (grepl("quad_vec", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
       }
     }
+  )
+}
+
+#' Summation over an Integer Support
+#'
+#' @description
+#' Sums \code{term(k, i)} over the integers of \code{[from, to]} for each of
+#' \code{n_rows} parameter rows at once. A finite support is summed directly
+#' in one matrix evaluation; a support unbounded above goes through
+#' \code{\link[numericals7]{series_vec}}; one unbounded below is reflected;
+#' one unbounded on both sides is folded around zero. A row whose series
+#' does not converge raises an error naming it.
+#'
+#' @param term A function \code{term(k, i)} of two equal-length integer
+#'   vectors, returning the terms elementwise.
+#' @param from,to The endpoints of the support, either possibly infinite.
+#' @param n_rows The number of parameter rows.
+#' @return A numeric vector of sums, one per row.
+#' @keywords internal
+discrete_support_sum <- function(term, from, to, n_rows) {
+  if (is.finite(from) && is.finite(to)) {
+    ks <- seq.int(from, to)
+    K <- rep(ks, each = n_rows)
+    I <- rep.int(seq_len(n_rows), length(ks))
+    return(rowSums(matrix(term(K, I), n_rows, length(ks))))
   }
-  
-  if (it >= maxit) {
-    warning("Maximum number of iterations reached.")
+  if (is.finite(from)) {
+    return(series_rows(term, from, n_rows))
   }
-  
-  s_init + s
+  if (is.finite(to)) {
+    return(series_rows(function(k, i) term(-k, i), -to, n_rows))
+  }
+  center <- term(rep.int(0L, n_rows), seq_len(n_rows))
+  center + series_rows(function(k, i) term(k, i) + term(-k, i), 1L, n_rows)
+}
+
+#' Batched Series Summation with Refusal
+#'
+#' @description
+#' Calls \code{\link[numericals7]{series_vec}} with its warning muffled and
+#' promotes a row that did not converge to an error naming it: a series that
+#' does not converge is a failure of the request, not a number.
+#'
+#' @param term A function \code{term(k, i)} in \code{series_vec}'s contract.
+#' @param from The first summation index.
+#' @param n_rows The number of parameter rows.
+#' @return A numeric vector of sums, one per row.
+#' @keywords internal
+series_rows <- function(term, from, n_rows) {
+  s <- withCallingHandlers(
+    numericals7::series_vec(term, n = n_rows, from = from),
+    warning = function(w) {
+      if (grepl("series_vec", conditionMessage(w), fixed = TRUE)) {
+        invokeRestart("muffleWarning")
+      }
+    }
+  )
+  if (anyNA(s)) {
+    stop(sprintf(
+      "The series did not converge for parameter combination(s) %s.",
+      paste(which(is.na(s)), collapse = ", ")
+    ), call. = FALSE)
+  }
+  s
 }
 
 #' Expected Value of a Function of a Random Variable
@@ -140,16 +97,18 @@ numerical_series <- function(f, start = 0, end = Inf, step = 10000, tol = 1e-10,
 #'
 #' @param distrib An object inheriting from \code{\link{distrib}}.
 #' @param f The function whose expectation is taken, with signature
-#'   \code{f(y, theta, ...)}.
+#'   \code{f(y, theta, ...)}. It is evaluated elementwise: \code{y} arrives as
+#'   a numeric vector and every component of \code{theta}, like every argument
+#'   passed through \code{...}, as a vector of the same length, so \code{f}
+#'   must be vectorized in all of them jointly -- which any expression built
+#'   from arithmetic and the \code{distrib_*} generics already is.
 #' @param theta A named list of parameters. Vectors are supported and are
 #'   recycled against any vectors in \code{...}, so several parameter values can
-#'   be handled in one call.
+#'   be handled in one call; all combinations share one batched evaluation.
 #' @param ... Further arguments passed to \code{f}; their names must not clash
 #'   with those of \code{theta}.
 #'
 #' @return A numeric vector of expected values, one per parameter combination.
-#'
-#' @importFrom stats integrate
 #'
 #' @examples
 #' expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
@@ -160,9 +119,41 @@ expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib,
   S7::S7_dispatch()
 })
 
+#' Aligned Parameter Columns for an Expectation
+#'
+#' @description
+#' Shared preparation for the \code{\link{expectation}} methods: checks that
+#' the names in \code{...} do not collide with those of \code{theta}, then
+#' expands every component to one aligned column per parameter combination.
+#'
+#' @param f_env_theta The named list of parameters.
+#' @param dots The list of further arguments destined for \code{f}.
+#' @return A list with the theta columns \code{th}, the dot columns
+#'   \code{dots} and the number of combinations \code{n}.
+#' @keywords internal
+expectation_columns <- function(f_env_theta, dots) {
+  if (any(names(dots) %in% names(f_env_theta))) {
+    stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
+  }
+  all_params <- expand_params(c(f_env_theta, dots))
+  n_theta <- length(f_env_theta)
+  list(
+    th = all_params[seq_len(n_theta)],
+    dots = all_params[-seq_len(n_theta)],
+    n = length(all_params[[1L]])
+  )
+}
+
 #' @title Expectation of a Continuous Distribution
 #' @name expectation.continuous_distrib
-#' @description Evaluates \eqn{E[f(Y)] = \int f(y)\,p(y;\theta)\,dy} by adaptive quadrature (\code{\link[stats]{integrate}}). The domain is split at the 0.1, 0.5 and 0.9 quantiles of the distribution and each panel is integrated separately, which anchors the quadrature nodes on the probability mass wherever it sits; the panels are then summed.
+#' @description Evaluates \eqn{E[f(Y)] = \int f(y)\,p(y;\theta)\,dy} by the
+#' batched adaptive quadrature of \code{\link[numericals7]{quad_vec}}: the
+#' panels of every parameter combination are refined in one call, so a vector
+#' \code{theta} costs matrix evaluations rather than one adaptive run per
+#' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
+#' quantiles, which anchors the quadrature on the probability mass wherever it
+#' sits; a combination whose quadrature cannot reach the requested accuracy
+#' raises an error naming it.
 #' @param distrib A \code{continuous_distrib}.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.
@@ -170,53 +161,53 @@ expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib,
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
-  # Capture extra arguments and check for name collisions
-  dots <- list(...)
-  if (any(names(dots) %in% names(theta))) {
-    stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
+  cols <- expectation_columns(theta, list(...))
+  b <- distrib@bounds
+
+  # quantile knots for every combination in one elementwise call
+  pr <- c(0.1, 0.5, 0.9)
+  th_rep <- lapply(cols$th, function(v) rep(v, each = length(pr)))
+  qs <- suppressWarnings(distrib_quantile(distrib, rep(pr, times = cols$n), th_rep))
+  qm <- matrix(qs, nrow = length(pr))
+
+  lower <- upper <- numeric(0)
+  comb <- integer(0)
+  for (j in seq_len(cols$n)) {
+    kj <- qm[, j]
+    kj <- unique(kj[is.finite(kj) & kj > b[1L] & kj < b[2L]])
+    knots <- sort(c(b[1L], kj, b[2L]))
+    lower <- c(lower, knots[-length(knots)])
+    upper <- c(upper, knots[-1L])
+    comb <- c(comb, rep.int(j, length(knots) - 1L))
   }
 
-  # Combine all parameters to handle vectorization
-  all_params <- c(theta, dots)
-  n_theta <- length(theta) 
-
-  # Define the worker function for a single set of parameters
-  compute_single <- function(params) {
-    p_theta <- as.list(params[1:n_theta])
-    p_dots <- if (length(params) > n_theta) as.list(params[-(1:n_theta)]) else list()
-
-    integrand <- function(y) {
-      val_f <- do.call(f, c(list(y = y, theta = p_theta), p_dots))
-      val_p <- distrib_pdf(distrib, y, p_theta, log = FALSE)
-      val_f * val_p
-    }
-
-    # `integrate` over (-Inf, Inf) transforms the domain around the origin and
-    # can silently return 0 when the probability mass sits far from it.
-    # Splitting the domain at the 0.1/0.5/0.9 quantiles anchors every panel on
-    # the mass. Exactly three knots: more panels extend the range of extreme
-    # shapes that integrate at all, but convert loud failures into silent wrong
-    # answers and add each panel's quadrature error in the ordinary range.
-    b <- distrib@bounds
-    qs <- suppressWarnings(distrib_quantile(distrib, c(0.1, 0.5, 0.9), p_theta))
-    qs <- unique(qs[is.finite(qs) & qs > b[1] & qs < b[2]])
-    knots <- sort(c(b[1], qs, b[2]))
-
-    sum(vapply(
-      seq_len(length(knots) - 1L),
-      function(k) stats::integrate(
-        integrand,
-        lower = knots[k], upper = knots[k + 1L]
-      )$value,
-      numeric(1)
-    ))
+  integrand <- function(x, i) {
+    xv <- as.numeric(x)
+    idx <- rep(comb[i], times = ncol(x))
+    th_e <- lapply(cols$th, function(v) v[idx])
+    dt_e <- lapply(cols$dots, function(v) v[idx])
+    val_f <- do.call(f, c(list(y = xv, theta = th_e), dt_e))
+    val_f * distrib_pdf(distrib, xv, th_e, log = FALSE)
   }
-  unname(sapply(transpose_params(expand_params(all_params)), compute_single))
+
+  panels <- quad_rows(integrand, lower, upper)
+  out <- as.numeric(rowsum(panels, comb, reorder = FALSE))
+  if (anyNA(out)) {
+    stop(sprintf(
+      "The quadrature did not reach the requested accuracy for parameter combination(s) %s.",
+      paste(which(is.na(out)), collapse = ", ")
+    ), call. = FALSE)
+  }
+  unname(out)
 }
 
 #' @title Expectation of a Discrete Distribution
 #' @name expectation.discrete_distrib
-#' @description Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by direct summation over the support, truncating the series once the accumulated tail contribution falls below tolerance.
+#' @description Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by
+#' summation over the support, every parameter combination in one batched
+#' pass: a finite support is summed exactly in a single matrix evaluation,
+#' an infinite one through \code{\link[numericals7]{series_vec}}, whose rows
+#' retire as they converge.
 #' @param distrib A \code{discrete_distrib}.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.
@@ -224,28 +215,15 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {
-  # Capture extra arguments and check for name collisions
-  dots <- list(...)
-  if (any(names(dots) %in% names(theta))) {
-    stop("Arguments in '...' cannot have the same names as parameters in 'theta'.")
+  cols <- expectation_columns(theta, list(...))
+  b <- distrib@bounds
+
+  term <- function(k, i) {
+    th_e <- lapply(cols$th, function(v) v[i])
+    dt_e <- lapply(cols$dots, function(v) v[i])
+    val_f <- do.call(f, c(list(y = k, theta = th_e), dt_e))
+    val_f * distrib_pdf(distrib, k, th_e, log = FALSE)
   }
 
-  # Combine all parameters to handle vectorization
-  all_params <- c(theta, dots)
-  n_theta <- length(theta) 
-
-  # Define the worker function for a single set of parameters
-  compute_single <- function(params) {
-    p_theta <- as.list(params[1:n_theta])
-    p_dots <- if (length(params) > n_theta) as.list(params[-(1:n_theta)]) else list()
-
-    integrand <- function(y) {
-      val_f <- do.call(f, c(list(y = y, theta = p_theta), p_dots))
-      val_p <- distrib_pdf(distrib, y, p_theta, log = FALSE)
-      val_f * val_p
-    }
-
-    numerical_series(integrand, start = distrib@bounds[1], end = distrib@bounds[2])
-  }
-  unname(sapply(transpose_params(expand_params(all_params)), compute_single))
+  unname(discrete_support_sum(term, b[1L], b[2L], cols$n))
 }

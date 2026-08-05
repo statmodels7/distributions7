@@ -78,28 +78,29 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' @seealso \code{\link{pseudohuber_distrib}}
 S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   all_params <- expand_params(c(list(.q = q), theta))
-  rows <- transpose_params(all_params)
+  qv <- all_params$.q
+  th_cols <- all_params[distrib@params]
 
-  res <- vapply(rows, function(r) {
-    r <- as.list(r)
-    th <- r[distrib@params]
-    qi <- r$.q
-    m <- th[[1]]
+  # By symmetry F(q) = 1 - F(2 mu - q): integrate only over the lower tail,
+  # where the integrand is anchored at the finite endpoint. Every quantile is
+  # one row of a single batched quadrature.
+  mu <- th_cols[[1L]]
+  left <- qv <= mu
+  up <- ifelse(left, qv, 2 * mu - qv)
 
-    # By symmetry F(q) = 1 - F(2 mu - q): integrate only over the lower tail,
-    # where the integrand is anchored at the finite endpoint.
-    if (qi <= m) {
-      stats::integrate(
-        function(t) distrib_pdf(distrib, t, th),
-        lower = -Inf, upper = qi
-      )$value
-    } else {
-      1 - stats::integrate(
-        function(t) distrib_pdf(distrib, t, th),
-        lower = -Inf, upper = 2 * m - qi
-      )$value
-    }
-  }, numeric(1))
+  integrand <- function(x, i) {
+    xv <- as.numeric(x)
+    idx <- rep(i, times = ncol(x))
+    distrib_pdf(distrib, xv, lapply(th_cols, function(v) v[idx]))
+  }
+  vals <- quad_rows(integrand, -Inf, up)
+  if (anyNA(vals)) {
+    stop(sprintf(
+      "The cdf quadrature did not reach the requested accuracy at quantile(s) %s.",
+      paste(which(is.na(vals)), collapse = ", ")
+    ), call. = FALSE)
+  }
+  res <- ifelse(left, vals, 1 - vals)
 
   res <- pmin(pmax(res, 0), 1)
   if (!lower.tail) res <- 1 - res

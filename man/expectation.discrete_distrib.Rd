@@ -16,6 +16,10 @@
 A numeric vector of expected values.
 }
 \description{
-Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by direct summation over the support, truncating the series once the accumulated tail contribution falls below tolerance.
+Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by
+summation over the support, every parameter combination in one batched
+pass: a finite support is summed exactly in a single matrix evaluation,
+an infinite one through \code{\link[numericals7]{series_vec}}, whose rows
+retire as they converge.
 }
 \keyword{internal}

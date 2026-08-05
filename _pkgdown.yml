@@ -192,7 +192,9 @@ reference:
   - numerical_hess_y
   - numerical_cross_y
   - numerical_cdf_deriv
-  - numerical_series
+  - quad_rows
+  - discrete_support_sum
+  - series_rows
 
 - title: Utilities
   contents:
