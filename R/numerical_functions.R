@@ -152,8 +152,10 @@ expectation_columns <- function(f_env_theta, dots) {
 #' \code{theta} costs matrix evaluations rather than one adaptive run per
 #' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 #' quantiles, which anchors the quadrature on the probability mass wherever it
-#' sits; a combination whose quadrature cannot reach the requested accuracy
-#' raises an error naming it.
+#' sits. A combination the batched quadrature refuses -- an integrable
+#' endpoint singularity too harsh for bisection -- is rescued by one scalar
+#' \code{\link[stats]{integrate}} run, whose extrapolation reaches it; an
+#' error naming the combination is raised only when both routes fail.
 #' @param distrib A \code{continuous_distrib}.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.
@@ -192,6 +194,33 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 
   panels <- quad_rows(integrand, lower, upper)
   out <- as.numeric(rowsum(panels, comb, reorder = FALSE))
+
+  # A combination the batched quadrature refuses gets one scalar rescue
+  # through stats::integrate, whose extrapolation reaches integrable
+  # endpoint singularities that bisection cannot: a gamma-weighted Hessian
+  # component at shape below one behaves like y^(shape-2+k) at zero, where
+  # quad_vec would need a bisection depth in the hundreds. The batch stays
+  # the fast path for every combination that converges; the rescue costs
+  # one adaptive run per refused combination, exactly the old engine's
+  # price, and an error is raised only when both routes fail.
+  if (anyNA(out)) {
+    for (j in which(is.na(out))) {
+      th_j <- lapply(cols$th, `[`, j)
+      dt_j <- lapply(cols$dots, `[`, j)
+      one <- function(y) {
+        val_f <- do.call(f, c(list(y = y, theta = lapply(th_j, rep_len, length(y))),
+                              lapply(dt_j, rep_len, length(y))))
+        val_f * distrib_pdf(distrib, y, th_j, log = FALSE)
+      }
+      ks <- sort(unique(c(b, lower[comb == j], upper[comb == j])))
+      ks <- ks[!is.na(ks)]
+      out[j] <- tryCatch(
+        sum(vapply(seq_len(length(ks) - 1L), function(k)
+          stats::integrate(one, ks[k], ks[k + 1L])$value, numeric(1))),
+        error = function(e) NA_real_
+      )
+    }
+  }
   if (anyNA(out)) {
     stop(sprintf(
       "The quadrature did not reach the requested accuracy for parameter combination(s) %s.",

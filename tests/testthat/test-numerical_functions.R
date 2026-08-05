@@ -90,3 +90,19 @@ test_that("expectation throws error on name collision", {
     "cannot have the same names"
   )
 })
+
+
+test_that("a combination the batch refuses is rescued by one scalar integrate", {
+  # gamma2 at shape mu^2/sigma2 = 0.49: the mu_mu Hessian component times
+  # the density behaves like y^(shape-2+k) at zero, an integrable
+  # singularity too harsh for bisection at the default depth; found by a
+  # 200-row benchmark whose row 22 this is. The batch refuses, the scalar
+  # rescue reaches it, and the answer must satisfy the second Bartlett
+  # identity within quadrature accuracy.
+  d <- gamma2_distrib()
+  th <- list(mu = 1.2916372833, sigma2 = 3.3876254116)
+  eh <- distrib_expected_hessian(d, 1, th)          # closed form, reference
+  got <- expectation(d, function(y, theta)
+    distrib_hessian(d, y, theta)[["mu_mu"]], th)
+  expect_equal(got, eh[["mu_mu"]], tolerance = 1e-6)
+})
