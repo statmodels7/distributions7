@@ -43,6 +43,8 @@ reference:
     used for each of its parameters.
   contents:
   - gaussian1_distrib
+  - gaussian2_distrib
+  - gaussian3_distrib
   - cauchy_distrib
   - logistic_distrib
   - student_t1_distrib
@@ -51,6 +53,7 @@ reference:
   - skewnormal1_distrib
   - skewt_distrib
   - gumbel_distrib
+  - gamma1_distrib
   - gamma2_distrib
   - invgauss1_distrib
   - lognormal1_distrib
@@ -209,6 +212,10 @@ reference:
 # "every cdf method" but "everything about the gamma".
 - title: Gaussian
   contents: [Gaussian1Distrib, ends_with(".Gaussian1Distrib")]
+- title: Gaussian in mean and variance
+  contents: [Gaussian2Distrib, ends_with(".Gaussian2Distrib")]
+- title: Gaussian in mean and precision
+  contents: [Gaussian3Distrib, ends_with(".Gaussian3Distrib")]
 - title: Cauchy
   contents: [CauchyDistrib, ends_with(".CauchyDistrib")]
 - title: Logistic
@@ -233,6 +240,8 @@ reference:
   contents: [ChisqDistrib, ends_with(".ChisqDistrib")]
 - title: Gamma
   contents: [Gamma2Distrib, ends_with(".Gamma2Distrib")]
+- title: Gamma in mean and dispersion
+  contents: [Gamma1Distrib, ends_with(".Gamma1Distrib"), gamma1_shape_rate]
 - title: Inverse Gaussian
   contents: [InvGauss1Distrib, ends_with(".InvGauss1Distrib")]
 - title: Lognormal

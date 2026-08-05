@@ -177,6 +177,34 @@ gamma_expected_hessian_cpp <- function(y, mu, sigma2) {
     .Call(`_distributions7_gamma_expected_hessian_cpp`, y, mu, sigma2)
 }
 
+gamma1_gradient_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_gradient_cpp`, y, mu, phi)
+}
+
+gamma1_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_hessian_cpp`, y, mu, phi)
+}
+
+gamma1_expected_hessian_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_expected_hessian_cpp`, y, mu, phi)
+}
+
+gamma1_deriv3_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_deriv3_cpp`, y, mu, phi)
+}
+
+gamma1_deriv3_expected_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_deriv3_expected_cpp`, y, mu, phi)
+}
+
+gamma1_deriv4_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_deriv4_cpp`, y, mu, phi)
+}
+
+gamma1_deriv4_expected_cpp <- function(y, mu, phi) {
+    .Call(`_distributions7_gamma1_deriv4_expected_cpp`, y, mu, phi)
+}
+
 gamma_deriv3_cpp <- function(y, mu, sigma2) {
     .Call(`_distributions7_gamma_deriv3_cpp`, y, mu, sigma2)
 }
@@ -203,6 +231,54 @@ gaussian_hessian_cpp <- function(y, mu, sigma) {
 
 gaussian_expected_hessian_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gaussian_expected_hessian_cpp`, y, mu, sigma)
+}
+
+gaussian2_gradient_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_gradient_cpp`, y, mu, sigma2)
+}
+
+gaussian2_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_hessian_cpp`, y, mu, sigma2)
+}
+
+gaussian2_expected_hessian_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_expected_hessian_cpp`, y, mu, sigma2)
+}
+
+gaussian2_deriv3_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_deriv3_cpp`, y, mu, sigma2)
+}
+
+gaussian2_deriv3_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_deriv3_expected_cpp`, y, mu, sigma2)
+}
+
+gaussian2_deriv4_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_deriv4_cpp`, y, mu, sigma2)
+}
+
+gaussian2_deriv4_expected_cpp <- function(y, mu, sigma2) {
+    .Call(`_distributions7_gaussian2_deriv4_expected_cpp`, y, mu, sigma2)
+}
+
+gaussian3_gradient_cpp <- function(y, mu, tau) {
+    .Call(`_distributions7_gaussian3_gradient_cpp`, y, mu, tau)
+}
+
+gaussian3_hessian_cpp <- function(y, mu, tau) {
+    .Call(`_distributions7_gaussian3_hessian_cpp`, y, mu, tau)
+}
+
+gaussian3_expected_hessian_cpp <- function(y, mu, tau) {
+    .Call(`_distributions7_gaussian3_expected_hessian_cpp`, y, mu, tau)
+}
+
+gaussian3_deriv3_cpp <- function(y, mu, tau) {
+    .Call(`_distributions7_gaussian3_deriv3_cpp`, y, mu, tau)
+}
+
+gaussian3_deriv4_cpp <- function(y, mu, tau) {
+    .Call(`_distributions7_gaussian3_deriv4_cpp`, y, mu, tau)
 }
 
 gaussian_deriv3_cpp <- function(y, mu, sigma) {

@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R
 NULL
 
 #' @title Raw and Central Moments of a Distribution
@@ -1939,4 +1939,162 @@ S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   m <- betabinom_central(theta[[1]], theta[[2]], x@size)
   m$c4 / m$c2^2 - 3
+}
+
+# --- gaussian2, gaussian3, gamma1 ------------------------------------------
+#
+# Three reparametrisations of two families already here, so each moment is the
+# same number the twin reports, written in the coordinates of this one.
+
+#' @title Mean of the Gaussian in Mean and Variance
+#' @name mean.Gaussian2Distrib
+#' @description Closed form: \eqn{\mu}.
+#' @param x A \code{Gaussian2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Gaussian2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
+}
+
+#' @title Variance of the Gaussian in Mean and Variance
+#' @name variance.Gaussian2Distrib
+#' @description Closed form: \eqn{\sigma^2}, the parameter itself.
+#' @param x A \code{Gaussian2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, Gaussian2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[2]]
+}
+
+#' @title Skewness of the Gaussian in Mean and Variance
+#' @name skewness.Gaussian2Distrib
+#' @description Closed form: zero.
+#' @param x A \code{Gaussian2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, Gaussian2Distrib) <- function(x, theta, ...) {
+  moment_const(align_theta(x, theta), 2L, 0)
+}
+
+#' @title Kurtosis of the Gaussian in Mean and Variance
+#' @name kurtosis.Gaussian2Distrib
+#' @description Closed form: zero excess.
+#' @param x A \code{Gaussian2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, Gaussian2Distrib) <- function(x, theta, ...) {
+  moment_const(align_theta(x, theta), 2L, 0)
+}
+
+#' @title Mean of the Gaussian in Mean and Precision
+#' @name mean.Gaussian3Distrib
+#' @description Closed form: \eqn{\mu}.
+#' @param x A \code{Gaussian3Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Gaussian3Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
+}
+
+#' @title Variance of the Gaussian in Mean and Precision
+#' @name variance.Gaussian3Distrib
+#' @description Closed form: \eqn{1/\tau}.
+#' @param x A \code{Gaussian3Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, Gaussian3Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  1 / theta[[2]] + moment_const(theta, 2L, 0)
+}
+
+#' @title Skewness of the Gaussian in Mean and Precision
+#' @name skewness.Gaussian3Distrib
+#' @description Closed form: zero.
+#' @param x A \code{Gaussian3Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, Gaussian3Distrib) <- function(x, theta, ...) {
+  moment_const(align_theta(x, theta), 2L, 0)
+}
+
+#' @title Kurtosis of the Gaussian in Mean and Precision
+#' @name kurtosis.Gaussian3Distrib
+#' @description Closed form: zero excess.
+#' @param x A \code{Gaussian3Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, Gaussian3Distrib) <- function(x, theta, ...) {
+  moment_const(align_theta(x, theta), 2L, 0)
+}
+
+#' @title Mean of the Gamma in Mean and Dispersion
+#' @name mean.Gamma1Distrib
+#' @description Closed form: \eqn{\mu}, the parameter itself.
+#' @param x A \code{Gamma1Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
+}
+
+#' @title Variance of the Gamma in Mean and Dispersion
+#' @name variance.Gamma1Distrib
+#' @description Closed form: \eqn{\phi\mu^2}, which is what the
+#'   parametrisation is defined by.
+#' @param x A \code{Gamma1Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, Gamma1Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  theta[[2]] * theta[[1]]^2
+}
+
+#' @title Skewness of the Gamma in Mean and Dispersion
+#' @name skewness.Gamma1Distrib
+#' @description Closed form: \eqn{2\sqrt{\phi}}, free of the mean.
+#' @param x A \code{Gamma1Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  2 * sqrt(theta[[2]]) + moment_const(theta, 2L, 0)
+}
+
+#' @title Kurtosis of the Gamma in Mean and Dispersion
+#' @name kurtosis.Gamma1Distrib
+#' @description Closed form: excess \eqn{6\phi}, free of the mean.
+#' @param x A \code{Gamma1Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, Gamma1Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  6 * theta[[2]] + moment_const(theta, 2L, 0)
 }
