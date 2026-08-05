@@ -40,7 +40,7 @@ The identity of order \\k\\ states that \$\$\sum\_{\pi}
 running over every partition \\\pi\\ of the index set. The single-block
 partition is the target, so it equals minus the sum of all the others –
 which is why
-[`set_partitions`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
+[`set_partitions`](https://rdrr.io/pkg/numericals7/man/set_partitions.html)
 is the whole algorithm and why the top-order derivative is never needed.
 
 At order 2 this reduces to the outer product of gradients,
@@ -54,4 +54,4 @@ a spelling of it.
 ## See also
 
 [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md),
-[`set_partitions`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
+[`set_partitions`](https://rdrr.io/pkg/numericals7/man/set_partitions.html)

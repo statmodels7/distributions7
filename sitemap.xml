@@ -93,7 +93,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_truncation_points.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chisq_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/coef.distrib_fit.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/compositions.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/confint.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/declares_atoms.html</loc></url>
@@ -872,7 +871,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparametrize.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/rng_grou.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/safe_check.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/set_partitions.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.Beta1Distrib.html</loc></url>

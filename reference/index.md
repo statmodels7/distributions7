@@ -246,8 +246,6 @@ generic of the package indexes them as it always did.
   : The Support Points of a Discrete Multivariate Distribution
 - [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
   : A Proposal for Integrating a Multivariate Density
-- [`compositions()`](https://statmodels7.github.io/distributions7/reference/compositions.md)
-  : Every Way to Write an Integer as an Ordered Sum
 - [`mv_derived()`](https://statmodels7.github.io/distributions7/reference/mv_derived.md)
   : Interpretable Quantities of a Multivariate Distribution
 - [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
@@ -2416,9 +2414,6 @@ divergent density.
 
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
-
-- [`set_partitions()`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
-  : All Set Partitions of a Finite Index Set
 
 - [`skewness.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.md)
   : Skewness of the Bernoulli Distribution
