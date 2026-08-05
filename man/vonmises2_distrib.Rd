@@ -51,9 +51,8 @@ d <- vonmises2_distrib()
 theta <- list(mu = 0.5, rho = 0.7)
 distrib_pdf(d, c(-1, 0, 1), theta)
 
-# the same law as vonmises1 at the matching concentration
-k <- vm_kappa_of_rho(0.7)$kappa
-distrib_pdf(vonmises1_distrib(), c(-1, 0, 1), list(mu = 0.5, kappa = k))
+# rho is bounded, which is what makes it readable
+d@params_bounds$rho
 
 }
 \seealso{
