@@ -9,7 +9,7 @@ object.
 ## Usage
 
 ``` r
-transformation(distrib, transformer)
+transformation(distrib, transformer, new_name = NULL)
 ```
 
 ## Arguments
@@ -27,6 +27,11 @@ transformation(distrib, transformer)
   [`bc_transform`](https://statmodels7.github.io/distributions7/reference/bc_transform.md)`(0.5)`,
   [`affine_transform`](https://statmodels7.github.io/distributions7/reference/affine_transform.md)`(1, 2)`).
 
+- new_name:
+
+  A single string naming the result, or `NULL` (the default) to compose
+  the parent's name with the transformer's.
+
 ## Value
 
 An S7 object of class `TransformedDistrib` (inheriting from
@@ -42,6 +47,14 @@ the parameters, the score, observed Hessian and expected Hessian
 coincide with the parent's, evaluated at \\x = g^{-1}(y)\\. Moments are
 available numerically via
 [`moment`](https://statmodels7.github.io/distributions7/reference/moment.md).
+
+Several standard families are a transformation of one already here, and
+`new_name` lets the result carry the name it is known by rather than the
+recipe that produced it: the inverse of a Gamma is an inverse Gamma, the
+exponential of a logistic a log-logistic, the exponential of an
+exponential a Pareto. Only the printed name changes; nothing about the
+distribution depends on it, and the default composes the parent's name
+with the transformer's as before.
 
 ## See also
 
@@ -61,4 +74,10 @@ logn <- transformation(gaussian_distrib(), exp_transform())
 distrib_pdf(logn, 2, list(mu = 0, sigma = 1))
 dlnorm(2, 0, 1)
 } # }
+
+# the inverse of a Gamma is an inverse Gamma, and can say so
+ig <- transformation(gamma_distrib(), inverse_transform(),
+                     new_name = "inverse gamma")
+ig@distrib_name
+#> [1] "inverse gamma"
 ```

@@ -48,6 +48,16 @@ used for each of its parameters.
   : Negative Binomial Distribution Object (NB2)
 - [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
   : Geometric Distribution Object
+- [`betabinom_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom_distrib.md)
+  : Beta-Binomial Distribution Object
+- [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  : NB1 Negative Binomial Distribution Object
+- [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
+  : Generalised Pareto Distribution Object
+- [`vonmises_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises_distrib.md)
+  : von Mises Distribution Object
+- [`gengamma_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma_distrib.md)
+  : Generalised Gamma Distribution Object
 
 ## Probability functions
 
@@ -614,28 +624,44 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`GammaDistrib()`](https://statmodels7.github.io/distributions7/reference/GammaDistrib.md)
   : S7 Class for Gamma Distribution
+- [`GenGammaDistrib()`](https://statmodels7.github.io/distributions7/reference/GenGammaDistrib.md)
+  : S7 Class for the Generalised Gamma Distribution
 - [`distrib_cdf.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GammaDistrib.md)
   : Gamma Cumulative Distribution Function
+- [`distrib_cdf.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGammaDistrib.md)
+  : Generalised Gamma Distribution Function
 - [`distrib_deriv3.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GammaDistrib.md)
   : Gamma Analytical Third-Order Derivatives
 - [`distrib_deriv4.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GammaDistrib.md)
   : Gamma Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GammaDistrib.md)
   : Gamma Analytical Expected Hessian
+- [`distrib_expected_hessian.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Expected Hessian
 - [`distrib_grad_y.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GammaDistrib.md)
   : Gamma Response Derivatives
 - [`distrib_gradient.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GammaDistrib.md)
   : Gamma Analytical Gradient
+- [`distrib_gradient.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Gradient
 - [`distrib_hess_y.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.GammaDistrib.md)
   : Gamma Response Second Derivative
 - [`distrib_hessian.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GammaDistrib.md)
   : Gamma Analytical Observed Hessian
+- [`distrib_hessian.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Observed Hessian
 - [`distrib_pdf.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GammaDistrib.md)
   : Gamma Probability Density Function
+- [`distrib_pdf.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGammaDistrib.md)
+  : Generalised Gamma Density
 - [`distrib_quantile.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GammaDistrib.md)
   : Gamma Quantile Function
+- [`distrib_quantile.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGammaDistrib.md)
+  : Generalised Gamma Quantile Function
 - [`distrib_rng.GammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GammaDistrib.md)
   : Gamma Random Number Generator
+- [`distrib_rng.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGammaDistrib.md)
+  : Generalised Gamma Random Generation
 
 ## Inverse Gaussian
 
@@ -821,6 +847,101 @@ Rarely called directly, but useful as a reference for what is happening.
   : Negative Binomial Quantile Function
 - [`distrib_rng.NegBinDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBinDistrib.md)
   : Negative Binomial Random Number Generator
+
+## Generalised gamma
+
+- [`GenGammaDistrib()`](https://statmodels7.github.io/distributions7/reference/GenGammaDistrib.md)
+  : S7 Class for the Generalised Gamma Distribution
+- [`distrib_cdf.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGammaDistrib.md)
+  : Generalised Gamma Distribution Function
+- [`distrib_expected_hessian.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Expected Hessian
+- [`distrib_gradient.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Gradient
+- [`distrib_hessian.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGammaDistrib.md)
+  : Generalised Gamma Analytical Observed Hessian
+- [`distrib_pdf.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGammaDistrib.md)
+  : Generalised Gamma Density
+- [`distrib_quantile.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGammaDistrib.md)
+  : Generalised Gamma Quantile Function
+- [`distrib_rng.GenGammaDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGammaDistrib.md)
+  : Generalised Gamma Random Generation
+
+## von Mises
+
+- [`VonMisesDistrib()`](https://statmodels7.github.io/distributions7/reference/VonMisesDistrib.md)
+  : S7 Class for the von Mises Distribution
+- [`distrib_expected_hessian.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMisesDistrib.md)
+  : von Mises Analytical Expected Hessian
+- [`distrib_grad_y.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.VonMisesDistrib.md)
+  : von Mises Response Gradient
+- [`distrib_gradient.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMisesDistrib.md)
+  : von Mises Analytical Gradient
+- [`distrib_hess_y.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.VonMisesDistrib.md)
+  : von Mises Response Hessian
+- [`distrib_hessian.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMisesDistrib.md)
+  : von Mises Analytical Observed Hessian
+- [`distrib_pdf.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMisesDistrib.md)
+  : von Mises Density
+- [`distrib_rng.VonMisesDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMisesDistrib.md)
+  : von Mises Random Generation
+
+## Generalised Pareto
+
+- [`GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/GPDDistrib.md)
+  : S7 Class for the Generalised Pareto Distribution
+- [`distrib_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md)
+  : Generalised Pareto Distribution Function
+- [`distrib_expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md)
+  : Generalised Pareto Analytical Expected Hessian
+- [`distrib_gradient.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md)
+  : Generalised Pareto Analytical Gradient
+- [`distrib_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md)
+  : Generalised Pareto Analytical Observed Hessian
+- [`distrib_pdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md)
+  : Generalised Pareto Density
+- [`distrib_quantile.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GPDDistrib.md)
+  : Generalised Pareto Quantile Function
+- [`distrib_rng.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md)
+  : Generalised Pareto Random Generation
+
+## NB1 negative binomial
+
+- [`NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.md)
+  : S7 Class for the NB1 Negative Binomial
+- [`distrib_cdf.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md)
+  : NB1 Cumulative Distribution Function
+- [`distrib_expected_hessian.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)
+  : NB1 Analytical Expected Hessian
+- [`distrib_gradient.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
+  : NB1 Analytical Gradient
+- [`distrib_hessian.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.md)
+  : NB1 Analytical Observed Hessian
+- [`distrib_pdf.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md)
+  : NB1 Probability Mass Function
+- [`distrib_quantile.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.NegBin1Distrib.md)
+  : NB1 Quantile Function
+- [`distrib_rng.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin1Distrib.md)
+  : NB1 Random Generation
+
+## Beta-binomial
+
+- [`BetaBinomDistrib()`](https://statmodels7.github.io/distributions7/reference/BetaBinomDistrib.md)
+  : S7 Class for the Beta-Binomial Distribution
+- [`distrib_cdf.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinomDistrib.md)
+  : Beta-Binomial Cumulative Distribution Function
+- [`distrib_expected_hessian.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinomDistrib.md)
+  : Beta-Binomial Analytical Expected Hessian
+- [`distrib_gradient.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinomDistrib.md)
+  : Beta-Binomial Analytical Gradient
+- [`distrib_hessian.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinomDistrib.md)
+  : Beta-Binomial Analytical Observed Hessian
+- [`distrib_pdf.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinomDistrib.md)
+  : Beta-Binomial Probability Mass Function
+- [`distrib_quantile.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.BetaBinomDistrib.md)
+  : Beta-Binomial Quantile Function
+- [`distrib_rng.BetaBinomDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinomDistrib.md)
+  : Beta-Binomial Random Generation
 
 ## Geometric
 
@@ -1026,6 +1147,8 @@ inherits unless it registers something more specific.
   : Bernoulli Distribution Object
 - [`beta_distrib()`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)
   : Beta Distribution Object (Mean-Precision Parameterization)
+- [`betabinom_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom_distrib.md)
+  : Beta-Binomial Distribution Object
 - [`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
   : Binomial Distribution Object
 - [`cauchy_distrib()`](https://statmodels7.github.io/distributions7/reference/cauchy_distrib.md)
@@ -1046,8 +1169,12 @@ inherits unless it registers something more specific.
   : Gamma Distribution Object (Mean-Variance Parameterization)
 - [`gaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md)
   : Gaussian Distribution Object (Standard Deviation Parameterization)
+- [`gengamma_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma_distrib.md)
+  : Generalised Gamma Distribution Object
 - [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
   : Geometric Distribution Object
+- [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
+  : Generalised Pareto Distribution Object
 - [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
   : Gumbel Distribution Object
 - [`invgauss_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss_distrib.md)
@@ -1065,6 +1192,8 @@ inherits unless it registers something more specific.
   : Construct a Multivariate Gaussian Distribution
 - [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
   : Construct a Multivariate Student's t Distribution
+- [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+  : NB1 Negative Binomial Distribution Object
 - [`negbin_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
   : Negative Binomial Distribution Object (NB2)
 - [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
@@ -1077,6 +1206,8 @@ inherits unless it registers something more specific.
   : Skew t Distribution Object
 - [`student_t_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)
   : Student's t Distribution Object (Location-Scale Parameterization)
+- [`vonmises_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises_distrib.md)
+  : von Mises Distribution Object
 - [`weibull_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
   : Weibull Distribution Object
 
@@ -1396,6 +1527,9 @@ divergent density.
 - [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
   : The Success Probability Behind a Geometric Mean
 
+- [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
+  : The Upper Endpoint of a Generalised Pareto
+
 - [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
   : The Generalized Ratio-of-Uniforms Sampler
 
@@ -1606,6 +1740,12 @@ divergent density.
 - [`n_support_points()`](https://statmodels7.github.io/distributions7/reference/n_support_points.md)
   : Number of Points in a Discrete Support
 
+- [`nb1_prob()`](https://statmodels7.github.io/distributions7/reference/nb1_prob.md)
+  : The Success Probability Behind an NB1 Dispersion
+
+- [`nb1_size()`](https://statmodels7.github.io/distributions7/reference/nb1_size.md)
+  : The Size Behind an NB1 Mean
+
 - [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)
   : Record One Check Result
 
@@ -1803,6 +1943,12 @@ divergent density.
 
 - [`variance.numeric`](https://statmodels7.github.io/distributions7/reference/variance.numeric.md)
   : Sample Variance
+
+- [`vm_A()`](https://statmodels7.github.io/distributions7/reference/vm_A.md)
+  : The Mean Resultant Length of a von Mises
+
+- [`vm_dA()`](https://statmodels7.github.io/distributions7/reference/vm_dA.md)
+  : The Derivative of the Mean Resultant Length
 
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments
