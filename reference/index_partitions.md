@@ -21,4 +21,4 @@ A list of partitions, each a list of character-vector blocks.
 
 ## See also
 
-[`set_partitions`](https://rdrr.io/pkg/numericals7/man/set_partitions.html)
+[`set_partitions`](https://statmodels7.github.io/numericals7/reference/set_partitions.html)

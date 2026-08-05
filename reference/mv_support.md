@@ -46,7 +46,7 @@ either way an answer would be a fiction, and the caller is better told.
 ## See also
 
 [`multinomial_distrib`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),
-[`compositions`](https://rdrr.io/pkg/numericals7/man/compositions.html)
+[`compositions`](https://statmodels7.github.io/numericals7/reference/compositions.html)
 
 ## Examples
 
