@@ -117,7 +117,7 @@ S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
 #' @description
 #' \deqn{\ell^{(\mu\mu)} = -\tau, \qquad \ell^{(\mu\tau)} = r, \qquad
 #'       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}}
-#' The mean block is free of the data here, as it is in every parametrisation
+#' The mean block is free of the data here, as it is in every parametrization
 #' of this family, and so is the precision block.
 #' @param distrib A \code{Gaussian3Distrib} object.
 #' @param y A numeric vector of observations.
@@ -230,7 +230,7 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' Gaussian Distribution in Mean and Precision
 #'
 #' @description
-#' Creates a Gaussian distribution object parametrised by its mean and its
+#' Creates a Gaussian distribution object parametrized by its mean and its
 #' \strong{precision} \eqn{\tau = 1/\sigma^2}.
 #'
 #' @details
@@ -240,12 +240,12 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' precision, and that is what the estimate, the standard error and the
 #' interval describe.
 #'
-#' It is the flattest of the three parametrisations. Every third derivative is
+#' It is the flattest of the three parametrizations. Every third derivative is
 #' free of the response, so the observed and the expected ones coincide, and
 #' the only non-zero fourth derivative is
 #' \eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}.
 #'
-#' The precision is the parametrisation a Bayesian conjugate analysis uses,
+#' The precision is the parametrization a Bayesian conjugate analysis uses,
 #' the gamma being conjugate for \eqn{\tau} at known \eqn{\mu}.
 #'
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the identity.

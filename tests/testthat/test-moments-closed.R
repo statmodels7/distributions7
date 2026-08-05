@@ -110,7 +110,7 @@ test_that("the Student t moments appear one threshold at a time", {
 })
 
 
-test_that("the generalised Pareto moments follow xi < 1/k", {
+test_that("the generalized Pareto moments follow xi < 1/k", {
   d <- gpd_distrib()
   th <- function(xi) list(sigma = 1, xi = xi)
 

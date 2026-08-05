@@ -89,7 +89,7 @@ test_that("GRoU copes with heavy tails, where r = 2 keeps the region bounded", {
   expect_gt(ks$p.value, 0.001)
 })
 
-test_that("recentring makes GRoU independent of where the distribution sits", {
+test_that("recentering makes GRoU independent of where the distribution sits", {
   # Without the shift to the mode the bounding rectangle degenerates and the
   # acceptance rate collapses to zero.
   set.seed(103)

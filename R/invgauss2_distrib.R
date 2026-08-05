@@ -5,7 +5,7 @@ NULL
 #' @name InvGauss2Distrib
 #'
 #' @description A subclass of \code{continuous_distrib} for the inverse
-#'   gaussian in its classical parametrisation, the mean and the shape
+#'   gaussian in its classical parametrization, the mean and the shape
 #'   \eqn{\lambda}.
 #' @inheritParams distrib
 #' @return An object of class \code{InvGauss2Distrib}.
@@ -200,7 +200,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #'
 #' @description
 #' Creates an inverse gaussian distribution object in the classical
-#' parametrisation, the mean \eqn{\mu} and the shape \eqn{\lambda}, with
+#' parametrization, the mean \eqn{\mu} and the shape \eqn{\lambda}, with
 #' \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}.
 #'
 #' @details

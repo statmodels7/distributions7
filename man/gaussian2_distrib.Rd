@@ -15,18 +15,18 @@ gaussian2_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 An S7 object of class \code{\link{Gaussian2Distrib}}.
 }
 \description{
-Creates a Gaussian distribution object parametrised by its mean and its
+Creates a Gaussian distribution object parametrized by its mean and its
 \strong{variance}.
 }
 \details{
 This is the same law as \code{\link{gaussian1_distrib}} in different
 coordinates: \eqn{\sigma^2} here is the square of the \eqn{\sigma} there.
 The two are separate families rather than one family under a link, because a
-link changes the scale a parameter is \emph{modelled} on while leaving the
+link changes the scale a parameter is \emph{modeled} on while leaving the
 parameter what it was, whereas here the parameter, its interpretation, its
 standard error and its confidence interval are all about the variance.
 
-The numbering follows the literature where it has one: this parametrisation
+The numbering follows the literature where it has one: this parametrization
 is \code{NO2} in \pkg{gamlss}.
 
 Derivatives are closed form to fourth order, observed and expected, and the

@@ -67,7 +67,7 @@ test_that("the derived Jacobian is closed form and agrees with an independent on
   }
 })
 
-test_that("a precision parametrisation reports what it describes directly", {
+test_that("a precision parametrization reports what it describes directly", {
   ds <- mvgaussian_distrib(3)
   do <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
 
@@ -83,7 +83,7 @@ test_that("a precision parametrisation reports what it describes directly", {
   do_der <- mv_derived(do, tho)
 
   # the standard deviations and correlations of the response are the same
-  # whichever side is parametrised: they are properties of the law
+  # whichever side is parametrized: they are properties of the law
   expect_equal(do_der$value[names(ds_der$value)], ds_der$value)
 
   # and the precision form adds the readings that are its own
@@ -165,7 +165,7 @@ test_that("mv_summary carries the standard errors across and respects the domain
     tab[1, 1] - tab[1, 3], tab[1, 4] - tab[1, 1], tolerance = 1e-6
   )))
 
-  # the level is honoured
+  # the level is honored
   wide <- mv_summary(fit, level = 0.99)
   expect_true(all(wide[, 3] < tab[, 3]))
   expect_true(all(wide[, 4] > tab[, 4]))
@@ -295,7 +295,7 @@ test_that("the reported standard errors match the asymptotic ones", {
   }
 })
 
-test_that("the two parametrisations report the same uncertainty", {
+test_that("the two parametrizations report the same uncertainty", {
   # They are the same model, so a derived quantity has the same standard error
   # under either. A disagreement means one of the two informations is wrong.
   set.seed(83)
@@ -369,7 +369,7 @@ test_that("the delta method behind the block agrees with a numerical Jacobian", 
 })
 
 
-test_that("a precision parametrisation says which matrix the block describes", {
+test_that("a precision parametrization says which matrix the block describes", {
   d <- mvgaussian_distrib(4, omega = parameters7::ar1(4))
   th <- as.list(stats::setNames(c(0, 0, 0, 0, log(2), atanh(0.5)), d@params))
   der <- mv_derived(d, th)

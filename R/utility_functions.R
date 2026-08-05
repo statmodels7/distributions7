@@ -28,7 +28,7 @@ align_theta <- function(distrib, theta) {
   # Strip names from the values themselves. A parameter that has been through a
   # link function comes back carrying its own name, which is meaningless on a
   # numeric value and leaks into the results: distrib_pdf() would return a
-  # density labelled "nu". Only worth a pass over the list when there is
+  # density labeled "nu". Only worth a pass over the list when there is
   # something to strip.
   if (any(vapply(theta, function(x) !is.null(names(x)), logical(1)))) {
     theta <- lapply(theta, unname)
@@ -466,7 +466,7 @@ transpose_params <- function(theta) {
   # Applying the function twice therefore returns the original structure.
   #
   # Deliberately independent of the *inner* names when splitting: parameter
-  # values that have travelled through a link function carry their own parameter
+  # values that have traveled through a link function carry their own parameter
   # name, and keying the rows by those names collapses a multi-parameter theta
   # onto its first column.
   n <- length(theta[[1L]])

@@ -18,7 +18,7 @@ test_that("the three families are what their densities say", {
   expect_equal(distrib_pdf(chisq_distrib(), y, list(mu = 4)),
                stats::dchisq(y, df = 4))
 
-  # the parametrisation is the mean, so the first moment is the parameter
+  # the parametrization is the mean, so the first moment is the parameter
   for (d in list(exponential_distrib(), geometric_distrib(), chisq_distrib())) {
     expect_equal(mean(d, list(mu = 3)), 3, tolerance = 1e-6,
                  label = d@distrib_name)

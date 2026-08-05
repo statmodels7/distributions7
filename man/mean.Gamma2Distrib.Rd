@@ -15,6 +15,6 @@ A numeric vector.
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}, a parameter of this
-parametrisation.
+parametrization.
 }
 \keyword{internal}

@@ -1,21 +1,21 @@
 #' @include reparametrize.R
 NULL
 
-# The second parametrisations obtained through reparametrize() rather than
+# The second parametrizations obtained through reparametrize() rather than
 # written out. Each is a map of a few lines; everything else -- the density,
 # the derivatives to fourth order observed and expected, the moments, the
 # validator, the fit -- comes from the parent through the partition sum.
 #
-# Where the literature already numbers a parametrisation that number is used,
+# Where the literature already numbers a parametrization that number is used,
 # so the Weibull in the mean is weibull3 and not weibull2: in gamlss WEI2 is a
-# different parametrisation, and a number that means one thing there and
+# different parametrization, and a number that means one thing there and
 # another here would mislead exactly the reader who knows the field.
 
 
 #' Lognormal Distribution in the Mean and Variance of Y
 #'
 #' @description
-#' Creates a lognormal distribution object parametrised by the mean and the
+#' Creates a lognormal distribution object parametrized by the mean and the
 #' variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 #'
 #' @details
@@ -23,7 +23,7 @@ NULL
 #' neither of them is a moment of \eqn{Y}. Here they are, through
 #' \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
 #'       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)}
-#' which is the parametrisation a regression on the mean wants.
+#' which is the parametrization a regression on the mean wants.
 #'
 #' Built with \code{\link{reparametrize}}, so every derivative to fourth order,
 #' observed and expected, is exact.
@@ -60,7 +60,7 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #' Weibull Distribution in the Mean
 #'
 #' @description
-#' Creates a Weibull distribution object parametrised by its mean and its
+#' Creates a Weibull distribution object parametrized by its mean and its
 #' shape.
 #'
 #' @details
@@ -73,7 +73,7 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #'
 #' The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
 #' Leaving \code{weibull2} unused is deliberate: it names a different
-#' parametrisation there.
+#' parametrization there.
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_sigma Link function for the shape. Defaults to the log.
@@ -118,7 +118,7 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 #' down. This is \code{TF2} in gamlss.
 #'
 #' The restriction is the point rather than a limitation: a family
-#' parametrised by a standard deviation is a family whose standard deviation
+#' parametrized by a standard deviation is a family whose standard deviation
 #' exists.
 #'
 #' @param link_mu Link function for the location. Defaults to the identity.
@@ -157,14 +157,14 @@ student_t2_distrib <- function(link_mu = identity_link(),
 }
 
 
-#' Generalised Gamma Distribution in the Mean
+#' Generalized Gamma Distribution in the Mean
 #'
 #' @description
-#' Creates a generalised gamma distribution object whose first parameter is the
+#' Creates a generalized gamma distribution object whose first parameter is the
 #' mean.
 #'
 #' @details
-#' The Stacy parametrisation of \code{\link{gengamma1_distrib}} carries a
+#' The Stacy parametrization of \code{\link{gengamma1_distrib}} carries a
 #' scale, a shape and a power, and exposes no mean at all, which is awkward for
 #' a family a regression would put a linear predictor on. Since
 #' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is

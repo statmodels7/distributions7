@@ -27,7 +27,7 @@ NULL
 #'
 #' On the link scale the component for \eqn{\eta_i} is the parameter-scale
 #' component multiplied by \eqn{h_i'(\eta_i)}: the response derivative is
-#' untouched by a reparametrisation of \eqn{\theta}, so only the first-order
+#' untouched by a reparametrization of \eqn{\theta}, so only the first-order
 #' diagonal chain rule enters, exactly as for \code{\link{distrib_gradient}}.
 #'
 #' Distributions with a closed form provide it directly; the others fall back
@@ -179,7 +179,7 @@ S7::method(distrib_cross_y, StudentT1Distrib) <- function(distrib, y, theta,
 #' @name distrib_cross_y.TruncatedContinuousDistrib
 #' @description The parent's mixed derivatives, unchanged: the truncated
 #'   log-density is the parent's minus \eqn{\log Z(\theta)}, and the
-#'   normalising constant does not depend on \eqn{y}, so it vanishes from any
+#'   normalizing constant does not depend on \eqn{y}, so it vanishes from any
 #'   derivative that involves the response.
 #' @param distrib A \code{TruncatedContinuousDistrib} object.
 #' @param y A numeric vector of observations.

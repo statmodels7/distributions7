@@ -240,7 +240,7 @@ test_that("the discrete closed forms match their textbook identities", {
   expect_equal(big, -dpois(c(1, 4, 9), 4), tolerance = 1e-5)
 })
 
-test_that("the gamma satisfies its exact parametrisation identity", {
+test_that("the gamma satisfies its exact parametrization identity", {
   # dF/dshape has no elementary form, but the two package parameters are tied:
   # with alpha = mu^2/s2 and beta = mu/s2, the shape direction cancels from
   #     dF/dmu + (2 s2/mu) dF/ds2 = -dF/dbeta / s2 = -y f(y) / mu.

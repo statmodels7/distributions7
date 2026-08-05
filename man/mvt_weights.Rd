@@ -21,7 +21,7 @@ that go with it.
 \details{
 This weight is the whole of the family's robustness. At \eqn{q = 0} it is
 \eqn{(\nu+p)/\nu} and it decays like \eqn{1/q}, so an observation far from
-the centre contributes less to every derivative rather than dragging the
+the center contributes less to every derivative rather than dragging the
 fit towards itself; letting \eqn{\nu \to \infty} sends it to one and
 recovers the gaussian, where nothing is downweighted.
 }

@@ -47,7 +47,7 @@ An object of class \code{TruncatedContinuousDistrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} representing a continuous distribution
-restricted to \eqn{[\ell, u]} and renormalised.
+restricted to \eqn{[\ell, u]} and renormalized.
 }
 \section{Methods}{
 

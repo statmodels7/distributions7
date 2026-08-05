@@ -1,11 +1,11 @@
 #' @include distrib.R generics.R
 NULL
 
-#' @title S7 Class for the Generalised Gamma Distribution
+#' @title S7 Class for the Generalized Gamma Distribution
 #' @name GenGamma1Distrib
 #'
 #' @description A subclass of \code{continuous_distrib} representing the
-#'   generalised gamma distribution in Stacy's three-parameter form.
+#'   generalized gamma distribution in Stacy's three-parameter form.
 #' @inheritParams distrib
 #' @return An object of class \code{GenGamma1Distrib}.
 #' @seealso \code{\link{gengamma1_distrib}}
@@ -25,7 +25,7 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 
 # --- S7 METHODS IMPLEMENTATION ---
 
-#' @title Generalised Gamma Density
+#' @title Generalized Gamma Density
 #' @name distrib_pdf.GenGamma1Distrib
 #' @description
 #' \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\, y^{d-1} e^{-(y/a)^{p}},
@@ -41,10 +41,10 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
   if (log) out else exp(out)
 }
 
-#' @title Generalised Gamma Distribution Function
+#' @title Generalized Gamma Distribution Function
 #' @name distrib_cdf.GenGamma1Distrib
 #' @description
-#' \eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularised lower incomplete gamma
+#' \eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularized lower incomplete gamma
 #' function, since \eqn{(Y/a)^{p}} is Gamma with shape \eqn{d/p} and unit
 #' rate.
 #' @param distrib A \code{GenGamma1Distrib} object.
@@ -63,7 +63,7 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
                 lower.tail = lower.tail, log.p = log.p)
 }
 
-#' @title Generalised Gamma Quantile Function
+#' @title Generalized Gamma Quantile Function
 #' @name distrib_quantile.GenGamma1Distrib
 #' @description
 #' \eqn{Q(u) = a\,\{Q_{\Gamma}(u; d/p)\}^{1/p}}, inverting the same
@@ -84,7 +84,7 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
   a * g^(1 / pw)
 }
 
-#' @title Generalised Gamma Random Generation
+#' @title Generalized Gamma Random Generation
 #' @name distrib_rng.GenGamma1Distrib
 #' @description
 #' A Gamma draw raised to the power \eqn{1/p} and scaled, which is the
@@ -99,7 +99,7 @@ S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta) {
   a * stats::rgamma(n, shape = d / p, rate = 1)^(1 / p)
 }
 
-#' @title Generalised Gamma Analytical Gradient
+#' @title Generalized Gamma Analytical Gradient
 #' @name distrib_gradient.GenGamma1Distrib
 #' @description
 #' With \eqn{w = (y/a)^{p}}, \eqn{L = \log(y/a)} and \eqn{k = d/p},
@@ -119,7 +119,7 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
   gengamma_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
-#' @title Generalised Gamma Analytical Observed Hessian
+#' @title Generalized Gamma Analytical Observed Hessian
 #' @name distrib_hessian.GenGamma1Distrib
 #' @description
 #' The second derivatives of the same expressions. The mixed
@@ -137,7 +137,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
   gengamma_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
 
-#' @title Generalised Gamma Analytical Expected Hessian
+#' @title Generalized Gamma Analytical Expected Hessian
 #' @name distrib_expected_hessian.GenGamma1Distrib
 #' @description
 #' Closed form. Every expectation the observed Hessian needs is a moment of
@@ -163,10 +163,10 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 
 # --- CONSTRUCTOR WRAPPER ---
 
-#' Generalised Gamma Distribution Object
+#' Generalized Gamma Distribution Object
 #'
 #' @description
-#' Creates a distribution object for the generalised gamma distribution in
+#' Creates a distribution object for the generalized gamma distribution in
 #' Stacy's form, with a scale \eqn{a} and two shapes \eqn{d} and \eqn{p}.
 #'
 #' @param link_a A link function object for \eqn{a}. Defaults to
@@ -184,7 +184,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #' \strong{Density:}
 #' \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}}}
 #'
-#' \strong{What it nests}, which Stacy's parametrisation is chosen to make
+#' \strong{What it nests}, which Stacy's parametrization is chosen to make
 #' visible:
 #' \itemize{
 #'   \item \eqn{p = 1} is the \link[=gamma2_distrib]{gamma} with shape \eqn{d}

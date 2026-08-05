@@ -15,7 +15,7 @@ weibull3_distrib(link_mean = log_link(), link_sigma = log_link())
 A reparametrized distribution object.
 }
 \description{
-Creates a Weibull distribution object parametrised by its mean and its
+Creates a Weibull distribution object parametrized by its mean and its
 shape.
 }
 \details{
@@ -28,7 +28,7 @@ why \code{\link{weibull1_distrib}} is not written this way.
 
 The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
 Leaving \code{weibull2} unused is deliberate: it names a different
-parametrisation there.
+parametrization there.
 }
 \examples{
 d <- weibull3_distrib()

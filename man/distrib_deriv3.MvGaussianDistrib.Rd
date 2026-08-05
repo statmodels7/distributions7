@@ -27,7 +27,7 @@ quadratic form being quadratic; one mean index gives
 \eqn{(P_{klm} r)_i}; two give \eqn{-P_{kl}[i, j]}; none gives
 \eqn{\mp\tfrac{1}{2}\,\partial^3 \log|M| - \tfrac{1}{2} r^\top P_{klm} r}.
 The precision's derivative tensors \eqn{P_t} come directly from the
-structure under a precision parametrisation, and by the Leibniz recursion
+structure under a precision parametrization, and by the Leibniz recursion
 on \eqn{P_k = -P A_k P} under a covariance one.
 }
 \keyword{internal}

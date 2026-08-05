@@ -14,7 +14,7 @@ home:
     Probability distributions written once, as objects any package can use,
     carrying exact derivatives of the log-likelihood to fourth order — with
     respect to the parameters, the response, and the unconstrained scale an
-    optimiser works on.
+    optimizer works on.
 
 navbar:
   structure:
@@ -156,7 +156,7 @@ reference:
     Distributions whose observations are vectors. The response is a matrix with
     one row per observation, and the parameters stay scalars: a mean vector
     contributes one each, and a covariance contributes the free values of the
-    parameters7 structure that parametrises it, so every generic of the package
+    parameters7 structure that parametrizes it, so every generic of the package
     indexes them as it always did.
   contents:
   - mvgaussian_distrib
@@ -239,7 +239,7 @@ reference:
   contents: [PseudoHuberDistrib, ends_with(".PseudoHuberDistrib")]
 - title: Skew normal
   contents: [SkewNormal1Distrib, ends_with(".SkewNormal1Distrib")]
-- title: Skew normal, centred
+- title: Skew normal, centered
   contents: [SkewNormal2Distrib, ends_with(".SkewNormal2Distrib"),
              sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta, sn2_jets, sn2_chain]
 - title: Skew t
@@ -274,13 +274,13 @@ reference:
   contents: [PoissonDistrib, ends_with(".PoissonDistrib")]
 - title: Negative binomial
   contents: [NegBin2Distrib, ends_with(".NegBin2Distrib")]
-- title: Generalised gamma
+- title: Generalized gamma
   contents: [GenGamma1Distrib, ends_with(".GenGamma1Distrib")]
 - title: von Mises
   contents: [VonMises1Distrib, ends_with(".VonMises1Distrib")]
 - title: von Mises in its resultant length
   contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"), vm2_parts]
-- title: Generalised Pareto
+- title: Generalized Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: NB1 negative binomial
   contents: [NegBin1Distrib, ends_with(".NegBin1Distrib")]

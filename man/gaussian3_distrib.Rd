@@ -15,7 +15,7 @@ gaussian3_distrib(link_mu = identity_link(), link_tau = log_link())
 An S7 object of class \code{\link{Gaussian3Distrib}}.
 }
 \description{
-Creates a Gaussian distribution object parametrised by its mean and its
+Creates a Gaussian distribution object parametrized by its mean and its
 \strong{precision} \eqn{\tau = 1/\sigma^2}.
 }
 \details{
@@ -25,12 +25,12 @@ coordinates, and a separate family for the same reason
 precision, and that is what the estimate, the standard error and the
 interval describe.
 
-It is the flattest of the three parametrisations. Every third derivative is
+It is the flattest of the three parametrizations. Every third derivative is
 free of the response, so the observed and the expected ones coincide, and
 the only non-zero fourth derivative is
 \eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}.
 
-The precision is the parametrisation a Bayesian conjugate analysis uses,
+The precision is the parametrization a Bayesian conjugate analysis uses,
 the gamma being conjugate for \eqn{\tau} at known \eqn{\mu}.
 }
 \examples{

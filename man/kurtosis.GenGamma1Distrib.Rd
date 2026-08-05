@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GenGamma1Distrib}
 \alias{kurtosis.GenGamma1Distrib}
-\title{Kurtosis of the Generalised Gamma Distribution}
+\title{Kurtosis of the Generalized Gamma Distribution}
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}.}
 

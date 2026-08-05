@@ -13,7 +13,7 @@ missing, as for a univariate distribution.}
 
 \item{n_grid}{Points per axis for the marginal densities and the contours.}
 
-\item{col_fit}{Colour of the density and of the contours.}
+\item{col_fit}{Color of the density and of the contours.}
 
 \item{...}{Passed to the underlying plotting calls.}
 }

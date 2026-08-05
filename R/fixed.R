@@ -39,7 +39,7 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' values. Constructed by \code{\link{fixed}}.
 #'
 #' @details
-#' Identical in behaviour to \code{\link{FixedContinuousDistrib}}: every method
+#' Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
 #' splices the fixed values into \code{theta} and delegates to the parent, and
 #' the derivative methods keep only the components among the free parameters.
 #'
@@ -84,7 +84,7 @@ is_fixed <- function(distrib) {
 #' to call both from generic-dispatched methods, whose \code{theta} is already
 #' aligned, and from delegating methods such as \code{mean()}, whose
 #' \code{theta} arrives as the caller wrote it. Free values may be vectors --
-#' the wrapper is as vectorised in \code{theta} as its parent -- while the
+#' the wrapper is as vectorized in \code{theta} as its parent -- while the
 #' fixed values are scalars by construction.
 #'
 #' @param distrib A fixed-parameter wrapper object.
@@ -112,7 +112,7 @@ fixed_full_theta <- function(distrib, theta) {
 # ---------------------------------------------------------------------------
 # Method registration.
 #
-# Every method has the same one-line behaviour -- splice and delegate -- so
+# Every method has the same one-line behavior -- splice and delegate -- so
 # they are registered in a loop over the two classes. The functions do not
 # read the loop variable, so no closure capture is involved. The derivative
 # methods subset the parent's result by the names generated from the free
@@ -306,7 +306,7 @@ rm(.fixed_cls)
 #' at the full vector, and the derivative components are the parent's
 #' restricted to the free indices -- a subvector of the score, a submatrix of
 #' the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
-#' no normalising constant changes, so the parent's closed forms are used
+#' no normalizing constant changes, so the parent's closed forms are used
 #' throughout, and \code{\link{fit_distrib}} estimates the free parameters
 #' with standard errors and intervals for them alone.
 #'

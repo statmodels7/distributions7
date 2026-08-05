@@ -24,7 +24,7 @@ else is left to the parent. What that means depends on the parent's type, and th
 constructor dispatches on it:
 \itemize{
 \item \strong{Discrete} (support including 0): a \strong{hurdle} model. The mass the
-parent puts at zero is removed, the parent is renormalised over the positive
+parent puts at zero is removed, the parent is renormalized over the positive
 values, and \eqn{\pi} takes its place.
 \item \strong{Continuous}: a \strong{mixed} distribution. Nothing has to be removed,
 since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the

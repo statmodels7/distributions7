@@ -24,27 +24,27 @@ scale}. If \code{NULL} (default) they come from
 data; families that do not say otherwise fall back to random draws, with
 restarts.}
 
-\item{method}{How to optimise. One argument, taking one of three things:
+\item{method}{How to optimize. One argument, taking one of three things:
 \itemize{
 \item \code{\link{fisher_scoring}()}, the default --- Newton's method
 with the \strong{expected} information in place of the Hessian, the
 object carrying how that information is to be obtained when the family
 has no closed form for it;
-\item an optimiser object from \pkg{optimizers7}, used as given and
+\item an optimizer object from \pkg{optimizers7}, used as given and
 receiving the analytical gradient and the \strong{observed} Hessian,
 so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
 both the algorithm and the stopping rule;
 \item one of the strings \code{"fisher"}, \code{"newton"} or
 \code{"bfgs"}, kept as short names for the three ready-made
 strategies. The first two fall back to BFGS if they fail to converge;
-an optimiser the caller chose is never silently replaced.
+an optimizer the caller chose is never silently replaced.
 }
 The iteration limit and the stopping rule belong to the method and are
-set there: on an optimiser object through its own \code{maxit} and
+set there: on an optimizer object through its own \code{maxit} and
 \code{criterion}, on \code{\link{fisher_scoring}()} through the same two
 arguments, and otherwise left at the defaults of
-\code{\link[optimizers7]{crit_grad}} and of the optimiser. The objective
-handed to the optimiser is the \emph{mean} negative log-likelihood, so a
+\code{\link[optimizers7]{crit_grad}} and of the optimizer. The objective
+handed to the optimizer is the \emph{mean} negative log-likelihood, so a
 tolerance on its gradient is a tolerance on the score \strong{per
 observation} whatever the sample size, and
 \code{\link[optimizers7]{crit_grad}} documents why its default sits where
@@ -62,14 +62,14 @@ the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
 methods are provided.
 }
 \description{
-Fits a distribution to an i.i.d. sample by maximum likelihood. The optimisation
+Fits a distribution to an i.i.d. sample by maximum likelihood. The optimization
 is carried out on the \strong{link (real) scale}, where the parameters are
 unconstrained, using the analytical score and information supplied by the
 distribution (\code{scale = "link"}). Estimates are then mapped back to the
 parameter scale and reported with standard errors and confidence intervals.
 }
 \details{
-\strong{Why the link scale.} Optimising \eqn{\eta \in \mathbb{R}^p} rather than
+\strong{Why the link scale.} Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
 the constrained \eqn{\theta} removes the need for box constraints: a variance
 can never become negative, a probability never leaves \eqn{(0,1)}. The score and
 information on that scale are obtained exactly (not numerically) through the

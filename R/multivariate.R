@@ -12,7 +12,7 @@ NULL
 #' The parameters of a multivariate distribution are still \strong{scalars} as
 #' far as the rest of the package is concerned. A mean vector contributes
 #' \eqn{p} of them and a covariance matrix contributes the free values of the
-#' \pkg{parameters7} structure that parametrises it, so \code{theta} remains
+#' \pkg{parameters7} structure that parametrizes it, so \code{theta} remains
 #' the named list of numbers every generic already understands, and the
 #' derivative bookkeeping -- \code{\link{deriv_names}}, the Hessian keys, the
 #' link scale, \code{\link{fit_distrib}} -- needs no special case. The
@@ -145,7 +145,7 @@ as_mv_matrix <- function(distrib, y) {
 #'
 #' @details
 #' The multivariate families of this package take one parameter value for the
-#' whole sample. Vectorised parameters are what a regression supplies, and a
+#' whole sample. Vectorized parameters are what a regression supplies, and a
 #' distribution that accepted them would be doing the model layer's work with
 #' none of its bookkeeping.
 #'
@@ -282,7 +282,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' \code{"integrate"} builds its quadrature over an interval and is refused
 #' here; \code{"bartlett"} in the univariate package reaches
 #' \code{\link{expectation}}, which is that same quadrature. What does
-#' generalise is sampling, so both remaining routes draw from the family's own
+#' generalize is sampling, so both remaining routes draw from the family's own
 #' generator and differ in what they average:
 #'
 #' \code{"mc"} averages the observed Hessian, \eqn{\mathbb{E}[\ell^{(ij)}]}
@@ -345,7 +345,7 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #'
 #' @description
 #' Returns the matrix parameter's free names with \code{"sigma_"} or \code{"omega_"}
-#' in front, according to which side of the model the matrix parameter parametrises.
+#' in front, according to which side of the model the matrix parameter parametrizes.
 #'
 #' @details
 #' The name of a free value says how the matrix is built, not which matrix it
@@ -358,7 +358,7 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #' handed to.
 #'
 #' @param free_names The matrix parameter's free names.
-#' @param inverted Whether the matrix parameter parametrises the precision.
+#' @param inverted Whether the matrix parameter parametrizes the precision.
 #'
 #' @return A character vector.
 #'
@@ -444,7 +444,7 @@ S7::method(mv_support, multivariate_distrib) <- function(distrib, theta, ...) {
 #' against.
 #'
 #' This is consumed by \code{\link{check_distrib}} and by nothing else. A
-#' discrete family does not need it, its normalisation being an exact sum over
+#' discrete family does not need it, its normalization being an exact sum over
 #' \code{\link{mv_support}}.
 #'
 #' @param distrib An object inheriting from class
@@ -512,7 +512,7 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #' The parameters of a multivariate distribution are scalars, so that every
 #' generic of the package can index them, and these two functions put them back
 #' into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
-#' PARAMETRISATION carries, whichever side the matrix parameter describes: the
+#' PARAMETRIZATION carries, whichever side the matrix parameter describes: the
 #' covariance for a gaussian, and the scale matrix for a Student t, whose
 #' covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
 #' of freedom. The moment is \code{\link{variance}}, and keeping the two apart
@@ -564,7 +564,7 @@ S7::method(mv_location, multivariate_distrib) <- function(distrib, theta) {
 #'
 #' @description
 #' The helper the elliptical families implement \code{\link{mv_location}} with:
-#' the first \eqn{p} entries of the flat parameter vector, labelled by
+#' the first \eqn{p} entries of the flat parameter vector, labeled by
 #' coordinate.
 #'
 #' @param distrib A \code{\link{multivariate_distrib}} object.

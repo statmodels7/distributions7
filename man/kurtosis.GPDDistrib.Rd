@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GPDDistrib}
 \alias{kurtosis.GPDDistrib}
-\title{Kurtosis of the Generalised Pareto Distribution}
+\title{Kurtosis of the Generalized Pareto Distribution}
 \arguments{
 \item{x}{A \code{GPDDistrib}.}
 

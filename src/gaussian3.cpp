@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // Gaussian in the mean and the PRECISION, l = log(t)/2 - log(2 pi)/2 - t r^2/2,
-// with r = y - mu. This is the flattest of the three parametrisations: the
+// with r = y - mu. This is the flattest of the three parametrizations: the
 // third derivatives are free of the data except through nothing at all, and
 // the fourth has a single non-zero component.
 

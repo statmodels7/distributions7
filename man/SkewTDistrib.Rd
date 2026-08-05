@@ -42,7 +42,7 @@ An object of class \code{SkewTDistrib}.
 A subclass of \code{continuous_distrib} representing Azzalini's
 skew \eqn{t} distribution: a Student \eqn{t} with a shape parameter
 controlling the asymmetry, so that the tail weight and the skewness are
-modelled separately.
+modeled separately.
 }
 \section{Methods}{
 

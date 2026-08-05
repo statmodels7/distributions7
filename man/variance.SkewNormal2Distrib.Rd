@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{variance.SkewNormal2Distrib}
 \alias{variance.SkewNormal2Distrib}
-\title{Variance of the Skew Normal in the Centred Parametrisation}
+\title{Variance of the Skew Normal in the Centered Parametrization}
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 

@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Closed form: \eqn{n\mu}, the shapes cancelling.
+Closed form: \eqn{n\mu}, the shapes canceling.
 }
 \keyword{internal}

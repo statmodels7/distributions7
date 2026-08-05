@@ -22,7 +22,7 @@ With \eqn{s = 1/\phi} and \eqn{z = y/\mu},
 \deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{y-\mu}{\phi\mu^2}, \qquad
       \dfrac{\partial\ell}{\partial\phi}
         = -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\}}
-the first being the score of a gamma generalised linear model.
+the first being the score of a gamma generalized linear model.
 }
 \seealso{
 \code{\link{gamma1_distrib}}

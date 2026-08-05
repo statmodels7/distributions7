@@ -284,7 +284,7 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #'
 #' @description
 #' Creates a distribution object for the multinomial distribution,
-#' parametrised by a probability vector on the simplex.
+#' parametrized by a probability vector on the simplex.
 #'
 #' @param n_dim The number of categories \eqn{p}.
 #' @param size The number of trials \eqn{n}. A constant of the distribution

@@ -33,7 +33,7 @@ NegBin1Distrib <- S7::new_class("NegBin1Distrib", parent = discrete_distrib)
 #' Requiring the variance to be \eqn{\mu(1+\theta)} fixes the success
 #' probability at \eqn{1/(1+\theta)}, and the mean then determines the size.
 #' It is this that puts \eqn{\mu} inside the gamma functions and makes the
-#' family different from the quadratic form rather than a reparametrisation of
+#' family different from the quadratic form rather than a reparametrization of
 #' it.
 #'
 #' @param mu The mean, a positive numeric vector.
@@ -206,7 +206,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' @details
 #' Two negative binomials are in common use and they are \strong{different
-#' families}, not two parametrisations of one. Here the variance is
+#' families}, not two parametrizations of one. Here the variance is
 #' \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 #' relative to a Poisson is the same at every mean;
 #' \code{\link{negbin2_distrib}} has \eqn{\mu + \mu^2/\theta}, growing

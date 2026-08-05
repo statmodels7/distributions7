@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_pdf.GPDDistrib}
 \alias{distrib_pdf.GPDDistrib}
-\title{Generalised Pareto Density}
+\title{Generalized Pareto Density}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object.}
 

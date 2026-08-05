@@ -157,7 +157,7 @@ parent_ell <- function(parent, y, theta, max_order, params) {
   function(block) d[[length(block)]][[canon_key(block, params)]]
 }
 
-#' Memoise a Ratio Function on Its Block
+#' Memoize a Ratio Function on Its Block
 #'
 #' @description
 #' Caches a ratio function by the canonical key of its block.
@@ -165,7 +165,7 @@ parent_ell <- function(parent, y, theta, max_order, params) {
 #' @details
 #' A partition of a fourth-order index asks for the same small blocks many times
 #' over. For the truncated wrapper each distinct block costs a quadrature, so
-#' memoising across the partition sum is the difference between one integration
+#' memoizing across the partition sum is the difference between one integration
 #' per block and one per occurrence.
 #'
 #' @param f The ratio function to wrap.
@@ -536,7 +536,7 @@ za_cont_deriv_k <- function(order) {
 #
 # l_T = l - log Z, and the ratios are truncated expectations of the complete
 # Bell polynomial:  d^B Z / Z = E_T[ d^B f / f ].  Each distinct block costs
-# one quadrature or summation, which is why they are memoised.
+# one quadrature or summation, which is why they are memoized.
 # --------------------------------------------------------------------------
 
 #' Derivatives of a Truncated Distribution
@@ -548,7 +548,7 @@ za_cont_deriv_k <- function(order) {
 #' Here \eqn{\ell_T = \ell - \log Z}, and the ratios are truncated expectations
 #' of the same complete Bell quantity the other wrappers use,
 #' \eqn{d^B Z / Z = \mathbb{E}_T[d^B f / f]}. Each distinct block costs one
-#' quadrature or summation, which is why they are memoised across the partition
+#' quadrature or summation, which is why they are memoized across the partition
 #' sum.
 #'
 #' @param order The derivative order, 3 or 4.

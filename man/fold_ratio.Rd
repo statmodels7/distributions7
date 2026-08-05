@@ -24,14 +24,14 @@ fold_ratio(parent, x, theta, order, params, w)
 A function of one block, returning that ratio's vector.
 }
 \description{
-Returns a memoised function giving \eqn{d^B L / L} for any block, which is
+Returns a memoized function giving \eqn{d^B L / L} for any block, which is
 what \code{\link{log_deriv}} consumes.
 }
 \details{
 The ratio is the parent's complete Bell polynomial at each preimage,
 weighted by which preimage the point came from:
 \eqn{w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))}. Both parent
-evaluations are fetched once and the result memoised, since a partition sum
+evaluations are fetched once and the result memoized, since a partition sum
 at fourth order asks for the same blocks repeatedly.
 }
 \seealso{

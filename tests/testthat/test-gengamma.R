@@ -1,4 +1,4 @@
-# The generalised gamma in Stacy's form, whose parametrisation is chosen so
+# The generalized gamma in Stacy's form, whose parametrization is chosen so
 # that the families it nests are read off the parameters rather than derived.
 
 test_that("it nests the gamma, the Weibull and the exponential exactly", {

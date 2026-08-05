@@ -14,7 +14,7 @@ when there are at most 2000 of them.}
 
 \item{legend}{Logical; add a legend. Defaults to \code{TRUE}.}
 
-\item{col_fit, col_data}{Colours of the fitted curve and of the empirical
+\item{col_fit, col_data}{Colors of the fitted curve and of the empirical
 summary.}
 
 \item{mv_which}{For a multivariate fit, which coordinates to show. Defaults
@@ -29,7 +29,7 @@ instance \code{main}, \code{xlab} or \code{xlim}.}
 }
 \description{
 Compares the fitted distribution with the sample it was estimated from. For a
-continuous distribution the observations are summarised by a kernel density
+continuous distribution the observations are summarized by a kernel density
 estimate, with the fitted density drawn on top and a rug of the data
 underneath. For a discrete one the observed relative frequencies are drawn as
 bars with the fitted probability mass overlaid, since a kernel density would

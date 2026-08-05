@@ -20,7 +20,7 @@ NULL
 # Its tolerance is expressed in t, and the derivative of the compactification can
 # be enormous -- with the tangent map dy/dt is of order y^2, so the default
 # tolerance of about 1e-4 turns into an error of several hundred units in y for a
-# density centred far from the origin. The grid refinement instead stops on the
+# density centered far from the origin. The grid refinement instead stops on the
 # width of the bracket measured in y.
 
 #' Locate an Interior High-Density Point
@@ -261,7 +261,7 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
 # Internal: TRUE when the object gets its quantile function from a class-specific
 # method rather than from the numerical fallback registered just above. S7 records
 # the class a method was registered on in the method's `signature` attribute, so
-# inherited fallbacks are recognised by that class being `continuous_distrib`
+# inherited fallbacks are recognized by that class being `continuous_distrib`
 # itself. Used to decide whether inverse transform sampling is cheap.
 #' Does This Distribution Have a Real Quantile Method?
 #'
@@ -276,7 +276,7 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
 #'
 #' The test uses the documented S7 trick. S7 records the class a method was
 #' registered on in the method's \code{signature} attribute, so an inherited
-#' fallback is recognised by that class being \code{continuous_distrib} itself.
+#' fallback is recognized by that class being \code{continuous_distrib} itself.
 #' Note that \code{identical()} does not work for this -- S7 wraps the method
 #' object, so comparing against the fallback fails even when it is the fallback.
 #'
@@ -322,14 +322,14 @@ has_analytic_quantile <- function(distrib) {
 #'
 #' Two devices make this numerically safe for an arbitrary user-supplied density:
 #' \itemize{
-#'   \item \strong{Recentring.} The kernel is shifted to its mode,
+#'   \item \strong{Recentering.} The kernel is shifted to its mode,
 #'     \eqn{K(z) \propto f(m + z)}, and the mode is added back to the draws. Without
 #'     this a distribution located far from the origin (say \eqn{\mu = 1000}) gives a
 #'     wildly elongated bounding rectangle and an acceptance rate close to zero.
-#'     Recentring also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
+#'     Recentering also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
 #'     non-positive for \eqn{z \le 0} and non-negative for \eqn{z \ge 0}, so
 #'     \eqn{v_{\min}} and \eqn{v_{\max}} are each found on one side of the mode.
-#'   \item \strong{Normalisation.} The kernel is rescaled by its value at the mode, so
+#'   \item \strong{Normalization.} The kernel is rescaled by its value at the mode, so
 #'     that \eqn{\max K = 1} and \eqn{u_{\max} = 1}. Every quantity stays in a safe
 #'     numerical range whatever the height of the density, and all computations are
 #'     carried out on the log scale.
@@ -339,7 +339,7 @@ has_analytic_quantile <- function(distrib) {
 #' from the mode until \eqn{h} has clearly turned back towards zero (finite support
 #' bounds are used directly), then combining \code{\link[stats]{optimize}} with a grid
 #' search over the resulting bracket; the box is enclosing by construction for a
-#' unimodal kernel. Candidates are generated and filtered in vectorised batches whose
+#' unimodal kernel. Candidates are generated and filtered in vectorized batches whose
 #' size adapts to the observed acceptance rate.
 #'
 #' @section Unbounded densities:
@@ -634,9 +634,9 @@ lp_edge_divergence <- function(lp, b) {
 #' Kept separate from the \code{distrib} object so that it can also be run on a
 #' reparameterised density, which is how the divergence transforms reuse it.
 #'
-#' Two devices make it safe. The kernel is \strong{recentred at the mode},
+#' Two devices make it safe. The kernel is \strong{recentered at the mode},
 #' without which a density located at \eqn{\mu = 1000} produces a degenerate
-#' bounding box; and it is \strong{normalised to a maximum of one}. With those it
+#' bounding box; and it is \strong{normalized to a maximum of one}. With those it
 #' refuses far less often than expected: bimodal densities, a Student t with half
 #' a degree of freedom and a Pareto with infinite mean are all fine. The only
 #' genuine refusal is a density that diverges at an edge, which is handled by
@@ -658,7 +658,7 @@ grou_core <- function(lp, b, n, r) {
     stop("GRoU needs a bounded density: the log-density at the mode is ", lp_max, ".", call. = FALSE)
   }
 
-  # Log-kernel recentred at the mode and normalised to a maximum of 1
+  # Log-kernel recentered at the mode and normalized to a maximum of 1
   lk <- function(z) {
     out <- lp(m + z) - lp_max
     out[is.na(out)] <- -Inf
@@ -831,7 +831,7 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 #' the random generator are all lookups into it. No new algorithm was needed for
 #' discrete distributions, because the cdf of a discrete variable is a step
 #' function and inverting it is exact. The cost was one R-level call per draw,
-#' and the lookup is vectorised.
+#' and the lookup is vectorized.
 #'
 #' Requires a finite lower bound, which every standard count distribution has.
 #'

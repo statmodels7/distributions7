@@ -1,5 +1,5 @@
 # NB1: the negative binomial whose variance is LINEAR in the mean. It is a
-# different family from negbin2_distrib(), not a reparametrisation: the size is
+# different family from negbin2_distrib(), not a reparametrization: the size is
 # mu/theta, so the mean sits inside the gamma functions rather than outside
 # them, and the two have different variance functions at every (mu, theta).
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{skewness.SkewNormal2Distrib}
 \alias{skewness.SkewNormal2Distrib}
-\title{Skewness of the Skew Normal in the Centred Parametrisation}
+\title{Skewness of the Skew Normal in the Centered Parametrization}
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 

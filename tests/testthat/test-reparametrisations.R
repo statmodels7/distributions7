@@ -1,6 +1,6 @@
 # gaussian1/2/3 and gamma1/2 are the same two laws in different coordinates.
 # That is what makes them testable without choosing a tolerance: at
-# corresponding parameters they must agree on the density, on the maximised
+# corresponding parameters they must agree on the density, on the maximized
 # log-likelihood and on AIC/BIC exactly, and their standard errors must
 # correspond through the delta method.
 #
@@ -26,7 +26,7 @@ test_that("the three gaussians are one law", {
   expect_identical(distrib_quantile(d2, p, t2), distrib_quantile(d1, p, t1))
   expect_identical(distrib_quantile(d3, p, t3), distrib_quantile(d1, p, t1))
 
-  # the moments are the same numbers in each parametrisation's coordinates
+  # the moments are the same numbers in each parametrization's coordinates
   expect_equal(variance(d2, t2), sg^2)
   expect_equal(variance(d3, t3), sg^2)
   expect_identical(skewness(d2, t2), 0)
@@ -50,7 +50,7 @@ test_that("the three gaussians reach the same maximum", {
 
   # The estimates agree only as closely as the rule that stopped each run
   # promises, so the tolerance follows crit_grad()'s default rather than being
-  # chosen: three optimisations of three different objectives land at three
+  # chosen: three optimizations of three different objectives land at three
   # nearby points, not at one.
   tol <- sqrt(eval(formals(optimizers7::crit_grad)$tol))
   s <- unname(coef(f1)[2])

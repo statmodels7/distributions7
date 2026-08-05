@@ -28,7 +28,7 @@ the parent is a \code{discrete_distrib}; that looks right and is wrong. The cdf
 of \code{zero_adjusted(gamma2_distrib())} already includes the point mass at
 zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
 \code{continuous_distrib}. Truncating it from above, with the atom retained,
-then drops exactly that mass out of the normalising constant -- and the
+then drops exactly that mass out of the normalizing constant -- and the
 resulting density integrates to something other than one while every formula
 still reads correctly. Asking \code{\link{distrib_atoms}} instead of asking
 the class cannot make that mistake.

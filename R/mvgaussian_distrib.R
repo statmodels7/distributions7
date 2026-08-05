@@ -4,13 +4,13 @@ NULL
 #' Multivariate Gaussian Distribution
 #'
 #' @description
-#' The S7 class of multivariate gaussian distributions, parametrised by a mean
+#' The S7 class of multivariate gaussian distributions, parametrized by a mean
 #' vector and by a \pkg{parameters7} structure for the covariance or the
 #' precision. Constructed by \code{\link{mvgaussian_distrib}}.
 #'
 #' @inheritParams multivariate_distrib
 #' @param param The \pkg{parameters7} structure carrying the matrix.
-#' @param inverted Whether the matrix parameter parametrises the precision rather than
+#' @param inverted Whether the matrix parameter parametrizes the precision rather than
 #'   the covariance.
 #'
 #' @return An object of class \code{MvGaussianDistrib}.
@@ -40,13 +40,13 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' @details
 #' Exactly one of \code{sigma} and \code{omega} may be given, and
 #' the name of the argument decides which side of the model the matrix parameter
-#' parametrises: the covariance in the first case, the precision in the second.
-#' One constructor returns one of two behaviours, in the manner of
+#' parametrizes: the covariance in the first case, the precision in the second.
+#' One constructor returns one of two behaviors, in the manner of
 #' \code{\link{truncated}}, which chooses between its continuous and discrete
 #' classes from the arguments it is handed.
 #'
 #' The precision form is the cheaper one and is worth preferring where the
-#' modelling allows it. Written in \eqn{\Omega}, the log-density, the score and
+#' modeling allows it. Written in \eqn{\Omega}, the log-density, the score and
 #' the Hessian are multiplications, and the first term of the score is the
 #' parameter's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
 #' quantities need a solve at every step.
@@ -70,7 +70,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' \strong{Reading a fit.} The free values are coordinates, not quantities
 #' anybody reads. \code{\link{mv_summary}} carries the fit's variance matrix
 #' onto the standard deviations and correlations by the delta method, and
-#' \code{print()} shows them; a precision parametrisation also reports the
+#' \code{print()} shows them; a precision parametrization also reports the
 #' conditional variances and the partial correlations, which are what it
 #' describes directly. The conditional variance is
 #' \eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, and its ratio to the
@@ -80,7 +80,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' \strong{Rank.} A rank-deficient structure is refused. A singular covariance
 #' gives a law supported on a subspace, with no density against Lebesgue
 #' measure, and a singular precision gives a quadratic form that is flat along
-#' its null space and does not normalise. The two are different failures and
+#' its null space and does not normalize. The two are different failures and
 #' both are failures; a structure of that kind is a legitimate penalty and not
 #' a legitimate density.
 #'
@@ -113,7 +113,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' # a diagonal covariance: two variances instead of three free values
 #' mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 #'
-#' # or the precision, which is the cheaper parametrisation
+#' # or the precision, which is the cheaper parametrization
 #' mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 #'
 #' @export
@@ -127,7 +127,7 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
   if (!is.null(sigma) && !is.null(omega)) {
     stop(paste0(
       "Give at most one of 'sigma' and 'omega'. They name the\n",
-      "  two sides of the same model, and a distribution parametrised by both\n",
+      "  two sides of the same model, and a distribution parametrized by both\n",
       "  would be over-determined."
     ), call. = FALSE)
   }
@@ -148,7 +148,7 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
     stop(sprintf(paste0(
       "The matrix parameter is rank deficient (%d of %d), so it does not describe a\n",
       "  density. A singular covariance is supported on a subspace and a\n",
-      "  singular precision does not normalise; either way the law has no\n",
+      "  singular precision does not normalize; either way the law has no\n",
       "  density against Lebesgue measure. Such a structure is a penalty, not\n",
       "  a distribution."
     ), s@rank, s@dimension), call. = FALSE)
@@ -211,7 +211,7 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
 #' derivative matrices when they are asked for.
 #'
 #' @details
-#' Whichever side the matrix parameter parametrises, the arithmetic below is written
+#' Whichever side the matrix parameter parametrizes, the arithmetic below is written
 #' in the covariance, so a precision structure is inverted once here rather
 #' than at every use. The log-determinant follows the matrix parameter's own, with its
 #' sign flipped for a precision, which is the one place the two forms differ in
@@ -294,7 +294,7 @@ S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
 #' @name mv_sigma.MvGaussianDistrib
 #' @description
 #' The covariance, assembled from the matrix parameter and inverted first when the
-#' structure parametrises the precision.
+#' structure parametrizes the precision.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param theta A named list of parameters.
 #' @return A \eqn{p \times p} numeric matrix.
@@ -310,7 +310,7 @@ S7::method(mv_sigma, MvGaussianDistrib) <- function(distrib, theta) {
 #' Residuals and Whitened Residuals
 #'
 #' @description
-#' The centred response and its image under the inverse covariance, which are
+#' The centered response and its image under the inverse covariance, which are
 #' what every derivative of a multivariate gaussian is written in.
 #'
 #' @param y An \eqn{n \times p} matrix.
@@ -356,8 +356,8 @@ S7::method(distrib_pdf, MvGaussianDistrib) <- function(distrib, y, theta,
 #' @name distrib_rng.MvGaussianDistrib
 #' @description
 #' \eqn{\mu + L z} with \eqn{z} standard normal and \eqn{LL^\top = \Sigma}, the
-#' factor taken from the matrix parameter where it parametrises the covariance and
-#' from a factorisation of the inverse otherwise.
+#' factor taken from the matrix parameter where it parametrizes the covariance and
+#' from a factorization of the inverse otherwise.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param n The number of observations to draw.
 #' @param theta A named list of parameters.
@@ -670,7 +670,7 @@ S7::method(generate_random_theta, MvGaussianDistrib) <- function(distrib, ...) {
 #'
 #' @description
 #' The precision's derivative tensors in the matrix parameter's free values, orders 1
-#' to 4, keyed by index tuple. For a precision parametrisation they are the
+#' to 4, keyed by index tuple. For a precision parametrization they are the
 #' parameter's own derivatives; for a covariance they follow from repeated
 #' differentiation of the inverse, so no expanded formula is transcribed and
 #' no term can be dropped.
@@ -853,7 +853,7 @@ mvg_higher <- function(distrib, y, theta, order) {
 #' \eqn{(P_{klm} r)_i}; two give \eqn{-P_{kl}[i, j]}; none gives
 #' \eqn{\mp\tfrac{1}{2}\,\partial^3 \log|M| - \tfrac{1}{2} r^\top P_{klm} r}.
 #' The precision's derivative tensors \eqn{P_t} come directly from the
-#' structure under a precision parametrisation, and by the Leibniz recursion
+#' structure under a precision parametrization, and by the Leibniz recursion
 #' on \eqn{P_k = -P A_k P} under a covariance one.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param y An \eqn{n \times p} matrix of observations.

@@ -42,14 +42,14 @@ MvGaussianDistrib(
 
 \item{param}{The \pkg{parameters7} structure carrying the matrix.}
 
-\item{inverted}{Whether the matrix parameter parametrises the precision rather than
+\item{inverted}{Whether the matrix parameter parametrizes the precision rather than
 the covariance.}
 }
 \value{
 An object of class \code{MvGaussianDistrib}.
 }
 \description{
-The S7 class of multivariate gaussian distributions, parametrised by a mean
+The S7 class of multivariate gaussian distributions, parametrized by a mean
 vector and by a \pkg{parameters7} structure for the covariance or the
 precision. Constructed by \code{\link{mvgaussian_distrib}}.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_hessian.SkewNormal2Distrib}
 \alias{distrib_hessian.SkewNormal2Distrib}
-\title{Skew Normal Observed Hessian in the Centred Parametrisation}
+\title{Skew Normal Observed Hessian in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object.}
 

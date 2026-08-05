@@ -6,7 +6,7 @@ NULL
 #'
 #' @description A subclass of \code{discrete_distrib} representing the
 #'   geometric distribution on \eqn{\{0, 1, 2, \dots\}} in its mean
-#'   parametrisation.
+#'   parametrization.
 #' @inheritParams distrib
 #' @return An object of class \code{GeometricDistrib}.
 #' @seealso \code{\link{geometric_distrib}}
@@ -224,7 +224,7 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #'
 #' @description
 #' Creates a distribution object for the geometric distribution on
-#' \eqn{\{0, 1, 2, \dots\}}, parametrised by its mean \eqn{\mu}.
+#' \eqn{\{0, 1, 2, \dots\}}, parametrized by its mean \eqn{\mu}.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
 #'   \code{\link[linkfunctions7]{log_link}} to ensure positivity.

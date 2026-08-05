@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Chi-squared in the MEAN parametrisation: the mean IS the degrees of
+// Chi-squared in the MEAN parametrization: the mean IS the degrees of
 // freedom, so mu = nu and
 //   l = (mu/2 - 1) log y - y/2 - (mu/2) log 2 - lgamma(mu/2).
 // Only the score carries the data:

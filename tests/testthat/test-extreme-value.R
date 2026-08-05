@@ -59,7 +59,7 @@ expect_derivatives_ok <- function(d, th, y, tol_g = 1e-8, tol_h = 1e-5) {
 
 # --- Weibull ---------------------------------------------------------------
 
-test_that("the Weibull density is base R's, on the same parametrisation", {
+test_that("the Weibull density is base R's, on the same parametrization", {
   d <- weibull1_distrib()
   th <- list(mu = 2, sigma = 1.5)
   y <- c(0.4, 1, 2, 4)
@@ -177,7 +177,7 @@ test_that("the Gumbel has a fixed shape", {
   expect_equal(mean(d, list(mu = 1, sigma = 2)), 1 + 2 * eg)
   expect_equal(variance(d, list(mu = 1, sigma = 2)), pi^2 * 4 / 6)
 
-  # the third and fourth standardised moments do not depend on either
+  # the third and fourth standardized moments do not depend on either
   # parameter, which is the substantive statement about this family
   s1 <- skewness(d, list(mu = 0, sigma = 1))
   s2 <- skewness(d, list(mu = -50, sigma = 7))
@@ -308,7 +308,7 @@ test_that("both families are fitted by maximum likelihood", {
     )
     expect_lt(max(abs(sc)) / length(y), 1e-6)
 
-    # and the three methods agree on the maximised log-likelihood
+    # and the three methods agree on the maximized log-likelihood
     lls <- vapply(c("fisher", "newton", "bfgs"), function(m) {
       as.numeric(logLik(fit_distrib(cfg$d, y, method = m)))
     }, numeric(1))

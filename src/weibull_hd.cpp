@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Weibull log-density in the gamlss WEI
-// parametrisation (mu = scale, sigma = shape). With u = (y/mu)^sigma and
+// parametrization (mu = scale, sigma = shape). With u = (y/mu)^sigma and
 // L = log(y/mu), du/dmu = -sigma*u/mu and du/dsigma = u*L, so every derivative
 // stays a polynomial in u and L*u over powers of mu and sigma; the ladders are
 // derived by hand from the gradient the package already ships.

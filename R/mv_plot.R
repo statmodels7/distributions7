@@ -27,7 +27,7 @@ NULL
 #'   missing, as for a univariate distribution.
 #' @param which The coordinates to show. Defaults to all of them.
 #' @param n_grid Points per axis for the marginal densities and the contours.
-#' @param col_fit Colour of the density and of the contours.
+#' @param col_fit Color of the density and of the contours.
 #' @param ... Passed to the underlying plotting calls.
 #'
 #' @return \code{x}, invisibly.
@@ -76,9 +76,9 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #' @param theta A named list of parameters, already aligned.
 #' @param which The coordinates to show, or \code{NULL} for all.
 #' @param n_grid Points per axis.
-#' @param col_fit Colour of the fitted density.
+#' @param col_fit Color of the fitted density.
 #' @param data An \eqn{n \times p} matrix of observations, or \code{NULL}.
-#' @param col_data Colour of the observed summary.
+#' @param col_data Color of the observed summary.
 #' @param ... Unused.
 #'
 #' @return Invisibly \code{NULL}.
@@ -105,11 +105,11 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
   # variance(): a Student t with nu <= 2 has no variance, and that is precisely
   # the shape worth drawing. The two agree up to a factor for an elliptical
   # family, which is all a plotting range needs.
-  centre <- as.numeric(mv_location(d, theta))
+  center <- as.numeric(mv_location(d, theta))
   spread <- sqrt(diag(mv_sigma(d, theta)))
   rng <- lapply(which, function(j) {
-    lo <- centre[j] - 3 * spread[j]
-    hi <- centre[j] + 3 * spread[j]
+    lo <- center[j] - 3 * spread[j]
+    hi <- center[j] + 3 * spread[j]
     if (!is.null(data)) {
       col <- match(j, which)
       lo <- min(lo, min(data[, col]))

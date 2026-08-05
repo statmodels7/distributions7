@@ -23,7 +23,7 @@ the closest thing the matrix parameter can represent, which is a good deal neare
 than the origin.
 }
 \details{
-When the matrix parameter parametrises the precision the sample covariance is
+When the matrix parameter parametrizes the precision the sample covariance is
 inverted first, since that is the matrix the matrix parameter has to represent.
 }
 \keyword{internal}

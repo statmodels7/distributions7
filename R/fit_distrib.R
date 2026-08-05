@@ -152,7 +152,7 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
 #'
 #' @description
 #' The sum of the log-density over the observations, the objective the fit
-#' maximises.
+#' maximizes.
 #'
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #' @param y A numeric vector of observations.
@@ -183,17 +183,17 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param ci_eta Matrix of confidence limits on the link scale.
 #' @param vcov Variance-covariance matrix on the parameter scale.
 #' @param vcov_eta Variance-covariance matrix on the link scale.
-#' @param loglik Maximised log-likelihood.
+#' @param loglik Maximized log-likelihood.
 #' @param aic,bic Information criteria.
 #' @param iterations Number of iterations used.
 #' @param converged Logical convergence flag.
-#' @param method Optimisation method actually used.
+#' @param method Optimization method actually used.
 #' @param criterion Which stopping rule ended the run, as optimizers7 reports it.
-#' @param note Any remark the optimiser attached to the run.
+#' @param note Any remark the optimizer attached to the run.
 #' @param counts How many times the objective and its gradient were evaluated.
 #' @param score The max-norm of the score \strong{per observation} at the
 #'   reported optimum, which is the quantity the stopping rule tested.
-#' @param elapsed Seconds spent optimising, summed over every starting value
+#' @param elapsed Seconds spent optimizing, summed over every starting value
 #'   and every fallback attempted.
 #' @param level Confidence level.
 #' @section Methods:
@@ -247,7 +247,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' Maximum-Likelihood Estimation
 #'
 #' @description
-#' Fits a distribution to an i.i.d. sample by maximum likelihood. The optimisation
+#' Fits a distribution to an i.i.d. sample by maximum likelihood. The optimization
 #' is carried out on the \strong{link (real) scale}, where the parameters are
 #' unconstrained, using the analytical score and information supplied by the
 #' distribution (\code{scale = "link"}). Estimates are then mapped back to the
@@ -260,27 +260,27 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   \code{\link{distrib_start}}, which lets a family compute them from the
 #'   data; families that do not say otherwise fall back to random draws, with
 #'   restarts.
-#' @param method How to optimise. One argument, taking one of three things:
+#' @param method How to optimize. One argument, taking one of three things:
 #'   \itemize{
 #'     \item \code{\link{fisher_scoring}()}, the default --- Newton's method
 #'       with the \strong{expected} information in place of the Hessian, the
 #'       object carrying how that information is to be obtained when the family
 #'       has no closed form for it;
-#'     \item an optimiser object from \pkg{optimizers7}, used as given and
+#'     \item an optimizer object from \pkg{optimizers7}, used as given and
 #'       receiving the analytical gradient and the \strong{observed} Hessian,
 #'       so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
 #'       both the algorithm and the stopping rule;
 #'     \item one of the strings \code{"fisher"}, \code{"newton"} or
 #'       \code{"bfgs"}, kept as short names for the three ready-made
 #'       strategies. The first two fall back to BFGS if they fail to converge;
-#'       an optimiser the caller chose is never silently replaced.
+#'       an optimizer the caller chose is never silently replaced.
 #'   }
 #'   The iteration limit and the stopping rule belong to the method and are
-#'   set there: on an optimiser object through its own \code{maxit} and
+#'   set there: on an optimizer object through its own \code{maxit} and
 #'   \code{criterion}, on \code{\link{fisher_scoring}()} through the same two
 #'   arguments, and otherwise left at the defaults of
-#'   \code{\link[optimizers7]{crit_grad}} and of the optimiser. The objective
-#'   handed to the optimiser is the \emph{mean} negative log-likelihood, so a
+#'   \code{\link[optimizers7]{crit_grad}} and of the optimizer. The objective
+#'   handed to the optimizer is the \emph{mean} negative log-likelihood, so a
 #'   tolerance on its gradient is a tolerance on the score \strong{per
 #'   observation} whatever the sample size, and
 #'   \code{\link[optimizers7]{crit_grad}} documents why its default sits where
@@ -295,7 +295,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   methods are provided.
 #'
 #' @details
-#' \strong{Why the link scale.} Optimising \eqn{\eta \in \mathbb{R}^p} rather than
+#' \strong{Why the link scale.} Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
 #' the constrained \eqn{\theta} removes the need for box constraints: a variance
 #' can never become negative, a probability never leaves \eqn{(0,1)}. The score and
 #' information on that scale are obtained exactly (not numerically) through the
@@ -335,7 +335,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
                         level = 0.95, n_start = 5) {
-  # 'start' comes before 'method' in the signature, so an optimiser passed
+  # 'start' comes before 'method' in the signature, so an optimizer passed
   # positionally lands in it. What the caller then sees, several frames down,
   # is align_theta() refusing to coerce an S7 object to a list -- an error
   # that names neither the argument nor the mistake. The check is here, where
@@ -343,7 +343,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   if (!is.null(start) && !is.list(start)) {
     hint <- if (S7::S7_inherits(start, optimizers7::optimizer) ||
                 S7::S7_inherits(start, FisherScoring)) {
-      "\n  It looks like an optimiser: pass it as 'method = ', since 'start'\n  is the third argument and 'method' the fourth."
+      "\n  It looks like an optimizer: pass it as 'method = ', since 'start'\n  is the third argument and 'method' the fourth."
     } else {
       ""
     }
@@ -353,12 +353,12 @@ fit_distrib <- function(distrib, y, start = NULL,
     ), paste(class(start), collapse = "/"), hint), call. = FALSE)
   }
 
-  # One argument says how to optimise, and it takes one of three things: a
-  # fisher_scoring() specification, an optimizers7 optimiser, or the name of
+  # One argument says how to optimize, and it takes one of three things: a
+  # fisher_scoring() specification, an optimizers7 optimizer, or the name of
   # one of the three ready-made strategies. How the expected information is to
   # be approximated is a property of Fisher scoring and lives on that object,
   # not among fit_distrib()'s own arguments, where it would sit next to
-  # optimisers that never look at it.
+  # optimizers that never look at it.
   optimizer <- NULL
   approx <- "bartlett"
   nsim <- 10000
@@ -372,7 +372,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   } else if (S7::S7_inherits(method, optimizers7::optimizer)) {
     optimizer <- method
     method <- "custom"
-    # A stopping rule the optimiser cannot evaluate is a mistake in the call,
+    # A stopping rule the optimizer cannot evaluate is a mistake in the call,
     # not a numerical failure, and it is raised here so that it reaches the
     # caller with its own explanation rather than being caught by the restart
     # loop below and reported as a fit that never converged.
@@ -399,7 +399,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   # number of OBSERVATIONS, which is what BIC and the printed summary mean.
   n <- n_obs(distrib, y)
 
-  # The optimiser is handed the MEAN negative log-likelihood, and its gradient
+  # The optimizer is handed the MEAN negative log-likelihood, and its gradient
   # and Hessian divided by n with it. Scaling an objective by a positive
   # constant leaves the maximum and every Newton step where they were --
   # H^{-1}g is unchanged when both are divided by n -- so nothing about the
@@ -454,9 +454,9 @@ fit_distrib <- function(distrib, y, start = NULL,
     })
   }
 
-  # --- optimisation -------------------------------------------------------
+  # --- optimization -------------------------------------------------------
   # The objective, its gradient and its Hessian are those of the NEGATIVE
-  # log-likelihood, since optimizers7 minimises. Fisher scoring is Newton's
+  # log-likelihood, since optimizers7 minimizes. Fisher scoring is Newton's
   # method with the expected information supplied in place of the observed
   # Hessian, so the two named strategies differ only in that argument.
   nll_gr <- function(eta) {
@@ -474,7 +474,7 @@ fit_distrib <- function(distrib, y, start = NULL,
 
   # How the run stops and how long it may take are properties of the method,
   # so they are read off the method and nowhere else. Whatever the caller did
-  # not set stays at the optimiser's own default, which is the only place the
+  # not set stays at the optimizer's own default, which is the only place the
   # constant is written down: a copy of it here would keep its old value the
   # day the default moved. The objective the rule sees is the mean negative
   # log-likelihood, so a tolerance on its gradient is a tolerance on the score
@@ -493,7 +493,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   run <- function(opt, eta0, he, label) {
     r <- optimizers7::minimize(opt, fn = nll, par = eta0, gr = nll_gr, he = he)
     if (length(r@elapsed) && is.finite(r@elapsed)) spent <<- spent + r@elapsed
-    # The optimiser's gradient is that of -l(eta)/n, so its max-norm IS the
+    # The optimizer's gradient is that of -l(eta)/n, so its max-norm IS the
     # score per observation the stopping rule tested. Keeping it means the
     # object can say how close to stationary it ended, which is the one number
     # a run that did not converge is worth reading for.
@@ -525,13 +525,13 @@ fit_distrib <- function(distrib, y, start = NULL,
   res <- NULL
   for (eta0 in starts) {
     if (!is.finite(nll(eta0))) next
-    # An error raised inside the optimiser must be treated like a failure to
+    # An error raised inside the optimizer must be treated like a failure to
     # converge, not propagated: at an awkward parameter value the quadrature
     # behind a numerically-approximated expected Hessian can fail outright
     # ("the integral is probably divergent"), and without this the random
     # restarts and the BFGS fallback promised below never get their turn.
     this <- tryCatch(run_chosen(eta0), error = function(e) NULL)
-    # An explicitly chosen optimiser is not silently replaced; the fallback
+    # An explicitly chosen optimizer is not silently replaced; the fallback
     # belongs to the two named second-order strategies, which can fail on a
     # Hessian the distribution cannot supply at that point.
     if (method %in% c("fisher", "newton") &&
@@ -563,7 +563,7 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   if (is.null(res)) {
-    stop("Optimisation failed from every starting value; supply 'start'.", call. = FALSE)
+    stop("Optimization failed from every starting value; supply 'start'.", call. = FALSE)
   }
 
   # --- inference at the optimum -------------------------------------------
@@ -666,7 +666,7 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
       "   AIC: ", format(x@aic, digits = digits),
       "   BIC: ", format(x@bic, digits = digits), "\n", sep = "")
 
-  # What the optimiser did, in the shape optimizers7 reports it. The stopping
+  # What the optimizer did, in the shape optimizers7 reports it. The stopping
   # rule that ended the run is the thing that says what "converged" means here,
   # and a run that stopped without meeting one is worth reading for the same
   # reason.
@@ -882,7 +882,7 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
 #'
 #' @param object A \code{\link{distrib_fit}} object.
 #' @param nsim Number of replicates to draw. Defaults to 1.
-#' @param seed Optional seed. If supplied it is used to initialise the generator,
+#' @param seed Optional seed. If supplied it is used to initialize the generator,
 #'   and the state of \code{.Random.seed} in effect before the call is restored
 #'   afterwards, so that simulating does not disturb the calling stream. The seed
 #'   actually used is attached to the result as the \code{"seed"} attribute.
@@ -911,7 +911,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
     stop("'nsim' must be a single positive integer.", call. = FALSE)
   }
 
-  # The seed protocol of stats::simulate: honour `seed`, leave the caller's
+  # The seed protocol of stats::simulate: honor `seed`, leave the caller's
   # random stream exactly as it was, and report what was used.
   if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
     stats::runif(1)
@@ -938,7 +938,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #'
 #' @description
 #' Compares the fitted distribution with the sample it was estimated from. For a
-#' continuous distribution the observations are summarised by a kernel density
+#' continuous distribution the observations are summarized by a kernel density
 #' estimate, with the fitted density drawn on top and a rug of the data
 #' underneath. For a discrete one the observed relative frequencies are drawn as
 #' bars with the fitted probability mass overlaid, since a kernel density would
@@ -950,7 +950,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @param rug Logical; draw a rug of the observations. Defaults to \code{TRUE}
 #'   when there are at most 2000 of them.
 #' @param legend Logical; add a legend. Defaults to \code{TRUE}.
-#' @param col_fit,col_data Colours of the fitted curve and of the empirical
+#' @param col_fit,col_data Colors of the fitted curve and of the empirical
 #'   summary.
 #' @param mv_which For a multivariate fit, which coordinates to show. Defaults
 #'   to all of them, and at most three are drawn: above that the panel matrix

@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn2_jets}
 \alias{sn2_jets}
-\title{The Jets of the Centred-to-Direct Map}
+\title{The Jets of the Centered-to-Direct Map}
 \usage{
 sn2_jets(theta, n)
 }
@@ -16,7 +16,7 @@ A list as \code{\link{reparam_jets}} returns.
 }
 \description{
 The map run on jets, giving every partial derivative of the direct
-parameters with respect to the centred ones, to fourth order and exactly.
+parameters with respect to the centered ones, to fourth order and exactly.
 }
 \details{
 The sign of \eqn{\gamma_1} is read off the plain value before the jets are

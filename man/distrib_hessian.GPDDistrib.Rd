@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_hessian.GPDDistrib}
 \alias{distrib_hessian.GPDDistrib}
-\title{Generalised Pareto Analytical Observed Hessian}
+\title{Generalized Pareto Analytical Observed Hessian}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object.}
 

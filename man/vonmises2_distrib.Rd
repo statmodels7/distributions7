@@ -20,7 +20,7 @@ logit, the natural link onto \eqn{(0, 1)}.}
 An S7 object of class \code{\link{VonMises2Distrib}}.
 }
 \description{
-Creates a von Mises distribution object parametrised by its mean direction
+Creates a von Mises distribution object parametrized by its mean direction
 and its \strong{mean resultant length} \eqn{\rho = A(\kappa)}, which lives
 in \eqn{(0, 1)}.
 }
@@ -40,7 +40,7 @@ Bessel recurrences give from the same two evaluations \eqn{A} already needs.
 The map touches the second parameter only, so the chain rule is the
 one-variable one and the derivatives are exact. The expected information is
 closed form and the two parameters are orthogonal, as they are in the
-concentration parametrisation.
+concentration parametrization.
 
 \strong{The moments are not the parameters.} \code{\link{mean}} returns the
 ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from

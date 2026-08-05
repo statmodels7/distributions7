@@ -7,7 +7,7 @@ NULL
 #' @description A subclass of \code{continuous_distrib} representing Azzalini's
 #' skew \eqn{t} distribution: a Student \eqn{t} with a shape parameter
 #' controlling the asymmetry, so that the tail weight and the skewness are
-#' modelled separately.
+#' modeled separately.
 #' @inheritParams distrib
 #' @return An object of class \code{SkewTDistrib}.
 #' @seealso \code{\link{skewt_distrib}}
@@ -36,7 +36,7 @@ SkewTDistrib <- S7::new_class("SkewTDistrib", parent = continuous_distrib)
 #' The Pieces a Skew t Evaluates From
 #'
 #' @description
-#' Assembles the standardised variable and the argument of the tilting
+#' Assembles the standardized variable and the argument of the tilting
 #' distribution function, together with the six scalar functions every
 #' derivative of the log-density is a combination of.
 #'
@@ -550,7 +550,7 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #'
 #' \strong{The tolerance a fit can ask for.} The score in \eqn{\nu} cannot be
 #' computed more accurately than the table above, so a stopping rule on the
-#' gradient cannot be satisfied below that level however good the optimiser is.
+#' gradient cannot be satisfied below that level however good the optimizer is.
 #' \code{\link{fit_distrib}} tests the score \strong{per observation}, and its
 #' default of \eqn{10^{-10}} leaves room: on samples of 500 to 4000 the summed
 #' score reaches \eqn{10^{-10}} to \eqn{3 \times 10^{-9}}, which is

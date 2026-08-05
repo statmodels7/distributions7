@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{memo_ratio}
 \alias{memo_ratio}
-\title{Memoise a Ratio Function on Its Block}
+\title{Memoize a Ratio Function on Its Block}
 \usage{
 memo_ratio(f, params)
 }
@@ -20,7 +20,7 @@ Caches a ratio function by the canonical key of its block.
 \details{
 A partition of a fourth-order index asks for the same small blocks many times
 over. For the truncated wrapper each distinct block costs a quadrature, so
-memoising across the partition sum is the difference between one integration
+memoizing across the partition sum is the difference between one integration
 per block and one per occurrence.
 }
 \seealso{

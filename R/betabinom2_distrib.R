@@ -5,7 +5,7 @@ NULL
 #' @name BetaBinom2Distrib
 #'
 #' @description A subclass of \code{discrete_distrib} for the beta-binomial in
-#'   its canonical parametrisation, the two beta shapes.
+#'   its canonical parametrization, the two beta shapes.
 #' @inheritParams distrib
 #' @param size The number of trials, a constant of the distribution.
 #' @return An object of class \code{BetaBinom2Distrib}.
@@ -277,7 +277,7 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #'
 #' @description
 #' Creates a beta-binomial distribution object in its canonical
-#' parametrisation, the two beta shapes.
+#' parametrization, the two beta shapes.
 #'
 #' @details
 #' The same law as \code{\link{betabinom1_distrib}}, which carries a mean

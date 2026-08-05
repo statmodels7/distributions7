@@ -22,7 +22,7 @@ Creates a distribution object for the negative binomial whose variance is
 }
 \details{
 Two negative binomials are in common use and they are \strong{different
-families}, not two parametrisations of one. Here the variance is
+families}, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
 \code{\link{negbin2_distrib}} has \eqn{\mu + \mu^2/\theta}, growing

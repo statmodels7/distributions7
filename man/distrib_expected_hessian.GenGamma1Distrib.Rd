@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_expected_hessian.GenGamma1Distrib}
 \alias{distrib_expected_hessian.GenGamma1Distrib}
-\title{Generalised Gamma Analytical Expected Hessian}
+\title{Generalized Gamma Analytical Expected Hessian}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

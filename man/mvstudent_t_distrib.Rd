@@ -28,7 +28,7 @@ The elliptical \eqn{t} on \eqn{\mathbb{R}^p}, with density
 covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists at all, and for
 \eqn{\nu \le 2} it does not while the distribution is perfectly well
 defined. \code{\link{mv_sigma}} returns the scale matrix, which is the thing
-the parametrisation carries, and \code{\link{variance}} returns the
+the parametrization carries, and \code{\link{variance}} returns the
 covariance, which is a moment. Keeping the two apart is what lets a fit run
 at \eqn{\nu = 1.5}.
 
@@ -47,7 +47,7 @@ of the response and are named \code{scale_sd_} to say so.
 
 \strong{What it is for.} A gaussian fitted to data with a few outlying rows
 inflates its covariance to cover them. A \eqn{t} with \eqn{\nu} estimated
-does not: the observations far from the centre get a weight
+does not: the observations far from the center get a weight
 \eqn{(\nu+p)/(\nu+q)} that falls away with their Mahalanobis distance
 \eqn{q}, which is what appears in the score below and what makes the fit
 resistant. The gaussian is the limit \eqn{\nu \to \infty}.

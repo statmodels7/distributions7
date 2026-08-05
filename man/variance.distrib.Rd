@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the centre.
+Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the center.
 }
 \keyword{internal}

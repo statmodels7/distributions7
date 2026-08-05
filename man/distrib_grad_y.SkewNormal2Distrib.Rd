@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_grad_y.SkewNormal2Distrib}
 \alias{distrib_grad_y.SkewNormal2Distrib}
-\title{Skew Normal Response Derivatives in the Centred Parametrisation}
+\title{Skew Normal Response Derivatives in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object.}
 

@@ -23,7 +23,7 @@ parameter list of the parent, in the parent's order.
 to call both from generic-dispatched methods, whose \code{theta} is already
 aligned, and from delegating methods such as \code{mean()}, whose
 \code{theta} arrives as the caller wrote it. Free values may be vectors --
-the wrapper is as vectorised in \code{theta} as its parent -- while the
+the wrapper is as vectorized in \code{theta} as its parent -- while the
 fixed values are scalars by construction.
 }
 \seealso{

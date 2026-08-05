@@ -40,7 +40,7 @@ An object of class \code{Weibull1Distrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} representing the Weibull
-distribution, parametrised by a scale and a shape.
+distribution, parametrized by a scale and a shape.
 }
 \section{Methods}{
 

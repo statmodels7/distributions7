@@ -16,7 +16,7 @@ NULL
 #' is worse than not checking, because a user validating their own distribution
 #' cannot tell a real defect from it.
 #'
-#' What replaces them are checks that do generalise:
+#' What replaces them are checks that do generalize:
 #' \enumerate{
 #'   \item \strong{the density is positive and finite} on a sample;
 #'   \item \strong{the density integrates to one}. For a family that enumerates
@@ -63,7 +63,7 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
   rel <- function(a, e) max(abs(a - e) / pmax(1, abs(e)))
 
   # Two facts decide which checks apply. A family that enumerates a support is
-  # discrete, so its normalisation is an exact sum and it has no derivative in
+  # discrete, so its normalization is an exact sum and it has no derivative in
   # the response; and the base class refuses the response derivatives by
   # design, so a family that has not registered them has made a choice rather
   # than left a gap, and reporting that refusal as a failure would be the
@@ -83,7 +83,7 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 
   res[[length(res) + 1L]] <- safe_check("density integrates to 1", {
     if (enumerable) {
-      # A finite support makes the normalisation an exact sum, so the check is
+      # A finite support makes the normalization an exact sum, so the check is
       # an equality rather than a comparison against Monte Carlo error.
       total <- sum(distrib_pdf(distrib, mv_support(distrib, theta), theta))
       new_check("density integrates to 1", abs(total - 1) < 1e-10,

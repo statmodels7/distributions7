@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Computes the excess kurtosis, the standardised fourth central moment minus three through \code{\link{moment}}.
+Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link{moment}}.
 }
 \keyword{internal}

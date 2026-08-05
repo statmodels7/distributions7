@@ -16,7 +16,7 @@ A named numeric vector of length \eqn{p}.
 }
 \description{
 The helper the elliptical families implement \code{\link{mv_location}} with:
-the first \eqn{p} entries of the flat parameter vector, labelled by
+the first \eqn{p} entries of the flat parameter vector, labeled by
 coordinate.
 }
 \keyword{internal}

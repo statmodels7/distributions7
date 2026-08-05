@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{gengamma1_distrib}
 \alias{gengamma1_distrib}
-\title{Generalised Gamma Distribution Object}
+\title{Generalized Gamma Distribution Object}
 \usage{
 gengamma1_distrib(
   link_a = log_link(),
@@ -24,7 +24,7 @@ gengamma1_distrib(
 An S7 object of class \code{GenGamma1Distrib}.
 }
 \description{
-Creates a distribution object for the generalised gamma distribution in
+Creates a distribution object for the generalized gamma distribution in
 Stacy's form, with a scale \eqn{a} and two shapes \eqn{d} and \eqn{p}.
 }
 \details{
@@ -35,7 +35,7 @@ estimate rather than to assume.
 \strong{Density:}
 \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}}}
 
-\strong{What it nests}, which Stacy's parametrisation is chosen to make
+\strong{What it nests}, which Stacy's parametrization is chosen to make
 visible:
 \itemize{
 \item \eqn{p = 1} is the \link[=gamma2_distrib]{gamma} with shape \eqn{d}

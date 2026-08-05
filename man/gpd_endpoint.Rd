@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{gpd_endpoint}
 \alias{gpd_endpoint}
-\title{The Upper Endpoint of a Generalised Pareto}
+\title{The Upper Endpoint of a Generalized Pareto}
 \usage{
 gpd_endpoint(sigma, xi)
 }
@@ -20,7 +20,7 @@ A numeric vector.
 \details{
 The endpoint depends on the parameters, which is the whole reason the
 family needs care: for \eqn{\xi < 0} the support is bounded and moves with
-\eqn{\sigma} and \eqn{\xi}, so the licence to differentiate under the
+\eqn{\sigma} and \eqn{\xi}, so the license to differentiate under the
 integral sign is not automatic. See \code{\link{gpd_distrib}}.
 }
 \seealso{

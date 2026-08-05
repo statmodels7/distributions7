@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{skewnormal2_distrib}
 \alias{skewnormal2_distrib}
-\title{Skew Normal Distribution in Its Centred Parametrisation}
+\title{Skew Normal Distribution in Its Centered Parametrization}
 \usage{
 skewnormal2_distrib(
   link_mu = identity_link(),
@@ -23,14 +23,14 @@ bounded to the reachable interval.}
 An S7 object of class \code{\link{SkewNormal2Distrib}}.
 }
 \description{
-Creates a skew normal distribution object parametrised by its mean, its
+Creates a skew normal distribution object parametrized by its mean, its
 standard deviation and its skewness.
 }
 \details{
-The direct parametrisation of \code{\link{skewnormal1_distrib}} carries a
+The direct parametrization of \code{\link{skewnormal1_distrib}} carries a
 location, a scale and a shape, none of which is a moment. Here all three
-parameters are moments, and the family is Azzalini's centred
-parametrisation.
+parameters are moments, and the family is Azzalini's centered
+parametrization.
 
 \strong{Why this is not a reparametrize().} The map passes through
 \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
@@ -38,8 +38,8 @@ follow. It carries a sign, which a jet cannot take of itself, so the sign is
 read off the plain value before any jet is seeded. And
 \eqn{\partial\alpha/\partial\gamma_1} grows without bound as
 \eqn{\gamma_1 \to 0}: measured, 3.9 at \eqn{\gamma_1 = 0.5} and 258 at
-\eqn{10^{-4}}. What makes the parametrisation worth having is that the score
-does \strong{not} follow it, the divergent contributions cancelling, so the
+\eqn{10^{-4}}. What makes the parametrization worth having is that the score
+does \strong{not} follow it, the divergent contributions canceling, so the
 variance of the score in \eqn{\gamma_1} is 0.158 at \eqn{\gamma_1 = 0.05}
 and 0.158 again at \eqn{0.01}.
 
@@ -47,8 +47,8 @@ and 0.158 again at \eqn{0.01}.
 size proportional to the Jacobian, so the significant digits lost grow like
 the logarithm of it: negligible over the range a fit visits, and severe only
 within a few multiples of \eqn{10^{-8}} of exact symmetry. The
-\strong{expected information}, unlike the direct parametrisation's, is
-non-singular at zero skewness, which is the property the parametrisation
+\strong{expected information}, unlike the direct parametrization's, is
+non-singular at zero skewness, which is the property the parametrization
 exists for.
 
 \strong{The bound on the skewness.} A skew normal cannot reach
@@ -59,7 +59,7 @@ bounded there. That ceiling is the reason the skew \eqn{t} exists.
 d <- skewnormal2_distrib()
 theta <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# all three parameters are moments, which is what centred means
+# all three parameters are moments, which is what centered means
 c(mean = mean(d, theta), sd = sqrt(variance(d, theta)),
   skewness = skewness(d, theta))
 

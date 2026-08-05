@@ -15,7 +15,7 @@ lognormal2_distrib(link_mean = log_link(), link_var = log_link())
 A reparametrized distribution object.
 }
 \description{
-Creates a lognormal distribution object parametrised by the mean and the
+Creates a lognormal distribution object parametrized by the mean and the
 variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 }
 \details{
@@ -23,7 +23,7 @@ The parameters of \code{\link{lognormal1_distrib}} describe \eqn{\log Y}, so
 neither of them is a moment of \eqn{Y}. Here they are, through
 \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)}
-which is the parametrisation a regression on the mean wants.
+which is the parametrization a regression on the mean wants.
 
 Built with \code{\link{reparametrize}}, so every derivative to fourth order,
 observed and expected, is exact.

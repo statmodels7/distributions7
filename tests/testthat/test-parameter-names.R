@@ -4,7 +4,7 @@
 # multi-index by splitting one back apart is ambiguous the moment a parameter
 # name contains an underscore of its own: "mu_log_scale_log_scale" splits into
 # five pieces, none of which except the first matches a parameter. Nothing in the
-# shipped catalogue is affected -- none of the fourteen has such a name -- so the
+# shipped catalog is affected -- none of the fourteen has such a name -- so the
 # only way this surfaces is through a distribution someone defines themselves,
 # which is precisely the case the package is built to support.
 

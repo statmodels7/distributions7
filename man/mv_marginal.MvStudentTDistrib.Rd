@@ -19,6 +19,6 @@ A list with \code{distrib} and \code{theta}.
 A marginal of a \eqn{t} is a \eqn{t} with the same degrees of freedom, the
 subvector of the location and the corresponding block of the scale matrix.
 The degrees of freedom do not change with the dimension, which is what makes
-the family closed under marginalisation at all.
+the family closed under marginalization at all.
 }
 \keyword{internal}

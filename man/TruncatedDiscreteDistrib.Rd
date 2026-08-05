@@ -47,7 +47,7 @@ An object of class \code{TruncatedDiscreteDistrib}.
 }
 \description{
 A subclass of \code{discrete_distrib} representing a discrete distribution
-restricted to the support points in \eqn{[\ell, u]} and renormalised. Both
+restricted to the support points in \eqn{[\ell, u]} and renormalized. Both
 endpoints are \strong{included}.
 }
 \section{Methods}{

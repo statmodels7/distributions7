@@ -527,12 +527,12 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' Write a Distribution in Different Coordinates
 #'
 #' @description
-#' Returns the same law as \code{distrib}, parametrised by quantities of the
+#' Returns the same law as \code{distrib}, parametrized by quantities of the
 #' caller's choosing.
 #'
 #' @details
 #' A reparametrization is not a link. A link changes the scale a parameter is
-#' \emph{modelled} on and leaves the parameter what it was; here the parameter
+#' \emph{modeled} on and leaves the parameter what it was; here the parameter
 #' \emph{is} the new quantity, and that is what the estimate, the standard
 #' error and the confidence interval describe.
 #'

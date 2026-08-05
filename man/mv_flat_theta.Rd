@@ -19,7 +19,7 @@ Refuses a \code{theta} whose components are not single numbers.
 }
 \details{
 The multivariate families of this package take one parameter value for the
-whole sample. Vectorised parameters are what a regression supplies, and a
+whole sample. Vectorized parameters are what a regression supplies, and a
 distribution that accepted them would be doing the model layer's work with
 none of its bookkeeping.
 }

@@ -33,7 +33,7 @@ is the mistake a validator makes when it does not know about a case, and it
 is worse than not checking, because a user validating their own distribution
 cannot tell a real defect from it.
 
-What replaces them are checks that do generalise:
+What replaces them are checks that do generalize:
 \enumerate{
 \item \strong{the density is positive and finite} on a sample;
 \item \strong{the density integrates to one}. For a family that enumerates

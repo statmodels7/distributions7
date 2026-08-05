@@ -25,7 +25,7 @@ A named list of expected second derivatives.
 \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\dfrac{1}{v}, \qquad
       \mathbb{E}[\ell^{(\mu v)}] = 0, \qquad
       \mathbb{E}[\ell^{(vv)}] = -\dfrac{1}{2v^2}}
-The two parameters are orthogonal, as they are in every parametrisation of
+The two parameters are orthogonal, as they are in every parametrization of
 this family.
 }
 \seealso{

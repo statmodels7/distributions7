@@ -120,7 +120,7 @@ S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta) {
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{y-\mu}{\phi\mu^2}, \qquad
 #'       \dfrac{\partial\ell}{\partial\phi}
 #'         = -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\}}
-#' the first being the score of a gamma generalised linear model.
+#' the first being the score of a gamma generalized linear model.
 #' @param distrib A \code{Gamma1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list with \code{mu} and \code{phi}.
@@ -159,7 +159,7 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\mu\phi)}] = 0, \qquad
 #'       \mathbb{E}[\ell^{(\phi\phi)}] = s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}}
 #' The mean and the dispersion are orthogonal, which is what makes this the
-#' natural parametrisation for a generalised linear model. The expectation uses
+#' natural parametrization for a generalized linear model. The expectation uses
 #' \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}.
 #' @param distrib A \code{Gamma1Distrib} object.
 #' @param y A numeric vector of observations.
@@ -258,11 +258,11 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' Gamma Distribution in Mean and Dispersion
 #'
 #' @description
-#' Creates a gamma distribution object parametrised by its mean and a
+#' Creates a gamma distribution object parametrized by its mean and a
 #' dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
 #'
 #' @details
-#' This is the parametrisation a generalised linear model uses: the variance
+#' This is the parametrization a generalized linear model uses: the variance
 #' function is \eqn{V(\mu) = \mu^2} and \eqn{\phi} is the dispersion that
 #' multiplies it, so the mean and the dispersion are orthogonal and the score
 #' in \eqn{\mu} is \eqn{(y-\mu)/(\phi\mu^2)}. The shape is \eqn{1/\phi} and the

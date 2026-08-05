@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{gpd_distrib}
 \alias{gpd_distrib}
-\title{Generalised Pareto Distribution Object}
+\title{Generalized Pareto Distribution Object}
 \usage{
 gpd_distrib(link_sigma = log_link(), link_xi = identity_link())
 }
@@ -18,8 +18,8 @@ either sign.}
 An S7 object of class \code{GPDDistrib}.
 }
 \description{
-Creates a distribution object for the generalised Pareto distribution,
-parametrised by a scale \eqn{\sigma} and a shape \eqn{\xi}.
+Creates a distribution object for the generalized Pareto distribution,
+parametrized by a scale \eqn{\sigma} and a shape \eqn{\xi}.
 }
 \details{
 The family of exceedances over a high threshold, and the natural companion
@@ -33,16 +33,16 @@ At \eqn{\xi = 0} both reduce to the exponential, which the implementation
 reaches through a series rather than by a special case, so the parameter may
 pass through zero during a fit.
 
-\strong{It is not parametrised by its mean}, unlike most families here. The
+\strong{It is not parametrized by its mean}, unlike most families here. The
 mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a mean
-parametrisation would leave the family undescribable exactly where it is
+parametrization would leave the family undescribable exactly where it is
 most used --- the heavy-tailed regime. This is the argument that keeps
 \code{\link{mv_sigma}} and \code{\link{variance}} apart for the multivariate
-\eqn{t}: a parametrisation must not depend on a moment that need not exist.
+\eqn{t}: a parametrization must not depend on a moment that need not exist.
 
 \strong{The support depends on the parameters when \eqn{\xi < 0}}, being
 \eqn{[0, -\sigma/\xi]}, and this is the first family here of which that is
-true. What it costs is the automatic licence to differentiate under the
+true. What it costs is the automatic license to differentiate under the
 integral sign, on which the Bartlett identities rest. Two things survive and
 one does not:
 \itemize{

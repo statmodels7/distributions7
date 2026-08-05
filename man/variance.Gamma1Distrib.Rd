@@ -15,6 +15,6 @@ A numeric vector.
 }
 \description{
 Closed form: \eqn{\phi\mu^2}, which is what the
-parametrisation is defined by.
+parametrization is defined by.
 }
 \keyword{internal}

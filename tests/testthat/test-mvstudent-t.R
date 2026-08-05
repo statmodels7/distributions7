@@ -92,7 +92,7 @@ test_that("the scale matrix and the covariance are different objects", {
   th <- th2()
   s <- mv_sigma(d, th)
 
-  # what the parametrisation carries
+  # what the parametrization carries
   l <- matrix(c(exp(0.1), 0, 0.5, exp(-0.2)), 2, 2, byrow = TRUE)
   expect_equal(unname(s), tcrossprod(l))
   # and the moment, inflated by nu/(nu-2)
@@ -285,7 +285,7 @@ test_that("fit_distrib recovers the degrees of freedom", {
   expect_equal(unname(mv_location(d, est)), c(1, -0.5), tolerance = 0.1)
 
   # the optimum is a stationary point on the link scale, which is where the
-  # optimisation happens
+  # optimization happens
   sc <- vapply(
     distrib_gradient(d, y, as.list(est), scale = "link"), sum, numeric(1)
   )
@@ -311,7 +311,7 @@ test_that("Fisher scoring works on a family whose information is sampled", {
   fn <- fit_distrib(d, y, method = "newton")
 
   expect_true(ff@converged)
-  # The two agree on the maximised log-likelihood; they cannot be expected to
+  # The two agree on the maximized log-likelihood; they cannot be expected to
   # agree digit for digit on the point, since one of them inverts a matrix
   # estimated by sampling.
   expect_equal(as.numeric(logLik(ff)), as.numeric(logLik(fn)), tolerance = 1e-4)

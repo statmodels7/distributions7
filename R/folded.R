@@ -90,14 +90,14 @@ fold_parts <- function(parent, x, theta) {
 #' The Block Ratios of a Folded Density
 #'
 #' @description
-#' Returns a memoised function giving \eqn{d^B L / L} for any block, which is
+#' Returns a memoized function giving \eqn{d^B L / L} for any block, which is
 #' what \code{\link{log_deriv}} consumes.
 #'
 #' @details
 #' The ratio is the parent's complete Bell polynomial at each preimage,
 #' weighted by which preimage the point came from:
 #' \eqn{w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))}. Both parent
-#' evaluations are fetched once and the result memoised, since a partition sum
+#' evaluations are fetched once and the result memoized, since a partition sum
 #' at fourth order asks for the same blocks repeatedly.
 #'
 #' @param parent The wrapped distribution.
@@ -424,7 +424,7 @@ declares_atoms <- function(parent) {
 #' the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x; -\mu)},
 #' so the two terms of \eqn{L} merely swap and the likelihood is
 #' \emph{exactly} even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
-#' \eqn{-\hat\mu} according to where it started, at the same maximised value
+#' \eqn{-\hat\mu} according to where it started, at the same maximized value
 #' to every digit. This is a property of the model rather than of the fitting,
 #' and it is not refused, the folded normal being a standard family; what is
 #' estimable is \eqn{|\mu|} together with the remaining parameters. Holding

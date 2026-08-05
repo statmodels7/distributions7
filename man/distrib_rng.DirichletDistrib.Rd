@@ -14,7 +14,7 @@
 A matrix with \code{n} rows, each summing to one.
 }
 \description{
-Independent Gamma draws with the shapes \eqn{\alpha_j}, normalised by their
+Independent Gamma draws with the shapes \eqn{\alpha_j}, normalized by their
 sum, which is the representation the family is defined by.
 }
 \seealso{

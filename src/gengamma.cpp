@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Generalised gamma in Stacy's form, where the nesting is visible:
+// Generalized gamma in Stacy's form, where the nesting is visible:
 //   f(y) = p / (a^d Gamma(d/p)) * y^(d-1) * exp(-(y/a)^p),
 //   l    = log p - d log a - lgamma(k) + (d-1) log y - w,
 // with w = (y/a)^p, L = log(y/a) and k = d/p. Then p = 1 is the gamma with

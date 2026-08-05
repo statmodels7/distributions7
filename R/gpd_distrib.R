@@ -1,11 +1,11 @@
 #' @include distrib.R generics.R
 NULL
 
-#' @title S7 Class for the Generalised Pareto Distribution
+#' @title S7 Class for the Generalized Pareto Distribution
 #' @name GPDDistrib
 #'
 #' @description A subclass of \code{continuous_distrib} representing the
-#'   generalised Pareto distribution in its scale and shape.
+#'   generalized Pareto distribution in its scale and shape.
 #' @inheritParams distrib
 #' @return An object of class \code{GPDDistrib}.
 #' @seealso \code{\link{gpd_distrib}}
@@ -23,7 +23,7 @@ NULL
 #' Everything else is inherited from \code{\link{continuous_distrib}}.
 GPDDistrib <- S7::new_class("GPDDistrib", parent = continuous_distrib)
 
-#' The Upper Endpoint of a Generalised Pareto
+#' The Upper Endpoint of a Generalized Pareto
 #'
 #' @description
 #' \eqn{-\sigma/\xi} when \eqn{\xi < 0}, and infinity otherwise.
@@ -31,7 +31,7 @@ GPDDistrib <- S7::new_class("GPDDistrib", parent = continuous_distrib)
 #' @details
 #' The endpoint depends on the parameters, which is the whole reason the
 #' family needs care: for \eqn{\xi < 0} the support is bounded and moves with
-#' \eqn{\sigma} and \eqn{\xi}, so the licence to differentiate under the
+#' \eqn{\sigma} and \eqn{\xi}, so the license to differentiate under the
 #' integral sign is not automatic. See \code{\link{gpd_distrib}}.
 #'
 #' @param sigma The scale, a positive numeric vector.
@@ -46,7 +46,7 @@ gpd_endpoint <- function(sigma, xi) ifelse(xi < 0, -sigma / xi, Inf)
 
 # --- S7 METHODS IMPLEMENTATION ---
 
-#' @title Generalised Pareto Density
+#' @title Generalized Pareto Density
 #' @name distrib_pdf.GPDDistrib
 #' @description
 #' \deqn{f(y) = \dfrac{1}{\sigma}
@@ -63,7 +63,7 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE) 
   if (log) out else exp(out)
 }
 
-#' @title Generalised Pareto Distribution Function
+#' @title Generalized Pareto Distribution Function
 #' @name distrib_cdf.GPDDistrib
 #' @description
 #' \deqn{F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}}
@@ -96,7 +96,7 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
   if (log.p) log(p) else p
 }
 
-#' @title Generalised Pareto Quantile Function
+#' @title Generalized Pareto Quantile Function
 #' @name distrib_quantile.GPDDistrib
 #' @description
 #' \deqn{Q(p) = \dfrac{\sigma}{\xi}\left((1-p)^{-\xi} - 1\right)}
@@ -125,7 +125,7 @@ S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
   out
 }
 
-#' @title Generalised Pareto Random Generation
+#' @title Generalized Pareto Random Generation
 #' @name distrib_rng.GPDDistrib
 #' @description Inverse transform, the quantile function being elementary.
 #' @param distrib A \code{GPDDistrib} object.
@@ -137,7 +137,7 @@ S7::method(distrib_rng, GPDDistrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 
-#' @title Generalised Pareto Analytical Gradient
+#' @title Generalized Pareto Analytical Gradient
 #' @name distrib_gradient.GPDDistrib
 #' @description
 #' With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and \eqn{u = z/t},
@@ -159,7 +159,7 @@ S7::method(distrib_gradient, GPDDistrib) <- function(distrib, y, theta,
   gpd_gradient_cpp(y, theta[[1]], theta[[2]])
 }
 
-#' @title Generalised Pareto Analytical Observed Hessian
+#' @title Generalized Pareto Analytical Observed Hessian
 #' @name distrib_hessian.GPDDistrib
 #' @description
 #' The second derivatives of the same expressions, kept short by
@@ -178,7 +178,7 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
   gpd_hessian_cpp(y, theta[[1]], theta[[2]])
 }
 
-#' @title Generalised Pareto Analytical Expected Hessian
+#' @title Generalized Pareto Analytical Expected Hessian
 #' @name distrib_expected_hessian.GPDDistrib
 #' @description
 #' The closed form of Smith (1985), valid for \eqn{\xi > -1/2}:
@@ -208,11 +208,11 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 
 # --- CONSTRUCTOR WRAPPER ---
 
-#' Generalised Pareto Distribution Object
+#' Generalized Pareto Distribution Object
 #'
 #' @description
-#' Creates a distribution object for the generalised Pareto distribution,
-#' parametrised by a scale \eqn{\sigma} and a shape \eqn{\xi}.
+#' Creates a distribution object for the generalized Pareto distribution,
+#' parametrized by a scale \eqn{\sigma} and a shape \eqn{\xi}.
 #'
 #' @param link_sigma A link function object for \eqn{\sigma}. Defaults to
 #'   \code{\link[linkfunctions7]{log_link}} to ensure positivity.
@@ -232,16 +232,16 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' reaches through a series rather than by a special case, so the parameter may
 #' pass through zero during a fit.
 #'
-#' \strong{It is not parametrised by its mean}, unlike most families here. The
+#' \strong{It is not parametrized by its mean}, unlike most families here. The
 #' mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a mean
-#' parametrisation would leave the family undescribable exactly where it is
+#' parametrization would leave the family undescribable exactly where it is
 #' most used --- the heavy-tailed regime. This is the argument that keeps
 #' \code{\link{mv_sigma}} and \code{\link{variance}} apart for the multivariate
-#' \eqn{t}: a parametrisation must not depend on a moment that need not exist.
+#' \eqn{t}: a parametrization must not depend on a moment that need not exist.
 #'
 #' \strong{The support depends on the parameters when \eqn{\xi < 0}}, being
 #' \eqn{[0, -\sigma/\xi]}, and this is the first family here of which that is
-#' true. What it costs is the automatic licence to differentiate under the
+#' true. What it costs is the automatic license to differentiate under the
 #' integral sign, on which the Bartlett identities rest. Two things survive and
 #' one does not:
 #' \itemize{
@@ -303,7 +303,7 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' @export
 gpd_distrib <- function(link_sigma = log_link(), link_xi = identity_link()) {
   GPDDistrib(
-    distrib_name = "generalised pareto", dimension = "univariate",
+    distrib_name = "generalized pareto", dimension = "univariate",
     bounds = c(0, Inf),
     params = c("sigma", "xi"),
     params_interpretation = c(sigma = "scale", xi = "shape"),

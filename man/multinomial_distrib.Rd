@@ -20,7 +20,7 @@ An S7 object of class \code{MultinomialDistrib}.
 }
 \description{
 Creates a distribution object for the multinomial distribution,
-parametrised by a probability vector on the simplex.
+parametrized by a probability vector on the simplex.
 }
 \details{
 The first family here that is multivariate and \strong{discrete}, so its

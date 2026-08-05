@@ -27,7 +27,7 @@ Closed form:
       \mathbb{E}[\ell^{(\mu\phi)}] = 0, \qquad
       \mathbb{E}[\ell^{(\phi\phi)}] = s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}}
 The mean and the dispersion are orthogonal, which is what makes this the
-natural parametrisation for a generalised linear model. The expectation uses
+natural parametrization for a generalized linear model. The expectation uses
 \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}.
 }
 \seealso{

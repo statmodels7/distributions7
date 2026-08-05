@@ -16,7 +16,7 @@ An S7 object of class \code{\link{InvGauss2Distrib}}.
 }
 \description{
 Creates an inverse gaussian distribution object in the classical
-parametrisation, the mean \eqn{\mu} and the shape \eqn{\lambda}, with
+parametrization, the mean \eqn{\mu} and the shape \eqn{\lambda}, with
 \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}.
 }
 \details{

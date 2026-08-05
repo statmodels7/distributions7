@@ -55,7 +55,7 @@ distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 
 \item{vcov_eta}{Variance-covariance matrix on the link scale.}
 
-\item{loglik}{Maximised log-likelihood.}
+\item{loglik}{Maximized log-likelihood.}
 
 \item{aic, bic}{Information criteria.}
 
@@ -63,18 +63,18 @@ distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
 
 \item{converged}{Logical convergence flag.}
 
-\item{method}{Optimisation method actually used.}
+\item{method}{Optimization method actually used.}
 
 \item{criterion}{Which stopping rule ended the run, as optimizers7 reports it.}
 
-\item{note}{Any remark the optimiser attached to the run.}
+\item{note}{Any remark the optimizer attached to the run.}
 
 \item{counts}{How many times the objective and its gradient were evaluated.}
 
 \item{score}{The max-norm of the score \strong{per observation} at the
 reported optimum, which is the quantity the stopping rule tested.}
 
-\item{elapsed}{Seconds spent optimising, summed over every starting value
+\item{elapsed}{Seconds spent optimizing, summed over every starting value
 and every fallback attempted.}
 
 \item{level}{Confidence level.}

@@ -40,7 +40,7 @@ through the implicit function theorem.
 
 On the link scale the component for \eqn{\eta_i} is the parameter-scale
 component multiplied by \eqn{h_i'(\eta_i)}: the response derivative is
-untouched by a reparametrisation of \eqn{\theta}, so only the first-order
+untouched by a reparametrization of \eqn{\theta}, so only the first-order
 diagonal chain rule enters, exactly as for \code{\link{distrib_gradient}}.
 
 Distributions with a closed form provide it directly; the others fall back

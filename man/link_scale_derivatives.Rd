@@ -25,7 +25,7 @@ optimization is normally carried out, since \eqn{\eta \in \mathbb{R}^p}.
 \details{
 Write \eqn{h_i = g_i^{-1}}, so that \eqn{\theta_i = h_i(\eta_i)}. Because each
 parameter carries its own link, the Jacobian \eqn{\partial\theta/\partial\eta}
-is \strong{diagonal} and the multivariate Faa di Bruno formula factorises. For a
+is \strong{diagonal} and the multivariate Faa di Bruno formula factorizes. For a
 derivative whose multi-index involves the distinct parameters
 \eqn{p_1,\dots,p_r} with multiplicities \eqn{m_1,\dots,m_r},
 \deqn{\frac{\partial^k \ell}{\partial \eta_{p_1}^{m_1} \cdots \partial \eta_{p_r}^{m_r}}

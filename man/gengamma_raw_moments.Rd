@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{gengamma_raw_moments}
 \alias{gengamma_raw_moments}
-\title{Raw Moments of the Generalised Gamma}
+\title{Raw Moments of the Generalized Gamma}
 \usage{
 gengamma_raw_moments(a, d, p)
 }

@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // Gamma in the mean and the DISPERSION, Var = phi mu^2, which is the GLM
-// parametrisation. Writing s = 1/phi for the shape and z = y/mu,
+// parametrization. Writing s = 1/phi for the shape and z = y/mu,
 //
 //   l = s log s - s log mu - lgamma(s) + (s-1) log y - s z.
 //

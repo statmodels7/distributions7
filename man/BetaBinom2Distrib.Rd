@@ -43,7 +43,7 @@ An object of class \code{BetaBinom2Distrib}.
 }
 \description{
 A subclass of \code{discrete_distrib} for the beta-binomial in
-its canonical parametrisation, the two beta shapes.
+its canonical parametrization, the two beta shapes.
 }
 \section{Methods}{
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{skewness.GenGamma1Distrib}
 \alias{skewness.GenGamma1Distrib}
-\title{Skewness of the Generalised Gamma Distribution}
+\title{Skewness of the Generalized Gamma Distribution}
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}.}
 

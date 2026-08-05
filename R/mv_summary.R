@@ -11,7 +11,7 @@ NULL
 #'
 #' @details
 #' The free values of a \pkg{parameters7} structure are coordinates chosen so
-#' that an optimiser can move freely; they are not quantities anyone reads.
+#' that an optimizer can move freely; they are not quantities anyone reads.
 #' The logarithm of the third diagonal entry of a Cholesky factor has an
 #' estimate and a standard error, and neither answers a question. This generic
 #' names the quantities that do, and supplies
@@ -45,7 +45,7 @@ NULL
 #'     \item{\code{transform}}{a character vector, one of \code{"identity"},
 #'       \code{"log"} or \code{"atanh"} per quantity, naming the scale its
 #'       interval is built on;}
-#'     \item{\code{block}}{a character vector labelling the group each quantity
+#'     \item{\code{block}}{a character vector labeling the group each quantity
 #'       belongs to, used to lay the printed summary out.}
 #'   }
 #'
@@ -307,7 +307,7 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #' @details
 #' The mean components and, for a Student \eqn{t}, the degrees of freedom leave
 #' the matrix alone, so those entries are \code{NULL} and cost nothing. When
-#' the matrix parameter parametrises the precision the chain rule of an inverse
+#' the matrix parameter parametrizes the precision the chain rule of an inverse
 #' applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 #'
 #' @param distrib A distribution carrying a \code{param} property.
@@ -339,7 +339,7 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' @name mv_derived.MvGaussianDistrib
 #' @description
 #' The standard deviations and correlations of the response, whichever side the
-#' structure parametrises. A precision structure additionally reports the
+#' structure parametrizes. A precision structure additionally reports the
 #' \strong{partial} correlations, which are what it describes directly:
 #' \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}} is the correlation of two
 #' coordinates given all the others, and it is zero exactly where the precision

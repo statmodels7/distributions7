@@ -9,14 +9,14 @@ mv_prefixed_names(free_names, inverted = FALSE)
 \arguments{
 \item{free_names}{The matrix parameter's free names.}
 
-\item{inverted}{Whether the matrix parameter parametrises the precision.}
+\item{inverted}{Whether the matrix parameter parametrizes the precision.}
 }
 \value{
 A character vector.
 }
 \description{
 Returns the matrix parameter's free names with \code{"sigma_"} or \code{"omega_"}
-in front, according to which side of the model the matrix parameter parametrises.
+in front, according to which side of the model the matrix parameter parametrizes.
 }
 \details{
 The name of a free value says how the matrix is built, not which matrix it

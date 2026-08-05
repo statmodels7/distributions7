@@ -20,7 +20,7 @@ A named list of second derivatives.
 \description{
 \deqn{\ell^{(\mu\mu)} = -\tau, \qquad \ell^{(\mu\tau)} = r, \qquad
       \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}}
-The mean block is free of the data here, as it is in every parametrisation
+The mean block is free of the data here, as it is in every parametrization
 of this family, and so is the precision block.
 }
 \seealso{

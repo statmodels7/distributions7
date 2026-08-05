@@ -5,7 +5,7 @@ NULL
 #' @name ExponentialDistrib
 #'
 #' @description A subclass of \code{continuous_distrib} representing the
-#'   exponential distribution in its mean parametrisation.
+#'   exponential distribution in its mean parametrization.
 #' @inheritParams distrib
 #' @return An object of class \code{ExponentialDistrib}.
 #' @seealso \code{\link{exponential_distrib}}
@@ -225,7 +225,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' Exponential Distribution Object
 #'
 #' @description
-#' Creates a distribution object for the exponential distribution parametrised
+#' Creates a distribution object for the exponential distribution parametrized
 #' by its mean \eqn{\mu}.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to

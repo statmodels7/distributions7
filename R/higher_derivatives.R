@@ -105,7 +105,7 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
   names(out) <- nms
 
   H <- function(th) distrib_hessian(distrib, y, th)
-  # The centre point of the three-point stencil does not move, so it is computed
+  # The center point of the three-point stencil does not move, so it is computed
   # once rather than once per component with k == l.
   H0 <- H(theta)
 

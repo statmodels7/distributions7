@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_gradient.SkewNormal2Distrib}
 \alias{distrib_gradient.SkewNormal2Distrib}
-\title{Skew Normal Gradient in the Centred Parametrisation}
+\title{Skew Normal Gradient in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object.}
 
@@ -18,10 +18,10 @@
 A named list of first derivatives.
 }
 \description{
-The parent's score carried by the Jacobian of the centred-to-direct map. The
+The parent's score carried by the Jacobian of the centered-to-direct map. The
 components in \eqn{\gamma_1} stay of order one however small \eqn{\gamma_1}
 is, although the Jacobian itself grows without bound: the divergent parts
-cancel, which is what the centred parametrisation is for.
+cancel, which is what the centered parametrization is for.
 }
 \seealso{
 \code{\link{skewnormal2_distrib}}

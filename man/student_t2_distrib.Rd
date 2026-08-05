@@ -35,7 +35,7 @@ there rather than letting the map return a complex number several frames
 down. This is \code{TF2} in gamlss.
 
 The restriction is the point rather than a limitation: a family
-parametrised by a standard deviation is a family whose standard deviation
+parametrized by a standard deviation is a family whose standard deviation
 exists.
 }
 \examples{

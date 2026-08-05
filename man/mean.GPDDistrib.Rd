@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{mean.GPDDistrib}
 \alias{mean.GPDDistrib}
-\title{Mean of the Generalised Pareto Distribution}
+\title{Mean of the Generalized Pareto Distribution}
 \arguments{
 \item{x}{A \code{GPDDistrib}.}
 

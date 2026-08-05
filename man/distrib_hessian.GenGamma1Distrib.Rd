@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_hessian.GenGamma1Distrib}
 \alias{distrib_hessian.GenGamma1Distrib}
-\title{Generalised Gamma Analytical Observed Hessian}
+\title{Generalized Gamma Analytical Observed Hessian}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

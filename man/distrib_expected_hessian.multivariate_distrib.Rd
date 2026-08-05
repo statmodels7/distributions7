@@ -32,7 +32,7 @@ The one-dimensional routes do not survive the move to \eqn{p} dimensions.
 \code{"integrate"} builds its quadrature over an interval and is refused
 here; \code{"bartlett"} in the univariate package reaches
 \code{\link{expectation}}, which is that same quadrature. What does
-generalise is sampling, so both remaining routes draw from the family's own
+generalize is sampling, so both remaining routes draw from the family's own
 generator and differ in what they average:
 
 \code{"mc"} averages the observed Hessian, \eqn{\mathbb{E}[\ell^{(ij)}]}

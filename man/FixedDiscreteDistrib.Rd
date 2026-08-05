@@ -50,7 +50,7 @@ in which some parameters of the wrapped distribution are held at known
 values. Constructed by \code{\link{fixed}}.
 }
 \details{
-Identical in behaviour to \code{\link{FixedContinuousDistrib}}: every method
+Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
 splices the fixed values into \code{theta} and delegates to the parent, and
 the derivative methods keep only the components among the free parameters.
 }

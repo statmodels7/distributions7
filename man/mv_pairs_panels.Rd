@@ -24,11 +24,11 @@ mv_pairs_panels(
 
 \item{n_grid}{Points per axis.}
 
-\item{col_fit}{Colour of the fitted density.}
+\item{col_fit}{Color of the fitted density.}
 
 \item{data}{An \eqn{n \times p} matrix of observations, or \code{NULL}.}
 
-\item{col_data}{Colour of the observed summary.}
+\item{col_data}{Color of the observed summary.}
 
 \item{...}{Unused.}
 }

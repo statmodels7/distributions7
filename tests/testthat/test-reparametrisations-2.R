@@ -1,4 +1,4 @@
-# The second parametrisations whose derivatives are elementary at every order:
+# The second parametrizations whose derivatives are elementary at every order:
 # the inverse gaussian in its shape, and the beta and beta-binomial in their
 # canonical shapes. Each is checked against its twin, which shares no code.
 

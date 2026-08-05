@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Computes the standardised third central moment through \code{\link{moment}}.
+Computes the standardized third central moment through \code{\link{moment}}.
 }
 \keyword{internal}

@@ -21,7 +21,7 @@ NULL
 # default method uses it directly. For a *continuous* one it is an integral over
 # a semi-infinite region, and evaluating it by quadrature is both slower and less
 # accurate than differencing the cdf, which for every distribution in the
-# catalogue is an analytic function; the default there differences the cdf, and
+# catalog is an analytic function; the default there differences the cdf, and
 # distributions with a closed form register it.
 # ===========================================================================
 
@@ -172,7 +172,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
     t2[[j]] <- theta[[j]] + s * hj
     t2
   }
-  # one step per observation, not per parameter: theta may be vectorised, and a
+  # one step per observation, not per parameter: theta may be vectorized, and a
   # step chosen from its first element would be wrong everywhere else.
   hs <- lapply(seq_len(p), function(j) h_rel * pmax(1, abs(theta[[j]])))
 
@@ -498,7 +498,7 @@ S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
 #   dF/dmu     = -y f(y)
 #   dF/dsigma2 = -y f(y) z / (2 sigma)
 #
-# the second carrying the extra 1/(2 sigma) because the package parametrises by
+# the second carrying the extra 1/(2 sigma) because the package parametrizes by
 # the variance on the log scale rather than the standard deviation.
 
 #' @title Lognormal Log-CDF Gradient
@@ -576,7 +576,7 @@ S7::method(distrib_grad_cdf, InvGauss1Distrib) <- function(distrib, q, theta,
 # so the sensitivity of the cdf to the mean is minus the mass at the last point
 # retained. The binomial has the companion identity
 #   d/dp P(X <= k) = -n dbinom(k, n-1, p),
-# and the negative binomial, in the (mu, theta) parametrisation,
+# and the negative binomial, in the (mu, theta) parametrization,
 #   dF(k)/dmu = -f(k) (k + theta)/(theta + mu),
 # which tends to the Poisson result as theta grows. The theta direction is a
 # derivative of the incomplete beta in its parameter and has no elementary form,

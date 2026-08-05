@@ -15,8 +15,8 @@ trunc_constants(distrib, theta)
 A list with \code{Fl} and \code{Z}.
 }
 \description{
-Returns \eqn{F(\ell^-)} and the normalising constant
-\eqn{Z = F(u) - F(\ell^-)}, vectorised in \eqn{\theta}.
+Returns \eqn{F(\ell^-)} and the normalizing constant
+\eqn{Z = F(u) - F(\ell^-)}, vectorized in \eqn{\theta}.
 }
 \details{
 Both endpoints are \strong{included} in the truncated support, so any mass

@@ -128,7 +128,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   # have no counterpart. Running them anyway reports refusals as failures,
   # which is the mistake this function already learned not to make with mixed
   # distributions: a user validating their own code could not tell a real
-  # defect from it. The battery that does generalise is a separate one.
+  # defect from it. The battery that does generalize is a separate one.
   if (S7::S7_inherits(distrib, multivariate_distrib)) {
     out <- do.call(rbind, check_distrib_mv(distrib, theta, n, nsim, tol))
     if (verbose) print_check_table(distrib, out, theta, n, nsim)
@@ -322,7 +322,7 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         # The score product is not always random: for a non-smooth location
         # parameter it is constant across draws (the Laplace score is
         # sign(y-mu)/b, so its square is 1/b^2 everywhere), leaving a standard
-        # error that is pure floating-point dust. Standardising by it turns a
+        # error that is pure floating-point dust. Standardizing by it turns a
         # perfect agreement into an enormous z. Floor the denominator at the
         # precision the two sides can possibly agree to, which keeps a genuinely
         # wrong analytic information easy to detect.

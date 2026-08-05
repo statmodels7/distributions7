@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_expected_hessian.SkewNormal2Distrib}
 \alias{distrib_expected_hessian.SkewNormal2Distrib}
-\title{Skew Normal Expected Hessian in the Centred Parametrisation}
+\title{Skew Normal Expected Hessian in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object.}
 
@@ -23,7 +23,7 @@ A named list of expected second derivatives.
 }
 \description{
 The parent's expected information carried by the same congruence. It is
-\strong{non-singular at zero skewness}, which the direct parametrisation's
+\strong{non-singular at zero skewness}, which the direct parametrization's
 is not: there the score for \eqn{\alpha} is proportional to the score for
 the location and the information loses a rank.
 }

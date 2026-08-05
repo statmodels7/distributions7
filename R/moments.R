@@ -86,7 +86,7 @@ variance <- S7::new_generic("variance", "x")
 
 #' @title Variance of a Distribution
 #' @name variance.distrib
-#' @description Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the centre.
+#' @description Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the center.
 #' @param x A \code{distrib} object.
 #' @param theta A named list of parameters.
 #' @param ... Passed to \code{\link{moment}}.
@@ -170,7 +170,7 @@ skewness <- S7::new_generic("skewness", "x")
 # distrib method: theta is a named list of parameters
 #' @title Skewness of a Distribution
 #' @name skewness.distrib
-#' @description Computes the standardised third central moment through \code{\link{moment}}.
+#' @description Computes the standardized third central moment through \code{\link{moment}}.
 #' @param x A \code{distrib} object.
 #' @param theta A named list of parameters.
 #' @param ... Passed to \code{\link{moment}}.
@@ -218,7 +218,7 @@ kurtosis <- S7::new_generic("kurtosis", "x")
 # distrib method: theta is a named list of parameters
 #' @title Kurtosis of a Distribution
 #' @name kurtosis.distrib
-#' @description Computes the excess kurtosis, the standardised fourth central moment minus three through \code{\link{moment}}.
+#' @description Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link{moment}}.
 #' @param x A \code{distrib} object.
 #' @param theta A named list of parameters.
 #' @param ... Passed to \code{\link{moment}}.
@@ -421,7 +421,7 @@ S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
 #
 # Every moment of a Weibull is the scale to a power times a gamma function of
 # the shape: with g_k = Gamma(1 + k/sigma), E[Y^k] = mu^k g_k. The four
-# quantities below are the standardised combinations of those, so only the
+# quantities below are the standardized combinations of those, so only the
 # first depends on mu at all.
 
 #' Gamma Factors of a Weibull's Moments
@@ -507,7 +507,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 
 # --- GUMBEL -----------------------------------------------------------------
 #
-# A location-scale family with a FIXED shape: the third and fourth standardised
+# A location-scale family with a FIXED shape: the third and fourth standardized
 # moments are constants, which is the substantive statement here rather than an
 # arithmetic convenience.
 
@@ -572,7 +572,7 @@ S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
 
 # --- SKEW NORMAL ------------------------------------------------------------
 #
-# Every standardised moment is a function of delta = alpha/sqrt(1 + alpha^2)
+# Every standardized moment is a function of delta = alpha/sqrt(1 + alpha^2)
 # alone, which is the quantity the shape enters through. As |alpha| grows delta
 # tends to 1, so the skewness and the kurtosis the family can reach are bounded
 # -- that bound is the reason the skew t exists.
@@ -666,7 +666,7 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
 #' \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
 #' \eqn{\mu_z = \delta b_\nu} and the variance \eqn{\sigma_z^2} of the
-#' standardised variable.
+#' standardized variable.
 #'
 #' @details
 #' \eqn{b_\nu} is finite only for \eqn{\nu > 1} and \eqn{\sigma_z^2} only for
@@ -1020,13 +1020,13 @@ S7::method(kurtosis, StudentT1Distrib) <- function(x, theta, ...) {
 
 # --- gamma2 ----------------------------------------------------------------
 #
-# The parametrisation is the mean and the variance, so the first two moments
+# The parametrization is the mean and the variance, so the first two moments
 # are the parameters and the shape a = mu^2/sigma2 carries the rest.
 
 #' @title Mean of the Gamma Distribution
 #' @name mean.Gamma2Distrib
 #' @description Closed form: \eqn{E[Y] = \mu}, a parameter of this
-#'   parametrisation.
+#'   parametrization.
 #' @param x A \code{Gamma2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -1040,7 +1040,7 @@ S7::method(mean, Gamma2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Gamma Distribution
 #' @name variance.Gamma2Distrib
 #' @description Closed form: \eqn{\sigma^2}, a parameter of this
-#'   parametrisation.
+#'   parametrization.
 #' @param x A \code{Gamma2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -1130,7 +1130,7 @@ S7::method(kurtosis, ExponentialDistrib) <- function(x, theta, ...) {
 
 # --- chisq -----------------------------------------------------------------
 #
-# Parametrised by its mean, which for a chi-squared is its degrees of freedom.
+# Parametrized by its mean, which for a chi-squared is its degrees of freedom.
 
 #' @title Mean of the Chi-Squared Distribution
 #' @name mean.ChisqDistrib
@@ -1246,11 +1246,11 @@ S7::method(kurtosis, Lognormal1Distrib) <- function(x, theta, ...) {
 
 # --- invgauss1 -------------------------------------------------------------
 #
-# statmod parametrises by the mean and a dispersion phi, so Var = phi mu^3.
+# statmod parametrizes by the mean and a dispersion phi, so Var = phi mu^3.
 
 #' @title Mean of the Inverse Gaussian Distribution
 #' @name mean.InvGauss1Distrib
-#' @description Closed form: \eqn{\mu}, a parameter of this parametrisation.
+#' @description Closed form: \eqn{\mu}, a parameter of this parametrization.
 #' @param x An \code{InvGauss1Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -1307,7 +1307,7 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Beta Distribution
 #' @name mean.Beta1Distrib
-#' @description Closed form: \eqn{\mu}, a parameter of this parametrisation.
+#' @description Closed form: \eqn{\mu}, a parameter of this parametrization.
 #' @param x A \code{Beta1Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -1371,7 +1371,7 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 # A moment of order k exists only for xi < 1/k, which is the condition for
 # the integrand to be integrable in the upper tail.
 
-#' @title Mean of the Generalised Pareto Distribution
+#' @title Mean of the Generalized Pareto Distribution
 #' @name mean.GPDDistrib
 #' @description Closed form: \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, and
 #'   infinite at or above one.
@@ -1388,7 +1388,7 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
   ifelse(xi < 1, s / (1 - xi), Inf)
 }
 
-#' @title Variance of the Generalised Pareto Distribution
+#' @title Variance of the Generalized Pareto Distribution
 #' @name variance.GPDDistrib
 #' @description Closed form:
 #'   \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, and infinite
@@ -1406,7 +1406,7 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
   ifelse(xi < 0.5, s^2 / ((1 - xi)^2 * (1 - 2 * xi)), Inf)
 }
 
-#' @title Skewness of the Generalised Pareto Distribution
+#' @title Skewness of the Generalized Pareto Distribution
 #' @name skewness.GPDDistrib
 #' @description Closed form:
 #'   \eqn{2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for \eqn{\xi < 1/3}, and infinite
@@ -1423,7 +1423,7 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
   ifelse(xi < 1 / 3, 2 * (1 + xi) * sqrt(1 - 2 * xi) / (1 - 3 * xi), Inf)
 }
 
-#' @title Kurtosis of the Generalised Pareto Distribution
+#' @title Kurtosis of the Generalized Pareto Distribution
 #' @name kurtosis.GPDDistrib
 #' @description Closed form: excess
 #'   \eqn{3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
@@ -1450,7 +1450,7 @@ S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
 # so the four central moments follow from four of them. The ratio is formed
 # through lgamma, since Gamma((d+k)/p) overflows long before the ratio does.
 
-#' Raw Moments of the Generalised Gamma
+#' Raw Moments of the Generalized Gamma
 #'
 #' @description
 #' \eqn{E[Y^k] = a^k\,\Gamma((d+k)/p)/\Gamma(d/p)} for \eqn{k = 1, \dots, 4},
@@ -1466,7 +1466,7 @@ gengamma_raw_moments <- function(a, d, p) {
   lapply(1:4, function(k) exp(k * log(a) + lgamma(k0 + k / p) - lgamma(k0)))
 }
 
-#' @title Mean of the Generalised Gamma Distribution
+#' @title Mean of the Generalized Gamma Distribution
 #' @name mean.GenGamma1Distrib
 #' @description Closed form:
 #'   \eqn{a\,\Gamma((d+1)/p)/\Gamma(d/p)}.
@@ -1480,7 +1480,7 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
   gengamma_raw_moments(theta[[1]], theta[[2]], theta[[3]])[[1]]
 }
 
-#' @title Variance of the Generalised Gamma Distribution
+#' @title Variance of the Generalized Gamma Distribution
 #' @name variance.GenGamma1Distrib
 #' @description Closed form, from the first two raw moments.
 #' @param x A \code{GenGamma1Distrib}.
@@ -1494,7 +1494,7 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
   m[[2]] - m[[1]]^2
 }
 
-#' @title Skewness of the Generalised Gamma Distribution
+#' @title Skewness of the Generalized Gamma Distribution
 #' @name skewness.GenGamma1Distrib
 #' @description Closed form, from the first three raw moments.
 #' @param x A \code{GenGamma1Distrib}.
@@ -1509,7 +1509,7 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
   (m[[3]] - 3 * m[[1]] * m[[2]] + 2 * m[[1]]^3) / v^1.5
 }
 
-#' @title Kurtosis of the Generalised Gamma Distribution
+#' @title Kurtosis of the Generalized Gamma Distribution
 #' @name kurtosis.GenGamma1Distrib
 #' @description Closed form, from the first four raw moments; excess.
 #' @param x A \code{GenGamma1Distrib}.
@@ -1861,7 +1861,7 @@ central_from_factorial <- function(f) {
 #' Central Moments of a Beta-Binomial
 #'
 #' @description
-#' The mean and the second, third and fourth central moments, vectorised over
+#' The mean and the second, third and fourth central moments, vectorized over
 #' the parameters.
 #'
 #' @param mu,sigma The mean proportion and the dispersion.
@@ -1887,7 +1887,7 @@ betabinom_central <- function(mu, sigma, n) {
 
 #' @title Mean of the Beta-Binomial Distribution
 #' @name mean.BetaBinom1Distrib
-#' @description Closed form: \eqn{n\mu}, the shapes cancelling.
+#' @description Closed form: \eqn{n\mu}, the shapes canceling.
 #' @param x A \code{BetaBinom1Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -1943,7 +1943,7 @@ S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
 
 # --- gaussian2, gaussian3, gamma1 ------------------------------------------
 #
-# Three reparametrisations of two families already here, so each moment is the
+# Three reparametrizations of two families already here, so each moment is the
 # same number the twin reports, written in the coordinates of this one.
 
 #' @title Mean of the Gaussian in Mean and Variance
@@ -2062,7 +2062,7 @@ S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Gamma in Mean and Dispersion
 #' @name variance.Gamma1Distrib
 #' @description Closed form: \eqn{\phi\mu^2}, which is what the
-#'   parametrisation is defined by.
+#'   parametrization is defined by.
 #' @param x A \code{Gamma1Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.

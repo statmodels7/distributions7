@@ -2,12 +2,12 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn_cp_to_dp}
 \alias{sn_cp_to_dp}
-\title{From the Centred Parameters to the Direct Ones}
+\title{From the Centered Parameters to the Direct Ones}
 \usage{
 sn_cp_to_dp(mu, sigma, gamma1, s)
 }
 \arguments{
-\item{mu, sigma, gamma1}{The centred parameters, numbers or jets.}
+\item{mu, sigma, gamma1}{The centered parameters, numbers or jets.}
 
 \item{s}{The sign of \eqn{\gamma_1}, taken from its plain value.}
 }

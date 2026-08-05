@@ -72,7 +72,7 @@ test_that("pdf, cdf, quantile and rng equal the parent's at the full theta", {
   expect_identical(r_fixed, r_parent)
 })
 
-test_that("theta stays vectorised in the free parameters", {
+test_that("theta stays vectorized in the free parameters", {
   d <- fixed(gaussian1_distrib(), mu = 0)
   y <- c(-1, 0, 2)
   sig <- c(1, 2, 3)

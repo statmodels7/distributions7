@@ -25,7 +25,7 @@ An S7 object of class \code{DirichletDistrib}.
 }
 \description{
 Creates a distribution object for the Dirichlet distribution on the
-simplex, parametrised by a mean vector and a concentration \eqn{\phi}.
+simplex, parametrized by a mean vector and a concentration \eqn{\phi}.
 }
 \details{
 The first family here that is multivariate and \strong{not elliptical}, and
@@ -34,7 +34,7 @@ scale to separate, the support is a simplex rather than a Euclidean space,
 and the covariance is singular by construction because the coordinates sum
 to one.
 
-The parametrisation follows the same design as the multivariate gaussian's.
+The parametrization follows the same design as the multivariate gaussian's.
 The constrained object --- here a point of the simplex rather than a
 positive definite matrix --- is carried by a \pkg{parameters7} parameter and
 \strong{flattened into scalars} with identity links, so every generic of the

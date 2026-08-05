@@ -2,7 +2,7 @@
 using namespace Rcpp;
 
 // Inverse gaussian in the mean and the SHAPE lambda, the classical
-// parametrisation, with Var = mu^3 / lambda:
+// parametrization, with Var = mu^3 / lambda:
 //
 //   l = log(lambda)/2 - log(2 pi y^3)/2 - lambda (y-mu)^2 / (2 mu^2 y).
 //

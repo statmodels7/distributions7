@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{variance.GenGamma1Distrib}
 \alias{variance.GenGamma1Distrib}
-\title{Variance of the Generalised Gamma Distribution}
+\title{Variance of the Generalized Gamma Distribution}
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}.}
 

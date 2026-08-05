@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn2_theta}
 \alias{sn2_theta}
-\title{The Direct Parameters a Centred Triple Implies}
+\title{The Direct Parameters a Centered Triple Implies}
 \usage{
 sn2_theta(theta)
 }

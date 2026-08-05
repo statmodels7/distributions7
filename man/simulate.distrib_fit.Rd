@@ -8,7 +8,7 @@
 
 \item{nsim}{Number of replicates to draw. Defaults to 1.}
 
-\item{seed}{Optional seed. If supplied it is used to initialise the generator,
+\item{seed}{Optional seed. If supplied it is used to initialize the generator,
 and the state of \code{.Random.seed} in effect before the call is restored
 afterwards, so that simulating does not disturb the calling stream. The seed
 actually used is attached to the result as the \code{"seed"} attribute.}

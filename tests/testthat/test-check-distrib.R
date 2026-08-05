@@ -166,7 +166,7 @@ test_that("check_distrib catches a defect injected into each component", {
 test_that("a deterministic score product does not fake an information mismatch", {
   # Regression: the Laplace score for mu is sign(y - mu)/b, so its square is
   # exactly 1/b^2 on every draw. The Monte Carlo standard error is then pure
-  # floating-point dust, and standardising the (essentially exact) difference by
+  # floating-point dust, and standardizing the (essentially exact) difference by
   # it used to report a z around 1500 -- a failure raised precisely because the
   # two sides agreed to eleven decimals.
   CheckLap <- S7::new_class("CheckLap", parent = continuous_distrib, package = NULL)

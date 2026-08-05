@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_gradient.GenGamma1Distrib}
 \alias{distrib_gradient.GenGamma1Distrib}
-\title{Generalised Gamma Analytical Gradient}
+\title{Generalized Gamma Analytical Gradient}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

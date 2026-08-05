@@ -15,13 +15,13 @@ beta2_distrib(link_alpha = log_link(), link_beta = log_link())
 An S7 object of class \code{\link{Beta2Distrib}}.
 }
 \description{
-Creates a beta distribution object in its canonical parametrisation, the two
+Creates a beta distribution object in its canonical parametrization, the two
 shapes \eqn{\alpha} and \eqn{\beta}.
 }
 \details{
 The same law as \code{\link{beta1_distrib}}, which carries the mean and a
 precision: \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}. The
-mean parametrisation is the one a regression wants; this one is the one the
+mean parametrization is the one a regression wants; this one is the one the
 family is usually written in and the one a conjugate analysis produces, the
 beta being conjugate for a binomial probability.
 

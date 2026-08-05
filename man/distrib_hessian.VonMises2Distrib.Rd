@@ -18,7 +18,7 @@
 A named list of second derivatives.
 }
 \description{
-The concentration parametrisation's second derivatives carried through the
+The concentration parametrization's second derivatives carried through the
 one-variable chain rule,
 \deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}(\kappa')^2
                          + \ell^{(\kappa)}\kappa'',}

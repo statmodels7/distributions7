@@ -41,7 +41,7 @@ An object of class \code{GeometricDistrib}.
 \description{
 A subclass of \code{discrete_distrib} representing the
 geometric distribution on \eqn{\{0, 1, 2, \dots\}} in its mean
-parametrisation.
+parametrization.
 }
 \section{Methods}{
 

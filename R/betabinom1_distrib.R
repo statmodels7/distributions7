@@ -186,7 +186,7 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #'
 #' @description
 #' Creates a distribution object for the beta-binomial distribution,
-#' parametrised by the mean proportion \eqn{\mu} and a dispersion parameter
+#' parametrized by the mean proportion \eqn{\mu} and a dispersion parameter
 #' \eqn{\sigma}.
 #'
 #' @param size The number of trials \eqn{n}. A constant of the distribution

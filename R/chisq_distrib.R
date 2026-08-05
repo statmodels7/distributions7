@@ -46,7 +46,7 @@ S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE
 
 #' @title Chi-Squared Distribution Function
 #' @name distrib_cdf.ChisqDistrib
-#' @description The regularised lower incomplete gamma function
+#' @description The regularized lower incomplete gamma function
 #'   \eqn{P(\mu/2, q/2)}.
 #' @param distrib A \code{ChisqDistrib} object.
 #' @param q A numeric vector of quantiles.
@@ -227,7 +227,7 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' Chi-Squared Distribution Object
 #'
 #' @description
-#' Creates a distribution object for the chi-squared distribution, parametrised
+#' Creates a distribution object for the chi-squared distribution, parametrized
 #' by its mean \eqn{\mu}, which is the degrees of freedom.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
@@ -254,7 +254,7 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' nothing to average. \eqn{\mathbb{E}[\log y] = \psi(\mu/2) + \log 2} is what
 #' makes the score have mean zero.
 #'
-#' That coincidence does not carry to the scale a fit optimises on. The
+#' That coincidence does not carry to the scale a fit optimizes on. The
 #' second-order chain rule of \code{\link{distrib_hessian}} adds a term
 #' \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian, and the
 #' expected version drops it because the score has mean zero, while a sample

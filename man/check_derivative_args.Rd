@@ -18,7 +18,7 @@ A list with elements \code{y} and \code{theta}, both conformable.
 }
 \description{
 Aligns \code{theta}, checks that every parameter has length 1 or \eqn{n}, and
-recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorised.
+recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorized.
 }
 \details{
 An empty \code{y} is allowed through untouched, giving empty derivatives, the

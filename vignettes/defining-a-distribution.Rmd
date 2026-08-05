@@ -130,7 +130,7 @@ laplace_distrib <- function(link_mu = linkfunctions7::identity_link(),
 
 The `params_bounds` are used by the fallbacks (finite-difference steps are
 shrunk so they never step outside a parameter's domain) and by
-`generate_random_theta()`. The `link_params` are used by downstream modelling
+`generate_random_theta()`. The `link_params` are used by downstream modeling
 code; `identity_link()` and `log_link()` come from **linkfunctions7**.
 
 That is the entire definition. Everything now works:
@@ -270,9 +270,9 @@ str(distrib_gradient(d, c(-1, 3), th))                   # now analytical
 A practical suggestion for the order in which to add closed forms:
 
 1. **`distrib_gradient`** --- the single biggest speed-up for model fitting,
-   since the score is evaluated at every optimisation step. Writing it in C++
+   since the score is evaluated at every optimization step. Writing it in C++
    (via **Rcpp**), as the built-in distributions do, helps further.
-2. **`distrib_hessian`** --- for Newton-type optimisation and standard errors.
+2. **`distrib_hessian`** --- for Newton-type optimization and standard errors.
 3. **`distrib_cdf` / `distrib_quantile` / `distrib_rng`** --- for fast or
    high-volume simulation and tail probabilities.
 4. **`distrib_expected_hessian`** and **analytical moments** --- when a closed
@@ -335,7 +335,7 @@ formulas.
 
 ## Fitting a distribution to data
 
-`fit_distrib()` maximises the likelihood on the link scale — where the parameters
+`fit_distrib()` maximizes the likelihood on the link scale — where the parameters
 are unconstrained — using the analytical score and information, and then reports
 the estimates back on the parameter scale:
 

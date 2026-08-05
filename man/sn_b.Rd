@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn_b}
 \alias{sn_b}
-\title{The Constant Behind the Centred Parametrisation}
+\title{The Constant Behind the Centered Parametrization}
 \usage{
 sn_b()
 }

@@ -22,7 +22,7 @@ binomial functions take.
 Requiring the variance to be \eqn{\mu(1+\theta)} fixes the success
 probability at \eqn{1/(1+\theta)}, and the mean then determines the size.
 It is this that puts \eqn{\mu} inside the gamma functions and makes the
-family different from the quadratic form rather than a reparametrisation of
+family different from the quadratic form rather than a reparametrization of
 it.
 }
 \seealso{

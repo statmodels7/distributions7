@@ -5,7 +5,7 @@ NULL
 #' @name Weibull1Distrib
 #'
 #' @description A subclass of \code{continuous_distrib} representing the Weibull
-#' distribution, parametrised by a scale and a shape.
+#' distribution, parametrized by a scale and a shape.
 #' @inheritParams distrib
 #' @return An object of class \code{Weibull1Distrib}.
 #' @seealso \code{\link{weibull1_distrib}}
@@ -36,7 +36,7 @@ Weibull1Distrib <- S7::new_class("Weibull1Distrib", parent = continuous_distrib)
 #' The Pieces a Weibull Evaluates From
 #'
 #' @description
-#' Returns the standardised variable \eqn{z = y/\mu}, its logarithm and the
+#' Returns the standardized variable \eqn{z = y/\mu}, its logarithm and the
 #' quantity \eqn{u = z^{\sigma}}, which every derivative of the Weibull
 #' log-density is a polynomial in.
 #'
@@ -293,7 +293,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' Weibull Distribution Object
 #'
 #' @description
-#' Creates a distribution object for the Weibull distribution, parametrised by
+#' Creates a distribution object for the Weibull distribution, parametrized by
 #' a scale \eqn{\mu} and a shape \eqn{\sigma}, both positive.
 #'
 #' @param link_mu A link function object for the scale \eqn{\mu}. Defaults to
@@ -302,12 +302,12 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #'   Defaults to \code{\link[linkfunctions7]{log_link}}.
 #'
 #' @details
-#' \strong{Parametrisation.} \eqn{\mu} is the \strong{scale} and not the mean.
+#' \strong{Parametrization.} \eqn{\mu} is the \strong{scale} and not the mean.
 #' The mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a
-#' mean parametrisation would make every derivative a derivative of the gamma
+#' mean parametrization would make every derivative a derivative of the gamma
 #' function and its inverse. The scale-shape form keeps the whole family
 #' elementary, and \code{\link{mean.Weibull1Distrib}} reports the mean.
-#' This is the parametrisation of \code{WEI} in \pkg{gamlss}.
+#' This is the parametrization of \code{WEI} in \pkg{gamlss}.
 #'
 #' \strong{Probability density function:}
 #' \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}

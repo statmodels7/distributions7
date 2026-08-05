@@ -40,7 +40,7 @@ An object of class \code{Beta2Distrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} for the beta in its
-canonical parametrisation, the two shapes.
+canonical parametrization, the two shapes.
 }
 \section{Methods}{
 

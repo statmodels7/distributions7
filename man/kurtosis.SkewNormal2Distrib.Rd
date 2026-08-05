@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{kurtosis.SkewNormal2Distrib}
 \alias{kurtosis.SkewNormal2Distrib}
-\title{Kurtosis of the Skew Normal in the Centred Parametrisation}
+\title{Kurtosis of the Skew Normal in the Centered Parametrization}
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 
@@ -14,7 +14,7 @@
 A numeric vector.
 }
 \description{
-The parent's, at the implied direct parameters: the centred parametrisation
+The parent's, at the implied direct parameters: the centered parametrization
 fixes the first three moments and leaves the fourth to follow.
 }
 \keyword{internal}

@@ -40,7 +40,7 @@ An object of class \code{InvGauss2Distrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} for the inverse
-gaussian in its classical parametrisation, the mean and the shape
+gaussian in its classical parametrization, the mean and the shape
 \eqn{\lambda}.
 }
 \section{Methods}{

@@ -19,7 +19,7 @@ the pieces.
 }
 \description{
 The precision's derivative tensors in the matrix parameter's free values, orders 1
-to 4, keyed by index tuple. For a precision parametrisation they are the
+to 4, keyed by index tuple. For a precision parametrization they are the
 parameter's own derivatives; for a covariance they follow from repeated
 differentiation of the inverse, so no expanded formula is transcribed and
 no term can be dropped.

@@ -17,13 +17,13 @@ trunc_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 A named list, one component per parameter.
 }
 \description{
-The parent's score recentred by its truncated mean,
+The parent's score recentered by its truncated mean,
 \eqn{d_i \ell_T = s_i(y) - m_i}.
 }
 \details{
 Truncation adds no parameter -- the endpoints are constants, like a binomial's
-size -- but it does add a \eqn{\theta}-dependent normalising constant, and the
-recentring is that constant's contribution. The support does not depend on
+size -- but it does add a \eqn{\theta}-dependent normalizing constant, and the
+recentering is that constant's contribution. The support does not depend on
 \eqn{\theta}, which is what licenses differentiating \eqn{Z} under the
 integral sign and keeps truncation at fixed points a regular problem.
 }

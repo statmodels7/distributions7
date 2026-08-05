@@ -40,7 +40,7 @@ An object of class \code{ExponentialDistrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} representing the
-exponential distribution in its mean parametrisation.
+exponential distribution in its mean parametrization.
 }
 \section{Methods}{
 

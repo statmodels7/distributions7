@@ -53,7 +53,7 @@ test_that("the constructor validates its arguments", {
   )
 
   # A rank-deficient structure is a penalty, not a density, and the refusal is
-  # the same whichever side it parametrises.
+  # the same whichever side it parametrizes.
   pen <- parameters7::scaled_matrix(crossprod(diff(diag(5), differences = 2)))
   expect_error(mvgaussian_distrib(5, sigma = pen), "rank deficient")
   expect_error(mvgaussian_distrib(5, omega = pen), "rank deficient")
@@ -248,7 +248,7 @@ test_that("the precision form describes the same law as the covariance form", {
     distrib_pdf(do, y, th_o, log = TRUE),
     distrib_pdf(ds, y, th_s, log = TRUE)
   )
-  # the score in the mean is the same quantity in both parametrisations
+  # the score in the mean is the same quantity in both parametrizations
   expect_equal(
     distrib_gradient(do, y, th_o)[["mu1"]],
     distrib_gradient(ds, y, th_s)[["mu1"]]
@@ -291,7 +291,7 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
 
   # The maximum likelihood estimator of a gaussian is the sample mean and the
   # sample second moment about it, both in closed form, so the maximum of the
-  # log-likelihood is known without optimising anything.
+  # log-likelihood is known without optimizing anything.
   mu_hat <- colMeans(y)
   s_hat <- crossprod(sweep(y, 2L, mu_hat)) / nrow(y)
   th_hat <- as.list(stats::setNames(
@@ -377,7 +377,7 @@ test_that("the fit prints the quantities a reader reads, and each once", {
   expect_true(any(grepl("link scale is the parameter scale", out)))
   expect_false(any(grepl("^Link scale", out)))
 
-  # what the optimiser did is information, and is kept
+  # what the optimizer did is information, and is kept
   expect_true(any(grepl("^Method: .*iterations:", out)))
   expect_true(any(grepl("^Converged: yes \\(", out)))
 })

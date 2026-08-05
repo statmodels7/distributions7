@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_quantile.GenGamma1Distrib}
 \alias{distrib_quantile.GenGamma1Distrib}
-\title{Generalised Gamma Quantile Function}
+\title{Generalized Gamma Quantile Function}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

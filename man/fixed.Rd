@@ -27,7 +27,7 @@ carries only the free parameters, every generic answers as the parent does
 at the full vector, and the derivative components are the parent's
 restricted to the free indices -- a subvector of the score, a submatrix of
 the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
-no normalising constant changes, so the parent's closed forms are used
+no normalizing constant changes, so the parent's closed forms are used
 throughout, and \code{\link{fit_distrib}} estimates the free parameters
 with standard errors and intervals for them alone.
 

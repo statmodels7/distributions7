@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_cdf.GenGamma1Distrib}
 \alias{distrib_cdf.GenGamma1Distrib}
-\title{Generalised Gamma Distribution Function}
+\title{Generalized Gamma Distribution Function}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 
@@ -18,7 +18,7 @@
 A numeric vector of cumulative probabilities.
 }
 \description{
-\eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularised lower incomplete gamma
+\eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularized lower incomplete gamma
 function, since \eqn{(Y/a)^{p}} is Gamma with shape \eqn{d/p} and unit
 rate.
 }

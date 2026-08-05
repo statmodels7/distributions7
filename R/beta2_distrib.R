@@ -5,7 +5,7 @@ NULL
 #' @name Beta2Distrib
 #'
 #' @description A subclass of \code{continuous_distrib} for the beta in its
-#'   canonical parametrisation, the two shapes.
+#'   canonical parametrization, the two shapes.
 #' @inheritParams distrib
 #' @return An object of class \code{Beta2Distrib}.
 #' @seealso \code{\link{beta2_distrib}}, \code{\link{beta1_distrib}}
@@ -279,13 +279,13 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' Beta Distribution in Its Shapes
 #'
 #' @description
-#' Creates a beta distribution object in its canonical parametrisation, the two
+#' Creates a beta distribution object in its canonical parametrization, the two
 #' shapes \eqn{\alpha} and \eqn{\beta}.
 #'
 #' @details
 #' The same law as \code{\link{beta1_distrib}}, which carries the mean and a
 #' precision: \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}. The
-#' mean parametrisation is the one a regression wants; this one is the one the
+#' mean parametrization is the one a regression wants; this one is the one the
 #' family is usually written in and the one a conjugate analysis produces, the
 #' beta being conjugate for a binomial probability.
 #'

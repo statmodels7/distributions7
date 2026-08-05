@@ -1,8 +1,8 @@
-# The two second parametrisations that are families in their own right rather
+# The two second parametrizations that are families in their own right rather
 # than reparametrize() wrappers, each for a reason that is mathematical and not
 # a matter of taste: the von Mises because A has no elementary inverse, and the
-# skew normal because its map carries a sign and because what makes the centred
-# parametrisation worth having is a cancellation a generic chain rule would
+# skew normal because its map carries a sign and because what makes the centered
+# parametrization worth having is a cancellation a generic chain rule would
 # compute as a difference of large numbers.
 
 
@@ -36,7 +36,7 @@ test_that("vonmises2 is the von Mises at the matching concentration", {
 })
 
 
-test_that("the skew normal's centred parameters ARE its moments", {
+test_that("the skew normal's centered parameters ARE its moments", {
   d <- skewnormal2_distrib()
   for (g1 in c(-0.9, -0.3, 0.3, 0.9)) {
     th <- list(mu = 2, sigma = 3, gamma1 = g1)
@@ -67,11 +67,11 @@ test_that("skewnormal2 passes the validator on both signs", {
 })
 
 
-test_that("the centred information is non-singular where the direct one is not", {
-  # This is the property the parametrisation exists for, and the comparison is
-  # the whole point: in the direct parametrisation the score for alpha is
+test_that("the centered information is non-singular where the direct one is not", {
+  # This is the property the parametrization exists for, and the comparison is
+  # the whole point: in the direct parametrization the score for alpha is
   # proportional to the score for the location at alpha = 0, so the information
-  # loses a rank. In the centred one it does not.
+  # loses a rank. In the centered one it does not.
   info <- function(d, theta) {
     eh <- distrib_expected_hessian(d, 0, theta)
     pr <- hess_pairs(d@params)

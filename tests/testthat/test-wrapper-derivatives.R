@@ -116,7 +116,7 @@ test_that("the truncated third derivative agrees with one obtained from the cdf"
   # can be differentiated numerically straight from the parent's cdf, touching
   # none of the partition machinery.
   #
-  # The bounds must be ASYMMETRIC about mu. With mu at the centre of the interval
+  # The bounds must be ASYMMETRIC about mu. With mu at the center of the interval
   # the truncated law is symmetric, every odd derivative of log Z vanishes, and
   # the comparison degenerates into 0 == 0 -- a test that passes without
   # exercising anything.

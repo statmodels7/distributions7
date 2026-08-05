@@ -17,7 +17,7 @@ An \eqn{n \times p} numeric matrix.
 }
 \description{
 \eqn{\mu + L z} with \eqn{z} standard normal and \eqn{LL^\top = \Sigma}, the
-factor taken from the matrix parameter where it parametrises the covariance and
-from a factorisation of the inverse otherwise.
+factor taken from the matrix parameter where it parametrizes the covariance and
+from a factorization of the inverse otherwise.
 }
 \keyword{internal}

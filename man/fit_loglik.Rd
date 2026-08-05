@@ -18,7 +18,7 @@ A single number.
 }
 \description{
 The sum of the log-density over the observations, the objective the fit
-maximises.
+maximizes.
 }
 \seealso{
 \code{\link{fit_distrib}}

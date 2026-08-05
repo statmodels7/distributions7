@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_deriv4.SkewNormal2Distrib}
 \alias{distrib_deriv4.SkewNormal2Distrib}
-\title{Skew Normal Fourth-Order Derivatives in the Centred Parametrisation}
+\title{Skew Normal Fourth-Order Derivatives in the Centered Parametrization}
 \arguments{
 \item{distrib}{A \code{SkewNormal2Distrib} object.}
 

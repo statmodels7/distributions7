@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_rng.GenGamma1Distrib}
 \alias{distrib_rng.GenGamma1Distrib}
-\title{Generalised Gamma Random Generation}
+\title{Generalized Gamma Random Generation}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

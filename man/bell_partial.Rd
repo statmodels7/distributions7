@@ -24,7 +24,7 @@ derivatives of the inverse link, for \eqn{m \le 4}.
 \details{
 These are the coefficients Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
-diagonal and the multivariate formula factorises into a product of univariate
+diagonal and the multivariate formula factorizes into a product of univariate
 ones, so only \eqn{B_{m,j}} for a single variable is required. They are
 written out rather than generated: there are ten of them below order five, and
 a table cannot be slower or wrong in a way a recursion could.

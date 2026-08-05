@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{GPDDistrib}
 \alias{GPDDistrib}
-\title{S7 Class for the Generalised Pareto Distribution}
+\title{S7 Class for the Generalized Pareto Distribution}
 \usage{
 GPDDistrib(
   distrib_name = character(0),
@@ -40,7 +40,7 @@ An object of class \code{GPDDistrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} representing the
-generalised Pareto distribution in its scale and shape.
+generalized Pareto distribution in its scale and shape.
 }
 \section{Methods}{
 

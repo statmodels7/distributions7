@@ -39,14 +39,14 @@ in \eqn{A_r}, i.e. those with
 
 Two devices make this numerically safe for an arbitrary user-supplied density:
 \itemize{
-\item \strong{Recentring.} The kernel is shifted to its mode,
+\item \strong{Recentering.} The kernel is shifted to its mode,
 \eqn{K(z) \propto f(m + z)}, and the mode is added back to the draws. Without
 this a distribution located far from the origin (say \eqn{\mu = 1000}) gives a
 wildly elongated bounding rectangle and an acceptance rate close to zero.
-Recentring also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
+Recentering also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
 non-positive for \eqn{z \le 0} and non-negative for \eqn{z \ge 0}, so
 \eqn{v_{\min}} and \eqn{v_{\max}} are each found on one side of the mode.
-\item \strong{Normalisation.} The kernel is rescaled by its value at the mode, so
+\item \strong{Normalization.} The kernel is rescaled by its value at the mode, so
 that \eqn{\max K = 1} and \eqn{u_{\max} = 1}. Every quantity stays in a safe
 numerical range whatever the height of the density, and all computations are
 carried out on the log scale.
@@ -56,7 +56,7 @@ The bounds \eqn{v_{\min}, v_{\max}} are obtained by expanding geometrically away
 from the mode until \eqn{h} has clearly turned back towards zero (finite support
 bounds are used directly), then combining \code{\link[stats]{optimize}} with a grid
 search over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorised batches whose
+unimodal kernel. Candidates are generated and filtered in vectorized batches whose
 size adapts to the observed acceptance rate.
 }
 \section{Unbounded densities}{

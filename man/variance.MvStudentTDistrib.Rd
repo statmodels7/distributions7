@@ -15,7 +15,7 @@ A \eqn{p \times p} numeric matrix.
 }
 \description{
 \eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2}, and infinite otherwise. This is
-the moment; the matrix the parametrisation carries is
+the moment; the matrix the parametrization carries is
 \code{\link{mv_sigma}}, and the two differ by the factor above.
 }
 \keyword{internal}

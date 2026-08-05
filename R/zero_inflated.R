@@ -463,7 +463,7 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' assigned to. Zero-adjustment (\code{\link{zero_adjusted}}) \emph{replaces} it: the
 #' parent is truncated away from zero and the mass at zero becomes a free parameter,
 #' which can be above or below \eqn{f(0)}. A hurdle model therefore also handles
-#' \emph{under}-dispersed zeros, and its likelihood factorises into a binary part and
+#' \emph{under}-dispersed zeros, and its likelihood factorizes into a binary part and
 #' a positive-count part that can be read separately. Zero-inflation keeps the
 #' parent's interpretation --- \eqn{\theta} still describes the count process the
 #' non-structural observations come from --- while the hurdle re-interprets

@@ -37,7 +37,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #' covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists at all, and for
 #' \eqn{\nu \le 2} it does not while the distribution is perfectly well
 #' defined. \code{\link{mv_sigma}} returns the scale matrix, which is the thing
-#' the parametrisation carries, and \code{\link{variance}} returns the
+#' the parametrization carries, and \code{\link{variance}} returns the
 #' covariance, which is a moment. Keeping the two apart is what lets a fit run
 #' at \eqn{\nu = 1.5}.
 #'
@@ -56,7 +56,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' \strong{What it is for.} A gaussian fitted to data with a few outlying rows
 #' inflates its covariance to cover them. A \eqn{t} with \eqn{\nu} estimated
-#' does not: the observations far from the centre get a weight
+#' does not: the observations far from the center get a weight
 #' \eqn{(\nu+p)/(\nu+q)} that falls away with their Mahalanobis distance
 #' \eqn{q}, which is what appears in the score below and what makes the fit
 #' resistant. The gaussian is the limit \eqn{\nu \to \infty}.
@@ -266,7 +266,7 @@ S7::method(distrib_rng, MvStudentTDistrib) <- function(distrib, n, theta, ...) {
 #' @details
 #' This weight is the whole of the family's robustness. At \eqn{q = 0} it is
 #' \eqn{(\nu+p)/\nu} and it decays like \eqn{1/q}, so an observation far from
-#' the centre contributes less to every derivative rather than dragging the
+#' the center contributes less to every derivative rather than dragging the
 #' fit towards itself; letting \eqn{\nu \to \infty} sends it to one and
 #' recovers the gaussian, where nothing is downweighted.
 #'
@@ -483,7 +483,7 @@ S7::method(mean, MvStudentTDistrib) <- function(x, theta, ...) {
 #' @name variance.MvStudentTDistrib
 #' @description
 #' \eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2}, and infinite otherwise. This is
-#' the moment; the matrix the parametrisation carries is
+#' the moment; the matrix the parametrization carries is
 #' \code{\link{mv_sigma}}, and the two differ by the factor above.
 #' @param x A \code{\link{MvStudentTDistrib}} object.
 #' @param theta A named list of parameters.
@@ -507,7 +507,7 @@ S7::method(variance, MvStudentTDistrib) <- function(x, theta, ...) {
 #' A marginal of a \eqn{t} is a \eqn{t} with the same degrees of freedom, the
 #' subvector of the location and the corresponding block of the scale matrix.
 #' The degrees of freedom do not change with the dimension, which is what makes
-#' the family closed under marginalisation at all.
+#' the family closed under marginalization at all.
 #' @param distrib A \code{\link{MvStudentTDistrib}} object.
 #' @param theta A named list of parameters.
 #' @param which An integer vector of coordinates.
@@ -569,7 +569,7 @@ S7::method(generate_random_theta, MvStudentTDistrib) <- function(distrib, ...) {
 #' @name mv_location.MvStudentTDistrib
 #' @description
 #' The first \eqn{p} parameters. They are the mean when \eqn{\nu > 1} and the
-#' centre of symmetry always, which is why the generic is called a location
+#' center of symmetry always, which is why the generic is called a location
 #' rather than a mean.
 #' @param distrib A \code{\link{MvStudentTDistrib}} object.
 #' @param theta A named list of parameters.

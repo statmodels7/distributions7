@@ -21,7 +21,7 @@ An S7 object of class \code{BetaBinom1Distrib}.
 }
 \description{
 Creates a distribution object for the beta-binomial distribution,
-parametrised by the mean proportion \eqn{\mu} and a dispersion parameter
+parametrized by the mean proportion \eqn{\mu} and a dispersion parameter
 \eqn{\sigma}.
 }
 \details{

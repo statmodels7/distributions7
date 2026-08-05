@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_gradient.GPDDistrib}
 \alias{distrib_gradient.GPDDistrib}
-\title{Generalised Pareto Analytical Gradient}
+\title{Generalized Pareto Analytical Gradient}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object.}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_rng.GPDDistrib}
 \alias{distrib_rng.GPDDistrib}
-\title{Generalised Pareto Random Generation}
+\title{Generalized Pareto Random Generation}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object.}
 

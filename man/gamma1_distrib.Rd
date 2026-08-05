@@ -15,11 +15,11 @@ gamma1_distrib(link_mu = log_link(), link_phi = log_link())
 An S7 object of class \code{\link{Gamma1Distrib}}.
 }
 \description{
-Creates a gamma distribution object parametrised by its mean and a
+Creates a gamma distribution object parametrized by its mean and a
 dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
 }
 \details{
-This is the parametrisation a generalised linear model uses: the variance
+This is the parametrization a generalized linear model uses: the variance
 function is \eqn{V(\mu) = \mu^2} and \eqn{\phi} is the dispersion that
 multiplies it, so the mean and the dispersion are orthogonal and the score
 in \eqn{\mu} is \eqn{(y-\mu)/(\phi\mu^2)}. The shape is \eqn{1/\phi} and the

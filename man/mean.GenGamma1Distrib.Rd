@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{mean.GenGamma1Distrib}
 \alias{mean.GenGamma1Distrib}
-\title{Mean of the Generalised Gamma Distribution}
+\title{Mean of the Generalized Gamma Distribution}
 \arguments{
 \item{x}{A \code{GenGamma1Distrib}.}
 

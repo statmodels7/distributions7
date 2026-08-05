@@ -26,7 +26,7 @@ not depend on the parameter.
 \details{
 The mean components and, for a Student \eqn{t}, the degrees of freedom leave
 the matrix alone, so those entries are \code{NULL} and cost nothing. When
-the matrix parameter parametrises the precision the chain rule of an inverse
+the matrix parameter parametrizes the precision the chain rule of an inverse
 applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 }
 \keyword{internal}

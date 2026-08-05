@@ -13,6 +13,6 @@ A \eqn{p \times p} numeric matrix.
 }
 \description{
 The covariance, assembled from the matrix parameter and inverted first when the
-structure parametrises the precision.
+structure parametrizes the precision.
 }
 \keyword{internal}

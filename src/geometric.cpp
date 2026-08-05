@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Geometric on {0, 1, 2, ...} in the MEAN parametrisation. With success
+// Geometric on {0, 1, 2, ...} in the MEAN parametrization. With success
 // probability p = 1/(1+mu) the mass is p (1-p)^y, so
 //   l = y log(mu) - (y + 1) log(1 + mu)
 // and every order is the same shape twice, once at mu and once at 1 + mu:

@@ -15,7 +15,7 @@ betabinom_central(mu, sigma, n)
 A list of four numeric vectors.
 }
 \description{
-The mean and the second, third and fourth central moments, vectorised over
+The mean and the second, third and fourth central moments, vectorized over
 the parameters.
 }
 \keyword{internal}

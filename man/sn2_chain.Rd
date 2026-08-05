@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{sn2_chain}
 \alias{sn2_chain}
-\title{Derivatives of the Skew Normal in Its Centred Parametrisation}
+\title{Derivatives of the Skew Normal in Its Centered Parametrization}
 \usage{
 sn2_chain(distrib, y, theta, order, expected = FALSE)
 }
@@ -21,7 +21,7 @@ sn2_chain(distrib, y, theta, order, expected = FALSE)
 A named list of component vectors.
 }
 \description{
-The parent's derivatives carried into the centred coordinates by the
+The parent's derivatives carried into the centered coordinates by the
 partition sum of \code{\link{chain_derivatives}}.
 }
 \seealso{

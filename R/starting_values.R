@@ -157,7 +157,7 @@ param_free_or_fit <- function(s, m) {
 #' the closest thing the matrix parameter can represent, which is a good deal nearer
 #' than the origin.
 #' @details
-#' When the matrix parameter parametrises the precision the sample covariance is
+#' When the matrix parameter parametrizes the precision the sample covariance is
 #' inverted first, since that is the matrix the matrix parameter has to represent.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
 #' @param y The response.

@@ -15,6 +15,6 @@ A numeric vector.
 }
 \description{
 Closed form: \eqn{\sigma^2}, a parameter of this
-parametrisation.
+parametrization.
 }
 \keyword{internal}

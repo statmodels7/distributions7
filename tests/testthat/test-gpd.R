@@ -1,6 +1,6 @@
-# The generalised Pareto. Two things distinguish it from every other family
+# The generalized Pareto. Two things distinguish it from every other family
 # here: it is not written in its mean, the mean existing only for xi < 1, and
-# for xi < 0 its support depends on the parameters, which is what the licence
+# for xi < 0 its support depends on the parameters, which is what the license
 # to differentiate under the integral sign rests on.
 
 test_that("the density and the distribution function are the written formulas", {

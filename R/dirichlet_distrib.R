@@ -121,7 +121,7 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #' @title Dirichlet Random Generation
 #' @name distrib_rng.DirichletDistrib
 #' @description
-#' Independent Gamma draws with the shapes \eqn{\alpha_j}, normalised by their
+#' Independent Gamma draws with the shapes \eqn{\alpha_j}, normalized by their
 #' sum, which is the representation the family is defined by.
 #' @param distrib A \code{DirichletDistrib} object.
 #' @param n The number of draws.
@@ -332,7 +332,7 @@ S7::method(mv_reference_draw, DirichletDistrib) <- function(distrib, theta, n, .
 #' @name mv_marginal.DirichletDistrib
 #' @description
 #' A single coordinate is \eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, which
-#' in this package's mean-and-precision parametrisation of the Beta is simply
+#' in this package's mean-and-precision parametrization of the Beta is simply
 #' mean \eqn{\mu_j} and precision \eqn{\phi}: the concentration is shared by
 #' every marginal. A group of coordinates is again Dirichlet, but only after
 #' the remaining mass is collapsed into one of its own, so that case is
@@ -354,7 +354,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
   }
   p <- dir_parts(distrib, theta)
   # The Beta here is written in a mean and a precision, exactly as this family
-  # is, so the marginal needs no reparametrisation at all: coordinate j has
+  # is, so the marginal needs no reparametrization at all: coordinate j has
   # shapes (alpha_j, phi - alpha_j), hence mean mu_j and precision phi. The
   # CONCENTRATION IS SHARED by every marginal, as the multivariate t's degrees
   # of freedom are.
@@ -368,7 +368,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #'
 #' @description
 #' Creates a distribution object for the Dirichlet distribution on the
-#' simplex, parametrised by a mean vector and a concentration \eqn{\phi}.
+#' simplex, parametrized by a mean vector and a concentration \eqn{\phi}.
 #'
 #' @param n_dim The number of coordinates \eqn{p}.
 #' @param mean A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
@@ -384,7 +384,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' and the covariance is singular by construction because the coordinates sum
 #' to one.
 #'
-#' The parametrisation follows the same design as the multivariate gaussian's.
+#' The parametrization follows the same design as the multivariate gaussian's.
 #' The constrained object --- here a point of the simplex rather than a
 #' positive definite matrix --- is carried by a \pkg{parameters7} parameter and
 #' \strong{flattened into scalars} with identity links, so every generic of the

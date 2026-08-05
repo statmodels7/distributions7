@@ -145,7 +145,7 @@ test_that("a symmetric parent folds to twice its upper half", {
   x <- c(0.3, 1, 2.5)
   expect_equal(distrib_pdf(d, x, th), 2 * stats::dnorm(x, 0, 1.5))
 
-  # and the score in mu vanishes, the two preimages cancelling
+  # and the score in mu vanishes, the two preimages canceling
   expect_equal(distrib_gradient(d, x, th)$mu, rep(0, length(x)))
 })
 
@@ -209,7 +209,7 @@ test_that("a fit through the fold recovers what generated the data", {
   y <- distrib_rng(d, 3000, true)
 
   # The location's sign is not identified, so the two starts reach the two
-  # maxima and the estimable quantity is its magnitude. Their maximised
+  # maxima and the estimable quantity is its magnitude. Their maximized
   # log-likelihoods must agree, which is what makes them the same maximum.
   fp <- fit_distrib(d, y, start = list(mu = 3, sigma = 1))
   fm <- fit_distrib(d, y, start = list(mu = -3, sigma = 1))

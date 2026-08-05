@@ -18,7 +18,7 @@
 A numeric vector of cumulative probabilities.
 }
 \description{
-The regularised lower incomplete gamma function
+The regularized lower incomplete gamma function
 \eqn{P(\mu/2, q/2)}.
 }
 \seealso{

@@ -54,7 +54,7 @@ and the folded normal proper is \code{folded(gaussian1_distrib())}.
 the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x; -\mu)},
 so the two terms of \eqn{L} merely swap and the likelihood is
 \emph{exactly} even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
-\eqn{-\hat\mu} according to where it started, at the same maximised value
+\eqn{-\hat\mu} according to where it started, at the same maximized value
 to every digit. This is a property of the model rather than of the fitting,
 and it is not refused, the folded normal being a standard family; what is
 estimable is \eqn{|\mu|} together with the remaining parameters. Holding

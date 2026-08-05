@@ -23,7 +23,7 @@ per parameter of \code{distrib};}
 \item{\code{transform}}{a character vector, one of \code{"identity"},
 \code{"log"} or \code{"atanh"} per quantity, naming the scale its
 interval is built on;}
-\item{\code{block}}{a character vector labelling the group each quantity
+\item{\code{block}}{a character vector labeling the group each quantity
 belongs to, used to lay the printed summary out.}
 }
 }
@@ -35,7 +35,7 @@ errors onto them.
 }
 \details{
 The free values of a \pkg{parameters7} structure are coordinates chosen so
-that an optimiser can move freely; they are not quantities anyone reads.
+that an optimizer can move freely; they are not quantities anyone reads.
 The logarithm of the third diagonal entry of a Cholesky factor has an
 estimate and a standard error, and neither answers a question. This generic
 names the quantities that do, and supplies

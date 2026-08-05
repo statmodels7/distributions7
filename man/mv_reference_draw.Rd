@@ -39,7 +39,7 @@ with respect to the same dominating measure the family's density is written
 against.
 
 This is consumed by \code{\link{check_distrib}} and by nothing else. A
-discrete family does not need it, its normalisation being an exact sum over
+discrete family does not need it, its normalization being an exact sum over
 \code{\link{mv_support}}.
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{skewness.GPDDistrib}
 \alias{skewness.GPDDistrib}
-\title{Skewness of the Generalised Pareto Distribution}
+\title{Skewness of the Generalized Pareto Distribution}
 \arguments{
 \item{x}{A \code{GPDDistrib}.}
 

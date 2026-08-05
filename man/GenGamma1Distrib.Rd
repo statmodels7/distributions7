@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{GenGamma1Distrib}
 \alias{GenGamma1Distrib}
-\title{S7 Class for the Generalised Gamma Distribution}
+\title{S7 Class for the Generalized Gamma Distribution}
 \usage{
 GenGamma1Distrib(
   distrib_name = character(0),
@@ -40,7 +40,7 @@ An object of class \code{GenGamma1Distrib}.
 }
 \description{
 A subclass of \code{continuous_distrib} representing the
-generalised gamma distribution in Stacy's three-parameter form.
+generalized gamma distribution in Stacy's three-parameter form.
 }
 \section{Methods}{
 

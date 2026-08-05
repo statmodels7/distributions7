@@ -7,7 +7,7 @@ using namespace Rcpp;
 //   r = mu - y,   S = nu*sigma^2 + r^2
 // so that (nu + r^2/sigma^2)^(k/2) = S^(k/2) / sigma^k.
 //
-// Bessel functions appear only in the pure-nu derivatives (the normalising
+// Bessel functions appear only in the pure-nu derivatives (the normalizing
 // constant depends on sigma and nu separably). Every such term is homogeneous of
 // the same degree in K over the same degree in K1, so the exponentially scaled
 // Bessel functions may be used throughout: the e^{-x} factors cancel exactly and

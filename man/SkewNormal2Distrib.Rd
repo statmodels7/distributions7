@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{SkewNormal2Distrib}
 \alias{SkewNormal2Distrib}
-\title{S7 Class for the Skew Normal in Its Centred Parametrisation}
+\title{S7 Class for the Skew Normal in Its Centered Parametrization}
 \usage{
 SkewNormal2Distrib(
   distrib_name = character(0),

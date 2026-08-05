@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Exponential in the MEAN parametrisation: f(y) = exp(-y/mu)/mu, so
+// Exponential in the MEAN parametrization: f(y) = exp(-y/mu)/mu, so
 //   l = -log(mu) - y/mu
 // and each part contributes one term whose every order is elementary:
 //   d^k/dmu^k [-log mu]  = (-1)^k (k-1)! / mu^k

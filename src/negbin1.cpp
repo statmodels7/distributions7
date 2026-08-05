@@ -3,7 +3,7 @@ using namespace Rcpp;
 
 // Negative binomial with a variance LINEAR in the mean: Var(Y) = mu (1 + theta),
 // against the quadratic mu + mu^2/theta of negbin_distrib(). The two are
-// different families rather than two parametrisations of one, and the
+// different families rather than two parametrizations of one, and the
 // difference shows in where the mean sits: here the size is r = mu/theta, so
 // mu appears INSIDE the gamma functions, while in NB2 it stays outside them.
 //

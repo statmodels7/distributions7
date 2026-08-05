@@ -14,7 +14,7 @@
 A numeric vector of angles.
 }
 \description{
-Delegates to the concentration parametrisation.
+Delegates to the concentration parametrization.
 }
 \seealso{
 \code{\link{vonmises2_distrib}}

@@ -22,7 +22,7 @@ A numeric vector.
 Evaluates a response derivative of the parent inside the interval.
 }
 \details{
-The normalising constant does not depend on \eqn{y}, so inside the support the
+The normalizing constant does not depend on \eqn{y}, so inside the support the
 parent's derivative is exact and nothing needs correcting.
 }
 \keyword{internal}

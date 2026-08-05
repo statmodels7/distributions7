@@ -18,7 +18,7 @@ An S7 object of class \code{\link{BetaBinom2Distrib}}.
 }
 \description{
 Creates a beta-binomial distribution object in its canonical
-parametrisation, the two beta shapes.
+parametrization, the two beta shapes.
 }
 \details{
 The same law as \code{\link{betabinom1_distrib}}, which carries a mean

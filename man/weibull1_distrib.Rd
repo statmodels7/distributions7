@@ -18,16 +18,16 @@ An S7 object of class \code{\link{Weibull1Distrib}} (inheriting from
 \code{continuous_distrib}).
 }
 \description{
-Creates a distribution object for the Weibull distribution, parametrised by
+Creates a distribution object for the Weibull distribution, parametrized by
 a scale \eqn{\mu} and a shape \eqn{\sigma}, both positive.
 }
 \details{
-\strong{Parametrisation.} \eqn{\mu} is the \strong{scale} and not the mean.
+\strong{Parametrization.} \eqn{\mu} is the \strong{scale} and not the mean.
 The mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a
-mean parametrisation would make every derivative a derivative of the gamma
+mean parametrization would make every derivative a derivative of the gamma
 function and its inverse. The scale-shape form keeps the whole family
 elementary, and \code{\link{mean.Weibull1Distrib}} reports the mean.
-This is the parametrisation of \code{WEI} in \pkg{gamlss}.
+This is the parametrization of \code{WEI} in \pkg{gamlss}.
 
 \strong{Probability density function:}
 \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}

@@ -17,7 +17,7 @@ weibull_pieces(y, mu, sigma)
 A list with \code{z}, \code{lz} and \code{u}.
 }
 \description{
-Returns the standardised variable \eqn{z = y/\mu}, its logarithm and the
+Returns the standardized variable \eqn{z = y/\mu}, its logarithm and the
 quantity \eqn{u = z^{\sigma}}, which every derivative of the Weibull
 log-density is a polynomial in.
 }

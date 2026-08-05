@@ -73,7 +73,7 @@ score \tab about \eqn{10^{-8}} \cr
 
 \strong{The tolerance a fit can ask for.} The score in \eqn{\nu} cannot be
 computed more accurately than the table above, so a stopping rule on the
-gradient cannot be satisfied below that level however good the optimiser is.
+gradient cannot be satisfied below that level however good the optimizer is.
 \code{\link{fit_distrib}} tests the score \strong{per observation}, and its
 default of \eqn{10^{-10}} leaves room: on samples of 500 to 4000 the summed
 score reaches \eqn{10^{-10}} to \eqn{3 \times 10^{-9}}, which is

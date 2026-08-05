@@ -65,7 +65,7 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta, log = F
 
 #' @title von Mises Random Generation in the Resultant Length
 #' @name distrib_rng.VonMises2Distrib
-#' @description Delegates to the concentration parametrisation.
+#' @description Delegates to the concentration parametrization.
 #' @param distrib A \code{VonMises2Distrib} object.
 #' @param n The number of draws.
 #' @param theta A list with \code{mu} and \code{rho}.
@@ -102,7 +102,7 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #' @title von Mises Analytical Observed Hessian in the Resultant Length
 #' @name distrib_hessian.VonMises2Distrib
 #' @description
-#' The concentration parametrisation's second derivatives carried through the
+#' The concentration parametrization's second derivatives carried through the
 #' one-variable chain rule,
 #' \deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}(\kappa')^2
 #'                          + \ell^{(\kappa)}\kappa'',}
@@ -136,7 +136,7 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
 #'       \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
 #' The last is the inverse of the information in \eqn{\kappa}, which is what a
-#' one-to-one reparametrisation of a single parameter must give, and the two
+#' one-to-one reparametrization of a single parameter must give, and the two
 #' parameters stay orthogonal.
 #' @param distrib A \code{VonMises2Distrib} object.
 #' @param y A numeric vector of angles.
@@ -181,7 +181,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' von Mises Distribution in the Mean Resultant Length
 #'
 #' @description
-#' Creates a von Mises distribution object parametrised by its mean direction
+#' Creates a von Mises distribution object parametrized by its mean direction
 #' and its \strong{mean resultant length} \eqn{\rho = A(\kappa)}, which lives
 #' in \eqn{(0, 1)}.
 #'
@@ -201,7 +201,7 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' The map touches the second parameter only, so the chain rule is the
 #' one-variable one and the derivatives are exact. The expected information is
 #' closed form and the two parameters are orthogonal, as they are in the
-#' concentration parametrisation.
+#' concentration parametrization.
 #'
 #' \strong{The moments are not the parameters.} \code{\link{mean}} returns the
 #' ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from

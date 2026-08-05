@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_quantile.GPDDistrib}
 \alias{distrib_quantile.GPDDistrib}
-\title{Generalised Pareto Quantile Function}
+\title{Generalized Pareto Quantile Function}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object.}
 

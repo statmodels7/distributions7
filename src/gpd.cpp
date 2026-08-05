@@ -1,7 +1,7 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 
-// Generalised Pareto in (sigma, xi):
+// Generalized Pareto in (sigma, xi):
 //   f(y) = (1/sigma) (1 + xi y/sigma)^(-1/xi - 1),
 //   l    = -log(sigma) - log(t)/xi - log(t),   t = 1 + xi z,  z = y/sigma.
 // Writing w = log(t)/xi removes the apparent singularity at xi = 0, where

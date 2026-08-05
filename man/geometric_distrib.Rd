@@ -15,7 +15,7 @@ An S7 object of class \code{GeometricDistrib}.
 }
 \description{
 Creates a distribution object for the geometric distribution on
-\eqn{\{0, 1, 2, \dots\}}, parametrised by its mean \eqn{\mu}.
+\eqn{\{0, 1, 2, \dots\}}, parametrized by its mean \eqn{\mu}.
 }
 \details{
 The distribution counts the failures before the first success, so the

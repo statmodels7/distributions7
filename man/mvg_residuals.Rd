@@ -16,7 +16,7 @@ A list with \code{r}, the residuals, and \code{w}, the rows of
 \eqn{R \Sigma^{-1}}.
 }
 \description{
-The centred response and its image under the inverse covariance, which are
+The centered response and its image under the inverse covariance, which are
 what every derivative of a multivariate gaussian is written in.
 }
 \keyword{internal}

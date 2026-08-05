@@ -50,7 +50,7 @@ observation, and \code{n_dim} records \eqn{p}.
 The parameters of a multivariate distribution are still \strong{scalars} as
 far as the rest of the package is concerned. A mean vector contributes
 \eqn{p} of them and a covariance matrix contributes the free values of the
-\pkg{parameters7} structure that parametrises it, so \code{theta} remains
+\pkg{parameters7} structure that parametrizes it, so \code{theta} remains
 the named list of numbers every generic already understands, and the
 derivative bookkeeping -- \code{\link{deriv_names}}, the Hessian keys, the
 link scale, \code{\link{fit_distrib}} -- needs no special case. The

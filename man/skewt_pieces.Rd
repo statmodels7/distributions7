@@ -16,7 +16,7 @@ A list with \code{z}, \code{w}, \code{c}, \code{a}, \code{da},
 \code{e}, \code{b}, \code{db}, \code{q} and \code{dq}.
 }
 \description{
-Assembles the standardised variable and the argument of the tilting
+Assembles the standardized variable and the argument of the tilting
 distribution function, together with the six scalar functions every
 derivative of the log-density is a combination of.
 }

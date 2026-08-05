@@ -18,7 +18,7 @@ A list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}.
 Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
 \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
 \eqn{\mu_z = \delta b_\nu} and the variance \eqn{\sigma_z^2} of the
-standardised variable.
+standardized variable.
 }
 \details{
 \eqn{b_\nu} is finite only for \eqn{\nu > 1} and \eqn{\sigma_z^2} only for

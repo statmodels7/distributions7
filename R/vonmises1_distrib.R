@@ -186,7 +186,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' @description
 #' Creates a distribution object for the von Mises distribution, the natural
-#' family for an angle, parametrised by a mean direction \eqn{\mu} and a
+#' family for an angle, parametrized by a mean direction \eqn{\mu} and a
 #' concentration \eqn{\kappa}.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
@@ -202,7 +202,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' \strong{Density:}
 #' \deqn{f(y) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)}}
-#' The normalising constant is a modified Bessel function, and it is evaluated
+#' The normalizing constant is a modified Bessel function, and it is evaluated
 #' exponentially scaled with the exponent added back, so a concentration past
 #' \eqn{\kappa = 700} does not overflow.
 #'
@@ -239,7 +239,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' mapping the free scale onto \eqn{(-\pi, \pi)}. That keeps the parameter
 #' identified, at the cost that a fit cannot walk across the boundary: data
 #' concentrated near \eqn{\pm\pi} are better rotated before fitting than
-#' handed to the optimiser as they are. Leaving \eqn{\mu} unbounded instead
+#' handed to the optimizer as they are. Leaving \eqn{\mu} unbounded instead
 #' would make the likelihood periodic and every maximum one of infinitely
 #' many.
 #'

@@ -23,7 +23,7 @@ NULL
 #' @details
 #' Write \eqn{h_i = g_i^{-1}}, so that \eqn{\theta_i = h_i(\eta_i)}. Because each
 #' parameter carries its own link, the Jacobian \eqn{\partial\theta/\partial\eta}
-#' is \strong{diagonal} and the multivariate Faa di Bruno formula factorises. For a
+#' is \strong{diagonal} and the multivariate Faa di Bruno formula factorizes. For a
 #' derivative whose multi-index involves the distinct parameters
 #' \eqn{p_1,\dots,p_r} with multiplicities \eqn{m_1,\dots,m_r},
 #' \deqn{\frac{\partial^k \ell}{\partial \eta_{p_1}^{m_1} \cdots \partial \eta_{p_r}^{m_r}}
@@ -58,7 +58,7 @@ NULL
 #
 # Each parameter carries its own link, eta_i = g_i(theta_i) and theta_i =
 # h_i(eta_i) with h_i = g_i^{-1}. Because the map is applied coordinate-wise the
-# Jacobian is diagonal, so the multivariate Faa di Bruno formula factorises: for
+# Jacobian is diagonal, so the multivariate Faa di Bruno formula factorizes: for
 # a multi-index with distinct parameters p_1..p_r of multiplicities m_1..m_r,
 #
 #   d^k L / d eta_{p_1}^{m_1} ... d eta_{p_r}^{m_r}
@@ -77,7 +77,7 @@ NULL
 #' @details
 #' These are the coefficients Faa di Bruno's formula needs. Because each
 #' parameter carries its own link, the Jacobian of \eqn{\theta \mapsto \eta} is
-#' diagonal and the multivariate formula factorises into a product of univariate
+#' diagonal and the multivariate formula factorizes into a product of univariate
 #' ones, so only \eqn{B_{m,j}} for a single variable is required. They are
 #' written out rather than generated: there are ten of them below order five, and
 #' a table cannot be slower or wrong in a way a recursion could.

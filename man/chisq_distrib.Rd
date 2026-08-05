@@ -14,7 +14,7 @@ chisq_distrib(link_mu = log_link())
 An S7 object of class \code{ChisqDistrib}.
 }
 \description{
-Creates a distribution object for the chi-squared distribution, parametrised
+Creates a distribution object for the chi-squared distribution, parametrized
 by its mean \eqn{\mu}, which is the degrees of freedom.
 }
 \details{
@@ -38,7 +38,7 @@ expected information, and the same holds at third and fourth order: there is
 nothing to average. \eqn{\mathbb{E}[\log y] = \psi(\mu/2) + \log 2} is what
 makes the score have mean zero.
 
-That coincidence does not carry to the scale a fit optimises on. The
+That coincidence does not carry to the scale a fit optimizes on. The
 second-order chain rule of \code{\link{distrib_hessian}} adds a term
 \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian, and the
 expected version drops it because the score has mean zero, while a sample

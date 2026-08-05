@@ -15,7 +15,7 @@ A list as described in \code{\link{mv_derived}}.
 }
 \description{
 The standard deviations and correlations of the response, whichever side the
-structure parametrises. A precision structure additionally reports the
+structure parametrizes. A precision structure additionally reports the
 \strong{partial} correlations, which are what it describes directly:
 \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}} is the correlation of two
 coordinates given all the others, and it is zero exactly where the precision

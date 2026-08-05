@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{mean.SkewNormal2Distrib}
 \alias{mean.SkewNormal2Distrib}
-\title{Mean of the Skew Normal in the Centred Parametrisation}
+\title{Mean of the Skew Normal in the Centered Parametrization}
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 
@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-\eqn{\mu}, the parameter itself: that is what centred means.
+\eqn{\mu}, the parameter itself: that is what centered means.
 }
 \keyword{internal}

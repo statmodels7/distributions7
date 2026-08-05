@@ -59,7 +59,7 @@ test_that("laplace fit works despite the degenerate observed Hessian in mu", {
   expect_true(all(f@se > 0))
 })
 
-test_that("all optimisation methods agree", {
+test_that("all optimization methods agree", {
   set.seed(3)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 800, list(mu = 1, sigma = 2))
@@ -120,9 +120,9 @@ test_that("the print method reports both scales", {
 })
 
 
-# --- the optimisation is delegated to optimizers7 ---------------------------
+# --- the optimization is delegated to optimizers7 ---------------------------
 
-test_that("an optimizers7 optimiser can be passed as the method", {
+test_that("an optimizers7 optimizer can be passed as the method", {
   set.seed(11)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 400, list(mu = 2, sigma = 3))
@@ -140,7 +140,7 @@ test_that("an optimizers7 optimiser can be passed as the method", {
 })
 
 
-test_that("the optimiser brings its own stopping rule", {
+test_that("the optimizer brings its own stopping rule", {
   set.seed(12)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 300, list(mu = 0, sigma = 2))
@@ -163,8 +163,8 @@ test_that("the optimiser brings its own stopping rule", {
 })
 
 
-test_that("an explicitly chosen optimiser is never replaced by the fallback", {
-  # fisher and newton fall back to BFGS; a supplied optimiser does not, so a
+test_that("an explicitly chosen optimizer is never replaced by the fallback", {
+  # fisher and newton fall back to BFGS; a supplied optimizer does not, so a
   # run that fails is reported as a failure under its own name.
   set.seed(13)
   d <- gaussian1_distrib()
@@ -234,7 +234,7 @@ test_that("confint() agrees with the intervals the fit computed", {
 })
 
 
-test_that("confint() honours level and parm", {
+test_that("confint() honors level and parm", {
   set.seed(32)
   d <- gaussian1_distrib()
   y <- distrib_rng(d, 300, list(mu = 1, sigma = 2))
@@ -307,7 +307,7 @@ test_that("the print method shows the interval on both scales", {
 })
 
 
-test_that("the fit carries what the optimiser reported about the run", {
+test_that("the fit carries what the optimizer reported about the run", {
   # minimize() reports the time it took and the gradient it ended at, and both
   # used to be discarded. The score is that of -l(eta)/n, so its max-norm is
   # the quantity the stopping rule tested and can be checked against the
@@ -381,8 +381,8 @@ test_that("the method governs the budget and the rule, and nothing else does", {
 })
 
 
-test_that("an optimiser passed positionally is named, not coerced", {
-  # 'start' is the third argument and 'method' the fourth, so an optimiser
+test_that("an optimizer passed positionally is named, not coerced", {
+  # 'start' is the third argument and 'method' the fourth, so an optimizer
   # written positionally lands in 'start'. Before this check the caller saw
   # align_theta() refusing to coerce an S7 object, several frames down, with
   # neither the argument nor the mistake named.

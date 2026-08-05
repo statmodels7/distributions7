@@ -34,8 +34,8 @@ carrying how the expected information is to be obtained when the
 distribution has no closed form for it.
 }
 \details{
-\code{fit_distrib()} takes one argument saying how to optimise, and it takes
-either an optimiser of \pkg{optimizers7} or this. The two are the same kind
+\code{fit_distrib()} takes one argument saying how to optimize, and it takes
+either an optimizer of \pkg{optimizers7} or this. The two are the same kind
 of thing said in the same place:
 
 \tabular{ll}{
@@ -43,12 +43,12 @@ of thing said in the same place:
 \strong{expected} information \cr
 \code{method = optimizers7::newton()} \tab Newton's method with the
 \strong{observed} Hessian \cr
-\code{method = optimizers7::lbfgs()} \tab whatever that optimiser does
+\code{method = optimizers7::lbfgs()} \tab whatever that optimizer does
 }
 
 Fisher scoring is not a separate algorithm, which is why it has no
 implementation of its own: it is a Newton step with one matrix replaced by
-another. What it does need, and an optimiser cannot carry, is a statement of
+another. What it does need, and an optimizer cannot carry, is a statement of
 how that matrix is to be obtained when the family does not supply it in
 closed form --- and that is what this object holds. A family that does
 supply one ignores \code{approx} entirely, and \code{fit_distrib()} refuses
@@ -56,7 +56,7 @@ the argument in that case rather than accepting something it will not use.
 
 Fisher scoring is Newton's method with one matrix replaced, so how the run
 stops and how long it may take are set here, as they would be on any other
-optimiser. Both default to \code{NULL}, meaning the defaults of
+optimizer. Both default to \code{NULL}, meaning the defaults of
 \code{\link[optimizers7]{newton}} and \code{\link[optimizers7]{crit_grad}}
 stand.
 }

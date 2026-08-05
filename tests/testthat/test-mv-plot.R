@@ -65,9 +65,9 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.3, nu = 6)
   y <- distrib_rng(d, 200, th)
 
-  # One argument says how to optimise, and it takes either an optimiser or a
+  # One argument says how to optimize, and it takes either an optimizer or a
   # fisher_scoring() specification. How the expectation is approximated is a
-  # property of Fisher scoring, so it cannot be handed to an optimiser that
+  # property of Fisher scoring, so it cannot be handed to an optimizer that
   # would never look at it.
   fs <- fisher_scoring(approx = "mc", nsim = 2000)
   expect_s3_class(fs, "distributions7::FisherScoring")

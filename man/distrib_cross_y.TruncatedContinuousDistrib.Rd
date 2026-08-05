@@ -20,7 +20,7 @@ A named list with one numeric vector per parameter.
 \description{
 The parent's mixed derivatives, unchanged: the truncated
 log-density is the parent's minus \eqn{\log Z(\theta)}, and the
-normalising constant does not depend on \eqn{y}, so it vanishes from any
+normalizing constant does not depend on \eqn{y}, so it vanishes from any
 derivative that involves the response.
 }
 \keyword{internal}

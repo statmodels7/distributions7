@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Closed form: \eqn{\mu}, a parameter of this parametrisation.
+Closed form: \eqn{\mu}, a parameter of this parametrization.
 }
 \keyword{internal}

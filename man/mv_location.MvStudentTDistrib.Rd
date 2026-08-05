@@ -13,7 +13,7 @@ A named numeric vector of length \eqn{p}.
 }
 \description{
 The first \eqn{p} parameters. They are the mean when \eqn{\nu > 1} and the
-centre of symmetry always, which is why the generic is called a location
+center of symmetry always, which is why the generic is called a location
 rather than a mean.
 }
 \keyword{internal}

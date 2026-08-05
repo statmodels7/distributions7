@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_pdf.GenGamma1Distrib}
 \alias{distrib_pdf.GenGamma1Distrib}
-\title{Generalised Gamma Density}
+\title{Generalized Gamma Density}
 \arguments{
 \item{distrib}{A \code{GenGamma1Distrib} object.}
 

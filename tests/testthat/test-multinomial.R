@@ -108,21 +108,21 @@ test_that("a fit recovers the probabilities", {
 })
 
 
-test_that("the validator passes, and its normalisation is exact", {
+test_that("the validator passes, and its normalization is exact", {
   d <- multinomial_distrib(3, size = 5)
   th <- as.list(stats::setNames(c(0.3, -0.2), d@params))
   set.seed(1)
   res <- check_distrib(d, th, verbose = FALSE)
   expect_true(all(res$status == "OK"),
               info = paste(res$check[res$status != "OK"], collapse = ", "))
-  # the support being finite, the normalisation is a sum and not a sample
+  # the support being finite, the normalization is a sum and not a sample
   expect_lt(res$statistic[res$check == "density integrates to 1"], 1e-14)
   # and a discrete family has no derivative in its response
   expect_false("response derivatives vs finite differences" %in% res$check)
   expect_true(has_mv_support(d))
   expect_false(has_mv_grad_y(d))
 
-  # a normalisation wrong by a thousandth would sit inside the Monte Carlo
+  # a normalization wrong by a thousandth would sit inside the Monte Carlo
   # error of an importance-sampling check and is caught by the exact one
   good <- S7::method(distrib_pdf, MultinomialDistrib)
   on.exit(S7::method(distrib_pdf, MultinomialDistrib) <- good, add = TRUE)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/moments.R
 \name{variance.GPDDistrib}
 \alias{variance.GPDDistrib}
-\title{Variance of the Generalised Pareto Distribution}
+\title{Variance of the Generalized Pareto Distribution}
 \arguments{
 \item{x}{A \code{GPDDistrib}.}
 

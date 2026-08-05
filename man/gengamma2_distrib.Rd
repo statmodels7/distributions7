@@ -2,7 +2,7 @@
 % Please edit documentation in R/reparametrized_families.R
 \name{gengamma2_distrib}
 \alias{gengamma2_distrib}
-\title{Generalised Gamma Distribution in the Mean}
+\title{Generalized Gamma Distribution in the Mean}
 \usage{
 gengamma2_distrib(
   link_mean = log_link(),
@@ -21,11 +21,11 @@ gengamma2_distrib(
 A reparametrized distribution object.
 }
 \description{
-Creates a generalised gamma distribution object whose first parameter is the
+Creates a generalized gamma distribution object whose first parameter is the
 mean.
 }
 \details{
-The Stacy parametrisation of \code{\link{gengamma1_distrib}} carries a
+The Stacy parametrization of \code{\link{gengamma1_distrib}} carries a
 scale, a shape and a power, and exposes no mean at all, which is awkward for
 a family a regression would put a linear predictor on. Since
 \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is

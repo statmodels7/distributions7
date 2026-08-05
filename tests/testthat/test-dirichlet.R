@@ -133,7 +133,7 @@ test_that("a fit recovers the mean and the concentration", {
 
 
 test_that("the validator passes, and still catches a broken density", {
-  # The normalisation cannot be checked against a gaussian proposal here: the
+  # The normalization cannot be checked against a gaussian proposal here: the
   # simplex has no volume in R^p. The family supplies a uniform one instead,
   # and the injection confirms the substitution has not made the check vacuous.
   d <- dirichlet_distrib(4)

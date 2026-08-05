@@ -14,7 +14,7 @@ exponential_distrib(link_mu = log_link())
 An S7 object of class \code{ExponentialDistrib}.
 }
 \description{
-Creates a distribution object for the exponential distribution parametrised
+Creates a distribution object for the exponential distribution parametrized
 by its mean \eqn{\mu}.
 }
 \details{
