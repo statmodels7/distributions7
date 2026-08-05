@@ -1,7 +1,7 @@
 # S7 Class for Truncated Discrete Distributions
 
 A subclass of `discrete_distrib` representing a discrete distribution
-restricted to the support points in \\\[\ell, u\]\\ and renormalised.
+restricted to the support points in \\\[\ell, u\]\\ and renormalized.
 Both endpoints are **included**.
 
 ## Usage

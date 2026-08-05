@@ -80,12 +80,12 @@ is given.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Exactly one of <code>sigma</code> and <code>omega</code> may be given, and
 the name of the argument decides which side of the model the matrix parameter
-parametrises: the covariance in the first case, the precision in the second.
-One constructor returns one of two behaviours, in the manner of
+parametrizes: the covariance in the first case, the precision in the second.
+One constructor returns one of two behaviors, in the manner of
 <code><a href="truncated.html">truncated</a></code>, which chooses between its continuous and discrete
 classes from the arguments it is handed.</p>
 <p>The precision form is the cheaper one and is worth preferring where the
-modelling allows it. Written in \(\Omega\), the log-density, the score and
+modeling allows it. Written in \(\Omega\), the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
 parameter's own <code>param_dlogdet()</code>; written in \(\Sigma\) the same
 quantities need a solve at every step.</p>
@@ -106,7 +106,7 @@ coincide here, so <code>scale = "link"</code> changes nothing.</p>
 <p><strong>Reading a fit.</strong> The free values are coordinates, not quantities
 anybody reads. <code><a href="mv_summary.html">mv_summary</a></code> carries the fit's variance matrix
 onto the standard deviations and correlations by the delta method, and
-<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows them; a precision parametrisation also reports the
+<code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> shows them; a precision parametrization also reports the
 conditional variances and the partial correlations, which are what it
 describes directly. The conditional variance is
 \(1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})\), and its ratio to the
@@ -115,7 +115,7 @@ on all the others.</p>
 <p><strong>Rank.</strong> A rank-deficient structure is refused. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
 measure, and a singular precision gives a quadratic form that is flat along
-its null space and does not normalise. The two are different failures and
+its null space and does not normalize. The two are different failures and
 both are failures; a structure of that kind is a legitimate penalty and not
 a legitimate density.</p>
 <p><strong>The response</strong> is an \(n \times p\) matrix, one row per
@@ -158,7 +158,7 @@ observation.</p>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, sigma <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/diagonal_matrix.html" class="external-link">diagonal_matrix</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># or the precision, which is the cheaper parametrisation</span></span></span>
+<span class="r-in"><span><span class="co"># or the precision, which is the cheaper parametrization</span></span></span>
 <span class="r-in"><span><span class="fu">mvgaussian_distrib</span><span class="op">(</span><span class="fl">2</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  </span>
 <span class="r-in"><span></span></span>

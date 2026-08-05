@@ -42,7 +42,7 @@ This is the whole of the discrete fallback: the cdf, the quantile
 function and the random generator are all lookups into it. No new
 algorithm was needed for discrete distributions, because the cdf of a
 discrete variable is a step function and inverting it is exact. The cost
-was one R-level call per draw, and the lookup is vectorised.
+was one R-level call per draw, and the lookup is vectorized.
 
 Requires a finite lower bound, which every standard count distribution
 has.

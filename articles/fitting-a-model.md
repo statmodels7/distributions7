@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 469 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 168 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -120,11 +120,11 @@ print above.
 ## Why the link scale
 
 A gamma’s mean and variance are positive; a beta’s probability lives in
-$`(0, 1)`$; a Gaussian’s standard deviation is positive. Optimising
+$`(0, 1)`$; a Gaussian’s standard deviation is positive. Optimizing
 those constrained parameters directly means fighting the boundary.
 Instead
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-optimises the **unconstrained** parameters behind each link —
+optimizes the **unconstrained** parameters behind each link —
 $`\log\mu`$ and $`\log\sigma^2`$ for the gamma — where there is no
 boundary to hit, using the exact score and information the package
 provides on that scale.
@@ -140,7 +140,7 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 2 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -156,7 +156,7 @@ Even with a probability estimate close to one and only forty
 observations, the interval stays inside $`(0, 1)`$ — a symmetric
 interval on the probability scale would have spilled past it.
 
-## Choosing how it is optimised
+## Choosing how it is optimized
 
 The default is Fisher scoring, which uses the *expected* information.
 Two other methods are available, and Fisher scoring and Newton fall back
@@ -179,10 +179,10 @@ the expected information, which stays well-behaved even where the
 observed Hessian does not, and that matters for distributions with a
 non-smooth parameter such as the Laplace.
 
-The optimisation runs through
+The optimization runs through
 [optimizers7](https://statmodels7.github.io/optimizers7/), and `method`
-also accepts an optimiser object from that package, which is then used
-as given. Choosing the optimiser this way also chooses its stopping
+also accepts an optimizer object from that package, which is then used
+as given. Choosing the optimizer this way also chooses its stopping
 rule, its line search and its iteration budget:
 
 ``` r
@@ -201,7 +201,7 @@ c(fit_lbfgs@method, fit_nm@method)
 ```
 
 The three named strategies fall back to BFGS when they fail to converge;
-an optimiser supplied explicitly is never replaced, so the method
+an optimizer supplied explicitly is never replaced, so the method
 reported is always the method that produced the estimates.
 
 ## Checking the fit against the data

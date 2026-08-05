@@ -26,7 +26,7 @@ bivariate marginal below it.
 
 - col_fit:
 
-  Colour of the density and of the contours.
+  Color of the density and of the contours.
 
 - ...:
 

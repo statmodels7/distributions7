@@ -1,6 +1,6 @@
-# Generalised Gamma Distribution Function
+# Generalized Gamma Distribution Function
 
-\\F(q) = P(d/p,\\ (q/a)^{p})\\, the regularised lower incomplete gamma
+\\F(q) = P(d/p,\\ (q/a)^{p})\\, the regularized lower incomplete gamma
 function, since \\(Y/a)^{p}\\ is Gamma with shape \\d/p\\ and unit rate.
 
 ## Arguments

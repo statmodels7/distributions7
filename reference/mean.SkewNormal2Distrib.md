@@ -1,6 +1,6 @@
-# Mean of the Skew Normal in the Centred Parametrisation
+# Mean of the Skew Normal in the Centered Parametrization
 
-\\\mu\\, the parameter itself: that is what centred means.
+\\\mu\\, the parameter itself: that is what centered means.
 
 ## Arguments
 

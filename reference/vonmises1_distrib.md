@@ -1,7 +1,7 @@
 # von Mises Distribution Object
 
 Creates a distribution object for the von Mises distribution, the
-natural family for an angle, parametrised by a mean direction \\\mu\\
+natural family for an angle, parametrized by a mean direction \\\mu\\
 and a concentration \\\kappa\\.
 
 ## Usage
@@ -39,7 +39,7 @@ has that topology: the two ends of the interval are the same point, so a
 density need not vanish at either.
 
 **Density:** \$\$f(y) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi
-I_0(\kappa)}\$\$ The normalising constant is a modified Bessel function,
+I_0(\kappa)}\$\$ The normalizing constant is a modified Bessel function,
 and it is evaluated exponentially scaled with the exponent added back,
 so a concentration past \\\kappa = 700\\ does not overflow.
 
@@ -78,7 +78,7 @@ information positive definite.
 mapping the free scale onto \\(-\pi, \pi)\\. That keeps the parameter
 identified, at the cost that a fit cannot walk across the boundary: data
 concentrated near \\\pm\pi\\ are better rotated before fitting than
-handed to the optimiser as they are. Leaving \\\mu\\ unbounded instead
+handed to the optimizer as they are. Leaving \\\mu\\ unbounded instead
 would make the likelihood periodic and every maximum one of infinitely
 many.
 

@@ -116,7 +116,7 @@ precision</td></tr><tr><td>\(\nu\) with another parameter</td><td>five-point ste
 score</td><td>about \(10^{-8}\)</td></tr><tr><td>\(\nu\) twice</td><td>five-point stencil on \(\ell\)</td><td>about
 \(10^{-6}\)</td></tr></table><p><strong>The tolerance a fit can ask for.</strong> The score in \(\nu\) cannot be
 computed more accurately than the table above, so a stopping rule on the
-gradient cannot be satisfied below that level however good the optimiser is.
+gradient cannot be satisfied below that level however good the optimizer is.
 <code><a href="fit_distrib.html">fit_distrib</a></code> tests the score <strong>per observation</strong>, and its
 default of \(10^{-10}\) leaves room: on samples of 500 to 4000 the summed
 score reaches \(10^{-10}\) to \(3 \times 10^{-9}\), which is

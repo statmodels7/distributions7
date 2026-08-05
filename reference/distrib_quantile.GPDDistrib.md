@@ -1,4 +1,4 @@
-# Generalised Pareto Quantile Function
+# Generalized Pareto Quantile Function
 
 \$\$Q(p) = \dfrac{\sigma}{\xi}\left((1-p)^{-\xi} - 1\right)\$\$ with
 \\-\sigma\log(1-p)\\ at \\\xi = 0\\.

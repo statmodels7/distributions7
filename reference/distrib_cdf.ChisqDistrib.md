@@ -1,6 +1,6 @@
 # Chi-Squared Distribution Function
 
-The regularised lower incomplete gamma function \\P(\mu/2, q/2)\\.
+The regularized lower incomplete gamma function \\P(\mu/2, q/2)\\.
 
 ## Arguments
 

@@ -90,7 +90,7 @@ An object of class `FixedDiscreteDistrib`.
 
 ## Details
 
-Identical in behaviour to
+Identical in behavior to
 [`FixedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md):
 every method splices the fixed values into `theta` and delegates to the
 parent, and the derivative methods keep only the components among the

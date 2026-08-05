@@ -1,4 +1,4 @@
-# Skew Normal Response Derivatives in the Centred Parametrisation
+# Skew Normal Response Derivatives in the Centered Parametrization
 
 The parent's, unchanged: the coordinates change, the response does not.
 

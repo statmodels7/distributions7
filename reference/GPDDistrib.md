@@ -1,6 +1,6 @@
-# S7 Class for the Generalised Pareto Distribution
+# S7 Class for the Generalized Pareto Distribution
 
-A subclass of `continuous_distrib` representing the generalised Pareto
+A subclass of `continuous_distrib` representing the generalized Pareto
 distribution in its scale and shape.
 
 ## Usage

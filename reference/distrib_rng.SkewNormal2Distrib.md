@@ -1,4 +1,4 @@
-# Skew Normal Random Generation in the Centred Parametrisation
+# Skew Normal Random Generation in the Centered Parametrization
 
 The parent's generator at the implied parameters.
 

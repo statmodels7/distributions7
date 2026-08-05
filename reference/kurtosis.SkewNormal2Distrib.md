@@ -1,7 +1,7 @@
-# Kurtosis of the Skew Normal in the Centred Parametrisation
+# Kurtosis of the Skew Normal in the Centered Parametrization
 
-The parent's, at the implied direct parameters: the centred
-parametrisation fixes the first three moments and leaves the fourth to
+The parent's, at the implied direct parameters: the centered
+parametrization fixes the first three moments and leaves the fourth to
 follow.
 
 ## Arguments

@@ -96,14 +96,14 @@ reduces to drawing uniformly in a bounding rectangle
 \([0, u_{\max}] \times [v_{\min}, v_{\max}]\) and keeping the pairs that fall
 in \(A_r\), i.e. those with
 $$(r+1)\log U \leq \log K(Y).$$</p>
-<p>Two devices make this numerically safe for an arbitrary user-supplied density:</p><ul><li><p><strong>Recentring.</strong> The kernel is shifted to its mode,
+<p>Two devices make this numerically safe for an arbitrary user-supplied density:</p><ul><li><p><strong>Recentering.</strong> The kernel is shifted to its mode,
 \(K(z) \propto f(m + z)\), and the mode is added back to the draws. Without
 this a distribution located far from the origin (say \(\mu = 1000\)) gives a
 wildly elongated bounding rectangle and an acceptance rate close to zero.
-Recentring also splits the box exactly: \(h(z) = z\,K(z)^{r/(r+1)}\) is
+Recentering also splits the box exactly: \(h(z) = z\,K(z)^{r/(r+1)}\) is
 non-positive for \(z \le 0\) and non-negative for \(z \ge 0\), so
 \(v_{\min}\) and \(v_{\max}\) are each found on one side of the mode.</p></li>
-<li><p><strong>Normalisation.</strong> The kernel is rescaled by its value at the mode, so
+<li><p><strong>Normalization.</strong> The kernel is rescaled by its value at the mode, so
 that \(\max K = 1\) and \(u_{\max} = 1\). Every quantity stays in a safe
 numerical range whatever the height of the density, and all computations are
 carried out on the log scale.</p></li>
@@ -111,7 +111,7 @@ carried out on the log scale.</p></li>
 from the mode until \(h\) has clearly turned back towards zero (finite support
 bounds are used directly), then combining <code><a href="https://rdrr.io/r/stats/optimize.html" class="external-link">optimize</a></code> with a grid
 search over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorised batches whose
+unimodal kernel. Candidates are generated and filtered in vectorized batches whose
 size adapts to the observed acceptance rate.</p>
     </div>
     <div class="section level2">

@@ -1,7 +1,7 @@
 # S7 Class for the Weibull Distribution
 
 A subclass of `continuous_distrib` representing the Weibull
-distribution, parametrised by a scale and a shape.
+distribution, parametrized by a scale and a shape.
 
 ## Usage
 

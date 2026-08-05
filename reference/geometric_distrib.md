@@ -1,7 +1,7 @@
 # Geometric Distribution Object
 
 Creates a distribution object for the geometric distribution on \\\\0,
-1, 2, \dots\\\\, parametrised by its mean \\\mu\\.
+1, 2, \dots\\\\, parametrized by its mean \\\mu\\.
 
 ## Usage
 

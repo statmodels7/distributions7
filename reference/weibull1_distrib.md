@@ -1,6 +1,6 @@
 # Weibull Distribution Object
 
-Creates a distribution object for the Weibull distribution, parametrised
+Creates a distribution object for the Weibull distribution, parametrized
 by a scale \\\mu\\ and a shape \\\sigma\\, both positive.
 
 ## Usage
@@ -29,13 +29,13 @@ An S7 object of class
 
 ## Details
 
-**Parametrisation.** \\\mu\\ is the **scale** and not the mean. The mean
+**Parametrization.** \\\mu\\ is the **scale** and not the mean. The mean
 is \\\mu\\\Gamma(1 + 1/\sigma)\\, which involves the shape, so a mean
-parametrisation would make every derivative a derivative of the gamma
+parametrization would make every derivative a derivative of the gamma
 function and its inverse. The scale-shape form keeps the whole family
 elementary, and
 [`mean.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md)
-reports the mean. This is the parametrisation of `WEI` in gamlss.
+reports the mean. This is the parametrization of `WEI` in gamlss.
 
 **Probability density function:** \$\$f(y; \mu, \sigma) =
 \dfrac{\sigma}{\mu} \left(\dfrac{y}{\mu}\right)^{\sigma - 1}

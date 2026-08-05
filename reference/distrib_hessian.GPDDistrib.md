@@ -1,4 +1,4 @@
-# Generalised Pareto Analytical Observed Hessian
+# Generalized Pareto Analytical Observed Hessian
 
 The second derivatives of the same expressions, kept short by \\t - \xi
 z = 1\\, which makes \\\partial u/\partial\sigma\\ equal to \\-z/(\sigma

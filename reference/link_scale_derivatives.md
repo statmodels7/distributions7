@@ -27,7 +27,7 @@ derivative generics named above; the value returned is theirs.
 Write \\h_i = g_i^{-1}\\, so that \\\theta_i = h_i(\eta_i)\\. Because
 each parameter carries its own link, the Jacobian
 \\\partial\theta/\partial\eta\\ is **diagonal** and the multivariate Faa
-di Bruno formula factorises. For a derivative whose multi-index involves
+di Bruno formula factorizes. For a derivative whose multi-index involves
 the distinct parameters \\p_1,\dots,p_r\\ with multiplicities
 \\m_1,\dots,m_r\\, \$\$\frac{\partial^k \ell}{\partial \eta\_{p_1}^{m_1}
 \cdots \partial \eta\_{p_r}^{m_r}} = \sum\_{j_1=1}^{m_1} \cdots

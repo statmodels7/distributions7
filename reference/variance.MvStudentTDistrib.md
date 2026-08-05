@@ -1,7 +1,7 @@
 # Covariance of a Multivariate Student t
 
 \\\nu\Sigma/(\nu-2)\\ for \\\nu \> 2\\, and infinite otherwise. This is
-the moment; the matrix the parametrisation carries is
+the moment; the matrix the parametrization carries is
 [`mv_sigma`](https://statmodels7.github.io/distributions7/reference/mv_location.md),
 and the two differ by the factor above.
 

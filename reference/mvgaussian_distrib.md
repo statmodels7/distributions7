@@ -34,14 +34,14 @@ An object of class
 
 Exactly one of `sigma` and `omega` may be given, and the name of the
 argument decides which side of the model the matrix parameter
-parametrises: the covariance in the first case, the precision in the
-second. One constructor returns one of two behaviours, in the manner of
+parametrizes: the covariance in the first case, the precision in the
+second. One constructor returns one of two behaviors, in the manner of
 [`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md),
 which chooses between its continuous and discrete classes from the
 arguments it is handed.
 
 The precision form is the cheaper one and is worth preferring where the
-modelling allows it. Written in \\\Omega\\, the log-density, the score
+modeling allows it. Written in \\\Omega\\, the log-density, the score
 and the Hessian are multiplications, and the first term of the score is
 the parameter's own `param_dlogdet()`; written in \\\Sigma\\ the same
 quantities need a solve at every step.
@@ -68,7 +68,7 @@ anybody reads.
 carries the fit's variance matrix onto the standard deviations and
 correlations by the delta method, and
 [`print()`](https://rdrr.io/r/base/print.html) shows them; a precision
-parametrisation also reports the conditional variances and the partial
+parametrization also reports the conditional variances and the partial
 correlations, which are what it describes directly. The conditional
 variance is \\1/\Omega\_{jj} = \mathrm{Var}(Y_j \mid Y\_{-j})\\, and its
 ratio to the marginal variance is \\1 - R_j^2\\ for the regression of
@@ -77,7 +77,7 @@ that coordinate on all the others.
 **Rank.** A rank-deficient structure is refused. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
 measure, and a singular precision gives a quadratic form that is flat
-along its null space and does not normalise. The two are different
+along its null space and does not normalize. The two are different
 failures and both are failures; a structure of that kind is a legitimate
 penalty and not a legitimate density.
 
@@ -121,7 +121,7 @@ mv_sigma(d, theta)
 mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 #> [1] "mu1"          "mu2"          "sigma_log_d1" "sigma_log_d2"
 
-# or the precision, which is the cheaper parametrisation
+# or the precision, which is the cheaper parametrization
 mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 #> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  
 ```

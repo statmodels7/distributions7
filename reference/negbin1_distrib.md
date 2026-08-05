@@ -28,7 +28,7 @@ An S7 object of class `NegBin1Distrib`.
 ## Details
 
 Two negative binomials are in common use and they are **different
-families**, not two parametrisations of one. Here the variance is
+families**, not two parametrizations of one. Here the variance is
 \\\mu(1+\theta)\\, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
 [`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)

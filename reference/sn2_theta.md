@@ -1,4 +1,4 @@
-# The Direct Parameters a Centred Triple Implies
+# The Direct Parameters a Centered Triple Implies
 
 Runs
 [`sn_cp_to_dp`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)

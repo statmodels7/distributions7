@@ -1,6 +1,6 @@
 # The Block Ratios of a Folded Density
 
-Returns a memoised function giving \\d^B L / L\\ for any block, which is
+Returns a memoized function giving \\d^B L / L\\ for any block, which is
 what
 [`log_deriv`](https://statmodels7.github.io/distributions7/reference/log_deriv.md)
 consumes.
@@ -47,7 +47,7 @@ A function of one block, returning that ratio's vector.
 The ratio is the parent's complete Bell polynomial at each preimage,
 weighted by which preimage the point came from: \\w\\(d^B f(x)/f(x)) +
 (1-w)\\(d^B f(-x)/f(-x))\\. Both parent evaluations are fetched once and
-the result memoised, since a partition sum at fourth order asks for the
+the result memoized, since a partition sum at fourth order asks for the
 same blocks repeatedly.
 
 ## See also

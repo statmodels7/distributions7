@@ -9,7 +9,7 @@ Most of what **distributions7** offers beyond densities is derivatives:
 the score, the information, and the third and fourth derivatives of the
 log-likelihood. This vignette explains what they are, the two scales
 they are available on, and why the second scale — the link scale — is
-the one an optimiser needs.
+the one an optimizer needs.
 
 ## The derivatives of the log-likelihood
 
@@ -164,7 +164,7 @@ distrib_deriv3(d, y, theta, scale = "link")
 ## Why the link scale is the useful one
 
 A standard deviation is positive, a probability lives in $`(0, 1)`$, a
-shape parameter is positive. Maximising a likelihood over such
+shape parameter is positive. Maximizing a likelihood over such
 constrained parameters means either fighting the boundary or bolting on
 constraints. Reparameterise through the link and the problem becomes
 unconstrained: $`\eta`$ ranges over the whole real line, and a Newton or
@@ -173,7 +173,7 @@ this package computes in closed form.
 
 That is precisely what
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-does — it optimises on the link scale and maps back — and it is why its
+does — it optimizes on the link scale and maps back — and it is why its
 confidence intervals cannot leave a parameter’s domain. See
 [`vignette("fitting-a-model")`](https://statmodels7.github.io/distributions7/articles/fitting-a-model.md)
 for that side of the story.

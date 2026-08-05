@@ -1,4 +1,4 @@
-# Generalised Gamma Random Generation
+# Generalized Gamma Random Generation
 
 A Gamma draw raised to the power \\1/p\\ and scaled, which is the
 representation the family is defined by rather than an approximation of

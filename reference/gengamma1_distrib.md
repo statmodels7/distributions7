@@ -1,6 +1,6 @@
-# Generalised Gamma Distribution Object
+# Generalized Gamma Distribution Object
 
-Creates a distribution object for the generalised gamma distribution in
+Creates a distribution object for the generalized gamma distribution in
 Stacy's form, with a scale \\a\\ and two shapes \\d\\ and \\p\\.
 
 ## Usage
@@ -43,7 +43,7 @@ estimate rather than to assume.
 **Density:** \$\$f(y) =
 \dfrac{p}{a^{d}\\\Gamma(d/p)}\\y^{d-1}e^{-(y/a)^{p}}\$\$
 
-**What it nests**, which Stacy's parametrisation is chosen to make
+**What it nests**, which Stacy's parametrization is chosen to make
 visible:
 
 - \\p = 1\\ is the

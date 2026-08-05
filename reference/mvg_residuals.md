@@ -1,6 +1,6 @@
 # Residuals and Whitened Residuals
 
-The centred response and its image under the inverse covariance, which
+The centered response and its image under the inverse covariance, which
 are what every derivative of a multivariate gaussian is written in.
 
 ## Usage

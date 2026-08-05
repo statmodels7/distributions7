@@ -68,14 +68,14 @@ approximates it by the strategy named in `approx`, the default being the
 score variance.
 
 **Singularity at the gaussian.** At \\\alpha = 0\\ the expected
-information of this parametrisation is **singular**: the derivative in
+information of this parametrization is **singular**: the derivative in
 \\\alpha\\ becomes collinear with the derivative in \\\mu\\, so the two
 cannot be separated there. This is a property of the family and not of
 the implementation, and it is why the profile log-likelihood in
 \\\alpha\\ is flat at the origin. A fit whose true shape is near zero
-will report a large standard error for \\\alpha\\; the centred
-parametrisation of Azzalini and Capitanio removes the singularity and is
-a different object, not a reparametrisation this class performs.
+will report a large standard error for \\\alpha\\; the centered
+parametrization of Azzalini and Capitanio removes the singularity and is
+a different object, not a reparametrization this class performs.
 
 **Moments.** With \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b =
 \sqrt{2/\pi}\\, the mean is \\\mu + \sigma b \delta\\ and the variance

@@ -255,7 +255,7 @@ an object of the class with the metadata filled in:</p>
 <p>The <code>params_bounds</code> are used by the fallbacks
 (finite-difference steps are shrunk so they never step outside a
 parameter’s domain) and by <code><a href="../reference/generate_random_theta.html">generate_random_theta()</a></code>. The
-<code>link_params</code> are used by downstream modelling code;
+<code>link_params</code> are used by downstream modeling code;
 <code>identity_link()</code> and <code>log_link()</code> come from
 <strong>linkfunctions7</strong>.</p>
 <p>That is the entire definition. Everything now works:</p>
@@ -417,11 +417,11 @@ forms:</p>
 <li>
 <strong><code>distrib_gradient</code></strong> — the single biggest
 speed-up for model fitting, since the score is evaluated at every
-optimisation step. Writing it in C++ (via <strong>Rcpp</strong>), as the
+optimization step. Writing it in C++ (via <strong>Rcpp</strong>), as the
 built-in distributions do, helps further.</li>
 <li>
 <strong><code>distrib_hessian</code></strong> — for Newton-type
-optimisation and standard errors.</li>
+optimization and standard errors.</li>
 <li>
 <strong><code>distrib_cdf</code> / <code>distrib_quantile</code> /
 <code>distrib_rng</code></strong> — for fast or high-volume simulation
@@ -523,7 +523,7 @@ order 4; see <code><a href="../reference/link_scale_derivatives.html">?link_scal
 <div class="section level2">
 <h2 id="fitting-a-distribution-to-data">Fitting a distribution to data<a class="anchor" aria-label="anchor" href="#fitting-a-distribution-to-data"></a>
 </h2>
-<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> maximises the likelihood on the link scale
+<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> maximizes the likelihood on the link scale
 — where the parameters are unconstrained — using the analytical score
 and information, and then reports the estimates back on the parameter
 scale:</p>
@@ -534,7 +534,7 @@ scale:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gaussian1</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 17 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 15 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>

@@ -1,7 +1,7 @@
 # Beta-Binomial Distribution in Its Shapes
 
 Creates a beta-binomial distribution object in its canonical
-parametrisation, the two beta shapes.
+parametrization, the two beta shapes.
 
 ## Usage
 

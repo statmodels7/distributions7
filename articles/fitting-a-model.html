@@ -105,7 +105,7 @@ distribution back to it. Parameters travel as a named list.</p>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 469 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 168 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -173,9 +173,9 @@ print above.</p>
 <p>A gamma’s mean and variance are positive; a beta’s probability lives
 in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>;
-a Gaussian’s standard deviation is positive. Optimising those
+a Gaussian’s standard deviation is positive. Optimizing those
 constrained parameters directly means fighting the boundary. Instead
-<code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> optimises the <strong>unconstrained</strong>
+<code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> optimizes the <strong>unconstrained</strong>
 parameters behind each link —
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mi mathvariant="normal">log</mi><mo>⁡</mo></mrow><mi>μ</mi></mrow><annotation encoding="application/x-tex">\log\mu</annotation></semantics></math>
 and
@@ -192,7 +192,7 @@ its endpoints can never leave the parameter’s domain:</p>
 <span><span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">b</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: bernoulli</span></span>
 <span><span class="co">#&gt; Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 2 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -209,7 +209,7 @@ observations, the interval stays inside
 it.</p>
 </div>
 <div class="section level2">
-<h2 id="choosing-how-it-is-optimised">Choosing how it is optimised<a class="anchor" aria-label="anchor" href="#choosing-how-it-is-optimised"></a>
+<h2 id="choosing-how-it-is-optimized">Choosing how it is optimized<a class="anchor" aria-label="anchor" href="#choosing-how-it-is-optimized"></a>
 </h2>
 <p>The default is Fisher scoring, which uses the <em>expected</em>
 information. Two other methods are available, and Fisher scoring and
@@ -227,9 +227,9 @@ Newton fall back to BFGS if they fail to converge:</p>
 uses the expected information, which stays well-behaved even where the
 observed Hessian does not, and that matters for distributions with a
 non-smooth parameter such as the Laplace.</p>
-<p>The optimisation runs through <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>, and
-<code>method</code> also accepts an optimiser object from that package,
-which is then used as given. Choosing the optimiser this way also
+<p>The optimization runs through <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>, and
+<code>method</code> also accepts an optimizer object from that package,
+which is then used as given. Choosing the optimizer this way also
 chooses its stopping rule, its line search and its iteration budget:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a></span><span class="op">)</span></span>
@@ -244,7 +244,7 @@ chooses its stopping rule, its line search and its iteration budget:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">fit_lbfgs</span><span class="op">@</span><span class="va">method</span>, <span class="va">fit_nm</span><span class="op">@</span><span class="va">method</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "L-BFGS"      "nelder-mead"</span></span></code></pre></div>
 <p>The three named strategies fall back to BFGS when they fail to
-converge; an optimiser supplied explicitly is never replaced, so the
+converge; an optimizer supplied explicitly is never replaced, so the
 method reported is always the method that produced the estimates.</p>
 </div>
 <div class="section level2">

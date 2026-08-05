@@ -1,6 +1,6 @@
 # Mean of the Gamma Distribution
 
-Closed form: \\E\[Y\] = \mu\\, a parameter of this parametrisation.
+Closed form: \\E\[Y\] = \mu\\, a parameter of this parametrization.
 
 ## Arguments
 

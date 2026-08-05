@@ -1,4 +1,4 @@
-# Generalised Pareto Distribution Function
+# Generalized Pareto Distribution Function
 
 \$\$F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}\$\$
 

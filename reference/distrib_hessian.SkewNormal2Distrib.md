@@ -1,4 +1,4 @@
-# Skew Normal Observed Hessian in the Centred Parametrisation
+# Skew Normal Observed Hessian in the Centered Parametrization
 
 The second-order chain rule through the same map.
 

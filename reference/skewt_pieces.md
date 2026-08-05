@@ -1,6 +1,6 @@
 # The Pieces a Skew t Evaluates From
 
-Assembles the standardised variable and the argument of the tilting
+Assembles the standardized variable and the argument of the tilting
 distribution function, together with the six scalar functions every
 derivative of the log-density is a combination of.
 

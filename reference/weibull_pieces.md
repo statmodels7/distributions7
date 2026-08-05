@@ -1,6 +1,6 @@
 # The Pieces a Weibull Evaluates From
 
-Returns the standardised variable \\z = y/\mu\\, its logarithm and the
+Returns the standardized variable \\z = y/\mu\\, its logarithm and the
 quantity \\u = z^{\sigma}\\, which every derivative of the Weibull
 log-density is a polynomial in.
 

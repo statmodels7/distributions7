@@ -1,4 +1,4 @@
-# Generalised Gamma Analytical Observed Hessian
+# Generalized Gamma Analytical Observed Hessian
 
 The second derivatives of the same expressions. The mixed \\a\\–\\d\\
 component is \\-1/a\\, free of the data, the scale and the first shape

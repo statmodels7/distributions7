@@ -1,4 +1,4 @@
-# From the Centred Parameters to the Direct Ones
+# From the Centered Parameters to the Direct Ones
 
 The map \\(\mu, \sigma, \gamma_1) \mapsto (\xi, \omega, \alpha)\\ that
 takes the mean, the standard deviation and the skewness to the location,
@@ -14,7 +14,7 @@ sn_cp_to_dp(mu, sigma, gamma1, s)
 
 - mu, sigma, gamma1:
 
-  The centred parameters, numbers or jets.
+  The centered parameters, numbers or jets.
 
 - s:
 

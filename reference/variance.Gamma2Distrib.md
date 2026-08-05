@@ -1,6 +1,6 @@
 # Variance of the Gamma Distribution
 
-Closed form: \\\sigma^2\\, a parameter of this parametrisation.
+Closed form: \\\sigma^2\\, a parameter of this parametrization.
 
 ## Arguments
 

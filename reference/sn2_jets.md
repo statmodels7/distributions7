@@ -1,7 +1,7 @@
-# The Jets of the Centred-to-Direct Map
+# The Jets of the Centered-to-Direct Map
 
 The map run on jets, giving every partial derivative of the direct
-parameters with respect to the centred ones, to fourth order and
+parameters with respect to the centered ones, to fourth order and
 exactly.
 
 ## Usage

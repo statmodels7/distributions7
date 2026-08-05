@@ -1,7 +1,7 @@
 # S7 Class for the Exponential Distribution
 
 A subclass of `continuous_distrib` representing the exponential
-distribution in its mean parametrisation.
+distribution in its mean parametrization.
 
 ## Usage
 

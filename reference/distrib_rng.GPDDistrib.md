@@ -1,4 +1,4 @@
-# Generalised Pareto Random Generation
+# Generalized Pareto Random Generation
 
 Inverse transform, the quantile function being elementary.
 

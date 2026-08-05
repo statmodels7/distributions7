@@ -82,7 +82,7 @@ Defaults to <code>parameters7::log_cholesky(n_dim)</code>.</p></dd>
 covariance is \(\nu\Sigma/(\nu-2)\) where it exists at all, and for
 \(\nu \le 2\) it does not while the distribution is perfectly well
 defined. <code><a href="mv_location.html">mv_sigma</a></code> returns the scale matrix, which is the thing
-the parametrisation carries, and <code><a href="variance.html">variance</a></code> returns the
+the parametrization carries, and <code><a href="variance.html">variance</a></code> returns the
 covariance, which is a moment. Keeping the two apart is what lets a fit run
 at \(\nu = 1.5\).</p>
 <p><strong>Parameters.</strong> The mean contributes <code>mu1</code>, ..., <code>mup</code>, the
@@ -98,7 +98,7 @@ leaving them alone, but the diagonal quantities are not standard deviations
 of the response and are named <code>scale_sd_</code> to say so.</p>
 <p><strong>What it is for.</strong> A gaussian fitted to data with a few outlying rows
 inflates its covariance to cover them. A \(t\) with \(\nu\) estimated
-does not: the observations far from the centre get a weight
+does not: the observations far from the center get a weight
 \((\nu+p)/(\nu+q)\) that falls away with their Mahalanobis distance
 \(q\), which is what appears in the score below and what makes the fit
 resistant. The gaussian is the limit \(\nu \to \infty\).</p>

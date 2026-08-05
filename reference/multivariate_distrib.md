@@ -87,7 +87,7 @@ An object of class `multivariate_distrib`.
 The parameters of a multivariate distribution are still **scalars** as
 far as the rest of the package is concerned. A mean vector contributes
 \\p\\ of them and a covariance matrix contributes the free values of the
-parameters7 structure that parametrises it, so `theta` remains the named
+parameters7 structure that parametrizes it, so `theta` remains the named
 list of numbers every generic already understands, and the derivative
 bookkeeping –
 [`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),

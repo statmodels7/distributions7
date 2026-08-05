@@ -1,4 +1,4 @@
-# Skew Normal Distribution Function in the Centred Parametrisation
+# Skew Normal Distribution Function in the Centered Parametrization
 
 The skew normal distribution function, through Owen's T.
 

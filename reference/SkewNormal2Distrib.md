@@ -1,4 +1,4 @@
-# S7 Class for the Skew Normal in Its Centred Parametrisation
+# S7 Class for the Skew Normal in Its Centered Parametrization
 
 A subclass of `continuous_distrib` for the skew normal written in its
 mean, standard deviation and skewness.

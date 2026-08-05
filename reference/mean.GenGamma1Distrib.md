@@ -1,4 +1,4 @@
-# Mean of the Generalised Gamma Distribution
+# Mean of the Generalized Gamma Distribution
 
 Closed form: \\a\\\Gamma((d+1)/p)/\Gamma(d/p)\\.
 

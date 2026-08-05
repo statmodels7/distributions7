@@ -79,7 +79,7 @@ an analytic quantity, never from a difference of a difference:
 
 **The tolerance a fit can ask for.** The score in \\\nu\\ cannot be
 computed more accurately than the table above, so a stopping rule on the
-gradient cannot be satisfied below that level however good the optimiser
+gradient cannot be satisfied below that level however good the optimizer
 is.
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 tests the score **per observation**, and its default of \\10^{-10}\\

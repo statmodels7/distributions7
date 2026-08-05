@@ -1,6 +1,6 @@
-# Skew Normal Distribution in Its Centred Parametrisation
+# Skew Normal Distribution in Its Centered Parametrization
 
-Creates a skew normal distribution object parametrised by its mean, its
+Creates a skew normal distribution object parametrized by its mean, its
 standard deviation and its skewness.
 
 ## Usage
@@ -35,11 +35,11 @@ An S7 object of class
 
 ## Details
 
-The direct parametrisation of
+The direct parametrization of
 [`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
 carries a location, a scale and a shape, none of which is a moment. Here
-all three parameters are moments, and the family is Azzalini's centred
-parametrisation.
+all three parameters are moments, and the family is Azzalini's centered
+parametrization.
 
 **Why this is not a reparametrize().** The map passes through \\c =
 \mathrm{sign}(\gamma_1)(2\|\gamma_1\|/(4-\pi))^{1/3}\\, and two things
@@ -47,8 +47,8 @@ follow. It carries a sign, which a jet cannot take of itself, so the
 sign is read off the plain value before any jet is seeded. And
 \\\partial\alpha/\partial\gamma_1\\ grows without bound as \\\gamma_1
 \to 0\\: measured, 3.9 at \\\gamma_1 = 0.5\\ and 258 at \\10^{-4}\\.
-What makes the parametrisation worth having is that the score does
-**not** follow it, the divergent contributions cancelling, so the
+What makes the parametrization worth having is that the score does
+**not** follow it, the divergent contributions canceling, so the
 variance of the score in \\\gamma_1\\ is 0.158 at \\\gamma_1 = 0.05\\
 and 0.158 again at \\0.01\\.
 
@@ -56,8 +56,8 @@ and 0.158 again at \\0.01\\.
 size proportional to the Jacobian, so the significant digits lost grow
 like the logarithm of it: negligible over the range a fit visits, and
 severe only within a few multiples of \\10^{-8}\\ of exact symmetry. The
-**expected information**, unlike the direct parametrisation's, is
-non-singular at zero skewness, which is the property the parametrisation
+**expected information**, unlike the direct parametrization's, is
+non-singular at zero skewness, which is the property the parametrization
 exists for.
 
 **The bound on the skewness.** A skew normal cannot reach \\\|\gamma_1\|
@@ -75,7 +75,7 @@ there. That ceiling is the reason the skew \\t\\ exists.
 d <- skewnormal2_distrib()
 theta <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# all three parameters are moments, which is what centred means
+# all three parameters are moments, which is what centered means
 c(mean = mean(d, theta), sd = sqrt(variance(d, theta)),
   skewness = skewness(d, theta))
 #>     mean       sd skewness 

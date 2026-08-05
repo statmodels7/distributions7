@@ -1,4 +1,4 @@
-# The Constant Behind the Centred Parametrisation
+# The Constant Behind the Centered Parametrization
 
 \\b = \sqrt{2/\pi}\\, which is \\\mathbb{E}\[\|Z\|\]\\ for a standard
 normal and appears in every quantity of the skew normal's first moment.

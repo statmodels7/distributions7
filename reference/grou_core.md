@@ -36,9 +36,9 @@ Kept separate from the `distrib` object so that it can also be run on a
 reparameterised density, which is how the divergence transforms reuse
 it.
 
-Two devices make it safe. The kernel is **recentred at the mode**,
+Two devices make it safe. The kernel is **recentered at the mode**,
 without which a density located at \\\mu = 1000\\ produces a degenerate
-bounding box; and it is **normalised to a maximum of one**. With those
+bounding box; and it is **normalized to a maximum of one**. With those
 it refuses far less often than expected: bimodal densities, a Student t
 with half a degree of freedom and a Pareto with infinite mean are all
 fine. The only genuine refusal is a density that diverges at an edge,

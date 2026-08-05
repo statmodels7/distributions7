@@ -30,7 +30,7 @@ call both from generic-dispatched methods, whose `theta` is already
 aligned, and from delegating methods such as
 [`mean()`](https://rdrr.io/r/base/mean.html), whose `theta` arrives as
 the caller wrote it. Free values may be vectors – the wrapper is as
-vectorised in `theta` as its parent – while the fixed values are scalars
+vectorized in `theta` as its parent – while the fixed values are scalars
 by construction.
 
 ## See also

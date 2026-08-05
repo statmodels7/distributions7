@@ -80,7 +80,7 @@
 is derivatives: the score, the information, and the third and fourth
 derivatives of the log-likelihood. This vignette explains what they are,
 the two scales they are available on, and why the second scale — the
-link scale — is the one an optimiser needs.</p>
+link scale — is the one an optimizer needs.</p>
 <div class="section level2">
 <h2 id="the-derivatives-of-the-log-likelihood">The derivatives of the log-likelihood<a class="anchor" aria-label="anchor" href="#the-derivatives-of-the-log-likelihood"></a>
 </h2>
@@ -217,7 +217,7 @@ available uniformly:</p>
 </h2>
 <p>A standard deviation is positive, a probability lives in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(0, 1)</annotation></semantics></math>,
-a shape parameter is positive. Maximising a likelihood over such
+a shape parameter is positive. Maximizing a likelihood over such
 constrained parameters means either fighting the boundary or bolting on
 constraints. Reparameterise through the link and the problem becomes
 unconstrained:
@@ -225,7 +225,7 @@ unconstrained:
 ranges over the whole real line, and a Newton or Fisher-scoring step
 needs exactly the link-scale score and information this package computes
 in closed form.</p>
-<p>That is precisely what <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> does — it optimises
+<p>That is precisely what <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> does — it optimizes
 on the link scale and maps back — and it is why its confidence intervals
 cannot leave a parameter’s domain. See
 <code><a href="../articles/fitting-a-model.html">vignette("fitting-a-model")</a></code> for that side of the story.</p>

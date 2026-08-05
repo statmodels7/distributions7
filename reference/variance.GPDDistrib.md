@@ -1,4 +1,4 @@
-# Variance of the Generalised Pareto Distribution
+# Variance of the Generalized Pareto Distribution
 
 Closed form: \\\sigma^2/\\(1-\xi)^2(1-2\xi)\\\\ for \\\xi \< 1/2\\, and
 infinite at or above one half.

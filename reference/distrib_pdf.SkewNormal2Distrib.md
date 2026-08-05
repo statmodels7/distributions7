@@ -1,4 +1,4 @@
-# Skew Normal Density in the Centred Parametrisation
+# Skew Normal Density in the Centered Parametrization
 
 The skew normal density at the implied direct parameters.
 

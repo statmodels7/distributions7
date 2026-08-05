@@ -1,7 +1,7 @@
 # Shared Argument Handling for the Derivative Generics
 
 Aligns `theta`, checks that every parameter has length 1 or \\n\\, and
-recycles a scalar `y` up to \\n\\ when `theta` is vectorised.
+recycles a scalar `y` up to \\n\\ when `theta` is vectorized.
 
 ## Usage
 

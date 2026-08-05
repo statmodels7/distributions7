@@ -1,7 +1,7 @@
 # Chi-Squared Distribution Object
 
 Creates a distribution object for the chi-squared distribution,
-parametrised by its mean \\\mu\\, which is the degrees of freedom.
+parametrized by its mean \\\mu\\, which is the degrees of freedom.
 
 ## Usage
 
@@ -42,7 +42,7 @@ exactly the expected information, and the same holds at third and fourth
 order: there is nothing to average. \\\mathbb{E}\[\log y\] =
 \psi(\mu/2) + \log 2\\ is what makes the score have mean zero.
 
-That coincidence does not carry to the scale a fit optimises on. The
+That coincidence does not carry to the scale a fit optimizes on. The
 second-order chain rule of
 [`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
 adds a term \\h''(\eta)\\\partial\ell/\partial\mu\\ to the link-scale

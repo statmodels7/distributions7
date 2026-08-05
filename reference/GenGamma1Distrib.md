@@ -1,6 +1,6 @@
-# S7 Class for the Generalised Gamma Distribution
+# S7 Class for the Generalized Gamma Distribution
 
-A subclass of `continuous_distrib` representing the generalised gamma
+A subclass of `continuous_distrib` representing the generalized gamma
 distribution in Stacy's three-parameter form.
 
 ## Usage

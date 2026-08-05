@@ -1,7 +1,7 @@
 # The Truncation Constant and Lower Tail
 
-Returns \\F(\ell^-)\\ and the normalising constant \\Z = F(u) -
-F(\ell^-)\\, vectorised in \\\theta\\.
+Returns \\F(\ell^-)\\ and the normalizing constant \\Z = F(u) -
+F(\ell^-)\\, vectorized in \\\theta\\.
 
 ## Usage
 

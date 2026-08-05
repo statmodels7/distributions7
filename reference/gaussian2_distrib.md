@@ -1,6 +1,6 @@
 # Gaussian Distribution in Mean and Variance
 
-Creates a Gaussian distribution object parametrised by its mean and its
+Creates a Gaussian distribution object parametrized by its mean and its
 **variance**.
 
 ## Usage
@@ -30,13 +30,13 @@ This is the same law as
 [`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 in different coordinates: \\\sigma^2\\ here is the square of the
 \\\sigma\\ there. The two are separate families rather than one family
-under a link, because a link changes the scale a parameter is *modelled*
+under a link, because a link changes the scale a parameter is *modeled*
 on while leaving the parameter what it was, whereas here the parameter,
 its interpretation, its standard error and its confidence interval are
 all about the variance.
 
 The numbering follows the literature where it has one: this
-parametrisation is `NO2` in gamlss.
+parametrization is `NO2` in gamlss.
 
 Derivatives are closed form to fourth order, observed and expected, and
 the two parameters are orthogonal.

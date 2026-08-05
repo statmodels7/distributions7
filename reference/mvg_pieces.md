@@ -38,7 +38,7 @@ values.
 
 ## Details
 
-Whichever side the matrix parameter parametrises, the arithmetic below
+Whichever side the matrix parameter parametrizes, the arithmetic below
 is written in the covariance, so a precision structure is inverted once
 here rather than at every use. The log-determinant follows the matrix
 parameter's own, with its sign flipped for a precision, which is the one

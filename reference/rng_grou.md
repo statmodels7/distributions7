@@ -52,16 +52,16 @@ with \$\$(r+1)\log U \leq \log K(Y).\$\$
 Two devices make this numerically safe for an arbitrary user-supplied
 density:
 
-- **Recentring.** The kernel is shifted to its mode, \\K(z) \propto
+- **Recentering.** The kernel is shifted to its mode, \\K(z) \propto
   f(m + z)\\, and the mode is added back to the draws. Without this a
   distribution located far from the origin (say \\\mu = 1000\\) gives a
   wildly elongated bounding rectangle and an acceptance rate close to
-  zero. Recentring also splits the box exactly: \\h(z) =
+  zero. Recentering also splits the box exactly: \\h(z) =
   z\\K(z)^{r/(r+1)}\\ is non-positive for \\z \le 0\\ and non-negative
   for \\z \ge 0\\, so \\v\_{\min}\\ and \\v\_{\max}\\ are each found on
   one side of the mode.
 
-- **Normalisation.** The kernel is rescaled by its value at the mode, so
+- **Normalization.** The kernel is rescaled by its value at the mode, so
   that \\\max K = 1\\ and \\u\_{\max} = 1\\. Every quantity stays in a
   safe numerical range whatever the height of the density, and all
   computations are carried out on the log scale.
@@ -71,7 +71,7 @@ geometrically away from the mode until \\h\\ has clearly turned back
 towards zero (finite support bounds are used directly), then combining
 [`optimize`](https://rdrr.io/r/stats/optimize.html) with a grid search
 over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorised
+unimodal kernel. Candidates are generated and filtered in vectorized
 batches whose size adapts to the observed acceptance rate.
 
 ## Unbounded densities

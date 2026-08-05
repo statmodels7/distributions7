@@ -1,6 +1,6 @@
 # von Mises Distribution in the Mean Resultant Length
 
-Creates a von Mises distribution object parametrised by its mean
+Creates a von Mises distribution object parametrized by its mean
 direction and its **mean resultant length** \\\rho = A(\kappa)\\, which
 lives in \\(0, 1)\\.
 
@@ -50,7 +50,7 @@ evaluations \\A\\ already needs.
 The map touches the second parameter only, so the chain rule is the
 one-variable one and the derivatives are exact. The expected information
 is closed form and the two parameters are orthogonal, as they are in the
-concentration parametrisation.
+concentration parametrization.
 
 **The moments are not the parameters.**
 [`mean`](https://rdrr.io/r/base/mean.html) returns the ordinary

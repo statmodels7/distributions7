@@ -1,6 +1,6 @@
 # Weibull Distribution in the Mean
 
-Creates a Weibull distribution object parametrised by its mean and its
+Creates a Weibull distribution object parametrized by its mean and its
 shape.
 
 ## Usage
@@ -36,7 +36,7 @@ is not written this way.
 
 The number follows gamlss, where the Weibull in the mean is `WEI3`.
 Leaving `weibull2` unused is deliberate: it names a different
-parametrisation there.
+parametrization there.
 
 ## See also
 

@@ -1,9 +1,9 @@
-# Skew Normal Gradient in the Centred Parametrisation
+# Skew Normal Gradient in the Centered Parametrization
 
-The parent's score carried by the Jacobian of the centred-to-direct map.
-The components in \\\gamma_1\\ stay of order one however small
+The parent's score carried by the Jacobian of the centered-to-direct
+map. The components in \\\gamma_1\\ stay of order one however small
 \\\gamma_1\\ is, although the Jacobian itself grows without bound: the
-divergent parts cancel, which is what the centred parametrisation is
+divergent parts cancel, which is what the centered parametrization is
 for.
 
 ## Arguments

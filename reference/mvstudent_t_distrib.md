@@ -38,7 +38,7 @@ covariance is \\\nu\Sigma/(\nu-2)\\ where it exists at all, and for
 \\\nu \le 2\\ it does not while the distribution is perfectly well
 defined.
 [`mv_sigma`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
-returns the scale matrix, which is the thing the parametrisation
+returns the scale matrix, which is the thing the parametrization
 carries, and
 [`variance`](https://statmodels7.github.io/distributions7/reference/variance.md)
 returns the covariance, which is a moment. Keeping the two apart is what
@@ -61,7 +61,7 @@ so.
 
 **What it is for.** A gaussian fitted to data with a few outlying rows
 inflates its covariance to cover them. A \\t\\ with \\\nu\\ estimated
-does not: the observations far from the centre get a weight
+does not: the observations far from the center get a weight
 \\(\nu+p)/(\nu+q)\\ that falls away with their Mahalanobis distance
 \\q\\, which is what appears in the score below and what makes the fit
 resistant. The gaussian is the limit \\\nu \to \infty\\.

@@ -1,4 +1,4 @@
-# Skew Normal Third-Order Derivatives in the Centred Parametrisation
+# Skew Normal Third-Order Derivatives in the Centered Parametrization
 
 The partition sum at order three.
 

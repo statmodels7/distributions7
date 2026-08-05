@@ -1,4 +1,4 @@
-# Generalised Pareto Analytical Expected Hessian
+# Generalized Pareto Analytical Expected Hessian
 
 The closed form of Smith (1985), valid for \\\xi \> -1/2\\:
 \$\$\mathbb{E}\left\[\dfrac{\partial^2\ell}{\partial\sigma^2}\right\] =

@@ -44,7 +44,7 @@ mv_pairs_panels(
 
 - col_fit:
 
-  Colour of the fitted density.
+  Color of the fitted density.
 
 - data:
 
@@ -52,7 +52,7 @@ mv_pairs_panels(
 
 - col_data:
 
-  Colour of the observed summary.
+  Color of the observed summary.
 
 - ...:
 

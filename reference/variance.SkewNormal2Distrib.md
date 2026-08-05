@@ -1,4 +1,4 @@
-# Variance of the Skew Normal in the Centred Parametrisation
+# Variance of the Skew Normal in the Centered Parametrization
 
 \\\sigma^2\\, the square of the parameter.
 

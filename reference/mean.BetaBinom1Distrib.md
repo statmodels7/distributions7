@@ -1,6 +1,6 @@
 # Mean of the Beta-Binomial Distribution
 
-Closed form: \\n\mu\\, the shapes cancelling.
+Closed form: \\n\mu\\, the shapes canceling.
 
 ## Arguments
 

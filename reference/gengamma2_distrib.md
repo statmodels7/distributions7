@@ -1,6 +1,6 @@
-# Generalised Gamma Distribution in the Mean
+# Generalized Gamma Distribution in the Mean
 
-Creates a generalised gamma distribution object whose first parameter is
+Creates a generalized gamma distribution object whose first parameter is
 the mean.
 
 ## Usage
@@ -33,7 +33,7 @@ A reparametrized distribution object.
 
 ## Details
 
-The Stacy parametrisation of
+The Stacy parametrization of
 [`gengamma1_distrib`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
 carries a scale, a shape and a power, and exposes no mean at all, which
 is awkward for a family a regression would put a linear predictor on.

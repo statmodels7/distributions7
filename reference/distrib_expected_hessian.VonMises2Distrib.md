@@ -6,7 +6,7 @@ the map drops and \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] = -\kappa A, \qquad
 \mathbb{E}\[\ell^{(\mu\rho)}\] = 0, \qquad
 \mathbb{E}\[\ell^{(\rho\rho)}\] = -\dfrac{1}{A'(\kappa)}.\$\$ The last
 is the inverse of the information in \\\kappa\\, which is what a
-one-to-one reparametrisation of a single parameter must give, and the
+one-to-one reparametrization of a single parameter must give, and the
 two parameters stay orthogonal.
 
 ## Arguments

@@ -1,4 +1,4 @@
-# Generalised Gamma Density
+# Generalized Gamma Density
 
 \$\$f(y) = \dfrac{p}{a^{d}\\\Gamma(d/p)}\\ y^{d-1} e^{-(y/a)^{p}},
 \qquad y \> 0\$\$

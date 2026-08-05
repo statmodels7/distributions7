@@ -1,4 +1,4 @@
-# Generalised Pareto Analytical Gradient
+# Generalized Pareto Analytical Gradient
 
 With \\z = y/\sigma\\, \\t = 1 + \xi z\\ and \\u = z/t\\,
 \$\$\dfrac{\partial \ell}{\partial \sigma} = \dfrac{(\xi+1)u -

@@ -2,7 +2,7 @@
 
 Returns \\\delta = \alpha/\sqrt{1+\alpha^2}\\, the constant \\b\_\nu =
 \sqrt{\nu/\pi}\\\Gamma\\(\nu-1)/2\\/\Gamma(\nu/2)\\, the mean \\\mu_z =
-\delta b\_\nu\\ and the variance \\\sigma_z^2\\ of the standardised
+\delta b\_\nu\\ and the variance \\\sigma_z^2\\ of the standardized
 variable.
 
 ## Usage

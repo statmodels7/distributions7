@@ -47,19 +47,19 @@ An object of class
 ## Details
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-takes one argument saying how to optimise, and it takes either an
-optimiser of optimizers7 or this. The two are the same kind of thing
+takes one argument saying how to optimize, and it takes either an
+optimizer of optimizers7 or this. The two are the same kind of thing
 said in the same place:
 
 |  |  |
 |----|----|
 | `method = fisher_scoring()` | Newton's method with the **expected** information |
 | `method = optimizers7::newton()` | Newton's method with the **observed** Hessian |
-| `method = optimizers7::lbfgs()` | whatever that optimiser does |
+| `method = optimizers7::lbfgs()` | whatever that optimizer does |
 
 Fisher scoring is not a separate algorithm, which is why it has no
 implementation of its own: it is a Newton step with one matrix replaced
-by another. What it does need, and an optimiser cannot carry, is a
+by another. What it does need, and an optimizer cannot carry, is a
 statement of how that matrix is to be obtained when the family does not
 supply it in closed form — and that is what this object holds. A family
 that does supply one ignores `approx` entirely, and
@@ -69,7 +69,7 @@ will not use.
 
 Fisher scoring is Newton's method with one matrix replaced, so how the
 run stops and how long it may take are set here, as they would be on any
-other optimiser. Both default to `NULL`, meaning the defaults of
+other optimizer. Both default to `NULL`, meaning the defaults of
 [`newton`](https://statmodels7.github.io/optimizers7/reference/newton.html)
 and
 [`crit_grad`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)

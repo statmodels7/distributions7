@@ -13,11 +13,11 @@ quantile functions, together with the **exact derivatives of the
 log-likelihood up to fourth order**. The derivatives are available with
 respect to the parameters, with respect to the response, and with
 respect to the unconstrained parameters behind a link function, which is
-the scale an optimiser works on.
+the scale an optimizer works on.
 
 It is the distribution layer of
 [statmodels7](https://statmodels7.github.io), an S7 toolkit for
-statistical modelling, and works alongside
+statistical modeling, and works alongside
 [linkfunctions7](https://statmodels7.github.io/linkfunctions7/). The
 mathematics behind every formula, from the likelihood theory and the
 change of scale to the derivations for the zero-inflated, zero-adjusted,
@@ -43,7 +43,7 @@ pak::pak("statmodels7/statmodels7")
 ## The usual functions
 
 Thirty-eight univariate distributions and four multivariate ones ship
-with the package, one name per parametrisation where a family has
+with the package, one name per parametrization where a family has
 several –
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 in mean and scale,
@@ -110,7 +110,7 @@ distrib_gradient(d, y, theta, scale = "link")
 ## Fitting
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximises the likelihood on the link scale, where the parameters are
+maximizes the likelihood on the link scale, where the parameters are
 unconstrained, then reports estimates back on their natural scale.
 Confidence intervals are built on the link scale and mapped through
 $`g^{-1}`$, so they can never leave a parameter’s domain.
@@ -154,9 +154,9 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 #> 2.570081 2.881259
 ```
 
-The optimisation itself is delegated to
+The optimization itself is delegated to
 [optimizers7](https://statmodels7.github.io/optimizers7/). One argument
-says how to optimise, and it takes either an optimiser of that package,
+says how to optimize, and it takes either an optimizer of that package,
 which brings its own stopping rule, or
 [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
 which is Newton’s method with the expected information and carries how
@@ -216,13 +216,13 @@ mv_sigma(dm, coef(fitm))
 #> v2 0.7273189 1.5380692
 ```
 
-Those free values are coordinates an optimiser moves in, not quantities
+Those free values are coordinates an optimizer moves in, not quantities
 anybody reads, and they are not what the fit prints.
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 carries the fit’s variance matrix onto the ones that are, by the delta
 method, and builds each interval on the scale that keeps it in its own
 set: a standard deviation on the log scale, a correlation on Fisher’s
-*z*. A precision parametrisation reports the same standard deviations
+*z*. A precision parametrization reports the same standard deviations
 and correlations — they are properties of the law — and adds the
 conditional variances and partial correlations, which are what it
 describes directly.
@@ -265,7 +265,7 @@ concentration.
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
 is discrete, and being discrete it can enumerate its support:
 [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
-returns every vector of counts summing to the size, so its normalisation
+returns every vector of counts summing to the size, so its normalization
 and its expected information are exact sums rather than samples.
 
 ``` r
@@ -356,8 +356,8 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 
 |  |  |
 |----|----|
-| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalised gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalised Pareto, beta, von Mises |
-| discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrisation |
-| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrised by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
+| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
+| discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
+| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrized by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
 | wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md), [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |

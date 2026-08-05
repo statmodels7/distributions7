@@ -32,6 +32,6 @@ A list with one named parameter list.
 
 ## Details
 
-When the matrix parameter parametrises the precision the sample
+When the matrix parameter parametrizes the precision the sample
 covariance is inverted first, since that is the matrix the matrix
 parameter has to represent.

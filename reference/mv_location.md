@@ -38,7 +38,7 @@ p\\ matrix for `mv_sigma()`.
 The parameters of a multivariate distribution are scalars, so that every
 generic of the package can index them, and these two functions put them
 back into the shapes a reader thinks in. `mv_sigma()` returns the matrix
-the PARAMETRISATION carries, whichever side the matrix parameter
+the PARAMETRIZATION carries, whichever side the matrix parameter
 describes: the covariance for a gaussian, and the scale matrix for a
 Student t, whose covariance is \\\nu\Sigma/(\nu-2)\\ and does not exist
 below two degrees of freedom. The moment is

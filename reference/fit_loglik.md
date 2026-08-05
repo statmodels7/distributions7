@@ -1,7 +1,7 @@
 # Total Log-Likelihood
 
 The sum of the log-density over the observations, the objective the fit
-maximises.
+maximizes.
 
 ## Usage
 

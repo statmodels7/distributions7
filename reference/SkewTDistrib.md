@@ -2,7 +2,7 @@
 
 A subclass of `continuous_distrib` representing Azzalini's skew \\t\\
 distribution: a Student \\t\\ with a shape parameter controlling the
-asymmetry, so that the tail weight and the skewness are modelled
+asymmetry, so that the tail weight and the skewness are modeled
 separately.
 
 ## Usage

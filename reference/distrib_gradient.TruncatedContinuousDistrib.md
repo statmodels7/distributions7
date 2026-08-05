@@ -1,8 +1,8 @@
 # Truncated Analytical Gradient (Continuous)
 
 \$\$\dfrac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad m_i
-= \mathbb{E}\_T\[s_i\]\$\$ the parent's score recentred at its mean over
-the truncated support.
+= \mathbb{E}\_T\[s_i\]\$\$ the parent's score recentered at its mean
+over the truncated support.
 
 ## Arguments
 

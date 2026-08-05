@@ -1,7 +1,7 @@
 # S7 Class for the Inverse Gaussian in Mean and Shape
 
 A subclass of `continuous_distrib` for the inverse gaussian in its
-classical parametrisation, the mean and the shape \\\lambda\\.
+classical parametrization, the mean and the shape \\\lambda\\.
 
 ## Usage
 

@@ -1,4 +1,4 @@
-# Skewness of the Skew Normal in the Centred Parametrisation
+# Skewness of the Skew Normal in the Centered Parametrization
 
 \\\gamma_1\\, the parameter itself.
 

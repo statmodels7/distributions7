@@ -1,7 +1,7 @@
 # Maximum-Likelihood Estimation
 
 Fits a distribution to an i.i.d. sample by maximum likelihood. The
-optimisation is carried out on the **link (real) scale**, where the
+optimization is carried out on the **link (real) scale**, where the
 parameters are unconstrained, using the analytical score and information
 supplied by the distribution (`scale = "link"`). Estimates are then
 mapped back to the parameter scale and reported with standard errors and
@@ -40,30 +40,30 @@ fit_distrib(
 
 - method:
 
-  How to optimise. One argument, taking one of three things:
+  How to optimize. One argument, taking one of three things:
 
   - [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md),
     the default — Newton's method with the **expected** information in
     place of the Hessian, the object carrying how that information is to
     be obtained when the family has no closed form for it;
 
-  - an optimiser object from optimizers7, used as given and receiving
+  - an optimizer object from optimizers7, used as given and receiving
     the analytical gradient and the **observed** Hessian, so that
     `method = lbfgs(criterion = crit_grad(1e-12))` selects both the
     algorithm and the stopping rule;
 
   - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, kept as short
     names for the three ready-made strategies. The first two fall back
-    to BFGS if they fail to converge; an optimiser the caller chose is
+    to BFGS if they fail to converge; an optimizer the caller chose is
     never silently replaced.
 
   The iteration limit and the stopping rule belong to the method and are
-  set there: on an optimiser object through its own `maxit` and
+  set there: on an optimizer object through its own `maxit` and
   `criterion`, on
   [`fisher_scoring()`](https://statmodels7.github.io/distributions7/reference/fisher_scoring.md)
   through the same two arguments, and otherwise left at the defaults of
   [`crit_grad`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
-  and of the optimiser. The objective handed to the optimiser is the
+  and of the optimizer. The objective handed to the optimizer is the
   *mean* negative log-likelihood, so a tolerance on its gradient is a
   tolerance on the score **per observation** whatever the sample size,
   and
@@ -92,7 +92,7 @@ see its documentation for the available components.
 
 ## Details
 
-**Why the link scale.** Optimising \\\eta \in \mathbb{R}^p\\ rather than
+**Why the link scale.** Optimizing \\\eta \in \mathbb{R}^p\\ rather than
 the constrained \\\theta\\ removes the need for box constraints: a
 variance can never become negative, a probability never leaves
 \\(0,1)\\. The score and information on that scale are obtained exactly

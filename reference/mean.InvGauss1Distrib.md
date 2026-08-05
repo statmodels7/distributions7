@@ -1,6 +1,6 @@
 # Mean of the Inverse Gaussian Distribution
 
-Closed form: \\\mu\\, a parameter of this parametrisation.
+Closed form: \\\mu\\, a parameter of this parametrization.
 
 ## Arguments
 

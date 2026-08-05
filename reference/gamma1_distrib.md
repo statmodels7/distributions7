@@ -1,6 +1,6 @@
 # Gamma Distribution in Mean and Dispersion
 
-Creates a gamma distribution object parametrised by its mean and a
+Creates a gamma distribution object parametrized by its mean and a
 dispersion, with \\\operatorname{Var}(Y) = \phi\mu^2\\.
 
 ## Usage
@@ -26,7 +26,7 @@ An S7 object of class
 
 ## Details
 
-This is the parametrisation a generalised linear model uses: the
+This is the parametrization a generalized linear model uses: the
 variance function is \\V(\mu) = \mu^2\\ and \\\phi\\ is the dispersion
 that multiplies it, so the mean and the dispersion are orthogonal and
 the score in \\\mu\\ is \\(y-\mu)/(\phi\mu^2)\\. The shape is \\1/\phi\\

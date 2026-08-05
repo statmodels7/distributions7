@@ -1,7 +1,7 @@
 # S7 Class for Truncated Continuous Distributions
 
 A subclass of `continuous_distrib` representing a continuous
-distribution restricted to \\\[\ell, u\]\\ and renormalised.
+distribution restricted to \\\[\ell, u\]\\ and renormalized.
 
 ## Usage
 

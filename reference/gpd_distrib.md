@@ -1,7 +1,7 @@
-# Generalised Pareto Distribution Object
+# Generalized Pareto Distribution Object
 
-Creates a distribution object for the generalised Pareto distribution,
-parametrised by a scale \\\sigma\\ and a shape \\\xi\\.
+Creates a distribution object for the generalized Pareto distribution,
+parametrized by a scale \\\sigma\\ and a shape \\\xi\\.
 
 ## Usage
 
@@ -41,19 +41,19 @@ in an analysis of extremes.
 reaches through a series rather than by a special case, so the parameter
 may pass through zero during a fit.
 
-**It is not parametrised by its mean**, unlike most families here. The
+**It is not parametrized by its mean**, unlike most families here. The
 mean is \\\sigma/(1-\xi)\\ and exists only for \\\xi \< 1\\, so a mean
-parametrisation would leave the family undescribable exactly where it is
+parametrization would leave the family undescribable exactly where it is
 most used — the heavy-tailed regime. This is the argument that keeps
 [`mv_sigma`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
 and
 [`variance`](https://statmodels7.github.io/distributions7/reference/variance.md)
-apart for the multivariate \\t\\: a parametrisation must not depend on a
+apart for the multivariate \\t\\: a parametrization must not depend on a
 moment that need not exist.
 
 **The support depends on the parameters when \\\xi \< 0\\**, being
 \\\[0, -\sigma/\xi\]\\, and this is the first family here of which that
-is true. What it costs is the automatic licence to differentiate under
+is true. What it costs is the automatic license to differentiate under
 the integral sign, on which the Bartlett identities rest. Two things
 survive and one does not:
 

@@ -1,7 +1,7 @@
 # Dirichlet Distribution Object
 
 Creates a distribution object for the Dirichlet distribution on the
-simplex, parametrised by a mean vector and a concentration \\\phi\\.
+simplex, parametrized by a mean vector and a concentration \\\phi\\.
 
 ## Usage
 
@@ -44,7 +44,7 @@ scale to separate, the support is a simplex rather than a Euclidean
 space, and the covariance is singular by construction because the
 coordinates sum to one.
 
-The parametrisation follows the same design as the multivariate
+The parametrization follows the same design as the multivariate
 gaussian's. The constrained object — here a point of the simplex rather
 than a positive definite matrix — is carried by a parameters7 parameter
 and **flattened into scalars** with identity links, so every generic of

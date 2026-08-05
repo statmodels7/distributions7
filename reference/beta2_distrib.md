@@ -1,6 +1,6 @@
 # Beta Distribution in Its Shapes
 
-Creates a beta distribution object in its canonical parametrisation, the
+Creates a beta distribution object in its canonical parametrization, the
 two shapes \\\alpha\\ and \\\beta\\.
 
 ## Usage
@@ -29,7 +29,7 @@ An S7 object of class
 The same law as
 [`beta1_distrib`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md),
 which carries the mean and a precision: \\\alpha = \mu\varphi\\ and
-\\\beta = (1-\mu)\varphi\\. The mean parametrisation is the one a
+\\\beta = (1-\mu)\varphi\\. The mean parametrization is the one a
 regression wants; this one is the one the family is usually written in
 and the one a conjugate analysis produces, the beta being conjugate for
 a binomial probability.

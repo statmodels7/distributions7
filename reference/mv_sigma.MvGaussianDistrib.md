@@ -1,7 +1,7 @@
 # The Covariance a Multivariate Gaussian Carries
 
 The covariance, assembled from the matrix parameter and inverted first
-when the structure parametrises the precision.
+when the structure parametrizes the precision.
 
 ## Arguments
 

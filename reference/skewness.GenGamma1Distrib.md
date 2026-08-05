@@ -1,4 +1,4 @@
-# Skewness of the Generalised Gamma Distribution
+# Skewness of the Generalized Gamma Distribution
 
 Closed form, from the first three raw moments.
 

@@ -46,13 +46,13 @@ A list with
 
 - `block`:
 
-  a character vector labelling the group each quantity belongs to, used
+  a character vector labeling the group each quantity belongs to, used
   to lay the printed summary out.
 
 ## Details
 
 The free values of a parameters7 structure are coordinates chosen so
-that an optimiser can move freely; they are not quantities anyone reads.
+that an optimizer can move freely; they are not quantities anyone reads.
 The logarithm of the third diagonal entry of a Cholesky factor has an
 estimate and a standard error, and neither answers a question. This
 generic names the quantities that do, and supplies \\\partial

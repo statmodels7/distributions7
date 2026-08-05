@@ -48,7 +48,7 @@ The one-dimensional routes do not survive the move to \\p\\ dimensions.
 `"integrate"` builds its quadrature over an interval and is refused
 here; `"bartlett"` in the univariate package reaches
 [`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
-which is that same quadrature. What does generalise is sampling, so both
+which is that same quadrature. What does generalize is sampling, so both
 remaining routes draw from the family's own generator and differ in what
 they average:
 

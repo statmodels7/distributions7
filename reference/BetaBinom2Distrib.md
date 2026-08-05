@@ -1,7 +1,7 @@
 # S7 Class for the Beta-Binomial in Its Shapes
 
 A subclass of `discrete_distrib` for the beta-binomial in its canonical
-parametrisation, the two beta shapes.
+parametrization, the two beta shapes.
 
 ## Usage
 

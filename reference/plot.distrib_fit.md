@@ -1,7 +1,7 @@
 # Plot a Fitted Distribution against the Data
 
 Compares the fitted distribution with the sample it was estimated from.
-For a continuous distribution the observations are summarised by a
+For a continuous distribution the observations are summarized by a
 kernel density estimate, with the fitted density drawn on top and a rug
 of the data underneath. For a discrete one the observed relative
 frequencies are drawn as bars with the fitted probability mass overlaid,
@@ -31,7 +31,7 @@ since a kernel density would misrepresent a discrete sample.
 
 - col_fit, col_data:
 
-  Colours of the fitted curve and of the empirical summary.
+  Colors of the fitted curve and of the empirical summary.
 
 - mv_which:
 

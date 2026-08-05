@@ -1,7 +1,7 @@
-# Skew Normal Expected Hessian in the Centred Parametrisation
+# Skew Normal Expected Hessian in the Centered Parametrization
 
 The parent's expected information carried by the same congruence. It is
-**non-singular at zero skewness**, which the direct parametrisation's is
+**non-singular at zero skewness**, which the direct parametrization's is
 not: there the score for \\\alpha\\ is proportional to the score for the
 location and the information loses a rank.
 

@@ -28,7 +28,7 @@ A numeric vector.
 Requiring the variance to be \\\mu(1+\theta)\\ fixes the success
 probability at \\1/(1+\theta)\\, and the mean then determines the size.
 It is this that puts \\\mu\\ inside the gamma functions and makes the
-family different from the quadratic form rather than a reparametrisation
+family different from the quadratic form rather than a reparametrization
 of it.
 
 ## See also

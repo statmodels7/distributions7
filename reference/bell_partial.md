@@ -32,7 +32,7 @@ A numeric vector, the polynomial evaluated element-wise.
 
 These are the coefficients Faa di Bruno's formula needs. Because each
 parameter carries its own link, the Jacobian of \\\theta \mapsto \eta\\
-is diagonal and the multivariate formula factorises into a product of
+is diagonal and the multivariate formula factorizes into a product of
 univariate ones, so only \\B\_{m,j}\\ for a single variable is required.
 They are written out rather than generated: there are ten of them below
 order five, and a table cannot be slower or wrong in a way a recursion

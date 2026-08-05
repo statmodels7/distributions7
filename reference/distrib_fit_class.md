@@ -85,7 +85,7 @@ distrib_fit(
 
 - loglik:
 
-  Maximised log-likelihood.
+  Maximized log-likelihood.
 
 - aic, bic:
 
@@ -101,7 +101,7 @@ distrib_fit(
 
 - method:
 
-  Optimisation method actually used.
+  Optimization method actually used.
 
 - criterion:
 
@@ -109,7 +109,7 @@ distrib_fit(
 
 - note:
 
-  Any remark the optimiser attached to the run.
+  Any remark the optimizer attached to the run.
 
 - counts:
 
@@ -122,7 +122,7 @@ distrib_fit(
 
 - elapsed:
 
-  Seconds spent optimising, summed over every starting value and every
+  Seconds spent optimizing, summed over every starting value and every
   fallback attempted.
 
 - level:

@@ -1,4 +1,4 @@
-# Generalised Gamma Quantile Function
+# Generalized Gamma Quantile Function
 
 \\Q(u) = a\\\\Q\_{\Gamma}(u; d/p)\\^{1/p}\\, inverting the same
 representation the distribution function uses.

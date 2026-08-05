@@ -1,4 +1,4 @@
-# Generalised Gamma Analytical Expected Hessian
+# Generalized Gamma Analytical Expected Hessian
 
 Closed form. Every expectation the observed Hessian needs is a moment of
 \\u = (Y/a)^{p}\\, which is Gamma with shape \\k = d/p\\ and unit rate:

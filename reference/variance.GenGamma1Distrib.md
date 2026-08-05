@@ -1,4 +1,4 @@
-# Variance of the Generalised Gamma Distribution
+# Variance of the Generalized Gamma Distribution
 
 Closed form, from the first two raw moments.
 

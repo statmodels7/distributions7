@@ -1,6 +1,6 @@
 # Multivariate Gaussian Distribution
 
-The S7 class of multivariate gaussian distributions, parametrised by a
+The S7 class of multivariate gaussian distributions, parametrized by a
 mean vector and by a parameters7 structure for the covariance or the
 precision. Constructed by
 [`mvgaussian_distrib`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
@@ -87,7 +87,7 @@ MvGaussianDistrib(
 
 - inverted:
 
-  Whether the matrix parameter parametrises the precision rather than
+  Whether the matrix parameter parametrizes the precision rather than
   the covariance.
 
 ## Value

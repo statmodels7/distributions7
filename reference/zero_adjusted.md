@@ -6,7 +6,7 @@ probability of a zero becomes a parameter of its own, \\\pi\\ (parameter
 depends on the parent's type, and the constructor dispatches on it:
 
 - **Discrete** (support including 0): a **hurdle** model. The mass the
-  parent puts at zero is removed, the parent is renormalised over the
+  parent puts at zero is removed, the parent is renormalized over the
   positive values, and \\\pi\\ takes its place.
 
 - **Continuous**: a **mixed** distribution. Nothing has to be removed,

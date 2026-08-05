@@ -1,7 +1,7 @@
 # S7 Class for the Geometric Distribution
 
 A subclass of `discrete_distrib` representing the geometric distribution
-on \\\\0, 1, 2, \dots\\\\ in its mean parametrisation.
+on \\\\0, 1, 2, \dots\\\\ in its mean parametrization.
 
 ## Usage
 

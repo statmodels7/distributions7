@@ -26,7 +26,7 @@ used for each of its parameters.
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
   : Skew Normal Distribution Object
 - [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-  : Skew Normal Distribution in Its Centred Parametrisation
+  : Skew Normal Distribution in Its Centered Parametrization
 - [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
   : Skew t Distribution Object
 - [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
@@ -73,15 +73,15 @@ used for each of its parameters.
 - [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
   : NB1 Negative Binomial Distribution Object
 - [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
-  : Generalised Pareto Distribution Object
+  : Generalized Pareto Distribution Object
 - [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
   : von Mises Distribution Object
 - [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
   : von Mises Distribution in the Mean Resultant Length
 - [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
-  : Generalised Gamma Distribution Object
+  : Generalized Gamma Distribution Object
 - [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md)
-  : Generalised Gamma Distribution in the Mean
+  : Generalized Gamma Distribution in the Mean
 
 ## Probability functions
 
@@ -165,7 +165,7 @@ respect to the unconstrained parameters.
 - [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
   : Recycle a Constant Moment to the Length of the Parameters
 - [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
-  : Raw Moments of the Generalised Gamma
+  : Raw Moments of the Generalized Gamma
 - [`betabinom_factorial_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_factorial_moments.md)
   : Falling Factorial Moments of the Beta-Binomial
 - [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
@@ -226,7 +226,7 @@ values.
 Distributions whose observations are vectors. The response is a matrix
 with one row per observation, and the parameters stay scalars: a mean
 vector contributes one each, and a covariance contributes the free
-values of the parameters7 structure that parametrises it, so every
+values of the parameters7 structure that parametrizes it, so every
 generic of the package indexes them as it always did.
 
 - [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
@@ -589,45 +589,45 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormal1Distrib.md)
   : Skew Normal Random Number Generator
 
-## Skew normal, centred
+## Skew normal, centered
 
 - [`SkewNormal2Distrib()`](https://statmodels7.github.io/distributions7/reference/SkewNormal2Distrib.md)
-  : S7 Class for the Skew Normal in Its Centred Parametrisation
+  : S7 Class for the Skew Normal in Its Centered Parametrization
 - [`distrib_cdf.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.SkewNormal2Distrib.md)
-  : Skew Normal Distribution Function in the Centred Parametrisation
+  : Skew Normal Distribution Function in the Centered Parametrization
 - [`distrib_deriv3.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.SkewNormal2Distrib.md)
-  : Skew Normal Third-Order Derivatives in the Centred Parametrisation
+  : Skew Normal Third-Order Derivatives in the Centered Parametrization
 - [`distrib_deriv4.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.SkewNormal2Distrib.md)
-  : Skew Normal Fourth-Order Derivatives in the Centred Parametrisation
+  : Skew Normal Fourth-Order Derivatives in the Centered Parametrization
 - [`distrib_expected_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.SkewNormal2Distrib.md)
-  : Skew Normal Expected Hessian in the Centred Parametrisation
+  : Skew Normal Expected Hessian in the Centered Parametrization
 - [`distrib_grad_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.SkewNormal2Distrib.md)
-  : Skew Normal Response Derivatives in the Centred Parametrisation
+  : Skew Normal Response Derivatives in the Centered Parametrization
 - [`distrib_gradient.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal2Distrib.md)
-  : Skew Normal Gradient in the Centred Parametrisation
+  : Skew Normal Gradient in the Centered Parametrization
 - [`distrib_hess_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.SkewNormal2Distrib.md)
-  : Skew Normal Second Response Derivative in the Centred
-  Parametrisation
+  : Skew Normal Second Response Derivative in the Centered
+  Parametrization
 - [`distrib_hessian.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal2Distrib.md)
-  : Skew Normal Observed Hessian in the Centred Parametrisation
+  : Skew Normal Observed Hessian in the Centered Parametrization
 - [`distrib_pdf.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.SkewNormal2Distrib.md)
-  : Skew Normal Density in the Centred Parametrisation
+  : Skew Normal Density in the Centered Parametrization
 - [`distrib_quantile.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.SkewNormal2Distrib.md)
-  : Skew Normal Quantile Function in the Centred Parametrisation
+  : Skew Normal Quantile Function in the Centered Parametrization
 - [`distrib_rng.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.SkewNormal2Distrib.md)
-  : Skew Normal Random Generation in the Centred Parametrisation
+  : Skew Normal Random Generation in the Centered Parametrization
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
-  : The Constant Behind the Centred Parametrisation
+  : The Constant Behind the Centered Parametrization
 - [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md)
   : The Largest Skewness a Skew Normal Can Reach
 - [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
-  : From the Centred Parameters to the Direct Ones
+  : From the Centered Parameters to the Direct Ones
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
-  : The Direct Parameters a Centred Triple Implies
+  : The Direct Parameters a Centered Triple Implies
 - [`sn2_jets()`](https://statmodels7.github.io/distributions7/reference/sn2_jets.md)
-  : The Jets of the Centred-to-Direct Map
+  : The Jets of the Centered-to-Direct Map
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
-  : Derivatives of the Skew Normal in Its Centred Parametrisation
+  : Derivatives of the Skew Normal in Its Centered Parametrization
 
 ## Skew t
 
@@ -790,11 +790,11 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/Gamma1Distrib.md)
   : S7 Class for the Gamma Distribution in Mean and Dispersion
 - [`GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/GenGamma1Distrib.md)
-  : S7 Class for the Generalised Gamma Distribution
+  : S7 Class for the Generalized Gamma Distribution
 - [`distrib_cdf.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gamma1Distrib.md)
   : Gamma Distribution Function in Mean and Dispersion
 - [`distrib_cdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md)
-  : Generalised Gamma Distribution Function
+  : Generalized Gamma Distribution Function
 - [`distrib_deriv3.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma1Distrib.md)
   : Gamma Third-Order Derivatives in Mean and Dispersion
 - [`distrib_deriv4.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gamma1Distrib.md)
@@ -802,31 +802,31 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_expected_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md)
   : Gamma Analytical Expected Hessian in Mean and Dispersion
 - [`distrib_expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Expected Hessian
+  : Generalized Gamma Analytical Expected Hessian
 - [`distrib_grad_y.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Gamma1Distrib.md)
   : Gamma Response Derivatives in Mean and Dispersion
 - [`distrib_gradient.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Gamma1Distrib.md)
   : Gamma Analytical Gradient in Mean and Dispersion
 - [`distrib_gradient.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Gradient
+  : Generalized Gamma Analytical Gradient
 - [`distrib_hess_y.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gamma1Distrib.md)
   : Gamma Second Response Derivative in Mean and Dispersion
 - [`distrib_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Gamma1Distrib.md)
   : Gamma Analytical Observed Hessian in Mean and Dispersion
 - [`distrib_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Observed Hessian
+  : Generalized Gamma Analytical Observed Hessian
 - [`distrib_pdf.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma1Distrib.md)
   : Gamma Density in Mean and Dispersion
 - [`distrib_pdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md)
-  : Generalised Gamma Density
+  : Generalized Gamma Density
 - [`distrib_quantile.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gamma1Distrib.md)
   : Gamma Quantile Function in Mean and Dispersion
 - [`distrib_quantile.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGamma1Distrib.md)
-  : Generalised Gamma Quantile Function
+  : Generalized Gamma Quantile Function
 - [`distrib_rng.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Gamma1Distrib.md)
   : Gamma Random Generation in Mean and Dispersion
 - [`distrib_rng.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGamma1Distrib.md)
-  : Generalised Gamma Random Generation
+  : Generalized Gamma Random Generation
 - [`gamma1_shape_rate()`](https://statmodels7.github.io/distributions7/reference/gamma1_shape_rate.md)
   : The Shape and Rate a Mean and Dispersion Imply
 
@@ -1067,24 +1067,24 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin2Distrib.md)
   : Negative Binomial Random Number Generator
 
-## Generalised gamma
+## Generalized gamma
 
 - [`GenGamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/GenGamma1Distrib.md)
-  : S7 Class for the Generalised Gamma Distribution
+  : S7 Class for the Generalized Gamma Distribution
 - [`distrib_cdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md)
-  : Generalised Gamma Distribution Function
+  : Generalized Gamma Distribution Function
 - [`distrib_expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Expected Hessian
+  : Generalized Gamma Analytical Expected Hessian
 - [`distrib_gradient.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Gradient
+  : Generalized Gamma Analytical Gradient
 - [`distrib_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GenGamma1Distrib.md)
-  : Generalised Gamma Analytical Observed Hessian
+  : Generalized Gamma Analytical Observed Hessian
 - [`distrib_pdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GenGamma1Distrib.md)
-  : Generalised Gamma Density
+  : Generalized Gamma Density
 - [`distrib_quantile.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GenGamma1Distrib.md)
-  : Generalised Gamma Quantile Function
+  : Generalized Gamma Quantile Function
 - [`distrib_rng.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GenGamma1Distrib.md)
-  : Generalised Gamma Random Generation
+  : Generalized Gamma Random Generation
 
 ## von Mises
 
@@ -1122,24 +1122,24 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
 
-## Generalised Pareto
+## Generalized Pareto
 
 - [`GPDDistrib()`](https://statmodels7.github.io/distributions7/reference/GPDDistrib.md)
-  : S7 Class for the Generalised Pareto Distribution
+  : S7 Class for the Generalized Pareto Distribution
 - [`distrib_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md)
-  : Generalised Pareto Distribution Function
+  : Generalized Pareto Distribution Function
 - [`distrib_expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md)
-  : Generalised Pareto Analytical Expected Hessian
+  : Generalized Pareto Analytical Expected Hessian
 - [`distrib_gradient.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md)
-  : Generalised Pareto Analytical Gradient
+  : Generalized Pareto Analytical Gradient
 - [`distrib_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.GPDDistrib.md)
-  : Generalised Pareto Analytical Observed Hessian
+  : Generalized Pareto Analytical Observed Hessian
 - [`distrib_pdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.GPDDistrib.md)
-  : Generalised Pareto Density
+  : Generalized Pareto Density
 - [`distrib_quantile.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.GPDDistrib.md)
-  : Generalised Pareto Quantile Function
+  : Generalized Pareto Quantile Function
 - [`distrib_rng.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md)
-  : Generalised Pareto Random Generation
+  : Generalized Pareto Random Generation
 
 ## NB1 negative binomial
 
@@ -1487,13 +1487,13 @@ inherits unless it registers something more specific.
 - [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
   : Gaussian Distribution in Mean and Precision
 - [`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
-  : Generalised Gamma Distribution Object
+  : Generalized Gamma Distribution Object
 - [`gengamma2_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.md)
-  : Generalised Gamma Distribution in the Mean
+  : Generalized Gamma Distribution in the Mean
 - [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
   : Geometric Distribution Object
 - [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
-  : Generalised Pareto Distribution Object
+  : Generalized Pareto Distribution Object
 - [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
   : Gumbel Distribution Object
 - [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
@@ -1528,7 +1528,7 @@ inherits unless it registers something more specific.
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
   : Skew Normal Distribution Object
 - [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
-  : Skew Normal Distribution in Its Centred Parametrisation
+  : Skew Normal Distribution in Its Centered Parametrization
 - [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
   : Skew t Distribution Object
 - [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
@@ -1936,13 +1936,13 @@ divergent density.
   Generate Random Parameters for `distrib` Objects
 
 - [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
-  : Raw Moments of the Generalised Gamma
+  : Raw Moments of the Generalized Gamma
 
 - [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
   : The Success Probability Behind a Geometric Mean
 
 - [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
-  : The Upper Endpoint of a Generalised Pareto
+  : The Upper Endpoint of a Generalized Pareto
 
 - [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
   : The Generalized Ratio-of-Uniforms Sampler
@@ -2020,7 +2020,7 @@ divergent density.
   : Kurtosis of the Exponential Distribution
 
 - [`kurtosis.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GPDDistrib.md)
-  : Kurtosis of the Generalised Pareto Distribution
+  : Kurtosis of the Generalized Pareto Distribution
 
 - [`kurtosis.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Gamma1Distrib.md)
   : Kurtosis of the Gamma in Mean and Dispersion
@@ -2038,7 +2038,7 @@ divergent density.
   : Kurtosis of the Gaussian in Mean and Precision
 
 - [`kurtosis.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GenGamma1Distrib.md)
-  : Kurtosis of the Generalised Gamma Distribution
+  : Kurtosis of the Generalized Gamma Distribution
 
 - [`kurtosis.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GeometricDistrib.md)
   : Kurtosis of the Geometric Distribution
@@ -2077,7 +2077,7 @@ divergent density.
   : Kurtosis of the Skew Normal Distribution
 
 - [`kurtosis.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewNormal2Distrib.md)
-  : Kurtosis of the Skew Normal in the Centred Parametrisation
+  : Kurtosis of the Skew Normal in the Centered Parametrization
 
 - [`kurtosis.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewTDistrib.md)
   : Kurtosis of the Skew t Distribution
@@ -2149,7 +2149,7 @@ divergent density.
   : Mean of the Exponential Distribution
 
 - [`mean.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GPDDistrib.md)
-  : Mean of the Generalised Pareto Distribution
+  : Mean of the Generalized Pareto Distribution
 
 - [`mean.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Gamma1Distrib.md)
   : Mean of the Gamma in Mean and Dispersion
@@ -2167,7 +2167,7 @@ divergent density.
   : Mean of the Gaussian in Mean and Precision
 
 - [`mean.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma1Distrib.md)
-  : Mean of the Generalised Gamma Distribution
+  : Mean of the Generalized Gamma Distribution
 
 - [`mean.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GeometricDistrib.md)
   : Mean of the Geometric Distribution
@@ -2221,7 +2221,7 @@ divergent density.
   : Mean of the Skew Normal Distribution
 
 - [`mean.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.SkewNormal2Distrib.md)
-  : Mean of the Skew Normal in the Centred Parametrisation
+  : Mean of the Skew Normal in the Centered Parametrization
 
 - [`mean.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md)
   : Mean of the Skew t Distribution
@@ -2239,7 +2239,7 @@ divergent density.
   : Mean of a Distribution Object
 
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
-  : Memoise a Ratio Function on Its Block
+  : Memoize a Ratio Function on Its Block
 
 - [`mn_parts()`](https://statmodels7.github.io/distributions7/reference/mn_parts.md)
   : The Pieces a Multinomial Derivative Needs
@@ -2449,7 +2449,7 @@ divergent density.
   : Skewness of the Exponential Distribution
 
 - [`skewness.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GPDDistrib.md)
-  : Skewness of the Generalised Pareto Distribution
+  : Skewness of the Generalized Pareto Distribution
 
 - [`skewness.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Gamma1Distrib.md)
   : Skewness of the Gamma in Mean and Dispersion
@@ -2467,7 +2467,7 @@ divergent density.
   : Skewness of the Gaussian in Mean and Precision
 
 - [`skewness.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.GenGamma1Distrib.md)
-  : Skewness of the Generalised Gamma Distribution
+  : Skewness of the Generalized Gamma Distribution
 
 - [`skewness.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GeometricDistrib.md)
   : Skewness of the Geometric Distribution
@@ -2506,7 +2506,7 @@ divergent density.
   : Skewness of the Skew Normal Distribution
 
 - [`skewness.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.SkewNormal2Distrib.md)
-  : Skewness of the Skew Normal in the Centred Parametrisation
+  : Skewness of the Skew Normal in the Centered Parametrization
 
 - [`skewness.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.SkewTDistrib.md)
   : Skewness of the Skew t Distribution
@@ -2539,19 +2539,19 @@ divergent density.
   : The Pieces a Skew t Evaluates From
 
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
-  : Derivatives of the Skew Normal in Its Centred Parametrisation
+  : Derivatives of the Skew Normal in Its Centered Parametrization
 
 - [`sn2_jets()`](https://statmodels7.github.io/distributions7/reference/sn2_jets.md)
-  : The Jets of the Centred-to-Direct Map
+  : The Jets of the Centered-to-Direct Map
 
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
-  : The Direct Parameters a Centred Triple Implies
+  : The Direct Parameters a Centered Triple Implies
 
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
-  : The Constant Behind the Centred Parametrisation
+  : The Constant Behind the Centered Parametrization
 
 - [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
-  : From the Centred Parameters to the Direct Ones
+  : From the Centered Parameters to the Direct Ones
 
 - [`sn_max_skew()`](https://statmodels7.github.io/distributions7/reference/sn_max_skew.md)
   : The Largest Skewness a Skew Normal Can Reach
@@ -2656,7 +2656,7 @@ divergent density.
   : Variance of the Exponential Distribution
 
 - [`variance.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GPDDistrib.md)
-  : Variance of the Generalised Pareto Distribution
+  : Variance of the Generalized Pareto Distribution
 
 - [`variance.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Gamma1Distrib.md)
   : Variance of the Gamma in Mean and Dispersion
@@ -2674,7 +2674,7 @@ divergent density.
   : Variance of the Gaussian in Mean and Precision
 
 - [`variance.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md)
-  : Variance of the Generalised Gamma Distribution
+  : Variance of the Generalized Gamma Distribution
 
 - [`variance.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GeometricDistrib.md)
   : Variance of the Geometric Distribution
@@ -2722,7 +2722,7 @@ divergent density.
   : Variance of the Skew Normal Distribution
 
 - [`variance.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/variance.SkewNormal2Distrib.md)
-  : Variance of the Skew Normal in the Centred Parametrisation
+  : Variance of the Skew Normal in the Centered Parametrization
 
 - [`variance.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/variance.SkewTDistrib.md)
   : Variance of the Skew t Distribution

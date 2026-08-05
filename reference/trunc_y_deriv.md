@@ -32,5 +32,5 @@ A numeric vector.
 
 ## Details
 
-The normalising constant does not depend on \\y\\, so inside the support
+The normalizing constant does not depend on \\y\\, so inside the support
 the parent's derivative is exact and nothing needs correcting.

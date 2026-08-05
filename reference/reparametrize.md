@@ -1,6 +1,6 @@
 # Write a Distribution in Different Coordinates
 
-Returns the same law as `distrib`, parametrised by quantities of the
+Returns the same law as `distrib`, parametrized by quantities of the
 caller's choosing.
 
 ## Usage
@@ -61,9 +61,9 @@ or
 ## Details
 
 A reparametrization is not a link. A link changes the scale a parameter
-is *modelled* on and leaves the parameter what it was; here the
-parameter *is* the new quantity, and that is what the estimate, the
-standard error and the confidence interval describe.
+is *modeled* on and leaves the parameter what it was; here the parameter
+*is* the new quantity, and that is what the estimate, the standard error
+and the confidence interval describe.
 
 **The map is written in ordinary R.** It takes a named list of the new
 parameters and returns a named list of the parent's, and nothing in it

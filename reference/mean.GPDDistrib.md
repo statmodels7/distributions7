@@ -1,4 +1,4 @@
-# Mean of the Generalised Pareto Distribution
+# Mean of the Generalized Pareto Distribution
 
 Closed form: \\\sigma/(1-\xi)\\ for \\\xi \< 1\\, and infinite at or
 above one.

@@ -1,6 +1,6 @@
 # von Mises Random Generation in the Resultant Length
 
-Delegates to the concentration parametrisation.
+Delegates to the concentration parametrization.
 
 ## Arguments
 

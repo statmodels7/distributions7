@@ -54,7 +54,7 @@ Zero-adjustment
 *replaces* it: the parent is truncated away from zero and the mass at
 zero becomes a free parameter, which can be above or below \\f(0)\\. A
 hurdle model therefore also handles *under*-dispersed zeros, and its
-likelihood factorises into a binary part and a positive-count part that
+likelihood factorizes into a binary part and a positive-count part that
 can be read separately. Zero-inflation keeps the parent's interpretation
 — \\\theta\\ still describes the count process the non-structural
 observations come from — while the hurdle re-interprets \\\theta\\ as

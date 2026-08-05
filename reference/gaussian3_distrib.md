@@ -1,6 +1,6 @@
 # Gaussian Distribution in Mean and Precision
 
-Creates a Gaussian distribution object parametrised by its mean and its
+Creates a Gaussian distribution object parametrized by its mean and its
 **precision** \\\tau = 1/\sigma^2\\.
 
 ## Usage
@@ -33,12 +33,12 @@ in different coordinates, and a separate family for the same reason
 is: the parameter here *is* the precision, and that is what the
 estimate, the standard error and the interval describe.
 
-It is the flattest of the three parametrisations. Every third derivative
+It is the flattest of the three parametrizations. Every third derivative
 is free of the response, so the observed and the expected ones coincide,
 and the only non-zero fourth derivative is \\\ell^{(\tau\tau\tau\tau)} =
 -3/\tau^4\\.
 
-The precision is the parametrisation a Bayesian conjugate analysis uses,
+The precision is the parametrization a Bayesian conjugate analysis uses,
 the gamma being conjugate for \\\tau\\ at known \\\mu\\.
 
 ## See also

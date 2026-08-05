@@ -55,7 +55,7 @@ theorem.
 
 On the link scale the component for \\\eta_i\\ is the parameter-scale
 component multiplied by \\h_i'(\eta_i)\\: the response derivative is
-untouched by a reparametrisation of \\\theta\\, so only the first-order
+untouched by a reparametrization of \\\theta\\, so only the first-order
 diagonal chain rule enters, exactly as for
 [`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md).
 

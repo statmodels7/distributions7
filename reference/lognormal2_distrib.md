@@ -1,6 +1,6 @@
 # Lognormal Distribution in the Mean and Variance of Y
 
-Creates a lognormal distribution object parametrised by the mean and the
+Creates a lognormal distribution object parametrized by the mean and the
 variance of \\Y\\ itself, rather than of \\\log Y\\.
 
 ## Usage
@@ -30,7 +30,7 @@ The parameters of
 describe \\\log Y\\, so neither of them is a moment of \\Y\\. Here they
 are, through \$\$\mu\_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
 \sigma^2\_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)\$\$ which is the
-parametrisation a regression on the mean wants.
+parametrization a regression on the mean wants.
 
 Built with
 [`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),

@@ -1,4 +1,4 @@
-# The Upper Endpoint of a Generalised Pareto
+# The Upper Endpoint of a Generalized Pareto
 
 \\-\sigma/\xi\\ when \\\xi \< 0\\, and infinity otherwise.
 
@@ -26,7 +26,7 @@ A numeric vector.
 
 The endpoint depends on the parameters, which is the whole reason the
 family needs care: for \\\xi \< 0\\ the support is bounded and moves
-with \\\sigma\\ and \\\xi\\, so the licence to differentiate under the
+with \\\sigma\\ and \\\xi\\, so the license to differentiate under the
 integral sign is not automatic. See
 [`gpd_distrib`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md).
 

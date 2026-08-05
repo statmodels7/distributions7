@@ -1,6 +1,6 @@
 # von Mises Analytical Observed Hessian in the Resultant Length
 
-The concentration parametrisation's second derivatives carried through
+The concentration parametrization's second derivatives carried through
 the one-variable chain rule, \$\$\ell^{(\rho\rho)} =
 \ell^{(\kappa\kappa)}(\kappa')^2 + \ell^{(\kappa)}\kappa'',\$\$ with
 \\\ell^{(\kappa\kappa)} = -A'(\kappa)\\ and \\\ell^{(\mu\kappa)} =

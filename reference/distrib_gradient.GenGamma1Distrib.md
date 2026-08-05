@@ -1,4 +1,4 @@
-# Generalised Gamma Analytical Gradient
+# Generalized Gamma Analytical Gradient
 
 With \\w = (y/a)^{p}\\, \\L = \log(y/a)\\ and \\k = d/p\\,
 \$\$\dfrac{\partial\ell}{\partial a} = \dfrac{pw - d}{a}, \qquad

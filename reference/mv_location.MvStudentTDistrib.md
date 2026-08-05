@@ -1,7 +1,7 @@
 # Location of a Multivariate Student t
 
 The first \\p\\ parameters. They are the mean when \\\nu \> 1\\ and the
-centre of symmetry always, which is why the generic is called a location
+center of symmetry always, which is why the generic is called a location
 rather than a mean.
 
 ## Arguments

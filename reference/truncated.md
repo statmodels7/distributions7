@@ -1,6 +1,6 @@
 # Truncated Distribution Object
 
-Restricts an existing distribution to \\\[\ell, u\]\\ and renormalises
+Restricts an existing distribution to \\\[\ell, u\]\\ and renormalizes
 it, so that all the probability mass the parent placed outside the
 interval is redistributed inside it. Either endpoint may be omitted,
 giving one-sided truncation; at least one must be given.
@@ -45,7 +45,7 @@ f(\ell)\\ for a discrete one, since the lower endpoint is kept.
 **Truncation adds no parameter.** The endpoints are known constants,
 like a binomial's `size`, so the truncated distribution has exactly the
 parent's parameters, domains and links. What it does add is a
-\\\theta\\-dependent normalising constant, and that constant contributes
+\\\theta\\-dependent normalizing constant, and that constant contributes
 to every derivative of the log-likelihood \\\ell_T = \ell - \log Z\\.
 Writing \$\$m_i = \mathbb{E}\_T\[s_i\], \qquad M\_{ij} =
 \mathbb{E}\_T\[H\_{ij} + s_is_j\],\$\$ where the expectations are taken
@@ -55,7 +55,7 @@ under the *truncated* distribution, \$\$\frac{\partial
 H\_{ij}(y) - M\_{ij} + m_im_j,\$\$
 \$\$\mathbb{E}\left\[\frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j}\right\]
 = -\operatorname{Cov}\_T(s_i, s_j).\$\$ The score is simply the parent's
-score *recentred* at its truncated mean, and the information is the
+score *recentered* at its truncated mean, and the information is the
 covariance of that score — which is the second Bartlett identity for the
 truncated model, and is used as a consistency check rather than derived
 separately.

@@ -1,6 +1,6 @@
-# Derivatives of the Skew Normal in Its Centred Parametrisation
+# Derivatives of the Skew Normal in Its Centered Parametrization
 
-The parent's derivatives carried into the centred coordinates by the
+The parent's derivatives carried into the centered coordinates by the
 partition sum of
 [`chain_derivatives`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md).
 

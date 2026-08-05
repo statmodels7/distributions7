@@ -1,4 +1,4 @@
-# Generalised Pareto Density
+# Generalized Pareto Density
 
 \$\$f(y) = \dfrac{1}{\sigma} \left(1 + \dfrac{\xi
 y}{\sigma}\right)^{-1/\xi - 1}\$\$ with the exponential density as the

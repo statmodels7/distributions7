@@ -1,6 +1,6 @@
 # Central Moments of a Beta-Binomial
 
-The mean and the second, third and fourth central moments, vectorised
+The mean and the second, third and fourth central moments, vectorized
 over the parameters.
 
 ## Usage

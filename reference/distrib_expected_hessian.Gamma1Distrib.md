@@ -4,7 +4,7 @@ Closed form: \$\$\mathbb{E}\[\ell^{(\mu\mu)}\] = -\dfrac{1}{\phi\mu^2},
 \qquad \mathbb{E}\[\ell^{(\mu\phi)}\] = 0, \qquad
 \mathbb{E}\[\ell^{(\phi\phi)}\] = s^4\left\\\dfrac{1}{s} -
 \psi'(s)\right\\\$\$ The mean and the dispersion are orthogonal, which
-is what makes this the natural parametrisation for a generalised linear
+is what makes this the natural parametrization for a generalized linear
 model. The expectation uses \\\mathbb{E}\[\log(Y/\mu)\] = \psi(s) - \log
 s\\.
 

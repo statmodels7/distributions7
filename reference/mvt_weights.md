@@ -28,6 +28,6 @@ A list with `r`, `w`, `q` and `cw`.
 
 This weight is the whole of the family's robustness. At \\q = 0\\ it is
 \\(\nu+p)/\nu\\ and it decays like \\1/q\\, so an observation far from
-the centre contributes less to every derivative rather than dragging the
+the center contributes less to every derivative rather than dragging the
 fit towards itself; letting \\\nu \to \infty\\ sends it to one and
 recovers the gaussian, where nothing is downweighted.

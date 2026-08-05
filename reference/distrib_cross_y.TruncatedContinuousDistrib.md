@@ -1,7 +1,7 @@
 # Mixed Derivatives of a Truncated Distribution
 
 The parent's mixed derivatives, unchanged: the truncated log-density is
-the parent's minus \\\log Z(\theta)\\, and the normalising constant does
+the parent's minus \\\log Z(\theta)\\, and the normalizing constant does
 not depend on \\y\\, so it vanishes from any derivative that involves
 the response.
 

@@ -136,7 +136,7 @@ laplace_distrib <- function(link_mu = linkfunctions7::identity_link(),
 The `params_bounds` are used by the fallbacks (finite-difference steps
 are shrunk so they never step outside a parameter’s domain) and by
 [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
-The `link_params` are used by downstream modelling code;
+The `link_params` are used by downstream modeling code;
 `identity_link()` and `log_link()` come from **linkfunctions7**.
 
 That is the entire definition. Everything now works:
@@ -320,10 +320,10 @@ str(distrib_gradient(d, c(-1, 3), th))                   # now analytical
 A practical suggestion for the order in which to add closed forms:
 
 1.  **`distrib_gradient`** — the single biggest speed-up for model
-    fitting, since the score is evaluated at every optimisation step.
+    fitting, since the score is evaluated at every optimization step.
     Writing it in C++ (via **Rcpp**), as the built-in distributions do,
     helps further.
-2.  **`distrib_hessian`** — for Newton-type optimisation and standard
+2.  **`distrib_hessian`** — for Newton-type optimization and standard
     errors.
 3.  **`distrib_cdf` / `distrib_quantile` / `distrib_rng`** — for fast or
     high-volume simulation and tail probabilities.
@@ -429,7 +429,7 @@ for the formulas.
 ## Fitting a distribution to data
 
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-maximises the likelihood on the link scale — where the parameters are
+maximizes the likelihood on the link scale — where the parameters are
 unconstrained — using the analytical score and information, and then
 reports the estimates back on the parameter scale:
 
@@ -441,7 +441,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 17 ms
+#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 15 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

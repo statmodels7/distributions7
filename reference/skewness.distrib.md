@@ -1,6 +1,6 @@
 # Skewness of a Distribution
 
-Computes the standardised third central moment through
+Computes the standardized third central moment through
 [`moment`](https://statmodels7.github.io/distributions7/reference/moment.md).
 
 ## Arguments

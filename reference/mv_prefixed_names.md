@@ -2,7 +2,7 @@
 
 Returns the matrix parameter's free names with `"sigma_"` or `"omega_"`
 in front, according to which side of the model the matrix parameter
-parametrises.
+parametrizes.
 
 ## Usage
 
@@ -18,7 +18,7 @@ mv_prefixed_names(free_names, inverted = FALSE)
 
 - inverted:
 
-  Whether the matrix parameter parametrises the precision.
+  Whether the matrix parameter parametrizes the precision.
 
 ## Value
 

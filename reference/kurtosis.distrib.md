@@ -1,6 +1,6 @@
 # Kurtosis of a Distribution
 
-Computes the excess kurtosis, the standardised fourth central moment
+Computes the excess kurtosis, the standardized fourth central moment
 minus three through
 [`moment`](https://statmodels7.github.io/distributions7/reference/moment.md).
 

@@ -1,7 +1,7 @@
 # Exponential Distribution Object
 
 Creates a distribution object for the exponential distribution
-parametrised by its mean \\\mu\\.
+parametrized by its mean \\\mu\\.
 
 ## Usage
 

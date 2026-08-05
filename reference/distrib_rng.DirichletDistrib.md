@@ -1,6 +1,6 @@
 # Dirichlet Random Generation
 
-Independent Gamma draws with the shapes \\\alpha_j\\, normalised by
+Independent Gamma draws with the shapes \\\alpha_j\\, normalized by
 their sum, which is the representation the family is defined by.
 
 ## Arguments

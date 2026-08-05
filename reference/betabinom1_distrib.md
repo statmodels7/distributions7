@@ -1,7 +1,7 @@
 # Beta-Binomial Distribution Object
 
 Creates a distribution object for the beta-binomial distribution,
-parametrised by the mean proportion \\\mu\\ and a dispersion parameter
+parametrized by the mean proportion \\\mu\\ and a dispersion parameter
 \\\sigma\\.
 
 ## Usage

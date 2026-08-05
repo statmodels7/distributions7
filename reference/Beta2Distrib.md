@@ -1,7 +1,7 @@
 # S7 Class for the Beta Distribution in Its Shapes
 
 A subclass of `continuous_distrib` for the beta in its canonical
-parametrisation, the two shapes.
+parametrization, the two shapes.
 
 ## Usage
 

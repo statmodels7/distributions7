@@ -51,7 +51,7 @@ measure the family's density is written against.
 This is consumed by
 [`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 and by nothing else. A discrete family does not need it, its
-normalisation being an exact sum over
+normalization being an exact sum over
 [`mv_support`](https://statmodels7.github.io/distributions7/reference/mv_support.md).
 
 ## See also

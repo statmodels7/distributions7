@@ -1,4 +1,4 @@
-# Skew Normal Second Response Derivative in the Centred Parametrisation
+# Skew Normal Second Response Derivative in the Centered Parametrization
 
 The parent's, unchanged.
 

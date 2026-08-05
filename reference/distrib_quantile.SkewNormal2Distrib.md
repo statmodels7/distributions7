@@ -1,4 +1,4 @@
-# Skew Normal Quantile Function in the Centred Parametrisation
+# Skew Normal Quantile Function in the Centered Parametrization
 
 The parent's quantile function at the implied parameters.
 

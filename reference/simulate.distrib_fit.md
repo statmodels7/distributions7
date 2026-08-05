@@ -20,7 +20,7 @@ posterior-predictive style check.
 
 - seed:
 
-  Optional seed. If supplied it is used to initialise the generator, and
+  Optional seed. If supplied it is used to initialize the generator, and
   the state of `.Random.seed` in effect before the call is restored
   afterwards, so that simulating does not disturb the calling stream.
   The seed actually used is attached to the result as the `"seed"`

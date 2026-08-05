@@ -1,7 +1,7 @@
 # Inverse Gaussian Distribution in Mean and Shape
 
 Creates an inverse gaussian distribution object in the classical
-parametrisation, the mean \\\mu\\ and the shape \\\lambda\\, with
+parametrization, the mean \\\mu\\ and the shape \\\lambda\\, with
 \\\operatorname{Var}(Y) = \mu^3/\lambda\\.
 
 ## Usage

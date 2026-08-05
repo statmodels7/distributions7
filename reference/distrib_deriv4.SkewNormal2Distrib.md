@@ -1,4 +1,4 @@
-# Skew Normal Fourth-Order Derivatives in the Centred Parametrisation
+# Skew Normal Fourth-Order Derivatives in the Centered Parametrization
 
 The partition sum at order four.
 

@@ -1,7 +1,7 @@
 # Multinomial Distribution Object
 
 Creates a distribution object for the multinomial distribution,
-parametrised by a probability vector on the simplex.
+parametrized by a probability vector on the simplex.
 
 ## Usage
 
