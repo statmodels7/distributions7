@@ -68,7 +68,7 @@ in each parameter (see
 ## Examples
 
 ``` r
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #> $mu
 #> [1] 1 1 1

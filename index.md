@@ -48,7 +48,7 @@ parameters, and parameters travel as a named list.
 
 ``` r
 
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 theta <- list(mu = 2, sigma = 3)
 
 distrib_pdf(d, c(0, 2, 4), theta)
@@ -109,8 +109,8 @@ $`g^{-1}`$, so they can never leave a parameter’s domain.
 
 ``` r
 
-y <- distrib_rng(gamma_distrib(), 500, list(mu = 3, sigma2 = 2))
-fit <- fit_distrib(gamma_distrib(), y)
+y <- distrib_rng(gamma2_distrib(), 500, list(mu = 3, sigma2 = 2))
+fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
@@ -157,7 +157,7 @@ for it.
 
 ``` r
 
-fit2 <- fit_distrib(gamma_distrib(), y,
+fit2 <- fit_distrib(gamma2_distrib(), y,
                     method = optimizers7::lbfgs(
                       criterion = optimizers7::crit_grad(1e-12)))
 c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))

@@ -75,7 +75,7 @@ it exactly.
 ## See also
 
 [`mvgaussian_distrib`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md),
-[`student_t_distrib`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md)
+[`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
 
 ## Examples
 

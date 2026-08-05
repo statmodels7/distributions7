@@ -20,9 +20,9 @@ called with no arguments:
 
 ``` r
 
-d <- gamma_distrib()
+d <- gamma2_distrib()
 d
-#> Distribution: Gamma
+#> Distribution: Gamma2
 #> Type:         Continuous
 #> Dimensions:   univariate
 #> 
@@ -39,9 +39,9 @@ distribution back to it. Parameters travel as a named list.
 y <- distrib_rng(d, 500, list(mu = 3, sigma2 = 2))
 fit <- fit_distrib(d, y)
 fit
-#> Maximum-likelihood fit: gamma
+#> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 70 ms
+#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 73 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -269,7 +269,7 @@ the parameter and the link scale:
 ``` r
 
 invisible(check_distrib(d, list(mu = 3, sigma2 = 2)))
-#> Distribution: gamma
+#> Distribution: gamma2
 #> Parameters:   mu = 3, sigma2 = 2
 #> Observations: 100   Monte Carlo: 200000
 #> 

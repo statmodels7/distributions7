@@ -401,7 +401,7 @@ $`\theta`$ itself:
 
 ``` r
 
-d <- gaussian_distrib()          # identity link on mu, log link on sigma
+d <- gaussian1_distrib()          # identity link on mu, log link on sigma
 th <- list(mu = 1.5, sigma = 2)
 y <- c(0.4, 1.9, 3.2)
 
@@ -436,12 +436,12 @@ reports the estimates back on the parameter scale:
 ``` r
 
 set.seed(1)
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
-#> Maximum-likelihood fit: gaussian
+#> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 39 ms
+#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 38 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -466,7 +466,7 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 6   evaluations: f 10, g 7   time: 4 ms
+#> Method: Fisher scoring   iterations: 6   evaluations: f 10, g 7   time: 5 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

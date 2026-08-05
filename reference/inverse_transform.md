@@ -18,7 +18,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gamma_distrib(), inverse_transform())
+d <- transformation(gamma2_distrib(), inverse_transform())
 distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #> [1] 0.3608941
 ```

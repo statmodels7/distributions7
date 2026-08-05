@@ -97,7 +97,7 @@ thresholds. *Journal of the Royal Statistical Society B* 52, 393-442.
 
 [`gumbel_distrib`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md),
 [`exponential_distrib`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md),
-[`weibull_distrib`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
+[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 
 ## Examples
 

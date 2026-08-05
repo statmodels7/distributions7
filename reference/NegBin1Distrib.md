@@ -93,4 +93,4 @@ Everything else is inherited from
 ## See also
 
 [`negbin1_distrib`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md),
-[`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)

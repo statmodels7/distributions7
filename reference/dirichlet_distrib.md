@@ -81,7 +81,7 @@ as for every family of that class.
 
 ## See also
 
-[`beta_distrib`](https://statmodels7.github.io/distributions7/reference/beta_distrib.md)
+[`beta1_distrib`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
 for the two-coordinate case seen on the line,
 [`mvgaussian_distrib`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md),
 [`simplex`](https://statmodels7.github.io/parameters7/reference/simplex.html)

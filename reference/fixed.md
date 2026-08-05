@@ -19,7 +19,7 @@ fixed(distrib, ...)
 - ...:
 
   The fixed values, named after the parameters they fix, as in
-  `fixed(gaussian_distrib(), mu = 0)`.
+  `fixed(gaussian1_distrib(), mu = 0)`.
 
 ## Value
 
@@ -59,7 +59,7 @@ distribution whose remaining parameter is smooth.
 
 ``` r
 # a gaussian with known mean: only sigma remains
-d <- fixed(gaussian_distrib(), mu = 0)
+d <- fixed(gaussian1_distrib(), mu = 0)
 d@params
 #> [1] "sigma"
 
@@ -72,12 +72,12 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 #> 
 
 # the score is the corresponding component of the parent's
-full <- distrib_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
+full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
 all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 #> [1] TRUE
 
 # fixing everything gives a fully known distribution
-d0 <- fixed(gaussian_distrib(), mu = 0, sigma = 1)
+d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
 distrib_pdf(d0, 0, list())
 #> [1] 0.3989423
 ```

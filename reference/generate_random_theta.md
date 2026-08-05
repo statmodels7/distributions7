@@ -28,7 +28,7 @@ each inside that parameter's bounds.
 
 ``` r
 set.seed(1)
-generate_random_theta(gamma_distrib())
+generate_random_theta(gamma2_distrib())
 #> $mu
 #> [1] 1.666501
 #> 

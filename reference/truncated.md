@@ -76,7 +76,7 @@ to finite differences of the analytical Hessian.
 - `lower >= upper`.
 
 - A truncation point that removes no mass, such as
-  `truncated(gamma_distrib(), lower = -2)`: the Gamma is supported on
+  `truncated(gamma2_distrib(), lower = -2)`: the Gamma is supported on
   \\(0,\infty)\\, so the result would be the Gamma itself.
 
 - A non-integer endpoint for a discrete parent, which is ambiguous.
@@ -92,7 +92,7 @@ to finite differences of the analytical Hessian.
   — when the truncation removes \\0\\ from the support. Truncating zero
   away cancels that parameter out of the likelihood entirely, leaving an
   identically zero score. Truncating elsewhere, as in
-  `truncated(zero_adjusted(gamma_distrib()), upper = 5)`, is fine and
+  `truncated(zero_adjusted(gamma2_distrib()), upper = 5)`, is fine and
   the point mass is carried through
   [`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
 
@@ -118,14 +118,14 @@ dpois(1:4, 2) / (1 - dpois(0, 2))
 #> [1] 0.3130353 0.3130353 0.2086902 0.1043451
 
 # A Gaussian restricted to an interval
-tn <- truncated(gaussian_distrib(), lower = -1, upper = 2)
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 mean(tn, list(mu = 0, sigma = 1))
 #> [1] 0.2296372
 
 # A truncation point that removes nothing is refused
-try(truncated(gamma_distrib(), lower = -2))
+try(truncated(gamma2_distrib(), lower = -2))
 #> Error : truncated() was given lower = -2, which is at or below the lower bound of the
-#>   support of 'gamma' (0). Truncating there removes no probability mass and the
+#>   support of 'gamma2' (0). Truncating there removes no probability mass and the
 #>   result would be the parent distribution. Choose a point strictly inside the
 #>   support, or omit 'lower'.
 ```

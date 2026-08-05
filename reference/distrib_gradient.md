@@ -44,7 +44,7 @@ A named list with one numeric vector per parameter, keyed by
 ## Examples
 
 ``` r
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> $mu
 #> [1] -1  0  1

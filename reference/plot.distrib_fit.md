@@ -68,7 +68,7 @@ observations below it, and the fitted correlation above.
 ``` r
 set.seed(1)
 y <- rgamma(300, shape = 4, rate = 2)
-fit <- fit_distrib(gamma_distrib(), y)
+fit <- fit_distrib(gamma2_distrib(), y)
 plot(fit)
 
 ```

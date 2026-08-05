@@ -19,7 +19,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(beta_distrib(), logit_transform())
+d <- transformation(beta1_distrib(), logit_transform())
 distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 #> [1] 0.375
 ```

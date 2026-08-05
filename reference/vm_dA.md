@@ -32,5 +32,5 @@ I_1/\kappa\\, so no further Bessel evaluation is needed.
 
 ## See also
 
-[`vonmises_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises_distrib.md),
+[`vonmises1_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md),
 [`vm_A`](https://statmodels7.github.io/distributions7/reference/vm_A.md)

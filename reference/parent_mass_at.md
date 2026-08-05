@@ -33,7 +33,7 @@ A numeric vector of probabilities.
 This is the one quantity separating the two truncation classes, and
 getting it wrong for a *mixed* parent is subtle. It is tempting to
 branch on whether the parent is a `discrete_distrib`; that looks right
-and is wrong. The cdf of `zero_adjusted(gamma_distrib())` already
+and is wrong. The cdf of `zero_adjusted(gamma2_distrib())` already
 includes the point mass at zero, so \\F(0) \neq F(0^-)\\ even though the
 object is a `continuous_distrib`. Truncating it from above, with the
 atom retained, then drops exactly that mass out of the normalising

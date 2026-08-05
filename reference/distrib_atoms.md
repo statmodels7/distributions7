@@ -50,14 +50,14 @@ jumps.
 ## Examples
 
 ``` r
-distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1))
+distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #> $y
 #> numeric(0)
 #> 
 #> $p
 #> numeric(0)
 #> 
-distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
+distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
 #> $y
 #> [1] 0
 #> 

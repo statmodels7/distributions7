@@ -75,7 +75,7 @@ numerically, and distributions with a closed form register it directly.
 ## Examples
 
 ``` r
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 theta <- list(mu = 0, sigma = 1)
 
 # what a right-censored observation at q = 1 contributes to the score

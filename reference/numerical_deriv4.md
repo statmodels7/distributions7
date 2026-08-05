@@ -53,7 +53,7 @@ stencil when \\k = l\\, a four-point cross stencil otherwise.
 ## Examples
 
 ``` r
-numerical_deriv4(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #> $mu_mu_mu_mu
 #> [1] 0
 #> 

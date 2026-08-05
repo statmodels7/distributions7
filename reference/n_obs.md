@@ -37,7 +37,7 @@ parameters of length \\np\\.
 ## Examples
 
 ``` r
-n_obs(gaussian_distrib(), c(1, 2, 3))
+n_obs(gaussian1_distrib(), c(1, 2, 3))
 #> [1] 3
 n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
 #> [1] 5

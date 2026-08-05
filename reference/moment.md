@@ -52,7 +52,7 @@ among `theta` components and `p`.
 
 ``` r
 if (FALSE) { # \dontrun{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 moment(d, list(mu = 2, sigma = 3), p = 1)                 # 2
 moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 } # }

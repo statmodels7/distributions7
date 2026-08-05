@@ -26,7 +26,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gaussian_distrib(), yj_transform(lambda = 0.5))
+d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #> [1] 0.2739736
 ```

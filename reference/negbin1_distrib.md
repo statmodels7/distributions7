@@ -31,7 +31,7 @@ Two negative binomials are in common use and they are **different
 families**, not two parametrisations of one. Here the variance is
 \\\mu(1+\theta)\\, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
-[`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 has \\\mu + \mu^2/\theta\\, growing quadratically. Fitting one is not
 fitting the other, and a likelihood ratio between them is not a test of
 nested models.
@@ -66,7 +66,7 @@ form does when \\\theta \to \infty\\.
 
 ## See also
 
-[`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md)
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
 for the quadratic variance,
 [`poisson_distrib`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md),
 [`geometric_distrib`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
@@ -87,6 +87,6 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 # the two negative binomials are different families: at the same (mu, theta)
 # this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8
-variance(negbin_distrib(), list(mu = 4, theta = 4))
+variance(negbin2_distrib(), list(mu = 4, theta = 4))
 #> [1] 8
 ```

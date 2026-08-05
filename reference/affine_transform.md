@@ -29,7 +29,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gaussian_distrib(), affine_transform(loc = 1, scale = 2))
+d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #> [1] 0.1994711
 ```

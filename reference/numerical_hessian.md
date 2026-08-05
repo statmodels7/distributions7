@@ -54,7 +54,7 @@ Accuracy is roughly `sqrt(eps)`.
 ## Examples
 
 ``` r
-numerical_hessian(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+numerical_hessian(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> $mu_mu
 #> [1] -1 -1 -1
 #> 

@@ -18,7 +18,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gaussian_distrib(), expit_transform())
+d <- transformation(gaussian1_distrib(), expit_transform())
 distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
 #> [1] 1.595769
 ```

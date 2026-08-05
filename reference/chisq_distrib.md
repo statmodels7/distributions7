@@ -66,7 +66,7 @@ held at.
 
 ## See also
 
-[`gamma_distrib`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md),
+[`gamma2_distrib`](https://statmodels7.github.io/distributions7/reference/gamma2_distrib.md),
 [`exponential_distrib`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
 
 ## Examples

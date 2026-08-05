@@ -114,7 +114,7 @@ distrib_pdf(zap, 0:5, list(mu = 3, za = 0.3))
 #> [1] 0.3000000 0.1100310 0.1650464 0.1650464 0.1237848 0.0742709
 
 # Semicontinuous data: a spike at zero and a gamma above it
-zagamma <- zero_adjusted(gamma_distrib())
+zagamma <- zero_adjusted(gamma2_distrib())
 distrib_atoms(zagamma, list(mu = 2, sigma2 = 1, za = 0.3))
 #> $y
 #> [1] 0

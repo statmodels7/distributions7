@@ -51,7 +51,7 @@ This is the four-parameter family a location-scale-shape framework
 wants: the scale, the skewness and the tail weight are three separate
 parameters, each of which can be given its own linear predictor. The
 skew normal of
-[`skewnormal_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal_distrib.md)
+[`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
 can reach a skewness of at most \\0.995\\ and an excess kurtosis of at
 most \\0.87\\; adding \\\nu\\ removes both bounds.
 
@@ -105,9 +105,9 @@ density is perfectly well defined there, which is why the moments and
 the parameters are kept apart.
 
 **Special cases.** \\\alpha = 0\\ is
-[`student_t_distrib`](https://statmodels7.github.io/distributions7/reference/student_t_distrib.md);
+[`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md);
 large \\\nu\\ approaches
-[`skewnormal_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal_distrib.md).
+[`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md).
 The information is singular in \\\alpha\\ at \\\alpha = 0\\ for the same
 reason as in the skew normal.
 

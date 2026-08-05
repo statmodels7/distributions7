@@ -61,7 +61,7 @@ A named list of derivative components of \\F\\, not of its logarithm.
 ## Examples
 
 ``` r
-numerical_cdf_deriv(gaussian_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
+numerical_cdf_deriv(gaussian1_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
 #> $mu
 #> [1] -0.2419707
 #> 

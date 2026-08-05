@@ -49,12 +49,12 @@ overdispersed relative to the Poisson at every mean.
 - \\\mu \in (0, +\infty)\\
 
 The family is the negative binomial at \\\theta = 1\\, so
-`fixed(negbin_distrib(), theta = 1)` describes the same law and is used
+`fixed(negbin2_distrib(), theta = 1)` describes the same law and is used
 in the tests as an independent implementation.
 
 ## See also
 
-[`negbin_distrib`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md),
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md),
 [`poisson_distrib`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md),
 [`exponential_distrib`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
 

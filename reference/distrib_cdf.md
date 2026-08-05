@@ -36,7 +36,7 @@ A numeric vector of cumulative probabilities.
 ## Examples
 
 ``` r
-distrib_cdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> [1] 0.1586553 0.5000000 0.8413447
 distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 #> [1] 0.8646647 0.5939942 0.3233236 0.1428765

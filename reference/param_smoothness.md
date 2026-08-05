@@ -24,7 +24,7 @@ A named logical vector, one entry per parameter.
 ## Examples
 
 ``` r
-param_smoothness(gaussian_distrib())
+param_smoothness(gaussian1_distrib())
 #>    mu sigma 
 #>  TRUE  TRUE 
 

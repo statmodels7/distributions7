@@ -86,7 +86,7 @@ plain vector of length \\p\\ is read as a single observation.
 
 ## See also
 
-[`gaussian_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian_distrib.md),
+[`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
 [`log_cholesky`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
 

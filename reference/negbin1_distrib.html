@@ -75,7 +75,7 @@ linear in the mean, \(\operatorname{Var}(Y) = \mu(1+\theta)\)."><meta property="
 families</strong>, not two parametrisations of one. Here the variance is
 \(\mu(1+\theta)\), growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
-<code><a href="negbin_distrib.html">negbin_distrib</a></code> has \(\mu + \mu^2/\theta\), growing
+<code><a href="negbin2_distrib.html">negbin2_distrib</a></code> has \(\mu + \mu^2/\theta\), growing
 quadratically. Fitting one is not fitting the other, and a likelihood ratio
 between them is not a test of nested models.</p>
 <p>The difference is visible in where the mean sits. The size is
@@ -101,7 +101,7 @@ form does when \(\theta \to \infty\).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="negbin_distrib.html">negbin_distrib</a></code> for the quadratic variance,
+    <div class="dont-index"><p><code><a href="negbin2_distrib.html">negbin2_distrib</a></code> for the quadratic variance,
 <code><a href="poisson_distrib.html">poisson_distrib</a></code>, <code><a href="geometric_distrib.html">geometric_distrib</a></code></p></div>
     </div>
 
@@ -120,7 +120,7 @@ form does when \(\theta \to \infty\).</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the two negative binomials are different families: at the same (mu, theta)</span></span></span>
 <span class="r-in"><span><span class="co"># this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="fu"><a href="negbin_distrib.html">negbin_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variance.html">variance</a></span><span class="op">(</span><span class="fu"><a href="negbin2_distrib.html">negbin2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">4</span>, theta <span class="op">=</span> <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

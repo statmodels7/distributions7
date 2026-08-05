@@ -122,7 +122,7 @@ Hessian.</p>
 parent would hide the mistake.</p></li>
 <li><p><code>lower &gt;= upper</code>.</p></li>
 <li><p>A truncation point that removes no mass, such as
-<code>truncated(gamma_distrib(), lower = -2)</code>: the Gamma is supported on
+<code>truncated(gamma2_distrib(), lower = -2)</code>: the Gamma is supported on
 \((0,\infty)\), so the result would be the Gamma itself.</p></li>
 <li><p>A non-integer endpoint for a discrete parent, which is ambiguous.</p></li>
 <li><p>A discrete truncation leaving too few support points to identify the
@@ -133,7 +133,7 @@ parameters: \(k\) points carry \(k-1\) free probabilities, so
 truncation removes \(0\) from the support. Truncating zero away cancels
 that parameter out of the likelihood entirely, leaving an identically zero
 score. Truncating elsewhere, as in
-<code>truncated(zero_adjusted(gamma_distrib()), upper = 5)</code>, is fine and the
+<code>truncated(zero_adjusted(gamma2_distrib()), upper = 5)</code>, is fine and the
 point mass is carried through <code><a href="distrib_atoms.html">distrib_atoms</a></code>.</p></li>
 </ul><p>Truncating an already truncated distribution is allowed and is collapsed into a
 single object over the intersection of the two intervals, rather than nested.</p>
@@ -154,14 +154,14 @@ single object over the intersection of the two intervals, rather than nested.</p
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.3130353 0.3130353 0.2086902 0.1043451</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A Gaussian restricted to an interval</span></span></span>
-<span class="r-in"><span><span class="va">tn</span> <span class="op">&lt;-</span> <span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">tn</span> <span class="op">&lt;-</span> <span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2296372</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A truncation point that removes nothing is refused</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gamma_distrib.html">gamma_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : truncated() was given lower = -2, which is at or below the lower bound of the</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   support of 'gamma' (0). Truncating there removes no probability mass and the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   support of 'gamma2' (0). Truncating there removes no probability mass and the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   result would be the parent distribution. Choose a point strictly inside the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   support, or omit 'lower'.</span>
 <span class="r-in"><span></span></span>

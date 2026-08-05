@@ -96,6 +96,6 @@ Everything else is inherited from
 ``` r
 S7::S7_inherits(poisson_distrib(), discrete_distrib)
 #> [1] TRUE
-S7::S7_inherits(gaussian_distrib(), discrete_distrib)
+S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 #> [1] FALSE
 ```

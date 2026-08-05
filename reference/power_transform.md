@@ -26,7 +26,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gamma_distrib(), power_transform(p = 2))
+d <- transformation(gamma2_distrib(), power_transform(p = 2))
 distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #> [1] 0.180447
 ```

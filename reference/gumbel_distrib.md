@@ -69,7 +69,7 @@ kurtosis \\12/5\\, the last two free of both parameters.
 
 **Relation to the Weibull.** If \\Y\\ is Gumbel then \\e^{-Y}\\ is
 Weibull, so
-[`weibull_distrib`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md)
+[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 is this family on the log scale and reversed; the two share the
 expectations that produce their information matrices.
 

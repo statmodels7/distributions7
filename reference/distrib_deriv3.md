@@ -75,7 +75,7 @@ A named list of derivative-component vectors, keyed as in
 ## Examples
 
 ``` r
-distrib_deriv3(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_deriv3(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> $mu_mu_mu
 #> [1] 0 0 0
 #> 

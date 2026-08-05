@@ -25,7 +25,7 @@ zero_inflated(distrib, link_zi = logit_link())
   e.g.
   [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
   or
-  [`negbin_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin_distrib.md).
+  [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md).
 
 - link_zi:
 

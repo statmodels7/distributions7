@@ -51,17 +51,17 @@ kurtosis 6.
 - \\\mu \in (0, +\infty)\\
 
 The family is the Weibull with unit shape, so
-`fixed(weibull_distrib(), sigma = 1)` describes the same law and is used
-in the tests as an independent implementation. It is **not** a Gamma
-with a fixed parameter: this package writes the Gamma in \\(\mu,
+`fixed(weibull1_distrib(), sigma = 1)` describes the same law and is
+used in the tests as an independent implementation. It is **not** a
+Gamma with a fixed parameter: this package writes the Gamma in \\(\mu,
 \sigma^2)\\, whose shape is \\\mu^2/\sigma^2\\, so unit shape is the
 relation \\\sigma^2 = \mu^2\\ between two parameters rather than a value
 one of them can be held at.
 
 ## See also
 
-[`gamma_distrib`](https://statmodels7.github.io/distributions7/reference/gamma_distrib.md),
-[`weibull_distrib`](https://statmodels7.github.io/distributions7/reference/weibull_distrib.md),
+[`gamma2_distrib`](https://statmodels7.github.io/distributions7/reference/gamma2_distrib.md),
+[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
 [`geometric_distrib`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
 
 ## Examples

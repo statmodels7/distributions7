@@ -116,7 +116,7 @@ stand.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">200</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">1</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># the default, and the same thing said explicitly</span></span></span>
@@ -130,7 +130,7 @@ stand.</p>
 <span class="r-in"><span><span class="co"># A family whose expected information has no closed form takes a strategy.</span></span></span>
 <span class="r-in"><span><span class="co"># The same argument on a family that HAS one is refused rather than</span></span></span>
 <span class="r-in"><span><span class="co"># silently ignored.</span></span></span>
-<span class="r-in"><span><span class="va">sn</span> <span class="op">&lt;-</span> <span class="fu"><a href="skewnormal_distrib.html">skewnormal_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sn</span> <span class="op">&lt;-</span> <span class="fu"><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ys</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">sn</span>, <span class="fl">300</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span>, alpha <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">sn</span>, <span class="va">ys</span>, method <span class="op">=</span> <span class="fu">fisher_scoring</span><span class="op">(</span>approx <span class="op">=</span> <span class="st">"opg"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -138,7 +138,7 @@ stand.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0.09063071 1.01986793 3.15712508 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu"><a href="fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, method <span class="op">=</span> <span class="fu">fisher_scoring</span><span class="op">(</span>approx <span class="op">=</span> <span class="st">"mc"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gaussian' computes its expected information in closed form, so the 'approx'</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Error : 'gaussian1' computes its expected information in closed form, so the 'approx'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   of fisher_scoring() would be ignored. Use fisher_scoring() with no</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   arguments: the fit will take the exact expression.</span>
 <span class="r-in"><span></span></span>

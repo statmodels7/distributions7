@@ -89,7 +89,7 @@ link scale — is the one an optimiser needs.</p>
 The package returns its derivatives with respect to the parameters, per
 observation, as named lists:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">4</span>, <span class="va">theta</span><span class="op">)</span></span>
 <span></span>
@@ -184,7 +184,7 @@ that factor is simply
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>Under an identity link the two scales coincide, as they must:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gaussian_distrib.html">gaussian_distrib</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">d_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span></span>
 <span>  link_mu    <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  link_sigma <span class="op">=</span> <span class="fu">linkfunctions7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/linkfunctions7/reference/identity_link.html" class="external-link">identity_link</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
@@ -263,7 +263,7 @@ take <code>expected = TRUE</code>. Some distributions have closed-form
 expected derivatives; where they do not, the value is approximated, and
 <code>approx</code> chooses how:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="fu"><a href="../reference/gamma_distrib.html">gamma_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/distrib_deriv3.html">distrib_deriv3</a></span><span class="op">(</span><span class="fu"><a href="../reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, expected <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mu_mu_mu</span></span>
 <span><span class="co">#&gt; [1] -0.2431584</span></span>
 <span><span class="co">#&gt; </span></span>

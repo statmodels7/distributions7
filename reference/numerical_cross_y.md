@@ -54,7 +54,7 @@ the way nested differences in the same variable do.
 ## Examples
 
 ``` r
-numerical_cross_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+numerical_cross_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> $mu
 #> [1] 1 1 1
 #> 

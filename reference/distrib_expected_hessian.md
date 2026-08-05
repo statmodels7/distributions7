@@ -75,7 +75,7 @@ transforms as the simple congruence \\\mathrm{diag}(h')\\
 ## Examples
 
 ``` r
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 #> $mu_mu
 #> [1] -1

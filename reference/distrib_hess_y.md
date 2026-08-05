@@ -37,6 +37,6 @@ A numeric vector of the same length as `y`.
 ## Examples
 
 ``` r
-distrib_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> [1] -1 -1 -1
 ```

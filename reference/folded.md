@@ -50,8 +50,8 @@ preimage while every other point has two, so an atom at zero would be
 counted twice by the sum above and an atom elsewhere would be moved onto
 its reflection.
 
-**The half-normal** is `fixed(folded(gaussian_distrib()), mu = 0)`, and
-the folded normal proper is `folded(gaussian_distrib())`.
+**The half-normal** is `fixed(folded(gaussian1_distrib()), mu = 0)`, and
+the folded normal proper is `folded(gaussian1_distrib())`.
 
 **The sign of a symmetric parent's location is not identified.** When
 the parent is symmetric about its location, \\f(-x; \mu) = f(x; -\mu)\\,
@@ -63,7 +63,7 @@ it is not refused, the folded normal being a standard family; what is
 estimable is \\\|\mu\|\\ together with the remaining parameters. Holding
 the location at zero removes the question and gives the half-normal. A
 parent that is not symmetric about its location, such as
-[`skewnormal_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal_distrib.md),
+[`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
 has no such invariance and its sign is identified.
 
 ## See also
@@ -75,13 +75,13 @@ has no such invariance and its sign is identified.
 ## Examples
 
 ``` r
-d <- folded(gaussian_distrib())
+d <- folded(gaussian1_distrib())
 theta <- list(mu = 0.5, sigma = 1)
 distrib_pdf(d, c(0, 0.5, 2), theta)
 #> [1] 0.7041307 0.6409130 0.1470459
 
 # the half-normal: a folded gaussian with its location held at zero
-hn <- fixed(folded(gaussian_distrib()), mu = 0)
+hn <- fixed(folded(gaussian1_distrib()), mu = 0)
 hn@params
 #> [1] "sigma"
 distrib_pdf(hn, c(0.5, 1), list(sigma = 2))

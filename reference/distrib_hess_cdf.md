@@ -66,7 +66,7 @@ q\right\],\$\$ and the log scale follows from \\\partial\_{ij}\log P =
 ## Examples
 
 ``` r
-distrib_hess_cdf(gaussian_distrib(), 1, list(mu = 0, sigma = 1))
+distrib_hess_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 #> $mu_mu
 #> [1] -0.3703137
 #> 

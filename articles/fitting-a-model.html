@@ -88,9 +88,9 @@ to start otherwise.</p>
 its parameters, but the defaults are sensible, so most of the time it is
 called with no arguments:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gamma_distrib.html">gamma_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">d</span></span>
-<span><span class="co">#&gt; Distribution: Gamma</span></span>
+<span><span class="co">#&gt; Distribution: Gamma2</span></span>
 <span><span class="co">#&gt; Type:         Continuous</span></span>
 <span><span class="co">#&gt; Dimensions:   univariate</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -103,9 +103,9 @@ distribution back to it. Parameters travel as a named list.</p>
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">500</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
-<span><span class="co">#&gt; Maximum-likelihood fit: gamma</span></span>
+<span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 70 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 73 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -297,7 +297,7 @@ derivative matches finite differences, on both the parameter and the
 link scale:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Distribution: gamma</span></span>
+<span><span class="co">#&gt; Distribution: gamma2</span></span>
 <span><span class="co">#&gt; Parameters:   mu = 3, sigma2 = 2</span></span>
 <span><span class="co">#&gt; Observations: 100   Monte Carlo: 200000</span></span>
 <span><span class="co">#&gt; </span></span>

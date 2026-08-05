@@ -96,7 +96,7 @@ Defaults to <code><a href="https://statmodels7.github.io/linkfunctions7/referenc
     <p>This is the four-parameter family a location-scale-shape framework wants: the
 scale, the skewness and the tail weight are three separate parameters, each
 of which can be given its own linear predictor. The skew normal of
-<code><a href="skewnormal_distrib.html">skewnormal_distrib</a></code> can reach a skewness of at most \(0.995\)
+<code><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></code> can reach a skewness of at most \(0.995\)
 and an excess kurtosis of at most \(0.87\); adding \(\nu\) removes both
 bounds.</p>
 <p><strong>Probability density function</strong>, with \(z = (y-\mu)/\sigma\) and
@@ -135,8 +135,8 @@ observed Hessian is the closed form above and needs no integration.</p>
 kurtosis \(\nu &gt; 4\), and each returns <code>NaN</code> below its threshold. The
 density is perfectly well defined there, which is why the moments and the
 parameters are kept apart.</p>
-<p><strong>Special cases.</strong> \(\alpha = 0\) is <code><a href="student_t_distrib.html">student_t_distrib</a></code>;
-large \(\nu\) approaches <code><a href="skewnormal_distrib.html">skewnormal_distrib</a></code>. The information
+<p><strong>Special cases.</strong> \(\alpha = 0\) is <code><a href="student_t1_distrib.html">student_t1_distrib</a></code>;
+large \(\nu\) approaches <code><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></code>. The information
 is singular in \(\alpha\) at \(\alpha = 0\) for the same reason as in the
 skew normal.</p>
 <p><strong>Parameter Domains:</strong></p><ul><li><p>\(\mu \in (-\infty, +\infty)\)</p></li>

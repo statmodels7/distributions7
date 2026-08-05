@@ -35,7 +35,7 @@ A numeric vector of density values, one per observation.
 ## Examples
 
 ``` r
-distrib_pdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #> [1] 0.2419707 0.3989423 0.2419707
 distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 #> [1] -2.000000 -1.306853 -1.306853 -1.712318

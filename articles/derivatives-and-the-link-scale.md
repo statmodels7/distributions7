@@ -19,7 +19,7 @@ observation, as named lists:
 
 ``` r
 
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 theta <- list(mu = 2, sigma = 3)
 y <- distrib_rng(d, 4, theta)
 
@@ -128,7 +128,7 @@ Under an identity link the two scales coincide, as they must:
 
 ``` r
 
-d_id <- gaussian_distrib(
+d_id <- gaussian1_distrib(
   link_mu    = linkfunctions7::identity_link(),
   link_sigma = linkfunctions7::identity_link()
 )
@@ -210,7 +210,7 @@ expected derivatives; where they do not, the value is approximated, and
 
 ``` r
 
-distrib_deriv3(gamma_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
+distrib_deriv3(gamma2_distrib(), 0, list(mu = 3, sigma2 = 2), expected = TRUE)
 #> $mu_mu_mu
 #> [1] -0.2431584
 #> 

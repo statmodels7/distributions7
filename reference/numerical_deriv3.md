@@ -54,7 +54,7 @@ parameter-domain boundaries.
 ## Examples
 
 ``` r
-numerical_deriv3(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #> $mu_mu_mu
 #> [1] 0
 #> 

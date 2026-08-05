@@ -102,7 +102,7 @@ default: the density is the one thing a distribution must supply.
 ## Examples
 
 ``` r
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 S7::S7_inherits(d, distrib)
 #> [1] TRUE
 d@params

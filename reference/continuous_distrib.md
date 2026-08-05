@@ -98,7 +98,7 @@ Everything else is inherited from
 ## Examples
 
 ``` r
-S7::S7_inherits(gaussian_distrib(), continuous_distrib)
+S7::S7_inherits(gaussian1_distrib(), continuous_distrib)
 #> [1] TRUE
 S7::S7_inherits(poisson_distrib(), continuous_distrib)
 #> [1] FALSE

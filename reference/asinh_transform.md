@@ -19,7 +19,7 @@ object.
 ## Examples
 
 ``` r
-d <- transformation(gaussian_distrib(), asinh_transform())
+d <- transformation(gaussian1_distrib(), asinh_transform())
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #> [1] 0.3086008
 ```
