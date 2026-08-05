@@ -92,6 +92,8 @@ Collate:
     'mvstudent_t_distrib.R'
     'mv_summary.R'
     'numerical_fallbacks.R'
+    'reparametrize.R'
+    'reparametrized_families.R'
     'starting_values.R'
     'transformations.R'
     'vonmises1_distrib.R'
