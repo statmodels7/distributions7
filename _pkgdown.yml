@@ -65,6 +65,7 @@ reference:
   - geometric_distrib
   - betabinom_distrib
   - negbin1_distrib
+  - gpd_distrib
 
 - title: Probability functions
   desc: Density, distribution and quantile functions, and random generation.
@@ -234,6 +235,8 @@ reference:
   contents: [PoissonDistrib, ends_with(".PoissonDistrib")]
 - title: Negative binomial
   contents: [NegBinDistrib, ends_with(".NegBinDistrib")]
+- title: Generalised Pareto
+  contents: [GPDDistrib, ends_with(".GPDDistrib")]
 - title: NB1 negative binomial
   contents: [NegBin1Distrib, ends_with(".NegBin1Distrib")]
 - title: Beta-binomial

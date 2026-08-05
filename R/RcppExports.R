@@ -249,6 +249,22 @@ geometric_deriv4_expected_cpp <- function(y, mu) {
     .Call(`_distributions7_geometric_deriv4_expected_cpp`, y, mu)
 }
 
+gpd_logpdf_cpp <- function(y, sigma, xi) {
+    .Call(`_distributions7_gpd_logpdf_cpp`, y, sigma, xi)
+}
+
+gpd_gradient_cpp <- function(y, sigma, xi) {
+    .Call(`_distributions7_gpd_gradient_cpp`, y, sigma, xi)
+}
+
+gpd_hessian_cpp <- function(y, sigma, xi) {
+    .Call(`_distributions7_gpd_hessian_cpp`, y, sigma, xi)
+}
+
+gpd_expected_hessian_cpp <- function(y, sigma, xi) {
+    .Call(`_distributions7_gpd_expected_hessian_cpp`, y, sigma, xi)
+}
+
 gumbel_deriv3_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_gumbel_deriv3_cpp`, y, mu, sigma)
 }

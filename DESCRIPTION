@@ -75,6 +75,7 @@ Collate:
     'folded.R'
     'gamma_distrib.R'
     'geometric_distrib.R'
+    'gpd_distrib.R'
     'methods.R'
     'mvgaussian_distrib.R'
     'mv_plot.R'

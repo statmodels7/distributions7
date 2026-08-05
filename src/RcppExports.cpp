@@ -795,6 +795,58 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gpd_logpdf_cpp
+NumericVector gpd_logpdf_cpp(NumericVector y, NumericVector sigma, NumericVector xi);
+RcppExport SEXP _distributions7_gpd_logpdf_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_logpdf_cpp(y, sigma, xi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_gradient_cpp
+List gpd_gradient_cpp(NumericVector y, NumericVector sigma, NumericVector xi);
+RcppExport SEXP _distributions7_gpd_gradient_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_gradient_cpp(y, sigma, xi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_hessian_cpp
+List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi);
+RcppExport SEXP _distributions7_gpd_hessian_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_hessian_cpp(y, sigma, xi));
+    return rcpp_result_gen;
+END_RCPP
+}
+// gpd_expected_hessian_cpp
+List gpd_expected_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi);
+RcppExport SEXP _distributions7_gpd_expected_hessian_cpp(SEXP ySEXP, SEXP sigmaSEXP, SEXP xiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type xi(xiSEXP);
+    rcpp_result_gen = Rcpp::wrap(gpd_expected_hessian_cpp(y, sigma, xi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // gumbel_deriv3_cpp
 List gumbel_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
 RcppExport SEXP _distributions7_gumbel_deriv3_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
@@ -1643,6 +1695,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_geometric_deriv3_expected_cpp", (DL_FUNC) &_distributions7_geometric_deriv3_expected_cpp, 2},
     {"_distributions7_geometric_deriv4_cpp", (DL_FUNC) &_distributions7_geometric_deriv4_cpp, 2},
     {"_distributions7_geometric_deriv4_expected_cpp", (DL_FUNC) &_distributions7_geometric_deriv4_expected_cpp, 2},
+    {"_distributions7_gpd_logpdf_cpp", (DL_FUNC) &_distributions7_gpd_logpdf_cpp, 3},
+    {"_distributions7_gpd_gradient_cpp", (DL_FUNC) &_distributions7_gpd_gradient_cpp, 3},
+    {"_distributions7_gpd_hessian_cpp", (DL_FUNC) &_distributions7_gpd_hessian_cpp, 3},
+    {"_distributions7_gpd_expected_hessian_cpp", (DL_FUNC) &_distributions7_gpd_expected_hessian_cpp, 3},
     {"_distributions7_gumbel_deriv3_cpp", (DL_FUNC) &_distributions7_gumbel_deriv3_cpp, 3},
     {"_distributions7_gumbel_deriv3_expected_cpp", (DL_FUNC) &_distributions7_gumbel_deriv3_expected_cpp, 3},
     {"_distributions7_gumbel_deriv4_cpp", (DL_FUNC) &_distributions7_gumbel_deriv4_cpp, 3},
