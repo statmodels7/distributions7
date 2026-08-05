@@ -97,6 +97,7 @@ Collate:
     'starting_values.R'
     'transformations.R'
     'vonmises1_distrib.R'
+    'vonmises2_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),
