@@ -54,9 +54,13 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-Eighteen univariate distributions and two multivariate ones ship with
-the package. Each constructor takes the link functions used for its
-parameters, and parameters travel as a named list.
+Thirty-eight univariate distributions and four multivariate ones ship
+with the package, one name per parametrisation where a family has
+several – `gaussian1_distrib()` in mean and scale, `gaussian2_distrib()`
+in mean and variance, `gaussian3_distrib()` in mean and precision, and
+likewise for eleven other families. Each constructor takes the link
+functions used for its parameters, and parameters travel as a named
+list.
 
 ``` r
 d <- gaussian1_distrib()
@@ -119,9 +123,9 @@ mapped through $g^{-1}$, so they can never leave a parameter’s domain.
 y <- distrib_rng(gamma2_distrib(), 500, list(mu = 3, sigma2 = 2))
 fit <- fit_distrib(gamma2_distrib(), y)
 fit
-#> Maximum-likelihood fit: gamma
+#> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms
+#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 20 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -313,7 +317,7 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 #>   [OK  ] density integrates to 1                     1.81e-10
 #>   [OK  ] density is non-negative                     5.00e-03
 #>   [OK  ] cdf in [0,1] and non-decreasing             2.46e-02
-#>   [OK  ] cdf agrees with the density                 8.42e-06
+#>   [OK  ] cdf agrees with the density                 6.25e-07
 #>   [OK  ] quantile/cdf round-trip                     3.31e-10
 #>   [OK  ] rng matches the cdf                         1.68e+00
 #>   [OK  ] gradient vs finite differences              0.00e+00

@@ -62,9 +62,13 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-Eighteen univariate distributions and two multivariate ones ship with the
-package. Each constructor takes the link functions used for its parameters,
-and parameters travel as a named list.
+Thirty-eight univariate distributions and four multivariate ones ship with
+the package, one name per parametrisation where a family has several --
+`gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean and
+variance, `gaussian3_distrib()` in mean and precision, and likewise for
+eleven other families.
+Each constructor takes the link functions used for its parameters, and
+parameters travel as a named list.
 
 ```{r}
 d <- gaussian1_distrib()
