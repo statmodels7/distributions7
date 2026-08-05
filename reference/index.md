@@ -138,6 +138,16 @@ respect to the unconstrained parameters.
   : Skewness of a Distribution or Sample
 - [`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
   : Excess Kurtosis of a Distribution or Sample
+- [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
+  : Recycle a Constant Moment to the Length of the Parameters
+- [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
+  : Raw Moments of the Generalised Gamma
+- [`betabinom_factorial_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_factorial_moments.md)
+  : Falling Factorial Moments of the Beta-Binomial
+- [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
+  : Central Moments From Falling Factorial Moments
+- [`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
+  : Central Moments of a Beta-Binomial
 
 ## Building on a distribution
 
@@ -1274,11 +1284,20 @@ divergent density.
 - [`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
   : Partial Bell Polynomials for Orders up to Four
 
+- [`betabinom_central()`](https://statmodels7.github.io/distributions7/reference/betabinom_central.md)
+  : Central Moments of a Beta-Binomial
+
+- [`betabinom_factorial_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_factorial_moments.md)
+  : Falling Factorial Moments of the Beta-Binomial
+
 - [`canon_key()`](https://statmodels7.github.io/distributions7/reference/canon_key.md)
   : Canonical Component Name of a Block
 
 - [`cdf_tail_scale()`](https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.md)
   : Put CDF Derivatives on the Requested Tail and Scale
+
+- [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
+  : Central Moments From Falling Factorial Moments
 
 - [`check_bounds_fast()`](https://statmodels7.github.io/distributions7/reference/check_bounds_fast.md)
   : Check Parameter Domains, Taking the Properties as Arguments
@@ -1568,6 +1587,9 @@ divergent density.
 
   Generate Random Parameters for `distrib` Objects
 
+- [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
+  : Raw Moments of the Generalised Gamma
+
 - [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
   : The Success Probability Behind a Geometric Mean
 
@@ -1616,14 +1638,65 @@ divergent density.
 - [`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
   : Does This Distribution Already Model a Probability of Zero?
 
+- [`kurtosis.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.BernoulliDistrib.md)
+  : Kurtosis of the Bernoulli Distribution
+
+- [`kurtosis.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Beta1Distrib.md)
+  : Kurtosis of the Beta Distribution
+
+- [`kurtosis.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md)
+  : Kurtosis of the Beta-Binomial Distribution
+
+- [`kurtosis.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.BinomialDistrib.md)
+  : Kurtosis of the Binomial Distribution
+
+- [`kurtosis.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.CauchyDistrib.md)
+  : The Cauchy Distribution Has No Kurtosis
+
+- [`kurtosis.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.ChisqDistrib.md)
+  : Kurtosis of the Chi-Squared Distribution
+
+- [`kurtosis.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.ExponentialDistrib.md)
+  : Kurtosis of the Exponential Distribution
+
+- [`kurtosis.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GPDDistrib.md)
+  : Kurtosis of the Generalised Pareto Distribution
+
+- [`kurtosis.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Gamma2Distrib.md)
+  : Kurtosis of the Gamma Distribution
+
+- [`kurtosis.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Gaussian1Distrib.md)
+  : Kurtosis of the Gaussian Distribution
+
+- [`kurtosis.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GenGamma1Distrib.md)
+  : Kurtosis of the Generalised Gamma Distribution
+
+- [`kurtosis.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GeometricDistrib.md)
+  : Kurtosis of the Geometric Distribution
+
 - [`kurtosis.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.GumbelDistrib.md)
   : Kurtosis of the Gumbel Distribution
+
+- [`kurtosis.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.InvGauss1Distrib.md)
+  : Kurtosis of the Inverse Gaussian Distribution
 
 - [`kurtosis.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md)
   : Kurtosis of the Laplace Distribution
 
+- [`kurtosis.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.LogisticDistrib.md)
+  : Kurtosis of the Logistic Distribution
+
+- [`kurtosis.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Lognormal1Distrib.md)
+  : Kurtosis of the Lognormal Distribution
+
+- [`kurtosis.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.NegBin1Distrib.md)
+  : Kurtosis of the NB1 Negative Binomial Distribution
+
 - [`kurtosis.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.NegBin2Distrib.md)
   : Kurtosis of the Negative Binomial Distribution
+
+- [`kurtosis.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.PoissonDistrib.md)
+  : Kurtosis of the Poisson Distribution
 
 - [`kurtosis.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.PseudoHuberDistrib.md)
   : Kurtosis of the Pseudo-Huber Distribution
@@ -1633,6 +1706,9 @@ divergent density.
 
 - [`kurtosis.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.SkewTDistrib.md)
   : Kurtosis of the Skew t Distribution
+
+- [`kurtosis.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.StudentT1Distrib.md)
+  : Kurtosis of the Student t Distribution
 
 - [`kurtosis.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Weibull1Distrib.md)
   : Kurtosis of the Weibull Distribution
@@ -1664,14 +1740,59 @@ divergent density.
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
+- [`mean.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.md)
+  : Mean of the Bernoulli Distribution
+
+- [`mean.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Beta1Distrib.md)
+  : Mean of the Beta Distribution
+
+- [`mean.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md)
+  : Mean of the Beta-Binomial Distribution
+
+- [`mean.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mean.BinomialDistrib.md)
+  : Mean of the Binomial Distribution
+
+- [`mean.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/mean.CauchyDistrib.md)
+  : The Cauchy Distribution Has No Moments
+
+- [`mean.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/mean.ChisqDistrib.md)
+  : Mean of the Chi-Squared Distribution
+
 - [`mean.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/mean.DirichletDistrib.md)
   : Mean of a Dirichlet
+
+- [`mean.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/mean.ExponentialDistrib.md)
+  : Mean of the Exponential Distribution
+
+- [`mean.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GPDDistrib.md)
+  : Mean of the Generalised Pareto Distribution
+
+- [`mean.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Gamma2Distrib.md)
+  : Mean of the Gamma Distribution
+
+- [`mean.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Gaussian1Distrib.md)
+  : Mean of the Gaussian Distribution
+
+- [`mean.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.GenGamma1Distrib.md)
+  : Mean of the Generalised Gamma Distribution
+
+- [`mean.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GeometricDistrib.md)
+  : Mean of the Geometric Distribution
 
 - [`mean.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/mean.GumbelDistrib.md)
   : Mean of the Gumbel Distribution
 
+- [`mean.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.InvGauss1Distrib.md)
+  : Mean of the Inverse Gaussian Distribution
+
 - [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
   : Mean of the Laplace Distribution
+
+- [`mean.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LogisticDistrib.md)
+  : Mean of the Logistic Distribution
+
+- [`mean.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Lognormal1Distrib.md)
+  : Mean of the Lognormal Distribution
 
 - [`mean.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MultinomialDistrib.md)
   : Mean of a Multinomial
@@ -1682,8 +1803,14 @@ divergent density.
 - [`mean.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md)
   : Mean of a Multivariate Student t
 
+- [`mean.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.NegBin1Distrib.md)
+  : Mean of the NB1 Negative Binomial Distribution
+
 - [`mean.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.NegBin2Distrib.md)
   : Mean of the Negative Binomial Distribution
+
+- [`mean.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/mean.PoissonDistrib.md)
+  : Mean of the Poisson Distribution
 
 - [`mean.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuberDistrib.md)
   : Mean of the Pseudo-Huber Distribution
@@ -1693,6 +1820,9 @@ divergent density.
 
 - [`mean.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/mean.SkewTDistrib.md)
   : Mean of the Skew t Distribution
+
+- [`mean.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.StudentT1Distrib.md)
+  : Mean of the Student t Distribution
 
 - [`mean.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.md)
   : Mean of the Weibull Distribution
@@ -1708,6 +1838,9 @@ divergent density.
 
 - [`mn_parts()`](https://statmodels7.github.io/distributions7/reference/mn_parts.md)
   : The Pieces a Multinomial Derivative Needs
+
+- [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
+  : Recycle a Constant Moment to the Length of the Parameters
 
 - [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
   : Append One Block of Derived Quantities to Another
@@ -1874,14 +2007,65 @@ divergent density.
 - [`set_partitions()`](https://statmodels7.github.io/distributions7/reference/set_partitions.md)
   : All Set Partitions of a Finite Index Set
 
+- [`skewness.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.md)
+  : Skewness of the Bernoulli Distribution
+
+- [`skewness.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Beta1Distrib.md)
+  : Skewness of the Beta Distribution
+
+- [`skewness.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
+  : Skewness of the Beta-Binomial Distribution
+
+- [`skewness.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BinomialDistrib.md)
+  : Skewness of the Binomial Distribution
+
+- [`skewness.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.CauchyDistrib.md)
+  : The Cauchy Distribution Has No Skewness
+
+- [`skewness.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.ChisqDistrib.md)
+  : Skewness of the Chi-Squared Distribution
+
+- [`skewness.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.ExponentialDistrib.md)
+  : Skewness of the Exponential Distribution
+
+- [`skewness.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GPDDistrib.md)
+  : Skewness of the Generalised Pareto Distribution
+
+- [`skewness.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Gamma2Distrib.md)
+  : Skewness of the Gamma Distribution
+
+- [`skewness.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Gaussian1Distrib.md)
+  : Skewness of the Gaussian Distribution
+
+- [`skewness.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.GenGamma1Distrib.md)
+  : Skewness of the Generalised Gamma Distribution
+
+- [`skewness.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GeometricDistrib.md)
+  : Skewness of the Geometric Distribution
+
 - [`skewness.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.GumbelDistrib.md)
   : Skewness of the Gumbel Distribution
+
+- [`skewness.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.InvGauss1Distrib.md)
+  : Skewness of the Inverse Gaussian Distribution
 
 - [`skewness.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.LaplaceDistrib.md)
   : Skewness of the Laplace Distribution
 
+- [`skewness.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.LogisticDistrib.md)
+  : Skewness of the Logistic Distribution
+
+- [`skewness.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Lognormal1Distrib.md)
+  : Skewness of the Lognormal Distribution
+
+- [`skewness.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.NegBin1Distrib.md)
+  : Skewness of the NB1 Negative Binomial Distribution
+
 - [`skewness.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.NegBin2Distrib.md)
   : Skewness of the Negative Binomial Distribution
+
+- [`skewness.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.PoissonDistrib.md)
+  : Skewness of the Poisson Distribution
 
 - [`skewness.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.PseudoHuberDistrib.md)
   : Skewness of the Pseudo-Huber Distribution
@@ -1891,6 +2075,9 @@ divergent density.
 
 - [`skewness.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.SkewTDistrib.md)
   : Skewness of the Skew t Distribution
+
+- [`skewness.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.StudentT1Distrib.md)
+  : Skewness of the Student t Distribution
 
 - [`skewness.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Weibull1Distrib.md)
   : Skewness of the Weibull Distribution
@@ -1982,14 +2169,59 @@ divergent density.
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
 
+- [`variance.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/variance.BernoulliDistrib.md)
+  : Variance of the Bernoulli Distribution
+
+- [`variance.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Beta1Distrib.md)
+  : Variance of the Beta Distribution
+
+- [`variance.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom1Distrib.md)
+  : Variance of the Beta-Binomial Distribution
+
+- [`variance.BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/variance.BinomialDistrib.md)
+  : Variance of the Binomial Distribution
+
+- [`variance.CauchyDistrib`](https://statmodels7.github.io/distributions7/reference/variance.CauchyDistrib.md)
+  : The Cauchy Distribution Has No Variance
+
+- [`variance.ChisqDistrib`](https://statmodels7.github.io/distributions7/reference/variance.ChisqDistrib.md)
+  : Variance of the Chi-Squared Distribution
+
 - [`variance.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/variance.DirichletDistrib.md)
   : Variance of a Dirichlet
+
+- [`variance.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/variance.ExponentialDistrib.md)
+  : Variance of the Exponential Distribution
+
+- [`variance.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GPDDistrib.md)
+  : Variance of the Generalised Pareto Distribution
+
+- [`variance.Gamma2Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Gamma2Distrib.md)
+  : Variance of the Gamma Distribution
+
+- [`variance.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Gaussian1Distrib.md)
+  : Variance of the Gaussian Distribution
+
+- [`variance.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.GenGamma1Distrib.md)
+  : Variance of the Generalised Gamma Distribution
+
+- [`variance.GeometricDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GeometricDistrib.md)
+  : Variance of the Geometric Distribution
 
 - [`variance.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/variance.GumbelDistrib.md)
   : Variance of the Gumbel Distribution
 
+- [`variance.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss1Distrib.md)
+  : Variance of the Inverse Gaussian Distribution
+
 - [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
   : Variance of the Laplace Distribution
+
+- [`variance.LogisticDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LogisticDistrib.md)
+  : Variance of the Logistic Distribution
+
+- [`variance.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Lognormal1Distrib.md)
+  : Variance of the Lognormal Distribution
 
 - [`variance.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MultinomialDistrib.md)
   : Variance of a Multinomial
@@ -2000,8 +2232,14 @@ divergent density.
 - [`variance.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
   : Covariance of a Multivariate Student t
 
+- [`variance.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.NegBin1Distrib.md)
+  : Variance of the NB1 Negative Binomial Distribution
+
 - [`variance.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/variance.NegBin2Distrib.md)
   : Variance of the Negative Binomial Distribution
+
+- [`variance.PoissonDistrib`](https://statmodels7.github.io/distributions7/reference/variance.PoissonDistrib.md)
+  : Variance of the Poisson Distribution
 
 - [`variance.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/variance.PseudoHuberDistrib.md)
   : Variance of the Pseudo-Huber Distribution
@@ -2011,6 +2249,9 @@ divergent density.
 
 - [`variance.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/variance.SkewTDistrib.md)
   : Variance of the Skew t Distribution
+
+- [`variance.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.StudentT1Distrib.md)
+  : Variance of the Student t Distribution
 
 - [`variance.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Weibull1Distrib.md)
   : Variance of the Weibull Distribution
