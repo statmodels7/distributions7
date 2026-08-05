@@ -1,11 +1,14 @@
 # Expectation of a Continuous Distribution
 
-Evaluates \\E\[f(Y)\] = \int f(y)\\p(y;\theta)\\dy\\ by adaptive
-quadrature ([`integrate`](https://rdrr.io/r/stats/integrate.html)). The
-domain is split at the 0.1, 0.5 and 0.9 quantiles of the distribution
-and each panel is integrated separately, which anchors the quadrature
-nodes on the probability mass wherever it sits; the panels are then
-summed.
+Evaluates \\E\[f(Y)\] = \int f(y)\\p(y;\theta)\\dy\\ by the batched
+adaptive quadrature of
+[`quad_vec`](https://statmodels7.github.io/numericals7/reference/quad_vec.html):
+the panels of every parameter combination are refined in one call, so a
+vector `theta` costs matrix evaluations rather than one adaptive run per
+value. The domain of each combination is split at its 0.1, 0.5 and 0.9
+quantiles, which anchors the quadrature on the probability mass wherever
+it sits; a combination whose quadrature cannot reach the requested
+accuracy raises an error naming it.
 
 ## Arguments
 

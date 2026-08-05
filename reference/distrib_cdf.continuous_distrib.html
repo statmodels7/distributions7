@@ -3,11 +3,13 @@
 CDF get one by numerical integration of distrib_pdf. An approximate mode
 is located first and the integral is taken over the side of the mode containing
 \(q\) (using the complement for the other side), so that the quadrature nodes
-concentrate where the probability mass is."><meta property="og:description" content="Fallback method: continuous distributions that do not implement an analytical
+concentrate where the probability mass is. All quantiles are integrated in one
+batched call to quad_vec, one row per quantile."><meta property="og:description" content="Fallback method: continuous distributions that do not implement an analytical
 CDF get one by numerical integration of distrib_pdf. An approximate mode
 is located first and the integral is taken over the side of the mode containing
 \(q\) (using the complement for the other side), so that the quadrature nodes
-concentrate where the probability mass is."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+concentrate where the probability mass is. All quantiles are integrated in one
+batched call to quad_vec, one row per quantile."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -52,7 +54,8 @@ concentrate where the probability mass is."><meta property="og:image" content="h
 CDF get one by numerical integration of <code>distrib_pdf</code>. An approximate mode
 is located first and the integral is taken over the side of the mode containing
 \(q\) (using the complement for the other side), so that the quadrature nodes
-concentrate where the probability mass is.</p>
+concentrate where the probability mass is. All quantiles are integrated in one
+batched call to <code><a href="https://statmodels7.github.io/numericals7/reference/quad_vec.html" class="external-link">quad_vec</a></code>, one row per quantile.</p>
     </div>
 
 

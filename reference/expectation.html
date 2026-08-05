@@ -64,13 +64,17 @@ methods described on their own pages.</p>
 
 <dt id="arg-f">f<a class="anchor" aria-label="anchor" href="#arg-f"></a></dt>
 <dd><p>The function whose expectation is taken, with signature
-<code>f(y, theta, ...)</code>.</p></dd>
+<code>f(y, theta, ...)</code>. It is evaluated elementwise: <code>y</code> arrives as
+a numeric vector and every component of <code>theta</code>, like every argument
+passed through <code>...</code>, as a vector of the same length, so <code>f</code>
+must be vectorized in all of them jointly – which any expression built
+from arithmetic and the <code>distrib_*</code> generics already is.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
 <dd><p>A named list of parameters. Vectors are supported and are
 recycled against any vectors in <code>...</code>, so several parameter values can
-be handled in one call.</p></dd>
+be handled in one call; all combinations share one batched evaluation.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>

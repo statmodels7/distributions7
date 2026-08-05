@@ -105,6 +105,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/disc_cum_table.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/discrete_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/discrete_support_sum.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_atoms.ReparamContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_atoms.TruncatedContinuousDistrib.html</loc></url>
@@ -612,6 +613,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expectation.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expectation_columns.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_integrate.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_mc.html</loc></url>
@@ -844,7 +846,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_gradient.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hess_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hessian.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_series.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/observed_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/order_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/owen_t.html</loc></url>
@@ -865,12 +866,14 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/print.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/print_check_table.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_jets.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparametrize.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/rng_grou.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/safe_check.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/series_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.Beta1Distrib.html</loc></url>

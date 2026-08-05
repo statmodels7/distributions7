@@ -20,13 +20,17 @@ expectation(distrib, f, theta, ...)
 - f:
 
   The function whose expectation is taken, with signature
-  `f(y, theta, ...)`.
+  `f(y, theta, ...)`. It is evaluated elementwise: `y` arrives as a
+  numeric vector and every component of `theta`, like every argument
+  passed through `...`, as a vector of the same length, so `f` must be
+  vectorized in all of them jointly – which any expression built from
+  arithmetic and the `distrib_*` generics already is.
 
 - theta:
 
   A named list of parameters. Vectors are supported and are recycled
   against any vectors in `...`, so several parameter values can be
-  handled in one call.
+  handled in one call; all combinations share one batched evaluation.
 
 - ...:
 

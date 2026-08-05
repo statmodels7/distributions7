@@ -288,8 +288,12 @@ Rarely called directly, but useful as a reference for what is happening.
   : Numerical Mixed Response-Parameter Derivatives
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
   : Numerical Derivatives of the Distribution Function
-- [`numerical_series()`](https://statmodels7.github.io/distributions7/reference/numerical_series.md)
-  : Numerical Summation of Discrete Series
+- [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
+  : Batched Quadrature with Refusal
+- [`discrete_support_sum()`](https://statmodels7.github.io/distributions7/reference/discrete_support_sum.md)
+  : Summation over an Integer Support
+- [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
+  : Batched Series Summation with Refusal
 
 ## Utilities
 
@@ -1638,6 +1642,9 @@ divergent density.
 - [`discrete_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.md)
   : CDF Derivatives of a Discrete Distribution
 
+- [`discrete_support_sum()`](https://statmodels7.github.io/distributions7/reference/discrete_support_sum.md)
+  : Summation over an Integer Support
+
 - [`reparam_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ReparamContinuousDistrib.md)
   : Atoms of a Reparametrized Distribution
 
@@ -1839,6 +1846,9 @@ divergent density.
 
 - [`expectation.discrete_distrib`](https://statmodels7.github.io/distributions7/reference/expectation.discrete_distrib.md)
   : Expectation of a Discrete Distribution
+
+- [`expectation_columns()`](https://statmodels7.github.io/distributions7/reference/expectation_columns.md)
+  : Aligned Parameter Columns for an Expectation
 
 - [`expected_by_bartlett()`](https://statmodels7.github.io/distributions7/reference/expected_by_bartlett.md)
   : Expected Derivatives by the Bartlett Identity
@@ -2403,6 +2413,9 @@ divergent density.
 - [`print_check_table()`](https://statmodels7.github.io/distributions7/reference/print_check_table.md)
   : Print a Validation Table
 
+- [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
+  : Batched Quadrature with Refusal
+
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
 
@@ -2414,6 +2427,9 @@ divergent density.
 
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
+
+- [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
+  : Batched Series Summation with Refusal
 
 - [`skewness.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.md)
   : Skewness of the Bernoulli Distribution

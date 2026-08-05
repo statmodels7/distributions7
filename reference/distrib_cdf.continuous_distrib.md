@@ -5,7 +5,9 @@ analytical CDF get one by numerical integration of `distrib_pdf`. An
 approximate mode is located first and the integral is taken over the
 side of the mode containing \\q\\ (using the complement for the other
 side), so that the quadrature nodes concentrate where the probability
-mass is.
+mass is. All quantiles are integrated in one batched call to
+[`quad_vec`](https://statmodels7.github.io/numericals7/reference/quad_vec.html),
+one row per quantile.
 
 ## Arguments
 
