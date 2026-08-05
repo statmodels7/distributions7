@@ -36,8 +36,11 @@ cannot tell a real defect from it.
 What replaces them are checks that do generalise:
 \enumerate{
 \item \strong{the density is positive and finite} on a sample;
-\item \strong{the density integrates to one}, by importance sampling from a
-gaussian with the same mean and an inflated covariance. The proposal is
+\item \strong{the density integrates to one}. For a family that enumerates
+its support through \code{\link{mv_support}} this is an exact sum over
+that support; otherwise it is importance sampling from the proposal
+\code{\link{mv_reference_draw}} supplies, which by default is a gaussian
+with the same mean and an inflated covariance. The proposal is
 deliberately not the distribution itself, which would make the ratio
 identically one and the check vacuous;
 \item \strong{the score has mean zero}, the first Bartlett identity, under
@@ -52,6 +55,13 @@ second Bartlett identity;
 \item \strong{the response derivatives} against finite differences in
 \eqn{y}.
 }
+
+The last of these is emitted only when it applies, as the univariate battery
+already omits the checks that a discrete family has no counterpart for. A
+family with an enumerable support is discrete and has no derivative in the
+response, and the multivariate base class refuses
+\code{\link{distrib_grad_y}} by design, so a family that has not registered
+one has made a choice rather than left a gap.
 }
 \seealso{
 \code{\link{check_distrib}}

@@ -143,8 +143,13 @@ reference:
   contents:
   - mvgaussian_distrib
   - mvstudent_t_distrib
+  - dirichlet_distrib
+  - multinomial_distrib
   - mv_location
   - mv_marginal
+  - mv_support
+  - mv_reference_draw
+  - compositions
   - mv_derived
   - mv_summary
   - n_obs
@@ -255,6 +260,12 @@ reference:
 
 - title: Multivariate Student t
   contents: [MvStudentTDistrib, ends_with(".MvStudentTDistrib")]
+
+- title: Dirichlet
+  contents: [DirichletDistrib, ends_with(".DirichletDistrib")]
+
+- title: Multinomial
+  contents: [MultinomialDistrib, ends_with(".MultinomialDistrib")]
 
 - title: Wrapper classes
   desc: >

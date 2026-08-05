@@ -366,3 +366,331 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 mv_prefixed_names <- function(free_names, inverted = FALSE) {
   paste0(if (isTRUE(inverted)) "omega_" else "sigma_", free_names)
 }
+
+
+#' The Support Points of a Discrete Multivariate Distribution
+#'
+#' @description
+#' The points a discrete multivariate distribution places mass on, as a matrix
+#' with one row per point.
+#'
+#' @details
+#' A univariate discrete distribution needs no such generic: its support is a
+#' stretch of the integers and the package walks it. On a vector the support is
+#' a set whose shape depends on the family --- the multinomial's is the
+#' compositions of its size --- and enumerating it is what lets an expectation
+#' be an exact sum and the validator check the total mass by addition rather
+#' than by sampling.
+#'
+#' The base class refuses. A continuous family has no such set, and a discrete
+#' one whose support is infinite has no finite matrix to return; either way an
+#' answer would be a fiction, and the caller is better told.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters. Families whose support does not
+#'   depend on them ignore it.
+#' @param ... Passed to methods.
+#'
+#' @return A matrix with one row per support point and one column per
+#'   coordinate.
+#'
+#' @seealso \code{\link{multinomial_distrib}}, \code{\link{compositions}}
+#'
+#' @examples
+#' d <- multinomial_distrib(3, size = 4)
+#' nrow(mv_support(d, list(probs_alr1 = 0, probs_alr2 = 0)))
+#'
+#' @export
+mv_support <- S7::new_generic("mv_support", "distrib",
+  function(distrib, theta, ...) S7::S7_dispatch()
+)
+
+#' @title No Enumerable Support
+#' @name mv_support.multivariate_distrib
+#' @description The base-class method, which refuses.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return Never returns; raises an error.
+#' @seealso \code{\link{mv_support}}
+#' @keywords internal
+S7::method(mv_support, multivariate_distrib) <- function(distrib, theta, ...) {
+  stop(sprintf(paste0(
+    "'%s' does not enumerate a support. A continuous family has no such set,\n",
+    "  and a discrete one whose support is infinite has no finite matrix to\n",
+    "  return; a family that does have one registers this generic."
+  ), distrib@distrib_name), call. = FALSE)
+}
+
+
+#' A Proposal for Integrating a Multivariate Density
+#'
+#' @description
+#' Draws from a distribution that dominates the family, together with the
+#' log-density of those draws, so that an importance-sampling estimate of
+#' \eqn{\int f = 1} can be formed.
+#'
+#' @details
+#' The default proposal is a gaussian with the same mean and twice the
+#' covariance, which serves any family supported on all of \eqn{\mathbb{R}^p}.
+#' The inflation matters: a proposal equal to the distribution itself makes
+#' every ratio one and certifies nothing.
+#'
+#' A family whose support is a lower-dimensional subset of \eqn{\mathbb{R}^p},
+#' such as a Dirichlet on the simplex, must register its own method, because a
+#' proposal spread over the ambient space places no mass at all on the support
+#' and the estimate would be zero. The draws and the log-density must be taken
+#' with respect to the same dominating measure the family's density is written
+#' against.
+#'
+#' This is consumed by \code{\link{check_distrib}} and by nothing else. A
+#' discrete family does not need it, its normalisation being an exact sum over
+#' \code{\link{mv_support}}.
+#'
+#' @param distrib An object inheriting from class
+#'   \code{\link{multivariate_distrib}}.
+#' @param theta A named list or vector of parameters.
+#' @param n The number of draws.
+#' @param ... Passed to methods.
+#'
+#' @return A list with \code{y}, a matrix of \code{n} draws, and \code{logd},
+#'   their log-density under the proposal.
+#'
+#' @seealso \code{\link{check_distrib}}, \code{\link{mv_support}}
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
+#' set.seed(1)
+#' str(mv_reference_draw(d, theta, 5))
+#'
+#' @export
+mv_reference_draw <- S7::new_generic("mv_reference_draw", "distrib",
+  function(distrib, theta, n, ...) {
+    theta <- align_theta(distrib, theta)
+    S7::S7_dispatch()
+  }
+)
+
+#' @title An Inflated Gaussian Proposal
+#' @name mv_reference_draw.multivariate_distrib
+#' @description
+#' The default: a gaussian with the family's mean and twice its covariance.
+#' Requires the covariance to be non-singular, which is what a support of full
+#' dimension gives.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param n The number of draws.
+#' @param ... Unused.
+#' @return A list with the draws \code{y} and their log-density \code{logd}.
+#' @seealso \code{\link{mv_reference_draw}}
+#' @keywords internal
+S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, n, ...) {
+  p <- distrib@n_dim
+  mu <- as.numeric(mean(distrib, theta))
+  sg <- as.matrix(variance(distrib, theta)) * 2
+  l <- t(chol(sg))
+  z <- matrix(stats::rnorm(n * p), n, p)
+  y <- sweep(z %*% t(l), 2L, mu, "+")
+  # The whitened residuals are L^{-1} r, so the system is LOWER triangular and
+  # forwardsolve is what solves it; backsolve on the transpose solves L' x = b,
+  # which is a different vector with the same shape.
+  q <- colSums(forwardsolve(l, t(sweep(y, 2L, mu, "-")))^2)
+  list(y = y, logd = -0.5 * (p * log(2 * pi) + 2 * sum(log(diag(l))) + q))
+}
+
+
+#' Every Way to Write an Integer as an Ordered Sum
+#'
+#' @description
+#' The weak compositions of \code{n} into \code{k} parts: every vector of
+#' \code{k} non-negative integers summing to \code{n}, one per row.
+#'
+#' @details
+#' Built by recursion on the number of parts, which is what keeps the result in
+#' a fixed order and avoids generating and filtering a full grid. There are
+#' \code{choose(n + k - 1, k - 1)} of them, so the enumeration is only
+#' practical for a moderate size: at \code{n = 20} and \code{k = 5} it is 10626
+#' rows, and at \code{k = 10} it is 10015005.
+#'
+#' @param n The total, a non-negative integer.
+#' @param k The number of parts, a positive integer.
+#'
+#' @return An integer matrix with \code{k} columns.
+#'
+#' @seealso \code{\link{mv_support}}
+#'
+#' @examples
+#' compositions(3, 2)
+#'
+#' @export
+compositions <- function(n, k) {
+  n <- as.integer(n)
+  k <- as.integer(k)
+  if (k == 1L) return(matrix(n, nrow = 1L, ncol = 1L))
+  out <- lapply(0:n, function(first) {
+    rest <- compositions(n - first, k - 1L)
+    cbind(first, rest, deparse.level = 0L)
+  })
+  do.call(rbind, out)
+}
+
+
+#' The Mean Vector and Covariance a Parameter List Describes
+#'
+#' @description
+#' Assembles the mean vector and the covariance matrix of a multivariate
+#' distribution from its flat parameter list.
+#'
+#' @details
+#' The parameters of a multivariate distribution are scalars, so that every
+#' generic of the package can index them, and these two functions put them back
+#' into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
+#' PARAMETRISATION carries, whichever side the matrix parameter describes: the
+#' covariance for a gaussian, and the scale matrix for a Student t, whose
+#' covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
+#' of freedom. The moment is \code{\link{variance}}, and keeping the two apart
+#' is what lets a heavy-tailed family be described at all.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list or vector of parameters.
+#'
+#' Both are generics whose base-class method refuses: not every multivariate
+#' family has a location, and one that does not should say so rather than
+#' hand back its first p parameters under a name that does not fit them.
+#'
+#' @return A numeric vector of length \eqn{p} for \code{mv_location()}, and a
+#'   \eqn{p \times p} matrix for \code{mv_sigma()}.
+#'
+#' @seealso \code{\link{mvgaussian_distrib}}
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+#' mv_location(d, theta)
+#' mv_sigma(d, theta)
+#'
+#' @export
+mv_location <- S7::new_generic("mv_location", "distrib", function(distrib, theta) {
+  theta <- align_theta(distrib, theta)
+  S7::S7_dispatch()
+})
+
+#' @title No Location Without a Family That Has One
+#' @name mv_location.multivariate_distrib
+#' @description
+#' Refused. Not every multivariate family has a location: a Dirichlet is
+#' described by concentrations and a Wishart by a scale and a count, and
+#' handing back the first \eqn{p} parameters under the name of a mean would be
+#' a wrong answer in the shape of a right one.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @return Never returns; raises an error.
+#' @keywords internal
+S7::method(mv_location, multivariate_distrib) <- function(distrib, theta) {
+  mv_refuse(
+    distrib, "mv_location",
+    "this family has no location parameter. A family that has one registers a method."
+  )
+}
+
+#' The First p Parameters, Read as a Location
+#'
+#' @description
+#' The helper the elliptical families implement \code{\link{mv_location}} with:
+#' the first \eqn{p} entries of the flat parameter vector, labelled by
+#' coordinate.
+#'
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters, already aligned.
+#'
+#' @return A named numeric vector of length \eqn{p}.
+#'
+#' @keywords internal
+mv_leading_location <- function(distrib, theta) {
+  v <- mv_flat_theta(distrib, theta)
+  stats::setNames(
+    unname(v[seq_len(distrib@n_dim)]), paste0("v", seq_len(distrib@n_dim))
+  )
+}
+
+#' @rdname mv_location
+#' @export
+mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
+  theta <- align_theta(distrib, theta)
+  S7::S7_dispatch()
+})
+
+#' A Marginal of a Multivariate Distribution
+#'
+#' @description
+#' Returns the distribution of a subset of the coordinates, together with the
+#' parameters that describe it.
+#'
+#' @details
+#' A marginal is not available in general: integrating a density over the
+#' coordinates one is not interested in has no closed form for most families.
+#' It is available for the elliptical ones, where the marginal belongs to the
+#' same family with the mean and the matrix subsetted, and those are the ones
+#' this generic has methods for. A family without one refuses rather than
+#' approximating, because a quadrature over the discarded coordinates would be
+#' a different object wearing the same name.
+#'
+#' This is what makes a picture of a multivariate distribution possible at all:
+#' a panel of a pairs plot shows a marginal, so the plot exists exactly when
+#' the marginals do.
+#'
+#' @param distrib An object inheriting from class
+#'   \code{\link{multivariate_distrib}}.
+#' @param theta A named list or vector of parameters.
+#' @param which An integer vector of coordinates to keep.
+#' @param ... Passed to methods.
+#'
+#' @return A list with \code{distrib}, the marginal distribution object, and
+#'   \code{theta}, its parameters.
+#'
+#' @seealso \code{\link{plot.multivariate_distrib}}
+#'
+#' @examples
+#' d <- mvgaussian_distrib(3)
+#' theta <- as.list(stats::setNames(c(1, 2, 3, 0, 0, 0, 0.3, 0.2, 0.1), d@params))
+#'
+#' # the marginal of the first two coordinates is a two-dimensional gaussian
+#' m <- mv_marginal(d, theta, c(1, 2))
+#' mv_sigma(m$distrib, m$theta)
+#'
+#' # and it is the corresponding block of the full covariance
+#' mv_sigma(d, theta)[1:2, 1:2]
+#'
+#' @export
+mv_marginal <- S7::new_generic("mv_marginal", "distrib",
+  function(distrib, theta, which, ...) {
+    theta <- align_theta(distrib, theta)
+    which <- as.integer(which)
+    if (!length(which) || anyNA(which) ||
+      any(which < 1L) || any(which > distrib@n_dim) || anyDuplicated(which)) {
+      stop(sprintf(
+        "'which' must be distinct coordinates in 1:%d.", distrib@n_dim
+      ), call. = FALSE)
+    }
+    S7::S7_dispatch()
+  }
+)
+
+#' @title No Marginal Without a Closed Form
+#' @name mv_marginal.multivariate_distrib
+#' @description
+#' Refused. Integrating out the other coordinates has no general closed form,
+#' and a numerical marginal would be a different object with the same name.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param which An integer vector of coordinates.
+#' @param ... Unused.
+#' @return Never returns; raises an error.
+#' @keywords internal
+S7::method(mv_marginal, multivariate_distrib) <- function(distrib, theta, which, ...) {
+  mv_refuse(
+    distrib, "mv_marginal",
+    "integrating out the other coordinates has no closed form for this family, and a numerical marginal would not be the same object."
+  )
+}

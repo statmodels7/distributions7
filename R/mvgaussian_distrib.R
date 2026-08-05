@@ -281,84 +281,6 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 }
 
 
-#' The Mean Vector and Covariance a Parameter List Describes
-#'
-#' @description
-#' Assembles the mean vector and the covariance matrix of a multivariate
-#' distribution from its flat parameter list.
-#'
-#' @details
-#' The parameters of a multivariate distribution are scalars, so that every
-#' generic of the package can index them, and these two functions put them back
-#' into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
-#' PARAMETRISATION carries, whichever side the matrix parameter describes: the
-#' covariance for a gaussian, and the scale matrix for a Student t, whose
-#' covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
-#' of freedom. The moment is \code{\link{variance}}, and keeping the two apart
-#' is what lets a heavy-tailed family be described at all.
-#'
-#' @param distrib A \code{\link{multivariate_distrib}} object.
-#' @param theta A named list or vector of parameters.
-#'
-#' Both are generics whose base-class method refuses: not every multivariate
-#' family has a location, and one that does not should say so rather than
-#' hand back its first p parameters under a name that does not fit them.
-#'
-#' @return A numeric vector of length \eqn{p} for \code{mv_location()}, and a
-#'   \eqn{p \times p} matrix for \code{mv_sigma()}.
-#'
-#' @seealso \code{\link{mvgaussian_distrib}}
-#'
-#' @examples
-#' d <- mvgaussian_distrib(2)
-#' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
-#' mv_location(d, theta)
-#' mv_sigma(d, theta)
-#'
-#' @export
-mv_location <- S7::new_generic("mv_location", "distrib", function(distrib, theta) {
-  theta <- align_theta(distrib, theta)
-  S7::S7_dispatch()
-})
-
-#' @title No Location Without a Family That Has One
-#' @name mv_location.multivariate_distrib
-#' @description
-#' Refused. Not every multivariate family has a location: a Dirichlet is
-#' described by concentrations and a Wishart by a scale and a count, and
-#' handing back the first \eqn{p} parameters under the name of a mean would be
-#' a wrong answer in the shape of a right one.
-#' @param distrib A \code{\link{multivariate_distrib}} object.
-#' @param theta A named list of parameters.
-#' @return Never returns; raises an error.
-#' @keywords internal
-S7::method(mv_location, multivariate_distrib) <- function(distrib, theta) {
-  mv_refuse(
-    distrib, "mv_location",
-    "this family has no location parameter. A family that has one registers a method."
-  )
-}
-
-#' The First p Parameters, Read as a Location
-#'
-#' @description
-#' The helper the elliptical families implement \code{\link{mv_location}} with:
-#' the first \eqn{p} entries of the flat parameter vector, labelled by
-#' coordinate.
-#'
-#' @param distrib A \code{\link{multivariate_distrib}} object.
-#' @param theta A named list of parameters, already aligned.
-#'
-#' @return A named numeric vector of length \eqn{p}.
-#'
-#' @keywords internal
-mv_leading_location <- function(distrib, theta) {
-  v <- mv_flat_theta(distrib, theta)
-  stats::setNames(
-    unname(v[seq_len(distrib@n_dim)]), paste0("v", seq_len(distrib@n_dim))
-  )
-}
-
 #' @title Mean of a Multivariate Gaussian
 #' @name mv_location.MvGaussianDistrib
 #' @description The first \eqn{p} parameters, which are the mean vector.
@@ -367,13 +289,6 @@ mv_leading_location <- function(distrib, theta) {
 #' @return A named numeric vector of length \eqn{p}.
 #' @keywords internal
 S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
-
-#' @rdname mv_location
-#' @export
-mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
-  theta <- align_theta(distrib, theta)
-  S7::S7_dispatch()
-})
 
 #' @title The Covariance a Multivariate Gaussian Carries
 #' @name mv_sigma.MvGaussianDistrib

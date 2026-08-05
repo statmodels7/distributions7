@@ -121,7 +121,7 @@ fit <- fit_distrib(gamma_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms
+#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -241,6 +241,21 @@ differ by $\nu/(\nu-2)$ and which the family keeps apart so that it
 remains usable below two degrees of freedom, where the covariance does
 not exist.
 
+Two families are not elliptical. `dirichlet_distrib()` lives on the
+simplex, written in a mean vector — a `parameters7` simplex — and a
+concentration, and its marginals are beta with that same concentration.
+`multinomial_distrib()` is discrete, and being discrete it can enumerate
+its support: `mv_support()` returns every vector of counts summing to
+the size, so its normalisation and its expected information are exact
+sums rather than samples.
+
+``` r
+dm <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+sum(distrib_pdf(dm, mv_support(dm, th), th))
+#> [1] 1
+```
+
 ## A user-defined distribution needs only its density
 
 Everything above has a numerical fallback registered on the base
@@ -316,8 +331,8 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 
 |  |  |
 |----|----|
-| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, inverse gaussian, lognormal, Weibull, Gumbel, beta |
-| discrete | bernoulli, binomial, poisson, negative binomial |
-| multivariate | `mvgaussian_distrib()`, parametrised by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/), and `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist |
-| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `fixed()`, `transformation()` with twelve transformers |
+| continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalised gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalised Pareto, beta, von Mises |
+| discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrisation |
+| multivariate | `mvgaussian_distrib()`, parametrised by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
+| wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `folded()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |

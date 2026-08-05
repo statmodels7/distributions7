@@ -88,18 +88,6 @@ mv_entry_index <- function(p, prefix) {
 }
 
 
-#' @title Matrix Entries as the Default Interpretable Quantities
-#' @name mv_derived.multivariate_distrib
-#' @description
-#' The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
-#' Jacobian from one central difference in each parameter. This is what a
-#' family gets when it says nothing more specific: the matrix on its own scale,
-#' named after the coordinates, rather than the matrix parameter's coordinates.
-#' @param distrib A \code{\link{multivariate_distrib}} object.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A list as described in \code{\link{mv_derived}}.
-#' @keywords internal
 #' The Quantities the Matrix Parameter Is About
 #'
 #' @description
@@ -174,6 +162,18 @@ mv_append_block <- function(out, extra) {
 }
 
 
+#' @title Matrix Entries as the Default Interpretable Quantities
+#' @name mv_derived.multivariate_distrib
+#' @description
+#' The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
+#' Jacobian from one central difference in each parameter. This is what a
+#' family gets when it says nothing more specific: the matrix on its own scale,
+#' named after the coordinates, rather than the matrix parameter's coordinates.
+#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A list as described in \code{\link{mv_derived}}.
+#' @keywords internal
 S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
   v <- mv_flat_theta(distrib, theta)

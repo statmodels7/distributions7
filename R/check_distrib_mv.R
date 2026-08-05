@@ -19,8 +19,11 @@ NULL
 #' What replaces them are checks that do generalise:
 #' \enumerate{
 #'   \item \strong{the density is positive and finite} on a sample;
-#'   \item \strong{the density integrates to one}, by importance sampling from a
-#'     gaussian with the same mean and an inflated covariance. The proposal is
+#'   \item \strong{the density integrates to one}. For a family that enumerates
+#'     its support through \code{\link{mv_support}} this is an exact sum over
+#'     that support; otherwise it is importance sampling from the proposal
+#'     \code{\link{mv_reference_draw}} supplies, which by default is a gaussian
+#'     with the same mean and an inflated covariance. The proposal is
 #'     deliberately not the distribution itself, which would make the ratio
 #'     identically one and the check vacuous;
 #'   \item \strong{the score has mean zero}, the first Bartlett identity, under
@@ -35,6 +38,13 @@ NULL
 #'   \item \strong{the response derivatives} against finite differences in
 #'     \eqn{y}.
 #' }
+#'
+#' The last of these is emitted only when it applies, as the univariate battery
+#' already omits the checks that a discrete family has no counterpart for. A
+#' family with an enumerable support is discrete and has no derivative in the
+#' response, and the multivariate base class refuses
+#' \code{\link{distrib_grad_y}} by design, so a family that has not registered
+#' one has made a choice rather than left a gap.
 #'
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters, already aligned.
@@ -52,6 +62,13 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
   res <- list()
   rel <- function(a, e) max(abs(a - e) / pmax(1, abs(e)))
 
+  # Two facts decide which checks apply. A family that enumerates a support is
+  # discrete, so its normalisation is an exact sum and it has no derivative in
+  # the response; and the base class refuses the response derivatives by
+  # design, so a family that has not registered them has made a choice rather
+  # than left a gap, and reporting that refusal as a failure would be the
+  # mistake this battery exists to avoid.
+  enumerable <- has_mv_support(distrib)
   y <- distrib_rng(distrib, n, theta)
   v0 <- vapply(theta[seq_len(distrib@n_params)], function(z) z[[1L]], numeric(1))
   ll <- function(v) {
@@ -65,23 +82,19 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
   })
 
   res[[length(res) + 1L]] <- safe_check("density integrates to 1", {
-    # Importance sampling from a gaussian with the same mean and an inflated
-    # covariance: a proposal equal to the distribution itself would make every
-    # ratio one and certify nothing.
-    mu <- as.numeric(mean(distrib, theta))
-    sg <- as.matrix(variance(distrib, theta)) * 2
-    l <- t(chol(sg))
-    z <- matrix(stats::rnorm(nsim * p), nsim, p)
-    x <- sweep(z %*% t(l), 2L, mu, "+")
-    # The whitened residuals are L^{-1} r, so the system is LOWER triangular
-    # and forwardsolve is what solves it; backsolve on the transpose solves
-    # L' x = b, which is a different vector with the same shape.
-    q <- colSums(forwardsolve(l, t(sweep(x, 2L, mu, "-")))^2)
-    lg <- -0.5 * (p * log(2 * pi) + 2 * sum(log(diag(l))) + q)
-    lf <- distrib_pdf(distrib, x, theta, log = TRUE)
-    total <- mean(exp(lf - lg))
-    new_check("density integrates to 1", abs(total - 1) < 20 / sqrt(nsim),
-      abs(total - 1))
+    if (enumerable) {
+      # A finite support makes the normalisation an exact sum, so the check is
+      # an equality rather than a comparison against Monte Carlo error.
+      total <- sum(distrib_pdf(distrib, mv_support(distrib, theta), theta))
+      new_check("density integrates to 1", abs(total - 1) < 1e-10,
+        abs(total - 1))
+    } else {
+      prop <- mv_reference_draw(distrib, theta, nsim)
+      lf <- distrib_pdf(distrib, prop$y, theta, log = TRUE)
+      total <- mean(exp(lf - prop$logd))
+      new_check("density integrates to 1", abs(total - 1) < 20 / sqrt(nsim),
+        abs(total - 1))
+    }
   })
 
   # --- the derivatives -----------------------------------------------------
@@ -154,19 +167,65 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
   })
 
   # --- the response --------------------------------------------------------
-  res[[length(res) + 1L]] <- safe_check("response derivatives vs finite differences", {
-    a <- distrib_grad_y(distrib, y, theta)
-    e <- t(vapply(seq_len(nrow(y)), function(i) {
-      numDeriv_grad(
-        function(z) distrib_pdf(distrib, matrix(z, 1L), theta, log = TRUE),
-        y[i, ]
-      )
-    }, numeric(p)))
-    new_check("response derivatives vs finite differences",
-      rel(a, e) < tol, rel(a, e))
-  })
+  if (!enumerable && has_mv_grad_y(distrib)) {
+    res[[length(res) + 1L]] <- safe_check("response derivatives vs finite differences", {
+      a <- distrib_grad_y(distrib, y, theta)
+      e <- t(vapply(seq_len(nrow(y)), function(i) {
+        numDeriv_grad(
+          function(z) distrib_pdf(distrib, matrix(z, 1L), theta, log = TRUE),
+          y[i, ]
+        )
+      }, numeric(p)))
+      new_check("response derivatives vs finite differences",
+        rel(a, e) < tol, rel(a, e))
+    })
+  }
 
   res
+}
+
+
+#' Whether a Multivariate Family Enumerates Its Support
+#'
+#' @description
+#' \code{TRUE} when the family registers \code{\link{mv_support}}, which is
+#' what a discrete multivariate family does and a continuous one cannot.
+#'
+#' @details
+#' The question is asked of the method rather than of the class, because the
+#' multivariate branch sits beside \code{\link{continuous_distrib}} and
+#' \code{\link{discrete_distrib}} rather than under either, so there is no
+#' class to test. The owning class of a method is read through
+#' \code{\link{is_class}}, never with \code{identical()}, which is object
+#' identity and fails whenever the package's code is re-evaluated rather than
+#' loaded.
+#'
+#' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{mv_support}}, \code{\link{check_distrib}}
+#' @keywords internal
+has_mv_support <- function(x) {
+  m <- tryCatch(S7::method(mv_support, S7::S7_class(x)), error = function(e) NULL)
+  !is.null(m) && !is_class(attr(m, "signature")[[1L]], multivariate_distrib)
+}
+
+#' Whether a Multivariate Family Implements Its Response Derivatives
+#'
+#' @description
+#' \code{TRUE} when \code{\link{distrib_grad_y}} comes from the family rather
+#' than from the base class, whose method refuses.
+#'
+#' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{has_mv_support}}, \code{\link{check_distrib}}
+#' @keywords internal
+has_mv_grad_y <- function(x) {
+  m <- tryCatch(S7::method(distrib_grad_y, S7::S7_class(x)), error = function(e) NULL)
+  !is.null(m) && !is_class(attr(m, "signature")[[1L]], multivariate_distrib)
 }
 
 
