@@ -50,7 +50,7 @@ identically one and the family reduces to the gaussian.
 
 **Cumulative distribution function:** \$\$F(q; \mu, \sigma, \alpha) =
 \Phi(z) - 2\\T(z, \alpha)\$\$ with \\T\\ Owen's T function; see
-[`owen_t`](https://statmodels7.github.io/distributions7/reference/owen_t.md).
+[`owen_t`](https://statmodels7.github.io/numericals7/reference/owen_t.html).
 The quantile function has no closed form and comes from the base class
 by root finding.
 

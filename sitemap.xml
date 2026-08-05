@@ -776,7 +776,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Weibull1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/memo_ratio.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/mills_ratio.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mn_parts.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moment.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moment_const.html</loc></url>
@@ -848,7 +847,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hessian.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/observed_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/order_indices.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/owen_t.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/param_free_or_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/param_pair_lookup.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/param_smoothness.html</loc></url>
@@ -997,10 +995,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.numeric.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vm2_parts.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/vm_A.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/vm_A_derivs.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/vm_dA.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/vm_kappa_of_rho.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull1_distrib.html</loc></url>

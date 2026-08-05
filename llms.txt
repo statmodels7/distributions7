@@ -1475,10 +1475,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : von Mises Density in the Resultant Length
 - [`distrib_rng.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md)
   : von Mises Random Generation in the Resultant Length
-- [`vm_A_derivs()`](https://statmodels7.github.io/distributions7/reference/vm_A_derivs.md)
-  : Higher Derivatives of the Mean Resultant Length
-- [`vm_kappa_of_rho()`](https://statmodels7.github.io/distributions7/reference/vm_kappa_of_rho.md)
-  : The Concentration a Mean Resultant Length Implies
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
 
@@ -2601,9 +2597,6 @@ divergent density.
 - [`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
   : Memoise a Ratio Function on Its Block
 
-- [`mills_ratio()`](https://statmodels7.github.io/distributions7/reference/mills_ratio.md)
-  : The Inverse Mills Ratio and Its Derivative
-
 - [`mn_parts()`](https://statmodels7.github.io/distributions7/reference/mn_parts.md)
   : The Pieces a Multinomial Derivative Needs
 
@@ -2729,9 +2722,6 @@ divergent density.
 
 - [`order_indices()`](https://statmodels7.github.io/distributions7/reference/order_indices.md)
   : Multi-Indices of a Given Order, as Parameter Names
-
-- [`owen_t()`](https://statmodels7.github.io/distributions7/reference/owen_t.md)
-  : Owen's T Function
 
 - [`param_free_or_fit()`](https://statmodels7.github.io/distributions7/reference/param_free_or_fit.md)
   : Project a Matrix onto What a Structure Can Represent
@@ -3107,18 +3097,6 @@ divergent density.
 
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
-
-- [`vm_A()`](https://statmodels7.github.io/distributions7/reference/vm_A.md)
-  : The Mean Resultant Length of a von Mises
-
-- [`vm_A_derivs()`](https://statmodels7.github.io/distributions7/reference/vm_A_derivs.md)
-  : Higher Derivatives of the Mean Resultant Length
-
-- [`vm_dA()`](https://statmodels7.github.io/distributions7/reference/vm_dA.md)
-  : The Derivative of the Mean Resultant Length
-
-- [`vm_kappa_of_rho()`](https://statmodels7.github.io/distributions7/reference/vm_kappa_of_rho.md)
-  : The Concentration a Mean Resultant Length Implies
 
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments
