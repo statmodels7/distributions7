@@ -7,8 +7,11 @@ the panels of every parameter combination are refined in one call, so a
 vector `theta` costs matrix evaluations rather than one adaptive run per
 value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 quantiles, which anchors the quadrature on the probability mass wherever
-it sits; a combination whose quadrature cannot reach the requested
-accuracy raises an error naming it.
+it sits. A combination the batched quadrature refuses – an integrable
+endpoint singularity too harsh for bisection – is rescued by one scalar
+[`integrate`](https://rdrr.io/r/stats/integrate.html) run, whose
+extrapolation reaches it; an error naming the combination is raised only
+when both routes fail.
 
 ## Arguments
 
