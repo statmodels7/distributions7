@@ -2,7 +2,7 @@
 # and class validators.
 
 test_that("named theta is aligned to the distribution's parameter order", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
 
   # Same value regardless of the order of a *named* theta
   expect_equal(
@@ -28,7 +28,7 @@ test_that("named theta is aligned to the distribution's parameter order", {
 })
 
 test_that("malformed theta produces informative errors", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
 
   expect_error(distrib_pdf(d, 0, list(mu = 0)), "Missing parameter")
   expect_error(distrib_pdf(d, 0, list(0)), "2 parameter")
@@ -43,7 +43,7 @@ test_that("malformed theta produces informative errors", {
 })
 
 test_that("derivatives recycle a scalar y over vectorized theta", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   g <- distrib_gradient(d, 0, list(mu = 1:5, sigma = 1))
   expect_length(g$mu, 5)
   expect_equal(g$mu, (0 - 1:5) / 1)
@@ -84,15 +84,15 @@ test_that("distrib validator rejects inconsistent objects", {
   )
 
   # non-link objects in link_params
-  expect_error(gaussian_distrib(link_mu = "not a link"), "link")
+  expect_error(gaussian1_distrib(link_mu = "not a link"), "link")
 
   # invalid dimension / bounds
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   expect_error(d@dimension <- "bivariate", "univariate")
 })
 
 test_that("expectation() handles probability mass far from the origin", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   expect_equal(expectation(d, function(y, theta) y, list(mu = 200, sigma = 1)), 200, tolerance = 1e-6)
   expect_equal(expectation(d, function(y, theta) y, list(mu = -500, sigma = 1)), -500, tolerance = 1e-6)
   expect_equal(
@@ -111,19 +111,19 @@ test_that("expectation() works on heavy-tailed and bounded supports", {
   )
   # Student t location
   expect_equal(
-    expectation(student_t_distrib(), function(y, theta) y, list(mu = 100, sigma = 1.3, nu = 6)),
+    expectation(student_t1_distrib(), function(y, theta) y, list(mu = 100, sigma = 1.3, nu = 6)),
     100,
     tolerance = 1e-5
   )
   # Beta on (0, 1)
   expect_equal(
-    expectation(beta_distrib(), function(y, theta) y, list(mu = 0.4, phi = 6)),
+    expectation(beta1_distrib(), function(y, theta) y, list(mu = 0.4, phi = 6)),
     0.4,
     tolerance = 1e-6
   )
   # Lognormal: E[Y] = exp(mu + sigma2/2)
   expect_equal(
-    expectation(lognormal_distrib(), function(y, theta) y, list(mu = 0.5, sigma2 = 1.3)),
+    expectation(lognormal1_distrib(), function(y, theta) y, list(mu = 0.5, sigma2 = 1.3)),
     exp(0.5 + 1.3 / 2),
     tolerance = 1e-6
   )
@@ -136,7 +136,7 @@ test_that("expectation() is vectorized over theta", {
     tolerance = 1e-8
   )
   expect_equal(
-    expectation(gaussian_distrib(), function(y, theta) y, list(mu = c(0, 100), sigma = 2)),
+    expectation(gaussian1_distrib(), function(y, theta) y, list(mu = c(0, 100), sigma = 2)),
     c(0, 100),
     tolerance = 1e-6
   )

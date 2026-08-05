@@ -8,7 +8,7 @@ NULL
 #'   negative binomial whose variance is \strong{linear} in the mean.
 #' @inheritParams distrib
 #' @return An object of class \code{NegBin1Distrib}.
-#' @seealso \code{\link{negbin1_distrib}}, \code{\link{negbin_distrib}}
+#' @seealso \code{\link{negbin1_distrib}}, \code{\link{negbin2_distrib}}
 #'
 #' @section Methods:
 #' Methods implemented for this class:
@@ -209,7 +209,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' families}, not two parametrisations of one. Here the variance is
 #' \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 #' relative to a Poisson is the same at every mean;
-#' \code{\link{negbin_distrib}} has \eqn{\mu + \mu^2/\theta}, growing
+#' \code{\link{negbin2_distrib}} has \eqn{\mu + \mu^2/\theta}, growing
 #' quadratically. Fitting one is not fitting the other, and a likelihood ratio
 #' between them is not a test of nested models.
 #'
@@ -244,7 +244,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' @return An S7 object of class \code{NegBin1Distrib}.
 #'
-#' @seealso \code{\link{negbin_distrib}} for the quadratic variance,
+#' @seealso \code{\link{negbin2_distrib}} for the quadratic variance,
 #'   \code{\link{poisson_distrib}}, \code{\link{geometric_distrib}}
 #'
 #' @importFrom linkfunctions7 log_link
@@ -259,7 +259,7 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #'
 #' # the two negative binomials are different families: at the same (mu, theta)
 #' # this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8
-#' variance(negbin_distrib(), list(mu = 4, theta = 4))
+#' variance(negbin2_distrib(), list(mu = 4, theta = 4))
 #'
 #' @export
 negbin1_distrib <- function(link_mu = log_link(), link_theta = log_link()) {

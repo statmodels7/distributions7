@@ -417,8 +417,8 @@ declares_atoms <- function(parent) {
 #' counted twice by the sum above and an atom elsewhere would be moved onto its
 #' reflection.
 #'
-#' \strong{The half-normal} is \code{fixed(folded(gaussian_distrib()), mu = 0)},
-#' and the folded normal proper is \code{folded(gaussian_distrib())}.
+#' \strong{The half-normal} is \code{fixed(folded(gaussian1_distrib()), mu = 0)},
+#' and the folded normal proper is \code{folded(gaussian1_distrib())}.
 #'
 #' \strong{The sign of a symmetric parent's location is not identified.} When
 #' the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x; -\mu)},
@@ -430,7 +430,7 @@ declares_atoms <- function(parent) {
 #' estimable is \eqn{|\mu|} together with the remaining parameters. Holding
 #' the location at zero removes the question and gives the half-normal. A
 #' parent that is not symmetric about its location, such as
-#' \code{\link{skewnormal_distrib}}, has no such invariance and its sign is
+#' \code{\link{skewnormal1_distrib}}, has no such invariance and its sign is
 #' identified.
 #'
 #' @return An S7 object of class \code{\link{FoldedDistrib}}.
@@ -439,12 +439,12 @@ declares_atoms <- function(parent) {
 #'   \code{\link{transformation}}
 #'
 #' @examples
-#' d <- folded(gaussian_distrib())
+#' d <- folded(gaussian1_distrib())
 #' theta <- list(mu = 0.5, sigma = 1)
 #' distrib_pdf(d, c(0, 0.5, 2), theta)
 #'
 #' # the half-normal: a folded gaussian with its location held at zero
-#' hn <- fixed(folded(gaussian_distrib()), mu = 0)
+#' hn <- fixed(folded(gaussian1_distrib()), mu = 0)
 #' hn@params
 #' distrib_pdf(hn, c(0.5, 1), list(sigma = 2))
 #'

@@ -16,23 +16,23 @@ test_that("deriv_names enumerates unique multi-indices, diagonal-first", {
 # distributions with a closed-form analytic higher-derivative kernel
 analytic_hd_cases <- function() {
   list(
-    gaussian  = list(d = gaussian_distrib(),  theta = list(mu = 1.5, sigma = 2)),
+    gaussian  = list(d = gaussian1_distrib(),  theta = list(mu = 1.5, sigma = 2)),
     cauchy    = list(d = cauchy_distrib(),    theta = list(mu = 0.5, sigma = 1.4)),
-    invgauss  = list(d = invgauss_distrib(),  theta = list(mu = 2, phi = 0.7)),
+    invgauss  = list(d = invgauss1_distrib(),  theta = list(mu = 2, phi = 0.7)),
     bernoulli = list(d = bernoulli_distrib(), theta = list(mu = 0.35)),
     binomial  = list(d = binomial_distrib(size = 10), theta = list(mu = 0.35)),
-    gamma     = list(d = gamma_distrib(),     theta = list(mu = 3, sigma2 = 2)),
-    beta      = list(d = beta_distrib(),      theta = list(mu = 0.4, phi = 6)),
+    gamma     = list(d = gamma2_distrib(),     theta = list(mu = 3, sigma2 = 2)),
+    beta      = list(d = beta1_distrib(),      theta = list(mu = 0.4, phi = 6)),
     logistic  = list(d = logistic_distrib(),  theta = list(mu = 0.5, sigma = 1.4)),
-    student_t = list(d = student_t_distrib(), theta = list(mu = 0.5, sigma = 1.3, nu = 6)),
-    lognormal = list(d = lognormal_distrib(), theta = list(mu = 0.5, sigma2 = 1.3)),
+    student_t = list(d = student_t1_distrib(), theta = list(mu = 0.5, sigma = 1.3, nu = 6)),
+    lognormal = list(d = lognormal1_distrib(), theta = list(mu = 0.5, sigma2 = 1.3)),
     poisson   = list(d = poisson_distrib(),   theta = list(mu = 4)),
-    negbin    = list(d = negbin_distrib(),    theta = list(mu = 4, theta = 1.7)),
+    negbin    = list(d = negbin2_distrib(),    theta = list(mu = 4, theta = 1.7)),
     pseudohuber = list(d = pseudohuber_distrib(), theta = list(mu = 0.5, sigma = 1.4, nu = 2.5)),
-    weibull    = list(d = weibull_distrib(),    theta = list(mu = 2, sigma = 1.6)),
+    weibull    = list(d = weibull1_distrib(),    theta = list(mu = 2, sigma = 1.6)),
     gumbel     = list(d = gumbel_distrib(),     theta = list(mu = 1, sigma = 2.5)),
     laplace    = list(d = laplace_distrib(),    theta = list(mu = 0.5, b = 1.3)),
-    skewnormal = list(d = skewnormal_distrib(), theta = list(mu = 0.3, sigma = 1.4, alpha = 3))
+    skewnormal = list(d = skewnormal1_distrib(), theta = list(mu = 0.3, sigma = 1.4, alpha = 3))
   )
 }
 
@@ -90,14 +90,14 @@ test_that("closed-form expected derivatives match a Monte Carlo mean of the obse
 })
 
 test_that("expected higher derivatives are returned per observation", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   e3 <- distrib_deriv3(g, c(0, 1, 2), list(mu = 0, sigma = 1), expected = TRUE)
   expect_length(e3$sigma_sigma_sigma, 3)
   expect_true(all(e3$sigma_sigma_sigma == e3$sigma_sigma_sigma[1]))
 })
 
 test_that("student_t expected derivatives (no closed form) fall back numerically", {
-  st <- student_t_distrib()
+  st <- student_t1_distrib()
   th <- list(mu = 0, sigma = 1, nu = 8)
   e3 <- distrib_deriv3(st, 0, th, expected = TRUE)
   expect_setequal(names(e3), deriv_names(st@params, 3))
@@ -110,15 +110,15 @@ test_that("student_t expected derivatives (no closed form) fall back numerically
 test_that("closed-form response derivatives match the numerical fallback", {
   set.seed(7)
   cont <- list(
-    gaussian    = list(d = gaussian_distrib(),    th = list(mu = 1.5, sigma = 2)),
+    gaussian    = list(d = gaussian1_distrib(),    th = list(mu = 1.5, sigma = 2)),
     cauchy      = list(d = cauchy_distrib(),      th = list(mu = 0.5, sigma = 1.4)),
     logistic    = list(d = logistic_distrib(),    th = list(mu = 0.5, sigma = 1.4)),
-    student_t   = list(d = student_t_distrib(),   th = list(mu = 0.5, sigma = 1.3, nu = 6)),
+    student_t   = list(d = student_t1_distrib(),   th = list(mu = 0.5, sigma = 1.3, nu = 6)),
     pseudohuber = list(d = pseudohuber_distrib(), th = list(mu = 0.5, sigma = 1.4, nu = 2.5)),
-    gamma       = list(d = gamma_distrib(),       th = list(mu = 3, sigma2 = 2)),
-    invgauss    = list(d = invgauss_distrib(),    th = list(mu = 2, phi = 0.7)),
-    lognormal   = list(d = lognormal_distrib(),   th = list(mu = 0.5, sigma2 = 1.3)),
-    beta        = list(d = beta_distrib(),        th = list(mu = 0.4, phi = 6))
+    gamma       = list(d = gamma2_distrib(),       th = list(mu = 3, sigma2 = 2)),
+    invgauss    = list(d = invgauss1_distrib(),    th = list(mu = 2, phi = 0.7)),
+    lognormal   = list(d = lognormal1_distrib(),   th = list(mu = 0.5, sigma2 = 1.3)),
+    beta        = list(d = beta1_distrib(),        th = list(mu = 0.4, phi = 6))
   )
   for (nm in names(cont)) {
     d <- cont[[nm]]$d; th <- cont[[nm]]$th

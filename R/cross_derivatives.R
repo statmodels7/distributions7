@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R y_derivatives.R gaussian_distrib.R student_t_distrib.R truncated.R
+#' @include distrib.R generics.R utility_functions.R y_derivatives.R gaussian1_distrib.R student_t1_distrib.R truncated.R
 NULL
 
 # Mixed second derivatives of the log-density: one derivative with respect to
@@ -45,7 +45,7 @@ NULL
 #'   \code{distrib@params}.
 #'
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -85,7 +85,7 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #'
 #' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_cross_y}}
 #' @examples
-#' numerical_cross_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' numerical_cross_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
 numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
@@ -123,18 +123,18 @@ S7::method(distrib_cross_y, continuous_distrib) <- function(distrib, y, theta,
 }
 
 #' @title Gaussian Mixed Derivatives
-#' @name distrib_cross_y.GaussianDistrib
+#' @name distrib_cross_y.Gaussian1Distrib
 #' @description Closed form: with \eqn{r = y - \mu},
 #'   \eqn{\partial^2 \ell / \partial y\, \partial \mu = 1/\sigma^2} and
 #'   \eqn{\partial^2 \ell / \partial y\, \partial \sigma = 2r/\sigma^3}.
-#' @param distrib A \code{GaussianDistrib} object.
+#' @param distrib A \code{Gaussian1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with components \code{mu} and \code{sigma}.
 #' @keywords internal
-S7::method(distrib_cross_y, GaussianDistrib) <- function(distrib, y, theta,
+S7::method(distrib_cross_y, Gaussian1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          ...) {
   mu <- theta[[1]]
@@ -147,20 +147,20 @@ S7::method(distrib_cross_y, GaussianDistrib) <- function(distrib, y, theta,
 }
 
 #' @title Student's t Mixed Derivatives
-#' @name distrib_cross_y.StudentTDistrib
+#' @name distrib_cross_y.StudentT1Distrib
 #' @description Closed form: with \eqn{r = y - \mu} and
 #'   \eqn{D = \nu\sigma^2 + r^2},
 #'   \eqn{\partial^2 \ell / \partial y\, \partial \mu = (\nu+1)(\nu\sigma^2 - r^2)/D^2},
 #'   \eqn{\partial^2 \ell / \partial y\, \partial \sigma = 2\nu\sigma(\nu+1)\, r/D^2},
 #'   \eqn{\partial^2 \ell / \partial y\, \partial \nu = -r\,(r^2 - \sigma^2)/D^2}.
-#' @param distrib A \code{StudentTDistrib} object.
+#' @param distrib A \code{StudentT1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with components \code{mu}, \code{sigma} and \code{nu}.
 #' @keywords internal
-S7::method(distrib_cross_y, StudentTDistrib) <- function(distrib, y, theta,
+S7::method(distrib_cross_y, StudentT1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          ...) {
   mu <- theta[[1]]

@@ -41,7 +41,7 @@ NULL
 #' tr@name
 #'
 #' # a transformer is consumed by transformation(), which is where it acts
-#' distrib_pdf(transformation(gamma_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
+#' distrib_pdf(transformation(gamma2_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
 #'
 #' @seealso \code{\link{transformation}}
 #' @export
@@ -68,7 +68,7 @@ transformer <- S7::new_class("transformer",
 #' Inverse \eqn{X = e^Y}, Jacobian \eqn{|J| = e^Y}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), log_transform())
+#' d <- transformation(gamma2_distrib(), log_transform())
 #' distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -97,7 +97,7 @@ log_transform <- function() {
 #' Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gaussian_distrib(), exp_transform())
+#' d <- transformation(gaussian1_distrib(), exp_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -122,7 +122,7 @@ exp_transform <- function() {
 #' containing 0). Inverse \eqn{X = 1/Y}, Jacobian \eqn{|J| = 1/Y^2}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), inverse_transform())
+#' d <- transformation(gamma2_distrib(), inverse_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -147,7 +147,7 @@ inverse_transform <- function() {
 #' Inverse \eqn{X = Y^2}, Jacobian \eqn{|J| = 2Y}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), sqrt_transform())
+#' d <- transformation(gamma2_distrib(), sqrt_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -174,7 +174,7 @@ sqrt_transform <- function() {
 #' @param p Numeric. The exponent. Defaults to 2.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), power_transform(p = 2))
+#' d <- transformation(gamma2_distrib(), power_transform(p = 2))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -219,7 +219,7 @@ power_transform <- function(p = 2) {
 #' handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gaussian_distrib(), asinh_transform())
+#' d <- transformation(gaussian1_distrib(), asinh_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -250,7 +250,7 @@ asinh_transform <- function() {
 #' @param lambda Numeric. The transformation parameter.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), bc_transform(lambda = 0.5))
+#' d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -297,7 +297,7 @@ bc_transform <- function(lambda) {
 #' @param lambda Numeric. The transformation parameter.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gaussian_distrib(), yj_transform(lambda = 0.5))
+#' d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -380,7 +380,7 @@ yj_transform <- function(lambda) {
 #' @param scale Numeric. The scale multiplier (non-zero). Defaults to 1.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gaussian_distrib(), affine_transform(loc = 1, scale = 2))
+#' d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -415,7 +415,7 @@ affine_transform <- function(loc = 0, scale = 1) {
 #' Inverse \eqn{X = \text{plogis}(Y)}, Jacobian \eqn{|J| = \text{dlogis}(Y)}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(beta_distrib(), logit_transform())
+#' d <- transformation(beta1_distrib(), logit_transform())
 #' distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 #'
 #' @export
@@ -440,7 +440,7 @@ logit_transform <- function() {
 #' Inverse \eqn{X = \text{logit}(Y)}, Jacobian \eqn{|J| = 1/(Y(1-Y))}.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gaussian_distrib(), expit_transform())
+#' d <- transformation(gaussian1_distrib(), expit_transform())
 #' distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
 #'
 #' @export
@@ -470,7 +470,7 @@ expit_transform <- function() {
 #' @param a Numeric. Positive scale parameter. Defaults to 1.
 #' @return A \code{\link{transformer}} object.
 #' @examples
-#' d <- transformation(gamma_distrib(), softplus_transform(a = 1))
+#' d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
 #' @export
@@ -682,14 +682,14 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #'
 #' @examples
 #' \dontrun{
-#' # A lognormal built by transformation, equal to lognormal_distrib()
-#' logn <- transformation(gaussian_distrib(), exp_transform())
+#' # A lognormal built by transformation, equal to lognormal1_distrib()
+#' logn <- transformation(gaussian1_distrib(), exp_transform())
 #' distrib_pdf(logn, 2, list(mu = 0, sigma = 1))
 #' dlnorm(2, 0, 1)
 #' }
 #'
 #' # the inverse of a Gamma is an inverse Gamma, and can say so
-#' ig <- transformation(gamma_distrib(), inverse_transform(),
+#' ig <- transformation(gamma2_distrib(), inverse_transform(),
 #'                      new_name = "inverse gamma")
 #' ig@distrib_name
 #'

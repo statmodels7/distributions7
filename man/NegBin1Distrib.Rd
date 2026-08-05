@@ -57,5 +57,5 @@ Everything else is inherited from \code{\link{discrete_distrib}}.
 }
 
 \seealso{
-\code{\link{negbin1_distrib}}, \code{\link{negbin_distrib}}
+\code{\link{negbin1_distrib}}, \code{\link{negbin2_distrib}}
 }

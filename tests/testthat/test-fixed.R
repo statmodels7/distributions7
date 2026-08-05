@@ -8,7 +8,7 @@
 # partially matches.
 
 test_that("the constructor validates its arguments", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
 
   expect_error(fixed(g), "at least one named value")
   expect_error(fixed(g, nu = 1), "not a parameter")
@@ -20,11 +20,11 @@ test_that("the constructor validates its arguments", {
 
   # The domains are open, so a value exactly on a bound is refused.
   expect_error(fixed(g, sigma = 0), "open domain")
-  expect_error(fixed(beta_distrib(), mu = 1), "open domain")
+  expect_error(fixed(beta1_distrib(), mu = 1), "open domain")
 })
 
 test_that("the free parameter set is the parent's minus the fixed ones", {
-  d <- fixed(gaussian_distrib(), mu = 0.5)
+  d <- fixed(gaussian1_distrib(), mu = 0.5)
 
   expect_identical(d@params, "sigma")
   expect_identical(d@n_params, 1L)
@@ -36,10 +36,10 @@ test_that("the free parameter set is the parent's minus the fixed ones", {
 })
 
 test_that("fixing a fixed distribution collapses into one wrapper", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- fixed(fixed(g, mu = 0), sigma = 1)
 
-  expect_true(S7::S7_inherits(d@parent_distrib, GaussianDistrib))
+  expect_true(S7::S7_inherits(d@parent_distrib, Gaussian1Distrib))
   expect_identical(names(d@fixed_params), c("mu", "sigma"))
   expect_identical(d@n_params, 0L)
 
@@ -48,7 +48,7 @@ test_that("fixing a fixed distribution collapses into one wrapper", {
 })
 
 test_that("pdf, cdf, quantile and rng equal the parent's at the full theta", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- fixed(g, mu = 0.5)
   th <- list(sigma = 2)
   full <- list(mu = 0.5, sigma = 2)
@@ -73,7 +73,7 @@ test_that("pdf, cdf, quantile and rng equal the parent's at the full theta", {
 })
 
 test_that("theta stays vectorised in the free parameters", {
-  d <- fixed(gaussian_distrib(), mu = 0)
+  d <- fixed(gaussian1_distrib(), mu = 0)
   y <- c(-1, 0, 2)
   sig <- c(1, 2, 3)
 
@@ -84,7 +84,7 @@ test_that("theta stays vectorised in the free parameters", {
 })
 
 test_that("the derivatives are the parent's components among the free parameters", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- fixed(g, mu = 0.5)
   th <- list(sigma = 2)
   full <- list(mu = 0.5, sigma = 2)
@@ -156,7 +156,7 @@ test_that("subsetting by name survives a three-parameter parent", {
 })
 
 test_that("the link scale is the parent's, restricted to the free parameters", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- fixed(g, mu = 0.5)
   th <- list(sigma = 2)
   full <- list(mu = 0.5, sigma = 2)
@@ -174,7 +174,7 @@ test_that("the link scale is the parent's, restricted to the free parameters", {
 })
 
 test_that("moments delegate to the parent's closed forms", {
-  d <- fixed(gaussian_distrib(), mu = 0.5)
+  d <- fixed(gaussian1_distrib(), mu = 0.5)
   th <- list(sigma = 2)
 
   expect_equal(mean(d, th), 0.5)
@@ -192,7 +192,7 @@ test_that("params_smooth travels with the free parameters", {
 })
 
 test_that("fixing every parameter leaves a fully known distribution", {
-  d0 <- fixed(gaussian_distrib(), mu = 1, sigma = 2)
+  d0 <- fixed(gaussian1_distrib(), mu = 1, sigma = 2)
 
   expect_identical(d0@n_params, 0L)
   expect_identical(d0@params, character(0))
@@ -215,7 +215,7 @@ test_that("a wrapper's own parameter can be fixed", {
   )
 
   # The atoms of a mixed parent come through unchanged.
-  za <- zero_adjusted(gamma_distrib())
+  za <- zero_adjusted(gamma2_distrib())
   fa <- fixed(za, za = 0.2)
   tha <- list(mu = 2, sigma2 = 1)
   fulla <- list(mu = 2, sigma2 = 1, za = 0.2)
@@ -223,7 +223,7 @@ test_that("a wrapper's own parameter can be fixed", {
 })
 
 test_that("fixed composes with truncation in both orders", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   full <- list(mu = 0, sigma = 1)
   y <- c(0.5, 1, 2)
 
@@ -241,7 +241,7 @@ test_that("fixed composes with truncation in both orders", {
 
 test_that("check_distrib passes on a fixed distribution", {
   set.seed(21)
-  res <- check_distrib(fixed(gaussian_distrib(), mu = 0.3),
+  res <- check_distrib(fixed(gaussian1_distrib(), mu = 0.3),
     theta = list(sigma = 1.5), orders = 1:2, nsim = 2e4, verbose = FALSE
   )
   expect_true(all(res$status == "OK"))
@@ -250,7 +250,7 @@ test_that("check_distrib passes on a fixed distribution", {
 test_that("fit_distrib estimates only the free parameters", {
   set.seed(31)
   y <- rnorm(500, mean = 0, sd = 1.7)
-  d <- fixed(gaussian_distrib(), mu = 0)
+  d <- fixed(gaussian1_distrib(), mu = 0)
 
   fit <- fit_distrib(d, y)
   est <- coef(fit)
@@ -265,7 +265,7 @@ test_that("fit_distrib estimates only the free parameters", {
 })
 
 test_that("print shows the fixed values", {
-  d <- fixed(gaussian_distrib(), mu = 0.5)
+  d <- fixed(gaussian1_distrib(), mu = 0.5)
   expect_output(print(d), "Fixed:")
   expect_output(print(d), "mu = 0.5")
   expect_output(print(d), "sigma")

@@ -3,18 +3,18 @@
 # List of all implemented distributions with a valid interior theta.
 all_distrib_cases <- function() {
   list(
-    gaussian  = list(d = gaussian_distrib(),  theta = list(mu = 1.5, sigma = 2.0)),
-    lognormal = list(d = lognormal_distrib(), theta = list(mu = 0.5, sigma2 = 1.3)),
-    gamma     = list(d = gamma_distrib(),     theta = list(mu = 3.0, sigma2 = 2.0)),
+    gaussian  = list(d = gaussian1_distrib(),  theta = list(mu = 1.5, sigma = 2.0)),
+    lognormal = list(d = lognormal1_distrib(), theta = list(mu = 0.5, sigma2 = 1.3)),
+    gamma     = list(d = gamma2_distrib(),     theta = list(mu = 3.0, sigma2 = 2.0)),
     cauchy    = list(d = cauchy_distrib(),    theta = list(mu = 0.5, sigma = 1.4)),
     logistic  = list(d = logistic_distrib(),  theta = list(mu = 0.5, sigma = 1.4)),
-    invgauss  = list(d = invgauss_distrib(),  theta = list(mu = 2.0, phi = 0.7)),
-    beta      = list(d = beta_distrib(),      theta = list(mu = 0.4, phi = 6.0)),
-    student_t = list(d = student_t_distrib(), theta = list(mu = 0.5, sigma = 1.3, nu = 6.0)),
+    invgauss  = list(d = invgauss1_distrib(),  theta = list(mu = 2.0, phi = 0.7)),
+    beta      = list(d = beta1_distrib(),      theta = list(mu = 0.4, phi = 6.0)),
+    student_t = list(d = student_t1_distrib(), theta = list(mu = 0.5, sigma = 1.3, nu = 6.0)),
     poisson   = list(d = poisson_distrib(),   theta = list(mu = 4.0)),
     bernoulli = list(d = bernoulli_distrib(), theta = list(mu = 0.35)),
     binomial  = list(d = binomial_distrib(size = 10), theta = list(mu = 0.35)),
-    negbin    = list(d = negbin_distrib(),    theta = list(mu = 4.0, theta = 1.7))
+    negbin    = list(d = negbin2_distrib(),    theta = list(mu = 4.0, theta = 1.7))
   )
 }
 

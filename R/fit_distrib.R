@@ -209,8 +209,8 @@ fit_loglik <- function(distrib, y, theta) {
 #'
 #' @examples
 #' set.seed(1)
-#' y <- distrib_rng(gaussian_distrib(), 200, list(mu = 1, sigma = 2))
-#' fit <- fit_distrib(gaussian_distrib(), y)
+#' y <- distrib_rng(gaussian1_distrib(), 200, list(mu = 1, sigma = 2))
+#' fit <- fit_distrib(gaussian1_distrib(), y)
 #' S7::S7_inherits(fit, distrib_fit)
 #' coef(fit)
 #' logLik(fit)
@@ -316,7 +316,7 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @examples
 #' \dontrun{
 #' set.seed(1)
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 #' fit <- fit_distrib(d, y)
 #' fit
@@ -896,7 +896,7 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
 #' @examples
 #' set.seed(1)
 #' y <- rnorm(200, 3, 2)
-#' fit <- fit_distrib(gaussian_distrib(), y)
+#' fit <- fit_distrib(gaussian1_distrib(), y)
 #'
 #' sims <- simulate(fit, 20, seed = 42)
 #' dim(sims)
@@ -973,7 +973,7 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' @examples
 #' set.seed(1)
 #' y <- rgamma(300, shape = 4, rate = 2)
-#' fit <- fit_distrib(gamma_distrib(), y)
+#' fit <- fit_distrib(gamma2_distrib(), y)
 #' plot(fit)
 #'
 #' @importFrom graphics lines legend rug barplot points

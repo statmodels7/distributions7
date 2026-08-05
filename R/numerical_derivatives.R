@@ -67,7 +67,7 @@ fd_steps <- function(theta_j, bounds_j, h_rel) {
 #'
 #' @seealso \code{\link{numerical_hessian}}, \code{\link{distrib_gradient}}
 #' @examples
-#' numerical_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' numerical_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
 numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
@@ -112,7 +112,7 @@ numerical_gradient <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1
 #'
 #' @seealso \code{\link{numerical_gradient}}, \code{\link{distrib_hessian}}
 #' @examples
-#' numerical_hessian(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' numerical_hessian(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
 numerical_hessian <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {

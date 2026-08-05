@@ -281,7 +281,7 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' thresholds. \emph{Journal of the Royal Statistical Society B} 52, 393-442.
 #'
 #' @seealso \code{\link{gumbel_distrib}}, \code{\link{exponential_distrib}},
-#'   \code{\link{weibull_distrib}}
+#'   \code{\link{weibull1_distrib}}
 #'
 #' @importFrom linkfunctions7 log_link identity_link
 #' @importFrom stats runif

@@ -125,7 +125,7 @@ test_that("the exponential is the unit-shape Weibull, to machine precision", {
   # kernels, fixed() splices a value into the Weibull's. Nothing here needs a
   # tolerance argument.
   a <- exponential_distrib()
-  b <- fixed(weibull_distrib(), sigma = 1)
+  b <- fixed(weibull1_distrib(), sigma = 1)
   set.seed(2)
   y <- stats::rexp(40, 1 / 2.5)
   th <- list(mu = 2.5)
@@ -151,7 +151,7 @@ test_that("the exponential is the unit-shape Weibull, to machine precision", {
 
 test_that("the geometric is the negative binomial at theta one, to machine precision", {
   a <- geometric_distrib()
-  b <- fixed(negbin_distrib(), theta = 1)
+  b <- fixed(negbin2_distrib(), theta = 1)
   set.seed(3)
   y <- stats::rgeom(40, 1 / 3.5)
   th <- list(mu = 2.5)
@@ -181,14 +181,14 @@ test_that("neither is a Gamma with a parameter held fixed", {
   # held at: a fixed() agrees with the exponential at one mean and nowhere
   # else. The same argument rules the chi-squared out, where it is
   # sigma2 = 2*mu.
-  gf <- fixed(gamma_distrib(), sigma2 = 2.5^2)
+  gf <- fixed(gamma2_distrib(), sigma2 = 2.5^2)
   y <- c(0.5, 1, 3)
   expect_equal(distrib_pdf(gf, y, list(mu = 2.5)),
                stats::dexp(y, rate = 1 / 2.5))
   expect_gt(max(abs(distrib_pdf(gf, y, list(mu = 4)) -
                     stats::dexp(y, rate = 1 / 4))), 0.1)
 
-  cf <- fixed(gamma_distrib(), sigma2 = 2 * 4)
+  cf <- fixed(gamma2_distrib(), sigma2 = 2 * 4)
   expect_equal(distrib_pdf(cf, y, list(mu = 4)), stats::dchisq(y, df = 4))
   expect_gt(max(abs(distrib_pdf(cf, y, list(mu = 7)) -
                     stats::dchisq(y, df = 7))), 0.01)

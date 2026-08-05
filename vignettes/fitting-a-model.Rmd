@@ -33,7 +33,7 @@ parameters, but the defaults are sensible, so most of the time it is called
 with no arguments:
 
 ```{r}
-d <- gamma_distrib()
+d <- gamma2_distrib()
 d
 ```
 

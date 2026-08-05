@@ -105,7 +105,7 @@ test_that("the marginals are Beta with the same concentration", {
 
   for (j in 1:4) {
     m <- mv_marginal(d, th, which = j)
-    expect_true(S7::S7_inherits(m$distrib, BetaDistrib))
+    expect_true(S7::S7_inherits(m$distrib, Beta1Distrib))
     expect_equal(m$theta$mu, mu[j])
     expect_equal(m$theta$phi, 12)
     # against dbeta with the shapes written out

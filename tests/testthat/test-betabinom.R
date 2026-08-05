@@ -4,7 +4,7 @@
 
 test_that("the mass function is the one written out by hand", {
   n <- 10
-  d <- betabinom_distrib(size = n)
+  d <- betabinom1_distrib(size = n)
   th <- list(mu = 0.3, sigma = 0.5)
   k <- 0:n
   a <- th$mu / th$sigma
@@ -22,7 +22,7 @@ test_that("the mass function is the one written out by hand", {
 
 test_that("the mean and the variance are the ones the family promises", {
   n <- 12
-  d <- betabinom_distrib(size = n)
+  d <- betabinom1_distrib(size = n)
   for (th in list(list(mu = 0.3, sigma = 0.5), list(mu = 0.7, sigma = 0.1))) {
     k <- 0:n
     p <- distrib_pdf(d, k, th)
@@ -37,7 +37,7 @@ test_that("the mean and the variance are the ones the family promises", {
 
 test_that("it is overdispersed and reaches the binomial as sigma vanishes", {
   n <- 10
-  d <- betabinom_distrib(size = n)
+  d <- betabinom1_distrib(size = n)
   db <- binomial_distrib(size = n)
   k <- 0:n
 
@@ -55,7 +55,7 @@ test_that("it is overdispersed and reaches the binomial as sigma vanishes", {
 
 test_that("the analytical derivatives match one Richardson differentiation", {
   skip_if_not_installed("numDeriv")
-  d <- betabinom_distrib(size = 10)
+  d <- betabinom1_distrib(size = 10)
   th <- list(mu = 0.3, sigma = 0.5)
   p0 <- c(0.3, 0.5)
   at <- function(p) list(mu = p[1], sigma = p[2])
@@ -78,7 +78,7 @@ test_that("the analytical derivatives match one Richardson differentiation", {
 
 
 test_that("the expected information is an exact sum over the support", {
-  d <- betabinom_distrib(size = 10)
+  d <- betabinom1_distrib(size = 10)
   th <- list(mu = 0.3, sigma = 0.5)
 
   # written out here rather than taken from the kernel: the mass times the
@@ -99,7 +99,7 @@ test_that("the expected information is an exact sum over the support", {
 
 
 test_that("the validator passes and a fit recovers the parameters", {
-  d <- betabinom_distrib(size = 10)
+  d <- betabinom1_distrib(size = 10)
   set.seed(3)
   res <- check_distrib(d, verbose = FALSE)
   expect_true(all(res$status == "OK"),
@@ -114,11 +114,11 @@ test_that("the validator passes and a fit recovers the parameters", {
 
 
 test_that("size is a constant of the distribution and is validated", {
-  expect_error(betabinom_distrib(size = 0), "positive integer")
-  expect_error(betabinom_distrib(size = 2.5), "positive integer")
-  expect_error(betabinom_distrib(size = c(2, 3)), "positive integer")
+  expect_error(betabinom1_distrib(size = 0), "positive integer")
+  expect_error(betabinom1_distrib(size = 2.5), "positive integer")
+  expect_error(betabinom1_distrib(size = c(2, 3)), "positive integer")
 
-  d <- betabinom_distrib(size = 7)
+  d <- betabinom1_distrib(size = 7)
   expect_identical(d@size, 7)
   expect_identical(d@bounds, c(0, 7))
   expect_identical(d@params, c("mu", "sigma"))

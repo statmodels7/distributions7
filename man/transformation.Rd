@@ -41,14 +41,14 @@ transformer's as before.
 }
 \examples{
 \dontrun{
-# A lognormal built by transformation, equal to lognormal_distrib()
-logn <- transformation(gaussian_distrib(), exp_transform())
+# A lognormal built by transformation, equal to lognormal1_distrib()
+logn <- transformation(gaussian1_distrib(), exp_transform())
 distrib_pdf(logn, 2, list(mu = 0, sigma = 1))
 dlnorm(2, 0, 1)
 }
 
 # the inverse of a Gamma is an inverse Gamma, and can say so
-ig <- transformation(gamma_distrib(), inverse_transform(),
+ig <- transformation(gamma2_distrib(), inverse_transform(),
                      new_name = "inverse gamma")
 ig@distrib_name
 

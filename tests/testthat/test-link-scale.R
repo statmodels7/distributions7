@@ -3,7 +3,7 @@
 
 test_that("identity links leave the derivatives unchanged at every order", {
   set.seed(3)
-  d <- gaussian_distrib(link_mu = linkfunctions7::identity_link(),
+  d <- gaussian1_distrib(link_mu = linkfunctions7::identity_link(),
                         link_sigma = linkfunctions7::identity_link())
   th <- list(mu = 1.5, sigma = 2)
   y <- distrib_rng(d, 8, th)
@@ -18,7 +18,7 @@ test_that("identity links leave the derivatives unchanged at every order", {
 
 test_that("log link reproduces the closed-form chain rule exactly", {
   set.seed(4)
-  d <- gaussian_distrib(link_mu = linkfunctions7::identity_link(),
+  d <- gaussian1_distrib(link_mu = linkfunctions7::identity_link(),
                         link_sigma = linkfunctions7::log_link())
   th <- list(mu = 1.5, sigma = 2)
   y <- distrib_rng(d, 8, th)
@@ -54,9 +54,9 @@ test_that("link-scale derivatives agree with finite differences in eta", {
   ev <- function(i, n) { v <- numeric(n); v[i] <- 1; v }
 
   for (case in list(
-    list(d = gaussian_distrib(), th = list(mu = 1.5, sigma = 2)),
+    list(d = gaussian1_distrib(), th = list(mu = 1.5, sigma = 2)),
     list(d = bernoulli_distrib(), th = list(mu = 0.35)),
-    list(d = beta_distrib(), th = list(mu = 0.4, phi = 6))
+    list(d = beta1_distrib(), th = list(mu = 0.4, phi = 6))
   )) {
     d <- case$d; th <- case$th
     y <- distrib_rng(d, 5, th)
@@ -87,9 +87,9 @@ test_that("link-scale derivatives agree with finite differences in eta", {
 
 test_that("expected information transforms as the congruence diag(h') I diag(h')", {
   for (case in list(
-    list(d = gaussian_distrib(), th = list(mu = 1.5, sigma = 2)),
-    list(d = gamma_distrib(), th = list(mu = 3, sigma2 = 2)),
-    list(d = negbin_distrib(), th = list(mu = 4, theta = 1.7))
+    list(d = gaussian1_distrib(), th = list(mu = 1.5, sigma = 2)),
+    list(d = gamma2_distrib(), th = list(mu = 3, sigma2 = 2)),
+    list(d = negbin2_distrib(), th = list(mu = 4, theta = 1.7))
   )) {
     d <- case$d; th <- case$th
     y <- rep(1, 3)
@@ -111,7 +111,7 @@ test_that("expected information transforms as the congruence diag(h') I diag(h')
 })
 
 test_that("scale defaults to the parameter scale and rejects unknown values", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 1, sigma = 2)
   y <- c(0.5, 1.5)
   expect_equal(distrib_gradient(d, y, th), distrib_gradient(d, y, th, scale = "parameter"))

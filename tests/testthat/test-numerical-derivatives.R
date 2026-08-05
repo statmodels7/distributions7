@@ -2,7 +2,7 @@
 # distrib_pdf must still provide gradient, observed Hessian and expected
 # Hessian through the default methods on the base `distrib` class.
 
-# A "bare" Gaussian: same math as gaussian_distrib(), but with no analytical
+# A "bare" Gaussian: same math as gaussian1_distrib(), but with no analytical
 # derivative methods registered, so every derivative call hits the fallbacks.
 BareGauss <- S7::new_class("BareGauss", parent = continuous_distrib, package = NULL)
 S7::method(distrib_pdf, BareGauss) <- function(distrib, y, theta, log = FALSE) {
@@ -34,7 +34,7 @@ bare_gauss <- function() {
 test_that("fallback gradient matches the analytical one", {
   set.seed(61)
   bg <- bare_gauss()
-  ref <- gaussian_distrib()
+  ref <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2.0)
   y <- distrib_rng(ref, 30, th)
 
@@ -49,7 +49,7 @@ test_that("fallback gradient matches the analytical one", {
 test_that("fallback hessian matches the analytical one, in hess_names order", {
   set.seed(62)
   bg <- bare_gauss()
-  ref <- gaussian_distrib()
+  ref <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2.0)
   y <- distrib_rng(ref, 30, th)
 
@@ -64,7 +64,7 @@ test_that("fallback hessian matches the analytical one, in hess_names order", {
 
 test_that("fallback expected hessian matches the analytical one", {
   bg <- bare_gauss()
-  ref <- gaussian_distrib()
+  ref <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2.0)
 
   eh_num <- distrib_expected_hessian(bg, c(0, 1, 2), th)
@@ -79,7 +79,7 @@ test_that("fallback expected hessian matches the analytical one", {
 
 test_that("fallback derivatives are vectorized over theta and validated like the analytic ones", {
   bg <- bare_gauss()
-  ref <- gaussian_distrib()
+  ref <- gaussian1_distrib()
   y <- c(-1, 0, 3)
   th_vec <- list(mu = c(0, 1, 2), sigma = c(1, 2, 3))
 
@@ -110,7 +110,7 @@ test_that("finite-difference steps respect parameter domain boundaries", {
 })
 
 test_that("numerical_gradient/numerical_hessian are exported and usable directly", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 1, sigma = 2)
   y <- c(-1, 0.5, 4)
 

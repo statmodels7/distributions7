@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R negbin_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull_distrib.R gumbel_distrib.R skewnormal_distrib.R skewt_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R
 NULL
 
 #' @title Raw and Central Moments of a Distribution
@@ -23,7 +23,7 @@ NULL
 #'
 #' @examples
 #' \dontrun{
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' moment(d, list(mu = 2, sigma = 3), p = 1)                 # 2
 #' moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 #' }
@@ -78,7 +78,7 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #'   further arguments passed to \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
 #' @examples
-#' variance(gaussian_distrib(), list(mu = 0, sigma = 2))
+#' variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #' variance(poisson_distrib(), list(mu = 3))
 #'
 #' @export
@@ -120,7 +120,7 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
 #' @examples
-#' std_dev(gaussian_distrib(), list(mu = 0, sigma = 2))
+#' std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #'
 #' @export
 std_dev <- S7::new_generic("std_dev", "x")
@@ -161,8 +161,8 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
 #' @examples
-#' skewness(gaussian_distrib(), list(mu = 0, sigma = 1))
-#' skewness(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#' skewness(gaussian1_distrib(), list(mu = 0, sigma = 1))
+#' skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
 #' @export
 skewness <- S7::new_generic("skewness", "x")
@@ -209,8 +209,8 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
 #' @return A numeric vector.
 #' @examples
-#' kurtosis(gaussian_distrib(), list(mu = 0, sigma = 1))
-#' kurtosis(gamma_distrib(), list(mu = 2, sigma2 = 1))
+#' kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1))
+#' kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
 #' @export
 kurtosis <- S7::new_generic("kurtosis", "x")
@@ -251,40 +251,40 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 # bracket relies on its analytical variance).
 
 #' @title Mean of the Negative Binomial Distribution
-#' @name mean.NegBinDistrib
+#' @name mean.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
-#' @param x A \code{NegBinDistrib}.
+#' @param x A \code{NegBin2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(mean, NegBinDistrib) <- function(x, theta, ...) {
+S7::method(mean, NegBin2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(theta[[1]], length.out = max(lengths(theta[seq_len(2)])))
 }
 
 #' @title Variance of the Negative Binomial Distribution
-#' @name variance.NegBinDistrib
+#' @name variance.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{Var(Y) = \mu + \mu^2/\theta}.
-#' @param x A \code{NegBinDistrib}.
+#' @param x A \code{NegBin2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(variance, NegBinDistrib) <- function(x, theta, ...) {
+S7::method(variance, NegBin2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[1]] + theta[[1]]^2 / theta[[2]]
 }
 
 #' @title Skewness of the Negative Binomial Distribution
-#' @name skewness.NegBinDistrib
+#' @name skewness.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}.
-#' @param x A \code{NegBinDistrib}.
+#' @param x A \code{NegBin2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(skewness, NegBinDistrib) <- function(x, theta, ...) {
+S7::method(skewness, NegBin2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   mu <- theta[[1]]
   th <- theta[[2]]
@@ -292,14 +292,14 @@ S7::method(skewness, NegBinDistrib) <- function(x, theta, ...) {
 }
 
 #' @title Kurtosis of the Negative Binomial Distribution
-#' @name kurtosis.NegBinDistrib
+#' @name kurtosis.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
-#' @param x A \code{NegBinDistrib}.
+#' @param x A \code{NegBin2Distrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(kurtosis, NegBinDistrib) <- function(x, theta, ...) {
+S7::method(kurtosis, NegBin2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   mu <- theta[[1]]
   th <- theta[[2]]
@@ -443,44 +443,44 @@ weibull_gamma_factors <- function(sigma, k = 4L) {
 }
 
 #' @title Mean of the Weibull Distribution
-#' @name mean.WeibullDistrib
+#' @name mean.Weibull1Distrib
 #' @description Closed form: \eqn{\mu\,\Gamma(1 + 1/\sigma)}. The scale
 #'   \eqn{\mu} is not the mean, which is what this method reports.
-#' @param x A \code{\link{WeibullDistrib}}.
+#' @param x A \code{\link{Weibull1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(mean, WeibullDistrib) <- function(x, theta, ...) {
+S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[1]] * gamma(1 + 1 / theta[[2]])
 }
 
 #' @title Variance of the Weibull Distribution
-#' @name variance.WeibullDistrib
+#' @name variance.Weibull1Distrib
 #' @description Closed form: \eqn{\mu^2\left(g_2 - g_1^2\right)} with
 #'   \eqn{g_k = \Gamma(1 + k/\sigma)}.
-#' @param x A \code{\link{WeibullDistrib}}.
+#' @param x A \code{\link{Weibull1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(variance, WeibullDistrib) <- function(x, theta, ...) {
+S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   g <- weibull_gamma_factors(theta[[2]], 2L)
   theta[[1]]^2 * (g$g2 - g$g1^2)
 }
 
 #' @title Skewness of the Weibull Distribution
-#' @name skewness.WeibullDistrib
+#' @name skewness.Weibull1Distrib
 #' @description Closed form:
 #'   \eqn{(g_3 - 3g_1g_2 + 2g_1^3)/(g_2 - g_1^2)^{3/2}}, free of the scale.
-#' @param x A \code{\link{WeibullDistrib}}.
+#' @param x A \code{\link{Weibull1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(skewness, WeibullDistrib) <- function(x, theta, ...) {
+S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   g <- weibull_gamma_factors(theta[[2]], 3L)
   v <- g$g2 - g$g1^2
@@ -488,16 +488,16 @@ S7::method(skewness, WeibullDistrib) <- function(x, theta, ...) {
 }
 
 #' @title Kurtosis of the Weibull Distribution
-#' @name kurtosis.WeibullDistrib
+#' @name kurtosis.Weibull1Distrib
 #' @description Closed form, excess:
 #'   \eqn{(g_4 - 4g_1g_3 + 6g_1^2g_2 - 3g_1^4)/(g_2 - g_1^2)^2 - 3}, free of
 #'   the scale.
-#' @param x A \code{\link{WeibullDistrib}}.
+#' @param x A \code{\link{Weibull1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(kurtosis, WeibullDistrib) <- function(x, theta, ...) {
+S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   g <- weibull_gamma_factors(theta[[2]], 4L)
   v <- g$g2 - g$g1^2
@@ -595,59 +595,59 @@ skewnormal_delta <- function(alpha) {
 }
 
 #' @title Mean of the Skew Normal Distribution
-#' @name mean.SkewNormalDistrib
+#' @name mean.SkewNormal1Distrib
 #' @description Closed form: \eqn{\mu + \sigma b \delta} with
 #'   \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}.
-#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param x A \code{\link{SkewNormal1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(mean, SkewNormalDistrib) <- function(x, theta, ...) {
+S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[1]] + theta[[2]] * skewnormal_delta(theta[[3]])$bd
 }
 
 #' @title Variance of the Skew Normal Distribution
-#' @name variance.SkewNormalDistrib
+#' @name variance.SkewNormal1Distrib
 #' @description Closed form: \eqn{\sigma^2\left(1 - b^2\delta^2\right)}.
-#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param x A \code{\link{SkewNormal1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(variance, SkewNormalDistrib) <- function(x, theta, ...) {
+S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[2]]^2 * (1 - skewnormal_delta(theta[[3]])$bd^2)
 }
 
 #' @title Skewness of the Skew Normal Distribution
-#' @name skewness.SkewNormalDistrib
+#' @name skewness.SkewNormal1Distrib
 #' @description Closed form:
 #'   \eqn{\tfrac{4-\pi}{2}(b\delta)^3/(1 - b^2\delta^2)^{3/2}}. Its range is
 #'   \eqn{(-0.9953, 0.9953)}, whatever the shape.
-#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param x A \code{\link{SkewNormal1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(skewness, SkewNormalDistrib) <- function(x, theta, ...) {
+S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   bd <- skewnormal_delta(theta[[3]])$bd
   ((4 - pi) / 2) * bd^3 / (1 - bd^2)^1.5
 }
 
 #' @title Kurtosis of the Skew Normal Distribution
-#' @name kurtosis.SkewNormalDistrib
+#' @name kurtosis.SkewNormal1Distrib
 #' @description Closed form, excess:
 #'   \eqn{2(\pi - 3)(b\delta)^4/(1 - b^2\delta^2)^2}. It is non-negative and
 #'   bounded above by about \eqn{0.8692}.
-#' @param x A \code{\link{SkewNormalDistrib}}.
+#' @param x A \code{\link{SkewNormal1Distrib}}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
-S7::method(kurtosis, SkewNormalDistrib) <- function(x, theta, ...) {
+S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   bd <- skewnormal_delta(theta[[3]])$bd
   2 * (pi - 3) * bd^4 / (1 - bd^2)^2

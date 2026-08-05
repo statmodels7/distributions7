@@ -21,7 +21,7 @@ Computes the excess kurtosis (fourth standardized moment minus 3). For
 numeric vectors the sample excess kurtosis (population denominator) is returned.
 }
 \examples{
-kurtosis(gaussian_distrib(), list(mu = 0, sigma = 1))
-kurtosis(gamma_distrib(), list(mu = 2, sigma2 = 1))
+kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1))
+kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 
 }

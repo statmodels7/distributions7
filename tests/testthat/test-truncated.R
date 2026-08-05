@@ -5,9 +5,9 @@ trunc_cases <- function() {
   list(
     ztp   = list(d = truncated(poisson_distrib(), lower = 1), theta = list(mu = 2.5)),
     tpois = list(d = truncated(poisson_distrib(), upper = 8), theta = list(mu = 3)),
-    tnb   = list(d = truncated(negbin_distrib(), 1, 15), theta = list(mu = 4, theta = 1.5)),
-    tnorm = list(d = truncated(gaussian_distrib(), -1, 2), theta = list(mu = 0.5, sigma = 1.5)),
-    tgam  = list(d = truncated(gamma_distrib(), 0.5, 8), theta = list(mu = 3, sigma2 = 2))
+    tnb   = list(d = truncated(negbin2_distrib(), 1, 15), theta = list(mu = 4, theta = 1.5)),
+    tnorm = list(d = truncated(gaussian1_distrib(), -1, 2), theta = list(mu = 0.5, sigma = 1.5)),
+    tgam  = list(d = truncated(gamma2_distrib(), 0.5, 8), theta = list(mu = 3, sigma2 = 2))
   )
 }
 
@@ -28,7 +28,7 @@ test_that("the zero-truncated Poisson matches its closed form", {
 
 test_that("the truncated Gaussian matches its closed form", {
   lo <- -1; up <- 2; mu <- 0.5; sg <- 1.5
-  tn <- truncated(gaussian_distrib(), lower = lo, upper = up)
+  tn <- truncated(gaussian1_distrib(), lower = lo, upper = up)
   th <- list(mu = mu, sigma = sg)
 
   a <- (lo - mu) / sg
@@ -125,31 +125,31 @@ test_that("the truncated score has zero mean, as the first Bartlett identity req
 test_that("truncation refuses points that remove no mass", {
   # The motivating case: the Gamma lives on (0, Inf), so truncating at -2 does
   # nothing at all and the user meant something else.
-  expect_error(truncated(gamma_distrib(), lower = -2), "removes no probability mass")
-  expect_error(truncated(gamma_distrib(), lower = 0), "removes no probability mass")
+  expect_error(truncated(gamma2_distrib(), lower = -2), "removes no probability mass")
+  expect_error(truncated(gamma2_distrib(), lower = 0), "removes no probability mass")
   expect_error(truncated(poisson_distrib(), lower = 0), "removes no probability mass")
   expect_error(truncated(binomial_distrib(size = 10), upper = 10), "removes no probability mass")
-  expect_error(truncated(beta_distrib(), lower = 0.2, upper = 1.5), "removes no probability mass")
+  expect_error(truncated(beta1_distrib(), lower = 0.2, upper = 1.5), "removes no probability mass")
 
   # ... and points that would leave nothing
-  expect_error(truncated(beta_distrib(), lower = 0.2, upper = 0.1), "strictly less")
+  expect_error(truncated(beta1_distrib(), lower = 0.2, upper = 0.1), "strictly less")
   expect_error(truncated(poisson_distrib(), 3, 3), "strictly less")
 })
 
 test_that("truncation requires at least one endpoint, and support points when discrete", {
   expect_error(truncated(poisson_distrib()), "at least one")
-  expect_error(truncated(gaussian_distrib()), "at least one")
+  expect_error(truncated(gaussian1_distrib()), "at least one")
 
   expect_error(truncated(poisson_distrib(), lower = 1.5), "not a point of the support")
-  expect_error(truncated(negbin_distrib(), upper = 7.2), "not a point of the support")
+  expect_error(truncated(negbin2_distrib(), upper = 7.2), "not a point of the support")
   # A continuous parent has no such restriction
-  expect_no_error(truncated(gaussian_distrib(), lower = 1.5))
+  expect_no_error(truncated(gaussian1_distrib(), lower = 1.5))
 })
 
 test_that("a discrete truncation must leave enough support to identify the parameters", {
   # Two points carry one free probability; the negative binomial has two parameters.
-  expect_error(truncated(negbin_distrib(), 3, 4), "not\\s+be\\s+identified")
-  expect_no_error(truncated(negbin_distrib(), 3, 5))
+  expect_error(truncated(negbin2_distrib(), 3, 4), "not\\s+be\\s+identified")
+  expect_no_error(truncated(negbin2_distrib(), 3, 5))
   # One parameter needs only two points
   expect_no_error(truncated(poisson_distrib(), 3, 4))
 })
@@ -161,16 +161,16 @@ test_that("truncation cannot remove zero from a distribution that models P(Y = 0
                "models the\\s+probability of a zero")
   expect_error(truncated(zero_adjusted(poisson_distrib()), lower = 1),
                "models the\\s+probability of a zero")
-  expect_error(truncated(zero_adjusted(gamma_distrib()), lower = 0.5),
+  expect_error(truncated(zero_adjusted(gamma2_distrib()), lower = 0.5),
                "models the\\s+probability of a zero")
 
   # Truncating elsewhere keeps zero, and is fine
   expect_no_error(truncated(zero_inflated(poisson_distrib()), upper = 6))
-  expect_no_error(truncated(zero_adjusted(gamma_distrib()), upper = 5))
+  expect_no_error(truncated(zero_adjusted(gamma2_distrib()), upper = 5))
 })
 
 test_that("truncating a mixed distribution keeps its atom, rescaled", {
-  zag <- zero_adjusted(gamma_distrib())
+  zag <- zero_adjusted(gamma2_distrib())
   th <- list(mu = 3, sigma2 = 2, za = 0.3)
   tz <- truncated(zag, upper = 5)
 
@@ -187,10 +187,10 @@ test_that("truncating a mixed distribution keeps its atom, rescaled", {
 })
 
 test_that("nested truncation collapses to the intersection", {
-  d <- truncated(truncated(gaussian_distrib(), -1, 3), upper = 2)
+  d <- truncated(truncated(gaussian1_distrib(), -1, 3), upper = 2)
   expect_equal(c(d@lower, d@upper), c(-1, 2))
   # one level of wrapping, not two
-  expect_true(S7::S7_inherits(d@parent_distrib, GaussianDistrib))
+  expect_true(S7::S7_inherits(d@parent_distrib, Gaussian1Distrib))
 
   d2 <- truncated(truncated(poisson_distrib(), lower = 2), upper = 9)
   expect_equal(c(d2@lower, d2@upper), c(2, 9))
@@ -207,19 +207,19 @@ test_that("truncation carries the parent's parameters and smoothness unchanged",
 })
 
 test_that("response derivatives stop at the truncation points", {
-  tg <- truncated(gamma_distrib(), 0.5, 8)
+  tg <- truncated(gamma2_distrib(), 0.5, 8)
   th <- list(mu = 3, sigma2 = 2)
   y <- c(0.2, 1, 4, 9)   # 0.2 and 9 both fall outside [0.5, 8]
-  parent <- distrib_grad_y(gamma_distrib(), c(1, 4), th)
+  parent <- distrib_grad_y(gamma2_distrib(), c(1, 4), th)
 
   expect_equal(distrib_grad_y(tg, y, th), c(NaN, parent, NaN))
   expect_equal(distrib_hess_y(tg, y, th),
-               c(NaN, distrib_hess_y(gamma_distrib(), c(1, 4), th), NaN))
+               c(NaN, distrib_hess_y(gamma2_distrib(), c(1, 4), th), NaN))
   expect_true(is.nan(distrib_hess_y(tg, 0.2, th)))
 })
 
 test_that("truncated derivatives are correct with vectorized parameters", {
-  d <- truncated(gaussian_distrib(), -1, 2)
+  d <- truncated(gaussian1_distrib(), -1, 2)
   mu <- c(0, 0.5, 1)
   th <- list(mu = mu, sigma = 1.5)
   y <- c(0.1, 0.4, 1.1)
@@ -238,9 +238,9 @@ test_that("check_distrib validates the truncated wrappers", {
   set.seed(404)
   cases <- list(
     list(d = truncated(poisson_distrib(), lower = 1), th = list(mu = 2.5)),
-    list(d = truncated(gaussian_distrib(), -1, 2), th = list(mu = 0.5, sigma = 1.5)),
-    list(d = truncated(gamma_distrib(), 0.5, 8), th = list(mu = 3, sigma2 = 2)),
-    list(d = truncated(zero_adjusted(gamma_distrib()), upper = 5),
+    list(d = truncated(gaussian1_distrib(), -1, 2), th = list(mu = 0.5, sigma = 1.5)),
+    list(d = truncated(gamma2_distrib(), 0.5, 8), th = list(mu = 3, sigma2 = 2)),
+    list(d = truncated(zero_adjusted(gamma2_distrib()), upper = 5),
          th = list(mu = 3, sigma2 = 2, za = 0.3))
   )
   for (cs in cases) {

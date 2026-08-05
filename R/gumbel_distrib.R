@@ -334,7 +334,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta) {
 #' and excess kurtosis \eqn{12/5}, the last two free of both parameters.
 #'
 #' \strong{Relation to the Weibull.} If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is
-#' Weibull, so \code{\link{weibull_distrib}} is this family on the log scale and
+#' Weibull, so \code{\link{weibull1_distrib}} is this family on the log scale and
 #' reversed; the two share the expectations that produce their information
 #' matrices.
 #'

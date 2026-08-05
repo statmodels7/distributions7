@@ -15,7 +15,7 @@ mixed_stencil <- function(distrib, y, theta, param, hy = 1e-5, ht = 1e-5) {
 }
 
 test_that("the gaussian closed form matches the mixed stencil", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 0.3, sigma = 1.7)
   y <- c(-2, -0.5, 0.3, 1, 4)
 
@@ -34,7 +34,7 @@ test_that("the gaussian closed form matches the mixed stencil", {
 })
 
 test_that("the Student t closed form matches the mixed stencil", {
-  d <- student_t_distrib()
+  d <- student_t1_distrib()
   th <- list(mu = -0.2, sigma = 1.3, nu = 4.5)
   y <- c(-3, -0.2, 0.4, 2.5)
 
@@ -49,16 +49,16 @@ test_that("the Student t closed form matches the mixed stencil", {
 
 test_that("the Student t tends to the gaussian as nu grows", {
   y <- c(-1, 0.5, 2)
-  tg <- distrib_cross_y(gaussian_distrib(), y, list(mu = 0, sigma = 1.5))
+  tg <- distrib_cross_y(gaussian1_distrib(), y, list(mu = 0, sigma = 1.5))
   tt <- distrib_cross_y(
-    student_t_distrib(), y, list(mu = 0, sigma = 1.5, nu = 1e7)
+    student_t1_distrib(), y, list(mu = 0, sigma = 1.5, nu = 1e7)
   )
   expect_equal(tt[["mu"]], tg[["mu"]], tolerance = 1e-5)
   expect_equal(tt[["sigma"]], tg[["sigma"]], tolerance = 1e-5)
 })
 
 test_that("the fallback covers a family without a closed form", {
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   th <- list(mu = 2, sigma2 = 0.8)
   y <- c(0.4, 1.5, 3, 6)
 
@@ -72,7 +72,7 @@ test_that("the fallback covers a family without a closed form", {
 })
 
 test_that("the link scale multiplies each component by its own h'", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 0.3, sigma = 1.7)
   y <- c(-1, 0.5, 2)
 
@@ -88,7 +88,7 @@ test_that("truncation leaves the mixed derivatives unchanged", {
   # l_T = l - log Z(theta): the constant has no y, so it drops from any
   # derivative involving the response. Both the delegation and the stencil on
   # the truncated log-density itself must say so.
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- truncated(g, lower = -1, upper = 3)
   th <- list(mu = 0.3, sigma = 1.2)
   y <- c(-0.5, 0.8, 2.4)
@@ -103,7 +103,7 @@ test_that("truncation leaves the mixed derivatives unchanged", {
 })
 
 test_that("fixed() keeps the components of the free parameters", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   d <- fixed(g, mu = 0.3)
   y <- c(-1, 0.5, 2)
 
@@ -120,7 +120,7 @@ test_that("fixed() keeps the components of the free parameters", {
 test_that("a deliberately wrong closed form would be caught", {
   # The stencil tolerance must be able to see a 5% error, or the agreement
   # tests above prove nothing.
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 0.3, sigma = 1.7)
   y <- c(-1, 0.5, 2)
   wrong <- 1.05 * distrib_cross_y(d, y, th)[["sigma"]]

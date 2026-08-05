@@ -26,5 +26,5 @@ distributions; distributions with a closed form provide it directly, the others
 fall back to finite differences of the log-density.
 }
 \examples{
-distrib_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }

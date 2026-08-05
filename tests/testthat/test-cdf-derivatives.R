@@ -11,12 +11,12 @@
 
 cdf_deriv_cases <- function() {
   list(
-    gaussian = list(d = gaussian_distrib(), th = list(mu = 1.2, sigma = 1.7), q = c(0, 1.2, 3)),
+    gaussian = list(d = gaussian1_distrib(), th = list(mu = 1.2, sigma = 1.7), q = c(0, 1.2, 3)),
     logistic = list(d = logistic_distrib(), th = list(mu = 0.5, sigma = 1.4), q = c(-1, 0.5, 2)),
-    gamma    = list(d = gamma_distrib(),    th = list(mu = 3, sigma2 = 2),    q = c(1, 3, 7)),
-    beta     = list(d = beta_distrib(),     th = list(mu = 0.4, phi = 6),     q = c(0.2, 0.5, 0.8)),
+    gamma    = list(d = gamma2_distrib(),    th = list(mu = 3, sigma2 = 2),    q = c(1, 3, 7)),
+    beta     = list(d = beta1_distrib(),     th = list(mu = 0.4, phi = 6),     q = c(0.2, 0.5, 0.8)),
     poisson  = list(d = poisson_distrib(),  th = list(mu = 4),                q = c(1, 4, 9)),
-    negbin   = list(d = negbin_distrib(),   th = list(mu = 4, theta = 1.7),   q = c(1, 4, 9)),
+    negbin   = list(d = negbin2_distrib(),   th = list(mu = 4, theta = 1.7),   q = c(1, 4, 9)),
     binomial = list(d = binomial_distrib(size = 10), th = list(mu = 0.35),    q = c(2, 4, 7))
   )
 }
@@ -73,7 +73,7 @@ test_that("discrete cdf gradients match finite differences of the cdf", {
 test_that("the location-scale closed forms are the density and its first moment", {
   # dF/dmu = -f(y),  dF/dsigma = -z f(y)
   for (nm in c("gaussian", "logistic", "cauchy", "laplace")) {
-    d <- switch(nm, gaussian = gaussian_distrib(), logistic = logistic_distrib(),
+    d <- switch(nm, gaussian = gaussian1_distrib(), logistic = logistic_distrib(),
                 cauchy = cauchy_distrib(), laplace = laplace_distrib())
     th <- stats::setNames(list(1.2, 1.7), d@params)
     q <- c(-1, 0.4, 1.2, 3.5)
@@ -130,7 +130,7 @@ test_that("a censored likelihood gets the right score", {
   # The motivating use: an observation known only to exceed c contributes
   # log(1 - F(c)), so its score is distrib_grad_cdf(lower.tail = FALSE).
   set.seed(1)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 1, sigma = 2)
   y <- distrib_rng(d, 200, th)
   cens <- y > 2.5
@@ -155,7 +155,7 @@ test_that("a censored likelihood gets the right score", {
 
 test_that("interval censoring assembles from the unlogged derivatives", {
   # log(F(b) - F(a)) has score (dF(b) - dF(a)) / (F(b) - F(a)).
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   th <- list(mu = 3, sigma2 = 2)
   a <- 1.5; b <- 4.0
 
@@ -175,7 +175,7 @@ test_that("interval censoring assembles from the unlogged derivatives", {
 })
 
 test_that("cdf derivatives are correct with vectorized parameters", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   mu <- c(0, 1, 2)
   th <- list(mu = mu, sigma = 1.5)
   q <- c(0.5, 1.0, 1.5)
@@ -193,11 +193,11 @@ test_that("the new closed forms agree with the partial expectation", {
   # and is the accurate reference where the cdf is itself numerical (the
   # pseudo-Huber), which is exactly where differencing the cdf is poor.
   cases <- list(
-    lognormal   = list(d = lognormal_distrib(), th = list(mu = 0.5, sigma2 = 1.3),
+    lognormal   = list(d = lognormal1_distrib(), th = list(mu = 0.5, sigma2 = 1.3),
                        q = c(0.4, 1.5, 4)),
-    invgauss    = list(d = invgauss_distrib(), th = list(mu = 2, phi = 0.7),
+    invgauss    = list(d = invgauss1_distrib(), th = list(mu = 2, phi = 0.7),
                        q = c(0.6, 2, 5)),
-    student_t   = list(d = student_t_distrib(), th = list(mu = 0.5, sigma = 1.3, nu = 6),
+    student_t   = list(d = student_t1_distrib(), th = list(mu = 0.5, sigma = 1.3, nu = 6),
                        q = c(-1, 0.5, 2)),
     pseudohuber = list(d = pseudohuber_distrib(), th = list(mu = 0.5, sigma = 1.2, nu = 3),
                        q = c(-1, 0.5, 2))
@@ -216,7 +216,7 @@ test_that("the location-scale identity holds where only two of three parameters 
   # Student t and pseudo-Huber are location-scale in (mu, sigma) with a further
   # shape; the first two derivatives are closed form, the third is differenced.
   for (nm in c("student_t", "pseudohuber")) {
-    d <- if (nm == "student_t") student_t_distrib() else pseudohuber_distrib()
+    d <- if (nm == "student_t") student_t1_distrib() else pseudohuber_distrib()
     th <- list(mu = 0.5, sigma = 1.2, nu = 4)
     names(th) <- d@params
     q <- c(-1, 0.5, 2)
@@ -235,7 +235,7 @@ test_that("the discrete closed forms match their textbook identities", {
                                 list(mu = 0.35), log = FALSE)$mu,
                -10 * dbinom(c(2, 4, 7), 9, 0.35))
   # the negative binomial tends to the Poisson identity as theta grows
-  big <- distrib_grad_cdf(negbin_distrib(), c(1, 4, 9),
+  big <- distrib_grad_cdf(negbin2_distrib(), c(1, 4, 9),
                           list(mu = 4, theta = 1e7), log = FALSE)$mu
   expect_equal(big, -dpois(c(1, 4, 9), 4), tolerance = 1e-5)
 })
@@ -244,7 +244,7 @@ test_that("the gamma satisfies its exact parametrisation identity", {
   # dF/dshape has no elementary form, but the two package parameters are tied:
   # with alpha = mu^2/s2 and beta = mu/s2, the shape direction cancels from
   #     dF/dmu + (2 s2/mu) dF/ds2 = -dF/dbeta / s2 = -y f(y) / mu.
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   for (th in list(list(mu = 3, sigma2 = 2), list(mu = 1.5, sigma2 = 0.4))) {
     q <- c(0.5, th$mu, 3 * th$mu)
     g <- distrib_grad_cdf(d, q, th, log = FALSE)
@@ -258,29 +258,29 @@ test_that("the gamma satisfies its exact parametrisation identity", {
 test_that("truncation takes the cdf route only where it is at least as accurate", {
   # A closed-form or discrete parent: the route is taken.
   expect_false(is.null(distributions7:::trunc_mass_derivs(
-    truncated(gaussian_distrib(), -1, 2), list(mu = 0.5, sigma = 1.5), 2L)))
+    truncated(gaussian1_distrib(), -1, 2), list(mu = 0.5, sigma = 1.5), 2L)))
   expect_false(is.null(distributions7:::trunc_mass_derivs(
     truncated(poisson_distrib(), lower = 1), list(mu = 2.5), 1L)))
 
   # A parent whose cdf derivative is differenced: quadrature is kept, because
   # the noise would otherwise reach the reference of the fourth-order check.
   expect_null(distributions7:::trunc_mass_derivs(
-    truncated(gamma_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 2L))
+    truncated(gamma2_distrib(), 0.5, 8), list(mu = 3, sigma2 = 2), 2L))
 
   # A mixed parent with an atom on the lower endpoint: refused for correctness.
-  tz <- truncated(zero_adjusted(gamma_distrib()), upper = 5)
+  tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
   expect_null(distributions7:::trunc_mass_derivs(tz, list(mu = 3, sigma2 = 2, za = 0.3), 1L))
 })
 
 test_that("the cdf route gives the same truncated Hessian as quadrature", {
-  d <- truncated(gaussian_distrib(), -1, 2)
+  d <- truncated(gaussian1_distrib(), -1, 2)
   th <- list(mu = 0.5, sigma = 1.5)
   y <- c(-0.5, 0.3, 1.6)
 
   m <- distributions7:::trunc_score_mean_quad(d, th)
   EH <- distributions7:::trunc_hess_mean(d, th)
   ES <- distributions7:::trunc_score_prod_mean(d, th)
-  h <- distrib_hessian(gaussian_distrib(), y, th)
+  h <- distrib_hessian(gaussian1_distrib(), y, th)
   pr <- distributions7:::hess_pairs(d@params)
   quad <- lapply(names(pr), function(nm)
     h[[nm]] - (EH[[nm]] + ES[[nm]]) + m[[pr[[nm]][1]]] * m[[pr[[nm]][2]]])

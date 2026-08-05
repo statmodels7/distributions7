@@ -62,7 +62,7 @@ stand.
 }
 \examples{
 set.seed(1)
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 y <- distrib_rng(d, 200, list(mu = 1, sigma = 2))
 
 # the default, and the same thing said explicitly
@@ -72,7 +72,7 @@ coef(fit_distrib(d, y, method = fisher_scoring()))
 # A family whose expected information has no closed form takes a strategy.
 # The same argument on a family that HAS one is refused rather than
 # silently ignored.
-sn <- skewnormal_distrib()
+sn <- skewnormal1_distrib()
 set.seed(2)
 ys <- distrib_rng(sn, 300, list(mu = 0, sigma = 1, alpha = 3))
 coef(fit_distrib(sn, ys, method = fisher_scoring(approx = "opg")))

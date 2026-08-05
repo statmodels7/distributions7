@@ -25,7 +25,7 @@ distribution.
 This is the one quantity separating the two truncation classes, and getting it
 wrong for a \emph{mixed} parent is subtle. It is tempting to branch on whether
 the parent is a \code{discrete_distrib}; that looks right and is wrong. The cdf
-of \code{zero_adjusted(gamma_distrib())} already includes the point mass at
+of \code{zero_adjusted(gamma2_distrib())} already includes the point mass at
 zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
 \code{continuous_distrib}. Truncating it from above, with the atom retained,
 then drops exactly that mass out of the normalising constant -- and the

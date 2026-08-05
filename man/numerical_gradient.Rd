@@ -34,7 +34,7 @@ significant digits): sufficient for optimization, but slower and less precise
 than an analytical implementation.
 }
 \examples{
-numerical_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+numerical_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{

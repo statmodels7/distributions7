@@ -22,7 +22,7 @@ bare_gauss_rng <- function() {
 test_that("all strategies recover the analytical expected Hessian", {
   bg <- bare_gauss_rng()
   th <- list(mu = 1.5, sigma = 2)
-  truth <- distrib_expected_hessian(gaussian_distrib(), 0, th)
+  truth <- distrib_expected_hessian(gaussian1_distrib(), 0, th)
 
   for (a in c("bartlett", "opg", "integrate")) {
     e <- distrib_expected_hessian(bg, 0, th, approx = a)
@@ -48,7 +48,7 @@ test_that("'opg' is an alias for 'bartlett'", {
 })
 
 test_that("approx is ignored when the distribution has a closed form", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2)
   base <- distrib_expected_hessian(g, 0, th)
   for (a in c("bartlett", "integrate", "mc")) {
@@ -89,7 +89,7 @@ test_that("only the Bartlett form gives the information for a non-regular model"
 })
 
 test_that("higher-order strategies agree for a distribution with analytic derivatives", {
-  st <- student_t_distrib()
+  st <- student_t1_distrib()
   th <- list(mu = 0, sigma = 1, nu = 8)
   r_int <- distrib_deriv3(st, 0, th, expected = TRUE, approx = "integrate")
   r_bar <- distrib_deriv3(st, 0, th, expected = TRUE, approx = "bartlett")
@@ -114,7 +114,7 @@ test_that("integrate fails informatively on a purely numerical high-order deriva
     "bartlett"
   )
   # and the suggested alternative works
-  ref <- distrib_deriv3(gaussian_distrib(), 0, th, expected = TRUE)
+  ref <- distrib_deriv3(gaussian1_distrib(), 0, th, expected = TRUE)
   alt <- distrib_deriv3(bg, 0, th, expected = TRUE, approx = "bartlett")
   for (k in names(ref)) {
     expect_equal(alt[[k]][1], ref[[k]][1], tolerance = 1e-5, label = paste("d3", k))

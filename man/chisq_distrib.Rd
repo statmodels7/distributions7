@@ -73,5 +73,5 @@ distrib_expected_hessian(d, c(1, 4, 9), theta)
 
 }
 \seealso{
-\code{\link{gamma_distrib}}, \code{\link{exponential_distrib}}
+\code{\link{gamma2_distrib}}, \code{\link{exponential_distrib}}
 }

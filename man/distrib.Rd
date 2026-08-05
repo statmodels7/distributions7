@@ -66,7 +66,7 @@ distribution must supply.
 }
 
 \examples{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 S7::S7_inherits(d, distrib)
 d@params
 d@params_bounds

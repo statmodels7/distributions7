@@ -4,9 +4,9 @@
 zi_za_cases <- function() {
   list(
     zip = list(d = zero_inflated(poisson_distrib()), theta = list(mu = 3, zi = 0.25)),
-    zinb = list(d = zero_inflated(negbin_distrib()), theta = list(mu = 4, theta = 1.5, zi = 0.3)),
+    zinb = list(d = zero_inflated(negbin2_distrib()), theta = list(mu = 4, theta = 1.5, zi = 0.3)),
     zap = list(d = zero_adjusted(poisson_distrib()), theta = list(mu = 3, za = 0.4)),
-    zagamma = list(d = zero_adjusted(gamma_distrib()), theta = list(mu = 3, sigma2 = 2, za = 0.3))
+    zagamma = list(d = zero_adjusted(gamma2_distrib()), theta = list(mu = 3, sigma2 = 2, za = 0.3))
   )
 }
 
@@ -26,7 +26,7 @@ test_that("wrapped pmfs/pdfs are normalized and place the right mass at zero", {
   expect_equal(numerical_series(function(k) distrib_pdf(zap, k, th), 0, Inf), 1, tolerance = 1e-9)
 
   # ZA gamma: P(0) = za, continuous part scaled by (1-za)
-  zag <- zero_adjusted(gamma_distrib())
+  zag <- zero_adjusted(gamma2_distrib())
   th <- list(mu = 3, sigma2 = 2, za = 0.3)
   expect_equal(distrib_pdf(zag, 0, th), 0.3)
   expect_equal(
@@ -67,7 +67,7 @@ test_that("wrapped moments match closed forms", {
   expect_equal(mean(zap, th), 0.6 * 3 / (1 - dpois(0, 3)), tolerance = 1e-7)
 
   # ZA gamma (GAMLSS 9.2): E[Y] = (1-p) mu, V = (1-p) s2 + p(1-p) mu^2
-  zag <- zero_adjusted(gamma_distrib())
+  zag <- zero_adjusted(gamma2_distrib())
   th <- list(mu = 3, sigma2 = 2, za = 0.3)
   expect_equal(mean(zag, th), 0.7 * 3, tolerance = 1e-6)
   expect_equal(variance(zag, th), 0.7 * 2 + 0.3 * 0.7 * 9, tolerance = 1e-5)
@@ -122,8 +122,8 @@ test_that("wrapped expected hessians equal the expectation of the observed hessi
 test_that("zero_inflated() requires a discrete parent with mass at zero", {
   # A continuous distribution has P(Y = 0) = 0: there is nothing to inflate, and
   # the model the user is after is the zero-adjusted one.
-  expect_error(zero_inflated(gaussian_distrib()), "zero_adjusted")
-  expect_error(zero_inflated(gamma_distrib()), "zero_adjusted")
+  expect_error(zero_inflated(gaussian1_distrib()), "zero_adjusted")
+  expect_error(zero_inflated(gamma2_distrib()), "zero_adjusted")
 
   # A discrete distribution whose support starts above zero has no mass to add to.
   d <- poisson_distrib()
@@ -164,7 +164,7 @@ test_that("the refusal above is not pedantry: the parameters really are lost", {
 test_that("the wrappers cannot be stacked on one another", {
   zip <- zero_inflated(poisson_distrib())
   zap <- zero_adjusted(poisson_distrib())
-  zag <- zero_adjusted(gamma_distrib())
+  zag <- zero_adjusted(gamma2_distrib())
 
   expect_error(zero_adjusted(zip), "already models the probability of a zero")
   expect_error(zero_inflated(zap), "already models the probability of a zero")
@@ -192,15 +192,15 @@ test_that("the wrappers cannot be stacked on one another", {
 })
 
 test_that("a continuous parent whose support misses zero is flagged", {
-  shifted <- transformation(gamma_distrib(), affine_transform(1, 2))
+  shifted <- transformation(gamma2_distrib(), affine_transform(1, 2))
   expect_warning(zero_adjusted(shifted), "disconnected")
   # ... but is still built, and is a perfectly valid distribution
   d <- suppressWarnings(zero_adjusted(shifted))
   expect_equal(distrib_pdf(d, 0, list(mu = 3, sigma2 = 2, za = 0.3)), 0.3)
 
   # A parent that reaches zero, boundary or interior, passes without comment
-  expect_silent(zero_adjusted(gamma_distrib()))
-  expect_silent(zero_adjusted(gaussian_distrib()))
+  expect_silent(zero_adjusted(gamma2_distrib()))
+  expect_silent(zero_adjusted(gaussian1_distrib()))
 })
 
 test_that("the wrappers carry the parent's smoothness flags", {
@@ -215,20 +215,20 @@ test_that("the wrappers carry the parent's smoothness flags", {
 })
 
 test_that("only the zero-adjusted continuous wrapper declares an atom", {
-  expect_equal(distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1)),
+  expect_equal(distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1)),
                list(y = numeric(0), p = numeric(0)))
   expect_equal(distrib_atoms(zero_adjusted(poisson_distrib()), list(mu = 2, za = 0.3)),
                list(y = numeric(0), p = numeric(0)))
-  expect_equal(distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3)),
+  expect_equal(distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3)),
                list(y = 0, p = 0.3))
 })
 
 test_that("response derivatives of a mixed distribution stop at the atom", {
-  zag <- zero_adjusted(gamma_distrib())
+  zag <- zero_adjusted(gamma2_distrib())
   th <- list(mu = 3, sigma2 = 2, za = 0.3)
   y <- c(0, 0.5, 1, 4)
-  parent_g <- distrib_grad_y(gamma_distrib(), y[-1], list(mu = 3, sigma2 = 2))
-  parent_h <- distrib_hess_y(gamma_distrib(), y[-1], list(mu = 3, sigma2 = 2))
+  parent_g <- distrib_grad_y(gamma2_distrib(), y[-1], list(mu = 3, sigma2 = 2))
+  parent_h <- distrib_hess_y(gamma2_distrib(), y[-1], list(mu = 3, sigma2 = 2))
 
   # The (1 - za) factor does not depend on y, so away from zero nothing changes
   expect_equal(distrib_grad_y(zag, y, th), c(NaN, parent_g))
@@ -241,8 +241,8 @@ test_that("check_distrib validates every wrapper, atoms included", {
   cases <- list(
     list(d = zero_inflated(poisson_distrib()), th = list(mu = 3, zi = 0.25)),
     list(d = zero_adjusted(poisson_distrib()), th = list(mu = 3, za = 0.4)),
-    list(d = zero_adjusted(gamma_distrib()), th = list(mu = 3, sigma2 = 2, za = 0.3)),
-    list(d = zero_adjusted(gaussian_distrib()), th = list(mu = 1, sigma = 2, za = 0.3))
+    list(d = zero_adjusted(gamma2_distrib()), th = list(mu = 3, sigma2 = 2, za = 0.3)),
+    list(d = zero_adjusted(gaussian1_distrib()), th = list(mu = 1, sigma = 2, za = 0.3))
   )
   for (cs in cases) {
     out <- check_distrib(cs$d, theta = cs$th, n = 40, nsim = 5e4,
@@ -257,7 +257,7 @@ test_that("atom-awareness has not blunted check_distrib", {
   skip_on_cran()
   set.seed(99)
   # A deliberately wrong gradient on the mixed distribution must still be caught.
-  broken <- zero_adjusted(gamma_distrib())
+  broken <- zero_adjusted(gamma2_distrib())
   # S7::method(gen, cls) <- fn mutates the generic in place, so the original has
   # to be put back or the rest of the suite runs against the broken one.
   old <- S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib)

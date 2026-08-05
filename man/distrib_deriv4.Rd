@@ -52,5 +52,5 @@ implementation provide it directly (in C++); the others fall back to finite
 differences of the Hessian (see \code{\link{numerical_deriv4}}).
 }
 \examples{
-distrib_deriv4(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }

@@ -5,8 +5,8 @@ test_that("log(lognormal) is the gaussian, all the way through", {
   # lognormal(mu, sigma2) has log Y ~ N(mu, sigma2), so the log transformation
   # must reproduce the gaussian exactly -- a sharp end-to-end check of the
   # change-of-variables machinery against a distribution implemented separately.
-  lg <- transformation(lognormal_distrib(), log_transform())
-  g <- gaussian_distrib()
+  lg <- transformation(lognormal1_distrib(), log_transform())
+  g <- gaussian1_distrib()
   th <- list(mu = 0.7, sigma2 = 1.3)
   thg <- list(mu = 0.7, sigma = sqrt(1.3))
 
@@ -27,8 +27,8 @@ test_that("log(lognormal) is the gaussian, all the way through", {
 test_that("fitting log(lognormal) and the gaussian to one sample agrees exactly", {
   set.seed(71)
   y <- stats::rnorm(1500, 0.7, sqrt(1.3))
-  f_lg <- fit_distrib(transformation(lognormal_distrib(), log_transform()), y)
-  f_g <- fit_distrib(gaussian_distrib(), y)
+  f_lg <- fit_distrib(transformation(lognormal1_distrib(), log_transform()), y)
+  f_g <- fit_distrib(gaussian1_distrib(), y)
 
   expect_equal(coef(f_lg)[["mu"]], coef(f_g)[["mu"]], tolerance = 1e-6)
   expect_equal(sqrt(coef(f_lg)[["sigma2"]]), coef(f_g)[["sigma"]], tolerance = 1e-6)
@@ -37,11 +37,11 @@ test_that("fitting log(lognormal) and the gaussian to one sample agrees exactly"
 
 test_that("transformed distributions pass their own validator and recover parameters", {
   cases <- list(
-    log_gamma = list(d = transformation(gamma_distrib(), log_transform()),
+    log_gamma = list(d = transformation(gamma2_distrib(), log_transform()),
                      th = list(mu = 3, sigma2 = 2)),
-    exp_gaussian = list(d = transformation(gaussian_distrib(), exp_transform()),
+    exp_gaussian = list(d = transformation(gaussian1_distrib(), exp_transform()),
                         th = list(mu = 0.4, sigma = 1.1)),
-    logit_beta = list(d = transformation(beta_distrib(), logit_transform()),
+    logit_beta = list(d = transformation(beta1_distrib(), logit_transform()),
                       th = list(mu = 0.4, phi = 6))
   )
   for (nm in names(cases)) {
@@ -64,7 +64,7 @@ test_that("transformed distributions pass their own validator and recover parame
 test_that("simulate() follows the stats::simulate contract", {
   set.seed(74)
   y <- stats::rnorm(200, 3, 2)
-  fit <- fit_distrib(gaussian_distrib(), y)
+  fit <- fit_distrib(gaussian1_distrib(), y)
 
   s <- simulate(fit, 5)
   expect_s3_class(s, "data.frame")
@@ -92,7 +92,7 @@ test_that("simulate() follows the stats::simulate contract", {
 test_that("simulate() draws from the fitted distribution", {
   set.seed(75)
   y <- stats::rgamma(500, shape = 4, rate = 2)
-  fit <- fit_distrib(gamma_distrib(), y)
+  fit <- fit_distrib(gamma2_distrib(), y)
   s <- simulate(fit, 1, seed = 3)[[1]]
 
   expect_length(s, 500)
@@ -111,7 +111,7 @@ test_that("simulate() works for a discrete and a transformed fit", {
   expect_equal(dim(sp), c(300L, 2L))
   expect_true(all(sp[[1]] == floor(sp[[1]])))
 
-  d <- transformation(gamma_distrib(), log_transform())
+  d <- transformation(gamma2_distrib(), log_transform())
   set.seed(77)
   ft <- fit_distrib(d, distrib_rng(d, 300, list(mu = 3, sigma2 = 2)))
   st <- simulate(ft, 2, seed = 1)
@@ -129,25 +129,25 @@ test_that("plot() draws for continuous, discrete and transformed fits", {
   }, add = TRUE)
 
   set.seed(78)
-  f1 <- fit_distrib(gaussian_distrib(), stats::rnorm(200, 3, 2))
+  f1 <- fit_distrib(gaussian1_distrib(), stats::rnorm(200, 3, 2))
   expect_identical(plot(f1), f1)
 
   f2 <- fit_distrib(poisson_distrib(), stats::rpois(200, 4))
   expect_identical(plot(f2), f2)
 
-  d <- transformation(gamma_distrib(), log_transform())
+  d <- transformation(gamma2_distrib(), log_transform())
   f3 <- fit_distrib(d, distrib_rng(d, 200, list(mu = 3, sigma2 = 2)))
   expect_identical(plot(f3), f3)
 
   # a bounded support: the fit must not be evaluated outside it
-  f4 <- fit_distrib(beta_distrib(), distrib_rng(beta_distrib(), 200, list(mu = 0.4, phi = 6)))
+  f4 <- fit_distrib(beta1_distrib(), distrib_rng(beta1_distrib(), 200, list(mu = 0.4, phi = 6)))
   expect_identical(plot(f4, legend = FALSE, rug = FALSE), f4)
 })
 
 test_that("the fit keeps the data it was estimated from", {
   set.seed(79)
   y <- stats::rnorm(50)
-  f <- fit_distrib(gaussian_distrib(), y)
+  f <- fit_distrib(gaussian1_distrib(), y)
   expect_equal(f@y, y)
   expect_equal(f@n, 50)
 })

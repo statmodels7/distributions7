@@ -23,6 +23,6 @@ A numeric vector of density values, one per observation.
 Evaluates the probability density function (PDF) or probability mass function (PMF).
 }
 \examples{
-distrib_pdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 }

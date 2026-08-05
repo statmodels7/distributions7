@@ -1,11 +1,11 @@
 # NB1: the negative binomial whose variance is LINEAR in the mean. It is a
-# different family from negbin_distrib(), not a reparametrisation: the size is
+# different family from negbin2_distrib(), not a reparametrisation: the size is
 # mu/theta, so the mean sits inside the gamma functions rather than outside
 # them, and the two have different variance functions at every (mu, theta).
 
 test_that("the variance is linear in the mean, unlike the quadratic form", {
   d <- negbin1_distrib()
-  d2 <- negbin_distrib()
+  d2 <- negbin2_distrib()
   for (th in list(list(mu = 4, theta = 4), list(mu = 2, theta = 0.5),
                   list(mu = 9, theta = 3))) {
     expect_equal(mean(d, th), th$mu, tolerance = 1e-6)

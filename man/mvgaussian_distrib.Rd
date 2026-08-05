@@ -93,6 +93,6 @@ mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 
 }
 \seealso{
-\code{\link{gaussian_distrib}}, \code{\link{fit_distrib}},
+\code{\link{gaussian1_distrib}}, \code{\link{fit_distrib}},
 \code{\link[parameters7]{log_cholesky}}
 }

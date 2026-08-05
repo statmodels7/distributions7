@@ -79,7 +79,7 @@ multivariate_distrib <- S7::new_class("multivariate_distrib",
 #' @seealso \code{\link{multivariate_distrib}}
 #'
 #' @examples
-#' n_obs(gaussian_distrib(), c(1, 2, 3))
+#' n_obs(gaussian1_distrib(), c(1, 2, 3))
 #' n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
 #'
 #' @export

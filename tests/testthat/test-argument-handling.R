@@ -4,7 +4,7 @@
 test_that("an empty y gives empty derivatives rather than an error", {
   # distrib_pdf has always returned numeric(0) here; the derivative generics used
   # to reject it with "'y' must have length 1 or 1, not 0".
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2)
 
   expect_length(distrib_pdf(d, numeric(0), th), 0)
@@ -19,7 +19,7 @@ test_that("rng recycles per-observation parameters up to n", {
   # rnorm(4, c(0, 10)) draws two from each mean; the package generators follow
   # the same convention.
   set.seed(21)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 4000, list(mu = rep(c(0, 50), each = 2000), sigma = 1))
   expect_length(y, 4000)
   expect_equal(mean(y[1:2000]), 0, tolerance = 0.15)
@@ -36,7 +36,7 @@ test_that("rng recycles per-observation parameters up to n", {
   # the zero-adjusted wrapper used to subset a short parameter with a longer
   # logical index, which silently produced NA parameters
   set.seed(23)
-  za <- zero_adjusted(gamma_distrib())
+  za <- zero_adjusted(gamma2_distrib())
   r <- distrib_rng(za, 8, list(mu = c(2, 5), sigma2 = 1, za = 0.3))
   expect_length(r, 8)
   expect_true(all(is.finite(r)))

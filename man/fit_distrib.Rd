@@ -90,7 +90,7 @@ symmetric interval on the parameter scale would not.
 \examples{
 \dontrun{
 set.seed(1)
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit <- fit_distrib(d, y)
 fit

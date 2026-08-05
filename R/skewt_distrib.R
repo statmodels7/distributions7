@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R skewnormal_distrib.R
+#' @include distrib.R generics.R skewnormal1_distrib.R
 NULL
 
 #' @title S7 Class for the Skew t Distribution
@@ -514,7 +514,7 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' This is the four-parameter family a location-scale-shape framework wants: the
 #' scale, the skewness and the tail weight are three separate parameters, each
 #' of which can be given its own linear predictor. The skew normal of
-#' \code{\link{skewnormal_distrib}} can reach a skewness of at most \eqn{0.995}
+#' \code{\link{skewnormal1_distrib}} can reach a skewness of at most \eqn{0.995}
 #' and an excess kurtosis of at most \eqn{0.87}; adding \eqn{\nu} removes both
 #' bounds.
 #'
@@ -572,8 +572,8 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' density is perfectly well defined there, which is why the moments and the
 #' parameters are kept apart.
 #'
-#' \strong{Special cases.} \eqn{\alpha = 0} is \code{\link{student_t_distrib}};
-#' large \eqn{\nu} approaches \code{\link{skewnormal_distrib}}. The information
+#' \strong{Special cases.} \eqn{\alpha = 0} is \code{\link{student_t1_distrib}};
+#' large \eqn{\nu} approaches \code{\link{skewnormal1_distrib}}. The information
 #' is singular in \eqn{\alpha} at \eqn{\alpha = 0} for the same reason as in the
 #' skew normal.
 #'

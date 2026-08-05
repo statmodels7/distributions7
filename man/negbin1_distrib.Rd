@@ -25,7 +25,7 @@ Two negative binomials are in common use and they are \strong{different
 families}, not two parametrisations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
-\code{\link{negbin_distrib}} has \eqn{\mu + \mu^2/\theta}, growing
+\code{\link{negbin2_distrib}} has \eqn{\mu + \mu^2/\theta}, growing
 quadratically. Fitting one is not fitting the other, and a likelihood ratio
 between them is not a test of nested models.
 
@@ -68,10 +68,10 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 # the two negative binomials are different families: at the same (mu, theta)
 # this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8
-variance(negbin_distrib(), list(mu = 4, theta = 4))
+variance(negbin2_distrib(), list(mu = 4, theta = 4))
 
 }
 \seealso{
-\code{\link{negbin_distrib}} for the quadratic variance,
+\code{\link{negbin2_distrib}} for the quadratic variance,
 \code{\link{poisson_distrib}}, \code{\link{geometric_distrib}}
 }

@@ -110,7 +110,7 @@ safe_check <- function(name, expr) {
 #'
 #' @examples
 #' \dontrun{
-#' check_distrib(gaussian_distrib())
+#' check_distrib(gaussian1_distrib())
 #' check_distrib(laplace_distrib(), theta = list(mu = 1, b = 2))
 #' check_distrib(poisson_distrib(), orders = 1:2, nsim = 5e4)
 #' }

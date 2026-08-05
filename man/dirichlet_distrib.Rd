@@ -83,7 +83,7 @@ mv_marginal(d, theta, which = 1)$theta
 
 }
 \seealso{
-\code{\link{beta_distrib}} for the two-coordinate case seen on the
+\code{\link{beta1_distrib}} for the two-coordinate case seen on the
 line, \code{\link{mvgaussian_distrib}},
 \code{\link[parameters7]{simplex}}
 }

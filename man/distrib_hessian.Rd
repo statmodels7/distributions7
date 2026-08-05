@@ -30,6 +30,6 @@ A named list of numeric vectors, keyed as
 Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
 }
 \examples{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 }

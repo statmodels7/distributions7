@@ -96,7 +96,7 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #'
 #' @return An object of class \code{\link{MvGaussianDistrib}}.
 #'
-#' @seealso \code{\link{gaussian_distrib}}, \code{\link{fit_distrib}},
+#' @seealso \code{\link{gaussian1_distrib}}, \code{\link{fit_distrib}},
 #'   \code{\link[parameters7]{log_cholesky}}
 #'
 #' @examples

@@ -23,6 +23,6 @@ A numeric vector of quantiles.
 Evaluates the quantile function for a given distribution.
 }
 \examples{
-distrib_quantile(gaussian_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
+distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
 distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 }

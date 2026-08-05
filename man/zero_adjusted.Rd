@@ -96,7 +96,7 @@ zap <- zero_adjusted(poisson_distrib())
 distrib_pdf(zap, 0:5, list(mu = 3, za = 0.3))
 
 # Semicontinuous data: a spike at zero and a gamma above it
-zagamma <- zero_adjusted(gamma_distrib())
+zagamma <- zero_adjusted(gamma2_distrib())
 distrib_atoms(zagamma, list(mu = 2, sigma2 = 1, za = 0.3))
 
 # The truncated part of a zero-adjusted Bernoulli has no free parameter

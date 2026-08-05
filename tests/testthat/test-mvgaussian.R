@@ -430,7 +430,7 @@ test_that("check_distrib catches a deliberately wrong component", {
 })
 
 test_that("n_obs counts observations rather than entries", {
-  expect_identical(n_obs(gaussian_distrib(), c(1, 2, 3)), 3L)
+  expect_identical(n_obs(gaussian1_distrib(), c(1, 2, 3)), 3L)
   expect_identical(n_obs(mvgaussian_distrib(2), matrix(0, 5, 2)), 5L)
   # a bare vector is one observation
   expect_identical(n_obs(mvgaussian_distrib(3), c(1, 2, 3)), 1L)

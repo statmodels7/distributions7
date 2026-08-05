@@ -3,7 +3,7 @@
 
 test_that("gaussian fit reproduces the closed-form MLE and its standard errors", {
   set.seed(42)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 2000, list(mu = 2, sigma = 3))
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
 
@@ -61,7 +61,7 @@ test_that("laplace fit works despite the degenerate observed Hessian in mu", {
 
 test_that("all optimisation methods agree", {
   set.seed(3)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 800, list(mu = 1, sigma = 2))
   fits <- lapply(c("fisher", "newton", "bfgs"), function(m) {
     fit_distrib(d, y, start = list(mu = 0, sigma = 1), method = m)
@@ -73,7 +73,7 @@ test_that("all optimisation methods agree", {
 
 test_that("extractors and the fitted object are coherent", {
   set.seed(5)
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   y <- distrib_rng(d, 800, list(mu = 3, sigma2 = 2))
   f <- fit_distrib(d, y, start = list(mu = 1, sigma2 = 1))
 
@@ -98,7 +98,7 @@ test_that("extractors and the fitted object are coherent", {
 
 test_that("fitting works from the default random starting values", {
   set.seed(9)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
   f <- fit_distrib(d, y)
   expect_true(f@converged)
@@ -107,7 +107,7 @@ test_that("fitting works from the default random starting values", {
 
 test_that("the print method reports both scales", {
   set.seed(2)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 200, list(mu = 0, sigma = 1))
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
   out <- paste(utils::capture.output(print(f)), collapse = "\n")
@@ -124,7 +124,7 @@ test_that("the print method reports both scales", {
 
 test_that("an optimizers7 optimiser can be passed as the method", {
   set.seed(11)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 400, list(mu = 2, sigma = 3))
 
   ref <- fit_distrib(d, y, start = list(mu = 1, sigma = 1))
@@ -142,7 +142,7 @@ test_that("an optimizers7 optimiser can be passed as the method", {
 
 test_that("the optimiser brings its own stopping rule", {
   set.seed(12)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 300, list(mu = 0, sigma = 2))
 
   # crit_never() can never fire, so the run must end on the iteration budget
@@ -167,7 +167,7 @@ test_that("an explicitly chosen optimiser is never replaced by the fallback", {
   # fisher and newton fall back to BFGS; a supplied optimiser does not, so a
   # run that fails is reported as a failure under its own name.
   set.seed(13)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 200, list(mu = 1, sigma = 1))
 
   f <- fit_distrib(d, y, start = list(mu = 1, sigma = 1),
@@ -179,7 +179,7 @@ test_that("an explicitly chosen optimiser is never replaced by the fallback", {
 
 test_that("the three named strategies agree with each other and the closed form", {
   set.seed(14)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
   st <- list(mu = 0, sigma = 1)
 
@@ -217,7 +217,7 @@ test_that("a non-smooth distribution still fits, and quietly", {
 
 test_that("confint() agrees with the intervals the fit computed", {
   set.seed(31)
-  d <- gamma_distrib()
+  d <- gamma2_distrib()
   y <- distrib_rng(d, 400, list(mu = 4, sigma2 = 6))
   f <- fit_distrib(d, y, start = list(mu = 4, sigma2 = 6))
 
@@ -236,7 +236,7 @@ test_that("confint() agrees with the intervals the fit computed", {
 
 test_that("confint() honours level and parm", {
   set.seed(32)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 300, list(mu = 1, sigma = 2))
   f <- fit_distrib(d, y, start = list(mu = 1, sigma = 2))
 
@@ -255,7 +255,7 @@ test_that("an interval never leaves the parameter's domain, either direction", {
   # A bounded-above link is DECREASING, so mapping the two ends swaps them; the
   # limits must still come back in order and inside the domain.
   set.seed(33)
-  du <- gaussian_distrib(link_mu = linkfunctions7::bounded_link(upr = 10))
+  du <- gaussian1_distrib(link_mu = linkfunctions7::bounded_link(upr = 10))
   yu <- distrib_rng(du, 300, list(mu = 6, sigma = 2))
   fu <- fit_distrib(du, yu, start = list(mu = 6, sigma = 2))
 
@@ -279,7 +279,7 @@ test_that("an interval never leaves the parameter's domain, either direction", {
 
 test_that("the print method shows the interval on both scales", {
   set.seed(35)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 200, list(mu = 0, sigma = 1))
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
   out <- utils::capture.output(print(f))
@@ -313,7 +313,7 @@ test_that("the fit carries what the optimiser reported about the run", {
   # the quantity the stopping rule tested and can be checked against the
   # distribution's own gradient.
   set.seed(21)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
   f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
 
@@ -338,7 +338,7 @@ test_that("the fit carries what the optimiser reported about the run", {
 
 test_that("a run that did not converge prints how close it got", {
   set.seed(22)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 300, list(mu = 0, sigma = 2))
   f <- fit_distrib(d, y, start = list(mu = 5, sigma = 5),
                    method = optimizers7::gd(maxit = 2))
@@ -350,7 +350,7 @@ test_that("a run that did not converge prints how close it got", {
 
 test_that("the method governs the budget and the rule, and nothing else does", {
   set.seed(31)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
 
   # An iteration limit set on the method is the one that binds. Before the
@@ -387,7 +387,7 @@ test_that("an optimiser passed positionally is named, not coerced", {
   # align_theta() refusing to coerce an S7 object, several frames down, with
   # neither the argument nor the mistake named.
   set.seed(42)
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- distrib_rng(d, 200, list(mu = 0, sigma = 1))
 
   expect_error(fit_distrib(d, y, optimizers7::lbfgs()),

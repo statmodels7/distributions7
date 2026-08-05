@@ -73,7 +73,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' @return An object of class \code{\link{MvStudentTDistrib}}.
 #'
-#' @seealso \code{\link{mvgaussian_distrib}}, \code{\link{student_t_distrib}}
+#' @seealso \code{\link{mvgaussian_distrib}}, \code{\link{student_t1_distrib}}
 #'
 #' @examples
 #' d <- mvstudent_t_distrib(2)

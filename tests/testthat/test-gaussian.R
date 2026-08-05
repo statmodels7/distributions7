@@ -1,5 +1,5 @@
-test_that("gaussian_distrib standard functions match base R", {
-  d <- gaussian_distrib()
+test_that("gaussian1_distrib standard functions match base R", {
+  d <- gaussian1_distrib()
   theta <- list(mu = 2, sigma = 1.5)
   y <- c(-1, 0, 2, 5)
   p <- c(0.1, 0.5, 0.9)
@@ -29,8 +29,8 @@ test_that("gaussian_distrib standard functions match base R", {
   expect_true(is.numeric(sims))
 })
 
-test_that("gaussian_distrib derivatives are structurally correct and mathematically sound", {
-  d <- gaussian_distrib()
+test_that("gaussian1_distrib derivatives are structurally correct and mathematically sound", {
+  d <- gaussian1_distrib()
   
   # Test exactly at the mean (y = mu)
   y_val <- 5

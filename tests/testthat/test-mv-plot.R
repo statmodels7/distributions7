@@ -85,7 +85,7 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
     fit_distrib(g, yg, method = fisher_scoring(approx = "mc")), "closed form"
   )
   expect_error(
-    fit_distrib(gaussian_distrib(), rnorm(50),
+    fit_distrib(gaussian1_distrib(), rnorm(50),
                 method = fisher_scoring(approx = "mc")),
     "closed form"
   )
@@ -126,8 +126,8 @@ test_that("a family is asked correctly whether its expected information is exact
   # 'distrib', which SHADOWS the base class of the same name, so the comparison
   # against that class compared the owning class with the distribution object
   # and every base-class fallback was reported as a closed form.
-  exact <- list(gaussian_distrib(), pseudohuber_distrib(), laplace_distrib(),
-                weibull_distrib(), gumbel_distrib(), mvgaussian_distrib(2))
+  exact <- list(gaussian1_distrib(), pseudohuber_distrib(), laplace_distrib(),
+                weibull1_distrib(), gumbel_distrib(), mvgaussian_distrib(2))
   for (d in exact) {
     expect_true(distributions7:::has_exact_expected_hessian(d),
                 label = d@distrib_name)
@@ -136,7 +136,7 @@ test_that("a family is asked correctly whether its expected information is exact
   # These inherit the approximating method -- the skew families from the base
   # class, the multivariate t from the multivariate one -- so the strategy is
   # theirs to choose.
-  approximated <- list(skewnormal_distrib(), skewt_distrib(),
+  approximated <- list(skewnormal1_distrib(), skewt_distrib(),
                        mvstudent_t_distrib(2))
   for (d in approximated) {
     expect_false(distributions7:::has_exact_expected_hessian(d),
@@ -145,13 +145,13 @@ test_that("a family is asked correctly whether its expected information is exact
 
   # and the consequence, at the level a caller sees it
   set.seed(71)
-  ys <- distrib_rng(skewnormal_distrib(), 200,
+  ys <- distrib_rng(skewnormal1_distrib(), 200,
                     list(mu = 0, sigma = 1, alpha = 3))
   expect_silent(
-    fit_distrib(skewnormal_distrib(), ys, method = fisher_scoring(approx = "opg"))
+    fit_distrib(skewnormal1_distrib(), ys, method = fisher_scoring(approx = "opg"))
   )
   expect_error(
-    fit_distrib(gaussian_distrib(), stats::rnorm(100),
+    fit_distrib(gaussian1_distrib(), stats::rnorm(100),
                 method = fisher_scoring(approx = "opg")),
     "closed form"
   )

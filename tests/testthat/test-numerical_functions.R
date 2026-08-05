@@ -44,7 +44,7 @@ test_that("expectation calculates correct values for discrete distributions", {
 })
 
 test_that("expectation calculates correct values for continuous distributions", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   f_mean <- function(y, theta) y
   f_var <- function(y, theta) (y - theta$mu)^2
   

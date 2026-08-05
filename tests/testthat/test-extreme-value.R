@@ -60,7 +60,7 @@ expect_derivatives_ok <- function(d, th, y, tol_g = 1e-8, tol_h = 1e-5) {
 # --- Weibull ---------------------------------------------------------------
 
 test_that("the Weibull density is base R's, on the same parametrisation", {
-  d <- weibull_distrib()
+  d <- weibull1_distrib()
   th <- list(mu = 2, sigma = 1.5)
   y <- c(0.4, 1, 2, 4)
 
@@ -82,7 +82,7 @@ test_that("the Weibull density is base R's, on the same parametrisation", {
 })
 
 test_that("the Weibull scale is not its mean", {
-  d <- weibull_distrib()
+  d <- weibull1_distrib()
   th <- list(mu = 2, sigma = 1.5)
 
   expect_equal(mean(d, th), 2 * gamma(1 + 1 / 1.5))
@@ -102,7 +102,7 @@ test_that("the Weibull scale is not its mean", {
 })
 
 test_that("the Weibull derivatives agree with finite differences", {
-  d <- weibull_distrib()
+  d <- weibull1_distrib()
   set.seed(41)
   for (th in list(list(mu = 2, sigma = 1.5), list(mu = 0.3, sigma = 4),
                   list(mu = 10, sigma = 0.7))) {
@@ -112,7 +112,7 @@ test_that("the Weibull derivatives agree with finite differences", {
 })
 
 test_that("the Weibull expected information is the closed form it claims", {
-  d <- weibull_distrib()
+  d <- weibull1_distrib()
   th <- list(mu = 2, sigma = 1.5)
   eg <- -digamma(1)
 
@@ -137,7 +137,7 @@ test_that("the Weibull expected information is the closed form it claims", {
 })
 
 test_that("the Weibull response derivatives are closed form", {
-  d <- weibull_distrib()
+  d <- weibull1_distrib()
   th <- list(mu = 2, sigma = 1.5)
   y <- c(0.4, 1, 2, 4)
   u <- (y / 2)^1.5
@@ -237,7 +237,7 @@ test_that("exp(-Gumbel) is Weibull", {
   # The families are one another on the log scale, so the transformation
   # wrapper must reproduce the Weibull exactly rather than approximately.
   dg <- gumbel_distrib()
-  dw <- weibull_distrib()
+  dw <- weibull1_distrib()
   thg <- list(mu = 1, sigma = 2)
   thw <- list(mu = exp(-1), sigma = 1 / 2)
 
@@ -259,7 +259,7 @@ test_that("exp(-Gumbel) is Weibull", {
 })
 
 test_that("check_distrib passes on both, and catches a wrong gradient", {
-  for (cfg in list(list(d = weibull_distrib(), th = list(mu = 2, sigma = 1.5)),
+  for (cfg in list(list(d = weibull1_distrib(), th = list(mu = 2, sigma = 1.5)),
                    list(d = gumbel_distrib(), th = list(mu = 1, sigma = 2)))) {
     set.seed(46)
     res <- check_distrib(cfg$d, theta = cfg$th, nsim = 3e4, verbose = FALSE)
@@ -268,15 +268,15 @@ test_that("check_distrib passes on both, and catches a wrong gradient", {
 
   # a gradient 5% wrong must still be caught, or the agreements above prove
   # nothing
-  Wrong <- S7::new_class("WrongWeibull", parent = WeibullDistrib, package = NULL)
+  Wrong <- S7::new_class("WrongWeibull", parent = Weibull1Distrib, package = NULL)
   gen <- distrib_gradient
   S7::method(gen, Wrong) <- function(distrib, y, theta,
                                      scale = c("parameter", "link"), ...) {
-    g <- S7::method(distrib_gradient, WeibullDistrib)(distrib, y, theta)
+    g <- S7::method(distrib_gradient, Weibull1Distrib)(distrib, y, theta)
     g[["mu"]] <- 1.05 * g[["mu"]]
     g
   }
-  good <- weibull_distrib()
+  good <- weibull1_distrib()
   bad <- Wrong(
     distrib_name = "wrong", dimension = "univariate", bounds = good@bounds,
     params = good@params, params_interpretation = good@params_interpretation,
@@ -292,7 +292,7 @@ test_that("check_distrib passes on both, and catches a wrong gradient", {
 })
 
 test_that("both families are fitted by maximum likelihood", {
-  for (cfg in list(list(d = weibull_distrib(), th = list(mu = 2, sigma = 1.5)),
+  for (cfg in list(list(d = weibull1_distrib(), th = list(mu = 2, sigma = 1.5)),
                    list(d = gumbel_distrib(), th = list(mu = 1, sigma = 2)))) {
     set.seed(48)
     y <- distrib_rng(cfg$d, 3000, cfg$th)

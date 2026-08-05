@@ -23,6 +23,6 @@ A numeric vector of cumulative probabilities.
 Evaluates the cumulative distribution function (CDF) for a given distribution.
 }
 \examples{
-distrib_cdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 }

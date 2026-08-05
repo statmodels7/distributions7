@@ -145,7 +145,7 @@ is_truncated <- function(distrib) {
 #' This is the one quantity separating the two truncation classes, and getting it
 #' wrong for a \emph{mixed} parent is subtle. It is tempting to branch on whether
 #' the parent is a \code{discrete_distrib}; that looks right and is wrong. The cdf
-#' of \code{zero_adjusted(gamma_distrib())} already includes the point mass at
+#' of \code{zero_adjusted(gamma2_distrib())} already includes the point mass at
 #' zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
 #' \code{continuous_distrib}. Truncating it from above, with the atom retained,
 #' then drops exactly that mass out of the normalising constant -- and the
@@ -989,7 +989,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
   }
 
   # A truncation point outside the support removes nothing. This is the
-  # truncated(gamma_distrib(), lower = -2) case: the result would be the parent,
+  # truncated(gamma2_distrib(), lower = -2) case: the result would be the parent,
   # and a user who wrote that meant something else.
   if (!is.null(lower) && lower <= b[1]) {
     stop(sprintf(paste0(
@@ -1074,7 +1074,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #'     parent would hide the mistake.
 #'   \item \code{lower >= upper}.
 #'   \item A truncation point that removes no mass, such as
-#'     \code{truncated(gamma_distrib(), lower = -2)}: the Gamma is supported on
+#'     \code{truncated(gamma2_distrib(), lower = -2)}: the Gamma is supported on
 #'     \eqn{(0,\infty)}, so the result would be the Gamma itself.
 #'   \item A non-integer endpoint for a discrete parent, which is ambiguous.
 #'   \item A discrete truncation leaving too few support points to identify the
@@ -1085,7 +1085,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #'     truncation removes \eqn{0} from the support. Truncating zero away cancels
 #'     that parameter out of the likelihood entirely, leaving an identically zero
 #'     score. Truncating elsewhere, as in
-#'     \code{truncated(zero_adjusted(gamma_distrib()), upper = 5)}, is fine and the
+#'     \code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is fine and the
 #'     point mass is carried through \code{\link{distrib_atoms}}.
 #' }
 #' Truncating an already truncated distribution is allowed and is collapsed into a
@@ -1101,11 +1101,11 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' dpois(1:4, 2) / (1 - dpois(0, 2))
 #'
 #' # A Gaussian restricted to an interval
-#' tn <- truncated(gaussian_distrib(), lower = -1, upper = 2)
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 #' mean(tn, list(mu = 0, sigma = 1))
 #'
 #' # A truncation point that removes nothing is refused
-#' try(truncated(gamma_distrib(), lower = -2))
+#' try(truncated(gamma2_distrib(), lower = -2))
 #'
 #' @seealso \code{\link{zero_inflated}}, \code{\link{zero_adjusted}},
 #'   \code{\link{transformation}}, \code{\link{check_distrib}}

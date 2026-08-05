@@ -262,7 +262,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' }
 #'
 #' The family is the Weibull with unit shape, so
-#' \code{fixed(weibull_distrib(), sigma = 1)} describes the same law and is
+#' \code{fixed(weibull1_distrib(), sigma = 1)} describes the same law and is
 #' used in the tests as an independent implementation. It is \strong{not} a
 #' Gamma with a fixed parameter: this package writes the Gamma in
 #' \eqn{(\mu, \sigma^2)}, whose shape is \eqn{\mu^2/\sigma^2}, so unit shape is
@@ -271,7 +271,7 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #'
 #' @return An S7 object of class \code{ExponentialDistrib}.
 #'
-#' @seealso \code{\link{gamma_distrib}}, \code{\link{weibull_distrib}},
+#' @seealso \code{\link{gamma2_distrib}}, \code{\link{weibull1_distrib}},
 #'   \code{\link{geometric_distrib}}
 #'
 #' @importFrom linkfunctions7 log_link

@@ -58,6 +58,6 @@ Everything else is inherited from \code{\link{distrib}}.
 
 \examples{
 S7::S7_inherits(poisson_distrib(), discrete_distrib)
-S7::S7_inherits(gaussian_distrib(), discrete_distrib)
+S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 
 }

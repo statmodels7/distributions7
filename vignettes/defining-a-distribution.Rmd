@@ -320,7 +320,7 @@ Every parameter carries a link function, and the derivative generics accept
 predictor $\eta = g(\theta)$ instead of $\theta$ itself:
 
 ```{r}
-d <- gaussian_distrib()          # identity link on mu, log link on sigma
+d <- gaussian1_distrib()          # identity link on mu, log link on sigma
 th <- list(mu = 1.5, sigma = 2)
 y <- c(0.4, 1.9, 3.2)
 
@@ -341,7 +341,7 @@ the estimates back on the parameter scale:
 
 ```{r}
 set.seed(1)
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 ```

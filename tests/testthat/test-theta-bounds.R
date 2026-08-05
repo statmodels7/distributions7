@@ -2,7 +2,7 @@
 # generic, so out-of-domain input errors clearly instead of yielding NaN.
 
 test_that("out-of-domain parameters are rejected with an informative message", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
 
   expect_error(distrib_pdf(d, 0, list(mu = 0, sigma = -1)), "outside its domain")
   expect_error(distrib_pdf(d, 0, list(mu = 0, sigma = -1)), "sigma")
@@ -19,7 +19,7 @@ test_that("out-of-domain parameters are rejected with an informative message", {
 })
 
 test_that("the check applies to every generic, not just the density", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   bad <- list(mu = 0, sigma = -2)
 
   expect_error(distrib_cdf(d, 0, bad), "outside its domain")
@@ -34,7 +34,7 @@ test_that("the check applies to every generic, not just the density", {
 })
 
 test_that("check_theta_bounds is usable directly and reports every offender", {
-  d <- student_t_distrib()
+  d <- student_t1_distrib()
   expect_invisible(check_theta_bounds(d, list(mu = 0, sigma = 1, nu = 5)))
 
   err <- tryCatch(
@@ -47,7 +47,7 @@ test_that("check_theta_bounds is usable directly and reports every offender", {
 })
 
 test_that("vectorized parameters are validated element-wise", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   expect_silent(distrib_pdf(d, c(0, 1), list(mu = c(0, 1), sigma = c(1, 2))))
   expect_error(
     distrib_pdf(d, c(0, 1), list(mu = c(0, 1), sigma = c(1, -2))),

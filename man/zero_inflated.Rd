@@ -8,7 +8,7 @@ zero_inflated(distrib, link_zi = logit_link())
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{discrete_distrib} whose support
-includes 0, e.g. \code{\link{poisson_distrib}()} or \code{\link{negbin_distrib}()}.}
+includes 0, e.g. \code{\link{poisson_distrib}()} or \code{\link{negbin2_distrib}()}.}
 
 \item{link_zi}{A link function object for the zero-inflation probability \eqn{\zeta}.
 Defaults to \code{\link[linkfunctions7]{logit_link}}.}

@@ -3,7 +3,7 @@
 # either.
 
 test_that("the density is the formula and integrates to one", {
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   th <- list(mu = 0.5, kappa = 2)
   y <- c(-2, -0.3, 0.5, 1.8, 3)
 
@@ -21,7 +21,7 @@ test_that("the density is the formula and integrates to one", {
 test_that("a large concentration does not overflow the Bessel constant", {
   # I_0(kappa) itself is infinite past about 700; the scaled form with the
   # exponent added back is finite for any concentration.
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   expect_true(is.infinite(besselI(900, 0)))
   expect_true(is.finite(distrib_pdf(d, 0.5, list(mu = 0.5, kappa = 900))))
   expect_true(is.finite(distrib_pdf(d, 0.5, list(mu = 0.5, kappa = 5000),
@@ -31,7 +31,7 @@ test_that("a large concentration does not overflow the Bessel constant", {
 
 test_that("the analytical derivatives match one Richardson differentiation", {
   skip_if_not_installed("numDeriv")
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   th <- list(mu = 0.5, kappa = 2)
   p0 <- c(0.5, 2)
   at <- function(p) list(mu = p[1], kappa = p[2])
@@ -56,7 +56,7 @@ test_that("the analytical derivatives match one Richardson differentiation", {
 test_that("the direction and the concentration are orthogonal", {
   # E[sin(Y - mu)] = 0 by symmetry, so the expected information is diagonal
   # and Fisher scoring updates the two independently.
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   for (th in list(list(mu = 0.5, kappa = 2), list(mu = -1, kappa = 0.3),
                   list(mu = 2, kappa = 12))) {
     eh <- distrib_expected_hessian(d, 0, th)
@@ -77,7 +77,7 @@ test_that("the direction and the concentration are orthogonal", {
 
 
 test_that("the generator reproduces the direction and the resultant length", {
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   th <- list(mu = 0.5, kappa = 2)
   set.seed(2)
   y <- distrib_rng(d, 2e5, th)
@@ -90,7 +90,7 @@ test_that("the generator reproduces the direction and the resultant length", {
 
 
 test_that("the validator passes and a fit recovers the parameters", {
-  d <- vonmises_distrib()
+  d <- vonmises1_distrib()
   set.seed(3)
   res <- check_distrib(d, verbose = FALSE)
   expect_true(all(res$status == "OK"),

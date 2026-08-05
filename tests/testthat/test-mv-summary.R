@@ -201,7 +201,7 @@ test_that("the correlation's standard error matches the known asymptotic one", {
 
 test_that("mv_summary refuses what it is not for", {
   set.seed(66)
-  uni <- fit_distrib(gaussian_distrib(), stats::rnorm(100))
+  uni <- fit_distrib(gaussian1_distrib(), stats::rnorm(100))
   expect_error(mv_summary(uni), "multivariate fit")
   expect_error(mv_summary("not a fit"), "distrib_fit")
 

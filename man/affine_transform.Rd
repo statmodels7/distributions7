@@ -19,7 +19,7 @@ Transformer for \eqn{Y = \text{loc} + \text{scale} \cdot X}.
 Inverse \eqn{X = (Y - \text{loc})/\text{scale}}, Jacobian \eqn{|J| = 1/|\text{scale}|}.
 }
 \examples{
-d <- transformation(gaussian_distrib(), affine_transform(loc = 1, scale = 2))
+d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }

@@ -39,7 +39,7 @@
 #' @return An object of class \code{distrib}.
 #'
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' S7::S7_inherits(d, distrib)
 #' d@params
 #' d@params_bounds
@@ -140,7 +140,7 @@ S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #' @return A named logical vector, one entry per parameter.
 #' @examples
-#' param_smoothness(gaussian_distrib())
+#' param_smoothness(gaussian1_distrib())
 #'
 #' # the Laplace location is a kink, so it is not smooth
 #' param_smoothness(laplace_distrib())
@@ -179,7 +179,7 @@ param_smoothness <- function(distrib) {
 #' @return An object of class \code{continuous_distrib}.
 #'
 #' @examples
-#' S7::S7_inherits(gaussian_distrib(), continuous_distrib)
+#' S7::S7_inherits(gaussian1_distrib(), continuous_distrib)
 #' S7::S7_inherits(poisson_distrib(), continuous_distrib)
 #'
 #' @export
@@ -209,7 +209,7 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #'
 #' @examples
 #' S7::S7_inherits(poisson_distrib(), discrete_distrib)
-#' S7::S7_inherits(gaussian_distrib(), discrete_distrib)
+#' S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 #'
 #' @export
 discrete_distrib <- S7::new_class("discrete_distrib",

@@ -28,7 +28,7 @@ and suitable for a parametric bootstrap or a posterior-predictive style check.
 \examples{
 set.seed(1)
 y <- rnorm(200, 3, 2)
-fit <- fit_distrib(gaussian_distrib(), y)
+fit <- fit_distrib(gaussian1_distrib(), y)
 
 sims <- simulate(fit, 20, seed = 42)
 dim(sims)

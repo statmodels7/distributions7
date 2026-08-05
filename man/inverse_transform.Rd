@@ -14,7 +14,7 @@ Transformer for \eqn{Y = 1/X} (monotonically decreasing on a support not
 containing 0). Inverse \eqn{X = 1/Y}, Jacobian \eqn{|J| = 1/Y^2}.
 }
 \examples{
-d <- transformation(gamma_distrib(), inverse_transform())
+d <- transformation(gamma2_distrib(), inverse_transform())
 distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }

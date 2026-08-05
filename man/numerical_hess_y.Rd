@@ -25,7 +25,7 @@ Computes \eqn{\partial^2 \ell / \partial y^2} by a central three-point stencil o
 method for continuous distributions without a closed form.
 }
 \examples{
-numerical_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+numerical_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{

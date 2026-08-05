@@ -97,5 +97,5 @@ thresholds. \emph{Journal of the Royal Statistical Society B} 52, 393-442.
 }
 \seealso{
 \code{\link{gumbel_distrib}}, \code{\link{exponential_distrib}},
-\code{\link{weibull_distrib}}
+\code{\link{weibull1_distrib}}
 }

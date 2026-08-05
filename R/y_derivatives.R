@@ -47,7 +47,7 @@ fd_steps_y <- function(y, bounds, h_rel) {
 #' @return A numeric vector of the same length as \code{y}.
 #' @seealso \code{\link{numerical_hess_y}}, \code{\link{distrib_grad_y}}
 #' @examples
-#' numerical_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' numerical_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
 numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
@@ -71,7 +71,7 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @return A numeric vector of the same length as \code{y}.
 #' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_hess_y}}
 #' @examples
-#' numerical_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' numerical_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
 numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 4)) {

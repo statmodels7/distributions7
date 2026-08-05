@@ -358,7 +358,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
   # shapes (alpha_j, phi - alpha_j), hence mean mu_j and precision phi. The
   # CONCENTRATION IS SHARED by every marginal, as the multivariate t's degrees
   # of freedom are.
-  list(distrib = beta_distrib(),
+  list(distrib = beta1_distrib(),
        theta = list(mu = p$mu[which], phi = p$phi))
 }
 
@@ -422,7 +422,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #'
 #' @return An S7 object of class \code{DirichletDistrib}.
 #'
-#' @seealso \code{\link{beta_distrib}} for the two-coordinate case seen on the
+#' @seealso \code{\link{beta1_distrib}} for the two-coordinate case seen on the
 #'   line, \code{\link{mvgaussian_distrib}},
 #'   \code{\link[parameters7]{simplex}}
 #'

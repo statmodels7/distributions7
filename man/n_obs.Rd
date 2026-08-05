@@ -25,7 +25,7 @@ observations, and the recycling checks built on it would ask for parameters
 of length \eqn{np}.
 }
 \examples{
-n_obs(gaussian_distrib(), c(1, 2, 3))
+n_obs(gaussian1_distrib(), c(1, 2, 3))
 n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
 
 }

@@ -34,7 +34,7 @@ Hessian entry \eqn{(i, j)} along \eqn{(\theta_k, \theta_l)}: a three-point stenc
 when \eqn{k = l}, a four-point cross stencil otherwise.
 }
 \examples{
-numerical_deriv4(gaussian_distrib(), 0, list(mu = 0, sigma = 1))
+numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 
 }
 \seealso{

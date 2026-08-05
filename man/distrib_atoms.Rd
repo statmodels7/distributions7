@@ -36,7 +36,7 @@ that the density is expected to integrate to \eqn{1 - \sum p} rather than 1,
 and to keep its finite differences away from the jumps.
 }
 \examples{
-distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1))
-distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
+distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
+distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
 
 }

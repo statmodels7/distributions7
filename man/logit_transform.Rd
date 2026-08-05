@@ -14,7 +14,7 @@ Transformer for \eqn{Y = \text{logit}(X)}: maps \eqn{(0, 1)} to the real line.
 Inverse \eqn{X = \text{plogis}(Y)}, Jacobian \eqn{|J| = \text{dlogis}(Y)}.
 }
 \examples{
-d <- transformation(beta_distrib(), logit_transform())
+d <- transformation(beta1_distrib(), logit_transform())
 distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 
 }

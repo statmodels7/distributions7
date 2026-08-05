@@ -71,7 +71,7 @@ test_that("expected Hessians equal the expectation of the observed Hessians", {
 })
 
 test_that("derivatives are vectorized over theta consistently", {
-  d <- gaussian_distrib()
+  d <- gaussian1_distrib()
   y <- c(-1, 0, 3)
   theta_vec <- list(mu = c(0, 1, 2), sigma = c(1, 2, 3))
 

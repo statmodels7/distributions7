@@ -66,7 +66,7 @@ Hessian.
 parent would hide the mistake.
 \item \code{lower >= upper}.
 \item A truncation point that removes no mass, such as
-\code{truncated(gamma_distrib(), lower = -2)}: the Gamma is supported on
+\code{truncated(gamma2_distrib(), lower = -2)}: the Gamma is supported on
 \eqn{(0,\infty)}, so the result would be the Gamma itself.
 \item A non-integer endpoint for a discrete parent, which is ambiguous.
 \item A discrete truncation leaving too few support points to identify the
@@ -77,7 +77,7 @@ parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
 truncation removes \eqn{0} from the support. Truncating zero away cancels
 that parameter out of the likelihood entirely, leaving an identically zero
 score. Truncating elsewhere, as in
-\code{truncated(zero_adjusted(gamma_distrib()), upper = 5)}, is fine and the
+\code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is fine and the
 point mass is carried through \code{\link{distrib_atoms}}.
 }
 Truncating an already truncated distribution is allowed and is collapsed into a
@@ -90,11 +90,11 @@ distrib_pdf(ztp, 0:4, list(mu = 2))
 dpois(1:4, 2) / (1 - dpois(0, 2))
 
 # A Gaussian restricted to an interval
-tn <- truncated(gaussian_distrib(), lower = -1, upper = 2)
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 mean(tn, list(mu = 0, sigma = 1))
 
 # A truncation point that removes nothing is refused
-try(truncated(gamma_distrib(), lower = -2))
+try(truncated(gamma2_distrib(), lower = -2))
 
 }
 \seealso{

@@ -25,7 +25,7 @@ Computes \eqn{\partial \ell / \partial y} by central finite differences of
 method for continuous distributions without a closed form.
 }
 \examples{
-numerical_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+numerical_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{

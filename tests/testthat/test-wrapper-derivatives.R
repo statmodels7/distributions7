@@ -3,21 +3,21 @@
 
 wrapper_deriv_cases <- function() {
   list(
-    transformed = list(d = transformation(gaussian_distrib(), exp_transform()),
+    transformed = list(d = transformation(gaussian1_distrib(), exp_transform()),
                        theta = list(mu = 0.5, sigma = 1.1), y = c(0.6, 1.4, 3.0)),
     zip = list(d = zero_inflated(poisson_distrib()),
                theta = list(mu = 3, zi = 0.25), y = c(0, 1, 4)),
-    zinb = list(d = zero_inflated(negbin_distrib()),
+    zinb = list(d = zero_inflated(negbin2_distrib()),
                 theta = list(mu = 4, theta = 1.5, zi = 0.3), y = c(0, 2, 6)),
     hurdle = list(d = zero_adjusted(poisson_distrib()),
                   theta = list(mu = 3, za = 0.4), y = c(0, 1, 5)),
-    zaga = list(d = zero_adjusted(gamma_distrib()),
+    zaga = list(d = zero_adjusted(gamma2_distrib()),
                 theta = list(mu = 3, sigma2 = 2, za = 0.3), y = c(0, 1.2, 5)),
     ztp = list(d = truncated(poisson_distrib(), lower = 1),
                theta = list(mu = 2.5), y = c(1, 3, 6)),
-    tnorm = list(d = truncated(gaussian_distrib(), -1, 2),
+    tnorm = list(d = truncated(gaussian1_distrib(), -1, 2),
                  theta = list(mu = 0.5, sigma = 1.5), y = c(-0.5, 0.3, 1.6)),
-    tgam = list(d = truncated(gamma_distrib(), 0.5, 8),
+    tgam = list(d = truncated(gamma2_distrib(), 0.5, 8),
                 theta = list(mu = 3, sigma2 = 2), y = c(0.8, 2, 6))
   )
 }
@@ -47,7 +47,7 @@ test_that("wrapper third and fourth derivatives match finite differences", {
 
 test_that("a transformed distribution's higher derivatives are exactly the parent's", {
   # The Jacobian does not depend on theta, so nothing is approximated here.
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   td <- transformation(g, exp_transform())
   th <- list(mu = 0.5, sigma = 1.1)
   y <- c(0.6, 1.4, 3.0)
@@ -89,7 +89,7 @@ test_that("the pure zi derivatives at zero match the closed form", {
 })
 
 test_that("the hurdle likelihood separates at every order", {
-  d <- zero_adjusted(negbin_distrib())
+  d <- zero_adjusted(negbin2_distrib())
   th <- list(mu = 4, theta = 1.5, za = 0.35)
   y <- c(0, 2, 7)
 
@@ -101,10 +101,10 @@ test_that("the hurdle likelihood separates at every order", {
 })
 
 test_that("the zero-adjusted continuous derivatives switch off at the atom", {
-  d <- zero_adjusted(gamma_distrib())
+  d <- zero_adjusted(gamma2_distrib())
   th <- list(mu = 3, sigma2 = 2, za = 0.3)
   y <- c(0, 1.2, 5)
-  parent <- distrib_deriv3(gamma_distrib(), y, list(mu = 3, sigma2 = 2))
+  parent <- distrib_deriv3(gamma2_distrib(), y, list(mu = 3, sigma2 = 2))
 
   got <- distrib_deriv3(d, y, th)[["mu_mu_mu"]]
   expect_equal(got[1], 0)                          # the atom carries no theta information
@@ -123,7 +123,7 @@ test_that("the truncated third derivative agrees with one obtained from the cdf"
   s <- 1.5
   for (b in list(c(-1, 3, 0.5), c(0, 4, 1.0), c(-2, 1, 0.3))) {
     lo <- b[1]; up <- b[2]; mu <- b[3]
-    d <- truncated(gaussian_distrib(), lo, up)
+    d <- truncated(gaussian1_distrib(), lo, up)
     th <- list(mu = mu, sigma = s)
     y <- c(lo + 0.2, (lo + up) / 2, up - 0.3)
 
@@ -134,7 +134,7 @@ test_that("the truncated third derivative agrees with one obtained from the cdf"
 
     expect_gt(abs(d3_logZ), 1e-3)    # the test would be vacuous otherwise
     expect_equal(distrib_deriv3(d, y, th)[["mu_mu_mu"]],
-                 distrib_deriv3(gaussian_distrib(), y, th)[["mu_mu_mu"]] - d3_logZ,
+                 distrib_deriv3(gaussian1_distrib(), y, th)[["mu_mu_mu"]] - d3_logZ,
                  tolerance = 1e-5,
                  label = sprintf("truncated Gaussian on (%g, %g)", lo, up))
   }

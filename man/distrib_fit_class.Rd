@@ -99,8 +99,8 @@ Methods implemented for this class:
 
 \examples{
 set.seed(1)
-y <- distrib_rng(gaussian_distrib(), 200, list(mu = 1, sigma = 2))
-fit <- fit_distrib(gaussian_distrib(), y)
+y <- distrib_rng(gaussian1_distrib(), 200, list(mu = 1, sigma = 2))
+fit <- fit_distrib(gaussian1_distrib(), y)
 S7::S7_inherits(fit, distrib_fit)
 coef(fit)
 logLik(fit)

@@ -48,7 +48,7 @@ to one central difference of \code{\link{distrib_grad_y}} in each
 parameter (see \code{\link{numerical_cross_y}}).
 }
 \examples{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 
 }

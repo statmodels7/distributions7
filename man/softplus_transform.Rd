@@ -18,7 +18,7 @@ sending \eqn{(0, \infty)} to the real line. Inverse (softplus)
 \eqn{X = \frac{1}{a}\log(1 + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
 }
 \examples{
-d <- transformation(gamma_distrib(), softplus_transform(a = 1))
+d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
 distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }

@@ -26,5 +26,5 @@ This is defined for continuous distributions; distributions with a closed form
 provide it directly, the others fall back to finite differences of the log-density.
 }
 \examples{
-distrib_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+distrib_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }

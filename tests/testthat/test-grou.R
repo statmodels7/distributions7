@@ -130,7 +130,7 @@ test_that("the default RNG method picks GRoU only when inversion is not analytic
 
 test_that("distributions with a native RNG are unaffected", {
   set.seed(106)
-  a <- distrib_rng(gaussian_distrib(), 5, list(mu = 0, sigma = 1))
+  a <- distrib_rng(gaussian1_distrib(), 5, list(mu = 0, sigma = 1))
   set.seed(106)
   expect_equal(a, stats::rnorm(5))
 })

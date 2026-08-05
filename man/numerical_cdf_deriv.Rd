@@ -39,7 +39,7 @@ parameter. These power the default \code{\link{distrib_grad_cdf}} and
 not supply a closed form.
 }
 \examples{
-numerical_cdf_deriv(gaussian_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
+numerical_cdf_deriv(gaussian1_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
 
 }
 \seealso{

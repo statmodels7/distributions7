@@ -65,8 +65,8 @@ test_that("params_smooth metadata is exposed and validated", {
   d <- laplace_distrib()
   expect_equal(param_smoothness(d), c(mu = FALSE, b = TRUE))
   # defaults to all TRUE when unset
-  expect_true(all(param_smoothness(gaussian_distrib())))
-  expect_named(param_smoothness(gaussian_distrib()), c("mu", "sigma"))
+  expect_true(all(param_smoothness(gaussian1_distrib())))
+  expect_named(param_smoothness(gaussian1_distrib()), c("mu", "sigma"))
 
   # print marks the non-smooth parameter
   out <- paste(utils::capture.output(print(d)), collapse = "\n")
@@ -88,7 +88,7 @@ test_that("OPG fallback yields the correct Fisher information for a bare distrib
   )
   th <- list(mu = 1.5, sigma = 2)
   eh_opg <- distrib_expected_hessian(bg, 0, th)
-  eh_ana <- distrib_expected_hessian(gaussian_distrib(), 0, th)
+  eh_ana <- distrib_expected_hessian(gaussian1_distrib(), 0, th)
   for (nm in names(eh_ana)) {
     expect_equal(eh_opg[[nm]][1], eh_ana[[nm]][1], tolerance = 1e-5, label = nm)
   }
@@ -98,12 +98,12 @@ test_that("response derivatives (grad_y / hess_y) work analytically and via fall
   y <- c(-2, 0.3, 3.7)
 
   # gaussian: closed form
-  g <- gaussian_distrib(); thg <- list(mu = 0.5, sigma = 2)
+  g <- gaussian1_distrib(); thg <- list(mu = 0.5, sigma = 2)
   expect_equal(distrib_grad_y(g, y, thg), -(y - 0.5) / 4)
   expect_equal(distrib_hess_y(g, y, thg), rep(-1 / 4, 3))
 
   # gamma: numerical fallback vs the analytical response derivatives
-  gam <- gamma_distrib(); thga <- list(mu = 3, sigma2 = 2)
+  gam <- gamma2_distrib(); thga <- list(mu = 3, sigma2 = 2)
   a <- 9 / 2; rate <- 3 / 2; yg <- c(1, 3, 6)
   expect_equal(distrib_grad_y(gam, yg, thga), (a - 1) / yg - rate, tolerance = 1e-5)
   expect_equal(distrib_hess_y(gam, yg, thga), -(a - 1) / yg^2, tolerance = 1e-5)

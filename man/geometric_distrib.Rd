@@ -49,7 +49,7 @@ is overdispersed relative to the Poisson at every mean.
 }
 
 The family is the negative binomial at \eqn{\theta = 1}, so
-\code{fixed(negbin_distrib(), theta = 1)} describes the same law and is used
+\code{fixed(negbin2_distrib(), theta = 1)} describes the same law and is used
 in the tests as an independent implementation.
 }
 \examples{
@@ -63,6 +63,6 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 }
 \seealso{
-\code{\link{negbin_distrib}}, \code{\link{poisson_distrib}},
+\code{\link{negbin2_distrib}}, \code{\link{poisson_distrib}},
 \code{\link{exponential_distrib}}
 }

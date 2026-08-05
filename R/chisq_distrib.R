@@ -277,7 +277,7 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #'
 #' @return An S7 object of class \code{ChisqDistrib}.
 #'
-#' @seealso \code{\link{gamma_distrib}}, \code{\link{exponential_distrib}}
+#' @seealso \code{\link{gamma2_distrib}}, \code{\link{exponential_distrib}}
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats dchisq pchisq qchisq rchisq

@@ -3,7 +3,7 @@
 test_that("built-in distributions pass every check", {
   set.seed(1)
   cases <- list(
-    list(d = gaussian_distrib(), th = list(mu = 1.5, sigma = 2)),
+    list(d = gaussian1_distrib(), th = list(mu = 1.5, sigma = 2)),
     list(d = poisson_distrib(),  th = list(mu = 4)),
     list(d = laplace_distrib(),  th = list(mu = 1, b = 2))
   )
@@ -196,7 +196,7 @@ test_that("a deterministic score product does not fake an information mismatch",
 
 test_that("check_distrib returns a tidy data frame and prints a report", {
   set.seed(2)
-  res <- check_distrib(gaussian_distrib(), theta = list(mu = 0, sigma = 1),
+  res <- check_distrib(gaussian1_distrib(), theta = list(mu = 0, sigma = 1),
                        n = 30, nsim = 2e4, orders = 1:2, verbose = FALSE)
   expect_s3_class(res, "data.frame")
   expect_named(res, c("check", "status", "statistic", "detail"))
@@ -205,7 +205,7 @@ test_that("check_distrib returns a tidy data frame and prints a report", {
   expect_true(any(grepl("link-scale", res$check)))
 
   out <- utils::capture.output(
-    check_distrib(gaussian_distrib(), theta = list(mu = 0, sigma = 1),
+    check_distrib(gaussian1_distrib(), theta = list(mu = 0, sigma = 1),
                   n = 20, nsim = 1e4, orders = 1, verbose = TRUE)
   )
   expect_true(any(grepl("Distribution:", out)))
@@ -245,7 +245,7 @@ test_that("check_distrib detects a wrong analytical gradient", {
 
 test_that("check_distrib draws its own theta when none is supplied", {
   set.seed(4)
-  res <- check_distrib(gaussian_distrib(), n = 20, nsim = 1e4,
+  res <- check_distrib(gaussian1_distrib(), n = 20, nsim = 1e4,
                        orders = 1, verbose = FALSE)
   expect_s3_class(res, "data.frame")
   expect_gt(nrow(res), 0)

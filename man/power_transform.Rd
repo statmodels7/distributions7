@@ -18,7 +18,7 @@ Jacobian \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
 non-negative support; even integer powers require a support that does not straddle 0.
 }
 \examples{
-d <- transformation(gamma_distrib(), power_transform(p = 2))
+d <- transformation(gamma2_distrib(), power_transform(p = 2))
 distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }

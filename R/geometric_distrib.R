@@ -261,12 +261,12 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #' }
 #'
 #' The family is the negative binomial at \eqn{\theta = 1}, so
-#' \code{fixed(negbin_distrib(), theta = 1)} describes the same law and is used
+#' \code{fixed(negbin2_distrib(), theta = 1)} describes the same law and is used
 #' in the tests as an independent implementation.
 #'
 #' @return An S7 object of class \code{GeometricDistrib}.
 #'
-#' @seealso \code{\link{negbin_distrib}}, \code{\link{poisson_distrib}},
+#' @seealso \code{\link{negbin2_distrib}}, \code{\link{poisson_distrib}},
 #'   \code{\link{exponential_distrib}}
 #'
 #' @importFrom linkfunctions7 log_link

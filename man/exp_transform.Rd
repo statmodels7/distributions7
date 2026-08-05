@@ -14,7 +14,7 @@ Transformer for \eqn{Y = e^X}: maps the real line to \eqn{(0, \infty)}.
 Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
 }
 \examples{
-d <- transformation(gaussian_distrib(), exp_transform())
+d <- transformation(gaussian1_distrib(), exp_transform())
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }

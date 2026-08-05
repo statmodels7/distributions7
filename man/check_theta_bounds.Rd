@@ -28,7 +28,7 @@ error instead of silently producing \code{NaN}. It is exported so that it can
 also be used directly, e.g. when writing an optimizer.
 }
 \examples{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 check_theta_bounds(d, list(mu = 0, sigma = 1))
 \dontrun{
 check_theta_bounds(d, list(mu = 0, sigma = -1)) # error: sigma outside (0, Inf)

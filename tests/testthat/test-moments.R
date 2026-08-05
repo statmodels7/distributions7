@@ -1,7 +1,7 @@
 # Numerical moment machinery and analytical overrides.
 
 test_that("numerical moments match known closed forms", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   thg <- list(mu = 2, sigma = 3)
   expect_equal(mean(g, thg), 2, tolerance = 1e-6)
   expect_equal(variance(g, thg), 9, tolerance = 1e-6)
@@ -9,7 +9,7 @@ test_that("numerical moments match known closed forms", {
   expect_equal(kurtosis(g, thg), 0, tolerance = 1e-5)
 
   # Gamma: shape a = mu^2/sigma2, skew = 2/sqrt(a), excess kurtosis = 6/a
-  gam <- gamma_distrib()
+  gam <- gamma2_distrib()
   thga <- list(mu = 3, sigma2 = 2)
   a <- 9 / 2
   expect_equal(skewness(gam, thga), 2 / sqrt(a), tolerance = 1e-6)
@@ -24,7 +24,7 @@ test_that("numerical moments match known closed forms", {
 })
 
 test_that("moment() supports raw/central moments and vectorized theta", {
-  g <- gaussian_distrib()
+  g <- gaussian1_distrib()
   expect_equal(moment(g, list(mu = 2, sigma = 3), p = 2), 4 + 9, tolerance = 1e-6)
   expect_equal(
     moment(g, list(mu = c(0, 1), sigma = c(1, 2)), p = 2, central = TRUE),
@@ -39,7 +39,7 @@ test_that("moment() supports raw/central moments and vectorized theta", {
 })
 
 test_that("negbin analytical moments agree with the numerical machinery", {
-  d <- negbin_distrib()
+  d <- negbin2_distrib()
   th <- list(mu = 4, theta = 1.7)
 
   expect_equal(mean(d, th), 4)

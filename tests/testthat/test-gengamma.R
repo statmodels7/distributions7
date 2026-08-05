@@ -2,7 +2,7 @@
 # that the families it nests are read off the parameters rather than derived.
 
 test_that("it nests the gamma, the Weibull and the exponential exactly", {
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   y <- c(0.5, 2, 5, 11)
 
   expect_equal(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)),
@@ -21,7 +21,7 @@ test_that("it nests the gamma, the Weibull and the exponential exactly", {
 
 
 test_that("the density integrates to one and the quantile inverts the cdf", {
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   for (th in list(list(a = 2, d = 3, p = 1.5), list(a = 0.7, d = 0.8, p = 3))) {
     expect_equal(stats::integrate(function(z) distrib_pdf(d, z, th),
                                   0, Inf)$value, 1, tolerance = 1e-8)
@@ -38,7 +38,7 @@ test_that("the density integrates to one and the quantile inverts the cdf", {
 test_that("the moments are the ratio of gamma functions", {
   # E[Y^r] = a^r Gamma((d+r)/p) / Gamma(d/p), written out here rather than
   # taken from the package.
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   th <- list(a = 2, d = 3, p = 1.5)
   for (r in 1:3) {
     want <- th$a^r * gamma((th$d + r) / th$p) / gamma(th$d / th$p)
@@ -53,7 +53,7 @@ test_that("the moments are the ratio of gamma functions", {
 
 test_that("the analytical derivatives match one Richardson differentiation", {
   skip_if_not_installed("numDeriv")
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   th <- list(a = 2, d = 3, p = 1.5)
   q0 <- c(2, 3, 1.5)
   at <- function(q) list(a = q[1], d = q[2], p = q[3])
@@ -82,7 +82,7 @@ test_that("the expected information is closed form", {
   # Every expectation is a moment of u = (Y/a)^p, which is Gamma(d/p, 1). The
   # three components free of the data must come out EXACTLY equal to a Monte
   # Carlo mean of the observed Hessian, since there is nothing to average.
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   th <- list(a = 2, d = 3, p = 1.5)
   eh <- distrib_expected_hessian(d, 0, th)
   set.seed(2)
@@ -99,7 +99,7 @@ test_that("the expected information is closed form", {
 
 
 test_that("the validator passes and a fit with one shape held recovers the rest", {
-  d <- gengamma_distrib()
+  d <- gengamma1_distrib()
   set.seed(3)
   res <- check_distrib(d, verbose = FALSE)
   expect_true(all(res$status == "OK"),
@@ -110,7 +110,7 @@ test_that("the validator passes and a fit with one shape held recovers the rest"
   set.seed(5)
   th <- list(a = 2, d = 3, p = 1.5)
   y <- distrib_rng(d, 3000, th)
-  f <- fit_distrib(fixed(gengamma_distrib(), p = 1.5), y)
+  f <- fit_distrib(fixed(gengamma1_distrib(), p = 1.5), y)
   expect_true(f@converged)
   expect_equal(unname(coef(f)), c(2, 3), tolerance = 0.2)
 })

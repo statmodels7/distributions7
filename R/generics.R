@@ -24,7 +24,7 @@ NULL
 #' @param ... Additional arguments passed to the specific method (e.g., \code{log}).
 #' @return A numeric vector of density values, one per observation.
 #' @examples
-#' distrib_pdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 #' @export
 distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, theta, ...) {
@@ -42,7 +42,7 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' @param ... Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).
 #' @return A numeric vector of cumulative probabilities.
 #' @examples
-#' distrib_cdf(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 #' @export
 distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, theta, ...) {
@@ -60,7 +60,7 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @param ... Additional arguments passed to the specific method (e.g., \code{lower.tail}, \code{log.p}).
 #' @return A numeric vector of quantiles.
 #' @examples
-#' distrib_quantile(gaussian_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
+#' distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
 #' distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 #' @export
 distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(distrib, p, theta, ...) {
@@ -96,8 +96,8 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
 #' and to keep its finite differences away from the jumps.
 #'
 #' @examples
-#' distrib_atoms(gamma_distrib(), list(mu = 2, sigma2 = 1))
-#' distrib_atoms(zero_adjusted(gamma_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
+#' distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
+#' distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
 #'
 #' @export
 distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, theta, ...) {
@@ -117,7 +117,7 @@ distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, t
 #'   an \eqn{n \times p} matrix for a multivariate one.
 #' @examples
 #' set.seed(1)
-#' distrib_rng(gaussian_distrib(), 5, list(mu = 0, sigma = 1))
+#' distrib_rng(gaussian1_distrib(), 5, list(mu = 0, sigma = 1))
 #' distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
 #'   sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #' @export
@@ -205,7 +205,7 @@ check_derivative_args <- function(distrib, y, theta) {
 #' @return A named list with one numeric vector per parameter, keyed by
 #'   \code{distrib@params}.
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' # the same score with respect to the unconstrained parameters
@@ -232,7 +232,7 @@ distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(dist
 #' @return A named list of numeric vectors, keyed as
 #'   \code{\link{hess_names}(distrib@params)} (e.g. \code{"mu_sigma"}).
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -274,7 +274,7 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #'   \code{\link{hess_names}(distrib@params)}, holding the expected second
 #'   derivatives, that is minus the Fisher information.
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 #'
 #' # a family with no closed form uses the strategy named by 'approx'
@@ -328,7 +328,7 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #' @return A named list of derivative-component vectors, keyed as in
 #'   \code{\link{deriv_names}(distrib@params, 3)} (e.g. \code{"mu_mu_sigma"}).
 #' @examples
-#' distrib_deriv3(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_deriv3(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -367,7 +367,7 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #' @return A named list of derivative-component vectors, keyed as in
 #'   \code{\link{deriv_names}(distrib@params, 4)} (e.g. \code{"mu_mu_sigma_sigma"}).
 #' @examples
-#' distrib_deriv4(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -397,7 +397,7 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' @param ... Additional arguments passed to the specific method.
 #' @return A numeric vector of the same length as \code{y}.
 #' @examples
-#' distrib_grad_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -420,7 +420,7 @@ distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib,
 #' @param ... Additional arguments passed to the specific method.
 #' @return A numeric vector of the same length as \code{y}.
 #' @examples
-#' distrib_hess_y(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' distrib_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' @export
 distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -471,7 +471,7 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #' numerically, and distributions with a closed form register it directly.
 #'
 #' @examples
-#' d <- gaussian_distrib()
+#' d <- gaussian1_distrib()
 #' theta <- list(mu = 0, sigma = 1)
 #'
 #' # what a right-censored observation at q = 1 contributes to the score
@@ -508,7 +508,7 @@ distrib_grad_cdf <- S7::new_generic("distrib_grad_cdf", "distrib", function(dist
 #' \eqn{\partial_{ij}\log P = \partial_{ij}P/P - (\partial_i P/P)(\partial_j P/P)}.
 #'
 #' @examples
-#' distrib_hess_cdf(gaussian_distrib(), 1, list(mu = 0, sigma = 1))
+#' distrib_hess_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 #'
 #' @seealso \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hessian}}
 #' @export
@@ -528,6 +528,6 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #'   \code{distrib@params}, each inside that parameter's bounds.
 #' @examples
 #' set.seed(1)
-#' generate_random_theta(gamma_distrib())
+#' generate_random_theta(gamma2_distrib())
 #' @export
 generate_random_theta <- S7::new_generic("generate_random_theta", "distrib")

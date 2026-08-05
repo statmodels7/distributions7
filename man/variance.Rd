@@ -21,7 +21,7 @@ evaluated numerically (analytical methods may override this for specific
 distributions); for numeric vectors the sample variance \code{\link[stats]{var}} is returned.
 }
 \examples{
-variance(gaussian_distrib(), list(mu = 0, sigma = 2))
+variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 variance(poisson_distrib(), list(mu = 3))
 
 }

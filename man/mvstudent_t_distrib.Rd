@@ -74,5 +74,5 @@ variance(d, theta)
 
 }
 \seealso{
-\code{\link{mvgaussian_distrib}}, \code{\link{student_t_distrib}}
+\code{\link{mvgaussian_distrib}}, \code{\link{student_t1_distrib}}
 }

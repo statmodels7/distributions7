@@ -3,7 +3,7 @@
 # instead of carrying one through a Jacobian.
 
 test_that("the density and the distribution function add the two preimages", {
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0.5, sigma = 1)
   x <- c(0, 0.2, 0.8, 2, 3.5)
 
@@ -19,18 +19,18 @@ test_that("the density and the distribution function add the two preimages", {
 
   # the support is the folded one and the parameters are the parent's
   expect_identical(d@bounds, c(0, Inf))
-  expect_identical(d@params, gaussian_distrib()@params)
-  expect_identical(d@n_params, gaussian_distrib()@n_params)
+  expect_identical(d@params, gaussian1_distrib()@params)
+  expect_identical(d@n_params, gaussian1_distrib()@n_params)
 })
 
 
 test_that("drawing is the absolute value of the parent's draw", {
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0.5, sigma = 1)
   set.seed(21)
   a <- distrib_rng(d, 50, th)
   set.seed(21)
-  b <- abs(distrib_rng(gaussian_distrib(), 50, th))
+  b <- abs(distrib_rng(gaussian1_distrib(), 50, th))
   expect_identical(a, b)
   expect_true(all(a >= 0))
 })
@@ -38,7 +38,7 @@ test_that("drawing is the absolute value of the parent's draw", {
 
 test_that("every order matches one Richardson differentiation of the order below", {
   skip_if_not_installed("numDeriv")
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0.5, sigma = 1)
   x <- c(0.2, 0.8, 2, 3.5)
   p0 <- c(0.5, 1)
@@ -91,15 +91,15 @@ test_that("every order matches one Richardson differentiation of the order below
 test_that("the score is the mixture score its derivation says it is", {
   # w s(x) + (1 - w) s(-x), the two preimages weighted by which one the point
   # came from. Written out here rather than taken from the package.
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0.5, sigma = 1)
   x <- c(0.2, 0.8, 2)
 
   fp <- stats::dnorm(x, 0.5, 1)
   fm <- stats::dnorm(-x, 0.5, 1)
   w <- fp / (fp + fm)
-  sp <- distrib_gradient(gaussian_distrib(), x, th)
-  sm <- distrib_gradient(gaussian_distrib(), -x, th)
+  sp <- distrib_gradient(gaussian1_distrib(), x, th)
+  sm <- distrib_gradient(gaussian1_distrib(), -x, th)
 
   g <- distrib_gradient(d, x, th)
   expect_equal(g$mu, w * sp$mu + (1 - w) * sm$mu)
@@ -109,7 +109,7 @@ test_that("the score is the mixture score its derivation says it is", {
 
 test_that("the response derivatives carry the reflection's sign", {
   skip_if_not_installed("numDeriv")
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0.5, sigma = 1)
   x <- c(0.2, 0.8, 2, 3.5)
 
@@ -123,7 +123,7 @@ test_that("the response derivatives carry the reflection's sign", {
 
 
 test_that("the half-normal is a folded gaussian with its location held at zero", {
-  hn <- fixed(folded(gaussian_distrib()), mu = 0)
+  hn <- fixed(folded(gaussian1_distrib()), mu = 0)
   expect_identical(hn@params, "sigma")
 
   s <- 2
@@ -140,7 +140,7 @@ test_that("the half-normal is a folded gaussian with its location held at zero",
 test_that("a symmetric parent folds to twice its upper half", {
   # With mu = 0 the two preimages carry the same density, so w is one half
   # everywhere and the folded density is exactly doubled.
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   th <- list(mu = 0, sigma = 1.5)
   x <- c(0.3, 1, 2.5)
   expect_equal(distrib_pdf(d, x, th), 2 * stats::dnorm(x, 0, 1.5))
@@ -151,8 +151,8 @@ test_that("a symmetric parent folds to twice its upper half", {
 
 
 test_that("the validator passes on the fold and on the half-normal", {
-  for (d in list(folded(gaussian_distrib()),
-                 fixed(folded(gaussian_distrib()), mu = 0))) {
+  for (d in list(folded(gaussian1_distrib()),
+                 fixed(folded(gaussian1_distrib()), mu = 0))) {
     set.seed(4)
     res <- check_distrib(d, verbose = FALSE)
     expect_true(all(res$status == "OK"),
@@ -165,11 +165,11 @@ test_that("the validator passes on the fold and on the half-normal", {
 test_that("folded() refuses what it would silently mishandle", {
   # a parent already on the non-negative half line folds to itself, so the
   # call is a mistake rather than a no-op
-  expect_error(folded(gamma_distrib()), "leaves alone")
-  expect_error(folded(folded(gaussian_distrib())), "leaves alone")
+  expect_error(folded(gamma2_distrib()), "leaves alone")
+  expect_error(folded(folded(gaussian1_distrib())), "leaves alone")
 
   # an atom would be counted twice at zero or moved onto its reflection
-  expect_error(folded(zero_adjusted(gaussian_distrib())), "atom")
+  expect_error(folded(zero_adjusted(gaussian1_distrib())), "atom")
 
   # and folding a lattice is not what the sum above computes
   expect_error(folded(poisson_distrib()), "continuous")
@@ -182,7 +182,7 @@ test_that("the sign of a symmetric parent's location is not identified", {
   # a property of the model, not of the arithmetic, so the comparison is
   # against zero rather than against a tolerance.
   x <- c(0.2, 0.9, 2.3, 4)
-  for (parent in list(gaussian_distrib(), cauchy_distrib(),
+  for (parent in list(gaussian1_distrib(), cauchy_distrib(),
                       logistic_distrib(), laplace_distrib())) {
     d <- folded(parent)
     nm <- d@params
@@ -195,7 +195,7 @@ test_that("the sign of a symmetric parent's location is not identified", {
 
   # and it is the parent's symmetry that does it, not the folding: a skew
   # parent has no such invariance
-  ds <- folded(skewnormal_distrib())
+  ds <- folded(skewnormal1_distrib())
   expect_gt(max(abs(
     distrib_pdf(ds, x, list(mu = 1.2, sigma = 1.5, alpha = 3), log = TRUE) -
     distrib_pdf(ds, x, list(mu = -1.2, sigma = 1.5, alpha = 3), log = TRUE))), 1)
@@ -204,7 +204,7 @@ test_that("the sign of a symmetric parent's location is not identified", {
 
 test_that("a fit through the fold recovers what generated the data", {
   set.seed(31)
-  d <- folded(gaussian_distrib())
+  d <- folded(gaussian1_distrib())
   true <- list(mu = 1.2, sigma = 2)
   y <- distrib_rng(d, 3000, true)
 
@@ -225,7 +225,7 @@ test_that("a fit through the fold recovers what generated the data", {
 
   # holding the location at zero removes the question entirely
   set.seed(32)
-  hn <- fixed(folded(gaussian_distrib()), mu = 0)
+  hn <- fixed(folded(gaussian1_distrib()), mu = 0)
   yh <- distrib_rng(hn, 3000, list(sigma = 2))
   fh <- fit_distrib(hn, yh)
   expect_true(fh@converged, info = fit_report(fh, hn, yh))

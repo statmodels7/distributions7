@@ -11,7 +11,7 @@
 # the same arithmetic.
 
 test_that("the skew normal contains the gaussian", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   y <- c(-2, -0.5, 0, 1, 3)
 
   expect_equal(
@@ -23,13 +23,13 @@ test_that("the skew normal contains the gaussian", {
   )
   # and the derivatives reduce too
   g <- distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 0))
-  gg <- distrib_gradient(gaussian_distrib(), y, list(mu = 0, sigma = 1))
+  gg <- distrib_gradient(gaussian1_distrib(), y, list(mu = 0, sigma = 1))
   expect_equal(g$mu, gg$mu)
   expect_equal(g$sigma, gg$sigma)
 })
 
 test_that("the skew normal density is the formula and integrates to one", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   th <- list(mu = 0.5, sigma = 2, alpha = -2.5)
   y <- c(-2, -0.5, 0, 1, 3)
   z <- (y - 0.5) / 2
@@ -45,7 +45,7 @@ test_that("the skew normal density is the formula and integrates to one", {
 })
 
 test_that("Owen's T gives the same distribution function as quadrature", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   th <- list(mu = 0.5, sigma = 2, alpha = -2.5)
   y <- c(-2, -0.5, 0, 1, 3)
 
@@ -78,7 +78,7 @@ test_that("the inverse Mills ratio survives the tail both densities underflow in
 })
 
 test_that("the skew normal derivatives agree with an independent reference", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   set.seed(51)
   for (th in list(list(mu = 0, sigma = 1, alpha = 3),
                   list(mu = -1, sigma = 2.5, alpha = -4),
@@ -109,7 +109,7 @@ test_that("the skew normal derivatives agree with an independent reference", {
 })
 
 test_that("the skew normal's moments are bounded, as the family requires", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   th <- list(mu = 0, sigma = 1, alpha = 3)
 
   set.seed(52)
@@ -126,7 +126,7 @@ test_that("the skew normal's moments are bounded, as the family requires", {
 })
 
 test_that("the skew normal response derivatives are the location ones", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   th <- list(mu = 0, sigma = 1, alpha = 3)
   y <- c(-2, 0, 1)
   expect_equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
@@ -146,7 +146,7 @@ test_that("the skew t contains the Student t and the skew normal", {
   )
   expect_equal(
     distrib_pdf(d, y, list(mu = 0, sigma = 1, alpha = 3, nu = 1e7)),
-    distrib_pdf(skewnormal_distrib(), y, list(mu = 0, sigma = 1, alpha = 3)),
+    distrib_pdf(skewnormal1_distrib(), y, list(mu = 0, sigma = 1, alpha = 3)),
     tolerance = 1e-6
   )
   expect_equal(
@@ -238,7 +238,7 @@ test_that("the skew t generator matches its own density", {
 
 test_that("check_distrib passes on both skew families", {
   set.seed(55)
-  res <- check_distrib(skewnormal_distrib(),
+  res <- check_distrib(skewnormal1_distrib(),
     theta = list(mu = 0, sigma = 1, alpha = 3), nsim = 2e4, verbose = FALSE)
   expect_true(all(res$status == "OK"))
 
@@ -250,7 +250,7 @@ test_that("check_distrib passes on both skew families", {
 })
 
 test_that("both skew families are fitted by maximum likelihood", {
-  d <- skewnormal_distrib()
+  d <- skewnormal1_distrib()
   set.seed(57)
   y <- distrib_rng(d, 3000, list(mu = 1, sigma = 2, alpha = 4))
   fit <- fit_distrib(d, y)

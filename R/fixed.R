@@ -322,7 +322,7 @@ rm(.fixed_cls)
 #'
 #' @param distrib The distribution whose parameters are to be fixed.
 #' @param ... The fixed values, named after the parameters they fix, as in
-#'   \code{fixed(gaussian_distrib(), mu = 0)}.
+#'   \code{fixed(gaussian1_distrib(), mu = 0)}.
 #'
 #' @return An object of class \code{FixedContinuousDistrib} or
 #'   \code{FixedDiscreteDistrib}, matching the parent.
@@ -332,7 +332,7 @@ rm(.fixed_cls)
 #'
 #' @examples
 #' # a gaussian with known mean: only sigma remains
-#' d <- fixed(gaussian_distrib(), mu = 0)
+#' d <- fixed(gaussian1_distrib(), mu = 0)
 #' d@params
 #'
 #' theta <- list(sigma = 2)
@@ -340,11 +340,11 @@ rm(.fixed_cls)
 #' distrib_gradient(d, c(-1, 0, 1), theta)
 #'
 #' # the score is the corresponding component of the parent's
-#' full <- distrib_gradient(gaussian_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
+#' full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
 #' all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 #'
 #' # fixing everything gives a fully known distribution
-#' d0 <- fixed(gaussian_distrib(), mu = 0, sigma = 1)
+#' d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
 #' distrib_pdf(d0, 0, list())
 #'
 #' @export

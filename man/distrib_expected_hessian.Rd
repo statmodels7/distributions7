@@ -54,7 +54,7 @@ congruence \eqn{\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')} with
 \eqn{h' = dg^{-1}/d\eta}.
 }
 \examples{
-d <- gaussian_distrib()
+d <- gaussian1_distrib()
 distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1))
 
 # a family with no closed form uses the strategy named by 'approx'

@@ -67,7 +67,7 @@ S7::S7_inherits(tr, transformer)
 tr@name
 
 # a transformer is consumed by transformation(), which is where it acts
-distrib_pdf(transformation(gamma_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
+distrib_pdf(transformation(gamma2_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
