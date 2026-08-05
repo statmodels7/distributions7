@@ -134,7 +134,9 @@ skewt_nu_step <- function(nu) {
 #'
 #' @keywords internal
 fd5_first <- function(f, x, h) {
-  (f(x - 2 * h) - 8 * f(x - h) + 8 * f(x + h) - f(x + 2 * h)) / (12 * h)
+  # numericals7's shared weights at accuracy four: the displayed formula is
+  # exactly what the Vandermonde construction produces on five nodes.
+  numericals7::fd_derivative(f, x, 1L, h = h, accuracy = 4L)
 }
 
 #' A Five-Point Second Derivative
@@ -151,8 +153,7 @@ fd5_first <- function(f, x, h) {
 #'
 #' @keywords internal
 fd5_second <- function(f, x, h) {
-  (-f(x - 2 * h) + 16 * f(x - h) - 30 * f(x) + 16 * f(x + h) - f(x + 2 * h)) /
-    (12 * h^2)
+  numericals7::fd_derivative(f, x, 2L, h = h, accuracy = 4L)
 }
 
 #' A Five-Point Third Derivative
@@ -170,7 +171,7 @@ fd5_second <- function(f, x, h) {
 #'
 #' @keywords internal
 fd5_third <- function(f, x, h) {
-  (-f(x - 2 * h) / 2 + f(x - h) - f(x + h) + f(x + 2 * h) / 2) / h^3
+  numericals7::fd_derivative(f, x, 3L, h = h)
 }
 
 #' A Five-Point Fourth Derivative
@@ -190,7 +191,7 @@ fd5_third <- function(f, x, h) {
 #'
 #' @keywords internal
 fd5_fourth <- function(f, x, h) {
-  (f(x - 2 * h) - 4 * f(x - h) + 6 * f(x) - 4 * f(x + h) + f(x + 2 * h)) / h^4
+  numericals7::fd_derivative(f, x, 4L, h = h)
 }
 
 #' @title Skew t Probability Density Function
