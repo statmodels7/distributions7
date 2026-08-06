@@ -154,3 +154,32 @@ test_that("a fit recovers the parameters", {
   expect_true(f@converged)
   expect_equal(unname(coef(f)), c(3, 0.8), tolerance = 0.15)
 })
+
+
+test_that("the explicit kernels agree with the jet kernels", {
+  # Two implementations sharing no algebra: the hand-written closed forms
+  # the methods run, against the bivariate-jet transcription kept for this
+  # comparison. Measured 2x to 36x faster, the explicit route is what
+  # ships; agreement is machine precision away from the sigma -> 0 corner,
+  # where terms of order sigma^-5 cancel in BOTH implementations and the
+  # comparison measures conditioning, not correctness.
+  set.seed(41)
+  n <- 3000
+  y <- distrib_rng(pig1_distrib(), n, list(mu = 3, sigma = 0.8))
+  mu <- runif(n, 0.2, 30)
+  sg <- runif(n, 0.2, 4)
+  A <- pig1_hd_jet_cpp(y, mu, sg)
+  B <- pig1_hd_cpp(y, mu, sg)
+  expect_lt(max(abs(A - B) / pmax(1, abs(A))), 1e-10)
+
+  al <- runif(n, 0.2, 8)
+  A2 <- pig2_hd_jet_cpp(y, mu, al)
+  B2 <- pig2_hd_cpp(y, mu, al)
+  expect_lt(max(abs(A2 - B2) / pmax(1, abs(A2))), 1e-10)
+
+  # and the small-sigma corner stays within its conditioning floor
+  sg2 <- runif(500, 0.02, 0.2)
+  A3 <- pig1_hd_jet_cpp(y[1:500], mu[1:500], sg2)
+  B3 <- pig1_hd_cpp(y[1:500], mu[1:500], sg2)
+  expect_lt(max(abs(A3 - B3) / pmax(1, abs(A3))), 1e-6)
+})

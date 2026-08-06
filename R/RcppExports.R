@@ -529,6 +529,14 @@ negbin_deriv4_expected_cpp <- function(y, mu, theta) {
     .Call(`_distributions7_negbin_deriv4_expected_cpp`, y, mu, theta)
 }
 
+pig1_hd_jet_cpp <- function(y, mu, sigma) {
+    .Call(`_distributions7_pig1_hd_jet_cpp`, y, mu, sigma)
+}
+
+pig2_hd_jet_cpp <- function(y, mu, alpha) {
+    .Call(`_distributions7_pig2_hd_jet_cpp`, y, mu, alpha)
+}
+
 pig1_hd_cpp <- function(y, mu, sigma) {
     .Call(`_distributions7_pig1_hd_cpp`, y, mu, sigma)
 }

@@ -1711,6 +1711,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pig1_hd_jet_cpp
+NumericMatrix pig1_hd_jet_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
+RcppExport SEXP _distributions7_pig1_hd_jet_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig1_hd_jet_cpp(y, mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pig2_hd_jet_cpp
+NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu, NumericVector alpha);
+RcppExport SEXP _distributions7_pig2_hd_jet_cpp(SEXP ySEXP, SEXP muSEXP, SEXP alphaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< NumericVector >::type alpha(alphaSEXP);
+    rcpp_result_gen = Rcpp::wrap(pig2_hd_jet_cpp(y, mu, alpha));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pig1_hd_cpp
 NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu, NumericVector sigma);
 RcppExport SEXP _distributions7_pig1_hd_cpp(SEXP ySEXP, SEXP muSEXP, SEXP sigmaSEXP) {
@@ -2161,6 +2187,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_distributions7_negbin_deriv3_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv3_expected_cpp, 3},
     {"_distributions7_negbin_deriv4_cpp", (DL_FUNC) &_distributions7_negbin_deriv4_cpp, 3},
     {"_distributions7_negbin_deriv4_expected_cpp", (DL_FUNC) &_distributions7_negbin_deriv4_expected_cpp, 3},
+    {"_distributions7_pig1_hd_jet_cpp", (DL_FUNC) &_distributions7_pig1_hd_jet_cpp, 3},
+    {"_distributions7_pig2_hd_jet_cpp", (DL_FUNC) &_distributions7_pig2_hd_jet_cpp, 3},
     {"_distributions7_pig1_hd_cpp", (DL_FUNC) &_distributions7_pig1_hd_cpp, 3},
     {"_distributions7_pig2_hd_cpp", (DL_FUNC) &_distributions7_pig2_hd_cpp, 3},
     {"_distributions7_poisson_gradient_cpp", (DL_FUNC) &_distributions7_poisson_gradient_cpp, 2},
