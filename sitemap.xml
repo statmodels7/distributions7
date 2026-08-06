@@ -71,6 +71,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/beta1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/beta2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/beta2_higher.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_components.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom2_component.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/betabinom2_derivs.html</loc></url>
@@ -165,12 +166,14 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian1Distrib.html</loc></url>
@@ -698,6 +701,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/geom_prob.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/geometric_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/gpd_components.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gpd_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gpd_endpoint.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/grou_core.html</loc></url>

@@ -1143,6 +1143,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Generalized Pareto Distribution
 - [`distrib_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GPDDistrib.md)
   : Generalized Pareto Distribution Function
+- [`distrib_deriv3.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+  [`distrib_deriv4.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.md)
+  : Generalized Pareto Third and Fourth Derivatives
 - [`distrib_expected_hessian.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GPDDistrib.md)
   : Generalized Pareto Analytical Expected Hessian
 - [`distrib_gradient.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GPDDistrib.md)
@@ -1227,6 +1230,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Beta-Binomial Distribution
 - [`distrib_cdf.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinom1Distrib.md)
   : Beta-Binomial Cumulative Distribution Function
+- [`distrib_deriv3.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
+  [`distrib_deriv4.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
+  : Beta-Binomial Third and Fourth Derivatives in Mean and Dispersion
 - [`distrib_expected_hessian.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom1Distrib.md)
   : Beta-Binomial Analytical Expected Hessian
 - [`distrib_gradient.BetaBinom1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md)
@@ -1637,6 +1643,9 @@ divergent density.
 
 - [`beta2_higher()`](https://statmodels7.github.io/distributions7/reference/beta2_higher.md)
   : Higher Derivatives of the Beta in Its Shapes
+
+- [`betabinom1_components()`](https://statmodels7.github.io/distributions7/reference/betabinom1_components.md)
+  : Derivative Components of the Beta-Binomial in Mean and Dispersion
 
 - [`betabinom2_component()`](https://statmodels7.github.io/distributions7/reference/betabinom2_component.md)
   : Higher Derivatives of the Beta-Binomial in Its Shapes
@@ -2065,6 +2074,9 @@ divergent density.
 
 - [`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md)
   : The Success Probability Behind a Geometric Mean
+
+- [`gpd_components()`](https://statmodels7.github.io/distributions7/reference/gpd_components.md)
+  : Derivative Components of the Generalized Pareto
 
 - [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
   : The Upper Endpoint of a Generalized Pareto
@@ -2561,7 +2573,8 @@ divergent density.
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
 
-- [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+- [`md_betabinom1()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_weibull3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_student_t2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
@@ -2941,7 +2954,8 @@ order the parent has in closed form survives.
   : The Map Derivatives as Keyed Tables
 - [`reparam_stencil_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.md)
   : One Stencil Per Map Partial
-- [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+- [`md_betabinom1()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_weibull3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_student_t2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)

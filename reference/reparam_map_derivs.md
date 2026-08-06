@@ -10,6 +10,8 @@ order in the tests.
 ## Usage
 
 ``` r
+md_betabinom1(psi)
+
 md_lognormal2(psi)
 
 md_weibull3(psi)
