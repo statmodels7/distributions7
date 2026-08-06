@@ -10,6 +10,7 @@ reparametrize(
   params,
   bounds,
   links,
+  map_derivs = NULL,
   interpretation = NULL,
   name = NULL
 )

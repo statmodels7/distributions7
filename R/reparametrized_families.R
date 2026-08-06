@@ -1,7 +1,8 @@
 #' @include reparametrize.R
 NULL
 
-# The second parametrizations obtained through reparametrize() rather than
+# The second parametrizations obtained through reparametrize(), each
+# supplying its hand-written map derivatives (reparam_maps.R), rather than
 # written out. Each is a map of a few lines; everything else -- the density,
 # the derivatives to fourth order observed and expected, the moments, the
 # validator, the fit -- comes from the parent through the partition sum.
@@ -51,6 +52,7 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
     params = c("mean", "var"),
     bounds = list(mean = c(0, Inf), var = c(0, Inf)),
     links = list(mean = link_mean, var = link_var),
+    map_derivs = md_lognormal2,
     interpretation = c(mean = "mean", var = "variance"),
     name = "lognormal2"
   )
@@ -97,6 +99,7 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
     params = c("mean", "sigma"),
     bounds = list(mean = c(0, Inf), sigma = c(0, Inf)),
     links = list(mean = link_mean, sigma = link_sigma),
+    map_derivs = md_weibull3,
     interpretation = c(mean = "mean", sigma = "shape"),
     name = "weibull3"
   )
@@ -150,6 +153,7 @@ student_t2_distrib <- function(link_mu = identity_link(),
     params = c("mu", "sigma", "nu"),
     bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf), nu = c(2, Inf)),
     links = list(mu = link_mu, sigma = link_sigma, nu = link_nu),
+    map_derivs = md_student_t2,
     interpretation = c(mu = "location", sigma = "standard deviation",
                        nu = "degrees of freedom"),
     name = "student t2"
@@ -195,6 +199,7 @@ gengamma2_distrib <- function(link_mean = log_link(), link_d = log_link(),
     params = c("mean", "d", "p"),
     bounds = list(mean = c(0, Inf), d = c(0, Inf), p = c(0, Inf)),
     links = list(mean = link_mean, d = link_d, p = link_p),
+    map_derivs = md_gengamma2,
     interpretation = c(mean = "mean", d = "shape", p = "power"),
     name = "gengamma2"
   )
@@ -225,6 +230,7 @@ invgauss2_by_reparam <- function() {
     params = c("mu", "lambda"),
     bounds = list(mu = c(0, Inf), lambda = c(0, Inf)),
     links = list(mu = log_link(), lambda = log_link()),
+    map_derivs = md_invgauss2,
     interpretation = c(mu = "mean", lambda = "shape"),
     name = "invgauss2 (reparametrized)"
   )

@@ -9,13 +9,40 @@
 il <- function() linkfunctions7::identity_link()
 ll <- function() linkfunctions7::log_link()
 
+# explicit map derivatives, so the twins stay at machine precision
+mdg2 <- function(psi) {
+  v <- psi[[2]]
+  list(
+    list("1" = rep_len(1, length(v))),
+    list("2" = 0.5 / sqrt(v), "2,2" = -0.25 / v^1.5,
+         "2,2,2" = 0.375 / v^2.5, "2,2,2,2" = -0.9375 / v^3.5)
+  )
+}
+
 reparam_gaussian2 <- function() {
   reparametrize(
     gaussian1_distrib(),
     map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
     params = c("mu", "sigma2"),
     bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
-    links = list(mu = il(), sigma2 = ll())
+    links = list(mu = il(), sigma2 = ll()),
+    map_derivs = mdg2
+  )
+}
+
+mdb2 <- function(psi) {
+  a <- psi[[1]]; b <- psi[[2]]
+  s <- a + b
+  one <- rep_len(1, length(s))
+  list(
+    list("1" = b / s^2, "2" = -a / s^2,
+         "1,1" = -2 * b / s^3, "1,2" = (a - b) / s^3, "2,2" = 2 * a / s^3,
+         "1,1,1" = 6 * b / s^4, "1,1,2" = (4 * b - 2 * a) / s^4,
+         "1,2,2" = (2 * b - 4 * a) / s^4, "2,2,2" = -6 * a / s^4,
+         "1,1,1,1" = -24 * b / s^5, "1,1,1,2" = (6 * a - 18 * b) / s^5,
+         "1,1,2,2" = (12 * a - 12 * b) / s^5,
+         "1,2,2,2" = (18 * a - 6 * b) / s^5, "2,2,2,2" = 24 * a / s^5),
+    list("1" = one, "2" = one)
   )
 }
 
@@ -26,7 +53,8 @@ reparam_beta2 <- function() {
                              phi = psi$alpha + psi$beta),
     params = c("alpha", "beta"),
     bounds = list(alpha = c(0, Inf), beta = c(0, Inf)),
-    links = list(alpha = ll(), beta = ll())
+    links = list(alpha = ll(), beta = ll()),
+    map_derivs = mdb2
   )
 }
 
@@ -62,12 +90,22 @@ test_that("the mechanism reproduces the families written by hand", {
   expect_lt(worst_gap(all_derivs(r, y, th), all_derivs(h, y, th)), 1e-12)
 
   # a map that is dense, both parent parameters moving with both new ones
+  mdrg <- function(psi) {
+    m <- psi[[1]]; ph <- psi[[2]]
+    one <- rep_len(1, length(m))
+    list(
+      list("1" = one),
+      list("1" = 2 * ph * m, "2" = m^2, "1,1" = 2 * ph * one,
+           "1,2" = 2 * m, "1,1,2" = 2 * one)
+    )
+  }
   rg <- reparametrize(
     gamma2_distrib(),
     map = function(psi) list(mu = psi$mu, sigma2 = psi$phi * psi$mu^2),
     params = c("mu", "phi"),
     bounds = list(mu = c(0, Inf), phi = c(0, Inf)),
-    links = list(mu = ll(), phi = ll())
+    links = list(mu = ll(), phi = ll()),
+    map_derivs = mdrg
   )
   hg <- gamma1_distrib()
   thg <- list(mu = 3, phi = 0.4)
@@ -245,4 +283,28 @@ test_that("a broken map would be caught", {
   th <- list(mu = 1.2, sigma2 = 3.5)
   expect_false(isTRUE(all.equal(distrib_pdf(bad, y, th),
                                 distrib_pdf(gaussian2_distrib(), y, th))))
+})
+
+
+test_that("the stencil fallback serves a map with no derivatives supplied", {
+  # without map_derivs every partial is one stencil on the analytic map:
+  # exact enough for exploratory use, and the documented reason the shipped
+  # families carry hand-written tables instead
+  r <- reparametrize(
+    gaussian1_distrib(),
+    map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+    params = c("mu", "sigma2"),
+    bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+    links = list(mu = il(), sigma2 = ll())
+  )
+  h <- gaussian2_distrib()
+  th <- list(mu = 1.2, sigma2 = 3.5)
+  set.seed(7)
+  y <- rnorm(20, 1.2, sqrt(3.5))
+  ga <- distrib_gradient(r, y, th)
+  gb <- distrib_gradient(h, y, th)
+  for (nm in names(gb)) expect_equal(ga[[nm]], gb[[nm]], tolerance = 1e-6)
+  ha <- distrib_hessian(r, y, th)
+  hb <- distrib_hessian(h, y, th)
+  for (nm in names(hb)) expect_equal(ha[[nm]], hb[[nm]], tolerance = 1e-4)
 })

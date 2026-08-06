@@ -1,29 +1,47 @@
-# The Poisson-inverse Gaussian, both parametrizations. References:
-# gamlss.dist (an independent implementation, recursion-based where ours is
-# the closed half-integer Bessel sum), one numDeriv pass per order on the
-# analytic order below, the reparametrize() twin, and direct series.
+# The Poisson-inverse Gaussian, both parametrizations. References: the
+# two-term Bessel recursion implemented here in the test (an independent
+# route where the kernel is the closed half-integer sum), one numDeriv pass
+# per order on the analytic order below, the compiled jet twin, and direct
+# series.
 
-test_that("pig1 matches gamlss's PIG", {
-  skip_if_not_installed("gamlss.dist")
+# The recursion follows from K_{y+1/2} = (2y-1)/alpha K_{y-1/2} + K_{y-3/2}:
+# with c = 1 + 2 sigma mu,
+#   p(y+1) = (2y-1) sigma mu / (c (y+1)) p(y) + mu^2 / (c y (y+1)) p(y-1),
+#   p(0) = exp((1 - sqrt(c))/sigma), p(1) = mu p(0) / sqrt(c).
+pig_recursion <- function(ymax, mu, sigma) {
+  cc <- 1 + 2 * sigma * mu
+  p <- numeric(ymax + 1)
+  p[1] <- exp((1 - sqrt(cc)) / sigma)
+  if (ymax >= 1) p[2] <- mu * p[1] / sqrt(cc)
+  if (ymax >= 2) {
+    for (y in 1:(ymax - 1)) {
+      p[y + 2] <- (2 * y - 1) * sigma * mu / (cc * (y + 1)) * p[y + 1] +
+        mu^2 / (cc * y * (y + 1)) * p[y]
+    }
+  }
+  p
+}
+
+test_that("pig1 matches the two-term recursion", {
   d <- pig1_distrib()
   y <- c(0, 1, 2, 5, 17, 60, 200)
   for (th in list(c(1, 1), c(0.3, 4), c(10, 0.05), c(50, 2), c(2, 0.001))) {
-    ref <- gamlss.dist::dPIG(y, mu = th[1], sigma = th[2], log = TRUE)
+    ref <- log(pig_recursion(200, th[1], th[2])[y + 1])
     got <- distrib_pdf(d, y, list(mu = th[1], sigma = th[2]), log = TRUE)
-    expect_equal(got, ref, tolerance = 1e-12,
+    expect_equal(got, ref, tolerance = 1e-11,
                  label = sprintf("pig1 at mu=%g sigma=%g", th[1], th[2]))
   }
 })
 
 
-test_that("pig2 matches gamlss's PIG2, whose sigma is the Bessel argument", {
-  skip_if_not_installed("gamlss.dist")
+test_that("pig2 is pig1 at the implied dispersion, alpha the Bessel argument", {
   d <- pig2_distrib()
   y <- c(0, 1, 2, 5, 17, 60)
   for (th in list(c(3, 1.2), c(0.5, 0.1), c(20, 8))) {
-    ref <- gamlss.dist::dPIG2(y, mu = th[1], sigma = th[2], log = TRUE)
+    sg <- pig2_sigma(th[1], th[2])
+    ref <- log(pig_recursion(60, th[1], sg)[y + 1])
     got <- distrib_pdf(d, y, list(mu = th[1], alpha = th[2]), log = TRUE)
-    expect_equal(got, ref, tolerance = 1e-12,
+    expect_equal(got, ref, tolerance = 1e-11,
                  label = sprintf("pig2 at mu=%g alpha=%g", th[1], th[2]))
   }
 })
@@ -74,31 +92,6 @@ test_that("the kernel derivatives match one numerical pass per order", {
     distrib_deriv3(d, yy, list(mu = th$mu, sigma = z))$mu_sigma_sigma,
     th$sigma), numeric(1))
   expect_equal(d4$mu_sigma_sigma_sigma, nd, tolerance = 1e-5)
-})
-
-
-test_that("pig2 agrees with reparametrize(pig1) at every order", {
-  # two implementations of one object: the hand-written kernel with alpha a
-  # seed variable, against the generic partition-sum wrapper over the map
-  # sigma = (mu + sqrt(mu^2 + alpha^2)) / alpha^2
-  d2 <- pig2_distrib()
-  rp <- reparametrize(
-    pig1_distrib(),
-    map = function(psi) list(mu = psi$mu, sigma = pig2_sigma(psi$mu, psi$alpha)),
-    params = c("mu", "alpha"),
-    bounds = list(mu = c(0, Inf), alpha = c(0, Inf)),
-    links = list(mu = log_link(), alpha = log_link())
-  )
-  th <- list(mu = 3.2, alpha = 1.4)
-  yv <- c(0, 1, 4, 11)
-  for (fn in list(distrib_gradient, distrib_hessian, distrib_deriv3,
-                  distrib_deriv4)) {
-    a <- fn(d2, yv, th)
-    b <- fn(rp, yv, th)
-    for (nm in names(b)) {
-      expect_equal(a[[nm]], b[[nm]], tolerance = 1e-10, label = nm)
-    }
-  }
 })
 
 

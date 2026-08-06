@@ -243,7 +243,7 @@ reference:
   contents: [SkewNormal1Distrib, ends_with(".SkewNormal1Distrib")]
 - title: Skew normal, centered
   contents: [SkewNormal2Distrib, ends_with(".SkewNormal2Distrib"),
-             sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta, sn2_jets, sn2_chain]
+             sn_b, sn_max_skew, sn_cp_to_dp, sn2_theta, sn2_chain]
 - title: Skew t
   contents: [SkewTDistrib, ends_with(".SkewTDistrib")]
 - title: Gumbel
@@ -358,14 +358,17 @@ reference:
 - title: Reparametrized distributions
   desc: >
     The wrapper reparametrize() returns and the machinery behind it. The map
-    is written in ordinary R and its derivatives come from running the same
-    expression on jets, so every order the parent has in closed form survives.
+    is written in ordinary R and its derivatives are hand-written closed
+    forms (or one stencil per partial when none are supplied), so every
+    order the parent has in closed form survives.
   contents:
   - ReparamContinuousDistrib
   - ends_with(".ReparamContinuousDistrib")
   - ends_with(".ReparamDiscreteDistrib")
   - reparam_theta
-  - reparam_jets
+  - reparam_tables
+  - reparam_stencil_derivs
+  - reparam_map_derivs
   - reparam_chain
   - chain_derivatives
   - is_reparam

@@ -96,6 +96,7 @@ Collate:
     'mvstudent_t_distrib.R'
     'mv_summary.R'
     'numerical_fallbacks.R'
+    'reparam_maps.R'
     'reparametrize.R'
     'reparametrized_families.R'
     'skewnormal2_distrib.R'
@@ -105,7 +106,6 @@ Collate:
     'vonmises2_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
-    gamlss.dist,
     testthat (>= 3.0.0),
     knitr,
     numDeriv,

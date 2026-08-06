@@ -4,7 +4,7 @@
 \alias{chain_derivatives}
 \title{The Partition Sum Itself}
 \usage{
-chain_derivatives(parent, y, th_par, jt, new_params, order, expected = FALSE)
+chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
 }
 \arguments{
 \item{parent}{The distribution whose derivatives are being carried.}
@@ -13,7 +13,8 @@ chain_derivatives(parent, y, th_par, jt, new_params, order, expected = FALSE)
 
 \item{th_par}{The parent's parameters, as plain numbers.}
 
-\item{jt}{The jets of the map, as \code{\link{reparam_jets}} returns them.}
+\item{maps}{The keyed partial tables of the map, as
+\code{\link{reparam_tables}} returns them.}
 
 \item{new_params}{The names of the new parameters.}
 

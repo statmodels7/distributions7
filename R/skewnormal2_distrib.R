@@ -137,40 +137,6 @@ sn2_theta <- function(theta) {
   sn_cp_to_dp(theta[[1]], theta[[2]], g, s)
 }
 
-#' The Jets of the Centered-to-Direct Map
-#'
-#' @description
-#' The map run on jets, giving every partial derivative of the direct
-#' parameters with respect to the centered ones, to fourth order and exactly.
-#'
-#' @details
-#' The sign of \eqn{\gamma_1} is read off the plain value before the jets are
-#' seeded, so the cube root is taken of a positive quantity and the result
-#' negated. This is the step \code{\link{reparametrize}} cannot take, a jet
-#' having no sign of its own.
-#'
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param n The number of observations.
-#'
-#' @return A list as \code{\link{reparam_jets}} returns.
-#'
-#' @seealso \code{\link{skewnormal2_distrib}}
-#'
-#' @keywords internal
-sn2_jets <- function(theta, n) {
-  psi <- theta[1:3]
-  lay <- numericals7::jet_layout(3L)
-  rows <- if (any(lengths(psi) > 1L)) seq_len(n) else 1L
-  th <- lapply(rows, function(r) {
-    v <- vapply(psi, function(z) z[[min(r, length(z))]], numeric(1))
-    js <- lapply(1:3, function(k) {
-      numericals7::jet_var(k, list(v[[k]], 1, 0, 0, 0), lay)
-    })
-    sn_cp_to_dp(js[[1]], js[[2]], js[[3]], if (v[[3]] >= 0) 1 else -1)
-  })
-  list(lay = lay, th = th, single = length(rows) == 1L)
-}
-
 #' Derivatives of the Skew Normal in Its Centered Parametrization
 #'
 #' @description
@@ -190,12 +156,11 @@ sn2_jets <- function(theta, n) {
 #' @keywords internal
 sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
   theta <- align_theta(distrib, theta)
-  n <- max(length(y), 1L)
   chain_derivatives(
     parent = skewnormal1_distrib(),
     y = y,
     th_par = sn2_theta(theta),
-    jt = sn2_jets(theta, n),
+    maps = md_skewnormal2(theta[1:3]),
     new_params = distrib@params,
     order = order,
     expected = expected

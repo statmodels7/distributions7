@@ -20,7 +20,8 @@ ReparamContinuousDistrib <- S7::new_class("ReparamContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
     parent_distrib = S7::class_any,
-    reparam_map = S7::class_function
+    reparam_map = S7::class_function,
+    reparam_derivs = S7::class_function
   )
 )
 
@@ -30,7 +31,8 @@ ReparamDiscreteDistrib <- S7::new_class("ReparamDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
     parent_distrib = S7::class_any,
-    reparam_map = S7::class_function
+    reparam_map = S7::class_function,
+    reparam_derivs = S7::class_function
   )
 )
 
@@ -79,47 +81,108 @@ reparam_theta <- function(distrib, theta) {
   out[parent@params]
 }
 
-#' The Derivatives of the Map, by Jets
+#' The Map Derivatives as Keyed Tables
 #'
 #' @description
-#' Runs the map on jets rather than on numbers, so that it returns every
-#' partial derivative of the parent's parameters with respect to the new ones,
-#' to fourth order and exactly.
+#' Returns, for every parent parameter, the partial derivatives of the map
+#' component with respect to the new parameters, keyed by the sorted tuple
+#' of new-parameter positions ("1", "1,2", "2,2,3,3", ...). A missing key
+#' is an exact zero.
 #'
 #' @details
-#' The map is written in ordinary R and knows nothing of this: the arithmetic
-#' operators and the mathematical functions dispatch on the jet class of
-#' \pkg{parameters7}, and the derivatives come out of the same expression that
-#' computes the value.
-#'
-#' A parameter that varies from observation to observation needs one jet per
-#' observation, so the common case of scalar parameters is detected and the
-#' map is run once.
+#' When the family supplies \code{map_derivs}, the tables are its
+#' hand-written closed forms; the shipped second parametrizations all do,
+#' and the formulas live in \code{\link{reparam_map_derivs}}. Otherwise
+#' each needed partial comes from one finite-difference stencil of
+#' \code{\link[numericals7]{fd_derivative}} applied to the analytic map --
+#' a single stencil per order, never a chain of differences, at the
+#' accuracy that construction carries (about 1e-8 at first order, fading
+#' with the order). Exact tables are therefore the recommendation for any
+#' family fitted in earnest.
 #'
 #' @param distrib A reparametrized distribution.
 #' @param theta A named list of the new parameters, already aligned.
-#' @param n The number of observations.
 #'
-#' @return A list with the layout \code{lay} and \code{th}, a list over
-#'   observations of the parent's parameters as jets.
+#' @return A list over parent parameters of keyed partial tables.
 #'
 #' @seealso \code{\link{reparametrize}}
 #'
 #' @keywords internal
-reparam_jets <- function(distrib, theta, n) {
+reparam_tables <- function(distrib, theta) {
   q <- distrib@n_params
   psi <- theta[seq_len(q)]
-  lay <- numericals7::jet_layout(q)
-  rows <- if (any(lengths(psi) > 1L)) seq_len(n) else 1L
-  th <- lapply(rows, function(r) {
-    vars <- lapply(seq_len(q), function(k) {
-      v <- psi[[k]]
-      numericals7::jet_var(k, list(v[[min(r, length(v))]], 1, 0, 0, 0), lay)
-    })
-    names(vars) <- distrib@params
-    distrib@reparam_map(vars)
-  })
-  list(lay = lay, th = th, single = length(rows) == 1L)
+  distrib@reparam_derivs(psi)
+}
+
+#' One Stencil Per Map Partial
+#'
+#' @description
+#' The numerical fallback behind \code{\link{reparam_tables}}: every
+#' partial of the map is one central stencil of
+#' \code{\link[numericals7]{fd_derivative}} in each direction, applied to
+#' the analytic map, iterated across DISTINCT directions (a cross-variable
+#' composition, which is not the forbidden same-variable nesting).
+#'
+#' @param map The map function.
+#' @param params The new parameter names.
+#' @param parent_params The parent parameter names.
+#'
+#' @return A function usable as \code{reparam_derivs}.
+#'
+#' @seealso \code{\link{reparametrize}}
+#'
+#' @keywords internal
+reparam_stencil_derivs <- function(map, params, parent_params) {
+  q <- length(params)
+  pp <- length(parent_params)
+  function(psi) {
+    n <- max(lengths(psi))
+    rows <- if (n > 1L) seq_len(n) else 1L
+    tabs <- lapply(seq_len(pp), function(i) list())
+    tuples <- unlist(lapply(1:4, function(r) {
+      g <- expand.grid(rep(list(seq_len(q)), r))
+      keys <- apply(g, 1L, function(z) paste(sort(z), collapse = ","))
+      unique(keys)
+    }))
+    for (key in tuples) {
+      tup <- as.integer(strsplit(key, ",")[[1L]])
+      counts <- tabulate(tup, nbins = q)
+      vals <- vapply(rows, function(r) {
+        base <- lapply(psi, function(v) v[[min(r, length(v))]])
+        f <- function(x) {
+          th <- base
+          for (j in which(counts > 0L)) th[[j]] <- x[[match(j, which(counts > 0L))]]
+          unlist(map(stats::setNames(th, params))[parent_params])
+        }
+        dirs <- which(counts > 0L)
+        # iterate single stencils across distinct directions
+        gcur <- f
+        for (j in dirs) {
+          ord <- counts[j]
+          gprev <- gcur
+          xj <- base[[j]]
+          gcur <- local({
+            jj <- j; oo <- ord; gp <- gprev; dd <- dirs
+            function(x) {
+              vapply(seq_len(pp), function(i) {
+                numericals7::fd_derivative(function(z) {
+                  xx <- x
+                  xx[[match(jj, dd)]] <- z
+                  gp(xx)[i]
+                }, xj, order = oo)
+              }, numeric(1))
+            }
+          })
+        }
+        gcur(lapply(dirs, function(j) base[[j]]))
+      }, numeric(pp))
+      vals <- matrix(vals, nrow = pp)
+      for (i in seq_len(pp)) {
+        if (any(abs(vals[i, ]) > 1e-12)) tabs[[i]][[key]] <- vals[i, ]
+      }
+    }
+    tabs
+  }
 }
 
 #' The Chain Rule of Any Order Through a Reparametrization
@@ -165,7 +228,7 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
     parent = distrib@parent_distrib,
     y = y,
     th_par = reparam_theta(distrib, theta),
-    jt = reparam_jets(distrib, theta, n),
+    maps = reparam_tables(distrib, theta),
     new_params = distrib@params,
     order = order,
     expected = expected
@@ -183,7 +246,8 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param parent The distribution whose derivatives are being carried.
 #' @param y The response.
 #' @param th_par The parent's parameters, as plain numbers.
-#' @param jt The jets of the map, as \code{\link{reparam_jets}} returns them.
+#' @param maps The keyed partial tables of the map, as
+#'   \code{\link{reparam_tables}} returns them.
 #' @param new_params The names of the new parameters.
 #' @param order The derivative order, 1 to 4.
 #' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
@@ -193,11 +257,10 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #' @seealso \code{\link{reparametrize}}
 #'
 #' @keywords internal
-chain_derivatives <- function(parent, y, th_par, jt, new_params, order,
+chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
                               expected = FALSE) {
   p <- parent@n_params
   n <- max(n_obs(parent, y), 1L)
-  lay <- jt$lay
 
   # The parent's derivatives of every order up to the one asked for. Under
   # expectation the score contributes nothing, by the first Bartlett identity.
@@ -220,13 +283,10 @@ chain_derivatives <- function(parent, y, th_par, jt, new_params, order,
     }
   }
 
-  # h^i_B for one block, as a vector over observations.
+  # h^i_B for one block, from the keyed table; a missing key is a zero
   hvec <- function(i, tup) {
-    slot <- get(paste(sort(tup), collapse = ","), envir = lay$pos)
-    if (jt$single) {
-      return(jt$th[[1L]][[i]]$d[[slot[1L]]][slot[2L]])
-    }
-    vapply(jt$th, function(z) z[[i]]$d[[slot[1L]]][slot[2L]], numeric(1))
+    v <- maps[[i]][[paste(sort(tup), collapse = ",")]]
+    if (is.null(v)) 0 else v
   }
 
   # The parent's derivative at a multiset of its own indices, keyed by name.
@@ -606,7 +666,8 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'
 #' @export
 reparametrize <- function(distrib, map, params, bounds, links,
-                          interpretation = NULL, name = NULL) {
+                          map_derivs = NULL, interpretation = NULL,
+                          name = NULL) {
   if (!S7::S7_inherits(distrib, continuous_distrib) &&
     !S7::S7_inherits(distrib, discrete_distrib)) {
     stop("'distrib' must inherit from 'continuous_distrib' or 'discrete_distrib'.",
@@ -693,7 +754,12 @@ reparametrize <- function(distrib, map, params, bounds, links,
     link_params = links[params],
     params_smooth = stats::setNames(rep(TRUE, length(params)), params),
     parent_distrib = distrib,
-    reparam_map = map
+    reparam_map = map,
+    reparam_derivs = if (is.null(map_derivs)) {
+      reparam_stencil_derivs(map, params, distrib@params)
+    } else {
+      map_derivs
+    }
   )
 }
 

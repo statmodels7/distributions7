@@ -16,7 +16,8 @@ ReparamContinuousDistrib(
   link_params = list(),
   params_smooth = logical(0),
   parent_distrib = NULL,
-  reparam_map = function() NULL
+  reparam_map = function() NULL,
+  reparam_derivs = function() NULL
 )
 
 ReparamDiscreteDistrib(
@@ -30,7 +31,8 @@ ReparamDiscreteDistrib(
   link_params = list(),
   params_smooth = logical(0),
   parent_distrib = NULL,
-  reparam_map = function() NULL
+  reparam_map = function() NULL,
+  reparam_derivs = function() NULL
 )
 }
 \arguments{
