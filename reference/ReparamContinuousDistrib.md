@@ -104,6 +104,12 @@ ReparamDiscreteDistrib(
 
   The map from the new parameters to the parent's.
 
+- reparam_derivs:
+
+  The function returning the map's keyed partial tables, as
+  [`reparam_tables`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
+  consumes them.
+
 ## Value
 
 An object of the corresponding class.

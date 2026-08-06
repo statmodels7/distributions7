@@ -87,6 +87,16 @@ each new parameter lives in.</p></dd>
 parameter.</p></dd>
 
 
+<dt id="arg-map-derivs">map_derivs<a class="anchor" aria-label="anchor" href="#arg-map-derivs"></a></dt>
+<dd><p>An optional function returning, for each parent
+parameter, the non-zero partial derivatives of the map with respect to
+the new parameters to fourth order, keyed by the sorted tuple of
+new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
+an exact zero. The shipped second parametrizations supply hand-written
+tables (see <code><a href="reparam_map_derivs.html">reparam_map_derivs</a></code>); when <code>NULL</code>, each
+needed partial comes from one finite-difference stencil on the map.</p></dd>
+
+
 <dt id="arg-interpretation">interpretation<a class="anchor" aria-label="anchor" href="#arg-interpretation"></a></dt>
 <dd><p>An optional named character vector describing each new
 parameter; defaults to the parameter names.</p></dd>

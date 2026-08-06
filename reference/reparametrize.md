@@ -42,6 +42,18 @@ reparametrize(
 
   A named list of linkfunctions7 links, one per new parameter.
 
+- map_derivs:
+
+  An optional function returning, for each parent parameter, the
+  non-zero partial derivatives of the map with respect to the new
+  parameters to fourth order, keyed by the sorted tuple of new-parameter
+  positions ("1", "1,2", "2,2,3,3", ...); a missing key is an exact
+  zero. The shipped second parametrizations supply hand-written tables
+  (see
+  [`reparam_map_derivs`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md));
+  when `NULL`, each needed partial comes from one finite-difference
+  stencil on the map.
+
 - interpretation:
 
   An optional named character vector describing each new parameter;
