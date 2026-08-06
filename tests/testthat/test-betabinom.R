@@ -123,3 +123,40 @@ test_that("size is a constant of the distribution and is validated", {
   expect_identical(d@bounds, c(0, 7))
   expect_identical(d@params, c("mu", "sigma"))
 })
+
+
+test_that("betabinom1's orders 3 and 4 are the shape parametrization's, chained", {
+  skip_if_not_installed("numDeriv")
+  # The mean-dispersion family is the shape family at a = mu/sigma and
+  # b = (1-mu)/sigma, and the shapes carry closed derivatives at every order,
+  # so the chain delivers them. Checked first at orders 1 and 2 against the
+  # compiled kernel written for this parametrization.
+  d <- betabinom1_distrib(size = 12)
+  y <- c(0, 3, 7, 12)
+  for (th in list(list(mu = 0.4, sigma = 0.7), list(mu = 0.15, sigma = 2.5))) {
+    g <- distributions7:::betabinom1_components(d, y, th, 1L)
+    r <- distrib_gradient(d, y, th)
+    for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-12)
+    h <- distributions7:::betabinom1_components(d, y, th, 2L)
+    r <- distrib_hessian(d, y, th)
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-12)
+  }
+
+  th <- list(mu = 0.4, sigma = 0.7)
+  for (ord in 3:4) {
+    lower <- if (ord == 3L) distrib_hessian else distrib_deriv3
+    got <- if (ord == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+    for (nm in names(got)) {
+      parts <- strsplit(nm, "_")[[1]]
+      j <- match(parts[length(parts)], d@params)
+      head_nm <- paste(parts[-length(parts)], collapse = "_")
+      ref <- vapply(seq_along(y), function(i) {
+        numDeriv::grad(function(z) {
+          t2 <- th; t2[[j]] <- z
+          lower(d, y[i], t2)[[head_nm]]
+        }, th[[j]])
+      }, numeric(1))
+      expect_equal(got[[nm]], ref, tolerance = 1e-6, label = nm)
+    }
+  }
+})

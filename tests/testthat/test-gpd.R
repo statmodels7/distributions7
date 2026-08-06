@@ -141,3 +141,71 @@ test_that("a fit recovers the parameters in the regular regime", {
   expect_true(f@converged, info = fit_report(f, d, th))
   expect_equal(unname(coef(f)), c(1.5, 0.3), tolerance = 0.2)
 })
+
+
+test_that("the generalized Pareto's assembly reproduces the compiled kernel", {
+  # Running the order 3 and 4 assembly at orders 1 and 2, where a kernel
+  # exists, is what licenses it at the orders where none does. Both routes
+  # through the shape direction are exercised: the Leibniz form where xi*z is
+  # ordinary, the series where it is small.
+  d <- gpd_distrib()
+  y <- c(0.2, 1.1, 3.5)
+  for (th in list(list(sigma = 1.2, xi = 0.35), list(sigma = 2.0, xi = -0.25),
+                  list(sigma = 0.7, xi = 1.8), list(sigma = 20, xi = 0.05),
+                  list(sigma = 1.0, xi = 1e-7))) {
+    g <- distributions7:::gpd_components(y, th, 1L)
+    r <- distrib_gradient(d, y, th)
+    for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-11)
+    h <- distributions7:::gpd_components(y, th, 2L)
+    r <- distrib_hessian(d, y, th)
+    # the kernel's own xi_xi cancels three terms of size 8 into 1e-4 at small
+    # xi*z, so its floor there is about 2e-11 and the comparison cannot ask
+    # for more than that
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-9)
+  }
+})
+
+
+test_that("the two routes through the shape agree where both are accurate", {
+  # This is what pins the switch. At xi*z in [0.1, 0.35] the Leibniz form has
+  # not yet lost digits to cancellation and the series has long converged, so
+  # forcing each route must give the same numbers.
+  th <- list(sigma = 1.0, xi = 0.3)
+  y <- c(0.4, 0.8, 1.15)
+  for (ord in 1:4) {
+    a <- distributions7:::gpd_components(y, th, ord, cut = 0)    # Leibniz
+    b <- distributions7:::gpd_components(y, th, ord, cut = 10)   # series
+    for (nm in names(a)) {
+      expect_equal(a[[nm]], b[[nm]], tolerance = 1e-9,
+                   label = sprintf("order %d component %s", ord, nm))
+    }
+  }
+})
+
+
+test_that("the generalized Pareto is closed at third and fourth order", {
+  skip_if_not_installed("numDeriv")
+  d <- gpd_distrib()
+  y <- c(0.2, 1.1, 3.5)
+  # Richardson on the analytic order below, at shapes where the kernel it
+  # differentiates is itself well conditioned
+  for (th in list(list(sigma = 1.2, xi = 0.35), list(sigma = 2.0, xi = -0.25),
+                  list(sigma = 0.7, xi = 1.8))) {
+    for (ord in 3:4) {
+      lower <- if (ord == 3L) distrib_hessian else distrib_deriv3
+      got <- if (ord == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+      for (nm in names(got)) {
+        parts <- strsplit(nm, "_")[[1]]
+        j <- match(parts[length(parts)], d@params)
+        head_nm <- paste(parts[-length(parts)], collapse = "_")
+        ref <- vapply(seq_along(y), function(i) {
+          numDeriv::grad(function(z) {
+            t2 <- th; t2[[j]] <- z
+            lower(d, y[i], t2)[[head_nm]]
+          }, th[[j]])
+        }, numeric(1))
+        expect_equal(got[[nm]], ref, tolerance = 1e-6, label = nm)
+      }
+    }
+  }
+})
