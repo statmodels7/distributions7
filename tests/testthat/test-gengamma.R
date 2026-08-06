@@ -114,3 +114,46 @@ test_that("the validator passes and a fit with one shape held recovers the rest"
   expect_true(f@converged)
   expect_equal(unname(coef(f)), c(2, 3), tolerance = 0.2)
 })
+
+
+test_that("the generalized gamma's assembly reproduces the compiled kernel", {
+  # The order 3 and 4 components are assembled from the five terms of the
+  # log-density; running that assembly at orders 1 and 2 must return what the
+  # independently written C++ kernel returns, which is what licenses trusting
+  # it at the orders where there is no kernel to compare against.
+  d <- gengamma1_distrib()
+  y <- c(0.4, 1.1, 2.3)
+  for (th in list(list(a = 1.3, d = 2.1, p = 1.6),
+                  list(a = 0.7, d = 0.5, p = 3.2))) {
+    g <- distributions7:::gengamma_components(y, th, 1L)
+    r <- distrib_gradient(d, y, th)
+    for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-12)
+    h <- distributions7:::gengamma_components(y, th, 2L)
+    r <- distrib_hessian(d, y, th)
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-12)
+  }
+})
+
+
+test_that("the generalized gamma is closed at third and fourth order", {
+  skip_if_not_installed("numDeriv")
+  d <- gengamma1_distrib()
+  y <- c(0.4, 1.1, 2.3)
+  th <- list(a = 1.3, d = 2.1, p = 1.6)
+  for (ord in 3:4) {
+    lower <- if (ord == 3L) distrib_hessian else distrib_deriv3
+    got <- if (ord == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+    for (nm in names(got)) {
+      parts <- strsplit(nm, "_")[[1]]
+      j <- match(parts[length(parts)], d@params)
+      head_nm <- paste(parts[-length(parts)], collapse = "_")
+      ref <- vapply(seq_along(y), function(i) {
+        numDeriv::grad(function(z) {
+          t2 <- th; t2[[j]] <- z
+          lower(d, y[i], t2)[[head_nm]]
+        }, th[[j]])
+      }, numeric(1))
+      expect_equal(got[[nm]], ref, tolerance = 1e-6, label = nm)
+    }
+  }
+})

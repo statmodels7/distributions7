@@ -92,6 +92,7 @@ Collate:
     'fit_distrib.R'
     'fixed.R'
     'folded.R'
+    'gengamma1_higher.R'
     'methods.R'
     'multinomial_distrib.R'
     'mvgaussian_distrib.R'

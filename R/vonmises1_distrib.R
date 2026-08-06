@@ -289,3 +289,69 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
     link_params = list(mu = link_mu, kappa = link_kappa)
   )
 }
+
+
+#' @title von Mises Third and Fourth Derivatives
+#' @name distrib_deriv3.VonMises1Distrib
+#' @description
+#' Closed form at both orders. The log-density is
+#' \eqn{\kappa\cos(y-\mu) - \log(2\pi I_0(\kappa))}, linear in
+#' \eqn{\kappa} apart from the normalizing constant, so every component with
+#' one \eqn{\mu} and two or more \eqn{\kappa} vanishes exactly. The pure
+#' \eqn{\mu} components cycle through
+#' \eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)}, and the pure
+#' \eqn{\kappa} ones are minus the derivatives of \eqn{A(\kappa)}, which
+#' \pkg{numericals7} supplies from the Riccati recursion
+#' \eqn{A' = 1 - A/\kappa - A^2}.
+#' @param distrib A \code{VonMises1Distrib} object.
+#' @param y A numeric vector of angles.
+#' @param theta A list containing \code{mu} and \code{kappa}.
+#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param approx The approximation used when \code{expected} is \code{TRUE}.
+#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param ... Unused.
+#' @return A named list of third-derivative components.
+#' @seealso \code{\link{vonmises1_distrib}}
+S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
+                                                         scale = c("parameter", "link"),
+                                                         expected = FALSE,
+                                                         approx = c("integrate", "bartlett", "mc", "opg"),
+                                                         nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 3L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  d <- y - theta[[1]]
+  k <- theta[[2]]
+  ad <- numericals7::bessel_i_ratio_derivs(k)
+  n <- length(d)
+  list(mu_mu_mu = -k * sin(d),
+       mu_mu_kappa = -cos(d),
+       mu_kappa_kappa = rep_len(0, n),
+       kappa_kappa_kappa = rep_len(-ad$d2, n))
+}
+
+#' @rdname distrib_deriv3.VonMises1Distrib
+#' @name distrib_deriv4.VonMises1Distrib
+#' @return A named list of fourth-derivative components.
+S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
+                                                         scale = c("parameter", "link"),
+                                                         expected = FALSE,
+                                                         approx = c("integrate", "bartlett", "mc", "opg"),
+                                                         nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 4L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  d <- y - theta[[1]]
+  k <- theta[[2]]
+  ad <- numericals7::bessel_i_ratio_derivs(k)
+  n <- length(d)
+  z <- rep_len(0, n)
+  list(mu_mu_mu_mu = k * cos(d),
+       mu_mu_mu_kappa = -sin(d),
+       mu_mu_kappa_kappa = z,
+       mu_kappa_kappa_kappa = z,
+       kappa_kappa_kappa_kappa = rep_len(-ad$d3, n))
+}

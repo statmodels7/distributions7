@@ -239,3 +239,70 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
     link_params = list(mu = link_mu, rho = link_rho)
   )
 }
+
+
+#' @title von Mises Third and Fourth Derivatives in the Resultant Length
+#' @name distrib_deriv3.VonMises2Distrib
+#' @description
+#' Closed form at both orders. Every derivative that carries at least one
+#' \eqn{\mu} is \eqn{D_a \kappa^{(b)}}, where \eqn{D_a} is the \eqn{a}-th
+#' \eqn{\mu}-derivative of \eqn{\cos(y-\mu)} and \eqn{\kappa^{(b)}} the
+#' \eqn{b}-th derivative of \eqn{A^{-1}}: the concentration parametrization's
+#' \eqn{\mu}-derivatives are linear in \eqn{\kappa}, so the composition
+#' collapses to a single term. The pure \eqn{\rho} components carry the full
+#' one-variable chain rule on \eqn{\log I_0}.
+#' @param distrib A \code{VonMises2Distrib} object.
+#' @param y A numeric vector of angles.
+#' @param theta A list containing \code{mu} and \code{rho}.
+#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param approx The approximation used when \code{expected} is \code{TRUE}.
+#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param ... Unused.
+#' @return A named list of third-derivative components.
+#' @seealso \code{\link{vonmises2_distrib}}
+S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
+                                                         scale = c("parameter", "link"),
+                                                         expected = FALSE,
+                                                         approx = c("integrate", "bartlett", "mc", "opg"),
+                                                         nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 3L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  p <- vm2_parts(theta)
+  d <- y - theta[[1]]
+  A <- p$ad
+  k <- p$kd
+  # d^3/drho^3 of log I_0(kappa(rho)), Faa di Bruno written out
+  phi3 <- A$d2 * k$d1^3 + 3 * A$d1 * k$d1 * k$d2 + A$A * k$d3
+  list(mu_mu_mu = -sin(d) * p$kappa,
+       mu_mu_rho = -cos(d) * k$d1,
+       mu_rho_rho = sin(d) * k$d2,
+       rho_rho_rho = cos(d) * k$d3 - phi3)
+}
+
+#' @rdname distrib_deriv3.VonMises2Distrib
+#' @name distrib_deriv4.VonMises2Distrib
+#' @return A named list of fourth-derivative components.
+S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
+                                                         scale = c("parameter", "link"),
+                                                         expected = FALSE,
+                                                         approx = c("integrate", "bartlett", "mc", "opg"),
+                                                         nsim = 10000, ...) {
+  if (expected) {
+    return(expected_derivative(distrib, y, theta, order = 4L,
+                               approx = match.arg(approx), nsim = nsim))
+  }
+  p <- vm2_parts(theta)
+  d <- y - theta[[1]]
+  A <- p$ad
+  k <- p$kd
+  phi4 <- A$d3 * k$d1^4 + 6 * A$d2 * k$d1^2 * k$d2 +
+    A$d1 * (3 * k$d2^2 + 4 * k$d1 * k$d3) + A$A * k$d4
+  list(mu_mu_mu_mu = cos(d) * p$kappa,
+       mu_mu_mu_rho = -sin(d) * k$d1,
+       mu_mu_rho_rho = -cos(d) * k$d2,
+       mu_rho_rho_rho = sin(d) * k$d3,
+       rho_rho_rho_rho = cos(d) * k$d4 - phi4)
+}

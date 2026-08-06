@@ -103,3 +103,52 @@ test_that("the validator passes and a fit recovers the parameters", {
   expect_true(f@converged, info = fit_report(f, d, th))
   expect_equal(unname(coef(f)), c(0.5, 2), tolerance = 0.15)
 })
+
+
+test_that("the third and fourth derivatives are closed for both parametrizations", {
+  skip_if_not_installed("numDeriv")
+  # each order against ONE Richardson differentiation of the analytic order
+  # below it -- never a chain of plain differences, which by order 3 would be
+  # noise
+  y <- c(-2.0, -0.4, 0.7, 2.6)
+  chk <- function(d, th, order, tol) {
+    lower <- if (order == 3L) distrib_hessian else distrib_deriv3
+    got <- if (order == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+    for (nm in names(got)) {
+      parts <- strsplit(nm, "_")[[1]]
+      j <- match(parts[length(parts)], d@params)
+      head_nm <- paste(parts[-length(parts)], collapse = "_")
+      ref <- vapply(seq_along(y), function(i) {
+        numDeriv::grad(function(z) {
+          t2 <- th; t2[[j]] <- z
+          lower(d, y[i], t2)[[head_nm]]
+        }, th[[j]])
+      }, numeric(1))
+      expect_equal(got[[nm]], ref, tolerance = tol,
+                   label = sprintf("%s %s", d@distrib_name, nm))
+    }
+  }
+  for (th in list(list(mu = 0.3, kappa = 1.7), list(mu = -1.2, kappa = 0.2),
+                  list(mu = 2.0, kappa = 12))) {
+    chk(vonmises1_distrib(), th, 3L, 1e-6)
+    chk(vonmises1_distrib(), th, 4L, 1e-6)
+  }
+  for (th in list(list(mu = 0.3, rho = 0.6), list(mu = -1.2, rho = 0.15),
+                  list(mu = 2.0, rho = 0.93))) {
+    chk(vonmises2_distrib(), th, 3L, 1e-6)
+    chk(vonmises2_distrib(), th, 4L, 1e-6)
+  }
+})
+
+
+test_that("the components mixing mu with two concentrations vanish exactly", {
+  # kappa enters kappa*cos(y - mu) linearly, so it is a structural zero and
+  # not a small number: asserted as such rather than to a tolerance
+  d <- vonmises1_distrib()
+  y <- c(-1, 0.5, 2)
+  th <- list(mu = 0.4, kappa = 2.2)
+  expect_identical(distrib_deriv3(d, y, th)$mu_kappa_kappa, rep(0, 3))
+  d4 <- distrib_deriv4(d, y, th)
+  expect_identical(d4$mu_mu_kappa_kappa, rep(0, 3))
+  expect_identical(d4$mu_kappa_kappa_kappa, rep(0, 3))
+})
