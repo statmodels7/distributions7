@@ -80,19 +80,25 @@ distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distri
 #' @param theta A named list of parameters.
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
 #'   \code{.Machine$double.eps^(1/3)}.
+#' @param which Character vector of parameter names to differentiate, or
+#'   \code{NULL} (default) for all of them. Used by families that have a
+#'   closed form for some parameters and not others, so that only the
+#'   remaining ones cost a pair of evaluations.
 #'
-#' @return A named list with one numeric vector per parameter.
+#' @return A named list with one numeric vector per requested parameter.
 #'
 #' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_cross_y}}
 #' @examples
 #' numerical_cross_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
 #' @export
-numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3)) {
+numerical_cross_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 / 3),
+                              which = NULL) {
   params <- distrib@params
-  out <- vector("list", length(params))
-  names(out) <- params
-  for (j in seq_along(params)) {
+  keep <- if (is.null(which)) params else which
+  out <- vector("list", length(keep))
+  names(out) <- keep
+  for (j in match(keep, params)) {
     p <- params[j]
     h <- fd_steps(theta[[j]], distrib@params_bounds[[p]], h_rel)
     th_up <- theta

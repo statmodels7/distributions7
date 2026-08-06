@@ -4,7 +4,13 @@
 \alias{numerical_cross_y}
 \title{Numerical Mixed Response-Parameter Derivatives}
 \usage{
-numerical_cross_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_cross_y(
+  distrib,
+  y,
+  theta,
+  h_rel = .Machine$double.eps^(1/3),
+  which = NULL
+)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"continuous_distrib"}.}
@@ -15,9 +21,14 @@ numerical_cross_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 
 \item{h_rel}{Numeric. Relative finite-difference step. Defaults to
 \code{.Machine$double.eps^(1/3)}.}
+
+\item{which}{Character vector of parameter names to differentiate, or
+\code{NULL} (default) for all of them. Used by families that have a
+closed form for some parameters and not others, so that only the
+remaining ones cost a pair of evaluations.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per requested parameter.
 }
 \description{
 Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one

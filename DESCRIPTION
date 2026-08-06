@@ -85,6 +85,11 @@ Collate:
     'cross_derivatives.R'
     'multivariate.R'
     'check_distrib_mv.R'
+    'vonmises1_distrib.R'
+    'vonmises2_distrib.R'
+    'cross_derivatives_families.R'
+    'skewnormal2_distrib.R'
+    'cross_derivatives_simple.R'
     'dirichlet_distrib.R'
     'distributions7-package.R'
     'expected_derivatives.R'
@@ -104,11 +109,8 @@ Collate:
     'negbin1_higher.R'
     'numerical_fallbacks.R'
     'reparametrized_families.R'
-    'skewnormal2_distrib.R'
     'starting_values.R'
     'transformations.R'
-    'vonmises1_distrib.R'
-    'vonmises2_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
     testthat (>= 3.0.0),
