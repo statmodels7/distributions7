@@ -57,6 +57,8 @@ Collate:
     'numerical_derivatives.R'
     'higher_derivatives.R'
     'check_distrib.R'
+    'pig1_distrib.R'
+    'pig2_distrib.R'
     'invgauss2_distrib.R'
     'gamma1_distrib.R'
     'gaussian3_distrib.R'
@@ -103,6 +105,7 @@ Collate:
     'vonmises2_distrib.R'
     'wrapper_derivatives.R'
 Suggests:
+    gamlss.dist,
     testthat (>= 3.0.0),
     knitr,
     numDeriv,

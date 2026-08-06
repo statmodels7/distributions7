@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R invgauss2_distrib.R beta2_distrib.R betabinom2_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R invgauss2_distrib.R beta2_distrib.R betabinom2_distrib.R pig1_distrib.R pig2_distrib.R
 NULL
 
 #' @title Raw and Central Moments of a Distribution
@@ -2271,4 +2271,90 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
   m <- betabinom_central(theta[[1]] / (theta[[1]] + theta[[2]]),
                          1 / (theta[[1]] + theta[[2]]), x@size)
   m$c4 / m$c2^2 - 3
+}
+
+
+# --- poisson-inverse gaussian ------------------------------------------------
+
+#' @title Closed Moments of the Poisson-Inverse Gaussian
+#' @name moments.Pig1Distrib
+#' @description The cumulants of the mixture are those of the Poisson plus
+#' those the inverse Gaussian rate contributes:
+#' \eqn{\kappa_1 = \mu}, \eqn{\kappa_2 = \mu + \sigma\mu^2},
+#' \eqn{\kappa_3 = \mu + 3\sigma\mu^2 + 3\sigma^2\mu^3},
+#' \eqn{\kappa_4 = \mu + 7\sigma\mu^2 + 18\sigma^2\mu^3 + 15\sigma^3\mu^4};
+#' skewness and excess kurtosis are the standardized ratios.
+#' @param x A \code{Pig1Distrib} object.
+#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Pig1Distrib) <- function(x, theta, ...) {
+  align_theta(x, theta)[[1]]
+}
+
+#' @rdname moments.Pig1Distrib
+#' @name variance.Pig1Distrib
+S7::method(variance, Pig1Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  th[[1]] + th[[2]] * th[[1]]^2
+}
+
+#' @rdname moments.Pig1Distrib
+#' @name skewness.Pig1Distrib
+S7::method(skewness, Pig1Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  mu <- th[[1]]; s <- th[[2]]
+  k2 <- mu + s * mu^2
+  k3 <- mu + 3 * s * mu^2 + 3 * s^2 * mu^3
+  k3 / k2^1.5
+}
+
+#' @rdname moments.Pig1Distrib
+#' @name kurtosis.Pig1Distrib
+S7::method(kurtosis, Pig1Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  mu <- th[[1]]; s <- th[[2]]
+  k2 <- mu + s * mu^2
+  k4 <- mu + 7 * s * mu^2 + 18 * s^2 * mu^3 + 15 * s^3 * mu^4
+  k4 / k2^2
+}
+
+#' @title Closed Moments of the Orthogonal Poisson-Inverse Gaussian
+#' @name moments.Pig2Distrib
+#' @description The cumulants of \code{\link[=moments.Pig1Distrib]{pig1}}
+#' at the dispersion \code{\link{pig2_sigma}} implies.
+#' @param x A \code{Pig2Distrib} object.
+#' @param theta A list containing \code{mu} and \code{alpha}.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Pig2Distrib) <- function(x, theta, ...) {
+  align_theta(x, theta)[[1]]
+}
+
+#' @rdname moments.Pig2Distrib
+#' @name variance.Pig2Distrib
+S7::method(variance, Pig2Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  mu <- th[[1]]; s <- pig2_sigma(mu, th[[2]])
+  mu + s * mu^2
+}
+
+#' @rdname moments.Pig2Distrib
+#' @name skewness.Pig2Distrib
+S7::method(skewness, Pig2Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  mu <- th[[1]]; s <- pig2_sigma(mu, th[[2]])
+  k2 <- mu + s * mu^2
+  (mu + 3 * s * mu^2 + 3 * s^2 * mu^3) / k2^1.5
+}
+
+#' @rdname moments.Pig2Distrib
+#' @name kurtosis.Pig2Distrib
+S7::method(kurtosis, Pig2Distrib) <- function(x, theta, ...) {
+  th <- align_theta(x, theta)
+  mu <- th[[1]]; s <- pig2_sigma(mu, th[[2]])
+  k2 <- mu + s * mu^2
+  (mu + 7 * s * mu^2 + 18 * s^2 * mu^3 + 15 * s^3 * mu^4) / k2^2
 }

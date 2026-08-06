@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R
+#' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R
 NULL
 
 #' A Starting Value Drawn from the Data
@@ -197,4 +197,38 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
   nu0 <- 8
   eta <- param_free_or_fit(distrib@param, m$sigma * (nu0 - 2) / nu0)
   list(as.list(stats::setNames(c(m$mu, eta, nu0), distrib@params)))
+}
+
+
+#' @title Poisson-Inverse Gaussian Starting Values
+#' @name distrib_start.Pig1Distrib
+#' @description Method of moments: the sample mean for \eqn{\mu}, and
+#' \eqn{(s^2 - \bar y)/\bar y^2} for \eqn{\sigma}, floored just above zero
+#' when the sample is underdispersed.
+#' @param distrib A \code{Pig1Distrib} object.
+#' @param y A numeric vector of observations.
+#' @param n_start Ignored; one moment start is returned.
+#' @param ... Unused.
+#' @return A list with one named parameter list.
+#' @seealso \code{\link{pig1_distrib}}
+S7::method(distrib_start, Pig1Distrib) <- function(distrib, y, n_start = 5L, ...) {
+  mu <- max(mean(y), 1e-8)
+  list(list(mu = mu, sigma = max((stats::var(y) - mu) / mu^2, 1e-3)))
+}
+
+#' @title Orthogonal Poisson-Inverse Gaussian Starting Values
+#' @name distrib_start.Pig2Distrib
+#' @description The moment start of
+#' \code{\link[=distrib_start.Pig1Distrib]{pig1}}, mapped onto
+#' \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
+#' @param distrib A \code{Pig2Distrib} object.
+#' @param y A numeric vector of observations.
+#' @param n_start Ignored; one moment start is returned.
+#' @param ... Unused.
+#' @return A list with one named parameter list.
+#' @seealso \code{\link{pig2_distrib}}
+S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...) {
+  mu <- max(mean(y), 1e-8)
+  sg <- max((stats::var(y) - mu) / mu^2, 1e-3)
+  list(list(mu = mu, alpha = sqrt(1 + 2 * sg * mu) / sg))
 }

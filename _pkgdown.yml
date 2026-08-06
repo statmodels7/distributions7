@@ -76,6 +76,8 @@ reference:
   - betabinom2_distrib
   - negbin1_distrib
   - gpd_distrib
+  - pig1_distrib
+  - pig2_distrib
   - vonmises1_distrib
   - vonmises2_distrib
   - gengamma1_distrib
@@ -282,6 +284,10 @@ reference:
   contents: [VonMises2Distrib, ends_with(".VonMises2Distrib"), vm2_parts]
 - title: Generalized Pareto
   contents: [GPDDistrib, ends_with(".GPDDistrib")]
+- title: Poisson-inverse Gaussian
+  contents: [Pig1Distrib, ends_with(".Pig1Distrib"), pig_hd_block]
+- title: Poisson-inverse Gaussian, orthogonal
+  contents: [Pig2Distrib, ends_with(".Pig2Distrib"), pig2_sigma]
 - title: NB1 negative binomial
   contents: [NegBin1Distrib, ends_with(".NegBin1Distrib")]
 - title: Beta-binomial
