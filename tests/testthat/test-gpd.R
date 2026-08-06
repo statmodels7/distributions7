@@ -158,10 +158,9 @@ test_that("the generalized Pareto's assembly reproduces the compiled kernel", {
     for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-11)
     h <- distributions7:::gpd_components(y, th, 2L)
     r <- distrib_hessian(d, y, th)
-    # the kernel's own xi_xi cancels three terms of size 8 into 1e-4 at small
-    # xi*z, so its floor there is about 2e-11 and the comparison cannot ask
-    # for more than that
-    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-9)
+    # since the kernel's xi direction switches on xi*z as this assembly does,
+    # the two agree at machine precision on every branch
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-13)
   }
 })
 
