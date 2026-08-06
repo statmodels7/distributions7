@@ -295,3 +295,28 @@ md_skewnormal2 <- function(psi) {
   out <- .md_entry(out, 3L, c("3", "3", "3", "3"), al$d4)
   out
 }
+
+
+#' @rdname reparam_map_derivs
+#' @keywords internal
+md_gaussian2 <- function(psi) {
+  v <- psi[[2]]
+  # mu passes through; sigma = sqrt(sigma2)
+  list(
+    list("1" = rep_len(1, length(v))),
+    list("2" = 0.5 / sqrt(v), "2,2" = -0.25 / v^1.5,
+         "2,2,2" = 0.375 / v^2.5, "2,2,2,2" = -0.9375 / v^3.5)
+  )
+}
+
+#' @rdname reparam_map_derivs
+#' @keywords internal
+md_gaussian3 <- function(psi) {
+  tau <- psi[[2]]
+  # mu passes through; sigma = tau^(-1/2)
+  list(
+    list("1" = rep_len(1, length(tau))),
+    list("2" = -0.5 / tau^1.5, "2,2" = 0.75 / tau^2.5,
+         "2,2,2" = -1.875 / tau^3.5, "2,2,2,2" = 6.5625 / tau^4.5)
+  )
+}

@@ -24,10 +24,11 @@ numerical_cdf_deriv(
 
 \item{h_rel}{Numeric. Relative finite-difference step.}
 
-\item{which}{Character vector of parameter names to differentiate, or
-\code{NULL} (default) for all of them. Used at first order by families that
-have a closed form for some parameters and not others, so that only the
-remaining ones cost a pair of cdf evaluations.}
+\item{which}{Character vector naming the components to differentiate, or
+\code{NULL} (default) for all of them: parameter names at first order and
+\code{\link{hess_names}} components at second. Used by families that have
+a closed form for some components and not others, so that only the
+remaining ones cost cdf evaluations.}
 }
 \value{
 A named list of derivative components of \eqn{F}, not of its logarithm.

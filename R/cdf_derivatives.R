@@ -151,10 +151,11 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #' @param theta A named list of parameters.
 #' @param order Either 1 or 2.
 #' @param h_rel Numeric. Relative finite-difference step.
-#' @param which Character vector of parameter names to differentiate, or
-#'   \code{NULL} (default) for all of them. Used at first order by families that
-#'   have a closed form for some parameters and not others, so that only the
-#'   remaining ones cost a pair of cdf evaluations.
+#' @param which Character vector naming the components to differentiate, or
+#'   \code{NULL} (default) for all of them: parameter names at first order and
+#'   \code{\link{hess_names}} components at second. Used by families that have
+#'   a closed form for some components and not others, so that only the
+#'   remaining ones cost cdf evaluations.
 #' @return A named list of derivative components of \eqn{F}, not of its logarithm.
 #' @seealso \code{\link{distrib_grad_cdf}}
 #' @examples
@@ -186,6 +187,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
   }
 
   pairs <- hess_pairs(params)
+  if (!is.null(which)) pairs <- pairs[intersect(names(pairs), which)]
   stats::setNames(lapply(names(pairs), function(nm) {
     pr <- pairs[[nm]]
     i <- match(pr[1], params); j <- match(pr[2], params)
