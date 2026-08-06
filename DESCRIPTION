@@ -99,6 +99,7 @@ Collate:
     'mv_plot.R'
     'mvstudent_t_distrib.R'
     'mv_summary.R'
+    'negbin1_higher.R'
     'numerical_fallbacks.R'
     'reparametrized_families.R'
     'skewnormal2_distrib.R'

@@ -99,3 +99,39 @@ test_that("the validator passes and a fit recovers the parameters", {
   expect_true(f@converged, info = fit_report(f, d, th))
   expect_equal(unname(coef(f)), c(4, 2), tolerance = 0.25)
 })
+
+
+test_that("NB1's assembly reproduces the compiled kernel and closes orders 3 and 4", {
+  skip_if_not_installed("numDeriv")
+  # The recursion in the powers of r and the order of G is checked first at
+  # the orders where a compiled kernel exists: reproducing it is what licenses
+  # the orders where none does.
+  d <- negbin1_distrib()
+  y <- c(0, 2, 5, 11)
+  for (th in list(list(mu = 3.2, theta = 1.4), list(mu = 0.8, theta = 0.3))) {
+    g <- distributions7:::negbin1_components(y, th, 1L)
+    r <- distrib_gradient(d, y, th)
+    for (nm in names(r)) expect_equal(g[[nm]], r[[nm]], tolerance = 1e-12)
+    h <- distributions7:::negbin1_components(y, th, 2L)
+    r <- distrib_hessian(d, y, th)
+    for (nm in names(r)) expect_equal(h[[nm]], r[[nm]], tolerance = 1e-12)
+  }
+
+  th <- list(mu = 3.2, theta = 1.4)
+  for (ord in 3:4) {
+    lower <- if (ord == 3L) distrib_hessian else distrib_deriv3
+    got <- if (ord == 3L) distrib_deriv3(d, y, th) else distrib_deriv4(d, y, th)
+    for (nm in names(got)) {
+      parts <- strsplit(nm, "_")[[1]]
+      j <- match(parts[length(parts)], d@params)
+      head_nm <- paste(parts[-length(parts)], collapse = "_")
+      ref <- vapply(seq_along(y), function(i) {
+        numDeriv::grad(function(z) {
+          t2 <- th; t2[[j]] <- z
+          lower(d, y[i], t2)[[head_nm]]
+        }, th[[j]])
+      }, numeric(1))
+      expect_equal(got[[nm]], ref, tolerance = 1e-5, label = nm)
+    }
+  }
+})
