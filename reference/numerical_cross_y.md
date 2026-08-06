@@ -10,7 +10,13 @@ method for continuous distributions without a closed form.
 ## Usage
 
 ``` r
-numerical_cross_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
+numerical_cross_y(
+  distrib,
+  y,
+  theta,
+  h_rel = .Machine$double.eps^(1/3),
+  which = NULL
+)
 ```
 
 ## Arguments
@@ -32,9 +38,16 @@ numerical_cross_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
   Numeric. Relative finite-difference step. Defaults to
   `.Machine$double.eps^(1/3)`.
 
+- which:
+
+  Character vector of parameter names to differentiate, or `NULL`
+  (default) for all of them. Used by families that have a closed form
+  for some parameters and not others, so that only the remaining ones
+  cost a pair of evaluations.
+
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per requested parameter.
 
 ## Details
 
