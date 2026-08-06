@@ -29,6 +29,14 @@ each new parameter lives in.}
 \item{links}{A named list of \pkg{linkfunctions7} links, one per new
 parameter.}
 
+\item{map_derivs}{An optional function returning, for each parent
+parameter, the non-zero partial derivatives of the map with respect to
+the new parameters to fourth order, keyed by the sorted tuple of
+new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
+an exact zero. The shipped second parametrizations supply hand-written
+tables (see \code{\link{reparam_map_derivs}}); when \code{NULL}, each
+needed partial comes from one finite-difference stencil on the map.}
+
 \item{interpretation}{An optional named character vector describing each new
 parameter; defaults to the parameter names.}
 

@@ -57,6 +57,9 @@ ReparamDiscreteDistrib(
 \item{parent_distrib}{The distribution being rewritten.}
 
 \item{reparam_map}{The map from the new parameters to the parent's.}
+
+\item{reparam_derivs}{The function returning the map's keyed partial
+tables, as \code{\link{reparam_tables}} consumes them.}
 }
 \value{
 An object of the corresponding class.

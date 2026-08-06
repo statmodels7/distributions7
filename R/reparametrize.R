@@ -14,6 +14,8 @@ NULL
 #' @inheritParams distrib
 #' @param parent_distrib The distribution being rewritten.
 #' @param reparam_map The map from the new parameters to the parent's.
+#' @param reparam_derivs The function returning the map's keyed partial
+#'   tables, as \code{\link{reparam_tables}} consumes them.
 #' @return An object of the corresponding class.
 #' @seealso \code{\link{reparametrize}}
 ReparamContinuousDistrib <- S7::new_class("ReparamContinuousDistrib",
@@ -637,6 +639,13 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   each new parameter lives in.
 #' @param links A named list of \pkg{linkfunctions7} links, one per new
 #'   parameter.
+#' @param map_derivs An optional function returning, for each parent
+#'   parameter, the non-zero partial derivatives of the map with respect to
+#'   the new parameters to fourth order, keyed by the sorted tuple of
+#'   new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
+#'   an exact zero. The shipped second parametrizations supply hand-written
+#'   tables (see \code{\link{reparam_map_derivs}}); when \code{NULL}, each
+#'   needed partial comes from one finite-difference stencil on the map.
 #' @param interpretation An optional named character vector describing each new
 #'   parameter; defaults to the parameter names.
 #' @param name An optional name for the result; defaults to the parent's with
