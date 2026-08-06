@@ -41,6 +41,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.html</loc></url>
@@ -182,6 +184,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ReparamContinuousDistrib.html</loc></url>
@@ -221,6 +225,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvGaussianDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ReparamContinuousDistrib.html</loc></url>
@@ -361,6 +367,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.ReparamContinuousDistrib.html</loc></url>
@@ -446,6 +454,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.ReparamContinuousDistrib.html</loc></url>
@@ -494,6 +504,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.ReparamContinuousDistrib.html</loc></url>
@@ -581,6 +593,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.ReparamContinuousDistrib.html</loc></url>
@@ -602,6 +616,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.MvGaussianDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.MvStudentTDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distributions7-package.html</loc></url>
@@ -779,6 +795,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mn_parts.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moment.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moment_const.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/multinomial_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_append_block.html</loc></url>
@@ -853,6 +871,10 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_ell.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_mass_at.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/pig1_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/pig2_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/pig2_sigma.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/pig_hd_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.html</loc></url>

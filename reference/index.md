@@ -74,6 +74,11 @@ used for each of its parameters.
   : NB1 Negative Binomial Distribution Object
 - [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
   : Generalized Pareto Distribution Object
+- [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  : Poisson-Inverse Gaussian Distribution Object
+- [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  : Poisson-Inverse Gaussian Distribution in Its Orthogonal
+  Parametrization
 - [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
   : von Mises Distribution Object
 - [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
@@ -1141,6 +1146,49 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GPDDistrib.md)
   : Generalized Pareto Random Generation
 
+## Poisson-inverse Gaussian
+
+- [`Pig1Distrib()`](https://statmodels7.github.io/distributions7/reference/Pig1Distrib.md)
+  : S7 Class for the Poisson-Inverse Gaussian Distribution
+- [`distrib_deriv3.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Analytical Third Derivatives
+- [`distrib_deriv4.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Analytical Fourth Derivatives
+- [`distrib_gradient.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Analytical Gradient
+- [`distrib_hessian.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Analytical Observed Hessian
+- [`distrib_pdf.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Probability Mass Function
+- [`distrib_rng.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Random Generation
+- [`distrib_start.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig1Distrib.md)
+  : Poisson-Inverse Gaussian Starting Values
+- [`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
+  : Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
+
+## Poisson-inverse Gaussian, orthogonal
+
+- [`Pig2Distrib()`](https://statmodels7.github.io/distributions7/reference/Pig2Distrib.md)
+  : S7 Class for the Poisson-Inverse Gaussian in Its Orthogonal
+  Parametrization
+- [`distrib_deriv3.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Analytical Third Derivatives
+- [`distrib_deriv4.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Analytical Fourth Derivatives
+- [`distrib_gradient.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Analytical Gradient
+- [`distrib_hessian.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Analytical Observed Hessian
+- [`distrib_pdf.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Probability Mass Function
+- [`distrib_rng.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Random Generation
+- [`distrib_start.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_start.Pig2Distrib.md)
+  : Orthogonal Poisson-Inverse Gaussian Starting Values
+- [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
+  : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+
 ## NB1 negative binomial
 
 - [`NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.md)
@@ -1521,6 +1569,11 @@ inherits unless it registers something more specific.
   : NB1 Negative Binomial Distribution Object
 - [`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
   : Negative Binomial Distribution Object (NB2)
+- [`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+  : Poisson-Inverse Gaussian Distribution Object
+- [`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+  : Poisson-Inverse Gaussian Distribution in Its Orthogonal
+  Parametrization
 - [`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
   : Poisson Distribution Object
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
@@ -2247,6 +2300,18 @@ divergent density.
 - [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
   : Recycle a Constant Moment to the Length of the Parameters
 
+- [`moments.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
+  [`variance.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
+  [`skewness.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
+  [`kurtosis.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
+  : Closed Moments of the Poisson-Inverse Gaussian
+
+- [`moments.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.md)
+  [`variance.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.md)
+  [`skewness.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.md)
+  [`kurtosis.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.md)
+  : Closed Moments of the Orthogonal Poisson-Inverse Gaussian
+
 - [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
   : Append One Block of Derived Quantities to Another
 
@@ -2382,6 +2447,12 @@ divergent density.
 
 - [`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
   : CDF Gradient When Only Some Parameters Are Location-Scale
+
+- [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
+  : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
+
+- [`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
+  : Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
 
 - [`plot.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
   : Plot Method for Continuous Distributions
