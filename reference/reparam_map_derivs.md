@@ -21,6 +21,10 @@ md_gengamma2(psi)
 md_invgauss2(psi)
 
 md_skewnormal2(psi)
+
+md_gaussian2(psi)
+
+md_gaussian3(psi)
 ```
 
 ## Arguments

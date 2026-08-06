@@ -83,6 +83,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/cauchy_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/central_from_factorial.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_derivatives.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_bounds_fast.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_derivative_args.html</loc></url>
@@ -294,15 +295,25 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.CauchyDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian3Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.NegBin2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PoissonDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuberDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ReparamContinuousDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.StudentT1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.html</loc></url>
@@ -391,6 +402,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Gaussian1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LogisticDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.PseudoHuberDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.StudentT1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.discrete_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.html</loc></url>
@@ -754,6 +768,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Beta2Distrib.html</loc></url>
@@ -873,6 +888,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_ell.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/parent_mass_at.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig2_sigma.html</loc></url>
@@ -1024,6 +1040,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull3_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/weibull_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/yj_transform.html</loc></url>

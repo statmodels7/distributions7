@@ -2011,6 +2011,9 @@ divergent density.
 - [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
   : Central Moments From Falling Factorial Moments
 
+- [`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md)
+  : The Chain Rule on a Parent's CDF Derivatives
+
 - [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
   : The Partition Sum Itself
 
@@ -2125,6 +2128,44 @@ divergent density.
 - [`distrib_expected_hessian.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.multivariate_distrib.md)
   : Expected Information of a Multivariate Distribution
 
+- [`distrib_grad_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
+  [`distrib_hess_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
+  : Exponential Log-CDF Derivatives
+
+- [`distrib_grad_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
+  : Generalized Pareto Log-CDF Gradient
+
+- [`distrib_grad_cdf.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian2Distrib.md)
+  [`distrib_hess_cdf.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian2Distrib.md)
+  : Gaussian Log-CDF Derivatives in Mean and Variance
+
+- [`distrib_grad_cdf.Gaussian3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian3Distrib.md)
+  [`distrib_hess_cdf.Gaussian3Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian3Distrib.md)
+  : Gaussian Log-CDF Derivatives in Mean and Precision
+
+- [`distrib_grad_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.md)
+  [`distrib_hess_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.md)
+  : Gumbel Log-CDF Derivatives
+
+- [`distrib_grad_cdf.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.md)
+  : Inverse Gaussian Log-CDF Gradient in Mean and Shape
+
+- [`distrib_grad_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ReparamContinuousDistrib.md)
+  [`distrib_hess_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ReparamContinuousDistrib.md)
+  : Log-CDF Gradient of a Reparametrized Distribution
+
+- [`distrib_grad_cdf.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
+  [`distrib_hess_cdf.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
+  : Skew Normal Log-CDF Derivatives
+
+- [`distrib_grad_cdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md)
+  [`distrib_hess_cdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md)
+  : Skew t Log-CDF Derivatives
+
+- [`distrib_grad_cdf.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
+  [`distrib_hess_cdf.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
+  : Weibull Log-CDF Derivatives
+
 - [`distrib_grad_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.md)
   : Default Log-CDF Gradient for Continuous Distributions
 
@@ -2161,6 +2202,15 @@ divergent density.
   :
 
   Default Numerical Gradient for `distrib` Objects
+
+- [`distrib_hess_cdf.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.md)
+  : Lognormal Log-CDF Hessian
+
+- [`distrib_hess_cdf.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.PseudoHuberDistrib.md)
+  : Pseudo-Huber Log-CDF Hessian
+
+- [`distrib_hess_cdf.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.StudentT1Distrib.md)
+  : Student t Log-CDF Hessian
 
 - [`distrib_hess_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.continuous_distrib.md)
   : Default Log-CDF Hessian for Continuous Distributions
@@ -2539,6 +2589,9 @@ divergent density.
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
+- [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
+  : CDF Derivatives Through a Map, With the Fallback as a Guard
+
 - [`mean.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.md)
   : Mean of the Bernoulli Distribution
 
@@ -2816,6 +2869,9 @@ divergent density.
 - [`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
   : CDF Gradient When Only Some Parameters Are Location-Scale
 
+- [`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
+  : CDF Hessian When Only Some Parameters Are Location-Scale
+
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
   : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
 
@@ -2854,6 +2910,8 @@ divergent density.
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gaussian2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gaussian3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   : Explicit Map Derivatives of the Second Parametrizations
 
 - [`reparam_stencil_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.md)
@@ -3189,6 +3247,9 @@ divergent density.
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
 
+- [`weibull_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/weibull_cdf_deriv.md)
+  : CDF Derivatives of a Weibull
+
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments
 
@@ -3229,6 +3290,8 @@ order the parent has in closed form survives.
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gaussian2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gaussian3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   : Explicit Map Derivatives of the Second Parametrizations
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization

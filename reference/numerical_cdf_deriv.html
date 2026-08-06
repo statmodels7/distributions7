@@ -89,10 +89,11 @@ not supply a closed form.</p>
 
 
 <dt id="arg-which">which<a class="anchor" aria-label="anchor" href="#arg-which"></a></dt>
-<dd><p>Character vector of parameter names to differentiate, or
-<code>NULL</code> (default) for all of them. Used at first order by families that
-have a closed form for some parameters and not others, so that only the
-remaining ones cost a pair of cdf evaluations.</p></dd>
+<dd><p>Character vector naming the components to differentiate, or
+<code>NULL</code> (default) for all of them: parameter names at first order and
+<code><a href="hess_names.html">hess_names</a></code> components at second. Used by families that have
+a closed form for some components and not others, so that only the
+remaining ones cost cdf evaluations.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -45,10 +45,12 @@ numerical_cdf_deriv(
 
 - which:
 
-  Character vector of parameter names to differentiate, or `NULL`
-  (default) for all of them. Used at first order by families that have a
-  closed form for some parameters and not others, so that only the
-  remaining ones cost a pair of cdf evaluations.
+  Character vector naming the components to differentiate, or `NULL`
+  (default) for all of them: parameter names at first order and
+  [`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+  components at second. Used by families that have a closed form for
+  some components and not others, so that only the remaining ones cost
+  cdf evaluations.
 
 ## Value
 
