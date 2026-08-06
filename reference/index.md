@@ -1205,6 +1205,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the NB1 Negative Binomial
 - [`distrib_cdf.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md)
   : NB1 Cumulative Distribution Function
+- [`distrib_deriv3.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
+  [`distrib_deriv4.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
+  : NB1 Third and Fourth Derivatives
 - [`distrib_expected_hessian.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md)
   : NB1 Analytical Expected Hessian
 - [`distrib_gradient.NegBin1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
@@ -2491,6 +2494,9 @@ divergent density.
 
 - [`nb1_size()`](https://statmodels7.github.io/distributions7/reference/nb1_size.md)
   : The Size Behind an NB1 Mean
+
+- [`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md)
+  : Derivative Components of NB1
 
 - [`new_check()`](https://statmodels7.github.io/distributions7/reference/new_check.md)
   : Record One Check Result

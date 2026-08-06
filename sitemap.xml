@@ -185,6 +185,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig2Distrib.html</loc></url>
@@ -872,6 +873,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/n_support_points.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/nb1_prob.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/nb1_size.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/negbin1_components.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/negbin2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/new_check.html</loc></url>
