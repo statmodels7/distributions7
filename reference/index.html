@@ -2110,13 +2110,6 @@
 
         <dt>
 
-          <code><a href="sn2_jets.html">sn2_jets()</a></code>
-
-        </dt>
-        <dd>The Jets of the Centered-to-Direct Map</dd>
-
-        <dt>
-
           <code><a href="sn2_chain.html">sn2_chain()</a></code>
 
         </dt>
@@ -6159,6 +6152,20 @@
 
         <dt>
 
+          <code><a href="fdb1.html">fdb1()</a></code>
+
+        </dt>
+        <dd>Univariate Composition to Fourth Order</dd>
+
+        <dt>
+
+          <code><a href="fdb2.html">fdb2()</a></code>
+
+        </dt>
+        <dd>Bivariate Composition to Fourth Order</dd>
+
+        <dt>
+
           <code><a href="find_lp_anchor.html">find_lp_anchor()</a></code>
 
         </dt>
@@ -7398,10 +7405,24 @@
 
         <dt>
 
-          <code><a href="reparam_jets.html">reparam_jets()</a></code>
+          <code><a href="reparam_map_derivs.html">md_lognormal2()</a></code> <code><a href="reparam_map_derivs.html">md_weibull3()</a></code> <code><a href="reparam_map_derivs.html">md_student_t2()</a></code> <code><a href="reparam_map_derivs.html">md_gengamma2()</a></code> <code><a href="reparam_map_derivs.html">md_invgauss2()</a></code> <code><a href="reparam_map_derivs.html">md_skewnormal2()</a></code>
 
         </dt>
-        <dd>The Derivatives of the Map, by Jets</dd>
+        <dd>Explicit Map Derivatives of the Second Parametrizations</dd>
+
+        <dt>
+
+          <code><a href="reparam_stencil_derivs.html">reparam_stencil_derivs()</a></code>
+
+        </dt>
+        <dd>One Stencil Per Map Partial</dd>
+
+        <dt>
+
+          <code><a href="reparam_tables.html">reparam_tables()</a></code>
+
+        </dt>
+        <dd>The Map Derivatives as Keyed Tables</dd>
 
         <dt>
 
@@ -7703,13 +7724,6 @@
 
         </dt>
         <dd>Derivatives of the Skew Normal in Its Centered Parametrization</dd>
-
-        <dt>
-
-          <code><a href="sn2_jets.html">sn2_jets()</a></code>
-
-        </dt>
-        <dd>The Jets of the Centered-to-Direct Map</dd>
 
         <dt>
 
@@ -8217,7 +8231,7 @@
       </dl></div><div class="section level2">
       <h2 id="reparametrized-distributions">Reparametrized distributions<a class="anchor" aria-label="anchor" href="#reparametrized-distributions"></a></h2>
 
-      <div class="section-desc"><p>The wrapper reparametrize() returns and the machinery behind it. The map is written in ordinary R and its derivatives come from running the same expression on jets, so every order the parent has in closed form survives.</p></div>
+      <div class="section-desc"><p>The wrapper reparametrize() returns and the machinery behind it. The map is written in ordinary R and its derivatives are hand-written closed forms (or one stencil per partial when none are supplied), so every order the parent has in closed form survives.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -8240,10 +8254,24 @@
 
         <dt>
 
-          <code><a href="reparam_jets.html">reparam_jets()</a></code>
+          <code><a href="reparam_tables.html">reparam_tables()</a></code>
 
         </dt>
-        <dd>The Derivatives of the Map, by Jets</dd>
+        <dd>The Map Derivatives as Keyed Tables</dd>
+
+        <dt>
+
+          <code><a href="reparam_stencil_derivs.html">reparam_stencil_derivs()</a></code>
+
+        </dt>
+        <dd>One Stencil Per Map Partial</dd>
+
+        <dt>
+
+          <code><a href="reparam_map_derivs.html">md_lognormal2()</a></code> <code><a href="reparam_map_derivs.html">md_weibull3()</a></code> <code><a href="reparam_map_derivs.html">md_student_t2()</a></code> <code><a href="reparam_map_derivs.html">md_gengamma2()</a></code> <code><a href="reparam_map_derivs.html">md_invgauss2()</a></code> <code><a href="reparam_map_derivs.html">md_skewnormal2()</a></code>
+
+        </dt>
+        <dd>Explicit Map Derivatives of the Second Parametrizations</dd>
 
         <dt>
 

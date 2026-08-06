@@ -645,6 +645,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/fd_second.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fd_steps.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fd_steps_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/fdb1.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/fdb2.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/find_lp_anchor.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fisher_scoring.html</loc></url>
@@ -888,7 +890,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_jets.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/reparam_tables.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparametrize.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/rng_grou.html</loc></url>
@@ -939,7 +943,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewt_nu_step.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewt_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn2_chain.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/sn2_jets.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn2_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn_b.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.html</loc></url>

@@ -993,8 +993,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : From the Centered Parameters to the Direct Ones
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
   : The Direct Parameters a Centered Triple Implies
-- [`sn2_jets()`](https://statmodels7.github.io/distributions7/reference/sn2_jets.md)
-  : The Jets of the Centered-to-Direct Map
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
   : Derivatives of the Skew Normal in Its Centered Parametrization
 
@@ -2299,6 +2297,12 @@ divergent density.
 - [`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
   : Finite-Difference Steps That Respect the Support
 
+- [`fdb1()`](https://statmodels7.github.io/distributions7/reference/fdb1.md)
+  : Univariate Composition to Fourth Order
+
+- [`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
+  : Bivariate Composition to Fourth Order
+
 - [`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md)
   : Locate a High-Density Point of a Bare Log-Density
 
@@ -2844,8 +2848,19 @@ divergent density.
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
 
-- [`reparam_jets()`](https://statmodels7.github.io/distributions7/reference/reparam_jets.md)
-  : The Derivatives of the Map, by Jets
+- [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_weibull3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_student_t2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  : Explicit Map Derivatives of the Second Parametrizations
+
+- [`reparam_stencil_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.md)
+  : One Stencil Per Map Partial
+
+- [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
+  : The Map Derivatives as Keyed Tables
 
 - [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
   : The Parent's Parameters at the New Ones
@@ -2975,9 +2990,6 @@ divergent density.
 
 - [`sn2_chain()`](https://statmodels7.github.io/distributions7/reference/sn2_chain.md)
   : Derivatives of the Skew Normal in Its Centered Parametrization
-
-- [`sn2_jets()`](https://statmodels7.github.io/distributions7/reference/sn2_jets.md)
-  : The Jets of the Centered-to-Direct Map
 
 - [`sn2_theta()`](https://statmodels7.github.io/distributions7/reference/sn2_theta.md)
   : The Direct Parameters a Centered Triple Implies
@@ -3198,17 +3210,26 @@ divergent density.
 ## Reparametrized distributions
 
 The wrapper reparametrize() returns and the machinery behind it. The map
-is written in ordinary R and its derivatives come from running the same
-expression on jets, so every order the parent has in closed form
-survives.
+is written in ordinary R and its derivatives are hand-written closed
+forms (or one stencil per partial when none are supplied), so every
+order the parent has in closed form survives.
 
 - [`ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
   [`ReparamDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
   : S7 Classes for a Reparametrized Distribution
 - [`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
   : The Parent's Parameters at the New Ones
-- [`reparam_jets()`](https://statmodels7.github.io/distributions7/reference/reparam_jets.md)
-  : The Derivatives of the Map, by Jets
+- [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
+  : The Map Derivatives as Keyed Tables
+- [`reparam_stencil_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.md)
+  : One Stencil Per Map Partial
+- [`md_lognormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_weibull3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_student_t2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  : Explicit Map Derivatives of the Second Parametrizations
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
 - [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)

@@ -10,7 +10,7 @@ can use the same machinery instead of a second copy of it.
 ## Usage
 
 ``` r
-chain_derivatives(parent, y, th_par, jt, new_params, order, expected = FALSE)
+chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
 ```
 
 ## Arguments
@@ -27,10 +27,10 @@ chain_derivatives(parent, y, th_par, jt, new_params, order, expected = FALSE)
 
   The parent's parameters, as plain numbers.
 
-- jt:
+- maps:
 
-  The jets of the map, as
-  [`reparam_jets`](https://statmodels7.github.io/distributions7/reference/reparam_jets.md)
+  The keyed partial tables of the map, as
+  [`reparam_tables`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
   returns them.
 
 - new_params:

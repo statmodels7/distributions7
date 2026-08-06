@@ -54,7 +54,7 @@ can use the same machinery instead of a second copy of it.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">chain_derivatives</span><span class="op">(</span><span class="va">parent</span>, <span class="va">y</span>, <span class="va">th_par</span>, <span class="va">jt</span>, <span class="va">new_params</span>, <span class="va">order</span>, expected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">chain_derivatives</span><span class="op">(</span><span class="va">parent</span>, <span class="va">y</span>, <span class="va">th_par</span>, <span class="va">maps</span>, <span class="va">new_params</span>, <span class="va">order</span>, expected <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,8 +73,9 @@ can use the same machinery instead of a second copy of it.</p>
 <dd><p>The parent's parameters, as plain numbers.</p></dd>
 
 
-<dt id="arg-jt">jt<a class="anchor" aria-label="anchor" href="#arg-jt"></a></dt>
-<dd><p>The jets of the map, as <code><a href="reparam_jets.html">reparam_jets</a></code> returns them.</p></dd>
+<dt id="arg-maps">maps<a class="anchor" aria-label="anchor" href="#arg-maps"></a></dt>
+<dd><p>The keyed partial tables of the map, as
+<code><a href="reparam_tables.html">reparam_tables</a></code> returns them.</p></dd>
 
 
 <dt id="arg-new-params">new_params<a class="anchor" aria-label="anchor" href="#arg-new-params"></a></dt>
