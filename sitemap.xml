@@ -176,6 +176,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian3Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss1Distrib.html</loc></url>
@@ -197,6 +198,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TransformedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.TruncatedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Weibull1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ZeroAdjustedDiscreteDistrib.html</loc></url>
@@ -690,6 +693,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/generate_random_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gengamma2_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/gengamma_components.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/geom_prob.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/geometric_distrib.html</loc></url>

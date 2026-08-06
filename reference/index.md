@@ -800,6 +800,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : Generalized Gamma Distribution Function
 - [`distrib_deriv3.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gamma1Distrib.md)
   : Gamma Third-Order Derivatives in Mean and Dispersion
+- [`distrib_deriv3.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  : Generalized Gamma Third and Fourth Derivatives
 - [`distrib_deriv4.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Gamma1Distrib.md)
   : Gamma Fourth-Order Derivatives in Mean and Dispersion
 - [`distrib_expected_hessian.Gamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Gamma1Distrib.md)
@@ -1076,6 +1079,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : S7 Class for the Generalized Gamma Distribution
 - [`distrib_cdf.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GenGamma1Distrib.md)
   : Generalized Gamma Distribution Function
+- [`distrib_deriv3.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  [`distrib_deriv4.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GenGamma1Distrib.md)
+  : Generalized Gamma Third and Fourth Derivatives
 - [`distrib_expected_hessian.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GenGamma1Distrib.md)
   : Generalized Gamma Analytical Expected Hessian
 - [`distrib_gradient.GenGamma1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.GenGamma1Distrib.md)
@@ -1093,6 +1099,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`VonMises1Distrib()`](https://statmodels7.github.io/distributions7/reference/VonMises1Distrib.md)
   : S7 Class for the von Mises Distribution
+- [`distrib_deriv3.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.md)
+  [`distrib_deriv4.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises1Distrib.md)
+  : von Mises Third and Fourth Derivatives
 - [`distrib_expected_hessian.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises1Distrib.md)
   : von Mises Analytical Expected Hessian
 - [`distrib_grad_y.VonMises1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.VonMises1Distrib.md)
@@ -1112,6 +1121,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/VonMises2Distrib.md)
   : S7 Class for the von Mises Distribution in Its Resultant Length
+- [`distrib_deriv3.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
+  [`distrib_deriv4.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md)
+  : von Mises Third and Fourth Derivatives in the Resultant Length
 - [`distrib_expected_hessian.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises2Distrib.md)
   : von Mises Analytical Expected Hessian in the Resultant Length
 - [`distrib_gradient.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises2Distrib.md)
@@ -2041,6 +2053,9 @@ divergent density.
   :
 
   Generate Random Parameters for `distrib` Objects
+
+- [`gengamma_components()`](https://statmodels7.github.io/distributions7/reference/gengamma_components.md)
+  : Derivative Components of the Generalized Gamma
 
 - [`gengamma_raw_moments()`](https://statmodels7.github.io/distributions7/reference/gengamma_raw_moments.md)
   : Raw Moments of the Generalized Gamma
