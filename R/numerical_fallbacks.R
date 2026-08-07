@@ -57,7 +57,7 @@ find_pdf_anchor <- function(distrib, theta) {
 }
 
 # The same search expressed on a bare log-density over an interval, so that it
-# can also be applied to a reparameterised density that has no distrib object.
+# can also be applied to a reparametrized density that has no distrib object.
 #' Locate a High-Density Point of a Bare Log-Density
 #'
 #' @description
@@ -66,7 +66,7 @@ find_pdf_anchor <- function(distrib, theta) {
 #'
 #' @details
 #' Kept separate from the \code{distrib} object so that it can also be applied to
-#' a reparameterised density, which is what the divergence-removing transforms in
+#' a reparametrized density, which is what the divergence-removing transforms in
 #' this file produce and which has no distribution object of its own.
 #'
 #' @param lp_raw A function giving the log-density at a numeric vector.
@@ -381,7 +381,7 @@ has_analytic_quantile <- function(distrib) {
 #' @section Requirements:
 #' The kernel must be unimodal and the parameters in \code{theta} must be scalars.
 #' Densities that diverge at one or at both edges of their support are handled by
-#' the reparameterisations described below.
+#' the reparametrizations described below.
 #'
 #' Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
 #' handles a Student's t with half a degree of freedom and a Pareto with infinite
@@ -444,7 +444,7 @@ rng_grou <- function(distrib, n, theta, r = 2) {
     out <- rep(-Inf, length(x))
     # Once x is small enough that edge +- x^lambda rounds back onto the edge, the
     # original density is evaluated exactly at its singularity and returns
-    # infinity, undoing the reparameterisation. The transformed density tends to
+    # infinity, undoing the reparametrization. The transformed density tends to
     # zero there (lambda*alpha > 1 by construction), so -Inf is both the correct
     # limit and the safe value.
     ok <- is.finite(x) & x > 0 & to_y(x) != edge
@@ -624,7 +624,7 @@ lp_edge_divergence <- function(lp, b) {
 
 # Internal: the Generalized Ratio-of-Uniforms itself, on a bare log-density over
 # an interval. Kept separate from the distrib object so that it can also be run
-# on a reparameterised density.
+# on a reparametrized density.
 #' The Generalized Ratio-of-Uniforms Sampler
 #'
 #' @description
@@ -632,7 +632,7 @@ lp_edge_divergence <- function(lp, b) {
 #'
 #' @details
 #' Kept separate from the \code{distrib} object so that it can also be run on a
-#' reparameterised density, which is how the divergence transforms reuse it.
+#' reparametrized density, which is how the divergence transforms reuse it.
 #'
 #' Two devices make it safe. The kernel is \strong{recentered at the mode},
 #' without which a density located at \eqn{\mu = 1000} produces a degenerate

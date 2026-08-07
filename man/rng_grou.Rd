@@ -99,7 +99,7 @@ is also what \code{\link[stats]{rbeta}} does.
 
 The kernel must be unimodal and the parameters in \code{theta} must be scalars.
 Densities that diverge at one or at both edges of their support are handled by
-the reparameterisations described below.
+the reparametrizations described below.
 
 Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
 handles a Student's t with half a degree of freedom and a Pareto with infinite

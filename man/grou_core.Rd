@@ -23,7 +23,7 @@ The sampler itself, on a bare log-density over an interval.
 }
 \details{
 Kept separate from the \code{distrib} object so that it can also be run on a
-reparameterised density, which is how the divergence transforms reuse it.
+reparametrized density, which is how the divergence transforms reuse it.
 
 Two devices make it safe. The kernel is \strong{recentered at the mode},
 without which a density located at \eqn{\mu = 1000} produces a degenerate

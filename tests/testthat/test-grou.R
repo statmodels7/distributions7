@@ -135,7 +135,7 @@ test_that("distributions with a native RNG are unaffected", {
   expect_equal(a, stats::rnorm(5))
 })
 
-test_that("a density diverging at one edge is reparameterised, not refused", {
+test_that("a density diverging at one edge is reparametrized, not refused", {
   # f(y) ~ |y - a|^(alpha - 1) near the edge: sampling |Y - a|^(1/lambda) with
   # lambda * alpha > 1 has a bounded density, and mapping back is exact.
   set.seed(107)
@@ -159,7 +159,7 @@ test_that("a density diverging at one edge is reparameterised, not refused", {
   expect_gt(ks$p.value, 0.001)
 })
 
-test_that("the reparameterisation does not care where the divergent edge sits", {
+test_that("the reparametrization does not care where the divergent edge sits", {
   # The power is applied to |Y - edge|, the distance from the singular edge, not
   # to Y itself; since a divergence can only occur at a finite edge that distance
   # is non-negative wherever the edge lies. So the positivity restriction that
