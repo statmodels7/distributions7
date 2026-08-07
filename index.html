@@ -140,7 +140,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 20 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -152,7 +152,7 @@
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
 <span><span class="co">#&gt; mu       1.0842     0.0213 1.0424 1.1260</span></span>
 <span><span class="co">#&gt; sigma2   0.6875     0.0744 0.5416 0.8334</span></span></code></pre></div>
-<p>The fit knows what it was estimated from, so it can be checked against the data and simulated from:</p>
+<p>The fit carries the data it was estimated from, so it can be checked against the data and simulated from:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-fit-plot-1.png" alt="" width="100%"></p>
@@ -169,7 +169,7 @@
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>fisher <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span><span class="op">)</span>, lbfgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/logLik.html" class="external-link">logLik</a></span><span class="op">(</span><span class="va">fit2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    fisher     lbfgs </span></span>
 <span><span class="co">#&gt; -841.2326 -841.2326</span></span></code></pre></div>
-<p>Where a fit starts matters more than it looks, so a family is asked for its own starting value through <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family that knows an estimator returns it and the fit begins there; one that says nothing gets random draws.</p>
+<p>Where a fit starts matters more than it looks, so a family is asked for its own starting value through <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family with a known estimator returns it and the fit begins there; one that says nothing gets random draws.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
