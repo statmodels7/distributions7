@@ -60,7 +60,7 @@ distribution are therefore substantially more expensive than the parent's, and
 third and fourth derivatives fall back to finite differences of the analytical
 Hessian.
 
-\strong{What the constructor refuses.}
+\strong{What the constructor rejects.}
 \itemize{
 \item Both endpoints \code{NULL}: nothing to do, and silently returning the
 parent would hide the mistake.
@@ -93,7 +93,7 @@ dpois(1:4, 2) / (1 - dpois(0, 2))
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 mean(tn, list(mu = 0, sigma = 1))
 
-# A truncation point that removes nothing is refused
+# A truncation point that removes nothing is rejected
 try(truncated(gamma2_distrib(), lower = -2))
 
 }

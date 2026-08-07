@@ -412,7 +412,7 @@ declares_atoms <- function(parent) {
 #' hide a mistaken call rather than report it; the same check makes
 #' \code{folded()} of a folded distribution an error.
 #'
-#' A parent with an atom is refused as well. The point zero is its own
+#' A parent with an atom is rejected as well. The point zero is its own
 #' preimage while every other point has two, so an atom at zero would be
 #' counted twice by the sum above and an atom elsewhere would be moved onto its
 #' reflection.
@@ -426,7 +426,7 @@ declares_atoms <- function(parent) {
 #' \emph{exactly} even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
 #' \eqn{-\hat\mu} according to where it started, at the same maximized value
 #' to every digit. This is a property of the model rather than of the fitting,
-#' and it is not refused, the folded normal being a standard family; what is
+#' and it is not rejected, the folded normal being a standard family; what is
 #' estimable is \eqn{|\mu|} together with the remaining parameters. Holding
 #' the location at zero removes the question and gives the half-normal. A
 #' parent that is not symmetric about its location, such as

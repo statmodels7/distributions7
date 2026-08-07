@@ -841,8 +841,9 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @name mean.CauchyDistrib
 #' @description
 #' \code{NaN}. No moment of the Cauchy exists, the tails being too heavy for
-#' \eqn{\int |y| f(y) \, dy} to converge, and that is the honest answer rather
-#' than the divergent quadrature the numerical default would attempt.
+#' \eqn{\int |y| f(y) \, dy} to converge, and \code{NaN} is returned rather
+#' than the artifact of the divergent quadrature the numerical default would
+#' attempt.
 #' @param x A \code{CauchyDistrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.

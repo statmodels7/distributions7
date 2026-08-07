@@ -16,7 +16,7 @@
 Never returns; raises an error.
 }
 \description{
-Refused. Integrating out the other coordinates has no general closed form,
+Rejected. Integrating out the other coordinates has no general closed form,
 and a numerical marginal would be a different object with the same name.
 }
 \keyword{internal}

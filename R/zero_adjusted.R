@@ -552,7 +552,7 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #' \eqn{\log((1-\pi) f(y))} on the other -- so no derivative in \eqn{y} exists
 #' there. The finite-difference default inherited from
 #' \code{\link{continuous_distrib}} would straddle the jump and return a
-#' number for it, which is worse than refusing. Away from zero the \eqn{1-\pi}
+#' number for it, which is worse than an error. Away from zero the \eqn{1-\pi}
 #' factor is constant in \eqn{y}, so the parent's own derivative is exact and
 #' nothing needs correcting.
 #'

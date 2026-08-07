@@ -43,8 +43,8 @@ NULL
 #' y <- distrib_rng(d, 200, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
 #'                               sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #'
-#' # the gaussian knows its own maximum likelihood estimate, so the fit starts
-#' # there and has nothing left to do
+#' # the gaussian has a closed-form maximum likelihood estimate, so the fit
+#' # starts there and has nothing left to do
 #' start <- distrib_start(d, y)[[1]]
 #' mv_location(d, start)
 #' colMeans(y)
@@ -115,10 +115,10 @@ mv_moment_start <- function(y, p) {
 #' supplied, or the matrix parameter's own inverse map when it has one.
 #'
 #' @details
-#' \code{\link[parameters7]{param_free}} is exact or refused: a structure that
+#' \code{\link[parameters7]{param_free}} is exact or rejected: a structure that
 #' cannot represent the matrix says so rather than returning something
 #' plausible. That is the right contract for reporting an estimate and the
-#' wrong one for choosing where to begin, so a refusal here falls back to a
+#' wrong one for choosing where to begin, so a rejection here falls back to a
 #' short numerical search over the free values, which is allowed to be
 #' approximate because a starting value is.
 #'

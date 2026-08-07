@@ -21,7 +21,7 @@ in this package's mean-and-precision parametrization of the Beta is simply
 mean \eqn{\mu_j} and precision \eqn{\phi}: the concentration is shared by
 every marginal. A group of coordinates is again Dirichlet, but only after
 the remaining mass is collapsed into one of its own, so that case is
-refused.
+rejected.
 }
 \seealso{
 \code{\link{dirichlet_distrib}}

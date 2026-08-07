@@ -16,7 +16,7 @@
 Never returns; raises an error.
 }
 \description{
-Refused. The distribution function of a multivariate law is an integral over
+Rejected. The distribution function of a multivariate law is an integral over
 an orthant, which has no closed form for the gaussian and no
 one-dimensional fallback to stand in for it, and the quadrature registered
 on \code{\link{continuous_distrib}} integrates over an interval.

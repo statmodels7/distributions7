@@ -98,7 +98,7 @@ n_obs <- function(distrib, y) {
 #'
 #' @description
 #' Puts \code{y} in the \eqn{n \times p} form every multivariate method expects,
-#' and refuses a response of the wrong width.
+#' and rejects a response of the wrong width.
 #'
 #' @details
 #' A plain vector of the right length is read as a single observation, which is
@@ -141,7 +141,7 @@ as_mv_matrix <- function(distrib, y) {
 #' Require Scalar Parameters
 #'
 #' @description
-#' Refuses a \code{theta} whose components are not single numbers.
+#' Rejects a \code{theta} whose components are not single numbers.
 #'
 #' @details
 #' The multivariate families of this package take one parameter value for the
@@ -194,7 +194,7 @@ mv_refuse <- function(distrib, what, why) {
 #' @title No Distribution Function in Several Dimensions
 #' @name distrib_cdf.multivariate_distrib
 #' @description
-#' Refused. The distribution function of a multivariate law is an integral over
+#' Rejected. The distribution function of a multivariate law is an integral over
 #' an orthant, which has no closed form for the gaussian and no
 #' one-dimensional fallback to stand in for it, and the quadrature registered
 #' on \code{\link{continuous_distrib}} integrates over an interval.
@@ -214,7 +214,7 @@ S7::method(distrib_cdf, multivariate_distrib) <- function(distrib, q, theta, ...
 #' @title No Quantile Function in Several Dimensions
 #' @name distrib_quantile.multivariate_distrib
 #' @description
-#' Refused. A quantile is defined by inverting a distribution function on the
+#' Rejected. A quantile is defined by inverting a distribution function on the
 #' line; in several dimensions the ordering that would define it does not
 #' exist.
 #' @param distrib A \code{\link{multivariate_distrib}} object.
@@ -233,7 +233,7 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
 #' @title Response Derivatives of a Multivariate Distribution
 #' @name distrib_grad_y.multivariate_distrib
 #' @description
-#' Refused on the base class rather than served numerically: the univariate
+#' Rejected on the base class rather than served numerically: the univariate
 #' fallbacks difference along a line, and the derivative of a multivariate
 #' log-density in its response is a vector (a matrix at second order) whose
 #' shape the base class cannot guess. A family that has the closed form
@@ -279,7 +279,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' @details
 #' The one-dimensional routes do not survive the move to \eqn{p} dimensions.
-#' \code{"integrate"} builds its quadrature over an interval and is refused
+#' \code{"integrate"} builds its quadrature over an interval and is rejected
 #' here; \code{"bartlett"} in the univariate package reaches
 #' \code{\link{expectation}}, which is that same quadrature. What does
 #' generalize is sampling, so both remaining routes draw from the family's own
@@ -295,7 +295,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' Both are Monte Carlo, so both carry an error of order
 #' \eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
 #' scoring with a noisy information. That is a deliberate choice a caller
-#' makes, which is why \code{\link{fit_distrib}} refuses the argument for a
+#' makes, which is why \code{\link{fit_distrib}} rejects the argument for a
 #' family that has an exact expression.
 #'
 #' @param distrib A \code{\link{multivariate_distrib}} object.
@@ -304,7 +304,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
 #' @param approx One of \code{"bartlett"} (equivalently \code{"opg"}) or
-#'   \code{"mc"}; \code{"integrate"} is refused.
+#'   \code{"mc"}; \code{"integrate"} is rejected.
 #' @param nsim Monte Carlo sample size.
 #' @param ... Unused.
 #'
@@ -382,7 +382,7 @@ mv_prefixed_names <- function(free_names, inverted = FALSE) {
 #' be an exact sum and the validator check the total mass by addition rather
 #' than by sampling.
 #'
-#' The base class refuses. A continuous family has no such set, and a discrete
+#' The base class rejects. A continuous family has no such set, and a discrete
 #' one whose support is infinite has no finite matrix to return; either way an
 #' answer would be a fiction, and the caller is better told.
 #'
@@ -407,7 +407,7 @@ mv_support <- S7::new_generic("mv_support", "distrib",
 
 #' @title No Enumerable Support
 #' @name mv_support.multivariate_distrib
-#' @description The base-class method, which refuses.
+#' @description The base-class method, which rejects.
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -521,7 +521,7 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list or vector of parameters.
 #'
-#' Both are generics whose base-class method refuses: not every multivariate
+#' Both are generics whose base-class method rejects: not every multivariate
 #' family has a location, and one that does not should say so rather than
 #' hand back its first p parameters under a name that does not fit them.
 #'
@@ -545,7 +545,7 @@ mv_location <- S7::new_generic("mv_location", "distrib", function(distrib, theta
 #' @title No Location Without a Family That Has One
 #' @name mv_location.multivariate_distrib
 #' @description
-#' Refused. Not every multivariate family has a location: a Dirichlet is
+#' Rejected. Not every multivariate family has a location: a Dirichlet is
 #' described by concentrations and a Wishart by a scale and a count, and
 #' handing back the first \eqn{p} parameters under the name of a mean would be
 #' a wrong answer in the shape of a right one.
@@ -598,9 +598,9 @@ mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
 #' coordinates one is not interested in has no closed form for most families.
 #' It is available for the elliptical ones, where the marginal belongs to the
 #' same family with the mean and the matrix subsetted, and those are the ones
-#' this generic has methods for. A family without one refuses rather than
-#' approximating, because a quadrature over the discarded coordinates would be
-#' a different object wearing the same name.
+#' this generic has methods for. For a family without one the generic signals
+#' an error rather than approximating, since a quadrature over the discarded
+#' coordinates would be a different object under the same name.
 #'
 #' This is what makes a picture of a multivariate distribution possible at all:
 #' a panel of a pairs plot shows a marginal, so the plot exists exactly when
@@ -646,7 +646,7 @@ mv_marginal <- S7::new_generic("mv_marginal", "distrib",
 #' @title No Marginal Without a Closed Form
 #' @name mv_marginal.multivariate_distrib
 #' @description
-#' Refused. Integrating out the other coordinates has no general closed form,
+#' Rejected. Integrating out the other coordinates has no general closed form,
 #' and a numerical marginal would be a different object with the same name.
 #' @param distrib A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters.
@@ -665,13 +665,13 @@ S7::method(mv_marginal, multivariate_distrib) <- function(distrib, theta, which,
 #' @title No Skewness Without Saying Which One
 #' @name skewness.multivariate_distrib
 #' @description
-#' Refused. A scalar skewness for a vector response is not one quantity but a
+#' Rejected. A scalar skewness for a vector response is not one quantity but a
 #' choice among several -- Mardia's, Malkovich-Afifi's, or the vector of
 #' coordinatewise marginal skewnesses -- and they do not agree. Returning any
 #' of them under the bare name would be a wrong answer in the shape of a right
 #' one, so the caller names the quantity it wants instead. Note that
 #' \code{\link{mv_marginal}} is not a way round this for an elliptical family,
-#' whose marginal is a smaller multivariate distribution and refuses in turn;
+#' whose marginal is a smaller multivariate distribution and rejects in turn;
 #' it is for the Dirichlet and the multinomial, whose marginals are univariate.
 #' @param x A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters.
@@ -689,7 +689,7 @@ S7::method(skewness, multivariate_distrib) <- function(x, theta, ...) {
 #' @title No Kurtosis Without Saying Which One
 #' @name kurtosis.multivariate_distrib
 #' @description
-#' Refused, for the reason given at
+#' Rejected, for the reason given at
 #' \code{\link[=skewness.multivariate_distrib]{skewness()}}.
 #' @param x A \code{\link{multivariate_distrib}} object.
 #' @param theta A named list of parameters.

@@ -14,7 +14,7 @@
 Never returns; raises an error.
 }
 \description{
-The base-class method, which refuses.
+The base-class method, which rejects.
 }
 \seealso{
 \code{\link{mv_support}}

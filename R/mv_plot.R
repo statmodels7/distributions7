@@ -14,13 +14,13 @@ NULL
 #' @details
 #' The picture is built from marginals, so it exists exactly when
 #' \code{\link{mv_marginal}} does. Above about three coordinates the panel
-#' matrix stops being readable, so a larger distribution is refused with the
+#' matrix stops being readable, so a larger distribution is rejected with the
 #' suggestion of choosing coordinates rather than being drawn illegibly.
 #'
 #' The contours are drawn at levels of the density itself rather than at
 #' probability levels: the equal-density contour is what the density's shape
 #' means, and computing a probability level would need the integral this
-#' package refuses to approximate in several dimensions.
+#' package rejects to approximate in several dimensions.
 #'
 #' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
 #' @param theta A named list or vector of parameters. Generated at random when

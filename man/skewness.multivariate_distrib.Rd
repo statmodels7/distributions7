@@ -14,13 +14,13 @@
 Never returns; raises an error.
 }
 \description{
-Refused. A scalar skewness for a vector response is not one quantity but a
+Rejected. A scalar skewness for a vector response is not one quantity but a
 choice among several -- Mardia's, Malkovich-Afifi's, or the vector of
 coordinatewise marginal skewnesses -- and they do not agree. Returning any
 of them under the bare name would be a wrong answer in the shape of a right
 one, so the caller names the quantity it wants instead. Note that
 \code{\link{mv_marginal}} is not a way round this for an elliptical family,
-whose marginal is a smaller multivariate distribution and refuses in turn;
+whose marginal is a smaller multivariate distribution and rejects in turn;
 it is for the Dirichlet and the multinomial, whose marginals are univariate.
 }
 \seealso{

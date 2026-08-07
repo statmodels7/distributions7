@@ -18,7 +18,7 @@
 No return value; called for its error.
 }
 \description{
-Refused on the base class rather than served numerically: the univariate
+Rejected on the base class rather than served numerically: the univariate
 fallbacks difference along a line, and the derivative of a multivariate
 log-density in its response is a vector (a matrix at second order) whose
 shape the base class cannot guess. A family that has the closed form

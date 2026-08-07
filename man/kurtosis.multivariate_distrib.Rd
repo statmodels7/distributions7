@@ -14,7 +14,7 @@
 Never returns; raises an error.
 }
 \description{
-Refused, for the reason given at
+Rejected, for the reason given at
 \code{\link[=skewness.multivariate_distrib]{skewness()}}.
 }
 \seealso{

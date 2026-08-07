@@ -53,7 +53,7 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' another. What it does need, and an optimizer cannot carry, is a statement of
 #' how that matrix is to be obtained when the family does not supply it in
 #' closed form --- and that is what this object holds. A family that does
-#' supply one ignores \code{approx} entirely, and \code{fit_distrib()} refuses
+#' supply one ignores \code{approx} entirely, and \code{fit_distrib()} rejects
 #' the argument in that case rather than accepting something it will not use.
 #'
 #' Fisher scoring is Newton's method with one matrix replaced, so how the run
@@ -86,7 +86,7 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' coef(fit_distrib(d, y, method = fisher_scoring()))
 #'
 #' # A family whose expected information has no closed form takes a strategy.
-#' # The same argument on a family that HAS one is refused rather than
+#' # The same argument on a family that HAS one is rejected rather than
 #' # silently ignored.
 #' sn <- skewnormal1_distrib()
 #' set.seed(2)

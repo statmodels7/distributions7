@@ -19,7 +19,7 @@ one that approximates the expectation.
 }
 \details{
 The question decides whether the \code{approx} argument means anything. A
-family with a closed form ignores it, and \code{\link{fit_distrib}} refuses
+family with a closed form ignores it, and \code{\link{fit_distrib}} rejects
 the argument in that case instead of accepting it and doing something else:
 the Laplace is the example the package already documents, where
 \code{approx} has no effect at all because

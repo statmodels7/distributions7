@@ -15,7 +15,8 @@ A numeric vector of \code{NaN}.
 }
 \description{
 \code{NaN}. No moment of the Cauchy exists, the tails being too heavy for
-\eqn{\int |y| f(y) \, dy} to converge, and that is the honest answer rather
-than the divergent quadrature the numerical default would attempt.
+\eqn{\int |y| f(y) \, dy} to converge, and \code{NaN} is returned rather
+than the artifact of the divergent quadrature the numerical default would
+attempt.
 }
 \keyword{internal}

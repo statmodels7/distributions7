@@ -3,7 +3,7 @@
 # the handling of the support's endpoints, and the contract expectation()
 # offers its integrand.
 
-#' Batched Quadrature with Refusal
+#' Batched Quadrature with Rejection
 #'
 #' @description
 #' Calls \code{\link[numericals7]{quad_vec}} with its warning muffled and
@@ -58,7 +58,7 @@ discrete_support_sum <- function(term, from, to, n_rows) {
   center + series_rows(function(k, i) term(k, i) + term(-k, i), 1L, n_rows)
 }
 
-#' Batched Series Summation with Refusal
+#' Batched Series Summation with Rejection
 #'
 #' @description
 #' Calls \code{\link[numericals7]{series_vec}} with its warning muffled and
@@ -152,7 +152,7 @@ expectation_columns <- function(f_env_theta, dots) {
 #' \code{theta} costs matrix evaluations rather than one adaptive run per
 #' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 #' quantiles, which anchors the quadrature on the probability mass wherever it
-#' sits. A combination the batched quadrature refuses -- an integrable
+#' sits. A combination the batched quadrature rejects -- an integrable
 #' endpoint singularity too harsh for bisection -- is rescued by one scalar
 #' \code{\link[stats]{integrate}} run, whose extrapolation reaches it; an
 #' error naming the combination is raised only when both routes fail.

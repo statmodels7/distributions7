@@ -2,7 +2,7 @@
 % Please edit documentation in R/numerical_functions.R
 \name{series_rows}
 \alias{series_rows}
-\title{Batched Series Summation with Refusal}
+\title{Batched Series Summation with Rejection}
 \usage{
 series_rows(term, from, n_rows)
 }

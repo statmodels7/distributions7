@@ -15,7 +15,7 @@ trunc_score_mean(distrib, theta)
 A named list, one component per parameter.
 }
 \description{
-\eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recentres the parent's score:
+\eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the parent's score:
 the truncated score is \eqn{d_i \ell_T = s_i(y) - m_i}.
 }
 \details{

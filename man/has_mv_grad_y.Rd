@@ -14,7 +14,7 @@ A single logical.
 }
 \description{
 \code{TRUE} when \code{\link{distrib_grad_y}} comes from the family rather
-than from the base class, whose method refuses.
+than from the base class, whose method rejects.
 }
 \seealso{
 \code{\link{has_mv_support}}, \code{\link{check_distrib}}

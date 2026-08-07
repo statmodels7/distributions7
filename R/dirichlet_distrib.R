@@ -24,7 +24,7 @@ NULL
 #'   \code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}}
 #'
 #' Everything else is inherited from \code{\link{multivariate_distrib}}, which
-#' refuses the distribution function and the quantile.
+#' rejects the distribution function and the quantile.
 DirichletDistrib <- S7::new_class("DirichletDistrib",
   parent = multivariate_distrib,
   properties = list(param = S7::class_any)
@@ -37,7 +37,7 @@ DirichletDistrib <- S7::new_class("DirichletDistrib",
 #' the simplex's first two derivatives, computed once per call.
 #'
 #' @details
-#' Two identities keep every formula short and are worth naming, both
+#' Two identities keep every formula short, both
 #' following from \eqn{\sum_j \mu_j = 1} differentiated once and twice: the
 #' columns of \eqn{A = \partial\mu/\partial\eta} sum to zero, and so does
 #' every second-derivative vector. They are what make the expected information
@@ -336,7 +336,7 @@ S7::method(mv_reference_draw, DirichletDistrib) <- function(distrib, theta, n, .
 #' mean \eqn{\mu_j} and precision \eqn{\phi}: the concentration is shared by
 #' every marginal. A group of coordinates is again Dirichlet, but only after
 #' the remaining mass is collapsed into one of its own, so that case is
-#' refused.
+#' rejected.
 #' @param distrib A \code{DirichletDistrib} object.
 #' @param theta A named list of parameters.
 #' @param which The coordinate wanted.
@@ -411,13 +411,13 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #'
 #' \strong{The marginals are Beta}, coordinate \eqn{j} being
 #' \eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, so
-#' \code{\link{mv_marginal}} returns an object rather than refusing --- which
+#' \code{\link{mv_marginal}} returns an object rather than signaling an error --- which
 #' is what makes this family a useful test of that generic rather than another
-#' refusal. Several coordinates together are again Dirichlet, but only after
+#' rejection. Several coordinates together are again Dirichlet, but only after
 #' the remaining mass is collapsed into a coordinate of its own, so that case
-#' is refused rather than returned under a name that would mislead.
+#' is rejected rather than returned under a name that would mislead.
 #'
-#' The distribution function and the quantile are refused by
+#' The distribution function and the quantile are rejected by
 #' \code{\link{multivariate_distrib}}, as for every family of that class.
 #'
 #' @return An S7 object of class \code{DirichletDistrib}.

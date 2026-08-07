@@ -16,7 +16,7 @@ A single number, an interior point of high density.
 }
 \description{
 Finds an approximate mode, used to split integrals, to scale root-finding
-brackets and to recentre the ratio-of-uniforms kernel.
+brackets and to recenter the ratio-of-uniforms kernel.
 }
 \details{
 The support is compactified to \eqn{(0, 1)} and the maximum found by

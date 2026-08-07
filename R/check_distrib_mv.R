@@ -11,7 +11,7 @@ NULL
 #' Five of the univariate checks do not survive the move to \eqn{p} dimensions:
 #' the distribution function is an integral over an orthant, the quantile
 #' function inverts an ordering that does not exist, and the two checks built on
-#' them go with them. Running them anyway and reporting the refusals as failures
+#' them go with them. Running them anyway and reporting the rejections as failures
 #' is the mistake a validator makes when it does not know about a case, and it
 #' is worse than not checking, because a user validating their own distribution
 #' cannot tell a real defect from it.
@@ -42,7 +42,7 @@ NULL
 #' The last of these is emitted only when it applies, as the univariate battery
 #' already omits the checks that a discrete family has no counterpart for. A
 #' family with an enumerable support is discrete and has no derivative in the
-#' response, and the multivariate base class refuses
+#' response, and the multivariate base class rejects
 #' \code{\link{distrib_grad_y}} by design, so a family that has not registered
 #' one has made a choice rather than left a gap.
 #'
@@ -215,7 +215,7 @@ has_mv_support <- function(x) {
 #'
 #' @description
 #' \code{TRUE} when \code{\link{distrib_grad_y}} comes from the family rather
-#' than from the base class, whose method refuses.
+#' than from the base class, whose method rejects.
 #'
 #' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
 #'

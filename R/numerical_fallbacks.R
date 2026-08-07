@@ -27,7 +27,7 @@ NULL
 #'
 #' @description
 #' Finds an approximate mode, used to split integrals, to scale root-finding
-#' brackets and to recentre the ratio-of-uniforms kernel.
+#' brackets and to recenter the ratio-of-uniforms kernel.
 #'
 #' @details
 #' The support is compactified to \eqn{(0, 1)} and the maximum found by
@@ -637,9 +637,9 @@ lp_edge_divergence <- function(lp, b) {
 #' Two devices make it safe. The kernel is \strong{recentered at the mode},
 #' without which a density located at \eqn{\mu = 1000} produces a degenerate
 #' bounding box; and it is \strong{normalized to a maximum of one}. With those it
-#' refuses far less often than expected: bimodal densities, a Student t with half
+#' rejects far less often than expected: bimodal densities, a Student t with half
 #' a degree of freedom and a Pareto with infinite mean are all fine. The only
-#' genuine refusal is a density that diverges at an edge, which is handled by
+#' genuine rejection is a density that diverges at an edge, which is handled by
 #' transforming it away.
 #'
 #' @param lp A function giving the log-density.
@@ -1008,7 +1008,7 @@ S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta) {
 #'
 #' @details
 #' The question decides whether the \code{approx} argument means anything. A
-#' family with a closed form ignores it, and \code{\link{fit_distrib}} refuses
+#' family with a closed form ignores it, and \code{\link{fit_distrib}} rejects
 #' the argument in that case instead of accepting it and doing something else:
 #' the Laplace is the example the package already documents, where
 #' \code{approx} has no effect at all because

@@ -2,7 +2,7 @@
 % Please edit documentation in R/numerical_functions.R
 \name{quad_rows}
 \alias{quad_rows}
-\title{Batched Quadrature with Refusal}
+\title{Batched Quadrature with Rejection}
 \usage{
 quad_rows(integrand, lower, upper)
 }

@@ -22,15 +22,13 @@ enumerated lexicographically.
 }
 \details{
 This exists so that nothing has to recover an index tuple by splitting a
-component name back apart. That is the obvious route and it is wrong: a
-parameter whose own name contains an underscore makes
-\code{"mu_log_scale_log_scale"} split into five pieces, and matching those
-against \code{params} yields \code{NA}s. The failure is not subtle when it
-arrives -- the numerical third and fourth derivatives and the Bartlett
-expected Hessian all stopped with an error -- but it only arrives for a
-user-defined distribution, since none of the fourteen shipped here has an
-underscore in a parameter name. Generating the indices and the names from the
-same enumeration cannot be fooled.
+component name back apart. Splitting fails for a parameter whose own name
+contains an underscore: \code{"mu_log_scale_log_scale"} splits into five
+pieces, and matching those against \code{params} yields \code{NA}s. The
+multivariate families carry such names by construction
+(\code{sigma_log_L1}), so the parsing route is wrong for shipped families
+as well as user-defined ones. Generating the indices and the names from the
+same enumeration removes the possibility of disagreement.
 
 Note that this is \strong{not} interchangeable with
 \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match

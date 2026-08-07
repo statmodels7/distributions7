@@ -62,7 +62,7 @@ Methods implemented for this class:
 \code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}}
 
 Everything else is inherited from \code{\link{multivariate_distrib}}, which
-refuses the distribution function and the quantile.
+rejects the distribution function and the quantile.
 }
 
 \seealso{

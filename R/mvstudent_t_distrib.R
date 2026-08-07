@@ -63,7 +63,7 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #'
 #' \strong{The expected information} has no closed form here and is
 #' approximated by sampling. \code{\link{fit_distrib}} therefore accepts
-#' \code{approx}, which it refuses for a family that computes it exactly.
+#' \code{approx}, which it rejects for a family that computes it exactly.
 #'
 #' @param n_dim The dimension \eqn{p}.
 #' @param sigma A \pkg{parameters7} structure for the scale matrix.

@@ -15,7 +15,7 @@ mv_flat_theta(distrib, theta)
 A numeric vector of the parameter values, in declaration order.
 }
 \description{
-Refuses a \code{theta} whose components are not single numbers.
+Rejects a \code{theta} whose components are not single numbers.
 }
 \details{
 The multivariate families of this package take one parameter value for the

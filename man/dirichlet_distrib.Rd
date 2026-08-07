@@ -61,13 +61,13 @@ drops out.
 
 \strong{The marginals are Beta}, coordinate \eqn{j} being
 \eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, so
-\code{\link{mv_marginal}} returns an object rather than refusing --- which
+\code{\link{mv_marginal}} returns an object rather than signaling an error --- which
 is what makes this family a useful test of that generic rather than another
-refusal. Several coordinates together are again Dirichlet, but only after
+rejection. Several coordinates together are again Dirichlet, but only after
 the remaining mass is collapsed into a coordinate of its own, so that case
-is refused rather than returned under a name that would mislead.
+is rejected rather than returned under a name that would mislead.
 
-The distribution function and the quantile are refused by
+The distribution function and the quantile are rejected by
 \code{\link{multivariate_distrib}}, as for every family of that class.
 }
 \examples{

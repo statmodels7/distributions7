@@ -31,7 +31,7 @@ One constructor returns one of two behaviors, in the manner of
 \code{\link{truncated}}, which chooses between its continuous and discrete
 classes from the arguments it is handed.
 
-The precision form is the cheaper one and is worth preferring where the
+The precision form is the cheaper one and is preferable where the
 modeling allows it. Written in \eqn{\Omega}, the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
 parameter's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
@@ -50,7 +50,7 @@ value says how the matrix is built and not which matrix it is.
 All of the parameters are unconstrained, and their links are therefore the
 identity: the constraint that makes the matrix positive definite lives
 inside the matrix parameter, which is why it needs no link to express it. A
-consequence worth knowing is that the parameter scale and the link scale
+practical consequence is that the parameter scale and the link scale
 coincide here, so \code{scale = "link"} changes nothing.
 
 \strong{Reading a fit.} The free values are coordinates, not quantities
@@ -63,7 +63,7 @@ describes directly. The conditional variance is
 marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
 on all the others.
 
-\strong{Rank.} A rank-deficient structure is refused. A singular covariance
+\strong{Rank.} A rank-deficient structure is rejected. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
 measure, and a singular precision gives a quadratic form that is flat along
 its null space and does not normalize. The two are different failures and

@@ -30,7 +30,7 @@ compositions of its size --- and enumerating it is what lets an expectation
 be an exact sum and the validator check the total mass by addition rather
 than by sampling.
 
-The base class refuses. A continuous family has no such set, and a discrete
+The base class rejects. A continuous family has no such set, and a discrete
 one whose support is infinite has no finite matrix to return; either way an
 answer would be a fiction, and the caller is better told.
 }

@@ -16,7 +16,7 @@
 Never returns; raises an error.
 }
 \description{
-Refused. A quantile is defined by inverting a distribution function on the
+Rejected. A quantile is defined by inverting a distribution function on the
 line; in several dimensions the ordering that would define it does not
 exist.
 }

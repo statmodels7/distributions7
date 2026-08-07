@@ -21,7 +21,7 @@ The mean vector, the concentration, the shapes \eqn{\alpha = \phi\mu} and
 the simplex's first two derivatives, computed once per call.
 }
 \details{
-Two identities keep every formula short and are worth naming, both
+Two identities keep every formula short, both
 following from \eqn{\sum_j \mu_j = 1} differentiated once and twice: the
 columns of \eqn{A = \partial\mu/\partial\eta} sum to zero, and so does
 every second-derivative vector. They are what make the expected information

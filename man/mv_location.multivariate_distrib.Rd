@@ -12,7 +12,7 @@
 Never returns; raises an error.
 }
 \description{
-Refused. Not every multivariate family has a location: a Dirichlet is
+Rejected. Not every multivariate family has a location: a Dirichlet is
 described by concentrations and a Wishart by a scale and a count, and
 handing back the first \eqn{p} parameters under the name of a mean would be
 a wrong answer in the shape of a right one.

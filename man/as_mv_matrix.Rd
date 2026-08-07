@@ -16,7 +16,7 @@ A numeric matrix with \code{distrib@n_dim} columns.
 }
 \description{
 Puts \code{y} in the \eqn{n \times p} form every multivariate method expects,
-and refuses a response of the wrong width.
+and rejects a response of the wrong width.
 }
 \details{
 A plain vector of the right length is read as a single observation, which is

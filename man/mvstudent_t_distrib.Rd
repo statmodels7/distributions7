@@ -54,7 +54,7 @@ resistant. The gaussian is the limit \eqn{\nu \to \infty}.
 
 \strong{The expected information} has no closed form here and is
 approximated by sampling. \code{\link{fit_distrib}} therefore accepts
-\code{approx}, which it refuses for a family that computes it exactly.
+\code{approx}, which it rejects for a family that computes it exactly.
 }
 \examples{
 d <- mvstudent_t_distrib(2)

@@ -356,7 +356,7 @@ trunc_mass_derivs <- function(distrib, theta, order) {
 #' Mean of the Parent's Score Under the Truncated Law
 #'
 #' @description
-#' \eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recentres the parent's score:
+#' \eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the parent's score:
 #' the truncated score is \eqn{d_i \ell_T = s_i(y) - m_i}.
 #'
 #' @details
@@ -1068,7 +1068,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' third and fourth derivatives fall back to finite differences of the analytical
 #' Hessian.
 #'
-#' \strong{What the constructor refuses.}
+#' \strong{What the constructor rejects.}
 #' \itemize{
 #'   \item Both endpoints \code{NULL}: nothing to do, and silently returning the
 #'     parent would hide the mistake.
@@ -1104,7 +1104,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 #' mean(tn, list(mu = 0, sigma = 1))
 #'
-#' # A truncation point that removes nothing is refused
+#' # A truncation point that removes nothing is rejected
 #' try(truncated(gamma2_distrib(), lower = -2))
 #'
 #' @seealso \code{\link{zero_inflated}}, \code{\link{zero_adjusted}},

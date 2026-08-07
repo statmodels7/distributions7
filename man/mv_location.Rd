@@ -14,7 +14,7 @@ mv_sigma(distrib, theta)
 
 \item{theta}{A named list or vector of parameters.
 
-Both are generics whose base-class method refuses: not every multivariate
+Both are generics whose base-class method rejects: not every multivariate
 family has a location, and one that does not should say so rather than
 hand back its first p parameters under a name that does not fit them.}
 }

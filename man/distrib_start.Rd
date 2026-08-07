@@ -49,8 +49,8 @@ d <- mvgaussian_distrib(2)
 y <- distrib_rng(d, 200, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
                               sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 
-# the gaussian knows its own maximum likelihood estimate, so the fit starts
-# there and has nothing left to do
+# the gaussian has a closed-form maximum likelihood estimate, so the fit
+# starts there and has nothing left to do
 start <- distrib_start(d, y)[[1]]
 mv_location(d, start)
 colMeans(y)

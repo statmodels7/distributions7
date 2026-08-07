@@ -14,7 +14,7 @@ used, the expectation being over the distribution rather than the data.}
 \item{scale}{Handled by the generic before dispatch.}
 
 \item{approx}{One of \code{"bartlett"} (equivalently \code{"opg"}) or
-\code{"mc"}; \code{"integrate"} is refused.}
+\code{"mc"}; \code{"integrate"} is rejected.}
 
 \item{nsim}{Monte Carlo sample size.}
 
@@ -29,7 +29,7 @@ taken over draws from the distribution itself.
 }
 \details{
 The one-dimensional routes do not survive the move to \eqn{p} dimensions.
-\code{"integrate"} builds its quadrature over an interval and is refused
+\code{"integrate"} builds its quadrature over an interval and is rejected
 here; \code{"bartlett"} in the univariate package reaches
 \code{\link{expectation}}, which is that same quadrature. What does
 generalize is sampling, so both remaining routes draw from the family's own
@@ -45,7 +45,7 @@ degenerate.
 Both are Monte Carlo, so both carry an error of order
 \eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
 scoring with a noisy information. That is a deliberate choice a caller
-makes, which is why \code{\link{fit_distrib}} refuses the argument for a
+makes, which is why \code{\link{fit_distrib}} rejects the argument for a
 family that has an exact expression.
 }
 \keyword{internal}
