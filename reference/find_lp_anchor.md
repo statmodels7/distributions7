@@ -27,7 +27,7 @@ A single number.
 ## Details
 
 Kept separate from the `distrib` object so that it can also be applied
-to a reparameterised density, which is what the divergence-removing
+to a reparametrized density, which is what the divergence-removing
 transforms in this file produce and which has no distribution object of
 its own.
 

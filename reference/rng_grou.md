@@ -115,7 +115,7 @@ to 1 exactly, which is also what
 
 The kernel must be unimodal and the parameters in `theta` must be
 scalars. Densities that diverge at one or at both edges of their support
-are handled by the reparameterisations described below.
+are handled by the reparametrizations described below.
 
 Heavy tails are not an obstacle: with the default `r = 2` the sampler
 handles a Student's t with half a degree of freedom and a Pareto with

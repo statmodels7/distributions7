@@ -75,7 +75,7 @@
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Kept separate from the <code>distrib</code> object so that it can also be run on a
-reparameterised density, which is how the divergence transforms reuse it.</p>
+reparametrized density, which is how the divergence transforms reuse it.</p>
 <p>Two devices make it safe. The kernel is <strong>recentered at the mode</strong>,
 without which a density located at \(\mu = 1000\) produces a degenerate
 bounding box; and it is <strong>normalized to a maximum of one</strong>. With those it

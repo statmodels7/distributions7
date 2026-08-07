@@ -166,7 +166,7 @@ distrib_deriv3(d, y, theta, scale = "link")
 A standard deviation is positive, a probability lives in $`(0, 1)`$, a
 shape parameter is positive. Maximizing a likelihood over such
 constrained parameters means either fighting the boundary or bolting on
-constraints. Reparameterise through the link and the problem becomes
+constraints. Reparametrize through the link and the problem becomes
 unconstrained: $`\eta`$ ranges over the whole real line, and a Newton or
 Fisher-scoring step needs exactly the link-scale score and information
 this package computes in closed form.
