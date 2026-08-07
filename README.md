@@ -125,7 +125,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 20 ms
+#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -139,8 +139,8 @@ fit
 #> sigma2   0.6875     0.0744 0.5416 0.8334
 ```
 
-The fit knows what it was estimated from, so it can be checked against
-the data and simulated from:
+The fit carries the data it was estimated from, so it can be checked
+against the data and simulated from:
 
 ``` r
 plot(fit)
@@ -172,7 +172,7 @@ c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))
 ```
 
 Where a fit starts matters more than it looks, so a family is asked for
-its own starting value through `distrib_start()`. A family that knows an
+its own starting value through `distrib_start()`. A family with a known
 estimator returns it and the fit begins there; one that says nothing
 gets random draws.
 

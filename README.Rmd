@@ -112,7 +112,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 ```
 
-The fit knows what it was estimated from, so it can be checked against the data
+The fit carries the data it was estimated from, so it can be checked against the data
 and simulated from:
 
 ```{r fit-plot, fig.height = 4, fig.width = 6}
@@ -139,7 +139,7 @@ c(fisher = as.numeric(logLik(fit)), lbfgs = as.numeric(logLik(fit2)))
 ```
 
 Where a fit starts matters more than it looks, so a family is asked for its
-own starting value through `distrib_start()`. A family that knows an estimator
+own starting value through `distrib_start()`. A family with a known estimator
 returns it and the fit begins there; one that says nothing gets random draws.
 
 ```{r}
