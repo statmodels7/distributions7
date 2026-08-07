@@ -3,7 +3,7 @@
 `TRUE` when
 [`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 comes from the family rather than from the base class, whose method
-refuses.
+rejects.
 
 ## Usage
 

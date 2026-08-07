@@ -108,12 +108,12 @@ carrying the data is therefore a constant times one of those zero sums, and
 drops out.</p>
 <p><strong>The marginals are Beta</strong>, coordinate \(j\) being
 \(\mathrm{Beta}(\alpha_j, \phi-\alpha_j)\), so
-<code><a href="mv_marginal.html">mv_marginal</a></code> returns an object rather than refusing — which
+<code><a href="mv_marginal.html">mv_marginal</a></code> returns an object rather than signaling an error — which
 is what makes this family a useful test of that generic rather than another
-refusal. Several coordinates together are again Dirichlet, but only after
+rejection. Several coordinates together are again Dirichlet, but only after
 the remaining mass is collapsed into a coordinate of its own, so that case
-is refused rather than returned under a name that would mislead.</p>
-<p>The distribution function and the quantile are refused by
+is rejected rather than returned under a name that would mislead.</p>
+<p>The distribution function and the quantile are rejected by
 <code><a href="multivariate_distrib.html">multivariate_distrib</a></code>, as for every family of that class.</p>
     </div>
     <div class="section level2">

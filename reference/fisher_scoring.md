@@ -64,7 +64,7 @@ statement of how that matrix is to be obtained when the family does not
 supply it in closed form — and that is what this object holds. A family
 that does supply one ignores `approx` entirely, and
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-refuses the argument in that case rather than accepting something it
+rejects the argument in that case rather than accepting something it
 will not use.
 
 Fisher scoring is Newton's method with one matrix replaced, so how the
@@ -96,7 +96,7 @@ coef(fit_distrib(d, y, method = fisher_scoring()))
 #> 1.071079 1.853543 
 
 # A family whose expected information has no closed form takes a strategy.
-# The same argument on a family that HAS one is refused rather than
+# The same argument on a family that HAS one is rejected rather than
 # silently ignored.
 sn <- skewnormal1_distrib()
 set.seed(2)

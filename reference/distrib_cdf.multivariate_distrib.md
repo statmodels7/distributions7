@@ -1,6 +1,6 @@
 # No Distribution Function in Several Dimensions
 
-Refused. The distribution function of a multivariate law is an integral
+Rejected. The distribution function of a multivariate law is an integral
 over an orthant, which has no closed form for the gaussian and no
 one-dimensional fallback to stand in for it, and the quadrature
 registered on

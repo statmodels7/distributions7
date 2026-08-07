@@ -100,7 +100,7 @@ implementation of its own: it is a Newton step with one matrix replaced by
 another. What it does need, and an optimizer cannot carry, is a statement of
 how that matrix is to be obtained when the family does not supply it in
 closed form — and that is what this object holds. A family that does
-supply one ignores <code>approx</code> entirely, and <code><a href="fit_distrib.html">fit_distrib()</a></code> refuses
+supply one ignores <code>approx</code> entirely, and <code><a href="fit_distrib.html">fit_distrib()</a></code> rejects
 the argument in that case rather than accepting something it will not use.</p>
 <p>Fisher scoring is Newton's method with one matrix replaced, so how the run
 stops and how long it may take are set here, as they would be on any other
@@ -128,7 +128,7 @@ stand.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1.071079 1.853543 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A family whose expected information has no closed form takes a strategy.</span></span></span>
-<span class="r-in"><span><span class="co"># The same argument on a family that HAS one is refused rather than</span></span></span>
+<span class="r-in"><span><span class="co"># The same argument on a family that HAS one is rejected rather than</span></span></span>
 <span class="r-in"><span><span class="co"># silently ignored.</span></span></span>
 <span class="r-in"><span><span class="va">sn</span> <span class="op">&lt;-</span> <span class="fu"><a href="skewnormal1_distrib.html">skewnormal1_distrib</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>

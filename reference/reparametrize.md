@@ -90,7 +90,7 @@ The derivatives of the map come from running that same expression on
 **jets** – values carrying every partial derivative to fourth order – so
 they are exact at every order with no chain rule transcribed. The
 arithmetic operators and the mathematical functions dispatch on them. A
-map that branches on the value of a parameter is refused rather than
+map that branches on the value of a parameter is rejected rather than
 approximated, a comparison having no derivative to carry.
 
 **What is exact and what is inherited.** The derivatives of the

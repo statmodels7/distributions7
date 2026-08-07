@@ -69,10 +69,10 @@ supplied, or the matrix parameter's own inverse map when it has one.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code><a href="https://statmodels7.github.io/parameters7/reference/param_free.html" class="external-link">param_free</a></code> is exact or refused: a structure that
+    <p><code><a href="https://statmodels7.github.io/parameters7/reference/param_free.html" class="external-link">param_free</a></code> is exact or rejected: a structure that
 cannot represent the matrix says so rather than returning something
 plausible. That is the right contract for reporting an estimate and the
-wrong one for choosing where to begin, so a refusal here falls back to a
+wrong one for choosing where to begin, so a rejection here falls back to a
 short numerical search over the free values, which is allowed to be
 approximate because a starting value is.</p>
     </div>

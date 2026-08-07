@@ -27,7 +27,7 @@ is taken over draws from the distribution itself.
 - approx:
 
   One of `"bartlett"` (equivalently `"opg"`) or `"mc"`; `"integrate"` is
-  refused.
+  rejected.
 
 - nsim:
 
@@ -45,7 +45,7 @@ A named list keyed as
 ## Details
 
 The one-dimensional routes do not survive the move to \\p\\ dimensions.
-`"integrate"` builds its quadrature over an interval and is refused
+`"integrate"` builds its quadrature over an interval and is rejected
 here; `"bartlett"` in the univariate package reaches
 [`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
 which is that same quadrature. What does generalize is sampling, so both
@@ -64,4 +64,4 @@ Both are Monte Carlo, so both carry an error of order
 scoring with a noisy information. That is a deliberate choice a caller
 makes, which is why
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-refuses the argument for a family that has an exact expression.
+rejects the argument for a family that has an exact expression.

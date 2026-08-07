@@ -1,4 +1,4 @@
-# Batched Quadrature with Refusal
+# Batched Quadrature with Rejection
 
 Calls
 [`quad_vec`](https://statmodels7.github.io/numericals7/reference/quad_vec.html)

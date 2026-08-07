@@ -1,7 +1,7 @@
 # Locate an Interior High-Density Point
 
 Finds an approximate mode, used to split integrals, to scale
-root-finding brackets and to recentre the ratio-of-uniforms kernel.
+root-finding brackets and to recenter the ratio-of-uniforms kernel.
 
 ## Usage
 

@@ -69,13 +69,13 @@ therefore a constant times one of those zero sums, and drops out.
 **The marginals are Beta**, coordinate \\j\\ being
 \\\mathrm{Beta}(\alpha_j, \phi-\alpha_j)\\, so
 [`mv_marginal`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
-returns an object rather than refusing — which is what makes this family
-a useful test of that generic rather than another refusal. Several
-coordinates together are again Dirichlet, but only after the remaining
-mass is collapsed into a coordinate of its own, so that case is refused
-rather than returned under a name that would mislead.
+returns an object rather than signaling an error — which is what makes
+this family a useful test of that generic rather than another rejection.
+Several coordinates together are again Dirichlet, but only after the
+remaining mass is collapsed into a coordinate of its own, so that case
+is rejected rather than returned under a name that would mislead.
 
-The distribution function and the quantile are refused by
+The distribution function and the quantile are rejected by
 [`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
 as for every family of that class.
 

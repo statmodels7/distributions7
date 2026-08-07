@@ -84,7 +84,7 @@ parametrizes: the covariance in the first case, the precision in the second.
 One constructor returns one of two behaviors, in the manner of
 <code><a href="truncated.html">truncated</a></code>, which chooses between its continuous and discrete
 classes from the arguments it is handed.</p>
-<p>The precision form is the cheaper one and is worth preferring where the
+<p>The precision form is the cheaper one and is preferable where the
 modeling allows it. Written in \(\Omega\), the log-density, the score and
 the Hessian are multiplications, and the first term of the score is the
 parameter's own <code>param_dlogdet()</code>; written in \(\Sigma\) the same
@@ -101,7 +101,7 @@ value says how the matrix is built and not which matrix it is.</p>
 <p>All of the parameters are unconstrained, and their links are therefore the
 identity: the constraint that makes the matrix positive definite lives
 inside the matrix parameter, which is why it needs no link to express it. A
-consequence worth knowing is that the parameter scale and the link scale
+practical consequence is that the parameter scale and the link scale
 coincide here, so <code>scale = "link"</code> changes nothing.</p>
 <p><strong>Reading a fit.</strong> The free values are coordinates, not quantities
 anybody reads. <code><a href="mv_summary.html">mv_summary</a></code> carries the fit's variance matrix
@@ -112,7 +112,7 @@ describes directly. The conditional variance is
 \(1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})\), and its ratio to the
 marginal variance is \(1 - R_j^2\) for the regression of that coordinate
 on all the others.</p>
-<p><strong>Rank.</strong> A rank-deficient structure is refused. A singular covariance
+<p><strong>Rank.</strong> A rank-deficient structure is rejected. A singular covariance
 gives a law supported on a subspace, with no density against Lebesgue
 measure, and a singular precision gives a quadratic form that is flat along
 its null space and does not normalize. The two are different failures and

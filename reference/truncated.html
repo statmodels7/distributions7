@@ -118,7 +118,7 @@ general parent, and are obtained by quadrature (continuous) or summation
 distribution are therefore substantially more expensive than the parent's, and
 third and fourth derivatives fall back to finite differences of the analytical
 Hessian.</p>
-<p><strong>What the constructor refuses.</strong></p><ul><li><p>Both endpoints <code>NULL</code>: nothing to do, and silently returning the
+<p><strong>What the constructor rejects.</strong></p><ul><li><p>Both endpoints <code>NULL</code>: nothing to do, and silently returning the
 parent would hide the mistake.</p></li>
 <li><p><code>lower &gt;= upper</code>.</p></li>
 <li><p>A truncation point that removes no mass, such as
@@ -158,7 +158,7 @@ single object over the intersection of the two intervals, rather than nested.</p
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">tn</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, sigma <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2296372</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># A truncation point that removes nothing is refused</span></span></span>
+<span class="r-in"><span><span class="co"># A truncation point that removes nothing is rejected</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/try.html" class="external-link">try</a></span><span class="op">(</span><span class="fu">truncated</span><span class="op">(</span><span class="fu"><a href="gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, lower <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Error : truncated() was given lower = -2, which is at or below the lower bound of the</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   support of 'gamma2' (0). Truncating there removes no probability mass and the</span>

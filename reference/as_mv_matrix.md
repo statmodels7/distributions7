@@ -1,7 +1,7 @@
 # Coerce a Multivariate Response to a Matrix
 
 Puts `y` in the \\n \times p\\ form every multivariate method expects,
-and refuses a response of the wrong width.
+and rejects a response of the wrong width.
 
 ## Usage
 

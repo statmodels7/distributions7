@@ -1,6 +1,6 @@
 # No Kurtosis Without Saying Which One
 
-Refused, for the reason given at
+Rejected, for the reason given at
 [`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.multivariate_distrib.md).
 
 ## Arguments

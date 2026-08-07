@@ -1,6 +1,6 @@
 # No Marginal Without a Closed Form
 
-Refused. Integrating out the other coordinates has no general closed
+Rejected. Integrating out the other coordinates has no general closed
 form, and a numerical marginal would be a different object with the same
 name.
 

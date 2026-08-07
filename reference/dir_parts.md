@@ -28,12 +28,12 @@ A list with `mu`, `phi`, `alpha`, `A` (a \\p \times (p-1)\\ matrix), `B`
 
 ## Details
 
-Two identities keep every formula short and are worth naming, both
-following from \\\sum_j \mu_j = 1\\ differentiated once and twice: the
-columns of \\A = \partial\mu/\partial\eta\\ sum to zero, and so does
-every second-derivative vector. They are what make the expected
-information closed form, since the terms carrying the data drop out
-under expectation.
+Two identities keep every formula short, both following from \\\sum_j
+\mu_j = 1\\ differentiated once and twice: the columns of \\A =
+\partial\mu/\partial\eta\\ sum to zero, and so does every
+second-derivative vector. They are what make the expected information
+closed form, since the terms carrying the data drop out under
+expectation.
 
 ## See also
 

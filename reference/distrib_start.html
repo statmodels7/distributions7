@@ -107,8 +107,8 @@ family the harder one contains.</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">200</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">1</span>, mu2 <span class="op">=</span> <span class="op">-</span><span class="fl">1</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>                              sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># the gaussian knows its own maximum likelihood estimate, so the fit starts</span></span></span>
-<span class="r-in"><span><span class="co"># there and has nothing left to do</span></span></span>
+<span class="r-in"><span><span class="co"># the gaussian has a closed-form maximum likelihood estimate, so the fit</span></span></span>
+<span class="r-in"><span><span class="co"># starts there and has nothing left to do</span></span></span>
 <span class="r-in"><span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fu">distrib_start</span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mv_location.html">mv_location</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">start</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         v1         v2 </span>

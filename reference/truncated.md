@@ -68,7 +68,7 @@ Derivatives of a truncated distribution are therefore substantially more
 expensive than the parent's, and third and fourth derivatives fall back
 to finite differences of the analytical Hessian.
 
-**What the constructor refuses.**
+**What the constructor rejects.**
 
 - Both endpoints `NULL`: nothing to do, and silently returning the
   parent would hide the mistake.
@@ -122,7 +122,7 @@ tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
 mean(tn, list(mu = 0, sigma = 1))
 #> [1] 0.2296372
 
-# A truncation point that removes nothing is refused
+# A truncation point that removes nothing is rejected
 try(truncated(gamma2_distrib(), lower = -2))
 #> Error : truncated() was given lower = -2, which is at or below the lower bound of the
 #>   support of 'gamma2' (0). Truncating there removes no probability mass and the

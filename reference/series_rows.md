@@ -1,4 +1,4 @@
-# Batched Series Summation with Refusal
+# Batched Series Summation with Rejection
 
 Calls
 [`series_vec`](https://statmodels7.github.io/numericals7/reference/series_vec.html)

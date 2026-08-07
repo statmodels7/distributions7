@@ -5,7 +5,7 @@ panels of every parameter combination are refined in one call, so a vector
 theta costs matrix evaluations rather than one adaptive run per
 value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 quantiles, which anchors the quadrature on the probability mass wherever it
-sits. A combination the batched quadrature refuses – an integrable
+sits. A combination the batched quadrature rejects – an integrable
 endpoint singularity too harsh for bisection – is rescued by one scalar
 integrate run, whose extrapolation reaches it; an
 error naming the combination is raised only when both routes fail."><meta property="og:description" content="Evaluates \(E[f(Y)] = \int f(y)\,p(y;\theta)\,dy\) by the
@@ -14,7 +14,7 @@ panels of every parameter combination are refined in one call, so a vector
 theta costs matrix evaluations rather than one adaptive run per
 value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 quantiles, which anchors the quadrature on the probability mass wherever it
-sits. A combination the batched quadrature refuses – an integrable
+sits. A combination the batched quadrature rejects – an integrable
 endpoint singularity too harsh for bisection – is rescued by one scalar
 integrate run, whose extrapolation reaches it; an
 error naming the combination is raised only when both routes fail."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -64,7 +64,7 @@ panels of every parameter combination are refined in one call, so a vector
 <code>theta</code> costs matrix evaluations rather than one adaptive run per
 value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 quantiles, which anchors the quadrature on the probability mass wherever it
-sits. A combination the batched quadrature refuses – an integrable
+sits. A combination the batched quadrature rejects – an integrable
 endpoint singularity too harsh for bisection – is rescued by one scalar
 <code><a href="https://rdrr.io/r/stats/integrate.html" class="external-link">integrate</a></code> run, whose extrapolation reaches it; an
 error naming the combination is raised only when both routes fail.</p>

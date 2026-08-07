@@ -1,6 +1,6 @@
 # No Quantile Function in Several Dimensions
 
-Refused. A quantile is defined by inverting a distribution function on
+Rejected. A quantile is defined by inverting a distribution function on
 the line; in several dimensions the ordering that would define it does
 not exist.
 

@@ -1,6 +1,6 @@
 # No Enumerable Support
 
-The base-class method, which refuses.
+The base-class method, which rejects.
 
 ## Arguments
 

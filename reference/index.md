@@ -294,11 +294,11 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
   : Numerical Derivatives of the Distribution Function
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
-  : Batched Quadrature with Refusal
+  : Batched Quadrature with Rejection
 - [`discrete_support_sum()`](https://statmodels7.github.io/distributions7/reference/discrete_support_sum.md)
   : Summation over an Integer Support
 - [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
-  : Batched Series Summation with Refusal
+  : Batched Series Summation with Rejection
 
 ## Utilities
 
@@ -2659,7 +2659,7 @@ divergent density.
   : Print a Validation Table
 
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
-  : Batched Quadrature with Refusal
+  : Batched Quadrature with Rejection
 
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
@@ -2688,7 +2688,7 @@ divergent density.
   : Run a Check, Turning an Error Into a Failure
 
 - [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
-  : Batched Series Summation with Refusal
+  : Batched Series Summation with Rejection
 
 - [`skewness.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.md)
   : Skewness of the Bernoulli Distribution

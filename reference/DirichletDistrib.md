@@ -101,7 +101,7 @@ Methods implemented for this class:
 
 Everything else is inherited from
 [`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
-which refuses the distribution function and the quantile.
+which rejects the distribution function and the quantile.
 
 ## See also
 

@@ -79,9 +79,9 @@ reparametrized density, which is how the divergence transforms reuse it.</p>
 <p>Two devices make it safe. The kernel is <strong>recentered at the mode</strong>,
 without which a density located at \(\mu = 1000\) produces a degenerate
 bounding box; and it is <strong>normalized to a maximum of one</strong>. With those it
-refuses far less often than expected: bimodal densities, a Student t with half
+rejects far less often than expected: bimodal densities, a Student t with half
 a degree of freedom and a Pareto with infinite mean are all fine. The only
-genuine refusal is a density that diverges at an edge, which is handled by
+genuine rejection is a density that diverges at an edge, which is handled by
 transforming it away.</p>
     </div>
     <div class="section level2">

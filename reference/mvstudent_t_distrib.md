@@ -69,7 +69,7 @@ resistant. The gaussian is the limit \\\nu \to \infty\\.
 **The expected information** has no closed form here and is approximated
 by sampling.
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-therefore accepts `approx`, which it refuses for a family that computes
+therefore accepts `approx`, which it rejects for a family that computes
 it exactly.
 
 ## See also

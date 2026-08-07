@@ -1,6 +1,6 @@
 # Require Scalar Parameters
 
-Refuses a `theta` whose components are not single numbers.
+Rejects a `theta` whose components are not single numbers.
 
 ## Usage
 

@@ -26,7 +26,7 @@ A single logical.
 The question decides whether the `approx` argument means anything. A
 family with a closed form ignores it, and
 [`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
-refuses the argument in that case instead of accepting it and doing
+rejects the argument in that case instead of accepting it and doing
 something else: the Laplace is the example the package already
 documents, where `approx` has no effect at all because
 \\\mathcal{I}(\theta) = 1/b^{2}\\ is written out.

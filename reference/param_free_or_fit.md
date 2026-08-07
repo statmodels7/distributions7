@@ -27,8 +27,8 @@ A numeric vector of length `s@n_free`.
 ## Details
 
 [`param_free`](https://statmodels7.github.io/parameters7/reference/param_free.html)
-is exact or refused: a structure that cannot represent the matrix says
+is exact or rejected: a structure that cannot represent the matrix says
 so rather than returning something plausible. That is the right contract
 for reporting an estimate and the wrong one for choosing where to begin,
-so a refusal here falls back to a short numerical search over the free
+so a rejection here falls back to a short numerical search over the free
 values, which is allowed to be approximate because a starting value is.

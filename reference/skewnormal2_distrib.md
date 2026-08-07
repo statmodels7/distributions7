@@ -46,11 +46,11 @@ parametrization.
 follow. It carries a sign, which a jet cannot take of itself, so the
 sign is read off the plain value before any jet is seeded. And
 \\\partial\alpha/\partial\gamma_1\\ grows without bound as \\\gamma_1
-\to 0\\: measured, 3.9 at \\\gamma_1 = 0.5\\ and 258 at \\10^{-4}\\.
-What makes the parametrization worth having is that the score does
-**not** follow it, the divergent contributions canceling, so the
-variance of the score in \\\gamma_1\\ is 0.158 at \\\gamma_1 = 0.05\\
-and 0.158 again at \\0.01\\.
+\to 0\\: measured, 3.9 at \\\gamma_1 = 0.5\\ and 258 at \\10^{-4}\\. The
+value of the parametrization is that the score does **not** follow it,
+the divergent contributions canceling, so the variance of the score in
+\\\gamma_1\\ is 0.158 at \\\gamma_1 = 0.05\\ and 0.158 again at
+\\0.01\\.
 
 **What that costs in arithmetic.** The cancellation is between terms of
 size proportional to the Jacobian, so the significant digits lost grow

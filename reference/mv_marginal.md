@@ -39,9 +39,10 @@ A marginal is not available in general: integrating a density over the
 coordinates one is not interested in has no closed form for most
 families. It is available for the elliptical ones, where the marginal
 belongs to the same family with the mean and the matrix subsetted, and
-those are the ones this generic has methods for. A family without one
-refuses rather than approximating, because a quadrature over the
-discarded coordinates would be a different object wearing the same name.
+those are the ones this generic has methods for. For a family without
+one the generic signals an error rather than approximating, since a
+quadrature over the discarded coordinates would be a different object
+under the same name.
 
 This is what makes a picture of a multivariate distribution possible at
 all: a panel of a pairs plot shows a marginal, so the plot exists
