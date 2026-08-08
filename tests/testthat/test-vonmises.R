@@ -152,3 +152,21 @@ test_that("the components mixing mu with two concentrations vanish exactly", {
   expect_identical(d4$mu_mu_kappa_kappa, rep(0, 3))
   expect_identical(d4$mu_kappa_kappa_kappa, rep(0, 3))
 })
+
+test_that("the log-density is finite at concentrations past the scaled-Bessel underflow", {
+  # log(besselI(k, 0, expon.scaled = TRUE)) is -Inf between kappa = 1e5 and
+  # 1e6, where the scaled Bessel underflows to an exact zero;
+  # numericals7::log_bessel_i is finite there, and the log-density must be too.
+  d <- vonmises1_distrib()
+  for (k in c(1e5, 5e5, 1e6)) {
+    lp <- distrib_pdf(d, c(-0.2, 0, 0.3), list(mu = 0, kappa = k), log = TRUE)
+    expect_true(all(is.finite(lp)))
+  }
+  # against the direct scaled route where that route still works
+  k <- 50
+  expect_equal(
+    distrib_pdf(d, 0.4, list(mu = 0.1, kappa = k), log = TRUE),
+    k * cos(0.4 - 0.1) - log(2 * pi) - (log(besselI(k, 0, expon.scaled = TRUE)) + k),
+    tolerance = 1e-12
+  )
+})

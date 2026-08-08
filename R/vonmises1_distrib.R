@@ -40,9 +40,10 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #' @seealso \code{\link{vonmises1_distrib}}
 S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta, log = FALSE) {
   k <- theta[[2]]
-  # log I_0 through the scaled Bessel: the exponent is added back rather than
-  # left to overflow, which it does past about kappa = 700.
-  log_i0 <- log(besselI(k, 0, expon.scaled = TRUE)) + k
+  # log I_0 from numericals7: the scaled besselI underflows to an exact zero
+  # between kappa = 1e5 and 1e6, where log() returns -Inf; log_bessel_i is
+  # finite wherever the logarithm itself is representable.
+  log_i0 <- numericals7::log_bessel_i(k, 0)
   out <- k * cos(y - theta[[1]]) - log(2 * pi) - log_i0
   out[y < -pi | y >= pi] <- -Inf
   if (log) out else exp(out)
