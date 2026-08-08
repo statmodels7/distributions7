@@ -2,7 +2,7 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_refuse}
 \alias{mv_refuse}
-\title{Refuse a Quantity That Has No Multivariate Counterpart}
+\title{Reject a Quantity That Has No Multivariate Counterpart}
 \usage{
 mv_refuse(distrib, what, why)
 }

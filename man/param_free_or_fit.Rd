@@ -19,9 +19,9 @@ Returns the free vector of the matrix parameter whose matrix is closest to the o
 supplied, or the matrix parameter's own inverse map when it has one.
 }
 \details{
-\code{\link[parameters7]{param_free}} is exact or rejected: a structure that
-cannot represent the matrix says so rather than returning something
-plausible. That is the right contract for reporting an estimate and the
+\code{\link[parameters7]{param_free}} is exact or rejected: a parameter that
+cannot represent the matrix signals an error rather than returning
+something plausible. That is the right contract for reporting an estimate and the
 wrong one for choosing where to begin, so a rejection here falls back to a
 short numerical search over the free values, which is allowed to be
 approximate because a starting value is.

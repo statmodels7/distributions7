@@ -170,7 +170,7 @@ mv_flat_theta <- function(distrib, theta) {
 }
 
 
-#' Refuse a Quantity That Has No Multivariate Counterpart
+#' Reject a Quantity That Has No Multivariate Counterpart
 #'
 #' @description
 #' Raises the error a multivariate distribution gives for the one-dimensional

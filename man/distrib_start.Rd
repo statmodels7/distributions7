@@ -35,8 +35,8 @@ converges in one iteration to \eqn{-379.9146}, which is the exact maximum.
 Nothing about the arithmetic changed.
 
 The default method returns random parameters, as before, so a distribution
-that says nothing loses nothing. A family that can do better says so by
-registering a method: an exact maximum likelihood estimator where one is
+that registers nothing loses nothing. A family with a better estimator
+registers a method: an exact maximum likelihood estimator where one is
 known, a method-of-moments estimator otherwise, or the estimate of a simpler
 family the harder one contains.
 

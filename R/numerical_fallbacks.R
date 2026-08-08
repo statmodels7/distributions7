@@ -10,7 +10,7 @@ NULL
 # through normal S7 dispatch and are both faster and more accurate.
 
 # Internal: locate an interior high-density anchor point (approximate mode)
-# used to split integrals, to scale root-finding brackets and to recentre the
+# used to split integrals, to scale root-finding brackets and to recenter the
 # GRoU kernel. The support is compactified to (0, 1) and the maximum is found by
 # repeatedly evaluating the log-density on a grid and keeping the two cells
 # around the largest value: for a unimodal density that bracket provably still

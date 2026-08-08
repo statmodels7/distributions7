@@ -33,8 +33,8 @@ suggestion of choosing coordinates rather than being drawn illegibly.
 
 The contours are drawn at levels of the density itself rather than at
 probability levels: the equal-density contour is what the density's shape
-means, and computing a probability level would need the integral this
-package rejects to approximate in several dimensions.
+means, and computing a probability level would need the orthant integral
+this package does not approximate in several dimensions.
 }
 \examples{
 d <- mvgaussian_distrib(3)

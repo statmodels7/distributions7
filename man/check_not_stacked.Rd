@@ -2,7 +2,7 @@
 % Please edit documentation in R/zero_inflated.R
 \name{check_not_stacked}
 \alias{check_not_stacked}
-\title{Refuse to Stack Two Zero Parameters}
+\title{Reject the Composition of Two Zero Wrappers}
 \usage{
 check_not_stacked(distrib, fun, param)
 }

@@ -19,8 +19,8 @@ NULL
 #' Nothing about the arithmetic changed.
 #'
 #' The default method returns random parameters, as before, so a distribution
-#' that says nothing loses nothing. A family that can do better says so by
-#' registering a method: an exact maximum likelihood estimator where one is
+#' that registers nothing loses nothing. A family with a better estimator
+#' registers a method: an exact maximum likelihood estimator where one is
 #' known, a method-of-moments estimator otherwise, or the estimate of a simpler
 #' family the harder one contains.
 #'
@@ -115,9 +115,9 @@ mv_moment_start <- function(y, p) {
 #' supplied, or the matrix parameter's own inverse map when it has one.
 #'
 #' @details
-#' \code{\link[parameters7]{param_free}} is exact or rejected: a structure that
-#' cannot represent the matrix says so rather than returning something
-#' plausible. That is the right contract for reporting an estimate and the
+#' \code{\link[parameters7]{param_free}} is exact or rejected: a parameter that
+#' cannot represent the matrix signals an error rather than returning
+#' something plausible. That is the right contract for reporting an estimate and the
 #' wrong one for choosing where to begin, so a rejection here falls back to a
 #' short numerical search over the free values, which is allowed to be
 #' approximate because a starting value is.

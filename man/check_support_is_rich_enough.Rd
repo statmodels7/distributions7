@@ -2,7 +2,7 @@
 % Please edit documentation in R/zero_inflated.R
 \name{check_support_is_rich_enough}
 \alias{check_support_is_rich_enough}
-\title{Refuse a Model With More Parameters Than the Support Can Distinguish}
+\title{Reject a Model With More Parameters Than the Support Can Distinguish}
 \usage{
 check_support_is_rich_enough(distrib, fun)
 }

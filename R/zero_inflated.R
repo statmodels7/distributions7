@@ -99,7 +99,7 @@ is_zero_wrapper <- function(distrib) {
     S7::S7_inherits(distrib, ZeroAdjustedContinuousDistrib)
 }
 
-#' Refuse to Stack Two Zero Parameters
+#' Reject the Composition of Two Zero Wrappers
 #'
 #' @description
 #' Rejects an attempt to wrap a distribution that already models the probability
@@ -146,7 +146,7 @@ check_not_stacked <- function(distrib, fun, param) {
   invisible(NULL)
 }
 
-#' Refuse a Model With More Parameters Than the Support Can Distinguish
+#' Reject a Model With More Parameters Than the Support Can Distinguish
 #'
 #' @description
 #' Enforces the counting rule that makes a zero wrapper identifiable.
