@@ -8,7 +8,7 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
 
@@ -19,7 +19,7 @@ A numeric vector of cumulative probabilities.
 }
 \description{
 Computes the cumulative distribution function for the Laplace distribution:
-\deqn{F(q; \mu, b) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{b}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{b}\right) & q \ge \mu \end{cases}}
+\deqn{F(q; \mu, \sigma) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
 }
 \seealso{
 \code{\link{laplace_distrib}}

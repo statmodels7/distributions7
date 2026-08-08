@@ -184,11 +184,11 @@ test_that("moments delegate to the parent's closed forms", {
 })
 
 test_that("params_smooth travels with the free parameters", {
-  dl <- fixed(laplace_distrib(), b = 1)
+  dl <- fixed(laplace_distrib(), sigma = 1)
   expect_false(param_smoothness(dl)[["mu"]])
 
   dm <- fixed(laplace_distrib(), mu = 0)
-  expect_true(param_smoothness(dm)[["b"]])
+  expect_true(param_smoothness(dm)[["sigma"]])
 })
 
 test_that("fixing every parameter leaves a fully known distribution", {

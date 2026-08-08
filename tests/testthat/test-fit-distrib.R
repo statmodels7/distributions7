@@ -48,12 +48,12 @@ test_that("bernoulli fit is exact and its interval respects the (0,1) domain", {
 test_that("laplace fit works despite the degenerate observed Hessian in mu", {
   set.seed(13)
   d <- laplace_distrib()
-  y <- distrib_rng(d, 2000, list(mu = 1, b = 2))
-  f <- fit_distrib(d, y, start = list(mu = 0, b = 1))
+  y <- distrib_rng(d, 2000, list(mu = 1, sigma = 2))
+  f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1))
 
   expect_true(f@converged)
-  # b_hat is the mean absolute deviation about the fitted location
-  expect_equal(unname(coef(f)["b"]), mean(abs(y - coef(f)[["mu"]])), tolerance = 1e-4)
+  # sigma_hat is the mean absolute deviation about the fitted location
+  expect_equal(unname(coef(f)["sigma"]), mean(abs(y - coef(f)[["mu"]])), tolerance = 1e-4)
   # the location is at (essentially) the sample median
   expect_equal(unname(coef(f)["mu"]), median(y), tolerance = 0.05)
   expect_true(all(f@se > 0))
@@ -203,12 +203,12 @@ test_that("a non-smooth distribution still fits, and quietly", {
   # every call must not mistake the kink for an inconsistent gradient.
   set.seed(15)
   d <- laplace_distrib()
-  y <- distrib_rng(d, 400, list(mu = 1, b = 2))
+  y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
 
-  expect_silent(f <- fit_distrib(d, y, start = list(mu = 0, b = 1)))
+  expect_silent(f <- fit_distrib(d, y, start = list(mu = 0, sigma = 1)))
   expect_true(f@converged)
   expect_equal(unname(coef(f)["mu"]), stats::median(y), tolerance = 1e-3)
-  expect_equal(unname(coef(f)["b"]),
+  expect_equal(unname(coef(f)["sigma"]),
                mean(abs(y - unname(coef(f)["mu"]))), tolerance = 1e-6)
 })
 

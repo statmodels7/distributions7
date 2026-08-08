@@ -38,10 +38,10 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #' @name distrib_pdf.LaplaceDistrib
 #' @description
 #' Computes the probability density function for the Laplace distribution:
-#' \deqn{f(y; \mu, b) = \dfrac{1}{2b} \exp\left(-\dfrac{|y-\mu|}{b}\right)}
+#' \deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y-\mu|}{\sigma}\right)}
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{laplace_distrib}}
@@ -56,10 +56,10 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #' @name distrib_cdf.LaplaceDistrib
 #' @description
 #' Computes the cumulative distribution function for the Laplace distribution:
-#' \deqn{F(q; \mu, b) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{b}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{b}\right) & q \ge \mu \end{cases}}
+#' \deqn{F(q; \mu, \sigma) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of cumulative probabilities.
@@ -76,10 +76,10 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 #' @name distrib_quantile.LaplaceDistrib
 #' @description
 #' Computes the quantile function (inverse CDF) for the Laplace distribution:
-#' \deqn{Q(p; \mu, b) = \mu - b\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
+#' \deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
 #' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of quantiles.
@@ -99,7 +99,7 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' sampling.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param n Number of observations to generate.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A numeric vector of random draws.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta) {
@@ -114,12 +114,12 @@ S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta) {
 #' kink at \eqn{y = \mu}, a set of probability zero); the subgradient value 0 is
 #' returned there.
 #'
-#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}}
-#' \deqn{\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)}
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}}
+#' \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
 #'
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -128,7 +128,7 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
   r <- y - mu
   list(
     mu = sign(r) / b,
-    b = (abs(r) / b - 1) / b
+    sigma = (abs(r) / b - 1) / b
   )
 }
 
@@ -140,16 +140,16 @@ S7::method(distrib_gradient, LaplaceDistrib) <- function(distrib, y, theta, scal
 #' to \eqn{\mu} is \strong{zero} almost everywhere:
 #'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \qquad
-#'       \dfrac{\partial^2 \ell}{\partial \mu \partial b} = -\dfrac{\mathrm{sign}(y-\mu)}{b^2}, \qquad
-#'       \dfrac{\partial^2 \ell}{\partial b^2} = \dfrac{b - 2|y-\mu|}{b^3}}
+#'       \dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \qquad
+#'       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
 #'
 #' The degeneracy of \eqn{\partial^2 \ell / \partial \mu^2} means Newton-Raphson
 #' cannot update \eqn{\mu}; use \code{\link{distrib_expected_hessian}} (Fisher
-#' scoring), which supplies the correct information \eqn{1/b^2} for \eqn{\mu}.
+#' scoring), which supplies the correct information \eqn{1/\sigma^2} for \eqn{\mu}.
 #'
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -159,8 +159,8 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
   n <- length(y)
   list(
     mu_mu = rep(0, n),
-    b_b = (b - 2 * abs(r)) / b^3,
-    mu_b = -sign(r) / b^2
+    sigma_sigma = (b - 2 * abs(r)) / b^3,
+    mu_sigma = -sign(r) / b^2
   )
 }
 
@@ -170,18 +170,18 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' Computes the expected Hessian (negative Fisher information) of the Laplace
 #' log-density. Because the log-likelihood is not differentiable in \eqn{\mu}, the
 #' second Bartlett identity fails: \eqn{\mathbb{E}[\partial^2 \ell / \partial \mu^2] = 0},
-#' yet the Fisher information for \eqn{\mu} is \eqn{1/b^2}. The expected Hessian is
+#' yet the Fisher information for \eqn{\mu} is \eqn{1/\sigma^2}. The expected Hessian is
 #' therefore defined here from the variance of the score, which is what the Fisher
 #' information \emph{is} whenever the score exists, whether or not the identity
 #' relating it to \eqn{-\mathbb{E}[H]} holds:
 #'
-#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{b^2}, \qquad
-#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial b}\right] = 0, \qquad
-#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial b^2}\right] = -\dfrac{1}{b^2}}
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0, \qquad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{\sigma^2}}
 #'
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
@@ -189,8 +189,8 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
   n <- length(y)
   list(
     mu_mu = rep(-1 / b^2, length.out = n),
-    b_b = rep(-1 / b^2, length.out = n),
-    mu_b = rep(0, n)
+    sigma_sigma = rep(-1 / b^2, length.out = n),
+    mu_sigma = rep(0, n)
   )
 }
 
@@ -201,12 +201,12 @@ S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, the
 #' everywhere (observed, or expected when \code{expected = TRUE}). With
 #' \eqn{s = \mathrm{sign}(y-\mu)} and \eqn{a = \lvert y-\mu \rvert}, the only
 #' non-zero components are
-#' \eqn{\ell^{(\mu b b)} = 2s/b^3} and
-#' \eqn{\ell^{(bbb)} = -2/b^3 + 6a/b^4}; the kink at \eqn{y = \mu} is the same
+#' \eqn{\ell^{(\mu\sigma\sigma)} = 2s/\sigma^3} and
+#' \eqn{\ell^{(\sigma\sigma\sigma)} = -2/\sigma^3 + 6a/\sigma^4}; the kink at \eqn{y = \mu} is the same
 #' one the gradient carries, and \code{params_smooth} records it.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{laplace_distrib}}
@@ -221,11 +221,11 @@ S7::method(distrib_deriv3, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' Closed-form fourth-order derivatives of the Laplace log-density, almost
 #' everywhere (observed, or expected when \code{expected = TRUE}), in the
 #' notation of \code{\link{distrib_deriv3.LaplaceDistrib}}: the non-zero
-#' components are \eqn{\ell^{(\mu bbb)} = -6s/b^4} and
-#' \eqn{\ell^{(bbbb)} = 6/b^4 - 24a/b^5}.
+#' components are \eqn{\ell^{(\mu\sigma\sigma\sigma)} = -6s/\sigma^4} and
+#' \eqn{\ell^{(\sigma\sigma\sigma\sigma)} = 6/\sigma^4 - 24a/\sigma^5}.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{laplace_distrib}}
@@ -238,12 +238,12 @@ S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expect
 #' @name distrib_grad_y.LaplaceDistrib
 #' @description
 #' Closed-form derivative of the Laplace log-density with respect to the response,
-#' \eqn{\partial \ell / \partial y = -\mathrm{sign}(y-\mu)/b} (the second derivative
+#' \eqn{\partial \ell / \partial y = -\mathrm{sign}(y-\mu)/\sigma} (the second derivative
 #' is 0 almost everywhere). The analytic form is provided because finite differences
 #' would be inaccurate across the kink at \eqn{y = \mu}.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A numeric vector.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta) {
@@ -255,7 +255,7 @@ S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = 0} (almost everywhere).
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{b}.
+#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A numeric vector of zeros.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
@@ -268,57 +268,57 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #'
 #' @description
 #' Creates a distribution object for the Laplace (double-exponential) distribution,
-#' parameterized by location (\eqn{\mu}) and scale (\eqn{b}). This is the reference
+#' parameterized by location (\eqn{\mu}) and scale (\eqn{\sigma}). This is the reference
 #' example of a distribution whose log-likelihood is not differentiable in a
 #' parameter (\eqn{\mu}); see \strong{Details} for how the package handles this.
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
 #'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
-#' @param link_b A link function object for the scale parameter \eqn{b}.
+#' @param link_sigma A link function object for the scale parameter \eqn{\sigma}.
 #'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
 #'
 #' @details
 #' The Laplace (double-exponential) distribution has location \eqn{\mu} and scale
-#' \eqn{b}.
+#' \eqn{\sigma}.
 #'
 #' \strong{Probability density function:}
-#' \deqn{f(y; \mu, b) = \dfrac{1}{2b} \exp\left(-\dfrac{|y-\mu|}{b}\right)}
+#' \deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y-\mu|}{\sigma}\right)}
 #'
 #' \strong{Cumulative distribution function:}
-#' \deqn{F(q; \mu, b) = \begin{cases} \tfrac{1}{2}\exp\left(\tfrac{q-\mu}{b}\right) & q < \mu \\ 1 - \tfrac{1}{2}\exp\left(-\tfrac{q-\mu}{b}\right) & q \ge \mu \end{cases}}
+#' \deqn{F(q; \mu, \sigma) = \begin{cases} \tfrac{1}{2}\exp\left(\tfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \tfrac{1}{2}\exp\left(-\tfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
 #'
 #' \strong{Quantile function:}
-#' \deqn{Q(p; \mu, b) = \mu - b\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
+#' \deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
 #'
 #' \strong{Score} (defined almost everywhere):
-#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}, \qquad
-#'       \dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)}
+#' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}, \qquad
+#'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
 #'
 #' \strong{Observed Hessian:}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \quad
-#'       \dfrac{\partial^2 \ell}{\partial \mu\,\partial b} = -\dfrac{\mathrm{sign}(y-\mu)}{b^2}, \quad
-#'       \dfrac{\partial^2 \ell}{\partial b^2} = \dfrac{b - 2|y-\mu|}{b^3}}
+#'       \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \quad
+#'       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
 #'
 #' \strong{Expected Hessian} (Fisher information from the score variance; see below):
-#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{b^2}, \quad
-#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial b^2}\right] = -\dfrac{1}{b^2}, \quad
-#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial b}\right] = 0}
+#' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{\sigma^2}, \quad
+#'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
 #'
-#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{2b^2}, skewness 0, excess kurtosis 3.
+#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{2\sigma^2}, skewness 0, excess kurtosis 3.
 #'
 #' \strong{Non-differentiability.}
 #' The density has a kink at \eqn{y = \mu}, so the log-likelihood is not
 #' differentiable in \eqn{\mu}. The package marks this via
-#' \code{params_smooth = c(mu = FALSE, b = TRUE)} and handles it as follows:
+#' \code{params_smooth = c(mu = FALSE, sigma = TRUE)} and handles it as follows:
 #' \itemize{
 #'   \item the \strong{score} (\code{\link{distrib_gradient}}) exists almost
-#'     everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/b};
+#'     everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/\sigma};
 #'   \item the \strong{observed Hessian} (\code{\link{distrib_hessian}}) has
 #'     \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
 #'     \eqn{\mu};
 #'   \item the \strong{expected Hessian} (\code{\link{distrib_expected_hessian}}) is
 #'     implemented in closed form from the variance of the score, giving the correct
-#'     Fisher information \eqn{1/b^2} for \eqn{\mu} and making Fisher scoring the
+#'     Fisher information \eqn{1/\sigma^2} for \eqn{\mu} and making Fisher scoring the
 #'     appropriate estimation method. Because the closed form exists, the
 #'     \code{approx} argument is ignored for this distribution.
 #' }
@@ -326,7 +326,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' \strong{Parameter Domains:}
 #' \itemize{
 #'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{b \in (0, +\infty)}
+#'   \item \eqn{\sigma \in (0, +\infty)}
 #' }
 #'
 #' @return An S7 object of class \code{LaplaceDistrib} (inheriting from \code{continuous_distrib}).
@@ -337,31 +337,31 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' d <- laplace_distrib()
 #' d@params
 #'
-#' theta <- list(mu = 0, b = 1)
+#' theta <- list(mu = 0, sigma = 1)
 #' distrib_pdf(d, c(-1, 0, 1), theta)
 #' distrib_gradient(d, c(-1, 0, 1), theta)
 #'
 #' @export
-laplace_distrib <- function(link_mu = identity_link(), link_b = log_link()) {
+laplace_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {
   LaplaceDistrib(
     distrib_name = "laplace",
     dimension = "univariate",
     bounds = c(-Inf, Inf),
 
-    params = c("mu", "b"),
-    params_interpretation = c(mu = "location", b = "scale"),
+    params = c("mu", "sigma"),
+    params_interpretation = c(mu = "location", sigma = "scale"),
     n_params = 2,
 
     params_bounds = list(
       mu = c(-Inf, Inf),
-      b = c(0, Inf)
+      sigma = c(0, Inf)
     ),
 
     link_params = list(
       mu = link_mu,
-      b = link_b
+      sigma = link_sigma
     ),
 
-    params_smooth = c(mu = FALSE, b = TRUE)
+    params_smooth = c(mu = FALSE, sigma = TRUE)
   )
 }

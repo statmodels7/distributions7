@@ -5,7 +5,7 @@ lap_cdf <- function(q, mu, b) ifelse(q < mu, 0.5 * exp((q - mu) / b), 1 - 0.5 * 
 
 test_that("laplace pdf/cdf/quantile/rng/moments are correct", {
   d <- laplace_distrib()
-  th <- list(mu = 1, b = 2)
+  th <- list(mu = 1, sigma = 2)
 
   expect_equal(stats::integrate(function(t) distrib_pdf(d, t, th), -Inf, Inf)$value, 1, tolerance = 1e-6)
   expect_equal(distrib_pdf(d, 1, th), 1 / (2 * 2))
@@ -28,7 +28,7 @@ test_that("laplace pdf/cdf/quantile/rng/moments are correct", {
 
 test_that("laplace score matches finite differences away from the kink", {
   d <- laplace_distrib()
-  th <- list(mu = 1, b = 2)
+  th <- list(mu = 1, sigma = 2)
   y <- c(-2, 0.3, 3.7) # none equal to mu
   a <- distrib_gradient(d, y, th)
   fd <- function(j, h = 1e-6) {
@@ -36,24 +36,24 @@ test_that("laplace score matches finite differences away from the kink", {
     (distrib_pdf(d, y, tp, log = TRUE) - distrib_pdf(d, y, tm, log = TRUE)) / (2 * h)
   }
   expect_equal(a$mu, fd(1), tolerance = 1e-5)
-  expect_equal(a$b, fd(2), tolerance = 1e-5)
+  expect_equal(a$sigma, fd(2), tolerance = 1e-5)
 })
 
 test_that("laplace observed Hessian is degenerate in mu but the expected Hessian is the Fisher information", {
   d <- laplace_distrib()
-  th <- list(mu = 1, b = 2)
+  th <- list(mu = 1, sigma = 2)
   y <- c(-2, 0.3, 3.7)
 
   h <- distrib_hessian(d, y, th)
   expect_equal(h$mu_mu, rep(0, 3))          # kink -> zero observed curvature in mu
-  expect_equal(h$b_b, (2 - 2 * abs(y - 1)) / 2^3)
-  expect_equal(h$mu_b, -sign(y - 1) / 2^2)
+  expect_equal(h$sigma_sigma, (2 - 2 * abs(y - 1)) / 2^3)
+  expect_equal(h$mu_sigma, -sign(y - 1) / 2^2)
 
-  # Expected Hessian = -Fisher information = c(mu_mu = -1/b^2, b_b = -1/b^2, mu_b = 0)
+  # Expected Hessian = -Fisher information = c(mu_mu = -1/s^2, sigma_sigma = -1/s^2, mu_sigma = 0)
   eh <- distrib_expected_hessian(d, c(0, 1, 2), th)
   expect_equal(eh$mu_mu, rep(-1 / 4, 3))
-  expect_equal(eh$b_b, rep(-1 / 4, 3))
-  expect_equal(eh$mu_b, rep(0, 3))
+  expect_equal(eh$sigma_sigma, rep(-1 / 4, 3))
+  expect_equal(eh$mu_sigma, rep(0, 3))
 
   # confirm it disagrees with the (degenerate) expectation of the observed Hessian
   set.seed(2)
@@ -63,7 +63,7 @@ test_that("laplace observed Hessian is degenerate in mu but the expected Hessian
 
 test_that("params_smooth metadata is exposed and validated", {
   d <- laplace_distrib()
-  expect_equal(param_smoothness(d), c(mu = FALSE, b = TRUE))
+  expect_equal(param_smoothness(d), c(mu = FALSE, sigma = TRUE))
   # defaults to all TRUE when unset
   expect_true(all(param_smoothness(gaussian1_distrib())))
   expect_named(param_smoothness(gaussian1_distrib()), c("mu", "sigma"))
@@ -109,7 +109,7 @@ test_that("response derivatives (grad_y / hess_y) work analytically and via fall
   expect_equal(distrib_hess_y(gam, yg, thga), -(a - 1) / yg^2, tolerance = 1e-5)
 
   # laplace: closed form (kink-aware)
-  d <- laplace_distrib(); th <- list(mu = 1, b = 2)
+  d <- laplace_distrib(); th <- list(mu = 1, sigma = 2)
   expect_equal(distrib_grad_y(d, y, th), -sign(y - 1) / 2)
   expect_equal(distrib_hess_y(d, y, th), rep(0, 3))
 })

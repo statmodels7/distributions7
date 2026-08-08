@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
 \value{
 A list containing the vectors of first derivatives.
@@ -19,8 +19,8 @@ derivative with respect to \eqn{\mu} exists only almost everywhere (there is a
 kink at \eqn{y = \mu}, a set of probability zero); the subgradient value 0 is
 returned there.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}}
-\deqn{\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)}
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}}
+\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
 }
 \seealso{
 \code{\link{laplace_distrib}}

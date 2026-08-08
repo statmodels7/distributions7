@@ -5,7 +5,7 @@ test_that("built-in distributions pass every check", {
   cases <- list(
     list(d = gaussian1_distrib(), th = list(mu = 1.5, sigma = 2)),
     list(d = poisson_distrib(),  th = list(mu = 4)),
-    list(d = laplace_distrib(),  th = list(mu = 1, b = 2))
+    list(d = laplace_distrib(),  th = list(mu = 1, sigma = 2))
   )
   for (case in cases) {
     res <- check_distrib(case$d, theta = case$th, n = 40, nsim = 5e4,
@@ -20,10 +20,10 @@ test_that("check_distrib is reproducible and survives a draw on a kink", {
   # It used to call set.seed(NULL), discarding whatever seed the caller had set,
   # so two runs never agreed and a failing check could not be reproduced.
   set.seed(42)
-  a <- check_distrib(laplace_distrib(), list(mu = 1, b = 2), n = 40, nsim = 2e4,
+  a <- check_distrib(laplace_distrib(), list(mu = 1, sigma = 2), n = 40, nsim = 2e4,
                      orders = 1:2, verbose = FALSE)
   set.seed(42)
-  b <- check_distrib(laplace_distrib(), list(mu = 1, b = 2), n = 40, nsim = 2e4,
+  b <- check_distrib(laplace_distrib(), list(mu = 1, sigma = 2), n = 40, nsim = 2e4,
                      orders = 1:2, verbose = FALSE)
   expect_equal(a$statistic, b$statistic)
 

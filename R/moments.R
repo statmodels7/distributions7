@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R invgauss2_distrib.R beta2_distrib.R betabinom2_distrib.R pig1_distrib.R pig2_distrib.R
+#' @include distrib.R generics.R numerical_functions.R negbin2_distrib.R pseudohuber_distrib.R laplace_distrib.R laplace2_distrib.R weibull1_distrib.R gumbel_distrib.R skewnormal1_distrib.R skewt_distrib.R gaussian1_distrib.R cauchy_distrib.R logistic_distrib.R student_t1_distrib.R gamma2_distrib.R exponential_distrib.R chisq_distrib.R lognormal1_distrib.R invgauss1_distrib.R beta1_distrib.R gpd_distrib.R gengamma1_distrib.R poisson_distrib.R bernoulli_distrib.R binomial_distrib.R geometric_distrib.R negbin1_distrib.R betabinom1_distrib.R gaussian2_distrib.R gaussian3_distrib.R gamma1_distrib.R invgauss2_distrib.R beta2_distrib.R betabinom2_distrib.R pig1_distrib.R pig2_distrib.R
 NULL
 
 #' @title Raw and Central Moments of a Distribution
@@ -380,7 +380,7 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Laplace Distribution
 #' @name variance.LaplaceDistrib
-#' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2b^2}.
+#' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2\sigma^2}.
 #' @param x A \code{LaplaceDistrib}.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -413,6 +413,58 @@ S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  rep(3, length.out = max(lengths(theta[seq_len(2)])))
+}
+
+#' @title Mean of the Laplace Distribution in Location and Rate
+#' @name mean.Laplace2Distrib
+#' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+#' @param x A \code{Laplace2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  rep(theta[[1]], length.out = max(lengths(theta[seq_len(2)])))
+}
+
+#' @title Variance of the Laplace Distribution in Location and Rate
+#' @name variance.Laplace2Distrib
+#' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2/\lambda^2}.
+#' @param x A \code{Laplace2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(variance, Laplace2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  2 / theta[[2]]^2
+}
+
+#' @title Skewness of the Laplace Distribution in Location and Rate
+#' @name skewness.Laplace2Distrib
+#' @description Closed form, replacing the numerical default: zero, by symmetry.
+#' @param x A \code{Laplace2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(skewness, Laplace2Distrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
+  rep(0, length.out = max(lengths(theta[seq_len(2)])))
+}
+
+#' @title Kurtosis of the Laplace Distribution in Location and Rate
+#' @name kurtosis.Laplace2Distrib
+#' @description Closed form, replacing the numerical default: \eqn{3} (excess).
+#' @param x A \code{Laplace2Distrib}.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return A numeric vector.
+#' @keywords internal
+S7::method(kurtosis, Laplace2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   rep(3, length.out = max(lengths(theta[seq_len(2)])))
 }

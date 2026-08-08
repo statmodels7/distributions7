@@ -8,7 +8,7 @@
 
 \item{n}{Number of observations to generate.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
 \value{
 A numeric vector of random draws.

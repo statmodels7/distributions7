@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 
 \item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
 }
@@ -20,8 +20,8 @@ Closed-form third-order derivatives of the Laplace log-density, almost
 everywhere (observed, or expected when \code{expected = TRUE}). With
 \eqn{s = \mathrm{sign}(y-\mu)} and \eqn{a = \lvert y-\mu \rvert}, the only
 non-zero components are
-\eqn{\ell^{(\mu b b)} = 2s/b^3} and
-\eqn{\ell^{(bbb)} = -2/b^3 + 6a/b^4}; the kink at \eqn{y = \mu} is the same
+\eqn{\ell^{(\mu\sigma\sigma)} = 2s/\sigma^3} and
+\eqn{\ell^{(\sigma\sigma\sigma)} = -2/\sigma^3 + 6a/\sigma^4}; the kink at \eqn{y = \mu} is the same
 one the gradient carries, and \code{params_smooth} records it.
 }
 \seealso{

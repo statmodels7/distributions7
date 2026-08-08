@@ -39,7 +39,7 @@ test_that("the location-scale identity gives the mixed block", {
   expect_cross(cauchy_distrib(), list(mu = 0.3, sigma = 1.4), y, 1e-7)
   expect_cross(gumbel_distrib(), list(mu = 0.3, sigma = 1.4), y, 1e-7)
   # the Laplace away from its kink, where the quantity does not exist
-  expect_cross(laplace_distrib(), list(mu = 0.3, b = 1.4), y, 1e-9)
+  expect_cross(laplace_distrib(), list(mu = 0.3, sigma = 1.4), y, 1e-9)
 })
 
 

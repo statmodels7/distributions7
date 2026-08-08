@@ -64,6 +64,7 @@ Collate:
     'skewt_distrib.R'
     'gumbel_distrib.R'
     'weibull1_distrib.R'
+    'laplace2_distrib.R'
     'laplace_distrib.R'
     'numerical_functions.R'
     'pseudohuber_distrib.R'

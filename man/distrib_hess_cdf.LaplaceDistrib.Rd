@@ -8,7 +8,7 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{b}.}
+\item{theta}{A list containing \code{mu} and \code{sigma}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
 
@@ -20,7 +20,7 @@ A named list keyed as \code{\link{hess_names}}.
 \description{
 Closed form, exact away from \eqn{y = \mu}. At the kink the second derivative
 of \eqn{F} in \eqn{\mu} genuinely does not exist --- it jumps between
-\eqn{\pm 1/(2b^{2})} --- so the value returned there is the one-sided limit
+\eqn{\pm 1/(2\sigma^{2})} --- so the value returned there is the one-sided limit
 the sign convention picks out, and is reported rather than smoothed.
 }
 \seealso{

@@ -200,9 +200,9 @@ test_that("nested truncation collapses to the intersection", {
 
 test_that("truncation carries the parent's parameters and smoothness unchanged", {
   d <- truncated(laplace_distrib(), lower = -2, upper = 4)
-  expect_equal(d@params, c("mu", "b"))
+  expect_equal(d@params, c("mu", "sigma"))
   expect_equal(d@n_params, 2)
-  expect_equal(param_smoothness(d), c(mu = FALSE, b = TRUE))
+  expect_equal(param_smoothness(d), c(mu = FALSE, sigma = TRUE))
   # truncation adds no parameter
   expect_equal(d@params, laplace_distrib()@params)
 })

@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
 \value{
 A list containing the vectors of second derivatives.
@@ -19,12 +19,12 @@ log-density is piecewise linear in \eqn{\mu}, the second derivative with respect
 to \eqn{\mu} is \strong{zero} almost everywhere:
 
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu \partial b} = -\dfrac{\mathrm{sign}(y-\mu)}{b^2}, \qquad
-      \dfrac{\partial^2 \ell}{\partial b^2} = \dfrac{b - 2|y-\mu|}{b^3}}
+      \dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
 
 The degeneracy of \eqn{\partial^2 \ell / \partial \mu^2} means Newton-Raphson
 cannot update \eqn{\mu}; use \code{\link{distrib_expected_hessian}} (Fisher
-scoring), which supplies the correct information \eqn{1/b^2} for \eqn{\mu}.
+scoring), which supplies the correct information \eqn{1/\sigma^2} for \eqn{\mu}.
 }
 \seealso{
 \code{\link{laplace_distrib}}

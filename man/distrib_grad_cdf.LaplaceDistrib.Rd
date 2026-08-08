@@ -8,7 +8,7 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{b}.}
+\item{theta}{A list containing \code{mu} and \code{sigma}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
 

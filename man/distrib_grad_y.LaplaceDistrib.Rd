@@ -8,14 +8,14 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
 \value{
 A numeric vector.
 }
 \description{
 Closed-form derivative of the Laplace log-density with respect to the response,
-\eqn{\partial \ell / \partial y = -\mathrm{sign}(y-\mu)/b} (the second derivative
+\eqn{\partial \ell / \partial y = -\mathrm{sign}(y-\mu)/\sigma} (the second derivative
 is 0 almost everywhere). The analytic form is provided because finite differences
 would be inaccurate across the kink at \eqn{y = \mu}.
 }

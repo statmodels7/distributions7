@@ -8,7 +8,7 @@
 
 \item{p}{A numeric vector of probabilities.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 
 \item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
 
@@ -19,7 +19,7 @@ A numeric vector of quantiles.
 }
 \description{
 Computes the quantile function (inverse CDF) for the Laplace distribution:
-\deqn{Q(p; \mu, b) = \mu - b\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
+\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
 }
 \seealso{
 \code{\link{laplace_distrib}}

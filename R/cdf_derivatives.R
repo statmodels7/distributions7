@@ -1,5 +1,6 @@
 #' @include distrib.R generics.R utility_functions.R numerical_functions.R
 #' @include gaussian1_distrib.R logistic_distrib.R cauchy_distrib.R laplace_distrib.R
+#' @include laplace2_distrib.R
 #' @include lognormal1_distrib.R invgauss1_distrib.R poisson_distrib.R binomial_distrib.R
 #' @include bernoulli_distrib.R negbin2_distrib.R student_t1_distrib.R pseudohuber_distrib.R
 NULL
@@ -467,7 +468,7 @@ S7::method(distrib_hess_cdf, CauchyDistrib) <- loc_scale_hess_cdf
 #' does not exist; \code{\link{param_smoothness}} records this.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{b}.
+#' @param theta A list containing \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
 #' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
@@ -479,16 +480,67 @@ S7::method(distrib_grad_cdf, LaplaceDistrib) <- loc_scale_grad_cdf
 #' @description
 #' Closed form, exact away from \eqn{y = \mu}. At the kink the second derivative
 #' of \eqn{F} in \eqn{\mu} genuinely does not exist --- it jumps between
-#' \eqn{\pm 1/(2b^{2})} --- so the value returned there is the one-sided limit
+#' \eqn{\pm 1/(2\sigma^{2})} --- so the value returned there is the one-sided limit
 #' the sign convention picks out, and is reported rather than smoothed.
 #' @param distrib A \code{LaplaceDistrib} object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{b}.
+#' @param theta A list containing \code{mu} and \code{sigma}.
 #' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
 #' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
 #' @return A named list keyed as \code{\link{hess_names}}.
 #' @seealso \code{\link{laplace_distrib}}
 S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
+
+#' @title Laplace Log-CDF Derivatives in Location and Rate
+#' @name distrib_grad_cdf.Laplace2Distrib
+#' @description
+#' Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
+#' \eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. The second
+#' derivatives inherit the kink at \eqn{q = \mu} exactly as those of
+#' \code{\link{laplace_distrib}} do.
+#' @param distrib A \code{Laplace2Distrib} object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A list containing \code{mu} and \code{lambda}.
+#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
+#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @return A named list, one vector per parameter.
+#' @seealso \code{\link{laplace2_distrib}}
+S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
+                                                          lower.tail = TRUE, log = TRUE) {
+  f <- distrib_pdf(distrib, q, theta)
+  d1 <- stats::setNames(list(-f, (q - theta[[1]]) * f / theta[[2]]), distrib@params)
+  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
+}
+
+#' @title Laplace Log-CDF Second Derivatives in Location and Rate
+#' @name distrib_hess_cdf.Laplace2Distrib
+#' @description
+#' Closed form, exact away from \eqn{q = \mu}: with \eqn{s = \mathrm{sign}(q-\mu)}
+#' and \eqn{a = \lvert q-\mu \rvert},
+#' \eqn{\partial^{2} F/\partial\mu^{2} = -\lambda s f},
+#' \eqn{\partial^{2} F/\partial\mu\,\partial\lambda = -(1/\lambda - a) f} and
+#' \eqn{\partial^{2} F/\partial\lambda^{2} = -s a^{2} f/\lambda}. At the kink the
+#' second derivative in \eqn{\mu} does not exist, and the value returned is the
+#' one-sided limit the sign convention picks out.
+#' @param distrib A \code{Laplace2Distrib} object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A list containing \code{mu} and \code{lambda}.
+#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
+#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @return A named list keyed as \code{\link{hess_names}}.
+#' @seealso \code{\link{laplace2_distrib}}
+S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
+                                                          lower.tail = TRUE, log = TRUE) {
+  lam <- theta[[2]]
+  r <- q - theta[[1]]
+  s <- sign(r)
+  a <- abs(r)
+  f <- distrib_pdf(distrib, q, theta)
+  d1 <- stats::setNames(list(-f, r * f / lam), distrib@params)
+  d2 <- stats::setNames(list(-lam * s * f, -s * a^2 * f / lam, -(1 / lam - a) * f),
+                        hess_names(distrib@params))
+  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, d2, lower.tail, log)
+}
 
 
 # --- lognormal -------------------------------------------------------------

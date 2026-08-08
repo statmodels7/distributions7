@@ -209,9 +209,9 @@ test_that("the wrappers carry the parent's smoothness flags", {
   # The Laplace has a kink in mu; a wrapper that forgot to say so would make
   # check_distrib() and fit_distrib() treat the observed Hessian as usable.
   expect_equal(param_smoothness(zero_adjusted(laplace_distrib())),
-               c(mu = FALSE, b = TRUE, za = TRUE))
+               c(mu = FALSE, sigma = TRUE, za = TRUE))
   expect_equal(param_smoothness(transformation(laplace_distrib(), affine_transform(2, 1))),
-               c(mu = FALSE, b = TRUE))
+               c(mu = FALSE, sigma = TRUE))
   expect_equal(param_smoothness(zero_inflated(poisson_distrib())),
                c(mu = TRUE, zi = TRUE))
 })

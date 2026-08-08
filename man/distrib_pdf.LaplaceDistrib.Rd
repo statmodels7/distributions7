@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 
 \item{log}{Logical; if \code{TRUE}, returns the log-density.}
 }
@@ -17,7 +17,7 @@ A numeric vector of density values.
 }
 \description{
 Computes the probability density function for the Laplace distribution:
-\deqn{f(y; \mu, b) = \dfrac{1}{2b} \exp\left(-\dfrac{|y-\mu|}{b}\right)}
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y-\mu|}{\sigma}\right)}
 }
 \seealso{
 \code{\link{laplace_distrib}}

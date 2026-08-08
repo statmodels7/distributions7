@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 }
 \value{
 A list containing the vectors of expected second derivatives.
@@ -17,14 +17,14 @@ A list containing the vectors of expected second derivatives.
 Computes the expected Hessian (negative Fisher information) of the Laplace
 log-density. Because the log-likelihood is not differentiable in \eqn{\mu}, the
 second Bartlett identity fails: \eqn{\mathbb{E}[\partial^2 \ell / \partial \mu^2] = 0},
-yet the Fisher information for \eqn{\mu} is \eqn{1/b^2}. The expected Hessian is
+yet the Fisher information for \eqn{\mu} is \eqn{1/\sigma^2}. The expected Hessian is
 therefore defined here from the variance of the score, which is what the Fisher
 information \emph{is} whenever the score exists, whether or not the identity
 relating it to \eqn{-\mathbb{E}[H]} holds:
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{b^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial b}\right] = 0, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial b^2}\right] = -\dfrac{1}{b^2}}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{\sigma^2}}
 }
 \seealso{
 \code{\link{laplace_distrib}}

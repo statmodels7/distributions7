@@ -8,7 +8,7 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{b}.}
+\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
 
 \item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
 }
@@ -19,8 +19,8 @@ A named list of fourth-derivative component vectors.
 Closed-form fourth-order derivatives of the Laplace log-density, almost
 everywhere (observed, or expected when \code{expected = TRUE}), in the
 notation of \code{\link{distrib_deriv3.LaplaceDistrib}}: the non-zero
-components are \eqn{\ell^{(\mu bbb)} = -6s/b^4} and
-\eqn{\ell^{(bbbb)} = 6/b^4 - 24a/b^5}.
+components are \eqn{\ell^{(\mu\sigma\sigma\sigma)} = -6s/\sigma^4} and
+\eqn{\ell^{(\sigma\sigma\sigma\sigma)} = 6/\sigma^4 - 24a/\sigma^5}.
 }
 \seealso{
 \code{\link{laplace_distrib}}

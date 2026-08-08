@@ -31,7 +31,7 @@ analytic_hd_cases <- function() {
     pseudohuber = list(d = pseudohuber_distrib(), theta = list(mu = 0.5, sigma = 1.4, nu = 2.5)),
     weibull    = list(d = weibull1_distrib(),    theta = list(mu = 2, sigma = 1.6)),
     gumbel     = list(d = gumbel_distrib(),     theta = list(mu = 1, sigma = 2.5)),
-    laplace    = list(d = laplace_distrib(),    theta = list(mu = 0.5, b = 1.3)),
+    laplace    = list(d = laplace_distrib(),    theta = list(mu = 0.5, sigma = 1.3)),
     skewnormal = list(d = skewnormal1_distrib(), theta = list(mu = 0.3, sigma = 1.4, alpha = 3))
   )
 }

@@ -1,5 +1,6 @@
 #' @include cross_derivatives.R reparametrize.R reparam_maps.R
 #' @include logistic_distrib.R cauchy_distrib.R laplace_distrib.R
+#' @include laplace2_distrib.R
 #' @include gumbel_distrib.R pseudohuber_distrib.R skewnormal1_distrib.R
 #' @include skewt_distrib.R exponential_distrib.R weibull1_distrib.R
 #' @include gpd_distrib.R gengamma1_distrib.R invgauss2_distrib.R
@@ -135,6 +136,25 @@ S7::method(distrib_cross_y, GumbelDistrib) <- loc_scale_cross_y
 #' @return A named list with one numeric vector per parameter.
 #' @keywords internal
 S7::method(distrib_cross_y, LaplaceDistrib) <- loc_scale_cross_y
+
+#' @title Laplace Mixed Derivatives in Location and Rate
+#' @name distrib_cross_y.Laplace2Distrib
+#' @description
+#' Closed form, away from the kink at \eqn{y = \mu}: with
+#' \eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the location component
+#' is 0 almost everywhere and the rate component is \eqn{-\mathrm{sign}(y-\mu)}.
+#' @param distrib A \code{Laplace2Distrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu} and \code{lambda}.
+#' @param scale Handled by the generic before dispatch.
+#' @param ... Unused.
+#' @return A named list with one numeric vector per parameter.
+#' @keywords internal
+S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
+                                                         scale = c("parameter", "link"), ...) {
+  n <- length(y)
+  list(mu = rep(0, n), lambda = -sign(y - theta[[1]]) + rep(0, n))
+}
 
 #' @title Pseudo-Huber Mixed Derivatives
 #' @name distrib_cross_y.PseudoHuberDistrib
