@@ -1,4 +1,4 @@
-# Refuse to Stack Two Zero Parameters
+# Reject the Composition of Two Zero Wrappers
 
 Rejects an attempt to wrap a distribution that already models the
 probability of a zero, and rejects a parameter name the parent has

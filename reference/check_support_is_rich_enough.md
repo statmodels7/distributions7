@@ -1,4 +1,4 @@
-# Refuse a Model With More Parameters Than the Support Can Distinguish
+# Reject a Model With More Parameters Than the Support Can Distinguish
 
 Enforces the counting rule that makes a zero wrapper identifiable.
 

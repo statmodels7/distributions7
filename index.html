@@ -87,7 +87,7 @@
 <div class="section level2">
 <h2 id="the-usual-functions">The usual functions<a class="anchor" aria-label="anchor" href="#the-usual-functions"></a>
 </h2>
-<p>Thirty-eight univariate distributions and four multivariate ones ship with the package, one name per parametrization where a family has several – <code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for eleven other families. Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
+<p>Forty univariate distributions and four multivariate ones ship with the package, one name per parametrization where a family has several – <code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for eleven other families. Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -140,7 +140,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>

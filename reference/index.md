@@ -1687,10 +1687,10 @@ divergent density.
   : Validate a Multivariate Distribution
 
 - [`check_not_stacked()`](https://statmodels7.github.io/distributions7/reference/check_not_stacked.md)
-  : Refuse to Stack Two Zero Parameters
+  : Reject the Composition of Two Zero Wrappers
 
 - [`check_support_is_rich_enough()`](https://statmodels7.github.io/distributions7/reference/check_support_is_rich_enough.md)
-  : Refuse a Model With More Parameters Than the Support Can Distinguish
+  : Reject a Model With More Parameters Than the Support Can Distinguish
 
 - [`check_truncation_points()`](https://statmodels7.github.io/distributions7/reference/check_truncation_points.md)
   : Validate the Truncation Endpoints
@@ -2551,7 +2551,7 @@ divergent density.
   : An Inflated Gaussian Proposal
 
 - [`mv_refuse()`](https://statmodels7.github.io/distributions7/reference/mv_refuse.md)
-  : Refuse a Quantity That Has No Multivariate Counterpart
+  : Reject a Quantity That Has No Multivariate Counterpart
 
 - [`mv_sd_cor()`](https://statmodels7.github.io/distributions7/reference/mv_sd_cor.md)
   : Standard Deviations and Correlations of a Structured Matrix

@@ -1,4 +1,4 @@
-# Refuse a Quantity That Has No Multivariate Counterpart
+# Reject a Quantity That Has No Multivariate Counterpart
 
 Raises the error a multivariate distribution gives for the
 one-dimensional quantities: the distribution function, the quantile
