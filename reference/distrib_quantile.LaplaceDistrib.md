@@ -1,7 +1,7 @@
 # Laplace Quantile Function
 
 Computes the quantile function (inverse CDF) for the Laplace
-distribution: \$\$Q(p; \mu, b) = \mu - b\\\mathrm{sign}(p -
+distribution: \$\$Q(p; \mu, \sigma) = \mu - \sigma\\\mathrm{sign}(p -
 \tfrac{1}{2})\\\log\left(1 - 2\left\|p - \tfrac{1}{2}\right\|\right)\$\$
 
 ## Arguments
@@ -16,7 +16,7 @@ distribution: \$\$Q(p; \mu, b) = \mu - b\\\mathrm{sign}(p -
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 - lower.tail:
 

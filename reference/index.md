@@ -21,6 +21,8 @@ used for each of its parameters.
   : Student t Distribution in the Standard Deviation
 - [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
   : Laplace Distribution Object
+- [`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+  : Laplace Distribution in Location and Rate
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution Object (Location-Scale Parameterization)
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
@@ -541,6 +543,37 @@ Rarely called directly, but useful as a reference for what is happening.
   : Laplace Quantile Function
 - [`distrib_rng.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.LaplaceDistrib.md)
   : Laplace Random Number Generator
+
+## Laplace, location and rate
+
+- [`Laplace2Distrib()`](https://statmodels7.github.io/distributions7/reference/Laplace2Distrib.md)
+  : S7 Class for the Laplace Distribution in Location and Rate
+- [`distrib_cdf.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Laplace2Distrib.md)
+  : Laplace Distribution Function in Location and Rate
+- [`distrib_deriv3.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Laplace2Distrib.md)
+  : Laplace Third-Order Derivatives in Location and Rate
+- [`distrib_deriv4.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Laplace2Distrib.md)
+  : Laplace Fourth-Order Derivatives in Location and Rate
+- [`distrib_expected_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Laplace2Distrib.md)
+  : Laplace Analytical Expected Hessian in Location and Rate
+- [`distrib_grad_cdf.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Laplace2Distrib.md)
+  : Laplace Log-CDF Derivatives in Location and Rate
+- [`distrib_grad_y.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Laplace2Distrib.md)
+  : Laplace Response Derivative in Location and Rate
+- [`distrib_gradient.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Laplace2Distrib.md)
+  : Laplace Analytical Gradient in Location and Rate
+- [`distrib_hess_cdf.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Laplace2Distrib.md)
+  : Laplace Log-CDF Second Derivatives in Location and Rate
+- [`distrib_hess_y.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Laplace2Distrib.md)
+  : Laplace Response Second Derivative in Location and Rate
+- [`distrib_hessian.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Laplace2Distrib.md)
+  : Laplace Analytical Observed Hessian in Location and Rate
+- [`distrib_pdf.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Laplace2Distrib.md)
+  : Laplace Density in Location and Rate
+- [`distrib_quantile.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Laplace2Distrib.md)
+  : Laplace Quantile Function in Location and Rate
+- [`distrib_rng.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Laplace2Distrib.md)
+  : Laplace Random Generation in Location and Rate
 
 ## Pseudo-Huber
 
@@ -1568,6 +1601,8 @@ inherits unless it registers something more specific.
   Parameterization)
 - [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
   : Inverse Gaussian Distribution in Mean and Shape
+- [`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+  : Laplace Distribution in Location and Rate
 - [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
   : Laplace Distribution Object
 - [`logistic_distrib()`](https://statmodels7.github.io/distributions7/reference/logistic_distrib.md)
@@ -1772,6 +1807,9 @@ divergent density.
 
 - [`distrib_cross_y.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.InvGauss1Distrib.md)
   : Inverse Gaussian Mixed Derivatives
+
+- [`distrib_cross_y.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Laplace2Distrib.md)
+  : Laplace Mixed Derivatives in Location and Rate
 
 - [`distrib_cross_y.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.LaplaceDistrib.md)
   : Laplace Mixed Derivatives
@@ -2268,6 +2306,9 @@ divergent density.
 - [`kurtosis.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.InvGauss2Distrib.md)
   : Kurtosis of the Inverse Gaussian in Mean and Shape
 
+- [`kurtosis.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.Laplace2Distrib.md)
+  : Kurtosis of the Laplace Distribution in Location and Rate
+
 - [`kurtosis.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.md)
   : Kurtosis of the Laplace Distribution
 
@@ -2408,6 +2449,9 @@ divergent density.
 
 - [`mean.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.InvGauss2Distrib.md)
   : Mean of the Inverse Gaussian in Mean and Shape
+
+- [`mean.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/mean.Laplace2Distrib.md)
+  : Mean of the Laplace Distribution in Location and Rate
 
 - [`mean.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.md)
   : Mean of the Laplace Distribution
@@ -2750,6 +2794,9 @@ divergent density.
 - [`skewness.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.InvGauss2Distrib.md)
   : Skewness of the Inverse Gaussian in Mean and Shape
 
+- [`skewness.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/skewness.Laplace2Distrib.md)
+  : Skewness of the Laplace Distribution in Location and Rate
+
 - [`skewness.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.LaplaceDistrib.md)
   : Skewness of the Laplace Distribution
 
@@ -2953,6 +3000,9 @@ divergent density.
 
 - [`variance.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/variance.InvGauss2Distrib.md)
   : Variance of the Inverse Gaussian in Mean and Shape
+
+- [`variance.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/variance.Laplace2Distrib.md)
+  : Variance of the Laplace Distribution in Location and Rate
 
 - [`variance.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.md)
   : Variance of the Laplace Distribution

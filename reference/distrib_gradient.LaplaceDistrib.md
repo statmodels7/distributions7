@@ -6,8 +6,9 @@ the derivative with respect to \\\mu\\ exists only almost everywhere
 subgradient value 0 is returned there.
 
 \$\$\dfrac{\partial \ell}{\partial \mu} =
-\dfrac{\mathrm{sign}(y-\mu)}{b}\$\$ \$\$\dfrac{\partial \ell}{\partial
-b} = \dfrac{1}{b}\left(\dfrac{\|y-\mu\|}{b} - 1\right)\$\$
+\dfrac{\mathrm{sign}(y-\mu)}{\sigma}\$\$ \$\$\dfrac{\partial
+\ell}{\partial \sigma} =
+\dfrac{1}{\sigma}\left(\dfrac{\|y-\mu\|}{\sigma} - 1\right)\$\$
 
 ## Arguments
 
@@ -21,7 +22,7 @@ b} = \dfrac{1}{b}\left(\dfrac{\|y-\mu\|}{b} - 1\right)\$\$
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 ## Value
 

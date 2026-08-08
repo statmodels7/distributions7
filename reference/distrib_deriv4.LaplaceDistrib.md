@@ -4,8 +4,9 @@ Closed-form fourth-order derivatives of the Laplace log-density, almost
 everywhere (observed, or expected when `expected = TRUE`), in the
 notation of
 [`distrib_deriv3.LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.md):
-the non-zero components are \\\ell^{(\mu bbb)} = -6s/b^4\\ and
-\\\ell^{(bbbb)} = 6/b^4 - 24a/b^5\\.
+the non-zero components are \\\ell^{(\mu\sigma\sigma\sigma)} =
+-6s/\sigma^4\\ and \\\ell^{(\sigma\sigma\sigma\sigma)} = 6/\sigma^4 -
+24a/\sigma^5\\.
 
 ## Arguments
 
@@ -19,7 +20,7 @@ the non-zero components are \\\ell^{(\mu bbb)} = -6s/b^4\\ and
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 - expected:
 

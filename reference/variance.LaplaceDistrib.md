@@ -1,6 +1,6 @@
 # Variance of the Laplace Distribution
 
-Closed form, replacing the numerical default: \\Var(Y) = 2b^2\\.
+Closed form, replacing the numerical default: \\Var(Y) = 2\sigma^2\\.
 
 ## Arguments
 

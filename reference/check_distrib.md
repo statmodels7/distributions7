@@ -130,7 +130,7 @@ kept away from the atoms, where no derivative exists.
 ``` r
 if (FALSE) { # \dontrun{
 check_distrib(gaussian1_distrib())
-check_distrib(laplace_distrib(), theta = list(mu = 1, b = 2))
+check_distrib(laplace_distrib(), theta = list(mu = 1, sigma = 2))
 check_distrib(poisson_distrib(), orders = 1:2, nsim = 5e4)
 } # }
 ```

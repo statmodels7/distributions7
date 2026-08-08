@@ -15,7 +15,7 @@ inverse-transform sampling.
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 ## Value
 

@@ -18,7 +18,7 @@ records this.
 
 - theta:
 
-  A list containing `mu` and `b`.
+  A list containing `mu` and `sigma`.
 
 - lower.tail:
 

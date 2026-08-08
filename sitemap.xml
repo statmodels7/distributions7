@@ -33,6 +33,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/Lognormal1Distrib.html</loc></url>
@@ -136,6 +137,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.Lognormal1Distrib.html</loc></url>
@@ -170,6 +172,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gaussian3Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.GenGamma1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.InvGauss1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Lognormal1Distrib.html</loc></url>
@@ -203,6 +206,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.html</loc></url>
@@ -247,6 +251,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Lognormal1Distrib.html</loc></url>
@@ -292,6 +297,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Lognormal1Distrib.html</loc></url>
@@ -329,6 +335,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Lognormal1Distrib.html</loc></url>
@@ -359,6 +366,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Lognormal1Distrib.html</loc></url>
@@ -400,6 +408,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Lognormal1Distrib.html</loc></url>
@@ -430,6 +439,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.Lognormal1Distrib.html</loc></url>
@@ -451,6 +461,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Gaussian3Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.InvGauss1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Lognormal1Distrib.html</loc></url>
@@ -490,6 +501,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_hessian.Lognormal1Distrib.html</loc></url>
@@ -540,6 +552,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_pdf.Lognormal1Distrib.html</loc></url>
@@ -586,6 +599,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_quantile.Lognormal1Distrib.html</loc></url>
@@ -629,6 +643,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_rng.Lognormal1Distrib.html</loc></url>
@@ -769,6 +784,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.Lognormal1Distrib.html</loc></url>
@@ -785,6 +801,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/kurtosis.numeric.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/laplace2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/laplace_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.html</loc></url>
@@ -825,6 +842,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mean.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Lognormal1Distrib.html</loc></url>
@@ -972,6 +990,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/skewness.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.Lognormal1Distrib.html</loc></url>
@@ -1053,6 +1072,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.GumbelDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.InvGauss1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.InvGauss2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/variance.Laplace2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.Lognormal1Distrib.html</loc></url>

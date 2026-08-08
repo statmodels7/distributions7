@@ -5,15 +5,15 @@ Because the log-density is piecewise linear in \\\mu\\, the second
 derivative with respect to \\\mu\\ is **zero** almost everywhere:
 
 \$\$\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \qquad
-\dfrac{\partial^2 \ell}{\partial \mu \partial b} =
--\dfrac{\mathrm{sign}(y-\mu)}{b^2}, \qquad \dfrac{\partial^2
-\ell}{\partial b^2} = \dfrac{b - 2\|y-\mu\|}{b^3}\$\$
+\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} =
+-\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \qquad \dfrac{\partial^2
+\ell}{\partial \sigma^2} = \dfrac{\sigma - 2\|y-\mu\|}{\sigma^3}\$\$
 
 The degeneracy of \\\partial^2 \ell / \partial \mu^2\\ means
 Newton-Raphson cannot update \\\mu\\; use
 [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-(Fisher scoring), which supplies the correct information \\1/b^2\\ for
-\\\mu\\.
+(Fisher scoring), which supplies the correct information \\1/\sigma^2\\
+for \\\mu\\.
 
 ## Arguments
 
@@ -27,7 +27,7 @@ Newton-Raphson cannot update \\\mu\\; use
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 ## Value
 

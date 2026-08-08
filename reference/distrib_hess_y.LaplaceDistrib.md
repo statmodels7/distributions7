@@ -14,7 +14,7 @@ Closed-form \\\partial^2 \ell / \partial y^2 = 0\\ (almost everywhere).
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 ## Value
 

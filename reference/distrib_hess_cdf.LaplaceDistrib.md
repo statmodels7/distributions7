@@ -2,7 +2,7 @@
 
 Closed form, exact away from \\y = \mu\\. At the kink the second
 derivative of \\F\\ in \\\mu\\ genuinely does not exist — it jumps
-between \\\pm 1/(2b^{2})\\ — so the value returned there is the
+between \\\pm 1/(2\sigma^{2})\\ — so the value returned there is the
 one-sided limit the sign convention picks out, and is reported rather
 than smoothed.
 
@@ -18,7 +18,7 @@ than smoothed.
 
 - theta:
 
-  A list containing `mu` and `b`.
+  A list containing `mu` and `sigma`.
 
 - lower.tail:
 

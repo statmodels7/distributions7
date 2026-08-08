@@ -1,8 +1,8 @@
 # Laplace Probability Density Function
 
 Computes the probability density function for the Laplace distribution:
-\$\$f(y; \mu, b) = \dfrac{1}{2b}
-\exp\left(-\dfrac{\|y-\mu\|}{b}\right)\$\$
+\$\$f(y; \mu, \sigma) = \dfrac{1}{2\sigma}
+\exp\left(-\dfrac{\|y-\mu\|}{\sigma}\right)\$\$
 
 ## Arguments
 
@@ -16,7 +16,7 @@ Computes the probability density function for the Laplace distribution:
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 - log:
 

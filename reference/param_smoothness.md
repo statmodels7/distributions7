@@ -30,6 +30,6 @@ param_smoothness(gaussian1_distrib())
 
 # the Laplace location is a kink, so it is not smooth
 param_smoothness(laplace_distrib())
-#>    mu     b 
+#>    mu sigma 
 #> FALSE  TRUE 
 ```

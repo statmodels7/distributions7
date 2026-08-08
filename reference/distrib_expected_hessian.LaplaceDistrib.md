@@ -4,16 +4,16 @@ Computes the expected Hessian (negative Fisher information) of the
 Laplace log-density. Because the log-likelihood is not differentiable in
 \\\mu\\, the second Bartlett identity fails: \\\mathbb{E}\[\partial^2
 \ell / \partial \mu^2\] = 0\\, yet the Fisher information for \\\mu\\ is
-\\1/b^2\\. The expected Hessian is therefore defined here from the
+\\1/\sigma^2\\. The expected Hessian is therefore defined here from the
 variance of the score, which is what the Fisher information *is*
 whenever the score exists, whether or not the identity relating it to
 \\-\mathbb{E}\[H\]\\ holds:
 
 \$\$\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \mu^2}\right\] =
--\dfrac{1}{b^2}, \qquad \mathbb{E}\left\[\dfrac{\partial^2
-\ell}{\partial \mu \partial b}\right\] = 0, \qquad
-\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial b^2}\right\] =
--\dfrac{1}{b^2}\$\$
+-\dfrac{1}{\sigma^2}, \qquad \mathbb{E}\left\[\dfrac{\partial^2
+\ell}{\partial \mu \partial \sigma}\right\] = 0, \qquad
+\mathbb{E}\left\[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right\] =
+-\dfrac{1}{\sigma^2}\$\$
 
 ## Arguments
 
@@ -27,7 +27,7 @@ whenever the score exists, whether or not the identity relating it to
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 ## Value
 

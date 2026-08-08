@@ -1,9 +1,9 @@
 # Laplace Cumulative Distribution Function
 
 Computes the cumulative distribution function for the Laplace
-distribution: \$\$F(q; \mu, b) = \begin{cases}
-\dfrac{1}{2}\exp\left(\dfrac{q-\mu}{b}\right) & q \< \mu \\ 1 -
-\dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{b}\right) & q \ge \mu
+distribution: \$\$F(q; \mu, \sigma) = \begin{cases}
+\dfrac{1}{2}\exp\left(\dfrac{q-\mu}{\sigma}\right) & q \< \mu \\ 1 -
+\dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{\sigma}\right) & q \ge \mu
 \end{cases}\$\$
 
 ## Arguments
@@ -18,7 +18,7 @@ distribution: \$\$F(q; \mu, b) = \begin{cases}
 
 - theta:
 
-  A list containing the parameters `mu` and `b`.
+  A list containing the parameters `mu` and `sigma`.
 
 - lower.tail:
 

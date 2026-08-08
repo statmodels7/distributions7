@@ -3,13 +3,13 @@
 derivative with respect to \(\mu\) exists only almost everywhere (there is a
 kink at \(y = \mu\), a set of probability zero); the subgradient value 0 is
 returned there.
-$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}$$
-$$\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)$$"><meta property="og:description" content="Computes the analytical gradient of the Laplace log-density. Note that the
+$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}$$
+$$\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)$$"><meta property="og:description" content="Computes the analytical gradient of the Laplace log-density. Note that the
 derivative with respect to \(\mu\) exists only almost everywhere (there is a
 kink at \(y = \mu\), a set of probability zero); the subgradient value 0 is
 returned there.
-$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}$$
-$$\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)$$"><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}$$
+$$\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)$$"><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -54,8 +54,8 @@ $$\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\r
 derivative with respect to \(\mu\) exists only almost everywhere (there is a
 kink at \(y = \mu\), a set of probability zero); the subgradient value 0 is
 returned there.</p>
-<p>$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{b}$$
-$$\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\right)$$</p>
+<p>$$\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}$$
+$$\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)$$</p>
     </div>
 
 
@@ -72,7 +72,7 @@ $$\dfrac{\partial \ell}{\partial b} = \dfrac{1}{b}\left(\dfrac{|y-\mu|}{b} - 1\r
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A list containing the parameters <code>mu</code> and <code>b</code>.</p></dd>
+<dd><p>A list containing the parameters <code>mu</code> and <code>sigma</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
