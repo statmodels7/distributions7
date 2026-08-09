@@ -107,6 +107,18 @@ approximated by sampling. <code><a href="fit_distrib.html">fit_distrib</a></code
 <code>approx</code>, which it rejects for a family that computes it exactly.</p>
     </div>
     <div class="section level2">
+    <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
+
+
+<p>$$f(y) = \frac{\Gamma\!\left(\frac{\nu+p}{2}\right)}{\Gamma\!\left(\frac{\nu}{2}\right)(\nu\pi)^{p/2}\lvert \Sigma \rvert^{1/2}}\left(1 + \frac{q}{\nu}\right)^{-(\nu+p)/2}, \qquad q = (y-\mu)'\Sigma^{-1}(y-\mu)$$
+on \(y \in \mathbb{R}^{p}\), with</p>
+<p>$$\mathbb{E}[Y] = \mu \; (\nu &gt; 1), \qquad \operatorname{Var}(Y) = \frac{\nu}{\nu-2}\Sigma \; (\nu &gt; 2).$$</p>
+<p>Here \(\Sigma\) is the scale matrix and not the covariance, which
+is what lets the family be fitted where the second moment does not
+exist; <code><a href="mv_location.html">mv_sigma</a></code> returns the first and
+<code><a href="variance.html">variance</a></code> the second.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></code>, <code><a href="student_t1_distrib.html">student_t1_distrib</a></code></p></div>
     </div>

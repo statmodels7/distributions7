@@ -40,6 +40,16 @@ For the parametrization in which \\\mu\\ and the second parameter are
 orthogonal, see
 [`pig2_distrib`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md).
 
+## The distribution
+
+\$\$P(Y=y) =
+\sqrt{\frac{2\alpha}{\pi}}\\\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\\y!}\\K\_{y-1/2}(\alpha),
+\qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}\$\$ on
+\\y \in \\0, 1, \dots\\\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \mu +
+\sigma\mu^{2}\$\$
+
 ## References
 
 Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive

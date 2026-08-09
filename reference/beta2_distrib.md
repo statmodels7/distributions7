@@ -41,6 +41,15 @@ observed and the expected ones coincide at orders two, three and four,
 and Fisher scoring and Newton's method take the same step on the
 parameter scale.
 
+## The distribution
+
+\$\$f(y) = \frac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}\$\$ on
+\\y \in (0, 1)\\.
+
+\$\$\mathbb{E}\[Y\] = \frac{\alpha}{\alpha+\beta}, \qquad
+\operatorname{Var}(Y) =
+\frac{\alpha\beta}{(\alpha+\beta)^{2}(\alpha+\beta+1)}\$\$
+
 ## See also
 
 [`beta1_distrib`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)

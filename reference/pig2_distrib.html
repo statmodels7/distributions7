@@ -99,6 +99,14 @@ computed by the same compiled kernel as <code><a href="pig1_distrib.html">pig1_d
 chain rule at all.</p>
     </div>
     <div class="section level2">
+    <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
+
+
+<p>$$P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \sigma = \frac{1}{\sqrt{\mu^{2}+\alpha^{2}} - \mu}$$
+on \(y \in \{0, 1, \dots\}\).</p>
+<p>$$\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu + \sigma\mu^{2}$$</p>
+    </div>
+    <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
 for location, scale and shape. <em>Applied Statistics</em> 54(3), 507–554.</p>

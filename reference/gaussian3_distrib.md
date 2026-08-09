@@ -41,6 +41,14 @@ and the only non-zero fourth derivative is \\\ell^{(\tau\tau\tau\tau)} =
 The precision is the parametrization a Bayesian conjugate analysis uses,
 the gamma being conjugate for \\\tau\\ at known \\\mu\\.
 
+## The distribution
+
+\$\$f(y) =
+\sqrt{\frac{\tau}{2\pi}}\exp\\\left\\-\frac{\tau(y-\mu)^{2}}{2}\right\\\$\$
+on \\y \in \mathbb{R}\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = 1/\tau\$\$
+
 ## See also
 
 [`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),

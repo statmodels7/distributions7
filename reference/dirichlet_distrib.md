@@ -79,6 +79,20 @@ The distribution function and the quantile are rejected by
 [`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md),
 as for every family of that class.
 
+## The distribution
+
+\$\$f(y) =
+\frac{\Gamma(\phi)}{\prod\_{j=1}^{p}\Gamma(\phi\mu_j)}\prod\_{j=1}^{p}
+y_j^{\phi\mu_j - 1}\$\$ on the simplex \\y_j \> 0\\, \\\sum_j y_j = 1\\,
+with
+
+\$\$\mathbb{E}\[Y_j\] = \mu_j, \qquad \operatorname{Var}(Y_j) =
+\frac{\mu_j(1-\mu_j)}{\phi + 1}.\$\$
+
+The mean lies on a parameters7 simplex and \\\phi\\ is the
+concentration, shared by every coordinate; the marginals are Beta with
+that same \\\phi\\.
+
 ## See also
 
 [`beta1_distrib`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)

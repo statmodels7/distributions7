@@ -63,6 +63,18 @@ n(\delta\_{ij}p_i - p_ip_j)\\, singular by construction.
 \\\mathrm{Binomial}(n, p_j)\\ with the other categories collapsed into a
 single failure.
 
+## The distribution
+
+\$\$P(Y = y) = \frac{n!}{\prod\_{j=1}^{p} y_j!}\prod\_{j=1}^{p}
+p_j^{y_j}\$\$ on the weak compositions of \\n\\ into \\p\\ parts, with
+
+\$\$\mathbb{E}\[Y_j\] = n p_j, \qquad \operatorname{Var}(Y_j) = n p_j
+(1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.\$\$
+
+The support is finite, so every expectation is an exact sum;
+[`mv_support`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
+returns it. The marginals are binomial.
+
 ## See also
 
 [`binomial_distrib`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md),

@@ -46,6 +46,13 @@ The restriction is the point rather than a limitation: a family
 parametrized by a standard deviation is a family whose standard
 deviation exists.
 
+## The distribution
+
+\$\$f(y) = \frac{1}{s_0}\\t\_{\nu}\\\left(\frac{y-\mu}{s_0}\right),
+\qquad s_0 = \sigma\sqrt{\frac{\nu-2}{\nu}}\$\$ on \\y \in \mathbb{R}\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}\$\$
+
 ## See also
 
 [`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),

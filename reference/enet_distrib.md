@@ -49,6 +49,17 @@ Orders three and four in the parameters come from the numerical
 fallback; the response derivatives are exact at every order, the third
 and beyond being zero.
 
+## The distribution
+
+\$\$f(y) = \frac{1}{Z}\exp\\\left\\-a\|y-\mu\| -
+\frac{c}{2}(y-\mu)^{2}\right\\, \qquad a = \lambda\alpha, \quad c =
+\lambda(1-\alpha), \quad Z = \frac{2M(a/\sqrt{c})}{\sqrt{c}}\$\$ on \\y
+\in \mathbb{R}\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \frac{1 +
+xG}{c}, \qquad x = \frac{a}{\sqrt{c}}, \quad G = \frac{\mathrm{d}\log
+M}{\mathrm{d}x}\$\$
+
 ## See also
 
 [`laplace2_distrib`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md),

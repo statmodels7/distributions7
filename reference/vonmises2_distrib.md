@@ -58,6 +58,13 @@ expectation of \\Y\\ on \\\[-\pi, \pi)\\, which differs from \\\mu\\
 whenever \\\mu \ne 0\\; see
 [`vonmises1_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md).
 
+## The distribution
+
+\$\$f(y) = \frac{e^{\kappa\cos(y-\mu)}}{2\pi I\_{0}(\kappa)}, \qquad
+\kappa = A^{-1}(\rho)\$\$ on \\y \in \[-\pi, \pi)\\.
+
+\$\$\mathbb{E}\[\cos(Y-\mu)\] = \rho\$\$
+
 ## See also
 
 [`vonmises1_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)

@@ -41,6 +41,16 @@ computed by the same compiled kernel as
 with \\\alpha\\ a seed variable of the jet, so the Bessel argument needs
 no chain rule at all.
 
+## The distribution
+
+\$\$P(Y=y) =
+\sqrt{\frac{2\alpha}{\pi}}\\\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\\y!}\\K\_{y-1/2}(\alpha),
+\qquad \sigma = \frac{1}{\sqrt{\mu^{2}+\alpha^{2}} - \mu}\$\$ on \\y \in
+\\0, 1, \dots\\\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \mu +
+\sigma\mu^{2}\$\$
+
 ## References
 
 Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive

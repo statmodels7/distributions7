@@ -43,6 +43,15 @@ Derivatives are closed form to fourth order, observed and expected.
 Those in \\\phi\\ go through \\s = 1/\phi\\ and the one-variable chain
 rule, so each polygamma function is evaluated once.
 
+## The distribution
+
+\$\$f(y) = \frac{y^{1/\phi -
+1}e^{-y/(\phi\mu)}}{(\phi\mu)^{1/\phi}\\\Gamma(1/\phi)}\$\$ on \\y \in
+(0, \infty)\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) =
+\phi\mu^{2}\$\$
+
 ## See also
 
 [`gamma2_distrib`](https://statmodels7.github.io/distributions7/reference/gamma2_distrib.md)

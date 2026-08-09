@@ -64,6 +64,15 @@ summed against the exact mass to a far-tail quantile.
 As \\\theta \to 0\\ the family approaches the Poisson, as the quadratic
 form does when \\\theta \to \infty\\.
 
+## The distribution
+
+\$\$P(Y=y) = \frac{\Gamma(y +
+\mu/\theta)}{\Gamma(\mu/\theta)\\y!}\left(\frac{1}{1+\theta}\right)^{\mu/\theta}\left(\frac{\theta}{1+\theta}\right)^{y}\$\$
+on \\y \in \\0, 1, \dots\\\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) =
+\mu(1+\theta)\$\$
+
 ## See also
 
 [`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)

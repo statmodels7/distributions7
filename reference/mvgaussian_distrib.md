@@ -84,6 +84,19 @@ penalty and not a legitimate density.
 **The response** is an \\n \times p\\ matrix, one row per observation. A
 plain vector of length \\p\\ is read as a single observation.
 
+## The distribution
+
+\$\$f(y) = (2\pi)^{-p/2}\lvert \Sigma
+\rvert^{-1/2}\exp\\\left\\-\tfrac{1}{2}(y-\mu)'\Sigma^{-1}(y-\mu)\right\\\$\$
+on \\y \in \mathbb{R}^{p}\\, with
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \Sigma.\$\$
+
+The matrix parameter is carried by parameters7, either as the covariance
+\\\Sigma\\ or as the precision \\\Omega = \Sigma^{-1}\\, and its free
+values are flattened into ordinary scalar parameters with identity
+links.
+
 ## See also
 
 [`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),

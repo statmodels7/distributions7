@@ -80,6 +80,14 @@ Leaving <code>weibull2</code> unused is deliberate: it names a different
 parametrization there.</p>
     </div>
     <div class="section level2">
+    <h2 id="the-distribution">The distribution<a class="anchor" aria-label="anchor" href="#the-distribution"></a></h2>
+
+
+<p>$$f(y) = \frac{\sigma}{b}\left(\frac{y}{b}\right)^{\sigma-1}e^{-(y/b)^{\sigma}}, \qquad b = \frac{\mu}{\Gamma(1+1/\sigma)}$$
+on \(y \in (0, \infty)\).</p>
+<p>$$\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = b^{2}\left[\Gamma(1+2/\sigma) - \Gamma(1+1/\sigma)^{2}\right]$$</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="weibull1_distrib.html">weibull1_distrib</a></code>, <code><a href="reparametrize.html">reparametrize</a></code></p></div>
     </div>

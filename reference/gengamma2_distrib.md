@@ -40,6 +40,14 @@ is awkward for a family a regression would put a linear predictor on.
 Since \\\mathbb{E}\[Y\] = a\\\Gamma((d+1)/p)/\Gamma(d/p)\\, the map is
 \$\$a = m\\\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)}.\$\$
 
+## The distribution
+
+\$\$f(y) = \frac{p\\y^{d-1}}{a^{d}\\\Gamma(d/p)}\\e^{-(y/a)^{p}}, \qquad
+a = \mu\\\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}\$\$ on \\y \in (0,
+\infty)\\.
+
+\$\$\mathbb{E}\[Y\] = \mu\$\$
+
 ## See also
 
 [`gengamma1_distrib`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),

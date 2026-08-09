@@ -36,6 +36,15 @@ Built with
 [`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
 so every derivative to fourth order, observed and expected, is exact.
 
+## The distribution
+
+\$\$f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\\\left\\-\frac{(\log y -
+m)^{2}}{2s^{2}}\right\\, \quad s^{2} =
+\log\\\left(1+\frac{v}{\mu^{2}}\right)\\, \\ m = \log\mu -
+\frac{s^{2}}{2}\$\$ on \\y \in (0, \infty)\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = v\$\$
+
 ## See also
 
 [`lognormal1_distrib`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),

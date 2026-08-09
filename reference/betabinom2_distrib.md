@@ -40,6 +40,15 @@ a sum of log-gamma terms and differentiating it \\k\\ times replaces
 each by \\\psi^{(k-1)}\\. The expectations are **exact finite sums**
 over \\\\0, \dots, n\\\\ rather than quadratures.
 
+## The distribution
+
+\$\$P(Y=y) = \binom{n}{y}\frac{B(y+\alpha,\\ n-y+\beta)}{B(\alpha,
+\beta)}\$\$ on \\y \in \\0, \dots, n\\\\.
+
+\$\$\mathbb{E}\[Y\] = \frac{n\alpha}{\alpha+\beta}, \qquad
+\operatorname{Var}(Y) =
+\frac{n\alpha\beta\\(\alpha+\beta+n)}{(\alpha+\beta)^{2}(\alpha+\beta+1)}\$\$
+
 ## See also
 
 [`betabinom1_distrib`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)

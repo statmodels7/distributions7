@@ -42,7 +42,7 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-Forty-one univariate distributions and four multivariate ones ship with
+Forty-two univariate distributions and four multivariate ones ship with
 the package, one name per parametrization where a family has several –
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 in mean and scale,

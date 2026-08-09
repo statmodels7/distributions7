@@ -41,6 +41,14 @@ parametrization is `NO2` in gamlss.
 Derivatives are closed form to fourth order, observed and expected, and
 the two parameters are orthogonal.
 
+## The distribution
+
+\$\$f(y) =
+\frac{1}{\sqrt{2\pi\sigma^{2}}}\exp\\\left\\-\frac{(y-\mu)^{2}}{2\sigma^{2}}\right\\\$\$
+on \\y \in \mathbb{R}\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}\$\$
+
 ## See also
 
 [`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md),

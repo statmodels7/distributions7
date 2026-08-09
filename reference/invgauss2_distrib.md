@@ -37,6 +37,15 @@ The response enters every derivative linearly, so every expectation
 needs only \\\mathbb{E}\[Y\] = \mu\\ and all four orders are closed
 form. The mean and the shape are orthogonal.
 
+## The distribution
+
+\$\$f(y) = \sqrt{\frac{\lambda}{2\pi
+y^{3}}}\exp\\\left\\-\frac{\lambda(y-\mu)^{2}}{2\mu^{2}y}\right\\\$\$ on
+\\y \in (0, \infty)\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) =
+\mu^{3}/\lambda\$\$
+
 ## See also
 
 [`invgauss1_distrib`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)

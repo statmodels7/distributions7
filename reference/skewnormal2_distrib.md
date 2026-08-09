@@ -64,6 +64,15 @@ exists for.
 \> 0.9952717\\, whatever \\\alpha\\ is, so the parameter is bounded
 there. That ceiling is the reason the skew \\t\\ exists.
 
+## The distribution
+
+\$\$f(y) =
+\frac{2}{\omega}\\\phi\\\left(\frac{y-\xi}{\omega}\right)\Phi\\\left(\alpha\\\frac{y-\xi}{\omega}\right),
+\qquad (\xi, \omega, \alpha) = \mathrm{DP}(\mu, \sigma, \gamma_1)\$\$ on
+\\y \in \mathbb{R}\\.
+
+\$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}\$\$
+
 ## See also
 
 [`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
