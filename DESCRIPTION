@@ -76,6 +76,8 @@ Collate:
     'cdf_derivatives.R'
     'reparam_maps.R'
     'cdf_derivatives_families.R'
+    'partition_sums.R'
+    'cdf_higher.R'
     'y_derivatives.R'
     'numerical_derivatives.R'
     'higher_derivatives.R'
