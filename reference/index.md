@@ -23,6 +23,8 @@ used for each of its parameters.
   : Laplace Distribution Object
 - [`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
   : Laplace Distribution in Location and Rate
+- [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  : Construct an Elastic-Net Distribution
 - [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
   : Pseudo-Huber Distribution Object (Location-Scale Parameterization)
 - [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
@@ -336,6 +338,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Print Method for Maximum-Likelihood Fits
 - [`plot.distrib_fit`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
   : Plot a Fitted Distribution against the Data
+- [`mean.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  : Elastic-Net Moments
 
 ## Gaussian
 
@@ -574,6 +578,31 @@ Rarely called directly, but useful as a reference for what is happening.
   : Laplace Quantile Function in Location and Rate
 - [`distrib_rng.Laplace2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Laplace2Distrib.md)
   : Laplace Random Generation in Location and Rate
+
+## EnetDistrib
+
+- [`EnetDistrib()`](https://statmodels7.github.io/distributions7/reference/EnetDistrib.md)
+  : S7 Class for the Elastic-Net Distribution
+- [`distrib_cdf.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.EnetDistrib.md)
+  : Elastic-Net Distribution Function
+- [`distrib_cross_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.EnetDistrib.md)
+  : Elastic-Net Mixed Response-Parameter Derivatives
+- [`distrib_grad_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.EnetDistrib.md)
+  : Elastic-Net Response Derivatives
+- [`distrib_gradient.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md)
+  : Elastic-Net Score
+- [`distrib_hess_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.EnetDistrib.md)
+  : Elastic-Net Second Response Derivative
+- [`distrib_hessian.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.EnetDistrib.md)
+  : Elastic-Net Observed Information
+- [`distrib_pdf.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.EnetDistrib.md)
+  : Elastic-Net Density
+- [`distrib_quantile.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.EnetDistrib.md)
+  : Elastic-Net Quantile Function
+- [`distrib_rng.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md)
+  : Elastic-Net Random Generation
+- [`mean.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  : Elastic-Net Moments
 
 ## Pseudo-Huber
 
@@ -1572,6 +1601,8 @@ inherits unless it registers something more specific.
   : Dirichlet Distribution Object
 - [`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md)
   : S7 Class for Discrete Distributions
+- [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  : Construct an Elastic-Net Distribution
 - [`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
   : Exponential Distribution Object
 - [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
