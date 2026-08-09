@@ -23,3 +23,6 @@ hess_names(c("mu", "sigma"))
 # "mu_mu" "sigma_sigma" "mu_sigma"
 
 }
+\seealso{
+\code{\link{deriv_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+}

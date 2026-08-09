@@ -247,6 +247,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #' mean(d, theta)
 #' variance(d, theta)
 #'
+#' @seealso \code{\link{pig2_distrib}}, \code{\link{negbin2_distrib}}
 #' @export
 pig1_distrib <- function(link_mu = log_link(), link_sigma = log_link()) {
   Pig1Distrib(

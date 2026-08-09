@@ -90,6 +90,7 @@ align_theta <- function(distrib, theta) {
 #' check_theta_bounds(d, list(mu = 0, sigma = -1)) # error: sigma outside (0, Inf)
 #' }
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 check_theta_bounds <- function(distrib, theta) {
   check_bounds_fast(distrib@params, distrib@params_bounds, theta, distrib@distrib_name)
@@ -199,6 +200,7 @@ check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
 #' check_params_dim(list(mu = 1:3, sigma = 1), n = 5)
 #' }
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 check_params_dim <- function(theta, n) {
   len_theta <- lengths(theta)
@@ -239,6 +241,7 @@ check_params_dim <- function(theta, n) {
 #' @examples
 #' expand_params(list(mu = 0, sigma = 1), n = 3)
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 expand_params <- function(theta, n) {
   lens <- lengths(theta)
@@ -276,6 +279,7 @@ expand_params <- function(theta, n) {
 #' hess_names(c("mu", "sigma"))
 #' # "mu_mu" "sigma_sigma" "mu_sigma"
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 hess_names <- function(params) {
   n_params <- length(params)
@@ -390,6 +394,7 @@ hess_pairs <- function(params) {
 #' deriv_names(c("mu", "sigma"), 3)
 #' # "mu_mu_mu" "mu_mu_sigma" "mu_sigma_sigma" "sigma_sigma_sigma"
 #'
+#' @seealso \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 deriv_names <- function(params, order) {
   vapply(deriv_indices(params, order),
@@ -455,6 +460,7 @@ deriv_indices <- function(params, order) {
 #' @examples
 #' transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
 #' @export
 transpose_params <- function(theta) {
   if (!length(theta)) return(list())

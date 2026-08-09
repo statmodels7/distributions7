@@ -220,6 +220,7 @@ S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta) {
 #' distrib_pdf(d, 0:5, theta)
 #' mean(d, theta)
 #'
+#' @seealso \code{\link{pig1_distrib}}, \code{\link{negbin2_distrib}}
 #' @export
 pig2_distrib <- function(link_mu = log_link(), link_alpha = log_link()) {
   Pig2Distrib(

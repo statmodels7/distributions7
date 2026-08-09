@@ -63,3 +63,6 @@ distrib_expected_hessian(
   approx = "integrate"
 )
 }
+\seealso{
+\code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+}

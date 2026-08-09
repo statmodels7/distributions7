@@ -29,3 +29,6 @@ skewness(gaussian1_distrib(), list(mu = 0, sigma = 1))
 skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 
 }
+\seealso{
+\code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{kurtosis}}
+}

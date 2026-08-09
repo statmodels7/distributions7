@@ -28,6 +28,7 @@ NULL
 #' moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 #' }
 #'
+#' @seealso \code{\link{expectation}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
 #' @export
 moment <- function(distrib, theta, p = 1, central = FALSE, mu = NULL, ...) {
   if (central) {
@@ -88,6 +89,7 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #' variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #' variance(poisson_distrib(), list(mu = 3))
 #'
+#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
 #' @export
 variance <- S7::new_generic("variance", "x")
 
@@ -132,6 +134,7 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @examples
 #' std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #'
+#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{skewness}}, \code{\link{kurtosis}}
 #' @export
 std_dev <- S7::new_generic("std_dev", "x")
 
@@ -178,6 +181,7 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' skewness(gaussian1_distrib(), list(mu = 0, sigma = 1))
 #' skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{kurtosis}}
 #' @export
 skewness <- S7::new_generic("skewness", "x")
 
@@ -231,6 +235,7 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1))
 #' kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}
 #' @export
 kurtosis <- S7::new_generic("kurtosis", "x")
 

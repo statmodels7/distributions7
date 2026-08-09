@@ -377,6 +377,7 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta) {
 #' # exp(-Y) is Weibull: the two families are one on the log scale
 #' stats::sd(exp(-distrib_rng(d, 1000, theta))) > 0
 #'
+#' @seealso \code{\link{weibull1_distrib}}, \code{\link{gpd_distrib}}
 #' @export
 gumbel_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {
   GumbelDistrib(

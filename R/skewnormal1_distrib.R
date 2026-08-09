@@ -357,6 +357,7 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
 #' c(alpha_3 = skewness(d, theta),
 #'   alpha_50 = skewness(d, list(mu = 0, sigma = 1, alpha = 50)))
 #'
+#' @seealso \code{\link{skewnormal2_distrib}}, \code{\link{skewt_distrib}}
 #' @export
 skewnormal1_distrib <- function(link_mu = identity_link(),
                                link_sigma = log_link(),

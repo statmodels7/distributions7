@@ -52,3 +52,6 @@ d <- gaussian1_distrib()
 distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 
 }
+\seealso{
+\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}
+}

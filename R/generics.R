@@ -35,6 +35,7 @@ NULL
 #' @examples
 #' distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
+#' @seealso \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
 #' @export
 distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -64,6 +65,7 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' @examples
 #' distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #' distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
+#' @seealso \code{\link{distrib_pdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
 #' @export
 distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -94,6 +96,7 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' @examples
 #' distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
 #' distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
+#' @seealso \code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
 #' @export
 distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(distrib, p, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -131,6 +134,7 @@ distrib_quantile <- S7::new_generic("distrib_quantile", "distrib", function(dist
 #' distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #' distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
 #'
+#' @seealso \code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}
 #' @export
 distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -152,6 +156,7 @@ distrib_atoms <- S7::new_generic("distrib_atoms", "distrib", function(distrib, t
 #' distrib_rng(gaussian1_distrib(), 5, list(mu = 0, sigma = 1))
 #' distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
 #'   sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
+#' @seealso \code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_atoms}}
 #' @export
 distrib_rng <- S7::new_generic("distrib_rng", "distrib", function(distrib, n, theta, ...) {
   theta <- align_theta(distrib, theta)
@@ -242,6 +247,7 @@ check_derivative_args <- function(distrib, y, theta) {
 #'
 #' # the same score with respect to the unconstrained parameters
 #' distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
+#' @seealso \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
 #' @export
 distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -286,6 +292,7 @@ distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(dist
 #' @examples
 #' d <- gaussian1_distrib()
 #' distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' @seealso \code{\link{distrib_gradient}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
 #' @export
 distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -334,6 +341,7 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #'   pseudohuber_distrib(), 0, list(mu = 0, sigma = 1, nu = 1),
 #'   approx = "integrate"
 #' )
+#' @seealso \code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
 #' @export
 distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -381,6 +389,7 @@ distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib
 #'   \code{\link{deriv_names}(distrib@params, 3)} (e.g. \code{"mu_mu_sigma"}).
 #' @examples
 #' distrib_deriv3(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' @seealso \code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv4}}
 #' @export
 distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -420,6 +429,7 @@ distrib_deriv3 <- S7::new_generic("distrib_deriv3", "distrib", function(distrib,
 #'   \code{\link{deriv_names}(distrib@params, 4)} (e.g. \code{"mu_mu_sigma_sigma"}).
 #' @examples
 #' distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' @seealso \code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}
 #' @export
 distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -450,6 +460,7 @@ distrib_deriv4 <- S7::new_generic("distrib_deriv4", "distrib", function(distrib,
 #' @return A numeric vector of the same length as \code{y}.
 #' @examples
 #' distrib_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' @seealso \code{\link{distrib_hess_y}}, \code{\link{distrib_cross_y}}
 #' @export
 distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -473,6 +484,7 @@ distrib_grad_y <- S7::new_generic("distrib_grad_y", "distrib", function(distrib,
 #' @return A numeric vector of the same length as \code{y}.
 #' @examples
 #' distrib_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+#' @seealso \code{\link{distrib_grad_y}}, \code{\link{distrib_cross_y}}
 #' @export
 distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib, y, theta, ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -581,5 +593,6 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' @examples
 #' set.seed(1)
 #' generate_random_theta(gamma2_distrib())
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}
 #' @export
 generate_random_theta <- S7::new_generic("generate_random_theta", "distrib")

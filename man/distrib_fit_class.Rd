@@ -106,3 +106,6 @@ coef(fit)
 logLik(fit)
 
 }
+\seealso{
+\code{\link{fit_distrib}}
+}

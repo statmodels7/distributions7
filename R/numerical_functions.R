@@ -114,6 +114,7 @@ series_rows <- function(term, from, n_rows) {
 #' expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
 #'             theta = list(mu = 10), k = 2)
 #'
+#' @seealso \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
 #' @export
 expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib, f, theta, ...) {
   S7::S7_dispatch()

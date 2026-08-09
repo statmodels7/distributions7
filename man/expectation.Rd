@@ -36,3 +36,6 @@ expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
             theta = list(mu = 10), k = 2)
 
 }
+\seealso{
+\code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+}

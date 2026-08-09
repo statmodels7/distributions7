@@ -72,3 +72,6 @@ d@params
 d@params_bounds
 
 }
+\seealso{
+\code{\link{continuous_distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
+}

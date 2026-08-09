@@ -341,6 +341,7 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' distrib_pdf(d, c(-1, 0, 1), theta)
 #' distrib_gradient(d, c(-1, 0, 1), theta)
 #'
+#' @seealso \code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
 #' @export
 laplace_distrib <- function(link_mu = identity_link(), link_sigma = log_link()) {
   LaplaceDistrib(

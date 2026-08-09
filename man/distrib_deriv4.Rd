@@ -54,3 +54,6 @@ differences of the Hessian (see \code{\link{numerical_deriv4}}).
 \examples{
 distrib_deriv4(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
+\seealso{
+\code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}
+}

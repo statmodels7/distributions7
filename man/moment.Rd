@@ -38,3 +38,6 @@ moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 }
 
 }
+\seealso{
+\code{\link{expectation}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+}

@@ -287,6 +287,7 @@ S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta) {
 #' distrib_pdf(d, c(0.5, 1, 2), theta)
 #' distrib_gradient(d, c(0.5, 1, 2), theta)
 #'
+#' @seealso \code{\link{lognormal2_distrib}}, \code{\link{gaussian1_distrib}}
 #' @export
 lognormal1_distrib <- function(link_mu = identity_link(), link_sigma2 = log_link()) {
   

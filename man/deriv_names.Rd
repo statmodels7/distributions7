@@ -28,3 +28,6 @@ deriv_names(c("mu", "sigma"), 3)
 # "mu_mu_mu" "mu_mu_sigma" "mu_sigma_sigma" "sigma_sigma_sigma"
 
 }
+\seealso{
+\code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+}

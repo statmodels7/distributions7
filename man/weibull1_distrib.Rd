@@ -101,3 +101,6 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
 \emph{Continuous Univariate Distributions, Volume 1}, 2nd edition, chapter 21.
 Wiley.
 }
+\seealso{
+\code{\link{weibull3_distrib}}, \code{\link{gumbel_distrib}}
+}

@@ -23,3 +23,6 @@ length \code{k}, one per observation, keeping the names.
 transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
 
 }
+\seealso{
+\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+}

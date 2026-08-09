@@ -52,3 +52,6 @@ the parameter scale.
 d <- gaussian1_distrib()
 distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
+\seealso{
+\code{\link{distrib_gradient}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+}

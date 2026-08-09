@@ -22,3 +22,6 @@ d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 
 }
+\seealso{
+\code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+}

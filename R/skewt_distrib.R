@@ -620,6 +620,7 @@ S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' y <- distrib_rng(d, 200, theta)
 #' coef(fit_distrib(d, y, method = optimizers7::newton(), start = theta))
 #'
+#' @seealso \code{\link{skewnormal1_distrib}}, \code{\link{student_t1_distrib}}
 #' @export
 skewt_distrib <- function(link_mu = identity_link(),
                           link_sigma = log_link(),

@@ -40,3 +40,6 @@ distrib_atoms(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3))
 
 }
+\seealso{
+\code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}
+}

@@ -37,3 +37,6 @@ lookup in the discrete one.
 distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
 distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 }
+\seealso{
+\code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
+}

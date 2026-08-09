@@ -18,3 +18,6 @@ d <- transformation(beta1_distrib(), logit_transform())
 distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 
 }
+\seealso{
+\code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+}

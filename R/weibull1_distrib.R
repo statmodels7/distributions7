@@ -386,6 +386,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' max(abs(distrib_pdf(d, c(0.5, 1, 2), list(mu = 2, sigma = 1)) -
 #'         stats::dexp(c(0.5, 1, 2), rate = 1 / 2)))
 #'
+#' @seealso \code{\link{weibull3_distrib}}, \code{\link{gumbel_distrib}}
 #' @export
 weibull1_distrib <- function(link_mu = log_link(), link_sigma = log_link()) {
   Weibull1Distrib(

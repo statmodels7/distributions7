@@ -100,3 +100,6 @@ stats::sd(exp(-distrib_rng(d, 1000, theta))) > 0
 Coles, S. (2001). \emph{An Introduction to Statistical Modeling of Extreme
 Values}, chapter 3. Springer.
 }
+\seealso{
+\code{\link{weibull1_distrib}}, \code{\link{gpd_distrib}}
+}

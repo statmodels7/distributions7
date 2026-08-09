@@ -71,6 +71,7 @@ transformer <- S7::new_class("transformer",
 #' d <- transformation(gamma2_distrib(), log_transform())
 #' distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 log_transform <- function() {
   transformer(
@@ -100,6 +101,7 @@ log_transform <- function() {
 #' d <- transformation(gaussian1_distrib(), exp_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 exp_transform <- function() {
   transformer(
@@ -125,6 +127,7 @@ exp_transform <- function() {
 #' d <- transformation(gamma2_distrib(), inverse_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 inverse_transform <- function() {
   transformer(
@@ -150,6 +153,7 @@ inverse_transform <- function() {
 #' d <- transformation(gamma2_distrib(), sqrt_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 sqrt_transform <- function() {
   transformer(
@@ -177,6 +181,7 @@ sqrt_transform <- function() {
 #' d <- transformation(gamma2_distrib(), power_transform(p = 2))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 power_transform <- function(p = 2) {
   transformer(
@@ -222,6 +227,7 @@ power_transform <- function(p = 2) {
 #' d <- transformation(gaussian1_distrib(), asinh_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 asinh_transform <- function() {
   transformer(
@@ -253,6 +259,7 @@ asinh_transform <- function() {
 #' d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 bc_transform <- function(lambda) {
   if (abs(lambda) < 1e-10) {
@@ -300,6 +307,7 @@ bc_transform <- function(lambda) {
 #' d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 yj_transform <- function(lambda) {
   lam2 <- 2 - lambda
@@ -383,6 +391,7 @@ yj_transform <- function(lambda) {
 #' d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{transformation}}
 #' @export
 affine_transform <- function(loc = 0, scale = 1) {
   if (scale == 0) {
@@ -418,6 +427,7 @@ affine_transform <- function(loc = 0, scale = 1) {
 #' d <- transformation(beta1_distrib(), logit_transform())
 #' distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 logit_transform <- function() {
   transformer(
@@ -443,6 +453,7 @@ logit_transform <- function() {
 #' d <- transformation(gaussian1_distrib(), expit_transform())
 #' distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 expit_transform <- function() {
   transformer(
@@ -473,6 +484,7 @@ expit_transform <- function() {
 #' d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
+#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
 #' @export
 softplus_transform <- function(a = 1) {
   if (a <= 0) {

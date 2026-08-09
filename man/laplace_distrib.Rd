@@ -83,3 +83,6 @@ distrib_pdf(d, c(-1, 0, 1), theta)
 distrib_gradient(d, c(-1, 0, 1), theta)
 
 }
+\seealso{
+\code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
+}

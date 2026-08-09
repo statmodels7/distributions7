@@ -22,3 +22,6 @@ Generates sensible random parameters for a distribution based on its mathematica
 set.seed(1)
 generate_random_theta(gamma2_distrib())
 }
+\seealso{
+\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}
+}

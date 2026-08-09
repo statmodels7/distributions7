@@ -54,3 +54,6 @@ check_params_dim(list(mu = 1:3, sigma = 1), n = 5)
 }
 
 }
+\seealso{
+\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+}

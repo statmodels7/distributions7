@@ -48,6 +48,7 @@ NULL
 #' d <- gaussian1_distrib()
 #' distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #'
+#' @seealso \code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}
 #' @export
 distrib_cross_y <- S7::new_generic("distrib_cross_y", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)

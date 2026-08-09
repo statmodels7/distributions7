@@ -28,3 +28,6 @@ provide it directly, the others fall back to finite differences of the log-densi
 \examples{
 distrib_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
+\seealso{
+\code{\link{distrib_hess_y}}, \code{\link{distrib_cross_y}}
+}

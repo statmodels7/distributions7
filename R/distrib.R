@@ -44,6 +44,7 @@
 #' d@params
 #' d@params_bounds
 #'
+#' @seealso \code{\link{continuous_distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
 #' @export
 distrib <- S7::new_class("distrib",
   properties = list(
@@ -145,6 +146,7 @@ S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
 #' # the Laplace location is a kink, so it is not smooth
 #' param_smoothness(laplace_distrib())
 #'
+#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{generate_random_theta}}
 #' @export
 param_smoothness <- function(distrib) {
   ps <- distrib@params_smooth
@@ -182,6 +184,7 @@ param_smoothness <- function(distrib) {
 #' S7::S7_inherits(gaussian1_distrib(), continuous_distrib)
 #' S7::S7_inherits(poisson_distrib(), continuous_distrib)
 #'
+#' @seealso \code{\link{distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
 #' @export
 continuous_distrib <- S7::new_class("continuous_distrib",
   parent = distrib
@@ -211,6 +214,7 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #' S7::S7_inherits(poisson_distrib(), discrete_distrib)
 #' S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 #'
+#' @seealso \code{\link{distrib}}, \code{\link{continuous_distrib}}, \code{\link{multivariate_distrib}}
 #' @export
 discrete_distrib <- S7::new_class("discrete_distrib",
   parent = distrib

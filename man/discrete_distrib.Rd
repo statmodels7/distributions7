@@ -61,3 +61,6 @@ S7::S7_inherits(poisson_distrib(), discrete_distrib)
 S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 
 }
+\seealso{
+\code{\link{distrib}}, \code{\link{continuous_distrib}}, \code{\link{multivariate_distrib}}
+}

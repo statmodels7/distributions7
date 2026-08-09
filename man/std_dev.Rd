@@ -26,3 +26,6 @@ For numeric vectors the sample standard deviation \code{\link[stats]{sd}} is ret
 std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
 
 }
+\seealso{
+\code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+}

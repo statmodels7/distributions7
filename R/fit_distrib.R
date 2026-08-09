@@ -215,6 +215,7 @@ fit_loglik <- function(distrib, y, theta) {
 #' coef(fit)
 #' logLik(fit)
 #'
+#' @seealso \code{\link{fit_distrib}}
 #' @export
 distrib_fit <- S7::new_class("distrib_fit",
   properties = list(

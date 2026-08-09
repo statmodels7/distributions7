@@ -36,3 +36,6 @@ distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 # the same score with respect to the unconstrained parameters
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 }
+\seealso{
+\code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+}

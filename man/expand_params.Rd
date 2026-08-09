@@ -22,3 +22,6 @@ ensuring all vectors are ready for element-wise operations.
 expand_params(list(mu = 0, sigma = 1), n = 3)
 
 }
+\seealso{
+\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+}

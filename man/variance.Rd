@@ -32,3 +32,6 @@ variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 variance(poisson_distrib(), list(mu = 3))
 
 }
+\seealso{
+\code{\link{expectation}}, \code{\link{moment}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+}

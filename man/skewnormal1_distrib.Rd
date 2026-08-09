@@ -105,3 +105,6 @@ Azzalini, A. (1985). A class of distributions which includes the normal ones.
 Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
 Families}. Cambridge University Press.
 }
+\seealso{
+\code{\link{skewnormal2_distrib}}, \code{\link{skewt_distrib}}
+}
