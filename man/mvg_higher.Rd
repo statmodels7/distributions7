@@ -9,7 +9,7 @@ mvg_higher(distrib, y, theta, order)
 \arguments{
 \item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
 
-\item{y}{An \eqn{n     imes p} matrix of observations.}
+\item{y}{An \eqn{n \times p} matrix of observations.}
 
 \item{theta}{A named list of parameters.}
 

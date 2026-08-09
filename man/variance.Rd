@@ -20,6 +20,13 @@ Computes the variance. For \code{distrib} objects the second central moment is
 evaluated numerically (analytical methods may override this for specific
 distributions); for numeric vectors the sample variance \code{\link[stats]{var}} is returned.
 }
+\details{
+\deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
+
+A family with a closed form registers its own method; otherwise the
+expectation is the quadrature or the exact sum of
+\code{\link{expectation}}.
+}
 \examples{
 variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 variance(poisson_distrib(), list(mu = 3))

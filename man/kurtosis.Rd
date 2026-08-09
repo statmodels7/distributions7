@@ -16,7 +16,12 @@ kurtosis(x, ...)
 A numeric vector.
 }
 \description{
-Computes the excess kurtosis (fourth standardized moment minus 3). For
+Computes the excess kurtosis, the fourth standardized moment less the
+three a Gaussian has:
+
+\deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
+
+For
 \code{distrib} objects it is evaluated numerically via \code{\link{moment}}; for
 numeric vectors the sample excess kurtosis (population denominator) is returned.
 }

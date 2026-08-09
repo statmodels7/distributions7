@@ -22,6 +22,16 @@ A numeric vector of cumulative probabilities.
 \description{
 Evaluates the cumulative distribution function (CDF) for a given distribution.
 }
+\details{
+\deqn{F(q; \theta) = P(Y \le q),}
+
+the integral of the density up to \eqn{q} for a continuous family and the
+sum of the mass over the support points at or below \eqn{q} for a discrete
+one. \code{lower.tail = FALSE} returns \eqn{1 - F(q; \theta)} and
+\code{log.p = TRUE} its logarithm, both computed on the log scale where a
+family provides one. Without a method the value comes from quadrature of
+the density.
+}
 \examples{
 distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)

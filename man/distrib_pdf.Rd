@@ -22,6 +22,14 @@ A numeric vector of density values, one per observation.
 \description{
 Evaluates the probability density function (PDF) or probability mass function (PMF).
 }
+\details{
+For a continuous family \eqn{f(y; \theta)} is the density with respect to
+the Lebesgue measure and for a discrete one the mass
+\eqn{f(y; \theta) = P(Y = y)}; \code{log = TRUE} returns
+\eqn{\log f(y; \theta)}, which is the quantity every derivative generic
+differentiates. This is the only method a distribution has to supply:
+every other quantity has a numerical fallback derived from it.
+}
 \examples{
 distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)

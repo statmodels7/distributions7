@@ -16,7 +16,11 @@ skewness(x, ...)
 A numeric vector.
 }
 \description{
-Computes the skewness (third standardized moment). For \code{distrib} objects it is
+Computes the skewness (third standardized moment):
+
+\deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right].}
+
+For \code{distrib} objects it is
 evaluated numerically via \code{\link{moment}}; for numeric vectors the sample
 skewness (population denominator) is returned.
 }

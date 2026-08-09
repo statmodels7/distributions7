@@ -48,6 +48,23 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'   \code{method = optimizers7::lbfgs()} \tab whatever that optimizer does
 #' }
 #'
+#' Writing \eqn{s(\eta) = \partial l / \partial \eta} for the score on the
+#' unconstrained scale and \eqn{\mathcal{I}(\eta) = \mathbb{E}[-\partial^{2} l
+#' / \partial \eta \partial \eta']} for the expected information there, the
+#' step is
+#'
+#' \deqn{\eta^{(t+1)} = \eta^{(t)}
+#'   + \mathcal{I}(\eta^{(t)})^{-1} s(\eta^{(t)}),}
+#'
+#' Newton's step with the observed Hessian replaced by minus the expected one.
+#' Under the diagonal reparametrization \eqn{\theta_i = h_i(\eta_i)} the
+#' information transforms by congruence,
+#' \eqn{\mathcal{I}(\eta) = D\, \mathcal{I}(\theta)\, D} with
+#' \eqn{D = \operatorname{diag}(h_i'(\eta_i))} (the diagonal first-order term
+#' of the chain rule vanishes in expectation, the score having mean zero), so
+#' the matrix inverted is positive definite wherever \eqn{\mathcal{I}(\theta)}
+#' is and the step is always a direction of ascent.
+#'
 #' Fisher scoring is not a separate algorithm, which is why it has no
 #' implementation of its own: it is a Newton step with one matrix replaced by
 #' another. What it does need, and an optimizer cannot carry, is a statement of

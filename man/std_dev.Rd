@@ -17,6 +17,9 @@ A numeric vector.
 }
 \description{
 Computes the standard deviation as the square root of \code{\link{variance}}.
+}
+\details{
+\deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
 For numeric vectors the sample standard deviation \code{\link[stats]{sd}} is returned.
 }
 \examples{

@@ -17,6 +17,15 @@ NULL
 #' Probability Density Function
 #'
 #' @description Evaluates the probability density function (PDF) or probability mass function (PMF).
+#'
+#' @details
+#' For a continuous family \eqn{f(y; \theta)} is the density with respect to
+#' the Lebesgue measure and for a discrete one the mass
+#' \eqn{f(y; \theta) = P(Y = y)}; \code{log = TRUE} returns
+#' \eqn{\log f(y; \theta)}, which is the quantity every derivative generic
+#' differentiates. This is the only method a distribution has to supply:
+#' every other quantity has a numerical fallback derived from it.
+#'
 #' @param distrib A distribution object inheriting from the \code{distrib} class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution parameters.
@@ -35,6 +44,17 @@ distrib_pdf <- S7::new_generic("distrib_pdf", "distrib", function(distrib, y, th
 #' Cumulative Distribution Function
 #'
 #' @description Evaluates the cumulative distribution function (CDF) for a given distribution.
+#'
+#' @details
+#' \deqn{F(q; \theta) = P(Y \le q),}
+#'
+#' the integral of the density up to \eqn{q} for a continuous family and the
+#' sum of the mass over the support points at or below \eqn{q} for a discrete
+#' one. \code{lower.tail = FALSE} returns \eqn{1 - F(q; \theta)} and
+#' \code{log.p = TRUE} its logarithm, both computed on the log scale where a
+#' family provides one. Without a method the value comes from quadrature of
+#' the density.
+#'
 #' @param distrib A distribution object inheriting from the \code{distrib} class.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list (or named numeric vector) of distribution parameters.
@@ -53,6 +73,18 @@ distrib_cdf <- S7::new_generic("distrib_cdf", "distrib", function(distrib, q, th
 #' Quantile Function
 #'
 #' @description Evaluates the quantile function for a given distribution.
+#'
+#' @details
+#' The generalized inverse of the distribution function,
+#'
+#' \deqn{Q(p; \theta) = \inf\{y : F(y; \theta) \ge p\},}
+#'
+#' which for a continuous strictly increasing \eqn{F} is the ordinary inverse
+#' and for a discrete family the smallest support point whose cumulative mass
+#' reaches \eqn{p}. Without a method the value comes from root-finding on
+#' \code{\link{distrib_cdf}} in the continuous case and from an exact table
+#' lookup in the discrete one.
+#'
 #' @param distrib A distribution object inheriting from the \code{distrib} class.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list (or named numeric vector) of distribution parameters.
@@ -223,6 +255,26 @@ distrib_gradient <- S7::new_generic("distrib_gradient", "distrib", function(dist
 #' Analytical Hessian
 #'
 #' @description Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
+#'
+#' @details
+#' With \eqn{l(\theta; y) = \log f(y; \theta)}, one entry per unordered pair
+#' of parameters,
+#'
+#' \deqn{l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},}
+#'
+#' evaluated at the observed \eqn{y} (see
+#' \code{\link{distrib_expected_hessian}} for its expectation). On the link
+#' scale the reparametrization \eqn{\theta_i = h_i(\eta_i)} is diagonal, so
+#' the second-order chain rule carries a first-order term on the diagonal
+#' alone:
+#'
+#' \deqn{\frac{\partial^{2} l}{\partial \eta_i \partial \eta_j}
+#'   = l^{(ij)} h_i'(\eta_i) h_j'(\eta_j)
+#'   + \delta_{ij}\, l^{(i)} h_i''(\eta_i).}
+#'
+#' The transformation is applied in the generic, so a method always returns
+#' the parameter scale.
+#'
 #' @param distrib A distribution object inheriting from the \code{distrib} class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution parameters.

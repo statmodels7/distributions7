@@ -301,6 +301,14 @@ rm(.fixed_cls)
 #' estimated.
 #'
 #' @details
+#' Splitting the parent's parameters into a fixed part \eqn{\theta_C = c} and a
+#' free part \eqn{\theta_F}, the density is the parent's at the reassembled
+#' vector and the derivatives are its components among the free indices,
+#'
+#' \deqn{f_{\mathrm{fix}}(y; \theta_F) = f(y; \theta_F, c),
+#'   \qquad l^{(i_1 \cdots i_k)}_{\mathrm{fix}} = l^{(i_1 \cdots i_k)},
+#'   \quad i_1, \dots, i_k \in F.}
+#'
 #' The result is the same law with a smaller parameter set: \code{theta}
 #' carries only the free parameters, every generic answers as the parent does
 #' at the full vector, and the derivative components are the parent's

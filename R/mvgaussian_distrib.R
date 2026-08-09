@@ -798,7 +798,7 @@ mv_ordered_partitions <- function(pos) {
 #' mean and structure indices, and reads the surviving cases off the
 #' gaussian's algebra.
 #' @param distrib A \code{\link{MvGaussianDistrib}} object.
-#' @param y An \eqn{n 	imes p} matrix of observations.
+#' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param order 3 or 4.
 #' @return A named list of derivative component vectors.

@@ -33,6 +33,16 @@ than by sampling.
 The base class rejects. A continuous family has no such set, and a discrete
 one whose support is infinite has no finite matrix to return; either way an
 answer would be a fiction, and the caller is better told.
+
+For the multinomial on \eqn{p} coordinates with \eqn{n} trials the support
+is the weak compositions of \eqn{n} into \eqn{p} parts,
+
+\deqn{\mathcal{S} = \Bigl\{y \in \mathbb{N}_0^{p} :
+  \textstyle\sum_{j=1}^{p} y_j = n\Bigr\},
+  \qquad \lvert\mathcal{S}\rvert = \binom{n + p - 1}{p - 1},}
+
+enumerated by \code{\link[numericals7]{compositions}}. Every expectation is
+then the finite sum \eqn{\sum_{y \in \mathcal{S}} g(y) f(y; \theta)}.
 }
 \examples{
 d <- multinomial_distrib(3, size = 4)

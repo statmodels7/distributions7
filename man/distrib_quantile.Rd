@@ -22,6 +22,17 @@ A numeric vector of quantiles.
 \description{
 Evaluates the quantile function for a given distribution.
 }
+\details{
+The generalized inverse of the distribution function,
+
+\deqn{Q(p; \theta) = \inf\{y : F(y; \theta) \ge p\},}
+
+which for a continuous strictly increasing \eqn{F} is the ordinary inverse
+and for a discrete family the smallest support point whose cumulative mass
+reaches \eqn{p}. Without a method the value comes from root-finding on
+\code{\link{distrib_cdf}} in the continuous case and from an exact table
+lookup in the discrete one.
+}
 \examples{
 distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma = 1))
 distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))

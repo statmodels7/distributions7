@@ -29,6 +29,25 @@ A named list of numeric vectors, keyed as
 \description{
 Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
 }
+\details{
+With \eqn{l(\theta; y) = \log f(y; \theta)}, one entry per unordered pair
+of parameters,
+
+\deqn{l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},}
+
+evaluated at the observed \eqn{y} (see
+\code{\link{distrib_expected_hessian}} for its expectation). On the link
+scale the reparametrization \eqn{\theta_i = h_i(\eta_i)} is diagonal, so
+the second-order chain rule carries a first-order term on the diagonal
+alone:
+
+\deqn{\frac{\partial^{2} l}{\partial \eta_i \partial \eta_j}
+  = l^{(ij)} h_i'(\eta_i) h_j'(\eta_j)
+  + \delta_{ij}\, l^{(i)} h_i''(\eta_i).}
+
+The transformation is applied in the generic, so a method always returns
+the parameter scale.
+}
 \examples{
 d <- gaussian1_distrib()
 distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))

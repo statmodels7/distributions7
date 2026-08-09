@@ -73,6 +73,13 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #' evaluated numerically (analytical methods may override this for specific
 #' distributions); for numeric vectors the sample variance \code{\link[stats]{var}} is returned.
 #'
+#' @details
+#' \deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
+#'
+#' A family with a closed form registers its own method; otherwise the
+#' expectation is the quadrature or the exact sum of
+#' \code{\link{expectation}}.
+#'
 #' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
 #' @param ... For \code{distrib} objects: \code{theta} (a named list of parameters) and
 #'   further arguments passed to \code{\link{moment}}. For numeric vectors: \code{na.rm}.
@@ -113,6 +120,9 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'
 #' @description
 #' Computes the standard deviation as the square root of \code{\link{variance}}.
+#'
+#' @details
+#' \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
 #' For numeric vectors the sample standard deviation \code{\link[stats]{sd}} is returned.
 #'
 #' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
@@ -152,7 +162,11 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' Skewness of a Distribution or Sample
 #'
 #' @description
-#' Computes the skewness (third standardized moment). For \code{distrib} objects it is
+#' Computes the skewness (third standardized moment):
+#'
+#' \deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right].}
+#'
+#' For \code{distrib} objects it is
 #' evaluated numerically via \code{\link{moment}}; for numeric vectors the sample
 #' skewness (population denominator) is returned.
 #'
@@ -200,7 +214,12 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' Excess Kurtosis of a Distribution or Sample
 #'
 #' @description
-#' Computes the excess kurtosis (fourth standardized moment minus 3). For
+#' Computes the excess kurtosis, the fourth standardized moment less the
+#' three a Gaussian has:
+#'
+#' \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
+#'
+#' For
 #' \code{distrib} objects it is evaluated numerically via \code{\link{moment}}; for
 #' numeric vectors the sample excess kurtosis (population denominator) is returned.
 #'
