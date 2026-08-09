@@ -447,8 +447,18 @@ trunc_deriv_k <- function(order) {
     params <- distrib@params
     n <- length(y)
 
-    # expectation() calls its integrand as f(y = ., theta = .), by name
+    # d^B Z / Z. Where the parent has genuine cdf derivatives of the block's
+    # order, Z's derivative is F(u) - F(l^-) differentiated, which is two
+    # calls on the parent instead of one quadrature per component. The tables
+    # are fetched once per order rather than once per block, and a NULL means
+    # that order has no such route and the block falls back to the
+    # expectation.
+    dZ <- lapply(seq_len(order), function(k) trunc_mass_derivs(distrib, theta, k))
+    Zval <- trunc_constants(distrib, theta)$Z
     ratio <- memo_ratio(function(block) {
+      k <- length(block)
+      if (!is.null(dZ[[k]])) return(dZ[[k]][[canon_key(block, params)]] / Zval)
+      # expectation() calls its integrand as f(y = ., theta = .), by name
       expectation(distrib, function(y, theta) {
         bell_f_ratio(block, parent_ell(parent, y, theta, length(block), params))
       }, theta)

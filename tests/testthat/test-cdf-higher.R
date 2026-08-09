@@ -131,3 +131,61 @@ test_that("both tails and both scales are served", {
     expect_equal(unlist(up), -unlist(lo))
   }
 })
+
+test_that("the two routes to the truncation constant agree", {
+  # d^B Z / Z can be had as F(u) - F(l^-) differentiated, or as a truncated
+  # expectation of the same Bell quantity. They share no code, so their
+  # agreement cross-validates both: the cdf derivatives of the parent on one
+  # side and expectation()'s quadrature on the other.
+  d <- gaussian1_distrib()
+  th <- list(mu = 0, sigma = 1)
+  tr <- truncated(d, lower = 0.2, upper = 4)
+  params <- tr@params
+  parent <- tr@parent_distrib
+  Z <- distributions7:::trunc_constants(tr, th)$Z
+
+  for (k in 1:4) {
+    dZ <- distributions7:::trunc_mass_derivs(tr, th, k)
+    expect_false(is.null(dZ))
+    quad <- vapply(deriv_indices(params, k), function(I) {
+      b <- params[I]
+      expectation(tr, function(y, theta) {
+        distributions7:::bell_f_ratio(
+          b, distributions7:::parent_ell(parent, y, theta, length(b), params))
+      }, th)
+    }, numeric(1))
+    expect_lt(max(abs(unlist(dZ) / Z - quad)) / max(abs(quad), 1), 1e-12)
+  }
+})
+
+test_that("the gate refuses a stencil dressed as a closed form", {
+  # the third and fourth defaults sit on `distrib` rather than on
+  # `continuous_distrib`, so a gate that excluded only the latter would take
+  # a stencil for a closed form and feed its noise into the truncation
+  expect_true(all(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))))
+  expect_true(all(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))))
+  expect_false(any(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
+})
+
+test_that("the location-scale closed form reproduces the written-out orders", {
+  for (cs in list(list(gaussian1_distrib(), list(mu = 0.3, sigma = 1.4), 0.9),
+                  list(logistic_distrib(), list(mu = 0.2, sigma = 1.1), 0.7),
+                  list(cauchy_distrib(), list(mu = 0.1, sigma = 1.3), 0.5),
+                  list(laplace_distrib(), list(mu = 0.2, sigma = 1.1), 0.8))) {
+    d <- cs[[1]]; th <- cs[[2]]; q <- cs[[3]]
+    for (k in 1:2) {
+      a <- distributions7:::loc_scale_cdf_deriv(d, q, th, k)
+      b <- distributions7:::loc_scale_cdf_deriv_k(d, q, th, k)
+      expect_equal(b[names(a)], a, tolerance = 1e-12)
+    }
+    # and at the new orders it agrees with the stencil route
+    for (k in 3:4) {
+      b <- unlist(distributions7:::loc_scale_cdf_deriv_k(d, q, th, k))
+      r <- unlist(distributions7:::numerical_cdf_deriv_k(d, q, th, k))
+      expect_lt(max(abs(b - r)) / max(abs(r), 1), 1e-4)
+    }
+  }
+})

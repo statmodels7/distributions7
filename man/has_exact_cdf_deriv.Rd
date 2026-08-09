@@ -9,7 +9,7 @@ has_exact_cdf_deriv(parent, order)
 \arguments{
 \item{parent}{The parent distribution.}
 
-\item{order}{The cdf derivative order, 1 or 2.}
+\item{order}{The cdf derivative order, 1 to 4.}
 }
 \value{
 A single logical.

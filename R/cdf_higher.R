@@ -1,4 +1,4 @@
-#' @include cdf_derivatives.R partition_sums.R
+#' @include cdf_derivatives.R partition_sums.R y_higher.R
 NULL
 
 # ===========================================================================
@@ -301,3 +301,90 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
   cdf_scale_k(distrib, distrib_cdf(distrib, q, theta),
               cdf_tables(distrib, q, theta, 4L), 4L, lower.tail, log)
 }
+
+#' Location-Scale CDF Derivatives at Any Order
+#'
+#' @description
+#' Closed-form derivatives of \eqn{F} of any order up to four, for a family
+#' that is location-scale in its first two parameters.
+#'
+#' @details
+#' With \eqn{z = (q-\mu)/\sigma} the distribution function is
+#' \eqn{F(q) = F_0(z)}, so every derivative in \eqn{(\mu, \sigma)} is one
+#' Faa di Bruno pass over that composition. The inner derivatives are
+#' \eqn{F_0^{(m)}(z) = \sigma^{m} \partial^{m} F/\partial q^{m}}, and
+#' \eqn{\partial^{m} F/\partial q^{m} = f(q) B_{m-1}}, the complete Bell
+#' polynomial in the response derivatives of \eqn{\log f}. The map is
+#' \eqn{\partial^{i+j} z/\partial\mu^{i}\partial\sigma^{j}}, which vanishes
+#' for \eqn{i \ge 2} because \eqn{z} is linear in the location.
+#'
+#' This is what the response derivatives of order three and four are for:
+#' with only \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}
+#' the construction stops at second order, which is where
+#' \code{\link{loc_scale_cdf_deriv}} stops. At orders one and two the two
+#' agree exactly.
+#'
+#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list of parameters, location first and scale second.
+#' @param order The derivative order, 1 to 4.
+#'
+#' @return A named list of derivative components of \eqn{F}.
+#'
+#' @seealso \code{\link{loc_scale_cdf_deriv}}, \code{\link{chain_assemble}}
+#' @keywords internal
+loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
+  s <- theta[[2]]
+  z <- (q - theta[[1]]) / s
+  f <- distrib_pdf(distrib, q, theta)
+
+  # the response derivatives of log f, as many as the order needs
+  ly <- list(distrib_grad_y(distrib, q, theta),
+             distrib_hess_y(distrib, q, theta),
+             if (order >= 3L) distrib_deriv3_y(distrib, q, theta) else NULL,
+             if (order >= 4L) distrib_deriv4_y(distrib, q, theta) else NULL)
+  ell <- function(block) ly[[length(block)]]
+
+  # F0^(m)(z) = sigma^m f B_{m-1}
+  D <- lapply(seq_len(order), function(m) {
+    b <- if (m == 1L) 1 else bell_f_ratio(rep("y", m - 1L), ell)
+    stats::setNames(list(s^m * f * b), paste(rep("z", m), collapse = "_"))
+  })
+
+  zmap <- list(z = list(
+    "1" = -1 / s, "2" = -z / s,
+    "1,2" = 1 / s^2, "2,2" = 2 * z / s^2,
+    "1,2,2" = -2 / s^3, "2,2,2" = -6 * z / s^3,
+    "1,2,2,2" = 6 / s^4, "2,2,2,2" = 24 * z / s^4
+  ))
+  chain_assemble(D, "z", zmap, distrib@params[1:2], order, length(q))
+}
+
+#' Location-Scale Third and Fourth Log-CDF Derivatives
+#'
+#' @description
+#' The \code{\link{distrib_deriv3_cdf}} and \code{\link{distrib_deriv4_cdf}}
+#' bodies shared by the location-scale families.
+#'
+#' @param order The derivative order, 3 or 4.
+#'
+#' @return A function suitable for registering as an S7 method.
+#'
+#' @seealso \code{\link{loc_scale_cdf_deriv_k}}
+#' @keywords internal
+loc_scale_deriv_cdf_k <- function(order) {
+  function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
+    dF <- lapply(seq_len(order),
+                 function(k) loc_scale_cdf_deriv_k(distrib, q, theta, k))
+    cdf_scale_k(distrib, distrib_cdf(distrib, q, theta), dF, order,
+                lower.tail, log)
+  }
+}
+
+# the location-scale families, the same four the orders below cover
+for (.cls in list(Gaussian1Distrib, LogisticDistrib, CauchyDistrib,
+                  LaplaceDistrib)) {
+  S7::method(distrib_deriv3_cdf, .cls) <- loc_scale_deriv_cdf_k(3L)
+  S7::method(distrib_deriv4_cdf, .cls) <- loc_scale_deriv_cdf_k(4L)
+}
+rm(.cls)

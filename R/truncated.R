@@ -278,7 +278,7 @@ trunc_inside <- function(distrib, y) {
 #' the method object does not answer the question, because S7 wraps it.
 #'
 #' @param parent The parent distribution.
-#' @param order The cdf derivative order, 1 or 2.
+#' @param order The cdf derivative order, 1 to 4.
 #'
 #' @return A single logical.
 #'
@@ -286,13 +286,18 @@ trunc_inside <- function(distrib, y) {
 #' @keywords internal
 has_exact_cdf_deriv <- function(parent, order) {
   if (S7::S7_inherits(parent, discrete_distrib)) return(TRUE)
-  gen <- if (order == 1L) distrib_grad_cdf else distrib_hess_cdf
+  gen <- switch(order, distrib_grad_cdf, distrib_hess_cdf,
+                distrib_deriv3_cdf, distrib_deriv4_cdf)
   m <- tryCatch(S7::method(gen, S7::S7_class(parent)), error = function(e) NULL)
   if (is.null(m)) return(FALSE)
   reg <- tryCatch(attr(m, "signature")[[1]], error = function(e) NULL)
+  if (is.null(reg)) return(FALSE)
   # identical() on a method object does not answer "is this the fallback?" --
-  # S7 wraps it -- but the class it was registered on does.
-  !is.null(reg) && !is_class(reg, continuous_distrib)
+  # S7 wraps it -- but the class it was registered on does. The defaults of
+  # the third and fourth orders sit on `distrib` rather than on
+  # `continuous_distrib`, so both have to be excluded or a stencil would be
+  # mistaken for a closed form.
+  !is_class(reg, continuous_distrib) && !is_class(reg, distrib)
 }
 
 #' Derivatives of the Truncation Constant via the Parent's CDF
@@ -320,32 +325,28 @@ trunc_mass_derivs <- function(distrib, theta, order) {
   lo <- distrib@lower
   up <- distrib@upper
   is_disc <- S7::S7_inherits(distrib, TruncatedDiscreteDistrib)
-  nms <- if (order == 1L) params else hess_names(params)
+  nms <- deriv_names(params, order)
+  idx <- deriv_indices(params, order)
 
   if (!is_disc && is.finite(lo)) {
     at <- distrib_atoms(parent, theta)
     if (length(at$y) && any(at$y == lo)) return(NULL)
   }
 
+  gen <- switch(order, distrib_grad_cdf, distrib_hess_cdf,
+                distrib_deriv3_cdf, distrib_deriv4_cdf)
   zero <- stats::setNames(lapply(nms, function(nm) 0), nms)
-  dU <- if (is.infinite(up)) zero else {
-    if (order == 1L) distrib_grad_cdf(parent, up, theta, log = FALSE)
-    else distrib_hess_cdf(parent, up, theta, log = FALSE)
-  }
+  dU <- if (is.infinite(up)) zero else gen(parent, up, theta, log = FALSE)
   dL <- if (is.infinite(lo)) zero else {
-    d <- if (order == 1L) distrib_grad_cdf(parent, lo, theta, log = FALSE)
-         else distrib_hess_cdf(parent, lo, theta, log = FALSE)
+    d <- gen(parent, lo, theta, log = FALSE)
     if (is_disc) {
+      # the lower point is IN the truncated support, so what leaves Z is
+      # F(lo) minus the mass at lo: d^I F(lo^-) = d^I F(lo) - f(lo) B_I,
+      # the same complete Bell polynomial the sum itself carries
       f0 <- distrib_pdf(parent, lo, theta)
-      g <- distrib_gradient(parent, lo, theta)
-      if (order == 1L) {
-        for (nm in nms) d[[nm]] <- d[[nm]] - f0 * g[[nm]]
-      } else {
-        h <- distrib_hessian(parent, lo, theta)
-        pr <- hess_pairs(params)
-        for (nm in nms) {
-          d[[nm]] <- d[[nm]] - f0 * (h[[nm]] + g[[pr[[nm]][1]]] * g[[pr[[nm]][2]]])
-        }
+      ell <- parent_ell(parent, lo, theta, order, params)
+      for (m in seq_along(nms)) {
+        d[[nms[m]]] <- d[[nms[m]]] - f0 * bell_f_ratio(params[idx[[m]]], ell)
       }
     }
     d
