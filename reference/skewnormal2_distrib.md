@@ -73,6 +73,12 @@ there. That ceiling is the reason the skew \\t\\ exists.
 
 \$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}\$\$
 
+## References
+
+Azzalini, A. and Capitanio, A. (2014). *The Skew-Normal and Related
+Families*. Cambridge University Press. The centred parametrization is
+section 3.1.4.
+
 ## See also
 
 [`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),

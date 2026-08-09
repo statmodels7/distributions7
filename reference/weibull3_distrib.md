@@ -47,6 +47,12 @@ parametrization there.
 \$\$\mathbb{E}\[Y\] = \mu, \qquad \operatorname{Var}(Y) =
 b^{2}\left\[\Gamma(1+2/\sigma) - \Gamma(1+1/\sigma)^{2}\right\]\$\$
 
+## References
+
+Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive
+models for location, scale and shape. *Journal of the Royal Statistical
+Society, Series C* 54, 507-554.
+
 ## See also
 
 [`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),

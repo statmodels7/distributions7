@@ -60,6 +60,12 @@ and beyond being zero.
 xG}{c}, \qquad x = \frac{a}{\sqrt{c}}, \quad G = \frac{\mathrm{d}\log
 M}{\mathrm{d}x}\$\$
 
+## References
+
+Zou, H. and Hastie, T. (2005). Regularization and variable selection via
+the elastic net. *Journal of the Royal Statistical Society, Series B*
+67, 301-320.
+
 ## See also
 
 [`laplace2_distrib`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md),

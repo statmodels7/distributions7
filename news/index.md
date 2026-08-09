@@ -1,0 +1,194 @@
+# Changelog
+
+## distributions7 0.0.0.9000
+
+### Families
+
+- One name per parametrization. A family with several parametrizations
+  carries a number on each – `gaussian1`/`gaussian2`/`gaussian3`,
+  `gamma1`/`gamma2`, `negbin1`/`negbin2` after Cameron and Trivedi,
+  `weibull1`/`weibull3` after gamlss’s WEI and WEI3 with `weibull2`
+  deliberately empty, and ten further groups. The reference index lists
+  what is present.
+
+- Univariate families added: weibull, gumbel, skewnormal, skewt,
+  exponential, geometric, chisq, betabinom, NB1, the generalized Pareto,
+  the generalized gamma, von Mises, the Poisson-inverse Gaussian in both
+  gamlss parametrizations, and
+  [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
+  the elastic-net prior.
+
+- Multivariate families: the gaussian and the Student t, whose matrix
+  parameter comes from `parameters7`, and the Dirichlet and the
+  multinomial, whose simplex parameter does. The matrix parameter is
+  flattened into scalars with identity links, so
+  [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md),
+  [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
+  the link scale and
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  need no special case; the constraint lives in the structure, where it
+  belongs. The base class sits beside `continuous_distrib` and
+  `discrete_distrib` rather than under either, the one-dimensional
+  defaults registered there – a cdf by quadrature, a quantile by root
+  finding – having no counterpart in several dimensions.
+
+- [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  reports the quantities a reader reads rather than the coordinates:
+  standard deviations and correlations with delta-method standard
+  errors, each interval built on the scale that keeps the quantity in
+  its own set (log for a standard deviation, Fisher’s z for a
+  correlation) and mapped back. A precision parametrization adds the
+  conditional standard deviations and the partial correlations.
+
+- Wrappers:
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+  holding parameters at known values and the only one that removes
+  parameters;
+  [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
+  for the absolute value; and
+  [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
+  [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
+  [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+  and
+  [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+  from earlier. Neither zero wrapper can be stacked on the other –
+  truncating at zero cancels `(1 - zeta)` between the numerator and the
+  truncation constant, so `zeta` leaves the likelihood entirely – and
+  both are rejected by the constructor, along with a discrete parent
+  carrying too few support points to identify the extra probability.
+
+### Derivatives
+
+- Every univariate family is analytic to fourth order, observed, except
+  the skew t’s components in `nu`, which cannot be: the density carries
+  `T_{nu+1}` and the derivative of a Student t distribution function in
+  its degrees of freedom has no elementary form. Those come from one
+  five-point stencil applied to an analytic quantity, never from a
+  difference of a difference.
+
+- Orders three and four are closed form for every wrapper. Each
+  wrapper’s log-likelihood is the parent’s log-density plus, or instead
+  of, `log L` for some parameter-dependent `L`, so two partition sums
+  cover all of them: the complete Bell polynomial, and the
+  moment-to-cumulant relation, which needs only the ratios `d^B L / L`.
+
+- [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+  and
+  [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+  the derivatives of the distribution function, which is what a censored
+  likelihood and a quantile residual’s standard error need. Closed form
+  for twelve of the original fourteen families; gamma and beta have
+  none, the shape direction being hypergeometric.
+
+- [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+  the mixed response-parameter derivatives, closed form for every
+  continuous family. Where the response enters only through
+  `z = (y - mu)/sigma` the identity `d2l/dy dmu = -l_yy` and
+  `d2l/dy dsigma = -z l_yy - l_y/sigma` closes nine families at once.
+
+- [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
+  building a family from another through a map, with Faa di Bruno over
+  partitions and the map’s partials as hand-written keyed tables
+  (`map_derivs`); without tables, one stencil per partial. Measured
+  against a family written out in full it costs 1.5x at the gradient and
+  6.6x at order four, so it is the user-facing route and new families
+  are written out.
+
+- Jets are removed from every production path. Generic jet composition
+  measured at 2x to 36x the hand-written closed forms on the PIG
+  kernels; the mechanical transcriptions survive in the tests as
+  independent references.
+
+### Fitting
+
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  delegates its optimization to `optimizers7`. Fisher scoring is
+  [`newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html)
+  with the expected information passed as `he`, and `method` accepts an
+  optimizer object, so nothing in this package implements a descent
+  loop.
+
+- `fisher_scoring(approx =, nsim =, criterion =, maxit =)` replaces the
+  loose `approx` and `nsim` arguments: how the expected information is
+  approximated is a property of Fisher scoring and had no business
+  sitting beside optimizers that never look at it. A strategy chosen
+  where it would be ignored is rejected.
+
+- `maxit` and `tol` leave the signature. With `method = <an optimizer>`
+  they were silently discarded, so a call setting both got no complaint
+  and no effect from the second; the budget and the stopping rule now
+  live on the method.
+
+- The objective is `-l(eta)/n`. The maximizer and every Newton step are
+  unchanged, the factor canceling in `H^-1 g`; what changes is what a
+  threshold means, an absolute gradient tolerance on a summed score
+  asking of a sample of ten million an accuracy per observation ten
+  million times finer than of a sample of ten. `ll_hat` and the
+  information are recomputed unscaled at the optimum, so
+  [`logLik()`](https://rdrr.io/r/stats/logLik.html), AIC, BIC and every
+  standard error are untouched.
+
+- [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  computes a starting value from the data. The default is the old random
+  draw from the parameter domains; the multivariate gaussian returns the
+  sample mean and covariance, its own maximum likelihood estimate for an
+  unstructured matrix.
+
+- The restart loop keeps the best result rather than the last: a
+  converged run beats a non-converged one, and among runs of equal
+  status the lower objective wins. A run that reached a point is no
+  longer discarded as a failure.
+
+- The default tolerance is `1e-6`, for the reason recorded in
+  optimizers7’s own notes: the attainable gradient is bounded below by
+  `sqrt(2*lambda*eps*|f*|)`, and a log-likelihood is of order one at its
+  maximum.
+
+- [`confint()`](https://rdrr.io/r/stats/confint.html), with
+  `scale = c("parameter", "link")`, recomputing at any level from the
+  stored estimate and standard error. The link-scale interval is the one
+  computed and the parameter-scale table is its image under the inverse
+  link, so [`print()`](https://rdrr.io/r/base/print.html) shows both.
+
+- A fit records its elapsed time, accumulated over every start and every
+  fallback, and the score per observation at the point it stopped.
+
+### Numerical layer
+
+- The enumerations, stencils, batched quadrature and series, and special
+  functions come from `numericals7`.
+  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)’s
+  integrand contract is elementwise in the response and the parameters
+  jointly, so every parameter combination shares one batched call.
+
+- Random numbers come from generalized ratio-of-uniforms, recentered at
+  the mode and normalized. A density diverging at an edge is transformed
+  away, and the exponent is measured by the same probe that detects the
+  divergence rather than searched for: Gamma shape 0.4 went from 27 ms a
+  draw to 0.8 microseconds. Discrete families invert the cumulative
+  table, which is exact.
+
+### Validation and documentation
+
+- [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  runs thirteen numerical checks on a continuous family, twelve on a
+  discrete one and a nine-check battery on a multivariate one. It is
+  aware of atoms, so a mixed distribution such as
+  `zero_adjusted(gamma1_distrib())` is not reported as four failures on
+  correct code; it allows for a kink where `params_smooth` declares one;
+  and a gradient made five per cent wrong is still caught.
+
+- [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
+  supplies the proposal the normalization check integrates against. The
+  gaussian proposal does not fail loudly on the Dirichlet –
+  [`chol()`](https://rdrr.io/r/base/chol.html) accepts the singular
+  covariance – and returns 2.0e-08 for an integral that is 1.
+
+- Every family’s constructor page displays its density, taken from the
+  book’s catalog, whose transcription is checked against
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+  at every render.
+
+- Three vignettes – defining a distribution, fitting a model,
+  derivatives and the link scale – a README with badges, a pkgdown site
+  and continuous integration on five platforms.

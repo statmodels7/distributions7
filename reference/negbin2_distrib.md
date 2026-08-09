@@ -78,6 +78,12 @@ Analytical third- and fourth-order derivatives
 [`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md))
 are also available.
 
+## References
+
+Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based on
+count data: comparisons and applications of some estimators and tests.
+*Journal of Applied Econometrics* 1, 29-53.
+
 ## See also
 
 - [`distrib_pdf.NegBin2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin2Distrib.md)
