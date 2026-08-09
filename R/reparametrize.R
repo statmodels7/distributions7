@@ -261,7 +261,6 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #' @keywords internal
 chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
                               expected = FALSE) {
-  p <- parent@n_params
   n <- max(n_obs(parent, y), 1L)
 
   # The parent's derivatives of every order up to the one asked for. Under
@@ -285,17 +284,52 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
     }
   }
 
+  chain_assemble(D, parent@params, maps, new_params, order, n)
+}
+
+#' Faa di Bruno Over Set Partitions, on Tables
+#'
+#' @description
+#' The partition sum of \code{\link{chain_derivatives}}, taking the inner
+#' derivatives as tables rather than fetching them from a distribution.
+#'
+#' @details
+#' Separated so that a family whose own derivatives are easiest to write in
+#' coordinates it does not expose can carry them into the ones it does,
+#' without a second copy of the enumeration. \code{\link{enet_distrib}} is
+#' the case: its derivatives are compact in the two rates \eqn{(a, c)} and
+#' the family is parametrized by \eqn{(\lambda, \alpha)}, which is a
+#' bilinear map away.
+#'
+#' @param D A list of length \code{order}; \code{D[[k]]} is the inner
+#'   derivative table of order \code{k}, keyed as
+#'   \code{\link{deriv_names}(inner_params, k)}.
+#' @param inner_params The names of the inner coordinates.
+#' @param maps Per inner coordinate, a keyed table of the map's partials in
+#'   the outer coordinates, as \code{\link{reparam_tables}} returns them.
+#' @param new_params The names of the outer parameters.
+#' @param order The derivative order, 1 to 4.
+#' @param n The length to recycle a constant component to.
+#'
+#' @return A named list of component vectors.
+#'
+#' @seealso \code{\link{chain_derivatives}}
+#'
+#' @keywords internal
+chain_assemble <- function(D, inner_params, maps, new_params, order, n) {
+  p <- length(inner_params)
+
   # h^i_B for one block, from the keyed table; a missing key is a zero
   hvec <- function(i, tup) {
     v <- maps[[i]][[paste(sort(tup), collapse = ",")]]
     if (is.null(v)) 0 else v
   }
 
-  # The parent's derivative at a multiset of its own indices, keyed by name.
+  # The inner derivative at a multiset of its own indices, keyed by name.
   # The key is BUILT from the names, never parsed out of one, so a parameter
   # whose own name contains an underscore is safe.
   pvec <- function(k, ids) {
-    D[[k]][[paste(parent@params[sort(ids)], collapse = "_")]]
+    D[[k]][[paste(inner_params[sort(ids)], collapse = "_")]]
   }
 
   parts <- numericals7::set_partitions(order)

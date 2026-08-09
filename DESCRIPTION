@@ -94,6 +94,7 @@ Collate:
     'dirichlet_distrib.R'
     'distributions7-package.R'
     'enet_distrib.R'
+    'enet_higher.R'
     'expected_derivatives.R'
     'fisher_scoring.R'
     'link_scale.R'
