@@ -29,6 +29,12 @@ NULL
 #' Built with \code{\link{reparametrize}}, so every derivative to fourth order,
 #' observed and expected, is exact.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y - m)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{\mu^{2}}\right)\!, \; m = \log\mu - \frac{s^{2}}{2}}
+#' on \eqn{y \in (0, \infty)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = v}
+#'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_var Link function for the variance. Defaults to the log.
 #'
@@ -77,6 +83,12 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #' Leaving \code{weibull2} unused is deliberate: it names a different
 #' parametrization there.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{\sigma}{b}\left(\frac{y}{b}\right)^{\sigma-1}e^{-(y/b)^{\sigma}}, \qquad b = \frac{\mu}{\Gamma(1+1/\sigma)}}
+#' on \eqn{y \in (0, \infty)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = b^{2}\left[\Gamma(1+2/\sigma) - \Gamma(1+1/\sigma)^{2}\right]}
+#'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_sigma Link function for the shape. Defaults to the log.
 #'
@@ -123,6 +135,12 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 #' The restriction is the point rather than a limitation: a family
 #' parametrized by a standard deviation is a family whose standard deviation
 #' exists.
+#'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{1}{s_0}\,t_{\nu}\!\left(\frac{y-\mu}{s_0}\right), \qquad s_0 = \sigma\sqrt{\frac{\nu-2}{\nu}}}
+#' on \eqn{y \in \mathbb{R}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
 #'
 #' @param link_mu Link function for the location. Defaults to the identity.
 #' @param link_sigma Link function for the standard deviation. Defaults to the
@@ -173,6 +191,12 @@ student_t2_distrib <- function(link_mu = identity_link(),
 #' a family a regression would put a linear predictor on. Since
 #' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is
 #' \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)}.}
+#'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{p\,y^{d-1}}{a^{d}\,\Gamma(d/p)}\,e^{-(y/a)^{p}}, \qquad a = \mu\,\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}}
+#' on \eqn{y \in (0, \infty)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu}
 #'
 #' @param link_mean Link function for the mean. Defaults to the log.
 #' @param link_d Link function for the shape. Defaults to the log.

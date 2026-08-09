@@ -30,6 +30,14 @@ The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
 Leaving \code{weibull2} unused is deliberate: it names a different
 parametrization there.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{\sigma}{b}\left(\frac{y}{b}\right)^{\sigma-1}e^{-(y/b)^{\sigma}}, \qquad b = \frac{\mu}{\Gamma(1+1/\sigma)}}
+on \eqn{y \in (0, \infty)}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = b^{2}\left[\Gamma(1+2/\sigma) - \Gamma(1+1/\sigma)^{2}\right]}
+}
+
 \examples{
 d <- weibull3_distrib()
 theta <- list(mean = 4, sigma = 1.7)

@@ -65,6 +65,17 @@ MvStudentTDistrib <- S7::new_class("MvStudentTDistrib",
 #' approximated by sampling. \code{\link{fit_distrib}} therefore accepts
 #' \code{approx}, which it rejects for a family that computes it exactly.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{\Gamma\!\left(\frac{\nu+p}{2}\right)}{\Gamma\!\left(\frac{\nu}{2}\right)(\nu\pi)^{p/2}\lvert \Sigma \rvert^{1/2}}\left(1 + \frac{q}{\nu}\right)^{-(\nu+p)/2}, \qquad q = (y-\mu)'\Sigma^{-1}(y-\mu)}
+#' on \eqn{y \in \mathbb{R}^{p}}, with
+#'
+#' \deqn{\mathbb{E}[Y] = \mu \; (\nu > 1), \qquad \operatorname{Var}(Y) = \frac{\nu}{\nu-2}\Sigma \; (\nu > 2).}
+#'
+#' Here \eqn{\Sigma} is the scale matrix and not the covariance, which
+#' is what lets the family be fitted where the second moment does not
+#' exist; \code{\link{mv_sigma}} returns the first and
+#' \code{\link{variance}} the second.
+#'
 #' @param n_dim The dimension \eqn{p}.
 #' @param sigma A \pkg{parameters7} structure for the scale matrix.
 #'   Defaults to \code{parameters7::log_cholesky(n_dim)}.

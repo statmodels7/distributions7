@@ -46,6 +46,14 @@ concentration parametrization.
 ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from
 \eqn{\mu} whenever \eqn{\mu \ne 0}; see \code{\link{vonmises1_distrib}}.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{e^{\kappa\cos(y-\mu)}}{2\pi I_{0}(\kappa)}, \qquad \kappa = A^{-1}(\rho)}
+on \eqn{y \in [-\pi, \pi)}.
+
+\deqn{\mathbb{E}[\cos(Y-\mu)] = \rho}
+}
+
 \examples{
 d <- vonmises2_distrib()
 theta <- list(mu = 0.5, rho = 0.7)

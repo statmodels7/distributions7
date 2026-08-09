@@ -38,6 +38,14 @@ The restriction is the point rather than a limitation: a family
 parametrized by a standard deviation is a family whose standard deviation
 exists.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{1}{s_0}\,t_{\nu}\!\left(\frac{y-\mu}{s_0}\right), \qquad s_0 = \sigma\sqrt{\frac{\nu-2}{\nu}}}
+on \eqn{y \in \mathbb{R}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+}
+
 \examples{
 d <- student_t2_distrib()
 theta <- list(mu = 0, sigma = 2, nu = 8)

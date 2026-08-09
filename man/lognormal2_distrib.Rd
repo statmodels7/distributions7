@@ -28,6 +28,14 @@ which is the parametrization a regression on the mean wants.
 Built with \code{\link{reparametrize}}, so every derivative to fourth order,
 observed and expected, is exact.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{1}{y\sqrt{2\pi s^{2}}}\exp\!\left\{-\frac{(\log y - m)^{2}}{2s^{2}}\right\}, \quad s^{2} = \log\!\left(1+\frac{v}{\mu^{2}}\right)\!, \; m = \log\mu - \frac{s^{2}}{2}}
+on \eqn{y \in (0, \infty)}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = v}
+}
+
 \examples{
 d <- lognormal2_distrib()
 theta <- list(mean = 3, var = 2)

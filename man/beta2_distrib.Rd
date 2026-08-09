@@ -31,6 +31,14 @@ derivative beyond the first is therefore free of the data, so the observed
 and the expected ones coincide at orders two, three and four, and Fisher
 scoring and Newton's method take the same step on the parameter scale.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
+on \eqn{y \in (0, 1)}.
+
+\deqn{\mathbb{E}[Y] = \frac{\alpha}{\alpha+\beta}, \qquad \operatorname{Var}(Y) = \frac{\alpha\beta}{(\alpha+\beta)^{2}(\alpha+\beta+1)}}
+}
+
 \examples{
 d <- beta2_distrib()
 theta <- list(alpha = 2, beta = 5)

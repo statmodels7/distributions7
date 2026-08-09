@@ -199,6 +199,12 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' Creates a distribution object for the negative binomial whose variance is
 #' \strong{linear} in the mean, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}.
 #'
+#' @section The distribution:
+#' \deqn{P(Y=y) = \frac{\Gamma(y + \mu/\theta)}{\Gamma(\mu/\theta)\,y!}\left(\frac{1}{1+\theta}\right)^{\mu/\theta}\left(\frac{\theta}{1+\theta}\right)^{y}}
+#' on \eqn{y \in \{0, 1, \dots\}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu(1+\theta)}
+#'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
 #'   \code{\link[linkfunctions7]{log_link}}.
 #' @param link_theta A link function object for \eqn{\theta}. Defaults to

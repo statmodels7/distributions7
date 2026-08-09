@@ -378,6 +378,12 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' fallback; the response derivatives are exact at every order, the third
 #' and beyond being zero.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{1}{Z}\exp\!\left\{-a|y-\mu| - \frac{c}{2}(y-\mu)^{2}\right\}, \qquad a = \lambda\alpha, \quad c = \lambda(1-\alpha), \quad Z = \frac{2M(a/\sqrt{c})}{\sqrt{c}}}
+#' on \eqn{y \in \mathbb{R}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \frac{1 + xG}{c}, \qquad x = \frac{a}{\sqrt{c}}, \quad G = \frac{\mathrm{d}\log M}{\mathrm{d}x}}
+#'
 #' @param link_mu A \pkg{linkfunctions7} link for the location.
 #' @param link_lambda A link for the overall rate, positive.
 #' @param link_alpha A link for the mixing weight, in \eqn{(0,1)}.

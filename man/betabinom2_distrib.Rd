@@ -30,6 +30,14 @@ sum of log-gamma terms and differentiating it \eqn{k} times replaces each
 by \eqn{\psi^{(k-1)}}. The expectations are \strong{exact finite sums} over
 \eqn{\{0, \dots, n\}} rather than quadratures.
 }
+\section{The distribution}{
+
+\deqn{P(Y=y) = \binom{n}{y}\frac{B(y+\alpha,\; n-y+\beta)}{B(\alpha, \beta)}}
+on \eqn{y \in \{0, \dots, n\}}.
+
+\deqn{\mathbb{E}[Y] = \frac{n\alpha}{\alpha+\beta}, \qquad \operatorname{Var}(Y) = \frac{n\alpha\beta\,(\alpha+\beta+n)}{(\alpha+\beta)^{2}(\alpha+\beta+1)}}
+}
+
 \examples{
 d <- betabinom2_distrib(size = 10)
 theta <- list(alpha = 2, beta = 3)

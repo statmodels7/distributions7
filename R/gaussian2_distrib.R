@@ -248,6 +248,12 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' Derivatives are closed form to fourth order, observed and expected, and the
 #' two parameters are orthogonal.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{1}{\sqrt{2\pi\sigma^{2}}}\exp\!\left\{-\frac{(y-\mu)^{2}}{2\sigma^{2}}\right\}}
+#' on \eqn{y \in \mathbb{R}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+#'
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the identity.
 #' @param link_sigma2 Link function for \eqn{\sigma^2}. Defaults to the log.
 #'

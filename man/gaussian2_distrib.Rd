@@ -32,6 +32,14 @@ is \code{NO2} in \pkg{gamlss}.
 Derivatives are closed form to fourth order, observed and expected, and the
 two parameters are orthogonal.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{1}{\sqrt{2\pi\sigma^{2}}}\exp\!\left\{-\frac{(y-\mu)^{2}}{2\sigma^{2}}\right\}}
+on \eqn{y \in \mathbb{R}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+}
+
 \examples{
 d <- gaussian2_distrib()
 theta <- list(mu = 1, sigma2 = 4)

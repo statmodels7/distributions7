@@ -34,6 +34,14 @@ computed by the same compiled kernel as \code{\link{pig1_distrib}} with
 \eqn{\alpha} a seed variable of the jet, so the Bessel argument needs no
 chain rule at all.
 }
+\section{The distribution}{
+
+\deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \sigma = \frac{1}{\sqrt{\mu^{2}+\alpha^{2}} - \mu}}
+on \eqn{y \in \{0, 1, \dots\}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu + \sigma\mu^{2}}
+}
+
 \examples{
 d <- pig2_distrib()
 theta <- list(mu = 3, alpha = 1.2)

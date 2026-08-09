@@ -29,6 +29,14 @@ The response enters every derivative linearly, so every expectation needs
 only \eqn{\mathbb{E}[Y] = \mu} and all four orders are closed form. The mean
 and the shape are orthogonal.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \sqrt{\frac{\lambda}{2\pi y^{3}}}\exp\!\left\{-\frac{\lambda(y-\mu)^{2}}{2\mu^{2}y}\right\}}
+on \eqn{y \in (0, \infty)}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu^{3}/\lambda}
+}
+
 \examples{
 d <- invgauss2_distrib()
 theta <- list(mu = 2, lambda = 3)

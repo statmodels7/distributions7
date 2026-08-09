@@ -74,6 +74,19 @@ a legitimate density.
 observation. A plain vector of length \eqn{p} is read as a single
 observation.
 }
+\section{The distribution}{
+
+\deqn{f(y) = (2\pi)^{-p/2}\lvert \Sigma \rvert^{-1/2}\exp\!\left\{-\tfrac{1}{2}(y-\mu)'\Sigma^{-1}(y-\mu)\right\}}
+on \eqn{y \in \mathbb{R}^{p}}, with
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \Sigma.}
+
+The matrix parameter is carried by \pkg{parameters7}, either as the
+covariance \eqn{\Sigma} or as the precision
+\eqn{\Omega = \Sigma^{-1}}, and its free values are flattened into
+ordinary scalar parameters with identity links.
+}
+
 \examples{
 d <- mvgaussian_distrib(2)
 d

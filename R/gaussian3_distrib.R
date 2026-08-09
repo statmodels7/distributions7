@@ -248,6 +248,12 @@ S7::method(distrib_hess_y, Gaussian3Distrib) <- function(distrib, y, theta, ...)
 #' The precision is the parametrization a Bayesian conjugate analysis uses,
 #' the gamma being conjugate for \eqn{\tau} at known \eqn{\mu}.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \sqrt{\frac{\tau}{2\pi}}\exp\!\left\{-\frac{\tau(y-\mu)^{2}}{2}\right\}}
+#' on \eqn{y \in \mathbb{R}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = 1/\tau}
+#'
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the identity.
 #' @param link_tau Link function for \eqn{\tau}. Defaults to the log.
 #'

@@ -443,6 +443,12 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' \eqn{|\gamma_1| > 0.9952717}, whatever \eqn{\alpha} is, so the parameter is
 #' bounded there. That ceiling is the reason the skew \eqn{t} exists.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{2}{\omega}\,\phi\!\left(\frac{y-\xi}{\omega}\right)\Phi\!\left(\alpha\,\frac{y-\xi}{\omega}\right), \qquad (\xi, \omega, \alpha) = \mathrm{DP}(\mu, \sigma, \gamma_1)}
+#' on \eqn{y \in \mathbb{R}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+#'
 #' @param link_mu Link function for the mean. Defaults to the identity.
 #' @param link_sigma Link function for the standard deviation. Defaults to the
 #'   log.

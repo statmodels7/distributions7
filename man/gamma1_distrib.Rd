@@ -35,6 +35,14 @@ Derivatives are closed form to fourth order, observed and expected. Those in
 \eqn{\phi} go through \eqn{s = 1/\phi} and the one-variable chain rule, so
 each polygamma function is evaluated once.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{y^{1/\phi - 1}e^{-y/(\phi\mu)}}{(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)}}
+on \eqn{y \in (0, \infty)}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \phi\mu^{2}}
+}
+
 \examples{
 d <- gamma1_distrib()
 theta <- list(mu = 3, phi = 0.5)

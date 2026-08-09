@@ -370,6 +370,16 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' Creates a distribution object for the Dirichlet distribution on the
 #' simplex, parametrized by a mean vector and a concentration \eqn{\phi}.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{\Gamma(\phi)}{\prod_{j=1}^{p}\Gamma(\phi\mu_j)}\prod_{j=1}^{p} y_j^{\phi\mu_j - 1}}
+#' on the simplex \eqn{y_j > 0}, \eqn{\sum_j y_j = 1}, with
+#'
+#' \deqn{\mathbb{E}[Y_j] = \mu_j, \qquad \operatorname{Var}(Y_j) = \frac{\mu_j(1-\mu_j)}{\phi + 1}.}
+#'
+#' The mean lies on a \pkg{parameters7} simplex and \eqn{\phi} is the
+#' concentration, shared by every coordinate; the marginals are Beta
+#' with that same \eqn{\phi}.
+#'
 #' @param n_dim The number of coordinates \eqn{p}.
 #' @param mean A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
 #'   same dimension, carrying the mean. Defaults to

@@ -58,6 +58,14 @@ against the exact mass to a far-tail quantile.
 As \eqn{\theta \to 0} the family approaches the Poisson, as the quadratic
 form does when \eqn{\theta \to \infty}.
 }
+\section{The distribution}{
+
+\deqn{P(Y=y) = \frac{\Gamma(y + \mu/\theta)}{\Gamma(\mu/\theta)\,y!}\left(\frac{1}{1+\theta}\right)^{\mu/\theta}\left(\frac{\theta}{1+\theta}\right)^{y}}
+on \eqn{y \in \{0, 1, \dots\}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu(1+\theta)}
+}
+
 \examples{
 d <- negbin1_distrib()
 d@params

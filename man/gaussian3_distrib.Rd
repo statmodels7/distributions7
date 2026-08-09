@@ -33,6 +33,14 @@ the only non-zero fourth derivative is
 The precision is the parametrization a Bayesian conjugate analysis uses,
 the gamma being conjugate for \eqn{\tau} at known \eqn{\mu}.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \sqrt{\frac{\tau}{2\pi}}\exp\!\left\{-\frac{\tau(y-\mu)^{2}}{2}\right\}}
+on \eqn{y \in \mathbb{R}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = 1/\tau}
+}
+
 \examples{
 d <- gaussian3_distrib()
 theta <- list(mu = 1, tau = 0.25)

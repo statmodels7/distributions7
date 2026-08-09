@@ -221,6 +221,12 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #' which \eqn{\mu} and the second parameter are orthogonal, see
 #' \code{\link{pig2_distrib}}.
 #'
+#' @section The distribution:
+#' \deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}}
+#' on \eqn{y \in \{0, 1, \dots\}}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu + \sigma\mu^{2}}
+#'
 #' @param link_mu The link for \eqn{\mu}; defaults to \code{log_link()}.
 #' @param link_sigma The link for \eqn{\sigma}; defaults to \code{log_link()}.
 #'

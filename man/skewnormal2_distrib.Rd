@@ -55,6 +55,14 @@ exists for.
 \eqn{|\gamma_1| > 0.9952717}, whatever \eqn{\alpha} is, so the parameter is
 bounded there. That ceiling is the reason the skew \eqn{t} exists.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{2}{\omega}\,\phi\!\left(\frac{y-\xi}{\omega}\right)\Phi\!\left(\alpha\,\frac{y-\xi}{\omega}\right), \qquad (\xi, \omega, \alpha) = \mathrm{DP}(\mu, \sigma, \gamma_1)}
+on \eqn{y \in \mathbb{R}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+}
+
 \examples{
 d <- skewnormal2_distrib()
 theta <- list(mu = 0, sigma = 1, gamma1 = 0.5)

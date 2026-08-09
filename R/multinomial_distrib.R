@@ -286,6 +286,15 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' Creates a distribution object for the multinomial distribution,
 #' parametrized by a probability vector on the simplex.
 #'
+#' @section The distribution:
+#' \deqn{P(Y = y) = \frac{n!}{\prod_{j=1}^{p} y_j!}\prod_{j=1}^{p} p_j^{y_j}}
+#' on the weak compositions of \eqn{n} into \eqn{p} parts, with
+#'
+#' \deqn{\mathbb{E}[Y_j] = n p_j, \qquad \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
+#'
+#' The support is finite, so every expectation is an exact sum;
+#' \code{\link{mv_support}} returns it. The marginals are binomial.
+#'
 #' @param n_dim The number of categories \eqn{p}.
 #' @param size The number of trials \eqn{n}. A constant of the distribution
 #'   rather than a parameter, as for \code{\link{binomial_distrib}}.

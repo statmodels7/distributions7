@@ -295,6 +295,12 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' and the expected ones coincide at orders two, three and four, and Fisher
 #' scoring and Newton's method take the same step on the parameter scale.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
+#' on \eqn{y \in (0, 1)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \frac{\alpha}{\alpha+\beta}, \qquad \operatorname{Var}(Y) = \frac{\alpha\beta}{(\alpha+\beta)^{2}(\alpha+\beta+1)}}
+#'
 #' @param link_alpha Link function for \eqn{\alpha}. Defaults to the log.
 #' @param link_beta Link function for \eqn{\beta}. Defaults to the log.
 #'

@@ -213,6 +213,12 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' only \eqn{\mathbb{E}[Y] = \mu} and all four orders are closed form. The mean
 #' and the shape are orthogonal.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \sqrt{\frac{\lambda}{2\pi y^{3}}}\exp\!\left\{-\frac{\lambda(y-\mu)^{2}}{2\mu^{2}y}\right\}}
+#' on \eqn{y \in (0, \infty)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu^{3}/\lambda}
+#'
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the log.
 #' @param link_lambda Link function for \eqn{\lambda}. Defaults to the log.
 #'

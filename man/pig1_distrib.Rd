@@ -32,6 +32,14 @@ the summation strategies of
 which \eqn{\mu} and the second parameter are orthogonal, see
 \code{\link{pig2_distrib}}.
 }
+\section{The distribution}{
+
+\deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}}
+on \eqn{y \in \{0, 1, \dots\}}.
+
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu + \sigma\mu^{2}}
+}
+
 \examples{
 d <- pig1_distrib()
 theta <- list(mu = 3, sigma = 0.8)

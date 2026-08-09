@@ -278,6 +278,12 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' \eqn{\phi} go through \eqn{s = 1/\phi} and the one-variable chain rule, so
 #' each polygamma function is evaluated once.
 #'
+#' @section The distribution:
+#' \deqn{f(y) = \frac{y^{1/\phi - 1}e^{-y/(\phi\mu)}}{(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)}}
+#' on \eqn{y \in (0, \infty)}.
+#'
+#' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \phi\mu^{2}}
+#'
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the log.
 #' @param link_phi Link function for \eqn{\phi}. Defaults to the log.
 #'

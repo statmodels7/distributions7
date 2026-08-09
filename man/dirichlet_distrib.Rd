@@ -70,6 +70,18 @@ is rejected rather than returned under a name that would mislead.
 The distribution function and the quantile are rejected by
 \code{\link{multivariate_distrib}}, as for every family of that class.
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{\Gamma(\phi)}{\prod_{j=1}^{p}\Gamma(\phi\mu_j)}\prod_{j=1}^{p} y_j^{\phi\mu_j - 1}}
+on the simplex \eqn{y_j > 0}, \eqn{\sum_j y_j = 1}, with
+
+\deqn{\mathbb{E}[Y_j] = \mu_j, \qquad \operatorname{Var}(Y_j) = \frac{\mu_j(1-\mu_j)}{\phi + 1}.}
+
+The mean lies on a \pkg{parameters7} simplex and \eqn{\phi} is the
+concentration, shared by every coordinate; the marginals are Beta
+with that same \eqn{\phi}.
+}
+
 \examples{
 d <- dirichlet_distrib(3)
 d@params

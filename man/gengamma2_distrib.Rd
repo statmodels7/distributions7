@@ -31,6 +31,14 @@ a family a regression would put a linear predictor on. Since
 \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is
 \deqn{a = m\,\dfrac{\Gamma(d/p)}{\Gamma((d+1)/p)}.}
 }
+\section{The distribution}{
+
+\deqn{f(y) = \frac{p\,y^{d-1}}{a^{d}\,\Gamma(d/p)}\,e^{-(y/a)^{p}}, \qquad a = \mu\,\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}}
+on \eqn{y \in (0, \infty)}.
+
+\deqn{\mathbb{E}[Y] = \mu}
+}
+
 \examples{
 d <- gengamma2_distrib()
 theta <- list(mean = 5, d = 3, p = 1.5)
