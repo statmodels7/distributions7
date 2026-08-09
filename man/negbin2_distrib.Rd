@@ -70,6 +70,11 @@ distrib_pdf(d, 0:5, theta)
 distrib_gradient(d, 0:5, theta)
 
 }
+\references{
+Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
+on count data: comparisons and applications of some estimators and
+tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+}
 \seealso{
 \itemize{
 \item \code{\link{distrib_pdf.NegBin2Distrib}} for the probability mass function.

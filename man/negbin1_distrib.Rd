@@ -79,6 +79,11 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 variance(negbin2_distrib(), list(mu = 4, theta = 4))
 
 }
+\references{
+Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
+on count data: comparisons and applications of some estimators and
+tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+}
 \seealso{
 \code{\link{negbin2_distrib}} for the quadratic variance,
 \code{\link{poisson_distrib}}, \code{\link{geometric_distrib}}

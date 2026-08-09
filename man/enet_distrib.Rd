@@ -60,6 +60,11 @@ distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
 distrib_pdf(laplace2_distrib(), 0.7, list(mu = 0, lambda = 2))
 
 }
+\references{
+Zou, H. and Hastie, T. (2005). Regularization and variable selection
+via the elastic net. \emph{Journal of the Royal Statistical Society,
+Series B} 67, 301-320.
+}
 \seealso{
 \code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
 }

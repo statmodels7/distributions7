@@ -101,6 +101,11 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #' theta <- list(mean = 4, sigma = 1.7)
 #' mean(d, theta)
 #'
+#' @references
+#' Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
+#' for location, scale and shape. \emph{Journal of the Royal Statistical
+#' Society, Series C} 54, 507-554.
+#'
 #' @export
 weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
   reparametrize(

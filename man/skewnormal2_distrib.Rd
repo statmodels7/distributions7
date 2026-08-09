@@ -72,6 +72,11 @@ c(mean = mean(d, theta), sd = sqrt(variance(d, theta)),
   skewness = skewness(d, theta))
 
 }
+\references{
+Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
+Families}. Cambridge University Press. The centred parametrization is
+section 3.1.4.
+}
 \seealso{
 \code{\link{skewnormal1_distrib}}, \code{\link{skewt_distrib}}
 }

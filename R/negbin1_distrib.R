@@ -267,6 +267,11 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' # this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8
 #' variance(negbin2_distrib(), list(mu = 4, theta = 4))
 #'
+#' @references
+#' Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
+#' on count data: comparisons and applications of some estimators and
+#' tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+#'
 #' @export
 negbin1_distrib <- function(link_mu = log_link(), link_theta = log_link()) {
   NegBin1Distrib(

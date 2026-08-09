@@ -286,6 +286,11 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' distrib_pdf(d, 0:5, theta)
 #' distrib_gradient(d, 0:5, theta)
 #'
+#' @references
+#' Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
+#' on count data: comparisons and applications of some estimators and
+#' tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+#'
 #' @export
 negbin2_distrib <- function(link_mu = log_link(), link_theta = log_link()) {
 

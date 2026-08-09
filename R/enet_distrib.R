@@ -401,6 +401,11 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' distrib_pdf(laplace2_distrib(), 0.7, list(mu = 0, lambda = 2))
 #'
 #' @seealso \code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
+#' @references
+#' Zou, H. and Hastie, T. (2005). Regularization and variable selection
+#' via the elastic net. \emph{Journal of the Royal Statistical Society,
+#' Series B} 67, 301-320.
+#'
 #' @export
 enet_distrib <- function(link_mu = identity_link(),
                          link_lambda = log_link(),
