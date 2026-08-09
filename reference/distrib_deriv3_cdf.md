@@ -74,16 +74,16 @@ below.
 ``` r
 distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 #> $mu_mu_mu
-#> [1] -0.2957177
+#> [1] -0.2957182
 #> 
 #> $mu_mu_sigma
 #> [1] 0.4449093
 #> 
 #> $mu_sigma_sigma
-#> [1] 0.6103371
+#> [1] 0.6103367
 #> 
 #> $sigma_sigma_sigma
-#> [1] 0.2005677
+#> [1] 0.2005643
 #> 
 
 distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))

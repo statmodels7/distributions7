@@ -832,8 +832,10 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_deriv_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.html</loc></url>

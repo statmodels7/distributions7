@@ -18,7 +18,7 @@ has_exact_cdf_deriv(parent, order)
 
 - order:
 
-  The cdf derivative order, 1 or 2.
+  The cdf derivative order, 1 to 4.
 
 ## Value
 
