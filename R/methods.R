@@ -146,18 +146,27 @@ plot_settings <- function(x, theta) {
        varying = if (k > 1L) x@params[lens == k] else character(0))
 }
 
-#' Colors and Line Types for Overlaid Curves
+#' Colors, Line Types and Symbols for Overlaid Settings
 #'
 #' @description
-#' The visual keys distinguishing several settings on one panel: a color and a
-#' line type per curve, both cycled, so the curves are told apart in color and
-#' in a printed copy that has none.
+#' The visual keys distinguishing several settings on one panel: a color, a
+#' line type and a plotting symbol per setting, all cycled, so the settings are
+#' told apart in color and in a printed copy that has none.
 #'
-#' @param k The number of curves.
-#' @param dots The caller's \code{...}; a \code{col} or \code{lty} given there
-#'   wins and is recycled over the curves.
+#' @details
+#' A continuous family is separated by color and line type, a discrete one by
+#' color and symbol. Dashing a stem is what a line type would do there, and a
+#' dashed stem reads as a broken one: at a support of any size the panel fills
+#' with fragments that cross each other. The symbol carries the same
+#' information without drawing anything extra, the point at the top of the stem
+#' being already there.
 #'
-#' @return A list with \code{col} and \code{lty}, each of length \code{k}.
+#' @param k The number of settings.
+#' @param dots The caller's \code{...}; a \code{col}, \code{lty} or \code{pch}
+#'   given there wins and is recycled over the settings.
+#'
+#' @return A list with \code{col}, \code{lty} and \code{pch}, each of length
+#'   \code{k}.
 #'
 #' @keywords internal
 plot_keys <- function(k, dots = list()) {
@@ -167,7 +176,10 @@ plot_keys <- function(k, dots = list()) {
   lty <- if (!is.null(dots$lty)) rep_len(dots$lty, k)
          else if (k == 1L) 1L
          else rep_len(seq_len(6L), k)
-  list(col = col, lty = lty)
+  pch <- if (!is.null(dots$pch)) rep_len(dots$pch, k)
+         else if (k == 1L) 16L
+         else rep_len(c(16L, 17L, 15L, 18L, 1L, 2L), k)
+  list(col = col, lty = lty, pch = pch)
 }
 
 #' Where to Put the Key
@@ -383,25 +395,28 @@ S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
   }
   dots$col <- NULL
   dots$lty <- NULL
+  dots$pch <- NULL
 
   plot_args <- c(list(x = seq_x, y = dens[[1L]], xlim = xlim, type = "n"), dots)
   do.call(graphics::plot, plot_args)
 
-  # a shift of a fraction of the unit spacing, so that equal masses at the same
-  # support point remain countable rather than drawn one over another
-  shift <- if (ps$k > 1L) (seq_len(ps$k) - (ps$k + 1) / 2) * (0.6 / ps$k)
+  # A shift of a fraction of the unit spacing, so that equal masses at one
+  # support point stay countable. The stems are drawn solid whatever the
+  # setting and told apart by their symbol: a dashed stem reads as a broken
+  # one, and at a support of any size the panel fills with fragments.
+  shift <- if (ps$k > 1L) (seq_len(ps$k) - (ps$k + 1) / 2) * (0.55 / ps$k)
            else 0
+  stem_lwd <- if (ps$k > 1L) max(1, dots$lwd - 1) else dots$lwd
   for (i in seq_len(ps$k)) {
     at <- seq_x + shift[i]
     graphics::segments(x0 = at, y0 = 0, x1 = at, y1 = dens[[i]],
-                       col = keys$col[i], lty = keys$lty[i], lwd = dots$lwd)
-    graphics::points(at, dens[[i]], pch = 16, col = keys$col[i],
-                     cex = if (ps$k > 1L) 0.7 else 1)
+                       col = keys$col[i], lwd = stem_lwd)
+    graphics::points(at, dens[[i]], pch = keys$pch[i], col = keys$col[i],
+                     cex = if (ps$k > 1L) 0.65 else 1)
   }
   if (isTRUE(legend) && !is.null(labs$legend)) {
     graphics::legend(plot_legend_side(seq_x, dens), legend = labs$legend,
-                     col = keys$col, lty = keys$lty, lwd = dots$lwd,
-                     bty = "n")
+                     col = keys$col, pch = keys$pch, bty = "n")
   }
 
   invisible(x)

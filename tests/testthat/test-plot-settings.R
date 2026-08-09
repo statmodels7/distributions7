@@ -47,23 +47,28 @@ test_that("a length that is neither 1 nor k is rejected, not recycled", {
     distributions7:::plot_settings(d, list(mu = 0)), "Missing parameters")
 })
 
-test_that("several settings are told apart by colour and by line type", {
-  # both, so that the curves survive a printed copy that has no colour
+test_that("several settings are told apart without relying on colour", {
+  # a continuous family by line type, a discrete one by symbol, so both
+  # survive a printed copy that has no colour
   k3 <- distributions7:::plot_keys(3)
   expect_length(k3$col, 3L)
   expect_length(k3$lty, 3L)
+  expect_length(k3$pch, 3L)
   expect_identical(anyDuplicated(k3$col), 0L)
   expect_identical(anyDuplicated(k3$lty), 0L)
+  expect_identical(anyDuplicated(k3$pch), 0L)
 
   # one curve keeps the plain appearance the method always had
   k1 <- distributions7:::plot_keys(1)
   expect_identical(k1$col, "black")
   expect_identical(k1$lty, 1L)
+  expect_identical(k1$pch, 16L)
 
   # and the caller's choice wins, recycled over the settings
-  own <- distributions7:::plot_keys(3, list(col = "red", lty = 1))
+  own <- distributions7:::plot_keys(3, list(col = "red", lty = 1, pch = 3))
   expect_identical(own$col, rep("red", 3))
   expect_identical(own$lty, rep(1, 3))
+  expect_identical(own$pch, rep(3, 3))
 })
 
 test_that("the varying parameters go in the legend and the fixed in the title", {
