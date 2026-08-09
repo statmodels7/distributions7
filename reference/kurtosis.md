@@ -1,7 +1,12 @@
 # Excess Kurtosis of a Distribution or Sample
 
-Computes the excess kurtosis (fourth standardized moment minus 3). For
-`distrib` objects it is evaluated numerically via
+Computes the excess kurtosis, the fourth standardized moment less the
+three a Gaussian has:
+
+\$\$\gamma_2 = \mathbb{E}\\\left\[\left(\frac{Y -
+\mathbb{E}\[Y\]}{\operatorname{sd}(Y)}\right)^{4}\right\] - 3.\$\$
+
+For `distrib` objects it is evaluated numerically via
 [`moment`](https://statmodels7.github.io/distributions7/reference/moment.md);
 for numeric vectors the sample excess kurtosis (population denominator)
 is returned.

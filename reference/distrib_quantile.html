@@ -73,6 +73,16 @@ If unnamed, parameters are taken in the order of <code>distrib@params</code>.</p
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of quantiles.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The generalized inverse of the distribution function,</p>
+<p>$$Q(p; \theta) = \inf\{y : F(y; \theta) \ge p\},$$</p>
+<p>which for a continuous strictly increasing \(F\) is the ordinary inverse
+and for a discrete family the smallest support point whose cumulative mass
+reaches \(p\). Without a method the value comes from root-finding on
+<code><a href="distrib_cdf.html">distrib_cdf</a></code> in the continuous case and from an exact table
+lookup in the discrete one.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

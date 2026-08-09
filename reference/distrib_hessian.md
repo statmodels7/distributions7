@@ -42,6 +42,26 @@ A named list of numeric vectors, keyed as
 [`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)`(distrib@params)`
 (e.g. `"mu_sigma"`).
 
+## Details
+
+With \\l(\theta; y) = \log f(y; \theta)\\, one entry per unordered pair
+of parameters,
+
+\$\$l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial
+\theta_j},\$\$
+
+evaluated at the observed \\y\\ (see
+[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+for its expectation). On the link scale the reparametrization \\\theta_i
+= h_i(\eta_i)\\ is diagonal, so the second-order chain rule carries a
+first-order term on the diagonal alone:
+
+\$\$\frac{\partial^{2} l}{\partial \eta_i \partial \eta_j} = l^{(ij)}
+h_i'(\eta_i) h_j'(\eta_j) + \delta\_{ij}\\ l^{(i)} h_i''(\eta_i).\$\$
+
+The transformation is applied in the generic, so a method always returns
+the parameter scale.
+
 ## Examples
 
 ``` r

@@ -22,7 +22,7 @@ mvg_higher(distrib, y, theta, order)
 
 - y:
 
-  An \\n imes p\\ matrix of observations.
+  An \\n \times p\\ matrix of observations.
 
 - theta:
 

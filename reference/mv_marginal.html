@@ -79,13 +79,24 @@ parameters that describe it.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>A marginal is not available in general: integrating a density over the
+    <p>For a subset \(A\) of the coordinates the marginal density is</p>
+<p>$$f_A(y_A; \theta)
+  = \int_{\mathbb{R}^{p - \lvert A \rvert}}
+    f(y; \theta)\, \mathrm{d}y_{A^{c}},$$</p>
+<p>which for a Gaussian is Gaussian with \(\mu_A\) and \(\Sigma_{AA}\),
+and for a Student t is a Student t with \(\mu_A\), \(\Sigma_{AA}\)
+and the <strong>same</strong> \(\nu\) (conditioning on the mixing variable of
+the scale-mixture representation leaves a Gaussian, whose marginal is
+Gaussian, and the mixture is then taken back). For a Dirichlet the
+marginal of one coordinate is Beta with the same concentration
+\(\phi\), and for a multinomial it is binomial.</p>
+<p>A marginal is not available in general: integrating a density over the
 coordinates one is not interested in has no closed form for most families.
-It is available for the elliptical ones, where the marginal belongs to the
-same family with the mean and the matrix subsetted, and those are the ones
-this generic has methods for. For a family without one the generic signals
-an error rather than approximating, since a quadrature over the discarded
-coordinates would be a different object under the same name.</p>
+Every family the package ships has one, the elliptical ones by subsetting
+the mean and the matrix and the two simplex families by the identities
+above. For a family without one the generic signals an error rather than
+approximating, since a quadrature over the discarded coordinates would be
+a different object under the same name.</p>
 <p>This is what makes a picture of a multivariate distribution possible at all:
 a panel of a pairs plot shows a marginal, so the plot exists exactly when
 the marginals do.</p>

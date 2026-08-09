@@ -39,6 +39,17 @@ A named list (one element per parameter) of gradient vectors.
 
 ## Details
 
+Each component is one central difference of the log-density in its own
+parameter,
+
+\$\$l^{(i)} = \frac{\partial}{\partial \theta_i} \log f(y; \theta)
+\approx \frac{\log f(y; \theta + h_i e_i) - \log f(y; \theta - h_i
+e_i)}{2 h_i},\$\$
+
+so the cost is two density evaluations per parameter. Truncation is of
+order \\h^{2}\\ and rounding of order \\\varepsilon / h\\, which the
+default \\h \propto \varepsilon^{1/3}\\ balances.
+
 Steps are scaled by `max(1, |theta|)` and automatically shrunk near the
 boundaries of `distrib@params_bounds` so that the evaluation points
 remain inside the parameter domain. Accuracy is roughly `eps^(2/3)`

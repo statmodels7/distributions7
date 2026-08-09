@@ -35,14 +35,26 @@ its parameters.
 
 ## Details
 
+For a subset \\A\\ of the coordinates the marginal density is
+
+\$\$f_A(y_A; \theta) = \int\_{\mathbb{R}^{p - \lvert A \rvert}} f(y;
+\theta)\\ \mathrm{d}y\_{A^{c}},\$\$
+
+which for a Gaussian is Gaussian with \\\mu_A\\ and \\\Sigma\_{AA}\\,
+and for a Student t is a Student t with \\\mu_A\\, \\\Sigma\_{AA}\\ and
+the **same** \\\nu\\ (conditioning on the mixing variable of the
+scale-mixture representation leaves a Gaussian, whose marginal is
+Gaussian, and the mixture is then taken back). For a Dirichlet the
+marginal of one coordinate is Beta with the same concentration \\\phi\\,
+and for a multinomial it is binomial.
+
 A marginal is not available in general: integrating a density over the
 coordinates one is not interested in has no closed form for most
-families. It is available for the elliptical ones, where the marginal
-belongs to the same family with the mean and the matrix subsetted, and
-those are the ones this generic has methods for. For a family without
-one the generic signals an error rather than approximating, since a
-quadrature over the discarded coordinates would be a different object
-under the same name.
+families. Every family the package ships has one, the elliptical ones by
+subsetting the mean and the matrix and the two simplex families by the
+identities above. For a family without one the generic signals an error
+rather than approximating, since a quadrature over the discarded
+coordinates would be a different object under the same name.
 
 This is what makes a picture of a multivariate distribution possible at
 all: a panel of a pairs plot shows a marginal, so the plot exists

@@ -87,7 +87,15 @@ implement an analytical gradient: any <code>distrib</code> subclass that defines
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Steps are scaled by <code>max(1, |theta|)</code> and automatically shrunk near the
+    <p>Each component is one central difference of the log-density in its own
+parameter,</p>
+<p>$$l^{(i)} = \frac{\partial}{\partial \theta_i} \log f(y; \theta)
+  \approx \frac{\log f(y; \theta + h_i e_i)
+    - \log f(y; \theta - h_i e_i)}{2 h_i},$$</p>
+<p>so the cost is two density evaluations per parameter. Truncation is of
+order \(h^{2}\) and rounding of order \(\varepsilon / h\), which the
+default \(h \propto \varepsilon^{1/3}\) balances.</p>
+<p>Steps are scaled by <code>max(1, |theta|)</code> and automatically shrunk near the
 boundaries of <code>distrib@params_bounds</code> so that the evaluation points remain
 inside the parameter domain. Accuracy is roughly <code>eps^(2/3)</code> (about 8
 significant digits): sufficient for optimization, but slower and less precise

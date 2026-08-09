@@ -28,6 +28,15 @@ variance(x, ...)
 
 A numeric vector.
 
+## Details
+
+\$\$\operatorname{Var}(Y) = \mathbb{E}\left\[(Y -
+\mathbb{E}\[Y\])^{2}\right\].\$\$
+
+A family with a closed form registers its own method; otherwise the
+expectation is the quadrature or the exact sum of
+[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md).
+
 ## Examples
 
 ``` r

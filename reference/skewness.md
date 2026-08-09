@@ -1,7 +1,11 @@
 # Skewness of a Distribution or Sample
 
-Computes the skewness (third standardized moment). For `distrib` objects
-it is evaluated numerically via
+Computes the skewness (third standardized moment):
+
+\$\$\gamma_1 = \mathbb{E}\\\left\[\left(\frac{Y -
+\mathbb{E}\[Y\]}{\operatorname{sd}(Y)}\right)^{3}\right\].\$\$
+
+For `distrib` objects it is evaluated numerically via
 [`moment`](https://statmodels7.github.io/distributions7/reference/moment.md);
 for numeric vectors the sample skewness (population denominator) is
 returned.

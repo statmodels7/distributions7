@@ -32,6 +32,20 @@ distrib_quantile(distrib, p, theta, ...)
 
 A numeric vector of quantiles.
 
+## Details
+
+The generalized inverse of the distribution function,
+
+\$\$Q(p; \theta) = \inf\\y : F(y; \theta) \ge p\\,\$\$
+
+which for a continuous strictly increasing \\F\\ is the ordinary inverse
+and for a discrete family the smallest support point whose cumulative
+mass reaches \\p\\. Without a method the value comes from root-finding
+on
+[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+in the continuous case and from an exact table lookup in the discrete
+one.
+
 ## Examples
 
 ``` r

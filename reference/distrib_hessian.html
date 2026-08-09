@@ -82,6 +82,22 @@ See <code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code
     <p>A named list of numeric vectors, keyed as
 <code><a href="hess_names.html">hess_names</a>(distrib@params)</code> (e.g. <code>"mu_sigma"</code>).</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>With \(l(\theta; y) = \log f(y; \theta)\), one entry per unordered pair
+of parameters,</p>
+<p>$$l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},$$</p>
+<p>evaluated at the observed \(y\) (see
+<code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code> for its expectation). On the link
+scale the reparametrization \(\theta_i = h_i(\eta_i)\) is diagonal, so
+the second-order chain rule carries a first-order term on the diagonal
+alone:</p>
+<p>$$\frac{\partial^{2} l}{\partial \eta_i \partial \eta_j}
+  = l^{(ij)} h_i'(\eta_i) h_j'(\eta_j)
+  + \delta_{ij}\, l^{(i)} h_i''(\eta_i).$$</p>
+<p>The transformation is applied in the generic, so a method always returns
+the parameter scale.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

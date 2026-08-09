@@ -73,6 +73,16 @@ If unnamed, parameters are taken in the order of <code>distrib@params</code>.</p
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A numeric vector of cumulative probabilities.</p>
     </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>$$F(q; \theta) = P(Y \le q),$$</p>
+<p>the integral of the density up to \(q\) for a continuous family and the
+sum of the mass over the support points at or below \(q\) for a discrete
+one. <code>lower.tail = FALSE</code> returns \(1 - F(q; \theta)\) and
+<code>log.p = TRUE</code> its logarithm, both computed on the log scale where a
+family provides one. Without a method the value comes from quadrature of
+the density.</p>
+    </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>

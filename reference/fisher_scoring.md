@@ -57,6 +57,23 @@ said in the same place:
 | `method = optimizers7::newton()` | Newton's method with the **observed** Hessian |
 | `method = optimizers7::lbfgs()` | whatever that optimizer does |
 
+Writing \\s(\eta) = \partial l / \partial \eta\\ for the score on the
+unconstrained scale and \\\mathcal{I}(\eta) = \mathbb{E}\[-\partial^{2}
+l / \partial \eta \partial \eta'\]\\ for the expected information there,
+the step is
+
+\$\$\eta^{(t+1)} = \eta^{(t)} + \mathcal{I}(\eta^{(t)})^{-1}
+s(\eta^{(t)}),\$\$
+
+Newton's step with the observed Hessian replaced by minus the expected
+one. Under the diagonal reparametrization \\\theta_i = h_i(\eta_i)\\ the
+information transforms by congruence, \\\mathcal{I}(\eta) = D\\
+\mathcal{I}(\theta)\\ D\\ with \\D = \operatorname{diag}(h_i'(\eta_i))\\
+(the diagonal first-order term of the chain rule vanishes in
+expectation, the score having mean zero), so the matrix inverted is
+positive definite wherever \\\mathcal{I}(\theta)\\ is and the step is
+always a direction of ascent.
+
 Fisher scoring is not a separate algorithm, which is why it has no
 implementation of its own: it is a Newton step with one matrix replaced
 by another. What it does need, and an optimizer cannot carry, is a

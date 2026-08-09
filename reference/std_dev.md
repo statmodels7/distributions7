@@ -2,8 +2,6 @@
 
 Computes the standard deviation as the square root of
 [`variance`](https://statmodels7.github.io/distributions7/reference/variance.md).
-For numeric vectors the sample standard deviation
-[`sd`](https://rdrr.io/r/stats/sd.html) is returned.
 
 ## Usage
 
@@ -26,6 +24,12 @@ std_dev(x, ...)
 ## Value
 
 A numeric vector.
+
+## Details
+
+\$\$\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.\$\$ For numeric
+vectors the sample standard deviation
+[`sd`](https://rdrr.io/r/stats/sd.html) is returned.
 
 ## Examples
 

@@ -33,6 +33,17 @@ distrib_cdf(distrib, q, theta, ...)
 
 A numeric vector of cumulative probabilities.
 
+## Details
+
+\$\$F(q; \theta) = P(Y \le q),\$\$
+
+the integral of the density up to \\q\\ for a continuous family and the
+sum of the mass over the support points at or below \\q\\ for a discrete
+one. `lower.tail = FALSE` returns \\1 - F(q; \theta)\\ and
+`log.p = TRUE` its logarithm, both computed on the log scale where a
+family provides one. Without a method the value comes from quadrature of
+the density.
+
 ## Examples
 
 ``` r

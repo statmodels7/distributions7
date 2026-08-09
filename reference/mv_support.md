@@ -43,6 +43,18 @@ The base class rejects. A continuous family has no such set, and a
 discrete one whose support is infinite has no finite matrix to return;
 either way an answer would be a fiction, and the caller is better told.
 
+For the multinomial on \\p\\ coordinates with \\n\\ trials the support
+is the weak compositions of \\n\\ into \\p\\ parts,
+
+\$\$\mathcal{S} = \Bigl\\y \in \mathbb{N}\_0^{p} :
+\textstyle\sum\_{j=1}^{p} y_j = n\Bigr\\, \qquad \lvert\mathcal{S}\rvert
+= \binom{n + p - 1}{p - 1},\$\$
+
+enumerated by
+[`compositions`](https://statmodels7.github.io/numericals7/reference/compositions.html).
+Every expectation is then the finite sum \\\sum\_{y \in \mathcal{S}}
+g(y) f(y; \theta)\\.
+
 ## See also
 
 [`multinomial_distrib`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md),

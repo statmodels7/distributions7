@@ -32,6 +32,15 @@ distrib_pdf(distrib, y, theta, ...)
 
 A numeric vector of density values, one per observation.
 
+## Details
+
+For a continuous family \\f(y; \theta)\\ is the density with respect to
+the Lebesgue measure and for a discrete one the mass \\f(y; \theta) =
+P(Y = y)\\; `log = TRUE` returns \\\log f(y; \theta)\\, which is the
+quantity every derivative generic differentiates. This is the only
+method a distribution has to supply: every other quantity has a
+numerical fallback derived from it.
+
 ## Examples
 
 ``` r
