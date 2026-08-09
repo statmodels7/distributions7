@@ -53,6 +53,18 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
     ))
   }
   theta <- align_theta(x, theta)
+  # The univariate methods read a vector component as several settings drawn
+  # over one another. Here the picture is already a matrix of panels, with no
+  # axis left to overlay them on, so the request is rejected rather than
+  # answered with the first setting.
+  long <- names(theta)[lengths(theta) > 1L]
+  if (length(long)) {
+    stop(sprintf(paste0("A multivariate distribution is drawn at one setting: ",
+                        "%s carr%s more than one value. Plot the settings ",
+                        "separately."),
+                 paste(sprintf("'%s'", long), collapse = ", "),
+                 if (length(long) == 1L) "ies" else "y"), call. = FALSE)
+  }
   mv_pairs_panels(x, theta, which, n_grid, col_fit, data = NULL, ...)
   invisible(x)
 }

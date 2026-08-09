@@ -1,5 +1,28 @@
 # distributions7 0.1.0
 
+## Plots
+
+* `plot()` on a univariate distribution draws one curve per element of a
+  parameter given as a vector, so
+  `plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))` is three
+  densities on one panel. The settings are separated by color and by line
+  type together, which keeps them apart in a printed copy that has no color;
+  the parameters that vary are named in a legend, placed on whichever side
+  the mass leaves emptier, and those held fixed are stated once in the
+  title. A discrete family is drawn as several sets of stems, shifted
+  sideways so that equal masses at one support point stay countable.
+
+  Every component must have length one or the same `k`. A length that merely
+  divides `k` is rejected rather than recycled, since a partial setting is
+  far more likely to be a mistake than a request. The horizontal window
+  covers every setting rather than the first.
+
+  This meaning is available because a plot has no data to recycle against;
+  the density and derivative generics read a vector component as one value
+  per observation, which is a different question asked of the same object.
+  A multivariate family, whose picture is already a matrix of panels with no
+  axis left to overlay settings on, rejects a vector component instead.
+
 ## Families
 
 * One name per parametrization. A family with several parametrizations

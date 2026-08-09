@@ -6,16 +6,26 @@
 \arguments{
 \item{x}{An object of class \code{"discrete_distrib"}.}
 
-\item{theta}{A named list or vector of parameters matching \code{x@params}.}
+\item{theta}{A named list or vector of parameters matching \code{x@params}.
+A component of length \eqn{k > 1} draws \eqn{k} sets of stems.}
 
 \item{xlim}{Optional numeric vector of length 2 indicating the x-axis range.}
 
-\item{...}{Additional arguments passed to the base \code{\link{plot}} function.}
+\item{legend}{Whether to draw the key when several settings are plotted.}
+
+\item{...}{Additional arguments passed to the base \code{\link{plot}} function.
+\code{col} and \code{lty} given here win and are recycled over the settings.}
 }
 \value{
 The distribution, invisibly.
 }
 \description{
 Visualizes the Probability Mass Function (PMF) of a discrete distribution object.
+}
+\details{
+A parameter given as a vector asks for one setting per element, exactly as
+in \code{\link{plot.continuous_distrib}}. Several settings are drawn as
+several sets of stems, shifted sideways so that one does not stand in front
+of another, and separated by color and line type together.
 }
 \keyword{internal}

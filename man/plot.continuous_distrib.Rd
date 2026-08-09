@@ -6,16 +6,32 @@
 \arguments{
 \item{x}{An object of class \code{"continuous_distrib"}.}
 
-\item{theta}{A named list or vector of parameters matching \code{x@params}.}
+\item{theta}{A named list or vector of parameters matching \code{x@params}.
+A component of length \eqn{k > 1} draws \eqn{k} curves.}
 
 \item{xlim}{Optional numeric vector of length 2 indicating the x-axis range.}
 
-\item{...}{Additional arguments passed to the base \code{\link{plot}} function.}
+\item{legend}{Whether to draw the key when several settings are plotted.}
+
+\item{...}{Additional arguments passed to the base \code{\link{plot}} function.
+\code{col} and \code{lty} given here win and are recycled over the curves.}
 }
 \value{
 The distribution, invisibly.
 }
 \description{
 Visualizes the Probability Density Function (PDF) of a continuous distribution object.
+}
+\details{
+A parameter given as a vector asks for one curve per element, so
+\code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))} draws three densities that
+share a mean and differ in scale. The curves are separated by color and by
+line type together, and the parameters that vary are named in a legend while
+those held fixed are stated in the title. See \code{\link{plot_settings}}
+for the rule on lengths.
+
+The horizontal range covers every setting: it runs from the smallest
+0.5\\% quantile to the largest 99.5\\% quantile over them, widened by a tenth
+and clamped to the support.
 }
 \keyword{internal}
