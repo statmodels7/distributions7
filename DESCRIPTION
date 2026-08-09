@@ -93,6 +93,7 @@ Collate:
     'cross_derivatives_simple.R'
     'dirichlet_distrib.R'
     'distributions7-package.R'
+    'enet_distrib.R'
     'expected_derivatives.R'
     'fisher_scoring.R'
     'link_scale.R'

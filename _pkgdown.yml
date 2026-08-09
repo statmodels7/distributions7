@@ -51,6 +51,7 @@ reference:
   - student_t2_distrib
   - laplace_distrib
   - laplace2_distrib
+  - enet_distrib
   - pseudohuber_distrib
   - skewnormal1_distrib
   - skewnormal2_distrib
@@ -240,6 +241,8 @@ reference:
   contents: [LaplaceDistrib, ends_with(".LaplaceDistrib")]
 - title: Laplace, location and rate
   contents: [Laplace2Distrib, ends_with(".Laplace2Distrib")]
+- title: EnetDistrib
+  contents: [EnetDistrib, ends_with(".EnetDistrib")]
 - title: Pseudo-Huber
   contents: [PseudoHuberDistrib, ends_with(".PseudoHuberDistrib")]
 - title: Skew normal
