@@ -37,6 +37,14 @@ A family with a closed form registers its own method; otherwise the
 expectation is the quadrature or the exact sum of
 [`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md).
 
+## See also
+
+[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
+[`moment`](https://statmodels7.github.io/distributions7/reference/moment.md),
+[`std_dev`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md),
+[`kurtosis`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
+
 ## Examples
 
 ``` r

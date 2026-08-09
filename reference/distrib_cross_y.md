@@ -65,6 +65,11 @@ back to one central difference of
 in each parameter (see
 [`numerical_cross_y`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md)).
 
+## See also
+
+[`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
+[`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
+
 ## Examples
 
 ``` r

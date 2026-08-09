@@ -95,6 +95,12 @@ or inverse transform when an analytical quantile is available.
 Everything else is inherited from
 [`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
 
+## See also
+
+[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md),
+[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
+[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+
 ## Examples
 
 ``` r

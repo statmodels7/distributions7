@@ -44,6 +44,13 @@ one. `lower.tail = FALSE` returns \\1 - F(q; \theta)\\ and
 family provides one. Without a method the value comes from quadrature of
 the density.
 
+## See also
+
+[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+[`distrib_quantile`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
+[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+
 ## Examples
 
 ``` r

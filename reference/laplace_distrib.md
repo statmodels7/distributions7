@@ -94,6 +94,11 @@ follows:
 
 - \\\sigma \in (0, +\infty)\\
 
+## See also
+
+[`laplace2_distrib`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md),
+[`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
+
 ## Examples
 
 ``` r

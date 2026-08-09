@@ -95,6 +95,11 @@ expectation is a derivative of \\\Gamma\\ at 2.
 Coles, S. (2001). *An Introduction to Statistical Modeling of Extreme
 Values*, chapter 3. Springer.
 
+## See also
+
+[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
+[`gpd_distrib`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
+
 ## Examples
 
 ``` r

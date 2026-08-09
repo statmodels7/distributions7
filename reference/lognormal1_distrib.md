@@ -81,6 +81,11 @@ and response derivatives
 [`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md))
 are also available.
 
+## See also
+
+[`lognormal2_distrib`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md),
+[`gaussian1_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
+
 ## Examples
 
 ``` r

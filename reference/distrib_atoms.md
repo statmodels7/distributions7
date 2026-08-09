@@ -47,6 +47,13 @@ uses it to know that the density is expected to integrate to \\1 - \sum
 p\\ rather than 1, and to keep its finite differences away from the
 jumps.
 
+## See also
+
+[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
+[`distrib_quantile`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
+[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
+
 ## Examples
 
 ``` r

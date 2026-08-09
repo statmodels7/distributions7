@@ -72,6 +72,13 @@ A named list of derivative-component vectors, keyed as in
 [`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)`(distrib@params, 3)`
 (e.g. `"mu_mu_sigma"`).
 
+## See also
+
+[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+
 ## Examples
 
 ``` r

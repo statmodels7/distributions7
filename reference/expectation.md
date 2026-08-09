@@ -41,6 +41,14 @@ expectation(distrib, f, theta, ...)
 
 A numeric vector of expected values, one per parameter combination.
 
+## See also
+
+[`moment`](https://statmodels7.github.io/distributions7/reference/moment.md),
+[`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
+[`std_dev`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md),
+[`kurtosis`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
+
 ## Examples
 
 ``` r

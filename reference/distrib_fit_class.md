@@ -143,6 +143,10 @@ Methods implemented for this class:
 [`simulate()`](https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.md),
 [`vcov()`](https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.md)
 
+## See also
+
+[`fit_distrib`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+
 ## Examples
 
 ``` r

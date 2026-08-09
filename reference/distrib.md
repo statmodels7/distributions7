@@ -99,6 +99,12 @@ default: the density is the one thing a distribution must supply.
 [`std_dev()`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
 
+## See also
+
+[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
+[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+
 ## Examples
 
 ``` r

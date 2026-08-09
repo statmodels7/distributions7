@@ -91,6 +91,12 @@ finite lower bound, which every standard count distribution has.
 Everything else is inherited from
 [`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
 
+## See also
+
+[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md),
+[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+
 ## Examples
 
 ``` r

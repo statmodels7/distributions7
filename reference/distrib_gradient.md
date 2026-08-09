@@ -41,6 +41,13 @@ distrib_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 A named list with one numeric vector per parameter, keyed by
 `distrib@params`.
 
+## See also
+
+[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+
 ## Examples
 
 ``` r

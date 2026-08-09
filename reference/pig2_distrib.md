@@ -61,6 +61,11 @@ Heller, G. Z., Couturier, D.-L., and Heritier, S. R. (2019). Beyond mean
 modelling: bias due to misspecification of dispersion in Poisson-inverse
 Gaussian regression. *Biometrical Journal* 61(2), 333–342.
 
+## See also
+
+[`pig1_distrib`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+
 ## Examples
 
 ``` r

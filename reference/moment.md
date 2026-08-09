@@ -48,6 +48,14 @@ moment(distrib, theta, p = 1, central = FALSE, mu = NULL, ...)
 A numeric vector of moments, with length equal to the maximum length
 among `theta` components and `p`.
 
+## See also
+
+[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
+[`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
+[`std_dev`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md),
+[`kurtosis`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
+
 ## Examples
 
 ``` r

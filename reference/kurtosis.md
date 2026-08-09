@@ -33,6 +33,14 @@ kurtosis(x, ...)
 
 A numeric vector.
 
+## See also
+
+[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
+[`moment`](https://statmodels7.github.io/distributions7/reference/moment.md),
+[`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
+[`std_dev`](https://statmodels7.github.io/distributions7/reference/std_dev.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md)
+
 ## Examples
 
 ``` r

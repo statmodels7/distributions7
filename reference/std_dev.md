@@ -31,6 +31,14 @@ A numeric vector.
 vectors the sample standard deviation
 [`sd`](https://rdrr.io/r/stats/sd.html) is returned.
 
+## See also
+
+[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md),
+[`moment`](https://statmodels7.github.io/distributions7/reference/moment.md),
+[`variance`](https://statmodels7.github.io/distributions7/reference/variance.md),
+[`skewness`](https://statmodels7.github.io/distributions7/reference/skewness.md),
+[`kurtosis`](https://statmodels7.github.io/distributions7/reference/kurtosis.md)
+
 ## Examples
 
 ``` r

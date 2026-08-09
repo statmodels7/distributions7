@@ -62,6 +62,13 @@ h_i'(\eta_i) h_j'(\eta_j) + \delta\_{ij}\\ l^{(i)} h_i''(\eta_i).\$\$
 The transformation is applied in the generic, so a method always returns
 the parameter scale.
 
+## See also
+
+[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+
 ## Examples
 
 ``` r

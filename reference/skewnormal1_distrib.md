@@ -105,6 +105,11 @@ ones. *Scandinavian Journal of Statistics* 12, 171-178.
 Azzalini, A. and Capitanio, A. (2014). *The Skew-Normal and Related
 Families*. Cambridge University Press.
 
+## See also
+
+[`skewnormal2_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md),
+[`skewt_distrib`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+
 ## Examples
 
 ``` r

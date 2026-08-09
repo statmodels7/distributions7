@@ -25,6 +25,16 @@ expand_params(theta, n)
 
 A list where all elements have length `n`.
 
+## See also
+
+[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
+[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+[`transpose_params`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
+[`check_params_dim`](https://statmodels7.github.io/distributions7/reference/check_params_dim.md),
+[`check_theta_bounds`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
+[`param_smoothness`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
+[`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+
 ## Examples
 
 ``` r

@@ -33,6 +33,16 @@ check_theta_bounds(distrib, theta)
 Invisibly `NULL`. Raises an error listing every offending parameter, the
 offending value(s) and the expected domain.
 
+## See also
+
+[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
+[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+[`expand_params`](https://statmodels7.github.io/distributions7/reference/expand_params.md),
+[`transpose_params`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
+[`check_params_dim`](https://statmodels7.github.io/distributions7/reference/check_params_dim.md),
+[`param_smoothness`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
+[`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+
 ## Examples
 
 ``` r

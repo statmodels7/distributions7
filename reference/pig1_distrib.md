@@ -60,6 +60,11 @@ Dean, C., Lawless, J. F., and Willmot, G. E. (1989). A mixed
 Poisson-inverse-Gaussian regression model. *Canadian Journal of
 Statistics* 17(2), 171–181.
 
+## See also
+
+[`pig2_distrib`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md),
+[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+
 ## Examples
 
 ``` r

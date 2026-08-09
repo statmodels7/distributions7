@@ -90,6 +90,11 @@ every expectation is a derivative of \\\Gamma\\ at 2.
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994). *Continuous
 Univariate Distributions, Volume 1*, 2nd edition, chapter 21. Wiley.
 
+## See also
+
+[`weibull3_distrib`](https://statmodels7.github.io/distributions7/reference/weibull3_distrib.md),
+[`gumbel_distrib`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
+
 ## Examples
 
 ``` r

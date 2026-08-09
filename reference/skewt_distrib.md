@@ -128,6 +128,11 @@ perturbation of symmetry with emphasis on a multivariate skew t
 distribution. *Journal of the Royal Statistical Society, Series B* 65,
 367-389.
 
+## See also
+
+[`skewnormal1_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md),
+[`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
+
 ## Examples
 
 ``` r
