@@ -87,6 +87,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/cauchy_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/cdf_tail_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/central_from_factorial.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/chain_assemble.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_derivatives.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_bounds_fast.html</loc></url>
@@ -197,6 +198,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GPDDistrib.html</loc></url>
@@ -692,6 +694,10 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distributions7-package.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-describe_probe.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_ac_derivs.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_chain.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_g_higher.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/enet_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/exp_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expand_params.html</loc></url>

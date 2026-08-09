@@ -587,6 +587,9 @@ Rarely called directly, but useful as a reference for what is happening.
   : Elastic-Net Distribution Function
 - [`distrib_cross_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.EnetDistrib.md)
   : Elastic-Net Mixed Response-Parameter Derivatives
+- [`distrib_deriv3.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
+  [`distrib_deriv4.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
+  : Elastic-Net Third and Fourth Derivatives
 - [`distrib_grad_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.EnetDistrib.md)
   : Elastic-Net Response Derivatives
 - [`distrib_gradient.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md)
@@ -1737,6 +1740,9 @@ divergent density.
 - [`central_from_factorial()`](https://statmodels7.github.io/distributions7/reference/central_from_factorial.md)
   : Central Moments From Falling Factorial Moments
 
+- [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
+  : Faa di Bruno Over Set Partitions, on Tables
+
 - [`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md)
   : The Chain Rule on a Parent's CDF Derivatives
 
@@ -2103,6 +2109,18 @@ divergent density.
 
 - [`.describe_probe()`](https://statmodels7.github.io/distributions7/reference/dot-describe_probe.md)
   : Describe a Trial Parameter Value
+
+- [`.enet_ac_derivs()`](https://statmodels7.github.io/distributions7/reference/dot-enet_ac_derivs.md)
+  : The Elastic Net in Its Two Rates
+
+- [`.enet_chain()`](https://statmodels7.github.io/distributions7/reference/dot-enet_chain.md)
+  : The Elastic Net's Derivatives of a Given Order
+
+- [`.enet_g_higher()`](https://statmodels7.github.io/distributions7/reference/dot-enet_g_higher.md)
+  : Higher Derivatives of the Elastic Net's Log Mills Ratio
+
+- [`.enet_rate_maps()`](https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.md)
+  : The Map From the Rates to the Elastic Net's Parameters
 
 - [`expectation.TruncatedContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
   : Expectation for Truncated Continuous Distributions
