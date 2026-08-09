@@ -3085,6 +3085,18 @@ divergent density.
 - [`plot.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/plot.multivariate_distrib.md)
   : Panels of a Multivariate Density
 
+- [`plot_keys()`](https://statmodels7.github.io/distributions7/reference/plot_keys.md)
+  : Colors and Line Types for Overlaid Curves
+
+- [`plot_labels()`](https://statmodels7.github.io/distributions7/reference/plot_labels.md)
+  : Labels for a Plot of Several Settings
+
+- [`plot_legend_side()`](https://statmodels7.github.io/distributions7/reference/plot_legend_side.md)
+  : Where to Put the Key
+
+- [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md)
+  : The Parameter Settings a Plot Draws
+
 - [`print.FisherScoring`](https://statmodels7.github.io/distributions7/reference/print.FisherScoring.md)
   : Print a Fisher Scoring Specification
 

@@ -53,20 +53,38 @@
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
-<dd><p>A named list or vector of parameters matching <code>x@params</code>.</p></dd>
+<dd><p>A named list or vector of parameters matching <code>x@params</code>.
+A component of length \(k &gt; 1\) draws \(k\) curves.</p></dd>
 
 
 <dt id="arg-xlim">xlim<a class="anchor" aria-label="anchor" href="#arg-xlim"></a></dt>
 <dd><p>Optional numeric vector of length 2 indicating the x-axis range.</p></dd>
 
 
+<dt id="arg-legend">legend<a class="anchor" aria-label="anchor" href="#arg-legend"></a></dt>
+<dd><p>Whether to draw the key when several settings are plotted.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>Additional arguments passed to the base <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></code> function.</p></dd>
+<dd><p>Additional arguments passed to the base <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></code> function.
+<code>col</code> and <code>lty</code> given here win and are recycled over the curves.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The distribution, invisibly.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>A parameter given as a vector asks for one curve per element, so
+<code>plot(d, list(mu = 0, sigma = c(1, 2, 4)))</code> draws three densities that
+share a mean and differ in scale. The curves are separated by color and by
+line type together, and the parameters that vary are named in a legend while
+those held fixed are stated in the title. See <code><a href="plot_settings.html">plot_settings</a></code>
+for the rule on lengths.</p>
+<p>The horizontal range covers every setting: it runs from the smallest
+0.5\<!-- % quantile to the largest 99.5\\% quantile over them, widened by a tenth -->
+and clamped to the support.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

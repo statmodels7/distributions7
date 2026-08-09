@@ -41,6 +41,14 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="distributions7-010">distributions7 0.1.0<a class="anchor" aria-label="anchor" href="#distributions7-010"></a></h2>
 <div class="section level3">
+<h3 id="plots-0-1-0">Plots<a class="anchor" aria-label="anchor" href="#plots-0-1-0"></a></h3>
+<ul><li>
+<p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a univariate distribution draws one curve per element of a parameter given as a vector, so <code>plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))</code> is three densities on one panel. The settings are separated by color and by line type together, which keeps them apart in a printed copy that has no color; the parameters that vary are named in a legend, placed on whichever side the mass leaves emptier, and those held fixed are stated once in the title. A discrete family is drawn as several sets of stems, shifted sideways so that equal masses at one support point stay countable.</p>
+<p>Every component must have length one or the same <code>k</code>. A length that merely divides <code>k</code> is rejected rather than recycled, since a partial setting is far more likely to be a mistake than a request. The horizontal window covers every setting rather than the first.</p>
+<p>This meaning is available because a plot has no data to recycle against; the density and derivative generics read a vector component as one value per observation, which is a different question asked of the same object. A multivariate family, whose picture is already a matrix of panels with no axis left to overlay settings on, rejects a vector component instead.</p>
+</li>
+</ul></div>
+<div class="section level3">
 <h3 id="families-0-1-0">Families<a class="anchor" aria-label="anchor" href="#families-0-1-0"></a></h3>
 <ul><li><p>One name per parametrization. A family with several parametrizations carries a number on each – <code>gaussian1</code>/<code>gaussian2</code>/<code>gaussian3</code>, <code>gamma1</code>/<code>gamma2</code>, <code>negbin1</code>/<code>negbin2</code> after Cameron and Trivedi, <code>weibull1</code>/<code>weibull3</code> after gamlss’s WEI and WEI3 with <code>weibull2</code> deliberately empty, and ten further groups. The reference index lists what is present.</p></li>
 <li><p>Univariate families added: weibull, gumbel, skewnormal, skewt, exponential, geometric, chisq, betabinom, NB1, the generalized Pareto, the generalized gamma, von Mises, the Poisson-inverse Gaussian in both gamlss parametrizations, and <code><a href="../reference/enet_distrib.html">enet_distrib()</a></code>, the elastic-net prior.</p></li>
