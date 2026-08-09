@@ -3086,7 +3086,7 @@ divergent density.
   : Panels of a Multivariate Density
 
 - [`plot_keys()`](https://statmodels7.github.io/distributions7/reference/plot_keys.md)
-  : Colors and Line Types for Overlaid Curves
+  : Colors, Line Types and Symbols for Overlaid Settings
 
 - [`plot_labels()`](https://statmodels7.github.io/distributions7/reference/plot_labels.md)
   : Labels for a Plot of Several Settings

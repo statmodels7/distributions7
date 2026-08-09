@@ -14,7 +14,9 @@
   whichever side the mass leaves emptier, and those held fixed are
   stated once in the title. A discrete family is drawn as several sets
   of stems, shifted sideways so that equal masses at one support point
-  stay countable.
+  stay countable, and separated by symbol rather than by line type: a
+  dashed stem reads as a broken one, and at a support of any size the
+  panel fills with fragments.
 
   Every component must have length one or the same `k`. A length that
   merely divides `k` is rejected rather than recycled, since a partial
