@@ -82,6 +82,25 @@
   them: the complete Bell polynomial, and the moment-to-cumulant relation,
   which needs only the ratios `d^B L / L`.
 
+* `distrib_deriv3_cdf()` and `distrib_deriv4_cdf()` complete that
+  sequence. The routes are the ones the orders below use: a discrete family
+  sums the identity exactly and a continuous one applies one product
+  stencil to its analytic distribution function. Nothing new was derived --
+  the quantity summed is the complete Bell polynomial and the conversion to
+  the log scale the moment-to-cumulant relation, both already in the
+  package for the wrappers and now in `partition_sums.R`, where they belong.
+  The general forms reproduce the written-out orders one and two exactly,
+  on both tails and both scales.
+
+* `distrib_deriv3_y()` and `distrib_deriv4_y()` do the same for the
+  response. A family whose response enters only as `y - mu` needs no
+  formula of its own: `d^k l / dy^k = (-1)^k d^k l / dmu^k`, so fourteen
+  families inherit these orders from derivatives they already have, often
+  compiled ones. The identity is checked at orders one and two, where both
+  sides are written independently and it holds exactly. A family on a half
+  line takes one stencil of the order asked for, with the step halved
+  because the stencil reaches two steps either side of a support boundary.
+
 * `distrib_grad_cdf()` and `distrib_hess_cdf()`, the derivatives of the
   distribution function, which is what a censored likelihood and a quantile
   residual's standard error need. Closed form for twelve of the original

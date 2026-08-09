@@ -117,6 +117,7 @@ Collate:
     'starting_values.R'
     'transformations.R'
     'wrapper_derivatives.R'
+    'y_higher.R'
 Suggests:
     testthat (>= 3.0.0),
     knitr,
