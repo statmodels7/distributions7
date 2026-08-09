@@ -345,12 +345,14 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 }
 
 #' @rdname mean.EnetDistrib
+#' @name variance.EnetDistrib
 S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
   p <- .enet_parts(theta)
   (1 + p$x * p$g) / p$c
 }
 
 #' @rdname mean.EnetDistrib
+#' @name skewness.EnetDistrib
 S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
   0 * .enet_parts(theta)$c
 }

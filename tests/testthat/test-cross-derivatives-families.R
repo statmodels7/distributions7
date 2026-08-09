@@ -54,6 +54,39 @@ test_that("the location-scale block closes for the shape families too", {
 })
 
 
+test_that("the shape component of two of them is closed rather than differenced", {
+  # The values agree with Richardson either way, so a tolerance cannot tell a
+  # closed form from the difference it replaced. What separates them is
+  # whether the body reaches numerical_cross_y at all.
+  differences <- function(cls) {
+    m <- S7::method(distrib_cross_y, cls)
+    any(grepl("numerical_cross_y", deparse(body(m)), fixed = TRUE))
+  }
+  expect_false(differences(distributions7:::SkewNormal1Distrib))
+  expect_false(differences(distributions7:::PseudoHuberDistrib))
+  # and the skew t is not claimed to be closed: its nu direction carries the
+  # derivative of a Student t distribution function in its degrees of freedom
+  expect_true(differences(distributions7:::SkewTDistrib))
+})
+
+
+test_that("the closed shape components hold far into the tail", {
+  skip_if_not_installed("numDeriv")
+  # where phi and Phi both underflow, so that the ratio is carried on the log
+  # scale, and where D is dominated by r^2/sigma^2
+  d <- skewnormal1_distrib()
+  th <- list(mu = 1, sigma = 2, alpha = 3)
+  y <- th$mu + th$sigma * c(-30, -12, 12)
+  expect_cross(d, th, y, 1e-6, only = "alpha")
+  expect_true(all(is.finite(distrib_cross_y(d, y, th)$alpha)))
+
+  d2 <- pseudohuber_distrib()
+  th2 <- list(mu = 0.5, sigma = 1.3, nu = 2.5)
+  y2 <- th2$mu + th2$sigma * c(-500, -20, 20, 500)
+  expect_cross(d2, th2, y2, 1e-6, only = "nu")
+})
+
+
 test_that("the scale families close both parameters", {
   skip_if_not_installed("numDeriv")
   y <- c(0.3, 1.2, 3.1)

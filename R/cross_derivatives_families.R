@@ -159,7 +159,10 @@ S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
 #' @title Pseudo-Huber Mixed Derivatives
 #' @name distrib_cross_y.PseudoHuberDistrib
 #' @description
-#' Closed form in the location and the scale; the shape is differenced.
+#' Closed form throughout. The location and scale components come from the
+#' location-scale identity; the response enters the shape only through
+#' \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
+#' \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
 #' @param distrib A \code{PseudoHuberDistrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing \code{mu}, \code{sigma} and \code{nu}.
@@ -167,15 +170,70 @@ S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
 #' @keywords internal
-S7::method(distrib_cross_y, PseudoHuberDistrib) <- partial_loc_scale_cross_y
+S7::method(distrib_cross_y, PseudoHuberDistrib) <- function(distrib, y, theta,
+                                                            scale = c("parameter",
+                                                                      "link"),
+                                                            ...) {
+  r <- y - theta$mu
+  s2 <- theta$sigma^2
+  D <- sqrt(theta$nu + r^2 / s2)
+  out <- c(loc_scale_cross_block(distrib, y, theta),
+           list(rep_len(r / (2 * s2 * D^3), length(y))))
+  stats::setNames(out, distrib@params)
+}
 
-#' @rdname distrib_cross_y.PseudoHuberDistrib
+#' @title Skew Normal Mixed Derivatives
 #' @name distrib_cross_y.SkewNormal1Distrib
+#' @description
+#' Closed form throughout, written in the inverse Mills ratio \eqn{R} at
+#' \eqn{t = \alpha z}. The location and scale components are the
+#' location-scale identity with \eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
+#' \eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2} substituted, and the shape
+#' component is \eqn{(R + t R')/\sigma}, the response entering \eqn{\alpha}
+#' only through \eqn{t}. The three are assembled from a single evaluation of
+#' \code{\link[numericals7]{mills_ratio}} rather than by calling
+#' \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}, which would
+#' evaluate it twice more.
+#' @param distrib A \code{SkewNormal1Distrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param scale Handled by the generic before dispatch.
+#' @param ... Unused.
+#' @return A named list with one numeric vector per parameter.
 #' @keywords internal
-S7::method(distrib_cross_y, SkewNormal1Distrib) <- partial_loc_scale_cross_y
+S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
+                                                            scale = c("parameter",
+                                                                      "link"),
+                                                            ...) {
+  s <- theta$sigma
+  a <- theta$alpha
+  z <- (y - theta$mu) / s
+  t <- a * z
+  m <- numericals7::mills_ratio(t)
+  aR <- a * m$r
+  a2R <- a * a * m$dr
+  n <- length(y)
+  stats::setNames(list(rep_len((1 - a2R) / s^2, n),
+                       rep_len((2 * z - z * a2R - aR) / s^2, n),
+                       rep_len((m$r + t * m$dr) / s, n)),
+                  distrib@params)
+}
 
-#' @rdname distrib_cross_y.PseudoHuberDistrib
+#' @title Skew t Mixed Derivatives
 #' @name distrib_cross_y.SkewTDistrib
+#' @description
+#' Closed form in the location and the scale, from the location-scale
+#' identity. The two shape components come from one central difference of
+#' \code{\link{distrib_grad_y}}: the density carries \eqn{T_{\nu+1}}, whose
+#' derivative in the degrees of freedom has no elementary form, the same
+#' obstruction that the family's parameter derivatives meet.
+#' @param distrib A \code{SkewTDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{sigma}, \code{alpha} and
+#'   \code{nu}.
+#' @param scale Handled by the generic before dispatch.
+#' @param ... Unused.
+#' @return A named list with one numeric vector per parameter.
 #' @keywords internal
 S7::method(distrib_cross_y, SkewTDistrib) <- partial_loc_scale_cross_y
 

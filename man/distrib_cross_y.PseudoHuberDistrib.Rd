@@ -2,8 +2,6 @@
 % Please edit documentation in R/cross_derivatives_families.R
 \name{distrib_cross_y.PseudoHuberDistrib}
 \alias{distrib_cross_y.PseudoHuberDistrib}
-\alias{distrib_cross_y.SkewNormal1Distrib}
-\alias{distrib_cross_y.SkewTDistrib}
 \title{Pseudo-Huber Mixed Derivatives}
 \arguments{
 \item{distrib}{A \code{PseudoHuberDistrib} object.}
@@ -20,6 +18,9 @@
 A named list with one numeric vector per parameter.
 }
 \description{
-Closed form in the location and the scale; the shape is differenced.
+Closed form throughout. The location and scale components come from the
+location-scale identity; the response enters the shape only through
+\eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
+\eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
 }
 \keyword{internal}

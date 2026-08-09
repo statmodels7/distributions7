@@ -2,6 +2,8 @@
 % Please edit documentation in R/enet_distrib.R
 \name{mean.EnetDistrib}
 \alias{mean.EnetDistrib}
+\alias{variance.EnetDistrib}
+\alias{skewness.EnetDistrib}
 \title{Elastic-Net Moments}
 \arguments{
 \item{x}{An \code{EnetDistrib} object.}
