@@ -54,12 +54,12 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-Forty-two univariate distributions and four multivariate ones ship with the
-package, one name per parametrization where a family has several –
+The package carries 42 univariate distributions and 4 multivariate ones,
+one name per parametrization where a family has several –
 `gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean
 and variance, `gaussian3_distrib()` in mean and precision, and likewise
-for eleven other families. Each constructor takes the link functions
-used for its parameters, and parameters travel as a named list.
+for 12 other families. Each constructor takes the link functions used
+for its parameters, and parameters travel as a named list.
 
 ``` r
 d <- gaussian1_distrib()
@@ -124,7 +124,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 10 ms
+#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

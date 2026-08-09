@@ -21,6 +21,31 @@ knitr::opts_chunk$set(
 )
 library(distributions7)
 set.seed(1)
+
+# The counts below are read from the package rather than typed, both having
+# gone stale once: the univariate one when pig1 and pig2 were added, the
+# group one at the same time.
+.ctors <- setdiff(grep("_distrib$", getNamespaceExports("distributions7"),
+                       value = TRUE),
+                  c("continuous_distrib", "discrete_distrib",
+                    "multivariate_distrib", "check_distrib", "fit_distrib"))
+# the constructors that need a dimension or a size, so none is dropped
+.ctor_args <- list(betabinom1_distrib = list(size = 10),
+                   betabinom2_distrib = list(size = 10),
+                   binomial_distrib = list(size = 10),
+                   mvgaussian_distrib = list(n_dim = 2),
+                   mvstudent_t_distrib = list(n_dim = 2),
+                   dirichlet_distrib = list(n_dim = 3),
+                   multinomial_distrib = list(n_dim = 3, size = 5))
+.is_mv <- vapply(.ctors, function(cn) {
+  S7::S7_inherits(do.call(cn, .ctor_args[[cn]] %||% list()),
+                  multivariate_distrib)
+}, logical(1))
+.n_mv <- sum(.is_mv)
+.n_uv <- sum(!.is_mv)
+# a numbered group is a stem carrying more than one trailing digit
+.stem <- sub("[0-9]+_distrib$", "", grep("[0-9]+_distrib$", .ctors, value = TRUE))
+.n_groups <- sum(table(.stem) > 1L)
 ```
 
 # distributions7 <img src="man/figures/logo.png" align="right" height="139" alt="" />
@@ -62,11 +87,11 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-Forty-one univariate distributions and four multivariate ones ship with
-the package, one name per parametrization where a family has several --
+The package carries `r .n_uv` univariate distributions and `r .n_mv`
+multivariate ones, one name per parametrization where a family has several --
 `gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean and
 variance, `gaussian3_distrib()` in mean and precision, and likewise for
-eleven other families.
+`r .n_groups - 1L` other families.
 Each constructor takes the link functions used for its parameters, and
 parameters travel as a named list.
 
