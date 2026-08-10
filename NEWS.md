@@ -1,3 +1,14 @@
+# distributions7 0.9.0
+
+* `distrib_cross2_y()` completes the mixed surface: two derivatives in
+  the response and one in each parameter, which is how the curvature of
+  a log-density in the response moves with the parameters. A penalty is
+  a negative log-density evaluated at the coefficients, so this is what
+  a marginal likelihood needs to differentiate the determinant of a
+  penalized information. Closed forms for the gaussian and the Student
+  t, and one central difference of the analytic `distrib_hess_y()` for
+  everything else.
+
 # distributions7 0.8.0
 
 ## Derivatives of the distribution function
