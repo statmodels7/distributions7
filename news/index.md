@@ -1,5 +1,18 @@
 # Changelog
 
+## distributions7 0.10.0
+
+- [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  close the mixed grid: one or two derivatives in the response and TWO
+  in the parameters. They are what the SECOND derivative of a marginal
+  criterion needs of a penalty. Closed forms for the gaussian, one
+  central difference of the analytic first-order component otherwise,
+  and
+  [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  delegates them like every other derivative.
+
 ## distributions7 0.9.1
 
 - [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)

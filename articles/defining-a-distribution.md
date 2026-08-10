@@ -441,7 +441,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 16 ms
+#> Method: Fisher scoring   iterations: 5   evaluations: f 6, g 6   time: 19 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

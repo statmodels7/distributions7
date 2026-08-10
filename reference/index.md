@@ -136,6 +136,9 @@ respect to the unconstrained parameters.
   : Mixed Response-Parameter Derivatives of the Log-Density
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
   : Mixed Second-Response Parameter Derivatives of the Log-Density
+- [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  : Hyperparameter Hessians of the Response Derivatives
 - [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
   : Gradient of the Log Distribution Function
 - [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
@@ -307,6 +310,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Numerical Mixed Response-Parameter Derivatives
 - [`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md)
   : Numerical Mixed Second-Response Parameter Derivatives
+- [`numerical_theta2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.md)
+  : Numerical Hyperparameter Hessians of the Response Derivatives
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
   : Numerical Derivatives of the Distribution Function
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
@@ -2077,6 +2082,14 @@ divergent density.
   [`distrib_cross_y.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.md)
   : Response Derivatives of a Multivariate Distribution
 
+- [`distrib_grad_y_hess.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.md)
+  [`distrib_hess_y_hess.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.md)
+  : Gaussian Second-Order Mixed Derivatives
+
+- [`distrib_grad_y_hess.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
+  [`distrib_hess_y_hess.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
+  : Default Second-Order Mixed Derivatives for Continuous Distributions
+
 - [`distrib_gradient.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
   : Multivariate Gaussian Score
 
@@ -3103,6 +3116,9 @@ divergent density.
 
 - [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
   : CDF Derivatives From an Exponential Survival Function
+
+- [`theta2_link_scale()`](https://statmodels7.github.io/distributions7/reference/theta2_link_scale.md)
+  : The Link Scale of a Second-Order Parameter Derivative
 
 - [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
   : Convert Parameter-Scale Derivatives to the Link Scale

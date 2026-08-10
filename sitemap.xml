@@ -415,6 +415,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.html</loc></url>
@@ -991,6 +994,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_gradient.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hess_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hessian.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_theta2_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/observed_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/order_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/param_free_or_fit.html</loc></url>
@@ -1102,6 +1106,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/theta2_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/to_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/trans_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/transformation.html</loc></url>
