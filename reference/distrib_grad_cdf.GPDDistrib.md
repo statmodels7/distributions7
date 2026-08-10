@@ -1,8 +1,10 @@
-# Generalized Pareto Log-CDF Gradient
+# Generalized Pareto Log-CDF Derivatives
 
-Closed form. With \\t = 1 + \xi q/\sigma\\ and \\S = t^{-1/\xi}\\,
-\\\partial F/\partial\sigma = -S q/(\sigma^2 t)\\ and \\\partial
-F/\partial\xi = -S(\log t/\xi^2 - q/(\xi\sigma t))\\.
+Closed form at every order, from the survival function \\S = (1 + \xi
+q/\sigma)^{-1/\xi}\\. Its logarithm is written \\-(q/\sigma)\Lambda(\xi
+q/\sigma)\\ with \\\Lambda(u) = \log(1+u)/u\\, which carries no division
+by the shape, so the exponential limit \\\xi \to 0\\ is an ordinary
+point of the formula rather than a branch.
 
 ## Arguments
 
@@ -26,17 +28,13 @@ F/\partial\xi = -S(\log t/\xi^2 - q/(\xi\sigma t))\\.
 
   Logical; if `TRUE` (default), derivatives of the log probability.
 
+- ...:
+
+  Unused.
+
 ## Value
 
-A named list, one vector per parameter.
-
-## Details
-
-The shape direction is a difference of two quantities of size \\z/\xi\\
-that cancel as \\\xi \to 0\\, so below \\10^{-4}\\ it is taken from the
-series \\z^2/2 - 2\xi z^3/3 + 3\xi^2 z^4/4\\ that the cancellation
-leaves, matching the branch the distribution function itself takes
-there.
+A named list, one vector per component.
 
 ## See also
 

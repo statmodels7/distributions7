@@ -7,7 +7,7 @@ derivatives.
 ## Usage
 
 ``` r
-surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv)
+surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 ```
 
 ## Arguments

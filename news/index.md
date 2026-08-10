@@ -1,5 +1,31 @@
 # Changelog
 
+## distributions7 0.6.0
+
+### Derivatives of the distribution function
+
+- [`gpd_distrib()`](https://statmodels7.github.io/distributions7/reference/gpd_distrib.md)
+  has closed derivatives at all four orders, its Hessian included, from
+  the exponential-survival route. The form is what makes it work:
+  writing and , the exponent is and carries no division by the shape, so
+  the exponential limit is an ordinary point of the formula rather than
+  a branch of the code.
+
+- `Lambda` and its four derivatives come from the recursion above and
+  from the Taylor series below it. The crossover is measured, not
+  chosen: the recursion divides by and subtracts nearly equal
+  quantities, and its fourth derivative is wrong by a factor of at , by
+  1.7 at and by at , while the two agree to at the switch.
+
+- At the scale components equal the exponential family’s exactly, at
+  every order. That family reaches them through and shares no arithmetic
+  with the series, so it is the reference near zero, where a stencil in
+  the shape is not one: at the step is a thousand times the value.
+
+- A negative shape bounds the support above, at , and the derivatives
+  are zero past it. The support is declared by the family rather than
+  read off the bounds, the endpoint depending on a parameter.
+
 ## distributions7 0.5.0
 
 ### Derivatives of the distribution function

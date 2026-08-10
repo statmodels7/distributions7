@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,16 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="distributions7-060">distributions7 0.6.0<a class="anchor" aria-label="anchor" href="#distributions7-060"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-of-the-distribution-function-0-6-0">Derivatives of the distribution function<a class="anchor" aria-label="anchor" href="#derivatives-of-the-distribution-function-0-6-0"></a></h3>
+<ul><li><p><code><a href="../reference/gpd_distrib.html">gpd_distrib()</a></code> has closed derivatives at all four orders, its Hessian included, from the exponential-survival route. The form is what makes it work: writing  and , the exponent is  and carries no division by the shape, so the exponential limit  is an ordinary point of the formula rather than a branch of the code.</p></li>
+<li><p><code>Lambda</code> and its four derivatives come from the recursion  above  and from the Taylor series below it. The crossover is measured, not chosen: the recursion divides by  and subtracts nearly equal quantities, and its fourth derivative is wrong by a factor of  at , by 1.7 at  and by  at , while the two agree to  at the switch.</p></li>
+<li><p>At  the scale components equal the exponential family’s exactly, at every order. That family reaches them through  and shares no arithmetic with the series, so it is the reference near zero, where a stencil in the shape is not one: at  the step is a thousand times the value.</p></li>
+<li><p>A negative shape bounds the support above, at , and the derivatives are zero past it. The support is declared by the family rather than read off the bounds, the endpoint depending on a parameter.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="distributions7-050">distributions7 0.5.0<a class="anchor" aria-label="anchor" href="#distributions7-050"></a></h2>
 <div class="section level3">

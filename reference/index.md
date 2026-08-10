@@ -1987,7 +1987,7 @@ divergent density.
   : Exponential Log-CDF Derivatives
 
 - [`distrib_grad_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
-  : Generalized Pareto Log-CDF Gradient
+  : Generalized Pareto Log-CDF Derivatives
 
 - [`distrib_grad_cdf.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian2Distrib.md)
   [`distrib_hess_cdf.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian2Distrib.md)
@@ -2313,6 +2313,12 @@ divergent density.
 
 - [`gpd_endpoint()`](https://statmodels7.github.io/distributions7/reference/gpd_endpoint.md)
   : The Upper Endpoint of a Generalized Pareto
+
+- [`gpd_lambda_derivs()`](https://statmodels7.github.io/distributions7/reference/gpd_lambda_derivs.md)
+  : Derivatives of log1p(u)/u
+
+- [`gpd_surv_pieces()`](https://statmodels7.github.io/distributions7/reference/gpd_surv_pieces.md)
+  : The Exponential Survival Pieces of a Generalized Pareto
 
 - [`grou_core()`](https://statmodels7.github.io/distributions7/reference/grou_core.md)
   : The Generalized Ratio-of-Uniforms Sampler
