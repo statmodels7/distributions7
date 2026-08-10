@@ -497,6 +497,8 @@ respect to the unconstrained parameters.
   : Third and Fourth Derivatives With Respect to the Response
 - [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
   : Mixed Response-Parameter Derivatives of the Log-Density
+- [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
+  : Mixed Second-Response Parameter Derivatives of the Log-Density
 - [`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
   : Gradient of the Log Distribution Function
 - [`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md)
@@ -666,6 +668,8 @@ Rarely called directly, but useful as a reference for what is happening.
   : Numerical Third and Fourth Response Derivatives
 - [`numerical_cross_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross_y.md)
   : Numerical Mixed Response-Parameter Derivatives
+- [`numerical_cross2_y()`](https://statmodels7.github.io/distributions7/reference/numerical_cross2_y.md)
+  : Numerical Mixed Second-Response Parameter Derivatives
 - [`numerical_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv.md)
   : Numerical Derivatives of the Distribution Function
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
@@ -2211,6 +2215,16 @@ divergent density.
 
 - [`distrib_cdf.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.md)
   : No Distribution Function in Several Dimensions
+
+- [`distrib_cross2_y.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
+  : Gaussian Mixed Second-Response Derivatives
+
+- [`distrib_cross2_y.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.md)
+  : Student's t Mixed Second-Response Derivatives
+
+- [`distrib_cross2_y.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.md)
+  : Default Mixed Second-Response Derivatives for Continuous
+  Distributions
 
 - [`distrib_cross_y.Beta1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta1Distrib.md)
   : Beta Mixed Derivatives in Mean and Precision
