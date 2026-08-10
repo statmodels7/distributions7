@@ -1015,6 +1015,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/register_surv_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.html</loc></url>
@@ -1084,6 +1085,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/std_dev.numeric.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/student_t2_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/to_link_scale.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/trans_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/transformation.html</loc></url>
@@ -1154,7 +1156,6 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull3_distrib.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/weibull_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/yj_transform.html</loc></url>

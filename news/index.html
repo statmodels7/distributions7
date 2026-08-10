@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,16 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.0" id="distributions7-050">distributions7 0.5.0<a class="anchor" aria-label="anchor" href="#distributions7-050"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-of-the-distribution-function-0-5-0">Derivatives of the distribution function<a class="anchor" aria-label="anchor" href="#derivatives-of-the-distribution-function-0-5-0"></a></h3>
+<ul><li><p>A family whose survival function is an exponential of something elementary now gets all four orders from one identity:  gives , the complete Bell polynomial in the partial derivatives of . A family states  and its partials and nothing else. <code><a href="../reference/exponential_distrib.html">exponential_distrib()</a></code> and <code><a href="../reference/weibull1_distrib.html">weibull1_distrib()</a></code> are served by it, and <code><a href="../reference/weibull3_distrib.html">weibull3_distrib()</a></code> follows through the reparametrization wrapper; the route replaces the two written-out orders each carried before, which it reproduces.</p></li>
+<li><p><code><a href="../reference/laplace2_distrib.html">laplace2_distrib()</a></code> reaches the two new orders as the Laplace at , through the mapped route.</p></li>
+<li><p>The upper tail of an exponential-survival family is exact wherever the logarithm is representable. <code>log S</code> is <code>L</code>, so its derivatives are <code>L</code>’s own and need no division by <code>1 - F</code>, which is exactly one in double precision past <code>q/mu = 37</code>: the first derivative of an exponential’s log survival at <code>q = 700</code> was <code>Inf</code> and is now <code>700</code>.</p></li>
+<li><p><code>weibull_cdf_deriv()</code> is gone with the two methods that were its only callers.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="distributions7-040">distributions7 0.4.0<a class="anchor" aria-label="anchor" href="#distributions7-040"></a></h2>
 <div class="section level3">

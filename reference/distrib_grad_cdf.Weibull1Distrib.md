@@ -1,7 +1,12 @@
 # Weibull Log-CDF Derivatives
 
-Closed form; see
-[`weibull_cdf_deriv`](https://statmodels7.github.io/distributions7/reference/weibull_cdf_deriv.md).
+Closed form at every order from the survival function \\S =
+\exp\\-(q/\mu)^{\sigma}\\\\. Writing \\h = \sigma(\log q - \log\mu)\\
+the exponent is \\L = -e^{h}\\, so its partial derivatives are
+\\-e^{h}\\ times the complete Bell polynomial in the partials of \\h\\,
+and those are elementary: \\\partial^{j}h/\partial\mu^{j} =
+\sigma(-1)^{j}(j-1)!/\mu^{j}\\, the same without the \\\sigma\\ when one
+index names the shape, and zero when two do.
 
 ## Arguments
 
@@ -25,9 +30,13 @@ Closed form; see
 
   Logical; if `TRUE` (default), derivatives of the log probability.
 
+- ...:
+
+  Unused.
+
 ## Value
 
-A named list, one vector per parameter.
+A named list, one vector per component.
 
 ## See also
 

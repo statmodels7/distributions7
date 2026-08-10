@@ -24,6 +24,8 @@ md_invgauss2(psi)
 
 md_skewnormal2(psi)
 
+md_laplace2(psi)
+
 md_gaussian2(psi)
 
 md_gaussian3(psi)

@@ -2347,7 +2347,6 @@ divergent density.
   : Expected Information of a Multivariate Distribution
 
 - [`distrib_grad_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
-  [`distrib_hess_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
   : Exponential Log-CDF Derivatives
 
 - [`distrib_grad_cdf.GPDDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.md)
@@ -2381,7 +2380,6 @@ divergent density.
   : Skew t Log-CDF Derivatives
 
 - [`distrib_grad_cdf.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
-  [`distrib_hess_cdf.Weibull1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Weibull1Distrib.md)
   : Weibull Log-CDF Derivatives
 
 - [`distrib_grad_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.continuous_distrib.md)
@@ -3235,6 +3233,10 @@ divergent density.
 - [`register_mapped_cdf_k()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
   : Register the Two New Orders on a Mapped Family
 
+- [`register_surv_cdf()`](https://statmodels7.github.io/distributions7/reference/register_surv_cdf.md)
+  : Register the Four CDF Derivative Orders of an Exponential Survival
+  Family
+
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization
 
@@ -3245,6 +3247,7 @@ divergent density.
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_laplace2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gaussian2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gaussian3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   : Explicit Map Derivatives of the Second Parametrizations
@@ -3413,6 +3416,9 @@ divergent density.
 
 - [`std_dev.numeric`](https://statmodels7.github.io/distributions7/reference/std_dev.numeric.md)
   : Sample Standard Deviation
+
+- [`surv_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/surv_cdf_deriv_k.md)
+  : CDF Derivatives From an Exponential Survival Function
 
 - [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
   : Convert Parameter-Scale Derivatives to the Link Scale
@@ -3594,9 +3600,6 @@ divergent density.
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
 
-- [`weibull_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/weibull_cdf_deriv.md)
-  : CDF Derivatives of a Weibull
-
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments
 
@@ -3638,6 +3641,7 @@ order the parent has in closed form survives.
   [`md_gengamma2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_invgauss2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_skewnormal2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
+  [`md_laplace2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gaussian2()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   [`md_gaussian3()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md)
   : Explicit Map Derivatives of the Second Parametrizations

@@ -1,8 +1,8 @@
 # Exponential Log-CDF Derivatives
 
-Closed form. With \\F = 1 - e^{-q/\mu}\\, \\\partial F/\partial\mu =
--(q/\mu) f\\ and \\\partial^2 F/\partial\mu^2 = (q/\mu^2) f (2 -
-q/\mu)\\.
+Closed form at every order from the survival function \\S =
+\exp(-q/\mu)\\, whose logarithm has the partial derivatives
+\\\partial^{j}L/\partial\mu^{j} = -q(-1)^{j}j!/\mu^{j+1}\\.
 
 ## Arguments
 
@@ -26,9 +26,13 @@ q/\mu)\\.
 
   Logical; if `TRUE` (default), derivatives of the log probability.
 
+- ...:
+
+  Unused.
+
 ## Value
 
-A named list with one element.
+A named list, one vector per component.
 
 ## See also
 
