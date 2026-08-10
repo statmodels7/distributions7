@@ -1019,6 +1019,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/print_check_table.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/recip_1p_sq.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.html</loc></url>
@@ -1082,6 +1083,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn2_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn2_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn_b.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/sn_cdf_std_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/sn_max_skew.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/softplus_transform.html</loc></url>

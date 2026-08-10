@@ -2012,8 +2012,7 @@ divergent density.
   [`distrib_hess_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ReparamContinuousDistrib.md)
   : Log-CDF Gradient of a Reparametrized Distribution
 
-- [`distrib_grad_cdf.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
-  [`distrib_hess_cdf.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
+- [`sn_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
   : Skew Normal Log-CDF Derivatives
 
 - [`distrib_grad_cdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md)
@@ -2883,6 +2882,9 @@ divergent density.
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
   : Batched Quadrature with Rejection
 
+- [`recip_1p_sq()`](https://statmodels7.github.io/distributions7/reference/recip_1p_sq.md)
+  : Derivatives of the Reciprocal of One Plus a Square
+
 - [`register_dy_k()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
   : Register the Third and Fourth Response Derivatives of a Family
 
@@ -3060,6 +3062,9 @@ divergent density.
 
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
   : The Constant Behind the Centered Parametrization
+
+- [`sn_cdf_std_derivs()`](https://statmodels7.github.io/distributions7/reference/sn_cdf_std_derivs.md)
+  : The Skew Normal's Distribution Function in Standard Coordinates
 
 - [`sn_cp_to_dp()`](https://statmodels7.github.io/distributions7/reference/sn_cp_to_dp.md)
   : From the Centered Parameters to the Direct Ones

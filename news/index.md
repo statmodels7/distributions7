@@ -1,5 +1,30 @@
 # Changelog
 
+## distributions7 0.8.0
+
+### Derivatives of the distribution function
+
+- [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
+  is closed in the shape as well as in the location and the scale, at
+  every order, and
+  [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+  follows through the map. The distribution function is and Owen’s has
+  elementary partial derivatives, and , so the integral in its
+  definition is differentiated away at the first order and never has to
+  be differentiated again. Everything above is a product of normal
+  densities, Hermite polynomials and a rational function of the shape.
+
+- The check that the first identity is the right one is that it returns
+  the density: . At the location and scale components agree with the
+  gaussian’s to 1e-15, and the gaussian reaches them by another route.
+
+- Every cdf order now leaves the same eight families on the stencil, and
+  all eight are mathematical obstructions: the derivative of an
+  incomplete gamma or beta in its shape is hypergeometric (gamma,
+  chi-squared, beta, generalized gamma) and the von Mises distribution
+  function is itself a quadrature. A test asserts that list, so a family
+  added without a route joins it visibly.
+
 ## distributions7 0.7.0
 
 ### Derivatives of the distribution function

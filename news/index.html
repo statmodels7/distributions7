@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,15 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.8.0" id="distributions7-080">distributions7 0.8.0<a class="anchor" aria-label="anchor" href="#distributions7-080"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-of-the-distribution-function-0-8-0">Derivatives of the distribution function<a class="anchor" aria-label="anchor" href="#derivatives-of-the-distribution-function-0-8-0"></a></h3>
+<ul><li><p><code><a href="../reference/skewnormal1_distrib.html">skewnormal1_distrib()</a></code> is closed in the shape as well as in the location and the scale, at every order, and <code><a href="../reference/skewnormal2_distrib.html">skewnormal2_distrib()</a></code> follows through the map. The distribution function is  and Owen’s  has elementary partial derivatives,  and , so the integral in its definition is differentiated away at the first order and never has to be differentiated again. Everything above is a product of normal densities, Hermite polynomials and a rational function of the shape.</p></li>
+<li><p>The check that the first identity is the right one is that it returns the density: . At  the location and scale components agree with the gaussian’s to 1e-15, and the gaussian reaches them by another route.</p></li>
+<li><p>Every cdf order now leaves the same eight families on the stencil, and all eight are mathematical obstructions: the derivative of an incomplete gamma or beta in its shape is hypergeometric (gamma, chi-squared, beta, generalized gamma) and the von Mises distribution function is itself a quadrature. A test asserts that list, so a family added without a route joins it visibly.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="distributions7-070">distributions7 0.7.0<a class="anchor" aria-label="anchor" href="#distributions7-070"></a></h2>
 <div class="section level3">
