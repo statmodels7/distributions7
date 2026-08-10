@@ -1,5 +1,15 @@
 # Changelog
 
+## distributions7 0.9.1
+
+- [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+  delegates
+  [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+  subset to the free parameters as it does every other derivative.
+  Without it every penalty built on `fixed(gaussian1_distrib(), mu = 0)`
+  – which is what a ridge and a random effect are – reached the
+  numerical fallback while the closed form sat one class away.
+
 ## distributions7 0.9.0
 
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md)
