@@ -355,27 +355,6 @@ S7::method(distrib_hess_cdf, StudentT1Distrib) <- partial_loc_scale_hess_cdf
 #' @keywords internal
 S7::method(distrib_hess_cdf, PseudoHuberDistrib) <- partial_loc_scale_hess_cdf
 
-#' @title Skew Normal Log-CDF Derivatives
-#' @name distrib_grad_cdf.SkewNormal1Distrib
-#' @description
-#' Closed form in the location and scale, the family being location-scale in
-#' them; the shape direction is a derivative of Owen's T in its second
-#' argument and is differenced.
-#' @param distrib A \code{SkewNormal1Distrib} object.
-#' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list, one vector per parameter.
-#' @seealso \code{\link{skewnormal1_distrib}}
-#' @keywords internal
-S7::method(distrib_grad_cdf, SkewNormal1Distrib) <- partial_loc_scale_grad_cdf
-
-#' @rdname distrib_grad_cdf.SkewNormal1Distrib
-#' @name distrib_hess_cdf.SkewNormal1Distrib
-#' @keywords internal
-S7::method(distrib_hess_cdf, SkewNormal1Distrib) <- partial_loc_scale_hess_cdf
-
 #' @title Skew t Log-CDF Derivatives
 #' @name distrib_grad_cdf.SkewTDistrib
 #' @description

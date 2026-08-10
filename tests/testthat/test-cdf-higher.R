@@ -581,3 +581,93 @@ test_that("neither family is on the stencil any more", {
     }
   }
 })
+
+
+# --- the skew normal, in the shape as well ----------------------------------
+
+test_that("the skew normal agrees with a stencil on F at every order", {
+  hs <- c(1e-5, 1e-4, 1e-3, 3e-3)
+  tols <- c(1e-7, 1e-6, 1e-4, 5e-3)
+  d1 <- skewnormal1_distrib()
+  d2 <- skewnormal2_distrib()
+  for (cs in list(
+        list(d1, list(mu = 0.2, sigma = 1.2, alpha = 1.5), 0.6),
+        list(d1, list(mu = 0.2, sigma = 1.2, alpha = 1.5), -1.4),
+        list(d1, list(mu = 0, sigma = 1, alpha = 0), 0.5),
+        list(d1, list(mu = 0, sigma = 1, alpha = -4), 1.1),
+        list(d2, list(mu = 0.3, sigma = 1.1, gamma1 = 0.4), 0.9),
+        list(d2, list(mu = 0, sigma = 1, gamma1 = -0.6), -0.5))) {
+    d <- cs[[1]]; th <- cs[[2]]; q <- cs[[3]]
+    for (o in 1:4) {
+      got <- switch(o,
+        distrib_grad_cdf(d, q, th, log = FALSE),
+        distrib_hess_cdf(d, q, th, log = FALSE),
+        distrib_deriv3_cdf(d, q, th, log = FALSE),
+        distrib_deriv4_cdf(d, q, th, log = FALSE))
+      ref <- vapply(deriv_indices(d@params, o),
+                    function(I) fd_on_cdf(d, q, th, I, hs[o]), numeric(1))
+      names(ref) <- deriv_names(d@params, o)
+      expect_lt(max(abs(unlist(got)[names(ref)] - ref)) / max(1, max(abs(ref))),
+                tols[o],
+                label = sprintf("%s order %d at q = %g", d@distrib_name, o, q))
+    }
+  }
+})
+
+test_that("at a zero shape the skew normal is the gaussian, exactly", {
+  # the reference shares no code: the gaussian reaches these through the
+  # location-scale construction and the skew normal through Owen's T
+  d <- skewnormal1_distrib()
+  g <- gaussian1_distrib()
+  qq <- c(-1, 0.4, 2)
+  th <- list(mu = 0.3, sigma = 1.2, alpha = 0)
+  tg <- list(mu = 0.3, sigma = 1.2)
+  for (o in 1:4) {
+    a <- switch(o,
+      distrib_grad_cdf(d, qq, th, log = FALSE),
+      distrib_hess_cdf(d, qq, th, log = FALSE),
+      distrib_deriv3_cdf(d, qq, th, log = FALSE),
+      distrib_deriv4_cdf(d, qq, th, log = FALSE))
+    b <- switch(o,
+      distrib_grad_cdf(g, qq, tg, log = FALSE),
+      distrib_hess_cdf(g, qq, tg, log = FALSE),
+      distrib_deriv3_cdf(g, qq, tg, log = FALSE),
+      distrib_deriv4_cdf(g, qq, tg, log = FALSE))
+    for (k in names(b)) {
+      expect_equal(a[[k]], b[[k]], tolerance = 1e-12,
+                   info = sprintf("order %d component %s", o, k))
+    }
+  }
+})
+
+test_that("the first derivative in the quantile is the density", {
+  # dF/dz = 2 phi(z) Phi(alpha z), which is sigma times the density: the check
+  # that the Owen's T partial in its first argument is the right one
+  d <- skewnormal1_distrib()
+  th <- list(mu = 0.2, sigma = 1.3, alpha = 2)
+  q <- c(-0.5, 0.4, 1.8)
+  z <- (q - th$mu) / th$sigma
+  expect_equal(2 * stats::dnorm(z) * stats::pnorm(th$alpha * z) / th$sigma,
+               distrib_pdf(d, q, th), tolerance = 1e-14)
+})
+
+test_that("only the mathematical obstructions are left on the cdf stencil", {
+  # every one of these differences its cdf because the derivative of an
+  # incomplete gamma or beta in its shape is hypergeometric, or because the
+  # distribution function is itself a quadrature. The test fails if a family
+  # joins them, which is what would happen to a new one added without a route.
+  exported <- grep("_distrib$", getNamespaceExports("distributions7"), value = TRUE)
+  skip_these <- c("check_distrib", "fit_distrib", "continuous_distrib",
+                  "discrete_distrib", "multivariate_distrib")
+  open <- character()
+  for (ctor in setdiff(exported, skip_these)) {
+    d <- tryCatch(get(ctor, asNamespace("distributions7"))(),
+                  error = function(e) NULL)
+    if (is.null(d) || !S7::S7_inherits(d, distributions7:::continuous_distrib)) next
+    if (!distributions7:::has_exact_cdf_deriv(d, 4L)) {
+      open <- c(open, sub("_distrib$", "", ctor))
+    }
+  }
+  expect_setequal(open, c("beta1", "beta2", "chisq", "gamma1", "gamma2",
+                          "gengamma1", "vonmises1", "vonmises2"))
+})

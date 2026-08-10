@@ -227,8 +227,9 @@ partial_loc_scale_deriv_cdf_k <- function(order) {
   }
 }
 
-for (.cls in list(StudentT1Distrib, PseudoHuberDistrib, SkewNormal1Distrib,
-                  SkewTDistrib)) {
+# the skew normal is not among them any more: Owen's T has elementary partial
+# derivatives, so its shape components close too and it has a route of its own
+for (.cls in list(StudentT1Distrib, PseudoHuberDistrib, SkewTDistrib)) {
   S7::method(distrib_deriv3_cdf, .cls) <- partial_loc_scale_deriv_cdf_k(3L)
   S7::method(distrib_deriv4_cdf, .cls) <- partial_loc_scale_deriv_cdf_k(4L)
 }
