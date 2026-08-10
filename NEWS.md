@@ -1,3 +1,16 @@
+# distributions7 0.11.0
+
+* The location-scale identity closes the new mixed generics for the
+  families it applies to. Where the response enters only through
+  `z = (y - mu)/sigma`, every derivative of the response gradient and of
+  the response curvature in the location and the scale is that family's
+  own y-derivatives times a power of sigma, so nothing new is derived:
+  `distrib_cross2_y()`, `distrib_grad_y_hess()` and
+  `distrib_hess_y_hess()` go from 2, 1 and 1 closed families to 9, 8 and
+  8. A family with a shape parameter beyond the two keeps its
+  location-scale pairs closed and differences the rest, as the
+  first-order block already does.
+
 # distributions7 0.10.0
 
 * `distrib_grad_y_hess()` and `distrib_hess_y_hess()` close the mixed
