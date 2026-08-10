@@ -8,12 +8,6 @@ the first order and never has to be differentiated again. The location
 and the scale then enter only through \\z\\, by the same chain rule the
 other location-scale families use.
 
-## Usage
-
-``` r
-sn_cdf_deriv_k(distrib, q, theta, order)
-```
-
 ## Arguments
 
 - distrib:

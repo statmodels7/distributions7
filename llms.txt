@@ -2375,7 +2375,7 @@ divergent density.
   [`distrib_hess_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ReparamContinuousDistrib.md)
   : Log-CDF Gradient of a Reparametrized Distribution
 
-- [`sn_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
+- [`distrib_grad_cdf.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewNormal1Distrib.md)
   : Skew Normal Log-CDF Derivatives
 
 - [`distrib_grad_cdf.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.SkewTDistrib.md)
@@ -3425,6 +3425,9 @@ divergent density.
 
 - [`sn_b()`](https://statmodels7.github.io/distributions7/reference/sn_b.md)
   : The Constant Behind the Centered Parametrization
+
+- [`sn_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/sn_cdf_deriv_k.md)
+  : Assemble the Skew Normal's CDF Derivatives of a Given Order
 
 - [`sn_cdf_std_derivs()`](https://statmodels7.github.io/distributions7/reference/sn_cdf_std_derivs.md)
   : The Skew Normal's Distribution Function in Standard Coordinates
