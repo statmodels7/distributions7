@@ -189,3 +189,82 @@ test_that("the location-scale closed form reproduces the written-out orders", {
     }
   }
 })
+
+
+# --- the mapped and partially location-scale families -----------------------
+
+cdfk_cases <- function() {
+  list(
+    list("gaussian2", gaussian2_distrib(), list(mu = 0.3, sigma2 = 1.4), 0.8, TRUE),
+    list("gaussian3", gaussian3_distrib(), list(mu = 0.3, tau = 0.7), 0.8, TRUE),
+    list("gumbel", gumbel_distrib(), list(mu = 0.2, sigma = 1.1), 0.9, TRUE),
+    list("lognormal1", lognormal1_distrib(), list(mu = 0.3, sigma2 = 0.7), 1.4, TRUE),
+    list("lognormal2", lognormal2_distrib(), list(mean = 1.5, var = 1.2), 1.4, TRUE),
+    list("student_t1", student_t1_distrib(),
+         list(mu = 0.2, sigma = 1.2, nu = 6), 0.7, FALSE),
+    list("pseudohuber", pseudohuber_distrib(),
+         list(mu = 0.2, sigma = 1.1, nu = 2), 0.7, FALSE),
+    list("skewnormal1", skewnormal1_distrib(),
+         list(mu = 0.2, sigma = 1.2, alpha = 1.3), 0.6, FALSE)
+  )
+}
+
+test_that("the new routes agree with the partial expectation", {
+  # the reference shares no code with the chain rule over a map, nor with the
+  # location-scale construction, nor with the stencil
+  part_exp <- function(d, q, th, I) {
+    nms <- d@params
+    f <- function(y) {
+      ell <- distributions7:::parent_ell(d, y, th, length(I), nms)
+      distrib_pdf(d, y, th) * distributions7:::bell_f_ratio(nms[I], ell)
+    }
+    stats::integrate(f, max(d@bounds[1] + 1e-10, q - 60), q,
+                     rel.tol = 1e-11, subdivisions = 800L)$value
+  }
+  for (cs in cdfk_cases()) {
+    nm <- cs[[1]]; d <- cs[[2]]; th <- cs[[3]]; q <- cs[[4]]; full <- cs[[5]]
+    for (o in 3:4) {
+      got <- if (o == 3L) distrib_deriv3_cdf(d, q, th, log = FALSE) else
+                          distrib_deriv4_cdf(d, q, th, log = FALSE)
+      ref <- vapply(deriv_indices(d@params, o),
+                    function(I) part_exp(d, q, th, I), numeric(1))
+      # a family closed throughout is held to machine precision; one whose
+      # shape components still come from a stencil is held to the stencil's
+      tol <- if (full) 1e-11 else 1e-4
+      expect_lt(max(abs(unlist(got) - ref)) / max(1, max(abs(ref))), tol,
+                label = sprintf("%s order %d", nm, o))
+    }
+  }
+})
+
+test_that("the gate refuses to carry a differenced parent", {
+  # weibull3's parent differences its own cdf above the second order, so the
+  # chain rule must not report a closed form there
+  expect_true(all(vapply(1:2, function(k)
+    distributions7:::has_exact_cdf_deriv(weibull1_distrib(), k), logical(1))))
+  expect_false(any(vapply(3:4, function(k)
+    distributions7:::has_exact_cdf_deriv(weibull1_distrib(), k), logical(1))))
+  # while the lognormal's parent is exact at every order, which is why the
+  # mapped route closes it
+  expect_true(all(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))))
+})
+
+test_that("both tails and both scales are served by the new routes", {
+  for (cs in cdfk_cases()) {
+    d <- cs[[2]]; th <- cs[[3]]; q <- cs[[4]]
+    for (o in 3:4) {
+      f <- if (o == 3L) distrib_deriv3_cdf else distrib_deriv4_cdf
+      for (lt in c(TRUE, FALSE)) {
+        for (lg in c(TRUE, FALSE)) {
+          v <- f(d, q, th, lower.tail = lt, log = lg)
+          expect_named(v, deriv_names(d@params, o))
+          expect_true(all(vapply(v, is.finite, logical(1))), info = cs[[1]])
+        }
+      }
+      lo <- f(d, q, th, lower.tail = TRUE, log = FALSE)
+      up <- f(d, q, th, lower.tail = FALSE, log = FALSE)
+      expect_equal(unlist(up), -unlist(lo), info = cs[[1]])
+    }
+  }
+})
