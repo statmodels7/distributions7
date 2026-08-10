@@ -350,6 +350,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.CauchyDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GPDDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.Gaussian1Distrib.html</loc></url>
@@ -715,6 +716,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_g_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dpow_affine.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dy_log.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dy_of_log.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/enet_distrib.html</loc></url>
@@ -995,6 +997,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/phi_hermite.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/phi_terms_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig2_sigma.html</loc></url>
@@ -1017,6 +1021,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/register_surv_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.html</loc></url>
@@ -1026,6 +1031,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparametrize.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/rng_grou.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/safe_check.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/separable_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/series_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.html</loc></url>

@@ -1,5 +1,43 @@
 # Changelog
 
+## distributions7 0.7.0
+
+### Derivatives of the distribution function
+
+- [`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
+  and
+  [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  have closed derivatives at all four orders, from one route: a
+  distribution function of the form is a Leibniz split between the
+  weight and the tail, with a Faa di Bruno on each side. A family
+  supplies, per term, the partial derivatives of the log weight and
+  those of the argument.
+
+  The inverse gaussian’s has all three of , and separable in the mean
+  and the dispersion, so their mixed partials are products of
+  one-variable ones. The elastic net’s halves are truncated Gaussians,
+  and its and are likewise separable in and ; its weight is written
+  through the Mills ratio the family already carries, , so its
+  derivatives come from the same the density uses.
+
+- The weight is never formed on its own. is at ordinary settings – 2000
+  in the exponent at , – exactly where underflows, so the two are
+  combined as and the fourth derivative comes back finite.
+
+- [`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
+  takes its Hessian through the mapped route too. Registering only the
+  gradient there was right while the parent differenced its own second
+  order and is not now that it does not.
+
+- Every one of the four cdf surfaces now leaves the same nine families
+  on the stencil, and all nine are obstructions or correct refusals: the
+  derivative of an incomplete gamma or beta in its shape is
+  hypergeometric (gamma, chi-squared, beta, generalized gamma), the von
+  Mises distribution function is itself a quadrature, and
+  [`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+  is refused by the gate while its parent’s shape components are
+  differenced.
+
 ## distributions7 0.6.0
 
 ### Derivatives of the distribution function

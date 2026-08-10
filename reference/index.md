@@ -925,8 +925,6 @@ Rarely called directly, but useful as a reference for what is happening.
   : Inverse-Gaussian Analytical Fourth-Order Derivatives
 - [`distrib_expected_hessian.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.InvGauss1Distrib.md)
   : Inverse-Gaussian Analytical Expected Hessian
-- [`distrib_grad_cdf.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss1Distrib.md)
-  : Inverse Gaussian Log-CDF Gradient
 - [`distrib_grad_y.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.InvGauss1Distrib.md)
   : Inverse-Gaussian Response Derivatives
 - [`distrib_gradient.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss1Distrib.md)
@@ -1983,6 +1981,9 @@ divergent density.
 - [`distrib_expected_hessian.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.multivariate_distrib.md)
   : Expected Information of a Multivariate Distribution
 
+- [`distrib_grad_cdf.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.EnetDistrib.md)
+  : Elastic-Net Log-CDF Derivatives
+
 - [`distrib_grad_cdf.ExponentialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.ExponentialDistrib.md)
   : Exponential Log-CDF Derivatives
 
@@ -2000,6 +2001,9 @@ divergent density.
 - [`distrib_grad_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.md)
   [`distrib_hess_cdf.GumbelDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.GumbelDistrib.md)
   : Gumbel Log-CDF Derivatives
+
+- [`distrib_grad_cdf.InvGauss1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss1Distrib.md)
+  : Inverse-Gaussian Log-CDF Derivatives
 
 - [`distrib_grad_cdf.InvGauss2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.InvGauss2Distrib.md)
   : Inverse Gaussian Log-CDF Gradient in Mean and Shape
@@ -2178,6 +2182,9 @@ divergent density.
 
 - [`.enet_rate_maps()`](https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.md)
   : The Map From the Rates to the Elastic Net's Parameters
+
+- [`dpow_affine()`](https://statmodels7.github.io/distributions7/reference/dpow_affine.md)
+  : Derivatives of a Power of an Affine Argument
 
 - [`dy_log()`](https://statmodels7.github.io/distributions7/reference/dy_log.md)
   [`dy_log1m()`](https://statmodels7.github.io/distributions7/reference/dy_log.md)
@@ -2829,6 +2836,12 @@ divergent density.
 - [`partial_loc_scale_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.md)
   : CDF Hessian When Only Some Parameters Are Location-Scale
 
+- [`phi_hermite()`](https://statmodels7.github.io/distributions7/reference/phi_hermite.md)
+  : Derivatives of the Standard Normal Distribution Function
+
+- [`phi_terms_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/phi_terms_cdf_deriv_k.md)
+  : CDF Derivatives of a Sum of Weighted Normal Tails
+
 - [`pig2_sigma()`](https://statmodels7.github.io/distributions7/reference/pig2_sigma.md)
   : The Dispersion a Poisson-Inverse Gaussian Alpha Implies
 
@@ -2876,6 +2889,9 @@ divergent density.
 - [`register_mapped_cdf_k()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
   : Register the Two New Orders on a Mapped Family
 
+- [`register_phi_terms_cdf()`](https://statmodels7.github.io/distributions7/reference/register_phi_terms_cdf.md)
+  : Register the Four CDF Derivative Orders of a Normal-Tail Family
+
 - [`register_surv_cdf()`](https://statmodels7.github.io/distributions7/reference/register_surv_cdf.md)
   : Register the Four CDF Derivative Orders of an Exponential Survival
   Family
@@ -2906,6 +2922,9 @@ divergent density.
 
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
+
+- [`separable_deriv()`](https://statmodels7.github.io/distributions7/reference/separable_deriv.md)
+  : Partial Derivatives of a Product of a Location Term and a Scale Term
 
 - [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
   : Batched Series Summation with Rejection

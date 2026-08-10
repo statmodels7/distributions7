@@ -9,7 +9,7 @@ its map once instead of twice."><meta property="og:image" content="https://statm
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,14 @@ its map once instead of twice.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">register_mapped_cdf_k</span><span class="op">(</span><span class="va">cls</span>, <span class="va">parent_fn</span>, <span class="va">th_fn</span>, <span class="va">md_fn</span>, q_fn <span class="op">=</span> <span class="va">identity</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">register_mapped_cdf_k</span><span class="op">(</span></span>
+<span>  <span class="va">cls</span>,</span>
+<span>  <span class="va">parent_fn</span>,</span>
+<span>  <span class="va">th_fn</span>,</span>
+<span>  <span class="va">md_fn</span>,</span>
+<span>  q_fn <span class="op">=</span> <span class="va">identity</span>,</span>
+<span>  orders <span class="op">=</span> <span class="fl">3</span><span class="op">:</span><span class="fl">4</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,6 +81,11 @@ its map once instead of twice.</p>
 <dt id="arg-q-fn">q_fn<a class="anchor" aria-label="anchor" href="#arg-q-fn"></a></dt>
 <dd><p>The transformation of the response, when the parent is the same
 law on a transformed scale. The identity by default.</p></dd>
+
+
+<dt id="arg-orders">orders<a class="anchor" aria-label="anchor" href="#arg-orders"></a></dt>
+<dd><p>The orders to register, 3 and 4 by default. A family whose
+written-out route stops below the fourth order takes the rest here.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,19 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.7.0" id="distributions7-070">distributions7 0.7.0<a class="anchor" aria-label="anchor" href="#distributions7-070"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-of-the-distribution-function-0-7-0">Derivatives of the distribution function<a class="anchor" aria-label="anchor" href="#derivatives-of-the-distribution-function-0-7-0"></a></h3>
+<ul><li>
+<p><code><a href="../reference/invgauss1_distrib.html">invgauss1_distrib()</a></code> and <code><a href="../reference/enet_distrib.html">enet_distrib()</a></code> have closed derivatives at all four orders, from one route: a distribution function of the form  is a Leibniz split between the weight and the tail, with a Faa di Bruno on each side. A family supplies, per term, the partial derivatives of the log weight and those of the argument.</p>
+<p>The inverse gaussian’s  has all three of ,  and  separable in the mean and the dispersion, so their mixed partials are products of one-variable ones. The elastic net’s halves are truncated Gaussians, and its  and  are likewise separable in  and ; its weight is written through the Mills ratio the family already carries, , so its derivatives come from the same  the density uses.</p>
+</li>
+<li><p>The weight is never formed on its own.  is  at ordinary settings – 2000 in the exponent at ,  – exactly where  underflows, so the two are combined as  and the fourth derivative comes back finite.</p></li>
+<li><p><code><a href="../reference/invgauss2_distrib.html">invgauss2_distrib()</a></code> takes its Hessian through the mapped route too. Registering only the gradient there was right while the parent differenced its own second order and is not now that it does not.</p></li>
+<li><p>Every one of the four cdf surfaces now leaves the same nine families on the stencil, and all nine are obstructions or correct refusals: the derivative of an incomplete gamma or beta in its shape is hypergeometric (gamma, chi-squared, beta, generalized gamma), the von Mises distribution function is itself a quadrature, and <code><a href="../reference/skewnormal2_distrib.html">skewnormal2_distrib()</a></code> is refused by the gate while its parent’s shape components are differenced.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="distributions7-060">distributions7 0.6.0<a class="anchor" aria-label="anchor" href="#distributions7-060"></a></h2>
 <div class="section level3">

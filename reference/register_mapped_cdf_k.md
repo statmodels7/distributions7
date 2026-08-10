@@ -6,7 +6,14 @@ states its map once instead of twice.
 ## Usage
 
 ``` r
-register_mapped_cdf_k(cls, parent_fn, th_fn, md_fn, q_fn = identity)
+register_mapped_cdf_k(
+  cls,
+  parent_fn,
+  th_fn,
+  md_fn,
+  q_fn = identity,
+  orders = 3:4
+)
 ```
 
 ## Arguments
@@ -31,6 +38,11 @@ register_mapped_cdf_k(cls, parent_fn, th_fn, md_fn, q_fn = identity)
 
   The transformation of the response, when the parent is the same law on
   a transformed scale. The identity by default.
+
+- orders:
+
+  The orders to register, 3 and 4 by default. A family whose written-out
+  route stops below the fourth order takes the rest here.
 
 ## Value
 
