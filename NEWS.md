@@ -1,3 +1,34 @@
+# distributions7 0.2.0
+
+## Derivatives
+
+* Every one of the 46 families is now analytic to fourth order in the
+  parameters. The three that were still on the numerical fallback --
+  `dirichlet_distrib()`, `multinomial_distrib()` and
+  `mvstudent_t_distrib()` -- have closed third and fourth derivatives.
+  The two simplex-valued log-densities are a sum of terms each depending
+  on one coordinate, so the chain rule is one univariate partition sum
+  per coordinate; the Student t splits into the mean-and-matrix part,
+  which reuses the gaussian's expansion of the derivative of an inverse,
+  and a part in the degrees of freedom, which is elementary. In each
+  case the same assembly run at orders one and two reproduces the
+  hand-written score and information, to 9e-16 and 4e-15.
+
+* The mixed derivative `distrib_cross_y()` of `skewnormal1_distrib()`
+  and `pseudohuber_distrib()` is closed in the shape parameter as well
+  as in the location and the scale. The response reaches the skew
+  normal's shape only through `alpha * z` and the pseudo-Huber's only
+  through `D`. The skew normal assembles all three components from a
+  single evaluation of the inverse Mills ratio rather than through
+  `distrib_grad_y()` and `distrib_hess_y()`, which evaluate it twice
+  more: 77.5 ms to 19.4 at n = 1e5.
+
+## Internals
+
+* `mvg_ptensors()` takes the pieces rather than the distribution, so the
+  Student t reuses one copy of the expansion, and its accessor answers
+  for the empty multiset.
+
 # distributions7 0.1.0
 
 ## Plots

@@ -685,14 +685,20 @@ S7::method(generate_random_theta, MvGaussianDistrib) <- function(distrib, ...) {
 #' parameter's own derivatives; for a covariance they follow from repeated
 #' differentiation of the inverse, so no expanded formula is transcribed and
 #' no term can be dropped.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
-#' @param theta A named list of parameters.
+#' It takes the pieces rather than the distribution, because the multivariate
+#' Student t needs the same tensors of its scale matrix and there must be one
+#' copy of the expansion: its first draft double counted the mixed terms, which
+#' only a comparison against a stencil caught.
+#' @param pc The pieces, as returned by \code{\link{mvg_pieces}} or
+#'   \code{mvt_pieces()}: a list carrying \code{s}, \code{eta} and
+#'   \code{sigma_inv}.
 #' @param order The highest order wanted.
+#' @param inverted Whether the free values parametrize the precision, in which
+#'   case the tensors are the parameter's own.
 #' @return A list with the accessor \code{get}, the log-determinant sign and
 #'   the pieces.
 #' @keywords internal
-mvg_ptensors <- function(distrib, theta, order) {
-  pc <- mvg_pieces(distrib, theta)
+mvg_ptensors <- function(pc, order, inverted = FALSE) {
   s <- pc$s
   eta <- pc$eta
   a <- list(parameters7::param_d1(s, eta))
@@ -714,13 +720,17 @@ mvg_ptensors <- function(distrib, theta, order) {
   }
   aget <- function(t) amap[[paste0(length(t), ":", key(t))]]
 
-  if (distrib@inverted) {
+  if (inverted) {
     return(list(get = aget, sign_ld = 0.5, pc = pc))
   }
 
   P <- pc$sigma_inv
   pmap <- new.env(parent = emptyenv())
   pget <- function(t) {
+    # the empty multiset is the matrix itself; the gaussian never asks for it,
+    # but the Student t does, a partition block of pure mean indices carrying
+    # no matrix index at all
+    if (!length(t)) return(P)
     k <- key(t)
     got <- pmap[[k]]
     if (!is.null(got)) return(got)
@@ -807,7 +817,8 @@ mvg_higher <- function(distrib, y, theta, order) {
   y <- as_mv_matrix(distrib, y)
   n <- nrow(y)
   p <- distrib@n_dim
-  pt <- mvg_ptensors(distrib, theta, order)
+  pt <- mvg_ptensors(mvg_pieces(distrib, theta), order,
+                     inverted = distrib@inverted)
   pc <- pt$pc
   s <- pc$s
   r <- sweep(y, 2L, pc$mu, "-")

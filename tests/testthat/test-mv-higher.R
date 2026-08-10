@@ -15,7 +15,18 @@ mvh_cases <- function() {
          th = list(mean_alr1 = 0.2, mean_alr2 = -0.3, mean_alr3 = 0.5,
                    phi = 9)),
     list(name = "multinomial", d = multinomial_distrib(3, size = 7),
-         th = list(probs_alr1 = 0.2, probs_alr2 = -0.5))
+         th = list(probs_alr1 = 0.2, probs_alr2 = -0.5)),
+    list(name = "mvstudent_t", d = mvstudent_t_distrib(2),
+         th = list(mu1 = 0.2, mu2 = -0.3, sigma_log_L1 = 0.1,
+                   sigma_log_L2 = -0.2, sigma_L2.1 = 0.3, nu = 7))
+  )
+}
+
+mvh_assembly <- function(name) {
+  switch(name,
+    multinomial = distributions7:::multinomial_higher,
+    mvstudent_t = distributions7:::mvt_higher,
+    distributions7:::dirichlet_higher
   )
 }
 
@@ -32,8 +43,7 @@ test_that("the same assembly reproduces the hand-written score and information",
   for (cs in mvh_cases()) {
     set.seed(7)
     y <- distrib_rng(cs$d, 40, cs$th)
-    asm <- if (cs$name == "multinomial")
-      distributions7:::multinomial_higher else distributions7:::dirichlet_higher
+    asm <- mvh_assembly(cs$name)
     g <- distrib_gradient(cs$d, y, cs$th)
     expect_equal(asm(cs$d, y, cs$th, 1L), g, tolerance = 1e-12,
                  info = cs$name)

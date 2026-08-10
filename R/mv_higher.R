@@ -1,6 +1,7 @@
 #' @include partition_sums.R
 #' @include dirichlet_distrib.R
 #' @include multinomial_distrib.R
+#' @include mvstudent_t_distrib.R
 NULL
 
 # Third and fourth derivatives of the two simplex-valued families.
@@ -312,4 +313,179 @@ multinomial_higher <- function(distrib, y, theta, order) {
   idx <- deriv_indices(distrib@params, order)
   out <- lapply(idx, function(t) as.numeric(y %*% chain_univariate(t, fd, ud)))
   stats::setNames(out, deriv_names(distrib@params, order))
+}
+
+
+# --- the multivariate Student t ---------------------------------------------
+#
+# The log-density is
+#   c(nu) - (1/2) log|Sigma| - ((nu+p)/2) log(1 + q/nu),   q = r' Sigma^-1 r,
+# and every term is elementary in nu: unlike the univariate skew t, whose nu
+# derivatives carry the derivative of a Student t distribution function in its
+# degrees of freedom, nothing here is a distribution function. So all four
+# orders close.
+
+#' Derivatives of the Quadratic Form of a Multivariate Student t
+#'
+#' @description
+#' Evaluates \eqn{\partial^{B} q} for a multiset \eqn{B} of mean and matrix
+#' indices, with \eqn{q = r'\Sigma^{-1}r}. The form is quadratic in the mean,
+#' so a block naming three or more mean coordinates is zero.
+#'
+#' @param b An integer vector of composite indices, mean coordinates first.
+#' @param r The \eqn{n \times p} matrix of residuals.
+#' @param pget The accessor for \eqn{\partial^{t}\Sigma^{-1}}, as returned by
+#'   \code{\link{mvg_ptensors}}.
+#' @param p The dimension.
+#'
+#' @return A numeric vector of length \code{nrow(r)}, or a scalar recycled by
+#'   the caller.
+#'
+#' @keywords internal
+mvt_q_deriv <- function(b, r, pget, p) {
+  is_mu <- b <= p
+  n_mu <- sum(is_mu)
+  n <- nrow(r)
+  if (n_mu >= 3L) return(rep(0, n))
+  et <- b[!is_mu] - p
+  P <- pget(et)
+  if (n_mu == 0L) return(rowSums((r %*% P) * r))
+  if (n_mu == 1L) return(-2 * (r %*% P)[, b[is_mu]])
+  ij <- b[is_mu]
+  rep(2 * P[ij[1L], ij[2L]], n)
+}
+
+#' Assemble a Multivariate Student t's Higher Derivatives
+#'
+#' @description
+#' Splits a component into its mean-and-matrix part and its \eqn{\nu} part.
+#' The log-determinant and the \eqn{\nu} constant each contribute to one kind
+#' of component only; the remaining term is a univariate chain rule in \eqn{q}
+#' whose outer derivatives, \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^{m}}, are then
+#' differentiated in \eqn{\nu} by the Leibniz rule against the prefactor
+#' \eqn{(\nu+p)/2}, which is linear.
+#'
+#' @param distrib A \code{MvStudentTDistrib} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param order The derivative order, 1 to 4.
+#'
+#' @return A named list of numeric vectors, one per component.
+#'
+#' @keywords internal
+mvt_higher <- function(distrib, y, theta, order) {
+  y <- as_mv_matrix(distrib, y)
+  n <- nrow(y)
+  p <- distrib@n_dim
+  pc <- mvt_pieces(distrib, theta)
+  nu <- pc$nu
+  s <- pc$s
+  nfree <- s@n_free
+  inu <- p + nfree + 1L
+  r <- sweep(y, 2L, pc$mu, "-")
+  q <- rowSums((r %*% pc$sigma_inv) * r)
+
+  pt <- mvg_ptensors(pc, order)
+  ldfun <- switch(order,
+    parameters7::param_dlogdet, parameters7::param_d2logdet,
+    parameters7::param_d3logdet, parameters7::param_d4logdet
+  )
+  ld <- ldfun(s, pc$eta)
+  ldkey <- vapply(parameters7::param_tuple_indices(s, order),
+                  function(t) paste(sort(t), collapse = ","), character(1))
+
+  # d^a/dnu^a of c(nu) = lgamma((nu+p)/2) - lgamma(nu/2) - (p/2) log(nu pi)
+  cnu <- function(a) {
+    0.5^a * (psigamma((nu + p) / 2, a - 1L) - psigamma(nu / 2, a - 1L)) -
+      (p / 2) * (-1)^(a - 1L) * factorial(a - 1L) / nu^a
+  }
+  # d^a/dnu^a of (nu + q)^-m
+  wa <- function(m, a) {
+    if (a < 0L) return(rep(0, n))
+    (-1)^a * (factorial(m + a - 1L) / factorial(m - 1L)) / (nu + q)^(m + a)
+  }
+
+  idx <- deriv_indices(distrib@params, order)
+  out <- lapply(idx, function(t) {
+    a <- sum(t == inu)
+    rest <- t[t != inu]
+    acc <- rep(0, n)
+
+    # the constant in nu, present only when every index names nu
+    if (a == order) acc <- acc + cnu(a)
+
+    # the log-determinant, present only when every index names the matrix
+    if (a == 0L && length(rest) == order && all(rest > p)) {
+      acc <- acc - 0.5 * ld[[match(paste(sort(rest - p), collapse = ","), ldkey)]]
+    }
+
+    # -((nu+p)/2) log(1 + q/nu), differentiated in the rest and then in nu
+    if (!length(rest)) {
+      # v(nu) = log(nu + q) - log(nu)
+      v <- if (a == 0L) base::log1p(q / nu) else
+        (-1)^(a - 1L) * factorial(a - 1L) * ((nu + q)^-a - nu^-a)
+      vprev <- if (a == 0L) rep(0, n) else if (a == 1L) base::log1p(q / nu) else
+        (-1)^(a - 2L) * factorial(a - 2L) * ((nu + q)^-(a - 1L) - nu^-(a - 1L))
+      acc <- acc - ((nu + p) / 2 * v + a / 2 * vprev)
+    } else {
+      for (part in index_partitions(rest)) {
+        m <- length(part)
+        term <- rep(1, n)
+        for (b in part) term <- term * mvt_q_deriv(b, r, pt$get, p)
+        coef <- (-1)^(m - 1L) * factorial(m - 1L) *
+          ((nu + p) / 2 * wa(m, a) + a / 2 * wa(m, a - 1L))
+        acc <- acc - coef * term
+      }
+    }
+    acc
+  })
+  stats::setNames(out, deriv_names(distrib@params, order))
+}
+
+
+#' @title Multivariate Student t Third and Fourth Derivatives
+#' @name distrib_deriv3.MvStudentTDistrib
+#' @description
+#' Closed form. Every term of the log-density is elementary in \eqn{\nu}, so
+#' the obstruction the univariate skew t meets -- the derivative of a Student t
+#' distribution function in its degrees of freedom -- does not arise here, and
+#' all four orders close.
+#' @param distrib A \code{MvStudentTDistrib} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param expected Logical; the expectation is approximated by sampling.
+#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param approx Strategy label; sampling is the only multivariate route.
+#' @param nsim Monte Carlo sample size.
+#' @param ... Unused.
+#' @return A named list of third-derivative component vectors.
+#' @seealso \code{\link{mvstudent_t_distrib}}
+S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
+                                                           expected = FALSE,
+                                                           scale = c("parameter", "link"),
+                                                           approx = c("integrate", "bartlett", "mc", "opg"),
+                                                           nsim = 10000, ...) {
+  if (expected) {
+    big <- distrib_rng(distrib, nsim, theta)
+    ob <- mvt_higher(distrib, big, theta, 3L)
+    n <- n_obs(distrib, y)
+    return(lapply(ob, function(v) rep(mean(v), n)))
+  }
+  mvt_higher(distrib, y, theta, 3L)
+}
+
+#' @rdname distrib_deriv3.MvStudentTDistrib
+#' @name distrib_deriv4.MvStudentTDistrib
+S7::method(distrib_deriv4, MvStudentTDistrib) <- function(distrib, y, theta,
+                                                           expected = FALSE,
+                                                           scale = c("parameter", "link"),
+                                                           approx = c("integrate", "bartlett", "mc", "opg"),
+                                                           nsim = 10000, ...) {
+  if (expected) {
+    big <- distrib_rng(distrib, nsim, theta)
+    ob <- mvt_higher(distrib, big, theta, 4L)
+    n <- n_obs(distrib, y)
+    return(lapply(ob, function(v) rep(mean(v), n)))
+  }
+  mvt_higher(distrib, y, theta, 4L)
 }

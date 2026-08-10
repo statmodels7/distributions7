@@ -4,14 +4,17 @@
 \alias{mvg_ptensors}
 \title{Precision Derivative Tensors of a Multivariate Gaussian}
 \usage{
-mvg_ptensors(distrib, theta, order)
+mvg_ptensors(pc, order, inverted = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
-
-\item{theta}{A named list of parameters.}
+\item{pc}{The pieces, as returned by \code{\link{mvg_pieces}} or
+\code{mvt_pieces()}: a list carrying \code{s}, \code{eta} and
+\code{sigma_inv}.}
 
 \item{order}{The highest order wanted.}
+
+\item{inverted}{Whether the free values parametrize the precision, in which
+case the tensors are the parameter's own.}
 }
 \value{
 A list with the accessor \code{get}, the log-determinant sign and
@@ -23,5 +26,9 @@ to 4, keyed by index tuple. For a precision parametrization they are the
 parameter's own derivatives; for a covariance they follow from repeated
 differentiation of the inverse, so no expanded formula is transcribed and
 no term can be dropped.
+It takes the pieces rather than the distribution, because the multivariate
+Student t needs the same tensors of its scale matrix and there must be one
+copy of the expansion: its first draft double counted the mixed terms, which
+only a comparison against a stencil caught.
 }
 \keyword{internal}
