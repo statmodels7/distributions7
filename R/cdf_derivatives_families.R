@@ -400,51 +400,6 @@ S7::method(distrib_hess_cdf, SkewTDistrib) <- partial_loc_scale_hess_cdf
 
 # --- positive families with an elementary distribution function -------------
 
-#' @title Generalized Pareto Log-CDF Gradient
-#' @name distrib_grad_cdf.GPDDistrib
-#' @description
-#' Closed form. With \eqn{t = 1 + \xi q/\sigma} and \eqn{S = t^{-1/\xi}},
-#' \eqn{\partial F/\partial\sigma = -S q/(\sigma^2 t)} and
-#' \eqn{\partial F/\partial\xi = -S(\log t/\xi^2 - q/(\xi\sigma t))}.
-#' @details
-#' The shape direction is a difference of two quantities of size
-#' \eqn{z/\xi} that cancel as \eqn{\xi \to 0}, so below \eqn{10^{-4}} it is
-#' taken from the series \eqn{z^2/2 - 2\xi z^3/3 + 3\xi^2 z^4/4} that the
-#' cancellation leaves, matching the branch the distribution function itself
-#' takes there.
-#' @param distrib A \code{GPDDistrib} object.
-#' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{sigma} and \code{xi}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list, one vector per parameter.
-#' @seealso \code{\link{gpd_distrib}}
-#' @keywords internal
-S7::method(distrib_grad_cdf, GPDDistrib) <-
-  function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
-    n <- max(length(q), lengths(theta[1:2]))
-    q <- rep_len(q, n)
-    sg <- rep_len(theta[[1]], n)
-    xi <- rep_len(theta[[2]], n)
-    z <- q / sg
-    t <- 1 + xi * z
-    inside <- q > 0 & t > 0
-    S <- 1 - distrib_cdf(distrib, q, theta)
-
-    g_s <- z / (sg * t)
-    small <- abs(xi) < 1e-4
-    g_x <- numeric(n)
-    g_x[!small] <- base::log(t[!small]) / xi[!small]^2 -
-      z[!small] / (xi[!small] * t[!small])
-    zs <- z[small]
-    xs <- xi[small]
-    g_x[small] <- zs^2 / 2 - 2 * xs * zs^3 / 3 + 3 * xs^2 * zs^4 / 4
-
-    d1 <- list(sigma = -S * g_s * inside, xi = -S * g_x * inside)
-    cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL,
-                   lower.tail, log)
-  }
-
 #' @title Lognormal Log-CDF Hessian
 #' @name distrib_hess_cdf.Lognormal1Distrib
 #' @description

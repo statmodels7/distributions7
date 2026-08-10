@@ -386,3 +386,119 @@ test_that("the partial-expectation reference is invalid at a kink", {
   names(rs) <- deriv_names(c("mu", "sigma"), 2L)
   expect_lt(max(abs(gl[names(rs)] - rs)), 1e-5)
 })
+
+
+# --- the generalized Pareto -------------------------------------------------
+
+test_that("the generalized Pareto agrees with a stencil away from zero", {
+  # the stencil is not usable near xi = 0: the step is 1e-3 to 3e-3, so at a
+  # shape of 1e-6 the reference differentiates over a range a thousand times
+  # the value itself. The exponential limit below is the check there.
+  d <- gpd_distrib()
+  hs <- c(1e-5, 1e-4, 1e-3, 3e-3)
+  tols <- c(1e-8, 1e-6, 1e-4, 1e-3)
+  q <- 1.3
+  for (xi in c(-0.45, -0.3, -0.1, 0.1, 0.3, 0.5, 0.54, 1, 2)) {
+    th <- list(sigma = 1.4, xi = xi)
+    for (o in 1:4) {
+      got <- switch(o,
+        distrib_grad_cdf(d, q, th, log = FALSE),
+        distrib_hess_cdf(d, q, th, log = FALSE),
+        distrib_deriv3_cdf(d, q, th, log = FALSE),
+        distrib_deriv4_cdf(d, q, th, log = FALSE))
+      ref <- vapply(deriv_indices(d@params, o),
+                    function(I) fd_on_cdf(d, q, th, I, hs[o]), numeric(1))
+      names(ref) <- deriv_names(d@params, o)
+      expect_lt(max(abs(unlist(got)[names(ref)] - ref)) / max(1, max(abs(ref))),
+                tols[o], label = sprintf("xi = %g order %d", xi, o))
+    }
+  }
+})
+
+test_that("the exponential limit of the generalized Pareto is exact", {
+  # at xi = 0 the scale components must be the exponential family's, and that
+  # family reaches them through L = -q/mu, which shares no arithmetic with the
+  # series for log1p(u)/u. This is the reference near zero, where a stencil in
+  # the shape is not one.
+  d <- gpd_distrib()
+  e <- exponential_distrib()
+  qq <- c(0.2, 1.3, 5, 40)
+  sig <- 1.4
+  for (o in 1:4) {
+    a <- switch(o,
+      distrib_grad_cdf(d, qq, list(sigma = sig, xi = 0), log = FALSE),
+      distrib_hess_cdf(d, qq, list(sigma = sig, xi = 0), log = FALSE),
+      distrib_deriv3_cdf(d, qq, list(sigma = sig, xi = 0), log = FALSE),
+      distrib_deriv4_cdf(d, qq, list(sigma = sig, xi = 0), log = FALSE))
+    b <- switch(o,
+      distrib_grad_cdf(e, qq, list(mu = sig), log = FALSE),
+      distrib_hess_cdf(e, qq, list(mu = sig), log = FALSE),
+      distrib_deriv3_cdf(e, qq, list(mu = sig), log = FALSE),
+      distrib_deriv4_cdf(e, qq, list(mu = sig), log = FALSE))
+    expect_equal(a[[paste(rep("sigma", o), collapse = "_")]],
+                 b[[paste(rep("mu", o), collapse = "_")]],
+                 tolerance = 1e-12, info = sprintf("order %d", o))
+  }
+})
+
+test_that("the generalized Pareto is continuous through a zero shape", {
+  # the shape enters only through Lambda(u) = log1p(u)/u, which is analytic at
+  # the origin, so every component moves linearly in xi rather than blowing up
+  d <- gpd_distrib()
+  qq <- c(0.2, 1.3, 5)
+  base <- distrib_deriv4_cdf(d, qq, list(sigma = 1.4, xi = 0), log = FALSE)
+  prev <- Inf
+  for (xi in c(1e-7, 1e-9)) {
+    v <- distrib_deriv4_cdf(d, qq, list(sigma = 1.4, xi = xi), log = FALSE)
+    g <- max(vapply(names(base), function(k)
+      max(abs(v[[k]] - base[[k]]) / pmax(1, abs(base[[k]]))), numeric(1)))
+    expect_lt(g, 1e-5)
+    # and it shrinks with the shape, which a cancelling form would not do
+    expect_lt(g, prev)
+    prev <- g
+  }
+  expect_true(all(is.finite(unlist(
+    distrib_deriv4_cdf(d, qq, list(sigma = 1.4, xi = -1e-12), log = FALSE)))))
+})
+
+test_that("the series and the recursion agree at the switch", {
+  # the branch changes at |u| = 0.5; a seam would show as a step here
+  d <- gpd_distrib()
+  th <- list(sigma = 1.4, xi = 1)
+  # an EVEN grid: second differences of an uneven one measure the spacing
+  qs <- seq(0.697, 0.703, by = 0.0015)
+  v <- vapply(qs, function(q)
+    distrib_deriv4_cdf(d, q, th, log = FALSE)[["xi_xi_xi_xi"]], numeric(1))
+  # on an even grid the second differences of a smooth function are small next
+  # to the first ones; a step at the seam would make them comparable
+  d1 <- diff(v)
+  d2 <- diff(d1)
+  expect_lt(max(abs(d2)) / max(abs(d1)), 0.01)
+})
+
+test_that("a negative shape bounds the support above", {
+  d <- gpd_distrib()
+  th <- list(sigma = 1.4, xi = -0.5)
+  # the upper endpoint is sigma/|xi| = 2.8
+  v <- distrib_deriv3_cdf(d, c(1, 2.7, 2.9, 10), th, log = FALSE)
+  expect_true(all(vapply(v, function(x) all(is.finite(x)), logical(1))))
+  expect_true(all(vapply(v, function(x) all(x[3:4] == 0), logical(1))))
+  expect_true(any(vapply(v, function(x) abs(x[1]) > 1e-8, logical(1))))
+})
+
+test_that("the generalized Pareto upper tail stays finite far out", {
+  d <- gpd_distrib()
+  th <- list(sigma = 1, xi = 0.1)
+  for (q in c(50, 1e6, 1e12)) {
+    v <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+    expect_true(all(is.finite(unlist(v))))
+  }
+  # d log S / d sigma tends to 1/xi, but only once xi q / sigma is large: at
+  # q = 50 it is 8.33 against 10, which is the function and not an error
+  for (q in c(1e6, 1e12)) {
+    v <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+    expect_lt(abs(v[["sigma"]] - 1 / th$xi), 1e-3)
+  }
+  expect_true(all(is.finite(unlist(
+    distrib_deriv4_cdf(d, 1e12, th, lower.tail = FALSE, log = TRUE)))))
+})

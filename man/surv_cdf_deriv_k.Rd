@@ -4,7 +4,7 @@
 \alias{surv_cdf_deriv_k}
 \title{CDF Derivatives From an Exponential Survival Function}
 \usage{
-surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv)
+surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}

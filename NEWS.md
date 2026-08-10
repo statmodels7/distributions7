@@ -1,3 +1,35 @@
+# distributions7 0.6.0
+
+## Derivatives of the distribution function
+
+* `gpd_distrib()` has closed derivatives at all four orders, its
+  Hessian included, from the exponential-survival route. The form is
+  what makes it work: writing \eqn{u = \xi q/\sigma} and
+  \eqn{\Lambda(u) = \log(1+u)/u}, the exponent is
+  \eqn{L = -(q/\sigma)\Lambda(u)} and carries no division by the shape,
+  so the exponential limit \eqn{\xi \to 0} is an ordinary point of the
+  formula rather than a branch of the code.
+
+* `Lambda` and its four derivatives come from the recursion
+  \eqn{u\Lambda^{(r)} + r\Lambda^{(r-1)} = (-1)^{r-1}(r-1)!/(1+u)^{r}}
+  above \eqn{\lvert u\rvert = 1/2} and from the Taylor series below it.
+  The crossover is measured, not chosen: the recursion divides by
+  \eqn{u} and subtracts nearly equal quantities, and its fourth
+  derivative is wrong by a factor of \eqn{10^{39}} at
+  \eqn{u = 10^{-14}}, by 1.7 at \eqn{10^{-4}} and by \eqn{3\times10^{-8}}
+  at \eqn{10^{-2}}, while the two agree to \eqn{10^{-16}} at the switch.
+
+* At \eqn{\xi = 0} the scale components equal the exponential family's
+  exactly, at every order. That family reaches them through
+  \eqn{L = -q/\mu} and shares no arithmetic with the series, so it is
+  the reference near zero, where a stencil in the shape is not one: at
+  \eqn{\xi = 10^{-6}} the step is a thousand times the value.
+
+* A negative shape bounds the support above, at \eqn{\sigma/\lvert\xi\rvert},
+  and the derivatives are zero past it. The support is declared by the
+  family rather than read off the bounds, the endpoint depending on a
+  parameter.
+
 # distributions7 0.5.0
 
 ## Derivatives of the distribution function
