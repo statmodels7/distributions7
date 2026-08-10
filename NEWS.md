@@ -1,3 +1,31 @@
+# distributions7 0.3.0
+
+## Derivatives
+
+* The third and fourth response derivatives are closed for every
+  continuous family. Eighteen were taking a finite-difference stencil,
+  all of them families whose response is not a pure location; each
+  already carried a closed second response derivative, and the third is
+  the same elementary function differentiated once more. The log-density
+  of each is a sum of terms in `log(y)`, `log(1 - y)`, a power of `y`,
+  a logarithm of an affine function of `y`, or a cosine, so the terms
+  are written once and each family is a sum of them.
+
+* `reparametrize()` carries the third and fourth response derivatives to
+  the parent, as it already carried the first and second: the map acts on
+  the parameters and the derivative is taken in the response, so the two
+  do not interact.
+
+* The generalized Pareto's coefficient is written as `xi^k + xi^(k-1)`
+  rather than `(1 + 1/xi) * xi^k`. It is the same number and stays finite
+  as the shape goes to zero, where the family is exponential and every
+  order above the first is exactly zero.
+
+  Measured against one differentiation of the analytic second response
+  derivative, the third order agrees to 1e-11 and the fourth to 4e-5,
+  which is each reference's own accuracy. A test walks the namespace and
+  fails if a continuous family is left on the stencil.
+
 # distributions7 0.2.0
 
 ## Derivatives

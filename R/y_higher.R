@@ -5,6 +5,12 @@
 #' @include student_t1_distrib.R
 #' @include skewnormal1_distrib.R skewnormal2_distrib.R skewt_distrib.R
 #' @include gumbel_distrib.R
+#' @include gamma1_distrib.R gamma2_distrib.R chisq_distrib.R
+#' @include exponential_distrib.R beta1_distrib.R beta2_distrib.R
+#' @include weibull1_distrib.R gengamma1_distrib.R
+#' @include invgauss1_distrib.R invgauss2_distrib.R lognormal1_distrib.R
+#' @include gpd_distrib.R vonmises1_distrib.R vonmises2_distrib.R
+#' @include reparametrize.R
 NULL
 
 # ===========================================================================
@@ -176,3 +182,186 @@ for (.cls in list(Gaussian1Distrib, Gaussian2Distrib, Gaussian3Distrib,
   S7::method(distrib_deriv4_y, .cls) <- loc_deriv_y_k(4L)
 }
 rm(.cls)
+
+
+# --- the families whose response is not a pure location ---------------------
+#
+# Every one of them already carries a closed first and second response
+# derivative, and the third is the same elementary function differentiated once
+# more: the log-density is a sum of terms in log(y), log(1-y), a power of y, a
+# logarithm of an affine function of y, or a cosine. The terms are written once
+# below and each family is a sum of them, which is shorter than four formulas
+# per family and leaves one place for each rule to be wrong in.
+
+#' The k-th Response Derivative of an Elementary Term
+#'
+#' @description
+#' \code{dy_log} differentiates \eqn{c\log y}, \code{dy_log1m} differentiates
+#' \eqn{c\log(1-y)}, \code{dy_pow} differentiates \eqn{c\,y^{p}},
+#' \code{dy_logaff} differentiates \eqn{c\log(a + by)} and \code{dy_cos}
+#' differentiates \eqn{c\cos(y-m)}.
+#'
+#' @details
+#' A term linear in \eqn{y} is \code{dy_pow} at \eqn{p = 1} and vanishes from
+#' the second order, so it needs no case of its own.
+#'
+#' @param c The coefficient.
+#' @param y The response.
+#' @param k The derivative order.
+#' @param p The exponent, for \code{dy_pow}.
+#' @param a,b The affine coefficients, for \code{dy_logaff}.
+#' @param m The location, for \code{dy_cos}.
+#'
+#' @return A numeric vector the length of \code{y}.
+#'
+#' @keywords internal
+dy_log <- function(c, y, k) c * (-1)^(k - 1L) * factorial(k - 1L) / y^k
+
+#' @rdname dy_log
+#' @keywords internal
+dy_log1m <- function(c, y, k) -c * factorial(k - 1L) / (1 - y)^k
+
+#' @rdname dy_log
+#' @keywords internal
+dy_pow <- function(c, p, y, k) c * prod(p - seq_len(k) + 1) * y^(p - k)
+
+#' @rdname dy_log
+#' @keywords internal
+dy_logaff <- function(c, a, b, y, k) {
+  c * (-1)^(k - 1L) * factorial(k - 1L) * b^k / (a + b * y)^k
+}
+
+#' @rdname dy_log
+#' @keywords internal
+dy_cos <- function(c, m, y, k) c * cos(y - m + k * pi / 2)
+
+#' The k-th Response Derivative of a Function of the Log Response
+#'
+#' @description
+#' Evaluates \eqn{\partial^{k} g(\log y)/\partial y^{k}} from the derivatives
+#' of \eqn{g}, by
+#' \eqn{y^{-k}\sum_{j} s(k, j)\, g^{(j)}(\log y)} with \eqn{s(k, j)} the signed
+#' Stirling numbers of the first kind.
+#'
+#' @param gd A list whose \eqn{j}-th element is \eqn{g^{(j)}(\log y)}.
+#' @param y The response.
+#' @param k The derivative order, 1 to 4.
+#'
+#' @return A numeric vector the length of \code{y}.
+#'
+#' @keywords internal
+dy_of_log <- function(gd, y, k) {
+  s <- list(c(1), c(-1, 1), c(2, -3, 1), c(-6, 11, -6, 1))[[k]]
+  acc <- 0
+  for (j in seq_len(k)) acc <- acc + s[j] * gd[[j]]
+  acc / y^k
+}
+
+#' Register the Third and Fourth Response Derivatives of a Family
+#'
+#' @description
+#' Turns a function of \code{(distrib, y, theta, k)} into the two methods, so
+#' that a family writes its rule once instead of twice.
+#'
+#' @param cls The S7 class.
+#' @param f The rule.
+#'
+#' @return Invisibly \code{NULL}; called for the registration.
+#'
+#' @keywords internal
+register_dy_k <- function(cls, f) {
+  S7::method(distrib_deriv3_y, cls) <- function(distrib, y, theta, ...) {
+    rep_len(f(distrib, y, theta, 3L), length(y))
+  }
+  S7::method(distrib_deriv4_y, cls) <- function(distrib, y, theta, ...) {
+    rep_len(f(distrib, y, theta, 4L), length(y))
+  }
+  invisible(NULL)
+}
+
+# gamma and its special cases: (a - 1) log y - rate * y, so only the
+# logarithm survives past the first order
+register_dy_k(Gamma1Distrib, function(distrib, y, theta, k) {
+  dy_log(gamma1_shape_rate(theta)$shape - 1, y, k)
+})
+register_dy_k(Gamma2Distrib, function(distrib, y, theta, k) {
+  dy_log(theta[[1]]^2 / theta[[2]] - 1, y, k)
+})
+register_dy_k(ChisqDistrib, function(distrib, y, theta, k) {
+  dy_log(theta[[1]] / 2 - 1, y, k)
+})
+# the exponential has unit shape, so the log-density is linear in the response
+# and everything above the first order is exactly zero
+register_dy_k(ExponentialDistrib, function(distrib, y, theta, k) {
+  0 * y
+})
+
+# beta: (alpha - 1) log y + (beta - 1) log(1 - y)
+register_dy_k(Beta1Distrib, function(distrib, y, theta, k) {
+  a <- theta[[1]] * theta[[2]]
+  b <- (1 - theta[[1]]) * theta[[2]]
+  dy_log(a - 1, y, k) + dy_log1m(b - 1, y, k)
+})
+register_dy_k(Beta2Distrib, function(distrib, y, theta, k) {
+  dy_log(theta[[1]] - 1, y, k) + dy_log1m(theta[[2]] - 1, y, k)
+})
+
+# weibull: (sigma - 1) log y - (y/mu)^sigma
+register_dy_k(Weibull1Distrib, function(distrib, y, theta, k) {
+  sigma <- theta[[2]]
+  dy_log(sigma - 1, y, k) + dy_pow(-theta[[1]]^-sigma, sigma, y, k)
+})
+
+# generalized gamma: (d - 1) log y - (y/a)^p
+register_dy_k(GenGamma1Distrib, function(distrib, y, theta, k) {
+  p <- theta[[3]]
+  dy_log(theta[[2]] - 1, y, k) + dy_pow(-theta[[1]]^-p, p, y, k)
+})
+
+# inverse gaussian: -1.5 log y - y/(2 phi mu^2) - 1/(2 phi y)
+register_dy_k(InvGauss1Distrib, function(distrib, y, theta, k) {
+  dy_log(-1.5, y, k) + dy_pow(-1 / (2 * theta[[2]]), -1, y, k)
+})
+register_dy_k(InvGauss2Distrib, function(distrib, y, theta, k) {
+  dy_log(-1.5, y, k) + dy_pow(-theta[[2]] / 2, -1, y, k)
+})
+
+# lognormal: g(log y) with g(u) = -u - (u - mu)^2 / (2 sigma^2)
+register_dy_k(Lognormal1Distrib, function(distrib, y, theta, k) {
+  s2 <- theta[[2]]
+  u <- log(y)
+  gd <- list(-1 - (u - theta[[1]]) / s2, rep(-1 / s2, length(y)),
+             rep(0, length(y)), rep(0, length(y)))
+  dy_of_log(gd, y, k)
+})
+
+# generalized Pareto: -(1 + 1/xi) log(1 + xi y / sigma). The coefficient is
+# written as xi^k + xi^(k-1) rather than (1 + 1/xi) xi^k, which is the same
+# number and stays finite as xi goes to zero, where the family is exponential
+# and every order above the first vanishes.
+register_dy_k(GPDDistrib, function(distrib, y, theta, k) {
+  sigma <- theta[[1]]
+  xi <- theta[[2]]
+  cf <- -(xi^k + xi^(k - 1L)) / sigma^k
+  cf * (-1)^(k - 1L) * factorial(k - 1L) / (1 + xi * y / sigma)^k
+})
+
+# von Mises: kappa cos(y - mu), whose derivatives are the same four functions
+# in rotation
+register_dy_k(VonMises1Distrib, function(distrib, y, theta, k) {
+  dy_cos(theta[[2]], theta[[1]], y, k)
+})
+register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
+  dy_cos(vm2_parts(theta)$kappa, theta[[1]], y, k)
+})
+
+# a reparametrization acts on the parameters and the derivative is taken in the
+# response, so the two do not interact and the parent's answer is the answer
+S7::method(distrib_deriv3_y, ReparamContinuousDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_deriv3_y(distrib@parent_distrib, y, reparam_theta(distrib, theta), ...)
+  }
+S7::method(distrib_deriv4_y, ReparamContinuousDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_deriv4_y(distrib@parent_distrib, y, reparam_theta(distrib, theta), ...)
+  }
