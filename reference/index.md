@@ -1861,6 +1861,11 @@ divergent density.
 - [`distrib_cross2_y.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
   : Gaussian Mixed Second-Response Derivatives
 
+- [`distrib_cross2_y.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md)
+  [`distrib_grad_y_hess.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md)
+  [`distrib_hess_y_hess.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md)
+  : Lognormal Second-Response and Second-Order Mixed Derivatives
+
 - [`distrib_cross2_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.ReparamContinuousDistrib.md)
   : Second-Response Mixed Derivatives of a Reparametrized Distribution
 
@@ -2564,6 +2569,9 @@ divergent density.
 - [`log_pow_deriv()`](https://statmodels7.github.io/distributions7/reference/log_pow_deriv.md)
   : Derivatives of log(p) and log(1 - p)
 
+- [`lognormal_theta_chain()`](https://statmodels7.github.io/distributions7/reference/lognormal_theta_chain.md)
+  : The Mixed Grid of the Lognormal
+
 - [`lp_edge_divergence()`](https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.md)
   : Detect and Measure a Divergence at the Edges of the Support
 
@@ -2581,6 +2589,9 @@ divergent density.
 
 - [`mapped_theta2()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2.md)
   : A Second-Order Mixed Derivative Through a Map
+
+- [`mapped_theta2_methods()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2_methods.md)
+  : The Mixed Grid of a Family Written Out Against a Tabulated Map
 
 - [`mean.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.md)
   : Mean of the Bernoulli Distribution
@@ -2987,6 +2998,15 @@ divergent density.
 
 - [`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
   : Run a Check, Turning an Error Into a Failure
+
+- [`scale_only_cross2_method()`](https://statmodels7.github.io/distributions7/reference/scale_only_cross2_method.md)
+  : The Scale Component of the Response Curvature's Derivative
+
+- [`scale_only_theta2()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2.md)
+  : The Scale Component of a Family With No Location
+
+- [`scale_only_theta2_methods()`](https://statmodels7.github.io/distributions7/reference/scale_only_theta2_methods.md)
+  : The Mixed Grid of a Family With No Location
 
 - [`separable_deriv()`](https://statmodels7.github.io/distributions7/reference/separable_deriv.md)
   : Partial Derivatives of a Product of a Location Term and a Scale Term

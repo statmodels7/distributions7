@@ -1,5 +1,35 @@
 # Changelog
 
+## distributions7 0.14.0
+
+- The mixed grid reaches every shape that needs no new algebra. A family
+  written out in its own parametrization with its own kernels –
+  gaussian2, gaussian3, laplace2, invgauss2 – is not a
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  wrapper and does not inherit its methods, but its map onto a parent is
+  already tabulated in `reparam_maps.R`, so the same chain rule applies
+  and only the registration was missing.
+
+- A family with no location keeps every scale formula: the derivation
+  never used the location, only that sigma is a scale, so with
+  `z = y/sigma` they hold as written. That covers the exponential, the
+  Weibull’s scale and the generalized Pareto’s, and the exponential is
+  closed outright, having nothing but a scale.
+
+- The lognormal closes by the transformation: it is a gaussian at
+  `t = log y`, and the transformation carries no parameter, so `t` does
+  not move with theta and every theta-derivative is the gaussian’s own
+  at that point. What the response derivatives carry is the Jacobian.
+  lognormal2 follows through its map, which is what closing a parent is
+  for.
+
+- [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
+  [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  and
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  reach 21 families each, up from 13. The eleven that remain are not
+  location-scale and have no transformation onto one.
+
 ## distributions7 0.12.0
 
 - A reparametrized family carries the whole mixed grid through its map:
