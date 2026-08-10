@@ -1,3 +1,11 @@
+# distributions7 0.9.1
+
+* `fixed()` delegates `distrib_cross2_y()`, subset to the free
+  parameters as it does every other derivative. Without it every
+  penalty built on `fixed(gaussian1_distrib(), mu = 0)` -- which is
+  what a ridge and a random effect are -- reached the numerical
+  fallback while the closed form sat one class away.
+
 # distributions7 0.9.0
 
 * `distrib_cross2_y()` completes the mixed surface: two derivatives in

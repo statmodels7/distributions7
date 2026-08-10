@@ -77,3 +77,18 @@ test_that("the gaussian's curvature does not move with the location", {
   expect_true(all(got$mu == 0))
   expect_equal(got$sigma, rep(2 / 2.2^3, 20), tolerance = 1e-14)
 })
+
+test_that("fixed() delegates it, subset to the free parameters", {
+  # a penalty is built on fixed(gaussian1_distrib(), mu = 0), so a wrapper
+  # that did not delegate would send every ridge through the fallback while
+  # the closed form sat one class away
+  d <- gaussian1_distrib()
+  f <- fixed(d, mu = 0)
+  y <- c(-1.2, 0.3, 2.1)
+  got <- distrib_cross2_y(f, y, list(sigma = 1.6))
+  expect_named(got, "sigma")
+  expect_equal(got$sigma, distrib_cross2_y(d, y, list(mu = 0, sigma = 1.6))$sigma,
+               tolerance = 1e-14)
+  # and it is the closed form, not a difference of it
+  expect_equal(got$sigma, rep(2 / 1.6^3, 3), tolerance = 1e-14)
+})
