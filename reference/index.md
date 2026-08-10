@@ -347,6 +347,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`plot.distrib_fit`](https://statmodels7.github.io/distributions7/reference/plot.distrib_fit.md)
   : Plot a Fitted Distribution against the Data
 - [`mean.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  [`variance.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  [`skewness.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
   : Elastic-Net Moments
 
 ## Gaussian
@@ -613,6 +615,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_rng.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_rng.EnetDistrib.md)
   : Elastic-Net Random Generation
 - [`mean.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  [`variance.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
+  [`skewness.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/mean.EnetDistrib.md)
   : Elastic-Net Moments
 
 ## Pseudo-Huber
@@ -1877,15 +1881,19 @@ divergent density.
   : Lognormal Mixed Derivatives
 
 - [`distrib_cross_y.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
-  [`distrib_cross_y.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
-  [`distrib_cross_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
   : Pseudo-Huber Mixed Derivatives
 
 - [`distrib_cross_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ReparamContinuousDistrib.md)
   : Mixed Derivatives of a Reparametrized Distribution
 
+- [`distrib_cross_y.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewNormal1Distrib.md)
+  : Skew Normal Mixed Derivatives
+
 - [`distrib_cross_y.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewNormal2Distrib.md)
   : Skew Normal Mixed Derivatives in the Centered Parametrization
+
+- [`distrib_cross_y.SkewTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewTDistrib.md)
+  : Skew t Mixed Derivatives
 
 - [`distrib_cross_y.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.StudentT1Distrib.md)
   : Student's t Mixed Derivatives
