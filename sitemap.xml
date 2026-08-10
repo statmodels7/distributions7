@@ -713,6 +713,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_g_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dy_log.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dy_of_log.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/enet_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/exp_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expand_params.html</loc></url>
@@ -1007,6 +1009,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/print_check_table.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/quad_rows.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/register_dy_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/reparam_stencil_derivs.html</loc></url>

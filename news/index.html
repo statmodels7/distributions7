@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,18 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.3.0" id="distributions7-030">distributions7 0.3.0<a class="anchor" aria-label="anchor" href="#distributions7-030"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-0-3-0">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives-0-3-0"></a></h3>
+<ul><li><p>The third and fourth response derivatives are closed for every continuous family. Eighteen were taking a finite-difference stencil, all of them families whose response is not a pure location; each already carried a closed second response derivative, and the third is the same elementary function differentiated once more. The log-density of each is a sum of terms in <code>log(y)</code>, <code>log(1 - y)</code>, a power of <code>y</code>, a logarithm of an affine function of <code>y</code>, or a cosine, so the terms are written once and each family is a sum of them.</p></li>
+<li><p><code><a href="../reference/reparametrize.html">reparametrize()</a></code> carries the third and fourth response derivatives to the parent, as it already carried the first and second: the map acts on the parameters and the derivative is taken in the response, so the two do not interact.</p></li>
+<li>
+<p>The generalized Pareto’s coefficient is written as <code>xi^k + xi^(k-1)</code> rather than <code>(1 + 1/xi) * xi^k</code>. It is the same number and stays finite as the shape goes to zero, where the family is exponential and every order above the first is exactly zero.</p>
+<p>Measured against one differentiation of the analytic second response derivative, the third order agrees to 1e-11 and the fourth to 4e-5, which is each reference’s own accuracy. A test walks the namespace and fails if a continuous family is left on the stencil.</p>
+</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.0" id="distributions7-020">distributions7 0.2.0<a class="anchor" aria-label="anchor" href="#distributions7-020"></a></h2>
 <div class="section level3">
