@@ -2,11 +2,7 @@
 % Please edit documentation in R/cdf_skewnormal_higher.R
 \name{distrib_grad_cdf.SkewNormal1Distrib}
 \alias{distrib_grad_cdf.SkewNormal1Distrib}
-\alias{sn_cdf_deriv_k}
 \title{Skew Normal Log-CDF Derivatives}
-\usage{
-sn_cdf_deriv_k(distrib, q, theta, order)
-}
 \arguments{
 \item{distrib}{A \code{SkewNormal1Distrib} object.}
 

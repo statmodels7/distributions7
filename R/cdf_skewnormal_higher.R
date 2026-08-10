@@ -121,24 +121,21 @@ sn_cdf_std_derivs <- function(z, al, order) {
   out
 }
 
-#' @title Skew Normal Log-CDF Derivatives
-#' @name distrib_grad_cdf.SkewNormal1Distrib
+#' Assemble the Skew Normal's CDF Derivatives of a Given Order
+#'
 #' @description
-#' Closed form at every order, in the shape as well as in the location and the
-#' scale. With \eqn{z = (q-\mu)/\sigma} the distribution function is
-#' \eqn{\Phi(z) - 2T(z, \alpha)}, and Owen's \eqn{T} has elementary partial
-#' derivatives, so the integral in its definition is differentiated away at the
-#' first order and never has to be differentiated again. The location and the
-#' scale then enter only through \eqn{z}, by the same chain rule the other
-#' location-scale families use.
+#' Chains the standard-coordinate table of
+#' \code{\link{sn_cdf_std_derivs}} through \eqn{z = (q-\mu)/\sigma}, the
+#' shape passing straight through as the second index of that table.
+#'
 #' @param distrib A \code{SkewNormal1Distrib} object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @param ... Unused.
-#' @return A named list, one vector per component.
-#' @seealso \code{\link{skewnormal1_distrib}}
+#' @param order The derivative order, 1 to 4.
+#'
+#' @return A named list of derivative components of \eqn{F}.
+#'
+#' @seealso \code{\link{sn_cdf_std_derivs}}
 #' @keywords internal
 sn_cdf_deriv_k <- function(distrib, q, theta, order) {
   params <- distrib@params
@@ -179,6 +176,25 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
   stats::setNames(out, deriv_names(params, order))
 }
 
+#' @title Skew Normal Log-CDF Derivatives
+#' @name distrib_grad_cdf.SkewNormal1Distrib
+#' @description
+#' Closed form at every order, in the shape as well as in the location and the
+#' scale. With \eqn{z = (q-\mu)/\sigma} the distribution function is
+#' \eqn{\Phi(z) - 2T(z, \alpha)}, and Owen's \eqn{T} has elementary partial
+#' derivatives, so the integral in its definition is differentiated away at the
+#' first order and never has to be differentiated again. The location and the
+#' scale then enter only through \eqn{z}, by the same chain rule the other
+#' location-scale families use.
+#' @param distrib A \code{SkewNormal1Distrib} object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
+#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param ... Unused.
+#' @return A named list, one vector per component.
+#' @seealso \code{\link{skewnormal1_distrib}}
+#' @keywords internal
 local({
   make <- function(o) {
     force(o)
