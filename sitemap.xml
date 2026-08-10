@@ -856,11 +856,15 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_deriv_y_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cdf_deriv_k.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross2_block.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross2_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_cross_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_deriv_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_grad_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_grad_y_hess.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_hess_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/loc_scale_theta2_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/logLik.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/log_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/log_pow_deriv.html</loc></url>
@@ -1005,7 +1009,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_cross_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_y_hess.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/partial_loc_scale_hess_cdf.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/partial_theta2.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/phi_hermite.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/phi_terms_cdf_deriv_k.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/pig1_distrib.html</loc></url>
