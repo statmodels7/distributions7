@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.11.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.12.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,12 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.12.0" id="distributions7-0120">distributions7 0.12.0<a class="anchor" aria-label="anchor" href="#distributions7-0120"></a></h2>
+<ul><li><p>A reparametrized family carries the whole mixed grid through its map: <code><a href="../reference/distrib_cross2_y.html">distrib_cross2_y()</a></code> by the same first-order chain rule <code><a href="../reference/distrib_cross_y.html">distrib_cross_y()</a></code> takes, and the two second-order generics by the ordinary two-term expansion, which needs the map’s second partials and the parent’s first-order components. <code><a href="../reference/reparam_tables.html">reparam_tables()</a></code> already keys both, so nothing new is differentiated.</p></li>
+<li><p>The laplace was registered for <code><a href="../reference/distrib_cross2_y.html">distrib_cross2_y()</a></code> and not for the two second-order generics. A census found it: a family half-registered answers at one order and falls back at the next without anything failing.</p></li>
+<li><p>The three generics now reach 13 families each, up from 9, 8 and 8.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.11.0" id="distributions7-0110">distributions7 0.11.0<a class="anchor" aria-label="anchor" href="#distributions7-0110"></a></h2>
 <ul><li>The location-scale identity closes the new mixed generics for the families it applies to. Where the response enters only through <code>z = (y - mu)/sigma</code>, every derivative of the response gradient and of the response curvature in the location and the scale is that family’s own y-derivatives times a power of sigma, so nothing new is derived: <code><a href="../reference/distrib_cross2_y.html">distrib_cross2_y()</a></code>, <code><a href="../reference/distrib_grad_y_hess.html">distrib_grad_y_hess()</a></code> and <code><a href="../reference/distrib_grad_y_hess.html">distrib_hess_y_hess()</a></code> go from 2, 1 and 1 closed families to 9, 8 and

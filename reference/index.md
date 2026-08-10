@@ -1861,6 +1861,9 @@ divergent density.
 - [`distrib_cross2_y.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.md)
   : Gaussian Mixed Second-Response Derivatives
 
+- [`distrib_cross2_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.ReparamContinuousDistrib.md)
+  : Second-Response Mixed Derivatives of a Reparametrized Distribution
+
 - [`distrib_cross2_y.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.md)
   : Student's t Mixed Second-Response Derivatives
 
@@ -2085,6 +2088,10 @@ divergent density.
 - [`distrib_grad_y_hess.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.md)
   [`distrib_hess_y_hess.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.md)
   : Gaussian Second-Order Mixed Derivatives
+
+- [`distrib_grad_y_hess.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.ReparamContinuousDistrib.md)
+  [`distrib_hess_y_hess.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.ReparamContinuousDistrib.md)
+  : Second-Order Mixed Derivatives of a Reparametrized Distribution
 
 - [`distrib_grad_y_hess.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
   [`distrib_hess_y_hess.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.md)
@@ -2566,8 +2573,14 @@ divergent density.
 - [`mapped_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.md)
   : Third and Fourth Log-CDF Derivatives of a Mapped Family
 
+- [`mapped_cross2_y()`](https://statmodels7.github.io/distributions7/reference/mapped_cross2_y.md)
+  : Second-Response Mixed Derivatives Through a Map
+
 - [`mapped_cross_y()`](https://statmodels7.github.io/distributions7/reference/mapped_cross_y.md)
   : Mixed Derivatives Through a Map
+
+- [`mapped_theta2()`](https://statmodels7.github.io/distributions7/reference/mapped_theta2.md)
+  : A Second-Order Mixed Derivative Through a Map
 
 - [`mean.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.md)
   : Mean of the Bernoulli Distribution

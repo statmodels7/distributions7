@@ -172,6 +172,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.ReparamContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.html</loc></url>
@@ -416,6 +417,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.Gaussian1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.ReparamContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.continuous_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_gradient.BernoulliDistrib.html</loc></url>
@@ -876,7 +878,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/lp_edge_divergence.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cross2_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mapped_cross_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mapped_theta2.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mean.Beta2Distrib.html</loc></url>
