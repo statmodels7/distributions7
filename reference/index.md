@@ -1773,6 +1773,9 @@ divergent density.
 - [`chain_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.md)
   : The Chain Rule on a Parent's CDF Derivatives
 
+- [`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
+  : The Chain Rule of Any Order on a Parent's CDF Derivatives
+
 - [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
   : The Partition Sum Itself
 
@@ -1938,6 +1941,11 @@ divergent density.
   :
 
   Default Third-Order Derivatives for `distrib` Objects
+
+- [`distrib_deriv3_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.ReparamContinuousDistrib.md)
+  [`distrib_deriv4_cdf.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.ReparamContinuousDistrib.md)
+  : Third and Fourth Log-CDF Derivatives of a Reparametrized
+  Distribution
 
 - [`distrib_deriv3_cdf.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.distrib.md)
   [`distrib_deriv4_cdf.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3_cdf.distrib.md)
@@ -2503,6 +2511,9 @@ divergent density.
 - [`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
   : CDF Derivatives Through a Map, With the Fallback as a Guard
 
+- [`mapped_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv_k.md)
+  : Third and Fourth Log-CDF Derivatives of a Mapped Family
+
 - [`mapped_cross_y()`](https://statmodels7.github.io/distributions7/reference/mapped_cross_y.md)
   : Mixed Derivatives Through a Map
 
@@ -2804,6 +2815,10 @@ divergent density.
 - [`partial_loc_scale_cross_y()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_cross_y.md)
   : Mixed Derivatives When Only Two Parameters Are Location-Scale
 
+- [`partial_loc_scale_deriv_cdf_k()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_deriv_cdf_k.md)
+  : Higher Log-CDF Derivatives When Only Some Parameters Are
+  Location-Scale
+
 - [`partial_loc_scale_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/partial_loc_scale_grad_cdf.md)
   : CDF Gradient When Only Some Parameters Are Location-Scale
 
@@ -2853,6 +2868,9 @@ divergent density.
 
 - [`register_dy_k()`](https://statmodels7.github.io/distributions7/reference/register_dy_k.md)
   : Register the Third and Fourth Response Derivatives of a Family
+
+- [`register_mapped_cdf_k()`](https://statmodels7.github.io/distributions7/reference/register_mapped_cdf_k.md)
+  : Register the Two New Orders on a Mapped Family
 
 - [`reparam_chain()`](https://statmodels7.github.io/distributions7/reference/reparam_chain.md)
   : The Chain Rule of Any Order Through a Reparametrization

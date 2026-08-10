@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,19 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.4.0" id="distributions7-040">distributions7 0.4.0<a class="anchor" aria-label="anchor" href="#distributions7-040"></a></h2>
+<div class="section level3">
+<h3 id="derivatives-of-the-distribution-function-0-4-0">Derivatives of the distribution function<a class="anchor" aria-label="anchor" href="#derivatives-of-the-distribution-function-0-4-0"></a></h3>
+<ul><li>
+<p>The third and fourth derivatives are closed for thirteen more families, taking the count from four to seventeen. Three routes did it, and none derived anything new.</p>
+<p>A family written as a map of another carries the parent’s through one Faa di Bruno pass; orders one and two already did this and the new orders use <code><a href="../reference/chain_assemble.html">chain_assemble()</a></code>, the enumeration the reparametrized parameter derivatives run on, so no second copy of the partition sum exists. That closes <code><a href="../reference/gaussian2_distrib.html">gaussian2_distrib()</a></code>, <code><a href="../reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> and every <code><a href="../reference/reparametrize.html">reparametrize()</a></code> wrapper whose parent is exact.</p>
+<p>The mapped route now admits a transformation of the response as well as of the parameters. A lognormal is a gaussian at <code>log q</code> and the transformation carries no parameter, so the derivatives in the parameters are the gaussian’s with the point substituted; that closes <code><a href="../reference/lognormal1_distrib.html">lognormal1_distrib()</a></code>, and <code><a href="../reference/lognormal2_distrib.html">lognormal2_distrib()</a></code> follows from it through the wrapper.</p>
+<p><code><a href="../reference/gumbel_distrib.html">gumbel_distrib()</a></code> joins the location-scale families, and <code><a href="../reference/student_t1_distrib.html">student_t1_distrib()</a></code>, <code><a href="../reference/pseudohuber_distrib.html">pseudohuber_distrib()</a></code>, <code><a href="../reference/skewnormal1_distrib.html">skewnormal1_distrib()</a></code> and <code><a href="../reference/skewt_distrib.html">skewt_distrib()</a></code> get the location and scale components from that construction with the shape components still differenced, as at the two orders below.</p>
+</li>
+<li><p>The gate is the one orders one and two use: a chain rule is taken only when the parent is exact at every order up to the one asked for, so a differenced quantity is never reported as a closed form. Measured against the partial-expectation integral, which shares no code with any of the three routes, the fully closed families agree to 4e-15 and the partial ones to the stencil’s own 3e-6.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="distributions7-030">distributions7 0.3.0<a class="anchor" aria-label="anchor" href="#distributions7-030"></a></h2>
 <div class="section level3">

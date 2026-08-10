@@ -1,5 +1,51 @@
 # Changelog
 
+## distributions7 0.4.0
+
+### Derivatives of the distribution function
+
+- The third and fourth derivatives are closed for thirteen more
+  families, taking the count from four to seventeen. Three routes did
+  it, and none derived anything new.
+
+  A family written as a map of another carries the parent’s through one
+  Faa di Bruno pass; orders one and two already did this and the new
+  orders use
+  [`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md),
+  the enumeration the reparametrized parameter derivatives run on, so no
+  second copy of the partition sum exists. That closes
+  [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md),
+  [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
+  and every
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  wrapper whose parent is exact.
+
+  The mapped route now admits a transformation of the response as well
+  as of the parameters. A lognormal is a gaussian at `log q` and the
+  transformation carries no parameter, so the derivatives in the
+  parameters are the gaussian’s with the point substituted; that closes
+  [`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md),
+  and
+  [`lognormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal2_distrib.md)
+  follows from it through the wrapper.
+
+  [`gumbel_distrib()`](https://statmodels7.github.io/distributions7/reference/gumbel_distrib.md)
+  joins the location-scale families, and
+  [`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
+  [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),
+  [`skewnormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal1_distrib.md)
+  and
+  [`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+  get the location and scale components from that construction with the
+  shape components still differenced, as at the two orders below.
+
+- The gate is the one orders one and two use: a chain rule is taken only
+  when the parent is exact at every order up to the one asked for, so a
+  differenced quantity is never reported as a closed form. Measured
+  against the partial-expectation integral, which shares no code with
+  any of the three routes, the fully closed families agree to 4e-15 and
+  the partial ones to the stencil’s own 3e-6.
+
 ## distributions7 0.3.0
 
 ### Derivatives
