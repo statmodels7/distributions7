@@ -1743,11 +1743,17 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   : Multivariate Student's t Distribution
+- [`distrib_deriv3.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
+  [`distrib_deriv4.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
+  : Multivariate Student t Third and Fourth Derivatives
 
 ## Dirichlet
 
 - [`DirichletDistrib()`](https://statmodels7.github.io/distributions7/reference/DirichletDistrib.md)
   : S7 Class for the Dirichlet Distribution
+- [`distrib_deriv3.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.md)
+  [`distrib_deriv4.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.md)
+  : Dirichlet Analytical Third and Fourth Derivatives
 - [`distrib_expected_hessian.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.DirichletDistrib.md)
   : Dirichlet Analytical Expected Hessian
 - [`distrib_gradient.DirichletDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.DirichletDistrib.md)
@@ -1769,6 +1775,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/MultinomialDistrib.md)
   : S7 Class for the Multinomial Distribution
+- [`distrib_deriv3.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.md)
+  [`distrib_deriv4.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.md)
+  : Multinomial Analytical Third and Fourth Derivatives
 - [`distrib_expected_hessian.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.md)
   : Multinomial Analytical Expected Hessian
 - [`distrib_gradient.MultinomialDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MultinomialDistrib.md)
@@ -2130,6 +2139,9 @@ divergent density.
 - [`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md)
   : The Partition Sum Itself
 
+- [`chain_univariate()`](https://statmodels7.github.io/distributions7/reference/chain_univariate.md)
+  : One Univariate Chain Rule Over a Multivariate Map
+
 - [`check_bounds_fast()`](https://statmodels7.github.io/distributions7/reference/check_bounds_fast.md)
   : Check Parameter Domains, Taking the Properties as Arguments
 
@@ -2162,6 +2174,12 @@ divergent density.
 
 - [`dir_parts()`](https://statmodels7.github.io/distributions7/reference/dir_parts.md)
   : The Pieces a Dirichlet Derivative Needs
+
+- [`dirichlet_higher()`](https://statmodels7.github.io/distributions7/reference/dirichlet_higher.md)
+  : Assemble a Dirichlet's Higher Derivatives
+
+- [`dirichlet_map_tensors()`](https://statmodels7.github.io/distributions7/reference/dirichlet_map_tensors.md)
+  : Derivative Tensors of a Dirichlet's Shape Vector
 
 - [`disc_cum_table()`](https://statmodels7.github.io/distributions7/reference/disc_cum_table.md)
   : Cumulative Probability Table for a Discrete Distribution
@@ -2985,6 +3003,9 @@ divergent density.
   [`kurtosis.Pig2Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.md)
   : Closed Moments of the Orthogonal Poisson-Inverse Gaussian
 
+- [`multinomial_higher()`](https://statmodels7.github.io/distributions7/reference/multinomial_higher.md)
+  : Assemble a Multinomial's Higher Derivatives
+
 - [`mv_append_block()`](https://statmodels7.github.io/distributions7/reference/mv_append_block.md)
   : Append One Block of Derived Quantities to Another
 
@@ -2999,6 +3020,9 @@ divergent density.
 
 - [`mv_entry_index()`](https://statmodels7.github.io/distributions7/reference/mv_entry_index.md)
   : Distinct Entries of a Symmetric Matrix, and Their Labels
+
+- [`mv_expected_higher()`](https://statmodels7.github.io/distributions7/reference/mv_expected_higher.md)
+  : Expected Higher Derivatives of a Multivariate Family by Sampling
 
 - [`mv_flat_theta()`](https://statmodels7.github.io/distributions7/reference/mv_flat_theta.md)
   : Require Scalar Parameters
@@ -3078,8 +3102,14 @@ divergent density.
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals
 
+- [`mvt_higher()`](https://statmodels7.github.io/distributions7/reference/mvt_higher.md)
+  : Assemble a Multivariate Student t's Higher Derivatives
+
 - [`mvt_pieces()`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
   : The Pieces a Multivariate t Evaluates From
+
+- [`mvt_q_deriv()`](https://statmodels7.github.io/distributions7/reference/mvt_q_deriv.md)
+  : Derivatives of the Quadratic Form of a Multivariate Student t
 
 - [`mvt_weights()`](https://statmodels7.github.io/distributions7/reference/mvt_weights.md)
   : The Weight a Multivariate t Gives Each Observation
@@ -3202,6 +3232,9 @@ divergent density.
 
 - [`series_rows()`](https://statmodels7.github.io/distributions7/reference/series_rows.md)
   : Batched Series Summation with Rejection
+
+- [`simplex_map_tensors()`](https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.md)
+  : Derivative Tensors of a Simplex-Valued Map
 
 - [`skewness.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.md)
   : Skewness of the Bernoulli Distribution
@@ -3406,6 +3439,9 @@ divergent density.
 
 - [`trunc_y_deriv()`](https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.md)
   : Response Derivative of a Truncated Distribution
+
+- [`tuple_indices_upto()`](https://statmodels7.github.io/distributions7/reference/tuple_indices_upto.md)
+  : Index Tuples of a Given Width Over a Number of Variables
 
 - [`variance.BernoulliDistrib`](https://statmodels7.github.io/distributions7/reference/variance.BernoulliDistrib.md)
   : Variance of the Bernoulli Distribution

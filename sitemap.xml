@@ -92,6 +92,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_assemble.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/chain_derivatives.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/chain_univariate.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_bounds_fast.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_derivative_args.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/check_distrib.html</loc></url>
@@ -112,6 +113,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/dir_b_index.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dir_parts.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dirichlet_higher.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dirichlet_map_tensors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/disc_cum_table.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.html</loc></url>
@@ -203,6 +206,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.CauchyDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ChisqDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.DirichletDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.html</loc></url>
@@ -221,7 +225,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Lognormal1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MultinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.html</loc></url>
@@ -899,6 +905,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/moments.Pig2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/multinomial_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/multinomial_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_append_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_derived.MvGaussianDistrib.html</loc></url>
@@ -906,6 +913,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_derived.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_derived.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_entry_index.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mv_expected_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_flat_theta.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_hess_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_leading_location.html</loc></url>
@@ -946,7 +954,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_residuals.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvt_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_pieces.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvt_q_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_weights.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/n_obs.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/n_support_points.html</loc></url>
@@ -1006,6 +1016,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/rng_grou.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/safe_check.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/series_rows.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/simplex_map_tensors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/simulate.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/skewness.Beta1Distrib.html</loc></url>
@@ -1088,6 +1099,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/trunc_score_prod_mean.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/trunc_y_deriv.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/truncated.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/tuple_indices_upto.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.Beta2Distrib.html</loc></url>
