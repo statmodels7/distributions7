@@ -167,6 +167,13 @@ register_mapped_cdf_k(InvGauss2Distrib, invgauss1_distrib,
                                            phi = 1 / theta[[2]]),
                       md_invgauss2)
 
+# the second Laplace parametrization carries the rate, so it is the first at
+# sigma = 1/lambda
+register_mapped_cdf_k(Laplace2Distrib, laplace_distrib,
+                      function(theta) list(mu = theta[[1]],
+                                           sigma = 1 / theta[[2]]),
+                      md_laplace2)
+
 # a lognormal is a gaussian at log q, and the transformation carries no
 # parameter, so the derivatives in the parameters are the gaussian's with the
 # point substituted and the scale read off the variance

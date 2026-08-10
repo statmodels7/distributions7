@@ -1,3 +1,28 @@
+# distributions7 0.5.0
+
+## Derivatives of the distribution function
+
+* A family whose survival function is an exponential of something
+  elementary now gets all four orders from one identity:
+  \eqn{S = e^{L}} gives \eqn{\partial^{I}F = -S\,B_{I}(L)}, the complete
+  Bell polynomial in the partial derivatives of \eqn{L}. A family states
+  \eqn{L} and its partials and nothing else. `exponential_distrib()` and
+  `weibull1_distrib()` are served by it, and `weibull3_distrib()` follows
+  through the reparametrization wrapper; the route replaces the two
+  written-out orders each carried before, which it reproduces.
+
+* `laplace2_distrib()` reaches the two new orders as the Laplace at
+  \eqn{\sigma = 1/\lambda}, through the mapped route.
+
+* The upper tail of an exponential-survival family is exact wherever the
+  logarithm is representable. `log S` is `L`, so its derivatives are
+  `L`'s own and need no division by `1 - F`, which is exactly one in
+  double precision past `q/mu = 37`: the first derivative of an
+  exponential's log survival at `q = 700` was `Inf` and is now `700`.
+
+* `weibull_cdf_deriv()` is gone with the two methods that were its only
+  callers.
+
 # distributions7 0.4.0
 
 ## Derivatives of the distribution function

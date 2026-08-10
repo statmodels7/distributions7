@@ -299,6 +299,19 @@ md_skewnormal2 <- function(psi) {
 
 #' @rdname reparam_map_derivs
 #' @keywords internal
+md_laplace2 <- function(psi) {
+  lam <- psi[[2]]
+  # mu passes through; sigma = 1/lambda, whose j-th derivative is
+  # (-1)^j j! lambda^(-1-j)
+  list(
+    list("1" = rep_len(1, length(lam))),
+    list("2" = -1 / lam^2, "2,2" = 2 / lam^3,
+         "2,2,2" = -6 / lam^4, "2,2,2,2" = 24 / lam^5)
+  )
+}
+
+#' @rdname reparam_map_derivs
+#' @keywords internal
 md_gaussian2 <- function(psi) {
   v <- psi[[2]]
   # mu passes through; sigma = sqrt(sigma2)

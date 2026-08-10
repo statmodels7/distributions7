@@ -9,6 +9,7 @@
 \alias{md_gengamma2}
 \alias{md_invgauss2}
 \alias{md_skewnormal2}
+\alias{md_laplace2}
 \alias{md_gaussian2}
 \alias{md_gaussian3}
 \title{Explicit Map Derivatives of the Second Parametrizations}
@@ -26,6 +27,8 @@ md_gengamma2(psi)
 md_invgauss2(psi)
 
 md_skewnormal2(psi)
+
+md_laplace2(psi)
 
 md_gaussian2(psi)
 

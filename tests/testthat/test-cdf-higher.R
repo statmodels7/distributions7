@@ -238,16 +238,21 @@ test_that("the new routes agree with the partial expectation", {
 })
 
 test_that("the gate refuses to carry a differenced parent", {
-  # weibull3's parent differences its own cdf above the second order, so the
-  # chain rule must not report a closed form there
-  expect_true(all(vapply(1:2, function(k)
-    distributions7:::has_exact_cdf_deriv(weibull1_distrib(), k), logical(1))))
-  expect_false(any(vapply(3:4, function(k)
-    distributions7:::has_exact_cdf_deriv(weibull1_distrib(), k), logical(1))))
-  # while the lognormal's parent is exact at every order, which is why the
-  # mapped route closes it
+  # the gamma differences its own cdf at every order, the derivative of the
+  # incomplete gamma in its shape having no elementary form, so a chain rule
+  # over it must not report a closed form
+  expect_false(any(vapply(1:4, function(k)
+    distributions7:::has_exact_cdf_deriv(gamma1_distrib(), k), logical(1))))
+  # while the gaussian and the Laplace are exact at every order, which is what
+  # lets the mapped route close the lognormal and the second Laplace
+  for (d in list(gaussian1_distrib(), laplace_distrib())) {
+    expect_true(all(vapply(1:4, function(k)
+      distributions7:::has_exact_cdf_deriv(d, k), logical(1))))
+  }
+  # and the weibull is exact now that the survival route serves it, which is
+  # why weibull3 follows through the wrapper
   expect_true(all(vapply(1:4, function(k)
-    distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))))
+    distributions7:::has_exact_cdf_deriv(weibull1_distrib(), k), logical(1))))
 })
 
 test_that("both tails and both scales are served by the new routes", {
@@ -267,4 +272,117 @@ test_that("both tails and both scales are served by the new routes", {
       expect_equal(unlist(up), -unlist(lo), info = cs[[1]])
     }
   }
+})
+
+
+# --- the exponential-survival families, and the Laplace pair ----------------
+
+# one stencil of the requested order on the ANALYTIC distribution function.
+# This is the reference a non-regular family needs: the partial-expectation
+# identity integrates the log-density's parameter derivatives, and the
+# Laplace's second derivative in the location carries a point mass at the kink
+# that no integral over the density can see. Measured, the shipped Laplace --
+# validated long before this route existed -- disagrees with that integral by
+# 1.3 relative at orders two to four while agreeing with the stencil below.
+fd_on_cdf <- function(d, q, th, I, h) {
+  nms <- d@params
+  used <- sort(unique(I))
+  mult <- tabulate(match(I, used), length(used))
+  fac <- list(list(o = c(-1, 1), w = c(-0.5, 0.5)),
+              list(o = c(-1, 0, 1), w = c(1, -2, 1)),
+              list(o = c(-2, -1, 1, 2), w = c(-0.5, 1, -1, 0.5)),
+              list(o = c(-2, -1, 0, 1, 2), w = c(1, -4, 6, -4, 1)))
+  fs <- fac[mult]
+  grid <- expand.grid(lapply(fs, function(x) seq_along(x$o)))
+  acc <- 0
+  for (r in seq_len(nrow(grid))) {
+    t2 <- th
+    w <- 1
+    for (j in seq_along(used)) {
+      pick <- grid[r, j]
+      t2[[nms[used[j]]]] <- th[[nms[used[j]]]] + fs[[j]]$o[pick] * h
+      w <- w * fs[[j]]$w[pick]
+    }
+    acc <- acc + w * distrib_cdf(d, q, t2)
+  }
+  acc / h^length(I)
+}
+
+test_that("the survival route and the Laplace map agree with a stencil on F", {
+  hs <- c(1e-4, 1e-3, 3e-3, 1e-2)
+  tols <- c(1e-6, 1e-5, 1e-3, 1e-2)
+  for (cs in list(
+        list("exponential", exponential_distrib(), list(mu = 2), 1.3),
+        list("weibull1", weibull1_distrib(), list(mu = 2, sigma = 1.5), 1.7),
+        list("weibull3", weibull3_distrib(), list(mean = 2, sigma = 1.5), 1.7),
+        list("laplace2", laplace2_distrib(), list(mu = 0.3, lambda = 1.4), 0.9))) {
+    nm <- cs[[1]]; d <- cs[[2]]; th <- cs[[3]]; q <- cs[[4]]
+    for (o in 1:4) {
+      got <- switch(o,
+        distrib_grad_cdf(d, q, th, log = FALSE),
+        distrib_hess_cdf(d, q, th, log = FALSE),
+        distrib_deriv3_cdf(d, q, th, log = FALSE),
+        distrib_deriv4_cdf(d, q, th, log = FALSE))
+      ref <- vapply(deriv_indices(d@params, o),
+                    function(I) fd_on_cdf(d, q, th, I, hs[o]), numeric(1))
+      names(ref) <- deriv_names(d@params, o)
+      expect_lt(max(abs(unlist(got)[names(ref)] - ref)) / max(1, max(abs(ref))),
+                tols[o], label = sprintf("%s order %d", nm, o))
+    }
+  }
+})
+
+test_that("the upper tail of an exponential survival stays finite", {
+  # log S is L, so its derivatives are L's own and need no division by
+  # 1 - F, which is exactly one in double precision past q/mu = 37
+  d <- exponential_distrib()
+  th <- list(mu = 1)
+  for (q in c(20, 40, 700)) {
+    v <- distrib_grad_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+    w <- distrib_hess_cdf(d, q, th, lower.tail = FALSE, log = TRUE)
+    expect_equal(v[[1]], q / th$mu^2, tolerance = 1e-12)
+    expect_equal(w[[1]], -2 * q / th$mu^3, tolerance = 1e-12)
+    expect_true(all(is.finite(unlist(
+      distrib_deriv4_cdf(d, q, th, lower.tail = FALSE, log = TRUE)))))
+  }
+  # and on the natural scale the two tails are still negatives of each other
+  for (q in c(0.5, 2)) {
+    lo <- distrib_deriv3_cdf(d, q, th, lower.tail = TRUE, log = FALSE)
+    up <- distrib_deriv3_cdf(d, q, th, lower.tail = FALSE, log = FALSE)
+    expect_equal(unlist(up), -unlist(lo))
+  }
+})
+
+test_that("the partial-expectation reference is invalid at a kink", {
+  # recorded as a test because it cost time: the identity holds where the
+  # log-density is twice differentiable in the parameters, and the Laplace's
+  # is not. The gaussian agrees with both references, the Laplace with only
+  # one, and the code is the same in both cases.
+  part_exp <- function(d, q, th, I) {
+    nms <- d@params
+    f <- function(y) {
+      ell <- distributions7:::parent_ell(d, y, th, length(I), nms)
+      distrib_pdf(d, y, th) * distributions7:::bell_f_ratio(nms[I], ell)
+    }
+    stats::integrate(f, q - 60, q, rel.tol = 1e-11, subdivisions = 800L)$value
+  }
+  q <- 0.9
+  thg <- list(mu = 0.3, sigma = 0.7)
+  gg <- unlist(distrib_hess_cdf(gaussian1_distrib(), q, thg, log = FALSE))
+  rg <- vapply(deriv_indices(c("mu", "sigma"), 2L),
+               function(I) part_exp(gaussian1_distrib(), q, thg, I), numeric(1))
+  names(rg) <- deriv_names(c("mu", "sigma"), 2L)
+  expect_lt(max(abs(gg[names(rg)] - rg)), 1e-12)
+
+  gl <- unlist(distrib_hess_cdf(laplace_distrib(), q, thg, log = FALSE))
+  rl <- vapply(deriv_indices(c("mu", "sigma"), 2L),
+               function(I) part_exp(laplace_distrib(), q, thg, I), numeric(1))
+  names(rl) <- deriv_names(c("mu", "sigma"), 2L)
+  expect_gt(max(abs(gl[names(rl)] - rl)), 0.1)
+  # while the stencil on F confirms the shipped value
+  rs <- vapply(deriv_indices(c("mu", "sigma"), 2L),
+               function(I) fd_on_cdf(laplace_distrib(), q, thg, I, 1e-3),
+               numeric(1))
+  names(rs) <- deriv_names(c("mu", "sigma"), 2L)
+  expect_lt(max(abs(gl[names(rs)] - rs)), 1e-5)
 })
