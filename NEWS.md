@@ -1,3 +1,19 @@
+# distributions7 0.12.0
+
+* A reparametrized family carries the whole mixed grid through its map:
+  `distrib_cross2_y()` by the same first-order chain rule
+  `distrib_cross_y()` takes, and the two second-order generics by the
+  ordinary two-term expansion, which needs the map's second partials and
+  the parent's first-order components. `reparam_tables()` already keys
+  both, so nothing new is differentiated.
+
+* The laplace was registered for `distrib_cross2_y()` and not for the two
+  second-order generics. A census found it: a family half-registered
+  answers at one order and falls back at the next without anything
+  failing.
+
+* The three generics now reach 13 families each, up from 9, 8 and 8.
+
 # distributions7 0.11.0
 
 * The location-scale identity closes the new mixed generics for the
