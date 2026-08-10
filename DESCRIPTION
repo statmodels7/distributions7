@@ -108,6 +108,7 @@ Collate:
     'gpd_higher.R'
     'methods.R'
     'multinomial_distrib.R'
+    'mv_higher.R'
     'mvgaussian_distrib.R'
     'mv_plot.R'
     'mvstudent_t_distrib.R'
