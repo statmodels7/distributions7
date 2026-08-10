@@ -102,12 +102,14 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
 #' @param md_fn The map's table function.
 #' @param q_fn The transformation of the response, when the parent is the same
 #'   law on a transformed scale. The identity by default.
+#' @param orders The orders to register, 3 and 4 by default. A family whose
+#'   written-out route stops below the fourth order takes the rest here.
 #'
 #' @return Invisibly \code{NULL}; called for the registration.
 #'
 #' @keywords internal
 register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
-                                  q_fn = identity) {
+                                  q_fn = identity, orders = 3:4) {
   make <- function(o) {
     force(o)
     function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
@@ -115,8 +117,9 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
                          q, theta, o, lower.tail, log, q_par = q_fn(q))
     }
   }
-  S7::method(distrib_deriv3_cdf, cls) <- make(3L)
-  S7::method(distrib_deriv4_cdf, cls) <- make(4L)
+  gens <- list(distrib_grad_cdf, distrib_hess_cdf,
+               distrib_deriv3_cdf, distrib_deriv4_cdf)
+  for (o in orders) S7::method(gens[[o]], cls) <- make(o)
   invisible(NULL)
 }
 
@@ -162,10 +165,13 @@ register_mapped_cdf_k(Gaussian3Distrib, gaussian1_distrib,
                       function(theta) list(mu = theta[[1]],
                                            sigma = 1 / sqrt(theta[[2]])),
                       md_gaussian3)
+# the second inverse-gaussian parametrization also takes its Hessian here: the
+# written-out route registered only the gradient, which was right while the
+# parent differenced its own second order and is not now that it does not
 register_mapped_cdf_k(InvGauss2Distrib, invgauss1_distrib,
                       function(theta) list(mu = theta[[1]],
                                            phi = 1 / theta[[2]]),
-                      md_invgauss2)
+                      md_invgauss2, orders = 2:4)
 
 # the second Laplace parametrization carries the rate, so it is the first at
 # sigma = 1/lambda

@@ -589,40 +589,6 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 # phi*mu, so the product exp(2/(phi mu)) Phi(b) is formed on the log scale --
 # the factor is huge exactly where Phi(b) is tiny.
 
-#' @title Inverse Gaussian Log-CDF Gradient
-#' @name distrib_grad_cdf.InvGauss1Distrib
-#' @description
-#' Closed form, obtained by differentiating the elementary representation
-#' \eqn{F(y) = \Phi(a) + e^{2/(\phi\mu)}\Phi(b)}. The exponential factor is
-#' combined with \eqn{\Phi(b)} on the log scale, since it overflows for small
-#' \eqn{\phi\mu} exactly where \eqn{\Phi(b)} underflows.
-#' @param distrib An \code{InvGauss1Distrib} object.
-#' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{phi}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list, one vector per parameter.
-#' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_grad_cdf, InvGauss1Distrib) <- function(distrib, q, theta,
-                                                          lower.tail = TRUE, log = TRUE) {
-  mu <- theta[[1]]
-  ph <- theta[[2]]
-  rt <- sqrt(ph * q)
-  a <- (q / mu - 1) / rt
-  b <- -(q / mu + 1) / rt
-  lg <- 2 / (ph * mu)
-  tail_b <- exp(lg + stats::pnorm(b, log.p = TRUE))   # exp(lg) * Phi(b), stably
-  eb <- exp(lg + stats::dnorm(b, log = TRUE))         # exp(lg) * phi(b), stably
-
-  d_mu <- stats::dnorm(a) * (-q / (mu^2 * rt)) + tail_b * (-2 / (ph * mu^2)) +
-    eb * (q / (mu^2 * rt))
-  d_ph <- stats::dnorm(a) * (-a / (2 * ph)) + tail_b * (-2 / (ph^2 * mu)) +
-    eb * (-b / (2 * ph))
-
-  cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
-                 list(mu = d_mu, phi = d_ph), NULL, lower.tail, log)
-}
-
 # --- discrete families ------------------------------------------------------
 #
 # For the Poisson the sum defining F telescopes:

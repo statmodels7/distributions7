@@ -4,7 +4,14 @@
 \alias{register_mapped_cdf_k}
 \title{Register the Two New Orders on a Mapped Family}
 \usage{
-register_mapped_cdf_k(cls, parent_fn, th_fn, md_fn, q_fn = identity)
+register_mapped_cdf_k(
+  cls,
+  parent_fn,
+  th_fn,
+  md_fn,
+  q_fn = identity,
+  orders = 3:4
+)
 }
 \arguments{
 \item{cls}{The S7 class.}
@@ -17,6 +24,9 @@ register_mapped_cdf_k(cls, parent_fn, th_fn, md_fn, q_fn = identity)
 
 \item{q_fn}{The transformation of the response, when the parent is the same
 law on a transformed scale. The identity by default.}
+
+\item{orders}{The orders to register, 3 and 4 by default. A family whose
+written-out route stops below the fourth order takes the rest here.}
 }
 \value{
 Invisibly \code{NULL}; called for the registration.

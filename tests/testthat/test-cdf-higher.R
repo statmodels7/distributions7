@@ -502,3 +502,82 @@ test_that("the generalized Pareto upper tail stays finite far out", {
   expect_true(all(is.finite(unlist(
     distrib_deriv4_cdf(d, 1e12, th, lower.tail = FALSE, log = TRUE)))))
 })
+
+
+# --- the families whose cdf is a sum of normal tails ------------------------
+
+test_that("the inverse gaussian and the elastic net agree with a stencil on F", {
+  hs <- c(1e-5, 1e-4, 1e-3, 3e-3)
+  tols <- c(1e-6, 1e-5, 1e-3, 5e-3)
+  ig <- invgauss1_distrib()
+  en <- enet_distrib()
+  cases <- list(
+    list(ig, list(mu = 2, phi = 0.5), 1.3),
+    list(ig, list(mu = 2, phi = 0.5), 0.3),
+    list(ig, list(mu = 1, phi = 2), 3),
+    list(ig, list(mu = 0.5, phi = 4), 0.2),
+    # both sides of the location, the branch of the elastic net's cdf
+    list(en, list(mu = 0.3, lambda = 2, alpha = 0.5), -0.4),
+    list(en, list(mu = 0.3, lambda = 2, alpha = 0.5), 1.2),
+    list(en, list(mu = 0, lambda = 1, alpha = 0.2), 0.8),
+    list(en, list(mu = -0.5, lambda = 5, alpha = 0.7), -1.5),
+    list(en, list(mu = 0, lambda = 0.5, alpha = 0.05), 2)
+  )
+  for (cs in cases) {
+    d <- cs[[1]]; th <- cs[[2]]; q <- cs[[3]]
+    for (o in 1:4) {
+      got <- switch(o,
+        distrib_grad_cdf(d, q, th, log = FALSE),
+        distrib_hess_cdf(d, q, th, log = FALSE),
+        distrib_deriv3_cdf(d, q, th, log = FALSE),
+        distrib_deriv4_cdf(d, q, th, log = FALSE))
+      ref <- vapply(deriv_indices(d@params, o),
+                    function(I) fd_on_cdf(d, q, th, I, hs[o]), numeric(1))
+      names(ref) <- deriv_names(d@params, o)
+      expect_lt(max(abs(unlist(got)[names(ref)] - ref)) / max(1, max(abs(ref))),
+                tols[o],
+                label = sprintf("%s order %d at q = %g", d@distrib_name, o, q))
+    }
+  }
+})
+
+test_that("the inverse gaussian survives a weight that overflows alone", {
+  # exp(2/(phi mu)) is Inf on its own at these settings while Phi(b)
+  # underflows; the two are combined on the log scale
+  d <- invgauss1_distrib()
+  for (th in list(list(mu = 0.05, phi = 0.5), list(mu = 0.01, phi = 0.1))) {
+    expect_true(is.infinite(exp(2 / (th$phi * th$mu))) ||
+                  exp(2 / (th$phi * th$mu)) > 1e30)
+    for (o in 1:4) {
+      v <- switch(o,
+        distrib_grad_cdf(d, 0.02, th, log = FALSE),
+        distrib_hess_cdf(d, 0.02, th, log = FALSE),
+        distrib_deriv3_cdf(d, 0.02, th, log = FALSE),
+        distrib_deriv4_cdf(d, 0.02, th, log = FALSE))
+      expect_true(all(is.finite(unlist(v))), info = sprintf("order %d", o))
+    }
+  }
+})
+
+test_that("the elastic net stays finite at both ends of its mixing", {
+  # alpha near one is the Laplace and near zero the gaussian; the fourth
+  # derivative in alpha grows as the family degenerates, which is the function
+  d <- enet_distrib()
+  for (al in c(0.001, 0.01, 0.5, 0.99, 0.999)) {
+    v <- distrib_deriv4_cdf(d, 0.7, list(mu = 0, lambda = 2, alpha = al),
+                            log = FALSE)
+    expect_true(all(is.finite(unlist(v))), info = sprintf("alpha = %g", al))
+  }
+})
+
+test_that("neither family is on the stencil any more", {
+  for (d in list(invgauss1_distrib(), enet_distrib(), gpd_distrib())) {
+    for (gen in list(distrib_grad_cdf, distrib_hess_cdf,
+                     distrib_deriv3_cdf, distrib_deriv4_cdf)) {
+      m <- S7::method(gen, S7::S7_class(d))
+      owner <- attr(attr(m, "signature")[[1L]], "name")
+      expect_false(owner %in% c("distrib", "continuous_distrib"),
+                   info = sprintf("%s: %s", d@distrib_name, owner))
+    }
+  }
+})
