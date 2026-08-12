@@ -9,7 +9,7 @@ stencil rather than from nested first differences."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.20.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -48,7 +48,7 @@ stencil rather than from nested first differences.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_second</span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span>, <span class="va">k</span>, <span class="va">l</span>, h_rel <span class="op">=</span> <span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">^</span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fd_second</span><span class="op">(</span><span class="va">f</span>, <span class="va">x</span>, <span class="va">k</span>, <span class="va">l</span>, h_rel <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,12 +68,25 @@ stencil rather than from nested first differences.</p>
 
 
 <dt id="arg-h-rel">h_rel<a class="anchor" aria-label="anchor" href="#arg-h-rel"></a></dt>
-<dd><p>The relative step.</p></dd>
+<dd><p>Deprecated and unused; the step is
+<code><a href="https://statmodels7.github.io/numericals7/reference/fd_step.html" class="external-link">fd_step</a></code>'s at order two.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A single number.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The nodes, the weights and the step are <span class="pkg">numericals7</span>'s. Where the two
+coordinates differ the stencil is the product of two first-order factors,
+which is one stencil in two variables and not a difference of a difference:
+nesting is forbidden along ONE variable, and is what a mixed derivative is
+along two.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="https://statmodels7.github.io/numericals7/reference/fd_weights.html" class="external-link">fd_weights</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

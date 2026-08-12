@@ -1,5 +1,231 @@
 # Changelog
 
+## distributions7 0.20.0
+
+- The gaussian’s derivatives are written in `z = (y - mu)/sigma` and
+  `1/sigma`, never in a positive power of the scale.
+
+  Written as `(res^2 - sigma^2)/sigma^3`, the score loses its
+  denominator to overflow before the ratio itself becomes
+  unrepresentable: at `sigma = 8e102` it returned exactly 0 where the
+  value is `-1/sigma`, which on the link scale is -1, and at `1e200` it
+  returned `NaN`. Zero is what a stopping rule reads as stationarity, so
+  a run that had wandered out there reported `converged = TRUE` at a
+  point that is not a maximum. The second derivative carried `sigma^4`
+  and failed from `1.2e77`, the fourth `sigma^6` and from `4.4e61`. The
+  variance chart is rewritten in `1/v` for the same reason; the
+  precision chart already had no such form.
+
+  Every component now agrees with the expression it replaces wherever
+  that one held, and with the algebra beyond it. What remains out of
+  reach above `1.3e154` is the LINK-SCALE second order, and there the
+  cause is the chain rule rather than the kernel: it forms `(h')^2`,
+  which overflows, against a component of order `1/sigma^2`, which
+  underflows. The result is `NaN` rather than a plausible number, and a
+  test pins that.
+
+- The beta-binomial’s mass stays a probability at any shapes.
+
+  `lchoose(n, y) + lbeta(y + a, n - y + b) - lbeta(a, b)` evaluated left
+  to right adds a term of order one to a beta function of order `1e23`,
+  which annihilates it, and the subtraction then leaves exactly zero.
+  Every mass came back as one, the support summed to 11 instead of 1,
+  and the log-likelihood was 0 – which beats any real fit. Fitted to
+  binomial data, which asks the shapes to run to infinity at a fixed
+  ratio, one start in six landed there and won.
+
+  The shifts are integers, so each log-gamma difference is an exact sum
+  of logarithms and the mass follows from three of them without forming
+  any quantity larger than `n log(alpha + beta)`. The route is taken
+  when the ordinary one is no longer accurate, at a threshold derived
+  from the size of the terms it cancels rather than chosen. The mass now
+  sums to one to 1e-13 at shapes from 1 to 1e23 and reaches the binomial
+  limit to 1e-13.
+
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  rejects a run of a discrete family whose log-likelihood is positive.
+
+  A product of probabilities cannot exceed one, so such a run has left
+  the region where the mass function is computable rather than found a
+  better fit. It is discarded before the comparison, not ranked below
+  the others: the objective is what breaks ties, and a number that is
+  not a likelihood wins every tie it is allowed to enter. A
+  log-likelihood of exactly zero is left alone, being what a legitimate
+  fit against a support boundary reports.
+
+- Six more families carry a method-of-moments estimate, taking the count
+  to 37 of 42: `skewnormal1` and `skewnormal2` from the first three
+  moments, `weibull3` and `pig2` by carrying the estimate of the chart
+  they reparametrize across its map, and `betabinom1` and `betabinom2`
+  by reading the intra-class correlation off the variance. Each recovers
+  its parameters to better than one per cent on 4e5 draws. The five
+  without one – `skewt`, `pseudohuber`, `gengamma1`, `gengamma2`, `enet`
+  – have no closed inversion of their moments and keep the
+  interpretation route.
+
+  A family carrying a fixed constant spells it in its name, as in
+  `"beta-binomial [size=10]"`, so the bracketed part is now dropped
+  before the name is used as a lookup key: without that no beta-binomial
+  of any size could match its own entry.
+
+## distributions7 0.19.0
+
+- A univariate family starts from the DATA, not from a draw over its
+  parameters’ domains.
+
+  The base
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  never looked at `y`. That is harmless while the response is of order
+  one and fatal when it is not: on a response of mean 919 and standard
+  deviation 169 the draws are of order one, the first step is taken
+  where the residuals are hundreds of standard deviations wide, and the
+  scale runs to the largest representable double. Measured on a
+  gaussian,
+  [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  recovered N(5, 2) and N(50, 20) and FAILED on N(500, 200) – a
+  threshold in the scale of the data, not in the family. Downstream,
+  `statmod(y ~ t, gaussian1_distrib(), Nile)` returned an intercept of
+  227.9 and a slope of exactly 0 where `lm` gives 1056.4 and -2.71.
+
+  What makes one method serve every family is that they already declare
+  `params_interpretation`. A parameter meaning a location starts at the
+  sample median, one meaning a spread at the sample standard deviation
+  or its square, one meaning degrees of freedom at the value the sample
+  kurtosis implies, and anything else – a shape, a dispersion, a
+  probability – keeps its draw, being of order one whatever the data. A
+  family declaring nothing recognizable loses nothing. Values are
+  clamped strictly inside their bounds, a sample median being able to
+  land on a support boundary.
+
+  Now recovered across five decades of scale, N(5,2) to N(50000,20000),
+  and on gamma, lognormal, Student t, Weibull, Poisson and negative
+  binomial responses centred in the hundreds. `statmod()` on the Nile
+  agrees with `lm` to 4.3e-16.
+
+- [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
+  gives a family its own method-of-moments estimate, which
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  returns as the first starting value and refines by maximum likelihood
+  from there. The interpretation route above is what a family without
+  one falls back to. Each entry is checked against 2e5 draws from a
+  known parameter, so the inversion is pinned to the family’s own
+  generator rather than to the algebra it was written from – which is
+  what catches a variance function transcribed from the wrong
+  parametrization.
+
+## distributions7 0.18.0
+
+- `distrib_kernel(distrib, param)` returns the log-density, the score
+  and the curvature in one parameter’s unconstrained scale, with the
+  family’s methods and the link’s resolved once and the chain rule
+  applied to the single component wanted rather than to all of them.
+
+  The generic route is right almost everywhere: it validates its
+  arguments, aligns `theta` by name, dispatches, and assembles every
+  component of the order asked for. A recursion that calls back once per
+  observation can afford none of that, and a score-driven filter
+  evaluates its score at a predictor it has just produced, so the call
+  cannot be vectorized away. Measured on one observation, the kernel is
+  5.2x the generic for a gaussian score and 5.8x for its curvature; on a
+  family whose own method is expensive the share is smaller (1.7x for
+  the skew t).
+
+  The caller takes on what the generic was doing: `theta` must already
+  be in the family’s order with values of an acceptable length, and
+  nothing is checked. The inverse link is still clamped strictly inside
+  its bounds, which is a correctness property and not an optimization –
+  an unclamped `exp(-800)` is zero, and a gaussian with a scale of
+  exactly zero is not a distribution.
+
+## distributions7 0.17.0
+
+- The link-scale assembly no longer rebuilds its index layout on every
+  call.
+  [`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+  computed, for each component of the requested order, the multi-index
+  list, a `unique` and a `tabulate`, and then a `sort` and a `paste` per
+  term of the nested sum to spell the key of the parameter-scale
+  component it needed. None of that depends on the values; it is a
+  function of the parameter names and the order alone, and
+  [`link_scale_layout()`](https://statmodels7.github.io/distributions7/reference/link_scale_layout.md)
+  now computes it once and caches it.
+
+  It was found by profiling a fitted score-driven model, where `paste`,
+  `sort` and `unique` were among the leaders of the self time: a filter
+  reaches this once per observation per iteration, so the names were
+  being respelled millions of times in one fit. Measured end to end, a
+  gas(1,1) fit at 2000 observations went from 109 to 85 seconds, and an
+  ordinary gaussian fit at 100000 observations from 1.00 to 0.89. The
+  components are bit-for-bit what they were, checked on four families at
+  all four orders.
+
+## distributions7 0.16.0
+
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  reports the observed information whenever the expected one has no
+  closed form and the fit did not compute it.
+
+  Which matrix the standard errors came from was decided by comparing
+  `method` with the string `"newton"`. That argument has accepted an
+  optimizers7 OBJECT since the delegation to that package, and an object
+  is normalized internally to `"custom"`, so
+  [`newton()`](https://statmodels7.github.io/optimizers7/reference/newton.html)
+  failed the test and the expected information was assembled anyway – by
+  quadrature, for a family that does not write the expectation out. On a
+  user-defined Gompertz, whose score grows like `exp(by)` while the
+  density decays like `exp(-eta exp(by))`, that quadrature does not
+  converge: `method = "newton"` fitted in 0.15 seconds and
+  `method = newton()`, the same algorithm on the same data, had not
+  returned after five minutes. The surrounding `tryCatch` does not help,
+  a quadrature that fails to converge raising nothing.
+
+  The condition now asks what is actually wanted: the expected
+  information when the fit used it (Fisher scoring) or when the family
+  writes it out and it costs one evaluation, and the observed one
+  otherwise. Families that carry a closed-form expectation are
+  unaffected, to the digit.
+
+## distributions7 0.15.0
+
+- [`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md)
+  has a closed expected information, where it took one from the sampling
+  fallback. Every piece was already in the family.
+
+  In the two rates the density is an exponential family with sufficient
+  statistics `-|z|` and `-z^2/2`, so `log Z` is its cumulant generating
+  function and the information in `(a, c)` is exactly the Hessian of
+  `log Z` – which `.enet_logz_derivs()` computes for the observed
+  Hessian already. The map to `(lambda, alpha)` is bilinear, so the
+  information transforms by `J' I J` with no second-derivative term.
+
+  The location is where the expected and the observed part company, and
+  the reason is the kink. The observed second derivative in `mu` is
+  `-c`, which misses the point mass `d sgn(z)/dz = 2 delta(z)` the
+  density carries at its own location, exactly as the Laplace does; the
+  information there is the variance of the score,
+
+  ``` R
+  I_mu_mu = a^2 + 2ac E|z| + c^2 E[z^2]
+          = a^2 - 2ac dlogZ/da - 2c^2 dlogZ/dc,
+  ```
+
+  since `E|z| = -dlogZ/da` and `E[z^2] = -2 dlogZ/dc`. It reduces to
+  `lambda^2` at `alpha = 1`, which is the Laplace’s, and to `c` at
+  `alpha = 0`, which is the Gaussian’s, and both are asserted against
+  the families that own them.
+
+  Validated against the definition – minus the outer product of the
+  score, integrated against the density and SPLIT AT THE KINK, since a
+  rule that straddles the corner measures the corner: 2.3e-14 to 1.1e-6
+  over five settings, the worse ones being the quadrature and not the
+  formula. A Monte Carlo of 4e6 draws agrees within its own standard
+  error at all of them.
+
+- The multivariate validator’s own gradient and second-derivative
+  stencils take their nodes, weights and step from numericals7 rather
+  than writing out a central difference with a step of their own. The
+  rules are identical, so the checks report what they reported.
+
 ## distributions7 0.14.0
 
 - The mixed grid reaches every shape that needs no new algebra. A family

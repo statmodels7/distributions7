@@ -120,7 +120,7 @@ set.seed(2)
 ys <- distrib_rng(sn, 300, list(mu = 0, sigma = 1, alpha = 3))
 coef(fit_distrib(sn, ys, method = fisher_scoring(approx = "opg")))
 #>         mu      sigma      alpha 
-#> 0.09063039 1.01986818 3.15712890 
+#> 0.09062958 1.01986881 3.15713881 
 
 try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
 #> Error : 'gaussian1' computes its expected information in closed form, so the 'approx'

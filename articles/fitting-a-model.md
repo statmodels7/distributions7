@@ -41,7 +41,7 @@ fit <- fit_distrib(d, y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -844   AIC: 1692   BIC: 1700
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 246 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 276 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:
@@ -69,11 +69,11 @@ returns an object that answers the familiar extractors:
 
 coef(fit)
 #>       mu   sigma2 
-#> 2.970589 2.012009
+#> 2.970589 2.012010
 vcov(fit)
 #>                 mu      sigma2
-#> mu     0.004024019 0.005451015
-#> sigma2 0.005451015 0.022443706
+#> mu     0.004024020 0.005451018
+#> sigma2 0.005451018 0.022443720
 logLik(fit)
 #> 'log Lik.' -844.0323 (df=2)
 confint(fit)
@@ -91,11 +91,11 @@ argument, which returns the same quantities on the unconstrained scale:
 
 coef(fit, scale = "link")
 #>        mu    sigma2 
-#> 1.0887603 0.6991339
+#> 1.0887603 0.6991342
 confint(fit, scale = "link")
 #>             2.5%     97.5%
-#> mu     1.0469065 1.1306142
-#> sigma2 0.5531969 0.8450709
+#> mu     1.0469064 1.1306142
+#> sigma2 0.5531972 0.8450712
 ```
 
 The interval on the link scale is symmetric about the estimate, and the
@@ -140,7 +140,7 @@ b <- bernoulli_distrib()
 fit_distrib(b, rbinom(40, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 40   Log-likelihood: -10.66   AIC: 23.31   BIC: 25
-#> Method: Fisher scoring   iterations: 3   evaluations: f 4, g 4   time: 3 ms
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 1 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.14.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.20.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,73 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.20.0" id="distributions7-0200">distributions7 0.20.0<a class="anchor" aria-label="anchor" href="#distributions7-0200"></a></h2>
+<ul><li>
+<p>The gaussian’s derivatives are written in <code>z = (y - mu)/sigma</code> and <code>1/sigma</code>, never in a positive power of the scale.</p>
+<p>Written as <code>(res^2 - sigma^2)/sigma^3</code>, the score loses its denominator to overflow before the ratio itself becomes unrepresentable: at <code>sigma = 8e102</code> it returned exactly 0 where the value is <code>-1/sigma</code>, which on the link scale is -1, and at <code>1e200</code> it returned <code>NaN</code>. Zero is what a stopping rule reads as stationarity, so a run that had wandered out there reported <code>converged = TRUE</code> at a point that is not a maximum. The second derivative carried <code>sigma^4</code> and failed from <code>1.2e77</code>, the fourth <code>sigma^6</code> and from <code>4.4e61</code>. The variance chart is rewritten in <code>1/v</code> for the same reason; the precision chart already had no such form.</p>
+<p>Every component now agrees with the expression it replaces wherever that one held, and with the algebra beyond it. What remains out of reach above <code>1.3e154</code> is the LINK-SCALE second order, and there the cause is the chain rule rather than the kernel: it forms <code>(h')^2</code>, which overflows, against a component of order <code>1/sigma^2</code>, which underflows. The result is <code>NaN</code> rather than a plausible number, and a test pins that.</p>
+</li>
+<li>
+<p>The beta-binomial’s mass stays a probability at any shapes.</p>
+<p><code>lchoose(n, y) + lbeta(y + a, n - y + b) - lbeta(a, b)</code> evaluated left to right adds a term of order one to a beta function of order <code>1e23</code>, which annihilates it, and the subtraction then leaves exactly zero. Every mass came back as one, the support summed to 11 instead of 1, and the log-likelihood was 0 – which beats any real fit. Fitted to binomial data, which asks the shapes to run to infinity at a fixed ratio, one start in six landed there and won.</p>
+<p>The shifts are integers, so each log-gamma difference is an exact sum of logarithms and the mass follows from three of them without forming any quantity larger than <code>n log(alpha + beta)</code>. The route is taken when the ordinary one is no longer accurate, at a threshold derived from the size of the terms it cancels rather than chosen. The mass now sums to one to 1e-13 at shapes from 1 to 1e23 and reaches the binomial limit to 1e-13.</p>
+</li>
+<li>
+<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> rejects a run of a discrete family whose log-likelihood is positive.</p>
+<p>A product of probabilities cannot exceed one, so such a run has left the region where the mass function is computable rather than found a better fit. It is discarded before the comparison, not ranked below the others: the objective is what breaks ties, and a number that is not a likelihood wins every tie it is allowed to enter. A log-likelihood of exactly zero is left alone, being what a legitimate fit against a support boundary reports.</p>
+</li>
+<li>
+<p>Six more families carry a method-of-moments estimate, taking the count to 37 of 42: <code>skewnormal1</code> and <code>skewnormal2</code> from the first three moments, <code>weibull3</code> and <code>pig2</code> by carrying the estimate of the chart they reparametrize across its map, and <code>betabinom1</code> and <code>betabinom2</code> by reading the intra-class correlation off the variance. Each recovers its parameters to better than one per cent on 4e5 draws. The five without one – <code>skewt</code>, <code>pseudohuber</code>, <code>gengamma1</code>, <code>gengamma2</code>, <code>enet</code> – have no closed inversion of their moments and keep the interpretation route.</p>
+<p>A family carrying a fixed constant spells it in its name, as in <code>"beta-binomial [size=10]"</code>, so the bracketed part is now dropped before the name is used as a lookup key: without that no beta-binomial of any size could match its own entry.</p>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.19.0" id="distributions7-0190">distributions7 0.19.0<a class="anchor" aria-label="anchor" href="#distributions7-0190"></a></h2>
+<ul><li>
+<p>A univariate family starts from the DATA, not from a draw over its parameters’ domains.</p>
+<p>The base <code><a href="../reference/distrib_start.html">distrib_start()</a></code> never looked at <code>y</code>. That is harmless while the response is of order one and fatal when it is not: on a response of mean 919 and standard deviation 169 the draws are of order one, the first step is taken where the residuals are hundreds of standard deviations wide, and the scale runs to the largest representable double. Measured on a gaussian, <code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> recovered N(5, 2) and N(50, 20) and FAILED on N(500, 200) – a threshold in the scale of the data, not in the family. Downstream, <code>statmod(y ~ t, gaussian1_distrib(), Nile)</code> returned an intercept of 227.9 and a slope of exactly 0 where <code>lm</code> gives 1056.4 and -2.71.</p>
+<p>What makes one method serve every family is that they already declare <code>params_interpretation</code>. A parameter meaning a location starts at the sample median, one meaning a spread at the sample standard deviation or its square, one meaning degrees of freedom at the value the sample kurtosis implies, and anything else – a shape, a dispersion, a probability – keeps its draw, being of order one whatever the data. A family declaring nothing recognizable loses nothing. Values are clamped strictly inside their bounds, a sample median being able to land on a support boundary.</p>
+<p>Now recovered across five decades of scale, N(5,2) to N(50000,20000), and on gamma, lognormal, Student t, Weibull, Poisson and negative binomial responses centred in the hundreds. <code>statmod()</code> on the Nile agrees with <code>lm</code> to 4.3e-16.</p>
+</li>
+<li><p><code><a href="../reference/moment_estimates.html">moment_estimates()</a></code> gives a family its own method-of-moments estimate, which <code><a href="../reference/distrib_start.html">distrib_start()</a></code> returns as the first starting value and refines by maximum likelihood from there. The interpretation route above is what a family without one falls back to. Each entry is checked against 2e5 draws from a known parameter, so the inversion is pinned to the family’s own generator rather than to the algebra it was written from – which is what catches a variance function transcribed from the wrong parametrization.</p></li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.18.0" id="distributions7-0180">distributions7 0.18.0<a class="anchor" aria-label="anchor" href="#distributions7-0180"></a></h2>
+<ul><li>
+<p><code>distrib_kernel(distrib, param)</code> returns the log-density, the score and the curvature in one parameter’s unconstrained scale, with the family’s methods and the link’s resolved once and the chain rule applied to the single component wanted rather than to all of them.</p>
+<p>The generic route is right almost everywhere: it validates its arguments, aligns <code>theta</code> by name, dispatches, and assembles every component of the order asked for. A recursion that calls back once per observation can afford none of that, and a score-driven filter evaluates its score at a predictor it has just produced, so the call cannot be vectorized away. Measured on one observation, the kernel is 5.2x the generic for a gaussian score and 5.8x for its curvature; on a family whose own method is expensive the share is smaller (1.7x for the skew t).</p>
+<p>The caller takes on what the generic was doing: <code>theta</code> must already be in the family’s order with values of an acceptable length, and nothing is checked. The inverse link is still clamped strictly inside its bounds, which is a correctness property and not an optimization – an unclamped <code>exp(-800)</code> is zero, and a gaussian with a scale of exactly zero is not a distribution.</p>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.17.0" id="distributions7-0170">distributions7 0.17.0<a class="anchor" aria-label="anchor" href="#distributions7-0170"></a></h2>
+<ul><li>
+<p>The link-scale assembly no longer rebuilds its index layout on every call. <code><a href="../reference/to_link_scale.html">to_link_scale()</a></code> computed, for each component of the requested order, the multi-index list, a <code>unique</code> and a <code>tabulate</code>, and then a <code>sort</code> and a <code>paste</code> per term of the nested sum to spell the key of the parameter-scale component it needed. None of that depends on the values; it is a function of the parameter names and the order alone, and <code><a href="../reference/link_scale_layout.html">link_scale_layout()</a></code> now computes it once and caches it.</p>
+<p>It was found by profiling a fitted score-driven model, where <code>paste</code>, <code>sort</code> and <code>unique</code> were among the leaders of the self time: a filter reaches this once per observation per iteration, so the names were being respelled millions of times in one fit. Measured end to end, a gas(1,1) fit at 2000 observations went from 109 to 85 seconds, and an ordinary gaussian fit at 100000 observations from 1.00 to 0.89. The components are bit-for-bit what they were, checked on four families at all four orders.</p>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.16.0" id="distributions7-0160">distributions7 0.16.0<a class="anchor" aria-label="anchor" href="#distributions7-0160"></a></h2>
+<ul><li>
+<p><code><a href="../reference/fit_distrib.html">fit_distrib()</a></code> reports the observed information whenever the expected one has no closed form and the fit did not compute it.</p>
+<p>Which matrix the standard errors came from was decided by comparing <code>method</code> with the string <code>"newton"</code>. That argument has accepted an optimizers7 OBJECT since the delegation to that package, and an object is normalized internally to <code>"custom"</code>, so <code><a href="https://statmodels7.github.io/optimizers7/reference/newton.html" class="external-link">newton()</a></code> failed the test and the expected information was assembled anyway – by quadrature, for a family that does not write the expectation out. On a user-defined Gompertz, whose score grows like <code>exp(by)</code> while the density decays like <code>exp(-eta exp(by))</code>, that quadrature does not converge: <code>method = "newton"</code> fitted in 0.15 seconds and <code>method = newton()</code>, the same algorithm on the same data, had not returned after five minutes. The surrounding <code>tryCatch</code> does not help, a quadrature that fails to converge raising nothing.</p>
+<p>The condition now asks what is actually wanted: the expected information when the fit used it (Fisher scoring) or when the family writes it out and it costs one evaluation, and the observed one otherwise. Families that carry a closed-form expectation are unaffected, to the digit.</p>
+</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.15.0" id="distributions7-0150">distributions7 0.15.0<a class="anchor" aria-label="anchor" href="#distributions7-0150"></a></h2>
+<ul><li>
+<p><code><a href="../reference/enet_distrib.html">enet_distrib()</a></code> has a closed expected information, where it took one from the sampling fallback. Every piece was already in the family.</p>
+<p>In the two rates the density is an exponential family with sufficient statistics <code>-|z|</code> and <code>-z^2/2</code>, so <code>log Z</code> is its cumulant generating function and the information in <code>(a, c)</code> is exactly the Hessian of <code>log Z</code> – which <code>.enet_logz_derivs()</code> computes for the observed Hessian already. The map to <code>(lambda, alpha)</code> is bilinear, so the information transforms by <code>J' I J</code> with no second-derivative term.</p>
+<p>The location is where the expected and the observed part company, and the reason is the kink. The observed second derivative in <code>mu</code> is <code>-c</code>, which misses the point mass <code>d sgn(z)/dz = 2 delta(z)</code> the density carries at its own location, exactly as the Laplace does; the information there is the variance of the score,</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>I_mu_mu <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span>ac E<span class="sc">|</span>z<span class="sc">|</span> <span class="sc">+</span> c<span class="sc">^</span><span class="dv">2</span> E[z<span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>        <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span>ac dlogZ<span class="sc">/</span>da <span class="sc">-</span> <span class="dv">2</span>c<span class="sc">^</span><span class="dv">2</span> dlogZ<span class="sc">/</span>dc,</span></code></pre></div>
+<p>since <code>E|z| = -dlogZ/da</code> and <code>E[z^2] = -2 dlogZ/dc</code>. It reduces to <code>lambda^2</code> at <code>alpha = 1</code>, which is the Laplace’s, and to <code>c</code> at <code>alpha = 0</code>, which is the Gaussian’s, and both are asserted against the families that own them.</p>
+<p>Validated against the definition – minus the outer product of the score, integrated against the density and SPLIT AT THE KINK, since a rule that straddles the corner measures the corner: 2.3e-14 to 1.1e-6 over five settings, the worse ones being the quadrature and not the formula. A Monte Carlo of 4e6 draws agrees within its own standard error at all of them.</p>
+</li>
+<li><p>The multivariate validator’s own gradient and second-derivative stencils take their nodes, weights and step from numericals7 rather than writing out a central difference with a step of their own. The rules are identical, so the checks report what they reported.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.14.0" id="distributions7-0140">distributions7 0.14.0<a class="anchor" aria-label="anchor" href="#distributions7-0140"></a></h2>
 <ul><li><p>The mixed grid reaches every shape that needs no new algebra. A family written out in its own parametrization with its own kernels – gaussian2, gaussian3, laplace2, invgauss2 – is not a <code><a href="../reference/reparametrize.html">reparametrize()</a></code> wrapper and does not inherit its methods, but its map onto a parent is already tabulated in <code>reparam_maps.R</code>, so the same chain rule applies and only the registration was missing.</p></li>

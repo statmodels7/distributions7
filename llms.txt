@@ -511,6 +511,8 @@ respect to the unconstrained parameters.
   : Third and Fourth Derivatives of the Log Distribution Function
 - [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
   : Derivatives on the Link (Real) Scale
+- [`distrib_kernel()`](https://statmodels7.github.io/distributions7/reference/distrib_kernel.md)
+  : A Resolved Kernel for One Parameter's Link-Scale Derivatives
 - [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
   : Strategies for Expected Derivatives
 
@@ -972,6 +974,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_deriv3.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
   [`distrib_deriv4.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.EnetDistrib.md)
   : Elastic-Net Third and Fourth Derivatives
+- [`distrib_expected_hessian.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.EnetDistrib.md)
+  : Elastic-Net Expected Information
 - [`distrib_grad_y.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.EnetDistrib.md)
   : Elastic-Net Response Derivatives
 - [`distrib_gradient.EnetDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.EnetDistrib.md)
@@ -2122,6 +2126,9 @@ divergent density.
 - [`betabinom_factorial_moments()`](https://statmodels7.github.io/distributions7/reference/betabinom_factorial_moments.md)
   : Falling Factorial Moments of the Beta-Binomial
 
+- [`betabinom_log_mass()`](https://statmodels7.github.io/distributions7/reference/betabinom_log_mass.md)
+  : Log-Mass of the Beta-Binomial
+
 - [`canon_key()`](https://statmodels7.github.io/distributions7/reference/canon_key.md)
   : Canonical Component Name of a Block
 
@@ -2169,6 +2176,9 @@ divergent density.
 
 - [`check_truncation_points()`](https://statmodels7.github.io/distributions7/reference/check_truncation_points.md)
   : Validate the Truncation Endpoints
+
+- [`clamp_to_bounds()`](https://statmodels7.github.io/distributions7/reference/clamp_to_bounds.md)
+  : Move a Starting Value Strictly Inside the Parameter Bounds
 
 - [`declares_atoms()`](https://statmodels7.github.io/distributions7/reference/declares_atoms.md)
   : Does a Distribution Declare Atoms
@@ -2884,6 +2894,9 @@ divergent density.
 - [`kurtosis.numeric`](https://statmodels7.github.io/distributions7/reference/kurtosis.numeric.md)
   : Sample Kurtosis
 
+- [`link_scale_layout()`](https://statmodels7.github.io/distributions7/reference/link_scale_layout.md)
+  : The Index Layout of the Link-Scale Assembly
+
 - [`link_scale_lower_orders()`](https://statmodels7.github.io/distributions7/reference/link_scale_lower_orders.md)
   : Lower-Order Parameter-Scale Derivatives for the Chain Rule
 
@@ -3087,6 +3100,9 @@ divergent density.
 
 - [`moment_const()`](https://statmodels7.github.io/distributions7/reference/moment_const.md)
   : Recycle a Constant Moment to the Length of the Parameters
+
+- [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
+  : Method-of-Moments Estimates, Family by Family
 
 - [`moments.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
   [`variance.Pig1Distrib`](https://statmodels7.github.io/distributions7/reference/moments.Pig1Distrib.md)
@@ -3526,6 +3542,9 @@ divergent density.
 
 - [`split_mix_theta()`](https://statmodels7.github.io/distributions7/reference/split_mix_theta.md)
   : Split a Wrapper's Parameters From Its Parent's
+
+- [`start_from_moments()`](https://statmodels7.github.io/distributions7/reference/start_from_moments.md)
+  : Where a Univariate Family Starts, From the Data
 
 - [`std_dev.distrib`](https://statmodels7.github.io/distributions7/reference/std_dev.distrib.md)
   : Standard Deviation of a Distribution
