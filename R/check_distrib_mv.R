@@ -235,21 +235,35 @@ has_mv_grad_y <- function(x) {
 #' One central difference per coordinate, which is all the multivariate checks
 #' need and which keeps \pkg{numDeriv} a suggestion rather than a requirement.
 #'
+#' @details
+#' The nodes, the weights and the step are \pkg{numericals7}'s.
+#' \code{\link[numericals7]{fd_derivative}} is not called directly because its
+#' \code{f} maps a vector of points to the values at those points, while this
+#' one maps a whole vector to a single number.
+#'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
-#' @param h_rel The relative step.
+#' @param h_rel Deprecated and unused; the step is
+#'   \code{\link[numericals7]{fd_step}}'s.
 #'
 #' @return A numeric vector the length of \code{x}.
 #'
+#' @seealso \code{\link[numericals7]{fd_weights}}
+#'
 #' @keywords internal
-numDeriv_grad <- function(f, x, h_rel = .Machine$double.eps^(1 / 3)) {
+numDeriv_grad <- function(f, x, h_rel = NULL) {
+  s <- numericals7::fd_offsets(1L, accuracy = 2L)$central
+  w <- numericals7::fd_weights(s, 1L)
   vapply(seq_along(x), function(k) {
-    h <- h_rel * max(1, abs(x[k]))
-    up <- x
-    dn <- x
-    up[k] <- x[k] + h
-    dn[k] <- x[k] - h
-    (f(up) - f(dn)) / (2 * h)
+    h <- numericals7::fd_step(x[k], 1L, accuracy = 2L)
+    acc <- 0
+    for (j in seq_along(s)) {
+      if (w[j] == 0) next
+      z <- x
+      z[k] <- x[k] + s[j] * h
+      acc <- acc + w[j] * f(z)
+    }
+    acc / h
   }, numeric(1))
 }
 
@@ -260,27 +274,51 @@ numDeriv_grad <- function(f, x, h_rel = .Machine$double.eps^(1 / 3)) {
 #' The mixed or repeated second derivative of a scalar function, from a single
 #' stencil rather than from nested first differences.
 #'
+#' @details
+#' The nodes, the weights and the step are \pkg{numericals7}'s. Where the two
+#' coordinates differ the stencil is the product of two first-order factors,
+#' which is one stencil in two variables and not a difference of a difference:
+#' nesting is forbidden along ONE variable, and is what a mixed derivative is
+#' along two.
+#'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
 #' @param k,l The coordinates to differentiate in.
-#' @param h_rel The relative step.
+#' @param h_rel Deprecated and unused; the step is
+#'   \code{\link[numericals7]{fd_step}}'s at order two.
 #'
 #' @return A single number.
 #'
+#' @seealso \code{\link[numericals7]{fd_weights}}
+#'
 #' @keywords internal
-fd_second <- function(f, x, k, l, h_rel = .Machine$double.eps^(1 / 4)) {
-  hk <- h_rel * max(1, abs(x[k]))
-  hl <- h_rel * max(1, abs(x[l]))
+fd_second <- function(f, x, k, l, h_rel = NULL) {
+  hk <- numericals7::fd_step(x[k], 2L, accuracy = 2L)
+  hl <- numericals7::fd_step(x[l], 2L, accuracy = 2L)
   if (k == l) {
-    up <- dn <- x
-    up[k] <- x[k] + hk
-    dn[k] <- x[k] - hk
-    return((f(up) - 2 * f(x) + f(dn)) / hk^2)
+    s <- numericals7::fd_offsets(2L, accuracy = 2L)$central
+    w <- numericals7::fd_weights(s, 2L)
+    acc <- 0
+    for (j in seq_along(s)) {
+      if (w[j] == 0) next
+      z <- x
+      z[k] <- x[k] + s[j] * hk
+      acc <- acc + w[j] * f(z)
+    }
+    return(acc / hk^2)
   }
-  pp <- pm <- mp <- mm <- x
-  pp[k] <- pp[k] + hk; pp[l] <- pp[l] + hl
-  pm[k] <- pm[k] + hk; pm[l] <- pm[l] - hl
-  mp[k] <- mp[k] - hk; mp[l] <- mp[l] + hl
-  mm[k] <- mm[k] - hk; mm[l] <- mm[l] - hl
-  (f(pp) - f(pm) - f(mp) + f(mm)) / (4 * hk * hl)
+  s <- numericals7::fd_offsets(1L, accuracy = 2L)$central
+  w <- numericals7::fd_weights(s, 1L)
+  acc <- 0
+  for (a in seq_along(s)) {
+    if (w[a] == 0) next
+    for (b in seq_along(s)) {
+      if (w[b] == 0) next
+      z <- x
+      z[k] <- x[k] + s[a] * hk
+      z[l] <- x[l] + s[b] * hl
+      acc <- acc + w[a] * w[b] * f(z)
+    }
+  }
+  acc / (hk * hl)
 }

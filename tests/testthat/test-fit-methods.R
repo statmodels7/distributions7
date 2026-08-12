@@ -151,3 +151,213 @@ test_that("the fit keeps the data it was estimated from", {
   expect_equal(f@y, y)
   expect_equal(f@n, 50)
 })
+
+test_that("the information at the optimum does not depend on the SPELLING", {
+  # `method` takes a string or an optimizer object, and the choice between
+  # the observed and the expected information was made by comparing it with
+  # the string "newton". An object is normalized to "custom", so newton()
+  # took the expected branch -- which for a family that does not write the
+  # expectation out is a quadrature, and on a family whose score grows
+  # exponentially that quadrature does not converge. The fit took 0.15 s and
+  # the standard errors never returned.
+  skip_on_cran()
+  Gomp <- S7::new_class("Gomp", parent = continuous_distrib)
+  S7::method(distrib_pdf, Gomp) <- function(distrib, y, theta, log = FALSE) {
+    eta <- theta[[1]]; b <- theta[[2]]
+    ld <- log(eta) + log(b) + b * y - eta * expm1(b * y)
+    ld[y < 0] <- -Inf
+    if (log) ld else exp(ld)
+  }
+  gz <- Gomp(distrib_name = "gomp", dimension = "univariate",
+             bounds = c(0, Inf), params = c("eta", "b"),
+             params_interpretation = c(eta = "level", b = "rate"),
+             n_params = 2,
+             params_bounds = list(eta = c(0, Inf), b = c(0, Inf)),
+             link_params = list(eta = linkfunctions7::log_link(),
+                                b = linkfunctions7::log_link()))
+  expect_false(has_exact_expected_hessian(gz))
+
+  set.seed(2)
+  yg <- distrib_rng(gz, 150, list(eta = 0.02, b = 0.9))
+
+  t0 <- proc.time()[["elapsed"]]
+  f_obj <- fit_distrib(gz, yg, method = optimizers7::newton())
+  el <- proc.time()[["elapsed"]] - t0
+  f_str <- fit_distrib(gz, yg, method = "newton")
+
+  # the estimate is the same algorithm's, and so is the variance matrix
+  expect_equal(unlist(coef(f_obj)), unlist(coef(f_str)), tolerance = 1e-6)
+  expect_equal(vcov(f_obj), vcov(f_str), tolerance = 1e-6)
+  # and it returns at all, which is the whole point: the divergent
+  # quadrature ran for minutes and raised nothing, so no tryCatch caught it
+  expect_lt(el, 60)
+  expect_true(all(is.finite(vcov(f_obj))))
+
+  # a family that DOES write the expectation out is unaffected: Fisher
+  # scoring still reports the expected information there
+  gg <- gamma1_distrib()
+  expect_true(has_exact_expected_hessian(gg))
+  set.seed(3)
+  yy <- distrib_rng(gg, 400, list(mu = 3, phi = 2))
+  fg <- fit_distrib(gg, yy)
+  # on the LINK scale, which is where the information is assembled; vcov()
+  # defaults to the parameter scale and is that matrix carried through the
+  # delta method
+  expect_equal(vcov(fg, scale = "link"),
+               solve(-fit_hess_matrix(gg, yy,
+                                      as.list(coef(fg, scale = "parameter")),
+                                      expected = TRUE)),
+               tolerance = 1e-6, ignore_attr = TRUE)
+})
+
+test_that("distrib_kernel agrees with the generic route it bypasses", {
+  # The kernel resolves the family's methods and the link's once and applies
+  # the chain rule for ONE component; the generic validates, aligns, and
+  # assembles every component of its order. They must not differ.
+  fams <- list(
+    list(d = gaussian1_distrib(), th = list(mu = 0.3, sigma = 1.4)),
+    list(d = gamma1_distrib(),    th = list(mu = 2, phi = 3)),
+    list(d = poisson_distrib(),   th = list(mu = 2.5)),
+    list(d = negbin2_distrib(),   th = list(mu = 3, theta = 2)),
+    list(d = weibull1_distrib(),  th = list(mu = 2, sigma = 1.5)),
+    list(d = gpd_distrib(),       th = list(sigma = 1.2, xi = 0.3))
+  )
+  for (f in fams) {
+    set.seed(5)
+    y <- distrib_rng(f$d, 40, f$th)
+    for (p in f$d@params) {
+      lk <- f$d@link_params[[p]]
+      eta <- linkfunctions7::linkfun(lk, f$th[[p]])
+      k <- distrib_kernel(f$d, p)
+      # the entry for p on the way in is immaterial, being replaced
+      th_in <- f$th
+      th_in[[p]] <- NA_real_
+      expect_equal(as.numeric(k$logdens(y, th_in, eta)),
+                   as.numeric(rep_len(distrib_pdf(f$d, y, f$th, log = TRUE),
+                                      length(y))), tolerance = 1e-10)
+      expect_equal(as.numeric(k$score(y, th_in, eta)),
+                   as.numeric(rep_len(distrib_gradient(
+                     f$d, y, f$th, scale = "link")[[p]], length(y))),
+                   tolerance = 1e-10)
+      expect_equal(as.numeric(k$curvature(y, th_in, eta)),
+                   as.numeric(rep_len(distrib_hessian(
+                     f$d, y, f$th, scale = "link")[[paste0(p, "_", p)]],
+                     length(y))), tolerance = 1e-10)
+    }
+  }
+
+  # a vector eta, which a filter never uses and a caller may
+  d <- gaussian1_distrib()
+  set.seed(6)
+  y <- stats::rnorm(30)
+  ev <- stats::rnorm(30, 0, 0.3)
+  k <- distrib_kernel(d, "sigma")
+  expect_equal(k$score(y, list(mu = 0.2, sigma = NA), ev),
+               distrib_gradient(d, y, list(mu = 0.2, sigma = exp(ev)),
+                                scale = "link")[["sigma"]],
+               ignore_attr = TRUE)
+
+  # the inverse link is clamped strictly inside its bounds, which is what
+  # linkinv()'s own generic body does and is a correctness property rather
+  # than something the fast path may skip: an unclamped exp(-800) is zero,
+  # and a gaussian with a scale of exactly zero is not a distribution
+  expect_true(is.finite(k$logdens(0, list(mu = 0, sigma = NA), -800)))
+
+  expect_error(distrib_kernel(d, "nope"), "not a parameter")
+  expect_error(distrib_kernel(mvgaussian_distrib(2), "mu1"), "univariate")
+})
+
+test_that("every moment estimate inverts its own family's moments", {
+  # The check that matters: simulate a large sample from a KNOWN theta with
+  # the family's own rng and require the moment estimate to return it. That
+  # tests the inversion against the family, not against memory, and it is
+  # what catches a variance function written from the wrong parametrization.
+  skip_on_cran()
+  cases <- list(
+    list(gaussian1_distrib(),  list(mu = 30, sigma = 7)),
+    list(gaussian2_distrib(),  list(mu = 30, sigma2 = 49)),
+    list(gaussian3_distrib(),  list(mu = 30, tau = 1 / 49)),
+    list(cauchy_distrib(),     list(mu = 30, sigma = 7)),
+    list(laplace_distrib(),    list(mu = 30, sigma = 7)),
+    list(laplace2_distrib(),   list(mu = 30, lambda = 1 / 7)),
+    list(logistic_distrib(),   list(mu = 30, sigma = 7)),
+    list(student_t1_distrib(), list(mu = 30, sigma = 7, nu = 8)),
+    list(student_t2_distrib(), list(mu = 30, sigma = 7, nu = 8)),
+    list(gamma1_distrib(),     list(mu = 30, phi = 0.5)),
+    list(gamma2_distrib(),     list(mu = 30, sigma2 = 400)),
+    list(exponential_distrib(), list(mu = 30)),
+    list(chisq_distrib(),      list(mu = 9)),
+    list(poisson_distrib(),    list(mu = 40)),
+    list(geometric_distrib(),  list(mu = 12)),
+    list(negbin1_distrib(),    list(mu = 40, theta = 3)),
+    list(negbin2_distrib(),    list(mu = 40, theta = 3)),
+    list(beta1_distrib(),      list(mu = 0.35, phi = 9)),
+    list(beta2_distrib(),      list(alpha = 3, beta = 5)),
+    list(bernoulli_distrib(),  list(mu = 0.35)),
+    list(weibull1_distrib(),   list(mu = 300, sigma = 2.5)),
+    list(lognormal1_distrib(), list(mu = 4, sigma2 = 0.3)),
+    list(lognormal2_distrib(), list(mean = 60, var = 900)),
+    list(invgauss1_distrib(),  list(mu = 30, phi = 0.02)),
+    list(invgauss2_distrib(),  list(mu = 30, lambda = 400)),
+    list(gumbel_distrib(),     list(mu = 30, sigma = 7)),
+    list(gpd_distrib(),        list(sigma = 20, xi = 0.2)),
+    list(pig1_distrib(),       list(mu = 40, sigma = 0.05)),
+    list(vonmises1_distrib(),  list(mu = 0.7, kappa = 3)),
+    # the second chart of a family whose first one has an estimate: the
+    # inversion is carried across the map rather than derived again
+    list(weibull3_distrib(),   list(mean = 300, sigma = 2.5)),
+    list(pig2_distrib(),       list(mu = 40, alpha = 3)),
+    list(betabinom2_distrib(size = 10), list(alpha = 3, beta = 5)),
+    # three moments, and the skew normal reaches its shape from the third
+    list(skewnormal2_distrib(), list(mu = 3, sigma = 2, gamma1 = 0.4)),
+    list(skewnormal1_distrib(), list(mu = 3, sigma = 2, alpha = 1.5)),
+    list(betabinom1_distrib(size = 10), list(mu = 0.35, sigma = 0.25))
+  )
+  for (cs in cases) {
+    d <- cs[[1L]]
+    th <- cs[[2L]]
+    set.seed(99)
+    y <- distrib_rng(d, 200000L, th)
+    e <- moment_estimates(d, y)
+    expect_false(is.null(e), label = d@distrib_name)
+    expect_named(e, d@params)
+    rel <- max(abs(unlist(e) - unlist(th)) / pmax(abs(unlist(th)), 1e-3))
+    # loose, because it is a starting value and a t's degrees of freedom
+    # come from a fourth moment; the point is that it is an ESTIMATE
+    expect_lt(rel, 0.1)
+  }
+
+  # A family whose moments cannot be inverted in closed form falls back to the
+  # interpretation route rather than failing. Five do: the skew t and the
+  # elastic net, whose systems are four equations in quantities carrying a
+  # distribution function and a Mills ratio, the two generalized gammas, whose
+  # moments are ratios of gamma functions in two shapes, and the pseudo-Huber,
+  # whose moments have no elementary form.
+  for (d in list(skewt_distrib(), pseudohuber_distrib(), gengamma1_distrib(),
+                 gengamma2_distrib(), enet_distrib())) {
+    expect_null(moment_estimates(d, stats::rnorm(100)), label = d@distrib_name)
+    s <- distrib_start(d, stats::rnorm(100), 2L)
+    expect_length(s, 2L)
+    expect_named(s[[1L]], d@params)
+  }
+
+  # A family carrying a fixed constant spells it in its name, which must not
+  # reach the lookup key: without dropping it, no beta-binomial of any size
+  # would ever match its own entry.
+  expect_false(is.null(moment_estimates(betabinom1_distrib(size = 7),
+                                        stats::rbinom(200, 7, 0.4))))
+})
+
+test_that("a fit recovers its parameters across four decades of scale", {
+  # what the moment start is FOR: the old random draw ignored the data, so
+  # a response of order 1000 sent the scale to the largest double
+  skip_on_cran()
+  for (mult in c(1, 10, 100, 1000, 10000)) {
+    set.seed(7)
+    z <- stats::rnorm(300, 5 * mult, 2 * mult)
+    f <- suppressWarnings(fit_distrib(gaussian1_distrib(), z, n_start = 5L))
+    expect_true(f@converged)
+    expect_equal(coef(f)[["mu"]], 5 * mult, tolerance = 0.05)
+    expect_equal(coef(f)[["sigma"]], 2 * mult, tolerance = 0.05)
+  }
+})

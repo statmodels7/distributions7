@@ -4,14 +4,15 @@
 \alias{numDeriv_grad}
 \title{A Central-Difference Gradient Without a Dependency}
 \usage{
-numDeriv_grad(f, x, h_rel = .Machine$double.eps^(1/3))
+numDeriv_grad(f, x, h_rel = NULL)
 }
 \arguments{
 \item{f}{A function of a numeric vector, returning one number.}
 
 \item{x}{The point.}
 
-\item{h_rel}{The relative step.}
+\item{h_rel}{Deprecated and unused; the step is
+\code{\link[numericals7]{fd_step}}'s.}
 }
 \value{
 A numeric vector the length of \code{x}.
@@ -19,5 +20,14 @@ A numeric vector the length of \code{x}.
 \description{
 One central difference per coordinate, which is all the multivariate checks
 need and which keeps \pkg{numDeriv} a suggestion rather than a requirement.
+}
+\details{
+The nodes, the weights and the step are \pkg{numericals7}'s.
+\code{\link[numericals7]{fd_derivative}} is not called directly because its
+\code{f} maps a vector of points to the values at those points, while this
+one maps a whole vector to a single number.
+}
+\seealso{
+\code{\link[numericals7]{fd_weights}}
 }
 \keyword{internal}

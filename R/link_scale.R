@@ -310,43 +310,202 @@ to_link_scale <- function(distrib, theta, nat, order) {
     return(out)
   }
 
-  terms <- deriv_index_list(p, order)
-  out <- vector("list", length(terms))
-  nms <- character(length(terms))
+  # Everything about WHICH components combine with which is a function of
+  # the parameter names and the order, so it is computed once and reused;
+  # what is left in the loop is arithmetic on the vectors themselves.
+  lay <- link_scale_layout(params, order)
+  out <- vector("list", length(lay))
 
-  for (t in seq_along(terms)) {
-    idx <- terms[[t]]
-    nms[t] <- paste(params[idx], collapse = "_")
-
-    uniq <- unique(idx)
-    mult <- tabulate(match(idx, uniq), length(uniq))
-
-    # Nested sum over j_t = 1..m_t. The combinations are enumerated by decoding a
-    # counter in mixed radix rather than built with expand.grid, which costs
-    # sixty microseconds a term here -- more than everything else in this loop
-    # put together, and paid once per component on every call.
-    n_comb <- prod(mult)
-    radix <- c(1L, cumprod(mult)[-length(mult)])
+  for (t in seq_along(lay)) {
+    L <- lay[[t]]
+    uniq <- L$uniq
+    mult <- L$mult
     acc <- 0
-
-    for (r in seq_len(n_comb)) {
-      j <- as.integer(((r - 1L) %/% radix) %% mult + 1L)
-      nat_idx <- sort(rep(uniq, times = j))
-      key <- paste(params[nat_idx], collapse = "_")
-      term <- nat[[length(nat_idx)]][[key]]
+    for (cb in L$combos) {
+      term <- nat[[cb$ord]][[cb$key]]
       if (is.null(term)) {
-        stop(sprintf("Missing parameter-scale derivative component '%s'.", key), call. = FALSE)
+        stop(sprintf("Missing parameter-scale derivative component '%s'.",
+                     cb$key), call. = FALSE)
       }
       coef <- 1
+      jj <- cb$j
       for (s in seq_along(uniq)) {
-        coef <- coef * bell_partial(mult[s], j[s], h[[uniq[s]]])
+        coef <- coef * bell_partial(mult[s], jj[s], h[[uniq[s]]])
       }
       acc <- acc + term * coef
     }
-
     out[[t]] <- acc
   }
 
-  names(out) <- nms
+  names(out) <- vapply(lay, `[[`, character(1), "name")
   out
+}
+
+
+#' The Index Layout of the Link-Scale Assembly
+#'
+#' @description
+#' Which parameter-scale components enter each link-scale component of a
+#' given order, with the multiplicities and the lookup keys, for one vector
+#' of parameter names.
+#'
+#' @details
+#' \code{\link{to_link_scale}} used to rebuild this on every call: the
+#' multi-index list, a \code{unique} and a \code{tabulate} per component,
+#' and a \code{sort} and a \code{paste} per combination to spell the key of
+#' the parameter-scale component to look up. None of it depends on the
+#' values, only on the names and the order, and a profile of a fitted
+#' score-driven model put \code{paste}, \code{sort} and \code{unique} among
+#' the leaders of its self time -- a filter reaches this once per
+#' observation per iteration, so the names were being respelled millions of
+#' times per fit.
+#'
+#' The combinations are enumerated by decoding a counter in mixed radix
+#' rather than with \code{expand.grid}, which is the same device the loop
+#' used before and is now paid once.
+#'
+#' The cache is keyed by the parameter names and the order, so it holds one
+#' entry per family per order actually used. It lives in the function's own
+#' enclosure rather than in the namespace: it is an implementation detail
+#' with no other reader, and a package-level object would need a help topic
+#' of its own saying so.
+#'
+#' @param params The parameter names, in the family's own order.
+#' @param order The derivative order.
+#'
+#' @return A list with one entry per component of that order, each carrying
+#'   \code{name}, the multi-index's distinct entries \code{uniq}, their
+#'   multiplicities \code{mult}, and \code{combos}, one entry per term of
+#'   the nested sum with its exponents, its order and its lookup key.
+#'
+#' @keywords internal
+link_scale_layout <- local({
+  cache <- new.env(parent = emptyenv())
+  function(params, order) {
+    key <- paste0(order, "\r", paste(params, collapse = "\r"))
+    hit <- cache[[key]]
+    if (!is.null(hit)) return(hit)
+
+    terms <- deriv_index_list(length(params), order)
+    lay <- lapply(terms, function(idx) {
+      uniq <- unique(idx)
+      mult <- tabulate(match(idx, uniq), length(uniq))
+      radix <- c(1L, cumprod(mult)[-length(mult)])
+      combos <- lapply(seq_len(prod(mult)), function(r) {
+        j <- as.integer(((r - 1L) %/% radix) %% mult + 1L)
+        nat_idx <- sort(rep(uniq, times = j))
+        list(j = j, ord = length(nat_idx),
+             key = paste(params[nat_idx], collapse = "_"))
+      })
+      list(name = paste(params[idx], collapse = "_"), uniq = uniq,
+           mult = mult, combos = combos)
+    })
+    assign(key, lay, envir = cache)
+    lay
+  }
+})
+
+
+#' @title A Resolved Kernel for One Parameter's Link-Scale Derivatives
+#'
+#' @description
+#' The log-density, the score and the curvature in ONE parameter's
+#' unconstrained scale, as three functions with everything that does not
+#' depend on the data already resolved.
+#'
+#' @details
+#' The generic route is the right one almost everywhere: it validates its
+#' arguments, aligns \code{theta} by name, dispatches, and assembles every
+#' component of the requested order. A recursion that calls back once per
+#' observation cannot afford any of that. A score-driven filter evaluates
+#' the score at a predictor it has just produced, so the call cannot be
+#' vectorized away, and profiling a fitted model put S7 dispatch, the
+#' argument checking and the name arithmetic at the whole of its cost.
+#'
+#' This resolves the family's methods and the link's once, and applies the
+#' chain rule for the single component wanted rather than for all of them.
+#' The Jacobian of the parametrization is diagonal, so with
+#' \eqn{\theta_p = h(\eta_p)},
+#'
+#' \deqn{\frac{\partial \ell}{\partial \eta_p} = \ell_p\,h'(\eta_p),
+#'   \qquad
+#'   \frac{\partial^2 \ell}{\partial \eta_p^2}
+#'     = \ell_{pp}\,h'(\eta_p)^2 + \ell_p\,h''(\eta_p),}
+#'
+#' which is what \code{\link{to_link_scale}} computes for those two
+#' components and nothing else.
+#'
+#' The bargain is that the caller takes on what the generic was doing.
+#' \code{theta} must already be a list in the family's own order, its values
+#' unnamed and of a length the family accepts against \code{y}; nothing is
+#' checked. The entry for \code{param} is replaced, so its value on the way
+#' in is immaterial. The inverse link is clamped strictly inside its bounds
+#' exactly as \code{\link[linkfunctions7]{linkinv}} does, because that is a
+#' correctness property and not an optimization.
+#'
+#' @param distrib A univariate distribution object.
+#' @param param The name of the parameter whose unconstrained scale the
+#'   derivatives are taken with respect to.
+#'
+#' @return A list of three functions of \code{(y, theta, eta)}:
+#'   \code{logdens}, \code{score} and \code{curvature}.
+#'
+#' @examples
+#' d <- gaussian1_distrib()
+#' k <- distrib_kernel(d, "sigma")
+#' th <- list(mu = 0, sigma = 1)
+#' k$score(0.7, th, log(1.4))
+#' # the same number the generic gives
+#' distrib_gradient(d, 0.7, list(mu = 0, sigma = 1.4),
+#'                  scale = "link")[["sigma"]]
+#'
+#' @seealso \code{\link{to_link_scale}}, \code{\link{link_scale_derivatives}}
+#' @export
+distrib_kernel <- function(distrib, param) {
+  params <- distrib@params
+  ip <- match(param, params)
+  if (is.na(ip)) {
+    stop(sprintf("'%s' is not a parameter of '%s' (%s).", param,
+                 distrib@distrib_name, paste(params, collapse = ", ")),
+         call. = FALSE)
+  }
+  if (S7::S7_inherits(distrib, multivariate_distrib)) {
+    stop("distrib_kernel() is for univariate families.", call. = FALSE)
+  }
+
+  lk <- distrib@link_params[[param]]
+  bnds <- lk@link_bounds
+  cls <- S7::S7_class(distrib)
+  lcls <- S7::S7_class(lk)
+  m_pdf <- S7::method(distrib_pdf, cls)
+  m_grad <- S7::method(distrib_gradient, cls)
+  m_hess <- S7::method(distrib_hessian, cls)
+  m_inv <- S7::method(linkfunctions7::linkinv, lcls)
+  m_h1 <- S7::method(linkfunctions7::dlinkinv, lcls)
+  m_h2 <- S7::method(linkfunctions7::d2linkinv, lcls)
+  key_pp <- paste0(param, "_", param)
+
+  # linkinv()'s own generic body applies this, and skipping it would hand
+  # back a parameter sitting exactly on a bound its family rejects.
+  at <- function(theta, eta) {
+    theta[[param]] <- linkfunctions7::link_bounds_clamp(m_inv(lk, eta), bnds)
+    theta
+  }
+
+  list(
+    logdens = function(y, theta, eta) {
+      m_pdf(distrib, y, at(theta, eta), log = TRUE)
+    },
+    score = function(y, theta, eta) {
+      g <- m_grad(distrib, y, at(theta, eta), scale = "parameter")
+      g[[param]] * m_h1(lk, eta)
+    },
+    curvature = function(y, theta, eta) {
+      th <- at(theta, eta)
+      g <- m_grad(distrib, y, th, scale = "parameter")[[param]]
+      h <- m_hess(distrib, y, th, scale = "parameter")[[key_pp]]
+      h1 <- m_h1(lk, eta)
+      h * h1 * h1 + g * m_h2(lk, eta)
+    }
+  )
 }

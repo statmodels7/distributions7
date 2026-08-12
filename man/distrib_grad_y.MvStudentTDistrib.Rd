@@ -6,17 +6,60 @@
 \arguments{
 \item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{A numeric matrix of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{The parameters.}
 
-\item{...}{Unused.}
+\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+
+\item{approx}{Ignored; the answer is exact.}
+
+\item{nsim}{Ignored; the answer is exact.}
+
+\item{...}{Ignored.}
 }
 \value{
 An \eqn{n \times p} numeric matrix.
+
+A named list of expected Hessian components.
 }
 \description{
 \eqn{\partial \ell / \partial y = -c\,\Sigma^{-1}(y-\mu)}, the gaussian
 expression with the family's weight in front of it.
+
+Closed form, from the family's own scale mixture rather than from a
+sample.
+}
+\details{
+Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{w = (\nu+p)/(\nu+q)}, the
+variable \eqn{v = q/(q+\nu)} is \strong{exactly} \eqn{\mathrm{Beta}(p/2,
+\nu/2)} and is independent of the direction \eqn{z/\lVert z\rVert}, which
+is uniform on the sphere. Every expectation the information needs is
+therefore a Beta moment or a polygamma, and the two averages separate:
+the radial one gives \eqn{wq = (\nu+p)v} and \eqn{w^2q^2 = (\nu+p)^2v^2},
+the angular one gives \eqn{\operatorname{E}[ee^\top] = I/p} and
+\eqn{\operatorname{E}[(e^\top Be)(e^\top Ce)] =
+\{\operatorname{tr}B\operatorname{tr}C + 2\operatorname{tr}(BC)\}/
+\{p(p+2)\}}.
+
+With \eqn{t_k = \operatorname{tr}(\Sigma^{-1}A_k)} and
+\eqn{T_{kl} = \operatorname{tr}(\Sigma^{-1}A_k\Sigma^{-1}A_l)} the blocks
+come out as
+
+\deqn{I_{\mu\mu} = \frac{\nu+p}{\nu+p+2}\,\Sigma^{-1}, \qquad
+  I_{kl} = \frac{(\nu+p)T_{kl} - t_kt_l}{2(\nu+p+2)}, \qquad
+  I_{k\nu} = \frac{-t_k}{(\nu+p)(\nu+p+2)},}
+
+\deqn{I_{\nu\nu} = \frac{\psi'(\nu/2) - \psi'\{(\nu+p)/2\}}{4}
+  - \frac{p}{\nu(\nu+p)} + \frac{p}{2\nu(\nu+p+2)},}
+
+with the location orthogonal to everything else, every cross-expectation
+with it being odd in \eqn{z}. Each reduces to the Gaussian's as
+\eqn{\nu \to \infty}: \eqn{I_{\mu\mu} \to \Sigma^{-1}},
+\eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, the degrees of
+freedom ceasing to be identified in the limit.
+}
+\seealso{
+\code{\link{mvstudent_t_distrib}}
 }
 \keyword{internal}

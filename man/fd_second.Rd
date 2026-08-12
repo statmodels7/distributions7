@@ -4,7 +4,7 @@
 \alias{fd_second}
 \title{A Second Derivative From One Stencil}
 \usage{
-fd_second(f, x, k, l, h_rel = .Machine$double.eps^(1/4))
+fd_second(f, x, k, l, h_rel = NULL)
 }
 \arguments{
 \item{f}{A function of a numeric vector, returning one number.}
@@ -13,7 +13,8 @@ fd_second(f, x, k, l, h_rel = .Machine$double.eps^(1/4))
 
 \item{k, l}{The coordinates to differentiate in.}
 
-\item{h_rel}{The relative step.}
+\item{h_rel}{Deprecated and unused; the step is
+\code{\link[numericals7]{fd_step}}'s at order two.}
 }
 \value{
 A single number.
@@ -21,5 +22,15 @@ A single number.
 \description{
 The mixed or repeated second derivative of a scalar function, from a single
 stencil rather than from nested first differences.
+}
+\details{
+The nodes, the weights and the step are \pkg{numericals7}'s. Where the two
+coordinates differ the stencil is the product of two first-order factors,
+which is one stencil in two variables and not a difference of a difference:
+nesting is forbidden along ONE variable, and is what a mixed derivative is
+along two.
+}
+\seealso{
+\code{\link[numericals7]{fd_weights}}
 }
 \keyword{internal}

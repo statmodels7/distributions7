@@ -130,3 +130,70 @@ test_that("a gradient that is 5 percent wrong is still caught", {
                        orders = 1:2, verbose = FALSE)
   expect_true(any(grepl("gradient", res$check[res$status != "OK"])))
 })
+
+test_that("the expected information is closed and is the score's variance", {
+  d <- enet_distrib()
+  settings <- list(
+    list(mu = 0.4, lambda = 2, alpha = 0.5),
+    list(mu = -1, lambda = 0.7, alpha = 0.2),
+    list(mu = 2, lambda = 5, alpha = 0.85),
+    list(mu = 0, lambda = 1.3, alpha = 0.05)
+  )
+  # the reference is the definition -- minus the outer product of the score,
+  # integrated against the density and SPLIT AT THE KINK, where a rule that
+  # straddles the corner measures the corner. It shares no arithmetic with
+  # the closed form, which is assembled from the derivatives of log Z.
+  ref <- function(th, k) {
+    p <- strsplit(k, "_")[[1L]]
+    f <- function(y) {
+      s <- distrib_gradient(d, y, th)
+      s[[p[1L]]] * s[[p[2L]]] * distrib_pdf(d, y, th)
+    }
+    -(stats::integrate(f, -Inf, th$mu, rel.tol = 1e-12,
+                       subdivisions = 4000)$value +
+      stats::integrate(f, th$mu, Inf, rel.tol = 1e-12,
+                       subdivisions = 4000)$value)
+  }
+  for (th in settings) {
+    got <- distrib_expected_hessian(d, 0, th)
+    for (k in names(got)) {
+      expect_equal(got[[k]][1L], ref(th, k), tolerance = 1e-5,
+                   info = sprintf("%s at lambda %g alpha %g", k, th$lambda,
+                                  th$alpha))
+    }
+  }
+})
+
+test_that("the expected information reaches the two families it lies between", {
+  d <- enet_distrib()
+  # alpha -> 1 is the Laplace of rate lambda, which is written out separately
+  e1 <- distrib_expected_hessian(d, 0, list(mu = 0, lambda = 2,
+                                            alpha = 1 - 1e-9))
+  l1 <- distrib_expected_hessian(laplace2_distrib(), 0,
+                                 list(mu = 0, lambda = 2))
+  expect_equal(e1$mu_mu[1L], l1$mu_mu[1L], tolerance = 1e-7)
+  # and alpha -> 0 the Gaussian of precision c = lambda
+  e0 <- distrib_expected_hessian(d, 0, list(mu = 0, lambda = 3,
+                                            alpha = 1e-9))
+  expect_equal(e0$mu_mu[1L], -3, tolerance = 1e-7)
+})
+
+test_that("the location's information is not its observed second derivative", {
+  # the point of the closed form: the density has a kink at its own
+  # location, so the observed second derivative in mu misses the point mass
+  # there and is NOT the information. The two must differ, and the
+  # information must be the larger.
+  d <- enet_distrib()
+  th <- list(mu = 0, lambda = 2, alpha = 0.6)
+  ob <- distrib_hessian(d, c(-1, 0.5, 2), th)$mu_mu
+  ex <- distrib_expected_hessian(d, c(-1, 0.5, 2), th)$mu_mu
+  expect_equal(unique(ob), -th$lambda * (1 - th$alpha))
+  expect_lt(ex[1L], ob[1L])
+  # the two rate entries that carry no data are their own expectations
+  eh <- distrib_expected_hessian(d, c(-1, 0.5, 2), th)
+  oh <- distrib_hessian(d, c(-1, 0.5, 2), th)
+  expect_equal(eh$lambda_lambda, oh$lambda_lambda)
+  expect_equal(eh$alpha_alpha, oh$alpha_alpha)
+  # and the third does not: it carries -|z| + z^2/2
+  expect_false(isTRUE(all.equal(eh$lambda_alpha, oh$lambda_alpha)))
+})

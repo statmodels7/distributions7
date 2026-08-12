@@ -111,10 +111,55 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
   ok <- y >= 0 & y <= n & y == round(y)
   out <- rep(-Inf, length(y))
   if (any(ok)) {
-    yk <- y[ok]
-    out[ok] <- lchoose(n, yk) + lbeta(yk + a, n - yk + b) - lbeta(a, b)
+    out[ok] <- betabinom_log_mass(y[ok], a, b, n)
   }
   if (log) out else exp(out)
+}
+
+#' Log-Mass of the Beta-Binomial
+#'
+#' @description
+#' The log-mass \eqn{\log\binom{n}{y} + \log B(y+\alpha, n-y+\beta) -
+#' \log B(\alpha, \beta)} by whichever of two routes is accurate at the shapes
+#' given.
+#'
+#' @details
+#' The two beta functions are of magnitude \eqn{(\alpha+\beta)\log(\alpha+\beta)}
+#' and their difference is of order one, so the ordinary route carries an
+#' absolute error of \eqn{\varepsilon} times that magnitude and is used only
+#' while this stays below \code{1e-8}. Beyond it the shifts are integers, so
+#' each log-gamma difference is an exact sum of logarithms,
+#' \deqn{\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
+#'       \sum_{j=0}^{y-1}\log(\alpha+j),}
+#' and the mass follows from three such sums without forming any quantity
+#' larger than \eqn{n\log(\alpha+\beta)}. The sums also give the binomial limit
+#' correctly as the shapes grow at a fixed ratio.
+#'
+#' @param y A numeric vector of counts, already known to lie on the support.
+#' @param a,b The two shapes.
+#' @param n The size.
+#' @return A numeric vector of log-probabilities.
+#' @keywords internal
+betabinom_log_mass <- function(y, a, b, n) {
+  s <- a + b
+  # the two large terms are grouped so that their difference is taken before
+  # the term of order one is added to it
+  if (all(is.finite(s)) &&
+      max(lgamma(s + n)) * .Machine$double.eps < 1e-8) {
+    return(lchoose(n, y) + (lbeta(y + a, n - y + b) - lbeta(a, b)))
+  }
+  m <- length(y)
+  a <- rep_len(a, m)
+  b <- rep_len(b, m)
+  s1 <- numeric(m)
+  s2 <- numeric(m)
+  s3 <- numeric(m)
+  for (j in seq_len(n) - 1) {
+    s1 <- s1 + (j < y) * log(a + j)
+    s2 <- s2 + (j < n - y) * log(b + j)
+    s3 <- s3 + log(a + b + j)
+  }
+  lchoose(n, y) + s1 + s2 - s3
 }
 
 #' @title Beta-Binomial Random Generation in Its Shapes

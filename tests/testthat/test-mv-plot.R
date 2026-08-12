@@ -92,9 +92,13 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # the default carries no claim and is accepted everywhere
   expect_silent(fit_distrib(g, yg, method = fisher_scoring()))
 
-  # and where the strategy does change something it is taken
+  # and where the strategy does change something it is taken: the skew
+  # normal's expected information has no closed form and cannot have one
   set.seed(53)
-  expect_silent(fit_distrib(d, y, method = fisher_scoring(approx = "opg")))
+  ysn <- distrib_rng(skewnormal1_distrib(), 200,
+                     list(mu = 0, sigma = 1, alpha = 2))
+  expect_silent(fit_distrib(skewnormal1_distrib(), ysn,
+                            method = fisher_scoring(approx = "opg")))
 
   # the object validates its own arguments
   expect_error(fisher_scoring(approx = "nonsense"), "should be one of")
@@ -133,15 +137,17 @@ test_that("a family is asked correctly whether its expected information is exact
                 label = d@distrib_name)
   }
 
-  # These inherit the approximating method -- the skew families from the base
-  # class, the multivariate t from the multivariate one -- so the strategy is
-  # theirs to choose.
-  approximated <- list(skewnormal1_distrib(), skewt_distrib(),
-                       mvstudent_t_distrib(2))
+  # These inherit the approximating method from the base class, so the
+  # strategy is theirs to choose. Both are the documented obstruction: the
+  # expected information of a skew family has no closed form.
+  approximated <- list(skewnormal1_distrib(), skewt_distrib())
   for (d in approximated) {
     expect_false(distributions7:::has_exact_expected_hessian(d),
                  label = d@distrib_name)
   }
+  # The multivariate t was among them until its scale mixture closed it.
+  expect_true(distributions7:::has_exact_expected_hessian(
+    mvstudent_t_distrib(2)))
 
   # and the consequence, at the level a caller sees it
   set.seed(71)

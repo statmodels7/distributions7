@@ -2,7 +2,11 @@
 using namespace Rcpp;
 
 // Third- and fourth-order derivatives of the Gaussian log-density (sd
-// parameterization), transcribed from the Wolfram output. r = mu - y.
+// parameterization). Written in z = (y - mu)/sigma and inv = 1/sigma for the
+// reason given in gaussian.cpp: a form carrying sigma^5 or sigma^6 in a
+// denominator loses the whole component once that power overflows, at
+// sigma = 4.4e61 for the fourth order, while the component itself is
+// representable far beyond.
 
 // [[Rcpp::export]]
 List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
@@ -15,13 +19,13 @@ List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
     for (int i = 0; i < n; i++) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
-        double s2 = s * s, s3 = s2 * s, s4 = s2 * s2, s5 = s4 * s;
-        double r = m - y[i];
+        double inv = 1.0 / s, inv3 = inv * inv * inv;
+        double z = (y[i] - m) / s;
 
         mu_mu_mu[i] = 0.0;
-        mu_mu_sigma[i] = 2.0 / s3;
-        mu_sigma_sigma[i] = 6.0 * (-m + y[i]) / s4;
-        sigma_sigma_sigma[i] = -2.0 * (s2 - 6.0 * r * r) / s5;
+        mu_mu_sigma[i] = 2.0 * inv3;
+        mu_sigma_sigma[i] = 6.0 * z * inv3;
+        sigma_sigma_sigma[i] = -2.0 * (1.0 - 6.0 * z * z) * inv3;
     }
 
     return List::create(
@@ -41,12 +45,12 @@ List gaussian_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVect
 
     for (int i = 0; i < n; i++) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
-        double s3 = s * s * s;
+        double inv = 1.0 / s, inv3 = inv * inv * inv;
 
         mu_mu_mu[i] = 0.0;
-        mu_mu_sigma[i] = 2.0 / s3;
+        mu_mu_sigma[i] = 2.0 * inv3;
         mu_sigma_sigma[i] = 0.0;
-        sigma_sigma_sigma[i] = 10.0 / s3;
+        sigma_sigma_sigma[i] = 10.0 * inv3;
     }
 
     return List::create(
@@ -69,14 +73,14 @@ List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
     for (int i = 0; i < n; i++) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
-        double s2 = s * s, s4 = s2 * s2, s5 = s4 * s, s6 = s4 * s2;
-        double r = m - y[i];
+        double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2;
+        double z = (y[i] - m) / s;
 
         mu_mu_mu_mu[i] = 0.0;
         mu_mu_mu_sigma[i] = 0.0;
-        mu_mu_sigma_sigma[i] = -6.0 / s4;
-        mu_sigma_sigma_sigma[i] = 24.0 * (m - y[i]) / s5;
-        sigma_sigma_sigma_sigma[i] = 6.0 * (s2 - 10.0 * r * r) / s6;
+        mu_mu_sigma_sigma[i] = -6.0 * inv4;
+        mu_sigma_sigma_sigma[i] = -24.0 * z * inv4;
+        sigma_sigma_sigma_sigma[i] = 6.0 * (1.0 - 10.0 * z * z) * inv4;
     }
 
     return List::create(
@@ -98,13 +102,13 @@ List gaussian_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVect
 
     for (int i = 0; i < n; i++) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
-        double s4 = s * s * s * s;
+        double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2;
 
         mu_mu_mu_mu[i] = 0.0;
         mu_mu_mu_sigma[i] = 0.0;
-        mu_mu_sigma_sigma[i] = -6.0 / s4;
+        mu_mu_sigma_sigma[i] = -6.0 * inv4;
         mu_sigma_sigma_sigma[i] = 0.0;
-        sigma_sigma_sigma_sigma[i] = -54.0 / s4;
+        sigma_sigma_sigma_sigma[i] = -54.0 * inv4;
     }
 
     return List::create(

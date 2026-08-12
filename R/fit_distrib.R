@@ -523,6 +523,19 @@ fit_distrib <- function(distrib, y, start = NULL,
     )
   }
 
+  # A discrete family's likelihood is a product of probabilities, so its
+  # logarithm cannot be positive. That is a fact about the model rather than a
+  # tolerance, and it is the one test that separates a run which has found a
+  # better fit from one which has left the region where the mass function is
+  # computable: the beta-binomial's two beta functions cancel to the last digit
+  # once its shapes pass about 1e15, and every mass then comes back as one, so
+  # the run reports a log-likelihood of zero and wins every comparison against
+  # a real fit. The mass function is written to avoid that (see
+  # betabinom_log_mass), and this stands behind it for any family whose mass
+  # breaks down somewhere its author did not foresee.
+  is_discrete <- S7::S7_inherits(distrib, discrete_distrib)
+  impossible <- 0L
+
   res <- NULL
   for (eta0 in starts) {
     if (!is.finite(nll(eta0))) next
@@ -546,6 +559,13 @@ fit_distrib <- function(distrib, y, start = NULL,
       # difference's own error, so this is reachable on correct code.
       if (!is.null(alt) && (isTRUE(alt$converged) || is.null(this))) this <- alt
     }
+    # The run is discarded before it is compared, not ranked below the others:
+    # the objective is what breaks ties, and a number that is not a
+    # log-likelihood wins every tie it is allowed to enter.
+    if (!is.null(this) && is_discrete && -this$value * scale_n > 1e-8) {
+      impossible <- impossible + 1L
+      this <- NULL
+    }
     # Keep the BEST run, not the last one. Several starting values exist
     # precisely because one of them may end somewhere poor, and overwriting on
     # every pass reported whichever start happened to come last -- which on a
@@ -564,6 +584,12 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   if (is.null(res)) {
+    if (impossible > 0L) {
+      stop("Every run reached a positive log-likelihood, which a discrete ",
+           "family cannot have: its mass function is breaking down at the ",
+           "parameters reached. Supply 'start', or bound the parameters.",
+           call. = FALSE)
+    }
     stop("Optimization failed from every starting value; supply 'start'.", call. = FALSE)
   }
 
@@ -571,11 +597,28 @@ fit_distrib <- function(distrib, y, start = NULL,
   eta_hat <- res$eta
   theta_hat <- fit_theta_from_eta(distrib, eta_hat)
 
+  # Which information the standard errors are read off. The expected one is
+  # taken when the fit itself used it, which is Fisher scoring, or when the
+  # family writes it out and it therefore costs one evaluation; otherwise the
+  # observed one, which every family has.
+  #
+  # The condition used to be `!identical(method, "newton")`, a test against a
+  # STRING, and `method` has accepted an optimizer OBJECT since the
+  # delegation to optimizers7. An object is normalized to "custom" above, so
+  # `newton()` failed that test and the expected information was assembled
+  # anyway -- by quadrature, for a family that has no closed form. Measured on
+  # a user-defined Gompertz: `method = "newton"` fits in 0.15 s and
+  # `method = newton()`, the same algorithm on the same data, had not
+  # returned after five minutes. The `tryCatch` below does not help, a
+  # quadrature that fails to converge raising nothing.
+  use_expected <- identical(method, "fisher") ||
+    (!identical(method, "newton") && has_exact_expected_hessian(distrib))
+
   # The estimates stand on their own; if the information cannot be evaluated at
   # the optimum the fit is still returned, with a missing variance matrix rather
   # than an error that throws the estimates away too.
   I_eta <- tryCatch(
-    -fit_hess_matrix(distrib, y, theta_hat, expected = !identical(method, "newton")),
+    -fit_hess_matrix(distrib, y, theta_hat, expected = use_expected),
     error = function(e) matrix(NA_real_, p, p, dimnames = list(params, params))
   )
   V_eta <- tryCatch(solve(I_eta), error = function(e) matrix(NA_real_, p, p))

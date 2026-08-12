@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <limits>
 using namespace Rcpp;
 
 // Beta-binomial with size n, written in the mean proportion mu and the
@@ -14,6 +15,29 @@ using namespace Rcpp;
 //
 // Var(Y) = n mu (1-mu) [1 + (n-1) sigma/(1+sigma)], so sigma -> 0 recovers
 // the binomial and the family is overdispersed for every sigma > 0.
+
+// The log-mass, by whichever of two routes is accurate at the shapes given.
+// The two beta functions are of magnitude S log S and their difference is of
+// order one, so the ordinary route carries an absolute error of eps times
+// that magnitude; past 1e-8 the shifts, being integers, are expanded as exact
+// sums of logarithms, which form nothing larger than n log S. Without this
+// the difference of the two beta functions collapses to zero at large shapes
+// and every mass comes back as one.
+static inline double bb_log_mass(double y, double A, double B, double n) {
+    double S = A + B;
+    static const double eps = std::numeric_limits<double>::epsilon();
+    if (R_FINITE(S) && R::lgammafn(S + n) * eps < 1e-8) {
+        return R::lchoose(n, y) + (R::lbeta(y + A, n - y + B) - R::lbeta(A, B));
+    }
+    double s1 = 0.0, s2 = 0.0, s3 = 0.0;
+    int N = (int) n;
+    for (int j = 0; j < N; j++) {
+        if (j < y)          s1 += std::log(A + j);
+        if (j < n - y)      s2 += std::log(B + j);
+        s3 += std::log(S + j);
+    }
+    return R::lchoose(n, y) + s1 + s2 - s3;
+}
 
 struct BBderiv {
     double lA, lB;              // first order in the shapes
@@ -122,11 +146,9 @@ List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
 
         if (m != last_m || s != last_s) {
             BBmap mp = bb_map(m, s);
-            double lb0 = R::lbeta(mp.A, mp.B);
             e_mm = 0; e_ms = 0; e_ss = 0;
             for (int k = 0; k <= N; k++) {
-                double p = std::exp(R::lchoose(size, k)
-                                    + R::lbeta(k + mp.A, size - k + mp.B) - lb0);
+                double p = std::exp(bb_log_mass(k, mp.A, mp.B, size));
                 BBderiv d = bb_shape_derivs(k, size, mp.A, mp.B);
                 e_mm += p * (d.lAA * mp.Am * mp.Am
                              + 2.0 * d.lAB * mp.Am * mp.Bm
@@ -164,8 +186,7 @@ NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu,
         if (y[i] < 0 || y[i] > size || y[i] != std::floor(y[i])) {
             out[i] = R_NegInf;
         } else {
-            out[i] = R::lchoose(size, y[i])
-                   + R::lbeta(y[i] + A, size - y[i] + B) - R::lbeta(A, B);
+            out[i] = bb_log_mass(y[i], A, B, size);
         }
     }
     return out;

@@ -239,15 +239,16 @@ test_that("a marginal is a t with the same degrees of freedom", {
   expect_error(mv_marginal(d, th, 4L), "distinct coordinates")
 })
 
-test_that("the expected information is approximated rather than refused", {
+test_that("the expected information is exact and needs no strategy", {
   d <- mvstudent_t_distrib(2)
   th <- th2()
   y1 <- matrix(c(0, 0), 1L, 2L)
 
-  # There is no closed form here, so a strategy has to be named; the default is
-  # the score variance, which needs no second derivative of its own.
-  set.seed(44)
-  eh <- distrib_expected_hessian(d, y1, th, nsim = 3e4)
+  # It was sampled until the scale mixture closed it. The check that it is
+  # the information and not something else: the average of the OBSERVED
+  # Hessian over a large sample is the same matrix, the first Bartlett
+  # identity holding for this family away from nothing.
+  eh <- distrib_expected_hessian(d, y1, th)
   set.seed(45)
   big <- distrib_rng(d, 1e5, th)
   hb <- distrib_hessian(d, big, th)
@@ -255,10 +256,13 @@ test_that("the expected information is approximated rather than refused", {
     expect_equal(eh[[nm]][1], mean(hb[[nm]]), tolerance = 0.08, label = nm)
   }
 
-  # and quadrature is not available in several dimensions
-  expect_error(
-    distrib_expected_hessian(d, y1, th, approx = "integrate"), "quadrature"
-  )
+  # the answer does not move between calls, which a sampled one does
+  expect_identical(distrib_expected_hessian(d, y1, th),
+                   distrib_expected_hessian(d, y1, th))
+  # and `approx` is now read by nothing here, so naming one is harmless
+  # rather than an error: what refuses it is fisher_scoring(), where the
+  # argument would silently do nothing
+  expect_no_error(distrib_expected_hessian(d, y1, th, approx = "integrate"))
 })
 
 test_that("check_distrib runs the multivariate battery on the t", {
@@ -301,20 +305,24 @@ test_that("fit_distrib recovers the degrees of freedom", {
   expect_gt(as.numeric(logLik(fit)), as.numeric(logLik(fit_distrib(g, y))))
 })
 
-test_that("Fisher scoring works on a family whose information is sampled", {
+test_that("Fisher scoring inverts the exact information here", {
   d <- mvstudent_t_distrib(2)
   set.seed(48)
   y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
-  set.seed(49)
-  ff <- fit_distrib(d, y, method = fisher_scoring(approx = "mc", nsim = 2000))
+  ff <- fit_distrib(d, y, method = fisher_scoring())
   fn <- fit_distrib(d, y, method = "newton")
 
   expect_true(ff@converged)
-  # The two agree on the maximized log-likelihood; they cannot be expected to
-  # agree digit for digit on the point, since one of them inverts a matrix
-  # estimated by sampling.
-  expect_equal(as.numeric(logLik(ff)), as.numeric(logLik(fn)), tolerance = 1e-4)
+  # the two now agree far more closely than they could when one of them
+  # inverted a sampled matrix
+  expect_equal(as.numeric(logLik(ff)), as.numeric(logLik(fn)),
+               tolerance = 1e-8)
+
+  # naming an approximation is refused, since the family has a closed form
+  # and the argument would be ignored
+  expect_error(fit_distrib(d, y, method = fisher_scoring(approx = "mc")),
+               "would be ignored")
 })
 
 
@@ -395,4 +403,69 @@ test_that("third and fourth parameter derivatives work on a matrix response", {
   expect_setequal(names(n4), deriv_names(d@params, 4))
   expect_true(all(lengths(n4) == nrow(y)))
   expect_true(all(is.finite(unlist(n4))))
+})
+
+test_that("the expected information is closed and matches the sampling route", {
+  # The family's own scale mixture closes it: q/(q+nu) is exactly
+  # Beta(p/2, nu/2) and is independent of the direction, so every
+  # expectation is a Beta moment or a polygamma. The reference is the
+  # definition -- minus the outer product of the score -- estimated from
+  # draws, which is the route the closed form replaces and shares no
+  # arithmetic with it.
+  skip_on_cran()
+  set.seed(7)
+  for (p in c(2L, 3L)) {
+    d <- mvstudent_t_distrib(p)
+    y0 <- matrix(stats::rnorm(20 * p), 20, p)
+    th <- distrib_start(d, y0, 1L)[[1L]]
+    for (nu in c(4, 8, 25)) {
+      th$nu <- nu
+      cl <- distrib_expected_hessian(d, y0[1, , drop = FALSE], th)
+      ys <- distrib_rng(d, 4e5, th)
+      s <- distrib_gradient(d, ys, th)
+      idx <- mv_hess_indices(d)
+      nm <- hess_names(d@params)
+      got <- vapply(nm, function(k) cl[[k]][1L], numeric(1))
+      mc <- vapply(idx, function(ab) -mean(s[[ab[1L]]] * s[[ab[2L]]]),
+                   numeric(1))
+      # ON THE SCALE OF THE WHOLE MATRIX: several blocks are exactly zero
+      # by symmetry, and a relative measure against a Monte Carlo estimate
+      # of zero reports one whatever the closed form says
+      expect_lt(max(abs(got - mc)) / max(abs(mc)), 0.02,
+                label = sprintf("p = %d, nu = %g", p, nu))
+    }
+  }
+})
+
+test_that("the expected information tends to the gaussian's", {
+  p <- 3L
+  d <- mvstudent_t_distrib(p)
+  g <- mvgaussian_distrib(p)
+  set.seed(3)
+  y0 <- matrix(stats::rnorm(10 * p), 10, p)
+  tht <- distrib_start(d, y0, 1L)[[1L]]
+  tht$nu <- 1e7
+  thg <- tht[setdiff(names(tht), "nu")]
+  et <- distrib_expected_hessian(d, y0[1, , drop = FALSE], tht)
+  eg <- distrib_expected_hessian(g, y0[1, , drop = FALSE], thg)
+  common <- intersect(names(et), names(eg))
+  expect_gt(length(common), 40L)
+  expect_equal(vapply(common, function(k) et[[k]][1L], numeric(1)),
+               vapply(common, function(k) eg[[k]][1L], numeric(1)),
+               tolerance = 1e-5)
+  # and the degrees of freedom cease to be identified in the limit
+  expect_lt(abs(et$nu_nu[1L]), 1e-12)
+})
+
+test_that("the location stays orthogonal to the scale and the shape", {
+  # odd in z against even in z: every cross-expectation with the location
+  # vanishes, which is why those blocks are exactly zero rather than small
+  d <- mvstudent_t_distrib(2)
+  set.seed(5)
+  y0 <- matrix(stats::rnorm(20), 10, 2)
+  th <- distrib_start(d, y0, 1L)[[1L]]
+  e <- distrib_expected_hessian(d, y0, th)
+  cross <- grep("^mu[0-9]+_(sigma|nu)", names(e), value = TRUE)
+  expect_gt(length(cross), 3L)
+  for (k in cross) expect_identical(unique(e[[k]]), 0)
 })

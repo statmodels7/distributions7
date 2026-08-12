@@ -431,6 +431,100 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 #' @param ... Unused.
 #' @return An \eqn{n \times p} numeric matrix.
 #' @keywords internal
+#' @title Multivariate Student t Expected Information
+#' @name distrib_expected_hessian.MvStudentTDistrib
+#'
+#' @description
+#' Closed form, from the family's own scale mixture rather than from a
+#' sample.
+#'
+#' @details
+#' Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{w = (\nu+p)/(\nu+q)}, the
+#' variable \eqn{v = q/(q+\nu)} is \strong{exactly} \eqn{\mathrm{Beta}(p/2,
+#' \nu/2)} and is independent of the direction \eqn{z/\lVert z\rVert}, which
+#' is uniform on the sphere. Every expectation the information needs is
+#' therefore a Beta moment or a polygamma, and the two averages separate:
+#' the radial one gives \eqn{wq = (\nu+p)v} and \eqn{w^2q^2 = (\nu+p)^2v^2},
+#' the angular one gives \eqn{\operatorname{E}[ee^\top] = I/p} and
+#' \eqn{\operatorname{E}[(e^\top Be)(e^\top Ce)] =
+#' \{\operatorname{tr}B\operatorname{tr}C + 2\operatorname{tr}(BC)\}/
+#' \{p(p+2)\}}.
+#'
+#' With \eqn{t_k = \operatorname{tr}(\Sigma^{-1}A_k)} and
+#' \eqn{T_{kl} = \operatorname{tr}(\Sigma^{-1}A_k\Sigma^{-1}A_l)} the blocks
+#' come out as
+#'
+#' \deqn{I_{\mu\mu} = \frac{\nu+p}{\nu+p+2}\,\Sigma^{-1}, \qquad
+#'   I_{kl} = \frac{(\nu+p)T_{kl} - t_kt_l}{2(\nu+p+2)}, \qquad
+#'   I_{k\nu} = \frac{-t_k}{(\nu+p)(\nu+p+2)},}
+#'
+#' \deqn{I_{\nu\nu} = \frac{\psi'(\nu/2) - \psi'\{(\nu+p)/2\}}{4}
+#'   - \frac{p}{\nu(\nu+p)} + \frac{p}{2\nu(\nu+p+2)},}
+#'
+#' with the location orthogonal to everything else, every cross-expectation
+#' with it being odd in \eqn{z}. Each reduces to the Gaussian's as
+#' \eqn{\nu \to \infty}: \eqn{I_{\mu\mu} \to \Sigma^{-1}},
+#' \eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, the degrees of
+#' freedom ceasing to be identified in the limit.
+#'
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y A numeric matrix of observations.
+#' @param theta The parameters.
+#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param approx Ignored; the answer is exact.
+#' @param nsim Ignored; the answer is exact.
+#' @param ... Ignored.
+#' @return A named list of expected Hessian components.
+#' @seealso \code{\link{mvstudent_t_distrib}}
+S7::method(distrib_expected_hessian, MvStudentTDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+  y <- as_mv_matrix(distrib, y)
+  pc <- mvt_pieces(distrib, theta, derivs = TRUE)
+  n <- nrow(y)
+  p <- pc$p
+  nu <- pc$nu
+  si <- pc$sigma_inv
+  sa <- lapply(pc$a, function(ak) si %*% ak)
+  tk <- vapply(sa, function(m) sum(diag(m)), numeric(1))
+  npr <- nu + p
+
+  i_nunu <- (trigamma(nu / 2) - trigamma(npr / 2)) / 4 -
+    p / (nu * npr) + p / (2 * nu * (npr + 2))
+
+  pairs <- mv_hess_indices(distrib)
+  nq <- distrib@n_params
+  out <- vector("list", length(pairs))
+  names(out) <- hess_names(distrib@params)
+
+  for (i in seq_along(pairs)) {
+    a <- pairs[[i]][1L]
+    b <- pairs[[i]][2L]
+    a_mu <- a <= p
+    b_mu <- b <= p
+    a_nu <- a == nq
+    b_nu <- b == nq
+    v <- if (a_mu && b_mu) {
+      -npr / (npr + 2) * si[a, b]
+    } else if (a_mu || b_mu) {
+      0
+    } else if (a_nu && b_nu) {
+      -i_nunu
+    } else if (a_nu || b_nu) {
+      k <- if (a_nu) b - p else a - p
+      tk[[k]] / (npr * (npr + 2))
+    } else {
+      ka <- a - p
+      kb <- b - p
+      -(npr * sum(sa[[ka]] * t(sa[[kb]])) - tk[[ka]] * tk[[kb]]) /
+        (2 * (npr + 2))
+    }
+    out[[i]] <- rep(v, n)
+  }
+  out
+}
+
+
 S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvt_pieces(distrib, theta)

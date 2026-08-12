@@ -275,6 +275,81 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
   )
 }
 
+#' @title Elastic-Net Expected Information
+#' @name distrib_expected_hessian.EnetDistrib
+#' @description
+#' The expected Hessian in closed form, which the family already carries
+#' every piece of.
+#'
+#' @details
+#' In the two rates the density is an exponential family with sufficient
+#' statistics \eqn{-|z|} and \eqn{-z^2/2}, so \eqn{\log Z} is its cumulant
+#' generating function and the information in \eqn{(a, c)} is exactly the
+#' Hessian of \eqn{\log Z},
+#'
+#' \deqn{I_{aa} = \operatorname{Var}(|z|), \quad
+#'   I_{ac} = \operatorname{Cov}\!\left(-|z|, -\tfrac{z^2}{2}\right), \quad
+#'   I_{cc} = \tfrac{1}{4}\operatorname{Var}(z^2),}
+#'
+#' which \code{.enet_logz_derivs()} computes for the observed Hessian
+#' already. The map to \eqn{(\lambda, \alpha)} is bilinear, so the
+#' information transforms by \eqn{J'IJ} with no second-derivative term.
+#'
+#' Two of the three rate entries of the observed Hessian carry no data at
+#' all and are therefore their own expectations, which is why
+#' \code{lambda_lambda} and \code{alpha_alpha} below repeat them exactly.
+#' The third does not: \code{lambda_alpha} carries \eqn{-|z| + z^2/2},
+#' whose expectation \eqn{\partial_a \log Z - \partial_c \log Z} cancels
+#' the constant of the same value sitting beside it and leaves the
+#' \eqn{\log Z} term alone.
+#'
+#' The location is where the two differ, and the reason is the kink. The
+#' observed second derivative in \eqn{\mu} is \eqn{-c}, which misses the
+#' point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)}
+#' the density carries at its own location, exactly as the Laplace does.
+#' The information is defined there as the variance of the score, and
+#'
+#' \deqn{I_{\mu\mu} = \operatorname{E}\left[(a\,\mathrm{sgn}(z) + cz)^2\right]
+#'   = a^2 + 2ac\,\operatorname{E}|z| + c^2\operatorname{E}[z^2]
+#'   = a^2 - 2ac\,\partial_a \log Z - 2c^2 \partial_c \log Z,}
+#'
+#' since \eqn{\operatorname{E}|z| = -\partial_a \log Z} and
+#' \eqn{\operatorname{E}[z^2] = -2\partial_c \log Z}. It reduces to
+#' \eqn{\lambda^2} at \eqn{\alpha = 1}, which is the Laplace's
+#' \eqn{1/\sigma^2}, and to \eqn{c} at \eqn{\alpha = 0}, which is the
+#' Gaussian's. The location stays orthogonal to both rates, every
+#' cross-expectation vanishing by symmetry.
+#'
+#' @param distrib An \code{EnetDistrib} object.
+#' @param y A numeric vector of observations.
+#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param expected Ignored; the answer is exact.
+#' @param approx Ignored; the answer is exact.
+#' @param nsim Ignored; the answer is exact.
+#' @param ... Ignored.
+#' @return A named list of expected Hessian components.
+#' @seealso \code{\link{enet_distrib}}
+S7::method(distrib_expected_hessian, EnetDistrib) <- function(
+    distrib, y, theta, scale = c("parameter", "link"),
+    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+  p <- .enet_parts(theta)
+  zz <- .enet_logz_derivs(p)
+  al <- p$al
+  lam <- p$lam
+  one <- rep(1, length(y))
+  list(
+    mu_mu = -(p$a^2 - 2 * p$a * p$c * zz$za - 2 * p$c^2 * zz$zc) * one,
+    lambda_lambda = -(zz$zaa * al^2 + 2 * zz$zac * al * (1 - al) +
+                      zz$zcc * (1 - al)^2) * one,
+    alpha_alpha = -lam^2 * (zz$zaa - 2 * zz$zac + zz$zcc) * one,
+    mu_lambda = 0 * one,
+    mu_alpha = 0 * one,
+    lambda_alpha = -lam * (zz$zaa * al + zz$zac * (1 - 2 * al) -
+                           zz$zcc * (1 - al)) * one
+  )
+}
+
 #' @title Elastic-Net Response Derivatives
 #' @name distrib_grad_y.EnetDistrib
 #' @description \eqn{\ell^{(y)} = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},

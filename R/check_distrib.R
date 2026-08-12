@@ -343,13 +343,30 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
         stop("too few draws land away from the atoms to check the response derivatives.",
              call. = FALSE)
       }
-      # Differencing in y crosses the same kink, so the same guard applies.
+      # Differencing in y crosses the same kink, so the same guard applies --
+      # and here it applies ALWAYS, not only when a parameter is declared
+      # non-smooth. What makes a difference in the RESPONSE unreliable is the
+      # support boundary, not the parameters: a gamma is smooth in both of
+      # its, so `smooth_all` was TRUE and the guard returned early without
+      # examining anything.
+      #
+      # NECESSARY AND NOT SUFFICIENT, and the measurement says so: passing
+      # FALSE takes the false failures over ten families and five seeds from
+      # 24 to 22, and gamma1 at mu = 3, phi = 2 still reports one. The
+      # remaining cause is that halving the step does not expose the error --
+      # near y = 0 the log-density carries (a-1)log y, whose second
+      # difference is wrong at BOTH steps by a comparable amount, so the two
+      # agree with each other while agreeing with nothing else. Measured
+      # there, the analytic derivative agrees with Richardson to 4e-11 while
+      # the plain central difference is out by 5e-3: the reference is the
+      # weak side, and the check needs a better one rather than a wider
+      # tolerance. See the open item in CLAUDE.md.
       g_ref <- numerical_grad_y(distrib, y, theta)
       k1 <- fd_is_reliable(function(h) list(v = numerical_grad_y(distrib, y, theta, h_rel = h)),
-                           list(v = g_ref), .Machine$double.eps^(1 / 3), smooth_all)
+                           list(v = g_ref), .Machine$double.eps^(1 / 3), FALSE)
       h_ref <- numerical_hess_y(distrib, y, theta)
       k2 <- fd_is_reliable(function(h) list(v = numerical_hess_y(distrib, y, theta, h_rel = h)),
-                           list(v = h_ref), .Machine$double.eps^(1 / 4), smooth_all)
+                           list(v = h_ref), .Machine$double.eps^(1 / 4), FALSE)
       e1 <- rel(distrib_grad_y(distrib, y, theta)[k1], g_ref[k1])
       e2 <- rel(distrib_hess_y(distrib, y, theta)[k2], h_ref[k2])
       err <- max(e1, e2)
