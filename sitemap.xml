@@ -23,6 +23,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/FisherScoring.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/FixedMultivariateDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/FoldedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/GPDDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/Gamma1Distrib.html</loc></url>
@@ -175,6 +176,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Gaussian1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.ReparamContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.StudentT1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.continuous_distrib.html</loc></url>
@@ -196,6 +199,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.LaplaceDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Lognormal1Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ReparamContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cross_y.SkewNormal1Distrib.html</loc></url>
@@ -335,6 +340,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MultinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.PoissonDistrib.html</loc></url>
@@ -730,6 +736,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_chain.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_g_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dot-mvt_scale_slices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dpow_affine.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dy_log.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dy_of_log.html</loc></url>
@@ -964,6 +971,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_marginal.multivariate_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_moment_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_ordered_partitions.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mv_outer_rows.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_param_block.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_prefixed_names.html</loc></url>
@@ -981,12 +989,15 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_support.MultinomialDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_support.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_support.multivariate_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvg_a2.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_ptensors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_residuals.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvt_a2.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvt_dpieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_higher.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_q_deriv.html</loc></url>

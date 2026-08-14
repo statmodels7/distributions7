@@ -9,7 +9,7 @@ partition sum of chain_derivatives."><meta property="og:image" content="https://
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.20.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.23.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,6 +78,19 @@ partition sum of <code><a href="chain_derivatives.html">chain_derivatives</a></c
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of component vectors.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The map to the direct parametrization runs through
+\(r = \sqrt[3]{2\gamma_1/(4-\pi)}\), whose derivative grows like
+\(\gamma_1^{-2/3}\), so at zero skewness the map is not differentiable
+and the chain rule is asked for a quantity that does not exist. The first
+derivatives of the log-density survive the limit – the map's factor
+cancels and they approach a finite value from both sides – but the second
+ones diverge at that rate, which is a property of the CENTERED
+parametrization and not of the family. It is rejected here, where the map
+is used and the reason can be named, rather than left to reach a
+comparison against <code>NA</code> several frames further on.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

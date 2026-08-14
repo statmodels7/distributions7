@@ -1757,6 +1757,8 @@ Rarely called directly, but useful as a reference for what is happening.
 - [`distrib_deriv3.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
   [`distrib_deriv4.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
   : Multivariate Student t Third and Fourth Derivatives
+- [`distrib_expected_hessian.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md)
+  : Multivariate Student t Expected Information
 
 ## Dirichlet
 
@@ -1969,6 +1971,8 @@ and fixed-parameter wrappers.
   : S7 Class for Distributions With Fixed Parameters (Continuous)
 - [`FixedDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.md)
   : S7 Class for Distributions With Fixed Parameters (Discrete)
+- [`FixedMultivariateDistrib()`](https://statmodels7.github.io/distributions7/reference/FixedMultivariateDistrib.md)
+  : S7 Class for Distributions With Fixed Parameters (Multivariate)
 
 ## Base-class defaults
 
@@ -2239,6 +2243,16 @@ divergent density.
   [`distrib_hess_y_hess.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.Lognormal1Distrib.md)
   : Lognormal Second-Response and Second-Order Mixed Derivatives
 
+- [`distrib_cross2_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md)
+  [`distrib_hess_y_hess.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md)
+  [`distrib_grad_y_hess.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvGaussianDistrib.md)
+  : Multivariate Gaussian Higher Mixed Response Derivatives
+
+- [`distrib_cross2_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md)
+  [`distrib_grad_y_hess.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md)
+  [`distrib_hess_y_hess.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md)
+  : Multivariate Student t Higher Mixed Response Derivatives
+
 - [`distrib_cross2_y.ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.ReparamContinuousDistrib.md)
   : Second-Response Mixed Derivatives of a Reparametrized Distribution
 
@@ -2298,6 +2312,12 @@ divergent density.
 
 - [`distrib_cross_y.Lognormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Lognormal1Distrib.md)
   : Lognormal Mixed Derivatives
+
+- [`distrib_cross_y.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvGaussianDistrib.md)
+  : Multivariate Gaussian Mixed Response-Parameter Derivatives
+
+- [`distrib_cross_y.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.md)
+  : Multivariate Student t Mixed Response-Parameter Derivatives
 
 - [`distrib_cross_y.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
   : Pseudo-Huber Mixed Derivatives
@@ -2593,6 +2613,10 @@ divergent density.
 
 - [`.enet_rate_maps()`](https://statmodels7.github.io/distributions7/reference/dot-enet_rate_maps.md)
   : The Map From the Rates to the Elastic Net's Parameters
+
+- [`.mvt_scale_slices()`](https://statmodels7.github.io/distributions7/reference/dot-mvt_scale_slices.md)
+  [`.mvt_const_slices()`](https://statmodels7.github.io/distributions7/reference/dot-mvt_scale_slices.md)
+  : Scale the Slices of an Array, and Repeat a Constant Matrix
 
 - [`dpow_affine()`](https://statmodels7.github.io/distributions7/reference/dpow_affine.md)
   : Derivatives of a Power of an Affine Argument
@@ -3170,6 +3194,9 @@ divergent density.
 - [`mv_ordered_partitions()`](https://statmodels7.github.io/distributions7/reference/mv_ordered_partitions.md)
   : Ordered Partitions of a Set of Positions
 
+- [`mv_outer_rows()`](https://statmodels7.github.io/distributions7/reference/mv_outer_rows.md)
+  : An Outer Product Per Observation
+
 - [`mv_pairs_panels()`](https://statmodels7.github.io/distributions7/reference/mv_pairs_panels.md)
   : Draw the Panel Matrix of a Multivariate Density
 
@@ -3203,6 +3230,9 @@ divergent density.
 - [`mv_support.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_support.multivariate_distrib.md)
   : No Enumerable Support
 
+- [`mvg_a2()`](https://statmodels7.github.io/distributions7/reference/mvg_a2.md)
+  : The Second Derivative of the Covariance, by Position
+
 - [`mvg_higher()`](https://statmodels7.github.io/distributions7/reference/mvg_higher.md)
   : The Closed-Form Higher Derivatives of a Multivariate Gaussian
 
@@ -3214,6 +3244,12 @@ divergent density.
 
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals
+
+- [`mvt_a2()`](https://statmodels7.github.io/distributions7/reference/mvt_a2.md)
+  : The Second Derivative of the Scale Matrix, by Position
+
+- [`mvt_dpieces()`](https://statmodels7.github.io/distributions7/reference/mvt_dpieces.md)
+  : The Pieces Every Mixed Response Derivative of the t Is Written In
 
 - [`mvt_higher()`](https://statmodels7.github.io/distributions7/reference/mvt_higher.md)
   : Assemble a Multivariate Student t's Higher Derivatives
