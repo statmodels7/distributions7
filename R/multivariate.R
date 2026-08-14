@@ -265,7 +265,7 @@ S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, 
 S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mv_refuse(
     distrib, "distrib_cross_y",
-    "the mixed response-parameter block of a multivariate family is a matrix per observation, and no consumer fixes its shape yet."
+    "register a closed form on the family, returning one n-by-p matrix per parameter as the gaussian and the Student t do."
   )
 }
 

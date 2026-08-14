@@ -270,3 +270,113 @@ test_that("print shows the fixed values", {
   expect_output(print(d), "mu = 0.5")
   expect_output(print(d), "sigma")
 })
+
+
+# ---------------------------------------------------------------------------
+# the multivariate branch
+# ---------------------------------------------------------------------------
+
+test_that("fixed() holds the location of a multivariate family", {
+  d <- mvgaussian_distrib(2)
+  z <- fixed(d, mu1 = 0, mu2 = 0)
+  expect_s3_class(z, "distributions7::FixedMultivariateDistrib")
+  expect_true(S7::S7_inherits(z, multivariate_distrib))
+  expect_identical(z@params, c("sigma_log_L1", "sigma_log_L2", "sigma_L2.1"))
+  expect_identical(z@n_dim, 2L)
+  expect_identical(z@dimension, "multivariate")
+})
+
+
+test_that("every multivariate method delegates exactly", {
+  d <- mvgaussian_distrib(2)
+  z <- fixed(d, mu1 = 0, mu2 = 0)
+  th_f <- list(sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.3)
+  th_p <- c(list(mu1 = 0, mu2 = 0), th_f)
+  y <- matrix(c(0.4, -0.2, 1.1, 0.5, -0.7, 0.9), ncol = 2)
+
+  expect_identical(distrib_pdf(z, y, th_f), distrib_pdf(d, y, th_p))
+  expect_identical(distrib_grad_y(z, y, th_f), distrib_grad_y(d, y, th_p))
+  expect_identical(distrib_hess_y(z, y, th_f), distrib_hess_y(d, y, th_p))
+  expect_identical(mv_sigma(z, th_f), mv_sigma(d, th_p))
+  expect_identical(variance(z, th_f), variance(d, th_p))
+
+  # the derivatives are the parent's components among the free parameters
+  gz <- distrib_gradient(z, y, th_f)
+  gp <- distrib_gradient(d, y, th_p)
+  expect_identical(names(gz), z@params)
+  expect_identical(gz, gp[z@params])
+  hz <- distrib_hessian(z, y, th_f)
+  expect_identical(hz, distrib_hessian(d, y, th_p)[hess_names(z@params)])
+  expect_length(distrib_deriv3(z, y, th_f), length(deriv_names(z@params, 3L)))
+  expect_length(distrib_deriv4(z, y, th_f), length(deriv_names(z@params, 4L)))
+})
+
+
+test_that("the wrapper inherits the refusals rather than answering", {
+  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  th <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
+  expect_error(distrib_cdf(z, matrix(0, 1, 2), th))
+  expect_error(distrib_quantile(z, 0.5, th))
+})
+
+
+test_that("the mv predicates ask the family, not the wrapper", {
+  # a wrapper delegates every accessor, so registering the delegation must not
+  # turn a family's refusal into a TRUE
+  expect_true(has_mv_grad_y(fixed(mvgaussian_distrib(2), mu1 = 0)))
+  expect_false(has_mv_grad_y(fixed(dirichlet_distrib(3), phi = 5)))
+  expect_true(has_mv_support(
+    fixed(multinomial_distrib(3, size = 4), probs_alr1 = 0.1)))
+})
+
+
+test_that("a fully fixed multivariate distribution has no free parameters", {
+  d <- mvgaussian_distrib(2)
+  z0 <- fixed(d, mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0)
+  expect_identical(z0@n_params, 0L)
+  y <- matrix(c(0.4, -0.2), ncol = 2)
+  expect_equal(distrib_pdf(z0, y, list()),
+               distrib_pdf(d, y, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+                                      sigma_log_L2 = 0, sigma_L2.1 = 0)))
+  expect_output(print(z0), "none free")
+})
+
+
+test_that("fixed() of fixed() collapses on the multivariate branch too", {
+  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  z2 <- fixed(z, sigma_L2.1 = 0.3)
+  expect_s3_class(z2, "distributions7::FixedMultivariateDistrib")
+  expect_identical(z2@params, c("sigma_log_L1", "sigma_log_L2"))
+  expect_identical(names(z2@fixed_params),
+                   c("mu1", "mu2", "sigma_L2.1"))
+})
+
+
+test_that("a centered multivariate prior passes check_distrib", {
+  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  th <- list(sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.3)
+  res <- check_distrib(z, theta = th, verbose = FALSE)
+  expect_true(all(res$status == "OK"),
+              info = paste(res$check[res$status != "OK"], collapse = ", "))
+})
+
+
+test_that("the wrapper reports the quantities the family declares", {
+  # without a method here the wrapper falls to the base one, which reports the
+  # distinct entries of the covariance rather than the standard deviations and
+  # correlations -- a centered prior read on a scale its family does not use
+  d <- mvgaussian_distrib(2)
+  z <- fixed(d, mu1 = 0, mu2 = 0)
+  th <- list(sigma_log_L1 = 0.2, sigma_log_L2 = -0.1, sigma_L2.1 = 0.5)
+  full <- c(list(mu1 = 0, mu2 = 0), th)
+
+  rz <- mv_derived(z, th)
+  rd <- mv_derived(d, full)
+  expect_identical(names(rz$value), c("sd_v1", "sd_v2", "cor_v1_v2"))
+  expect_equal(rz$value, rd$value)
+  expect_identical(rz$transform, rd$transform)
+  # the Jacobian keeps the free columns alone
+  expect_identical(dim(rz$jacobian), c(3L, 3L))
+  expect_equal(unname(rz$jacobian), unname(rd$jacobian[, 3:5, drop = FALSE]))
+})

@@ -1,4 +1,4 @@
-#' @include multivariate.R
+#' @include multivariate.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R
 NULL
 
 #' Multivariate Gaussian Distribution
@@ -625,6 +625,175 @@ S7::method(distrib_hess_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
   -pc$sigma_inv
 }
 
+
+#' @title Multivariate Gaussian Mixed Response-Parameter Derivatives
+#' @name distrib_cross_y.MvGaussianDistrib
+#' @description
+#' \eqn{\partial^2 \ell / \partial y \partial \theta_k}, one \eqn{n \times p}
+#' matrix per parameter. With \eqn{w = \Sigma^{-1}(y - \mu)} the response
+#' gradient is \eqn{-w}, so differentiating it in the mean and in the free
+#' values of the matrix parameter gives
+#' \deqn{\frac{\partial^2 \ell}{\partial y \partial \mu_j} = \Sigma^{-1}e_j,
+#'   \qquad
+#'   \frac{\partial^2 \ell}{\partial y \partial \eta_k} = \Sigma^{-1}A_k w,}
+#' with \eqn{A_k = \partial\Sigma/\partial\eta_k}. The mean block is the same
+#' at every observation, the matrix block is not.
+#' @details
+#' The shape is the one a consumer needs: a penalty whose prior is this family
+#' reads the block of \eqn{\partial^2\rho/\partial\beta\,\partial\theta_k} for
+#' one hyperparameter at a time, and the coefficients of one group are the row
+#' of \eqn{y} the density is read at.
+#'
+#' The link scale is the parameter scale here: the mean components carry the
+#' identity link and so do the matrix parameter's free values, which are
+#' unconstrained by construction.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param scale Handled by the generic.
+#' @param ... Unused.
+#' @return A named list, one \eqn{n \times p} matrix per parameter.
+#' @keywords internal
+S7::method(distrib_cross_y, MvGaussianDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    p <- distrib@n_dim
+    pc <- mvg_pieces(distrib, theta, derivs = TRUE)
+    w <- mvg_residuals(y, pc)$w
+    si <- pc$sigma_inv
+    n <- nrow(y)
+
+    mu_part <- lapply(seq_len(p), function(j) {
+      matrix(si[j, ], nrow = n, ncol = p, byrow = TRUE)
+    })
+    # rows: (Sigma^-1 A_k w_i)' = w_i' A_k Sigma^-1, both matrices symmetric
+    eta_part <- lapply(pc$a, function(ak) w %*% ak %*% si)
+
+    stats::setNames(c(mu_part, eta_part), distrib@params)
+  }
+
+
+#' @title Multivariate Gaussian Higher Mixed Response Derivatives
+#' @name distrib_cross2_y.MvGaussianDistrib
+#' @description
+#' The three derivatives a marginal criterion reads when this family is a
+#' prior. Writing \eqn{B_k = \Sigma^{-1}A_k\Sigma^{-1}} with
+#' \eqn{A_k = \partial\Sigma/\partial\eta_k},
+#' \deqn{\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
+#'     = B_k, \qquad
+#'   \frac{\partial^4\ell}{\partial y\,\partial y^\top
+#'     \partial\eta_k\partial\eta_l}
+#'     = \Sigma^{-1}A_{kl}\Sigma^{-1}
+#'       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
+#'         + A_k\Sigma^{-1}A_l\right)\!\Sigma^{-1},}
+#' \deqn{\frac{\partial^3\ell}{\partial y\,\partial\mu_j\partial\eta_k}
+#'     = -B_k e_j, \qquad
+#'   \frac{\partial^3\ell}{\partial y\,\partial\eta_k\partial\eta_l}
+#'     = \Sigma^{-1}A_{kl}w
+#'       - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
+#'         + A_k\Sigma^{-1}A_l\right)\!w.}
+#' @details
+#' The response Hessian is \eqn{-\Sigma^{-1}}, which does not depend on the
+#' observation and does not depend on the mean at all, so every component of
+#' the first two involving a mean is exactly zero and the rest are one matrix
+#' rather than one per row. Only the third carries the observation, through
+#' \eqn{w}.
+#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param scale Handled by the generic.
+#' @param ... Unused.
+#' @return A named list, keyed by parameter for \code{distrib_cross2_y} and by
+#'   parameter pair for the other two.
+#' @keywords internal
+S7::method(distrib_cross2_y, MvGaussianDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    p <- distrib@n_dim
+    pc <- mvg_pieces(distrib, theta, derivs = TRUE)
+    si <- pc$sigma_inv
+    zero <- matrix(0, p, p)
+    stats::setNames(
+      c(rep(list(zero), p), lapply(pc$a, function(ak) si %*% ak %*% si)),
+      distrib@params)
+  }
+
+#' @rdname distrib_cross2_y.MvGaussianDistrib
+#' @name distrib_hess_y_hess.MvGaussianDistrib
+#' @keywords internal
+S7::method(distrib_hess_y_hess, MvGaussianDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    p <- distrib@n_dim
+    pc <- mvg_pieces(distrib, theta, derivs2 = TRUE)
+    si <- pc$sigma_inv
+    nm <- distrib@params
+    zero <- matrix(0, p, p)
+    stats::setNames(lapply(hess_names(nm), function(k) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      if (a <= p || b <= p) return(zero)
+      ka <- a - p
+      kb <- b - p
+      aa <- pc$a[[ka]]
+      ab <- pc$a[[kb]]
+      si %*% (mvg_a2(pc, ka, kb) - aa %*% si %*% ab - ab %*% si %*% aa) %*% si
+    }), hess_names(nm))
+  }
+
+#' @rdname distrib_cross2_y.MvGaussianDistrib
+#' @name distrib_grad_y_hess.MvGaussianDistrib
+#' @keywords internal
+S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    p <- distrib@n_dim
+    n <- nrow(y)
+    pc <- mvg_pieces(distrib, theta, derivs2 = TRUE)
+    si <- pc$sigma_inv
+    w <- mvg_residuals(y, pc)$w
+    nm <- distrib@params
+    zero <- matrix(0, n, p)
+    stats::setNames(lapply(hess_names(nm), function(k) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      # the response gradient is -Sigma^-1 r, linear in the mean, so a
+      # component naming two means vanishes
+      if (a <= p && b <= p) return(zero)
+      if (a <= p || b <= p) {
+        j <- if (a <= p) a else b
+        kk <- if (a <= p) b - p else a - p
+        # -(Sigma^-1 A_k Sigma^-1) e_j, the same row at every observation
+        m <- -(si %*% pc$a[[kk]] %*% si)
+        return(matrix(m[, j], nrow = n, ncol = p, byrow = TRUE))
+      }
+      ka <- a - p
+      kb <- b - p
+      aa <- pc$a[[ka]]
+      ab <- pc$a[[kb]]
+      mid <- mvg_a2(pc, ka, kb) - aa %*% si %*% ab - ab %*% si %*% aa
+      w %*% mid %*% si
+    }), hess_names(nm))
+  }
+
+#' The Second Derivative of the Covariance, by Position
+#'
+#' @description
+#' \code{param_d2} keyed by the pair of free values rather than by the string
+#' the structure names it with, the key being CONSTRUCTED from the sorted
+#' pair and never parsed out of a name.
+#'
+#' @param pc The result of \code{\link{mvg_pieces}} with \code{derivs2}.
+#' @param k,l Positions among the structure's free values.
+#'
+#' @return A \eqn{p \times p} numeric matrix.
+#'
+#' @keywords internal
+mvg_a2 <- function(pc, k, l) {
+  nm <- pc$s@free_names
+  ij <- sort(c(k, l))
+  pc$a2[[paste(nm[ij], collapse = ":")]]
+}
 
 #' @title Mean of a Multivariate Gaussian
 #' @name mean.MvGaussianDistrib

@@ -1,4 +1,4 @@
-#' @include distrib.R generics.R utility_functions.R moments.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R
+#' @include distrib.R generics.R utility_functions.R moments.R cross_derivatives.R cross2_derivatives.R cross_theta2_derivatives.R mv_summary.R
 NULL
 
 #' @title S7 Class for Distributions With Fixed Parameters (Continuous)
@@ -56,11 +56,48 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
   )
 )
 
+#' @title S7 Class for Distributions With Fixed Parameters (Multivariate)
+#' @name FixedMultivariateDistrib
+#'
+#' @description
+#' A subclass of \code{multivariate_distrib} representing a multivariate
+#' distribution in which some parameters of the wrapped distribution are held
+#' at known values. Constructed by \code{\link{fixed}}.
+#'
+#' @details
+#' Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
+#' splices the fixed values into \code{theta} and delegates to the parent, and
+#' the derivative methods keep only the components among the free parameters.
+#' The multivariate branch sits beside the continuous and discrete ones rather
+#' than under either, so the generics a multivariate family rejects by design
+#' -- the distribution function, the quantile -- are inherited unregistered and
+#' go on rejecting.
+#'
+#' The motivating case is a centered prior: holding the mean components of a
+#' multivariate family at zero leaves the matrix parameter alone, which is what
+#' a random effect is distributed by.
+#'
+#' @inheritParams distrib
+#' @param parent_distrib The wrapped \code{multivariate_distrib} object.
+#' @param fixed_params A named list of the fixed parameter values.
+#' @param n_dim The number of coordinates, carried from the parent: fixing a
+#'   parameter removes it from the parameter set and leaves the dimension of
+#'   the response alone.
+#' @return An object of class \code{FixedMultivariateDistrib}.
+#' @seealso \code{\link{fixed}}
+FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
+  parent = multivariate_distrib,
+  properties = list(
+    parent_distrib = distrib,
+    fixed_params = S7::class_list
+  )
+)
+
 #' Is This a Fixed-Parameter Wrapper?
 #'
 #' @description
-#' \code{TRUE} for a distribution produced by \code{\link{fixed}}, in either of
-#' its two forms.
+#' \code{TRUE} for a distribution produced by \code{\link{fixed}}, in any of
+#' its three forms.
 #'
 #' @param distrib An object inheriting from class \code{"distrib"}.
 #'
@@ -70,7 +107,8 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @keywords internal
 is_fixed <- function(distrib) {
   S7::S7_inherits(distrib, FixedContinuousDistrib) ||
-    S7::S7_inherits(distrib, FixedDiscreteDistrib)
+    S7::S7_inherits(distrib, FixedDiscreteDistrib) ||
+    S7::S7_inherits(distrib, FixedMultivariateDistrib)
 }
 
 #' Splice the Fixed Values Back Into a Full Parameter List
@@ -323,6 +361,195 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
 }
 rm(.fixed_cls)
 
+# ---------------------------------------------------------------------------
+# The multivariate branch.
+#
+# Registered apart from the loop above because the two sets of generics differ:
+# a multivariate family has no distribution function, no quantile and no atoms,
+# and it has the mv_* accessors instead. The generics it rejects are NOT
+# registered here, so the rejection is inherited from multivariate_distrib and
+# keeps its message.
+#
+# The derivative methods subset by name from the free set, exactly as the
+# univariate ones do; a multivariate family's parameters are already flattened
+# into scalars, so the enumeration that generates the component names is the
+# same one and no special case is involved.
+# ---------------------------------------------------------------------------
+
+S7::method(distrib_pdf, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, log = FALSE) {
+    distrib_pdf(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
+                log = log)
+  }
+
+S7::method(distrib_rng, FixedMultivariateDistrib) <-
+  function(distrib, n, theta, ...) {
+    distrib_rng(distrib@parent_distrib, n, fixed_full_theta(distrib, theta),
+                ...)
+  }
+
+S7::method(distrib_grad_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_grad_y(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
+                   ...)
+  }
+
+S7::method(distrib_hess_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, ...) {
+    distrib_hess_y(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
+                   ...)
+  }
+
+S7::method(distrib_cross_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_cross_y(distrib@parent_distrib, y,
+                           fixed_full_theta(distrib, theta),
+                           scale = scale, ...)
+    out[distrib@params]
+  }
+
+S7::method(distrib_cross2_y, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_cross2_y(distrib@parent_distrib, y,
+                            fixed_full_theta(distrib, theta),
+                            scale = scale, ...)
+    out[distrib@params]
+  }
+
+S7::method(distrib_grad_y_hess, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_grad_y_hess(distrib@parent_distrib, y,
+                               fixed_full_theta(distrib, theta),
+                               scale = scale, ...)
+    out[hess_names(distrib@params)]
+  }
+
+S7::method(distrib_hess_y_hess, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_hess_y_hess(distrib@parent_distrib, y,
+                               fixed_full_theta(distrib, theta),
+                               scale = scale, ...)
+    out[hess_names(distrib@params)]
+  }
+
+S7::method(distrib_gradient, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_gradient(distrib@parent_distrib, y,
+                            fixed_full_theta(distrib, theta),
+                            scale = scale, ...)
+    out[distrib@params]
+  }
+
+S7::method(distrib_hessian, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    out <- distrib_hessian(distrib@parent_distrib, y,
+                           fixed_full_theta(distrib, theta),
+                           scale = scale, ...)
+    out[hess_names(distrib@params)]
+  }
+
+S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"),
+           approx = c("bartlett", "integrate", "mc", "opg"),
+           nsim = 10000, ...) {
+    out <- distrib_expected_hessian(distrib@parent_distrib, y,
+                                    fixed_full_theta(distrib, theta),
+                                    scale = scale, approx = approx,
+                                    nsim = nsim, ...)
+    out[hess_names(distrib@params)]
+  }
+
+S7::method(distrib_deriv3, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, expected = FALSE,
+           scale = c("parameter", "link"),
+           approx = c("integrate", "bartlett", "mc", "opg"),
+           nsim = 10000, ...) {
+    out <- distrib_deriv3(distrib@parent_distrib, y,
+                          fixed_full_theta(distrib, theta),
+                          expected = expected, scale = scale,
+                          approx = approx, nsim = nsim, ...)
+    out[deriv_names(distrib@params, 3L)]
+  }
+
+S7::method(distrib_deriv4, FixedMultivariateDistrib) <-
+  function(distrib, y, theta, expected = FALSE,
+           scale = c("parameter", "link"),
+           approx = c("integrate", "bartlett", "mc", "opg"),
+           nsim = 10000, ...) {
+    out <- distrib_deriv4(distrib@parent_distrib, y,
+                          fixed_full_theta(distrib, theta),
+                          expected = expected, scale = scale,
+                          approx = approx, nsim = nsim, ...)
+    out[deriv_names(distrib@params, 4L)]
+  }
+
+S7::method(mv_location, FixedMultivariateDistrib) <- function(distrib, theta) {
+  mv_location(distrib@parent_distrib, fixed_full_theta(distrib, theta))
+}
+
+S7::method(mv_sigma, FixedMultivariateDistrib) <- function(distrib, theta) {
+  mv_sigma(distrib@parent_distrib, fixed_full_theta(distrib, theta))
+}
+
+S7::method(mv_marginal, FixedMultivariateDistrib) <-
+  function(distrib, theta, which, ...) {
+    mv_marginal(distrib@parent_distrib, fixed_full_theta(distrib, theta),
+                which, ...)
+  }
+
+S7::method(mv_support, FixedMultivariateDistrib) <- function(distrib, theta, ...) {
+  mv_support(distrib@parent_distrib, fixed_full_theta(distrib, theta), ...)
+}
+
+S7::method(mv_reference_draw, FixedMultivariateDistrib) <-
+  function(distrib, theta, n, ...) {
+    mv_reference_draw(distrib@parent_distrib, fixed_full_theta(distrib, theta),
+                      n, ...)
+  }
+
+S7::method(mv_derived, FixedMultivariateDistrib) <-
+  function(distrib, theta, ...) {
+    # WITHOUT this the wrapper falls to the base method, which reports the
+    # distinct entries of the covariance rather than the standard deviations
+    # and correlations the family declares -- a centered prior would then be
+    # read on a scale its own family does not use.
+    out <- mv_derived(distrib@parent_distrib, fixed_full_theta(distrib, theta),
+                      ...)
+    if (is.null(out)) return(NULL)
+    # the quantities are the parent's; the Jacobian keeps the columns of the
+    # free parameters alone, the fixed ones having no derivative to report
+    keep <- match(distrib@params, distrib@parent_distrib@params)
+    out$jacobian <- out$jacobian[, keep, drop = FALSE]
+    out
+  }
+
+S7::method(mean, FixedMultivariateDistrib) <- function(x, theta, ...) {
+  mean(x@parent_distrib, fixed_full_theta(x, theta), ...)
+}
+
+S7::method(variance, FixedMultivariateDistrib) <- function(x, theta, ...) {
+  variance(x@parent_distrib, fixed_full_theta(x, theta), ...)
+}
+
+S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
+  # as in the univariate wrappers: the base print iterates over the free
+  # parameters and cannot size an empty set, so that case prints its own header
+  if (x@n_params > 0L) {
+    NextMethod()
+  } else {
+    cat(sprintf("Distribution: %s\n", x@distrib_name))
+    cat("Type:         Multivariate\n")
+    cat(sprintf("Dimensions:   %d\n", x@n_dim))
+    cat("\nParameters:   none free\n")
+  }
+  fp <- x@fixed_params
+  cat("\nFixed:\n")
+  for (nm in names(fp)) {
+    cat(sprintf("  %s = %s\n", nm, format(fp[[nm]])))
+  }
+  invisible(x)
+}
+
 #' Fix Parameters of a Distribution at Known Values
 #'
 #' @description
@@ -388,8 +615,10 @@ rm(.fixed_cls)
 #' @export
 fixed <- function(distrib, ...) {
   if (!S7::S7_inherits(distrib, continuous_distrib) &&
-    !S7::S7_inherits(distrib, discrete_distrib)) {
-    stop("Input must inherit from 'discrete_distrib' or 'continuous_distrib'.",
+    !S7::S7_inherits(distrib, discrete_distrib) &&
+    !S7::S7_inherits(distrib, multivariate_distrib)) {
+    stop(paste0("Input must inherit from 'discrete_distrib', ",
+                "'continuous_distrib' or 'multivariate_distrib'."),
       call. = FALSE
     )
   }
@@ -495,7 +724,10 @@ fixed <- function(distrib, ...) {
     params_smooth = smooth
   )
 
-  if (S7::S7_inherits(distrib, discrete_distrib)) {
+  if (S7::S7_inherits(distrib, multivariate_distrib)) {
+    common$n_dim <- distrib@n_dim
+    do.call(FixedMultivariateDistrib, common)
+  } else if (S7::S7_inherits(distrib, discrete_distrib)) {
     do.call(FixedDiscreteDistrib, common)
   } else {
     do.call(FixedContinuousDistrib, common)

@@ -358,15 +358,21 @@ test_that("the response Hessian is the reweighted gaussian expression", {
 test_that("response derivatives without a closed form are refused, not guessed", {
   # The base class refuses rather than serving the univariate fallback, whose
   # stencils difference along a line and would return numbers of the wrong
-  # shape for a matrix response.
+  # shape for a matrix response. The two elliptical families answer because a
+  # closed form is registered on each; a family without one still refuses.
   d <- mvgaussian_distrib(2)
   th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
              sigma_L2.1 = 0.3)
   y <- distrib_rng(d, 3, th)
-  expect_error(distrib_cross_y(d, y, th), "not defined")
+  expect_named(distrib_cross_y(d, y, th), d@params)
+  dt <- mvstudent_t_distrib(2)
+  expect_named(distrib_cross_y(dt, y, c(th, nu = 5)), dt@params)
+
+  dd <- dirichlet_distrib(3)
   expect_error(
-    distrib_cross_y(mvstudent_t_distrib(2), cbind(y, 0)[, 1:2], c(th, nu = 5)),
-    "not defined"
+    distrib_cross_y(dd, matrix(c(0.2, 0.3, 0.5), ncol = 3),
+                    stats::setNames(as.list(c(0, 0, 5)), dd@params)),
+    "closed form"
   )
 })
 
@@ -468,4 +474,143 @@ test_that("the location stays orthogonal to the scale and the shape", {
   cross <- grep("^mu[0-9]+_(sigma|nu)", names(e), value = TRUE)
   expect_gt(length(cross), 3L)
   for (k in cross) expect_identical(unique(e[[k]]), 0)
+})
+
+
+test_that("the mixed response-parameter block agrees with numDeriv", {
+  skip_if_not_installed("numDeriv")
+  # the reference differentiates the ANALYTIC response gradient in theta, so
+  # the two routes share no arithmetic
+  set.seed(5)
+  for (p in 2:4) {
+    d <- mvstudent_t_distrib(p)
+    nm <- d@params
+    v <- c(stats::rnorm(p, 0, 0.5), stats::rnorm(length(nm) - p - 1, 0, 0.3), 6)
+    th <- stats::setNames(as.list(v), nm)
+    y <- matrix(stats::rnorm(3 * p), ncol = p)
+    got <- distrib_cross_y(d, y, th)
+    expect_named(got, nm)
+    for (k in seq_along(nm)) {
+      ref <- matrix(numDeriv::jacobian(function(z) {
+        vv <- v; vv[k] <- z
+        as.vector(distrib_grad_y(d, y, stats::setNames(as.list(vv), nm)))
+      }, v[k]), nrow = nrow(y), ncol = p)
+      expect_equal(got[[k]], ref, tolerance = 1e-6,
+                   info = paste("p =", p, nm[k]))
+    }
+  }
+})
+
+
+test_that("the mixed block becomes the gaussian's at the rate 1/nu", {
+  # the limit is checked at its RATE and not only at one large value: an
+  # arithmetic accident does not fall by a hundred when nu rises by a hundred
+  p <- 3
+  dg <- mvgaussian_distrib(p)
+  dt <- mvstudent_t_distrib(p)
+  v <- c(0.2, -0.4, 0.1, 0.15, -0.2, 0.25, 0.1, -0.05, 0.3)
+  set.seed(9)
+  y <- matrix(stats::rnorm(4 * p), ncol = p)
+  cg <- distrib_cross_y(dg, y, stats::setNames(as.list(v), dg@params))
+  gap <- vapply(c(1e4, 1e6, 1e8), function(nu) {
+    ct <- distrib_cross_y(dt, y,
+                          stats::setNames(as.list(c(v, nu)), dt@params))
+    max(vapply(seq_along(dg@params),
+               function(k) max(abs(ct[[k]] - cg[[k]])), 0))
+  }, 0)
+  expect_lt(gap[1L], 1e-2)
+  expect_equal(gap[2L] / gap[1L], 1e-2, tolerance = 0.05)
+  expect_equal(gap[3L] / gap[2L], 1e-2, tolerance = 0.05)
+  # and the nu component itself vanishes, there being no nu in the limit
+  ct <- distrib_cross_y(dt, y, stats::setNames(as.list(c(v, 1e8)), dt@params))
+  expect_lt(max(abs(ct[["nu"]])), 1e-12)
+})
+
+
+test_that("the higher mixed response derivatives agree with one difference", {
+  skip_if_not_installed("numDeriv")
+  # ONE difference on an ANALYTIC quantity, never two in a row. Unlike the
+  # gaussian's, this family's response Hessian depends on the observation, so
+  # cross2_y and hess_y_hess return one matrix per row.
+  set.seed(21)
+  for (p in 2:3) {
+    d <- mvstudent_t_distrib(p)
+    nm <- d@params
+    v <- c(stats::rnorm(p, 0, 0.4),
+           stats::rnorm(length(nm) - p - 1, 0, 0.25), 7)
+    th <- stats::setNames(as.list(v), nm)
+    y <- matrix(stats::rnorm(4 * p), ncol = p)
+    at <- function(z) stats::setNames(as.list(z), nm)
+
+    c2 <- distrib_cross2_y(d, y, th)
+    expect_named(c2, nm)
+    expect_identical(dim(c2[[1L]]), c(p, p, nrow(y)))
+    for (k in seq_along(nm)) {
+      ref <- array(numDeriv::jacobian(function(z) {
+        vv <- v; vv[k] <- z
+        as.vector(distrib_hess_y(d, y, at(vv)))
+      }, v[k]), c(p, p, nrow(y)))
+      expect_equal(c2[[k]], ref, tolerance = 1e-5,
+                   info = paste("cross2_y p =", p, nm[k]))
+    }
+
+    gh <- distrib_grad_y_hess(d, y, th)
+    hh <- distrib_hess_y_hess(d, y, th)
+    for (k in hess_names(nm)) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      r3 <- matrix(numDeriv::jacobian(function(z) {
+        vv <- v; vv[b] <- z
+        as.vector(distrib_cross_y(d, y, at(vv))[[a]])
+      }, v[b]), nrow(y), p)
+      expect_equal(gh[[k]], r3, tolerance = 1e-5,
+                   info = paste("grad_y_hess p =", p, k))
+      r4 <- array(numDeriv::jacobian(function(z) {
+        vv <- v; vv[b] <- z
+        as.vector(distrib_cross2_y(d, y, at(vv))[[a]])
+      }, v[b]), c(p, p, nrow(y)))
+      expect_equal(hh[[k]], r4, tolerance = 1e-5,
+                   info = paste("hess_y_hess p =", p, k))
+    }
+  }
+})
+
+
+test_that("the higher mixed derivatives reach the gaussian's at the rate 1/nu", {
+  # the limit is checked at its RATE: a factor of 1e4 in nu must divide the
+  # gap by 1e4, which an arithmetic accident does not do. The gaussian returns
+  # a constant matrix where this family returns one per row, the convention
+  # distrib_hess_y already follows, so the constant is repeated to compare.
+  bc <- function(m, n) array(as.numeric(m), c(nrow(m), ncol(m), n))
+  for (p in 2:3) {
+    d <- mvstudent_t_distrib(p)
+    dg <- mvgaussian_distrib(p)
+    nm <- d@params
+    set.seed(21 + p)
+    vg <- c(stats::rnorm(p, 0, 0.4),
+            stats::rnorm(length(nm) - p - 1, 0, 0.25))
+    y <- matrix(stats::rnorm(4 * p), ncol = p)
+    thg <- stats::setNames(as.list(vg), dg@params)
+    gap <- function(nu) {
+      thi <- stats::setNames(as.list(c(vg, nu)), nm)
+      c(max(vapply(seq_along(dg@params), function(k) {
+          max(abs(distrib_cross2_y(d, y, thi)[[k]] -
+                  bc(distrib_cross2_y(dg, y, thg)[[k]], nrow(y))))
+        }, 0)),
+        max(vapply(hess_names(dg@params), function(k) {
+          max(abs(distrib_hess_y_hess(d, y, thi)[[k]] -
+                  bc(distrib_hess_y_hess(dg, y, thg)[[k]], nrow(y))))
+        }, 0)),
+        max(vapply(hess_names(dg@params), function(k) {
+          max(abs(distrib_grad_y_hess(d, y, thi)[[k]] -
+                  distrib_grad_y_hess(dg, y, thg)[[k]]))
+        }, 0)))
+    }
+    lo <- gap(1e6)
+    hi <- gap(1e10)
+    expect_true(all(lo < 1e-3), info = paste("p =", p))
+    expect_equal(hi / lo, rep(1e-4, 3L), tolerance = 0.05,
+                 info = paste("p =", p))
+  }
 })

@@ -347,6 +347,8 @@ reference:
   - ends_with(".FixedContinuousDistrib")
   - FixedDiscreteDistrib
   - ends_with(".FixedDiscreteDistrib")
+  - FixedMultivariateDistrib
+  - ends_with(".FixedMultivariateDistrib")
 
 - title: Base-class defaults
   desc: >

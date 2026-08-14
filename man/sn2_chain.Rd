@@ -24,6 +24,18 @@ A named list of component vectors.
 The parent's derivatives carried into the centered coordinates by the
 partition sum of \code{\link{chain_derivatives}}.
 }
+\details{
+The map to the direct parametrization runs through
+\eqn{r = \sqrt[3]{2\gamma_1/(4-\pi)}}, whose derivative grows like
+\eqn{\gamma_1^{-2/3}}, so at zero skewness the map is not differentiable
+and the chain rule is asked for a quantity that does not exist. The first
+derivatives of the log-density survive the limit -- the map's factor
+cancels and they approach a finite value from both sides -- but the second
+ones diverge at that rate, which is a property of the CENTERED
+parametrization and not of the family. It is rejected here, where the map
+is used and the reason can be named, rather than left to reach a
+comparison against \code{NA} several frames further on.
+}
 \seealso{
 \code{\link{skewnormal2_distrib}}
 }

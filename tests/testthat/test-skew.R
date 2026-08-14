@@ -262,3 +262,45 @@ test_that("both skew families are fitted by maximum likelihood", {
     tolerance = 1e-4
   )
 })
+
+
+test_that("the centred parametrization is singular at zero skewness", {
+  # A PROPERTY of the parametrization, pinned so that nobody reads the NaN as
+  # a defect and "fixes" it. The CP-to-DP map is r = cbrt(2*gamma1/(4-pi)),
+  # whose derivative grows like gamma1^(-2/3); the FIRST derivatives of the
+  # log-density in gamma1 have a finite limit there, which the map's own
+  # factor cancels, while the SECOND ones do not. Compare skewnormal1, whose
+  # derivatives at alpha = 0 are ordinary numbers.
+  d2 <- fixed(skewnormal2_distrib(), mu = 0)
+  y <- c(0.4, -1.1, 0.2, 0.9, -0.5)
+  at <- function(g) list(sigma = 1, gamma1 = g)
+
+  # the density and its response derivatives are fine AT zero
+  expect_true(all(is.finite(distrib_pdf(d2, y, at(0), log = TRUE))))
+  expect_true(all(is.finite(distrib_grad_y(d2, y, at(0)))))
+
+  # the first derivative in gamma1 converges from both sides
+  g1 <- vapply(c(1e-8, 1e-10, -1e-10, -1e-8), function(g) {
+    sum(distrib_gradient(d2, y, at(g))$gamma1)
+  }, 0)
+  expect_true(all(is.finite(g1)))
+  expect_lt(max(g1) - min(g1), 1e-3)
+  # and the point itself is REJECTED, with the reason named, rather than left
+  # to reach a comparison against NA several frames further on
+  expect_error(distrib_gradient(d2, y, at(0)), "zero skewness")
+  expect_error(distrib_hessian(d2, y, at(0)), "skewnormal1_distrib")
+
+  # the second derivative diverges like gamma1^(-2/3): a hundredfold step in
+  # gamma1 multiplies it by about twenty-one
+  h <- vapply(c(1e-6, 1e-8, 1e-10), function(g) {
+    abs(sum(distrib_hessian(d2, y, at(g))$gamma1_gamma1))
+  }, 0)
+  expect_gt(h[2L] / h[1L], 15)
+  expect_gt(h[3L] / h[2L], 15)
+
+  # the direct parametrization has no such point
+  d1 <- fixed(skewnormal1_distrib(), mu = 0)
+  th <- list(sigma = 1, alpha = 0)
+  expect_true(all(is.finite(unlist(distrib_gradient(d1, y, th)))))
+  expect_true(all(is.finite(unlist(distrib_hessian(d1, y, th)))))
+})

@@ -207,6 +207,10 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 #' @seealso \code{\link{mv_support}}, \code{\link{check_distrib}}
 #' @keywords internal
 has_mv_support <- function(x) {
+  # A wrapper delegates every accessor, so what the question means is whether
+  # the underlying family has one: asking the wrapper's own class would answer
+  # TRUE for a family that rejects.
+  if (is_fixed(x)) x <- x@parent_distrib
   m <- tryCatch(S7::method(mv_support, S7::S7_class(x)), error = function(e) NULL)
   !is.null(m) && !is_class(attr(m, "signature")[[1L]], multivariate_distrib)
 }
@@ -224,6 +228,8 @@ has_mv_support <- function(x) {
 #' @seealso \code{\link{has_mv_support}}, \code{\link{check_distrib}}
 #' @keywords internal
 has_mv_grad_y <- function(x) {
+  # see has_mv_support(): the wrapper delegates, so the family is asked
+  if (is_fixed(x)) x <- x@parent_distrib
   m <- tryCatch(S7::method(distrib_grad_y, S7::S7_class(x)), error = function(e) NULL)
   !is.null(m) && !is_class(attr(m, "signature")[[1L]], multivariate_distrib)
 }

@@ -420,17 +420,6 @@ S7::method(distrib_hessian, MvStudentTDistrib) <- function(distrib, y, theta,
 }
 
 
-#' @title Multivariate Student t Response Gradient
-#' @name distrib_grad_y.MvStudentTDistrib
-#' @description
-#' \eqn{\partial \ell / \partial y = -c\,\Sigma^{-1}(y-\mu)}, the gaussian
-#' expression with the family's weight in front of it.
-#' @param distrib A \code{\link{MvStudentTDistrib}} object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return An \eqn{n \times p} numeric matrix.
-#' @keywords internal
 #' @title Multivariate Student t Expected Information
 #' @name distrib_expected_hessian.MvStudentTDistrib
 #'
@@ -525,11 +514,321 @@ S7::method(distrib_expected_hessian, MvStudentTDistrib) <- function(
 }
 
 
+#' @title Multivariate Student t Response Gradient
+#' @name distrib_grad_y.MvStudentTDistrib
+#' @description
+#' \eqn{\partial \ell / \partial y = -c\,\Sigma^{-1}(y-\mu)}, the gaussian
+#' expression with the family's weight in front of it.
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param ... Unused.
+#' @return An \eqn{n \times p} numeric matrix.
+#' @keywords internal
 S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvt_pieces(distrib, theta)
   z <- mvt_weights(y, pc)
   -z$cw * z$w
+}
+
+
+#' The Pieces Every Mixed Response Derivative of the t Is Written In
+#'
+#' @description
+#' The response derivatives of this family are
+#' \eqn{\ell^{(y)} = -c\,w} and
+#' \eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} with
+#' \eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu + q}, so every
+#' derivative in the parameters is assembled from the first and second
+#' derivatives of four things: \eqn{s}, \eqn{w}, \eqn{\Sigma^{-1}} and the
+#' scalars \eqn{c} and \eqn{d} that follow from \eqn{s}.
+#'
+#' @details
+#' Writing \eqn{A_k} for the matrix parameter's first derivatives, \eqn{u_j}
+#' for the \eqn{j}th column of \eqn{\Sigma^{-1}} and \eqn{P_k} for
+#' \eqn{\Sigma^{-1}A_k\Sigma^{-1}}, the first derivatives are
+#' \deqn{\partial_{\mu_j} s = -2w_j, \quad \partial_{\eta_k} s = -w^\top A_kw,
+#'   \quad \partial_\nu s = 1,}
+#' \deqn{\partial_{\mu_j} w = -u_j, \quad
+#'   \partial_{\eta_k} w = -\Sigma^{-1}A_kw, \quad \partial_\nu w = 0,
+#'   \qquad \partial_{\eta_k}\Sigma^{-1} = -P_k,}
+#' and the second ones vanish except for
+#' \deqn{\partial_{\mu_j\mu_l} s = 2(\Sigma^{-1})_{jl}, \quad
+#'   \partial_{\mu_j\eta_k} s = 2(\Sigma^{-1}A_kw)_j, \quad
+#'   \partial_{\mu_j\eta_k} w = P_ke_j,}
+#' and, with \eqn{B_{kl} = A_k\Sigma^{-1}A_l + A_l\Sigma^{-1}A_k - A_{kl}},
+#' \deqn{\partial_{\eta_k\eta_l} s = w^\top B_{kl}w, \quad
+#'   \partial_{\eta_k\eta_l} w = \Sigma^{-1}B_{kl}w, \quad
+#'   \partial_{\eta_k\eta_l}\Sigma^{-1} = \Sigma^{-1}B_{kl}\Sigma^{-1}.}
+#' The same middle matrix serves all three, which is what keeps the assembly
+#' short. \eqn{c} and \eqn{d} then follow from the quotient rule with
+#' \eqn{\nu+p} linear in \eqn{\nu} and constant in everything else.
+#'
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#'
+#' @return A list of the quantities above, indexed by parameter POSITION --
+#'   the means, then the matrix parameter's free values, then \eqn{\nu} -- with
+#'   \code{pair()} a function returning the second-order pieces of a pair.
+#'
+#' @keywords internal
+mvt_dpieces <- function(distrib, y, theta) {
+  p <- distrib@n_dim
+  pc <- mvt_pieces(distrib, theta, derivs2 = TRUE)
+  z <- mvt_weights(y, pc)
+  si <- pc$sigma_inv
+  w <- z$w
+  n <- nrow(w)
+  nf <- pc$s@n_free
+  npar <- p + nf + 1L
+  nu <- pc$nu
+  N <- nu + p
+  s <- nu + z$q
+  zero_m <- matrix(0, p, p)
+
+  # Sigma^-1 A_k w, as rows, and w' A_k w -- the two quantities every matrix
+  # component is written in
+  v <- lapply(pc$a, function(ak) (w %*% ak) %*% si)
+  gq <- lapply(pc$a, function(ak) rowSums((w %*% ak) * w))
+  P <- lapply(pc$a, function(ak) si %*% ak %*% si)
+
+  sa <- wa <- Sa <- vector("list", npar)
+  Na <- numeric(npar)
+  for (j in seq_len(p)) {
+    sa[[j]] <- -2 * w[, j]
+    wa[[j]] <- matrix(-si[j, ], n, p, byrow = TRUE)
+    Sa[[j]] <- zero_m
+  }
+  for (k in seq_len(nf)) {
+    sa[[p + k]] <- -gq[[k]]
+    wa[[p + k]] <- -v[[k]]
+    Sa[[p + k]] <- -P[[k]]
+  }
+  sa[[npar]] <- rep(1, n)
+  wa[[npar]] <- matrix(0, n, p)
+  Sa[[npar]] <- zero_m
+  Na[npar] <- 1
+
+  ca <- lapply(seq_len(npar), function(a) Na[a] / s - N * sa[[a]] / s^2)
+  da <- lapply(seq_len(npar), function(a) Na[a] / s^2 - 2 * N * sa[[a]] / s^3)
+
+  pair <- function(a, b) {
+    if (a > b) {
+      t <- a
+      a <- b
+      b <- t
+    }
+    s_ab <- rep(0, n)
+    w_ab <- matrix(0, n, p)
+    S_ab <- zero_m
+    if (a <= p && b <= p) {
+      s_ab <- rep(2 * si[a, b], n)
+    } else if (a <= p && b <= p + nf) {
+      k <- b - p
+      s_ab <- 2 * v[[k]][, a]
+      w_ab <- matrix(P[[k]][a, ], n, p, byrow = TRUE)
+    } else if (a > p && a <= p + nf && b <= p + nf) {
+      ka <- a - p
+      kb <- b - p
+      mid <- pc$a[[ka]] %*% si %*% pc$a[[kb]] +
+        pc$a[[kb]] %*% si %*% pc$a[[ka]] - mvt_a2(pc, ka, kb)
+      s_ab <- rowSums((w %*% mid) * w)
+      w_ab <- (w %*% mid) %*% si
+      S_ab <- si %*% mid %*% si
+    }
+    # nu is linear in the recursion: every pair naming it has vanishing
+    # second derivatives of s, w and the inverse, and only c and d move
+    c_ab <- -Na[a] * sa[[b]] / s^2 - Na[b] * sa[[a]] / s^2 -
+      N * s_ab / s^2 + 2 * N * sa[[a]] * sa[[b]] / s^3
+    d_ab <- -2 * Na[a] * sa[[b]] / s^3 - 2 * Na[b] * sa[[a]] / s^3 -
+      2 * N * s_ab / s^3 + 6 * N * sa[[a]] * sa[[b]] / s^4
+    list(s = s_ab, w = w_ab, S = S_ab, c = c_ab, d = d_ab)
+  }
+
+  list(p = p, n = n, npar = npar, si = si, w = w, s = s,
+       cw = N / s, dw = N / s^2, sa = sa, wa = wa, Sa = Sa,
+       ca = ca, da = da, pair = pair)
+}
+
+#' The Second Derivative of the Scale Matrix, by Position
+#' @description As \code{\link{mvg_a2}}, for the Student t's pieces.
+#' @param pc The result of \code{\link{mvt_pieces}} with \code{derivs2}.
+#' @param k,l Positions among the structure's free values.
+#' @return A \eqn{p \times p} numeric matrix.
+#' @keywords internal
+mvt_a2 <- function(pc, k, l) {
+  nm <- pc$s@free_names
+  ij <- sort(c(k, l))
+  pc$a2[[paste(nm[ij], collapse = ":")]]
+}
+
+#' An Outer Product Per Observation
+#' @description
+#' The \eqn{p \times p \times n} array whose \eqn{i}th slice is
+#' \eqn{a_ib_i^\top}, assembled without a loop over the observations.
+#' @param a,b Matrices of \eqn{n} rows and \eqn{p} columns.
+#' @return A \eqn{p \times p \times n} numeric array.
+#' @keywords internal
+mv_outer_rows <- function(a, b) {
+  n <- nrow(a)
+  p <- ncol(a)
+  aperm(array(a[, rep(seq_len(p), times = p), drop = FALSE] *
+                b[, rep(seq_len(p), each = p), drop = FALSE], c(n, p, p)),
+        c(2L, 3L, 1L))
+}
+
+#' @title Multivariate Student t Mixed Response-Parameter Derivatives
+#' @name distrib_cross_y.MvStudentTDistrib
+#' @description
+#' \eqn{\partial^2 \ell / \partial y \partial \theta_k}, one \eqn{n \times p}
+#' matrix per parameter. The response gradient is \eqn{-c\,w}, so every
+#' component carries the derivative of the weight beside the gaussian term it
+#' multiplies: with \eqn{A_k = \partial\Sigma/\partial\eta_k},
+#' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu_j}
+#'     = c\,\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\,w,
+#'   \qquad \frac{\partial c}{\partial\mu_j}
+#'     = \frac{2(\nu+p)\,w_j}{(\nu+q)^2},}
+#' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\eta_k}
+#'     = c\,\Sigma^{-1}A_k w - \frac{\partial c}{\partial\eta_k}\,w,
+#'   \qquad \frac{\partial c}{\partial\eta_k}
+#'     = \frac{(\nu+p)\,w^\top A_k w}{(\nu+q)^2},}
+#' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\nu}
+#'     = -\frac{(q-p)\,w}{(\nu+q)^2}.}
+#' @details
+#' Nothing here is obstructed: the log-density carries no distribution
+#' function, only \code{lgamma}, a logarithm and a quadratic form, each
+#' elementary in \eqn{\nu}. As \eqn{\nu \to \infty} the weight and its
+#' derivatives go to one and to zero, and every component becomes the
+#' gaussian's, which is what the tests compare it against.
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param scale Handled by the generic.
+#' @param ... Unused.
+#' @return A named list, one \eqn{n \times p} matrix per parameter.
+#' @keywords internal
+S7::method(distrib_cross_y, MvStudentTDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    # one source for every order: l^(y) = -c w, so the first derivative is
+    # -c_a w - c w_a and the pieces supply both
+    z <- mvt_dpieces(distrib, y, theta)
+    stats::setNames(lapply(seq_len(z$npar), function(a) {
+      -z$ca[[a]] * z$w - z$cw * z$wa[[a]]
+    }), distrib@params)
+  }
+
+
+#' @title Multivariate Student t Higher Mixed Response Derivatives
+#' @name distrib_cross2_y.MvStudentTDistrib
+#' @description
+#' The three derivatives a marginal criterion reads when this family is a
+#' prior. With \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top},
+#' \deqn{\partial_a M = -c_a\Sigma^{-1} - c\,\partial_a\Sigma^{-1}
+#'   + 2d_a ww^\top + 2d\left(w_aw^\top + ww_a^\top\right),}
+#' \deqn{\partial_a \ell^{(y)} = -c_a w - c\,w_a, \qquad
+#'   \partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
+#' and \eqn{\partial_{ab}M} is the same expansion carried one order further.
+#' Every piece comes from \code{\link{mvt_dpieces}}.
+#' @details
+#' Unlike the gaussian's, this family's response Hessian depends on the
+#' observation, so \code{distrib_cross2_y} and \code{distrib_hess_y_hess}
+#' return one matrix per row rather than one matrix.
+#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param y An \eqn{n \times p} matrix of observations.
+#' @param theta A named list of parameters.
+#' @param scale Handled by the generic.
+#' @param ... Unused.
+#' @return A named list, keyed by parameter or by parameter pair.
+#' @keywords internal
+S7::method(distrib_cross2_y, MvStudentTDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    z <- mvt_dpieces(distrib, y, theta)
+    ww <- mv_outer_rows(z$w, z$w)
+    stats::setNames(lapply(seq_len(z$npar), function(a) {
+      wa <- z$wa[[a]]
+      .mvt_const_slices(z$si, -z$ca[[a]]) +
+        .mvt_const_slices(z$Sa[[a]], -z$cw) +
+        .mvt_scale_slices(ww, 2 * z$da[[a]]) +
+        .mvt_scale_slices(mv_outer_rows(wa, z$w) + mv_outer_rows(z$w, wa),
+                          2 * z$dw)
+    }), distrib@params)
+  }
+
+#' @rdname distrib_cross2_y.MvStudentTDistrib
+#' @name distrib_grad_y_hess.MvStudentTDistrib
+#' @keywords internal
+S7::method(distrib_grad_y_hess, MvStudentTDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    z <- mvt_dpieces(distrib, y, theta)
+    nm <- distrib@params
+    stats::setNames(lapply(hess_names(nm), function(k) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      ab <- z$pair(a, b)
+      -ab$c * z$w - z$ca[[a]] * z$wa[[b]] - z$ca[[b]] * z$wa[[a]] -
+        z$cw * ab$w
+    }), hess_names(nm))
+  }
+
+#' @rdname distrib_cross2_y.MvStudentTDistrib
+#' @name distrib_hess_y_hess.MvStudentTDistrib
+#' @keywords internal
+S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
+  function(distrib, y, theta, scale = c("parameter", "link"), ...) {
+    y <- as_mv_matrix(distrib, y)
+    z <- mvt_dpieces(distrib, y, theta)
+    nm <- distrib@params
+    ww <- mv_outer_rows(z$w, z$w)
+    stats::setNames(lapply(hess_names(nm), function(k) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      ab <- z$pair(a, b)
+      wa <- z$wa[[a]]
+      wb <- z$wa[[b]]
+      sym <- function(u, v) mv_outer_rows(u, v) + mv_outer_rows(v, u)
+      .mvt_const_slices(z$si, -ab$c) +
+        .mvt_const_slices(z$Sa[[b]], -z$ca[[a]]) +
+        .mvt_const_slices(z$Sa[[a]], -z$ca[[b]]) +
+        .mvt_const_slices(ab$S, -z$cw) +
+        .mvt_scale_slices(ww, 2 * ab$d) +
+        .mvt_scale_slices(sym(wb, z$w), 2 * z$da[[a]]) +
+        .mvt_scale_slices(sym(wa, z$w), 2 * z$da[[b]]) +
+        .mvt_scale_slices(sym(ab$w, z$w) + sym(wa, wb), 2 * z$dw)
+    }), hess_names(nm))
+  }
+
+#' Scale the Slices of an Array, and Repeat a Constant Matrix
+#'
+#' @description
+#' \code{.mvt_scale_slices} multiplies the \eqn{i}th slice of an array by
+#' \code{v[i]}; \code{.mvt_const_slices} returns the array whose \eqn{i}th
+#' slice is \code{v[i] * m}, which is what a term constant in the observation
+#' contributes.
+#'
+#' @param arr A \eqn{p \times p \times n} array.
+#' @param v A numeric vector of length \eqn{n}.
+#' @param m A \eqn{p \times p} matrix.
+#'
+#' @return A \eqn{p \times p \times n} numeric array.
+#'
+#' @keywords internal
+.mvt_scale_slices <- function(arr, v) {
+  d <- dim(arr)
+  arr * rep(v, each = d[1L] * d[2L])
+}
+
+#' @rdname dot-mvt_scale_slices
+#' @keywords internal
+.mvt_const_slices <- function(m, v) {
+  p <- nrow(m)
+  array(as.numeric(m), c(p, p, length(v))) * rep(v, each = p * p)
 }
 
 

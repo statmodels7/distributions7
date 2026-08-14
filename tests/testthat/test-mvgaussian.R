@@ -460,3 +460,134 @@ test_that("closed-form third and fourth derivatives match one stencil", {
     }
   }
 })
+
+
+test_that("the mixed response-parameter block agrees with numDeriv", {
+  skip_if_not_installed("numDeriv")
+  # the reference differentiates the ANALYTIC response gradient in theta, so
+  # the two routes share no arithmetic; p starts at 2 and runs to 4 because a
+  # single matrix coordinate says nothing about the cross terms
+  set.seed(3)
+  for (p in 2:4) {
+    for (inv in c(FALSE, TRUE)) {
+      d <- if (inv) mvgaussian_distrib(p, omega = parameters7::log_cholesky(p))
+           else mvgaussian_distrib(p)
+      nm <- d@params
+      v <- c(stats::rnorm(p, 0, 0.5), stats::rnorm(length(nm) - p, 0, 0.3))
+      th <- stats::setNames(as.list(v), nm)
+      y <- matrix(stats::rnorm(3 * p), ncol = p)
+      got <- distrib_cross_y(d, y, th)
+      expect_named(got, nm)
+      for (k in seq_along(nm)) {
+        ref <- matrix(numDeriv::jacobian(function(z) {
+          vv <- v; vv[k] <- z
+          as.vector(distrib_grad_y(d, y, stats::setNames(as.list(vv), nm)))
+        }, v[k]), nrow = nrow(y), ncol = p)
+        expect_equal(got[[k]], ref, tolerance = 1e-6,
+                     info = paste("p =", p, "inverted =", inv, nm[k]))
+      }
+    }
+  }
+})
+
+
+test_that("the mean block of the mixed derivative is Sigma^-1 and constant", {
+  d <- mvgaussian_distrib(3)
+  th <- stats::setNames(as.list(c(0.5, -1, 2, 0.1, -0.2, 0.3, 0.4, 0.1, -0.1)),
+                        d@params)
+  y <- matrix(stats::rnorm(12), ncol = 3)
+  got <- distrib_cross_y(d, y, th)
+  si <- solve(mv_sigma(d, th))
+  for (j in 1:3) {
+    expect_equal(unname(got[[j]]),
+                 matrix(unname(si)[j, ], nrow = 4, ncol = 3, byrow = TRUE))
+  }
+})
+
+
+test_that("the families that do not implement it still refuse", {
+  dd <- dirichlet_distrib(3)
+  th <- stats::setNames(as.list(c(0, 0, 5)), dd@params)
+  expect_error(distrib_cross_y(dd, matrix(c(0.2, 0.3, 0.5), ncol = 3), th),
+               "closed form")
+})
+
+
+test_that("the higher mixed response derivatives agree with one difference", {
+  skip_if_not_installed("numDeriv")
+  # ONE difference on an ANALYTIC quantity, never two in a row: the second
+  # theta derivative of the response Hessian is checked against a difference
+  # of distrib_cross2_y, which is closed form, and the second theta
+  # derivative of the response gradient against one of distrib_cross_y. A
+  # nested reference reports gaps of 0.3 on correct code.
+  set.seed(11)
+  for (p in 2:3) {
+    d <- mvgaussian_distrib(p)
+    nm <- d@params
+    v <- c(stats::rnorm(p, 0, 0.4), stats::rnorm(length(nm) - p, 0, 0.25))
+    th <- stats::setNames(as.list(v), nm)
+    y <- matrix(stats::rnorm(3 * p), ncol = p)
+    set_th <- function(z) stats::setNames(as.list(z), nm)
+
+    c2 <- distrib_cross2_y(d, y, th)
+    expect_named(c2, nm)
+    for (k in seq_along(nm)) {
+      ref <- matrix(numDeriv::jacobian(function(z) {
+        vv <- v; vv[k] <- z
+        as.vector(distrib_hess_y(d, y, set_th(vv)))
+      }, v[k]), p, p)
+      expect_equal(c2[[k]], ref, tolerance = 1e-6,
+                   info = paste("cross2_y p =", p, nm[k]))
+    }
+    # the mean does not enter the response Hessian at all
+    for (j in seq_len(p)) expect_equal(max(abs(c2[[j]])), 0)
+
+    hh <- distrib_hess_y_hess(d, y, th)
+    gh <- distrib_grad_y_hess(d, y, th)
+    expect_named(hh, hess_names(nm))
+    expect_named(gh, hess_names(nm))
+    for (k in hess_names(nm)) {
+      ij <- hess_pairs(nm)[[k]]
+      a <- match(ij[1L], nm)
+      b <- match(ij[2L], nm)
+      ref2 <- matrix(numDeriv::jacobian(function(z) {
+        vv <- v; vv[b] <- z
+        as.vector(distrib_cross2_y(d, y, set_th(vv))[[a]])
+      }, v[b]), p, p)
+      expect_equal(hh[[k]], ref2, tolerance = 1e-5,
+                   info = paste("hess_y_hess p =", p, k))
+      ref3 <- matrix(numDeriv::jacobian(function(z) {
+        vv <- v; vv[b] <- z
+        as.vector(distrib_cross_y(d, y, set_th(vv))[[a]])
+      }, v[b]), nrow(y), p)
+      expect_equal(gh[[k]], ref3, tolerance = 1e-5,
+                   info = paste("grad_y_hess p =", p, k))
+    }
+  }
+})
+
+
+test_that("the higher mixed derivatives do not depend on the order", {
+  # a component collects the same terms whichever index is differentiated
+  # first, which a tolerance cannot see from one direction alone
+  skip_if_not_installed("numDeriv")
+  set.seed(12)
+  p <- 3
+  d <- mvgaussian_distrib(p)
+  nm <- d@params
+  v <- c(stats::rnorm(p, 0, 0.4), stats::rnorm(length(nm) - p, 0, 0.25))
+  th <- stats::setNames(as.list(v), nm)
+  y <- matrix(stats::rnorm(3 * p), ncol = p)
+  hh <- distrib_hess_y_hess(d, y, th)
+  for (k in hess_names(nm)) {
+    ij <- hess_pairs(nm)[[k]]
+    a <- match(ij[1L], nm)
+    b <- match(ij[2L], nm)
+    if (a == b) next
+    alt <- matrix(numDeriv::jacobian(function(z) {
+      vv <- v; vv[a] <- z
+      as.vector(distrib_cross2_y(d, y, stats::setNames(as.list(vv), nm))[[b]])
+    }, v[a]), p, p)
+    expect_equal(hh[[k]], alt, tolerance = 1e-5, info = k)
+  }
+})

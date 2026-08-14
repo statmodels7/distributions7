@@ -1,3 +1,89 @@
+# distributions7 0.23.0
+
+* The centered skew normal rejects its derivatives at ZERO SKEWNESS, naming
+  the reason and the parametrization that has none. Its map to the direct
+  parameters runs through the cube root of `gamma1`, whose derivative is
+  unbounded there: the first derivatives of the log-density survive the limit
+  -- they approach a finite value from both sides, the map's factor
+  cancelling -- and the second ones grow like `gamma1^(-2/3)`, which is a
+  property of the CENTERED parametrization and not of the family. Until now
+  the resulting `NA` reached a comparison several frames further on and the
+  message named nothing. Patching the first order alone would have been
+  worse: the generic that a marginal criterion reads is the second.
+  ⚠️ The point matters because it is where a hyperparameter STARTS: the
+  bounds on `gamma1` are symmetric, so the midpoint rule puts the starting
+  value at exactly the one point the family has no derivatives at.
+
+* `distrib_cross2_y()`, `distrib_grad_y_hess()` and `distrib_hess_y_hess()`
+  are closed form for the multivariate Student t, which was the last family a
+  marginal criterion could not estimate a correlated prior's matrix with.
+  Unlike the gaussian's, this family's response Hessian DEPENDS on the
+  observation, so the first and third return one matrix per row.
+
+* All four orders are written on ONE set of pieces (`mvt_dpieces()`): the
+  response derivatives are `-c w` and `-c Sigma^-1 + 2d ww'`, so everything
+  follows from the first and second derivatives of `s = nu + q`, of `w`, of
+  `Sigma^-1` and of the scalars `c` and `d` that follow from `s`. The second
+  derivatives all vanish except four, and three of those share one middle
+  matrix `A_k Sigma^-1 A_l + A_l Sigma^-1 A_k - A_kl`. `distrib_cross_y()` was
+  rewritten to read the same pieces, so its existing checks validate them at
+  first order -- the licence the toolkit uses for an order it cannot check
+  directly.
+
+* Verified against ONE difference of the analytic quantity below each, at
+  p = 2 and 3: 1e-10 to 2e-10 throughout. And the gaussian limit is reached AT
+  THE RATE 1/nu -- a factor of 1e4 in nu divides every gap by 1e4, in all
+  three derivatives and at both dimensions.
+
+# distributions7 0.22.0
+
+* `distrib_cross_y()` is closed form for the multivariate Student t as well.
+  The response gradient is `-c w`, so every component carries the derivative
+  of the weight beside the gaussian term it multiplies, and the degrees of
+  freedom contribute `-(q - p) w / (nu + q)^2`. Nothing here is obstructed:
+  the log-density carries no distribution function, only `lgamma`, a
+  logarithm and a quadratic form, each elementary in `nu`. Against numDeriv on
+  the analytic response gradient, 1e-9 to 1e-10 at p = 2, 3, 4; and the whole
+  block becomes the gaussian's AT THE RATE 1/nu -- 1.17e-03, 1.17e-05,
+  1.17e-07 at nu of 1e4, 1e6, 1e8 -- which an arithmetic accident does not do.
+
+* `distrib_cross2_y()`, `distrib_grad_y_hess()` and `distrib_hess_y_hess()`
+  are closed form for the multivariate gaussian, which is what a marginal
+  criterion reads to estimate the covariance of a correlated random effect.
+  The response Hessian is `-Sigma^-1`, so it does not depend on the
+  observation and does not depend on the mean at all: every component of the
+  first two involving a mean is exactly zero and the rest are one matrix
+  rather than one per row.
+  ⚠️ Each is checked against ONE difference of the analytic quantity below it,
+  never two in a row. A nested reference reported gaps of 0.3 on correct code.
+
+* `mv_derived()` on a fixed-parameter wrapper delegates to the family instead
+  of falling to the base method, which reports the distinct entries of the
+  covariance: a centered prior was being read on a scale its own family does
+  not use. The Jacobian keeps the columns of the free parameters alone.
+
+# distributions7 0.21.0
+
+* `fixed()` accepts a MULTIVARIATE family, in a third wrapper class beside
+  the continuous and discrete ones. Holding the mean components at zero
+  leaves the matrix parameter alone, which is what a centered prior on a
+  random effect is. Every method splices and delegates as the other two do,
+  and the generics a multivariate family rejects by design -- the
+  distribution function, the quantile -- are inherited unregistered and go on
+  rejecting. `has_mv_support()` and `has_mv_grad_y()` unwrap first, so a
+  wrapper's delegation does not turn a family's refusal into a TRUE.
+
+* `distrib_cross_y()` is closed form for the multivariate gaussian, in both
+  parametrizations: `Sigma^-1 e_j` for the mean and `Sigma^-1 A_k w` for the
+  matrix, one n-by-p matrix per parameter. It was refused for want of a
+  consumer that fixed its shape, and a penalty whose prior is this family is
+  that consumer. Agreement with numDeriv on the analytic response gradient is
+  1e-9 to 1e-10 at p = 2, 3, 4.
+
+* `distrib_expected_hessian.MvStudentTDistrib` has a help page again: its
+  roxygen block had fused with the one above it, which had lost its function,
+  so the page had never been written.
+
 # distributions7 0.20.0
 
 * The gaussian's derivatives are written in `z = (y - mu)/sigma` and

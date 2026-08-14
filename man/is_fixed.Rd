@@ -13,8 +13,8 @@ is_fixed(distrib)
 A single logical.
 }
 \description{
-\code{TRUE} for a distribution produced by \code{\link{fixed}}, in either of
-its two forms.
+\code{TRUE} for a distribution produced by \code{\link{fixed}}, in any of
+its three forms.
 }
 \seealso{
 \code{\link{fixed}}
