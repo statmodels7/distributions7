@@ -583,6 +583,28 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
   S7::S7_dispatch()
 })
 
+#' Is a Family's Expected Information Written Out?
+#'
+#' @description
+#' A generic so that a family whose registered
+#' \code{\link{distrib_expected_hessian}} method is not what its owning class
+#' suggests can say so; \code{\link{has_exact_expected_hessian}} asks it and
+#' \code{\link{expected_hessian_exact.distrib}} is the default.
+#'
+#' @param x An object inheriting from class \code{"distrib"}.
+#' @param ... Passed to methods.
+#'
+#' @return A single logical.
+#'
+#' @examples
+#' distributions7:::expected_hessian_exact(gaussian1_distrib())
+#'
+#' @seealso \code{\link{has_exact_expected_hessian}},
+#'   \code{\link{distrib_dexpected_hessian}}
+#'
+#' @keywords internal
+expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
+
 #' Generate Random Parameters
 #'
 #' @description Generates sensible random parameters for a distribution based on its mathematical domain.

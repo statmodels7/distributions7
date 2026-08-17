@@ -130,17 +130,24 @@ test_that("a family is asked correctly whether its expected information is exact
   # 'distrib', which SHADOWS the base class of the same name, so the comparison
   # against that class compared the owning class with the distribution object
   # and every base-class fallback was reported as a closed form.
-  exact <- list(gaussian1_distrib(), pseudohuber_distrib(), laplace_distrib(),
+  exact <- list(gaussian1_distrib(), laplace_distrib(),
                 weibull1_distrib(), gumbel_distrib(), mvgaussian_distrib(2))
   for (d in exact) {
     expect_true(distributions7:::has_exact_expected_hessian(d),
                 label = d@distrib_name)
   }
 
-  # These inherit the approximating method from the base class, so the
-  # strategy is theirs to choose. Both are the documented obstruction: the
-  # expected information of a skew family has no closed form.
-  approximated <- list(skewnormal1_distrib(), skewt_distrib())
+  # These do not write the expectation out. Two of them REGISTER a method of
+  # their own and were listed as exact until the question was measured rather
+  # than read off the owning class: pseudohuber's method calls
+  # expected_derivative() and then replaces the two components that vanish by
+  # symmetry, and skewnormal2's is the chain onto skewnormal1, whose expected
+  # information is the base class's quadrature. Timed at 100 observations they
+  # cost 10980 ms and 5220 ms -- the latter MORE than the 2230 of the parent it
+  # chains onto -- where the families that do write it out answer in a median
+  # of 0.183 ms.
+  approximated <- list(skewnormal1_distrib(), skewt_distrib(),
+                       pseudohuber_distrib(), skewnormal2_distrib())
   for (d in approximated) {
     expect_false(distributions7:::has_exact_expected_hessian(d),
                  label = d@distrib_name)

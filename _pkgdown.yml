@@ -104,6 +104,7 @@ reference:
   - distrib_gradient
   - distrib_hessian
   - distrib_expected_hessian
+  - distrib_dexpected_hessian
   - distrib_deriv3
   - distrib_deriv4
   - distrib_grad_y
@@ -216,6 +217,8 @@ reference:
   - transpose_params
   - deriv_names
   - hess_names
+  - dexpected_names
+  - dexpected_key
   - param_smoothness
   - generate_random_theta
   - distrib_generics

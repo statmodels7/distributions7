@@ -243,6 +243,28 @@ S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y,
   out
 }
 
+#' @title The Pseudo-Huber Does Not Write Its Expected Information Out
+#' @name expected_hessian_exact.PseudoHuberDistrib
+#' @description
+#' The method above calls \code{\link{expected_derivative}} and then replaces
+#' two components that vanish by symmetry, so the registration improves the
+#' approximation rather than replacing it.
+#' @details
+#' Measured at 100 observations it costs 10980 ms, where the families that
+#' write their expected information out answer in a median of 0.183 ms.
+#' Reported as exact, it made \code{\link{fit_distrib}} reject a legitimate
+#' \code{fisher_scoring(approx = )} here with a message that was untrue, and
+#' take a quadrature it believed was a formula when assembling the standard
+#' errors.
+#' @param x A \code{PseudoHuberDistrib} object.
+#' @param ... Unused.
+#' @return \code{FALSE}.
+#' @seealso \code{\link{expected_hessian_exact}}
+#' @keywords internal
+S7::method(expected_hessian_exact, PseudoHuberDistrib) <- function(x, ...) {
+  FALSE
+}
+
 #' @title Pseudo-Huber Analytical Third-Order Derivatives
 #' @name distrib_deriv3.PseudoHuberDistrib
 #' @description

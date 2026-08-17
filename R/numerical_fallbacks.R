@@ -1033,14 +1033,67 @@ S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta) {
 #' @seealso \code{\link{has_analytic_quantile}}, \code{\link{is_class}}
 #' @keywords internal
 has_exact_expected_hessian <- function(x) {
+  expected_hessian_exact(x)
+}
+
+
+#' Is a Family's Expected Information Written Out?
+#'
+#' @description
+#' The question \code{\link{has_exact_expected_hessian}} asks, as a generic, so
+#' that a family whose registered method is not what its owner suggests can say
+#' so.
+#'
+#' @details
+#' The default reads the class the \code{\link{distrib_expected_hessian}}
+#' method is registered on: the base classes carry the approximating method and
+#' every other registration is, by default, a family that wrote the expectation
+#' out.
+#'
+#' \strong{Reading the owner is not sufficient, and two families prove it.} A
+#' method registered on a family's own class may still be a CHAIN onto a parent
+#' that approximates, and then the owner says "written out" about arithmetic
+#' that is a quadrature. Measured at 100 observations, where thirty-four
+#' families answer in a median of 0.183 ms:
+#' \code{skewnormal2_distrib()} costs 5220 ms -- more than the
+#' \code{skewnormal1_distrib()} it chains onto, which costs 2230 -- and
+#' \code{pseudohuber_distrib()} costs 10980 ms. Both were reported as exact.
+#' The consequences were real rather than cosmetic: \code{\link{fit_distrib}}
+#' rejected a legitimate \code{fisher_scoring(approx = )} on those two with a
+#' message stating that the family "computes its expected information in
+#' closed form", which is untrue, and its standard-error branch entered a
+#' multi-second quadrature believing it cheap.
+#'
+#' A family that chains onto another therefore answers for its parent, which is
+#' what the two methods registered here do.
+#'
+#' @param x An object inheriting from class \code{"distrib"}.
+#'
+#' @return A single logical.
+#'
+#' @seealso \code{\link{has_exact_expected_hessian}},
+#'   \code{\link{distrib_dexpected_hessian}}
+#'
+#' @keywords internal
+#' @name expected_hessian_exact
+NULL
+
+
+#' @title Whether the Owner of the Method Settles the Question
+#' @name expected_hessian_exact.distrib
+#' @description The default: the base classes approximate, everything else is
+#'   taken to have written its expected information out.
+#' @param x A distribution object.
+#' @param ... Unused.
+#' @return A single logical.
+#' @keywords internal
+S7::method(expected_hessian_exact, distrib) <- function(x, ...) {
   m <- tryCatch(
     S7::method(distrib_expected_hessian, S7::S7_class(x)),
     error = function(e) NULL
   )
   if (is.null(m)) return(FALSE)
   owner <- attr(m, "signature")[[1]]
-  # The base classes carry the approximating method; every other registration
-  # is a family that wrote the expectation out.
   !is_class(owner, distrib) &&
     !is_class(owner, continuous_distrib) &&
     !is_class(owner, discrete_distrib) &&

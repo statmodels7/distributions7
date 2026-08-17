@@ -310,6 +310,27 @@ S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y,
   sn2_chain(distrib, y, theta, 2L, expected = TRUE)[hess_names(distrib@params)]
 }
 
+#' @title The Centered Skew Normal Does Not Write Its Expected Information Out
+#' @name expected_hessian_exact.SkewNormal2Distrib
+#' @description
+#' The method above is the CHAIN onto \code{\link{skewnormal1_distrib}}, whose
+#' expected information is the base class's quadrature, so the registration
+#' says where the arithmetic is assembled and not that it is closed form.
+#' @details
+#' Measured at 100 observations it costs 5220 ms against the parent's 2230 --
+#' more than what it chains onto, the chain being paid on top -- where the
+#' families that do write it out answer in a median of 0.183 ms. Reported as
+#' exact, it made \code{\link{fit_distrib}} reject a legitimate
+#' \code{fisher_scoring(approx = )} here with a message that was untrue.
+#' @param x A \code{SkewNormal2Distrib} object.
+#' @param ... Unused.
+#' @return \code{FALSE}.
+#' @seealso \code{\link{expected_hessian_exact}}
+#' @keywords internal
+S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
+  expected_hessian_exact(skewnormal1_distrib())
+}
+
 #' @title Skew Normal Third-Order Derivatives in the Centered Parametrization
 #' @name distrib_deriv3.SkewNormal2Distrib
 #' @description The partition sum at order three.

@@ -1,3 +1,46 @@
+# distributions7 0.24.0
+
+* `distrib_dexpected_hessian()` is the derivative of the expected information
+  in the parameters, one component per pair `(a, b)` and differentiating
+  parameter `c`. It exists for a marginal criterion whose penalized matrix
+  carries the EXPECTED information: that matrix enters through its
+  determinant, so its gradient asks for `dK/dbeta`, which is `-l'''` with the
+  observed information and `-dE[l'']/deta` with the expected one -- and the
+  two are different objects, because differentiating an expectation moves the
+  measure as well as the integrand. The missing piece,
+  `E[l_ab l_c]`, is a mixed moment no Bartlett identity isolates: the third
+  ties the SYMMETRIZED sum, not the single term. The components are symmetric
+  in `(a, b)` and NOT in `c`, so they are keyed by `dexpected_names()` rather
+  than by the sorted triples `deriv_names()` uses at order three.
+
+* The default method is ONE central difference of the family's own expected
+  information, which is a single stencil on an analytic quantity wherever that
+  information is a written-out formula -- the licence the skew t already has
+  for its degrees of freedom, and not the nested differencing the package
+  forbids. Validated against the gaussian's hand-written components (7.2e-11)
+  and against the identity `E[l_abc] + E[l_ab l_c]` computed by quadrature on
+  a beta, every one of whose six components is non-zero (8.5e-10).
+
+* It REFUSES where the expected information is itself approximated, and the
+  reason is cost rather than accuracy: measured at 100 observations the six
+  families that approximate it cost 1880 to 147300 ms against a median of
+  0.183 ms for the thirty-four that do not, so 2p of those calls per
+  evaluation is not a slower route but an unusable one.
+
+* `has_exact_expected_hessian()` follows the arithmetic instead of the owning
+  class, through the new generic `expected_hessian_exact()`. Reading the owner
+  is not sufficient and two families prove it: `pseudohuber_distrib()`
+  registers a method that calls the numerical `expected_derivative()` and then
+  replaces the two components vanishing by symmetry, and
+  `skewnormal2_distrib()` registers the chain onto `skewnormal1_distrib()`,
+  whose expected information is the base class's quadrature -- costing 5220 ms
+  where the parent it chains onto costs 2230. Both answered "written out"
+  about a quadrature, and the consequences were live: `fit_distrib()` rejected
+  a legitimate `fisher_scoring(approx = )` on them with a message stating the
+  family computes its expected information in closed form, and its
+  standard-error branch entered a multi-second quadrature believing it a
+  formula.
+
 # distributions7 0.23.0
 
 * The centered skew normal rejects its derivatives at ZERO SKEWNESS, naming
