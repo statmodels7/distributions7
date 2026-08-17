@@ -114,6 +114,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/deriv_index_list.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/deriv_indices.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/deriv_names.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_key.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/dexpected_names.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dir_b_index.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dir_parts.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.html</loc></url>
@@ -312,6 +314,8 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv4.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BernoulliDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Beta2Distrib.html</loc></url>
@@ -754,6 +758,10 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_by_mc.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_derivative.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.SkewNormal2Distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/expit_transform.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/exponential_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/fd5_first.html</loc></url>
@@ -1018,6 +1026,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv3.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv4.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_grad_y.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_gradient.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/numerical_hess_y.html</loc></url>

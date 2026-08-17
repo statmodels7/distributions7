@@ -121,6 +121,8 @@ respect to the unconstrained parameters.
   : Analytical Hessian
 - [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
   : Analytical Expected Hessian
+- [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+  : The Derivative of the Expected Information
 - [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
   : Analytical Third-Order Derivatives
 - [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
@@ -337,6 +339,10 @@ Rarely called directly, but useful as a reference for what is happening.
   : Generate Names for Higher-Order Derivative Components
 - [`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
   : Generate Names for Hessian Matrix Components
+- [`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
+  : The Names of the Expected Information's Derivative
+- [`dexpected_key()`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md)
+  : The Key of One Component of the Expected Information's Derivative
 - [`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md)
   : Per-Parameter Smoothness of the Log-Likelihood
 - [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
@@ -2024,6 +2030,9 @@ divergent density.
 - [`distrib_deriv_component()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv_component.md)
   : One Component of the Parent's Derivative
 
+- [`distrib_dexpected_hessian.distrib`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.distrib.md)
+  : Default Derivative of the Expected Information
+
 - [`distrib_expected_hessian.MvGaussianDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvGaussianDistrib.md)
   : Multivariate Gaussian Expected Hessian
 
@@ -2294,6 +2303,18 @@ divergent density.
 
 - [`expected_derivative()`](https://statmodels7.github.io/distributions7/reference/expected_derivative.md)
   : Dispatch an Expected-Derivative Strategy
+
+- [`expected_hessian_exact.PseudoHuberDistrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md)
+  : The Pseudo-Huber Does Not Write Its Expected Information Out
+
+- [`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.md)
+  : Is a Family's Expected Information Written Out?
+
+- [`expected_hessian_exact.SkewNormal2Distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.SkewNormal2Distrib.md)
+  : The Centered Skew Normal Does Not Write Its Expected Information Out
+
+- [`expected_hessian_exact.distrib`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.distrib.md)
+  : Whether the Owner of the Method Settles the Question
 
 - [`fd5_first()`](https://statmodels7.github.io/distributions7/reference/fd5_first.md)
   : A Five-Point First Derivative
@@ -2920,6 +2941,9 @@ divergent density.
 
 - [`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md)
   : Numerical CDF Derivatives of Any Order
+
+- [`numerical_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_dexpected_hessian.md)
+  : Differencing the Expected Information Once
 
 - [`observed_deriv()`](https://statmodels7.github.io/distributions7/reference/observed_deriv.md)
   : Observed Derivatives of a Given Order
