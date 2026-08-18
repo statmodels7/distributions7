@@ -21,6 +21,11 @@ Closed-form fourth-order derivatives of the Inverse-Gaussian log-density
 
   Logical; if `TRUE`, returns the expected fourth derivatives.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of fourth-derivative component vectors.

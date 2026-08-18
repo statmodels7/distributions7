@@ -26,6 +26,11 @@ polygamma functions to one evaluation each.
 
   Unused.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of second derivatives.

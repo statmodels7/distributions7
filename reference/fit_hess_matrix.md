@@ -7,7 +7,15 @@ observations.
 ## Usage
 
 ``` r
-fit_hess_matrix(distrib, y, theta, expected, approx = "bartlett", nsim = 10000)
+fit_hess_matrix(
+  distrib,
+  y,
+  theta,
+  expected,
+  approx = "bartlett",
+  nsim = 10000,
+  threads = 1L
+)
 ```
 
 ## Arguments

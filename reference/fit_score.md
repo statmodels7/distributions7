@@ -6,7 +6,7 @@ summed over observations.
 ## Usage
 
 ``` r
-fit_score(distrib, y, theta)
+fit_score(distrib, y, theta, threads = 1L)
 ```
 
 ## Arguments

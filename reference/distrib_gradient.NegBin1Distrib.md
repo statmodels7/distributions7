@@ -27,6 +27,11 @@ which \\\theta\\ appears outside \\r\\.
 
   Unused.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list with the `mu` and `theta` components.

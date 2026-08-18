@@ -26,6 +26,11 @@ derivative in \\r\\ is \\\psi'(y+r) - \psi'(r)\\ and whose mixed term is
 
   Unused.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of second-derivative components.

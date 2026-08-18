@@ -22,6 +22,11 @@ coincide.
 
   Logical; ignored (observed and expected coincide).
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of fourth-derivative component vectors.

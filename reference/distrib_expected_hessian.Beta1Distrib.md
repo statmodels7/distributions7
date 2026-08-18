@@ -25,6 +25,11 @@ respect to the parameters \\\mu\\ and \\\phi\\.
 
   A list containing the parameters `mu` and `phi`.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A list containing the vectors of expected second derivatives.

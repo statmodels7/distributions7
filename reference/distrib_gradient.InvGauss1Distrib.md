@@ -22,6 +22,11 @@ y\mu^2\phi}{2y\phi^2\mu^2}\$\$
 
   A list containing the parameters `mu` and `phi`.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A list containing the vectors of first derivatives.

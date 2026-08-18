@@ -21,6 +21,11 @@ expected when `expected = TRUE`).
 
   Logical; if `TRUE`, returns the expected third derivative.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list with the `mu_mu_mu` component.

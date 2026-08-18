@@ -1,5 +1,59 @@
 # Changelog
 
+## distributions7 0.27.0
+
+- The per-observation derivative kernels of the transcendental compiled
+  families – poisson, negbin2, negbin1, beta1, student_t1, invgauss1,
+  betabinom1 and gamma2, forty-five kernels over fourteen files – run
+  their loops through the same d7 driver gaussian1 and gamma1 already
+  use, at the transcendental threshold (128), with `threads` on their
+  derivative methods. The loop bodies are untouched, so the results are
+  bit-identical at any count, which the suite asserts kernel by kernel
+  with [`identical()`](https://rdrr.io/r/base/identical.html); every
+  file was read before conversion for the shared-buffer shape that would
+  have made a mechanical pass a data race (none carried one).
+
+## distributions7 0.26.0
+
+- Scalar C entry points for the fast route of a score-driven filter
+  (piano_parallel.txt, section 2a), registered with
+  `R_RegisterCCallable`: `d7_scalar_id` keyed by the family’s S7 class
+  name (gaussian1 and gamma1; an unknown name answers -1 and the
+  consumer keeps its R callbacks) and `d7_score_curv`, the score and the
+  (k, k) second derivative of the log-density in one parameter at one
+  observation on the parameter scale, mirroring the family’s own vector
+  kernels expression by expression. A twin test holds them against
+  [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+  and
+  [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md)
+  with [`identical()`](https://rdrr.io/r/base/identical.html). The
+  remaining compiled families take the same few lines each when a
+  measurement names them; the sixteen in vectorized R have no C body to
+  point at and stay on the callbacks.
+
+## distributions7 0.25.0
+
+- `fit_distrib(threads = numericals7::n_threads())` accepts the
+  toolkit’s thread policy. The count travels as an argument down to the
+  family’s compiled per-observation kernels; the process-level
+  RcppParallel setting is sized at the fit’s entry and restored on exit.
+  At the default, `n_threads(1)`, the code takes exactly the sequential
+  path.
+- The per-observation derivative kernels of
+  [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
+  (all four orders) and
+  [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
+  (all four orders, observed and expected) run their loops through one
+  RcppParallel driver, decomposed over the elements of the output:
+  observation i’s derivatives are computed and written in full by one
+  thread, so no reduction is split and the result is bit-identical at
+  any thread count, which a test asserts with
+  [`identical()`](https://rdrr.io/r/base/identical.html). Their
+  derivative methods take a `threads` argument (default 1) through the
+  generics’ dots. Below a measured internal threshold a kernel stays
+  sequential whatever the count says; the remaining compiled families
+  take the same one-line conversion when a measurement names them.
+
 ## distributions7 0.24.0
 
 - [`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)

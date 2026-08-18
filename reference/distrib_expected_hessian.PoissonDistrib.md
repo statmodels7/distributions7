@@ -20,6 +20,11 @@ with respect to the parameter \\\mu\\.
 
   A list containing the parameter `mu`.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A list containing the vector of expected second derivatives.

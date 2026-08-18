@@ -15,7 +15,7 @@ parameter scale and reported with standard errors and confidence intervals.'><me
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.24.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.27.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,7 +63,8 @@ parameter scale and reported with standard errors and confidence intervals.</p>
 <span>  start <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  method <span class="op">=</span> <span class="fu"><a href="fisher_scoring.html">fisher_scoring</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  level <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  n_start <span class="op">=</span> <span class="fl">5</span></span>
+<span>  n_start <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  threads <span class="op">=</span> <span class="fu">numericals7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/numericals7/reference/n_threads.html" class="external-link">n_threads</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -120,6 +121,16 @@ it does.</p></dd>
 <dd><p>How many starting values to ask <code><a href="distrib_start.html">distrib_start</a></code>
 for when <code>start</code> is <code>NULL</code>. Defaults to 5. A family that returns
 its own estimate returns one and ignores this.</p></dd>
+
+
+<dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
+<dd><p>How many threads the fit may use, as
+<code><a href="https://statmodels7.github.io/numericals7/reference/n_threads.html" class="external-link">n_threads</a></code> constructs it. The default,
+<code>n_threads(1)</code>, is sequential and takes exactly the sequential
+code path. The count reaches the family's compiled per-observation
+kernels as an argument; the result does not depend on it, bit for bit,
+because every parallel region decomposes its work over the elements of
+its output and never splits a reduction.</p></dd>
 
 </dl></div>
     <div class="section level2">

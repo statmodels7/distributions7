@@ -16,7 +16,8 @@ fit_distrib(
   start = NULL,
   method = fisher_scoring(),
   level = 0.95,
-  n_start = 5
+  n_start = 5,
+  threads = numericals7::n_threads()
 )
 ```
 
@@ -80,6 +81,16 @@ fit_distrib(
   [`distrib_start`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
   for when `start` is `NULL`. Defaults to 5. A family that returns its
   own estimate returns one and ignores this.
+
+- threads:
+
+  How many threads the fit may use, as
+  [`n_threads`](https://statmodels7.github.io/numericals7/reference/n_threads.html)
+  constructs it. The default, `n_threads(1)`, is sequential and takes
+  exactly the sequential code path. The count reaches the family's
+  compiled per-observation kernels as an argument; the result does not
+  depend on it, bit for bit, because every parallel region decomposes
+  its work over the elements of its output and never splits a reduction.
 
 ## Value
 

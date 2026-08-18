@@ -21,6 +21,11 @@ log-density with respect to the parameters \\\mu\\ and \\\sigma\\.
 
   A list containing the parameters `mu` and `sigma`.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A list containing the vectors of first derivatives.

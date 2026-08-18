@@ -21,6 +21,11 @@ Closed-form third-order derivatives of the Inverse-Gaussian log-density
 
   Logical; if `TRUE`, returns the expected third derivatives.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of third-derivative component vectors.

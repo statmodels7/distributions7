@@ -36,6 +36,11 @@ against the exact mass to a far-tail quantile, as the NB2 kernel does;
 
   Unused.
 
+- threads:
+
+  How many threads the kernel may use; below the measured internal
+  threshold it stays sequential whatever the count says.
+
 ## Value
 
 A named list of expected second-derivative components.
