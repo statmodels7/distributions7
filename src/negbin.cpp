@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // E[trigamma(Y + theta)] for Y ~ NB2(mu, theta), needed by the expected hessian.
@@ -35,7 +36,8 @@ static double nb_E_trigamma(double mu, double theta) {
 }
 
 // [[Rcpp::export]]
-List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector grad_mu(n);
     NumericVector grad_theta(n);
@@ -44,17 +46,21 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta)
     bool theta_is_scalar = (theta.size() == 1);
     bool both_scalar = mu_is_scalar && theta_is_scalar;
 
-    double m = 0, th = 0, th_plus_mu = 0, digamma_th = 0, log_frac = 0;
+    // the scalar-case constants live OUT here; the per-iteration copies are
+    // LOCAL to the lambda, or two threads would race on them
+    double m0 = 0, th0 = 0, th_plus_mu0 = 0, digamma_th0 = 0, log_frac0 = 0;
 
     if (both_scalar) {
-        m = mu[0];
-        th = theta[0];
-        th_plus_mu = th + m;
-        digamma_th = R::digamma(th);
-        log_frac = std::log(th / th_plus_mu);
+        m0 = mu[0];
+        th0 = theta[0];
+        th_plus_mu0 = th0 + m0;
+        digamma_th0 = R::digamma(th0);
+        log_frac0 = std::log(th0 / th_plus_mu0);
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m0, th = th0, th_plus_mu = th_plus_mu0,
+               digamma_th = digamma_th0, log_frac = log_frac0;
         if (!both_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             th = theta_is_scalar ? theta[0] : theta[i];
@@ -65,13 +71,14 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta)
 
         grad_mu[i] = (th / th_plus_mu) * (y[i] / m - 1.0);
         grad_theta[i] = R::digamma(y[i] + th) - digamma_th + log_frac + (m - y[i]) / th_plus_mu;
-    }
+    });
 
     return List::create(Named("mu") = grad_mu, Named("theta") = grad_theta);
 }
 
 // [[Rcpp::export]]
-List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_theta_theta(n);
@@ -81,18 +88,22 @@ List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) 
     bool theta_is_scalar = (theta.size() == 1);
     bool both_scalar = mu_is_scalar && theta_is_scalar;
 
-    double m = 0, th = 0, th_plus_mu = 0, th_plus_mu2 = 0, trigamma_th = 0, mid = 0;
+    double m0 = 0, th0 = 0, th_plus_mu0 = 0, th_plus_mu20 = 0,
+           trigamma_th0 = 0, mid0 = 0;
 
     if (both_scalar) {
-        m = mu[0];
-        th = theta[0];
-        th_plus_mu = th + m;
-        th_plus_mu2 = th_plus_mu * th_plus_mu;
-        trigamma_th = R::trigamma(th);
-        mid = m / (th * th_plus_mu);
+        m0 = mu[0];
+        th0 = theta[0];
+        th_plus_mu0 = th0 + m0;
+        th_plus_mu20 = th_plus_mu0 * th_plus_mu0;
+        trigamma_th0 = R::trigamma(th0);
+        mid0 = m0 / (th0 * th_plus_mu0);
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m0, th = th0, th_plus_mu = th_plus_mu0,
+               th_plus_mu2 = th_plus_mu20, trigamma_th = trigamma_th0,
+               mid = mid0;
         if (!both_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             th = theta_is_scalar ? theta[0] : theta[i];
@@ -107,7 +118,7 @@ List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) 
         hess_mu_mu[i] = (y[i] + th) / th_plus_mu2 - y[i] / (m * m);
         hess_theta_theta[i] = R::trigamma(y[i] + th) - trigamma_th + mid + res / th_plus_mu2;
         hess_mu_theta[i] = res / th_plus_mu2;
-    }
+    });
 
     return List::create(
         Named("mu_mu") = hess_mu_mu,
@@ -117,7 +128,8 @@ List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) 
 }
 
 // [[Rcpp::export]]
-List negbin_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_theta_theta(n);
@@ -127,20 +139,21 @@ List negbin_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVecto
     bool theta_is_scalar = (theta.size() == 1);
     bool both_scalar = mu_is_scalar && theta_is_scalar;
 
-    double m = 0, th = 0, hmm = 0, htt = 0;
+    double hmm0 = 0, htt0 = 0;
 
     if (both_scalar) {
-        m = mu[0];
-        th = theta[0];
+        double m = mu[0];
+        double th = theta[0];
         double th_plus_mu = th + m;
-        hmm = -th / (m * th_plus_mu);
-        htt = nb_E_trigamma(m, th) - R::trigamma(th) + m / (th * th_plus_mu);
+        hmm0 = -th / (m * th_plus_mu);
+        htt0 = nb_E_trigamma(m, th) - R::trigamma(th) + m / (th * th_plus_mu);
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double hmm = hmm0, htt = htt0;
         if (!both_scalar) {
-            m = mu_is_scalar ? mu[0] : mu[i];
-            th = theta_is_scalar ? theta[0] : theta[i];
+            double m = mu_is_scalar ? mu[0] : mu[i];
+            double th = theta_is_scalar ? theta[0] : theta[i];
             double th_plus_mu = th + m;
             hmm = -th / (m * th_plus_mu);
             htt = nb_E_trigamma(m, th) - R::trigamma(th) + m / (th * th_plus_mu);
@@ -149,7 +162,7 @@ List negbin_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVecto
         hess_mu_mu[i] = hmm;
         hess_theta_theta[i] = htt;
         hess_mu_theta[i] = 0.0;
-    }
+    });
 
     return List::create(
         Named("mu_mu") = hess_mu_mu,

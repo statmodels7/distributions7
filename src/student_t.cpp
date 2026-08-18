@@ -1,8 +1,10 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
+List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector grad_mu(n), grad_sigma(n), grad_nu(n);
     
@@ -11,17 +13,20 @@ List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sig
     bool nu_is_scalar = (nu.size() == 1);
     bool all_scalar = mu_is_scalar && sigma_is_scalar && nu_is_scalar;
 
-    double m = 0, s = 0, v = 0, s2 = 0, v_s2 = 0;
-    double digamma_v_half = 0, digamma_v1_half = 0;
+    double m0 = 0, s0 = 0, v0 = 0, s20 = 0, v_s20 = 0;
+    double digamma_v_half0 = 0, digamma_v1_half0 = 0;
 
     if (all_scalar) {
-        m = mu[0]; s = sigma[0]; v = nu[0];
-        s2 = s * s; v_s2 = v * s2;
-        digamma_v_half = R::digamma(0.5 * v);
-        digamma_v1_half = R::digamma(0.5 * (v + 1.0));
+        m0 = mu[0]; s0 = sigma[0]; v0 = nu[0];
+        s20 = s0 * s0; v_s20 = v0 * s20;
+        digamma_v_half0 = R::digamma(0.5 * v0);
+        digamma_v1_half0 = R::digamma(0.5 * (v0 + 1.0));
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m0, s = s0, v = v0, s2 = s20, v_s2 = v_s20,
+               digamma_v_half = digamma_v_half0,
+               digamma_v1_half = digamma_v1_half0;
         if (!all_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             s = sigma_is_scalar ? sigma[0] : sigma[i];
@@ -40,13 +45,14 @@ List student_t_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sig
         grad_nu[i] = 0.5 * (-1.0 / v - digamma_v_half + digamma_v1_half + 
                             ((v + 1.0) * res2) / (v * den) - 
                             std::log(res2 / v_s2 + 1.0));
-    }
+    });
     
     return List::create(Named("mu") = grad_mu, Named("sigma") = grad_sigma, Named("nu") = grad_nu);
 }
 
 // [[Rcpp::export]]
-List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
+List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n), hess_sigma_sigma(n), hess_nu_nu(n);
     NumericVector hess_mu_sigma(n), hess_mu_nu(n), hess_sigma_nu(n);
@@ -56,18 +62,21 @@ List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
     bool nu_is_scalar = (nu.size() == 1);
     bool all_scalar = mu_is_scalar && sigma_is_scalar && nu_is_scalar;
 
-    double m = 0, s = 0, v = 0, s2 = 0, s4 = 0, v_s2 = 0, v_s4 = 0;
-    double trigamma_v_half = 0, trigamma_v1_half = 0;
+    double m0 = 0, s0 = 0, v0 = 0, s20 = 0, s40 = 0, v_s20 = 0, v_s40 = 0;
+    double trigamma_v_half0 = 0, trigamma_v1_half0 = 0;
 
     if (all_scalar) {
-        m = mu[0]; s = sigma[0]; v = nu[0];
-        s2 = s * s; s4 = s2 * s2;
-        v_s2 = v * s2; v_s4 = v * s4;
-        trigamma_v_half = R::trigamma(0.5 * v);
-        trigamma_v1_half = R::trigamma(0.5 * (v + 1.0));
+        m0 = mu[0]; s0 = sigma[0]; v0 = nu[0];
+        s20 = s0 * s0; s40 = s20 * s20;
+        v_s20 = v0 * s20; v_s40 = v0 * s40;
+        trigamma_v_half0 = R::trigamma(0.5 * v0);
+        trigamma_v1_half0 = R::trigamma(0.5 * (v0 + 1.0));
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m0, s = s0, v = v0, s2 = s20, s4 = s40, v_s2 = v_s20,
+               v_s4 = v_s40, trigamma_v_half = trigamma_v_half0,
+               trigamma_v1_half = trigamma_v1_half0;
         if (!all_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             s = sigma_is_scalar ? sigma[0] : sigma[i];
@@ -91,7 +100,7 @@ List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         hess_mu_sigma[i] = -(2.0 * v * (v + 1.0) * s * res) / den2;
         hess_mu_nu[i] = (res * (res2 - s2)) / den2;
         hess_sigma_nu[i] = (res4 - s2 * res2) / (s * den2);
-    }
+    });
     
     return List::create(
         Named("mu_mu") = hess_mu_mu, Named("sigma_sigma") = hess_sigma_sigma, Named("nu_nu") = hess_nu_nu,
@@ -100,7 +109,8 @@ List student_t_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigm
 }
 
 // [[Rcpp::export]]
-List student_t_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
+List student_t_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n), hess_sigma_sigma(n), hess_nu_nu(n);
     NumericVector hess_mu_sigma(n), hess_mu_nu(n), hess_sigma_nu(n);
@@ -109,17 +119,18 @@ List student_t_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
     bool nu_is_scalar = (nu.size() == 1);
     bool both_scalar = sigma_is_scalar && nu_is_scalar;
 
-    double s = 0, v = 0, s2 = 0;
-    double trigamma_v_half = 0, trigamma_v1_half = 0;
+    double s0 = 0, v0 = 0, s20 = 0;
+    double trigamma_v_half0 = 0, trigamma_v1_half0 = 0;
 
     if (both_scalar) {
-        s = sigma[0]; v = nu[0];
-        s2 = s * s;
-        trigamma_v_half = R::trigamma(0.5 * v);
-        trigamma_v1_half = R::trigamma(0.5 * (v + 1.0));
+        s0 = sigma[0]; v0 = nu[0];
+        s20 = s0 * s0;
+        trigamma_v_half0 = R::trigamma(0.5 * v0);
+        trigamma_v1_half0 = R::trigamma(0.5 * (v0 + 1.0));
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double s = s0, v = v0, s2 = s20, trigamma_v_half = trigamma_v_half0, trigamma_v1_half = trigamma_v1_half0;
         if (!both_scalar) {
             s = sigma_is_scalar ? sigma[0] : sigma[i];
             v = nu_is_scalar ? nu[0] : nu[i];
@@ -134,7 +145,7 @@ List student_t_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVe
         
         hess_sigma_nu[i] = 2.0 / ((v + 1.0) * (v + 3.0) * s);
         // mu_sigma and mu_nu default initialized to 0.0, no need to assign
-    }
+    });
     
     return List::create(
         Named("mu_mu") = hess_mu_mu, Named("sigma_sigma") = hess_sigma_sigma, Named("nu_nu") = hess_nu_nu,

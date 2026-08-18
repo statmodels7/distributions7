@@ -1,6 +1,6 @@
 Package: distributions7
 Title: S7 Framework for Probability Distributions
-Version: 0.24.0
+Version: 0.27.0
 Authors@R: 
     person("Giovanni", "Tinervia", , "giovannitinervia9@gmail.com", role = c("aut", "cre"))
 Description: Provides a consistent S7 object-oriented infrastructure for probability distributions. Each 'distrib' object encapsulates standard statistical functions alongside analytical derivatives.
@@ -13,18 +13,21 @@ BugReports: https://github.com/statmodels7/distributions7/issues
 Depends:
     R (>= 4.1.0)
 LinkingTo:
-    Rcpp
+    Rcpp,
+    RcppParallel
 Imports:
     graphics,
-    numericals7 (>= 0.4.0),
+    numericals7 (>= 0.8.0),
     parameters7 (>= 0.5.0),
     linkfunctions7,
     optimizers7,
     Rcpp,
+    RcppParallel,
     S7,
     statmod,
     stats,
     utils
+SystemRequirements: GNU make
 Remotes:
     statmodels7/numericals7,
     statmodels7/parameters7,

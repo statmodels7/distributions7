@@ -1,8 +1,10 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector grad_mu(n);
     NumericVector grad_phi(n);
@@ -10,7 +12,7 @@ List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi)
     bool mu_is_scalar = (mu.size() == 1);
     bool phi_is_scalar = (phi.size() == 1);
     
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double p = phi_is_scalar ? phi[0] : phi[i];
         
@@ -22,13 +24,14 @@ List invgauss_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi)
         
         grad_mu[i] = res / (p * m3);
         grad_phi[i] = (res * res - y[i] * m2 * p) / (2.0 * y[i] * p2 * m2);
-    }
+    });
     
     return List::create(Named("mu") = grad_mu, Named("phi") = grad_phi);
 }
 
 // [[Rcpp::export]]
-List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_phi_phi(n);
@@ -37,7 +40,7 @@ List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) 
     bool mu_is_scalar = (mu.size() == 1);
     bool phi_is_scalar = (phi.size() == 1);
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double p = phi_is_scalar ? phi[0] : phi[i];
         
@@ -53,13 +56,14 @@ List invgauss_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) 
         hess_mu_mu[i] = -(3.0 * y[i] - 2.0 * m) / (p * m4);
         hess_phi_phi[i] = (p - 2.0 * res2 / (m2 * y[i])) / (2.0 * p3);
         hess_mu_phi[i] = -res / (p2 * m3);
-    }
+    });
     
     return List::create(Named("mu_mu") = hess_mu_mu, Named("phi_phi") = hess_phi_phi, Named("mu_phi") = hess_mu_phi);
 }
 
 // [[Rcpp::export]]
-List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_phi_phi(n);
@@ -69,7 +73,7 @@ List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
     bool phi_is_scalar = (phi.size() == 1);
     bool both_scalar = mu_is_scalar && phi_is_scalar;
     
-    double hmm = 0, hpp = 0;
+    double hmm0 = 0, hpp0 = 0;
 
     if (both_scalar) {
         double m = mu[0];
@@ -77,11 +81,12 @@ List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
         double m3 = m * m * m;
         double p2 = p * p;
         
-        hmm = -1.0 / (p * m3);
-        hpp = -0.5 / p2;
+        hmm0 = -1.0 / (p * m3);
+        hpp0 = -0.5 / p2;
     }
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double hmm = hmm0, hpp = hpp0;
         if (!both_scalar) {
             double m = mu_is_scalar ? mu[0] : mu[i];
             double p = phi_is_scalar ? phi[0] : phi[i];
@@ -95,7 +100,7 @@ List invgauss_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
         hess_mu_mu[i] = hmm;
         hess_phi_phi[i] = hpp;
         hess_mu_phi[i] = 0.0;
-    }
+    });
     
     return List::create(Named("mu_mu") = hess_mu_mu, Named("phi_phi") = hess_phi_phi, Named("mu_phi") = hess_mu_phi);
 }

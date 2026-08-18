@@ -13,6 +13,9 @@
 \item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
 
 \item{...}{Unused.}
+
+\item{threads}{How many threads the kernel may use; below the measured
+internal threshold it stays sequential whatever the count says.}
 }
 \value{
 A named list of first derivatives.

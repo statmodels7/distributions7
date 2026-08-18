@@ -131,10 +131,13 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta) {
 #' @param distrib A \code{Gamma2Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  gamma_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  gamma_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Observed Hessian
@@ -146,10 +149,13 @@ S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale
 #' @param distrib A \code{Gamma2Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  gamma_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  gamma_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Expected Hessian
@@ -165,10 +171,13 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' @param distrib A \code{Gamma2Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  gamma_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  gamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Third-Order Derivatives
@@ -178,11 +187,14 @@ S7::method(distrib_expected_hessian, Gamma2Distrib) <- function(distrib, y, thet
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) gamma_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else gamma_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) gamma_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else gamma_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Fourth-Order Derivatives
@@ -192,11 +204,14 @@ S7::method(distrib_deriv3, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) gamma_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else gamma_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) gamma_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else gamma_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Response Derivatives

@@ -130,10 +130,13 @@ S7::method(distrib_rng, Beta1Distrib) <- function(distrib, n, theta) {
 #' @param distrib A \code{Beta1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_gradient, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  beta_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  beta_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Analytical Observed Hessian
@@ -145,10 +148,13 @@ S7::method(distrib_gradient, Beta1Distrib) <- function(distrib, y, theta, scale 
 #' @param distrib A \code{Beta1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  beta_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  beta_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Analytical Expected Hessian
@@ -164,10 +170,13 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #' @param distrib A \code{Beta1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  beta_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  beta_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Analytical Third-Order Derivatives
@@ -180,10 +189,13 @@ S7::method(distrib_expected_hessian, Beta1Distrib) <- function(distrib, y, theta
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param expected Logical; ignored (observed and expected coincide).
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  beta_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  beta_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Analytical Fourth-Order Derivatives
@@ -195,10 +207,13 @@ S7::method(distrib_deriv3, Beta1Distrib) <- function(distrib, y, theta, expected
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param expected Logical; ignored (observed and expected coincide).
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  beta_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  beta_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Beta Response Derivatives

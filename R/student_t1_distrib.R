@@ -131,10 +131,13 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta) {
 #' @param distrib A \code{StudentT1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  student_t_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  student_t_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student's t Analytical Observed Hessian
@@ -153,10 +156,13 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #' @param distrib A \code{StudentT1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  student_t_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  student_t_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student's t Analytical Expected Hessian
@@ -175,10 +181,13 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' @param distrib A \code{StudentT1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  student_t_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  student_t_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Student's t Analytical Third-Order Derivatives
@@ -191,14 +200,17 @@ S7::method(distrib_expected_hessian, StudentT1Distrib) <- function(distrib, y, t
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
 #' @param expected Logical; if \code{TRUE}, returns the (numerically integrated) expected third derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    student_t_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+    student_t_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
 }
 
@@ -212,14 +224,17 @@ S7::method(distrib_deriv3, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
 #' @param expected Logical; if \code{TRUE}, returns the (numerically integrated) expected fourth derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    student_t_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+    student_t_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
 }
 

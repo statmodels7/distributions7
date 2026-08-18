@@ -9,6 +9,9 @@
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+
+\item{threads}{How many threads the kernel may use; below the measured
+internal threshold it stays sequential whatever the count says.}
 }
 \value{
 A list containing the vectors of second derivatives.

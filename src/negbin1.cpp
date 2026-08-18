@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Negative binomial with a variance LINEAR in the mean: Var(Y) = mu (1 + theta),
@@ -56,46 +57,49 @@ static double nb1_E_trigamma(double mu, double th) {
 
 // [[Rcpp::export]]
 NumericVector negbin1_logpmf_cpp(NumericVector y, NumericVector mu,
-                                 NumericVector theta) {
+                                 NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector out(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
         out[i] = R::dnbinom(y[i], m / t, 1.0 / (1.0 + t), 1);
-    }
+    });
     return out;
 }
 
 // [[Rcpp::export]]
-List negbin1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g_mu(n), g_th(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
         NB1parts z = nb1_parts(y[i], m, t);
         g_mu[i] = z.P * z.rm;
         g_th[i] = z.P * z.rt + z.Q;
-    }
+    });
     return List::create(Named("mu") = g_mu, Named("theta") = g_th);
 }
 
 // [[Rcpp::export]]
-List negbin1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_mt(n), h_tt(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];
         NB1parts z = nb1_parts(y[i], m, t);
         h_mm[i] = z.Pr * z.rm * z.rm;
         h_mt[i] = (z.Pr * z.rt + z.Pth) * z.rm + z.P * z.rmt;
         h_tt[i] = z.Pr * z.rt * z.rt + 2.0 * z.Pth * z.rt + z.P * z.rtt + z.Qth;
-    }
+    });
     return List::create(Named("mu_mu") = h_mm,
                         Named("mu_theta") = h_mt,
                         Named("theta_theta") = h_tt);
@@ -107,12 +111,17 @@ List negbin1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta)
 // a closed form.
 // [[Rcpp::export]]
 List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu,
-                                  NumericVector theta) {
+                                  NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_mt(n), h_tt(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
     double last_m = R_NegInf, last_t = R_NegInf, emm = 0, emt = 0, ett = 0;
 
+    // this loop stays SEQUENTIAL: it memoizes an expensive expectation
+    // across consecutive observations (last_m), which is state the
+    // parallel decomposition may not share.
+    (void) threads;
     for (int i = 0; i < n; i++) {
         double m = mu_s ? mu[0] : mu[i];
         double t = th_s ? theta[0] : theta[i];

@@ -126,11 +126,14 @@ S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta) {
 #' @param theta A list with \code{mu} and \code{phi}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of first derivatives.
 #' @seealso \code{\link{gamma1_distrib}}
 S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
-                                                         scale = c("parameter", "link"), ...) {
-  gamma1_gradient_cpp(y, theta[[1]], theta[[2]])
+                                                         scale = c("parameter", "link"), ...,
+                                                         threads = 1L) {
+  gamma1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Observed Hessian in Mean and Dispersion
@@ -144,11 +147,14 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #' @param theta A list with \code{mu} and \code{phi}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of second derivatives.
 #' @seealso \code{\link{gamma1_distrib}}
 S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
-                                                        scale = c("parameter", "link"), ...) {
-  gamma1_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                        scale = c("parameter", "link"), ...,
+                                                        threads = 1L) {
+  gamma1_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Analytical Expected Hessian in Mean and Dispersion
@@ -168,13 +174,16 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of expected second derivatives.
 #' @seealso \code{\link{gamma1_distrib}}
 S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, theta,
                                                                  scale = c("parameter", "link"),
                                                                  approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                 nsim = 10000, ...) {
-  gamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                                 nsim = 10000, ...,
+                                                                 threads = 1L) {
+  gamma1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gamma Third-Order Derivatives in Mean and Dispersion
@@ -188,16 +197,19 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative components.
 #' @seealso \code{\link{gamma1_distrib}}
 S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
                                                        approx = c("integrate", "bartlett", "mc", "opg"),
-                                                       nsim = 10000, ...) {
+                                                       nsim = 10000, ...,
+                                                       threads = 1L) {
   if (expected) {
-    gamma1_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
+    gamma1_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {
-    gamma1_deriv3_cpp(y, theta[[1]], theta[[2]])
+    gamma1_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
   }
 }
 
@@ -212,16 +224,19 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative components.
 #' @seealso \code{\link{gamma1_distrib}}
 S7::method(distrib_deriv4, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
                                                        approx = c("integrate", "bartlett", "mc", "opg"),
-                                                       nsim = 10000, ...) {
+                                                       nsim = 10000, ...,
+                                                       threads = 1L) {
   if (expected) {
-    gamma1_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
+    gamma1_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   } else {
-    gamma1_deriv4_cpp(y, theta[[1]], theta[[2]])
+    gamma1_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
   }
 }
 

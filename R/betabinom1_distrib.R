@@ -132,11 +132,14 @@ S7::method(distrib_rng, BetaBinom1Distrib) <- function(distrib, n, theta) {
 #' @param theta A list containing \code{mu} and \code{sigma}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list with the \code{mu} and \code{sigma} components.
 #' @seealso \code{\link{betabinom1_distrib}}
 S7::method(distrib_gradient, BetaBinom1Distrib) <- function(distrib, y, theta,
-                                                            scale = c("parameter", "link"), ...) {
-  betabinom_gradient_cpp(y, theta[[1]], theta[[2]], distrib@size)
+                                                            scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  betabinom_gradient_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 #' @title Beta-Binomial Analytical Observed Hessian
@@ -151,11 +154,14 @@ S7::method(distrib_gradient, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @param theta A list containing \code{mu} and \code{sigma}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{betabinom1_distrib}}
 S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  betabinom_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size)
+                                                           scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  betabinom_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 #' @title Beta-Binomial Analytical Expected Hessian
@@ -171,13 +177,16 @@ S7::method(distrib_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
 #' @param approx Ignored; the expectation is an exact sum.
 #' @param nsim Ignored.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of expected second-derivative components.
 #' @seealso \code{\link{betabinom1_distrib}}
 S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                    nsim = 10000, ...) {
-  betabinom_expected_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size)
+                                                                    nsim = 10000, ...,
+                                       threads = 1L) {
+  betabinom_expected_hessian_cpp(y, theta[[1]], theta[[2]], distrib@size, threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

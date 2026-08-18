@@ -4,7 +4,15 @@
 \alias{fit_hess_matrix}
 \title{Summed Hessian on the Link Scale, as a Matrix}
 \usage{
-fit_hess_matrix(distrib, y, theta, expected, approx = "bartlett", nsim = 10000)
+fit_hess_matrix(
+  distrib,
+  y,
+  theta,
+  expected,
+  approx = "bartlett",
+  nsim = 10000,
+  threads = 1L
+)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}

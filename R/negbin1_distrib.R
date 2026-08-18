@@ -142,11 +142,14 @@ S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta) {
 #' @param theta A list containing \code{mu} and \code{theta}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list with the \code{mu} and \code{theta} components.
 #' @seealso \code{\link{negbin1_distrib}}
 S7::method(distrib_gradient, NegBin1Distrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"), ...) {
-  negbin1_gradient_cpp(y, theta[[1]], theta[[2]])
+                                                          scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  negbin1_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title NB1 Analytical Observed Hessian
@@ -160,11 +163,14 @@ S7::method(distrib_gradient, NegBin1Distrib) <- function(distrib, y, theta,
 #' @param theta A list containing \code{mu} and \code{theta}.
 #' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{negbin1_distrib}}
 S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
-                                                         scale = c("parameter", "link"), ...) {
-  negbin1_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                         scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  negbin1_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title NB1 Analytical Expected Hessian
@@ -182,13 +188,16 @@ S7::method(distrib_hessian, NegBin1Distrib) <- function(distrib, y, theta,
 #' @param approx Ignored.
 #' @param nsim Ignored.
 #' @param ... Unused.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of expected second-derivative components.
 #' @seealso \code{\link{negbin1_distrib}}
 S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, theta,
                                                                   scale = c("parameter", "link"),
                                                                   approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                  nsim = 10000, ...) {
-  negbin1_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                                  nsim = 10000, ...,
+                                       threads = 1L) {
+  negbin1_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Observed third/fourth-order derivatives of the (location-scale) Student's t
@@ -7,13 +8,14 @@ using namespace Rcpp;
 // (handled by the numerical fallback in R).
 
 // [[Rcpp::export]]
-List student_t_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
+List student_t_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_mu_nu(n), mu_sigma_sigma(n), mu_sigma_nu(n),
                   mu_nu_nu(n), sigma_sigma_sigma(n), sigma_sigma_nu(n), sigma_nu_nu(n), nu_nu_nu(n);
     bool mu_s = (mu.size() == 1), sig_s = (sigma.size() == 1), nu_s = (nu.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = sig_s ? sigma[0] : sigma[i];
         double v = nu_s ? nu[0] : nu[i];
@@ -47,7 +49,7 @@ List student_t_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma
         sigma_nu_nu[i] = 2.0 * s * r2 * (s2 - r2) / D3;
         nu_nu_nu[i] = (-4.0 / (v * v) - 8.0 * v1 * s6 / D3 + 12.0 * s4 / D2
             - R::psigamma(v / 2.0, 2.0) + R::psigamma((1.0 + v) / 2.0, 2.0)) / 8.0;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu, Named("mu_mu_sigma") = mu_mu_sigma, Named("mu_mu_nu") = mu_mu_nu,
@@ -58,7 +60,8 @@ List student_t_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma
 }
 
 // [[Rcpp::export]]
-List student_t_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu) {
+List student_t_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma, NumericVector nu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_mu_nu(n), mu_mu_sigma_sigma(n),
                   mu_mu_sigma_nu(n), mu_mu_nu_nu(n), mu_sigma_sigma_sigma(n), mu_sigma_sigma_nu(n),
@@ -66,7 +69,7 @@ List student_t_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma
                   sigma_sigma_sigma_nu(n), sigma_sigma_nu_nu(n), sigma_nu_nu_nu(n), nu_nu_nu_nu(n);
     bool mu_s = (mu.size() == 1), sig_s = (sigma.size() == 1), nu_s = (nu.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = sig_s ? sigma[0] : sigma[i];
         double v = nu_s ? nu[0] : nu[i];
@@ -115,7 +118,7 @@ List student_t_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma
         sigma_nu_nu_nu[i] = -6.0 * s3 * r2 * (s2 - r2) / D4;
         nu_nu_nu_nu[i] = 1.0 / (v * v * v) + 3.0 * v1 * s8 / D4 - 4.0 * s6 / D3
             - R::psigamma(v / 2.0, 3.0) / 16.0 + R::psigamma((1.0 + v) / 2.0, 3.0) / 16.0;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu, Named("mu_mu_mu_sigma") = mu_mu_mu_sigma,

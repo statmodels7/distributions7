@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 #include <limits>
 using namespace Rcpp;
 
@@ -78,30 +79,32 @@ static inline BBmap bb_map(double mu, double s) {
 
 // [[Rcpp::export]]
 List betabinom_gradient_cpp(NumericVector y, NumericVector mu,
-                            NumericVector sigma, double size) {
+                            NumericVector sigma, double size,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g_mu(n), g_sigma(n);
     bool mu_s = (mu.size() == 1), si_s = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
         BBmap mp = bb_map(m, s);
         BBderiv d = bb_shape_derivs(y[i], size, mp.A, mp.B);
         g_mu[i]    = d.lA * mp.Am + d.lB * mp.Bm;
         g_sigma[i] = d.lA * mp.As + d.lB * mp.Bs;
-    }
+    });
     return List::create(Named("mu") = g_mu, Named("sigma") = g_sigma);
 }
 
 // [[Rcpp::export]]
 List betabinom_hessian_cpp(NumericVector y, NumericVector mu,
-                           NumericVector sigma, double size) {
+                           NumericVector sigma, double size,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_ms(n), h_ss(n);
     bool mu_s = (mu.size() == 1), si_s = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
         BBmap mp = bb_map(m, s);
@@ -119,7 +122,7 @@ List betabinom_hessian_cpp(NumericVector y, NumericVector mu,
                 + 2.0 * d.lAB * mp.As * mp.Bs
                 + d.lBB * mp.Bs * mp.Bs
                 + d.lA * mp.Ass + d.lB * mp.Bss;
-    }
+    });
     return List::create(Named("mu_mu") = h_mm,
                         Named("mu_sigma") = h_ms,
                         Named("sigma_sigma") = h_ss);
@@ -131,7 +134,8 @@ List betabinom_hessian_cpp(NumericVector y, NumericVector mu,
 // on the data, only on the parameters.
 // [[Rcpp::export]]
 List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
-                                    NumericVector sigma, double size) {
+                                    NumericVector sigma, double size,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_ms(n), h_ss(n);
     bool mu_s = (mu.size() == 1), si_s = (sigma.size() == 1);
@@ -140,6 +144,10 @@ List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
     double last_m = R_NegInf, last_s = R_NegInf;
     double e_mm = 0, e_ms = 0, e_ss = 0;
 
+    // this loop stays SEQUENTIAL: it memoizes an expensive expectation
+    // across consecutive observations (last_m), which is state the
+    // parallel decomposition may not share.
+    (void) threads;
     for (int i = 0; i < n; i++) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
@@ -174,12 +182,13 @@ List betabinom_expected_hessian_cpp(NumericVector y, NumericVector mu,
 
 // [[Rcpp::export]]
 NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu,
-                                   NumericVector sigma, double size) {
+                                   NumericVector sigma, double size,
+                        int threads = 1) {
     int n = y.size();
     NumericVector out(n);
     bool mu_s = (mu.size() == 1), si_s = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double s = si_s ? sigma[0] : sigma[i];
         double A = m / s, B = (1.0 - m) / s;
@@ -188,6 +197,6 @@ NumericVector betabinom_logpmf_cpp(NumericVector y, NumericVector mu,
         } else {
             out[i] = bb_log_mass(y[i], A, B, size);
         }
-    }
+    });
     return out;
 }

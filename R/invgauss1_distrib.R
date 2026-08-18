@@ -127,10 +127,13 @@ S7::method(distrib_rng, InvGauss1Distrib) <- function(distrib, n, theta) {
 #' @param distrib An \code{InvGauss1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  invgauss_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  invgauss_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse-Gaussian Analytical Observed Hessian
@@ -153,10 +156,13 @@ S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, sc
 #' @param distrib An \code{InvGauss1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  invgauss_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  invgauss_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse-Gaussian Analytical Expected Hessian
@@ -172,10 +178,13 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #' @param distrib An \code{InvGauss1Distrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  invgauss_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  invgauss_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse-Gaussian Analytical Third-Order Derivatives
@@ -185,11 +194,14 @@ S7::method(distrib_expected_hessian, InvGauss1Distrib) <- function(distrib, y, t
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) invgauss_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else invgauss_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) invgauss_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else invgauss_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse-Gaussian Analytical Fourth-Order Derivatives
@@ -199,11 +211,14 @@ S7::method(distrib_deriv3, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters \code{mu} and \code{phi}.
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) invgauss_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else invgauss_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) invgauss_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else invgauss_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse-Gaussian Response Derivatives

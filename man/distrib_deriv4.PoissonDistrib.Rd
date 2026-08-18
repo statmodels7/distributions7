@@ -11,6 +11,9 @@
 \item{theta}{A list containing the parameter \code{mu}.}
 
 \item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivative.}
+
+\item{threads}{How many threads the kernel may use; below the measured
+internal threshold it stays sequential whatever the count says.}
 }
 \value{
 A named list with the \code{mu_mu_mu_mu} component.

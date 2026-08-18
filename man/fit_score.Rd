@@ -4,7 +4,7 @@
 \alias{fit_score}
 \title{Summed Score on the Link Scale}
 \usage{
-fit_score(distrib, y, theta)
+fit_score(distrib, y, theta, threads = 1L)
 }
 \arguments{
 \item{distrib}{An object inheriting from class \code{"distrib"}.}

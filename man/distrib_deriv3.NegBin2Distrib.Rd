@@ -11,6 +11,9 @@
 \item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
 
 \item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+
+\item{threads}{How many threads the kernel may use; below the measured
+internal threshold it stays sequential whatever the count says.}
 }
 \value{
 A named list of third-derivative component vectors.

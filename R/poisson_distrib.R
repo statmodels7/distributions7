@@ -119,10 +119,13 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta) {
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter \code{mu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  poisson_gradient_cpp(y, theta[[1]])
+S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  poisson_gradient_cpp(y, theta[[1]], threads)
 }
 
 #' @title Poisson Analytical Observed Hessian
@@ -136,10 +139,13 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter \code{mu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  poisson_hessian_cpp(y, theta[[1]])
+S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...,
+                                       threads = 1L) {
+  poisson_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Poisson Analytical Expected Hessian
@@ -153,10 +159,13 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' @param distrib A \code{PoissonDistrib} object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter \code{mu}.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  poisson_expected_hessian_cpp(y, theta[[1]])
+S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  poisson_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Poisson Analytical Third-Order Derivatives
@@ -166,11 +175,14 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter \code{mu}.
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list with the \code{mu_mu_mu} component.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) poisson_deriv3_expected_cpp(y, theta[[1]])
-  else poisson_deriv3_cpp(y, theta[[1]])
+S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) poisson_deriv3_expected_cpp(y, theta[[1]], threads)
+  else poisson_deriv3_cpp(y, theta[[1]], threads)
 }
 
 #' @title Poisson Analytical Fourth-Order Derivatives
@@ -180,11 +192,14 @@ S7::method(distrib_deriv3, PoissonDistrib) <- function(distrib, y, theta, expect
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter \code{mu}.
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
+#' @param threads How many threads the kernel may use; below the measured
+#'   internal threshold it stays sequential whatever the count says.
 #' @return A named list with the \code{mu_mu_mu_mu} component.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) poisson_deriv4_expected_cpp(y, theta[[1]])
-  else poisson_deriv4_cpp(y, theta[[1]])
+S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...,
+                                       threads = 1L) {
+  if (expected) poisson_deriv4_expected_cpp(y, theta[[1]], threads)
+  else poisson_deriv4_cpp(y, theta[[1]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

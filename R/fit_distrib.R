@@ -95,8 +95,8 @@ fit_dtheta_deta <- function(distrib, eta) {
 #'
 #' @seealso \code{\link{fit_hess_matrix}}
 #' @keywords internal
-fit_score <- function(distrib, y, theta) {
-  g <- distrib_gradient(distrib, y, theta, scale = "link")
+fit_score <- function(distrib, y, theta, threads = 1L) {
+  g <- distrib_gradient(distrib, y, theta, scale = "link", threads = threads)
   vapply(g, function(v) sum(v), numeric(1))
 }
 
@@ -127,15 +127,15 @@ fit_score <- function(distrib, y, theta) {
 #' @seealso \code{\link{fit_score}}, \code{\link{fit_distrib}}
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
-                            approx = "bartlett", nsim = 10000) {
+                            approx = "bartlett", nsim = 10000, threads = 1L) {
   params <- distrib@params
   p <- length(params)
   h <- if (expected) {
     distrib_expected_hessian(distrib, y, theta,
-      scale = "link", approx = approx, nsim = nsim
+      scale = "link", approx = approx, nsim = nsim, threads = threads
     )
   } else {
-    distrib_hessian(distrib, y, theta, scale = "link")
+    distrib_hessian(distrib, y, theta, scale = "link", threads = threads)
   }
   M <- matrix(0, p, p, dimnames = list(params, params))
   for (i in seq_len(p)) {
@@ -290,6 +290,13 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @param n_start How many starting values to ask \code{\link{distrib_start}}
 #'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
 #'   its own estimate returns one and ignores this.
+#' @param threads How many threads the fit may use, as
+#'   \code{\link[numericals7]{n_threads}} constructs it. The default,
+#'   \code{n_threads(1)}, is sequential and takes exactly the sequential
+#'   code path. The count reaches the family's compiled per-observation
+#'   kernels as an argument; the result does not depend on it, bit for bit,
+#'   because every parallel region decomposes its work over the elements of
+#'   its output and never splits a reduction.
 #'
 #' @return An object of class \code{\link{distrib_fit}}; see its documentation for
 #'   the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
@@ -335,7 +342,14 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
                         method = fisher_scoring(),
-                        level = 0.95, n_start = 5) {
+                        level = 0.95, n_start = 5,
+                        threads = numericals7::n_threads()) {
+  # The count is read once and passed DOWN as an argument; the process-level
+  # RcppParallel setting is sized here and restored when this frame exits,
+  # so a fit never leaves it moved for the code that runs after it. At
+  # threads = 1 neither call touches anything.
+  tc <- numericals7::thread_count(threads)
+  numericals7::local_threads(threads)
   # 'start' comes before 'method' in the signature, so an optimizer passed
   # positionally lands in it. What the caller then sees, several frames down,
   # is align_theta() refusing to coerce an S7 object to a list -- an error
@@ -462,13 +476,13 @@ fit_distrib <- function(distrib, y, start = NULL,
   # Hessian, so the two named strategies differ only in that argument.
   nll_gr <- function(eta) {
     th <- fit_theta_from_eta(distrib, eta)
-    -fit_score(distrib, y, th) / scale_n
+    -fit_score(distrib, y, th, threads = tc) / scale_n
   }
   nll_he <- function(expected) {
     function(eta) {
       th <- fit_theta_from_eta(distrib, eta)
       -fit_hess_matrix(distrib, y, th,
-        expected = expected, approx = approx, nsim = nsim
+        expected = expected, approx = approx, nsim = nsim, threads = tc
       ) / scale_n
     }
   }

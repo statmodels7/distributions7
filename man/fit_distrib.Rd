@@ -10,7 +10,8 @@ fit_distrib(
   start = NULL,
   method = fisher_scoring(),
   level = 0.95,
-  n_start = 5
+  n_start = 5,
+  threads = numericals7::n_threads()
 )
 }
 \arguments{
@@ -55,6 +56,14 @@ it does.}
 \item{n_start}{How many starting values to ask \code{\link{distrib_start}}
 for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
 its own estimate returns one and ignores this.}
+
+\item{threads}{How many threads the fit may use, as
+\code{\link[numericals7]{n_threads}} constructs it. The default,
+\code{n_threads(1)}, is sequential and takes exactly the sequential
+code path. The count reaches the family's compiled per-observation
+kernels as an argument; the result does not depend on it, bit for bit,
+because every parallel region decomposes its work over the elements of
+its output and never splits a reduction.}
 }
 \value{
 An object of class \code{\link{distrib_fit}}; see its documentation for

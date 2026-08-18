@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Negative Binomial (NB2) log-mass,
@@ -35,12 +36,13 @@ static double nb_E_psigamma(double mu, double theta, double deriv) {
 }
 
 // [[Rcpp::export]]
-List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_theta(n), mu_theta_theta(n), theta_theta_theta(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double th = th_s ? theta[0] : theta[i];
         double yi = y[i];
@@ -52,7 +54,7 @@ List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
         mu_theta_theta[i] = -2.0 * (yi - m) / s3;
         theta_theta_theta[i] = R::psigamma(yi + th, 2.0) - R::psigamma(th, 2.0)
             - m * (2.0 * th + m) / (th2 * s2) - 2.0 * (yi - m) / s3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -63,22 +65,26 @@ List negbin_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
 }
 
 // [[Rcpp::export]]
-List negbin_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_theta(n), mu_theta_theta(n), theta_theta_theta(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
     bool both_scalar = mu_s && th_s;
 
-    double ttt = 0;
+    // the scalar-case constant lives OUT here; the per-iteration copy is
+    // LOCAL to the lambda, or two threads would race on it
+    double ttt0 = 0;
     if (both_scalar) {
         double m = mu[0], th = theta[0], s = th + m;
-        ttt = nb_E_psigamma(m, th, 2.0) - R::psigamma(th, 2.0) - m * (2.0 * th + m) / (th * th * s * s);
+        ttt0 = nb_E_psigamma(m, th, 2.0) - R::psigamma(th, 2.0) - m * (2.0 * th + m) / (th * th * s * s);
     }
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double th = th_s ? theta[0] : theta[i];
         double s = th + m, s2 = s * s;
+        double ttt = ttt0;
         if (!both_scalar) {
             ttt = nb_E_psigamma(m, th, 2.0) - R::psigamma(th, 2.0) - m * (2.0 * th + m) / (th * th * s2);
         }
@@ -86,7 +92,7 @@ List negbin_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         mu_mu_theta[i] = -1.0 / s2;
         mu_theta_theta[i] = 0.0;
         theta_theta_theta[i] = ttt;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -97,13 +103,14 @@ List negbin_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
 }
 
 // [[Rcpp::export]]
-List negbin_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_theta(n), mu_mu_theta_theta(n),
                   mu_theta_theta_theta(n), theta_theta_theta_theta(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double th = th_s ? theta[0] : theta[i];
         double yi = y[i];
@@ -117,7 +124,7 @@ List negbin_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
         theta_theta_theta_theta[i] = R::psigamma(yi + th, 3.0) - R::psigamma(th, 3.0)
             - 2.0 * m * (th * s - (2.0 * th + m) * (2.0 * th + m)) / (th3 * s3)
             + 6.0 * (yi - m) / s4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
@@ -129,25 +136,27 @@ List negbin_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
 }
 
 // [[Rcpp::export]]
-List negbin_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector theta) {
+List negbin_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector theta,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_theta(n), mu_mu_theta_theta(n),
                   mu_theta_theta_theta(n), theta_theta_theta_theta(n);
     bool mu_s = (mu.size() == 1), th_s = (theta.size() == 1);
     bool both_scalar = mu_s && th_s;
 
-    double tttt = 0;
+    double tttt0 = 0;
     if (both_scalar) {
         double m = mu[0], th = theta[0], s = th + m;
         double th3 = th * th * th, s3 = s * s * s;
-        tttt = nb_E_psigamma(m, th, 3.0) - R::psigamma(th, 3.0)
+        tttt0 = nb_E_psigamma(m, th, 3.0) - R::psigamma(th, 3.0)
             - 2.0 * m * (th * s - (2.0 * th + m) * (2.0 * th + m)) / (th3 * s3);
     }
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_s ? mu[0] : mu[i];
         double th = th_s ? theta[0] : theta[i];
         double s = th + m, s3 = s * s * s;
+        double tttt = tttt0;
         if (!both_scalar) {
             double th3 = th * th * th;
             tttt = nb_E_psigamma(m, th, 3.0) - R::psigamma(th, 3.0)
@@ -158,7 +167,7 @@ List negbin_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         mu_mu_theta_theta[i] = 2.0 / s3;
         mu_theta_theta_theta[i] = 0.0;
         theta_theta_theta_theta[i] = tttt;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

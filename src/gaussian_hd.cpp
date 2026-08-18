@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third- and fourth-order derivatives of the Gaussian log-density (sd
@@ -9,14 +10,15 @@ using namespace Rcpp;
 // representable far beyond.
 
 // [[Rcpp::export]]
-List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                          int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
 
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double inv = 1.0 / s, inv3 = inv * inv * inv;
@@ -26,7 +28,7 @@ List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
         mu_mu_sigma[i] = 2.0 * inv3;
         mu_sigma_sigma[i] = 6.0 * z * inv3;
         sigma_sigma_sigma[i] = -2.0 * (1.0 - 6.0 * z * z) * inv3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -37,13 +39,14 @@ List gaussian_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
 }
 
 // [[Rcpp::export]]
-List gaussian_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gaussian_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                          int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
 
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double inv = 1.0 / s, inv3 = inv * inv * inv;
 
@@ -51,7 +54,7 @@ List gaussian_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVect
         mu_mu_sigma[i] = 2.0 * inv3;
         mu_sigma_sigma[i] = 0.0;
         sigma_sigma_sigma[i] = 10.0 * inv3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -62,7 +65,8 @@ List gaussian_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVect
 }
 
 // [[Rcpp::export]]
-List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                          int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
@@ -70,7 +74,7 @@ List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2;
@@ -81,7 +85,7 @@ List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
         mu_mu_sigma_sigma[i] = -6.0 * inv4;
         mu_sigma_sigma_sigma[i] = -24.0 * z * inv4;
         sigma_sigma_sigma_sigma[i] = 6.0 * (1.0 - 10.0 * z * z) * inv4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
@@ -93,14 +97,15 @@ List gaussian_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
 }
 
 // [[Rcpp::export]]
-List gaussian_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gaussian_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                          int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
 
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double inv = 1.0 / s, inv2 = inv * inv, inv4 = inv2 * inv2;
 
@@ -109,7 +114,7 @@ List gaussian_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVect
         mu_mu_sigma_sigma[i] = -6.0 * inv4;
         mu_sigma_sigma_sigma[i] = 0.0;
         sigma_sigma_sigma_sigma[i] = -54.0 * inv4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

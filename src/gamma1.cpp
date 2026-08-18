@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Gamma in the mean and the DISPERSION, Var = phi mu^2, which is the GLM
@@ -11,6 +12,11 @@ using namespace Rcpp;
 //   s' = -s^2, s'' = 2 s^3, s''' = -6 s^4, s'''' = 24 s^5.
 // The expected versions use E[z] = 1 and E[log z] = digamma(s) - log s, the
 // second of which is what makes E[l_s] vanish.
+//
+// Each kernel is a per-observation map -- observation i's derivatives are
+// written to slot i and nothing else -- so the loop runs through
+// d7::par_for, whose decomposition over output elements keeps the result
+// bit-identical at any thread count.
 
 namespace {
 
@@ -62,56 +68,65 @@ inline Fs gamma1_parts_expected(double m, double phi) {
 } // namespace
 
 // [[Rcpp::export]]
-List gamma1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_gradient_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                         int threads = 1) {
     int n = y.size();
     NumericVector g_mu(n), g_ph(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = phi.begin();
+    double *gm = g_mu.begin(), *gp = g_ph.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
         double s = 1.0 / p;
-        Fs o = gamma1_parts(y[i], m, p);
-        g_mu[i] = o.m1;
-        g_ph[i] = o.f1 * (-s * s);
-    }
+        Fs o = gamma1_parts(yp[i], m, p);
+        gm[i] = o.m1;
+        gp[i] = o.f1 * (-s * s);
+    });
     return List::create(Named("mu") = g_mu, Named("phi") = g_ph);
 }
 
 // [[Rcpp::export]]
-List gamma1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_mp(n), h_pp(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = phi.begin();
+    double *hmm = h_mm.begin(), *hmp = h_mp.begin(), *hpp = h_pp.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
         double s = 1.0 / p, s1 = -s * s, s2 = 2.0 * s * s * s;
-        Fs o = gamma1_parts(y[i], m, p);
-        h_mm[i] = o.m2;
-        h_mp[i] = o.ms1 * s1;
-        h_pp[i] = o.f2 * s1 * s1 + o.f1 * s2;
-    }
+        Fs o = gamma1_parts(yp[i], m, p);
+        hmm[i] = o.m2;
+        hmp[i] = o.ms1 * s1;
+        hpp[i] = o.f2 * s1 * s1 + o.f1 * s2;
+    });
     return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
                         Named("phi_phi") = h_pp);
 }
 
 // [[Rcpp::export]]
-List gamma1_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_expected_hessian_cpp(NumericVector y, NumericVector mu,
+                                 NumericVector phi, int threads = 1) {
     int n = y.size();
     NumericVector h_mm(n), h_mp(n), h_pp(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
+    const double *mp = mu.begin(), *pp = phi.begin();
+    double *hmm = h_mm.begin(), *hmp = h_mp.begin(), *hpp = h_pp.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
         double s = 1.0 / p, s1 = -s * s;
         Fs o = gamma1_parts_expected(m, p);
-        h_mm[i] = o.m2;
-        h_mp[i] = 0.0;
-        h_pp[i] = o.f2 * s1 * s1;
-    }
+        hmm[i] = o.m2;
+        hmp[i] = 0.0;
+        hpp[i] = o.f2 * s1 * s1;
+    });
     return List::create(Named("mu_mu") = h_mm, Named("mu_phi") = h_mp,
                         Named("phi_phi") = h_pp);
 }
@@ -143,70 +158,84 @@ inline void gamma1_d4(const Fs &o, double s, double *out) {
 } // namespace
 
 // [[Rcpp::export]]
-List gamma1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                       int threads = 1) {
     int n = y.size();
     NumericVector a(n), b(n), c(n), d(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
-    double v[4];
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = phi.begin();
+    double *ap = a.begin(), *bp = b.begin(), *cp = c.begin(), *dp = d.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
-        gamma1_d3(gamma1_parts(y[i], m, p), 1.0 / p, v);
-        a[i] = v[0]; b[i] = v[1]; c[i] = v[2]; d[i] = v[3];
-    }
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
+        double v[4];
+        gamma1_d3(gamma1_parts(yp[i], m, p), 1.0 / p, v);
+        ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3];
+    });
     return List::create(Named("mu_mu_mu") = a, Named("mu_mu_phi") = b,
                         Named("mu_phi_phi") = c, Named("phi_phi_phi") = d);
 }
 
 // [[Rcpp::export]]
-List gamma1_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_deriv3_expected_cpp(NumericVector y, NumericVector mu,
+                                NumericVector phi, int threads = 1) {
     int n = y.size();
     NumericVector a(n), b(n), c(n), d(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
-    double v[4];
+    const double *mp = mu.begin(), *pp = phi.begin();
+    double *ap = a.begin(), *bp = b.begin(), *cp = c.begin(), *dp = d.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
+        double v[4];
         gamma1_d3(gamma1_parts_expected(m, p), 1.0 / p, v);
-        a[i] = v[0]; b[i] = v[1]; c[i] = v[2]; d[i] = v[3];
-    }
+        ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3];
+    });
     return List::create(Named("mu_mu_mu") = a, Named("mu_mu_phi") = b,
                         Named("mu_phi_phi") = c, Named("phi_phi_phi") = d);
 }
 
 // [[Rcpp::export]]
-List gamma1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector phi,
+                       int threads = 1) {
     int n = y.size();
     NumericVector a(n), b(n), c(n), d(n), e(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
-    double v[5];
+    const double *yp = y.begin(), *mp = mu.begin(), *pp = phi.begin();
+    double *ap = a.begin(), *bp = b.begin(), *cp = c.begin(), *dp = d.begin(),
+           *ep = e.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
-        gamma1_d4(gamma1_parts(y[i], m, p), 1.0 / p, v);
-        a[i] = v[0]; b[i] = v[1]; c[i] = v[2]; d[i] = v[3]; e[i] = v[4];
-    }
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
+        double v[5];
+        gamma1_d4(gamma1_parts(yp[i], m, p), 1.0 / p, v);
+        ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3]; ep[i] = v[4];
+    });
     return List::create(Named("mu_mu_mu_mu") = a, Named("mu_mu_mu_phi") = b,
                         Named("mu_mu_phi_phi") = c, Named("mu_phi_phi_phi") = d,
                         Named("phi_phi_phi_phi") = e);
 }
 
 // [[Rcpp::export]]
-List gamma1_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector phi) {
+List gamma1_deriv4_expected_cpp(NumericVector y, NumericVector mu,
+                                NumericVector phi, int threads = 1) {
     int n = y.size();
     NumericVector a(n), b(n), c(n), d(n), e(n);
     bool m_s = (mu.size() == 1), p_s = (phi.size() == 1);
-    double v[5];
+    const double *mp = mu.begin(), *pp = phi.begin();
+    double *ap = a.begin(), *bp = b.begin(), *cp = c.begin(), *dp = d.begin(),
+           *ep = e.begin();
 
-    for (int i = 0; i < n; i++) {
-        double m = m_s ? mu[0] : mu[i];
-        double p = p_s ? phi[0] : phi[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        double m = m_s ? mp[0] : mp[i];
+        double p = p_s ? pp[0] : pp[i];
+        double v[5];
         gamma1_d4(gamma1_parts_expected(m, p), 1.0 / p, v);
-        a[i] = v[0]; b[i] = v[1]; c[i] = v[2]; d[i] = v[3]; e[i] = v[4];
-    }
+        ap[i] = v[0]; bp[i] = v[1]; cp[i] = v[2]; dp[i] = v[3]; ep[i] = v[4];
+    });
     return List::create(Named("mu_mu_mu_mu") = a, Named("mu_mu_mu_phi") = b,
                         Named("mu_mu_phi_phi") = c, Named("mu_phi_phi_phi") = d,
                         Named("phi_phi_phi_phi") = e);

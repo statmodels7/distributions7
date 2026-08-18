@@ -11,6 +11,9 @@
 \item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
 
 \item{expected}{Logical; ignored (observed and expected coincide).}
+
+\item{threads}{How many threads the kernel may use; below the measured
+internal threshold it stays sequential whatever the count says.}
 }
 \value{
 A named list of third-derivative component vectors.
