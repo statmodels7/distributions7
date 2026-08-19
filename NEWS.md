@@ -1,3 +1,14 @@
+# distributions7 0.27.2
+
+* `d7::par_for()`'s sequential branch runs through the worker over the whole
+  range instead of writing a loop of its own, so both branches execute the
+  same compiled function: the bit-identity across thread counts becomes a
+  property of the code rather than of the optimizer. The Windows CI runner
+  had reported last-bit differences between one and two threads in the two
+  negbin kernels whose per-element arithmetic wraps `R::psigamma` calls,
+  which no reordering of the decomposition can explain and which does not
+  reproduce on this machine's compiler.
+
 # distributions7 0.27.1
 
 * The negative binomial's expected series helpers (`nb_E_trigamma`,

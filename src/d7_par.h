@@ -41,13 +41,22 @@ struct BodyWorker : public RcppParallel::Worker {
   }
 };
 
+// The sequential branch runs THROUGH THE WORKER, over the whole range,
+// rather than writing a loop of its own: the two branches then execute the
+// same compiled function, which is what makes the bit-identity across
+// thread counts a property of the code rather than of the optimizer. An
+// inlined sequential loop and a worker's out-of-line call are two bodies
+// the compiler is free to optimize apart -- observed on the Windows CI
+// runner, 2026-08-19, as last-bit differences in the two negbin kernels
+// whose per-element arithmetic wraps R::psigamma calls, where nothing
+// about the decomposition had changed.
 template <typename Body>
 inline void par_for(int n, int threads, int threshold, const Body& body) {
+  BodyWorker<Body> w(body);
   if (threads > 1 && n >= threshold) {
-    BodyWorker<Body> w(body);
     RcppParallel::parallelFor(0, static_cast<std::size_t>(n), w);
   } else {
-    for (int i = 0; i < n; ++i) body(static_cast<std::size_t>(i));
+    w(0, static_cast<std::size_t>(n));
   }
 }
 
