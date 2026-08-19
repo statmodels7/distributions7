@@ -6,32 +6,42 @@ using namespace Rcpp;
 // derived from the gradient/Hessian by repeated differentiation and validated
 // numerically. s = theta + mu.
 //
-// E[psigamma(Y + theta, deriv)] for the expected pure-theta derivatives, summed
-// over the support up to a far-tail quantile with the same pmf recurrence used
-// by the expected Hessian; the residual tail mass (~1e-12) is negligible.
+// E[psigamma(Y + theta, deriv)] for the expected pure-theta derivatives,
+// summed with the same pmf recurrence as the expected Hessian's
+// nb_E_trigamma, carried in log scale until p_k is representable and stopped
+// when the accumulated mass reaches 1 - 1e-12. No quantile or mass function
+// is called: this helper runs inside d7::par_for workers, and qnbinom's
+// search reaches pbeta, whose warning path calls into the R API and killed
+// the process from a worker thread on four of the five CI platforms.
 static double nb_E_psigamma(double mu, double theta, double deriv) {
     double ratio = mu / (theta + mu);
-    double kq = R::qnbinom_mu(1.0 - 1e-12, theta, mu, 1, 0);
-    int kmax = (int) std::max(100.0, kq) + 1;
+    double lratio = std::log(mu) - std::log(theta + mu);
+    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+                 + 40.0 * (mu + theta) / theta;
+    int kmax = (int) std::min(cap, 2.0e9);
 
     double s = 0.0, cum = 0.0;
-    double log_p0 = theta * (std::log(theta) - std::log(theta + mu));
-
-    if (log_p0 > -700.0) {
-        double pk = std::exp(log_p0);
-        for (int k = 0; k <= kmax; ++k) {
-            s += R::psigamma(k + theta, deriv) * pk;
-            cum += pk;
+    double lpk = theta * (std::log(theta) - std::log(theta + mu));
+    double pk = std::exp(lpk);
+    bool logscale = !(pk > 0.0);
+    int k = 0;
+    for (; k <= kmax; ++k) {
+        s += R::psigamma(k + theta, deriv) * pk;
+        cum += pk;
+        if (cum >= 1.0 - 1e-12 && k >= 100) { ++k; break; }
+        if (logscale) {
+            lpk += lratio + std::log((k + theta) / (k + 1.0));
+            pk = std::exp(lpk);
+            // leave log scale only once pk is comfortably NORMAL: the first
+            // nonzero exp(lpk) is a subnormal with almost no significand, and
+            // seeding the multiplicative recurrence there was measured to
+            // carry a 2.5x error to the mode (mu = theta = 1e4)
+            if (lpk > -640.0) logscale = false;
+        } else {
             pk *= (k + theta) / (k + 1.0) * ratio;
         }
-    } else {
-        for (int k = 0; k <= kmax; ++k) {
-            double pk = R::dnbinom_mu(k, theta, mu, 0);
-            s += R::psigamma(k + theta, deriv) * pk;
-            cum += pk;
-        }
     }
-    if (cum < 1.0) s += R::psigamma(kmax + 1 + theta, deriv) * (1.0 - cum);
+    if (cum < 1.0) s += R::psigamma(k + theta, deriv) * (1.0 - cum);
     return s;
 }
 

@@ -1,3 +1,19 @@
+# distributions7 0.27.1
+
+* The negative binomial's expected series helpers (`nb_E_trigamma`,
+  `nb_E_psigamma`) no longer call `qnbinom` or `dnbinom` inside the
+  parallel bodies: the quantile's search reaches `pbeta`, whose warning
+  path calls into the R API, and a warning raised from a worker thread
+  trips R's C-stack check and killed the test process on four of the five
+  CI platforms. The series now stops on its own accumulated mass at the
+  point the quantile located, with the underflowing head carried in log
+  scale; the switch back to the multiplicative recurrence waits until the
+  mass is comfortably normal, since seeding it at a subnormal was measured
+  to carry a 2.5x error to the mode at `mu = theta = 1e4`. Values agree
+  with the previous sizing to 1e-10 or better across nine regimes, and the
+  rule in `d7_par.h` now names Rmath's p/q functions as off limits inside
+  a worker.
+
 # distributions7 0.27.0
 
 * The per-observation derivative kernels of the transcendental compiled

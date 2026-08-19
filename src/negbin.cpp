@@ -3,35 +3,50 @@
 using namespace Rcpp;
 
 // E[trigamma(Y + theta)] for Y ~ NB2(mu, theta), needed by the expected hessian.
-// Sums trigamma(k + theta) * P(Y = k) up to a far-tail quantile, using the
-// pmf recurrence p_{k+1} = p_k * (k + theta) / (k + 1) * mu / (theta + mu),
-// with a log-space fallback when p_0 underflows.
+// Sums trigamma(k + theta) * P(Y = k) through the pmf recurrence
+// p_{k+1} = p_k * (k + theta) / (k + 1) * mu / (theta + mu), carried in log
+// scale until p_k is representable, and stops when the accumulated mass
+// reaches 1 - 1e-12 -- the point a far-tail quantile would have located. The
+// quantile call an earlier version used here is off limits: this helper runs
+// inside d7::par_for workers, and qnbinom's search reaches pbeta, whose
+// warning path calls into the R API and killed the process from a worker
+// thread on four of the five CI platforms. Everything below is digamma-family
+// arithmetic and plain C, which never takes such a path on positive
+// arguments. The hard cap covers the geometric tail (decay ratio
+// mu/(theta+mu), so ~30(mu+theta)/theta terms reach 1e-12) and the loop
+// almost always breaks on the mass long before it.
 static double nb_E_trigamma(double mu, double theta) {
     double ratio = mu / (theta + mu);
-    double kq = R::qnbinom_mu(1.0 - 1e-12, theta, mu, 1, 0);
-    int kmax = (int) std::max(100.0, kq) + 1;
+    double lratio = std::log(mu) - std::log(theta + mu);
+    double cap = 100.0 + mu + 20.0 * std::sqrt(mu * (1.0 + mu / theta))
+                 + 40.0 * (mu + theta) / theta;
+    int kmax = (int) std::min(cap, 2.0e9);
 
     double s = 0.0, cum = 0.0;
-    double log_p0 = theta * (std::log(theta) - std::log(theta + mu));
-
-    if (log_p0 > -700.0) {
-        double pk = std::exp(log_p0);
-        for (int k = 0; k <= kmax; ++k) {
-            s += R::trigamma(k + theta) * pk;
-            cum += pk;
+    double lpk = theta * (std::log(theta) - std::log(theta + mu));
+    double pk = std::exp(lpk);
+    bool logscale = !(pk > 0.0);
+    int k = 0;
+    for (; k <= kmax; ++k) {
+        s += R::trigamma(k + theta) * pk;
+        cum += pk;
+        if (cum >= 1.0 - 1e-12 && k >= 100) { ++k; break; }
+        if (logscale) {
+            lpk += lratio + std::log((k + theta) / (k + 1.0));
+            pk = std::exp(lpk);
+            // leave log scale only once pk is comfortably NORMAL: the first
+            // nonzero exp(lpk) is a subnormal with almost no significand, and
+            // seeding the multiplicative recurrence there was measured to
+            // carry a 2.5x error to the mode (mu = theta = 1e4)
+            if (lpk > -640.0) logscale = false;
+        } else {
             pk *= (k + theta) / (k + 1.0) * ratio;
-        }
-    } else {
-        for (int k = 0; k <= kmax; ++k) {
-            double pk = R::dnbinom_mu(k, theta, mu, 0);
-            s += R::trigamma(k + theta) * pk;
-            cum += pk;
         }
     }
 
     // Tail bound: trigamma is decreasing, so the missing mass contributes at
-    // most trigamma(kmax + 1 + theta) * (1 - cum).
-    if (cum < 1.0) s += R::trigamma(kmax + 1 + theta) * (1.0 - cum);
+    // most trigamma(k + theta) * (1 - cum).
+    if (cum < 1.0) s += R::trigamma(k + theta) * (1.0 - cum);
     return s;
 }
 

@@ -23,7 +23,13 @@
 //
 // The body must not touch the R API: it reads and writes preallocated
 // memory through raw pointers, which is what makes it admissible inside a
-// worker at all.
+// worker at all. That rule covers Rmath's p/q functions too, and not only
+// allocation: qnbinom's search reaches pbeta, whose warning path calls into
+// the R API, and a warning raised from a worker thread trips R's C-stack
+// check with a garbage stack pointer and kills the process ("C stack usage
+// ... is too close to the limit", then a segfault) -- observed on four of
+// the five CI platforms, 2026-08-19. The digamma family, lgammafn and lbeta
+// on positive arguments never take such a path and are the admissible set.
 namespace d7 {
 
 template <typename Body>
