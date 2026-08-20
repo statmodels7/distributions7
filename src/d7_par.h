@@ -32,11 +32,29 @@
 // on positive arguments never take such a path and are the admissible set.
 namespace d7 {
 
+// operator() is NOINLINE: the sequential branch and TBB's invocation are
+// two call sites, and an inlinable loop gets a separately optimized copy
+// at each -- which is how the Windows CI runner produced one-ulp
+// differences between one and two threads in the negbin kernels (twice,
+// 2026-08-19: the second time AFTER the sequential branch was routed
+// through this same source function, which is what proved that a
+// source-level identity does not bind the machine code). With the loop
+// out of line, both branches execute the one compiled copy and the
+// bit-identity across counts is a property of the binary. The per-chunk
+// call this costs is nothing against the loop it guards.
+#if defined(__GNUC__) || defined(__clang__)
+#define D7_NOINLINE __attribute__((noinline))
+#elif defined(_MSC_VER)
+#define D7_NOINLINE __declspec(noinline)
+#else
+#define D7_NOINLINE
+#endif
+
 template <typename Body>
 struct BodyWorker : public RcppParallel::Worker {
   const Body& body;
   explicit BodyWorker(const Body& b) : body(b) {}
-  void operator()(std::size_t begin, std::size_t end) {
+  D7_NOINLINE void operator()(std::size_t begin, std::size_t end) {
     for (std::size_t i = begin; i < end; ++i) body(i);
   }
 };

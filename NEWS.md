@@ -1,3 +1,14 @@
+# distributions7 0.27.3
+
+* The worker's loop in `d7::par_for()` is marked noinline, so the
+  sequential branch and the parallel one execute the single compiled copy
+  they both call. Routing the sequential branch through the same source
+  function (0.27.2) had not been enough: the compiler inlined it at each
+  call site and optimized the two copies apart, and the Windows CI runner
+  went on producing one-ulp differences between one and two threads in the
+  negbin kernels. Bit-identity across counts has to be a property of the
+  binary, not of the source.
+
 # distributions7 0.27.2
 
 * `d7::par_for()`'s sequential branch runs through the worker over the whole
