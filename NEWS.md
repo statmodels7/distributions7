@@ -1,3 +1,15 @@
+# distributions7 0.27.4
+
+* The cross-count twins of the parallel kernels compare at a tolerance of
+  1e-13 instead of `identical()`. The Windows CI runner's R runtime
+  returns per-thread last bits from its own polygamma path: one ulp,
+  deterministic, the same value at the same index across three independent
+  binaries -- with the sequential branch routed through the worker's own
+  function, and again with that function noinline -- which is the opposite
+  of a race signature and not something package code can bind. The
+  decomposition guarantee (no reduction is ever split) stands, and the
+  tolerance still fails a split reduction or a data race by ten orders.
+
 # distributions7 0.27.3
 
 * The worker's loop in `d7::par_for()` is marked noinline, so the

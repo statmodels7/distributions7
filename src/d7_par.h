@@ -34,14 +34,21 @@ namespace d7 {
 
 // operator() is NOINLINE: the sequential branch and TBB's invocation are
 // two call sites, and an inlinable loop gets a separately optimized copy
-// at each -- which is how the Windows CI runner produced one-ulp
-// differences between one and two threads in the negbin kernels (twice,
-// 2026-08-19: the second time AFTER the sequential branch was routed
-// through this same source function, which is what proved that a
-// source-level identity does not bind the machine code). With the loop
-// out of line, both branches execute the one compiled copy and the
-// bit-identity across counts is a property of the binary. The per-chunk
-// call this costs is nothing against the loop it guards.
+// at each, which would make the cross-count comparison a comparison of
+// two binaries. With the loop out of line, both branches execute the one
+// compiled copy; the per-chunk call this costs is nothing against the
+// loop it guards.
+//
+// What even this cannot bind, measured on the Windows CI runner
+// (2026-08-19/20, three independent binaries, the same one-ulp value at
+// the same index every time): a kernel that calls into R's own polygamma
+// per element inherits that runtime's PER-THREAD last bit -- the main
+// thread and a TBB worker disagree by one ulp on some inputs, on that
+// platform's R build only. The decomposition guarantee (no reduction is
+// ever split) holds; the cross-count twin in the tests therefore carries
+// a tolerance of 1e-13, which a split reduction still fails by ten
+// orders, and bit-identity across counts is promised only for arithmetic
+// the kernel computes itself.
 #if defined(__GNUC__) || defined(__clang__)
 #define D7_NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
