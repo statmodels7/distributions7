@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.27.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.27.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,15 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.27.3" id="distributions7-0273">distributions7 0.27.3<a class="anchor" aria-label="anchor" href="#distributions7-0273"></a></h2>
+<ul><li>The worker’s loop in <code>d7::par_for()</code> is marked noinline, so the sequential branch and the parallel one execute the single compiled copy they both call. Routing the sequential branch through the same source function (0.27.2) had not been enough: the compiler inlined it at each call site and optimized the two copies apart, and the Windows CI runner went on producing one-ulp differences between one and two threads in the negbin kernels. Bit-identity across counts has to be a property of the binary, not of the source.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.27.2" id="distributions7-0272">distributions7 0.27.2<a class="anchor" aria-label="anchor" href="#distributions7-0272"></a></h2>
+<ul><li>
+<code>d7::par_for()</code>’s sequential branch runs through the worker over the whole range instead of writing a loop of its own, so both branches execute the same compiled function: the bit-identity across thread counts becomes a property of the code rather than of the optimizer. The Windows CI runner had reported last-bit differences between one and two threads in the two negbin kernels whose per-element arithmetic wraps <code>R::psigamma</code> calls, which no reordering of the decomposition can explain and which does not reproduce on this machine’s compiler.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.27.1" id="distributions7-0271">distributions7 0.27.1<a class="anchor" aria-label="anchor" href="#distributions7-0271"></a></h2>
 <ul><li>The negative binomial’s expected series helpers (<code>nb_E_trigamma</code>, <code>nb_E_psigamma</code>) no longer call <code>qnbinom</code> or <code>dnbinom</code> inside the parallel bodies: the quantile’s search reaches <code>pbeta</code>, whose warning path calls into the R API, and a warning raised from a worker thread trips R’s C-stack check and killed the test process on four of the five CI platforms. The series now stops on its own accumulated mass at the point the quantile located, with the underflowing head carried in log scale; the switch back to the multiplicative recurrence waits until the mass is comfortably normal, since seeding it at a subnormal was measured to carry a 2.5x error to the mode at <code>mu = theta = 1e4</code>. Values agree with the previous sizing to 1e-10 or better across nine regimes, and the rule in <code>d7_par.h</code> now names Rmath’s p/q functions as off limits inside a worker.</li>

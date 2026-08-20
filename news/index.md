@@ -1,5 +1,27 @@
 # Changelog
 
+## distributions7 0.27.3
+
+- The worker’s loop in `d7::par_for()` is marked noinline, so the
+  sequential branch and the parallel one execute the single compiled
+  copy they both call. Routing the sequential branch through the same
+  source function (0.27.2) had not been enough: the compiler inlined it
+  at each call site and optimized the two copies apart, and the Windows
+  CI runner went on producing one-ulp differences between one and two
+  threads in the negbin kernels. Bit-identity across counts has to be a
+  property of the binary, not of the source.
+
+## distributions7 0.27.2
+
+- `d7::par_for()`’s sequential branch runs through the worker over the
+  whole range instead of writing a loop of its own, so both branches
+  execute the same compiled function: the bit-identity across thread
+  counts becomes a property of the code rather than of the optimizer.
+  The Windows CI runner had reported last-bit differences between one
+  and two threads in the two negbin kernels whose per-element arithmetic
+  wraps `R::psigamma` calls, which no reordering of the decomposition
+  can explain and which does not reproduce on this machine’s compiler.
+
 ## distributions7 0.27.1
 
 - The negative binomial’s expected series helpers (`nb_E_trigamma`,
