@@ -10,13 +10,13 @@ Source:
 [`DESCRIPTION`](https://github.com/statmodels7/distributions7/blob/master/DESCRIPTION)
 
 Tinervia G (2026). *distributions7: S7 Framework for Probability
-Distributions*. R package version 0.30.0,
+Distributions*. R package version 0.31.0,
 <https://statmodels7.github.io/distributions7/>.
 
     @Manual{,
       title = {distributions7: S7 Framework for Probability Distributions},
       author = {Giovanni Tinervia},
       year = {2026},
-      note = {R package version 0.30.0},
+      note = {R package version 0.31.0},
       url = {https://statmodels7.github.io/distributions7/},
     }
