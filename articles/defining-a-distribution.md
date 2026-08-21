@@ -186,7 +186,7 @@ lap_cdf <- function(q, mu, b) {
 }
 q <- c(-3, -1, 0, 1, 4)
 max(abs(distrib_cdf(d, q, th) - lap_cdf(q, 1, 2)))   # ~1e-10
-#> [1] 1.387779e-15
+#> [1] 1.44329e-15
 ```
 
 ``` r
@@ -441,7 +441,7 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 11 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 13 ms
 #> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
 #> 
 #> Parameter scale:

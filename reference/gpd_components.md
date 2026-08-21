@@ -6,7 +6,7 @@ at any order from one to four.
 ## Usage
 
 ``` r
-gpd_components(y, theta, order, cut = 0.2)
+gpd_components(y, theta, order, cut = 0.2, threads = 1L)
 ```
 
 ## Arguments
@@ -26,6 +26,10 @@ gpd_components(y, theta, order, cut = 0.2)
 - cut:
 
   The value of \\\lvert\xi z\rvert\\ below which the series is used.
+
+- threads:
+
+  How many threads the series kernel may use.
 
 ## Value
 

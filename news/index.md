@@ -1,5 +1,122 @@
 # Changelog
 
+## distributions7 0.30.0
+
+- The generalized Pareto’s third and fourth derivatives cost **17 ms at
+  n = 20000 where they cost 660**, which was the largest single number
+  in the derivative census and 97.9 per cent of it sat in one R
+  function. Two things were wrong with it and neither was parallelism.
+  Its two branches were each evaluated over the WHOLE vector and subset
+  afterwards, so a sample straddling the cut paid for both in full; and
+  the near-zero branch raised two elementwise powers per term, which are
+  algebraically one – with `u = xi z`,
+  `xi^(k-b) z^(k+1) = u^(k-b) z^(b+1)`, so `z^(b+1)/sigma^a` leaves the
+  loop and what remains is a POLYNOMIAL IN u with scalar coefficients.
+  That is a scalar recursion of forty-one steps an element, so it is
+  compiled (`gpd_poly_cpp`, Horner from the highest power down, which
+  sums a decaying series smallest-first where the loop summed
+  largest-first). Checked against the previous implementation over 266
+  components spanning both branches and every order: 4.4e-16 relative to
+  each component’s own scale.
+
+- **153 of the 159 exported kernels take a `threads` count**, against 60
+  before. The six without are the two jet twins, which exist only as the
+  tests’ independent reference, and the pseudo-Huber’s four (below), so
+  every kernel is either threaded or refused for a stated reason.
+  Measured at n = 40000 on eight threads: chisq 5.8x on the score and
+  6.7x at fourth order, gengamma 6.4x, gpd 4.4x, lognormal 4.2x, weibull
+  4.4x, logistic and gumbel 4.0x, skewnormal 4.2x, cauchy 2.6x, the
+  binomial pair 2.1x to 2.5x, and every one of them identical at any
+  count.
+
+- The Poisson-inverse Gaussian’s kernels are among them, 3.9x and 4.8x
+  on eight threads, and the explicit route still agrees with the
+  mechanical jet transcription the tests keep beside it to 1.6e-14.
+  Their jet twins take no count, existing only as that reference.
+
+- [`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+  is deliberately NOT converted: its kernels call R’s `bessel_k`, which
+  can raise a warning, and a warning from a worker thread ends the
+  session. It is the same refusal `numericals7`’s `log_bessel_k()`
+  carries, and for the same reason.
+
+- ⚠️ The conversion surfaced the trap `d7_par.h` warns of, in three
+  families at once: `chisq`, `exponential` and `geometric` hoisted the
+  parameter out of the loop and wrote it inside
+  (`if (!mu_is_scalar) m = mu[i];`), which is shared state once the
+  iterations are split. It shows ONLY where the parameter varies by
+  observation – with a scalar every thread writes the same value and the
+  answer comes out right by accident – so the twin test added with them
+  uses a parameter per observation.
+
+- `kMinTiny`, a fourth cost class for bodies of about four nanoseconds
+  an observation. The geometric’s score is two divisions and does not
+  break even until about 150000: measured 0.79x at 40000, 1.29x at
+  200000, 1.58x at 1000000, where `kMinCheap` was measured for bodies
+  twice as dear.
+
+## distributions7 0.29.0
+
+- Every
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+  method takes `...`. The generic is `function(distrib, y, theta, ...)`
+  and 43 of 45 methods did not absorb what it may be handed, so any
+  caller passing an argument the family does not read broke it – which
+  is what happened the moment the fitting layer began passing a thread
+  count. The derivative generics’ methods had carried `...` all along;
+  this brings the density surface into line with them.
+
+- [`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
+  and
+  [`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
+  carry the count down to
+  [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html),
+  which is where this family spends its time: profiled at **80.8 per
+  cent** of a fit whose concentration is modelled, the concentration
+  then being a vector rather than one number. Measured end to end at n =
+  8000 with both parameters smoothed, 5.7 s against 2.0, and the
+  coefficients and the log-likelihood are identical to the bit.
+
+## distributions7 0.28.0
+
+- A parallel kernel is reproducible again, and the cross-count twins ask
+  for [`identical()`](https://rdrr.io/r/base/identical.html) rather than
+  the tolerance of 1e-13 that 0.27.4 settled on. That release read the
+  last-bit differences out of R’s polygamma path as the runtime’s and
+  unbindable; re-measured, the reading was wrong on both counts. They
+  are not deterministic – `gamma1`’s third derivative at `phi = 1/19`
+  returned six distinct results over six identical calls at one thread
+  count, and `negbin2`’s returned five to ten – so a fit’s answer moved
+  between two runs whenever a shape landed near one of the arguments
+  where `psigamma` diverges (measured at x = 19 and x = 40, 1.3 and 0.8
+  ulp; `bessel_k`, and `pgamma` and `pbeta` on the log scale, behave the
+  same way). And they are bindable: the worker of `d7::par_for()` now
+  installs the calling thread’s floating-point environment before
+  running its chunk, which makes the parallel branch reproduce the
+  sequential value exactly at every argument probed. It costs one call
+  per chunk and the measured gains are unchanged (`gamma1` 6.7x -\> 7.3x
+  at eight threads, `beta1`’s third derivative 5.9x -\> 7.2x).
+
+- `threads` says how many, not merely whether. `d7::par_for()` passes
+  the count to `parallelFor()`, whose `resolveValue()` prefers an
+  explicit positive value to `RCPP_PARALLEL_NUM_THREADS`, so a fit that
+  sized the pool through
+  [`numericals7::local_threads()`](https://statmodels7.github.io/numericals7/reference/local_threads.html)
+  is unaffected. Every other caller was running on all of the machine’s
+  cores whatever it asked for: measured on 24 cores, `threads = 2` gave
+  13.9x, the same as `threads = 24`, and now gives 2.03x against 4.00x
+  at four and 7.79x at eight.
+
+- The comment in `d7_par.h` states which Rmath routines a body may call
+  as a measured list rather than as a family name. `digamma` and
+  `trigamma` are thread-stable and `psigamma` at higher orders is not,
+  so “the digamma family” was never the right unit; and the routines
+  that can raise a warning – the p/q family, `lchoose`, the Bessel
+  functions – are excluded for a different reason, a warning from a
+  worker thread killing the process. `betabinom.cpp` records that its
+  `lchoose` calls are admissible only because the support guard keeps a
+  non-integer argument from ever reaching them.
+
 ## distributions7 0.27.4
 
 - The cross-count twins of the parallel kernels compare at a tolerance

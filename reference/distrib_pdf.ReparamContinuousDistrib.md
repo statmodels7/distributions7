@@ -5,7 +5,7 @@ The parent's density at the mapped parameters.
 ## Usage
 
 ``` r
-reparam_pdf(distrib, y, theta, log = FALSE)
+reparam_pdf(distrib, y, theta, log = FALSE, ...)
 ```
 
 ## Arguments

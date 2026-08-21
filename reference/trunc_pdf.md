@@ -5,7 +5,7 @@ The parent's density divided by \\Z\\, and zero outside the interval.
 ## Usage
 
 ``` r
-trunc_pdf(distrib, y, theta, log = FALSE)
+trunc_pdf(distrib, y, theta, log = FALSE, ...)
 ```
 
 ## Arguments

@@ -7,7 +7,7 @@ of components an order asks for.
 ## Usage
 
 ``` r
-pig_hd_block(y, theta, cols, kernel)
+pig_hd_block(y, theta, cols, kernel, threads = 1L)
 ```
 
 ## Arguments
@@ -27,6 +27,10 @@ pig_hd_block(y, theta, cols, kernel)
 - kernel:
 
   The compiled kernel, `pig1_hd_cpp` or `pig2_hd_cpp`.
+
+- threads:
+
+  How many threads that kernel may use.
 
 ## Value
 
