@@ -1,3 +1,51 @@
+# distributions7 0.31.0
+
+* The Student t's derivatives in `nu` no longer cancel, and nothing in the
+  family overflows at the `nu` its own chart can produce.  Two defects, both
+  reachable from an ordinary fit and both silent.
+
+  **The cancellation.**  The score, the observed `nu_nu` and the expected
+  `nu_nu` were written as differences of digamma or trigamma at arguments
+  half a unit apart, which agree to leading order: the expected information
+  **lost its sign from `nu` = 3.2e5**, reading +2.2e-23 where the value is
+  -3.5e-24, and on the link scale the factor `nu^2` then made it read
+  **-500 = -n/2**.  A scoring step on a negative information walks the fit
+  the wrong way.  Each now takes an asymptotic branch above a measured
+  crossover, from the duplication `psi(2z) = [psi(z) + psi(z+1/2)]/2 + log 2`
+  and its derivative:
+
+  ```
+  A(nu)      = psi((nu+1)/2) - psi(nu/2) - 1/nu
+             = 1/(2 nu^2) - 1/(4 nu^4) + 1/(2 nu^6) - ...        (nu >= 200)
+  S(nu)      = psi'((nu+1)/2) - psi'(nu/2) + 2/nu^2
+             = -2/nu^3 + 2/nu^5 - 6/nu^7 - ...                   (nu >= 100)
+  E[l_nu_nu] = -7/(2 nu^4) + 13/nu^5 - 79/(2 nu^6) + 119/nu^7    (nu >= 1000)
+  ```
+
+  and the score's two remaining terms, `((nu+1)res^2)/(nu den)` and
+  `log(1 + res^2/(nu sigma^2))`, which are both `u + O(u^2)`, are replaced by
+  the one function they leave behind, `D(u) = u/(1+u) - log1p(u)`, with a
+  series of its own below `u` = 1e-3.  The crossovers are where the two
+  routes agree best, measured; the series reproduce the direct forms to six
+  significant digits at `nu` = 1e3.
+
+  **The overflow.**  The kernels formed `nu sigma^2`, which is `Inf` at the
+  `nu` the log link clamps to (1.8e308), and `(nu+1) res / den` is then
+  `Inf/Inf`: **the whole score came back `NaN`** on a fit that had
+  legitimately run `nu` towards its boundary.  Every expression that divided
+  a numerator growing with `nu` by a denominator growing with `nu` is written
+  in the ratio instead, with `z^2 = res^2/sigma^2` formed BEFORE dividing by
+  `nu` so the product is never taken.  All fifteen components are finite at
+  `nu` = 1e6, 1e100 and 1.79e308.
+
+  Validated against four references: the direct forms where those still have
+  their digits (1e-16 on every component at `nu` = 2.5, 5, 30, and 7e-14 on
+  the two deliberately improved ones at 300), the sign of the expected
+  information over 24 values of `nu` from 3.16 to 1e12 (no violations against
+  three before), `numDeriv` on the log-density (3.9e-10 on the gradient and
+  6.5e-11 on the Hessian, which is numDeriv's own accuracy), and the gaussian
+  limit, which the log-density approaches as 1/nu.
+
 # distributions7 0.30.0
 
 * The generalized Pareto's third and fourth derivatives cost **17 ms at
