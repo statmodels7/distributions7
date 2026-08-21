@@ -45,7 +45,7 @@ BinomialDistrib <- S7::new_class("BinomialDistrib",
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dbinom(
     x = y,
     size = distrib@size,
@@ -132,8 +132,8 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  binomial_gradient_cpp(y, theta[[1]], distrib@size)
+S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  binomial_gradient_cpp(y, theta[[1]], distrib@size, threads)
 }
 
 #' @title Binomial Analytical Observed Hessian
@@ -149,8 +149,8 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  binomial_hessian_cpp(y, theta[[1]], distrib@size)
+S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  binomial_hessian_cpp(y, theta[[1]], distrib@size, threads)
 }
 
 #' @title Binomial Analytical Expected Hessian
@@ -166,8 +166,8 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  binomial_expected_hessian_cpp(y, theta[[1]], distrib@size)
+S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  binomial_expected_hessian_cpp(y, theta[[1]], distrib@size, threads)
 }
 
 #' @title Binomial Analytical Third-Order Derivatives
@@ -179,9 +179,9 @@ S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, th
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
 #' @return A named list with the \code{mu_mu_mu} component.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) binomial_deriv3_expected_cpp(y, theta[[1]], distrib@size)
-  else binomial_deriv3_cpp(y, theta[[1]], distrib@size)
+S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) binomial_deriv3_expected_cpp(y, theta[[1]], distrib@size, threads)
+  else binomial_deriv3_cpp(y, theta[[1]], distrib@size, threads)
 }
 
 #' @title Binomial Analytical Fourth-Order Derivatives
@@ -193,9 +193,9 @@ S7::method(distrib_deriv3, BinomialDistrib) <- function(distrib, y, theta, expec
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
 #' @return A named list with the \code{mu_mu_mu_mu} component.
 #' @seealso \code{\link{binomial_distrib}}
-S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) binomial_deriv4_expected_cpp(y, theta[[1]], distrib@size)
-  else binomial_deriv4_cpp(y, theta[[1]], distrib@size)
+S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) binomial_deriv4_expected_cpp(y, theta[[1]], distrib@size, threads)
+  else binomial_deriv4_cpp(y, theta[[1]], distrib@size, threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

@@ -41,7 +41,7 @@ Beta1Distrib <- S7::new_class("Beta1Distrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{beta1_distrib}}
-S7::method(distrib_pdf, Beta1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Beta1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dbeta(
     x = y,
     shape1 = theta[[1]] * theta[[2]],

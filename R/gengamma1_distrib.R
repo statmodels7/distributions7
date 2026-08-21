@@ -36,8 +36,8 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{gengamma1_distrib}}
-S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = FALSE) {
-  out <- gengamma_logpdf_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
+  out <- gengamma_logpdf_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   if (log) out else exp(out)
 }
 
@@ -115,8 +115,8 @@ S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta) {
 #' @return A named list with the \code{a}, \code{d} and \code{p} components.
 #' @seealso \code{\link{gengamma1_distrib}}
 S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  gengamma_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+                                                           scale = c("parameter", "link"), ..., threads = 1L) {
+  gengamma_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Generalized Gamma Analytical Observed Hessian
@@ -133,8 +133,8 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{gengamma1_distrib}}
 S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"), ...) {
-  gengamma_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+                                                          scale = c("parameter", "link"), ..., threads = 1L) {
+  gengamma_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 #' @title Generalized Gamma Analytical Expected Hessian
@@ -157,8 +157,8 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                   nsim = 10000, ...) {
-  gengamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+                                                                   nsim = 10000, ..., threads = 1L) {
+  gengamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

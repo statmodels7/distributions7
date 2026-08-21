@@ -57,7 +57,7 @@ gamma1_shape_rate <- function(theta) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector.
 #' @seealso \code{\link{gamma1_distrib}}
-S7::method(distrib_pdf, Gamma1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Gamma1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   sr <- gamma1_shape_rate(theta)
   stats::dgamma(y, shape = sr$shape, rate = sr$rate, log = log)
 }

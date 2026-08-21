@@ -58,7 +58,7 @@ geom_prob <- function(mu) 1 / (1 + mu)
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{geometric_distrib}}
-S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dgeom(y, prob = geom_prob(theta[[1]]), log = log)
 }
 
@@ -124,8 +124,8 @@ S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta) {
 #' @return A named list with the \code{mu} component.
 #' @seealso \code{\link{geometric_distrib}}
 S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  geometric_gradient_cpp(y, theta[[1]])
+                                                           scale = c("parameter", "link"), ..., threads = 1L) {
+  geometric_gradient_cpp(y, theta[[1]], threads)
 }
 
 #' @title Geometric Analytical Observed Hessian
@@ -141,8 +141,8 @@ S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
 #' @return A named list with the \code{mu_mu} component.
 #' @seealso \code{\link{geometric_distrib}}
 S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
-                                                          scale = c("parameter", "link"), ...) {
-  geometric_hessian_cpp(y, theta[[1]])
+                                                          scale = c("parameter", "link"), ..., threads = 1L) {
+  geometric_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Geometric Analytical Expected Hessian
@@ -164,8 +164,8 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                   nsim = 10000, ...) {
-  geometric_expected_hessian_cpp(y, theta[[1]])
+                                                                   nsim = 10000, ..., threads = 1L) {
+  geometric_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Geometric Analytical Third-Order Derivative
@@ -188,9 +188,9 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
-  if (expected) geometric_deriv3_expected_cpp(y, theta[[1]])
-  else geometric_deriv3_cpp(y, theta[[1]])
+                                                         nsim = 10000, ..., threads = 1L) {
+  if (expected) geometric_deriv3_expected_cpp(y, theta[[1]], threads)
+  else geometric_deriv3_cpp(y, theta[[1]], threads)
 }
 
 #' @title Geometric Analytical Fourth-Order Derivative
@@ -213,9 +213,9 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
-                                                         nsim = 10000, ...) {
-  if (expected) geometric_deriv4_expected_cpp(y, theta[[1]])
-  else geometric_deriv4_cpp(y, theta[[1]])
+                                                         nsim = 10000, ..., threads = 1L) {
+  if (expected) geometric_deriv4_expected_cpp(y, theta[[1]], threads)
+  else geometric_deriv4_cpp(y, theta[[1]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

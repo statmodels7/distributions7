@@ -4,7 +4,7 @@
 \alias{trunc_pdf}
 \title{Density of a Truncated Distribution}
 \usage{
-trunc_pdf(distrib, y, theta, log = FALSE)
+trunc_pdf(distrib, y, theta, log = FALSE, ...)
 }
 \arguments{
 \item{distrib}{A truncated distribution object.}

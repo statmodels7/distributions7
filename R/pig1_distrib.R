@@ -47,16 +47,17 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #' @param cols The kernel columns wanted, by name.
 #' @param kernel The compiled kernel, \code{pig1_hd_cpp} or
 #'   \code{pig2_hd_cpp}.
+#' @param threads How many threads that kernel may use.
 #' @return A named list of derivative component vectors.
 #' @keywords internal
-pig_hd_block <- function(y, theta, cols, kernel) {
+pig_hd_block <- function(y, theta, cols, kernel, threads = 1L) {
   n <- max(length(y), length(theta[[1]]), length(theta[[2]]))
   y <- rep_len(y, n)
   p1 <- rep_len(theta[[1]], n)
   p2 <- rep_len(theta[[2]], n)
   ok <- is.finite(y) & y >= 0 & y == floor(y)
   m <- matrix(NaN, n, 15)
-  if (any(ok)) m[ok, ] <- kernel(y[ok], p1[ok], p2[ok])
+  if (any(ok)) m[ok, ] <- kernel(y[ok], p1[ok], p2[ok], threads)
   colnames(m) <- c("l", "d10", "d01", "d20", "d11", "d02",
                    "d30", "d21", "d12", "d03",
                    "d40", "d31", "d22", "d13", "d04")
@@ -82,8 +83,8 @@ pig_hd_block <- function(y, theta, cols, kernel) {
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{pig1_distrib}}
-S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE) {
-  out <- pig_hd_block(y, theta, c(l = "l"), pig1_hd_cpp)$l
+S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
+  out <- pig_hd_block(y, theta, c(l = "l"), pig1_hd_cpp, threads)$l
   out[is.nan(out)] <- -Inf
   if (log) out else exp(out)
 }
@@ -100,8 +101,8 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE)
 #' @return A named list with the \code{mu} and \code{sigma} components.
 #' @seealso \code{\link{pig1_distrib}}
 S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
-                                                      scale = c("parameter", "link"), ...) {
-  pig_hd_block(y, theta, c(mu = "d10", sigma = "d01"), pig1_hd_cpp)
+                                                      scale = c("parameter", "link"), ..., threads = 1L) {
+  pig_hd_block(y, theta, c(mu = "d10", sigma = "d01"), pig1_hd_cpp, threads)
 }
 
 #' @title Poisson-Inverse Gaussian Analytical Observed Hessian
@@ -116,10 +117,10 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{pig1_distrib}}
 S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
-                                                     scale = c("parameter", "link"), ...) {
+                                                     scale = c("parameter", "link"), ..., threads = 1L) {
   pig_hd_block(y, theta,
                c(mu_mu = "d20", sigma_sigma = "d02", mu_sigma = "d11"),
-               pig1_hd_cpp)
+               pig1_hd_cpp, threads)
 }
 
 #' @title Poisson-Inverse Gaussian Analytical Third Derivatives
@@ -140,7 +141,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
@@ -148,7 +149,7 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
   pig_hd_block(y, theta,
                c(mu_mu_mu = "d30", mu_mu_sigma = "d21",
                  mu_sigma_sigma = "d12", sigma_sigma_sigma = "d03"),
-               pig1_hd_cpp)
+               pig1_hd_cpp, threads)
 }
 
 #' @title Poisson-Inverse Gaussian Analytical Fourth Derivatives
@@ -169,7 +170,7 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
@@ -178,7 +179,7 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
                c(mu_mu_mu_mu = "d40", mu_mu_mu_sigma = "d31",
                  mu_mu_sigma_sigma = "d22", mu_sigma_sigma_sigma = "d13",
                  sigma_sigma_sigma_sigma = "d04"),
-               pig1_hd_cpp)
+               pig1_hd_cpp, threads)
 }
 
 #' @title Poisson-Inverse Gaussian Random Generation

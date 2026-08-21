@@ -38,7 +38,7 @@ PoissonDistrib <- S7::new_class("PoissonDistrib", parent = discrete_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{poisson_distrib}}
-S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dpois(
     x = y,
     lambda = theta[[1]],

@@ -5,7 +5,7 @@
 \alias{reparam_pdf}
 \title{Density of a Reparametrized Distribution}
 \usage{
-reparam_pdf(distrib, y, theta, log = FALSE)
+reparam_pdf(distrib, y, theta, log = FALSE, ...)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution.}

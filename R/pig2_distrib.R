@@ -55,8 +55,8 @@ pig2_sigma <- function(mu, alpha) (mu + sqrt(mu^2 + alpha^2)) / alpha^2
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{pig2_distrib}}
-S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE) {
-  out <- pig_hd_block(y, theta, c(l = "l"), pig2_hd_cpp)$l
+S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
+  out <- pig_hd_block(y, theta, c(l = "l"), pig2_hd_cpp, threads)$l
   out[is.nan(out)] <- -Inf
   if (log) out else exp(out)
 }
@@ -73,8 +73,8 @@ S7::method(distrib_pdf, Pig2Distrib) <- function(distrib, y, theta, log = FALSE)
 #' @return A named list with the \code{mu} and \code{alpha} components.
 #' @seealso \code{\link{pig2_distrib}}
 S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
-                                                      scale = c("parameter", "link"), ...) {
-  pig_hd_block(y, theta, c(mu = "d10", alpha = "d01"), pig2_hd_cpp)
+                                                      scale = c("parameter", "link"), ..., threads = 1L) {
+  pig_hd_block(y, theta, c(mu = "d10", alpha = "d01"), pig2_hd_cpp, threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Analytical Observed Hessian
@@ -89,10 +89,10 @@ S7::method(distrib_gradient, Pig2Distrib) <- function(distrib, y, theta,
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{pig2_distrib}}
 S7::method(distrib_hessian, Pig2Distrib) <- function(distrib, y, theta,
-                                                     scale = c("parameter", "link"), ...) {
+                                                     scale = c("parameter", "link"), ..., threads = 1L) {
   pig_hd_block(y, theta,
                c(mu_mu = "d20", alpha_alpha = "d02", mu_alpha = "d11"),
-               pig2_hd_cpp)
+               pig2_hd_cpp, threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Analytical Third Derivatives
@@ -113,7 +113,7 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
@@ -121,7 +121,7 @@ S7::method(distrib_deriv3, Pig2Distrib) <- function(distrib, y, theta,
   pig_hd_block(y, theta,
                c(mu_mu_mu = "d30", mu_mu_alpha = "d21",
                  mu_alpha_alpha = "d12", alpha_alpha_alpha = "d03"),
-               pig2_hd_cpp)
+               pig2_hd_cpp, threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Analytical Fourth Derivatives
@@ -142,7 +142,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ..., threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
@@ -151,7 +151,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
                c(mu_mu_mu_mu = "d40", mu_mu_mu_alpha = "d31",
                  mu_mu_alpha_alpha = "d22", mu_alpha_alpha_alpha = "d13",
                  alpha_alpha_alpha_alpha = "d04"),
-               pig2_hd_cpp)
+               pig2_hd_cpp, threads)
 }
 
 #' @title Orthogonal Poisson-Inverse Gaussian Random Generation

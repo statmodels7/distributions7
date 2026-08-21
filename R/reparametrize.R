@@ -386,7 +386,7 @@ chain_assemble <- function(D, inner_params, maps, new_params, order, n) {
 #' @return A numeric vector.
 #' @seealso \code{\link{reparametrize}}
 #' @keywords internal
-reparam_pdf <- function(distrib, y, theta, log = FALSE) {
+reparam_pdf <- function(distrib, y, theta, log = FALSE, ...) {
   distrib_pdf(distrib@parent_distrib, y, reparam_theta(distrib, theta), log = log)
 }
 S7::method(distrib_pdf, ReparamContinuousDistrib) <- reparam_pdf

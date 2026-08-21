@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Gumbel (maxima) log-density. With
@@ -27,13 +28,14 @@ static void gumbel_gamma_moments(double g[5]) {
 }
 
 // [[Rcpp::export]]
-List gumbel_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gumbel_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s3 = s * s * s;
@@ -46,7 +48,7 @@ List gumbel_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
         mu_sigma_sigma[i] = (2.0 - 2.0 * w + 4.0 * z * w - z2 * w) / s3;
         sigma_sigma_sigma[i] = (-2.0 + 6.0 * z - 6.0 * z * w
                                 + 6.0 * z2 * w - z2 * z * w) / s3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -57,7 +59,8 @@ List gumbel_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
 }
 
 // [[Rcpp::export]]
-List gumbel_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gumbel_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool sigma_is_scalar = (sigma.size() == 1);
@@ -65,7 +68,7 @@ List gumbel_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
     double g[5];
     gumbel_gamma_moments(g);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s3 = s * s * s;
 
@@ -73,7 +76,7 @@ List gumbel_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         mu_mu_sigma[i] = (3.0 - euler) / s3;
         mu_sigma_sigma[i] = (4.0 * euler - 4.0 - g[2]) / s3;
         sigma_sigma_sigma[i] = (4.0 + 6.0 * g[2] + g[3]) / s3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -84,14 +87,15 @@ List gumbel_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector
 }
 
 // [[Rcpp::export]]
-List gumbel_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gumbel_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s4 = s * s * s * s;
@@ -107,7 +111,7 @@ List gumbel_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
         sigma_sigma_sigma_sigma[i] = (6.0 - 24.0 * z + 24.0 * z * w
                                       - 36.0 * z2 * w + 12.0 * z3 * w
                                       - z4 * w) / s4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
@@ -119,7 +123,8 @@ List gumbel_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
 }
 
 // [[Rcpp::export]]
-List gumbel_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List gumbel_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
@@ -128,7 +133,7 @@ List gumbel_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector
     double g[5];
     gumbel_gamma_moments(g);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s4 = s * s * s * s;
 
@@ -137,7 +142,7 @@ List gumbel_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector
         mu_mu_sigma_sigma[i] = -(12.0 - 6.0 * euler + g[2]) / s4;
         mu_sigma_sigma_sigma[i] = (18.0 - 18.0 * euler + 9.0 * g[2] + g[3]) / s4;
         sigma_sigma_sigma_sigma[i] = (-18.0 - 36.0 * g[2] - 12.0 * g[3] - g[4]) / s4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

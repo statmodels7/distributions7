@@ -41,7 +41,7 @@ Gamma2Distrib <- S7::new_class("Gamma2Distrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{gamma2_distrib}}
-S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dgamma(
     x = y,
     shape = theta[[1]]^2 / theta[[2]],

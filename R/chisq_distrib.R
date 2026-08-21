@@ -40,7 +40,7 @@ ChisqDistrib <- S7::new_class("ChisqDistrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{chisq_distrib}}
-S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dchisq(y, df = theta[[1]], log = log)
 }
 
@@ -103,8 +103,8 @@ S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta) {
 #' @return A named list with the \code{mu} component.
 #' @seealso \code{\link{chisq_distrib}}
 S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
-                                                       scale = c("parameter", "link"), ...) {
-  chisq_gradient_cpp(y, theta[[1]])
+                                                       scale = c("parameter", "link"), ..., threads = 1L) {
+  chisq_gradient_cpp(y, theta[[1]], threads)
 }
 
 #' @title Chi-Squared Analytical Observed Hessian
@@ -121,8 +121,8 @@ S7::method(distrib_gradient, ChisqDistrib) <- function(distrib, y, theta,
 #' @return A named list with the \code{mu_mu} component.
 #' @seealso \code{\link{chisq_distrib}}
 S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
-                                                      scale = c("parameter", "link"), ...) {
-  chisq_hessian_cpp(y, theta[[1]])
+                                                      scale = c("parameter", "link"), ..., threads = 1L) {
+  chisq_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Chi-Squared Analytical Expected Hessian
@@ -146,8 +146,8 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta,
                                                                scale = c("parameter", "link"),
                                                                approx = c("bartlett", "integrate", "mc", "opg"),
-                                                               nsim = 10000, ...) {
-  chisq_hessian_cpp(y, theta[[1]])
+                                                               nsim = 10000, ..., threads = 1L) {
+  chisq_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Chi-Squared Analytical Third-Order Derivative
@@ -168,8 +168,8 @@ S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta
 S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                      scale = c("parameter", "link"),
                                                      approx = c("integrate", "bartlett", "mc", "opg"),
-                                                     nsim = 10000, ...) {
-  chisq_deriv3_cpp(y, theta[[1]])
+                                                     nsim = 10000, ..., threads = 1L) {
+  chisq_deriv3_cpp(y, theta[[1]], threads)
 }
 
 #' @title Chi-Squared Analytical Fourth-Order Derivative
@@ -190,8 +190,8 @@ S7::method(distrib_deriv3, ChisqDistrib) <- function(distrib, y, theta, expected
 S7::method(distrib_deriv4, ChisqDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                      scale = c("parameter", "link"),
                                                      approx = c("integrate", "bartlett", "mc", "opg"),
-                                                     nsim = 10000, ...) {
-  chisq_deriv4_cpp(y, theta[[1]])
+                                                     nsim = 10000, ..., threads = 1L) {
+  chisq_deriv4_cpp(y, theta[[1]], threads)
 }
 
 #' @title Chi-Squared Response Gradient

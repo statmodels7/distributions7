@@ -4,7 +4,7 @@
 \alias{gpd_components}
 \title{Derivative Components of the Generalized Pareto}
 \usage{
-gpd_components(y, theta, order, cut = 0.2)
+gpd_components(y, theta, order, cut = 0.2, threads = 1L)
 }
 \arguments{
 \item{y}{A numeric vector of observations.}
@@ -15,6 +15,8 @@ gpd_components(y, theta, order, cut = 0.2)
 
 \item{cut}{The value of \eqn{\lvert\xi z\rvert} below which the series
 is used.}
+
+\item{threads}{How many threads the series kernel may use.}
 }
 \value{
 A named list of component vectors, keyed as

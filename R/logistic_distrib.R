@@ -40,7 +40,7 @@ LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_pdf, LogisticDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, LogisticDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dlogis(
     x = y,
     location = theta[[1]],
@@ -127,8 +127,8 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  logistic_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  logistic_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Logistic Analytical Observed Hessian
@@ -146,8 +146,8 @@ S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, sca
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  logistic_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  logistic_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Logistic Analytical Expected Hessian
@@ -165,8 +165,8 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  logistic_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  logistic_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Logistic Analytical Third-Order Derivatives
@@ -193,12 +193,12 @@ S7::method(distrib_expected_hessian, LogisticDistrib) <- function(distrib, y, th
 #' @param expected Logical; if \code{TRUE}, returns the approximated expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    logistic_deriv3_cpp(y, theta[[1]], theta[[2]])
+    logistic_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
   }
 }
 
@@ -221,12 +221,12 @@ S7::method(distrib_deriv3, LogisticDistrib) <- function(distrib, y, theta, expec
 #' @param expected Logical; if \code{TRUE}, returns the approximated expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{logistic_distrib}}
-S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    logistic_deriv4_cpp(y, theta[[1]], theta[[2]])
+    logistic_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
   }
 }
 

@@ -69,7 +69,7 @@ mn_parts <- function(distrib, theta) {
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector, one entry per row of \code{y}.
 #' @seealso \code{\link{multinomial_distrib}}
-S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- mn_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
   n <- distrib@size

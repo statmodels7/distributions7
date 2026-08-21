@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Exponential in the MEAN parametrization: f(y) = exp(-y/mu)/mu, so
@@ -12,104 +13,118 @@ using namespace Rcpp;
 // information 1/mu^2 at k = 2.
 
 // [[Rcpp::export]]
-List exponential_gradient_cpp(NumericVector y, NumericVector mu) {
+List exponential_gradient_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector grad_mu(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         grad_mu[i] = (y[i] - m) / (m * m);
-    }
+    });
     return List::create(Named("mu") = grad_mu);
 }
 
 // [[Rcpp::export]]
-List exponential_hessian_cpp(NumericVector y, NumericVector mu) {
+List exponential_hessian_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double m2 = m * m;
         h[i] = 1.0 / m2 - 2.0 * y[i] / (m2 * m);
-    }
+    });
     return List::create(Named("mu_mu") = h);
 }
 
 // [[Rcpp::export]]
-List exponential_expected_hessian_cpp(NumericVector y, NumericVector mu) {
+List exponential_expected_hessian_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCheap, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         h[i] = -1.0 / (m * m);
-    }
+    });
     return List::create(Named("mu_mu") = h);
 }
 
 // [[Rcpp::export]]
-List exponential_deriv3_cpp(NumericVector y, NumericVector mu) {
+List exponential_deriv3_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double m3 = m * m * m;
         d[i] = -2.0 / m3 + 6.0 * y[i] / (m3 * m);
-    }
+    });
     return List::create(Named("mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List exponential_deriv3_expected_cpp(NumericVector y, NumericVector mu) {
+List exponential_deriv3_expected_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         d[i] = 4.0 / (m * m * m);
-    }
+    });
     return List::create(Named("mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List exponential_deriv4_cpp(NumericVector y, NumericVector mu) {
+List exponential_deriv4_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double m2 = m * m;
         double m4 = m2 * m2;
         d[i] = 6.0 / m4 - 24.0 * y[i] / (m4 * m);
-    }
+    });
     return List::create(Named("mu_mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List exponential_deriv4_expected_cpp(NumericVector y, NumericVector mu) {
+List exponential_deriv4_expected_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double m2 = m * m;
         d[i] = -18.0 / (m2 * m2);
-    }
+    });
     return List::create(Named("mu_mu_mu_mu") = d);
 }

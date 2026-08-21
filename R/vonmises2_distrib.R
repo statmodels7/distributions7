@@ -58,9 +58,12 @@ vm2_parts <- function(theta) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector.
 #' @seealso \code{\link{vonmises2_distrib}}
-S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
+                                                     log = FALSE, ...,
+                                                     threads = 1L) {
   distrib_pdf(vonmises1_distrib(), y,
-              list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), log = log)
+              list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), log = log,
+              threads = threads)
 }
 
 #' @title von Mises Random Generation in the Resultant Length

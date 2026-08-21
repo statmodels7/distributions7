@@ -40,7 +40,7 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dcauchy(
     x = y,
     location = theta[[1]],
@@ -127,8 +127,8 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  cauchy_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  cauchy_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Cauchy Analytical Observed Hessian
@@ -146,8 +146,8 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  cauchy_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  cauchy_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Cauchy Analytical Expected Hessian
@@ -165,8 +165,8 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' @param theta A list containing the parameters \code{mu} and \code{sigma}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  cauchy_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  cauchy_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Cauchy Analytical Third-Order Derivatives
@@ -178,9 +178,9 @@ S7::method(distrib_expected_hessian, CauchyDistrib) <- function(distrib, y, thet
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) cauchy_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else cauchy_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) cauchy_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else cauchy_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Cauchy Analytical Fourth-Order Derivatives
@@ -192,9 +192,9 @@ S7::method(distrib_deriv3, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{cauchy_distrib}}
-S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) cauchy_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else cauchy_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) cauchy_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else cauchy_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Cauchy Response Derivatives

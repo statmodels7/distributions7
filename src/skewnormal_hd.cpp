@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Azzalini skew normal log-density.
@@ -31,7 +32,8 @@ static inline void sn_g(double t, double g[5]) {
 
 // [[Rcpp::export]]
 List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
-                           NumericVector sigma, NumericVector alpha) {
+                           NumericVector sigma, NumericVector alpha,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_mu_alpha(n),
                   mu_sigma_sigma(n), mu_sigma_alpha(n), mu_alpha_alpha(n),
@@ -41,7 +43,7 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
     bool sigma_is_scalar = (sigma.size() == 1);
     bool alpha_is_scalar = (alpha.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double a = alpha_is_scalar ? alpha[0] : alpha[i];
@@ -66,7 +68,7 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
         sigma_sigma_alpha[i] = z * (2.0 * g[1] + 4.0 * t * g[2] + t2 * g[3]) / s2;
         sigma_alpha_alpha[i] = -z2 * (2.0 * g[2] + t * g[3]) / s;
         alpha_alpha_alpha[i] = z3 * g[3];
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -84,7 +86,8 @@ List skewnormal_deriv3_cpp(NumericVector y, NumericVector mu,
 
 // [[Rcpp::export]]
 List skewnormal_deriv4_cpp(NumericVector y, NumericVector mu,
-                           NumericVector sigma, NumericVector alpha) {
+                           NumericVector sigma, NumericVector alpha,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_mu_alpha(n),
                   mu_mu_sigma_sigma(n), mu_mu_sigma_alpha(n), mu_mu_alpha_alpha(n),
@@ -97,7 +100,7 @@ List skewnormal_deriv4_cpp(NumericVector y, NumericVector mu,
     bool sigma_is_scalar = (sigma.size() == 1);
     bool alpha_is_scalar = (alpha.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double a = alpha_is_scalar ? alpha[0] : alpha[i];
@@ -134,7 +137,7 @@ List skewnormal_deriv4_cpp(NumericVector y, NumericVector mu,
                                            + t2 * g[4]) / s2;
         sigma_alpha_alpha_alpha[i] = -z3 * (3.0 * g[3] + t * g[4]) / s;
         alpha_alpha_alpha_alpha[i] = z4 * g[4];
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

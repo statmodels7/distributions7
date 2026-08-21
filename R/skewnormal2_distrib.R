@@ -201,7 +201,7 @@ sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector.
 #' @seealso \code{\link{skewnormal2_distrib}}
-S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   distrib_pdf(skewnormal1_distrib(), y, sn2_theta(theta), log = log)
 }
 

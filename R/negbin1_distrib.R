@@ -74,7 +74,7 @@ nb1_prob <- function(theta) 1 / (1 + theta)
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{negbin1_distrib}}
-S7::method(distrib_pdf, NegBin1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, NegBin1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   out <- negbin1_logpmf_cpp(y, theta[[1]], theta[[2]])
   if (log) out else exp(out)
 }

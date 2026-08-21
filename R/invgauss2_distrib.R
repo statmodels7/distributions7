@@ -39,7 +39,7 @@ InvGauss2Distrib <- S7::new_class("InvGauss2Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector.
 #' @seealso \code{\link{invgauss2_distrib}}
-S7::method(distrib_pdf, InvGauss2Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, InvGauss2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   statmod::dinvgauss(y, mean = theta[[1]], dispersion = 1 / theta[[2]], log = log)
 }
 
@@ -108,8 +108,8 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta) {
 #' @return A named list of first derivatives.
 #' @seealso \code{\link{invgauss2_distrib}}
 S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
-                                                            scale = c("parameter", "link"), ...) {
-  invgauss2_gradient_cpp(y, theta[[1]], theta[[2]])
+                                                            scale = c("parameter", "link"), ..., threads = 1L) {
+  invgauss2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse Gaussian Analytical Observed Hessian in Mean and Shape
@@ -126,8 +126,8 @@ S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
 #' @return A named list of second derivatives.
 #' @seealso \code{\link{invgauss2_distrib}}
 S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  invgauss2_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                           scale = c("parameter", "link"), ..., threads = 1L) {
+  invgauss2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse Gaussian Analytical Expected Hessian in Mean and Shape
@@ -151,8 +151,8 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                    nsim = 10000, ...) {
-  invgauss2_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                                    nsim = 10000, ..., threads = 1L) {
+  invgauss2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Inverse Gaussian Third-Order Derivatives in Mean and Shape
@@ -171,8 +171,8 @@ S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, t
 S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ...) {
-  invgauss2_deriv3_cpp(y, theta[[1]], theta[[2]], expected)
+                                                          nsim = 10000, ..., threads = 1L) {
+  invgauss2_deriv3_cpp(y, theta[[1]], theta[[2]], expected, threads)
 }
 
 #' @title Inverse Gaussian Fourth-Order Derivatives in Mean and Shape
@@ -191,8 +191,8 @@ S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expe
 S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ...) {
-  invgauss2_deriv4_cpp(y, theta[[1]], theta[[2]], expected)
+                                                          nsim = 10000, ..., threads = 1L) {
+  invgauss2_deriv4_cpp(y, theta[[1]], theta[[2]], expected, threads)
 }
 
 

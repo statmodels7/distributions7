@@ -58,8 +58,8 @@ gpd_endpoint <- function(sigma, xi) ifelse(xi < 0, -sigma / xi, Inf)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{gpd_distrib}}
-S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE) {
-  out <- gpd_logpdf_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
+  out <- gpd_logpdf_cpp(y, theta[[1]], theta[[2]], threads)
   if (log) out else exp(out)
 }
 
@@ -155,8 +155,8 @@ S7::method(distrib_rng, GPDDistrib) <- function(distrib, n, theta) {
 #' @return A named list with the \code{sigma} and \code{xi} components.
 #' @seealso \code{\link{gpd_distrib}}
 S7::method(distrib_gradient, GPDDistrib) <- function(distrib, y, theta,
-                                                      scale = c("parameter", "link"), ...) {
-  gpd_gradient_cpp(y, theta[[1]], theta[[2]])
+                                                      scale = c("parameter", "link"), ..., threads = 1L) {
+  gpd_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Generalized Pareto Analytical Observed Hessian
@@ -174,8 +174,8 @@ S7::method(distrib_gradient, GPDDistrib) <- function(distrib, y, theta,
 #' @return A named list of second-derivative components.
 #' @seealso \code{\link{gpd_distrib}}
 S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
-                                                     scale = c("parameter", "link"), ...) {
-  gpd_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                     scale = c("parameter", "link"), ..., threads = 1L) {
+  gpd_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Generalized Pareto Analytical Expected Hessian
@@ -202,8 +202,8 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"),
                                                               approx = c("bartlett", "integrate", "mc", "opg"),
-                                                              nsim = 10000, ...) {
-  gpd_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                              nsim = 10000, ..., threads = 1L) {
+  gpd_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

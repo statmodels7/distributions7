@@ -392,7 +392,7 @@ has_analytic_quantile <- function(distrib) {
 #' @examples
 #' # A distribution defined by its density alone still gets a fast sampler
 #' MyDist <- S7::new_class("MyDist", parent = continuous_distrib)
-#' S7::method(distrib_pdf, MyDist) <- function(distrib, y, theta, log = FALSE) {
+#' S7::method(distrib_pdf, MyDist) <- function(distrib, y, theta, log = FALSE, ...) {
 #'   ld <- -log(2 * theta$b) - abs(y - theta$mu) / theta$b
 #'   if (log) ld else exp(ld)
 #' }

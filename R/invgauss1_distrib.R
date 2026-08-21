@@ -40,7 +40,7 @@ InvGauss1Distrib <- S7::new_class("InvGauss1Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{invgauss1_distrib}}
-S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   statmod::dinvgauss(
     x = y,
     mean = theta[[1]],

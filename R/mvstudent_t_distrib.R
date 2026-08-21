@@ -228,7 +228,7 @@ mvt_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 #' @return A numeric vector with one value per observation.
 #' @keywords internal
 S7::method(distrib_pdf, MvStudentTDistrib) <- function(distrib, y, theta,
-                                                       log = FALSE) {
+                                                       log = FALSE, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvt_pieces(distrib, theta)
   if (!nrow(y)) return(numeric(0))

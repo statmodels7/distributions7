@@ -4,7 +4,7 @@
 \alias{pig_hd_block}
 \title{Log-Likelihood Derivatives of the Poisson-Inverse Gaussian}
 \usage{
-pig_hd_block(y, theta, cols, kernel)
+pig_hd_block(y, theta, cols, kernel, threads = 1L)
 }
 \arguments{
 \item{y}{A numeric vector of observations.}
@@ -15,6 +15,8 @@ pig_hd_block(y, theta, cols, kernel)
 
 \item{kernel}{The compiled kernel, \code{pig1_hd_cpp} or
 \code{pig2_hd_cpp}.}
+
+\item{threads}{How many threads that kernel may use.}
 }
 \value{
 A named list of derivative component vectors.

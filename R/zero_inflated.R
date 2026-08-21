@@ -204,7 +204,7 @@ check_support_is_rich_enough <- function(distrib, fun) {
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_inflated}}
-S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
 

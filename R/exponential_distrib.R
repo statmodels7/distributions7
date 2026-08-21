@@ -39,7 +39,7 @@ ExponentialDistrib <- S7::new_class("ExponentialDistrib", parent = continuous_di
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{exponential_distrib}}
-S7::method(distrib_pdf, ExponentialDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, ExponentialDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dexp(y, rate = 1 / theta[[1]], log = log)
 }
 
@@ -104,8 +104,8 @@ S7::method(distrib_rng, ExponentialDistrib) <- function(distrib, n, theta) {
 #' @return A named list with the \code{mu} component.
 #' @seealso \code{\link{exponential_distrib}}
 S7::method(distrib_gradient, ExponentialDistrib) <- function(distrib, y, theta,
-                                                             scale = c("parameter", "link"), ...) {
-  exponential_gradient_cpp(y, theta[[1]])
+                                                             scale = c("parameter", "link"), ..., threads = 1L) {
+  exponential_gradient_cpp(y, theta[[1]], threads)
 }
 
 #' @title Exponential Analytical Observed Hessian
@@ -120,8 +120,8 @@ S7::method(distrib_gradient, ExponentialDistrib) <- function(distrib, y, theta,
 #' @return A named list with the \code{mu_mu} component.
 #' @seealso \code{\link{exponential_distrib}}
 S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
-                                                            scale = c("parameter", "link"), ...) {
-  exponential_hessian_cpp(y, theta[[1]])
+                                                            scale = c("parameter", "link"), ..., threads = 1L) {
+  exponential_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Exponential Analytical Expected Hessian
@@ -141,8 +141,8 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
                                                                      approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                     nsim = 10000, ...) {
-  exponential_expected_hessian_cpp(y, theta[[1]])
+                                                                     nsim = 10000, ..., threads = 1L) {
+  exponential_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Exponential Analytical Third-Order Derivative
@@ -163,9 +163,9 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
-  if (expected) exponential_deriv3_expected_cpp(y, theta[[1]])
-  else exponential_deriv3_cpp(y, theta[[1]])
+                                                           nsim = 10000, ..., threads = 1L) {
+  if (expected) exponential_deriv3_expected_cpp(y, theta[[1]], threads)
+  else exponential_deriv3_cpp(y, theta[[1]], threads)
 }
 
 #' @title Exponential Analytical Fourth-Order Derivative
@@ -186,9 +186,9 @@ S7::method(distrib_deriv3, ExponentialDistrib) <- function(distrib, y, theta, ex
 S7::method(distrib_deriv4, ExponentialDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
-                                                           nsim = 10000, ...) {
-  if (expected) exponential_deriv4_expected_cpp(y, theta[[1]])
-  else exponential_deriv4_cpp(y, theta[[1]])
+                                                           nsim = 10000, ..., threads = 1L) {
+  if (expected) exponential_deriv4_expected_cpp(y, theta[[1]], threads)
+  else exponential_deriv4_cpp(y, theta[[1]], threads)
 }
 
 #' @title Exponential Response Gradient

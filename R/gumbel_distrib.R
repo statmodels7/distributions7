@@ -46,7 +46,7 @@ GumbelDistrib <- S7::new_class("GumbelDistrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{gumbel_distrib}}
-S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   z <- (y - mu) / sigma
@@ -229,9 +229,9 @@ S7::method(distrib_expected_hessian, GumbelDistrib) <- function(distrib, y, thet
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{gumbel_distrib}}
-S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) gumbel_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else gumbel_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) gumbel_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else gumbel_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gumbel Analytical Fourth-Order Derivatives
@@ -246,9 +246,9 @@ S7::method(distrib_deriv3, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{gumbel_distrib}}
-S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) gumbel_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else gumbel_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gumbel Response Derivative

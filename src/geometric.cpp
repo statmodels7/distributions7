@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Geometric on {0, 1, 2, ...} in the MEAN parametrization. With success
@@ -17,110 +18,124 @@ static inline void geom_terms(double y, double m, double &a, double &b) {
 }
 
 // [[Rcpp::export]]
-List geometric_gradient_cpp(NumericVector y, NumericVector mu) {
+List geometric_gradient_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         g[i] = (y[i] - m) / (m * (1.0 + m));
-    }
+    });
     return List::create(Named("mu") = g);
 }
 
 // [[Rcpp::export]]
-List geometric_hessian_cpp(NumericVector y, NumericVector mu) {
+List geometric_hessian_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double a, b;
         geom_terms(y[i], m, a, b);
         double om = 1.0 + m;
         h[i] = -(a / (m * m) - b / (om * om));
-    }
+    });
     return List::create(Named("mu_mu") = h);
 }
 
 // [[Rcpp::export]]
-List geometric_expected_hessian_cpp(NumericVector y, NumericVector mu) {
+List geometric_expected_hessian_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         h[i] = -1.0 / (m * (1.0 + m));
-    }
+    });
     return List::create(Named("mu_mu") = h);
 }
 
 // [[Rcpp::export]]
-List geometric_deriv3_cpp(NumericVector y, NumericVector mu) {
+List geometric_deriv3_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double a, b;
         geom_terms(y[i], m, a, b);
         double om = 1.0 + m;
         d[i] = 2.0 * (a / (m * m * m) - b / (om * om * om));
-    }
+    });
     return List::create(Named("mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List geometric_deriv3_expected_cpp(NumericVector y, NumericVector mu) {
+List geometric_deriv3_expected_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double om = 1.0 + m;
         d[i] = 2.0 * (1.0 / (m * m) - 1.0 / (om * om));
-    }
+    });
     return List::create(Named("mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List geometric_deriv4_cpp(NumericVector y, NumericVector mu) {
+List geometric_deriv4_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double a, b;
         geom_terms(y[i], m, a, b);
         double m2 = m * m, om = 1.0 + m, om2 = om * om;
         d[i] = -6.0 * (a / (m2 * m2) - b / (om2 * om2));
-    }
+    });
     return List::create(Named("mu_mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List geometric_deriv4_expected_cpp(NumericVector y, NumericVector mu) {
+List geometric_deriv4_expected_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinTiny, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         double om = 1.0 + m;
         d[i] = -6.0 * (1.0 / (m * m * m) - 1.0 / (om * om * om));
-    }
+    });
     return List::create(Named("mu_mu_mu_mu") = d);
 }

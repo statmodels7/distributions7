@@ -1,8 +1,10 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector grad_mu(n);
     NumericVector grad_sigma(n);
@@ -10,7 +12,7 @@ List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigm
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
     
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         
@@ -19,13 +21,14 @@ List logistic_gradient_cpp(NumericVector y, NumericVector mu, NumericVector sigm
         
         grad_mu[i] = tanh_z / s;
         grad_sigma[i] = (res * tanh_z - s) / (s * s);
-    }
+    });
     
     return List::create(Named("mu") = grad_mu, Named("sigma") = grad_sigma);
 }
 
 // [[Rcpp::export]]
-List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_sigma_sigma(n);
@@ -34,7 +37,7 @@ List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         
@@ -48,13 +51,14 @@ List logistic_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma
         hess_mu_mu[i] = -sech2_z / (2.0 * s2);
         hess_sigma_sigma[i] = (1.0 - 4.0 * z_half * tanh_z - 2.0 * z_half * z_half * sech2_z) / s2;
         hess_mu_sigma[i] = -(tanh_z + z_half * sech2_z) / s2;
-    }
+    });
     
     return List::create(Named("mu_mu") = hess_mu_mu, Named("sigma_sigma") = hess_sigma_sigma, Named("mu_sigma") = hess_mu_sigma);
 }
 
 // [[Rcpp::export]]
-List logistic_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List logistic_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector hess_mu_mu(n);
     NumericVector hess_sigma_sigma(n);
@@ -62,7 +66,7 @@ List logistic_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
     
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for(int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s2 = s * s;
         
@@ -70,7 +74,7 @@ List logistic_expected_hessian_cpp(NumericVector y, NumericVector mu, NumericVec
         // M_PI è predefinito in Rmath.h (incluso tramite Rcpp.h)
         hess_sigma_sigma[i] = -(3.0 + M_PI * M_PI) / (9.0 * s2);
         hess_mu_sigma[i] = 0.0;
-    }
+    });
     
     return List::create(Named("mu_mu") = hess_mu_mu, Named("sigma_sigma") = hess_sigma_sigma, Named("mu_sigma") = hess_mu_sigma);
 }

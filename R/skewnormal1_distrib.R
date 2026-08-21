@@ -45,7 +45,7 @@ SkewNormal1Distrib <- S7::new_class("SkewNormal1Distrib", parent = continuous_di
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{skewnormal1_distrib}}
-S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   alpha <- theta[[3]]
@@ -194,12 +194,12 @@ S7::method(distrib_hessian, SkewNormal1Distrib) <- function(distrib, y, theta, s
 #' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{skewnormal1_distrib}}
-S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    skewnormal_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+    skewnormal_deriv3_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
 }
 
@@ -218,12 +218,12 @@ S7::method(distrib_deriv3, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' @param nsim Monte Carlo sample size when \code{approx = "mc"}.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{skewnormal1_distrib}}
-S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
                         approx = match.arg(approx), nsim = nsim)
   } else {
-    skewnormal_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]])
+    skewnormal_deriv4_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   }
 }
 

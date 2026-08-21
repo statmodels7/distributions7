@@ -74,7 +74,7 @@ ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_adjusted}}
-S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   za <- pars$mix
@@ -333,7 +333,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{zero_adjusted}}
-S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
 

@@ -45,7 +45,7 @@ BetaBinom1Distrib <- S7::new_class("BetaBinom1Distrib",
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{betabinom1_distrib}}
-S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   out <- betabinom_logpmf_cpp(y, theta[[1]], theta[[2]], distrib@size)
   if (log) out else exp(out)
 }

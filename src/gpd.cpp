@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Generalized Pareto in (sigma, xi):
@@ -67,41 +68,44 @@ static inline double gpd_dl_dxi(double xi, double z, double t) {
 
 // [[Rcpp::export]]
 NumericVector gpd_logpdf_cpp(NumericVector y, NumericVector sigma,
-                             NumericVector xi) {
+                             NumericVector xi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector out(n);
     bool s_s = (sigma.size() == 1), x_s = (xi.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = s_s ? sigma[0] : sigma[i];
         double x = x_s ? xi[0] : xi[i];
         double z = y[i] / s, t = 1.0 + x * z;
-        if (y[i] < 0 || t <= 0) { out[i] = R_NegInf; continue; }
+        if (y[i] < 0 || t <= 0) { out[i] = R_NegInf; return; }
         out[i] = -std::log(s) - gpd_w(x, z) - std::log(t);
-    }
+    });
     return out;
 }
 
 // [[Rcpp::export]]
-List gpd_gradient_cpp(NumericVector y, NumericVector sigma, NumericVector xi) {
+List gpd_gradient_cpp(NumericVector y, NumericVector sigma, NumericVector xi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g_s(n), g_x(n);
     bool s_s = (sigma.size() == 1), x_s = (xi.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = s_s ? sigma[0] : sigma[i];
         double x = x_s ? xi[0] : xi[i];
         double z = y[i] / s, t = 1.0 + x * z, u = z / t;
         g_s[i] = ((x + 1.0) * u - 1.0) / s;
         g_x[i] = gpd_dl_dxi(x, z, t);
-    }
+    });
     return List::create(Named("sigma") = g_s, Named("xi") = g_x);
 }
 
 // [[Rcpp::export]]
-List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi) {
+List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_ss(n), h_sx(n), h_xx(n);
     bool s_s = (sigma.size() == 1), x_s = (xi.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = s_s ? sigma[0] : sigma[i];
         double x = x_s ? xi[0] : xi[i];
         double z = y[i] / s, t = 1.0 + x * z, u = z / t;
@@ -114,7 +118,7 @@ List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi) {
         // the second piece switching to its series where the direct form's
         // terms of size z^2 xi^-2 cancel (see gpd_w_d2xi above)
         h_xx[i] = z2 / t2 - gpd_w_d2xi(x, z, t);
-    }
+    });
     return List::create(Named("sigma_sigma") = h_ss,
                         Named("sigma_xi") = h_sx,
                         Named("xi_xi") = h_xx);
@@ -127,22 +131,23 @@ List gpd_hessian_cpp(NumericVector y, NumericVector sigma, NumericVector xi) {
 // which is a property of the family rather than of this implementation.
 // [[Rcpp::export]]
 List gpd_expected_hessian_cpp(NumericVector y, NumericVector sigma,
-                              NumericVector xi) {
+                              NumericVector xi,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_ss(n), h_sx(n), h_xx(n);
     bool s_s = (sigma.size() == 1), x_s = (xi.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double s = s_s ? sigma[0] : sigma[i];
         double x = x_s ? xi[0] : xi[i];
         if (x <= -0.5) {
             h_ss[i] = NA_REAL; h_sx[i] = NA_REAL; h_xx[i] = NA_REAL;
-            continue;
+            return;
         }
         double d = 1.0 + 2.0 * x, om = 1.0 + x;
         h_ss[i] = -1.0 / (d * s * s);
         h_sx[i] = -1.0 / (d * s * om);
         h_xx[i] = -2.0 / (d * om);
-    }
+    });
     return List::create(Named("sigma_sigma") = h_ss,
                         Named("sigma_xi") = h_sx,
                         Named("xi_xi") = h_xx);

@@ -24,6 +24,12 @@ using namespace Rcpp;
 // sums of logarithms, which form nothing larger than n log S. Without this
 // the difference of the two beta functions collapses to zero at large shapes
 // and every mass comes back as one.
+// The two lchoose calls are what make this body admissible in a parallel
+// region, and only because every caller reaches it through the support
+// guard in betabinom_logpmf_cpp: lchoose warns when its SECOND argument is
+// not an integer, and a warning raised from a worker thread kills the
+// process (d7_par.h). Do not remove the `y != floor(y)` test there without
+// replacing these with a form that has no warning path.
 static inline double bb_log_mass(double y, double A, double B, double n) {
     double S = A + B;
     static const double eps = std::numeric_limits<double>::epsilon();

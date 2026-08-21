@@ -47,7 +47,7 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{pseudohuber_distrib}}
-S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   nu <- theta[[3]]

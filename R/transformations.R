@@ -554,7 +554,7 @@ TransformedDistrib <- S7::new_class("TransformedDistrib",
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{transformation}}
-S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   tr <- distrib@transformer
   log_pdf_x <- distrib_pdf(distrib@parent_distrib, tr@trans_inv(y), theta, log = TRUE)
   log_J <- tr@trans_abs_jac(y, log = TRUE)

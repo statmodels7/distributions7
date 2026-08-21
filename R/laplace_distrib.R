@@ -45,7 +45,7 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{laplace_distrib}}
-S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
   log_d <- -log(2 * b) - abs(y - mu) / b

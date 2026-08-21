@@ -38,7 +38,7 @@ BernoulliDistrib <- S7::new_class("BernoulliDistrib", parent = discrete_distrib)
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector of probability values.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dbinom(
     x = y,
     size = 1,
@@ -125,8 +125,8 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of first derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  bernoulli_gradient_cpp(y, theta[[1]])
+S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  bernoulli_gradient_cpp(y, theta[[1]], threads)
 }
 
 #' @title Bernoulli Analytical Observed Hessian
@@ -142,8 +142,8 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of second derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  bernoulli_hessian_cpp(y, theta[[1]])
+S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  bernoulli_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Bernoulli Analytical Expected Hessian
@@ -159,8 +159,8 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' @param theta A list containing the parameter \code{mu}.
 #' @return A list containing the vector of expected second derivatives.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  bernoulli_expected_hessian_cpp(y, theta[[1]])
+S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  bernoulli_expected_hessian_cpp(y, theta[[1]], threads)
 }
 
 #' @title Bernoulli Analytical Third-Order Derivatives
@@ -172,9 +172,9 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivative.
 #' @return A named list with the \code{mu_mu_mu} component.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) bernoulli_deriv3_expected_cpp(y, theta[[1]])
-  else bernoulli_deriv3_cpp(y, theta[[1]])
+S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) bernoulli_deriv3_expected_cpp(y, theta[[1]], threads)
+  else bernoulli_deriv3_cpp(y, theta[[1]], threads)
 }
 
 #' @title Bernoulli Analytical Fourth-Order Derivatives
@@ -186,9 +186,9 @@ S7::method(distrib_deriv3, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivative.
 #' @return A named list with the \code{mu_mu_mu_mu} component.
 #' @seealso \code{\link{bernoulli_distrib}}
-S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) bernoulli_deriv4_expected_cpp(y, theta[[1]])
-  else bernoulli_deriv4_cpp(y, theta[[1]])
+S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) bernoulli_deriv4_expected_cpp(y, theta[[1]], threads)
+  else bernoulli_deriv4_cpp(y, theta[[1]], threads)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

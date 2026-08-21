@@ -170,7 +170,7 @@ fold_deriv_k <- function(order) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{folded}}
-S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- fold_parts(distrib@parent_distrib, y, theta)
   out <- ifelse(y < 0, 0, p$L)
   if (log) log(out) else out

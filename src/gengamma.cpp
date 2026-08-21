@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Generalized gamma in Stacy's form, where the nesting is visible:
@@ -25,28 +26,30 @@ static inline GGparts gg_parts(double y, double a, double d, double p) {
 
 // [[Rcpp::export]]
 NumericVector gengamma_logpdf_cpp(NumericVector y, NumericVector a,
-                                  NumericVector d, NumericVector p) {
+                                  NumericVector d, NumericVector p,
+                        int threads = 1) {
     int n = y.size();
     NumericVector out(n);
     bool a_s = (a.size() == 1), d_s = (d.size() == 1), p_s = (p.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double av = a_s ? a[0] : a[i], dv = d_s ? d[0] : d[i],
                pv = p_s ? p[0] : p[i];
-        if (y[i] <= 0) { out[i] = R_NegInf; continue; }
+        if (y[i] <= 0) { out[i] = R_NegInf; return; }
         GGparts z = gg_parts(y[i], av, dv, pv);
         out[i] = std::log(pv) - dv * std::log(av) - R::lgammafn(z.k)
                + (dv - 1.0) * std::log(y[i]) - z.w;
-    }
+    });
     return out;
 }
 
 // [[Rcpp::export]]
 List gengamma_gradient_cpp(NumericVector y, NumericVector a, NumericVector d,
-                           NumericVector p) {
+                           NumericVector p,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g_a(n), g_d(n), g_p(n);
     bool a_s = (a.size() == 1), d_s = (d.size() == 1), p_s = (p.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double av = a_s ? a[0] : a[i], dv = d_s ? d[0] : d[i],
                pv = p_s ? p[0] : p[i];
         GGparts z = gg_parts(y[i], av, dv, pv);
@@ -54,17 +57,18 @@ List gengamma_gradient_cpp(NumericVector y, NumericVector a, NumericVector d,
         g_a[i] = (pv * z.w - dv) / av;
         g_d[i] = z.L - psi / pv;
         g_p[i] = 1.0 / pv + dv * psi / (pv * pv) - z.w * z.L;
-    }
+    });
     return List::create(Named("a") = g_a, Named("d") = g_d, Named("p") = g_p);
 }
 
 // [[Rcpp::export]]
 List gengamma_hessian_cpp(NumericVector y, NumericVector a, NumericVector d,
-                          NumericVector p) {
+                          NumericVector p,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_aa(n), h_ad(n), h_ap(n), h_dd(n), h_dp(n), h_pp(n);
     bool a_s = (a.size() == 1), d_s = (d.size() == 1), p_s = (p.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double av = a_s ? a[0] : a[i], dv = d_s ? d[0] : d[i],
                pv = p_s ? p[0] : p[i];
         GGparts z = gg_parts(y[i], av, dv, pv);
@@ -78,7 +82,7 @@ List gengamma_hessian_cpp(NumericVector y, NumericVector a, NumericVector d,
         h_dp[i] = psi / p2 + dv * psi1 / p3;
         h_pp[i] = -1.0 / p2 - 2.0 * dv * psi / p3 - dv * dv * psi1 / p4
                 - z.w * z.L * z.L;
-    }
+    });
     return List::create(Named("a_a") = h_aa, Named("a_d") = h_ad,
                         Named("a_p") = h_ap, Named("d_d") = h_dd,
                         Named("d_p") = h_dp, Named("p_p") = h_pp);
@@ -86,11 +90,12 @@ List gengamma_hessian_cpp(NumericVector y, NumericVector a, NumericVector d,
 
 // [[Rcpp::export]]
 List gengamma_expected_hessian_cpp(NumericVector y, NumericVector a,
-                                   NumericVector d, NumericVector p) {
+                                   NumericVector d, NumericVector p,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h_aa(n), h_ad(n), h_ap(n), h_dd(n), h_dp(n), h_pp(n);
     bool a_s = (a.size() == 1), d_s = (d.size() == 1), p_s = (p.size() == 1);
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double av = a_s ? a[0] : a[i], dv = d_s ? d[0] : d[i],
                pv = p_s ? p[0] : p[i];
         double k = dv / pv;
@@ -106,7 +111,7 @@ List gengamma_expected_hessian_cpp(NumericVector y, NumericVector a,
         h_dp[i] = psi / p2 + dv * psi1 / p3;
         h_pp[i] = -1.0 / p2 - 2.0 * dv * psi / p3 - dv * dv * psi1 / p4
                 - k * (psiA * psiA + psi1A) / p2;
-    }
+    });
     return List::create(Named("a_a") = h_aa, Named("a_d") = h_ad,
                         Named("a_p") = h_ap, Named("d_d") = h_dd,
                         Named("d_p") = h_dp, Named("p_p") = h_pp);

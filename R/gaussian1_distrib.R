@@ -40,7 +40,7 @@ Gaussian1Distrib <- S7::new_class("Gaussian1Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{gaussian1_distrib}}
-S7::method(distrib_pdf, Gaussian1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Gaussian1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dnorm(
     x = y,
     mean = theta[[1]],

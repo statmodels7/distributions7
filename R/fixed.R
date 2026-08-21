@@ -163,7 +163,7 @@ fixed_full_theta <- function(distrib, theta) {
 # ---------------------------------------------------------------------------
 
 for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
-  S7::method(distrib_pdf, .fixed_cls) <- function(distrib, y, theta, log = FALSE) {
+  S7::method(distrib_pdf, .fixed_cls) <- function(distrib, y, theta, log = FALSE, ...) {
     distrib_pdf(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
       log = log
     )
@@ -377,7 +377,7 @@ rm(.fixed_cls)
 # ---------------------------------------------------------------------------
 
 S7::method(distrib_pdf, FixedMultivariateDistrib) <-
-  function(distrib, y, theta, log = FALSE) {
+  function(distrib, y, theta, log = FALSE, ...) {
     distrib_pdf(distrib@parent_distrib, y, fixed_full_theta(distrib, theta),
                 log = log)
   }

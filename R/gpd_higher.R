@@ -46,13 +46,14 @@ NULL
 #' @param order The derivative order, 1 to 4.
 #' @param cut The value of \eqn{\lvert\xi z\rvert} below which the series
 #'   is used.
+#' @param threads How many threads the series kernel may use.
 #'
 #' @return A named list of component vectors, keyed as
 #'   \code{\link{deriv_names}}.
 #'
 #' @seealso \code{\link{gpd_distrib}}, \code{\link{fdb2}}
 #' @keywords internal
-gpd_components <- function(y, theta, order, cut = 0.2) {
+gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
   sg <- theta[[1]]
   xi <- theta[[2]]
   n <- max(length(y), lengths(theta[1:2]))
@@ -85,23 +86,40 @@ gpd_components <- function(y, theta, order, cut = 0.2) {
     if (a >= 1L) for (i in 0:(a - 1L)) out <- out * (m + i)
     out
   }
+  # Each branch runs on ITS OWN elements. Both used to be evaluated over the
+  # whole vector and subset afterwards, so a sample straddling the cut paid
+  # for both in full -- the arithmetic is elementwise, so subsetting first
+  # returns the same numbers and does a fraction of the work.
+  big_i <- which(!small)
+  small_i <- which(small)
   Wget <- function(a, b) {
     out <- numeric(n)
-    if (any(!small)) {
-      acc <- numeric(n)
+    if (length(big_i)) {
+      xi_i <- xi[big_i]
+      acc <- numeric(length(big_i))
       for (j in 0:b) {
         m <- b - j
-        acc <- acc + choose(b, j) * Lget(a, j) * (-1)^m * factorial(m) / xi^(m + 1L)
+        acc <- acc + choose(b, j) * Lget(a, j)[big_i] * (-1)^m * factorial(m) /
+          xi_i^(m + 1L)
       }
-      out[!small] <- acc[!small]
+      out[big_i] <- acc
     }
-    if (any(small)) {
-      acc <- numeric(n)
-      for (k in b:40L) {
-        acc <- acc + (-1)^k * (factorial(k) / factorial(k - b)) * xi^(k - b) *
-          (-1)^a * rising(k + 1, a) * z^(k + 1) / ((k + 1) * sg^a)
-      }
-      out[small] <- acc[small]
+    if (length(small_i)) {
+      z_i <- z[small_i]
+      u_i <- xi[small_i] * z_i
+      # The two powers the loop used to raise PER ELEMENT are one power:
+      # with u = xi z, xi^(k-b) z^(k+1) = u^(k-b) z^(b+1), so z^(b+1)/sigma^a
+      # leaves the loop entirely and what is left is a POLYNOMIAL IN u whose
+      # coefficients are scalar in k. Evaluating it is a scalar recursion of
+      # forty-one steps per element, which is what gpd_poly_cpp() does by
+      # Horner -- from the highest power down, so a decaying series is summed
+      # smallest-first where the loop this replaces summed largest-first.
+      # |u| < cut on this branch, so the powers decay and cannot overflow.
+      ck <- vapply(b:40L, function(k) {
+        (-1)^k * (factorial(k) / factorial(k - b)) * rising(k + 1, a) / (k + 1)
+      }, 0)
+      pref <- (-1)^a * z_i^(b + 1L) / sg[small_i]^a
+      out[small_i] <- gpd_poly_cpp(u_i, ck, threads) * pref
     }
     out
   }
@@ -144,12 +162,13 @@ S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ...,
+                                                    threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 3L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  gpd_components(y, theta, 3L)
+  gpd_components(y, theta, 3L, threads = threads)
 }
 
 #' @rdname distrib_deriv3.GPDDistrib
@@ -159,10 +178,11 @@ S7::method(distrib_deriv4, GPDDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
                                                     approx = c("integrate", "bartlett", "mc", "opg"),
-                                                    nsim = 10000, ...) {
+                                                    nsim = 10000, ...,
+                                                    threads = 1L) {
   if (expected) {
     return(expected_derivative(distrib, y, theta, order = 4L,
                                approx = match.arg(approx), nsim = nsim))
   }
-  gpd_components(y, theta, 4L)
+  gpd_components(y, theta, 4L, threads = threads)
 }

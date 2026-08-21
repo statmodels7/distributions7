@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order observed derivatives of the Logistic log-density.
@@ -40,13 +41,14 @@ static inline void sigmoid_pair(double z, double& t, double& u) {
 }
 
 // [[Rcpp::export]]
-List logistic_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List logistic_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s3 = s * s * s;
@@ -66,7 +68,7 @@ List logistic_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
         mu_mu_sigma[i] = -(2.0 * g2 + z * g3) / s3;
         mu_sigma_sigma[i] = -(2.0 * g1 + 4.0 * z * g2 + z2 * g3) / s3;
         sigma_sigma_sigma[i] = -(2.0 + 6.0 * z * g1 + 6.0 * z2 * g2 + z3 * g3) / s3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -77,14 +79,15 @@ List logistic_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
 }
 
 // [[Rcpp::export]]
-List logistic_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List logistic_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double s2 = s * s, s4 = s2 * s2;
@@ -107,7 +110,7 @@ List logistic_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma)
         mu_sigma_sigma_sigma[i] = (6.0 * g1 + 18.0 * z * g2 + 9.0 * z2 * g3 + z3 * g4) / s4;
         sigma_sigma_sigma_sigma[i] =
             (6.0 + 24.0 * z * g1 + 36.0 * z2 * g2 + 12.0 * z3 * g3 + z4 * g4) / s4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

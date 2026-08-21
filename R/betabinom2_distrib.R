@@ -101,7 +101,7 @@ betabinom2_derivs <- function(y, a, b, n, order, params) {
 #' @param log Logical; if \code{TRUE}, returns the log-probability.
 #' @return A numeric vector.
 #' @seealso \code{\link{betabinom2_distrib}}
-S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   a <- theta[[1]]
   b <- theta[[2]]
   n <- distrib@size

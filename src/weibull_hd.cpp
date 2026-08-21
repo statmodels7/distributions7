@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Weibull log-density in the gamlss WEI
@@ -25,13 +26,14 @@ static void weibull_gamma_moments(double g[5]) {
 }
 
 // [[Rcpp::export]]
-List weibull_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List weibull_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double m2 = m * m, m3 = m2 * m, s3 = s * s * s;
@@ -42,7 +44,7 @@ List weibull_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) 
         mu_mu_sigma[i] = (1.0 - (1.0 + 2.0 * s) * u - s * (1.0 + s) * L * u) / m2;
         mu_sigma_sigma[i] = L * u * (2.0 + s * L) / m;
         sigma_sigma_sigma[i] = 2.0 / s3 - u * L * L * L;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -53,7 +55,8 @@ List weibull_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector sigma) 
 }
 
 // [[Rcpp::export]]
-List weibull_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List weibull_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
@@ -63,7 +66,7 @@ List weibull_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
 
     // E[u] = 1 and E[u L^k] = Gamma^(k)(2) / sigma^k, since u is standard
     // exponential whatever the parameters and L = log(u)/sigma.
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double m2 = m * m, m3 = m2 * m, s3 = s * s * s;
@@ -72,7 +75,7 @@ List weibull_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
         mu_mu_sigma[i] = (-2.0 * s - (1.0 + s) * g[1]) / m2;
         mu_sigma_sigma[i] = (2.0 * g[1] + g[2]) / (s * m);
         sigma_sigma_sigma[i] = (2.0 - g[3]) / s3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -83,14 +86,15 @@ List weibull_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
 }
 
 // [[Rcpp::export]]
-List weibull_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List weibull_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool sigma_is_scalar = (sigma.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double m2 = m * m, m3 = m2 * m, m4 = m2 * m2, s4 = s * s * s * s;
@@ -105,7 +109,7 @@ List weibull_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) 
                                      + s * (1.0 + s) * L2) / m2;
         mu_sigma_sigma_sigma[i] = L2 * u * (3.0 + s * L) / m;
         sigma_sigma_sigma_sigma[i] = -6.0 / s4 - u * L2 * L2;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
@@ -117,7 +121,8 @@ List weibull_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector sigma) 
 }
 
 // [[Rcpp::export]]
-List weibull_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma) {
+List weibull_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector sigma,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n),
                   mu_sigma_sigma_sigma(n), sigma_sigma_sigma_sigma(n);
@@ -126,7 +131,7 @@ List weibull_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
     double g[5];
     weibull_gamma_moments(g);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double s = sigma_is_scalar ? sigma[0] : sigma[i];
         double m2 = m * m, m3 = m2 * m, m4 = m2 * m2, s2 = s * s, s4 = s2 * s2;
@@ -138,7 +143,7 @@ List weibull_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
                                  + (1.0 + s) * g[2] / s) / m2;
         mu_sigma_sigma_sigma[i] = (3.0 * g[2] + g[3]) / (s2 * m);
         sigma_sigma_sigma_sigma[i] = (-6.0 - g[4]) / s4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,

@@ -2,6 +2,7 @@
 #define DISTRIBUTIONS7_D7_PAR_H
 
 #include <cstddef>
+#include <fenv.h>
 #include <RcppParallel.h>
 
 // The one parallel driver of the per-observation kernels. The decomposition
@@ -21,15 +22,35 @@
 // (piano_parallel.txt, section 3, on why each of the four knobs a first
 // draft had was dropped).
 //
-// The body must not touch the R API: it reads and writes preallocated
-// memory through raw pointers, which is what makes it admissible inside a
-// worker at all. That rule covers Rmath's p/q functions too, and not only
-// allocation: qnbinom's search reaches pbeta, whose warning path calls into
-// the R API, and a warning raised from a worker thread trips R's C-stack
-// check with a garbage stack pointer and kills the process ("C stack usage
-// ... is too close to the limit", then a segfault) -- observed on four of
-// the five CI platforms, 2026-08-19. The digamma family, lgammafn and lbeta
-// on positive arguments never take such a path and are the admissible set.
+// WHAT A BODY MAY CALL. It must not touch the R API: it reads and writes
+// preallocated memory through raw pointers, which is what makes it
+// admissible inside a worker at all. Two classes of Rmath routine are
+// excluded on top of allocation, and they fail differently:
+//
+//   - anything that can raise a WARNING kills the process. A warning from
+//     a worker thread trips R's C-stack check against a foreign stack
+//     pointer ("C stack usage ... is too close to the limit", then a
+//     segfault) -- observed on four of five CI platforms on 2026-08-19
+//     through qnbinom's search reaching pbeta, and reproduced locally on
+//     2026-08-21 with lchoose at a non-integer second argument, which
+//     warns by design. The p/q family, lchoose/choose and the Bessel
+//     functions are all in this class;
+//
+//   - anything whose value is not thread-invariant breaks the bit-identity
+//     the guarantee above promises. Measured locally on 2026-08-21, one
+//     input, 120000 calls: psigamma(x, deriv >= 2) at x = 19 and x = 40
+//     returns two distinct values 1.3 and 0.8 ulp apart, bessel_k 1.1 ulp,
+//     pgamma and pbeta on the log scale 0.5 to 0.8 ulp. Each thread is
+//     self-consistent, so which value an element gets follows the chunk it
+//     lands in and the answer moves between two runs at the SAME count:
+//     gamma1's deriv3 at phi = 1/19 gave six distinct results over six
+//     identical calls before this was fixed.
+//
+// The second class is what fesetenv() below is for, and it is why the
+// admissible set may no longer be stated as "the digamma family": digamma
+// and trigamma are stable and psigamma at higher orders is not, so the set
+// is a measured list and not a family name. Stable at every argument
+// probed: digamma, trigamma, lgammafn, lbeta, pnorm, dbinom, dnbinom_mu.
 namespace d7 {
 
 // operator() is NOINLINE: the sequential branch and TBB's invocation are
@@ -38,17 +59,6 @@ namespace d7 {
 // two binaries. With the loop out of line, both branches execute the one
 // compiled copy; the per-chunk call this costs is nothing against the
 // loop it guards.
-//
-// What even this cannot bind, measured on the Windows CI runner
-// (2026-08-19/20, three independent binaries, the same one-ulp value at
-// the same index every time): a kernel that calls into R's own polygamma
-// per element inherits that runtime's PER-THREAD last bit -- the main
-// thread and a TBB worker disagree by one ulp on some inputs, on that
-// platform's R build only. The decomposition guarantee (no reduction is
-// ever split) holds; the cross-count twin in the tests therefore carries
-// a tolerance of 1e-13, which a split reduction still fails by ten
-// orders, and bit-identity across counts is promised only for arithmetic
-// the kernel computes itself.
 #if defined(__GNUC__) || defined(__clang__)
 #define D7_NOINLINE __attribute__((noinline))
 #elif defined(_MSC_VER)
@@ -57,11 +67,26 @@ namespace d7 {
 #define D7_NOINLINE
 #endif
 
+// The worker carries the CALLING thread's floating-point environment and
+// installs it before running its chunk. The control word alone does not
+// explain the divergence -- fnstcw reads the same 0x037F on the main
+// thread and on a TBB worker -- but restoring the whole environment
+// removes it: with it the parallel branch reproduces the sequential value
+// exactly at every argument probed, where without it psigamma(19, 2)
+// splits 17778 / 182222 over 120000 calls. It costs one fldenv-and-ldmxcsr
+// per CHUNK, not per element, and is unmeasurable against the loop.
+//
+// The environment is captured in the constructor, which runs on the
+// calling thread, and installed at the top of operator(), which the
+// sequential branch also goes through -- there it restores that thread's
+// own environment and is a no-op, so the two branches stay the same code.
 template <typename Body>
 struct BodyWorker : public RcppParallel::Worker {
   const Body& body;
-  explicit BodyWorker(const Body& b) : body(b) {}
+  fenv_t env;
+  explicit BodyWorker(const Body& b) : body(b) { fegetenv(&env); }
   D7_NOINLINE void operator()(std::size_t begin, std::size_t end) {
+    fesetenv(&env);
     for (std::size_t i = begin; i < end; ++i) body(i);
   }
 };
@@ -75,11 +100,20 @@ struct BodyWorker : public RcppParallel::Worker {
 // runner, 2026-08-19, as last-bit differences in the two negbin kernels
 // whose per-element arithmetic wraps R::psigamma calls, where nothing
 // about the decomposition had changed.
+//
+// The count is passed to parallelFor rather than left to the process-level
+// setting. RcppParallel's resolveValue() gives an explicit positive value
+// precedence over RCPP_PARALLEL_NUM_THREADS, so a fit that sized the pool
+// through numericals7::local_threads() is unaffected and a caller that did
+// not gets the count it asked for: before this, `threads = 2` reached
+// parallelFor as -1 and ran on every core the machine has (measured
+// 13.9x against the sequential run on a 24-core machine, the same as
+// `threads = 24`).
 template <typename Body>
 inline void par_for(int n, int threads, int threshold, const Body& body) {
   BodyWorker<Body> w(body);
   if (threads > 1 && n >= threshold) {
-    RcppParallel::parallelFor(0, static_cast<std::size_t>(n), w);
+    RcppParallel::parallelFor(0, static_cast<std::size_t>(n), w, 1, threads);
   } else {
     w(0, static_cast<std::size_t>(n));
   }
@@ -96,9 +130,15 @@ inline void par_for(int n, int threads, int threshold, const Body& body) {
 //     0.77x at 2048, 1.1x at 4096, 1.9x at 16384;
 //   - two-output polynomial bodies (~8 ns/obs, bandwidth-bound): 0.89x at
 //     16384, 1.16x at 32768, 1.5x at 100000.
+//   - and a body cheaper still (~4 ns/obs: the geometric's, whose whole
+//     score is two divisions) does not break even until about 150000, so it
+//     takes a class of its own rather than a threshold picked per family.
+//     Measured on the geometric's gradient: 0.79x at 40000, 1.29x at 200000,
+//     1.58x at 1000000.
 constexpr int kMinCostly = 128;
 constexpr int kMinMid = 8192;
 constexpr int kMinCheap = 32768;
+constexpr int kMinTiny = 131072;
 
 } // namespace d7
 

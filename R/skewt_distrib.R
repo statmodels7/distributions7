@@ -209,7 +209,7 @@ fd5_fourth <- function(f, x, h) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{skewt_distrib}}
-S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   alpha <- theta[[3]]

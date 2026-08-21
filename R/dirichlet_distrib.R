@@ -103,7 +103,7 @@ dir_b_index <- function(idx, k, l) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector, one entry per row of \code{y}.
 #' @seealso \code{\link{dirichlet_distrib}}
-S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- dir_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
   const <- lgamma(p$phi) - sum(lgamma(p$alpha))

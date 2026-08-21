@@ -40,7 +40,7 @@ Lognormal1Distrib <- S7::new_class("Lognormal1Distrib", parent = continuous_dist
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_pdf, Lognormal1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Lognormal1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dlnorm(
     x = y,
     meanlog = theta[[1]],
@@ -127,8 +127,8 @@ S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta) {
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of first derivatives.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  lognormal_gradient_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  lognormal_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Lognormal Analytical Observed Hessian
@@ -142,8 +142,8 @@ S7::method(distrib_gradient, Lognormal1Distrib) <- function(distrib, y, theta, s
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of second derivatives.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
-  lognormal_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ..., threads = 1L) {
+  lognormal_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Lognormal Analytical Expected Hessian
@@ -157,8 +157,8 @@ S7::method(distrib_hessian, Lognormal1Distrib) <- function(distrib, y, theta, sc
 #' @param theta A list containing the parameters \code{mu} and \code{sigma2}.
 #' @return A list containing the vectors of expected second derivatives.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
-  lognormal_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  lognormal_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Lognormal Analytical Third-Order Derivatives
@@ -170,9 +170,9 @@ S7::method(distrib_expected_hessian, Lognormal1Distrib) <- function(distrib, y, 
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) lognormal_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else lognormal_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) lognormal_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else lognormal_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Lognormal Analytical Fourth-Order Derivatives
@@ -184,9 +184,9 @@ S7::method(distrib_deriv3, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{lognormal1_distrib}}
-S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) lognormal_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else lognormal_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) lognormal_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else lognormal_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Lognormal Response Derivatives

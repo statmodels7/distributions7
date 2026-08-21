@@ -40,7 +40,7 @@ Gaussian3Distrib <- S7::new_class("Gaussian3Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector.
 #' @seealso \code{\link{gaussian3_distrib}}
-S7::method(distrib_pdf, Gaussian3Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Gaussian3Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dnorm(y, mean = theta[[1]], sd = 1 / sqrt(theta[[2]]), log = log)
 }
 
@@ -108,8 +108,8 @@ S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta) {
 #' @return A named list of first derivatives.
 #' @seealso \code{\link{gaussian3_distrib}}
 S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
-                                                            scale = c("parameter", "link"), ...) {
-  gaussian3_gradient_cpp(y, theta[[1]], theta[[2]])
+                                                            scale = c("parameter", "link"), ..., threads = 1L) {
+  gaussian3_gradient_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gaussian Analytical Observed Hessian in Mean and Precision
@@ -127,8 +127,8 @@ S7::method(distrib_gradient, Gaussian3Distrib) <- function(distrib, y, theta,
 #' @return A named list of second derivatives.
 #' @seealso \code{\link{gaussian3_distrib}}
 S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
-                                                           scale = c("parameter", "link"), ...) {
-  gaussian3_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                           scale = c("parameter", "link"), ..., threads = 1L) {
+  gaussian3_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gaussian Analytical Expected Hessian in Mean and Precision
@@ -152,8 +152,8 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
-                                                                    nsim = 10000, ...) {
-  gaussian3_expected_hessian_cpp(y, theta[[1]], theta[[2]])
+                                                                    nsim = 10000, ..., threads = 1L) {
+  gaussian3_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gaussian Third-Order Derivatives in Mean and Precision
@@ -174,8 +174,8 @@ S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, t
 S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ...) {
-  gaussian3_deriv3_cpp(y, theta[[1]], theta[[2]])
+                                                          nsim = 10000, ..., threads = 1L) {
+  gaussian3_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gaussian Fourth-Order Derivatives in Mean and Precision
@@ -196,8 +196,8 @@ S7::method(distrib_deriv3, Gaussian3Distrib) <- function(distrib, y, theta, expe
 S7::method(distrib_deriv4, Gaussian3Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
-                                                          nsim = 10000, ...) {
-  gaussian3_deriv4_cpp(y, theta[[1]], theta[[2]])
+                                                          nsim = 10000, ..., threads = 1L) {
+  gaussian3_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Gaussian Response Derivatives in Mean and Precision

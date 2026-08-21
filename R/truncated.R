@@ -495,7 +495,7 @@ trunc_hess_mean <- function(distrib, theta) {
 #' @return A numeric vector.
 #'
 #' @keywords internal
-trunc_pdf <- function(distrib, y, theta, log = FALSE) {
+trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
   Z <- trunc_constants(distrib, theta)$Z
   ld <- distrib_pdf(distrib@parent_distrib, y, theta, log = TRUE) - log(Z)
   outside <- !trunc_inside(distrib, y)

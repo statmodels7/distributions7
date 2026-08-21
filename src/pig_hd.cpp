@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 #include <cstring>
 using namespace Rcpp;
 
@@ -218,10 +219,11 @@ NumericMatrix pig2_hd_jet_cpp(NumericVector y, NumericVector mu,
 
 // [[Rcpp::export]]
 NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
-                          NumericVector sigma) {
+                          NumericVector sigma,
+                          int threads = 1) {
     int n = y.size();
     NumericMatrix out(n, 15);
-    for (int i = 0; i < n; ++i) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double yy = y[i], m = mu[i], sg = sigma[i];
         double c = 1.0 + 2.0 * sg * m;
         double s = std::sqrt(c);
@@ -347,16 +349,17 @@ NumericMatrix pig1_hd_cpp(NumericVector y, NumericVector mu,
         out(i, 12) = G_mmss + P_mmss;
         out(i, 13) = G_msss + P_msss;
         out(i, 14) = G_ssss + 24.0 * g5 + P_ssss;
-    }
+    });
     return out;
 }
 
 // [[Rcpp::export]]
 NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
-                          NumericVector alpha) {
+                          NumericVector alpha,
+                          int threads = 1) {
     int n = y.size();
     NumericMatrix out(n, 15);
-    for (int i = 0; i < n; ++i) {
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
         double yy = y[i], m = mu[i], aa = alpha[i];
 
         // r = sqrt(m^2 + a^2) and its partials
@@ -464,6 +467,6 @@ NumericMatrix pig2_hd_cpp(NumericVector y, NumericVector mu,
         out(i, 12) = P_mmaa;
         out(i, 13) = P_maaa;
         out(i, 14) = 6.0 * yy * ia * ia * ia * ia + p[4] + P_aaaa;
-    }
+    });
     return out;
 }

@@ -114,7 +114,7 @@ EnetDistrib <- S7::new_class("EnetDistrib", parent = continuous_distrib)
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{enet_distrib}}
 S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
-                                                 log = FALSE) {
+                                                 log = FALSE, ...) {
   p <- .enet_parts(theta)
   z <- y - p$mu
   log_z <- base::log(2) - 0.5 * base::log(p$c) + .enet_logM(p$x)

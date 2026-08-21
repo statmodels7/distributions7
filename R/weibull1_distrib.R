@@ -72,7 +72,7 @@ weibull_pieces <- function(y, mu, sigma) {
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{weibull1_distrib}}
-S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dweibull(x = y, shape = theta[[2]], scale = theta[[1]], log = log)
 }
 
@@ -235,9 +235,9 @@ S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, th
 #' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @seealso \code{\link{weibull1_distrib}}
-S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) weibull_deriv3_expected_cpp(y, theta[[1]], theta[[2]])
-  else weibull_deriv3_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) weibull_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else weibull_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Weibull Analytical Fourth-Order Derivatives
@@ -252,9 +252,9 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @seealso \code{\link{weibull1_distrib}}
-S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
-  if (expected) weibull_deriv4_expected_cpp(y, theta[[1]], theta[[2]])
-  else weibull_deriv4_cpp(y, theta[[1]], theta[[2]])
+S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+  if (expected) weibull_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
+  else weibull_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
 }
 
 #' @title Weibull Response Derivative

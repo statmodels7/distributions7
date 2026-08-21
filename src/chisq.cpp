@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Chi-squared in the MEAN parametrization: the mean IS the degrees of
@@ -14,58 +15,66 @@ using namespace Rcpp;
 // E[log y] = psi(mu/2) + log 2 is what makes the score mean zero.
 
 // [[Rcpp::export]]
-List chisq_gradient_cpp(NumericVector y, NumericVector mu) {
+List chisq_gradient_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector g(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
     const double log2 = std::log(2.0);
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         g[i] = 0.5 * (std::log(y[i]) - log2 - R::digamma(0.5 * m));
-    }
+    });
     return List::create(Named("mu") = g);
 }
 
 // [[Rcpp::export]]
-List chisq_hessian_cpp(NumericVector y, NumericVector mu) {
+List chisq_hessian_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector h(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         h[i] = -0.25 * R::trigamma(0.5 * m);
-    }
+    });
     return List::create(Named("mu_mu") = h);
 }
 
 // [[Rcpp::export]]
-List chisq_deriv3_cpp(NumericVector y, NumericVector mu) {
+List chisq_deriv3_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         d[i] = -R::psigamma(0.5 * m, 2) / 8.0;
-    }
+    });
     return List::create(Named("mu_mu_mu") = d);
 }
 
 // [[Rcpp::export]]
-List chisq_deriv4_cpp(NumericVector y, NumericVector mu) {
+List chisq_deriv4_cpp(NumericVector y, NumericVector mu,
+                        int threads = 1) {
     int n = y.size();
     NumericVector d(n);
     bool mu_is_scalar = (mu.size() == 1);
-    double m = mu_is_scalar ? mu[0] : 0.0;
 
-    for (int i = 0; i < n; i++) {
-        if (!mu_is_scalar) m = mu[i];
+    d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        // LOCAL to the region: a scalar hoisted out of the loop and
+        // written inside it is shared once the iterations are split
+        const double m = mu_is_scalar ? mu[0] : mu[i];
         d[i] = -R::psigamma(0.5 * m, 3) / 16.0;
-    }
+    });
     return List::create(Named("mu_mu_mu_mu") = d);
 }

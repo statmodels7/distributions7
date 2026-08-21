@@ -40,7 +40,7 @@ StudentT1Distrib <- S7::new_class("StudentT1Distrib", parent = continuous_distri
 #' @param log Logical; if \code{TRUE}, returns the log-density.
 #' @return A numeric vector of density values.
 #' @seealso \code{\link{student_t1_distrib}}
-S7::method(distrib_pdf, StudentT1Distrib) <- function(distrib, y, theta, log = FALSE) {
+S7::method(distrib_pdf, StudentT1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   val <- stats::dt(
     x = (y - theta[[1]]) / theta[[2]],
     df = theta[[3]],

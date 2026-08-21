@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include "d7_par.h"
 using namespace Rcpp;
 
 // Third/fourth-order derivatives of the Laplace log-density, almost everywhere:
@@ -8,13 +9,14 @@ using namespace Rcpp;
 // params_smooth already records it and the validators guard their references.
 
 // [[Rcpp::export]]
-List laplace_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector b) {
+List laplace_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector b,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool b_is_scalar = (b.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double bb = b_is_scalar ? b[0] : b[i];
         double b3 = bb * bb * bb, b4 = b3 * bb;
@@ -26,7 +28,7 @@ List laplace_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector b) {
         mu_mu_sigma[i] = 0.0;
         mu_sigma_sigma[i] = 2.0 * s / b3;
         sigma_sigma_sigma[i] = -2.0 / b3 + 6.0 * a / b4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -37,21 +39,22 @@ List laplace_deriv3_cpp(NumericVector y, NumericVector mu, NumericVector b) {
 }
 
 // [[Rcpp::export]]
-List laplace_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector b) {
+List laplace_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVector b,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu(n), mu_mu_sigma(n), mu_sigma_sigma(n), sigma_sigma_sigma(n);
     bool b_is_scalar = (b.size() == 1);
 
     // E[s] = 0 and E[a] = b under the model, so only the pure-b component
     // survives: E[l_bbb] = -2/b^3 + 6/b^3 = 4/b^3.
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double bb = b_is_scalar ? b[0] : b[i];
         double b3 = bb * bb * bb;
         mu_mu_mu[i] = 0.0;
         mu_mu_sigma[i] = 0.0;
         mu_sigma_sigma[i] = 0.0;
         sigma_sigma_sigma[i] = 4.0 / b3;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu") = mu_mu_mu,
@@ -62,14 +65,15 @@ List laplace_deriv3_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
 }
 
 // [[Rcpp::export]]
-List laplace_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector b) {
+List laplace_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector b,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n), mu_sigma_sigma_sigma(n),
                   sigma_sigma_sigma_sigma(n);
     bool mu_is_scalar = (mu.size() == 1);
     bool b_is_scalar = (b.size() == 1);
 
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double m = mu_is_scalar ? mu[0] : mu[i];
         double bb = b_is_scalar ? b[0] : b[i];
         double b4 = bb * bb * bb * bb, b5 = b4 * bb;
@@ -82,7 +86,7 @@ List laplace_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector b) {
         mu_mu_sigma_sigma[i] = 0.0;
         mu_sigma_sigma_sigma[i] = -6.0 * s / b4;
         sigma_sigma_sigma_sigma[i] = 6.0 / b4 - 24.0 * a / b5;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
@@ -94,14 +98,15 @@ List laplace_deriv4_cpp(NumericVector y, NumericVector mu, NumericVector b) {
 }
 
 // [[Rcpp::export]]
-List laplace_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector b) {
+List laplace_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVector b,
+                        int threads = 1) {
     int n = y.size();
     NumericVector mu_mu_mu_mu(n), mu_mu_mu_sigma(n), mu_mu_sigma_sigma(n), mu_sigma_sigma_sigma(n),
                   sigma_sigma_sigma_sigma(n);
     bool b_is_scalar = (b.size() == 1);
 
     // E[l_bbbb] = 6/b^4 - 24/b^4 = -18/b^4; every component carrying s is 0.
-    for (int i = 0; i < n; i++) {
+    d7::par_for(n, threads, d7::kMinMid, [&](std::size_t i) {
         double bb = b_is_scalar ? b[0] : b[i];
         double b4 = bb * bb * bb * bb;
         mu_mu_mu_mu[i] = 0.0;
@@ -109,7 +114,7 @@ List laplace_deriv4_expected_cpp(NumericVector y, NumericVector mu, NumericVecto
         mu_mu_sigma_sigma[i] = 0.0;
         mu_sigma_sigma_sigma[i] = 0.0;
         sigma_sigma_sigma_sigma[i] = -18.0 / b4;
-    }
+    });
 
     return List::create(
         Named("mu_mu_mu_mu") = mu_mu_mu_mu,
