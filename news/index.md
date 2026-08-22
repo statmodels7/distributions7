@@ -1,5 +1,153 @@
 # Changelog
 
+## distributions7 0.36.0
+
+- The NB1’s derivatives in its dispersion no longer cancel, and the
+  header of 0.34.0 gains an R twin,
+  [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md),
+  for the orders that live there.
+
+  This is the same Poisson limit the negative binomial of 0.32.0
+  reaches, from the other side: NB1’s size is `r = mu/theta`, so it is
+  `theta -> 0` that makes the family tend to the Poisson, and
+  `psi(y+r) - psi(r)` and `psi'(y+r) - psi'(r)` both vanish there while
+  the chain rule divides them by `theta^2` and `theta^4`. The
+  amplification is what makes it the worst of the set found so far.
+  Measured against the Poisson limit, at `mu` = 4 and `y` = 3, where the
+  score in `theta` is -0.25:
+
+      theta      1e-6        1e-8            1e-10
+      direct   -0.2538     -99.3        +889005
+      now      -0.2500      -0.2500        -0.2500
+
+  a factor of 400 out at 1e-8 and of the wrong sign at 1e-10; the second
+  derivative reads 6.1e+03 where it should be of order one, and the
+  fourth 1.2e+36.
+
+  The two logarithms of the score combine exactly, as the
+  beta-binomial’s did: with `y/r = y theta/mu`,
+
+      log1p(y/r) - log1p(theta) = log1p( theta (y - mu) / (mu (1 + theta)) )
+
+  so none of the leading behaviour is formed and then subtracted, and
+  the trigamma pair goes through `psi_T_rest()` with its own leading
+  term `(y/r)/(y+r)` written out. The expected information sums the
+  DIFFERENCE term by term rather than taking `psi'(r)` off an
+  expectation of `psi'(Y+r)`, the two agreeing to leading order.
+
+  `psi_shift_diff(n, k, x)` gives `psi^(n)(x+k) - psi^(n)(x)` at any
+  order from one expansion, each power differenced as
+  `x^-p (exp(-p log1p(k/x)) - 1)` through `expm1` and `log1p`. Validated
+  against the exact recurrence `(-1)^n n! sum_{j<k} (x+j)^(-n-1)`, which
+  holds because the shift is a count and which shares no arithmetic with
+  the series: **1.1e-16 to 4.4e-16 at every order from 0 to 3 and every
+  argument to 1e12**, where the direct difference is 2.6e-08 out at 1e8
+  and 1.1e-03 at 1e12. At a shift of 500, where the recurrence is dear
+  and the series is not, it is exact to the bit. The expectation is
+  likewise 0 to 2.1e-16 against that recurrence weighted by the mass,
+  against 1.2e-08 for the difference of sums.
+
+  The score, the observed Hessian and their higher orders reproduce the
+  forms they replace to 2e-16 wherever those forms still hold, and every
+  order agrees with `numDeriv` on the log-mass.
+
+- ⚠️ **Two things this does NOT repair, both measured and both left
+  standing rather than described away.**
+
+  The expected information’s `theta` block is a cancellation of some
+  thirteen digits among three terms of size `mu/theta^2`, which no
+  accuracy in the expectation can close: with `E[P_r]` exact to 1.6e-16
+  the matrix is still indefinite from `theta` = 1e-6, its determinant
+  reading -52.6 there and 6.6e+04 at 1e-7 while the `mu` block stays
+  exact (0.2499997 against 0.25). It is the same shape already recorded
+  for the negative binomial and the multivariate t: those expectations
+  cancel one order deeper than the score, and closing them needs the
+  composition written out symbolically rather than a better summand.
+
+  The score in `theta` itself reaches the Poisson limit to five digits
+  over the whole range and no further: its approach is `O(theta)` down
+  to about 1e-6 and then meets a floor that RISES again, 8e-08, 1.2e-07,
+  7.6e-06 and 1.9e-03 at 1e-6 to 1e-12. The chain is
+  `P (-mu/theta^2) + Q`, two terms of size 1e+10 at `theta` = 1e-10
+  summing to 0.25, so a `P` exact to the last bit still leaves 1e-06;
+  closing it means combining the two symbolically, as the two logarithms
+  inside `P` already are. Against a factor of 400 and a wrong sign, five
+  digits is the improvement, and the test asserts exactly that rather
+  than more.
+
+  The third and fourth derivatives carry a SECOND cancellation, in
+  [`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md),
+  where terms of size `r^j G^(a+j)(r)` – of order 8e+06 at `theta` =
+  5e-4 – sum to a value of order one.
+  [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md)
+  makes each `G` exact and leaves that sum where it was: old and new
+  agree to the printed digit down to `theta` = 0.05 and diverge from
+  each other below it, with neither trustworthy. ⚠️ The reference is no
+  help there and says so: a central difference of the analytic Hessian
+  at `theta` = 5e-4 returns 2.98023224e-01, which is exactly
+  `1e7 * 2^-25`, i.e. one ulp of the quantity being differenced.
+
+## distributions7 0.35.0
+
+- The gamma’s derivatives in its dispersion no longer cancel, and the
+  four quantities the repair needs join the shared `src/psi_diff.h`.
+
+  As the dispersion goes to zero the shape `s = 1/phi` grows and the
+  family tends to a normal, so every derivative in `phi` is a polygamma
+  minus its own leading asymptote:
+
+      f1 = log(s) + 1 - psi(s) + log(z) - z      f2 =  1/s   - psi'(s)
+      f3 = -1/s^2 - psi''(s)                     f4 =  2/s^3 - psi'''(s)
+
+  each of which loses its digits as `s` grows. The score is the clearest
+  case: at `y = mu` the data term is exactly zero and the score is
+  `-[log(s) - psi(s)]/phi^2`, whose direct form is 1.3e-09 out at `phi`
+  = 1e-6, 1.8e-05 at 1e-10, 0.2 per cent at 1e-12 and reads **exactly
+  zero** at 1e-14, where the value is -5e+13. Rewritten it tracks the
+  asymptote to between 0 and 2.3e-16 over that whole range.
+
+  ⚠️ Unlike the negative binomial and the beta-binomial, whose limits an
+  ordinary fit reaches, this one is prophylactic and is written as such:
+  a gamma fit at a dispersion of 1e-4 reaches `s` = 1.0e+04, where the
+  loss is 1e-11, and reaching 1e+08 would take a coefficient of
+  variation of 1e-4. That is a degenerate fit, which is precisely when
+  its derivatives should not be noise.
+
+  `f1` splits into two cancelling pairs rather than one, the second
+  being `1 + log(z) - z = log1p(w) - w` with `w = z - 1`, which is the
+  `psi_Ew()` the negative binomial already carries. The crossover is 50
+  for all four, measured: the series sits within 5.4e-15, 7.5e-14,
+  3.7e-13 and 1.2e-12 there and the direct forms still have every digit.
+
+  The scalar C entry point of the score-driven fast route moved with the
+  kernel, the two being held to
+  [`identical()`](https://rdrr.io/r/base/identical.html) by their twin
+  test.
+
+  Validated against the form it replaces where that still holds (0 to
+  7.7e-16 on both components), against `numDeriv` on the log-density at
+  every order (2.5e-12 to 4.4e-10), and against a difference of the
+  Hessian at the third order (3.7e-10); and the orders above the score
+  come back as exact powers of the dispersion, finite and correctly
+  signed, to `s` = 1e15.
+
+- `tests/testthat/test-boundary-cancellation.R` pins all five families
+  repaired since 0.31.0 – the gamma, the negative binomial, the
+  beta-binomial, the Student t and the multivariate t – at the boundary
+  each one tends to. Every case asserts two things, and the second is
+  what keeps the first honest: the shipped derivative tracks the limit,
+  and the form it replaced does **not**, so reverting to a direct
+  expression fails the test rather than passing it silently.
+
+  ⚠️ Writing it corrected the record of 0.34.0. The measurements quoted
+  there are the compiled `betabinom1`’s, which the release did repair –
+  its score converges on the binomial’s `(y - n mu)/(mu(1-mu))` where
+  the direct chain is 4.0e-08 out at `sigma` = 1e-8 and 3.6e-04 at
+  1e-12. The parametrization by the shapes, `betabinom2`, computes the
+  same differences in R and was **not** touched; it cedes later, by 2.3
+  per cent at a concentration of 1e+14, and is recorded here rather than
+  left to be found.
+
 ## distributions7 0.34.0
 
 - The beta-binomial’s shape derivatives no longer cancel, and the three

@@ -3399,6 +3399,9 @@ divergent density.
 - [`print_check_table()`](https://statmodels7.github.io/distributions7/reference/print_check_table.md)
   : Print a Validation Table
 
+- [`psi_shift_diff()`](https://statmodels7.github.io/distributions7/reference/psi_shift_diff.md)
+  : Differences of a Polygamma at an Integer Shift
+
 - [`quad_rows()`](https://statmodels7.github.io/distributions7/reference/quad_rows.md)
   : Batched Quadrature with Rejection
 
