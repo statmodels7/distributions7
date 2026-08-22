@@ -219,3 +219,43 @@ test_that("the multivariate t's nu derivatives survive the gaussian limit", {
     expect_lt(h, 0)
   }
 })
+
+test_that("the Student t's third derivatives survive its own chart", {
+  ## Every component divided by D^3 with D = nu sigma^2 + r^2, and D^3
+  ## overflows at D = 5.6e+102 while the log link reaches 1.8e+308: at a nu
+  ## the family's own chart can produce the whole surface came back NaN,
+  ## which is where statmodels7's exact outer gradient reads. 0.31.0 made
+  ## the score and the observed Hessian finite there and did not reach
+  ## orders three and four.
+  d <- student_t1_distrib()
+  y <- c(-2.3, -0.4, 0, 0.7, 3.1)
+  m <- 0.2
+  s <- 1
+  for (nu in c(1e50, 1e150, 1e300, .Machine$double.xmax)) {
+    th <- list(mu = rep(m, length(y)), sigma = rep(s, length(y)),
+               nu = rep(nu, length(y)))
+    v <- distrib_deriv3(d, y, th)
+    expect_true(all(vapply(v, function(q) all(is.finite(q)), logical(1))),
+                info = paste("nu =", nu))
+  }
+
+  ## and it converges on its own closed limit, which shares no arithmetic
+  ## with the kernel: nu_nu_nu -> 1.5 (1 + 2 z^2 - z^4) / nu^4
+  z2 <- ((m - y) / s)^2
+  lim <- sum(1.5 * (1 + 2 * z2 - z2^2))
+  prev <- Inf
+  for (nu in c(1e6, 1e8, 1e10)) {
+    th <- list(mu = rep(m, length(y)), sigma = rep(s, length(y)),
+               nu = rep(nu, length(y)))
+    got <- sum(distrib_deriv3(d, y, th)[["nu_nu_nu"]])
+    e <- abs(got - lim / nu^4) / abs(lim / nu^4)
+    expect_lt(e, 1e-3)
+    expect_lt(e, prev)          # and it converges, as 1/nu
+    prev <- e
+  }
+
+  ## the form it replaces cannot: D^3 is already infinite there
+  Dcube <- function(nu, s, r) (nu * s^2 + r^2)^3
+  expect_true(is.finite(Dcube(1e50, 1, 1)))
+  expect_false(is.finite(Dcube(1e150, 1, 1)))
+})

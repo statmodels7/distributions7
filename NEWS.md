@@ -1,3 +1,76 @@
+# distributions7 0.37.0
+
+* The Student t's THIRD derivatives survive the `nu` its own chart can
+  produce. Every component divided by \eqn{D^3} with
+  \eqn{D = \nu\sigma^2 + r^2}, and \eqn{D^3} overflows at
+  \eqn{D = 5.6\times10^{102}} while the log link reaches
+  \eqn{1.8\times10^{308}}: over `nu` at `sigma` = 1, three of the ten were
+  non-finite at 1e150, four at 1e300 and **eight at `double.xmax`**, ten of
+  ten on the link scale.
+
+  ⚠️ 0.31.0 made the score and the observed Hessian finite there by the same
+  rewrite and did not reach orders three and four -- the shape this file
+  records as *when a defect is a shape of mistake, grep for the shape* --
+  and orders three and four are exactly what statmodels7's exact outer
+  gradient reads, so a fit whose `nu` had gone to its clamp could not be
+  certified.
+
+  The substitution is the one that removes \eqn{D}: with \eqn{z = r/\sigma},
+  \eqn{u = z^2/\nu}, \eqn{t = 1/(1+u) = \nu\sigma^2/D} and
+  \eqn{a = 1 + 1/\nu}, every \eqn{D^{-k}} carries a \eqn{(\nu\sigma^2)^k}
+  the numerator supplies, and what is left is a bounded function of
+  \eqn{(z, u, t)} over a power of \eqn{\sigma}. **Nine of the ten are exact
+  algebra**, with no series and so no crossover to calibrate. The two
+  carrying a real cancellation are written out:
+
+  ```
+  sigma^3 l_sss = 2nu - 2(1+nu) t^3 (1 - 3u)            -> -2
+                = -2 + 2 z^2 a (6 + 3u + u^2) t^3       exactly,
+      from  1 - t^3(1 - 3u) = u(6 + 3u + u^2) t^3
+  ```
+
+  and the rational part of `l_nununu`, whose bracket
+  \eqn{-4(1 + 2t^3 - 3t^2)} factorizes as \eqn{-4(t-1)^2(2t+1)} with
+  \eqn{t - 1 = -ut}, leaving
+  \eqn{-4z^4t^2(2t+1)/\nu^4 - 8t^3/\nu^3}. Its polygamma pair needs the only
+  series here: from the duplication twice differentiated,
+  \eqn{\psi''(z+\tfrac12) = 8\psi''(2z) - \psi''(z)}, so
+
+  ```
+  psi''((nu+1)/2) - psi''(nu/2) = 8/nu^3 + 12/nu^4 - 20/nu^6 + 84/nu^8
+  ```
+
+  the two Bernoulli expansions cancelling term by term at \eqn{\nu^{-2}}.
+  `t_T3rest()` carries the \eqn{8/\nu^3} inside, as `t_S()` carries its own
+  \eqn{2/\nu^2}, because the only consumer pairs it with a term that cancels
+  precisely that.
+
+  Validated four ways, three of them independent of the rewrite:
+  against the form it replaces where that still holds (7.7e-16 to 2.2e-15
+  up to `nu` = 30); against a central difference of the ANALYTIC Hessian
+  over all ten components and `nu` from 2.5 to 1e4 (5.5e-10 to 1.4e-07);
+  against the closed limit \eqn{1.5(1 + 2z^2 - z^4)/\nu^4}, which the
+  kernel converges onto as \eqn{1/\nu} -- 2.4e-04, 2.4e-05, 2.4e-07,
+  2.4e-09, **2.4e-11** at `nu` from 1e5 to 1e12; and by being finite on the
+  parameter scale at every `nu` to `double.xmax`.
+
+  ⚠️ My own asymptote was wrong twice before it was right, and the code was
+  right both times: the first draft dropped the \eqn{24z^2/\nu^4} that
+  \eqn{8\nu^{-3}(1-t^3)} contributes, and the second was a mis-summed hand
+  arithmetic. Computing the coefficient rather than writing it out settles
+  it in one line.
+
+* ⚠️ **What this does NOT repair: the chain to the LINK scale.** On the
+  parameter scale the third derivatives are now finite at every `nu`; on
+  the link scale `nu_nu_nu` is still non-finite at 1e150 and
+  `mu_nu_nu`, `sigma_nu_nu`, `nu_nu_nu` at 1e300 and above, because
+  `to_link_scale()` forms \eqn{(h')^k} with \eqn{h' = \nu} against a
+  component of order \eqn{\nu^{-k}}. That is the item already recorded for
+  the gaussian's second order at `sigma` = 1.3e154, and closing it means
+  restructuring `bell_partial()` to multiply the parameter-scale component
+  in first -- the hottest shared path in the package. The FOURTH
+  derivatives are untouched here and cede from 1e150 as before.
+
 # distributions7 0.36.0
 
 * The NB1's derivatives in its dispersion no longer cancel, and the header
