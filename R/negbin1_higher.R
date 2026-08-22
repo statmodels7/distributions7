@@ -50,10 +50,11 @@ negbin1_components <- function(y, theta, order) {
   r <- mu / th
   om <- 1 + th
 
-  # G^(m)(r), m = 1..4
-  Gd <- lapply(1:4, function(m) {
-    if (m == 1L) digamma(y + r) - digamma(r) else psigamma(y + r, m - 1L) - psigamma(r, m - 1L)
-  })
+  # G^(m)(r), m = 1..4.  Each is a polygamma differenced at the shift y,
+  # which is a COUNT: as theta goes to zero the family tends to the Poisson,
+  # r = mu/theta runs away and the two terms agree to leading order, while
+  # the consumers below divide by theta^(a+b).  See psi_shift_diff().
+  Gd <- lapply(1:4, function(m) psi_shift_diff(m - 1L, y, r))
 
   # B(theta) = -log(1 + theta) and its derivatives
   Bd <- function(m) {

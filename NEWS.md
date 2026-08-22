@@ -1,3 +1,89 @@
+# distributions7 0.36.0
+
+* The NB1's derivatives in its dispersion no longer cancel, and the header
+  of 0.34.0 gains an R twin, `psi_shift_diff()`, for the orders that live
+  there.
+
+  This is the same Poisson limit the negative binomial of 0.32.0 reaches,
+  from the other side: NB1's size is `r = mu/theta`, so it is `theta -> 0`
+  that makes the family tend to the Poisson, and `psi(y+r) - psi(r)` and
+  `psi'(y+r) - psi'(r)` both vanish there while the chain rule divides them
+  by `theta^2` and `theta^4`.  The amplification is what makes it the worst
+  of the set found so far.  Measured against the Poisson limit, at
+  `mu` = 4 and `y` = 3, where the score in `theta` is -0.25:
+
+  ```
+  theta      1e-6        1e-8            1e-10
+  direct   -0.2538     -99.3        +889005
+  now      -0.2500      -0.2500        -0.2500
+  ```
+
+  a factor of 400 out at 1e-8 and of the wrong sign at 1e-10; the second
+  derivative reads 6.1e+03 where it should be of order one, and the fourth
+  1.2e+36.
+
+  The two logarithms of the score combine exactly, as the beta-binomial's
+  did: with `y/r = y theta/mu`,
+
+  ```
+  log1p(y/r) - log1p(theta) = log1p( theta (y - mu) / (mu (1 + theta)) )
+  ```
+
+  so none of the leading behaviour is formed and then subtracted, and the
+  trigamma pair goes through `psi_T_rest()` with its own leading term
+  `(y/r)/(y+r)` written out.  The expected information sums the DIFFERENCE
+  term by term rather than taking `psi'(r)` off an expectation of
+  `psi'(Y+r)`, the two agreeing to leading order.
+
+  `psi_shift_diff(n, k, x)` gives `psi^(n)(x+k) - psi^(n)(x)` at any order
+  from one expansion, each power differenced as
+  `x^-p (exp(-p log1p(k/x)) - 1)` through `expm1` and `log1p`.  Validated
+  against the exact recurrence `(-1)^n n! sum_{j<k} (x+j)^(-n-1)`, which
+  holds because the shift is a count and which shares no arithmetic with
+  the series: **1.1e-16 to 4.4e-16 at every order from 0 to 3 and every
+  argument to 1e12**, where the direct difference is 2.6e-08 out at 1e8 and
+  1.1e-03 at 1e12.  At a shift of 500, where the recurrence is dear and the
+  series is not, it is exact to the bit.  The expectation is likewise 0 to
+  2.1e-16 against that recurrence weighted by the mass, against 1.2e-08 for
+  the difference of sums.
+
+  The score, the observed Hessian and their higher orders reproduce the
+  forms they replace to 2e-16 wherever those forms still hold, and every
+  order agrees with `numDeriv` on the log-mass.
+
+* ⚠️ **Two things this does NOT repair, both measured and both left
+  standing rather than described away.**
+
+  The expected information's `theta` block is a cancellation of some
+  thirteen digits among three terms of size `mu/theta^2`, which no accuracy
+  in the expectation can close: with `E[P_r]` exact to 1.6e-16 the matrix
+  is still indefinite from `theta` = 1e-6, its determinant reading -52.6
+  there and 6.6e+04 at 1e-7 while the `mu` block stays exact
+  (0.2499997 against 0.25).  It is the same shape already recorded for the
+  negative binomial and the multivariate t: those expectations cancel one
+  order deeper than the score, and closing them needs the composition
+  written out symbolically rather than a better summand.
+
+  The score in `theta` itself reaches the Poisson limit to five digits over
+  the whole range and no further: its approach is `O(theta)` down to about
+  1e-6 and then meets a floor that RISES again, 8e-08, 1.2e-07, 7.6e-06 and
+  1.9e-03 at 1e-6 to 1e-12.  The chain is `P (-mu/theta^2) + Q`, two terms
+  of size 1e+10 at `theta` = 1e-10 summing to 0.25, so a `P` exact to the
+  last bit still leaves 1e-06; closing it means combining the two
+  symbolically, as the two logarithms inside `P` already are.  Against a
+  factor of 400 and a wrong sign, five digits is the improvement, and the
+  test asserts exactly that rather than more.
+
+  The third and fourth derivatives carry a SECOND cancellation, in
+  `negbin1_components()`, where terms of size `r^j G^(a+j)(r)` -- of order
+  8e+06 at `theta` = 5e-4 -- sum to a value of order one.  `psi_shift_diff()`
+  makes each `G` exact and leaves that sum where it was: old and new agree
+  to the printed digit down to `theta` = 0.05 and diverge from each other
+  below it, with neither trustworthy.  ⚠️ The reference is no help there
+  and says so: a central difference of the analytic Hessian at
+  `theta` = 5e-4 returns 2.98023224e-01, which is exactly `1e7 * 2^-25`,
+  i.e. one ulp of the quantity being differenced.
+
 # distributions7 0.35.0
 
 * The gamma's derivatives in its dispersion no longer cancel, and the four

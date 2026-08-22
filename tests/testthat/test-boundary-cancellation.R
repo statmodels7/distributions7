@@ -70,6 +70,85 @@ test_that("the negative binomial's dispersion score survives the Poisson limit",
   }
 })
 
+test_that("psi_shift_diff matches the exact recurrence at every order", {
+  ## For an INTEGER shift the difference is a one-signed sum,
+  ##   psi^(n)(x+k) - psi^(n)(x) = (-1)^n n! sum_{j<k} 1/(x+j)^(n+1),
+  ## which cannot cancel and shares no arithmetic with the asymptotic series.
+  exact <- function(n, k, x) {
+    if (k == 0) return(0)
+    (-1)^n * factorial(n) * sum(1 / (x + 0:(k - 1))^(n + 1))
+  }
+  direct <- function(n, k, x) {
+    if (n == 0L) digamma(x + k) - digamma(x) else psigamma(x + k, n) - psigamma(x, n)
+  }
+  for (n in 0:3) {
+    for (x in c(1e2, 1e6, 1e10, 1e12)) {
+      ex <- exact(n, 3, x)
+      expect_equal(psi_shift_diff(n, 3, x), ex, tolerance = 1e-14)
+    }
+    ## and the direct form does not, from about x = 1e8 upward
+    expect_gt(abs(direct(n, 3, 1e12) - exact(n, 3, 1e12)) / abs(exact(n, 3, 1e12)),
+              1e-5)
+  }
+  ## a large shift, where the recurrence is dear and the series is not
+  for (n in c(0L, 1L)) {
+    expect_equal(psi_shift_diff(n, 500, 1e9), exact(n, 500, 1e9),
+                 tolerance = 1e-14)
+  }
+  ## zero at a zero shift, by either branch
+  expect_identical(psi_shift_diff(0L, 0, 3), 0)
+  expect_identical(psi_shift_diff(2L, 0, 1e6), 0)
+  ## and it is vectorized in both arguments
+  expect_equal(psi_shift_diff(1L, c(1, 2, 3), 1e6),
+               vapply(1:3, function(k) exact(1L, k, 1e6), numeric(1)),
+               tolerance = 1e-14)
+})
+
+test_that("NB1's dispersion derivatives survive the Poisson limit", {
+  ## Here the limit is theta -> 0, where the size r = mu/theta runs away.
+  d <- negbin1_distrib()
+  y <- 3
+  mu <- 4
+  lim_mu <- y / mu - 1
+  lim_th <- ((y - mu)^2 - y) / (2 * mu)
+  ## In the mean the approach is O(theta), which is a stronger statement
+  ## than any fixed tolerance: measured 1.2e-04, 1.2e-06, 1.2e-08, 1.4e-10.
+  ##
+  ## In the dispersion it is O(theta) only down to about 1e-6 and then meets
+  ## a floor that RISES again -- 8e-08, 1.2e-07, 7.6e-06, 1.9e-03 at 1e-6 to
+  ## 1e-12 -- because the score is P * (-mu/theta^2) + Q, two terms of size
+  ## 1e+10 at theta = 1e-10 summing to 0.25.  No accuracy in P closes that;
+  ## it would need the two combined symbolically, as the two logarithms
+  ## inside P already are.  What is asserted is what holds: five digits over
+  ## the whole range, where the direct form is out by a factor of 400 at
+  ## theta = 1e-8 and of the wrong sign at 1e-10.
+  for (th in c(1e-4, 1e-6, 1e-8, 1e-10)) {
+    g <- distrib_gradient(d, y, list(mu = mu, theta = th))
+    expect_true(is.finite(g[["mu"]]) && is.finite(g[["theta"]]))
+    expect_lt(abs(g[["mu"]] - lim_mu) / abs(lim_mu), 20 * th)
+    expect_lt(abs(g[["theta"]] - lim_th) / abs(lim_th), 1e-5)
+  }
+  ## Written directly the score in theta is a factor of 400 out at
+  ## theta = 1e-8 and of the WRONG SIGN at 1e-10.
+  direct_th <- function(th) {
+    r <- mu / th
+    om <- 1 + th
+    P <- digamma(y + r) - digamma(r) - log(om)
+    Q <- -r / om + y / th - y / om
+    P * (-mu / th^2) + Q
+  }
+  expect_gt(abs(direct_th(1e-8) - lim_th) / abs(lim_th), 10)
+  expect_lt(direct_th(1e-10) * lim_th, 0)
+
+  ## the observed Hessian keeps its sign and its Poisson limit, -1/mu
+  ## in the mean, at every theta above
+  for (th in c(1e-4, 1e-8, 1e-12)) {
+    h <- distrib_hessian(d, y, list(mu = mu, theta = th))
+    expect_true(all(vapply(h, is.finite, logical(1))))
+    expect_lt(abs(h[["mu_mu"]] + y / mu^2) / (y / mu^2), 20 * th)
+  }
+})
+
 test_that("the beta-binomial's score survives the binomial limit", {
   ## betabinom1 is (mu, sigma) with alpha = mu/sigma and beta = (1-mu)/sigma,
   ## so the concentration is S = 1/sigma and the binomial limit is sigma -> 0,

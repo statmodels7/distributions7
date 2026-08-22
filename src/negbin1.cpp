@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "psi_diff.h"
 using namespace Rcpp;
 
 // Negative binomial with a variance LINEAR in the mean: Var(Y) = mu (1 + theta),
@@ -27,9 +28,17 @@ struct NB1parts {
 static inline NB1parts nb1_parts(double y, double mu, double th) {
     NB1parts z;
     double r = mu / th, om = 1.0 + th;
-    z.P   = R::digamma(y + r) - R::digamma(r) - std::log(om);
+    // P and Pr both vanish at the Poisson limit theta -> 0, where r runs
+    // away, and the consumers below divide them by theta^2 and theta^4.
+    // Written directly the score is 1.5 per cent out at theta = 1e-6, a
+    // factor of 400 out at 1e-8 and of the WRONG SIGN at 1e-10.
+    //
+    // For P the two logarithms combine exactly: with y/r = y theta/mu,
+    //   log1p(y/r) - log1p(theta) = log1p( theta (y - mu) / (mu (1 + th)) ),
+    // so nothing of the leading behaviour is formed and then subtracted.
+    z.P   = d7::psi_A_rest(y, r) + std::log1p(th * (y - mu) / (mu * om));
     z.Q   = -r / om + y / th - y / om;
-    z.Pr  = R::trigamma(y + r) - R::trigamma(r);
+    z.Pr  = d7::psi_T_rest(y, r) - (y / r) / (y + r);
     z.Pth = -1.0 / om;
     z.Qth = r / (om * om) - y / (th * th) + y / (om * om);
     z.rm  = 1.0 / th;
@@ -39,20 +48,26 @@ static inline NB1parts nb1_parts(double y, double mu, double th) {
     return z;
 }
 
-// E[psi'(Y + r)] under the family itself, by summing the mass to a far-tail
-// quantile. The same device the NB2 kernel uses: there is no closed form, and
-// a series against an exact mass is better than a quadrature.
-static double nb1_E_trigamma(double mu, double th) {
+// E[psi'(Y + r) - psi'(r)] under the family itself, by summing the mass to a
+// far-tail quantile. The same device the NB2 kernel uses: there is no closed
+// form, and a series against an exact mass is better than a quadrature.
+//
+// It is the DIFFERENCE that is summed, term by term, and not the expectation
+// of psi'(Y + r) with psi'(r) taken off at the end: the two agree to leading
+// order as r runs away, so subtracting after summing loses the answer where
+// subtracting inside the sum costs nothing.
+static double nb1_E_Pr(double mu, double th) {
     double r = mu / th, prob = 1.0 / (1.0 + th);
     double kq = R::qnbinom(1.0 - 1e-12, r, prob, 1, 0);
     int kmax = (int) std::max(100.0, kq) + 1;
     double s = 0.0, cum = 0.0;
     for (int k = 0; k <= kmax; ++k) {
-        double pk = R::dnbinom(k, r, prob, 0);
-        s += R::trigamma(k + r) * pk;
+        double kd = (double) k;
+        double pk = R::dnbinom(kd, r, prob, 0);
+        s += (d7::psi_T_rest(kd, r) - (kd / r) / (kd + r)) * pk;
         cum += pk;
     }
-    return (cum > 0) ? s / cum : R::trigamma(r);
+    return (cum > 0) ? s / cum : 0.0;   // the difference at k = 0 is zero
 }
 
 // [[Rcpp::export]]
@@ -127,7 +142,7 @@ List negbin1_expected_hessian_cpp(NumericVector y, NumericVector mu,
         double t = th_s ? theta[0] : theta[i];
         if (m != last_m || t != last_t) {
             double r = m / t, om = 1.0 + t;
-            double EPr = nb1_E_trigamma(m, t) - R::trigamma(r);
+            double EPr = nb1_E_Pr(m, t);
             double rm = 1.0 / t, rt = -m / (t * t), rtt = 2.0 * m / (t * t * t);
             double Pth = -1.0 / om;
             double EQth = r / (om * om) - m / (t * t) + m / (om * om);
