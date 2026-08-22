@@ -488,13 +488,25 @@ fit_distrib <- function(distrib, y, start = NULL,
   }
 
   # How the run stops and how long it may take are properties of the method,
-  # so they are read off the method and nowhere else. Whatever the caller did
-  # not set stays at the optimizer's own default, which is the only place the
-  # constant is written down: a copy of it here would keep its old value the
-  # day the default moved. The objective the rule sees is the mean negative
+  # so they are read off the method and nowhere else. A budget the caller did
+  # not set stays at the optimizer's own, which is the only place that constant
+  # is written down. The objective the rule sees is the mean negative
   # log-likelihood, so a tolerance on its gradient is a tolerance on the score
   # per observation without the rule having to know n.
-  opt_args <- list()
+  #
+  # ⚠️ THE RULE IS NAMED HERE AND THE CONSTANT IS NOT. From optimizers7 0.6.0
+  # the gradient methods default to a disjunction that also stops on a stalled
+  # objective, and this function cannot use it: the loop below reads
+  # `converged` as the signal to try another start and to fall back to BFGS,
+  # so a rule that reports success at a stall turns a multi-start search into a
+  # single-start one that keeps the stall. Measured on
+  # folded(gaussian1_distrib()) at n = 3000 with mu = 1.2, sigma = 2: under the
+  # wider rule Fisher scoring reports convergence after 141 iterations at a
+  # score of 0.57, with mu = 0.103 and sigma = 3.572 and a log-likelihood 413
+  # units below what the same call reaches under this one. A maximum likelihood
+  # fit promises a stationary point, so it asks for the rule that tests one;
+  # `crit_grad()` carries no number, and its tolerance stays optimizers7's.
+  opt_args <- list(criterion = optimizers7::crit_grad())
   if (!is.null(fs)) {
     if (!is.null(fs@criterion)) opt_args$criterion <- fs@criterion
     if (!is.null(fs@maxit)) opt_args$maxit <- fs@maxit
