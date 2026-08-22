@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "psi_diff.h"
 using namespace Rcpp;
 
 // THE DISPERSION AT LARGE theta.
@@ -43,49 +44,8 @@ using namespace Rcpp;
 // than is written above, the theta^-3 term vanishing under expectation, so it
 // is a derivation of its own rather than a transcription of these.
 
-// psi(theta+y) - psi(theta) - log1p(y/theta), the score's first bracket.
-// From psi(x) = log x - 1/(2x) - 1/(12x^2) + 1/(120x^4) - ..., every
-// difference written so that no power of theta is formed on its own:
-//   = y/(2ab) + y(2a+y)/(12 a^2 b^2) - y(2a+y)(a^2+b^2)/(120 a^4 b^4) + ...
-inline double nb_A_rest(double y, double th) {
-    if (th >= 100.0) {
-        const double a = th, b = th + y;
-        // p and q WITHOUT forming a*b, which overflows past theta = 1.3e154
-        // and then (2a+y)/(a b) is Inf/Inf = NaN at the theta the log link
-        // clamps to: (2a+y)/(ab) is 2/b + y/(ab)
-        const double p = (y / a) / b;
-        const double q = 2.0 / b + p;
-        const double ia2 = 1.0 / (a * a), ib2 = 1.0 / (b * b);
-        return p * (0.5 + q * (1.0 / 12.0 - (ia2 + ib2) / 120.0));
-    }
-    return R::digamma(y + th) - R::digamma(th) - std::log1p(y / th);
-}
-
-// log1p(w) - w = -w^2/2 + w^3/3 - w^4/4 + w^5/5 - ...
-inline double nb_Ew(double w) {
-    if (std::fabs(w) < 1e-3) {
-        return w * w * (-0.5 + w * (1.0 / 3.0 + w * (-0.25 + w * 0.2)));
-    }
-    return std::log1p(w) - w;
-}
-
-// psi'(theta+y) - psi'(theta) + y/(theta(theta+y)), the Hessian's remainder.
-// From psi'(x) = 1/x + 1/(2x^2) + 1/(6x^3) - 1/(30x^5) + ...:
-//   = -y(2a+y)/(2 a^2 b^2) - y(a^2+ab+b^2)/(6 a^3 b^3)
-//     + y(a^4+a^3b+a^2b^2+ab^3+b^4)/(30 a^5 b^5) - ...
-inline double nb_T_rest(double y, double th) {
-    if (th >= 100.0) {
-        const double a = th, b = th + y;
-        const double p = (y / a) / b;   // see nb_A_rest for why not y/(a*b)
-        const double q = 2.0 / b + p;
-        const double ia = 1.0 / a, ib = 1.0 / b;
-        const double s2 = ia * ia + ia * ib + ib * ib;
-        const double s4 = ia * ia * ia * ia + ia * ia * ia * ib +
-            ia * ia * ib * ib + ia * ib * ib * ib + ib * ib * ib * ib;
-        return -p * (q * 0.5 + s2 / 6.0 - s4 / 30.0);
-    }
-    return R::trigamma(y + th) - R::trigamma(th) + y / (th * (th + y));
-}
+// The three quantities the rewrite needs live in psi_diff.h, shared with
+// the beta-binomial, which has the identical shape one family over.
 
 // E[trigamma(Y + theta)] for Y ~ NB2(mu, theta), needed by the expected hessian.
 // Sums trigamma(k + theta) * P(Y = k) through the pmf recurrence
@@ -169,8 +129,8 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
         grad_mu[i] = (th / th_plus_mu) * (y[i] / m - 1.0);
         // the two brackets of the rewrite, each cancellation performed
         // symbolically: see the note at the head of this file
-        grad_theta[i] = nb_A_rest(y[i], th) +
-            nb_Ew((y[i] - m) / th_plus_mu);
+        grad_theta[i] = d7::psi_A_rest(y[i], th) +
+            d7::psi_Ew((y[i] - m) / th_plus_mu);
     });
 
     return List::create(Named("mu") = grad_mu, Named("theta") = grad_theta);
@@ -215,7 +175,7 @@ List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
         // quotient, so those three need no series at all; what is left is
         // the trigamma remainder
         hess_theta_theta[i] = res * res / ((th + y[i]) * th_plus_mu2) +
-            nb_T_rest(y[i], th);
+            d7::psi_T_rest(y[i], th);
         hess_mu_theta[i] = res / th_plus_mu2;
     });
 

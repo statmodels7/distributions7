@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "psi_diff.h"
 #include <limits>
 using namespace Rcpp;
 
@@ -51,16 +52,36 @@ struct BBderiv {
     double lAA, lAB, lBB;       // second order
 };
 
+// EACH CANCELLATION WRITTEN OUT.  As the concentration S = A + B grows the
+// family tends to the binomial and every derivative in the shapes vanishes,
+// so each was a difference of digammas at arguments a whole SIZE apart:
+// measured, dl/dA is wrong by 5.6e-05 at S = 1e6, EXACTLY ZERO at 1e9 where
+// the value is 1.9e-17, and 1.9e+08 out at 1e12 -- while a fit at a true
+// concentration of 3000 reports 1.7e+08 and one on binomial data 3.1e+09.
+//
+// The log-mass above has carried the exact form since 0.20.0, summing
+// log(A+j) over the support rather than differencing two lbeta; these are
+// the derivatives of that sum and had not followed it.  With
+// psi(x+k) - psi(x) = psi_A_rest(k,x) + log1p(k/x), the two logarithms
+// combine into one log1p of a small quantity:
+//   log1p(y/A) - log1p(n/S) = log1p((y S - A n)/(A(S+n)))
+// and the same for B.  Nothing here is O(n): the sums the log-mass needs are
+// replaced by the series, which is O(1) in the size.
 static inline BBderiv bb_shape_derivs(double y, double n, double A, double B) {
     double S = A + B;
+    double Sn = S + n;
     BBderiv d;
-    double dS  = R::digamma(n + S) - R::digamma(S);
-    double dS1 = R::trigamma(n + S) - R::trigamma(S);
-    d.lA  = R::digamma(y + A) - R::digamma(A) - dS;
-    d.lB  = R::digamma(n - y + B) - R::digamma(B) - dS;
-    d.lAA = R::trigamma(y + A) - R::trigamma(A) - dS1;
-    d.lBB = R::trigamma(n - y + B) - R::trigamma(B) - dS1;
-    d.lAB = -dS1;
+    double aS  = d7::psi_A_rest(n, S);
+    double tS  = d7::psi_T_rest(n, S);
+    double nSn = n / (S * Sn);
+    d.lA  = d7::psi_A_rest(y, A) - aS +
+        std::log1p((y * S - A * n) / (A * Sn));
+    d.lB  = d7::psi_A_rest(n - y, B) - aS +
+        std::log1p(((n - y) * S - B * n) / (B * Sn));
+    d.lAA = d7::psi_T_rest(y, A) - tS - y / (A * (A + y)) + nSn;
+    d.lBB = d7::psi_T_rest(n - y, B) - tS -
+        (n - y) / (B * (B + n - y)) + nSn;
+    d.lAB = -tS + nSn;
     return d;
 }
 
