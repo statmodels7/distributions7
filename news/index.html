@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.33.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.34.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,18 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.34.0" id="distributions7-0340">distributions7 0.34.0<a class="anchor" aria-label="anchor" href="#distributions7-0340"></a></h2>
+<ul><li>
+<p>The beta-binomial’s shape derivatives no longer cancel, and the three quantities the repair needs are now shared with the negative binomial in <code>src/psi_diff.h</code> rather than written twice.</p>
+<p>As the concentration <code>S = A + B</code> grows the family tends to the binomial and every derivative in the shapes vanishes, so each was a difference of digammas at arguments a whole SIZE apart. Measured, <code>dl/dA</code> is wrong by 5.6e-05 at <code>S</code> = 1e6, <strong>exactly zero</strong> at 1e9 where the value is 1.9e-17, and 1.9e+08 out at 1e12 – while a fit reaches there without trying: at a true concentration of 3000 it reports 1.7e+08, and on binomial data 3.1e+09.</p>
+<p>⚠️ The log-mass has carried the exact form since 0.20.0, summing <code>log(A+j)</code> over the support rather than differencing two <code>lbeta</code>; these are the derivatives OF THAT SUM and had not followed it. A repair applied where a defect was found and not to the quantities derived from it is the shape this file records elsewhere as <em>when a defect is a shape of mistake, grep for the shape</em>.</p>
+<p>With <code>psi(x+k) - psi(x) = psi_A_rest(k,x) + log1p(k/x)</code> the two logarithms combine into a single <code>log1p</code> of a small quantity, <code>log1p(y/A) - log1p(n/S) = log1p((y S - A n)/(A(S+n)))</code>, and the trigamma pair the same way through <code>psi_T_rest()</code>. Nothing added is <code>O(n)</code>: the series are <code>O(1)</code> in the size, where the log-mass’s own sums are not.</p>
+<p>Validated against <code>numDeriv</code> on the log-mass, which shares no arithmetic (4.2e-10 to 5.8e-09 on the gradient, 1.3e-12 to 3.5e-11 on the Hessian); by the score keeping its sign and decaying as <code>1/S</code> – -5.4993e-02, -5.5714e-05, -5.5713e-08, exactly a thousandfold per decade; and by the negative binomial being unmoved to 3e-16 across the move onto the shared header.</p>
+<p>⚠️ A residual reported rather than explained: that <code>1/S</code> law holds cleanly to <code>S</code> = 2e9 and then departs, by 1.7 per cent at 2e12 and a factor of 2.6 at 2e15. The values stay finite and correctly signed, and the departure has not been chased.</p>
+</li>
+<li><p><code>src/psi_diff.h</code> carries <code>psi_A_rest()</code>, <code>psi_T_rest()</code> and <code>psi_Ew()</code>, each taking the SHIFT – a count, a size or a dimension, and therefore an integer – and returning the difference with its own leading behaviour subtracted, so a caller pairing it with that behaviour cancels symbolically. The header states which families reach which boundary and what each direct form was measured to cost.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.33.0" id="distributions7-0330">distributions7 0.33.0<a class="anchor" aria-label="anchor" href="#distributions7-0330"></a></h2>
 <ul><li>

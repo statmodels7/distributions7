@@ -1,5 +1,52 @@
 # Changelog
 
+## distributions7 0.34.0
+
+- The beta-binomial’s shape derivatives no longer cancel, and the three
+  quantities the repair needs are now shared with the negative binomial
+  in `src/psi_diff.h` rather than written twice.
+
+  As the concentration `S = A + B` grows the family tends to the
+  binomial and every derivative in the shapes vanishes, so each was a
+  difference of digammas at arguments a whole SIZE apart. Measured,
+  `dl/dA` is wrong by 5.6e-05 at `S` = 1e6, **exactly zero** at 1e9
+  where the value is 1.9e-17, and 1.9e+08 out at 1e12 – while a fit
+  reaches there without trying: at a true concentration of 3000 it
+  reports 1.7e+08, and on binomial data 3.1e+09.
+
+  ⚠️ The log-mass has carried the exact form since 0.20.0, summing
+  `log(A+j)` over the support rather than differencing two `lbeta`;
+  these are the derivatives OF THAT SUM and had not followed it. A
+  repair applied where a defect was found and not to the quantities
+  derived from it is the shape this file records elsewhere as *when a
+  defect is a shape of mistake, grep for the shape*.
+
+  With `psi(x+k) - psi(x) = psi_A_rest(k,x) + log1p(k/x)` the two
+  logarithms combine into a single `log1p` of a small quantity,
+  `log1p(y/A) - log1p(n/S) = log1p((y S - A n)/(A(S+n)))`, and the
+  trigamma pair the same way through `psi_T_rest()`. Nothing added is
+  `O(n)`: the series are `O(1)` in the size, where the log-mass’s own
+  sums are not.
+
+  Validated against `numDeriv` on the log-mass, which shares no
+  arithmetic (4.2e-10 to 5.8e-09 on the gradient, 1.3e-12 to 3.5e-11 on
+  the Hessian); by the score keeping its sign and decaying as `1/S` –
+  -5.4993e-02, -5.5714e-05, -5.5713e-08, exactly a thousandfold per
+  decade; and by the negative binomial being unmoved to 3e-16 across the
+  move onto the shared header.
+
+  ⚠️ A residual reported rather than explained: that `1/S` law holds
+  cleanly to `S` = 2e9 and then departs, by 1.7 per cent at 2e12 and a
+  factor of 2.6 at 2e15. The values stay finite and correctly signed,
+  and the departure has not been chased.
+
+- `src/psi_diff.h` carries `psi_A_rest()`, `psi_T_rest()` and
+  `psi_Ew()`, each taking the SHIFT – a count, a size or a dimension,
+  and therefore an integer – and returning the difference with its own
+  leading behaviour subtracted, so a caller pairing it with that
+  behaviour cancels symbolically. The header states which families reach
+  which boundary and what each direct form was measured to cost.
+
 ## distributions7 0.33.0
 
 - The multivariate Student t’s score and observed Hessian in `nu` no
