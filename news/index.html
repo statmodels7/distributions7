@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.32.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.33.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,18 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.33.0" id="distributions7-0330">distributions7 0.33.0<a class="anchor" aria-label="anchor" href="#distributions7-0330"></a></h2>
+<ul><li>
+<p>The multivariate Student t’s score and observed Hessian in <code>nu</code> no longer cancel. The structure is the univariate family’s with the dimension <code>p</code> in place of 1, and it fails the same way: as <code>nu</code> grows the family tends to the multivariate gaussian, every derivative in <code>nu</code> vanishes, and each was written as a difference of terms agreeing to leading order – <code>psi((nu+p)/2) - psi(nu/2)</code> is <code>p/nu</code> and so is what it is subtracted from. Measured on the score the family returns, the direct form is wrong by 4.9e-05 at <code>nu</code> = 1e6, by 0.397 at 1e8 and by 838 at 1e10, and it CHANGES SIGN: at <code>nu</code> = 1e9 it read +8.2e-15 where the trend of the values below it gives -2.2e-16.</p>
+<p><strong>The repair needs no series</strong>, because <code>p</code> is an integer dimension, so the shift between the two arguments is a whole number of steps of the recurrence <code>psi(x+1) = psi(x) + 1/x</code>. For even <code>p</code> that gives sums whose terms all carry ONE SIGN, and nothing cancels:</p>
+<pre><code>A_p(nu)                                   = -sum_{j&lt;p/2} 4j / (nu (nu+2j))
+[psi'((nu+p)/2) - psi'(nu/2)]/2 + p/nu^2  = sum_{j&lt;p/2} 8j(nu+j) / (nu^2 (nu+2j)^2)</code></pre>
+<p>Both are exactly zero at <code>p</code> = 2, which is what each identity gives there and what the direct forms return as noise at 1e-16. For odd <code>p</code> the shift is a half-integer and the recurrence carries the quantity onto the univariate <code>A_1(nu)</code>, which keeps a series above a measured crossover – the same expansion <code>student_t.cpp</code> carries, and the one place in the package where that series exists twice. The remaining pair of the score, <code>(nu+p) q/(nu(nu+q))</code> and <code>log1p(q/nu)</code>, is <code>D(u) + (p/nu) u/(1+u)</code> with <code>u = q/nu</code> and the same <code>D(u) = u/(1+u) - log1p(u)</code>.</p>
+<p>Validated three ways: the helpers against the direct forms where those still have their digits (1e-16 to 6e-12 over <code>p</code> = 2 to 6 and <code>nu</code> = 2.5 to 400, even and odd alike); the package’s own gradient and Hessian against <code>numDeriv</code> on the log-density, which shares no arithmetic (4.4e-10 to 2.6e-07, which is numDeriv’s own accuracy on a fifteen-parameter function); and the score in <code>nu</code> decaying cleanly and keeping its sign to the edge of the chart – -6.5e-08, -8.29e-11, -8.37e-15, -8.37e-19, -8.37e-25, -8.37e-201 and exactly 0 at 1.79e308.</p>
+</li>
+<li><p>⚠️ The EXPECTED information in <code>nu</code> is not repaired here, for the same structural reason as the negative binomial’s in 0.32.0: it cancels one order DEEPER than the other two, its three terms agreeing at <code>nu^-2</code> and again at <code>nu^-3</code>, so it is a derivation of its own rather than a transcription.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.32.0" id="distributions7-0320">distributions7 0.32.0<a class="anchor" aria-label="anchor" href="#distributions7-0320"></a></h2>
 <ul><li>
@@ -205,8 +217,8 @@ E[l_nu_nu] = -7/(2 nu^4) + 13/nu^5 - 79/(2 nu^6) + 119/nu^7    (nu &gt;= 1000)</
 <p><code><a href="../reference/enet_distrib.html">enet_distrib()</a></code> has a closed expected information, where it took one from the sampling fallback. Every piece was already in the family.</p>
 <p>In the two rates the density is an exponential family with sufficient statistics <code>-|z|</code> and <code>-z^2/2</code>, so <code>log Z</code> is its cumulant generating function and the information in <code>(a, c)</code> is exactly the Hessian of <code>log Z</code> – which <code>.enet_logz_derivs()</code> computes for the observed Hessian already. The map to <code>(lambda, alpha)</code> is bilinear, so the information transforms by <code>J' I J</code> with no second-derivative term.</p>
 <p>The location is where the expected and the observed part company, and the reason is the kink. The observed second derivative in <code>mu</code> is <code>-c</code>, which misses the point mass <code>d sgn(z)/dz = 2 delta(z)</code> the density carries at its own location, exactly as the Laplace does; the information there is the variance of the score,</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>I_mu_mu <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span>ac E<span class="sc">|</span>z<span class="sc">|</span> <span class="sc">+</span> c<span class="sc">^</span><span class="dv">2</span> E[z<span class="sc">^</span><span class="dv">2</span>]</span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>        <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span>ac dlogZ<span class="sc">/</span>da <span class="sc">-</span> <span class="dv">2</span>c<span class="sc">^</span><span class="dv">2</span> dlogZ<span class="sc">/</span>dc,</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>I_mu_mu <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span>ac E<span class="sc">|</span>z<span class="sc">|</span> <span class="sc">+</span> c<span class="sc">^</span><span class="dv">2</span> E[z<span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>        <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span>ac dlogZ<span class="sc">/</span>da <span class="sc">-</span> <span class="dv">2</span>c<span class="sc">^</span><span class="dv">2</span> dlogZ<span class="sc">/</span>dc,</span></code></pre></div>
 <p>since <code>E|z| = -dlogZ/da</code> and <code>E[z^2] = -2 dlogZ/dc</code>. It reduces to <code>lambda^2</code> at <code>alpha = 1</code>, which is the Laplace’s, and to <code>c</code> at <code>alpha = 0</code>, which is the Gaussian’s, and both are asserted against the families that own them.</p>
 <p>Validated against the definition – minus the outer product of the score, integrated against the density and SPLIT AT THE KINK, since a rule that straddles the corner measures the corner: 2.3e-14 to 1.1e-6 over five settings, the worse ones being the quadrature and not the formula. A Monte Carlo of 4e6 draws agrees within its own standard error at all of them.</p>
 </li>

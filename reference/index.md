@@ -2903,6 +2903,13 @@ divergent density.
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals
 
+- [`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
+  [`mvt_A1()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
+  [`mvt_T()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
+  [`mvt_T1()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
+  [`mvt_D()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
+  : The Degrees of Freedom at Large nu, Without the Cancellation
+
 - [`mvt_a2()`](https://statmodels7.github.io/distributions7/reference/mvt_a2.md)
   : The Second Derivative of the Scale Matrix, by Position
 
