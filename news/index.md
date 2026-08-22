@@ -1,5 +1,23 @@
 # Changelog
 
+## distributions7 0.37.1
+
+- [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
+  names
+  [`crit_grad()`](https://statmodels7.github.io/optimizers7/reference/crit_grad.html)
+  as its stopping rule rather than taking the optimizer’s default, which
+  optimizers7 0.6.0 widened into a disjunction that also stops on a
+  stalled objective. The restart loop reads `converged` as the signal to
+  try another start and to fall back to BFGS, so a rule reporting
+  success at a stall turns a multi-start search into a single-start one
+  that keeps the stall. Measured on `folded(gaussian1_distrib())` at n =
+  3000 with `mu = 1.2` and `sigma = 2`, both runs reporting convergence:
+  under the wider rule Fisher scoring stops after 141 iterations at a
+  score of 0.57, with `mu = 0.103`, `sigma = 3.572` and a log-likelihood
+  of -5142.97, against 14 iterations at 2.3e-07, `mu = 1.269`,
+  `sigma = 1.970` and -4729.38 under this one. The tolerance is still
+  optimizers7’s: the rule is named here, the constant is not.
+
 ## distributions7 0.37.0
 
 - The Student t’s THIRD derivatives survive the `nu` its own chart can

@@ -441,8 +441,8 @@ y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit_distrib(d, y)
 #> Maximum-likelihood fit: gaussian1
 #> Observations: 500   Log-likelihood: -1264   AIC: 2532   BIC: 2541
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 14 ms
-#> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 13 ms
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>       Estimate Std. Error   2.5%  97.5%
@@ -466,8 +466,8 @@ set.seed(2)
 fit_distrib(bernoulli_distrib(), rbinom(50, 1, 0.9))
 #> Maximum-likelihood fit: bernoulli
 #> Observations: 50   Log-likelihood: -20.25   AIC: 42.5   BIC: 44.41
-#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 1 ms
-#> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
+#> Method: Fisher scoring   iterations: 1   evaluations: f 2, g 2   time: 2 ms
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>    Estimate Std. Error   2.5%  97.5%
