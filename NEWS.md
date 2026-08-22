@@ -1,3 +1,49 @@
+# distributions7 0.33.0
+
+* The multivariate Student t's score and observed Hessian in `nu` no longer
+  cancel.  The structure is the univariate family's with the dimension `p` in
+  place of 1, and it fails the same way: as `nu` grows the family tends to the
+  multivariate gaussian, every derivative in `nu` vanishes, and each was
+  written as a difference of terms agreeing to leading order --
+  `psi((nu+p)/2) - psi(nu/2)` is `p/nu` and so is what it is subtracted from.
+  Measured on the score the family returns, the direct form is wrong by
+  4.9e-05 at `nu` = 1e6, by 0.397 at 1e8 and by 838 at 1e10, and it CHANGES
+  SIGN: at `nu` = 1e9 it read +8.2e-15 where the trend of the values below it
+  gives -2.2e-16.
+
+  **The repair needs no series**, because `p` is an integer dimension, so the
+  shift between the two arguments is a whole number of steps of the recurrence
+  `psi(x+1) = psi(x) + 1/x`.  For even `p` that gives sums whose terms all
+  carry ONE SIGN, and nothing cancels:
+
+  ```
+  A_p(nu)                                   = -sum_{j<p/2} 4j / (nu (nu+2j))
+  [psi'((nu+p)/2) - psi'(nu/2)]/2 + p/nu^2  = sum_{j<p/2} 8j(nu+j) / (nu^2 (nu+2j)^2)
+  ```
+
+  Both are exactly zero at `p` = 2, which is what each identity gives there
+  and what the direct forms return as noise at 1e-16.  For odd `p` the shift
+  is a half-integer and the recurrence carries the quantity onto the
+  univariate `A_1(nu)`, which keeps a series above a measured crossover -- the
+  same expansion `student_t.cpp` carries, and the one place in the package
+  where that series exists twice.  The remaining pair of the score,
+  `(nu+p) q/(nu(nu+q))` and `log1p(q/nu)`, is `D(u) + (p/nu) u/(1+u)` with
+  `u = q/nu` and the same `D(u) = u/(1+u) - log1p(u)`.
+
+  Validated three ways: the helpers against the direct forms where those still
+  have their digits (1e-16 to 6e-12 over `p` = 2 to 6 and `nu` = 2.5 to 400,
+  even and odd alike); the package's own gradient and Hessian against
+  `numDeriv` on the log-density, which shares no arithmetic (4.4e-10 to
+  2.6e-07, which is numDeriv's own accuracy on a fifteen-parameter function);
+  and the score in `nu` decaying cleanly and keeping its sign to the edge of
+  the chart -- -6.5e-08, -8.29e-11, -8.37e-15, -8.37e-19, -8.37e-25,
+  -8.37e-201 and exactly 0 at 1.79e308.
+
+* ⚠️ The EXPECTED information in `nu` is not repaired here, for the same
+  structural reason as the negative binomial's in 0.32.0: it cancels one order
+  DEEPER than the other two, its three terms agreeing at `nu^-2` and again at
+  `nu^-3`, so it is a derivation of its own rather than a transcription.
+
 # distributions7 0.32.0
 
 * The negative binomial's score and observed Hessian in the dispersion no
