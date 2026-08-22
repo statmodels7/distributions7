@@ -1,3 +1,64 @@
+# distributions7 0.32.0
+
+* The negative binomial's score and observed Hessian in the dispersion no
+  longer cancel.  As `theta` grows the family tends to the Poisson and every
+  derivative in it vanishes, so each was written as a sum of terms that cancel
+  to leading order -- and the score's four terms cancel PAIRWISE:
+  `psi(y+th) - psi(th)` is `y/th`, `log(th/(th+mu))` is `-mu/th` and
+  `(mu-y)/(th+mu)` is `(mu-y)/th`, and the three sum to zero.  The
+  cancellation is therefore of order `theta`, not of order `theta/y` as the
+  digamma difference alone suggests: measured, the direct form is wrong by
+  **1.0e-03 at theta = 1e6, by 4.4 at 1e7, and it CHANGES SIGN at 1e8**.
+
+  And a fit reaches there routinely.  On 2000 counts with `mu = 4` drawn at a
+  true `theta` of 100, `fit_distrib()` reports **1.6e+07**; on Poisson counts
+  it reports 2.3e+05.  Where such a fit stops is therefore decided by which
+  wrong value happens to cross the tolerance rather than by the likelihood.
+
+  Each cancellation is now performed symbolically.  With `a = theta`,
+  `b = theta + y` and `c = theta + mu`:
+
+  ```
+  dl/dtheta   = [psi(b) - psi(a) - log1p(y/a)] + [log1p(w) - w],  w = (y-mu)/c
+  d2l/dtheta2 = (y-mu)^2/(b c^2) + [psi'(b) - psi'(a) + y/(a b)]
+  ```
+
+  The Hessian's first quotient is an EXACT identity --
+  `-y/(ab) + mu/(ac) + (y-mu)/c^2 = (y-mu)^2/(b c^2)` -- so its three leading
+  terms need no series and no crossover at all; only the trigamma remainder
+  does.  The score's two brackets are `y/(2ab) + ...` and `-w^2/2 + ...`, each
+  with a series below its own measured crossover.
+
+  The two derivations check each other: to leading order the score is
+  `[y - (y-mu)^2]/(2 th^2)` and the Hessian `[(y-mu)^2 - y]/th^3`, which is
+  its derivative.
+
+  Validated four ways: every one of the five components agrees with the form
+  it replaces where that form still has its digits (0 to 1.2e-15 at
+  `theta` = 0.5, 3 and 30); `numDeriv` on the log-mass, which shares no
+  arithmetic, gives 1.2e-09 on the gradient and 4.0e-11 on the Hessian; the
+  score now tracks its Poisson-limit asymptote to 1.3e-04 at `theta` = 1e5
+  and exactly at 1e9 and 1e12, where before it was 4.4x wrong at 1e7; and
+  every component is finite at `theta` of 1e15, 1e100 and 1.79e308, the value
+  the log link clamps to -- `(2a+y)/(ab)` is written `2/b + y/(ab)` so the
+  product `a*b`, which overflows past 1.3e154, is never formed.
+
+* ⚠️ **The EXPECTED information in `theta` is NOT repaired**, and it is what
+  `iwls()` reads by default.  Measured, at `theta` = 1e6 it returns
+  **-1.7e-16**, and an expected information cannot be negative.  Its leading
+  order needs one term MORE of the observed Hessian than the rewrite above
+  carries, the `theta^-3` term vanishing under expectation, so it is a
+  derivation of its own rather than a transcription of these two.
+
+* ⚠️ And `stats::dnbinom` itself loses the Poisson limit: at `y` = 2 and
+  `theta` = 1e10 the difference from `dpois` reads **-4.1e-08** where the
+  value is +1.0e-10.  It is not repaired and the reason is that the
+  consequence is far smaller than for the score: the log-mass VALUE agrees
+  with `dpois` to twelve digits, and what is corrupted is only its difference
+  from the limit, which nothing in the package computes -- where the score IS
+  that difference.  Repairing it would mean writing a log-mass of our own in
+  place of R's, which is a different decision from rewriting a derivative.
+
 # distributions7 0.31.0
 
 * The Student t's derivatives in `nu` no longer cancel, and nothing in the

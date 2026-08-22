@@ -2,6 +2,91 @@
 #include "d7_par.h"
 using namespace Rcpp;
 
+// THE DISPERSION AT LARGE theta.
+//
+// As theta grows the negative binomial tends to the Poisson and every
+// derivative in theta vanishes, so each is written as a sum of terms that
+// cancel to leading order.  Measured, the score's four terms cancel PAIRWISE:
+// psi(y+th) - psi(th) is y/th, log(th/(th+mu)) is -mu/th and (mu-y)/(th+mu) is
+// (mu-y)/th, and the three sum to zero, so the value is O(1/th^2) computed
+// from terms of size 1/th -- a cancellation of order theta, not of order
+// theta/y as a look at the digamma difference alone suggests.  The direct form
+// is wrong by 1.0e-03 at theta = 1e6, by 4.4 at 1e7 and CHANGES SIGN at 1e8.
+//
+// And a fit reaches there routinely: on 2000 counts with mu = 4 drawn at a
+// true theta of 100, `fit_distrib` reports 1.6e+07; on Poisson counts it
+// reports 2.3e+05.  Where it stops in that limit is therefore decided by
+// which wrong value happens to cross the tolerance.
+//
+// Both quantities are rewritten so that each cancellation is performed
+// SYMBOLICALLY and what is left is evaluated directly.  With a = theta,
+// b = theta + y and c = theta + mu:
+//
+//   dl/dtheta   = [psi(b) - psi(a) - log1p(y/a)] + [log1p(w) - w],
+//                 w = (y - mu)/c
+//   d2l/dtheta2 = (y - mu)^2/(b c^2)
+//                 + [psi'(b) - psi'(a) + y/(a b)]
+//
+// The first bracket of the score is y/(2ab) + ... and the second is -w^2/2 +
+// ..., each with its own series; the leading three terms of the Hessian
+// combine EXACTLY into the first quotient, which is the identity
+// -y/(ab) + mu/(ac) + (y-mu)/c^2 = (y-mu)^2/(b c^2), so no series is needed
+// for them at all.
+//
+// The two derivations check each other: to leading order the score is
+// [y - (y-mu)^2]/(2 th^2) and the Hessian [(y-mu)^2 - y]/th^3, which is its
+// derivative.
+//
+// ⚠️ THE EXPECTED INFORMATION IS NOT FIXED HERE and is measured as wrong: at
+// theta = 1e6 it reads -1.7e-16, and an expected information cannot be
+// negative.  Its leading order needs one more term of the observed Hessian
+// than is written above, the theta^-3 term vanishing under expectation, so it
+// is a derivation of its own rather than a transcription of these.
+
+// psi(theta+y) - psi(theta) - log1p(y/theta), the score's first bracket.
+// From psi(x) = log x - 1/(2x) - 1/(12x^2) + 1/(120x^4) - ..., every
+// difference written so that no power of theta is formed on its own:
+//   = y/(2ab) + y(2a+y)/(12 a^2 b^2) - y(2a+y)(a^2+b^2)/(120 a^4 b^4) + ...
+inline double nb_A_rest(double y, double th) {
+    if (th >= 100.0) {
+        const double a = th, b = th + y;
+        // p and q WITHOUT forming a*b, which overflows past theta = 1.3e154
+        // and then (2a+y)/(a b) is Inf/Inf = NaN at the theta the log link
+        // clamps to: (2a+y)/(ab) is 2/b + y/(ab)
+        const double p = (y / a) / b;
+        const double q = 2.0 / b + p;
+        const double ia2 = 1.0 / (a * a), ib2 = 1.0 / (b * b);
+        return p * (0.5 + q * (1.0 / 12.0 - (ia2 + ib2) / 120.0));
+    }
+    return R::digamma(y + th) - R::digamma(th) - std::log1p(y / th);
+}
+
+// log1p(w) - w = -w^2/2 + w^3/3 - w^4/4 + w^5/5 - ...
+inline double nb_Ew(double w) {
+    if (std::fabs(w) < 1e-3) {
+        return w * w * (-0.5 + w * (1.0 / 3.0 + w * (-0.25 + w * 0.2)));
+    }
+    return std::log1p(w) - w;
+}
+
+// psi'(theta+y) - psi'(theta) + y/(theta(theta+y)), the Hessian's remainder.
+// From psi'(x) = 1/x + 1/(2x^2) + 1/(6x^3) - 1/(30x^5) + ...:
+//   = -y(2a+y)/(2 a^2 b^2) - y(a^2+ab+b^2)/(6 a^3 b^3)
+//     + y(a^4+a^3b+a^2b^2+ab^3+b^4)/(30 a^5 b^5) - ...
+inline double nb_T_rest(double y, double th) {
+    if (th >= 100.0) {
+        const double a = th, b = th + y;
+        const double p = (y / a) / b;   // see nb_A_rest for why not y/(a*b)
+        const double q = 2.0 / b + p;
+        const double ia = 1.0 / a, ib = 1.0 / b;
+        const double s2 = ia * ia + ia * ib + ib * ib;
+        const double s4 = ia * ia * ia * ia + ia * ia * ia * ib +
+            ia * ia * ib * ib + ia * ib * ib * ib + ib * ib * ib * ib;
+        return -p * (q * 0.5 + s2 / 6.0 - s4 / 30.0);
+    }
+    return R::trigamma(y + th) - R::trigamma(th) + y / (th * (th + y));
+}
+
 // E[trigamma(Y + theta)] for Y ~ NB2(mu, theta), needed by the expected hessian.
 // Sums trigamma(k + theta) * P(Y = k) through the pmf recurrence
 // p_{k+1} = p_k * (k + theta) / (k + 1) * mu / (theta + mu), carried in log
@@ -63,29 +148,29 @@ List negbin_gradient_cpp(NumericVector y, NumericVector mu, NumericVector theta,
 
     // the scalar-case constants live OUT here; the per-iteration copies are
     // LOCAL to the lambda, or two threads would race on them
-    double m0 = 0, th0 = 0, th_plus_mu0 = 0, digamma_th0 = 0, log_frac0 = 0;
+    double m0 = 0, th0 = 0, th_plus_mu0 = 0;
 
     if (both_scalar) {
         m0 = mu[0];
         th0 = theta[0];
         th_plus_mu0 = th0 + m0;
-        digamma_th0 = R::digamma(th0);
-        log_frac0 = std::log(th0 / th_plus_mu0);
     }
 
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
-        double m = m0, th = th0, th_plus_mu = th_plus_mu0,
-               digamma_th = digamma_th0, log_frac = log_frac0;
+        // LOCAL to the region: a scalar hoisted out of the loop and written
+        // inside it is shared once the iterations are split
+        double m = m0, th = th0, th_plus_mu = th_plus_mu0;
         if (!both_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             th = theta_is_scalar ? theta[0] : theta[i];
             th_plus_mu = th + m;
-            digamma_th = R::digamma(th);
-            log_frac = std::log(th / th_plus_mu);
         }
 
         grad_mu[i] = (th / th_plus_mu) * (y[i] / m - 1.0);
-        grad_theta[i] = R::digamma(y[i] + th) - digamma_th + log_frac + (m - y[i]) / th_plus_mu;
+        // the two brackets of the rewrite, each cancellation performed
+        // symbolically: see the note at the head of this file
+        grad_theta[i] = nb_A_rest(y[i], th) +
+            nb_Ew((y[i] - m) / th_plus_mu);
     });
 
     return List::create(Named("mu") = grad_mu, Named("theta") = grad_theta);
@@ -103,35 +188,34 @@ List negbin_hessian_cpp(NumericVector y, NumericVector mu, NumericVector theta,
     bool theta_is_scalar = (theta.size() == 1);
     bool both_scalar = mu_is_scalar && theta_is_scalar;
 
-    double m0 = 0, th0 = 0, th_plus_mu0 = 0, th_plus_mu20 = 0,
-           trigamma_th0 = 0, mid0 = 0;
+    double m0 = 0, th0 = 0, th_plus_mu0 = 0, th_plus_mu20 = 0;
 
     if (both_scalar) {
         m0 = mu[0];
         th0 = theta[0];
         th_plus_mu0 = th0 + m0;
         th_plus_mu20 = th_plus_mu0 * th_plus_mu0;
-        trigamma_th0 = R::trigamma(th0);
-        mid0 = m0 / (th0 * th_plus_mu0);
     }
 
     d7::par_for(n, threads, d7::kMinCostly, [&](std::size_t i) {
+        // LOCAL to the region, as above
         double m = m0, th = th0, th_plus_mu = th_plus_mu0,
-               th_plus_mu2 = th_plus_mu20, trigamma_th = trigamma_th0,
-               mid = mid0;
+               th_plus_mu2 = th_plus_mu20;
         if (!both_scalar) {
             m = mu_is_scalar ? mu[0] : mu[i];
             th = theta_is_scalar ? theta[0] : theta[i];
             th_plus_mu = th + m;
             th_plus_mu2 = th_plus_mu * th_plus_mu;
-            trigamma_th = R::trigamma(th);
-            mid = m / (th * th_plus_mu);
         }
 
         double res = y[i] - m;
 
         hess_mu_mu[i] = (y[i] + th) / th_plus_mu2 - y[i] / (m * m);
-        hess_theta_theta[i] = R::trigamma(y[i] + th) - trigamma_th + mid + res / th_plus_mu2;
+        // -y/(ab) + mu/(ac) + (y-mu)/c^2 collapses EXACTLY into the first
+        // quotient, so those three need no series at all; what is left is
+        // the trigamma remainder
+        hess_theta_theta[i] = res * res / ((th + y[i]) * th_plus_mu2) +
+            nb_T_rest(y[i], th);
         hess_mu_theta[i] = res / th_plus_mu2;
     });
 
