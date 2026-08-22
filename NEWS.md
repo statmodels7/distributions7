@@ -1,3 +1,62 @@
+# distributions7 0.35.0
+
+* The gamma's derivatives in its dispersion no longer cancel, and the four
+  quantities the repair needs join the shared `src/psi_diff.h`.
+
+  As the dispersion goes to zero the shape `s = 1/phi` grows and the family
+  tends to a normal, so every derivative in `phi` is a polygamma minus its
+  own leading asymptote:
+
+  ```
+  f1 = log(s) + 1 - psi(s) + log(z) - z      f2 =  1/s   - psi'(s)
+  f3 = -1/s^2 - psi''(s)                     f4 =  2/s^3 - psi'''(s)
+  ```
+
+  each of which loses its digits as `s` grows.  The score is the clearest
+  case: at `y = mu` the data term is exactly zero and the score is
+  `-[log(s) - psi(s)]/phi^2`, whose direct form is 1.3e-09 out at
+  `phi` = 1e-6, 1.8e-05 at 1e-10, 0.2 per cent at 1e-12 and reads
+  **exactly zero** at 1e-14, where the value is -5e+13.  Rewritten it tracks
+  the asymptote to between 0 and 2.3e-16 over that whole range.
+
+  ⚠️ Unlike the negative binomial and the beta-binomial, whose limits an
+  ordinary fit reaches, this one is prophylactic and is written as such: a
+  gamma fit at a dispersion of 1e-4 reaches `s` = 1.0e+04, where the loss is
+  1e-11, and reaching 1e+08 would take a coefficient of variation of 1e-4.
+  That is a degenerate fit, which is precisely when its derivatives should
+  not be noise.
+
+  `f1` splits into two cancelling pairs rather than one, the second being
+  `1 + log(z) - z = log1p(w) - w` with `w = z - 1`, which is the `psi_Ew()`
+  the negative binomial already carries.  The crossover is 50 for all four,
+  measured: the series sits within 5.4e-15, 7.5e-14, 3.7e-13 and 1.2e-12
+  there and the direct forms still have every digit.
+
+  The scalar C entry point of the score-driven fast route moved with the
+  kernel, the two being held to `identical()` by their twin test.
+
+  Validated against the form it replaces where that still holds (0 to
+  7.7e-16 on both components), against `numDeriv` on the log-density at
+  every order (2.5e-12 to 4.4e-10), and against a difference of the Hessian
+  at the third order (3.7e-10); and the orders above the score come back as
+  exact powers of the dispersion, finite and correctly signed, to `s` = 1e15.
+
+* `tests/testthat/test-boundary-cancellation.R` pins all five families
+  repaired since 0.31.0 -- the gamma, the negative binomial, the
+  beta-binomial, the Student t and the multivariate t -- at the boundary
+  each one tends to.  Every case asserts two things, and the second is what
+  keeps the first honest: the shipped derivative tracks the limit, and the
+  form it replaced does **not**, so reverting to a direct expression fails
+  the test rather than passing it silently.
+
+  ⚠️ Writing it corrected the record of 0.34.0.  The measurements quoted
+  there are the compiled `betabinom1`'s, which the release did repair -- its
+  score converges on the binomial's `(y - n mu)/(mu(1-mu))` where the direct
+  chain is 4.0e-08 out at `sigma` = 1e-8 and 3.6e-04 at 1e-12.  The
+  parametrization by the shapes, `betabinom2`, computes the same differences
+  in R and was **not** touched; it cedes later, by 2.3 per cent at a
+  concentration of 1e+14, and is recorded here rather than left to be found.
+
 # distributions7 0.34.0
 
 * The beta-binomial's shape derivatives no longer cancel, and the three

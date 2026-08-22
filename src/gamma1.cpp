@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include "d7_par.h"
+#include "psi_diff.h"
 using namespace Rcpp;
 
 // Gamma in the mean and the DISPERSION, Var = phi mu^2, which is the GLM
@@ -31,10 +32,12 @@ inline Fs gamma1_parts(double y, double m, double phi) {
     double z = y / m;
     double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
     Fs o;
-    o.f1 = std::log(s) + 1.0 - R::digamma(s) + std::log(z) - z;
-    o.f2 = 1.0 / s - R::trigamma(s);
-    o.f3 = -1.0 / (s * s) - R::psigamma(s, 2);
-    o.f4 = 2.0 / (s * s * s) - R::psigamma(s, 3);
+    // [log s - psi(s)] + [log z - (z-1)]: two cancelling pairs, each
+    // written out.  See psi_diff.h.
+    o.f1 = d7::psi_log_rest(s) + d7::psi_Ew(z - 1.0);
+    o.f2 = d7::psi1_rest(s);
+    o.f3 = d7::psi2_rest(s);
+    o.f4 = d7::psi3_rest(s);
     o.m1 = s * (z - 1.0) / m;
     o.m2 = s * (1.0 - 2.0 * z) / m2;
     o.m3 = s * (6.0 * z - 2.0) / m3;
@@ -52,9 +55,9 @@ inline Fs gamma1_parts_expected(double m, double phi) {
     double m2 = m * m, m3 = m2 * m, m4 = m2 * m2;
     Fs o;
     o.f1 = 0.0;
-    o.f2 = 1.0 / s - R::trigamma(s);
-    o.f3 = -1.0 / (s * s) - R::psigamma(s, 2);
-    o.f4 = 2.0 / (s * s * s) - R::psigamma(s, 3);
+    o.f2 = d7::psi1_rest(s);
+    o.f3 = d7::psi2_rest(s);
+    o.f4 = d7::psi3_rest(s);
     o.m1 = 0.0;
     o.m2 = -s / m2;
     o.m3 = 4.0 * s / m3;

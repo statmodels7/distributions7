@@ -76,6 +76,64 @@ inline double psi_Ew(double w) {
     return std::log1p(w) - w;
 }
 
+
+// A POLYGAMMA MINUS ITS OWN LEADING ASYMPTOTE, which is the shape the gamma
+// carries four times over.  From
+//
+//   psi^(n)(z) ~ (-1)^(n-1) [ (n-1)!/z^n + n!/(2 z^(n+1))
+//                             + sum_k B_2k (2k+n-1)!/((2k)! z^(2k+n)) ]
+//
+// the leading term cancels and what is left is one order down, so the direct
+// difference loses digits as the shape grows: measured, log(s) - psi(s) is
+// wrong by 1.3e-09 at s = 1e5, by 2.7e-04 at 1e11 and reads EXACTLY ZERO at
+// 1e14 where the value is 5e-15, and the three derivative versions go the
+// same way.
+//
+// ⚠️ Unlike the two families above, a gamma fit does NOT reach there in the
+// ordinary course: a dispersion of 1e-4 gives s = 1.0e+04, where the loss is
+// 1e-11.  Reaching 1e8 would take a coefficient of variation of 1e-4, which
+// is a degenerate fit -- which is precisely when the derivatives should not
+// be noise, and why these are written even though nothing routine needs them.
+//
+// The crossover is 50 for all four, measured: the series is within 1.2e-12
+// there and the direct form still has all its digits.
+
+// log(s) - psi(s) = 1/(2s) + 1/(12 s^2) - 1/(120 s^4) + 1/(252 s^6) - ...
+inline double psi_log_rest(double s) {
+    if (s >= 50.0) {
+        const double u = 1.0 / s, u2 = u * u;
+        return u * (0.5 + u * (1.0 / 12.0 + u2 * (-1.0 / 120.0 + u2 / 252.0)));
+    }
+    return std::log(s) - R::digamma(s);
+}
+
+// 1/s - psi'(s) = -1/(2 s^2) - 1/(6 s^3) + 1/(30 s^5) - 1/(42 s^7) + ...
+inline double psi1_rest(double s) {
+    if (s >= 50.0) {
+        const double u = 1.0 / s, u2 = u * u;
+        return u2 * (-0.5 + u * (-1.0 / 6.0 + u2 * (1.0 / 30.0 - u2 / 42.0)));
+    }
+    return 1.0 / s - R::trigamma(s);
+}
+
+// -1/s^2 - psi''(s) = 1/s^3 + 1/(2 s^4) - 1/(6 s^6) + 1/(6 s^8) - ...
+inline double psi2_rest(double s) {
+    if (s >= 50.0) {
+        const double u = 1.0 / s, u2 = u * u;
+        return u2 * u * (1.0 + u * (0.5 + u2 * (-1.0 / 6.0 + u2 / 6.0)));
+    }
+    return -1.0 / (s * s) - R::psigamma(s, 2);
+}
+
+// 2/s^3 - psi'''(s) = -3/s^4 - 2/s^5 + 1/s^7 - (4/3)/s^9 + ...
+inline double psi3_rest(double s) {
+    if (s >= 50.0) {
+        const double u = 1.0 / s, u2 = u * u;
+        return u2 * u2 * (-3.0 + u * (-2.0 + u2 * (1.0 - u2 * 4.0 / 3.0)));
+    }
+    return 2.0 / (s * s * s) - R::psigamma(s, 3);
+}
+
 }  // namespace d7
 
 #endif  // D7_PSI_DIFF_H
