@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.36.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.37.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,23 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.37.0" id="distributions7-0370">distributions7 0.37.0<a class="anchor" aria-label="anchor" href="#distributions7-0370"></a></h2>
+<ul><li>
+<p>The Student t’s THIRD derivatives survive the <code>nu</code> its own chart can produce. Every component divided by  with , and  overflows at  while the log link reaches : over <code>nu</code> at <code>sigma</code> = 1, three of the ten were non-finite at 1e150, four at 1e300 and <strong>eight at <code>double.xmax</code></strong>, ten of ten on the link scale.</p>
+<p>⚠️ 0.31.0 made the score and the observed Hessian finite there by the same rewrite and did not reach orders three and four – the shape this file records as <em>when a defect is a shape of mistake, grep for the shape</em> – and orders three and four are exactly what statmodels7’s exact outer gradient reads, so a fit whose <code>nu</code> had gone to its clamp could not be certified.</p>
+<p>The substitution is the one that removes : with , ,  and , every  carries a  the numerator supplies, and what is left is a bounded function of  over a power of . <strong>Nine of the ten are exact algebra</strong>, with no series and so no crossover to calibrate. The two carrying a real cancellation are written out:</p>
+<pre><code>sigma^3 l_sss = 2nu - 2(1+nu) t^3 (1 - 3u)            -&gt; -2
+              = -2 + 2 z^2 a (6 + 3u + u^2) t^3       exactly,
+    from  1 - t^3(1 - 3u) = u(6 + 3u + u^2) t^3</code></pre>
+<p>and the rational part of <code>l_nununu</code>, whose bracket  factorizes as  with , leaving . Its polygamma pair needs the only series here: from the duplication twice differentiated, , so</p>
+<pre><code>psi''((nu+1)/2) - psi''(nu/2) = 8/nu^3 + 12/nu^4 - 20/nu^6 + 84/nu^8</code></pre>
+<p>the two Bernoulli expansions cancelling term by term at . <code>t_T3rest()</code> carries the  inside, as <code>t_S()</code> carries its own , because the only consumer pairs it with a term that cancels precisely that.</p>
+<p>Validated four ways, three of them independent of the rewrite: against the form it replaces where that still holds (7.7e-16 to 2.2e-15 up to <code>nu</code> = 30); against a central difference of the ANALYTIC Hessian over all ten components and <code>nu</code> from 2.5 to 1e4 (5.5e-10 to 1.4e-07); against the closed limit , which the kernel converges onto as  – 2.4e-04, 2.4e-05, 2.4e-07, 2.4e-09, <strong>2.4e-11</strong> at <code>nu</code> from 1e5 to 1e12; and by being finite on the parameter scale at every <code>nu</code> to <code>double.xmax</code>.</p>
+<p>⚠️ My own asymptote was wrong twice before it was right, and the code was right both times: the first draft dropped the  that  contributes, and the second was a mis-summed hand arithmetic. Computing the coefficient rather than writing it out settles it in one line.</p>
+</li>
+<li><p>⚠️ <strong>What this does NOT repair: the chain to the LINK scale.</strong> On the parameter scale the third derivatives are now finite at every <code>nu</code>; on the link scale <code>nu_nu_nu</code> is still non-finite at 1e150 and <code>mu_nu_nu</code>, <code>sigma_nu_nu</code>, <code>nu_nu_nu</code> at 1e300 and above, because <code><a href="../reference/to_link_scale.html">to_link_scale()</a></code> forms  with  against a component of order . That is the item already recorded for the gaussian’s second order at <code>sigma</code> = 1.3e154, and closing it means restructuring <code><a href="../reference/bell_partial.html">bell_partial()</a></code> to multiply the parameter-scale component in first – the hottest shared path in the package. The FOURTH derivatives are untouched here and cede from 1e150 as before.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.36.0" id="distributions7-0360">distributions7 0.36.0<a class="anchor" aria-label="anchor" href="#distributions7-0360"></a></h2>
 <ul><li>
@@ -269,8 +286,8 @@ E[l_nu_nu] = -7/(2 nu^4) + 13/nu^5 - 79/(2 nu^6) + 119/nu^7    (nu &gt;= 1000)</
 <p><code><a href="../reference/enet_distrib.html">enet_distrib()</a></code> has a closed expected information, where it took one from the sampling fallback. Every piece was already in the family.</p>
 <p>In the two rates the density is an exponential family with sufficient statistics <code>-|z|</code> and <code>-z^2/2</code>, so <code>log Z</code> is its cumulant generating function and the information in <code>(a, c)</code> is exactly the Hessian of <code>log Z</code> – which <code>.enet_logz_derivs()</code> computes for the observed Hessian already. The map to <code>(lambda, alpha)</code> is bilinear, so the information transforms by <code>J' I J</code> with no second-derivative term.</p>
 <p>The location is where the expected and the observed part company, and the reason is the kink. The observed second derivative in <code>mu</code> is <code>-c</code>, which misses the point mass <code>d sgn(z)/dz = 2 delta(z)</code> the density carries at its own location, exactly as the Laplace does; the information there is the variance of the score,</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>I_mu_mu <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span>ac E<span class="sc">|</span>z<span class="sc">|</span> <span class="sc">+</span> c<span class="sc">^</span><span class="dv">2</span> E[z<span class="sc">^</span><span class="dv">2</span>]</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>        <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span>ac dlogZ<span class="sc">/</span>da <span class="sc">-</span> <span class="dv">2</span>c<span class="sc">^</span><span class="dv">2</span> dlogZ<span class="sc">/</span>dc,</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>I_mu_mu <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span>ac E<span class="sc">|</span>z<span class="sc">|</span> <span class="sc">+</span> c<span class="sc">^</span><span class="dv">2</span> E[z<span class="sc">^</span><span class="dv">2</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>        <span class="ot">=</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span>ac dlogZ<span class="sc">/</span>da <span class="sc">-</span> <span class="dv">2</span>c<span class="sc">^</span><span class="dv">2</span> dlogZ<span class="sc">/</span>dc,</span></code></pre></div>
 <p>since <code>E|z| = -dlogZ/da</code> and <code>E[z^2] = -2 dlogZ/dc</code>. It reduces to <code>lambda^2</code> at <code>alpha = 1</code>, which is the Laplace’s, and to <code>c</code> at <code>alpha = 0</code>, which is the Gaussian’s, and both are asserted against the families that own them.</p>
 <p>Validated against the definition – minus the outer product of the score, integrated against the density and SPLIT AT THE KINK, since a rule that straddles the corner measures the corner: 2.3e-14 to 1.1e-6 over five settings, the worse ones being the quadrature and not the formula. A Monte Carlo of 4e6 draws agrees within its own standard error at all of them.</p>
 </li>
