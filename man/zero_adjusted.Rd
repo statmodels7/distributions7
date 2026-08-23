@@ -86,6 +86,7 @@ likelihood entirely, leaving an identically zero score;
 support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
 concentrated on \eqn{\{1\}}, and \code{mu} vanishes from the likelihood.
 }
+
 A continuous parent whose support does not reach zero (say \eqn{(2, 5)}) is accepted
 with a warning: the atom is then disconnected from the rest of the distribution,
 which is legitimate but rarely intended.

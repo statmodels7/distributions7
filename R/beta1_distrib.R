@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Beta Distribution
 #' @name Beta1Distrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Beta distribution 
 #' under the mean-precision parameterization.
 #' @inheritParams distrib
@@ -34,7 +34,7 @@ Beta1Distrib <- S7::new_class("Beta1Distrib", parent = continuous_distrib)
 #' @description
 #' Computes the probability density function for the Beta distribution:
 #' \deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\mu\phi)\Gamma((1-\mu)\phi)} y^{\mu\phi-1} (1-y)^{(1-\mu)\phi-1}}
-#' 
+#'
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -104,7 +104,7 @@ S7::method(distrib_quantile, Beta1Distrib) <- function(distrib, p, theta, lower.
 #' @name distrib_rng.Beta1Distrib
 #' @description
 #' Generates random numbers from the Beta distribution.
-#' 
+#'
 #' @param distrib A `Beta1Distrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -123,10 +123,10 @@ S7::method(distrib_rng, Beta1Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Beta log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \phi \left[ \log\left(\dfrac{y}{1-y}\right) - \psi(\mu\phi) + \psi((1-\mu)\phi) \right]}
 #' \deqn{\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\mu\phi) - (1-\mu)\psi((1-\mu)\phi) + \mu \log(y) + (1-\mu) \log(1-y)}
-#' 
+#'
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -144,7 +144,7 @@ S7::method(distrib_gradient, Beta1Distrib) <- function(distrib, y, theta, scale 
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Beta log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -162,11 +162,11 @@ S7::method(distrib_hessian, Beta1Distrib) <- function(distrib, y, theta, scale =
 #' @description
 #' Computes the analytical expected Hessian of the Beta log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\phi^2 \left[ \psi_1(\mu\phi) + \psi_1((1-\mu)\phi) \right]}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = \psi_1(\phi) - \mu^2\psi_1(\mu\phi) - (1-\mu)^2\psi_1((1-\mu)\phi)}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \phi}\right] = -\phi \left[ \mu\psi_1(\mu\phi) - (1-\mu)\psi_1((1-\mu)\phi) \right]}
-#' 
+#'
 #' @param distrib A `Beta1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -287,25 +287,23 @@ S7::method(distrib_hess_y, Beta1Distrib) <- function(distrib, y, theta) {
 #' skewness \eqn{\dfrac{2(1-2\mu)\sqrt{\phi+1}}{(\phi+2)\sqrt{\mu(1-\mu)}}}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, 1)}
-#'   \item \eqn{\phi \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, 1)}
+#' - \eqn{\phi \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) and response derivatives ([distrib_grad_y()],
 #' [distrib_hess_y()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.Beta1Distrib()] for the probability density function.
-#'   \item [distrib_cdf.Beta1Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.Beta1Distrib()] for the quantile function.
-#'   \item [distrib_rng.Beta1Distrib()] for random number generation.
-#'   \item [distrib_gradient.Beta1Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.Beta1Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.Beta1Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.Beta1Distrib()] for the probability density function.
+#' - [distrib_cdf.Beta1Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.Beta1Distrib()] for the quantile function.
+#' - [distrib_rng.Beta1Distrib()] for random number generation.
+#' - [distrib_gradient.Beta1Distrib()] for the analytical gradient.
+#' - [distrib_hessian.Beta1Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.Beta1Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `Beta1Distrib` (inheriting from `continuous_distrib`) representing the Beta distribution.
 #'

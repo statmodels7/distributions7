@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Bernoulli Distribution
 #' @name BernoulliDistrib
-#' 
+#'
 #' @description A subclass of `discrete_distrib` representing the Bernoulli distribution.
 #' @inheritParams distrib
 #' @return An object of class `BernoulliDistrib`.
@@ -31,7 +31,7 @@ BernoulliDistrib <- S7::new_class("BernoulliDistrib", parent = discrete_distrib)
 #' @description
 #' Computes the probability mass function for the Bernoulli distribution:
 #' \deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}}
-#' 
+#'
 #' @param distrib A `BernoulliDistrib` object.
 #' @param y A numeric vector of observations (`0` or `1`).
 #' @param theta A list containing the parameter `mu`.
@@ -98,7 +98,7 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' @name distrib_rng.BernoulliDistrib
 #' @description
 #' Generates random numbers from the Bernoulli distribution.
-#' 
+#'
 #' @param distrib A `BernoulliDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter `mu`.
@@ -117,9 +117,9 @@ S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivative) of the Bernoulli log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}}
-#' 
+#'
 #' @param distrib A `BernoulliDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -134,9 +134,9 @@ S7::method(distrib_gradient, BernoulliDistrib) <- function(distrib, y, theta, sc
 #' @description
 #' Computes the analytical observed Hessian (second derivative) of the Bernoulli log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}}
-#' 
+#'
 #' @param distrib A `BernoulliDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -151,9 +151,9 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical expected Hessian of the Bernoulli log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1-\mu)}}
-#' 
+#'
 #' @param distrib A `BernoulliDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -224,23 +224,21 @@ S7::method(distrib_deriv4, BernoulliDistrib) <- function(distrib, y, theta, expe
 #' \eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, 1)}
-#' }
+#'
+#' - \eqn{\mu \in (0, 1)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.BernoulliDistrib()] for the probability mass function.
-#'   \item [distrib_cdf.BernoulliDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.BernoulliDistrib()] for the quantile function.
-#'   \item [distrib_rng.BernoulliDistrib()] for random number generation.
-#'   \item [distrib_gradient.BernoulliDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.BernoulliDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.BernoulliDistrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.BernoulliDistrib()] for the probability mass function.
+#' - [distrib_cdf.BernoulliDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.BernoulliDistrib()] for the quantile function.
+#' - [distrib_rng.BernoulliDistrib()] for random number generation.
+#' - [distrib_gradient.BernoulliDistrib()] for the analytical gradient.
+#' - [distrib_hessian.BernoulliDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.BernoulliDistrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `BernoulliDistrib` (inheriting from `discrete_distrib`) representing the Bernoulli distribution.
 #'

@@ -11,14 +11,13 @@ NULL
 #' [distrib_deriv3()], [distrib_deriv4()]) accept a
 #' `scale` argument selecting the parameterization the derivatives are taken
 #' with respect to:
-#' \itemize{
-#'   \item `scale = "parameter"` (default): derivatives with respect to the
-#'     parameters \eqn{\theta} on their natural, possibly constrained scale.
-#'   \item `scale = "link"`: derivatives with respect to the unconstrained
-#'     linear predictors \eqn{\eta_i = g_i(\theta_i)}, where \eqn{g_i} is the link
-#'     stored in `distrib@link_params`. This is the scale on which
-#'     optimization is normally carried out, since \eqn{\eta \in \mathbb{R}^p}.
-#' }
+#'
+#' - `scale = "parameter"` (default): derivatives with respect to the
+#'   parameters \eqn{\theta} on their natural, possibly constrained scale.
+#' - `scale = "link"`: derivatives with respect to the unconstrained
+#'   linear predictors \eqn{\eta_i = g_i(\theta_i)}, where \eqn{g_i} is the link
+#'   stored in `distrib@link_params`. This is the scale on which
+#'   optimization is normally carried out, since \eqn{\eta \in \mathbb{R}^p}.
 #'
 #' @details
 #' Write \eqn{h_i = g_i^{-1}}, so that \eqn{\theta_i = h_i(\eta_i)}. Because each

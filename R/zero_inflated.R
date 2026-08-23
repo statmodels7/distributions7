@@ -475,15 +475,15 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 #' point mass at zero next to a density is zero-*adjustment*, and
 #' [zero_adjusted()] handles it. Constructing the object also fails when the
 #' result would not be identified:
-#' \itemize{
-#'   \item the parent already models a probability of zero (a wrapper cannot be
-#'     stacked on another wrapper: only the total mass at zero would be identified);
-#'   \item the support is too small for one more parameter --- a distribution on
-#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least
-#'     `n_params + 2` support points are needed. This rules out the Bernoulli
-#'     and `binomial_distrib(size = 1)`, where `mu` and `zi` between
-#'     them describe a single free cell.
-#' }
+#'
+#' - the parent already models a probability of zero (a wrapper cannot be
+#'   stacked on another wrapper: only the total mass at zero would be identified);
+#' - the support is too small for one more parameter --- a distribution on
+#'   \eqn{k} points has \eqn{k-1} free probabilities, so at least
+#'   `n_params + 2` support points are needed. This rules out the Bernoulli
+#'   and `binomial_distrib(size = 1)`, where `mu` and `zi` between
+#'   them describe a single free cell.
+#'
 #' A large support is necessary but not sufficient: with \eqn{\mu} large enough that
 #' \eqn{f(0)} underflows, or \eqn{\zeta} close to 0, the ridge reappears in the data
 #' rather than in the model. [fit_distrib()] reports the standard errors

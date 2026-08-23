@@ -228,10 +228,9 @@ S7::method(distrib_expected_hessian, BetaBinom1Distrib) <- function(distrib, y, 
 #' quadrature, which is what a bounded count buys.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, 1)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, 1)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' The family is **not** reachable from anything already in the package:
 #' it is neither a binomial with a parameter held fixed nor a wrapper over

@@ -270,24 +270,22 @@ S7::method(distrib_deriv4, NegBin2Distrib) <- function(distrib, y, theta, expect
 #' \eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#'   \item \eqn{\theta \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
+#' - \eqn{\theta \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.NegBin2Distrib()] for the probability mass function.
-#'   \item [distrib_cdf.NegBin2Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.NegBin2Distrib()] for the quantile function.
-#'   \item [distrib_rng.NegBin2Distrib()] for random number generation.
-#'   \item [distrib_gradient.NegBin2Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.NegBin2Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.NegBin2Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.NegBin2Distrib()] for the probability mass function.
+#' - [distrib_cdf.NegBin2Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.NegBin2Distrib()] for the quantile function.
+#' - [distrib_rng.NegBin2Distrib()] for random number generation.
+#' - [distrib_gradient.NegBin2Distrib()] for the analytical gradient.
+#' - [distrib_hessian.NegBin2Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.NegBin2Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `NegBin2Distrib` (inheriting from `discrete_distrib`) representing the Negative Binomial distribution.
 #'

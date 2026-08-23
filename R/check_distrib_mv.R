@@ -17,27 +17,26 @@ NULL
 #' cannot tell a real defect from it.
 #'
 #' What replaces them are checks that do generalize:
-#' \enumerate{
-#'   \item **the density is positive and finite** on a sample;
-#'   \item **the density integrates to one**. For a family that enumerates
-#'     its support through [mv_support()] this is an exact sum over
-#'     that support; otherwise it is importance sampling from the proposal
-#'     [mv_reference_draw()] supplies, which by default is a gaussian
-#'     with the same mean and an inflated covariance. The proposal is
-#'     deliberately not the distribution itself, which would make the ratio
-#'     identically one and the check vacuous;
-#'   \item **the score has mean zero**, the first Bartlett identity, under
-#'     the distribution's own generator -- so it is also a check that the
-#'     generator and the density describe the same law;
-#'   \item **gradient and Hessian** against finite differences of the
-#'     summed log-density;
-#'   \item **the expected information** against the Monte Carlo average of
-#'     the observed Hessian, and against the variance of the score, which is the
-#'     second Bartlett identity;
-#'   \item **the generator** against the first two moments;
-#'   \item **the response derivatives** against finite differences in
-#'     \eqn{y}.
-#' }
+#'
+#' 1. **the density is positive and finite** on a sample;
+#' 2. **the density integrates to one**. For a family that enumerates
+#'    its support through [mv_support()] this is an exact sum over
+#'    that support; otherwise it is importance sampling from the proposal
+#'    [mv_reference_draw()] supplies, which by default is a gaussian
+#'    with the same mean and an inflated covariance. The proposal is
+#'    deliberately not the distribution itself, which would make the ratio
+#'    identically one and the check vacuous;
+#' 3. **the score has mean zero**, the first Bartlett identity, under
+#'    the distribution's own generator -- so it is also a check that the
+#'    generator and the density describe the same law;
+#' 4. **gradient and Hessian** against finite differences of the
+#'    summed log-density;
+#' 5. **the expected information** against the Monte Carlo average of
+#'    the observed Hessian, and against the variance of the score, which is the
+#'    second Bartlett identity;
+#' 6. **the generator** against the first two moments;
+#' 7. **the response derivatives** against finite differences in
+#'    \eqn{y}.
 #'
 #' The last of these is emitted only when it applies, as the univariate battery
 #' already omits the checks that a discrete family has no counterpart for. A

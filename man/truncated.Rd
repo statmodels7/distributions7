@@ -80,6 +80,7 @@ score. Truncating elsewhere, as in
 \code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is fine and the
 point mass is carried through \code{\link[=distrib_atoms]{distrib_atoms()}}.
 }
+
 Truncating an already truncated distribution is allowed and is collapsed into a
 single object over the intersection of the two intervals, rather than nested.
 }

@@ -646,14 +646,13 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' zero becomes a parameter of its own, \eqn{\pi} (parameter `za`), and everything
 #' else is left to the parent. What that means depends on the parent's type, and the
 #' constructor dispatches on it:
-#' \itemize{
-#'   \item **Discrete** (support including 0): a **hurdle** model. The mass the
-#'     parent puts at zero is removed, the parent is renormalized over the positive
-#'     values, and \eqn{\pi} takes its place.
-#'   \item **Continuous**: a **mixed** distribution. Nothing has to be removed,
-#'     since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the
-#'     density is scaled by \eqn{1-\pi}.
-#' }
+#'
+#' - **Discrete** (support including 0): a **hurdle** model. The mass the
+#'   parent puts at zero is removed, the parent is renormalized over the positive
+#'   values, and \eqn{\pi} takes its place.
+#' - **Continuous**: a **mixed** distribution. Nothing has to be removed,
+#'   since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the
+#'   density is scaled by \eqn{1-\pi}.
 #'
 #' Zero-adjustment is the right wrapper when zeros come from their own mechanism ---
 #' no claim filed, no purchase made, no rainfall --- and the parent describes only what
@@ -706,15 +705,15 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' **What the parent must be.** A discrete parent must have 0 in its support: with
 #' \eqn{f(0) = 0} there is no mass to remove. Construction also fails when the result
 #' would not be identified:
-#' \itemize{
-#'   \item the parent already models a probability of zero --- zero-truncating a
-#'     zero-inflated or zero-adjusted distribution cancels its zero parameter out of the
-#'     likelihood entirely, leaving an identically zero score;
-#'   \item the support is too small to carry one more parameter: a distribution on
-#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least `n_params + 2`
-#'     support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
-#'     concentrated on \eqn{\{1\}}, and `mu` vanishes from the likelihood.
-#' }
+#'
+#' - the parent already models a probability of zero --- zero-truncating a
+#'   zero-inflated or zero-adjusted distribution cancels its zero parameter out of the
+#'   likelihood entirely, leaving an identically zero score;
+#' - the support is too small to carry one more parameter: a distribution on
+#'   \eqn{k} points has \eqn{k-1} free probabilities, so at least `n_params + 2`
+#'   support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
+#'   concentrated on \eqn{\{1\}}, and `mu` vanishes from the likelihood.
+#'
 #' A continuous parent whose support does not reach zero (say \eqn{(2, 5)}) is accepted
 #' with a warning: the atom is then disconnected from the rest of the distribution,
 #' which is legitimate but rarely intended.

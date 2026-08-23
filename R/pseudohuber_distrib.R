@@ -370,12 +370,11 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' where \eqn{K_1} is the modified Bessel function of the second kind.
 #'
 #' **Moments:**
-#' \itemize{
-#'   \item Expected value: \eqn{\mathbb{E}(Y) = \mu}
-#'   \item Variance: \eqn{\mathbb{V}(Y) = \sigma^2 \sqrt{\nu}\, \dfrac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})}}
-#'   \item Skewness: 0 (symmetric)
-#'   \item Excess kurtosis: \eqn{3 \dfrac{K_3(\sqrt{\nu}) K_1(\sqrt{\nu})}{K_2(\sqrt{\nu})^2} - 3}
-#' }
+#'
+#' - Expected value: \eqn{\mathbb{E}(Y) = \mu}
+#' - Variance: \eqn{\mathbb{V}(Y) = \sigma^2 \sqrt{\nu}\, \dfrac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})}}
+#' - Skewness: 0 (symmetric)
+#' - Excess kurtosis: \eqn{3 \dfrac{K_3(\sqrt{\nu}) K_1(\sqrt{\nu})}{K_2(\sqrt{\nu})^2} - 3}
 #'
 #' **Score** (with \eqn{r = y-\mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 #' \eqn{K_1'} the derivative of \eqn{K_1}):
@@ -387,11 +386,10 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' closed form and is obtained by numerical integration.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#'   \item \eqn{\nu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
+#' - \eqn{\nu \in (0, +\infty)}
 #'
 #' **Note:** The CDF, quantile function and RNG have no closed form and rely on
 #' numerical integration / root-finding, so they are slower than for the other
@@ -400,15 +398,14 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' fourth-order parameter derivatives use the numerical fallback.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.PseudoHuberDistrib()] for the density function.
-#'   \item [distrib_cdf.PseudoHuberDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.PseudoHuberDistrib()] for the quantile function.
-#'   \item [distrib_rng.PseudoHuberDistrib()] for random number generation.
-#'   \item [distrib_gradient.PseudoHuberDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.PseudoHuberDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.PseudoHuberDistrib()] for the expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.PseudoHuberDistrib()] for the density function.
+#' - [distrib_cdf.PseudoHuberDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.PseudoHuberDistrib()] for the quantile function.
+#' - [distrib_rng.PseudoHuberDistrib()] for random number generation.
+#' - [distrib_gradient.PseudoHuberDistrib()] for the analytical gradient.
+#' - [distrib_hessian.PseudoHuberDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.PseudoHuberDistrib()] for the expected Hessian.
 #'
 #' @return An S7 object of class `PseudoHuberDistrib` (inheriting from `continuous_distrib`) representing the Pseudo-Huber distribution.
 #'

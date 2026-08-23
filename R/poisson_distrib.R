@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Poisson Distribution
 #' @name PoissonDistrib
-#' 
+#'
 #' @description A subclass of `discrete_distrib` representing the Poisson distribution.
 #' @inheritParams distrib
 #' @return An object of class `PoissonDistrib`.
@@ -31,7 +31,7 @@ PoissonDistrib <- S7::new_class("PoissonDistrib", parent = discrete_distrib)
 #' @description
 #' Computes the probability mass function for the Poisson distribution:
 #' \deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
-#' 
+#'
 #' @param distrib A `PoissonDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -95,7 +95,7 @@ S7::method(distrib_quantile, PoissonDistrib) <- function(distrib, p, theta, lowe
 #' @name distrib_rng.PoissonDistrib
 #' @description
 #' Generates random numbers from the Poisson distribution.
-#' 
+#'
 #' @param distrib A `PoissonDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter `mu`.
@@ -113,9 +113,9 @@ S7::method(distrib_rng, PoissonDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivative) of the Poisson log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}}
-#' 
+#'
 #' @param distrib A `PoissonDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -133,9 +133,9 @@ S7::method(distrib_gradient, PoissonDistrib) <- function(distrib, y, theta, scal
 #' @description
 #' Computes the analytical observed Hessian (second derivative) of the Poisson log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}}
-#' 
+#'
 #' @param distrib A `PoissonDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -153,9 +153,9 @@ S7::method(distrib_hessian, PoissonDistrib) <- function(distrib, y, theta, scale
 #' @description
 #' Computes the analytical expected Hessian of the Poisson log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
-#' 
+#'
 #' @param distrib A `PoissonDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -234,23 +234,21 @@ S7::method(distrib_deriv4, PoissonDistrib) <- function(distrib, y, theta, expect
 #' excess kurtosis \eqn{1/\mu}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.PoissonDistrib()] for the probability mass function.
-#'   \item [distrib_cdf.PoissonDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.PoissonDistrib()] for the quantile function.
-#'   \item [distrib_rng.PoissonDistrib()] for random number generation.
-#'   \item [distrib_gradient.PoissonDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.PoissonDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.PoissonDistrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.PoissonDistrib()] for the probability mass function.
+#' - [distrib_cdf.PoissonDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.PoissonDistrib()] for the quantile function.
+#' - [distrib_rng.PoissonDistrib()] for random number generation.
+#' - [distrib_gradient.PoissonDistrib()] for the analytical gradient.
+#' - [distrib_hessian.PoissonDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.PoissonDistrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `PoissonDistrib` (inheriting from `discrete_distrib`) representing the Poisson distribution.
 #'

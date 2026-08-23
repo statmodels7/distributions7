@@ -310,24 +310,22 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' The density has a kink at \eqn{y = \mu}, so the log-likelihood is not
 #' differentiable in \eqn{\mu}. The package marks this via
 #' `params_smooth = c(mu = FALSE, sigma = TRUE)` and handles it as follows:
-#' \itemize{
-#'   \item the **score** ([distrib_gradient()]) exists almost
-#'     everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/\sigma};
-#'   \item the **observed Hessian** ([distrib_hessian()]) has
-#'     \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
-#'     \eqn{\mu};
-#'   \item the **expected Hessian** ([distrib_expected_hessian()]) is
-#'     implemented in closed form from the variance of the score, giving the correct
-#'     Fisher information \eqn{1/\sigma^2} for \eqn{\mu} and making Fisher scoring the
-#'     appropriate estimation method. Because the closed form exists, the
-#'     `approx` argument is ignored for this distribution.
-#' }
+#'
+#' - the **score** ([distrib_gradient()]) exists almost
+#'   everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/\sigma};
+#' - the **observed Hessian** ([distrib_hessian()]) has
+#'   \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
+#'   \eqn{\mu};
+#' - the **expected Hessian** ([distrib_expected_hessian()]) is
+#'   implemented in closed form from the variance of the score, giving the correct
+#'   Fisher information \eqn{1/\sigma^2} for \eqn{\mu} and making Fisher scoring the
+#'   appropriate estimation method. Because the closed form exists, the
+#'   `approx` argument is ignored for this distribution.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' @return An S7 object of class `LaplaceDistrib` (inheriting from `continuous_distrib`).
 #'

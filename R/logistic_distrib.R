@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Logistic Distribution
 #' @name LogisticDistrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Logistic distribution.
 #' @inheritParams distrib
 #' @return An object of class `LogisticDistrib`.
@@ -33,7 +33,7 @@ LogisticDistrib <- S7::new_class("LogisticDistrib", parent = continuous_distrib)
 #' @description
 #' Computes the probability density function for the Logistic distribution:
 #' \deqn{f(y; \mu, \sigma) = \dfrac{\exp\left(-\dfrac{y-\mu}{\sigma}\right)}{\sigma \left[1 + \exp\left(-\dfrac{y-\mu}{\sigma}\right)\right]^2}}
-#' 
+#'
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -99,7 +99,7 @@ S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, low
 #' @name distrib_rng.LogisticDistrib
 #' @description
 #' Generates random numbers from the Logistic distribution.
-#' 
+#'
 #' @param distrib A `LogisticDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -118,10 +118,10 @@ S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Logistic log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right)}
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma} \left[ 1 - \dfrac{y-\mu}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
-#' 
+#'
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -136,11 +136,11 @@ S7::method(distrib_gradient, LogisticDistrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Logistic log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{2\sigma^2} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right)}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{1}{\sigma^2} \left[ 1 - \dfrac{(y-\mu)^2}{2\sigma^2} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right) - \dfrac{2(y-\mu)}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{1}{\sigma^2} \left[ \tanh\left(\dfrac{y-\mu}{2\sigma}\right) + \dfrac{y-\mu}{2\sigma} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
-#' 
+#'
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -155,11 +155,11 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' @description
 #' Computes the analytical expected Hessian of the Logistic log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{3\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0}
-#' 
+#'
 #' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -300,10 +300,9 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta) {
 #' excess kurtosis \eqn{6/5}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' Response derivatives ([distrib_grad_y()], [distrib_hess_y()])
 #' and observed third- and fourth-order parameter derivatives
@@ -318,16 +317,15 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta) {
 #' the remaining ones in that list being zero by symmetry.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.LogisticDistrib()] for the probability density function.
-#'   \item [distrib_cdf.LogisticDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.LogisticDistrib()] for the quantile function.
-#'   \item [distrib_rng.LogisticDistrib()] for random number generation.
-#'   \item [distrib_gradient.LogisticDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.LogisticDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.LogisticDistrib()] for the analytical expected Hessian.
-#'   \item [distrib_deriv3.LogisticDistrib()] and [distrib_deriv4.LogisticDistrib()] for the observed higher-order derivatives.
-#' }
+#'
+#' - [distrib_pdf.LogisticDistrib()] for the probability density function.
+#' - [distrib_cdf.LogisticDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.LogisticDistrib()] for the quantile function.
+#' - [distrib_rng.LogisticDistrib()] for random number generation.
+#' - [distrib_gradient.LogisticDistrib()] for the analytical gradient.
+#' - [distrib_hessian.LogisticDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.LogisticDistrib()] for the analytical expected Hessian.
+#' - [distrib_deriv3.LogisticDistrib()] and [distrib_deriv4.LogisticDistrib()] for the observed higher-order derivatives.
 #'
 #' @return An S7 object of class `LogisticDistrib` (inheriting from `continuous_distrib`) representing the Logistic distribution.
 #'

@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Gaussian Distribution
 #' @name Gaussian1Distrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Gaussian (Normal) distribution.
 #' @inheritParams distrib
 #' @return An object of class `Gaussian1Distrib`.
@@ -33,7 +33,7 @@ Gaussian1Distrib <- S7::new_class("Gaussian1Distrib", parent = continuous_distri
 #' @description
 #' Computes the probability density function for the Gaussian distribution:
 #' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -54,7 +54,7 @@ S7::method(distrib_pdf, Gaussian1Distrib) <- function(distrib, y, theta, log = F
 #' @description
 #' Computes the cumulative distribution function for the Gaussian distribution:
 #' \deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -77,7 +77,7 @@ S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.t
 #' @description
 #' Computes the quantile function (inverse CDF) for the Gaussian distribution:
 #' \deqn{Q(p; \mu, \sigma) = \mu + \sigma \Phi^{-1}(p)}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -99,7 +99,7 @@ S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lo
 #' @name distrib_rng.Gaussian1Distrib
 #' @description
 #' Generates random numbers from the Gaussian distribution.
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -118,10 +118,10 @@ S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2}}
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -138,11 +138,11 @@ S7::method(distrib_gradient, Gaussian1Distrib) <- function(distrib, y, theta, sc
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y - \mu)^2}{\sigma^4}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{2(y - \mu)}{\sigma^3}}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -159,11 +159,11 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical expected Hessian of the Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0}
-#' 
+#'
 #' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -288,25 +288,23 @@ S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta) {
 #' **Moments:** mean \eqn{\mu}, variance \eqn{\sigma^2}, skewness 0, excess kurtosis 0.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) and derivatives with respect to the response
 #' ([distrib_grad_y()], [distrib_hess_y()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.Gaussian1Distrib()] for the density function.
-#'   \item [distrib_cdf.Gaussian1Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.Gaussian1Distrib()] for the quantile function.
-#'   \item [distrib_rng.Gaussian1Distrib()] for random number generation.
-#'   \item [distrib_gradient.Gaussian1Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.Gaussian1Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.Gaussian1Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.Gaussian1Distrib()] for the density function.
+#' - [distrib_cdf.Gaussian1Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.Gaussian1Distrib()] for the quantile function.
+#' - [distrib_rng.Gaussian1Distrib()] for random number generation.
+#' - [distrib_gradient.Gaussian1Distrib()] for the analytical gradient.
+#' - [distrib_hessian.Gaussian1Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.Gaussian1Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `Gaussian1Distrib` (inheriting from `continuous_distrib`) representing the Gaussian distribution.
 #'

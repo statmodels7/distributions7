@@ -40,6 +40,7 @@ both the algorithm and the stopping rule;
 strategies. The first two fall back to BFGS if they fail to converge;
 an optimizer the caller chose is never silently replaced.
 }
+
 The iteration limit and the stopping rule belong to the method and are
 set there: on an optimizer object through its own \code{maxit} and
 \code{criterion}, on \code{\link[=fisher_scoring]{fisher_scoring()}} through the same two

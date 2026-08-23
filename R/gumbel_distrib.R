@@ -348,10 +348,9 @@ S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta) {
 #' expectation is a derivative of \eqn{\Gamma} at 2.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' @return An S7 object of class [GumbelDistrib()] (inheriting from
 #'   `continuous_distrib`).

@@ -304,10 +304,9 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta) {
 #' Hessian comes from the variance of the score.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\lambda \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\lambda \in (0, +\infty)}
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
 #'   Defaults to [linkfunctions7::identity_link()].

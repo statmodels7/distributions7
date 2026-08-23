@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Inverse-Gaussian Distribution
 #' @name InvGauss1Distrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Inverse-Gaussian distribution.
 #' @inheritParams distrib
 #' @return An object of class `InvGauss1Distrib`.
@@ -33,7 +33,7 @@ InvGauss1Distrib <- S7::new_class("InvGauss1Distrib", parent = continuous_distri
 #' @description
 #' Computes the probability density function for the Inverse-Gaussian distribution:
 #' \deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}} \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}}
-#' 
+#'
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param y A numeric vector of observations (\eqn{y > 0}).
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -101,7 +101,7 @@ S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lo
 #' @name distrib_rng.InvGauss1Distrib
 #' @description
 #' Generates random numbers from the Inverse-Gaussian distribution.
-#' 
+#'
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -120,10 +120,10 @@ S7::method(distrib_rng, InvGauss1Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Inverse-Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^3}}
 #' \deqn{\dfrac{\partial \ell}{\partial \phi} = \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2}}
-#' 
+#'
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -141,18 +141,18 @@ S7::method(distrib_gradient, InvGauss1Distrib) <- function(distrib, y, theta, sc
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Inverse-Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{3y - 2\mu}{\phi\mu^4}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \phi^2} = \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \phi} = -\dfrac{y - \mu}{\phi^2\mu^3}}
-#' 
+#'
 #' **Note:** The observed Hessian with respect to \eqn{\phi} is not guaranteed to be negative for all
 #' observed values of \eqn{y}. Specifically, \eqn{\partial^2 \ell/\partial \phi^2 < 0} only when
 #' \eqn{\phi < 2(y-\mu)^2/(\mu^2 y)}. This condition may be violated when observations are far from the mean
 #' or when the dispersion parameter is large, potentially causing numerical instability in optimization
 #' algorithms that rely on the observed Hessian (e.g., Newton-Raphson). In such cases, using the expected
 #' Hessian (`distrib_expected_hessian`) is recommended for more stable convergence.
-#' 
+#'
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -170,11 +170,11 @@ S7::method(distrib_hessian, InvGauss1Distrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical expected Hessian of the Inverse-Gaussian log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\phi}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\phi\mu^3}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = -\dfrac{1}{2\phi^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \phi}\right] = 0}
-#' 
+#'
 #' @param distrib An `InvGauss1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `phi`.
@@ -293,25 +293,23 @@ S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta) {
 #' skewness \eqn{3\sqrt{\phi\mu}}, excess kurtosis \eqn{15\phi\mu}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#'   \item \eqn{\phi \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
+#' - \eqn{\phi \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) and response derivatives ([distrib_grad_y()],
 #' [distrib_hess_y()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.InvGauss1Distrib()] for the probability density function.
-#'   \item [distrib_cdf.InvGauss1Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.InvGauss1Distrib()] for the quantile function.
-#'   \item [distrib_rng.InvGauss1Distrib()] for random number generation.
-#'   \item [distrib_gradient.InvGauss1Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.InvGauss1Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.InvGauss1Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.InvGauss1Distrib()] for the probability density function.
+#' - [distrib_cdf.InvGauss1Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.InvGauss1Distrib()] for the quantile function.
+#' - [distrib_rng.InvGauss1Distrib()] for random number generation.
+#' - [distrib_gradient.InvGauss1Distrib()] for the analytical gradient.
+#' - [distrib_hessian.InvGauss1Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.InvGauss1Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `InvGauss1Distrib` (inheriting from `continuous_distrib`) representing the Inverse-Gaussian distribution.
 #'

@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Binomial Distribution
 #' @name BinomialDistrib
-#' 
+#'
 #' @description A subclass of `discrete_distrib` representing the Binomial distribution.
 #' @inheritParams distrib
 #' @param size Integer or Numeric Vector. The number of trials \eqn{n}.
@@ -38,7 +38,7 @@ BinomialDistrib <- S7::new_class("BinomialDistrib",
 #' @description
 #' Computes the probability mass function for the Binomial distribution:
 #' \deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}}
-#' 
+#'
 #' @param distrib A `BinomialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -105,7 +105,7 @@ S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, low
 #' @name distrib_rng.BinomialDistrib
 #' @description
 #' Generates random numbers from the Binomial distribution.
-#' 
+#'
 #' @param distrib A `BinomialDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameter `mu`.
@@ -124,9 +124,9 @@ S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivative) of the Binomial log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}}
-#' 
+#'
 #' @param distrib A `BinomialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -141,9 +141,9 @@ S7::method(distrib_gradient, BinomialDistrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical observed Hessian (second derivative) of the Binomial log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}}
-#' 
+#'
 #' @param distrib A `BinomialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -158,9 +158,9 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' @description
 #' Computes the analytical expected Hessian of the Binomial log-probability 
 #' with respect to the parameter \eqn{\mu}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
-#' 
+#'
 #' @param distrib A `BinomialDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameter `mu`.
@@ -234,24 +234,22 @@ S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expec
 #' \eqn{(1 - 6\mu(1-\mu))/(n\mu(1-\mu))}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, 1)}
-#'   \item \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
-#' }
+#'
+#' - \eqn{\mu \in (0, 1)}
+#' - \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.BinomialDistrib()] for the probability mass function.
-#'   \item [distrib_cdf.BinomialDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.BinomialDistrib()] for the quantile function.
-#'   \item [distrib_rng.BinomialDistrib()] for random number generation.
-#'   \item [distrib_gradient.BinomialDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.BinomialDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.BinomialDistrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.BinomialDistrib()] for the probability mass function.
+#' - [distrib_cdf.BinomialDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.BinomialDistrib()] for the quantile function.
+#' - [distrib_rng.BinomialDistrib()] for random number generation.
+#' - [distrib_gradient.BinomialDistrib()] for the analytical gradient.
+#' - [distrib_hessian.BinomialDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.BinomialDistrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `BinomialDistrib` (inheriting from `discrete_distrib`) representing the Binomial distribution.
 #'

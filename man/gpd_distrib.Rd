@@ -58,6 +58,7 @@ and only if \eqn{|\xi| < 1/2};
 classical asymptotics of the maximum likelihood estimator do not hold
 (Smith, 1985).
 }
+
 The \code{bounds} of the object are \code{c(0, Inf)} because they are fixed
 at construction while the true endpoint moves with the parameters; the
 density is zero beyond it, so nothing computes a wrong number, but a caller

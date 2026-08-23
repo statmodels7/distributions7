@@ -186,15 +186,15 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #'
 #' **What it nests**, which Stacy's parametrization is chosen to make
 #' visible:
-#' \itemize{
-#'   \item \eqn{p = 1} is the [gamma][gamma2_distrib] with shape \eqn{d}
-#'     and scale \eqn{a};
-#'   \item \eqn{d = p} is the [Weibull][weibull1_distrib] with shape
-#'     \eqn{p} and scale \eqn{a};
-#'   \item \eqn{d = p = 1} is the [exponential][exponential_distrib];
-#'   \item \eqn{p \to 0} with \eqn{d/p} held large approaches the
-#'     [lognormal][lognormal1_distrib].
-#' }
+#'
+#' - \eqn{p = 1} is the [gamma][gamma2_distrib] with shape \eqn{d}
+#'   and scale \eqn{a};
+#' - \eqn{d = p} is the [Weibull][weibull1_distrib] with shape
+#'   \eqn{p} and scale \eqn{a};
+#' - \eqn{d = p = 1} is the [exponential][exponential_distrib];
+#' - \eqn{p \to 0} with \eqn{d/p} held large approaches the
+#'   [lognormal][lognormal1_distrib].
+#'
 #' The first three are exact and testable; the fourth is a limit and is not
 #' reached at any admissible value.
 #'

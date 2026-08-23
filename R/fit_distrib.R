@@ -262,20 +262,20 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'   data; families that do not say otherwise fall back to random draws, with
 #'   restarts.
 #' @param method How to optimize. One argument, taking one of three things:
-#'   \itemize{
-#'     \item [fisher_scoring()], the default --- Newton's method
-#'       with the **expected** information in place of the Hessian, the
-#'       object carrying how that information is to be obtained when the family
-#'       has no closed form for it;
-#'     \item an optimizer object from \pkg{optimizers7}, used as given and
-#'       receiving the analytical gradient and the **observed** Hessian,
-#'       so that `method = lbfgs(criterion = crit_grad(1e-12))` selects
-#'       both the algorithm and the stopping rule;
-#'     \item one of the strings `"fisher"`, `"newton"` or
-#'       `"bfgs"`, kept as short names for the three ready-made
-#'       strategies. The first two fall back to BFGS if they fail to converge;
-#'       an optimizer the caller chose is never silently replaced.
-#'   }
+#'
+#'   - [fisher_scoring()], the default --- Newton's method
+#'     with the **expected** information in place of the Hessian, the
+#'     object carrying how that information is to be obtained when the family
+#'     has no closed form for it;
+#'   - an optimizer object from \pkg{optimizers7}, used as given and
+#'     receiving the analytical gradient and the **observed** Hessian,
+#'     so that `method = lbfgs(criterion = crit_grad(1e-12))` selects
+#'     both the algorithm and the stopping rule;
+#'   - one of the strings `"fisher"`, `"newton"` or
+#'     `"bfgs"`, kept as short names for the three ready-made
+#'     strategies. The first two fall back to BFGS if they fail to converge;
+#'     an optimizer the caller chose is never silently replaced.
+#'
 #'   The iteration limit and the stopping rule belong to the method and are
 #'   set there: on an optimizer object through its own `maxit` and
 #'   `criterion`, on [fisher_scoring()] through the same two

@@ -65,6 +65,7 @@ stacked on another wrapper: only the total mass at zero would be identified);
 and \code{binomial_distrib(size = 1)}, where \code{mu} and \code{zi} between
 them describe a single free cell.
 }
+
 A large support is necessary but not sufficient: with \eqn{\mu} large enough that
 \eqn{f(0)} underflows, or \eqn{\zeta} close to 0, the ridge reappears in the data
 rather than in the model. \code{\link[=fit_distrib]{fit_distrib()}} reports the standard errors

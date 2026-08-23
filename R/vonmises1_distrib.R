@@ -250,10 +250,9 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' many.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\pi, \pi)}
-#'   \item \eqn{\kappa \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\pi, \pi)}
+#' - \eqn{\kappa \in (0, +\infty)}
 #'
 #' The distribution function has no elementary form and comes from the base
 #' class by quadrature over the bounded support, with the quantile by root

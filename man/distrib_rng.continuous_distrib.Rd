@@ -25,6 +25,7 @@ Inverting a purely numerical CDF costs one root-finding step per draw, which
 makes simulation-based tools (\code{approx = "mc"}, \code{\link[=check_distrib]{check_distrib()}})
 impractical; GRoU only evaluates the density, so it is orders of magnitude faster.
 }
+
 GRoU requires a bounded, unimodal density; if it cannot build its bounding
 rectangle the method warns and reverts to inverse transform sampling. Vector-valued
 \code{theta} is handled by grouping the draws by distinct parameter values.

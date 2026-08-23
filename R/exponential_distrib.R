@@ -257,9 +257,8 @@ S7::method(distrib_hess_y, ExponentialDistrib) <- function(distrib, y, theta, ..
 #' kurtosis 6.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
 #'
 #' The family is the Weibull with unit shape, so
 #' `fixed(weibull1_distrib(), sigma = 1)` describes the same law and is

@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Student's t Distribution
 #' @name StudentT1Distrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Student's t distribution.
 #' @inheritParams distrib
 #' @return An object of class `StudentT1Distrib`.
@@ -33,7 +33,7 @@ StudentT1Distrib <- S7::new_class("StudentT1Distrib", parent = continuous_distri
 #' @description
 #' Computes the probability density function for the Student's t distribution:
 #' \deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
-#' 
+#'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu`, `sigma`, and `nu`.
@@ -105,7 +105,7 @@ S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lo
 #' @name distrib_rng.StudentT1Distrib
 #' @description
 #' Generates random numbers from the Student's t distribution.
-#' 
+#'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu`, `sigma`, and `nu`.
@@ -123,11 +123,11 @@ S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Student's t log-density 
 #' with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)(y-\mu)}{\nu\sigma^2 + (y-\mu)^2}}
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left[(y-\mu)^2 - \sigma^2\right]}{\sigma\left[\nu\sigma^2 + (y-\mu)^2\right]}}
 #' \deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[ -\dfrac{1}{\nu} - \psi\left(\dfrac{\nu}{2}\right) + \psi\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)(y-\mu)^2}{\nu\left[\nu\sigma^2 + (y-\mu)^2\right]} - \log\left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right) \right]}
-#' 
+#'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu`, `sigma`, and `nu`.
@@ -145,14 +145,14 @@ S7::method(distrib_gradient, StudentT1Distrib) <- function(distrib, y, theta, sc
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Student's t log-density 
 #' with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{(\nu+1)\left[(y-\mu)^2 - \nu\sigma^2\right]}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\nu\left[\nu\sigma^4 - (3\nu+1)\sigma^2(y-\mu)^2 - (y-\mu)^4\right]}{\sigma^2\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4}\left[ -\psi_1\left(\dfrac{\nu}{2}\right) + \psi_1\left(\dfrac{\nu+1}{2}\right) + \dfrac{2\left(\nu\sigma^4 + (y-\mu)^4\right)}{\nu\left[\nu\sigma^2 + (y-\mu)^2\right]^2} \right]}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{2\nu(\nu+1)\sigma(y-\mu)}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \nu} = \dfrac{(y-\mu)\left[(y-\mu)^2 - \sigma^2\right]}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = \dfrac{(y-\mu)^2\left[(y-\mu)^2 - \sigma^2\right]}{\sigma\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
-#' 
+#'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu`, `sigma`, and `nu`.
@@ -170,14 +170,14 @@ S7::method(distrib_hessian, StudentT1Distrib) <- function(distrib, y, theta, sca
 #' @description
 #' Computes the analytical expected Hessian of the Student's t log-density 
 #' with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
-#' 
+#'
 #' The parameter \eqn{\mu} is orthogonal to \eqn{\sigma} and \eqn{\nu} (mixed expected derivatives are 0).
-#' 
+#'
 #' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu`, `sigma`, and `nu`.
@@ -315,11 +315,10 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta) {
 #' excess kurtosis \eqn{6/(\nu-4)} (\eqn{\nu>4}).
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#'   \item \eqn{\nu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
+#' - \eqn{\nu \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order observed derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]; the expected ones use the numerical fallback) and
@@ -327,15 +326,14 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta) {
 #' are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.StudentT1Distrib()] for the probability density function.
-#'   \item [distrib_cdf.StudentT1Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.StudentT1Distrib()] for the quantile function.
-#'   \item [distrib_rng.StudentT1Distrib()] for random number generation.
-#'   \item [distrib_gradient.StudentT1Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.StudentT1Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.StudentT1Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.StudentT1Distrib()] for the probability density function.
+#' - [distrib_cdf.StudentT1Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.StudentT1Distrib()] for the quantile function.
+#' - [distrib_rng.StudentT1Distrib()] for random number generation.
+#' - [distrib_gradient.StudentT1Distrib()] for the analytical gradient.
+#' - [distrib_hessian.StudentT1Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.StudentT1Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `StudentT1Distrib` (inheriting from `continuous_distrib`) representing the Student's t distribution.
 #'

@@ -78,25 +78,25 @@ safe_check <- function(name, expr) {
 #'
 #' @details
 #' The checks performed are:
-#' \itemize{
-#'   \item **density**: non-negativity and integration/summation to 1 over the support.
-#'   \item **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
-#'   \item **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
-#'     distributions, and the generalized-inverse inequalities for discrete ones).
-#'   \item **rng**: the sample mean and variance of a large draw agree with
-#'     [mean()] and [variance()] within Monte Carlo error.
-#'   \item **gradient, hessian, deriv3, deriv4**: analytical values against
-#'     [numerical_gradient()], [numerical_hessian()],
-#'     [numerical_deriv3()] and [numerical_deriv4()].
-#'   \item **expected information**: [distrib_expected_hessian()] against a
-#'     Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
-#'     product of the score is used as reference because it remains valid when the
-#'     log-likelihood is not differentiable in a parameter (see [laplace_distrib()]).
-#'   \item **response derivatives** (continuous only): [distrib_grad_y()] and
-#'     [distrib_hess_y()] against finite differences in \eqn{y}.
-#'   \item **link scale**: `scale = "link"` derivatives against finite
-#'     differences of the log-likelihood in \eqn{\eta}.
-#' }
+#'
+#' - **density**: non-negativity and integration/summation to 1 over the support.
+#' - **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
+#' - **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
+#'   distributions, and the generalized-inverse inequalities for discrete ones).
+#' - **rng**: the sample mean and variance of a large draw agree with
+#'   [mean()] and [variance()] within Monte Carlo error.
+#' - **gradient, hessian, deriv3, deriv4**: analytical values against
+#'   [numerical_gradient()], [numerical_hessian()],
+#'   [numerical_deriv3()] and [numerical_deriv4()].
+#' - **expected information**: [distrib_expected_hessian()] against a
+#'   Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
+#'   product of the score is used as reference because it remains valid when the
+#'   log-likelihood is not differentiable in a parameter (see [laplace_distrib()]).
+#' - **response derivatives** (continuous only): [distrib_grad_y()] and
+#'   [distrib_hess_y()] against finite differences in \eqn{y}.
+#' - **link scale**: `scale = "link"` derivatives against finite
+#'   differences of the log-likelihood in \eqn{\eta}.
+#'
 #' Distributions that rely on the numerical fallbacks will trivially pass the
 #' corresponding derivative checks, since analytical and numerical values then
 #' coincide by construction.

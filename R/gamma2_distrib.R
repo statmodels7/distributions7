@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Gamma Distribution
 #' @name Gamma2Distrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Gamma distribution 
 #' under the mean-variance parameterization.
 #' @inheritParams distrib
@@ -34,7 +34,7 @@ Gamma2Distrib <- S7::new_class("Gamma2Distrib", parent = continuous_distrib)
 #' @description
 #' Computes the probability density function for the Gamma distribution:
 #' \deqn{f(y; \mu, \sigma^2) = \dfrac{1}{\Gamma\left(\dfrac{\mu^2}{\sigma^2}\right)} \left(\dfrac{\mu}{\sigma^2}\right)^{\dfrac{\mu^2}{\sigma^2}} y^{\dfrac{\mu^2}{\sigma^2}-1} \exp\left(-\dfrac{\mu}{\sigma^2} y\right)}
-#' 
+#'
 #' @param distrib A `Gamma2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma2`.
@@ -105,7 +105,7 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #' @name distrib_rng.Gamma2Distrib
 #' @description
 #' Generates random numbers from the Gamma distribution.
-#' 
+#'
 #' @param distrib A `Gamma2Distrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `sigma2`.
@@ -124,10 +124,10 @@ S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Gamma log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{-2\mu\psi\left(\dfrac{\mu^2}{\sigma^2}\right) + 2\mu\log\left(\dfrac{\mu}{\sigma^2}\right) + \mu + 2\mu\log(y) - y}{\sigma^2}}
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi\left(\dfrac{\mu^2}{\sigma^2}\right) + \mu + \mu\left(\log\left(\dfrac{\mu}{\sigma^2}\right) + \log(y)\right) - y\right]}{(\sigma^2)^2}}
-#' 
+#'
 #' @param distrib A `Gamma2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma2`.
@@ -145,7 +145,7 @@ S7::method(distrib_gradient, Gamma2Distrib) <- function(distrib, y, theta, scale
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Gamma log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
-#' 
+#'
 #' @param distrib A `Gamma2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma2`.
@@ -163,11 +163,11 @@ S7::method(distrib_hessian, Gamma2Distrib) <- function(distrib, y, theta, scale 
 #' @description
 #' Computes the analytical expected Hessian of the Gamma log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right)}{(\sigma^2)^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2\left(\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right) - \sigma^2\right)}{(\sigma^2)^4}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma^2}\right] = \dfrac{2\mu\left(\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right) - \sigma^2\right)}{(\sigma^2)^3}}
-#' 
+#'
 #' @param distrib A `Gamma2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma2`.
@@ -285,25 +285,23 @@ S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta) {
 #' skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#'   \item \eqn{\sigma^2 \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
+#' - \eqn{\sigma^2 \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) and response derivatives ([distrib_grad_y()],
 #' [distrib_hess_y()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.Gamma2Distrib()] for the probability density function.
-#'   \item [distrib_cdf.Gamma2Distrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.Gamma2Distrib()] for the quantile function.
-#'   \item [distrib_rng.Gamma2Distrib()] for random number generation.
-#'   \item [distrib_gradient.Gamma2Distrib()] for the analytical gradient.
-#'   \item [distrib_hessian.Gamma2Distrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.Gamma2Distrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.Gamma2Distrib()] for the probability density function.
+#' - [distrib_cdf.Gamma2Distrib()] for the cumulative distribution function.
+#' - [distrib_quantile.Gamma2Distrib()] for the quantile function.
+#' - [distrib_rng.Gamma2Distrib()] for random number generation.
+#' - [distrib_gradient.Gamma2Distrib()] for the analytical gradient.
+#' - [distrib_hessian.Gamma2Distrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.Gamma2Distrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `Gamma2Distrib` (inheriting from `continuous_distrib`) representing the Gamma distribution.
 #'

@@ -46,6 +46,7 @@ and scale \eqn{a};
 \item \eqn{p \to 0} with \eqn{d/p} held large approaches the
 \link[=lognormal1_distrib]{lognormal}.
 }
+
 The first three are exact and testable; the fourth is a limit and is not
 reached at any admissible value.
 

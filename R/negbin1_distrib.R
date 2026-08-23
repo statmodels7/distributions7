@@ -249,10 +249,9 @@ S7::method(distrib_expected_hessian, NegBin1Distrib) <- function(distrib, y, the
 #' against the exact mass to a far-tail quantile.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#'   \item \eqn{\theta \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
+#' - \eqn{\theta \in (0, +\infty)}
 #'
 #' As \eqn{\theta \to 0} the family approaches the Poisson, as the quadratic
 #' form does when \eqn{\theta \to \infty}.

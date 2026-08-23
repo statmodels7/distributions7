@@ -239,24 +239,24 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' [mv_sigma()] and [variance()] apart for the multivariate
 #' \eqn{t}: a parametrization must not depend on a moment that need not exist.
 #'
-#' \strong{The support depends on the parameters when \eqn{\xi < 0}}, being
+#' **The support depends on the parameters when \eqn{\xi < 0}**, being
 #' \eqn{[0, -\sigma/\xi]}, and this is the first family here of which that is
 #' true. What it costs is the automatic license to differentiate under the
 #' integral sign, on which the Bartlett identities rest. Two things survive and
 #' one does not:
-#' \itemize{
-#'   \item the derivatives returned are correct as derivatives of the
-#'     log-density at every admissible point, whatever the sign of \eqn{\xi};
-#'   \item the expected information exists and is the closed form above for
-#'     \eqn{\xi > -1/2}. The condition is exactly that the integrand be
-#'     integrable: near the upper endpoint the second derivative grows like
-#'     \eqn{(1-u)^{-2|\xi|}} in the probability scale, which is integrable if
-#'     and only if \eqn{|\xi| < 1/2};
-#'   \item below \eqn{\xi = -1/2} the information does not exist,
-#'     [distrib_expected_hessian()] returns `NA`, and the
-#'     classical asymptotics of the maximum likelihood estimator do not hold
-#'     (Smith, 1985).
-#' }
+#'
+#' - the derivatives returned are correct as derivatives of the
+#'   log-density at every admissible point, whatever the sign of \eqn{\xi};
+#' - the expected information exists and is the closed form above for
+#'   \eqn{\xi > -1/2}. The condition is exactly that the integrand be
+#'   integrable: near the upper endpoint the second derivative grows like
+#'   \eqn{(1-u)^{-2|\xi|}} in the probability scale, which is integrable if
+#'   and only if \eqn{|\xi| < 1/2};
+#' - below \eqn{\xi = -1/2} the information does not exist,
+#'   [distrib_expected_hessian()] returns `NA`, and the
+#'   classical asymptotics of the maximum likelihood estimator do not hold
+#'   (Smith, 1985).
+#'
 #' The `bounds` of the object are `c(0, Inf)` because they are fixed
 #' at construction while the true endpoint moves with the parameters; the
 #' density is zero beyond it, so nothing computes a wrong number, but a caller
@@ -266,10 +266,9 @@ S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
 #' \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#'   \item \eqn{\xi \in (-\infty, +\infty)}
-#' }
+#'
+#' - \eqn{\sigma \in (0, +\infty)}
+#' - \eqn{\xi \in (-\infty, +\infty)}
 #'
 #' @return An S7 object of class `GPDDistrib`.
 #'

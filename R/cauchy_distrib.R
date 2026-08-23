@@ -3,7 +3,7 @@ NULL
 
 #' @title S7 Class for Cauchy Distribution
 #' @name CauchyDistrib
-#' 
+#'
 #' @description A subclass of `continuous_distrib` representing the Cauchy distribution.
 #' @inheritParams distrib
 #' @return An object of class `CauchyDistrib`.
@@ -33,7 +33,7 @@ CauchyDistrib <- S7::new_class("CauchyDistrib", parent = continuous_distrib)
 #' @description
 #' Computes the probability density function for the Cauchy distribution:
 #' \deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]}}
-#' 
+#'
 #' @param distrib A `CauchyDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -99,7 +99,7 @@ S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower
 #' @name distrib_rng.CauchyDistrib
 #' @description
 #' Generates random numbers from the Cauchy distribution.
-#' 
+#'
 #' @param distrib A `CauchyDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -118,10 +118,10 @@ S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Computes the analytical gradient (first derivatives) of the Cauchy log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2(y-\mu)}{\sigma^2 + (y-\mu)^2}}
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y-\mu)^2 - \sigma^2}{\sigma(\sigma^2 + (y-\mu)^2)}}
-#' 
+#'
 #' @param distrib A `CauchyDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -136,11 +136,11 @@ S7::method(distrib_gradient, CauchyDistrib) <- function(distrib, y, theta, scale
 #' @description
 #' Computes the analytical observed Hessian (second derivatives) of the Cauchy log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(y-\mu)^2 - 2\sigma^2}{(\sigma^2 + (y-\mu)^2)^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 (y-\mu)^2 - (y-\mu)^4}{\sigma^2(\sigma^2 + (y-\mu)^2)^2}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{4\sigma (y-\mu)}{(\sigma^2 + (y-\mu)^2)^2}}
-#' 
+#'
 #' @param distrib A `CauchyDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -155,11 +155,11 @@ S7::method(distrib_hessian, CauchyDistrib) <- function(distrib, y, theta, scale 
 #' @description
 #' Computes the analytical expected Hessian of the Cauchy log-density 
 #' with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
-#' 
+#'
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{2\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2}}
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0}
-#' 
+#'
 #' @param distrib A `CauchyDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list containing the parameters `mu` and `sigma`.
@@ -270,25 +270,23 @@ S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta) {
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' Analytical third- and fourth-order derivatives ([distrib_deriv3()],
 #' [distrib_deriv4()]) and response derivatives ([distrib_grad_y()],
 #' [distrib_hess_y()]) are also available.
 #'
 #' @seealso
-#' \itemize{
-#'   \item [distrib_pdf.CauchyDistrib()] for the density function.
-#'   \item [distrib_cdf.CauchyDistrib()] for the cumulative distribution function.
-#'   \item [distrib_quantile.CauchyDistrib()] for the quantile function.
-#'   \item [distrib_rng.CauchyDistrib()] for random number generation.
-#'   \item [distrib_gradient.CauchyDistrib()] for the analytical gradient.
-#'   \item [distrib_hessian.CauchyDistrib()] for the analytical observed Hessian.
-#'   \item [distrib_expected_hessian.CauchyDistrib()] for the analytical expected Hessian.
-#' }
+#'
+#' - [distrib_pdf.CauchyDistrib()] for the density function.
+#' - [distrib_cdf.CauchyDistrib()] for the cumulative distribution function.
+#' - [distrib_quantile.CauchyDistrib()] for the quantile function.
+#' - [distrib_rng.CauchyDistrib()] for random number generation.
+#' - [distrib_gradient.CauchyDistrib()] for the analytical gradient.
+#' - [distrib_hessian.CauchyDistrib()] for the analytical observed Hessian.
+#' - [distrib_expected_hessian.CauchyDistrib()] for the analytical expected Hessian.
 #'
 #' @return An S7 object of class `CauchyDistrib` (inheriting from `continuous_distrib`) representing the Cauchy distribution.
 #'

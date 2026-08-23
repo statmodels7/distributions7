@@ -355,10 +355,9 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' \eqn{Lu}, and every expectation is a derivative of \eqn{\Gamma} at 2.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
 #'
 #' @return An S7 object of class [Weibull1Distrib()] (inheriting from
 #'   `continuous_distrib`).

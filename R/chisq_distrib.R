@@ -265,9 +265,8 @@ S7::method(distrib_hess_y, ChisqDistrib) <- function(distrib, y, theta, ...) {
 #' \eqn{2\sqrt{2/\mu}}, excess kurtosis \eqn{12/\mu}.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
 #'
 #' The family is a Gamma with shape \eqn{\mu/2} and scale 2, but it is
 #' **not** a Gamma with a fixed parameter: this package writes the Gamma

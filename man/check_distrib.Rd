@@ -68,6 +68,7 @@ log-likelihood is not differentiable in a parameter (see \code{\link[=laplace_di
 \item \strong{link scale}: \code{scale = "link"} derivatives against finite
 differences of the log-likelihood in \eqn{\eta}.
 }
+
 Distributions that rely on the numerical fallbacks will trivially pass the
 corresponding derivative checks, since analytical and numerical values then
 coincide by construction.

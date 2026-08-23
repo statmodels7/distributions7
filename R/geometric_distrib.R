@@ -256,9 +256,8 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #' is overdispersed relative to the Poisson at every mean.
 #'
 #' **Parameter domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (0, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (0, +\infty)}
 #'
 #' The family is the negative binomial at \eqn{\theta = 1}, so
 #' `fixed(negbin2_distrib(), theta = 1)` describes the same law and is used

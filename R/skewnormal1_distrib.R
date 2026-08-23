@@ -322,11 +322,10 @@ S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
 #' approximated numerically.
 #'
 #' **Parameter Domains:**
-#' \itemize{
-#'   \item \eqn{\mu \in (-\infty, +\infty)}
-#'   \item \eqn{\sigma \in (0, +\infty)}
-#'   \item \eqn{\alpha \in (-\infty, +\infty)}
-#' }
+#'
+#' - \eqn{\mu \in (-\infty, +\infty)}
+#' - \eqn{\sigma \in (0, +\infty)}
+#' - \eqn{\alpha \in (-\infty, +\infty)}
 #'
 #' @return An S7 object of class [SkewNormal1Distrib()] (inheriting from
 #'   `continuous_distrib`).

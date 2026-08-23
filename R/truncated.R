@@ -1070,25 +1070,25 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' Hessian.
 #'
 #' **What the constructor rejects.**
-#' \itemize{
-#'   \item Both endpoints `NULL`: nothing to do, and silently returning the
-#'     parent would hide the mistake.
-#'   \item `lower >= upper`.
-#'   \item A truncation point that removes no mass, such as
-#'     `truncated(gamma2_distrib(), lower = -2)`: the Gamma is supported on
-#'     \eqn{(0,\infty)}, so the result would be the Gamma itself.
-#'   \item A non-integer endpoint for a discrete parent, which is ambiguous.
-#'   \item A discrete truncation leaving too few support points to identify the
-#'     parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
-#'     `n_params + 1` points are needed.
-#'   \item A parent that models a probability of zero ---
-#'     [zero_inflated()] or [zero_adjusted()] --- when the
-#'     truncation removes \eqn{0} from the support. Truncating zero away cancels
-#'     that parameter out of the likelihood entirely, leaving an identically zero
-#'     score. Truncating elsewhere, as in
-#'     `truncated(zero_adjusted(gamma2_distrib()), upper = 5)`, is fine and the
-#'     point mass is carried through [distrib_atoms()].
-#' }
+#'
+#' - Both endpoints `NULL`: nothing to do, and silently returning the
+#'   parent would hide the mistake.
+#' - `lower >= upper`.
+#' - A truncation point that removes no mass, such as
+#'   `truncated(gamma2_distrib(), lower = -2)`: the Gamma is supported on
+#'   \eqn{(0,\infty)}, so the result would be the Gamma itself.
+#' - A non-integer endpoint for a discrete parent, which is ambiguous.
+#' - A discrete truncation leaving too few support points to identify the
+#'   parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
+#'   `n_params + 1` points are needed.
+#' - A parent that models a probability of zero ---
+#'   [zero_inflated()] or [zero_adjusted()] --- when the
+#'   truncation removes \eqn{0} from the support. Truncating zero away cancels
+#'   that parameter out of the likelihood entirely, leaving an identically zero
+#'   score. Truncating elsewhere, as in
+#'   `truncated(zero_adjusted(gamma2_distrib()), upper = 5)`, is fine and the
+#'   point mass is carried through [distrib_atoms()].
+#'
 #' Truncating an already truncated distribution is allowed and is collapsed into a
 #' single object over the intersection of the two intervals, rather than nested.
 #'
