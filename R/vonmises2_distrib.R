@@ -315,3 +315,27 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
        mu_rho_rho_rho = sin(d) * k$d3,
        rho_rho_rho_rho = cos(d) * k$d4 - phi4)
 }
+
+
+#' @title von Mises Distribution Function in the Resultant Length
+#' @name distrib_cdf.VonMises2Distrib
+#' @description
+#' The concentration parametrization's series, read at the concentration this
+#' one's resultant length implies.
+#' @details
+#' The map touches the second parameter only and the response not at all, so
+#' the distribution function is the other family's at
+#' \eqn{\kappa = A^{-1}(\rho)}. What it replaces is the base class's
+#' quadrature, one per observation; see \code{\link{vm_cdf}} for the series
+#' and for how many terms it takes.
+#' @param distrib A \code{VonMises2Distrib} object.
+#' @param q A numeric vector of quantiles.
+#' @param theta A named list with \code{mu} and \code{rho}.
+#' @param ... Unused.
+#' @return The distribution function at \code{q}.
+#' @seealso \code{\link{vm_cdf}}, \code{\link{vonmises2_distrib}}
+#' @keywords internal
+S7::method(distrib_cdf, VonMises2Distrib) <- function(distrib, q, theta,
+                                                      ...) {
+  vm_cdf(q, theta[[1]], vm2_parts(theta)$kappa)
+}

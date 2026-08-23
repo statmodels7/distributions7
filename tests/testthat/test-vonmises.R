@@ -170,3 +170,84 @@ test_that("the log-density is finite at concentrations past the scaled-Bessel un
     tolerance = 1e-12
   )
 })
+
+test_that("the series distribution function agrees with the quadrature it replaces", {
+  # the base class's numerical integration of the density, which is what the
+  # method replaces and which shares no arithmetic with the Bessel series
+  quad <- S7::method(distrib_cdf, continuous_distrib)
+  d <- vonmises1_distrib()
+  x <- seq(-pi, pi - 1e-9, length.out = 25)
+  for (kap in c(0.05, 0.5, 2, 10, 50, 200)) {
+    for (mu in c(0, 1.2, -2.9)) {
+      th <- list(mu = mu, kappa = kap)
+      expect_equal(distrib_cdf(d, x, th), quad(d, x, th), tolerance = 1e-11,
+                   info = sprintf("kappa %g, mu %g", kap, mu))
+    }
+  }
+})
+
+test_that("the series has the properties a distribution function has", {
+  d <- vonmises1_distrib()
+  th <- list(mu = 0.9, kappa = 7)
+  expect_equal(distrib_cdf(d, -pi, th), 0)
+  expect_equal(distrib_cdf(d, pi - 1e-12, th), 1, tolerance = 1e-9)
+  x <- seq(-pi, pi - 1e-12, length.out = 400)
+  f <- distrib_cdf(d, x, th)
+  expect_true(all(diff(f) >= -1e-14))
+  expect_true(all(f >= 0 & f <= 1))
+  # outside the support it is the constant it must be, not an extrapolation
+  expect_equal(distrib_cdf(d, -4, th), 0)
+  expect_equal(distrib_cdf(d, 4, th), 1)
+  # and its derivative is the density
+  h <- 1e-5
+  inn <- x > -pi + 0.01 & x < pi - 0.01
+  num <- (distrib_cdf(d, x[inn] + h, th) - distrib_cdf(d, x[inn] - h, th)) /
+    (2 * h)
+  expect_equal(num, distrib_pdf(d, x[inn], th), tolerance = 1e-8)
+})
+
+test_that("the term count is a safe upper bound wherever it is used", {
+  # the rule is 8.5 sqrt(kappa) + 10; the check is that four times as many
+  # terms change nothing, which is what says the series has converged
+  d <- vonmises1_distrib()
+  x <- seq(-pi + 1e-9, pi - 1e-9, length.out = 21)
+  long <- function(mu, kappa, m) {
+    R <- numericals7::bessel_i_ratios(rep(kappa, length(x)), m)
+    j <- seq_len(m)
+    s <- rowSums(R * (sin(outer(x - mu, j)) +
+                        sin(outer(rep(pi + mu, length(x)), j))) /
+                   rep(j, each = length(x)))
+    (x + pi) / (2 * pi) + s / pi
+  }
+  for (kap in c(0.5, 5, 50, 300)) {
+    m <- max(20L, as.integer(ceiling(8.5 * sqrt(kap))) + 10L)
+    expect_equal(distrib_cdf(d, x, list(mu = 0.7, kappa = kap)),
+                 long(0.7, kap, 4L * m), tolerance = 1e-13,
+                 info = sprintf("kappa %g", kap))
+  }
+})
+
+test_that("the resultant-length family is the concentration one at its kappa", {
+  # the map touches the second parameter only and the response not at all
+  d1 <- vonmises1_distrib()
+  d2 <- vonmises2_distrib()
+  x <- seq(-pi, pi - 1e-9, length.out = 21)
+  for (rho in c(0.05, 0.3, 0.7, 0.95)) {
+    k <- numericals7::bessel_i_ratio_inverse(rho)$kappa
+    expect_identical(distrib_cdf(d2, x, list(mu = 0.5, rho = rho)),
+                     distrib_cdf(d1, x, list(mu = 0.5, kappa = k)))
+  }
+  quad <- S7::method(distrib_cdf, continuous_distrib)
+  th <- list(mu = -2.9, rho = 0.7)
+  expect_equal(distrib_cdf(d2, x, th), quad(d2, x, th), tolerance = 1e-11)
+})
+
+test_that("a concentration varying by observation is read per row", {
+  d <- vonmises1_distrib()
+  x <- seq(-pi + 0.1, pi - 0.1, length.out = 6)
+  kk <- c(0.2, 1, 3, 8, 20, 60)
+  got <- distrib_cdf(d, x, list(mu = 0.3, kappa = kk))
+  one <- vapply(seq_along(x), function(i)
+    distrib_cdf(d, x[i], list(mu = 0.3, kappa = kk[i])), numeric(1))
+  expect_equal(got, one, tolerance = 1e-12)
+})
