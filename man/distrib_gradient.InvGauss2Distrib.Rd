@@ -24,5 +24,5 @@ A named list of first derivatives.
         = \dfrac{1}{2\lambda} - \dfrac{(y-\mu)^2}{2\mu^2 y}}
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

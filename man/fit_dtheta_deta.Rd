@@ -24,6 +24,6 @@ from the link scale, where it is computed, to the parameter scale, where it is
 reported.
 }
 \seealso{
-\code{\link{fit_distrib}}
+\code{\link[=fit_distrib]{fit_distrib()}}
 }
 \keyword{internal}

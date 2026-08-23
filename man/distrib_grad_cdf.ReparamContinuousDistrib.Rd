@@ -24,6 +24,6 @@ parent's are; when the parent differences its own cdf, so does this, the
 chain having nothing closed to carry.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

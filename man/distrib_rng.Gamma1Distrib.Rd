@@ -14,8 +14,8 @@
 A numeric vector.
 }
 \description{
-Delegates to \code{\link[stats]{rgamma}}.
+Delegates to \code{\link[stats:GammaDist]{stats::rgamma()}}.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

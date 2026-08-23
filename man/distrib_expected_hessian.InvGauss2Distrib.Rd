@@ -30,5 +30,5 @@ The response enters every derivative linearly, so the expectations need only
 The mean and the shape are orthogonal.
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

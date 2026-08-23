@@ -4,7 +4,7 @@
 \alias{print.distrib_fit}
 \title{Print Method for Maximum-Likelihood Fits}
 \arguments{
-\item{x}{A \code{\link{distrib_fit}} object.}
+\item{x}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
 \item{digits}{Number of significant digits. Defaults to 4.}
 

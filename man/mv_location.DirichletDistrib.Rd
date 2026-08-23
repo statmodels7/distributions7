@@ -15,5 +15,5 @@ A numeric vector summing to one.
 The simplex the mean parameter carries, which is the mean.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

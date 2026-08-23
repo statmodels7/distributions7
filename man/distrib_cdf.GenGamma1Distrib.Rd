@@ -23,5 +23,5 @@ function, since \eqn{(Y/a)^{p}} is Gamma with shape \eqn{d/p} and unit
 rate.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

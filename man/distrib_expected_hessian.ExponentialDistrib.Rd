@@ -26,5 +26,5 @@ A named list with the \code{mu_mu} component.
 obtained from the observed form by \eqn{\mathbb{E}[y] = \mu}.
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

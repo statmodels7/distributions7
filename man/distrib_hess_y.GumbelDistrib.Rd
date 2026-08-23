@@ -17,5 +17,5 @@ A numeric vector.
 Closed form: \eqn{\partial^2 \ell / \partial y^2 = -w/\sigma^2}.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

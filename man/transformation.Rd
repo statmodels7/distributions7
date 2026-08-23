@@ -9,8 +9,8 @@ transformation(distrib, transformer, new_name = NULL)
 \arguments{
 \item{distrib}{An object inheriting from \code{continuous_distrib}.}
 
-\item{transformer}{A \code{\link{transformer}} object (e.g. \code{\link{log_transform}()},
-\code{\link{bc_transform}(0.5)}, \code{\link{affine_transform}(1, 2)}).}
+\item{transformer}{A \code{\link[=transformer]{transformer()}} object (e.g. \code{\link[=log_transform]{log_transform()}},
+\code{\link[=bc_transform]{bc_transform(0.5)}}, \code{\link[=affine_transform]{affine_transform(1, 2)}}).}
 
 \item{new_name}{A single string naming the result, or \code{NULL} (the
 default) to compose the parent's name with the transformer's.}
@@ -21,7 +21,7 @@ An S7 object of class \code{TransformedDistrib} (inheriting from \code{continuou
 \description{
 Creates a new distribution object for \eqn{Y = g(X)}, where \eqn{X} follows an existing
 \strong{continuous} distribution and \eqn{g} is a bijective transformation described by
-a \code{\link{transformer}} object.
+a \code{\link[=transformer]{transformer()}} object.
 }
 \details{
 The density follows the change-of-variables formula
@@ -29,7 +29,7 @@ The density follows the change-of-variables formula
 CDF, quantiles and RNG are obtained by mapping through \eqn{g} (with tails swapped for
 decreasing transformations). Since \eqn{g} does not depend on the parameters, the
 score, observed Hessian and expected Hessian coincide with the parent's, evaluated at
-\eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link{moment}}.
+\eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link[=moment]{moment()}}.
 
 Several standard families are a transformation of one already here, and
 \code{new_name} lets the result carry the name it is known by rather than
@@ -54,6 +54,6 @@ ig@distrib_name
 
 }
 \seealso{
-\code{\link{transformer}}, \code{\link{log_transform}}, \code{\link{exp_transform}},
-\code{\link{affine_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}
+\code{\link[=transformer]{transformer()}}, \code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}},
+\code{\link[=affine_transform]{affine_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}
 }

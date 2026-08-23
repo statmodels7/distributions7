@@ -16,7 +16,7 @@ A list of integer vectors, each of length \code{order}, parallel to
 \code{deriv_names(params, order)}.
 }
 \description{
-The multi-indices \code{\link{deriv_names}} names, in exactly the same order:
+The multi-indices \code{\link[=deriv_names]{deriv_names()}} names, in exactly the same order:
 non-decreasing tuples of length \code{order} over \code{seq_along(params)},
 enumerated lexicographically.
 }
@@ -32,11 +32,11 @@ same enumeration removes the possibility of disagreement.
 
 Note that this is \strong{not} interchangeable with
 \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match
-\code{\link{hess_names}} at order 2, which puts the diagonal first, whereas
-this one is lexicographic throughout to match \code{\link{deriv_names}}. At
-order 2 use \code{\link{hess_pairs}}.
+\code{\link[=hess_names]{hess_names()}} at order 2, which puts the diagonal first, whereas
+this one is lexicographic throughout to match \code{\link[=deriv_names]{deriv_names()}}. At
+order 2 use \code{\link[=hess_pairs]{hess_pairs()}}.
 }
 \seealso{
-\code{\link{deriv_names}}, \code{\link{hess_pairs}}
+\code{\link[=deriv_names]{deriv_names()}}, \code{\link[=hess_pairs]{hess_pairs()}}
 }
 \keyword{internal}

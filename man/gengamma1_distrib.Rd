@@ -12,13 +12,13 @@ gengamma1_distrib(
 }
 \arguments{
 \item{link_a}{A link function object for \eqn{a}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_d}{A link function object for \eqn{d}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_p}{A link function object for \eqn{p}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
 An S7 object of class \code{GenGamma1Distrib}.
@@ -72,7 +72,7 @@ The three parameters are \strong{weakly identified together} on small
 samples: \eqn{d} and \eqn{p} enter the density largely through their ratio,
 and the profile likelihood in that direction is flat. A fit of all three
 wants several hundred observations, and holding one with
-\code{\link{fixed}} is often the better model.
+\code{\link[=fixed]{fixed()}} is often the better model.
 }
 \examples{
 d <- gengamma1_distrib()
@@ -95,6 +95,6 @@ Stacy, E. W. (1962). A generalization of the gamma distribution.
 \emph{Annals of Mathematical Statistics} 33, 1187-1192.
 }
 \seealso{
-\code{\link{gamma2_distrib}}, \code{\link{weibull1_distrib}},
-\code{\link{lognormal1_distrib}}, \code{\link{exponential_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}},
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}}
 }

@@ -67,5 +67,5 @@ Gaussian's. The location stays orthogonal to both rates, every
 cross-expectation vanishing by symmetry.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

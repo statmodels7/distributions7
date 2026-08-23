@@ -20,11 +20,11 @@ NULL
 #' up to the requested order, keyed by the sorted tuple, as a list of numeric
 #' vectors over the coordinates \eqn{j}.
 #'
-#' @param s A \pkg{parameters7} \code{simplex} parameter.
+#' @param s A \pkg{parameters7} `simplex` parameter.
 #' @param eta The free vector.
 #' @param order The highest order required, 1 to 4.
 #'
-#' @return A named list of numeric vectors, keyed as \code{"1"}, \code{"1,2"}
+#' @return A named list of numeric vectors, keyed as `"1"`, `"1,2"`
 #'   and so on.
 #'
 #' @keywords internal
@@ -58,7 +58,7 @@ simplex_map_tensors <- function(s, eta, order) {
 #' @param fd A list whose \eqn{m}-th element is \eqn{f^{(m)}} evaluated at
 #'   every coordinate.
 #' @param ud A named list of the map's derivative tensors, keyed by sorted
-#'   tuple as \code{\link{simplex_map_tensors}} returns them.
+#'   tuple as [simplex_map_tensors()] returns them.
 #'
 #' @return A numeric vector over the coordinates.
 #'
@@ -81,7 +81,7 @@ chain_univariate <- function(tuple, fd, ud) {
 #' \eqn{S} names no \eqn{\phi}, is \eqn{\partial^{S'}\mu} when it names one,
 #' and is zero when it names two or more.
 #'
-#' @param s A \pkg{parameters7} \code{simplex} parameter.
+#' @param s A \pkg{parameters7} `simplex` parameter.
 #' @param eta The mean's free vector.
 #' @param phi The concentration.
 #' @param order The highest order required, 1 to 4.
@@ -116,7 +116,7 @@ dirichlet_map_tensors <- function(s, eta, phi, order) {
 #' Index Tuples of a Given Width Over a Number of Variables
 #'
 #' @description
-#' The same enumeration \code{parameters7::param_tuple_indices()} uses, taken
+#' The same enumeration `parameters7::param_tuple_indices()` uses, taken
 #' over a count rather than over a parameter, so that a composite index set
 #' formed by appending a coordinate can be enumerated without building an
 #' object for it.
@@ -171,16 +171,16 @@ mv_expected_higher <- function(distrib, y, theta, order, nsim) {
 #' univariate partition sum per coordinate. The concentration also enters
 #' directly, through \eqn{\log\Gamma(\phi)}, which contributes only to the
 #' component all of whose indices name it.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
 #' @param expected Whether to return expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
 #' @param nsim The Monte Carlo sample size.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
                                                          expected = FALSE,
                                                          scale = c("parameter", "link"),
@@ -208,7 +208,7 @@ S7::method(distrib_deriv4, DirichletDistrib) <- function(distrib, y, theta,
 #' the requested order and adds the two terms that do not pass through it: the
 #' response, which enters \eqn{\alpha_j} linearly, and \eqn{\log\Gamma(\phi)}.
 #'
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 3 or 4.
@@ -253,16 +253,16 @@ dirichlet_higher <- function(distrib, y, theta, order) {
 #' each term depends on one coordinate of the simplex and the chain rule is one
 #' univariate partition sum per coordinate, with
 #' \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}}.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
 #' @param expected Whether to return expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
 #' @param nsim The Monte Carlo sample size.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
                                                             expected = FALSE,
                                                             scale = c("parameter", "link"),
@@ -289,7 +289,7 @@ S7::method(distrib_deriv4, MultinomialDistrib) <- function(distrib, y, theta,
 #' Runs the univariate chain rule over the probability vector for every
 #' component of the requested order, weighted by the summed counts.
 #'
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 3 or 4.
@@ -335,10 +335,10 @@ multinomial_higher <- function(distrib, y, theta, order) {
 #' @param b An integer vector of composite indices, mean coordinates first.
 #' @param r The \eqn{n \times p} matrix of residuals.
 #' @param pget The accessor for \eqn{\partial^{t}\Sigma^{-1}}, as returned by
-#'   \code{\link{mvg_ptensors}}.
+#'   [mvg_ptensors()].
 #' @param p The dimension.
 #'
-#' @return A numeric vector of length \code{nrow(r)}, or a scalar recycled by
+#' @return A numeric vector of length `nrow(r)`, or a scalar recycled by
 #'   the caller.
 #'
 #' @keywords internal
@@ -365,7 +365,7 @@ mvt_q_deriv <- function(b, r, pget, p) {
 #' differentiated in \eqn{\nu} by the Leibniz rule against the prefactor
 #' \eqn{(\nu+p)/2}, which is linear.
 #'
-#' @param distrib A \code{MvStudentTDistrib} object.
+#' @param distrib A `MvStudentTDistrib` object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 1 to 4.
@@ -450,16 +450,16 @@ mvt_higher <- function(distrib, y, theta, order) {
 #' the obstruction the univariate skew t meets -- the derivative of a Student t
 #' distribution function in its degrees of freedom -- does not arise here, and
 #' all four orders close.
-#' @param distrib A \code{MvStudentTDistrib} object.
+#' @param distrib A `MvStudentTDistrib` object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param expected Logical; the expectation is approximated by sampling.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Strategy label; sampling is the only multivariate route.
 #' @param nsim Monte Carlo sample size.
 #' @param ... Unused.
 #' @return A named list of third-derivative component vectors.
-#' @seealso \code{\link{mvstudent_t_distrib}}
+#' @seealso [mvstudent_t_distrib()]
 S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),

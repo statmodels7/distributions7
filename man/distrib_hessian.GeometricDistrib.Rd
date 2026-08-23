@@ -22,5 +22,5 @@ A named list with the \code{mu_mu} component.
       -\dfrac{y}{\mu^2} + \dfrac{y+1}{(1+\mu)^2}}
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

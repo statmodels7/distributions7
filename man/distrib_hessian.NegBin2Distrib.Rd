@@ -25,5 +25,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\theta}.
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \theta} = \dfrac{y-\mu}{(\theta+\mu)^2}}
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

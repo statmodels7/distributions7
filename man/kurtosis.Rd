@@ -10,7 +10,7 @@ kurtosis(x, ...)
 \item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
 
 \item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link{moment}}. For numeric vectors: \code{na.rm}.}
+\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
 }
 \value{
 A numeric vector.
@@ -22,7 +22,7 @@ three a Gaussian has:
 \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
 
 For
-\code{distrib} objects it is evaluated numerically via \code{\link{moment}}; for
+\code{distrib} objects it is evaluated numerically via \code{\link[=moment]{moment()}}; for
 numeric vectors the sample excess kurtosis (population denominator) is returned.
 }
 \examples{
@@ -31,5 +31,5 @@ kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}
+\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}
 }

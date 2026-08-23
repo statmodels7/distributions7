@@ -14,9 +14,9 @@
 A numeric vector of length \code{n}.
 }
 \description{
-Draws through \code{\link[stats]{rgeom}} at
+Draws through \code{\link[stats:Geometric]{stats::rgeom()}} at
 \eqn{p = 1/(1+\mu)}.
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

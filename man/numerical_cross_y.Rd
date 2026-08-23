@@ -32,8 +32,8 @@ A named list with one numeric vector per requested parameter.
 }
 \description{
 Computes \eqn{\partial^2 \ell / \partial y\, \partial \theta_i} by one
-central difference of \code{\link{distrib_grad_y}} in each parameter.
-Powers the default \code{\link{distrib_cross_y}} method for continuous
+central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each parameter.
+Powers the default \code{\link[=distrib_cross_y]{distrib_cross_y()}} method for continuous
 distributions without a closed form.
 }
 \details{
@@ -50,5 +50,5 @@ numerical_cross_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{numerical_grad_y}}, \code{\link{distrib_cross_y}}
+\code{\link[=numerical_grad_y]{numerical_grad_y()}}, \code{\link[=distrib_cross_y]{distrib_cross_y()}}
 }

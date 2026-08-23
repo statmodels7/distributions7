@@ -19,7 +19,7 @@ where \eqn{\mu = E[Y]} (computed numerically unless \code{mu} is supplied).}
 \item{mu}{Optional numeric. The centering value(s) used when \code{central = TRUE}.
 If \code{NULL}, the mean is computed numerically.}
 
-\item{...}{Additional arguments passed to \code{\link{expectation}}.}
+\item{...}{Additional arguments passed to \code{\link[=expectation]{expectation()}}.}
 }
 \value{
 A numeric vector of moments, with length equal to the maximum length
@@ -27,7 +27,7 @@ among \code{theta} components and \code{p}.
 }
 \description{
 Computes raw moments \eqn{E[Y^p]} or central moments \eqn{E[(Y-\mu)^p]} of a
-distribution numerically, via \code{\link{expectation}} (numerical integration
+distribution numerically, via \code{\link[=expectation]{expectation()}} (numerical integration
 for continuous distributions, series summation for discrete ones).
 }
 \examples{
@@ -39,5 +39,5 @@ moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 
 }
 \seealso{
-\code{\link{expectation}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+\code{\link[=expectation]{expectation()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
 }

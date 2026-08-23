@@ -13,7 +13,7 @@ trunc_deriv_k(order)
 A function suitable for registering as an S7 method.
 }
 \description{
-Builds the order-\code{k} derivative method for \code{\link{truncated}}.
+Builds the order-\code{k} derivative method for \code{\link[=truncated]{truncated()}}.
 }
 \details{
 Here \eqn{\ell_T = \ell - \log Z}, and the ratios are truncated expectations
@@ -23,6 +23,6 @@ quadrature or summation, which is why they are memoized across the partition
 sum.
 }
 \seealso{
-\code{\link{memo_ratio}}
+\code{\link[=memo_ratio]{memo_ratio()}}
 }
 \keyword{internal}

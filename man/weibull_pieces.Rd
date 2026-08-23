@@ -25,6 +25,6 @@ log-density is a polynomial in.
 \eqn{u} is the substitution that makes the family tractable: under the model
 \eqn{u \sim \mathrm{Exp}(1)} whatever the parameters are, so an expectation
 of any polynomial in \eqn{u} and \eqn{\log u} is a derivative of the gamma
-function at 2, which is what \code{\link{distrib_expected_hessian}} uses.
+function at 2, which is what \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} uses.
 }
 \keyword{internal}

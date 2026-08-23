@@ -21,5 +21,5 @@ with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta) + f(\ell;\theta)}, the mass
 at the lower endpoint being added back because the endpoint is included.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

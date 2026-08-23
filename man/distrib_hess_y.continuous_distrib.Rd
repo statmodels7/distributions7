@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Fallback: \eqn{\partial^2 \ell / \partial y^2} via finite differences (see \code{\link{numerical_hess_y}}).
+Fallback: \eqn{\partial^2 \ell / \partial y^2} via finite differences (see \code{\link[=numerical_hess_y]{numerical_hess_y()}}).
 }
 \keyword{internal}

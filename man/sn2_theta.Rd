@@ -13,10 +13,10 @@ sn2_theta(theta)
 A named list of the direct parameters.
 }
 \description{
-Runs \code{\link{sn_cp_to_dp}} on plain numbers, which every probability
-function needs before delegating to \code{\link{skewnormal1_distrib}}.
+Runs \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} on plain numbers, which every probability
+function needs before delegating to \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }
 \keyword{internal}

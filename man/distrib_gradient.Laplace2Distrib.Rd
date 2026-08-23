@@ -22,5 +22,5 @@ subgradient value 0 is returned there.
       \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |y-\mu|}
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

@@ -7,7 +7,7 @@
 mv_leading_location(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters, already aligned.}
 }
@@ -15,7 +15,7 @@ mv_leading_location(distrib, theta)
 A named numeric vector of length \eqn{p}.
 }
 \description{
-The helper the elliptical families implement \code{\link{mv_location}} with:
+The helper the elliptical families implement \code{\link[=mv_location]{mv_location()}} with:
 the first \eqn{p} entries of the flat parameter vector, labeled by
 coordinate.
 }

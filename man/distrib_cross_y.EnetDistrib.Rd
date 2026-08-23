@@ -23,5 +23,5 @@ obtained by differentiating \eqn{\ell^{(y)} = -a\,\mathrm{sgn}(z) - cz}
 in each parameter.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

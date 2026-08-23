@@ -33,13 +33,13 @@ NULL
 #' \ell^{(y)}/\sigma}, for a family whose response enters only through
 #' \eqn{z = (y-\mu)/\sigma}.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, location first and scale second.
 #'
 #' @return A list of two component vectors, unnamed.
 #'
-#' @seealso \code{\link{distrib_cross_y}}
+#' @seealso [distrib_cross_y()]
 #' @keywords internal
 loc_scale_cross_block <- function(distrib, y, theta) {
   s <- theta[[2]]
@@ -52,10 +52,10 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #' Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The \code{\link{distrib_cross_y}} body shared by the families that are
+#' The [distrib_cross_y()] body shared by the families that are
 #' location-scale in both their parameters.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -63,7 +63,7 @@ loc_scale_cross_block <- function(distrib, y, theta) {
 #'
 #' @return A named list with one numeric vector per parameter.
 #'
-#' @seealso \code{\link{loc_scale_cross_block}}
+#' @seealso [loc_scale_cross_block()]
 #' @keywords internal
 loc_scale_cross_y <- function(distrib, y, theta,
                               scale = c("parameter", "link"), ...) {
@@ -74,9 +74,9 @@ loc_scale_cross_y <- function(distrib, y, theta,
 #'
 #' @description
 #' The location and scale components in closed form and the remaining shape
-#' components by one central difference of \code{\link{distrib_grad_y}}.
+#' components by one central difference of [distrib_grad_y()].
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -84,7 +84,7 @@ loc_scale_cross_y <- function(distrib, y, theta,
 #'
 #' @return A named list with one numeric vector per parameter.
 #'
-#' @seealso \code{\link{loc_scale_cross_block}}
+#' @seealso [loc_scale_cross_block()]
 #' @keywords internal
 partial_loc_scale_cross_y <- function(distrib, y, theta,
                                       scale = c("parameter", "link"), ...) {
@@ -103,9 +103,9 @@ partial_loc_scale_cross_y <- function(distrib, y, theta,
 #' @description
 #' Closed form from the location-scale identity: the location component is
 #' \eqn{-\ell^{(yy)}} and the scale one \eqn{-z\ell^{(yy)} - \ell^{(y)}/\sigma}.
-#' @param distrib A \code{LogisticDistrib} object.
+#' @param distrib A `LogisticDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -128,9 +128,9 @@ S7::method(distrib_cross_y, GumbelDistrib) <- loc_scale_cross_y
 #' Closed form from the location-scale identity, away from the kink at
 #' \eqn{y = \mu}, where the density has no derivative in the response and the
 #' quantity does not exist.
-#' @param distrib A \code{LaplaceDistrib} object.
+#' @param distrib A `LaplaceDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -143,9 +143,9 @@ S7::method(distrib_cross_y, LaplaceDistrib) <- loc_scale_cross_y
 #' Closed form, away from the kink at \eqn{y = \mu}: with
 #' \eqn{\ell^{(y)} = -\lambda\,\mathrm{sign}(y-\mu)}, the location component
 #' is 0 almost everywhere and the rate component is \eqn{-\mathrm{sign}(y-\mu)}.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{lambda}.
+#' @param theta A list containing `mu` and `lambda`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -163,9 +163,9 @@ S7::method(distrib_cross_y, Laplace2Distrib) <- function(distrib, y, theta,
 #' location-scale identity; the response enters the shape only through
 #' \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
 #' \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing `mu`, `sigma` and `nu`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -191,12 +191,12 @@ S7::method(distrib_cross_y, PseudoHuberDistrib) <- function(distrib, y, theta,
 #' \eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2} substituted, and the shape
 #' component is \eqn{(R + t R')/\sigma}, the response entering \eqn{\alpha}
 #' only through \eqn{t}. The three are assembled from a single evaluation of
-#' \code{\link[numericals7]{mills_ratio}} rather than by calling
-#' \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}, which would
+#' [numericals7::mills_ratio()] rather than by calling
+#' [distrib_grad_y()] and [distrib_hess_y()], which would
 #' evaluate it twice more.
-#' @param distrib A \code{SkewNormal1Distrib} object.
+#' @param distrib A `SkewNormal1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param theta A list containing `mu`, `sigma` and `alpha`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -224,13 +224,13 @@ S7::method(distrib_cross_y, SkewNormal1Distrib) <- function(distrib, y, theta,
 #' @description
 #' Closed form in the location and the scale, from the location-scale
 #' identity. The two shape components come from one central difference of
-#' \code{\link{distrib_grad_y}}: the density carries \eqn{T_{\nu+1}}, whose
+#' [distrib_grad_y()]: the density carries \eqn{T_{\nu+1}}, whose
 #' derivative in the degrees of freedom has no elementary form, the same
 #' obstruction that the family's parameter derivatives meet.
-#' @param distrib A \code{SkewTDistrib} object.
+#' @param distrib A `SkewTDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{sigma}, \code{alpha} and
-#'   \code{nu}.
+#' @param theta A list containing `mu`, `sigma`, `alpha` and
+#'   `nu`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -246,9 +246,9 @@ S7::method(distrib_cross_y, SkewTDistrib) <- partial_loc_scale_cross_y
 #' Closed form: the mean is a pure scale, so the identity
 #' \eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu} and
 #' returns \eqn{1/\mu^2}.
-#' @param distrib An \code{ExponentialDistrib} object.
+#' @param distrib An `ExponentialDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}.
+#' @param theta A list containing `mu`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector.
@@ -267,9 +267,9 @@ S7::method(distrib_cross_y, ExponentialDistrib) <- function(distrib, y, theta,
 #' shape comes from differentiating
 #' \eqn{\ell^{(y)} = ((\sigma-1) - \sigma w)/y}, giving
 #' \eqn{(1 - w - \sigma w L)/y} with \eqn{L = \log(y/\mu)}.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -295,9 +295,9 @@ S7::method(distrib_cross_y, Weibull1Distrib) <- function(distrib, y, theta,
 #' \eqn{-1/(\sigma t) + (\xi+1)y/(\sigma^2 t^2)}. Neither carries a
 #' \eqn{1/\xi}, so the shape direction needs no series at the exponential
 #' limit.
-#' @param distrib A \code{GPDDistrib} object.
+#' @param distrib A `GPDDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{sigma} and \code{xi}.
+#' @param theta A list containing `sigma` and `xi`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -322,9 +322,9 @@ S7::method(distrib_cross_y, GPDDistrib) <- function(distrib, y, theta,
 #' Closed form: \eqn{\ell^{(y)} = -(\xi+1)/(\sigma t)} and
 #' \eqn{\ell^{(yy)} = \xi(\xi+1)/(\sigma t)^2}, with
 #' \eqn{t = 1 + \xi y/\sigma}.
-#' @param distrib A \code{GPDDistrib} object.
+#' @param distrib A `GPDDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{sigma} and \code{xi}.
+#' @param theta A list containing `sigma` and `xi`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -350,9 +350,9 @@ S7::method(distrib_hess_y, GPDDistrib) <- function(distrib, y, theta, ...) {
 #' Closed form. With \eqn{w = (y/a)^p},
 #' \eqn{\ell^{(y)} = ((d-1) - pw)/y} and
 #' \eqn{\ell^{(yy)} = (pw(1-p) - (d-1))/y^2}.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
+#' @param theta A list containing `a`, `d` and `p`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -393,7 +393,7 @@ S7::method(distrib_hess_y, GenGamma1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' @return A named list with one numeric vector per new parameter.
 #'
-#' @seealso \code{\link{distrib_cross_y}}, \code{\link{reparam_tables}}
+#' @seealso [distrib_cross_y()], [reparam_tables()]
 #' @keywords internal
 mapped_cross_y <- function(distrib, parent, th_par, maps, y) {
   cy <- distrib_cross_y(parent, y, th_par)
@@ -434,9 +434,9 @@ S7::method(distrib_cross_y, ReparamContinuousDistrib) <-
 #' The dispersion parametrization's, at \eqn{\phi = 1/\lambda}: a derivative
 #' in the response does not see the parameters, so the response derivatives
 #' are the parent's unchanged, and the mixed block is one first-order chain.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{lambda}.
+#' @param theta A list containing `mu` and `lambda`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -470,9 +470,9 @@ S7::method(distrib_cross_y, InvGauss2Distrib) <-
 #' The concentration parametrization's, at \eqn{\kappa = A^{-1}(\rho)}. The
 #' response derivatives are the parent's unchanged; the mixed block is the
 #' parent's carried by \eqn{\kappa'(\rho)}, the location passing through.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{rho}.
+#' @param theta A list containing `mu` and `rho`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal

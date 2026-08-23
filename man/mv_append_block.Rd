@@ -7,18 +7,18 @@
 mv_append_block(out, extra)
 }
 \arguments{
-\item{out}{A list as described in \code{\link{mv_derived}}.}
+\item{out}{A list as described in \code{\link[=mv_derived]{mv_derived()}}.}
 
 \item{extra}{A list of the same shape, or \code{NULL}.}
 }
 \value{
-A list as described in \code{\link{mv_derived}}.
+A list as described in \code{\link[=mv_derived]{mv_derived()}}.
 }
 \description{
-Concatenates two lists in the shape of \code{\link{mv_derived}}, returning
+Concatenates two lists in the shape of \code{\link[=mv_derived]{mv_derived()}}, returning
 the first unchanged when the second is \code{NULL}.
 }
 \seealso{
-\code{\link{mv_param_block}}
+\code{\link[=mv_param_block]{mv_param_block()}}
 }
 \keyword{internal}

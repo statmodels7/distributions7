@@ -30,6 +30,6 @@ the two agree to \eqn{10^{-16}}, and its truncation is set so that the
 \eqn{m^{4}} weight at the switch point stays under the rounding.
 }
 \seealso{
-\code{\link{gpd_surv_pieces}}
+\code{\link[=gpd_surv_pieces]{gpd_surv_pieces()}}
 }
 \keyword{internal}

@@ -26,5 +26,5 @@ Closed-form first derivatives of the Weibull log-density, written in
         + (1 - u)\log z}
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

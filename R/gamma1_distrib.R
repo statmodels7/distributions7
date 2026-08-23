@@ -4,27 +4,27 @@ NULL
 #' @title S7 Class for the Gamma Distribution in Mean and Dispersion
 #' @name Gamma1Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the gamma written
+#' @description A subclass of `continuous_distrib` for the gamma written
 #'   in its mean and a dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
 #' @inheritParams distrib
-#' @return An object of class \code{Gamma1Distrib}.
-#' @seealso \code{\link{gamma1_distrib}}, \code{\link{gamma2_distrib}}
+#' @return An object of class `Gamma1Distrib`.
+#' @seealso [gamma1_distrib()], [gamma2_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.Gamma1Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Gamma1Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.Gamma1Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.Gamma1Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.Gamma1Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.Gamma1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Gamma1Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Gamma1Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gamma1Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.Gamma1Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Gamma1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Gamma1Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Gamma1Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.Gamma1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Gamma1Distrib],
+#'   [`distrib_rng()`][distrib_rng.Gamma1Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 Gamma1Distrib <- S7::new_class("Gamma1Distrib", parent = continuous_distrib)
 
 #' The Shape and Rate a Mean and Dispersion Imply
@@ -33,11 +33,11 @@ Gamma1Distrib <- S7::new_class("Gamma1Distrib", parent = continuous_distrib)
 #' \eqn{a = 1/\phi} and \eqn{b = 1/(\phi\mu)}, which is what makes the variance
 #' \eqn{\phi\mu^2}.
 #'
-#' @param theta A list with \code{mu} and \code{phi}.
+#' @param theta A list with `mu` and `phi`.
 #'
-#' @return A list with \code{shape} and \code{rate}.
+#' @return A list with `shape` and `rate`.
 #'
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 #'
 #' @keywords internal
 gamma1_shape_rate <- function(theta) {
@@ -51,12 +51,12 @@ gamma1_shape_rate <- function(theta) {
 #' @description
 #' The gamma density at shape \eqn{a = 1/\phi} and rate
 #' \eqn{b = 1/(\phi\mu)}.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `mu` and `phi`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_pdf, Gamma1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   sr <- gamma1_shape_rate(theta)
   stats::dgamma(y, shape = sr$shape, rate = sr$rate, log = log)
@@ -65,14 +65,14 @@ S7::method(distrib_pdf, Gamma1Distrib) <- function(distrib, y, theta, log = FALS
 #' @title Gamma Distribution Function in Mean and Dispersion
 #' @name distrib_cdf.Gamma1Distrib
 #' @description The gamma distribution function at the implied shape and rate.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param theta A list with `mu` and `phi`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_cdf, Gamma1Distrib) <- function(distrib, q, theta,
                                                     lower.tail = TRUE,
                                                     log.p = FALSE, ...) {
@@ -84,14 +84,14 @@ S7::method(distrib_cdf, Gamma1Distrib) <- function(distrib, q, theta,
 #' @title Gamma Quantile Function in Mean and Dispersion
 #' @name distrib_quantile.Gamma1Distrib
 #' @description The gamma quantile function at the implied shape and rate.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is given as a log-probability.
+#' @param theta A list with `mu` and `phi`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is given as a log-probability.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
                                                          lower.tail = TRUE,
                                                          log.p = FALSE, ...) {
@@ -102,12 +102,12 @@ S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
 
 #' @title Gamma Random Generation in Mean and Dispersion
 #' @name distrib_rng.Gamma1Distrib
-#' @description Delegates to \code{\link[stats]{rgamma}}.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @description Delegates to [stats::rgamma()].
+#' @param distrib A `Gamma1Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{mu} and \code{phi}.
+#' @param theta A list with `mu` and `phi`.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta) {
   sr <- gamma1_shape_rate(theta)
   stats::rgamma(n, shape = sr$shape, rate = sr$rate)
@@ -121,15 +121,15 @@ S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta) {
 #'       \dfrac{\partial\ell}{\partial\phi}
 #'         = -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\}}
 #' the first being the score of a gamma generalized linear model.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `phi`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @param threads How many threads the kernel may use; below the measured
 #'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"), ...,
                                                          threads = 1L) {
@@ -142,15 +142,15 @@ S7::method(distrib_gradient, Gamma1Distrib) <- function(distrib, y, theta,
 #' Closed form. The derivatives in \eqn{\phi} are those in \eqn{s = 1/\phi}
 #' carried across by the one-variable chain rule, which is what keeps the
 #' polygamma functions to one evaluation each.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `phi`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @param threads How many threads the kernel may use; below the measured
 #'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
                                                         scale = c("parameter", "link"), ...,
                                                         threads = 1L) {
@@ -167,17 +167,17 @@ S7::method(distrib_hessian, Gamma1Distrib) <- function(distrib, y, theta,
 #' The mean and the dispersion are orthogonal, which is what makes this the
 #' natural parametrization for a generalized linear model. The expectation uses
 #' \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `phi`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @param threads How many threads the kernel may use; below the measured
 #'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, theta,
                                                                  scale = c("parameter", "link"),
                                                                  approx = c("bartlett", "integrate", "mc", "opg"),
@@ -189,18 +189,18 @@ S7::method(distrib_expected_hessian, Gamma1Distrib) <- function(distrib, y, thet
 #' @title Gamma Third-Order Derivatives in Mean and Dispersion
 #' @name distrib_deriv3.Gamma1Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `phi`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @param threads How many threads the kernel may use; below the measured
 #'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
                                                        approx = c("integrate", "bartlett", "mc", "opg"),
@@ -216,18 +216,18 @@ S7::method(distrib_deriv3, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' @title Gamma Fourth-Order Derivatives in Mean and Dispersion
 #' @name distrib_deriv4.Gamma1Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `phi`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @param threads How many threads the kernel may use; below the measured
 #'   internal threshold it stays sequential whatever the count says.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_deriv4, Gamma1Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                        scale = c("parameter", "link"),
                                                        approx = c("integrate", "bartlett", "mc", "opg"),
@@ -244,12 +244,12 @@ S7::method(distrib_deriv4, Gamma1Distrib) <- function(distrib, y, theta, expecte
 #' @name distrib_grad_y.Gamma1Distrib
 #' @description \eqn{\partial\ell/\partial y = (a-1)/y - b} at the implied
 #'   shape and rate.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
+#' @param theta A list with `mu` and `phi`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
   sr <- gamma1_shape_rate(theta)
   (sr$shape - 1) / y - sr$rate
@@ -258,12 +258,12 @@ S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' @title Gamma Second Response Derivative in Mean and Dispersion
 #' @name distrib_hess_y.Gamma1Distrib
 #' @description \eqn{\partial^2\ell/\partial y^2 = -(a-1)/y^2}.
-#' @param distrib A \code{Gamma1Distrib} object.
+#' @param distrib A `Gamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{phi}.
+#' @param theta A list with `mu` and `phi`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gamma1_distrib}}
+#' @seealso [gamma1_distrib()]
 S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
   sr <- gamma1_shape_rate(theta)
   -(sr$shape - 1) / y^2
@@ -283,8 +283,8 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' in \eqn{\mu} is \eqn{(y-\mu)/(\phi\mu^2)}. The shape is \eqn{1/\phi} and the
 #' rate \eqn{1/(\phi\mu)}.
 #'
-#' It is the same law as \code{\link{gamma2_distrib}}, which carries the mean
-#' and the \emph{variance}: the two are related by
+#' It is the same law as [gamma2_distrib()], which carries the mean
+#' and the *variance*: the two are related by
 #' \eqn{\sigma^2 = \phi\mu^2}. They are separate families because the second
 #' parameter is a different quantity in each, with its own interpretation,
 #' standard error and interval.
@@ -302,9 +302,9 @@ S7::method(distrib_hess_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the log.
 #' @param link_phi Link function for \eqn{\phi}. Defaults to the log.
 #'
-#' @return An S7 object of class \code{\link{Gamma1Distrib}}.
+#' @return An S7 object of class [Gamma1Distrib()].
 #'
-#' @seealso \code{\link{gamma2_distrib}}
+#' @seealso [gamma2_distrib()]
 #'
 #' @examples
 #' d <- gamma1_distrib()

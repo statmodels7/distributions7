@@ -5,35 +5,35 @@ NULL
 #' @name transformer
 #'
 #' @description
-#' A \code{transformer} object defines the mathematical rules for transforming a random
-#' variable \eqn{Y = g(X)}. It is used as input to \code{\link{transformation}}.
+#' A `transformer` object defines the mathematical rules for transforming a random
+#' variable \eqn{Y = g(X)}. It is used as input to [transformation()].
 #'
 #' @param name A character string identifying the transformation.
 #' @param trans_fun The forward transformation \eqn{y = g(x)}.
 #' @param trans_inv The inverse transformation \eqn{x = g^{-1}(y)}.
 #' @param trans_abs_jac The absolute Jacobian of the inverse transformation
-#'   \eqn{|J(y)| = |dx/dy|}; must accept a \code{log} argument.
+#'   \eqn{|J(y)| = |dx/dy|}; must accept a `log` argument.
 #' @param trans_inv_hessian The second derivative of the inverse transformation \eqn{d^2x/dy^2}.
 #' @param grad_log_jac The first derivative of \eqn{\log|J(y)|} with respect to \eqn{y}.
 #' @param hess_log_jac The second derivative of \eqn{\log|J(y)|} with respect to \eqn{y}.
 #' @param bounds_fun Maps the original support bounds to the transformed ones.
 #' @param valid_support Checks whether a support is compatible with the transformation.
-#' @param decreasing Logical; \code{TRUE} for monotonically decreasing transformations.
+#' @param decreasing Logical; `TRUE` for monotonically decreasing transformations.
 #'
 #' @section Methods:
-#' No method dispatches on this class: a \code{transformer} is a description of a
+#' No method dispatches on this class: a `transformer` is a description of a
 #' change of variables, not a distribution. It is consumed by
-#' \code{\link{transformation}}, which returns a
-#' \code{\link{TransformedDistrib}} carrying the full set of distribution methods.
+#' [transformation()], which returns a
+#' [TransformedDistrib()] carrying the full set of distribution methods.
 #'
-#' Ready-made transformers: \code{\link{log_transform}}, \code{\link{exp_transform}},
-#' \code{\link{sqrt_transform}}, \code{\link{inverse_transform}},
-#' \code{\link{power_transform}}, \code{\link{bc_transform}},
-#' \code{\link{yj_transform}}, \code{\link{softplus_transform}},
-#' \code{\link{asinh_transform}}, \code{\link{logit_transform}},
-#' \code{\link{expit_transform}}, \code{\link{affine_transform}}.
+#' Ready-made transformers: [log_transform()], [exp_transform()],
+#' [sqrt_transform()], [inverse_transform()],
+#' [power_transform()], [bc_transform()],
+#' [yj_transform()], [softplus_transform()],
+#' [asinh_transform()], [logit_transform()],
+#' [expit_transform()], [affine_transform()].
 #'
-#' @return An object of class \code{transformer}.
+#' @return An object of class `transformer`.
 #'
 #' @examples
 #' tr <- log_transform()
@@ -43,7 +43,7 @@ NULL
 #' # a transformer is consumed by transformation(), which is where it acts
 #' distrib_pdf(transformation(gamma2_distrib(), tr), 0, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 #' @export
 transformer <- S7::new_class("transformer",
   properties = list(
@@ -66,12 +66,12 @@ transformer <- S7::new_class("transformer",
 #'
 #' @description Transformer for \eqn{Y = \log(X)}: maps \eqn{(0, \infty)} to the real line.
 #' Inverse \eqn{X = e^Y}, Jacobian \eqn{|J| = e^Y}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), log_transform())
 #' distrib_pdf(d, 0, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 log_transform <- function() {
   transformer(
@@ -96,12 +96,12 @@ log_transform <- function() {
 #'
 #' @description Transformer for \eqn{Y = e^X}: maps the real line to \eqn{(0, \infty)}.
 #' Inverse \eqn{X = \log(Y)}, Jacobian \eqn{|J| = 1/Y}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), exp_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 exp_transform <- function() {
   transformer(
@@ -122,12 +122,12 @@ exp_transform <- function() {
 #'
 #' @description Transformer for \eqn{Y = 1/X} (monotonically decreasing on a support not
 #' containing 0). Inverse \eqn{X = 1/Y}, Jacobian \eqn{|J| = 1/Y^2}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), inverse_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 inverse_transform <- function() {
   transformer(
@@ -148,12 +148,12 @@ inverse_transform <- function() {
 #'
 #' @description Transformer for \eqn{Y = \sqrt{X}} (requires \eqn{X \ge 0}).
 #' Inverse \eqn{X = Y^2}, Jacobian \eqn{|J| = 2Y}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), sqrt_transform())
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 sqrt_transform <- function() {
   transformer(
@@ -176,12 +176,12 @@ sqrt_transform <- function() {
 #' Jacobian \eqn{|J| = \frac{1}{|p|}|Y|^{1/p - 1}}. Fractional powers require a
 #' non-negative support; even integer powers require a support that does not straddle 0.
 #' @param p Numeric. The exponent. Defaults to 2.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), power_transform(p = 2))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 power_transform <- function(p = 2) {
   transformer(
@@ -222,12 +222,12 @@ power_transform <- function(p = 2) {
 #'
 #' @description Transformer for \eqn{Y = \text{asinh}(X)}, a log-like transformation that
 #' handles zero and negative values. Inverse \eqn{X = \sinh(Y)}, Jacobian \eqn{|J| = \cosh(Y)}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), asinh_transform())
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 asinh_transform <- function() {
   transformer(
@@ -254,12 +254,12 @@ asinh_transform <- function() {
 #' \eqn{Y = (X^\lambda - 1)/\lambda} (with \eqn{Y = \log X} for \eqn{\lambda = 0}).
 #' Requires \eqn{X > 0}.
 #' @param lambda Numeric. The transformation parameter.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), bc_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 bc_transform <- function(lambda) {
   if (abs(lambda) < 1e-10) {
@@ -302,12 +302,12 @@ bc_transform <- function(lambda) {
 #' negative values: Box-Cox of \eqn{X+1} (parameter \eqn{\lambda}) for \eqn{X \ge 0},
 #' and negated Box-Cox of \eqn{|X|+1} (parameter \eqn{2-\lambda}) for \eqn{X < 0}.
 #' @param lambda Numeric. The transformation parameter.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), yj_transform(lambda = 0.5))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 yj_transform <- function(lambda) {
   lam2 <- 2 - lambda
@@ -386,12 +386,12 @@ yj_transform <- function(lambda) {
 #' Inverse \eqn{X = (Y - \text{loc})/\text{scale}}, Jacobian \eqn{|J| = 1/|\text{scale}|}.
 #' @param loc Numeric. The location shift. Defaults to 0.
 #' @param scale Numeric. The scale multiplier (non-zero). Defaults to 1.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), affine_transform(loc = 1, scale = 2))
 #' distrib_pdf(d, 1, list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [transformation()]
 #' @export
 affine_transform <- function(loc = 0, scale = 1) {
   if (scale == 0) {
@@ -422,12 +422,12 @@ affine_transform <- function(loc = 0, scale = 1) {
 #'
 #' @description Transformer for \eqn{Y = \text{logit}(X)}: maps \eqn{(0, 1)} to the real line.
 #' Inverse \eqn{X = \text{plogis}(Y)}, Jacobian \eqn{|J| = \text{dlogis}(Y)}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(beta1_distrib(), logit_transform())
 #' distrib_pdf(d, 0, list(mu = 0.4, phi = 5))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 logit_transform <- function() {
   transformer(
@@ -448,12 +448,12 @@ logit_transform <- function() {
 #'
 #' @description Transformer for \eqn{Y = \text{plogis}(X)}: maps the real line to \eqn{(0, 1)}.
 #' Inverse \eqn{X = \text{logit}(Y)}, Jacobian \eqn{|J| = 1/(Y(1-Y))}.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gaussian1_distrib(), expit_transform())
 #' distrib_pdf(d, 0.5, list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{softplus_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [softplus_transform()], [asinh_transform()], [logit_transform()], [affine_transform()], [transformation()]
 #' @export
 expit_transform <- function() {
   transformer(
@@ -479,12 +479,12 @@ expit_transform <- function() {
 #' sending \eqn{(0, \infty)} to the real line. Inverse (softplus)
 #' \eqn{X = \frac{1}{a}\log(1 + e^{aY})}, Jacobian \eqn{|J| = \text{plogis}(aY)}.
 #' @param a Numeric. Positive scale parameter. Defaults to 1.
-#' @return A \code{\link{transformer}} object.
+#' @return A [transformer()] object.
 #' @examples
 #' d <- transformation(gamma2_distrib(), softplus_transform(a = 1))
 #' distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+#' @seealso [log_transform()], [exp_transform()], [sqrt_transform()], [inverse_transform()], [power_transform()], [bc_transform()], [yj_transform()], [asinh_transform()], [logit_transform()], [expit_transform()], [affine_transform()], [transformation()]
 #' @export
 softplus_transform <- function(a = 1) {
   if (a <= 0) {
@@ -515,26 +515,26 @@ softplus_transform <- function(a = 1) {
 #' @name TransformedDistrib
 #'
 #' @description
-#' A subclass of \code{continuous_distrib} representing the distribution of
+#' A subclass of `continuous_distrib` representing the distribution of
 #' \eqn{Y = g(X)}, where \eqn{X} follows a wrapped continuous distribution and \eqn{g}
-#' is a bijective \code{\link{transformer}}.
+#' is a bijective [transformer()].
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{continuous_distrib} object.
-#' @param transformer The \code{\link{transformer}} defining \eqn{g}.
-#' @return An object of class \code{TransformedDistrib}.
-#' @seealso \code{\link{transformation}}
+#' @param parent_distrib The wrapped `continuous_distrib` object.
+#' @param transformer The [transformer()] defining \eqn{g}.
+#' @return An object of class `TransformedDistrib`.
+#' @seealso [transformation()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.TransformedDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.TransformedDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.TransformedDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.TransformedDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.TransformedDistrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.TransformedDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.TransformedDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.TransformedDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.TransformedDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.TransformedDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.TransformedDistrib],
+#'   [`distrib_rng()`][distrib_rng.TransformedDistrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 TransformedDistrib <- S7::new_class("TransformedDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -547,13 +547,13 @@ TransformedDistrib <- S7::new_class("TransformedDistrib",
 #' @name distrib_pdf.TransformedDistrib
 #' @description
 #' Change of variables: \eqn{f_Y(y) = f_X(g^{-1}(y)) \cdot |J(y)|}. Computed in log space;
-#' singular log-densities are clamped to avoid \code{Inf - Inf} during integration.
-#' @param distrib A \code{TransformedDistrib} object.
+#' singular log-densities are clamped to avoid `Inf - Inf` during integration.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   tr <- distrib@transformer
   log_pdf_x <- distrib_pdf(distrib@parent_distrib, tr@trans_inv(y), theta, log = TRUE)
@@ -573,13 +573,13 @@ S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log =
 #' @name distrib_cdf.TransformedDistrib
 #' @description
 #' \eqn{F_Y(q) = F_X(g^{-1}(q))}, with tails swapped for decreasing transformations.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A list of the parent's parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   tr <- distrib@transformer
   if (tr@decreasing) lower.tail <- !lower.tail
@@ -590,13 +590,13 @@ S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower
 #' @name distrib_quantile.TransformedDistrib
 #' @description
 #' \eqn{Q_Y(p) = g(Q_X(p))}, with tails swapped for decreasing transformations.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A list of the parent's parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
+#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   tr <- distrib@transformer
   if (tr@decreasing) lower.tail <- !lower.tail
@@ -606,11 +606,11 @@ S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, 
 #' @title Transformed Random Number Generator
 #' @name distrib_rng.TransformedDistrib
 #' @description Draws from the parent distribution and applies \eqn{g}.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param n Number of observations to generate.
 #' @param theta A list of the parent's parameters.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta) {
   distrib@transformer@trans_fun(distrib_rng(distrib@parent_distrib, n, theta))
 }
@@ -620,11 +620,11 @@ S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta) {
 #' @description
 #' The Jacobian does not depend on the parameters, so the score of the transformed model
 #' equals the parent's score evaluated at \eqn{x = g^{-1}(y)}.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
 #' @return A list containing the vectors of first derivatives.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_gradient, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   distrib_gradient(distrib@parent_distrib, distrib@transformer@trans_inv(y), theta)
 }
@@ -634,11 +634,11 @@ S7::method(distrib_gradient, TransformedDistrib) <- function(distrib, y, theta, 
 #' @description
 #' The observed Hessian of the transformed model equals the parent's observed Hessian
 #' evaluated at \eqn{x = g^{-1}(y)}.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
 #' @return A list containing the vectors of second derivatives.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   distrib_hessian(distrib@parent_distrib, distrib@transformer@trans_inv(y), theta)
 }
@@ -648,13 +648,13 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' @description
 #' Since \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log|J(y)|} and the Jacobian
 #' does not depend on \eqn{\theta}, the expected Hessian of the transformed model is
-#' \emph{exactly} the parent's expected Hessian (the expectation is just re-parameterized
+#' *exactly* the parent's expected Hessian (the expectation is just re-parameterized
 #' by the change of variables). No Monte Carlo approximation is needed.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
 #' @return A list containing the vectors of expected second derivatives.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   distrib_expected_hessian(distrib@parent_distrib, distrib@transformer@trans_inv(y), theta)
 }
@@ -665,13 +665,13 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #'
 #' @description
 #' Creates a new distribution object for \eqn{Y = g(X)}, where \eqn{X} follows an existing
-#' \strong{continuous} distribution and \eqn{g} is a bijective transformation described by
-#' a \code{\link{transformer}} object.
+#' **continuous** distribution and \eqn{g} is a bijective transformation described by
+#' a [transformer()] object.
 #'
-#' @param distrib An object inheriting from \code{continuous_distrib}.
-#' @param transformer A \code{\link{transformer}} object (e.g. \code{\link{log_transform}()},
-#'   \code{\link{bc_transform}(0.5)}, \code{\link{affine_transform}(1, 2)}).
-#' @param new_name A single string naming the result, or \code{NULL} (the
+#' @param distrib An object inheriting from `continuous_distrib`.
+#' @param transformer A [transformer()] object (e.g. [log_transform()],
+#'   [`bc_transform(0.5)`][bc_transform], [`affine_transform(1, 2)`][affine_transform]).
+#' @param new_name A single string naming the result, or `NULL` (the
 #'   default) to compose the parent's name with the transformer's.
 #'
 #' @details
@@ -680,17 +680,17 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #' CDF, quantiles and RNG are obtained by mapping through \eqn{g} (with tails swapped for
 #' decreasing transformations). Since \eqn{g} does not depend on the parameters, the
 #' score, observed Hessian and expected Hessian coincide with the parent's, evaluated at
-#' \eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link{moment}}.
+#' \eqn{x = g^{-1}(y)}. Moments are available numerically via [moment()].
 #'
 #' Several standard families are a transformation of one already here, and
-#' \code{new_name} lets the result carry the name it is known by rather than
+#' `new_name` lets the result carry the name it is known by rather than
 #' the recipe that produced it: the inverse of a Gamma is an inverse Gamma, the
 #' exponential of a logistic a log-logistic, the exponential of an exponential
 #' a Pareto. Only the printed name changes; nothing about the distribution
 #' depends on it, and the default composes the parent's name with the
 #' transformer's as before.
 #'
-#' @return An S7 object of class \code{TransformedDistrib} (inheriting from \code{continuous_distrib}).
+#' @return An S7 object of class `TransformedDistrib` (inheriting from `continuous_distrib`).
 #'
 #' @examples
 #' \dontrun{
@@ -705,8 +705,8 @@ S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y,
 #'                      new_name = "inverse gamma")
 #' ig@distrib_name
 #'
-#' @seealso \code{\link{transformer}}, \code{\link{log_transform}}, \code{\link{exp_transform}},
-#'   \code{\link{affine_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}
+#' @seealso [transformer()], [log_transform()], [exp_transform()],
+#'   [affine_transform()], [bc_transform()], [yj_transform()]
 #' @export
 transformation <- function(distrib, transformer, new_name = NULL) {
   if (!S7::S7_inherits(distrib, continuous_distrib)) {

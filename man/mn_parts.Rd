@@ -7,7 +7,7 @@
 mn_parts(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{MultinomialDistrib}} object.}
+\item{distrib}{A \code{\link[=MultinomialDistrib]{MultinomialDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }
@@ -20,6 +20,6 @@ The probability vector and the simplex's first two derivatives, computed
 once per call.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }
 \keyword{internal}

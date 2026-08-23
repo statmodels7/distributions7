@@ -4,9 +4,9 @@ NULL
 #' @title Print Method for `distrib` Objects
 #' @name print.distrib
 #' @description Custom S7 print method for objects inheriting from `distrib`.
-#' @param x An object inheriting from class \code{"distrib"}.
+#' @param x An object inheriting from class `"distrib"`.
 #' @param ... Additional arguments (currently unused).
-#' @return The object \code{x} invisibly.
+#' @return The object `x` invisibly.
 #' @keywords internal
 S7::method(print, distrib) <- function(x, ...) {
   # Format the distribution name (Capitalize first letters)
@@ -66,9 +66,9 @@ S7::method(print, distrib) <- function(x, ...) {
 #'
 #' @name generate_random_theta.distrib
 #' @description
-#' Generates a named list of sensible random parameters based on the mathematical domain (\code{params_bounds}) of the given distribution.
+#' Generates a named list of sensible random parameters based on the mathematical domain (`params_bounds`) of the given distribution.
 #' 
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param ... Additional arguments (currently unused).
 #' @return A named list of randomly generated parameters.
 #' @keywords internal
@@ -96,13 +96,13 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #' The Parameter Settings a Plot Draws
 #'
 #' @description
-#' Splits a \code{theta} whose components may be vectors into one setting per
+#' Splits a `theta` whose components may be vectors into one setting per
 #' curve, and reports which parameters vary across them.
 #'
 #' @details
 #' A component of length \eqn{k > 1} asks for \eqn{k} curves and a component of
 #' length one is held across all of them, so
-#' \code{list(mu = 0, sigma = c(1, 2, 4))} is three settings sharing a mean.
+#' `list(mu = 0, sigma = c(1, 2, 4))` is three settings sharing a mean.
 #' Every component must therefore have length one or the same \eqn{k}; anything
 #' else is rejected rather than recycled, since a length that divides \eqn{k}
 #' is far more likely to be a mistake than a request.
@@ -114,8 +114,8 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
 #' @param x A distribution object.
 #' @param theta A named list or numeric vector of parameters.
 #'
-#' @return A list with \code{settings} (one scalar \code{theta} per curve),
-#'   \code{k} and \code{varying} (the names of the parameters that differ
+#' @return A list with `settings` (one scalar `theta` per curve),
+#'   `k` and `varying` (the names of the parameters that differ
 #'   between settings).
 #'
 #' @keywords internal
@@ -162,11 +162,11 @@ plot_settings <- function(x, theta) {
 #' being already there.
 #'
 #' @param k The number of settings.
-#' @param dots The caller's \code{...}; a \code{col}, \code{lty} or \code{pch}
+#' @param dots The caller's `...`; a `col`, `lty` or `pch`
 #'   given there wins and is recycled over the settings.
 #'
-#' @return A list with \code{col}, \code{lty} and \code{pch}, each of length
-#'   \code{k}.
+#' @return A list with `col`, `lty` and `pch`, each of length
+#'   `k`.
 #'
 #' @keywords internal
 plot_keys <- function(k, dots = list()) {
@@ -197,7 +197,7 @@ plot_keys <- function(k, dots = list()) {
 #' @param y The evaluation points.
 #' @param dens A list of densities, one per setting.
 #'
-#' @return \code{"topright"} or \code{"topleft"}.
+#' @return `"topright"` or `"topleft"`.
 #'
 #' @keywords internal
 plot_legend_side <- function(y, dens) {
@@ -216,10 +216,10 @@ plot_legend_side <- function(y, dens) {
 #' fixed go in the title, where they are stated once.
 #'
 #' @param x A distribution object.
-#' @param ps The value of \code{\link{plot_settings}}.
+#' @param ps The value of [plot_settings()].
 #'
-#' @return A list with \code{legend} (character, length \code{ps$k}, or
-#'   \code{NULL} when nothing varies) and \code{main}.
+#' @return A list with `legend` (character, length `ps$k`, or
+#'   `NULL` when nothing varies) and `main`.
 #'
 #' @keywords internal
 plot_labels <- function(x, ps) {
@@ -254,23 +254,23 @@ plot_labels <- function(x, ps) {
 #'
 #' @details
 #' A parameter given as a vector asks for one curve per element, so
-#' \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))} draws three densities that
+#' `plot(d, list(mu = 0, sigma = c(1, 2, 4)))` draws three densities that
 #' share a mean and differ in scale. The curves are separated by color and by
 #' line type together, and the parameters that vary are named in a legend while
-#' those held fixed are stated in the title. See \code{\link{plot_settings}}
+#' those held fixed are stated in the title. See [plot_settings()]
 #' for the rule on lengths.
 #'
 #' The horizontal range covers every setting: it runs from the smallest
 #' 0.5\% quantile to the largest 99.5\% quantile over them, widened by a tenth
 #' and clamped to the support.
 #'
-#' @param x An object of class \code{"continuous_distrib"}.
-#' @param theta A named list or vector of parameters matching \code{x@params}.
+#' @param x An object of class `"continuous_distrib"`.
+#' @param theta A named list or vector of parameters matching `x@params`.
 #'   A component of length \eqn{k > 1} draws \eqn{k} curves.
 #' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
 #' @param legend Whether to draw the key when several settings are plotted.
-#' @param ... Additional arguments passed to the base \code{\link{plot}} function.
-#'   \code{col} and \code{lty} given here win and are recycled over the curves.
+#' @param ... Additional arguments passed to the base [plot()] function.
+#'   `col` and `lty` given here win and are recycled over the curves.
 #' @importFrom graphics plot
 #' @keywords internal
 #' @return The distribution, invisibly.
@@ -342,17 +342,17 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
 #'
 #' @details
 #' A parameter given as a vector asks for one setting per element, exactly as
-#' in \code{\link{plot.continuous_distrib}}. Several settings are drawn as
+#' in [plot.continuous_distrib()]. Several settings are drawn as
 #' several sets of stems, shifted sideways so that one does not stand in front
 #' of another, and separated by color and line type together.
 #'
-#' @param x An object of class \code{"discrete_distrib"}.
-#' @param theta A named list or vector of parameters matching \code{x@params}.
+#' @param x An object of class `"discrete_distrib"`.
+#' @param theta A named list or vector of parameters matching `x@params`.
 #'   A component of length \eqn{k > 1} draws \eqn{k} sets of stems.
 #' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
 #' @param legend Whether to draw the key when several settings are plotted.
-#' @param ... Additional arguments passed to the base \code{\link{plot}} function.
-#'   \code{col} and \code{lty} given here win and are recycled over the settings.
+#' @param ... Additional arguments passed to the base [plot()] function.
+#'   `col` and `lty` given here win and are recycled over the settings.
 #' @importFrom graphics plot segments points
 #' @keywords internal
 #' @return The distribution, invisibly.

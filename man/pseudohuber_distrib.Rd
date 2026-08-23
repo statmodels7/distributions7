@@ -12,13 +12,13 @@ pseudohuber_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_nu}{A link function object for the shape parameter \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{PseudoHuberDistrib} (inheriting from \code{continuous_distrib}) representing the Pseudo-Huber distribution.
@@ -47,7 +47,7 @@ where \eqn{K_1} is the modified Bessel function of the second kind.
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right)}
 \deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[\dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\,K_1(\sqrt{\nu})}\right]}
 The observed Hessian is available in closed form via
-\code{\link{distrib_hessian.PseudoHuberDistrib}}; the expected Hessian has no
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}}; the expected Hessian has no
 closed form and is obtained by numerical integration.
 
 \strong{Parameter Domains:}
@@ -59,8 +59,8 @@ closed form and is obtained by numerical integration.
 
 \strong{Note:} The CDF, quantile function and RNG have no closed form and rely on
 numerical integration / root-finding, so they are slower than for the other
-distributions in the package. Response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are available in closed form; third- and
+distributions in the package. Response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are available in closed form; third- and
 fourth-order parameter derivatives use the numerical fallback.
 }
 \examples{
@@ -74,12 +74,12 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.PseudoHuberDistrib}} for the density function.
-\item \code{\link{distrib_cdf.PseudoHuberDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.PseudoHuberDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.PseudoHuberDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.PseudoHuberDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.PseudoHuberDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.PseudoHuberDistrib}} for the expected Hessian.
+\item \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf.PseudoHuberDistrib()}} for the density function.
+\item \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf.PseudoHuberDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng.PseudoHuberDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} for the expected Hessian.
 }
 }

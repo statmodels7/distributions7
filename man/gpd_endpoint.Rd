@@ -21,9 +21,9 @@ A numeric vector.
 The endpoint depends on the parameters, which is the whole reason the
 family needs care: for \eqn{\xi < 0} the support is bounded and moves with
 \eqn{\sigma} and \eqn{\xi}, so the license to differentiate under the
-integral sign is not automatic. See \code{\link{gpd_distrib}}.
+integral sign is not automatic. See \code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }
 \keyword{internal}

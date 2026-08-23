@@ -18,5 +18,5 @@ A list containing the vectors of first derivatives.
 the parent's score recentered at its mean over the truncated support.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

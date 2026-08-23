@@ -4,7 +4,7 @@
 \alias{mean.MvStudentTDistrib}
 \title{Mean of a Multivariate Student t}
 \arguments{
-\item{x}{A \code{\link{MvStudentTDistrib}} object.}
+\item{x}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 

@@ -8,10 +8,10 @@ lognormal1_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma2}{A link function object for the variance parameter \eqn{\sigma^2}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{Lognormal1Distrib} (inheriting from \code{continuous_distrib}) representing the Lognormal distribution.
@@ -57,9 +57,9 @@ excess kurtosis \eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}.
 \item \eqn{\sigma^2 \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- lognormal1_distrib()
@@ -71,5 +71,5 @@ distrib_gradient(d, c(0.5, 1, 2), theta)
 
 }
 \seealso{
-\code{\link{lognormal2_distrib}}, \code{\link{gaussian1_distrib}}
+\code{\link[=lognormal2_distrib]{lognormal2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

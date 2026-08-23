@@ -8,10 +8,10 @@ laplace2_distrib(link_mu = identity_link(), link_lambda = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_lambda}{A link function object for the rate parameter \eqn{\lambda}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{Laplace2Distrib} (inheriting from \code{continuous_distrib}).
@@ -21,7 +21,7 @@ Creates a Laplace (double-exponential) distribution object parametrized by
 location (\eqn{\mu}) and \strong{rate} (\eqn{\lambda}).
 }
 \details{
-This is the same law as \code{\link{laplace_distrib}} in different
+This is the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} in different
 coordinates: \eqn{\lambda} here is \eqn{1/\sigma} there. The rate form is
 the one a penalty consumes, because the negative log-density at fixed
 \eqn{\mu = 0} is \eqn{\lambda \lvert y \rvert} up to a constant: the lasso
@@ -49,8 +49,7 @@ beyond the first carry no data at all.
 excess kurtosis 3.
 
 The kink at \eqn{y = \mu} and its consequences are those of
-\code{\link{laplace_distrib}}: \code{params_smooth = c(mu = FALSE, lambda
-= TRUE)}, the observed Hessian cannot update \eqn{\mu}, and the expected
+\code{\link[=laplace_distrib]{laplace_distrib()}}: \code{params_smooth = c(mu = FALSE, lambda = TRUE)}, the observed Hessian cannot update \eqn{\mu}, and the expected
 Hessian comes from the variance of the score.
 
 \strong{Parameter Domains:}
@@ -69,5 +68,5 @@ distrib_pdf(laplace_distrib(), 0.7, list(mu = 0, sigma = 0.5))
 
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

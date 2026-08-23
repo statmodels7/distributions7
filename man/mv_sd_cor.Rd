@@ -30,7 +30,7 @@ the matrix does not depend on.}
 \item{sd_block, cor_block}{The headings the two groups print under.}
 }
 \value{
-A list as described in \code{\link{mv_derived}}.
+A list as described in \code{\link[=mv_derived]{mv_derived()}}.
 }
 \description{
 Turns a symmetric positive definite matrix and the derivatives of its

@@ -34,7 +34,7 @@ parameter, the non-zero partial derivatives of the map with respect to
 the new parameters to fourth order, keyed by the sorted tuple of
 new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
 an exact zero. The shipped second parametrizations supply hand-written
-tables (see \code{\link{reparam_map_derivs}}); when \code{NULL}, each
+tables (see \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}); when \code{NULL}, each
 needed partial comes from one finite-difference stencil on the map.}
 
 \item{interpretation}{An optional named character vector describing each new
@@ -45,8 +45,8 @@ the new parameters appended.}
 }
 \value{
 A distribution object of class
-\code{\link{ReparamContinuousDistrib}} or
-\code{\link{ReparamDiscreteDistrib}}.
+\code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}} or
+\code{\link[=ReparamDiscreteDistrib]{ReparamDiscreteDistrib()}}.
 }
 \description{
 Returns the same law as \code{distrib}, parametrized by quantities of the
@@ -109,5 +109,5 @@ distrib_pdf(gaussian2_distrib(), c(0, 1, 2), theta)
 
 }
 \seealso{
-\code{\link{fixed}}, \code{\link{transformation}}
+\code{\link[=fixed]{fixed()}}, \code{\link[=transformation]{transformation()}}
 }

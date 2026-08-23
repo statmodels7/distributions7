@@ -20,5 +20,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}}
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

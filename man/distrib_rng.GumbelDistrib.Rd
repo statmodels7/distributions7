@@ -19,5 +19,5 @@ exponential, which is inverse transform written without a logarithm of a
 uniform.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

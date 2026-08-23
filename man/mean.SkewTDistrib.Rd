@@ -4,7 +4,7 @@
 \alias{mean.SkewTDistrib}
 \title{Mean of the Skew t Distribution}
 \arguments{
-\item{x}{A \code{\link{SkewTDistrib}}.}
+\item{x}{A \code{\link[=SkewTDistrib]{SkewTDistrib()}}.}
 
 \item{theta}{A named list of parameters.}
 

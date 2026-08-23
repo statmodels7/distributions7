@@ -19,5 +19,5 @@ A numeric vector.
 \deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu)}
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

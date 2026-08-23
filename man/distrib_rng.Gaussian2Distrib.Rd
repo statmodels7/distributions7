@@ -14,8 +14,8 @@
 A numeric vector.
 }
 \description{
-Delegates to \code{\link[stats]{rnorm}}.
+Delegates to \code{\link[stats:Normal]{stats::rnorm()}}.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

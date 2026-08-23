@@ -28,5 +28,5 @@ with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
 \deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = \dfrac{(y-\mu)^2\left[(y-\mu)^2 - \sigma^2\right]}{\sigma\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

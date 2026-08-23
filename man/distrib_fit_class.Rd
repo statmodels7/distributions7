@@ -35,7 +35,7 @@ distrib_fit(
 \item{distrib}{The fitted \code{distrib} object.}
 
 \item{y}{The observations the fit was computed from, kept so that the fitted
-distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).}
+distribution can be compared with the data (see \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}).}
 
 \item{n}{Number of observations.}
 
@@ -83,7 +83,7 @@ and every fallback attempted.}
 An object of class \code{distrib_fit}.
 }
 \description{
-Object returned by \code{\link{fit_distrib}}, holding the estimates on both the
+Object returned by \code{\link[=fit_distrib]{fit_distrib()}}, holding the estimates on both the
 parameter and the link scale together with their uncertainty.
 }
 \section{Methods}{
@@ -107,5 +107,5 @@ logLik(fit)
 
 }
 \seealso{
-\code{\link{fit_distrib}}
+\code{\link[=fit_distrib]{fit_distrib()}}
 }

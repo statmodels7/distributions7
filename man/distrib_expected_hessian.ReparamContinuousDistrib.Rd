@@ -41,6 +41,6 @@ zero, so a parent with an exact expected information gives an exact one
 here.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

@@ -22,5 +22,5 @@ A named list with the \code{mu} component.
 the deviation from the mean over the variance.
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

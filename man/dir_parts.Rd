@@ -7,7 +7,7 @@
 dir_parts(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{DirichletDistrib}} object.}
+\item{distrib}{A \code{\link[=DirichletDistrib]{DirichletDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }
@@ -28,6 +28,6 @@ every second-derivative vector. They are what make the expected information
 closed form, since the terms carrying the data drop out under expectation.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }
 \keyword{internal}

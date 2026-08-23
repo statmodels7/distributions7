@@ -13,12 +13,12 @@ dirichlet_distrib(
 \arguments{
 \item{n_dim}{The number of coordinates \eqn{p}.}
 
-\item{mean}{A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
+\item{mean}{A \pkg{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} of the
 same dimension, carrying the mean. Defaults to
 \code{parameters7::simplex(n_dim)}.}
 
 \item{link_phi}{A link function object for \eqn{\phi}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{DirichletDistrib}.
@@ -61,14 +61,14 @@ drops out.
 
 \strong{The marginals are Beta}, coordinate \eqn{j} being
 \eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, so
-\code{\link{mv_marginal}} returns an object rather than signaling an error --- which
+\code{\link[=mv_marginal]{mv_marginal()}} returns an object rather than signaling an error --- which
 is what makes this family a useful test of that generic rather than another
 rejection. Several coordinates together are again Dirichlet, but only after
 the remaining mass is collapsed into a coordinate of its own, so that case
 is rejected rather than returned under a name that would mislead.
 
 The distribution function and the quantile are rejected by
-\code{\link{multivariate_distrib}}, as for every family of that class.
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}, as for every family of that class.
 }
 \section{The distribution}{
 
@@ -95,7 +95,7 @@ mv_marginal(d, theta, which = 1)$theta
 
 }
 \seealso{
-\code{\link{beta1_distrib}} for the two-coordinate case seen on the
-line, \code{\link{mvgaussian_distrib}},
-\code{\link[parameters7]{simplex}}
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the two-coordinate case seen on the
+line, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}},
+\code{\link[parameters7:simplex]{parameters7::simplex()}}
 }

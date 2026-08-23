@@ -19,5 +19,5 @@ A numeric vector.
 The von Mises density at the concentration \eqn{\kappa = A^{-1}(\rho)}.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }

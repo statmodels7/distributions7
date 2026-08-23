@@ -18,5 +18,5 @@ A list containing the vectors of second derivatives.
 with \eqn{M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j]}.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

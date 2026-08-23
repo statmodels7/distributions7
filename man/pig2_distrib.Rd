@@ -20,7 +20,7 @@ whose parameters are orthogonal -- the expected information is diagonal
 -- which is gamlss's \code{PIG2}. The mean stays \eqn{\mu}; the second
 parameter \eqn{\alpha} is exactly the argument the Bessel function of the
 mass function is evaluated at, related to the dispersion of
-\code{\link{pig1_distrib}} by \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}
+\code{\link[=pig1_distrib]{pig1_distrib()}} by \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}
 (gamlss states the inverse of the same map,
 \eqn{\alpha = 1/(\sqrt{\mu^2 + \sigma_2^2} - \mu)} with its own
 \eqn{\sigma_2}, which coincides with this \eqn{\alpha}).
@@ -30,7 +30,7 @@ Orthogonality makes the maximum likelihood estimates of \eqn{\mu} and
 \eqn{\alpha} asymptotically independent, so Fisher scoring steps in one
 parameter do not disturb the other; the cost is that \eqn{\alpha} has no
 moment reading of its own. Derivatives to fourth order are exact,
-computed by the same compiled kernel as \code{\link{pig1_distrib}} with
+computed by the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}} with
 \eqn{\alpha} a seed variable of the jet, so the Bessel argument needs no
 chain rule at all.
 }
@@ -58,5 +58,5 @@ modelling: bias due to misspecification of dispersion in Poisson-inverse
 Gaussian regression. \emph{Biometrical Journal} 61(2), 333--342.
 }
 \seealso{
-\code{\link{pig1_distrib}}, \code{\link{negbin2_distrib}}
+\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

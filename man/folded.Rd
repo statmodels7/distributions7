@@ -11,7 +11,7 @@ folded(distrib)
 below zero.}
 }
 \value{
-An S7 object of class \code{\link{FoldedDistrib}}.
+An S7 object of class \code{\link[=FoldedDistrib]{FoldedDistrib()}}.
 }
 \description{
 Wraps a continuous distribution into the distribution of the absolute value
@@ -20,11 +20,11 @@ of its variable.
 \details{
 Folding is not a change of variable. The map \eqn{y \mapsto |y|} is two to
 one and has no inverse, so it cannot be a
-\code{\link{transformer}}: instead of carrying a density through a Jacobian
+\code{\link[=transformer]{transformer()}}: instead of carrying a density through a Jacobian
 it adds the two preimages,
 \deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
 with distribution function \eqn{F(x) - F(-x)}. No parameter is added and
-none is removed, as with \code{\link{truncated}}.
+none is removed, as with \code{\link[=truncated]{truncated()}}.
 
 Every derivative comes from the wrapper machinery unchanged. Writing
 \eqn{w = f(x)/L(x)} for the weight of the positive preimage, the ratios that
@@ -60,7 +60,7 @@ and it is not rejected, the folded normal being a standard family; what is
 estimable is \eqn{|\mu|} together with the remaining parameters. Holding
 the location at zero removes the question and gives the half-normal. A
 parent that is not symmetric about its location, such as
-\code{\link{skewnormal1_distrib}}, has no such invariance and its sign is
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, has no such invariance and its sign is
 identified.
 }
 \examples{
@@ -75,6 +75,6 @@ distrib_pdf(hn, c(0.5, 1), list(sigma = 2))
 
 }
 \seealso{
-\code{\link{truncated}}, \code{\link{fixed}},
-\code{\link{transformation}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=fixed]{fixed()}},
+\code{\link[=transformation]{transformation()}}
 }

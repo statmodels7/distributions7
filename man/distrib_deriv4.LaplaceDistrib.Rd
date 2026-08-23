@@ -18,10 +18,10 @@ A named list of fourth-derivative component vectors.
 \description{
 Closed-form fourth-order derivatives of the Laplace log-density, almost
 everywhere (observed, or expected when \code{expected = TRUE}), in the
-notation of \code{\link{distrib_deriv3.LaplaceDistrib}}: the non-zero
+notation of \code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3.LaplaceDistrib()}}: the non-zero
 components are \eqn{\ell^{(\mu\sigma\sigma\sigma)} = -6s/\sigma^4} and
 \eqn{\ell^{(\sigma\sigma\sigma\sigma)} = 6/\sigma^4 - 24a/\sigma^5}.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

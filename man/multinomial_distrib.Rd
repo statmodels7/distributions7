@@ -10,9 +10,9 @@ multinomial_distrib(n_dim, size, probs = parameters7::simplex(n_dim))
 \item{n_dim}{The number of categories \eqn{p}.}
 
 \item{size}{The number of trials \eqn{n}. A constant of the distribution
-rather than a parameter, as for \code{\link{binomial_distrib}}.}
+rather than a parameter, as for \code{\link[=binomial_distrib]{binomial_distrib()}}.}
 
-\item{probs}{A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
+\item{probs}{A \pkg{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} of the
 same dimension. Defaults to \code{parameters7::simplex(n_dim)}.}
 }
 \value{
@@ -25,7 +25,7 @@ parametrized by a probability vector on the simplex.
 \details{
 The first family here that is multivariate and \strong{discrete}, so its
 support is a finite set of points --- every vector of non-negative integers
-summing to \eqn{n} --- rather than a region. \code{\link{mv_support}}
+summing to \eqn{n} --- rather than a region. \code{\link[=mv_support]{mv_support()}}
 enumerates them, which is what lets an expectation be an exact sum and the
 validator check the total mass by addition rather than by sampling.
 
@@ -62,7 +62,7 @@ on the weak compositions of \eqn{n} into \eqn{p} parts, with
 \deqn{\mathbb{E}[Y_j] = n p_j, \qquad \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
 
 The support is finite, so every expectation is an exact sum;
-\code{\link{mv_support}} returns it. The marginals are binomial.
+\code{\link[=mv_support]{mv_support()}} returns it. The marginals are binomial.
 }
 
 \examples{
@@ -78,7 +78,7 @@ c(points = nrow(supp), mass = sum(distrib_pdf(d, supp, theta)))
 
 }
 \seealso{
-\code{\link{binomial_distrib}}, \code{\link{dirichlet_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}, \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 for the family that is conjugate to it,
-\code{\link[parameters7]{simplex}}
+\code{\link[parameters7:simplex]{parameters7::simplex()}}
 }

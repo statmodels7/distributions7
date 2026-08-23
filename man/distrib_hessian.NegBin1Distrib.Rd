@@ -26,5 +26,5 @@ derivative in \eqn{r} is \eqn{\psi'(y+r) - \psi'(r)} and whose mixed term is
 \eqn{-1/(1+\theta)}.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

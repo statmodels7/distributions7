@@ -9,12 +9,12 @@ chain_assemble(D, inner_params, maps, new_params, order, n)
 \arguments{
 \item{D}{A list of length \code{order}; \code{D[[k]]} is the inner
 derivative table of order \code{k}, keyed as
-\code{\link{deriv_names}(inner_params, k)}.}
+\code{\link[=deriv_names]{deriv_names(inner_params, k)}}.}
 
 \item{inner_params}{The names of the inner coordinates.}
 
 \item{maps}{Per inner coordinate, a keyed table of the map's partials in
-the outer coordinates, as \code{\link{reparam_tables}} returns them.}
+the outer coordinates, as \code{\link[=reparam_tables]{reparam_tables()}} returns them.}
 
 \item{new_params}{The names of the outer parameters.}
 
@@ -26,18 +26,18 @@ the outer coordinates, as \code{\link{reparam_tables}} returns them.}
 A named list of component vectors.
 }
 \description{
-The partition sum of \code{\link{chain_derivatives}}, taking the inner
+The partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}, taking the inner
 derivatives as tables rather than fetching them from a distribution.
 }
 \details{
 Separated so that a family whose own derivatives are easiest to write in
 coordinates it does not expose can carry them into the ones it does,
-without a second copy of the enumeration. \code{\link{enet_distrib}} is
+without a second copy of the enumeration. \code{\link[=enet_distrib]{enet_distrib()}} is
 the case: its derivatives are compact in the two rates \eqn{(a, c)} and
 the family is parametrized by \eqn{(\lambda, \alpha)}, which is a
 bilinear map away.
 }
 \seealso{
-\code{\link{chain_derivatives}}
+\code{\link[=chain_derivatives]{chain_derivatives()}}
 }
 \keyword{internal}

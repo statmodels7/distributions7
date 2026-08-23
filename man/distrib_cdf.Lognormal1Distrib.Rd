@@ -24,5 +24,5 @@ Computes the cumulative distribution function for the Lognormal distribution
 where \eqn{\Phi} is the standard normal CDF.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

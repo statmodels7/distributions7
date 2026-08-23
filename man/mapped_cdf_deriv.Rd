@@ -40,11 +40,11 @@ A named list of derivative component vectors.
 }
 \description{
 The body shared by the families that obtain their cdf derivatives from a
-parent's: the chain rule of \code{\link{chain_cdf_deriv}} when the parent
+parent's: the chain rule of \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} when the parent
 has a closed form at that order, and the finite-difference fallback
 otherwise.
 }
 \seealso{
-\code{\link{chain_cdf_deriv}}
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}
 }
 \keyword{internal}

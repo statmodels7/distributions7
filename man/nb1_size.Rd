@@ -26,6 +26,6 @@ family different from the quadratic form rather than a reparametrization of
 it.
 }
 \seealso{
-\code{\link{negbin1_distrib}}, \code{\link{nb1_prob}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}, \code{\link[=nb1_prob]{nb1_prob()}}
 }
 \keyword{internal}

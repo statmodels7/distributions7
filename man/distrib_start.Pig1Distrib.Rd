@@ -21,5 +21,5 @@ Method of moments: the sample mean for \eqn{\mu}, and
 when the sample is underdispersed.
 }
 \seealso{
-\code{\link{pig1_distrib}}
+\code{\link[=pig1_distrib]{pig1_distrib()}}
 }

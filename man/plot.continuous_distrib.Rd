@@ -13,7 +13,7 @@ A component of length \eqn{k > 1} draws \eqn{k} curves.}
 
 \item{legend}{Whether to draw the key when several settings are plotted.}
 
-\item{...}{Additional arguments passed to the base \code{\link{plot}} function.
+\item{...}{Additional arguments passed to the base \code{\link[=plot]{plot()}} function.
 \code{col} and \code{lty} given here win and are recycled over the curves.}
 }
 \value{
@@ -27,7 +27,7 @@ A parameter given as a vector asks for one curve per element, so
 \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))} draws three densities that
 share a mean and differ in scale. The curves are separated by color and by
 line type together, and the parameters that vary are named in a legend while
-those held fixed are stated in the title. See \code{\link{plot_settings}}
+those held fixed are stated in the title. See \code{\link[=plot_settings]{plot_settings()}}
 for the rule on lengths.
 
 The horizontal range covers every setting: it runs from the smallest

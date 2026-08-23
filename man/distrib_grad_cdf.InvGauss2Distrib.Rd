@@ -23,6 +23,6 @@ gradient through \eqn{\phi = 1/\lambda}. The second order stays on the
 fallback, the parent having no closed form there.
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }
 \keyword{internal}

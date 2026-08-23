@@ -23,5 +23,5 @@ Computes the quantile function (inverse CDF) for the Lognormal distribution:
 where \eqn{\Phi^{-1}} is the standard normal quantile function.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

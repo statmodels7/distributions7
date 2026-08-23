@@ -16,5 +16,5 @@ The single point mass at zero, with probability \eqn{\pi}. This is what makes th
 object a mixed distribution: its density integrates to \eqn{1 - \pi}, not to 1.
 }
 \seealso{
-\code{\link{zero_adjusted}}, \code{\link{distrib_atoms}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

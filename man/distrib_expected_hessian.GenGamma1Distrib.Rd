@@ -29,5 +29,5 @@ Closed form. Every expectation the observed Hessian needs is a moment of
 \code{approx} is ignored.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

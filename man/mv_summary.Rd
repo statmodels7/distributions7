@@ -7,18 +7,18 @@
 mv_summary(object, level = object@level)
 }
 \arguments{
-\item{object}{A \code{\link{distrib_fit}} of a multivariate distribution.}
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a multivariate distribution.}
 
 \item{level}{The confidence level. Defaults to the fit's own.}
 }
 \value{
 A data frame with one row per quantity and the columns
-\code{Estimate}, \code{Std. Error} and the two confidence limits, carrying
+\code{Estimate}, \verb{Std. Error} and the two confidence limits, carrying
 the attribute \code{"block"} that names the group each row belongs to.
 }
 \description{
 Reports the standard deviations, correlations and whatever else
-\code{\link{mv_derived}} declares for the fitted distribution, each with its
+\code{\link[=mv_derived]{mv_derived()}} declares for the fitted distribution, each with its
 standard error and confidence interval.
 }
 \details{
@@ -30,11 +30,11 @@ by the delta method,
 \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
   \qquad J = \partial g/\partial\theta,}
-with \eqn{J} taken from \code{\link{mv_derived}}, in closed form for the
+with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the
 families that ship with the package.
 
 Each interval is built on the scale the quantity declares and mapped back,
-which is the same discipline \code{\link{fit_distrib}} applies to a
+which is the same discipline \code{\link[=fit_distrib]{fit_distrib()}} applies to a
 univariate parameter: a standard deviation is intervalled on the log scale
 and a correlation on Fisher's \eqn{z}, so neither interval can leave the set
 its quantity lives in. An interval on the raw scale would routinely put a
@@ -52,5 +52,5 @@ mv_summary(fit)
 
 }
 \seealso{
-\code{\link{mv_derived}}, \code{\link{confint.distrib_fit}}
+\code{\link[=mv_derived]{mv_derived()}}, \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}
 }

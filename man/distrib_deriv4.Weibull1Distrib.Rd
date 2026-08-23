@@ -18,8 +18,8 @@ A named list of fourth-derivative component vectors.
 \description{
 Closed-form fourth-order derivatives of the Weibull log-density (observed,
 or expected when \code{expected = TRUE}), in the notation of
-\code{\link{distrib_deriv3.Weibull1Distrib}}.
+\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3.Weibull1Distrib()}}.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

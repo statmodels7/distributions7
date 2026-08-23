@@ -28,5 +28,5 @@ Closed-form second derivatives of the Weibull log-density:
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).}
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

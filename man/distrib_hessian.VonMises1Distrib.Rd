@@ -25,5 +25,5 @@ the last free of the data, \eqn{\log I_0} being the only place
 \eqn{\kappa} appears alone.
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

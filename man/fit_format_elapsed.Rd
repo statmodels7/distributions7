@@ -18,6 +18,6 @@ minute, and minutes and seconds above, so that the figure a fit prints stays
 readable whatever the sample size.
 }
 \seealso{
-\code{\link{print.distrib_fit}}
+\code{\link[=print.distrib_fit]{print.distrib_fit()}}
 }
 \keyword{internal}

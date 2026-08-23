@@ -38,5 +38,5 @@ with \eqn{\gamma} the Euler-Mascheroni constant. Because the closed form
 exists, the \code{approx} argument is ignored.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

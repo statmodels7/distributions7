@@ -22,5 +22,5 @@ Computes the cumulative distribution function for the Poisson distribution:
 \deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

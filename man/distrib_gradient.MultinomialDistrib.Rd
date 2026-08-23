@@ -23,5 +23,5 @@ A named list, one component per parameter.
       A = \dfrac{\partial p}{\partial\eta}}
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

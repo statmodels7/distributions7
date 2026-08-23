@@ -8,13 +8,13 @@ weibull1_distrib(link_mu = log_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the scale \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_sigma}{A link function object for the shape \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}}.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
-An S7 object of class \code{\link{Weibull1Distrib}} (inheriting from
+An S7 object of class \code{\link[=Weibull1Distrib]{Weibull1Distrib()}} (inheriting from
 \code{continuous_distrib}).
 }
 \description{
@@ -26,7 +26,7 @@ a scale \eqn{\mu} and a shape \eqn{\sigma}, both positive.
 The mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a
 mean parametrization would make every derivative a derivative of the gamma
 function and its inverse. The scale-shape form keeps the whole family
-elementary, and \code{\link{mean.Weibull1Distrib}} reports the mean.
+elementary, and \code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} reports the mean.
 This is the parametrization of \code{WEI} in \pkg{gamlss}.
 
 \strong{Probability density function:}
@@ -55,7 +55,7 @@ This is the parametrization of \code{WEI} in \pkg{gamlss}.
         = \dfrac{u - 1 + \sigma u \log z}{\mu}}
 
 \strong{Expected Hessian:} see
-\code{\link{distrib_expected_hessian.Weibull1Distrib}}. The substitution
+\code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}}. The substitution
 \eqn{u \sim \mathrm{Exp}(1)} turns every expectation into a derivative of
 \eqn{\Gamma} at 2.
 
@@ -102,5 +102,5 @@ Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
 Wiley.
 }
 \seealso{
-\code{\link{weibull3_distrib}}, \code{\link{gumbel_distrib}}
+\code{\link[=weibull3_distrib]{weibull3_distrib()}}, \code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

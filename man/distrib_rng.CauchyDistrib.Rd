@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Cauchy distribution.
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

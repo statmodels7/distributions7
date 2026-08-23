@@ -21,5 +21,5 @@ A numeric vector of quantiles.
 \deqn{Q_T(p) = Q\!\left(F(\ell^-;\theta) + p\,Z(\theta)\right)}
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

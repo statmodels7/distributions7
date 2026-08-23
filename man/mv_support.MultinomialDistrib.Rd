@@ -18,5 +18,5 @@ Every vector of non-negative integers summing to the size, enumerated as a
 matrix with one row per point.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

@@ -21,5 +21,5 @@ A named list, one vector per parameter.
 Closed form in the location and scale; the shape \eqn{\nu} is differenced.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

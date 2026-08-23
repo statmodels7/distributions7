@@ -23,5 +23,5 @@ A numeric vector.
 The incomplete beta function.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

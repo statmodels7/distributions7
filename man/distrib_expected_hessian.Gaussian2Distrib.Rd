@@ -29,5 +29,5 @@ The two parameters are orthogonal, as they are in every parametrization of
 this family.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

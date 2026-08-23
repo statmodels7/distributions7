@@ -50,15 +50,15 @@ phi_hermite <- function(x, m) {
 #' one Faa di Bruno pass over \eqn{x}. Nothing is transcribed: both sums run on
 #' the package's own partition enumeration.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param order The derivative order, 1 to 4.
-#' @param terms A list of terms, each a list with \code{sign}, \code{logw},
-#'   \code{wderiv}, \code{x} and \code{xderiv}.
+#' @param terms A list of terms, each a list with `sign`, `logw`,
+#'   `wderiv`, `x` and `xderiv`.
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{bell_f_ratio}}
+#' @seealso [bell_f_ratio()]
 #' @keywords internal
 phi_terms_cdf_deriv_k <- function(distrib, q, order, terms) {
   params <- distrib@params
@@ -107,10 +107,10 @@ phi_terms_cdf_deriv_k <- function(distrib, q, order, terms) {
 #' Turns a function returning the terms into the four methods.
 #'
 #' @param cls The S7 class.
-#' @param term_fn A function of \code{(distrib, q, theta)} returning the term
-#'   list \code{\link{phi_terms_cdf_deriv_k}} consumes.
+#' @param term_fn A function of `(distrib, q, theta)` returning the term
+#'   list [phi_terms_cdf_deriv_k()] consumes.
 #'
-#' @return Invisibly \code{NULL}; called for the registration.
+#' @return Invisibly `NULL`; called for the registration.
 #'
 #' @keywords internal
 register_phi_terms_cdf <- function(cls, term_fn) {
@@ -162,14 +162,14 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 #' split between the weight and the tail. The weight and the tail are combined
 #' on the log scale: \eqn{e^{c}} overflows exactly where \eqn{\Phi(b)}
 #' underflows.
-#' @param distrib An \code{InvGauss1Distrib} object.
+#' @param distrib An `InvGauss1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{phi}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `phi`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{invgauss1_distrib}}
+#' @seealso [invgauss1_distrib()]
 #' @keywords internal
 register_phi_terms_cdf(InvGauss1Distrib, function(distrib, q, theta) {
   mu <- theta[[1]]
@@ -238,14 +238,14 @@ dpow_affine <- function(u, p, k, inner) {
 #' The location is the non-regular direction, as in the Laplace the family
 #' contains: the second derivative in \eqn{\mu} carries a point mass at
 #' \eqn{q = \mu}, and the formulas below hold on either side of it.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 #' @keywords internal
 register_phi_terms_cdf(EnetDistrib, function(distrib, q, theta) {
   p <- .enet_g_higher(.enet_parts(theta))

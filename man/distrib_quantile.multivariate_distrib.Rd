@@ -4,7 +4,7 @@
 \alias{distrib_quantile.multivariate_distrib}
 \title{No Quantile Function in Several Dimensions}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{p}{A numeric vector of probabilities.}
 

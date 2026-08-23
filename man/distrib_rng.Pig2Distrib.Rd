@@ -15,9 +15,9 @@ A numeric vector of length \code{n}.
 }
 \description{
 The exact mixture sampler of
-\code{\link[=distrib_rng.Pig1Distrib]{pig1}}, at the dispersion
-\code{\link{pig2_sigma}} implies.
+\code{\link[=distrib_rng.Pig1Distrib]{pig1()}}, at the dispersion
+\code{\link[=pig2_sigma]{pig2_sigma()}} implies.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }

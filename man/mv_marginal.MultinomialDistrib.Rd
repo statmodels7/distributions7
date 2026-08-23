@@ -20,5 +20,5 @@ A single coordinate is \eqn{\mathrm{Binomial}(n, p_j)}, the other outcomes
 collapsing into a single failure.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

@@ -19,6 +19,6 @@ The original route for \eqn{\mathbb{E}_T[s_i]}, kept for the parents the cdf
 route cannot serve.
 }
 \seealso{
-\code{\link{trunc_score_mean}}
+\code{\link[=trunc_score_mean]{trunc_score_mean()}}
 }
 \keyword{internal}

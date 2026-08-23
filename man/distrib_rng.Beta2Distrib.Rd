@@ -14,8 +14,8 @@
 A numeric vector.
 }
 \description{
-Delegates to \code{\link[stats]{rbeta}}.
+Delegates to \code{\link[stats:Beta]{stats::rbeta()}}.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

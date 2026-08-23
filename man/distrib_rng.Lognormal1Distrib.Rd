@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Lognormal distribution.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

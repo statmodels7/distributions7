@@ -23,5 +23,5 @@ on the numerical CDF. Symmetry around \eqn{\mu} is exploited: \eqn{Q(1/2) = \mu}
 \eqn{Q(p) = 2\mu - Q(1-p)} for \eqn{p > 1/2}.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

@@ -14,10 +14,10 @@ NULL
 #'
 #' @description
 #' Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, one
-#' component per parameter, each a vector along \code{y}.
+#' component per parameter, each a vector along `y`.
 #'
 #' @details
-#' \code{\link{distrib_hess_y}} says how curved the log-density is in the
+#' [distrib_hess_y()] says how curved the log-density is in the
 #' response; this says how that curvature moves with each parameter. It
 #' completes the surface a marginal likelihood needs: where a penalty is
 #' \eqn{-\log f(D\beta;\theta)}, its Hessian in the coefficients is
@@ -27,29 +27,29 @@ NULL
 #' On the link scale the component for \eqn{\eta_i} is the parameter-scale
 #' component multiplied by \eqn{h_i'(\eta_i)}: the response derivatives are
 #' untouched by a reparametrization of \eqn{\theta}, so only the first-order
-#' diagonal chain rule enters, exactly as for \code{\link{distrib_cross_y}}.
+#' diagonal chain rule enters, exactly as for [distrib_cross_y()].
 #'
 #' Distributions with a closed form provide it directly; the others fall back
-#' to one central difference of \code{\link{distrib_hess_y}} in each parameter
-#' (see \code{\link{numerical_cross2_y}}). The reference is the analytic
+#' to one central difference of [distrib_hess_y()] in each parameter
+#' (see [numerical_cross2_y()]). The reference is the analytic
 #' response Hessian, so a family with one pays for exactly one difference.
 #'
-#' @param distrib A distribution object inheriting from the \code{distrib}
+#' @param distrib A distribution object inheriting from the `distrib`
 #'   class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution
-#'   parameters. Each parameter must have length 1 or \code{length(y)}.
+#'   parameters. Each parameter must have length 1 or `length(y)`.
 #' @inheritParams distrib_gradient
 #' @param ... Additional arguments passed to the specific method.
 #'
 #' @return A named list with one numeric vector per parameter, keyed by
-#'   \code{distrib@params}.
+#'   `distrib@params`.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
 #' distrib_cross2_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{distrib_hess_y}}, \code{\link{distrib_cross_y}}
+#' @seealso [distrib_hess_y()], [distrib_cross_y()]
 #' @export
 distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -65,13 +65,13 @@ distrib_cross2_y <- S7::new_generic("distrib_cross2_y", "distrib", function(dist
 #'
 #' @description
 #' Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i} by one
-#' central difference of \code{\link{distrib_hess_y}} in each parameter.
-#' Powers the default \code{\link{distrib_cross2_y}} method for continuous
+#' central difference of [distrib_hess_y()] in each parameter.
+#' Powers the default [distrib_cross2_y()] method for continuous
 #' distributions without a closed form.
 #'
 #' @details
 #' The reference is the response Hessian, not the log-density, so a
-#' distribution with an analytical \code{distrib_hess_y} pays for exactly one
+#' distribution with an analytical `distrib_hess_y` pays for exactly one
 #' finite-difference layer. The two differences act on different variables and
 #' therefore compose into a single mixed stencil rather than into the nested
 #' differencing of one variable that the package forbids.
@@ -112,9 +112,9 @@ numerical_cross2_y <- function(distrib, y, theta,
 #' @title Default Mixed Second-Response Derivatives for Continuous Distributions
 #' @name distrib_cross2_y.continuous_distrib
 #' @description Fallback: one central difference of
-#'   \code{\link{distrib_hess_y}} in each parameter (see
-#'   \code{\link{numerical_cross2_y}}).
-#' @param distrib A \code{continuous_distrib} object.
+#'   [distrib_hess_y()] in each parameter (see
+#'   [numerical_cross2_y()]).
+#' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -133,9 +133,9 @@ S7::method(distrib_cross2_y, continuous_distrib) <- function(distrib, y, theta,
 #' @description Closed form: \eqn{\ell^{(yy)} = -1/\sigma^2} does not depend on
 #'   the location, so \eqn{\partial^3\ell/\partial y^2\partial\mu = 0} and
 #'   \eqn{\partial^3\ell/\partial y^2\partial\sigma = 2/\sigma^3}.
-#' @param distrib A \code{Gaussian1Distrib} object.
+#' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.
@@ -161,9 +161,9 @@ S7::method(distrib_cross2_y, Gaussian1Distrib) <- function(distrib, y, theta,
 #' \deqn{\partial_\mu \ell^{(yy)} = (\nu+1)Q'/\sigma^3, \quad
 #'   \partial_\sigma \ell^{(yy)} = (\nu+1)(2Q + zQ')/\sigma^3, \quad
 #'   \partial_\nu \ell^{(yy)} = -(Q + (\nu+1)\partial_\nu Q)/\sigma^2.}
-#' @param distrib A \code{StudentT1Distrib} object.
+#' @param distrib A `StudentT1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing `mu`, `sigma` and `nu`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list with one numeric vector per parameter.

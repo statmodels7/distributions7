@@ -20,5 +20,5 @@ A numeric vector.
       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\}}
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

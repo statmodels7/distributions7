@@ -21,5 +21,5 @@ A numeric vector of quantiles.
 \deqn{Q(p; \mu, \lambda) = \mu - \dfrac{1}{\lambda}\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

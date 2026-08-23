@@ -4,7 +4,7 @@
 \alias{distrib_rng.MvStudentTDistrib}
 \title{Multivariate Student t Generator}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{n}{The number of observations to draw.}
 

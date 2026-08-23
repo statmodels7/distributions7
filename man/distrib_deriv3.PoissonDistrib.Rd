@@ -22,5 +22,5 @@ A named list with the \code{mu_mu_mu} component.
 Closed-form third-order derivative of the Poisson log-mass (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

@@ -23,5 +23,5 @@ the score of a one-parameter family written as the deviation from the mean
 over the variance.
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

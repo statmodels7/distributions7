@@ -18,13 +18,13 @@ A named list of parameters on the natural scale.
 Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)}.
 }
 \details{
-The inverse of \code{\link{fit_eta_from_theta}}. Because every link maps onto
+The inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}. Because every link maps onto
 its parameter's domain by construction, a \eqn{\theta} obtained this way is
 admissible whatever the optimizer proposed -- which is the reason for working
 on the link scale at all, and the reason a confidence interval built there and
 mapped back cannot run outside the domain.
 }
 \seealso{
-\code{\link{fit_eta_from_theta}}
+\code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}
 }
 \keyword{internal}

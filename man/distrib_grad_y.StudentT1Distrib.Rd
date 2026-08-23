@@ -20,5 +20,5 @@ response. Let \eqn{r = y - \mu} and \eqn{d = \nu\sigma^2 + r^2}:
 \eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/d^2}.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

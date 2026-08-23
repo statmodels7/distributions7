@@ -31,6 +31,6 @@ on the log scale: \eqn{e^{c}} overflows exactly where \eqn{\Phi(b)}
 underflows.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }
 \keyword{internal}

@@ -33,7 +33,7 @@ EnetDistrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{EnetDistrib}.
@@ -44,7 +44,7 @@ whose negative logarithm is the elastic-net penalty,
 \eqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu| -
 \lambda(1-\alpha)(y-\mu)^2/2\}}: the product of a Laplace and a
 Gaussian, normalized. At \eqn{\alpha \to 1} it is the Laplace of
-\code{\link{Laplace2Distrib}} and at \eqn{\alpha \to 0} the Gaussian,
+\code{\link[=Laplace2Distrib]{Laplace2Distrib()}} and at \eqn{\alpha \to 0} the Gaussian,
 both of which remain families of their own; \eqn{\alpha} is confined
 to the open interval, as every bounded parameter in this package is.
 Like the Laplace, its log-likelihood is not differentiable in
@@ -66,9 +66,9 @@ Methods implemented for this class:
 \code{\link[=skewness]{skewness()}},
 \code{\link[=variance]{variance()}}
 
-Everything else is inherited from \code{\link{continuous_distrib}}.
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \seealso{
-\code{\link{enet_distrib}}, \code{\link{laplace2_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}, \code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

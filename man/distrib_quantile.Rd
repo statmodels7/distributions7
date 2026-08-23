@@ -30,7 +30,7 @@ The generalized inverse of the distribution function,
 which for a continuous strictly increasing \eqn{F} is the ordinary inverse
 and for a discrete family the smallest support point whose cumulative mass
 reaches \eqn{p}. Without a method the value comes from root-finding on
-\code{\link{distrib_cdf}} in the continuous case and from an exact table
+\code{\link[=distrib_cdf]{distrib_cdf()}} in the continuous case and from an exact table
 lookup in the discrete one.
 }
 \examples{
@@ -38,5 +38,5 @@ distrib_quantile(gaussian1_distrib(), c(0.025, 0.5, 0.975), list(mu = 0, sigma =
 distrib_quantile(poisson_distrib(), c(0.1, 0.9), list(mu = 2))
 }
 \seealso{
-\code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
+\code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

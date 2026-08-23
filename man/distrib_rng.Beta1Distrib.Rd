@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Beta distribution.
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

@@ -22,5 +22,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{4\sigma (y-\mu)}{(\sigma^2 + (y-\mu)^2)^2}}
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

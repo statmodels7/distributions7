@@ -29,6 +29,6 @@ and the product with \eqn{z} by Leibniz over the scale indices alone, the
 shape not entering \eqn{z}.
 }
 \seealso{
-\code{\link{gpd_lambda_derivs}}, \code{\link{register_surv_cdf}}
+\code{\link[=gpd_lambda_derivs]{gpd_lambda_derivs()}}, \code{\link[=register_surv_cdf]{register_surv_cdf()}}
 }
 \keyword{internal}

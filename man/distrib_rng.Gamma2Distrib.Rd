@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Gamma distribution.
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

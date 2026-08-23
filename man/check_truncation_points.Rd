@@ -29,6 +29,6 @@ route. Truncating a zero wrapper anywhere else is fine, and the atom is
 carried through.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }
 \keyword{internal}

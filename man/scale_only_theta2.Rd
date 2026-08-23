@@ -13,8 +13,8 @@ scale_only_theta2(distrib, y, theta, order = 1L, at = 1L)
 
 \item{theta}{A named list of parameters.}
 
-\item{order}{\code{1} for the block of \code{\link{distrib_grad_y}},
-\code{2} for that of \code{\link{distrib_hess_y}}.}
+\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
 
 \item{at}{The index of the scale parameter.}
 }
@@ -28,11 +28,11 @@ enters only through \eqn{z = y/\sigma}.
 }
 \details{
 The derivation of the scale components of
-\code{\link{loc_scale_theta2_block}} never used the location, only that
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} never used the location, only that
 \eqn{\sigma} is a scale, so the formulas hold unchanged with \eqn{z =
 y/\sigma}. Any other parameter is a shape and is not covered.
 }
 \seealso{
-\code{\link{loc_scale_theta2_block}}
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
 }
 \keyword{internal}

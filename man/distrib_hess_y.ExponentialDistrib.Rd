@@ -20,5 +20,5 @@ A numeric vector of zeros.
 the log-density being linear in the response.
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

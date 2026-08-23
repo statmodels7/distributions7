@@ -4,7 +4,7 @@
 \alias{plot.distrib_fit}
 \title{Plot a Fitted Distribution against the Data}
 \arguments{
-\item{x}{A \code{\link{distrib_fit}} object.}
+\item{x}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
 \item{n_grid}{Number of points at which the fitted density is evaluated
 (continuous distributions only). Defaults to 512.}
@@ -21,7 +21,7 @@ summary.}
 to all of them, and at most three are drawn: above that the panel matrix
 stops being readable.}
 
-\item{...}{Further arguments passed to \code{\link[graphics]{plot}}, for
+\item{...}{Further arguments passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for
 instance \code{main}, \code{xlab} or \code{xlim}.}
 }
 \value{
@@ -50,6 +50,6 @@ plot(fit)
 
 }
 \seealso{
-\code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}},
-\code{\link{plot.multivariate_distrib}}
+\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}},
+\code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}
 }

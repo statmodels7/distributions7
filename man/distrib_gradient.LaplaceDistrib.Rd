@@ -23,5 +23,5 @@ returned there.
 \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

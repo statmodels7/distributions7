@@ -8,12 +8,12 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{...}{Passed to \code{\link{moment}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}}.}
 }
 \value{
 A numeric vector.
 }
 \description{
-The square root of \code{\link{variance}}.
+The square root of \code{\link[=variance]{variance()}}.
 }
 \keyword{internal}

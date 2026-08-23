@@ -23,5 +23,5 @@ the jump are 0; on either side the parent's quantile function is used on the res
 probability.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

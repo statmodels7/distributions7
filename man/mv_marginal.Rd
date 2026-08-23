@@ -8,7 +8,7 @@ mv_marginal(distrib, theta, which, ...)
 }
 \arguments{
 \item{distrib}{An object inheriting from class
-\code{\link{multivariate_distrib}}.}
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters.}
 
@@ -64,5 +64,5 @@ mv_sigma(d, theta)[1:2, 1:2]
 
 }
 \seealso{
-\code{\link{plot.multivariate_distrib}}
+\code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}
 }

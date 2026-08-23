@@ -6,7 +6,7 @@
 \alias{distrib_hess_y_hess.MvStudentTDistrib}
 \title{Multivariate Student t Higher Mixed Response Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 
@@ -27,7 +27,7 @@ prior. With \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top},
 \deqn{\partial_a \ell^{(y)} = -c_a w - c\,w_a, \qquad
   \partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
 and \eqn{\partial_{ab}M} is the same expansion carried one order further.
-Every piece comes from \code{\link{mvt_dpieces}}.
+Every piece comes from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
 }
 \details{
 Unlike the gaussian's, this family's response Hessian depends on the

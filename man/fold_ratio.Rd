@@ -18,14 +18,14 @@ fold_ratio(parent, x, theta, order, params, w)
 \item{params}{The parent's parameter names, in declaration order.}
 
 \item{w}{The weight of the positive preimage, from
-\code{\link{fold_parts}}.}
+\code{\link[=fold_parts]{fold_parts()}}.}
 }
 \value{
 A function of one block, returning that ratio's vector.
 }
 \description{
 Returns a memoized function giving \eqn{d^B L / L} for any block, which is
-what \code{\link{log_deriv}} consumes.
+what \code{\link[=log_deriv]{log_deriv()}} consumes.
 }
 \details{
 The ratio is the parent's complete Bell polynomial at each preimage,
@@ -35,6 +35,6 @@ evaluations are fetched once and the result memoized, since a partition sum
 at fourth order asks for the same blocks repeatedly.
 }
 \seealso{
-\code{\link{folded}}, \code{\link{fold_parts}}
+\code{\link[=folded]{folded()}}, \code{\link[=fold_parts]{fold_parts()}}
 }
 \keyword{internal}

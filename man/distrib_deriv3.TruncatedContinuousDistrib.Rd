@@ -21,5 +21,5 @@ the truncated expectations \eqn{\mathbb{E}_T[\partial^B f / f]} through the
 moment-to-cumulant expansion. Each distinct block costs one quadrature.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

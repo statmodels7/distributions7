@@ -4,14 +4,14 @@
 \alias{mv_derived.MvGaussianDistrib}
 \title{Standard Deviations and Correlations of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
 \item{...}{Unused.}
 }
 \value{
-A list as described in \code{\link{mv_derived}}.
+A list as described in \code{\link[=mv_derived]{mv_derived()}}.
 }
 \description{
 The standard deviations and correlations of the response, whichever side the

@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Negative Binomial distribution.
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

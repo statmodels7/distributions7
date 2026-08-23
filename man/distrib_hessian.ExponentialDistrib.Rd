@@ -21,5 +21,5 @@ A named list with the \code{mu_mu} component.
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{1}{\mu^2} - \dfrac{2y}{\mu^3}}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

@@ -22,5 +22,5 @@ Computes the quantile function (inverse CDF) for the Laplace distribution:
 \deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

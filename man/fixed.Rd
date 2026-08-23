@@ -36,7 +36,7 @@ at the full vector, and the derivative components are the parent's
 restricted to the free indices -- a subvector of the score, a submatrix of
 the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
 no normalizing constant changes, so the parent's closed forms are used
-throughout, and \code{\link{fit_distrib}} estimates the free parameters
+throughout, and \code{\link[=fit_distrib]{fit_distrib()}} estimates the free parameters
 with standard errors and intervals for them alone.
 
 Fixed values are single numbers, strictly inside the open domain of their
@@ -68,6 +68,6 @@ distrib_pdf(d0, 0, list())
 
 }
 \seealso{
-\code{\link{zero_inflated}}, \code{\link{truncated}},
-\code{\link{transformation}}
+\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=truncated]{truncated()}},
+\code{\link[=transformation]{transformation()}}
 }

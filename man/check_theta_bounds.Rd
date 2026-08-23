@@ -36,5 +36,5 @@ check_theta_bounds(d, list(mu = 0, sigma = -1)) # error: sigma outside (0, Inf)
 
 }
 \seealso{
-\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+\code{\link[=deriv_names]{deriv_names()}}, \code{\link[=hess_names]{hess_names()}}, \code{\link[=expand_params]{expand_params()}}, \code{\link[=transpose_params]{transpose_params()}}, \code{\link[=check_params_dim]{check_params_dim()}}, \code{\link[=param_smoothness]{param_smoothness()}}, \code{\link[=generate_random_theta]{generate_random_theta()}}
 }

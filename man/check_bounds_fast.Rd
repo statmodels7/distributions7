@@ -20,7 +20,7 @@ Invisibly \code{NULL}; raises an error if any value is outside its
 open domain or not finite.
 }
 \description{
-The body behind \code{\link{check_theta_bounds}}, differing only in that it
+The body behind \code{\link[=check_theta_bounds]{check_theta_bounds()}}, differing only in that it
 receives the distribution's properties instead of reaching for them.
 }
 \details{
@@ -34,6 +34,6 @@ with two bad values reports both rather than one at a time. At most three
 distinct offending values are shown.
 }
 \seealso{
-\code{\link{check_theta_bounds}}
+\code{\link[=check_theta_bounds]{check_theta_bounds()}}
 }
 \keyword{internal}

@@ -19,5 +19,5 @@ A numeric vector.
 \deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{1}{\mu}}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

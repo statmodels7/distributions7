@@ -20,7 +20,7 @@ small number of degrees of freedom.
 \details{
 The relative step \eqn{10^{-3}} is measured rather than assumed. Swept over
 \eqn{\nu} from 2 to 30 and sample sizes from 500 to 4000, it is where the
-truncation error of the five-point stencil of \code{\link{fd5_first}} has
+truncation error of the five-point stencil of \code{\link[=fd5_first]{fd5_first()}} has
 fallen to the level of the rounding error and the two are balanced; a
 smaller step is dominated by rounding, which the stencil amplifies by
 \eqn{18/(12h)}, and a larger one by truncation, which grows as \eqn{h^4}.

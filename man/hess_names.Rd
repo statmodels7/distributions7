@@ -24,5 +24,5 @@ hess_names(c("mu", "sigma"))
 
 }
 \seealso{
-\code{\link{deriv_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+\code{\link[=deriv_names]{deriv_names()}}, \code{\link[=expand_params]{expand_params()}}, \code{\link[=transpose_params]{transpose_params()}}, \code{\link[=check_params_dim]{check_params_dim()}}, \code{\link[=check_theta_bounds]{check_theta_bounds()}}, \code{\link[=param_smoothness]{param_smoothness()}}, \code{\link[=generate_random_theta]{generate_random_theta()}}
 }

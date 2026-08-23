@@ -25,6 +25,6 @@ Closed form at every order from the survival function
 \eqn{\partial^{j}L/\partial\mu^{j} = -q(-1)^{j}j!/\mu^{j+1}}.
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }
 \keyword{internal}

@@ -21,8 +21,8 @@ A named list of fourth-derivative component vectors.
 \description{
 Closed-form observed fourth-order derivatives of the Student's t log-density. The
 expected fourth derivatives have no closed form, so \code{expected = TRUE} falls
-back to the numerical \code{\link{expectation}} of the observed derivatives.
+back to the numerical \code{\link[=expectation]{expectation()}} of the observed derivatives.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

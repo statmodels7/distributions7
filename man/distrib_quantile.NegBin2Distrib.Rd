@@ -23,5 +23,5 @@ generalized inverse of the CDF:
 \deqn{Q(p; \mu, \theta) = \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\}}
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

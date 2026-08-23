@@ -25,8 +25,8 @@ A named list of third-order components.
 }
 \description{
 Third-order derivatives from the same partition sums as the
-Hessian; see \code{\link{distrib_hessian.FoldedDistrib}}.
+Hessian; see \code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}}.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

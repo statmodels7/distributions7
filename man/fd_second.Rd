@@ -14,7 +14,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 \item{k, l}{The coordinates to differentiate in.}
 
 \item{h_rel}{Deprecated and unused; the step is
-\code{\link[numericals7]{fd_step}}'s at order two.}
+\code{\link[numericals7:fd_step]{numericals7::fd_step()}}'s at order two.}
 }
 \value{
 A single number.
@@ -31,6 +31,6 @@ nesting is forbidden along ONE variable, and is what a mixed derivative is
 along two.
 }
 \seealso{
-\code{\link[numericals7]{fd_weights}}
+\code{\link[numericals7:fd_weights]{numericals7::fd_weights()}}
 }
 \keyword{internal}

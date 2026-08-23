@@ -18,5 +18,5 @@ A numeric vector.
 \code{NaN} at the atom.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

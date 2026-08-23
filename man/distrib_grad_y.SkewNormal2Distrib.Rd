@@ -20,5 +20,5 @@ The parent's, unchanged: the coordinates change, the response
 does not.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

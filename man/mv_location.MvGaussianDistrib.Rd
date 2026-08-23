@@ -4,7 +4,7 @@
 \alias{mv_location.MvGaussianDistrib}
 \title{Mean of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }

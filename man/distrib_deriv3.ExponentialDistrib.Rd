@@ -28,5 +28,5 @@ A named list with the \code{mu_mu_mu} component.
       \qquad \mathbb{E}[\ell^{(\mu\mu\mu)}] = \dfrac{4}{\mu^3}}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

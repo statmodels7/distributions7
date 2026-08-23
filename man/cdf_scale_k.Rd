@@ -13,7 +13,7 @@ cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 
 \item{dF}{A list of length \code{order}; element \code{k} is the table of
 \eqn{k}-th derivatives of \eqn{F}, keyed as
-\code{\link{deriv_names}(distrib@params, k)}.}
+\code{\link[=deriv_names]{deriv_names(distrib@params, k)}}.}
 
 \item{order}{The derivative order wanted, 1 to 4.}
 
@@ -26,7 +26,7 @@ A named list of derivative component vectors of the requested
 order.
 }
 \description{
-The general form of \code{\link{cdf_tail_scale}}: converts derivatives of
+The general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}: converts derivatives of
 \eqn{F} of every order up to the one wanted into derivatives of whichever
 tail was asked for, on the natural or the log scale.
 }
@@ -36,10 +36,10 @@ scale is the moment-to-cumulant relation
 \eqn{d^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
 \prod_{B} (d^B P / P)}, which at second order is the familiar
 \eqn{d^2 P/P - (dP/P)(dP/P)} and at third and fourth is what
-\code{\link{log_deriv}} sums. Only the ratios are needed, which is why
+\code{\link[=log_deriv]{log_deriv()}} sums. Only the ratios are needed, which is why
 every order up to \code{order} has to be supplied.
 }
 \seealso{
-\code{\link{cdf_tail_scale}}, \code{\link{log_deriv}}
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, \code{\link[=log_deriv]{log_deriv()}}
 }
 \keyword{internal}

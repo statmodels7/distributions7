@@ -20,5 +20,5 @@ is 0 almost everywhere). The analytic form is provided because finite difference
 would be inaccurate across the kink at \eqn{y = \mu}.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

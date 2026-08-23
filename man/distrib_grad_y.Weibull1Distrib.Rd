@@ -17,5 +17,5 @@ A numeric vector.
 Closed form: \eqn{\partial \ell / \partial y = (\sigma - 1 - \sigma u)/y}.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

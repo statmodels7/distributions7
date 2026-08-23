@@ -13,26 +13,26 @@ NULL
 #'
 #' @description
 #' Computes the unique third-order partial derivatives of the log-density by central
-#' finite differences of \code{\link{distrib_hessian}}. This powers the default
-#' \code{\link{distrib_deriv3}} method for distributions without a closed-form
+#' finite differences of [distrib_hessian()]. This powers the default
+#' [distrib_deriv3()] method for distributions without a closed-form
 #' implementation, and is the reference used to validate the analytical kernels.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters (each of length 1 or \code{length(y)}).
+#' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   \code{.Machine$double.eps^(1/3)}.
+#'   `.Machine$double.eps^(1/3)`.
 #'
 #' @return A named list of third-derivative component vectors, keyed as in
-#'   \code{\link{deriv_names}(distrib@params, 3)}.
+#'   [`deriv_names(distrib@params, 3)`][deriv_names].
 #'
 #' @details
 #' Each component \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
 #' (with \eqn{i \le j \le k}) is obtained by differentiating the Hessian entry
-#' \eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by \code{max(1, |theta|)} and
+#' \eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by `max(1, |theta|)` and
 #' shrunk near parameter-domain boundaries.
 #'
-#' @seealso \code{\link{numerical_deriv4}}, \code{\link{distrib_deriv3}}
+#' @seealso [numerical_deriv4()], [distrib_deriv3()]
 #' @examples
 #' numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
@@ -70,18 +70,18 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @description
 #' Computes the unique fourth-order partial derivatives of the log-density by second
-#' central differences of \code{\link{distrib_hessian}}. This powers the default
-#' \code{\link{distrib_deriv4}} method for distributions without a closed-form
+#' central differences of [distrib_hessian()]. This powers the default
+#' [distrib_deriv4()] method for distributions without a closed-form
 #' implementation.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters (each of length 1 or \code{length(y)}).
+#' @param theta A named list of parameters (each of length 1 or `length(y)`).
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   \code{.Machine$double.eps^(1/4)}.
+#'   `.Machine$double.eps^(1/4)`.
 #'
 #' @return A named list of fourth-derivative component vectors, keyed as in
-#'   \code{\link{deriv_names}(distrib@params, 4)}.
+#'   [`deriv_names(distrib@params, 4)`][deriv_names].
 #'
 #' @details
 #' Each component
@@ -90,7 +90,7 @@ numerical_deriv3 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' Hessian entry \eqn{(i, j)} along \eqn{(\theta_k, \theta_l)}: a three-point stencil
 #' when \eqn{k = l}, a four-point cross stencil otherwise.
 #'
-#' @seealso \code{\link{numerical_deriv3}}, \code{\link{distrib_deriv4}}
+#' @seealso [numerical_deriv3()], [distrib_deriv4()]
 #' @examples
 #' numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 #'
@@ -142,13 +142,13 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @title Default Third-Order Derivatives for `distrib` Objects
 #' @name distrib_deriv3.distrib
 #' @description
-#' Fallback method: observed third derivatives via \code{\link{numerical_deriv3}}
+#' Fallback method: observed third derivatives via [numerical_deriv3()]
 #' (finite differences of the Hessian); expected third derivatives via the
-#' \code{\link{expectation}} of the observed ones.
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' [expectation()] of the observed ones.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param expected Logical; if \code{TRUE}, returns expected derivatives.
+#' @param expected Logical; if `TRUE`, returns expected derivatives.
 #' @return A named list of third-derivative component vectors.
 #' @keywords internal
 S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
@@ -163,13 +163,13 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 #' @title Default Fourth-Order Derivatives for `distrib` Objects
 #' @name distrib_deriv4.distrib
 #' @description
-#' Fallback method: observed fourth derivatives via \code{\link{numerical_deriv4}}
+#' Fallback method: observed fourth derivatives via [numerical_deriv4()]
 #' (second differences of the Hessian); expected fourth derivatives via the
-#' \code{\link{expectation}} of the observed ones.
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' [expectation()] of the observed ones.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param expected Logical; if \code{TRUE}, returns expected derivatives.
+#' @param expected Logical; if `TRUE`, returns expected derivatives.
 #' @return A named list of fourth-derivative component vectors.
 #' @keywords internal
 S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {

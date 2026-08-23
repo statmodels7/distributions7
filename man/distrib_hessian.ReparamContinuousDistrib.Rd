@@ -27,6 +27,6 @@ the second derivative of the map:
 \eqn{\ell^{(ab)} = \sum_{ij}\ell^{(ij)}h^i_a h^j_b + \sum_i \ell^{(i)} h^i_{ab}}.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

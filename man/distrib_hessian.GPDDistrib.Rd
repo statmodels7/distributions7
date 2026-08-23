@@ -24,5 +24,5 @@ The second derivatives of the same expressions, kept short by
 near zero, where its two singular terms cancel.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

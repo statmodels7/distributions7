@@ -22,5 +22,5 @@ A numeric vector of quantiles.
 with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

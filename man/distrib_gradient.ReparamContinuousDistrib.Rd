@@ -26,6 +26,6 @@ The parent's score carried by the Jacobian of the map,
 \eqn{\ell^{(a)} = \sum_i \ell^{(i)} \partial\theta_i/\partial\psi_a}.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

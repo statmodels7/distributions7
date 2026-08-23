@@ -16,10 +16,10 @@ A list containing the vectors of expected second derivatives.
 \description{
 Computes the expected Hessian of the Pseudo-Huber log-density.
 No closed form exists, so the non-zero components are evaluated by numerical
-integration of the observed Hessian against the density (via \code{\link{expectation}}).
+integration of the observed Hessian against the density (via \code{\link[=expectation]{expectation()}}).
 By symmetry \eqn{\mathbb{E}[r] = \mathbb{E}[r^3] = 0}, hence the \eqn{\mu\sigma} and
 \eqn{\mu\nu} components are exactly 0.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

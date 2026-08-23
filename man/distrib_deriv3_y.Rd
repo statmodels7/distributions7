@@ -24,7 +24,7 @@ A numeric vector the length of \code{y}.
 \description{
 \eqn{\partial^{3}\ell/\partial y^{3}} and
 \eqn{\partial^{4}\ell/\partial y^{4}}, completing the sequence begun by
-\code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}.
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}.
 }
 \details{
 A family whose response enters only as \eqn{y - \mu} gets these from the
@@ -43,5 +43,5 @@ distrib_deriv4_y(logistic_distrib(), 0.5, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{distrib_hess_y}}, \code{\link{numerical_deriv_y}}
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=numerical_deriv_y]{numerical_deriv_y()}}
 }

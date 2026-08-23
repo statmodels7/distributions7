@@ -31,5 +31,5 @@ each data-carrying term drops out and
       \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_j t_j \mu_j A_{jk}}
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

@@ -19,5 +19,5 @@ decomposing the expectation over \eqn{y=0} and \eqn{y>0} and using the parent's
 expected Hessian.
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

@@ -4,7 +4,7 @@
 \alias{generate_random_theta.MvStudentTDistrib}
 \title{Random Parameters for a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{...}{Unused.}
 }

@@ -14,9 +14,9 @@
 A numeric vector summing to the size.
 }
 \description{
-The vector \eqn{np}, which \code{\link{mv_location}} returns.
+The vector \eqn{np}, which \code{\link[=mv_location]{mv_location()}} returns.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }
 \keyword{internal}

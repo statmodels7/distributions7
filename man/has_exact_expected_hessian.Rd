@@ -14,18 +14,18 @@ A single logical.
 }
 \description{
 \code{TRUE} when the distribution registers its own
-\code{\link{distrib_expected_hessian}} method, rather than inheriting the
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} method, rather than inheriting the
 one that approximates the expectation.
 }
 \details{
 The question decides whether the \code{approx} argument means anything. A
-family with a closed form ignores it, and \code{\link{fit_distrib}} rejects
+family with a closed form ignores it, and \code{\link[=fit_distrib]{fit_distrib()}} rejects
 the argument in that case instead of accepting it and doing something else:
 the Laplace is the example the package already documents, where
 \code{approx} has no effect at all because
 \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
 
-The comparison goes through \code{\link{is_class}} rather than
+The comparison goes through \code{\link[=is_class]{is_class()}} rather than
 \code{identical()}, for the reason recorded there.
 
 The argument is called \code{x} and not \code{distrib}, which is not a
@@ -38,6 +38,6 @@ whole set this predicate exists to identify -- was reported as having a
 closed form.
 }
 \seealso{
-\code{\link{has_analytic_quantile}}, \code{\link{is_class}}
+\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, \code{\link[=is_class]{is_class()}}
 }
 \keyword{internal}

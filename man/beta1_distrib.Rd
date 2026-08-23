@@ -8,10 +8,10 @@ beta1_distrib(link_mu = logit_link(), link_phi = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).}
+Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
 
 \item{link_phi}{A link function object for the precision parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{Beta1Distrib} (inheriting from \code{continuous_distrib}) representing the Beta distribution.
@@ -51,9 +51,9 @@ skewness \eqn{\dfrac{2(1-2\mu)\sqrt{\phi+1}}{(\phi+2)\sqrt{\mu(1-\mu)}}}.
 \item \eqn{\phi \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- beta1_distrib()
@@ -66,12 +66,12 @@ distrib_gradient(d, c(0.2, 0.5, 0.8), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.Beta1Distrib}} for the probability density function.
-\item \code{\link{distrib_cdf.Beta1Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.Beta1Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.Beta1Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.Beta1Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.Beta1Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.Beta1Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} for the probability density function.
+\item \code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf.Beta1Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.Beta1Distrib]{distrib_quantile.Beta1Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.Beta1Distrib]{distrib_rng.Beta1Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}} for the analytical expected Hessian.
 }
 }

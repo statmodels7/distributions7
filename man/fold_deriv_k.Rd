@@ -13,16 +13,16 @@ fold_deriv_k(order)
 A function suitable for registering as an S7 method.
 }
 \description{
-Builds the order-\code{k} derivative method for \code{\link{folded}}.
+Builds the order-\code{k} derivative method for \code{\link[=folded]{folded()}}.
 }
 \details{
-The ratios handed to \code{\link{log_deriv}} are
+The ratios handed to \code{\link[=log_deriv]{log_deriv()}} are
 \eqn{d^B L / L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} with
 \eqn{w = f(x)/L}, each term a complete Bell polynomial in the parent's own
 log-derivatives evaluated at one of the two preimages. Folding adds no
 parameter, so every index is an index of the parent's.
 }
 \seealso{
-\code{\link{folded}}, \code{\link{fold_ratio}}
+\code{\link[=folded]{folded()}}, \code{\link[=fold_ratio]{fold_ratio()}}
 }
 \keyword{internal}

@@ -27,5 +27,5 @@ the second computed through a series near \eqn{\xi = 0}, where its limit is
 \eqn{z^2/2 - z}.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

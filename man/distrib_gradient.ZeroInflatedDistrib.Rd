@@ -20,5 +20,5 @@ where \eqn{L_0 = \zeta + (1-\zeta)f(0)}. For \eqn{\zeta}:
 \deqn{\dfrac{\partial \ell}{\partial \zeta} = \mathbb{I}(y=0)\dfrac{1-f(0)}{L_0} - \mathbb{I}(y>0)\dfrac{1}{1-\zeta}}
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

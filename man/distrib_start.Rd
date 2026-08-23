@@ -20,7 +20,7 @@ only one may ignore it.}
 A list of named parameter lists, on the \strong{parameter} scale.
 }
 \description{
-Returns a starting value for \code{\link{fit_distrib}}, computed from the
+Returns a starting value for \code{\link[=fit_distrib]{fit_distrib()}}, computed from the
 response rather than guessed.
 }
 \details{
@@ -57,5 +57,5 @@ colMeans(y)
 
 }
 \seealso{
-\code{\link{fit_distrib}}, \code{\link{generate_random_theta}}
+\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=generate_random_theta]{generate_random_theta()}}
 }

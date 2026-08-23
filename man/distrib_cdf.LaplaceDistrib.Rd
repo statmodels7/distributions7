@@ -22,5 +22,5 @@ Computes the cumulative distribution function for the Laplace distribution:
 \deqn{F(q; \mu, \sigma) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

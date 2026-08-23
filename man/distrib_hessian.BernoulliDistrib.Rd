@@ -20,5 +20,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}}
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

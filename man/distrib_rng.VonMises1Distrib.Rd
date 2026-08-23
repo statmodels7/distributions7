@@ -19,5 +19,5 @@ wrapped Cauchy envelope and accepts with a probability that does not
 involve the Bessel function at all.
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

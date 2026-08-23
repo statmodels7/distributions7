@@ -25,16 +25,16 @@ constant are built from.}
 \item{...}{Additional arguments passed to the specific method.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}(distrib@params)}.
+A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Computes the second derivatives, with respect to the parameters, of
 \eqn{\log F(q;\theta)} --- or of \eqn{\log(1 - F(q;\theta))} when
-\code{lower.tail = FALSE}. Together with \code{\link{distrib_grad_cdf}} these
+\code{lower.tail = FALSE}. Together with \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} these
 give the observed information of a censored observation.
 }
 \details{
-By the same exchange as in \code{\link{distrib_grad_cdf}}, and using
+By the same exchange as in \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, and using
 \eqn{\partial_{ij} f / f = \ell^{(ij)} + \ell^{(i)}\ell^{(j)}},
 \deqn{\frac{\partial^{2} F(q)}{\partial\theta_i\partial\theta_j}
   = F(q)\;\mathbb{E}\!\left[\ell^{(ij)} + \ell^{(i)}\ell^{(j)} \mid Y \leq q\right],}
@@ -46,5 +46,5 @@ distrib_hess_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{distrib_grad_cdf}}, \code{\link{distrib_hessian}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}
 }

@@ -19,5 +19,5 @@ everywhere; the analytic form is provided because finite differences would
 be inaccurate across the kink at \eqn{y = \mu}.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

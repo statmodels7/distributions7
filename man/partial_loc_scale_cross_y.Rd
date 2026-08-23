@@ -28,9 +28,9 @@ A named list with one numeric vector per parameter.
 }
 \description{
 The location and scale components in closed form and the remaining shape
-components by one central difference of \code{\link{distrib_grad_y}}.
+components by one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}}.
 }
 \seealso{
-\code{\link{loc_scale_cross_block}}
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}}
 }
 \keyword{internal}

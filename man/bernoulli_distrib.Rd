@@ -8,7 +8,7 @@ bernoulli_distrib(link_mu = logit_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu} (probability).
-Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).}
+Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
 }
 \value{
 An S7 object of class \code{BernoulliDistrib} (inheriting from \code{discrete_distrib}) representing the Bernoulli distribution.
@@ -43,8 +43,8 @@ skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}, excess kurtosis
 \item \eqn{\mu \in (0, 1)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
 }
 \examples{
 d <- bernoulli_distrib()
@@ -57,12 +57,12 @@ distrib_gradient(d, c(0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.BernoulliDistrib}} for the probability mass function.
-\item \code{\link{distrib_cdf.BernoulliDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.BernoulliDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.BernoulliDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.BernoulliDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.BernoulliDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.BernoulliDistrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf.BernoulliDistrib()}} for the probability mass function.
+\item \code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf.BernoulliDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.BernoulliDistrib]{distrib_quantile.BernoulliDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.BernoulliDistrib]{distrib_rng.BernoulliDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.BernoulliDistrib]{distrib_gradient.BernoulliDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian.BernoulliDistrib()}} for the analytical expected Hessian.
 }
 }

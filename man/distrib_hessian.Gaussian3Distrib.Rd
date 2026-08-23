@@ -24,5 +24,5 @@ The mean block is free of the data here, as it is in every parametrization
 of this family, and so is the precision block.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

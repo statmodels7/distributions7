@@ -17,6 +17,6 @@ The scale's own pair in closed form and every pair touching a shape by one
 central difference of the analytic first-order component.
 }
 \seealso{
-\code{\link{scale_only_theta2}}
+\code{\link[=scale_only_theta2]{scale_only_theta2()}}
 }
 \keyword{internal}

@@ -29,6 +29,6 @@ The parent's paired components carried onto a new parametrization by the
 second-order chain rule.
 }
 \seealso{
-\code{\link{mapped_cross_y}}, \code{\link{reparam_tables}}
+\code{\link[=mapped_cross_y]{mapped_cross_y()}}, \code{\link[=reparam_tables]{reparam_tables()}}
 }
 \keyword{internal}

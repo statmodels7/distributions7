@@ -7,7 +7,7 @@
 mvt_a2(pc, k, l)
 }
 \arguments{
-\item{pc}{The result of \code{\link{mvt_pieces}} with \code{derivs2}.}
+\item{pc}{The result of \code{\link[=mvt_pieces]{mvt_pieces()}} with \code{derivs2}.}
 
 \item{k, l}{Positions among the structure's free values.}
 }
@@ -15,6 +15,6 @@ mvt_a2(pc, k, l)
 A \eqn{p \times p} numeric matrix.
 }
 \description{
-As \code{\link{mvg_a2}}, for the Student t's pieces.
+As \code{\link[=mvg_a2]{mvg_a2()}}, for the Student t's pieces.
 }
 \keyword{internal}

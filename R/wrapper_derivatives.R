@@ -50,9 +50,9 @@ NULL
 #' @param f The ratio function to wrap.
 #' @param params The parameter names, in declaration order.
 #'
-#' @return A function with the same signature as \code{f}, backed by a cache.
+#' @return A function with the same signature as `f`, backed by a cache.
 #'
-#' @seealso \code{\link{trunc_deriv_k}}
+#' @seealso [trunc_deriv_k()]
 #' @keywords internal
 memo_ratio <- function(f, params) {
   cache <- list()
@@ -66,15 +66,15 @@ memo_ratio <- function(f, params) {
 #' Multi-Indices of a Given Order, as Parameter Names
 #'
 #' @description
-#' The multi-indices of a given order, in the order \code{\link{deriv_names}}
+#' The multi-indices of a given order, in the order [deriv_names()]
 #' lists them, expressed as parameter names.
 #'
 #' @details
-#' A thin wrapper on \code{\link{deriv_indices}}. It is deliberately not
-#' \code{deriv_index_list()} from \code{link_scale.R}, whose order-2 case is
-#' ordered for \code{\link{hess_names}} -- diagonal first -- while
-#' \code{deriv_names()} is lexicographic; pairing those would silently attach the
-#' name \code{"mu_sigma"} to the index \code{(sigma, sigma)}. The orders actually
+#' A thin wrapper on [deriv_indices()]. It is deliberately not
+#' `deriv_index_list()` from `link_scale.R`, whose order-2 case is
+#' ordered for [hess_names()] -- diagonal first -- while
+#' `deriv_names()` is lexicographic; pairing those would silently attach the
+#' name `"mu_sigma"` to the index `(sigma, sigma)`. The orders actually
 #' registered here are 3 and 4, where the two orderings agree; generating the
 #' indices locally removes the mismatch instead of depending on it never being
 #' reached.
@@ -82,9 +82,9 @@ memo_ratio <- function(f, params) {
 #' @param params A character vector of parameter names.
 #' @param order The derivative order.
 #'
-#' @return A list of character vectors, each of length \code{order}.
+#' @return A list of character vectors, each of length `order`.
 #'
-#' @seealso \code{\link{deriv_indices}}, \code{\link{deriv_names}}
+#' @seealso [deriv_indices()], [deriv_names()]
 #' @keywords internal
 order_indices <- function(params, order) {
   lapply(deriv_indices(params, order), function(i) params[i])
@@ -99,7 +99,7 @@ order_indices <- function(params, order) {
 #'
 #' @param p A numeric vector of probabilities.
 #' @param k The derivative order.
-#' @param complement Logical; \code{TRUE} for \eqn{\log(1-p)}.
+#' @param complement Logical; `TRUE` for \eqn{\log(1-p)}.
 #'
 #' @return A numeric vector.
 #'
@@ -122,7 +122,7 @@ log_pow_deriv <- function(p, k, complement = FALSE) {
 #' @param idx A character vector of parameter names, with repetition.
 #' @param mix_name The wrapper parameter's name.
 #'
-#' @return A list with \code{theta}, the parent part, and \code{n_mix}, a count.
+#' @return A list with `theta`, the parent part, and `n_mix`, a count.
 #'
 #' @keywords internal
 split_index <- function(idx, mix_name) {
@@ -133,7 +133,7 @@ split_index <- function(idx, mix_name) {
 #'
 #' @description
 #' The shared skeleton: builds the named list of components of a given order by
-#' calling \code{component} once per multi-index.
+#' calling `component` once per multi-index.
 #'
 #' @param distrib The wrapper distribution.
 #' @param order The derivative order.
@@ -161,8 +161,8 @@ assemble_deriv <- function(distrib, order, component) {
 #' Derivatives of a Transformed Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for
-#' \code{\link{transformation}}.
+#' Builds the order-`k` derivative method for
+#' [transformation()].
 #'
 #' @details
 #' There is nothing to do. The Jacobian does not depend on \eqn{\theta}, so every
@@ -203,8 +203,8 @@ trans_deriv_k <- function(order) {
 #' Derivatives of a Zero-Inflated Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for
-#' \code{\link{zero_inflated}}.
+#' Builds the order-`k` derivative method for
+#' [zero_inflated()].
 #'
 #' @details
 #' At \eqn{y > 0} the likelihood separates, \eqn{\log(1 - \zeta) + \ell(y)}, so a
@@ -302,8 +302,8 @@ distrib_deriv_component <- function(parent, y, theta, idx, params, order) {
 #' Derivatives of a Zero-Adjusted Discrete Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for the hurdle form of
-#' \code{\link{zero_adjusted}}.
+#' Builds the order-`k` derivative method for the hurdle form of
+#' [zero_adjusted()].
 #'
 #' @details
 #' The likelihood separates completely, so every mixed index vanishes at every
@@ -367,8 +367,8 @@ za_disc_deriv_k <- function(order) {
 #' Derivatives of a Zero-Adjusted Continuous Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for the mixed form of
-#' \code{\link{zero_adjusted}}.
+#' Builds the order-`k` derivative method for the mixed form of
+#' [zero_adjusted()].
 #'
 #' @details
 #' A continuous parent puts no mass at zero, so there is no truncation constant
@@ -421,7 +421,7 @@ za_cont_deriv_k <- function(order) {
 #' Derivatives of a Truncated Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for \code{\link{truncated}}.
+#' Builds the order-`k` derivative method for [truncated()].
 #'
 #' @details
 #' Here \eqn{\ell_T = \ell - \log Z}, and the ratios are truncated expectations
@@ -434,7 +434,7 @@ za_cont_deriv_k <- function(order) {
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
-#' @seealso \code{\link{memo_ratio}}
+#' @seealso [memo_ratio()]
 #' @keywords internal
 trunc_deriv_k <- function(order) {
   function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"),
@@ -481,23 +481,23 @@ trunc_deriv_k <- function(order) {
 #' @description
 #' Exactly the parent's, evaluated at \eqn{x = g^{-1}(y)}: the Jacobian does not
 #' depend on \eqn{\theta}, so it leaves every derivative in \eqn{\theta} untouched.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_deriv3, TransformedDistrib) <- trans_deriv_k(3L)
 
 #' @title Transformed Fourth Derivatives
 #' @name distrib_deriv4.TransformedDistrib
-#' @description As \code{\link[=distrib_deriv3.TransformedDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{TransformedDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.TransformedDistrib], at fourth order.
+#' @param distrib A `TransformedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{transformation}}
+#' @seealso [transformation()]
 S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 
 #' @title Zero-Inflated Third Derivatives
@@ -506,23 +506,23 @@ S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 #' At \eqn{y > 0} the likelihood separates; at \eqn{y = 0} it is \eqn{\log L_0}
 #' with \eqn{L_0} affine in \eqn{\zeta}, so the derivatives follow from the
 #' moment-to-cumulant expansion over set partitions.
-#' @param distrib A \code{ZeroInflatedDistrib} object.
+#' @param distrib A `ZeroInflatedDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{zi}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `zi`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_inflated}}
+#' @seealso [zero_inflated()]
 S7::method(distrib_deriv3, ZeroInflatedDistrib) <- zi_deriv_k(3L)
 
 #' @title Zero-Inflated Fourth Derivatives
 #' @name distrib_deriv4.ZeroInflatedDistrib
-#' @description As \code{\link[=distrib_deriv3.ZeroInflatedDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{ZeroInflatedDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.ZeroInflatedDistrib], at fourth order.
+#' @param distrib A `ZeroInflatedDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{zi}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `zi`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_inflated}}
+#' @seealso [zero_inflated()]
 S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 
 #' @title Hurdle Third Derivatives
@@ -531,23 +531,23 @@ S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 #' The likelihood separates, so mixed components vanish at every order; the
 #' \eqn{\theta} part is the parent's derivative less that of the truncation
 #' constant \eqn{\log(1-f_0)}.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_deriv3, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(3L)
 
 #' @title Hurdle Fourth Derivatives
 #' @name distrib_deriv4.ZeroAdjustedDiscreteDistrib
-#' @description As \code{\link[=distrib_deriv3.ZeroAdjustedDiscreteDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.ZeroAdjustedDiscreteDistrib], at fourth order.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_deriv4, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(4L)
 
 #' @title Zero-Adjusted Continuous Third Derivatives
@@ -555,23 +555,23 @@ S7::method(distrib_deriv4, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(4L)
 #' @description
 #' There is no truncation constant, so away from the atom the \eqn{\theta}
 #' derivatives are the parent's and the mixed ones vanish.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_deriv3, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(3L)
 
 #' @title Zero-Adjusted Continuous Fourth Derivatives
 #' @name distrib_deriv4.ZeroAdjustedContinuousDistrib
-#' @description As \code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.ZeroAdjustedContinuousDistrib], at fourth order.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 
 #' @title Truncated Third Derivatives (Continuous)
@@ -580,44 +580,44 @@ S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 #' \eqn{\ell_T = \ell - \log Z}, and the derivatives of \eqn{\log Z} follow from
 #' the truncated expectations \eqn{\mathbb{E}_T[\partial^B f / f]} through the
 #' moment-to-cumulant expansion. Each distinct block costs one quadrature.
-#' @param distrib A \code{TruncatedContinuousDistrib} object.
+#' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{truncated}}
+#' @seealso [truncated()]
 S7::method(distrib_deriv3, TruncatedContinuousDistrib) <- trunc_deriv_k(3L)
 
 #' @title Truncated Fourth Derivatives (Continuous)
 #' @name distrib_deriv4.TruncatedContinuousDistrib
-#' @description As \code{\link[=distrib_deriv3.TruncatedContinuousDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{TruncatedContinuousDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.TruncatedContinuousDistrib], at fourth order.
+#' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{truncated}}
+#' @seealso [truncated()]
 S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 
 #' @title Truncated Third Derivatives (Discrete)
 #' @name distrib_deriv3.TruncatedDiscreteDistrib
 #' @description As the continuous case, with the expectations taken by summation.
-#' @param distrib A \code{TruncatedDiscreteDistrib} object.
+#' @param distrib A `TruncatedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{truncated}}
+#' @seealso [truncated()]
 S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 
 #' @title Truncated Fourth Derivatives (Discrete)
 #' @name distrib_deriv4.TruncatedDiscreteDistrib
-#' @description As \code{\link[=distrib_deriv3.TruncatedDiscreteDistrib]{the third}}, at fourth order.
-#' @param distrib A \code{TruncatedDiscreteDistrib} object.
+#' @description As [`the third()`][distrib_deriv3.TruncatedDiscreteDistrib], at fourth order.
+#' @param distrib A `TruncatedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
 #' @return A named list of derivative components.
-#' @seealso \code{\link{truncated}}
+#' @seealso [truncated()]
 S7::method(distrib_deriv4, TruncatedDiscreteDistrib) <- trunc_deriv_k(4L)
 

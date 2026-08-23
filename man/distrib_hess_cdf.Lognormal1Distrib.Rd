@@ -15,7 +15,7 @@
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}.
 }
 \description{
 Closed form. On the log scale the family is location-scale, so with
@@ -26,6 +26,6 @@ and
 \eqn{\partial^2 F/\partial(\sigma^2)^2 = \varphi z(3-z^2)/(4\sigma^4)}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }
 \keyword{internal}

@@ -14,7 +14,7 @@ chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
 \item{th_par}{The parent's parameters, as plain numbers.}
 
 \item{maps}{The keyed partial tables of the map, as
-\code{\link{reparam_tables}} returns them.}
+\code{\link[=reparam_tables]{reparam_tables()}} returns them.}
 
 \item{new_params}{The names of the new parameters.}
 
@@ -27,11 +27,11 @@ A named list of component vectors.
 }
 \description{
 Carries the parent's derivatives into new coordinates, given the jets of the
-map. Separated from \code{\link{reparam_chain}} so that a family written in
-its own right, rather than obtained through \code{\link{reparametrize}},
+map. Separated from \code{\link[=reparam_chain]{reparam_chain()}} so that a family written in
+its own right, rather than obtained through \code{\link[=reparametrize]{reparametrize()}},
 can use the same machinery instead of a second copy of it.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

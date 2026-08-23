@@ -14,7 +14,7 @@ za_y_deriv(distrib, y, theta, fun)
 \item{theta}{A named list of parameters, including the atom probability.}
 
 \item{fun}{The parent's response-derivative function, e.g.
-\code{\link{distrib_grad_y}}.}
+\code{\link[=distrib_grad_y]{distrib_grad_y()}}.}
 }
 \value{
 A numeric vector as long as \code{y}, \code{NaN} wherever
@@ -28,12 +28,12 @@ Evaluates a response derivative of the parent away from the atom, and returns
 The log-density jumps at zero -- \eqn{\log \pi} on one side,
 \eqn{\log((1-\pi) f(y))} on the other -- so no derivative in \eqn{y} exists
 there. The finite-difference default inherited from
-\code{\link{continuous_distrib}} would straddle the jump and return a
+\code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the jump and return a
 number for it, which is worse than an error. Away from zero the \eqn{1-\pi}
 factor is constant in \eqn{y}, so the parent's own derivative is exact and
 nothing needs correcting.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }
 \keyword{internal}

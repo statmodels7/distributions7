@@ -28,5 +28,5 @@ Closed form and free of the data, so \code{expected} changes
 nothing.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

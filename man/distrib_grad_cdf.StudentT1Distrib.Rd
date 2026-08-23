@@ -22,5 +22,5 @@ Closed form in the location and scale, \eqn{-f(y)} and \eqn{-z f(y)}; the
 degrees of freedom are differenced, having no elementary form.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

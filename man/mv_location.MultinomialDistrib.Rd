@@ -15,5 +15,5 @@ A numeric vector summing to the size.
 \eqn{n p}, the size times the probability vector.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

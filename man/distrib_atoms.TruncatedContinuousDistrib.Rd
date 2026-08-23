@@ -14,8 +14,8 @@ A list with components \code{y} and \code{p}.
 \description{
 Truncation preserves the parent's atoms that survive it, rescaled by
 \eqn{1/Z}. This matters only when the parent is itself mixed, as
-\code{\link{zero_adjusted}()} of a continuous distribution is.
+\code{\link[=zero_adjusted]{zero_adjusted()}} of a continuous distribution is.
 }
 \seealso{
-\code{\link{truncated}}, \code{\link{distrib_atoms}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

@@ -14,8 +14,8 @@
 A numeric vector of length \code{n}.
 }
 \description{
-Draws through \code{\link[stats]{rchisq}}.
+Draws through \code{\link[stats:Chisquare]{stats::rchisq()}}.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

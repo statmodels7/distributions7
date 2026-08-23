@@ -15,13 +15,13 @@
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}.
 }
 \description{
 Closed form in the location and scale block; the shape is differenced.
 Differencing the cdf itself would be poor here, it being a quadrature.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }
 \keyword{internal}

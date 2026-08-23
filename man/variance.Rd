@@ -10,7 +10,7 @@ variance(x, ...)
 \item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
 
 \item{...}{For \code{distrib} objects: \code{theta} (a named list of parameters) and
-further arguments passed to \code{\link{moment}}. For numeric vectors: \code{na.rm}.}
+further arguments passed to \code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
 }
 \value{
 A numeric vector.
@@ -18,14 +18,14 @@ A numeric vector.
 \description{
 Computes the variance. For \code{distrib} objects the second central moment is
 evaluated numerically (analytical methods may override this for specific
-distributions); for numeric vectors the sample variance \code{\link[stats]{var}} is returned.
+distributions); for numeric vectors the sample variance \code{\link[stats:cor]{stats::var()}} is returned.
 }
 \details{
 \deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
 
 A family with a closed form registers its own method; otherwise the
 expectation is the quadrature or the exact sum of
-\code{\link{expectation}}.
+\code{\link[=expectation]{expectation()}}.
 }
 \examples{
 variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
@@ -33,5 +33,5 @@ variance(poisson_distrib(), list(mu = 3))
 
 }
 \seealso{
-\code{\link{expectation}}, \code{\link{moment}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
 }

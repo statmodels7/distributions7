@@ -31,7 +31,7 @@ NULL
 #'
 #' @return A named list keyed by the new parameters' pairs.
 #'
-#' @seealso \code{\link{mapped_cross_y}}, \code{\link{reparam_tables}}
+#' @seealso [mapped_cross_y()], [reparam_tables()]
 #' @keywords internal
 mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
   old <- parent@params
@@ -105,7 +105,7 @@ S7::method(distrib_hess_y_hess, ReparamContinuousDistrib) <-
 #' @name distrib_cross2_y.ReparamContinuousDistrib
 #' @description
 #' The parent's block carried by the first-order chain rule, exactly as
-#' \code{\link{distrib_cross_y}} is: a derivative in the response does not
+#' [distrib_cross_y()] is: a derivative in the response does not
 #' interact with a reparametrization of the parameters.
 #' @param distrib A reparametrized distribution.
 #' @param y A numeric vector of observations.
@@ -125,7 +125,7 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
 #' Second-Response Mixed Derivatives Through a Map
 #'
 #' @description
-#' The same first-order chain rule \code{\link{mapped_cross_y}} takes, on the
+#' The same first-order chain rule [mapped_cross_y()] takes, on the
 #' second response derivative.
 #'
 #' @param distrib The distribution in the new parametrization.
@@ -136,7 +136,7 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
 #'
 #' @return A named list with one numeric vector per new parameter.
 #'
-#' @seealso \code{\link{mapped_cross_y}}
+#' @seealso [mapped_cross_y()]
 #' @keywords internal
 mapped_cross2_y <- function(distrib, parent, th_par, maps, y) {
   cy <- distrib_cross2_y(parent, y, th_par)

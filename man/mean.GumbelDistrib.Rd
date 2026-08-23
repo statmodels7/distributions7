@@ -4,7 +4,7 @@
 \alias{mean.GumbelDistrib}
 \title{Mean of the Gumbel Distribution}
 \arguments{
-\item{x}{A \code{\link{GumbelDistrib}}.}
+\item{x}{A \code{\link[=GumbelDistrib]{GumbelDistrib()}}.}
 
 \item{theta}{A named list of parameters.}
 

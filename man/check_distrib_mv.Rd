@@ -7,7 +7,7 @@
 check_distrib_mv(distrib, theta, n, nsim, tol)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters, already aligned.}
 
@@ -18,10 +18,10 @@ check_distrib_mv(distrib, theta, n, nsim, tol)
 \item{tol}{The relative tolerance.}
 }
 \value{
-A list of one-row data frames, as \code{\link{check_distrib}} builds.
+A list of one-row data frames, as \code{\link[=check_distrib]{check_distrib()}} builds.
 }
 \description{
-The battery \code{\link{check_distrib}} runs on a multivariate distribution,
+The battery \code{\link[=check_distrib]{check_distrib()}} runs on a multivariate distribution,
 where the one-dimensional checks have no counterpart.
 }
 \details{
@@ -37,9 +37,9 @@ What replaces them are checks that do generalize:
 \enumerate{
 \item \strong{the density is positive and finite} on a sample;
 \item \strong{the density integrates to one}. For a family that enumerates
-its support through \code{\link{mv_support}} this is an exact sum over
+its support through \code{\link[=mv_support]{mv_support()}} this is an exact sum over
 that support; otherwise it is importance sampling from the proposal
-\code{\link{mv_reference_draw}} supplies, which by default is a gaussian
+\code{\link[=mv_reference_draw]{mv_reference_draw()}} supplies, which by default is a gaussian
 with the same mean and an inflated covariance. The proposal is
 deliberately not the distribution itself, which would make the ratio
 identically one and the check vacuous;
@@ -60,10 +60,10 @@ The last of these is emitted only when it applies, as the univariate battery
 already omits the checks that a discrete family has no counterpart for. A
 family with an enumerable support is discrete and has no derivative in the
 response, and the multivariate base class rejects
-\code{\link{distrib_grad_y}} by design, so a family that has not registered
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} by design, so a family that has not registered
 one has made a choice rather than left a gap.
 }
 \seealso{
-\code{\link{check_distrib}}
+\code{\link[=check_distrib]{check_distrib()}}
 }
 \keyword{internal}

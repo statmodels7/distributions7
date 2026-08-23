@@ -23,6 +23,6 @@ Closed form, by the chain rule on the scale parametrization's derivatives
 through \eqn{\sigma = \sqrt{\sigma^2}}.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }
 \keyword{internal}

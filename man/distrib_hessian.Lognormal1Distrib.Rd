@@ -18,5 +18,5 @@ Computes the analytical observed Hessian (second derivatives) of the Lognormal l
 with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

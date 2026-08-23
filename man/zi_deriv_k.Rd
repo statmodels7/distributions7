@@ -14,7 +14,7 @@ A function suitable for registering as an S7 method.
 }
 \description{
 Builds the order-\code{k} derivative method for
-\code{\link{zero_inflated}}.
+\code{\link[=zero_inflated]{zero_inflated()}}.
 }
 \details{
 At \eqn{y > 0} the likelihood separates, \eqn{\log(1 - \zeta) + \ell(y)}, so a

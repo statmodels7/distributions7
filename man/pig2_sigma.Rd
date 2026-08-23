@@ -16,12 +16,12 @@ A numeric vector of dispersions.
 }
 \description{
 Converts the orthogonal parametrization's \eqn{\alpha} into the
-dispersion \eqn{\sigma} of \code{\link{pig1_distrib}}:
+dispersion \eqn{\sigma} of \code{\link[=pig1_distrib]{pig1_distrib()}}:
 \eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2}, the positive
 root of \eqn{\alpha^2\sigma^2 - 2\mu\sigma - 1 = 0}, with no
 cancellation anywhere in the domain.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }
 \keyword{internal}

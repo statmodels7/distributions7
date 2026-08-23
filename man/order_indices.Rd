@@ -15,20 +15,20 @@ order_indices(params, order)
 A list of character vectors, each of length \code{order}.
 }
 \description{
-The multi-indices of a given order, in the order \code{\link{deriv_names}}
+The multi-indices of a given order, in the order \code{\link[=deriv_names]{deriv_names()}}
 lists them, expressed as parameter names.
 }
 \details{
-A thin wrapper on \code{\link{deriv_indices}}. It is deliberately not
+A thin wrapper on \code{\link[=deriv_indices]{deriv_indices()}}. It is deliberately not
 \code{deriv_index_list()} from \code{link_scale.R}, whose order-2 case is
-ordered for \code{\link{hess_names}} -- diagonal first -- while
+ordered for \code{\link[=hess_names]{hess_names()}} -- diagonal first -- while
 \code{deriv_names()} is lexicographic; pairing those would silently attach the
-name \code{"mu_sigma"} to the index \code{(sigma, sigma)}. The orders actually
+name \code{"mu_sigma"} to the index \verb{(sigma, sigma)}. The orders actually
 registered here are 3 and 4, where the two orderings agree; generating the
 indices locally removes the mismatch instead of depending on it never being
 reached.
 }
 \seealso{
-\code{\link{deriv_indices}}, \code{\link{deriv_names}}
+\code{\link[=deriv_indices]{deriv_indices()}}, \code{\link[=deriv_names]{deriv_names()}}
 }
 \keyword{internal}

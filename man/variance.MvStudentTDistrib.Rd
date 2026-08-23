@@ -4,7 +4,7 @@
 \alias{variance.MvStudentTDistrib}
 \title{Covariance of a Multivariate Student t}
 \arguments{
-\item{x}{A \code{\link{MvStudentTDistrib}} object.}
+\item{x}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
@@ -16,6 +16,6 @@ A \eqn{p \times p} numeric matrix.
 \description{
 \eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2}, and infinite otherwise. This is
 the moment; the matrix the parametrization carries is
-\code{\link{mv_sigma}}, and the two differ by the factor above.
+\code{\link[=mv_sigma]{mv_sigma()}}, and the two differ by the factor above.
 }
 \keyword{internal}

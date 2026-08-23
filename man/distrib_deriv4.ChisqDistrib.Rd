@@ -28,5 +28,5 @@ A named list with the \code{mu_mu_mu_mu} component.
 observed and expected alike.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

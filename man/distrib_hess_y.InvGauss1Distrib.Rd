@@ -17,5 +17,5 @@ A numeric vector.
 Closed-form \eqn{\partial^2 \ell / \partial y^2 = 3/(2y^2) - 1/(\phi y^3)}.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

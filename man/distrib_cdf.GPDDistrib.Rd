@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}}
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

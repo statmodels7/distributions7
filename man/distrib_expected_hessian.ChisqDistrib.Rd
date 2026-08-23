@@ -27,8 +27,8 @@ A named list with the \code{mu_mu} component.
 identical to the observed Hessian on the parameter scale, which the second
 derivative not depending on the response makes exact rather than
 approximate. The two differ on the link scale, where the chain rule adds a
-term proportional to the score; see \code{\link{chisq_distrib}}.
+term proportional to the score; see \code{\link[=chisq_distrib]{chisq_distrib()}}.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

@@ -8,7 +8,7 @@ poisson_distrib(link_mu = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{PoissonDistrib} (inheriting from \code{discrete_distrib}) representing the Poisson distribution.
@@ -42,8 +42,8 @@ excess kurtosis \eqn{1/\mu}.
 \item \eqn{\mu \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
 }
 \examples{
 d <- poisson_distrib()
@@ -56,12 +56,12 @@ distrib_gradient(d, 0:5, theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.PoissonDistrib}} for the probability mass function.
-\item \code{\link{distrib_cdf.PoissonDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.PoissonDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.PoissonDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.PoissonDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.PoissonDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.PoissonDistrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf.PoissonDistrib()}} for the probability mass function.
+\item \code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile.PoissonDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.PoissonDistrib]{distrib_rng.PoissonDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient.PoissonDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the analytical expected Hessian.
 }
 }

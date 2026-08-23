@@ -6,13 +6,13 @@
 #' Batched Quadrature with Rejection
 #'
 #' @description
-#' Calls \code{\link[numericals7]{quad_vec}} with its warning muffled and
-#' returns the per-row integrals, \code{NA} where the accuracy was not
+#' Calls [numericals7::quad_vec()] with its warning muffled and
+#' returns the per-row integrals, `NA` where the accuracy was not
 #' reached; the caller decides what a failed row means and names it.
 #'
-#' @param integrand The integrand, in \code{quad_vec}'s matrix contract.
+#' @param integrand The integrand, in `quad_vec`'s matrix contract.
 #' @param lower,upper Numeric vectors of panel endpoints.
-#' @return A numeric vector of integrals, \code{NA} for failed rows.
+#' @return A numeric vector of integrals, `NA` for failed rows.
 #' @keywords internal
 quad_rows <- function(integrand, lower, upper) {
   withCallingHandlers(
@@ -28,14 +28,14 @@ quad_rows <- function(integrand, lower, upper) {
 #' Summation over an Integer Support
 #'
 #' @description
-#' Sums \code{term(k, i)} over the integers of \code{[from, to]} for each of
-#' \code{n_rows} parameter rows at once. A finite support is summed directly
+#' Sums `term(k, i)` over the integers of `[from, to]` for each of
+#' `n_rows` parameter rows at once. A finite support is summed directly
 #' in one matrix evaluation; a support unbounded above goes through
-#' \code{\link[numericals7]{series_vec}}; one unbounded below is reflected;
+#' [numericals7::series_vec()]; one unbounded below is reflected;
 #' one unbounded on both sides is folded around zero. A row whose series
 #' does not converge raises an error naming it.
 #'
-#' @param term A function \code{term(k, i)} of two equal-length integer
+#' @param term A function `term(k, i)` of two equal-length integer
 #'   vectors, returning the terms elementwise.
 #' @param from,to The endpoints of the support, either possibly infinite.
 #' @param n_rows The number of parameter rows.
@@ -61,11 +61,11 @@ discrete_support_sum <- function(term, from, to, n_rows) {
 #' Batched Series Summation with Rejection
 #'
 #' @description
-#' Calls \code{\link[numericals7]{series_vec}} with its warning muffled and
+#' Calls [numericals7::series_vec()] with its warning muffled and
 #' promotes a row that did not converge to an error naming it: a series that
 #' does not converge is a failure of the request, not a number.
 #'
-#' @param term A function \code{term(k, i)} in \code{series_vec}'s contract.
+#' @param term A function `term(k, i)` in `series_vec`'s contract.
 #' @param from The first summation index.
 #' @param n_rows The number of parameter rows.
 #' @return A numeric vector of sums, one per row.
@@ -95,18 +95,18 @@ series_rows <- function(term, from, n_rows) {
 #' continuous distribution and by series summation for a discrete one, with the
 #' methods described on their own pages.
 #'
-#' @param distrib An object inheriting from \code{\link{distrib}}.
+#' @param distrib An object inheriting from [distrib()].
 #' @param f The function whose expectation is taken, with signature
-#'   \code{f(y, theta, ...)}. It is evaluated elementwise: \code{y} arrives as
-#'   a numeric vector and every component of \code{theta}, like every argument
-#'   passed through \code{...}, as a vector of the same length, so \code{f}
+#'   `f(y, theta, ...)`. It is evaluated elementwise: `y` arrives as
+#'   a numeric vector and every component of `theta`, like every argument
+#'   passed through `...`, as a vector of the same length, so `f`
 #'   must be vectorized in all of them jointly -- which any expression built
-#'   from arithmetic and the \code{distrib_*} generics already is.
+#'   from arithmetic and the `distrib_*` generics already is.
 #' @param theta A named list of parameters. Vectors are supported and are
-#'   recycled against any vectors in \code{...}, so several parameter values can
+#'   recycled against any vectors in `...`, so several parameter values can
 #'   be handled in one call; all combinations share one batched evaluation.
-#' @param ... Further arguments passed to \code{f}; their names must not clash
-#'   with those of \code{theta}.
+#' @param ... Further arguments passed to `f`; their names must not clash
+#'   with those of `theta`.
 #'
 #' @return A numeric vector of expected values, one per parameter combination.
 #'
@@ -114,7 +114,7 @@ series_rows <- function(term, from, n_rows) {
 #' expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
 #'             theta = list(mu = 10), k = 2)
 #'
-#' @seealso \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+#' @seealso [moment()], [variance()], [std_dev()], [skewness()], [kurtosis()]
 #' @export
 expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib, f, theta, ...) {
   S7::S7_dispatch()
@@ -123,14 +123,14 @@ expectation <- S7::new_generic("expectation", "distrib", fun = function(distrib,
 #' Aligned Parameter Columns for an Expectation
 #'
 #' @description
-#' Shared preparation for the \code{\link{expectation}} methods: checks that
-#' the names in \code{...} do not collide with those of \code{theta}, then
+#' Shared preparation for the [expectation()] methods: checks that
+#' the names in `...` do not collide with those of `theta`, then
 #' expands every component to one aligned column per parameter combination.
 #'
 #' @param f_env_theta The named list of parameters.
-#' @param dots The list of further arguments destined for \code{f}.
-#' @return A list with the theta columns \code{th}, the dot columns
-#'   \code{dots} and the number of combinations \code{n}.
+#' @param dots The list of further arguments destined for `f`.
+#' @return A list with the theta columns `th`, the dot columns
+#'   `dots` and the number of combinations `n`.
 #' @keywords internal
 expectation_columns <- function(f_env_theta, dots) {
   if (any(names(dots) %in% names(f_env_theta))) {
@@ -148,19 +148,19 @@ expectation_columns <- function(f_env_theta, dots) {
 #' @title Expectation of a Continuous Distribution
 #' @name expectation.continuous_distrib
 #' @description Evaluates \eqn{E[f(Y)] = \int f(y)\,p(y;\theta)\,dy} by the
-#' batched adaptive quadrature of \code{\link[numericals7]{quad_vec}}: the
+#' batched adaptive quadrature of [numericals7::quad_vec()]: the
 #' panels of every parameter combination are refined in one call, so a vector
-#' \code{theta} costs matrix evaluations rather than one adaptive run per
+#' `theta` costs matrix evaluations rather than one adaptive run per
 #' value. The domain of each combination is split at its 0.1, 0.5 and 0.9
 #' quantiles, which anchors the quadrature on the probability mass wherever it
 #' sits. A combination the batched quadrature rejects -- an integrable
 #' endpoint singularity too harsh for bisection -- is rescued by one scalar
-#' \code{\link[stats]{integrate}} run, whose extrapolation reaches it; an
+#' [stats::integrate()] run, whose extrapolation reaches it; an
 #' error naming the combination is raised only when both routes fail.
-#' @param distrib A \code{continuous_distrib}.
+#' @param distrib A `continuous_distrib`.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.
-#' @param ... Further arguments passed to \code{f}.
+#' @param ... Further arguments passed to `f`.
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) {
@@ -236,12 +236,12 @@ S7::method(expectation, continuous_distrib) <- function(distrib, f, theta, ...) 
 #' @description Evaluates \eqn{E[f(Y)] = \sum_y f(y)\,P(Y = y;\theta)} by
 #' summation over the support, every parameter combination in one batched
 #' pass: a finite support is summed exactly in a single matrix evaluation,
-#' an infinite one through \code{\link[numericals7]{series_vec}}, whose rows
+#' an infinite one through [numericals7::series_vec()], whose rows
 #' retire as they converge.
-#' @param distrib A \code{discrete_distrib}.
+#' @param distrib A `discrete_distrib`.
 #' @param f The function whose expectation is taken.
 #' @param theta A named list of parameters.
-#' @param ... Further arguments passed to \code{f}.
+#' @param ... Further arguments passed to `f`.
 #' @return A numeric vector of expected values.
 #' @keywords internal
 S7::method(expectation, discrete_distrib) <- function(distrib, f, theta, ...) {

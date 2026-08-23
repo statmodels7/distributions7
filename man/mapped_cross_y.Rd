@@ -26,6 +26,6 @@ first-order chain rule, which is all that is needed: the response
 derivative does not interact with a reparametrization of the parameters.
 }
 \seealso{
-\code{\link{distrib_cross_y}}, \code{\link{reparam_tables}}
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=reparam_tables]{reparam_tables()}}
 }
 \keyword{internal}

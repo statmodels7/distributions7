@@ -34,5 +34,5 @@ directly, through \eqn{\log\Gamma(\phi)}, which contributes only to the
 component all of whose indices name it.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

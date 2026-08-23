@@ -22,5 +22,5 @@ Computes the probability density function for the Weibull distribution:
   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}}
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

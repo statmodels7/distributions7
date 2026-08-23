@@ -20,14 +20,14 @@ log.}
 bounded to the reachable interval.}
 }
 \value{
-An S7 object of class \code{\link{SkewNormal2Distrib}}.
+An S7 object of class \code{\link[=SkewNormal2Distrib]{SkewNormal2Distrib()}}.
 }
 \description{
 Creates a skew normal distribution object parametrized by its mean, its
 standard deviation and its skewness.
 }
 \details{
-The direct parametrization of \code{\link{skewnormal1_distrib}} carries a
+The direct parametrization of \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} carries a
 location, a scale and a shape, none of which is a moment. Here all three
 parameters are moments, and the family is Azzalini's centered
 parametrization.
@@ -78,5 +78,5 @@ Families}. Cambridge University Press. The centred parametrization is
 section 3.1.4.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}, \code{\link{skewt_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}
 }

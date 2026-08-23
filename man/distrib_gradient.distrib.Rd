@@ -16,6 +16,6 @@ A named list of gradient vectors.
 \description{
 Fallback method: distributions that do not implement an analytical gradient get
 one computed by central finite differences of the log-density
-(see \code{\link{numerical_gradient}}).
+(see \code{\link[=numerical_gradient]{numerical_gradient()}}).
 }
 \keyword{internal}

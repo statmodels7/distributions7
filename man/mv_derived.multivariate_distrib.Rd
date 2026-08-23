@@ -4,17 +4,17 @@
 \alias{mv_derived.multivariate_distrib}
 \title{Matrix Entries as the Default Interpretable Quantities}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
 \item{...}{Unused.}
 }
 \value{
-A list as described in \code{\link{mv_derived}}.
+A list as described in \code{\link[=mv_derived]{mv_derived()}}.
 }
 \description{
-The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
+The distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} returns, with a
 Jacobian from one central difference in each parameter. This is what a
 family gets when it says nothing more specific: the matrix on its own scale,
 named after the coordinates, rather than the matrix parameter's coordinates.

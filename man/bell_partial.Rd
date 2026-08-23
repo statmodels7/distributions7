@@ -30,6 +30,6 @@ written out rather than generated: there are ten of them below order five, and
 a table cannot be slower or wrong in a way a recursion could.
 }
 \seealso{
-\code{\link{link_scale_derivatives}}, \code{\link{to_link_scale}}
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=to_link_scale]{to_link_scale()}}
 }
 \keyword{internal}

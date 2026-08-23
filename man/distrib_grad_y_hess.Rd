@@ -22,7 +22,7 @@ parameters.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -40,14 +40,14 @@ one component per unordered pair of parameters, each a vector along
 }
 \details{
 These are the second-order column of the mixed grid whose first-order one
-is \code{\link{distrib_cross_y}} and \code{\link{distrib_cross2_y}}: how the
+is \code{\link[=distrib_cross_y]{distrib_cross_y()}} and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}: how the
 response gradient and the response curvature CURVE in the parameters. A
 marginal likelihood needs them to differentiate its Laplace approximation
 twice, the penalty being a negative log-density evaluated at the
 coefficients.
 
-The components are keyed by \code{\link{hess_names}}, the same enumeration
-\code{\link{distrib_hessian}} uses, so a consumer that looks a pair up finds
+The components are keyed by \code{\link[=hess_names]{hess_names()}}, the same enumeration
+\code{\link[=distrib_hessian]{distrib_hessian()}} uses, so a consumer that looks a pair up finds
 it under the name it already knows.
 
 On the link scale each component is multiplied by \eqn{h_i'(\eta_i)
@@ -55,11 +55,11 @@ h_j'(\eta_j)} and, on a diagonal pair, gains the second-order term
 \eqn{h_i''(\eta_i)} times the corresponding first-order component: the
 response derivatives are untouched by a reparametrization of \eqn{\theta},
 so this is the ordinary diagonal chain rule at second order, exactly as for
-\code{\link{distrib_hessian}}.
+\code{\link[=distrib_hessian]{distrib_hessian()}}.
 
 Distributions with closed forms provide them; the others take one central
 difference of the analytic first-order quantity in each parameter (see
-\code{\link{numerical_theta2_y}}). The two differences act on different
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}). The two differences act on different
 parameters off the diagonal, so they compose into a single mixed stencil
 rather than the nested differencing of one variable the package forbids.
 }
@@ -70,5 +70,5 @@ distrib_hess_y_hess(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{distrib_cross_y}}, \code{\link{distrib_cross2_y}}
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}
 }

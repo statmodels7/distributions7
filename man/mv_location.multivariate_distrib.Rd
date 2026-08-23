@@ -4,7 +4,7 @@
 \alias{mv_location.multivariate_distrib}
 \title{No Location Without a Family That Has One}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }

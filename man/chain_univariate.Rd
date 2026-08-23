@@ -13,7 +13,7 @@ chain_univariate(tuple, fd, ud)
 every coordinate.}
 
 \item{ud}{A named list of the map's derivative tensors, keyed by sorted
-tuple as \code{\link{simplex_map_tensors}} returns them.}
+tuple as \code{\link[=simplex_map_tensors]{simplex_map_tensors()}} returns them.}
 }
 \value{
 A numeric vector over the coordinates.

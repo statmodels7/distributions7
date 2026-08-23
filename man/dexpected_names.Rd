@@ -10,18 +10,17 @@ dexpected_names(params)
 \item{params}{A character vector of parameter names, in the family's order.}
 }
 \value{
-A character vector, \code{length(hess_names(params)) *
-  length(params)} long.
+A character vector, \code{length(hess_names(params)) * length(params)} long.
 }
 \description{
 One key per pair \eqn{(a,b)} and differentiating parameter \eqn{c}, built by
-joining \code{\link{hess_names}} with the parameter differentiated in.
+joining \code{\link[=hess_names]{hess_names()}} with the parameter differentiated in.
 }
 \details{
 The keys are BUILT and never parsed, which is the package's rule wherever a
 component name is a concatenation of parameter names: a parameter whose own
 name contains an underscore makes the string ambiguous to read back, and
-\code{\link{dexpected_key}} exists so that a consumer composes the same
+\code{\link[=dexpected_key]{dexpected_key()}} exists so that a consumer composes the same
 string this function enumerates.
 }
 \examples{
@@ -29,5 +28,5 @@ dexpected_names(c("mu", "sigma"))
 
 }
 \seealso{
-\code{\link{dexpected_key}}, \code{\link{hess_names}}
+\code{\link[=dexpected_key]{dexpected_key()}}, \code{\link[=hess_names]{hess_names()}}
 }

@@ -10,8 +10,8 @@ the three generics named above; the value returned is theirs.
 \description{
 When a distribution does not supply a closed-form expected derivative, the
 expectation has to be approximated. The generics
-\code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}} and
-\code{\link{distrib_deriv4}} therefore accept an \code{approx} argument
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} therefore accept an \code{approx} argument
 selecting \emph{how} the expectation is taken. The argument is \strong{ignored}
 when the distribution provides an analytical method (which is always preferred).
 }
@@ -35,7 +35,7 @@ at order 3, \eqn{\mathbb{E}[\ell_{ijk}] = -\left(\mathbb{E}[\ell_{ij}\ell_k] +
 \emph{Fastest at order 2} (only the score is needed) and the only variant
 that stays valid when the log-likelihood is not differentiable in a
 parameter, where \eqn{\mathbb{E}[H]} degenerates but the score variance
-still gives the information (see \code{\link{laplace_distrib}}).
+still gives the information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
 Deterministic. At higher orders it needs several integrals, so it is
 usually slower than \code{"integrate"}, but it never requires the
 top-order derivative itself -- useful when only the lower orders are
@@ -55,8 +55,8 @@ but stochastic: the error decreases only as \eqn{1/\sqrt{n_{sim}}}, so
 results are not exactly reproducible unless the seed is fixed. Estimates
 the same quantity as \code{"integrate"}.
 \strong{Note:} the cost of this option is the cost of simulating from the
-distribution. A native \code{\link{distrib_rng}} is best, and failing that
-the default RNG falls back to \code{\link{rng_grou}}, which only needs the
+distribution. A native \code{\link[=distrib_rng]{distrib_rng()}} is best, and failing that
+the default RNG falls back to \code{\link[=rng_grou]{rng_grou()}}, which only needs the
 density. It becomes expensive only for a distribution that supplies a
 quantile function slow enough to make inverse transform sampling the
 bottleneck; prefer \code{"bartlett"} or \code{"integrate"} in that case.}
@@ -70,6 +70,6 @@ direct integration of the available derivative is usually cheaper and more
 accurate.
 }
 \seealso{
-\code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

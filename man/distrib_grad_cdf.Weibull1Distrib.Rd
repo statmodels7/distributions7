@@ -29,6 +29,6 @@ and those are elementary: \eqn{\partial^{j}h/\partial\mu^{j} =
 index names the shape, and zero when two do.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }
 \keyword{internal}

@@ -24,5 +24,5 @@ The constant is evaluated through the log Mills ratio, both factors of
 which underflow separately.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

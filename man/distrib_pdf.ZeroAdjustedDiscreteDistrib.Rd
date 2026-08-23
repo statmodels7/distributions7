@@ -19,5 +19,5 @@ A numeric vector of density values.
 \deqn{P(Y=0) = \pi, \qquad P(Y=y) = (1-\pi)\dfrac{f(y;\theta)}{1-f(0;\theta)} \ \ (y>0)}
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

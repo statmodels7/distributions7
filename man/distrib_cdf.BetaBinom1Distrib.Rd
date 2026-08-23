@@ -22,5 +22,5 @@ The cumulative sum of the mass function over the finite
 support, which is exact rather than approximated.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

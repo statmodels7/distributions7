@@ -9,7 +9,7 @@ mvt_weights(y, pc)
 \arguments{
 \item{y}{An \eqn{n \times p} matrix.}
 
-\item{pc}{The result of \code{\link{mvt_pieces}}.}
+\item{pc}{The result of \code{\link[=mvt_pieces]{mvt_pieces()}}.}
 }
 \value{
 A list with \code{r}, \code{w}, \code{q} and \code{cw}.

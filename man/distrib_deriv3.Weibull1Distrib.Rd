@@ -22,5 +22,5 @@ expected when \code{expected = TRUE}). With \eqn{u = (y/\mu)^{\sigma}} and
 \eqn{L u}; the expected values use \eqn{E[u L^k] = \Gamma^{(k)}(2)/\sigma^k}.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

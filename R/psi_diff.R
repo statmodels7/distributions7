@@ -2,8 +2,8 @@
 #' @name psi_shift_diff
 #' @description
 #' Returns \eqn{\psi^{(n)}(x+k) - \psi^{(n)}(x)} without the cancellation the
-#' direct difference carries. It is the R twin of the \code{psi_A_rest()} and
-#' \code{psi_T_rest()} of \code{src/psi_diff.h}, written for any order rather
+#' direct difference carries. It is the R twin of the `psi_A_rest()` and
+#' `psi_T_rest()` of `src/psi_diff.h`, written for any order rather
 #' than for the two the compiled kernels need.
 #'
 #' @details
@@ -25,17 +25,17 @@
 #' differenced as
 #' \deqn{\frac{1}{(x+k)^{p}} - \frac{1}{x^{p}}
 #'   = \frac{1}{x^{p}}\,\big(e^{-p\log(1+k/x)} - 1\big),}
-#' which \code{expm1} and \code{log1p} evaluate to the last bit however small
+#' which `expm1` and `log1p` evaluate to the last bit however small
 #' \eqn{k/x} is. Below the crossover the direct difference has all its digits
 #' and is used as it stands.
 #'
-#' @param n The order of the polygamma: \code{0} for \code{digamma},
-#'   \code{1} for \code{trigamma}, and so on.
+#' @param n The order of the polygamma: `0` for `digamma`,
+#'   `1` for `trigamma`, and so on.
 #' @param k The shift, which for every caller here is a count or a size and
-#'   therefore a non-negative integer. Recycled against \code{x}.
-#' @param x The argument, strictly positive. Recycled against \code{k}.
+#'   therefore a non-negative integer. Recycled against `x`.
+#' @param x The argument, strictly positive. Recycled against `k`.
 #' @return A numeric vector of the same length as the recycled arguments.
-#'   Exactly zero wherever \code{k} is zero, by either branch.
+#'   Exactly zero wherever `k` is zero, by either branch.
 #' @keywords internal
 psi_shift_diff <- function(n, k, x) {
   n <- as.integer(n)

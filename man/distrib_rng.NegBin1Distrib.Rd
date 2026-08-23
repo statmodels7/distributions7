@@ -14,8 +14,8 @@
 A numeric vector of length \code{n}.
 }
 \description{
-\code{\link[stats]{rnbinom}} at the same size and probability.
+\code{\link[stats:NegBinomial]{stats::rnbinom()}} at the same size and probability.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

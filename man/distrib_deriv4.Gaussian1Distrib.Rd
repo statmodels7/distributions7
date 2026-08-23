@@ -24,5 +24,5 @@ log-density with respect to \eqn{\mu} and \eqn{\sigma} (observed, or expected wh
 \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

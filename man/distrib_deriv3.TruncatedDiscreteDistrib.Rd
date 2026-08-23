@@ -19,5 +19,5 @@ A named list of derivative components.
 As the continuous case, with the expectations taken by summation.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

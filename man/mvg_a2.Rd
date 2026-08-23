@@ -7,7 +7,7 @@
 mvg_a2(pc, k, l)
 }
 \arguments{
-\item{pc}{The result of \code{\link{mvg_pieces}} with \code{derivs2}.}
+\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}} with \code{derivs2}.}
 
 \item{k, l}{Positions among the structure's free values.}
 }

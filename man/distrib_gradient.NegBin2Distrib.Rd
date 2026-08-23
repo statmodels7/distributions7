@@ -24,5 +24,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\theta}.
 \deqn{\dfrac{\partial \ell}{\partial \theta} = \psi(y+\theta) - \psi(\theta) + \log\left(\dfrac{\theta}{\theta+\mu}\right) + \dfrac{\mu - y}{\theta+\mu}}
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

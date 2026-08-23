@@ -14,10 +14,10 @@
 A symmetric \eqn{p \times p} matrix.
 }
 \description{
-The covariance matrix \code{\link{mv_sigma}} carries, singular
+The covariance matrix \code{\link[=mv_sigma]{mv_sigma()}} carries, singular
 because the counts sum to the size.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }
 \keyword{internal}

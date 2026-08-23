@@ -12,7 +12,7 @@
 
 \item{expected}{Logical; if \code{TRUE}, returns the (approximated) expected derivatives.}
 
-\item{approx, nsim}{Passed to \code{\link{expected_derivative_methods}} when \code{expected = TRUE}.}
+\item{approx, nsim}{Passed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} when \code{expected = TRUE}.}
 }
 \value{
 A named list of third-derivative component vectors.
@@ -22,8 +22,8 @@ Closed-form observed third-order derivatives of the Pseudo-Huber log-density.
 Bessel functions enter only through the pure-\eqn{\nu} component; the
 exponentially scaled forms are used so that large \eqn{\nu} does not overflow.
 The expected third derivatives have no closed form, so \code{expected = TRUE}
-is handled by the strategies in \code{\link{expected_derivative_methods}}.
+is handled by the strategies in \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

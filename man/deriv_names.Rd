@@ -21,7 +21,7 @@ with respect to a vector of parameters. Because mixed partial derivatives are
 symmetric, only one representative per multi-index is listed, using
 non-decreasing parameter order (e.g. \code{"mu_mu_sigma"} but not
 \code{"mu_sigma_mu"}). For \code{order = 2} this coincides with the set of
-\code{\link{hess_names}} (though possibly in a different order).
+\code{\link[=hess_names]{hess_names()}} (though possibly in a different order).
 }
 \examples{
 deriv_names(c("mu", "sigma"), 3)
@@ -29,5 +29,5 @@ deriv_names(c("mu", "sigma"), 3)
 
 }
 \seealso{
-\code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+\code{\link[=hess_names]{hess_names()}}, \code{\link[=expand_params]{expand_params()}}, \code{\link[=transpose_params]{transpose_params()}}, \code{\link[=check_params_dim]{check_params_dim()}}, \code{\link[=check_theta_bounds]{check_theta_bounds()}}, \code{\link[=param_smoothness]{param_smoothness()}}, \code{\link[=generate_random_theta]{generate_random_theta()}}
 }

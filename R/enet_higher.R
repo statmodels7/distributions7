@@ -12,12 +12,12 @@ NULL
 #'   G''' = 2G' + xG'' - 2(G')^{2} - 2GG''.}
 #' Written this way each order is a polynomial in \eqn{x}, \eqn{G} and the
 #' orders below, so the cancellation that afflicts \eqn{G = x - 1/M} for
-#' large \eqn{x} is confined to \eqn{G} itself, where \code{.enet_G}
+#' large \eqn{x} is confined to \eqn{G} itself, where `.enet_G`
 #' already switches to an asymptotic series.
 #'
-#' @param p The value of \code{.enet_parts}.
+#' @param p The value of `.enet_parts`.
 #'
-#' @return \code{p} with \code{d2g} and \code{d3g} added.
+#' @return `p` with `d2g` and `d3g` added.
 #'
 #' @keywords internal
 .enet_g_higher <- function(p) {
@@ -43,7 +43,7 @@ NULL
 #' of order three or more is therefore a derivative of the normalizing
 #' constant, apart from
 #' \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}, and the
-#' normalizer is one pass of \code{\link{chain_assemble}} over
+#' normalizer is one pass of [chain_assemble()] over
 #' \eqn{L(x(a,c))}: the inner derivatives are \eqn{-G, -G', -G'', -G'''}
 #' and the map has \eqn{\partial^{2}x/\partial a^{2} = 0}, which leaves a
 #' short table.
@@ -52,13 +52,13 @@ NULL
 #' and the sign function is what the first derivative carries there.
 #'
 #' @param y A numeric vector of observations.
-#' @param p The value of \code{.enet_parts}, extended by
-#'   \code{.enet_g_higher}.
+#' @param p The value of `.enet_parts`, extended by
+#'   `.enet_g_higher`.
 #' @param order The derivative order, 1 to 4.
 #'
-#' @return A list of length \code{order}; element \code{k} is the table of
-#'   order-\code{k} derivatives, keyed as
-#'   \code{\link{deriv_names}(c("mu", "a", "c"), k)}.
+#' @return A list of length `order`; element `k` is the table of
+#'   order-`k` derivatives, keyed as
+#'   [`deriv_names(c("mu", "a", "c"), k)`][deriv_names].
 #'
 #' @keywords internal
 .enet_ac_derivs <- function(y, p, order) {
@@ -128,7 +128,7 @@ NULL
 #' \eqn{(\lambda, \alpha)} still depend on the data although the third
 #' derivatives in the rates do not.
 #'
-#' @param p The value of \code{.enet_parts}.
+#' @param p The value of `.enet_parts`.
 #'
 #' @return A list of keyed tables, one per rate coordinate.
 #'
@@ -148,7 +148,7 @@ NULL
 #' them onto \eqn{(\mu, \lambda, \alpha)}.
 #'
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of components.
@@ -173,26 +173,26 @@ NULL
 #' linear in each rate, so at these orders only the normalizing constant
 #' contributes, apart from
 #' \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}; see
-#' \code{.enet_ac_derivs}. Running the same assembly at orders one and two
+#' `.enet_ac_derivs`. Running the same assembly at orders one and two
 #' reproduces the hand-written score and Hessian, which is what licenses it
 #' at the orders where there is nothing to compare against.
 #'
 #' The expected derivatives have no closed form here and go through
-#' \code{\link{expected_derivative}}.
+#' [expected_derivative()].
 #'
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @param expected Logical; whether to return the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the
+#' @param scale Either `"parameter"` or `"link"`; handled by the
 #'   generic.
 #' @param approx How the expectation is approximated.
-#' @param nsim Monte Carlo sample size, used when \code{approx = "mc"}.
+#' @param nsim Monte Carlo sample size, used when `approx = "mc"`.
 #' @param ... Unused.
 #'
 #' @return A named list of third-derivative components.
 #'
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_deriv3, EnetDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),

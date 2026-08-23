@@ -20,5 +20,5 @@ Computes the probability mass function for the Poisson distribution:
 \deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

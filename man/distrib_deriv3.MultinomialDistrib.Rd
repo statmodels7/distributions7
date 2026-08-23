@@ -31,5 +31,5 @@ univariate partition sum per coordinate, with
 \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}}.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

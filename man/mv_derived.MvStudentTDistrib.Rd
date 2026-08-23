@@ -4,14 +4,14 @@
 \alias{mv_derived.MvStudentTDistrib}
 \title{Scale Standard Deviations and Correlations of a Multivariate t}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
 \item{...}{Unused.}
 }
 \value{
-A list as described in \code{\link{mv_derived}}.
+A list as described in \code{\link[=mv_derived]{mv_derived()}}.
 }
 \description{
 The square roots of the diagonal of the \strong{scale} matrix and the

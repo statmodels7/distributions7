@@ -17,5 +17,5 @@ A numeric vector of length \code{n}.
 Inverse transform, the quantile function being elementary.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

@@ -28,26 +28,26 @@ NULL
 #' @name FoldedDistrib
 #'
 #' @description
-#' A subclass of \code{continuous_distrib} representing the distribution of
+#' A subclass of `continuous_distrib` representing the distribution of
 #' \eqn{|Y|} when \eqn{Y} follows the wrapped distribution.
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{continuous_distrib} object.
-#' @return An object of class \code{FoldedDistrib}.
-#' @seealso \code{\link{folded}}
+#' @param parent_distrib The wrapped `continuous_distrib` object.
+#' @return An object of class `FoldedDistrib`.
+#' @seealso [folded()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_hess_y.FoldedDistrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.FoldedDistrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.FoldedDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.FoldedDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.FoldedDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.FoldedDistrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.FoldedDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.FoldedDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.FoldedDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.FoldedDistrib],
+#'   [`distrib_rng()`][distrib_rng.FoldedDistrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}, whose
+#' Everything else is inherited from [continuous_distrib()], whose
 #' numerical quantile inverts the exact folded distribution function.
 FoldedDistrib <- S7::new_class("FoldedDistrib",
   parent = continuous_distrib,
@@ -62,7 +62,7 @@ FoldedDistrib <- S7::new_class("FoldedDistrib",
 #' \eqn{w = f(x)/L} the first carries.
 #'
 #' @details
-#' Every method of \code{\link{FoldedDistrib}} needs the same four quantities,
+#' Every method of [FoldedDistrib()] needs the same four quantities,
 #' and computing them once keeps the parent's density from being evaluated
 #' twice per call. Points outside the folded support contribute nothing and are
 #' returned with a zero density rather than being dropped, so that the result
@@ -72,9 +72,9 @@ FoldedDistrib <- S7::new_class("FoldedDistrib",
 #' @param x A numeric vector of folded observations.
 #' @param theta A named list of the parent's parameters.
 #'
-#' @return A list with \code{fp}, \code{fm}, \code{L} and \code{w}.
+#' @return A list with `fp`, `fm`, `L` and `w`.
 #'
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 #'
 #' @keywords internal
 fold_parts <- function(parent, x, theta) {
@@ -91,7 +91,7 @@ fold_parts <- function(parent, x, theta) {
 #'
 #' @description
 #' Returns a memoized function giving \eqn{d^B L / L} for any block, which is
-#' what \code{\link{log_deriv}} consumes.
+#' what [log_deriv()] consumes.
 #'
 #' @details
 #' The ratio is the parent's complete Bell polynomial at each preimage,
@@ -106,11 +106,11 @@ fold_parts <- function(parent, x, theta) {
 #' @param order The highest order needed, 1 to 4.
 #' @param params The parent's parameter names, in declaration order.
 #' @param w The weight of the positive preimage, from
-#'   \code{\link{fold_parts}}.
+#'   [fold_parts()].
 #'
 #' @return A function of one block, returning that ratio's vector.
 #'
-#' @seealso \code{\link{folded}}, \code{\link{fold_parts}}
+#' @seealso [folded()], [fold_parts()]
 #'
 #' @keywords internal
 fold_ratio <- function(parent, x, theta, order, params, w) {
@@ -125,10 +125,10 @@ fold_ratio <- function(parent, x, theta, order, params, w) {
 #' Derivatives of a Folded Distribution
 #'
 #' @description
-#' Builds the order-\code{k} derivative method for \code{\link{folded}}.
+#' Builds the order-`k` derivative method for [folded()].
 #'
 #' @details
-#' The ratios handed to \code{\link{log_deriv}} are
+#' The ratios handed to [log_deriv()] are
 #' \eqn{d^B L / L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} with
 #' \eqn{w = f(x)/L}, each term a complete Bell polynomial in the parent's own
 #' log-derivatives evaluated at one of the two preimages. Folding adds no
@@ -138,7 +138,7 @@ fold_ratio <- function(parent, x, theta, order, params, w) {
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
-#' @seealso \code{\link{folded}}, \code{\link{fold_ratio}}
+#' @seealso [folded()], [fold_ratio()]
 #'
 #' @keywords internal
 fold_deriv_k <- function(order) {
@@ -164,12 +164,12 @@ fold_deriv_k <- function(order) {
 #' @description
 #' \deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0}
 #' the two preimages of \eqn{x} under the absolute value added together.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- fold_parts(distrib@parent_distrib, y, theta)
   out <- ifelse(y < 0, 0, p$L)
@@ -180,13 +180,13 @@ S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALS
 #' @name distrib_cdf.FoldedDistrib
 #' @description
 #' \deqn{P(|Y| \le q) = F(q) - F(-q)}
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the parent's parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), \eqn{P(|Y| \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logarithms.
+#' @param lower.tail Logical; if `TRUE` (default), \eqn{P(|Y| \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logarithms.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_cdf, FoldedDistrib) <- function(distrib, q, theta,
                                                    lower.tail = TRUE,
                                                    log.p = FALSE) {
@@ -202,11 +202,11 @@ S7::method(distrib_cdf, FoldedDistrib) <- function(distrib, q, theta,
 #' @name distrib_rng.FoldedDistrib
 #' @description Draws from the parent and takes the absolute value, which is
 #'   the definition rather than an approximation of it.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param n The number of draws.
 #' @param theta A named list of the parent's parameters.
-#' @return A numeric vector of length \code{n}.
-#' @seealso \code{\link{folded}}
+#' @return A numeric vector of length `n`.
+#' @seealso [folded()]
 S7::method(distrib_rng, FoldedDistrib) <- function(distrib, n, theta) {
   abs(distrib_rng(distrib@parent_distrib, n, theta))
 }
@@ -218,13 +218,13 @@ S7::method(distrib_rng, FoldedDistrib) <- function(distrib, n, theta) {
 #'       = w\, s_i(x) + (1-w)\, s_i(-x), \qquad w = \dfrac{f(x)}{L(x)}}
 #' the score of a two-component mixture, the components being the two
 #' preimages.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list, one component per parameter.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_gradient, FoldedDistrib) <- function(distrib, y, theta,
                                                         scale = c("parameter", "link"), ...) {
   parent <- distrib@parent_distrib
@@ -244,13 +244,13 @@ S7::method(distrib_gradient, FoldedDistrib) <- function(distrib, y, theta,
 #' The moment-to-cumulant relation applied to the ratios
 #' \eqn{d^B L / L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))}, which at
 #' second order is the familiar mixture Hessian.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list, one component per pair of parameters.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_hessian, FoldedDistrib) <- function(distrib, y, theta,
                                                        scale = c("parameter", "link"), ...) {
   parent <- distrib@parent_distrib
@@ -269,33 +269,33 @@ S7::method(distrib_hessian, FoldedDistrib) <- function(distrib, y, theta,
 #' @title Folded Analytical Third-Order Derivatives
 #' @name distrib_deriv3.FoldedDistrib
 #' @description Third-order derivatives from the same partition sums as the
-#'   Hessian; see \code{\link{distrib_hessian.FoldedDistrib}}.
-#' @param distrib A \code{FoldedDistrib} object.
+#'   Hessian; see [distrib_hessian.FoldedDistrib()].
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expectation is approximated.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if `TRUE`, the expectation is approximated.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx How the expectation is approximated when requested.
 #' @param nsim Monte Carlo sample size.
 #' @param ... Unused.
 #' @return A named list of third-order components.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_deriv3, FoldedDistrib) <- fold_deriv_k(3L)
 
 #' @title Folded Analytical Fourth-Order Derivatives
 #' @name distrib_deriv4.FoldedDistrib
 #' @description Fourth-order derivatives from the same partition sums as the
-#'   Hessian; see \code{\link{distrib_hessian.FoldedDistrib}}.
-#' @param distrib A \code{FoldedDistrib} object.
+#'   Hessian; see [distrib_hessian.FoldedDistrib()].
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
-#' @param expected Logical; if \code{TRUE}, the expectation is approximated.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if `TRUE`, the expectation is approximated.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx How the expectation is approximated when requested.
 #' @param nsim Monte Carlo sample size.
 #' @param ... Unused.
 #' @return A named list of fourth-order components.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_deriv4, FoldedDistrib) <- fold_deriv_k(4L)
 
 #' @title Folded Response Gradient
@@ -304,12 +304,12 @@ S7::method(distrib_deriv4, FoldedDistrib) <- fold_deriv_k(4L)
 #' \deqn{\dfrac{\partial \ell}{\partial x} = w\, g(x) - (1-w)\, g(-x)}
 #' with \eqn{g = \partial \log f/\partial y}. The minus sign is the chain rule
 #' through the reflected preimage.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_grad_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
   parent <- distrib@parent_distrib
   p <- fold_parts(parent, y, theta)
@@ -325,12 +325,12 @@ S7::method(distrib_grad_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #'         - \left(w g(x) - (1-w) g(-x)\right)^2}
 #' with \eqn{g} and \eqn{h} the parent's first and second response
 #' derivatives.
-#' @param distrib A \code{FoldedDistrib} object.
+#' @param distrib A `FoldedDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{folded}}
+#' @seealso [folded()]
 S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
   parent <- distrib@parent_distrib
   p <- fold_parts(parent, y, theta)
@@ -345,27 +345,27 @@ S7::method(distrib_hess_y, FoldedDistrib) <- function(distrib, y, theta, ...) {
 #' Does a Distribution Declare Atoms
 #'
 #' @description
-#' Answers whether a distribution registers \code{\link{distrib_atoms}} for
+#' Answers whether a distribution registers [distrib_atoms()] for
 #' itself rather than inheriting the base class's empty answer.
 #'
 #' @details
 #' The question is asked of the class rather than of a value, since a
-#' constructor has no \code{theta} to evaluate the generic at, and the answer
+#' constructor has no `theta` to evaluate the generic at, and the answer
 #' is structural in any case. The class a method was registered on is what
-#' settles it: \code{identical()} on the method object would not, S7 wrapping
+#' settles it: `identical()` on the method object would not, S7 wrapping
 #' it.
 #'
-#' The argument is named \code{parent} deliberately. The base class of this
-#' package is called \code{distrib}, so an argument of that name would shadow
+#' The argument is named `parent` deliberately. The base class of this
+#' package is called `distrib`, so an argument of that name would shadow
 #' it and the comparison below would test the class against the distribution
-#' object instead -- answering \code{TRUE} for every family, which is exactly
+#' object instead -- answering `TRUE` for every family, which is exactly
 #' what it did before this helper existed.
 #'
 #' @param parent A distribution object.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{folded}}, \code{\link{distrib_atoms}}
+#' @seealso [folded()], [distrib_atoms()]
 #'
 #' @keywords internal
 declares_atoms <- function(parent) {
@@ -384,17 +384,17 @@ declares_atoms <- function(parent) {
 #' Wraps a continuous distribution into the distribution of the absolute value
 #' of its variable.
 #'
-#' @param distrib A \code{continuous_distrib} object whose support reaches
+#' @param distrib A `continuous_distrib` object whose support reaches
 #'   below zero.
 #'
 #' @details
 #' Folding is not a change of variable. The map \eqn{y \mapsto |y|} is two to
 #' one and has no inverse, so it cannot be a
-#' \code{\link{transformer}}: instead of carrying a density through a Jacobian
+#' [transformer()]: instead of carrying a density through a Jacobian
 #' it adds the two preimages,
 #' \deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
 #' with distribution function \eqn{F(x) - F(-x)}. No parameter is added and
-#' none is removed, as with \code{\link{truncated}}.
+#' none is removed, as with [truncated()].
 #'
 #' Every derivative comes from the wrapper machinery unchanged. Writing
 #' \eqn{w = f(x)/L(x)} for the weight of the positive preimage, the ratios that
@@ -410,33 +410,33 @@ declares_atoms <- function(parent) {
 #' The parent must reach below zero. A distribution already supported on the
 #' non-negative half line folds to itself, and returning it unchanged would
 #' hide a mistaken call rather than report it; the same check makes
-#' \code{folded()} of a folded distribution an error.
+#' `folded()` of a folded distribution an error.
 #'
 #' A parent with an atom is rejected as well. The point zero is its own
 #' preimage while every other point has two, so an atom at zero would be
 #' counted twice by the sum above and an atom elsewhere would be moved onto its
 #' reflection.
 #'
-#' \strong{The half-normal} is \code{fixed(folded(gaussian1_distrib()), mu = 0)},
-#' and the folded normal proper is \code{folded(gaussian1_distrib())}.
+#' **The half-normal** is `fixed(folded(gaussian1_distrib()), mu = 0)`,
+#' and the folded normal proper is `folded(gaussian1_distrib())`.
 #'
-#' \strong{The sign of a symmetric parent's location is not identified.} When
+#' **The sign of a symmetric parent's location is not identified.** When
 #' the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x; -\mu)},
 #' so the two terms of \eqn{L} merely swap and the likelihood is
-#' \emph{exactly} even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
+#' *exactly* even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
 #' \eqn{-\hat\mu} according to where it started, at the same maximized value
 #' to every digit. This is a property of the model rather than of the fitting,
 #' and it is not rejected, the folded normal being a standard family; what is
 #' estimable is \eqn{|\mu|} together with the remaining parameters. Holding
 #' the location at zero removes the question and gives the half-normal. A
 #' parent that is not symmetric about its location, such as
-#' \code{\link{skewnormal1_distrib}}, has no such invariance and its sign is
+#' [skewnormal1_distrib()], has no such invariance and its sign is
 #' identified.
 #'
-#' @return An S7 object of class \code{\link{FoldedDistrib}}.
+#' @return An S7 object of class [FoldedDistrib()].
 #'
-#' @seealso \code{\link{truncated}}, \code{\link{fixed}},
-#'   \code{\link{transformation}}
+#' @seealso [truncated()], [fixed()],
+#'   [transformation()]
 #'
 #' @examples
 #' d <- folded(gaussian1_distrib())

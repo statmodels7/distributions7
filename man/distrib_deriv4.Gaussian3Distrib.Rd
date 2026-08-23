@@ -28,5 +28,5 @@ Closed form, and free of the response: the only non-zero component is
 \eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

@@ -9,7 +9,7 @@ mvg_residuals(y, pc)
 \arguments{
 \item{y}{An \eqn{n \times p} matrix.}
 
-\item{pc}{The result of \code{\link{mvg_pieces}}.}
+\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}}.}
 }
 \value{
 A list with \code{r}, the residuals, and \code{w}, the rows of

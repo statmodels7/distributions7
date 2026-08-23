@@ -8,10 +8,10 @@ laplace_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{LaplaceDistrib} (inheriting from \code{continuous_distrib}).
@@ -56,12 +56,12 @@ The density has a kink at \eqn{y = \mu}, so the log-likelihood is not
 differentiable in \eqn{\mu}. The package marks this via
 \code{params_smooth = c(mu = FALSE, sigma = TRUE)} and handles it as follows:
 \itemize{
-\item the \strong{score} (\code{\link{distrib_gradient}}) exists almost
+\item the \strong{score} (\code{\link[=distrib_gradient]{distrib_gradient()}}) exists almost
 everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/\sigma};
-\item the \strong{observed Hessian} (\code{\link{distrib_hessian}}) has
+\item the \strong{observed Hessian} (\code{\link[=distrib_hessian]{distrib_hessian()}}) has
 \eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
 \eqn{\mu};
-\item the \strong{expected Hessian} (\code{\link{distrib_expected_hessian}}) is
+\item the \strong{expected Hessian} (\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}) is
 implemented in closed form from the variance of the score, giving the correct
 Fisher information \eqn{1/\sigma^2} for \eqn{\mu} and making Fisher scoring the
 appropriate estimation method. Because the closed form exists, the
@@ -84,5 +84,5 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 
 }
 \seealso{
-\code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

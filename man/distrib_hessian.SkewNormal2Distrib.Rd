@@ -21,5 +21,5 @@ A named list of second derivatives.
 The second-order chain rule through the same map.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

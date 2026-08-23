@@ -28,8 +28,8 @@ A named list with one numeric vector per parameter.
 }
 \description{
 Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i} by one
-central difference of \code{\link{distrib_hess_y}} in each parameter.
-Powers the default \code{\link{distrib_cross2_y}} method for continuous
+central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter.
+Powers the default \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method for continuous
 distributions without a closed form.
 }
 \details{

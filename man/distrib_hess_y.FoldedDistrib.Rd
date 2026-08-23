@@ -23,5 +23,5 @@ with \eqn{g} and \eqn{h} the parent's first and second response
 derivatives.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

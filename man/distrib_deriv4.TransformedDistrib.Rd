@@ -16,8 +16,8 @@
 A named list of derivative components.
 }
 \description{
-As \code{\link[=distrib_deriv3.TransformedDistrib]{the third}}, at fourth order.
+As \code{\link[=distrib_deriv3.TransformedDistrib]{the third()}}, at fourth order.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

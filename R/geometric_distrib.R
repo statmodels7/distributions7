@@ -4,26 +4,26 @@ NULL
 #' @title S7 Class for the Geometric Distribution
 #' @name GeometricDistrib
 #'
-#' @description A subclass of \code{discrete_distrib} representing the
+#' @description A subclass of `discrete_distrib` representing the
 #'   geometric distribution on \eqn{\{0, 1, 2, \dots\}} in its mean
 #'   parametrization.
 #' @inheritParams distrib
-#' @return An object of class \code{GeometricDistrib}.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return An object of class `GeometricDistrib`.
+#' @seealso [geometric_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.GeometricDistrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.GeometricDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.GeometricDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.GeometricDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.GeometricDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.GeometricDistrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.GeometricDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.GeometricDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.GeometricDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GeometricDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.GeometricDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.GeometricDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.GeometricDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.GeometricDistrib],
+#'   [`distrib_rng()`][distrib_rng.GeometricDistrib]
 #'
-#' Everything else is inherited from \code{\link{discrete_distrib}}.
+#' Everything else is inherited from [discrete_distrib()].
 GeometricDistrib <- S7::new_class("GeometricDistrib", parent = discrete_distrib)
 
 #' The Success Probability Behind a Geometric Mean
@@ -40,7 +40,7 @@ GeometricDistrib <- S7::new_class("GeometricDistrib", parent = discrete_distrib)
 #'
 #' @return A numeric vector of probabilities in \eqn{(0, 1)}.
 #'
-#' @seealso \code{\link{geometric_distrib}}
+#' @seealso [geometric_distrib()]
 #'
 #' @keywords internal
 geom_prob <- function(mu) 1 / (1 + mu)
@@ -52,12 +52,12 @@ geom_prob <- function(mu) 1 / (1 + mu)
 #' @description
 #' \deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}
 #'       \left(\dfrac{\mu}{1+\mu}\right)^{y}, \qquad y = 0, 1, 2, \dots}
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @param theta A list containing the parameter `mu`.
+#' @param log Logical; if `TRUE`, returns the log-probability.
 #' @return A numeric vector of probability values.
-#' @seealso \code{\link{geometric_distrib}}
+#' @seealso [geometric_distrib()]
 S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dgeom(y, prob = geom_prob(theta[[1]]), log = log)
 }
@@ -66,13 +66,13 @@ S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = F
 #' @name distrib_cdf.GeometricDistrib
 #' @description
 #' \deqn{F(q; \mu) = 1 - \left(\dfrac{\mu}{1+\mu}\right)^{\lfloor q \rfloor + 1}}
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logarithms.
+#' @param theta A list containing the parameter `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logarithms.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{geometric_distrib}}
+#' @seealso [geometric_distrib()]
 S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE) {
@@ -84,13 +84,13 @@ S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
 #' @name distrib_quantile.GeometricDistrib
 #' @description The generalized inverse
 #'   \eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is given as its logarithm.
+#' @param theta A list containing the parameter `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), `p` is \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is given as its logarithm.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{geometric_distrib}}
+#' @seealso [geometric_distrib()]
 S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
                                                            log.p = FALSE) {
@@ -100,13 +100,13 @@ S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
 
 #' @title Geometric Random Generation
 #' @name distrib_rng.GeometricDistrib
-#' @description Draws through \code{\link[stats]{rgeom}} at
+#' @description Draws through [stats::rgeom()] at
 #'   \eqn{p = 1/(1+\mu)}.
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param n The number of draws.
-#' @param theta A list containing the parameter \code{mu}.
-#' @return A numeric vector of length \code{n}.
-#' @seealso \code{\link{geometric_distrib}}
+#' @param theta A list containing the parameter `mu`.
+#' @return A numeric vector of length `n`.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta) {
   stats::rgeom(n, prob = geom_prob(theta[[1]]))
 }
@@ -116,13 +116,13 @@ S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta) {
 #' @description
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1+\mu)}}
 #' the deviation from the mean over the variance.
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing the parameter `mu`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
-#' @return A named list with the \code{mu} component.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return A named list with the `mu` component.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ..., threads = 1L) {
   geometric_gradient_cpp(y, theta[[1]], threads)
@@ -133,13 +133,13 @@ S7::method(distrib_gradient, GeometricDistrib) <- function(distrib, y, theta,
 #' @description
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} =
 #'       -\dfrac{y}{\mu^2} + \dfrac{y+1}{(1+\mu)^2}}
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing the parameter `mu`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
-#' @return A named list with the \code{mu_mu} component.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return A named list with the `mu_mu` component.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
                                                           scale = c("parameter", "link"), ..., threads = 1L) {
   geometric_hessian_cpp(y, theta[[1]], threads)
@@ -152,15 +152,15 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #'       = -\dfrac{1}{\mu(1+\mu)}}
 #' the reciprocal of the variance, as it must be for a family written in its
 #' mean.
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing the parameter `mu`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
-#' @return A named list with the \code{mu_mu} component.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return A named list with the `mu_mu` component.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
@@ -175,16 +175,16 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #'       - \dfrac{y+1}{(1+\mu)^3}\right), \qquad
 #'       \mathbb{E}[\ell^{(\mu\mu\mu)}] =
 #'       2\left(\dfrac{1}{\mu^2} - \dfrac{1}{(1+\mu)^2}\right)}
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivative.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing the parameter `mu`.
+#' @param expected Logical; if `TRUE`, returns the expected derivative.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
-#' @return A named list with the \code{mu_mu_mu} component.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return A named list with the `mu_mu_mu` component.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
@@ -200,16 +200,16 @@ S7::method(distrib_deriv3, GeometricDistrib) <- function(distrib, y, theta, expe
 #'       - \dfrac{y+1}{(1+\mu)^4}\right), \qquad
 #'       \mathbb{E}[\ell^{(\mu\mu\mu\mu)}] =
 #'       -6\left(\dfrac{1}{\mu^3} - \dfrac{1}{(1+\mu)^3}\right)}
-#' @param distrib A \code{GeometricDistrib} object.
+#' @param distrib A `GeometricDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameter \code{mu}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivative.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing the parameter `mu`.
+#' @param expected Logical; if `TRUE`, returns the expected derivative.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
-#' @return A named list with the \code{mu_mu_mu_mu} component.
-#' @seealso \code{\link{geometric_distrib}}
+#' @return A named list with the `mu_mu_mu_mu` component.
+#' @seealso [geometric_distrib()]
 S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expected = FALSE,
                                                          scale = c("parameter", "link"),
                                                          approx = c("integrate", "bartlett", "mc", "opg"),
@@ -227,16 +227,16 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #' \eqn{\{0, 1, 2, \dots\}}, parametrized by its mean \eqn{\mu}.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   [linkfunctions7::log_link()] to ensure positivity.
 #'
 #' @details
 #' The distribution counts the failures before the first success, so the
 #' support includes zero and the success probability is \eqn{p = 1/(1+\mu)}.
 #'
-#' \strong{Probability mass function:}
+#' **Probability mass function:**
 #' \deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}\left(\dfrac{\mu}{1+\mu}\right)^{y}}
 #'
-#' \strong{Score, observed and expected Hessian:}
+#' **Score, observed and expected Hessian:**
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu(1+\mu)},
 #'       \qquad
 #'       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}
@@ -252,22 +252,22 @@ S7::method(distrib_deriv4, GeometricDistrib) <- function(distrib, y, theta, expe
 #'       - (1+\mu)^{1-j}\right)}
 #' so the expected orders are closed form and vanish at \eqn{j = 1}.
 #'
-#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1+\mu)}, so the family
+#' **Moments:** mean \eqn{\mu}, variance \eqn{\mu(1+\mu)}, so the family
 #' is overdispersed relative to the Poisson at every mean.
 #'
-#' \strong{Parameter domains:}
+#' **Parameter domains:**
 #' \itemize{
 #'   \item \eqn{\mu \in (0, +\infty)}
 #' }
 #'
 #' The family is the negative binomial at \eqn{\theta = 1}, so
-#' \code{fixed(negbin2_distrib(), theta = 1)} describes the same law and is used
+#' `fixed(negbin2_distrib(), theta = 1)` describes the same law and is used
 #' in the tests as an independent implementation.
 #'
-#' @return An S7 object of class \code{GeometricDistrib}.
+#' @return An S7 object of class `GeometricDistrib`.
 #'
-#' @seealso \code{\link{negbin2_distrib}}, \code{\link{poisson_distrib}},
-#'   \code{\link{exponential_distrib}}
+#' @seealso [negbin2_distrib()], [poisson_distrib()],
+#'   [exponential_distrib()]
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats dgeom pgeom qgeom rgeom

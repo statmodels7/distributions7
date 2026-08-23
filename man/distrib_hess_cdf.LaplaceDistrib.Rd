@@ -15,7 +15,7 @@
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}.
 }
 \description{
 Closed form, exact away from \eqn{y = \mu}. At the kink the second derivative
@@ -24,5 +24,5 @@ of \eqn{F} in \eqn{\mu} genuinely does not exist --- it jumps between
 the sign convention picks out, and is reported rather than smoothed.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

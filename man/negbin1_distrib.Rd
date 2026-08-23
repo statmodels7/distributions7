@@ -8,10 +8,10 @@ negbin1_distrib(link_mu = log_link(), link_theta = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_theta}{A link function object for \eqn{\theta}. Defaults to
-\code{\link[linkfunctions7]{log_link}}.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
 An S7 object of class \code{NegBin1Distrib}.
@@ -25,7 +25,7 @@ Two negative binomials are in common use and they are \strong{different
 families}, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
 relative to a Poisson is the same at every mean;
-\code{\link{negbin2_distrib}} has \eqn{\mu + \mu^2/\theta}, growing
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} has \eqn{\mu + \mu^2/\theta}, growing
 quadratically. Fitting one is not fitting the other, and a likelihood ratio
 between them is not a test of nested models.
 
@@ -85,6 +85,6 @@ on count data: comparisons and applications of some estimators and
 tests. \emph{Journal of Applied Econometrics} 1, 29-53.
 }
 \seealso{
-\code{\link{negbin2_distrib}} for the quadratic variance,
-\code{\link{poisson_distrib}}, \code{\link{geometric_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} for the quadratic variance,
+\code{\link[=poisson_distrib]{poisson_distrib()}}, \code{\link[=geometric_distrib]{geometric_distrib()}}
 }

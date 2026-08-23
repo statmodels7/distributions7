@@ -21,10 +21,10 @@ print_check_table(distrib, out, theta, n, nsim)
 Invisibly \code{NULL}.
 }
 \description{
-Renders what \code{\link{check_distrib}} found, in the same shape for a
+Renders what \code{\link[=check_distrib]{check_distrib()}} found, in the same shape for a
 univariate and a multivariate distribution.
 }
 \seealso{
-\code{\link{check_distrib}}
+\code{\link[=check_distrib]{check_distrib()}}
 }
 \keyword{internal}

@@ -8,10 +8,10 @@ invgauss1_distrib(link_mu = log_link(), link_phi = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_phi}{A link function object for the dispersion parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{InvGauss1Distrib} (inheriting from \code{continuous_distrib}) representing the Inverse-Gaussian distribution.
@@ -54,9 +54,9 @@ skewness \eqn{3\sqrt{\phi\mu}}, excess kurtosis \eqn{15\phi\mu}.
 \item \eqn{\phi \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- invgauss1_distrib()
@@ -69,12 +69,12 @@ distrib_gradient(d, c(0.5, 1, 2), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.InvGauss1Distrib}} for the probability density function.
-\item \code{\link{distrib_cdf.InvGauss1Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.InvGauss1Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.InvGauss1Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.InvGauss1Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.InvGauss1Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.InvGauss1Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.InvGauss1Distrib]{distrib_pdf.InvGauss1Distrib()}} for the probability density function.
+\item \code{\link[=distrib_cdf.InvGauss1Distrib]{distrib_cdf.InvGauss1Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.InvGauss1Distrib]{distrib_quantile.InvGauss1Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.InvGauss1Distrib]{distrib_rng.InvGauss1Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}} for the analytical expected Hessian.
 }
 }

@@ -16,7 +16,7 @@ A list with the theta columns \code{th}, the dot columns
 \code{dots} and the number of combinations \code{n}.
 }
 \description{
-Shared preparation for the \code{\link{expectation}} methods: checks that
+Shared preparation for the \code{\link[=expectation]{expectation()}} methods: checks that
 the names in \code{...} do not collide with those of \code{theta}, then
 expands every component to one aligned column per parameter combination.
 }

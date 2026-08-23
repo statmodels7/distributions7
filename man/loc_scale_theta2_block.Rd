@@ -13,8 +13,8 @@ loc_scale_theta2_block(distrib, y, theta, order = 1L)
 
 \item{theta}{A named list of parameters, location first and scale second.}
 
-\item{order}{\code{1} for the block of \code{\link{distrib_grad_y}},
-\code{2} for that of \code{\link{distrib_hess_y}}.}
+\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
 }
 \value{
 A named list of three components, keyed
@@ -35,6 +35,6 @@ for \eqn{B = \sigma^2\ell^{(yy)}} they are \eqn{\sigma^3\ell^{(yyy)}} and
 \eqn{\sigma^4\ell^{(yyyy)}}. Nothing new is differentiated.
 }
 \seealso{
-\code{\link{distrib_grad_y_hess}}
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}
 }
 \keyword{internal}

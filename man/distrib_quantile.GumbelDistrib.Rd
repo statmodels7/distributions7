@@ -22,5 +22,5 @@ Computes the quantile function for the Gumbel distribution:
 \deqn{Q(p; \mu, \sigma) = \mu - \sigma \log(-\log p)}
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

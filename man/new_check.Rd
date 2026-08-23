@@ -21,10 +21,10 @@ A one-row data frame with columns \code{check}, \code{status},
 \code{statistic} and \code{detail}.
 }
 \description{
-Builds the single-row data frame that \code{\link{check_distrib}} accumulates
+Builds the single-row data frame that \code{\link[=check_distrib]{check_distrib()}} accumulates
 into its report.
 }
 \seealso{
-\code{\link{check_distrib}}, \code{\link{safe_check}}
+\code{\link[=check_distrib]{check_distrib()}}, \code{\link[=safe_check]{safe_check()}}
 }
 \keyword{internal}

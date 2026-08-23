@@ -26,6 +26,6 @@ at every order beyond the first, which is why this family needs no
 expectation anywhere.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }
 \keyword{internal}

@@ -23,5 +23,5 @@ A named list with the \code{mu} and \code{kappa} components.
 with \eqn{A = I_1/I_0}, the derivative of \eqn{\log I_0}.
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

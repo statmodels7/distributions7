@@ -20,5 +20,5 @@ Computes the probability mass function for the Negative Binomial distribution (N
 \deqn{P(Y=y; \mu, \theta) = \dfrac{\Gamma(y+\theta)}{y!\,\Gamma(\theta)} \left(\dfrac{\theta}{\theta+\mu}\right)^\theta \left(\dfrac{\mu}{\theta+\mu}\right)^y}
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

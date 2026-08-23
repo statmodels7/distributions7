@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Inverse-Gaussian distribution.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

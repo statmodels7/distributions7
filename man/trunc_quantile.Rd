@@ -21,7 +21,7 @@ trunc_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE)
 A numeric vector of quantiles.
 }
 \description{
-Inverts \code{\link{trunc_cdf}} through the parent's quantile function.
+Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the parent's quantile function.
 }
 \details{
 Inverse transform on the parent: \eqn{F_T(q) = p} exactly when

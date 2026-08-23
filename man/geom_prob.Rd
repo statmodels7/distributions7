@@ -21,6 +21,6 @@ The mean number of failures before the first success is
 functions that call \pkg{stats} from each repeating the algebra.
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }
 \keyword{internal}

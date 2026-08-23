@@ -33,9 +33,9 @@ and then \eqn{\omega = \sigma/\sqrt{1-\mu_z^2}} and
 The function is written once and used twice: on plain numbers for the
 density, and on jets for the derivatives. The sign is taken from the plain
 value before any jet is seeded, which is what a jet cannot do for itself and
-what makes this a family rather than a \code{\link{reparametrize}}.
+what makes this a family rather than a \code{\link[=reparametrize]{reparametrize()}}.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }
 \keyword{internal}

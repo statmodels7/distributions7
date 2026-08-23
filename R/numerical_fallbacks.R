@@ -42,12 +42,12 @@ NULL
 #' of the mode. The grid refinement
 #' instead stops on the width of the bracket measured in \eqn{y}.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters.
 #'
 #' @return A single number, an interior point of high density.
 #'
-#' @seealso \code{\link{find_lp_anchor}}, \code{\link{rng_grou}}
+#' @seealso [find_lp_anchor()], [rng_grou()]
 #' @keywords internal
 find_pdf_anchor <- function(distrib, theta) {
   find_lp_anchor(
@@ -61,11 +61,11 @@ find_pdf_anchor <- function(distrib, theta) {
 #' Locate a High-Density Point of a Bare Log-Density
 #'
 #' @description
-#' The search behind \code{\link{find_pdf_anchor}}, expressed on a plain
+#' The search behind [find_pdf_anchor()], expressed on a plain
 #' log-density over an interval.
 #'
 #' @details
-#' Kept separate from the \code{distrib} object so that it can also be applied to
+#' Kept separate from the `distrib` object so that it can also be applied to
 #' a reparametrized density, which is what the divergence-removing transforms in
 #' this file produce and which has no distribution object of its own.
 #'
@@ -74,7 +74,7 @@ find_pdf_anchor <- function(distrib, theta) {
 #'
 #' @return A single number.
 #'
-#' @seealso \code{\link{find_pdf_anchor}}
+#' @seealso [find_pdf_anchor()]
 #' @keywords internal
 find_lp_anchor <- function(lp_raw, b) {
   lp <- function(y) {
@@ -119,16 +119,16 @@ find_lp_anchor <- function(lp_raw, b) {
 #' @name distrib_cdf.continuous_distrib
 #' @description
 #' Fallback method: continuous distributions that do not implement an analytical
-#' CDF get one by numerical integration of \code{distrib_pdf}. An approximate mode
+#' CDF get one by numerical integration of `distrib_pdf`. An approximate mode
 #' is located first and the integral is taken over the side of the mode containing
 #' \eqn{q} (using the complement for the other side), so that the quadrature nodes
 #' concentrate where the probability mass is. All quantiles are integrated in one
-#' batched call to \code{\link[numericals7]{quad_vec}}, one row per quantile.
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' batched call to [numericals7::quad_vec()], one row per quantile.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
 #' @keywords internal
 #' @return A numeric vector of cumulative probabilities.
 S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
@@ -181,14 +181,14 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #' @name distrib_quantile.continuous_distrib
 #' @description
 #' Fallback method: continuous distributions that do not implement an analytical
-#' quantile function get one by root-finding on \code{\link{distrib_cdf}} (which may
+#' quantile function get one by root-finding on [distrib_cdf()] (which may
 #' itself be the numerical fallback). Brackets start from an approximate mode and
 #' expand geometrically, with the step scaled by the density height at the mode.
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
+#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
 #' @keywords internal
 #' @return A numeric vector of quantiles.
 S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
@@ -266,25 +266,25 @@ S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, 
 #' Does This Distribution Have a Real Quantile Method?
 #'
 #' @description
-#' \code{TRUE} when the object gets its quantile function from a class-specific
+#' `TRUE` when the object gets its quantile function from a class-specific
 #' method rather than from the numerical fallback.
 #'
 #' @details
 #' Used to decide whether inverse transform sampling is cheap enough to prefer
-#' over the ratio-of-uniforms sampler: inverting a \emph{numerical} quantile costs
-#' a call to \code{uniroot} per draw.
+#' over the ratio-of-uniforms sampler: inverting a *numerical* quantile costs
+#' a call to `uniroot` per draw.
 #'
 #' The test uses the documented S7 trick. S7 records the class a method was
-#' registered on in the method's \code{signature} attribute, so an inherited
-#' fallback is recognized by that class being \code{continuous_distrib} itself.
-#' Note that \code{identical()} does not work for this -- S7 wraps the method
+#' registered on in the method's `signature` attribute, so an inherited
+#' fallback is recognized by that class being `continuous_distrib` itself.
+#' Note that `identical()` does not work for this -- S7 wraps the method
 #' object, so comparing against the fallback fails even when it is the fallback.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{rng_grou}}
+#' @seealso [rng_grou()]
 #' @keywords internal
 has_analytic_quantile <- function(distrib) {
   m <- tryCatch(
@@ -300,15 +300,15 @@ has_analytic_quantile <- function(distrib) {
 #' Draws from a continuous distribution using the Generalized Ratio-of-Uniforms
 #' (GRoU) method. The sampler needs nothing but the (log) density: no CDF, no
 #' quantile function and no inversion. It is the engine behind the default
-#' \code{\link{distrib_rng}} method for continuous distributions that provide
+#' [distrib_rng()] method for continuous distributions that provide
 #' neither a native RNG nor an analytical quantile function.
 #'
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters, each of length one.
-#' @param r Numeric tuning parameter of the transformation power, default \code{2}.
-#'   \code{r = 1} is the classical Ratio-of-Uniforms; larger values enclose
-#'   heavier tails (\code{r = 2} keeps the acceptance region bounded for tails as
+#' @param r Numeric tuning parameter of the transformation power, default `2`.
+#'   `r = 1` is the classical Ratio-of-Uniforms; larger values enclose
+#'   heavier tails (`r = 2` keeps the acceptance region bounded for tails as
 #'   heavy as the Cauchy's, which is why it is the default).
 #'
 #' @details
@@ -322,14 +322,14 @@ has_analytic_quantile <- function(distrib) {
 #'
 #' Two devices make this numerically safe for an arbitrary user-supplied density:
 #' \itemize{
-#'   \item \strong{Recentering.} The kernel is shifted to its mode,
+#'   \item **Recentering.** The kernel is shifted to its mode,
 #'     \eqn{K(z) \propto f(m + z)}, and the mode is added back to the draws. Without
 #'     this a distribution located far from the origin (say \eqn{\mu = 1000}) gives a
 #'     wildly elongated bounding rectangle and an acceptance rate close to zero.
 #'     Recentering also splits the box exactly: \eqn{h(z) = z\,K(z)^{r/(r+1)}} is
 #'     non-positive for \eqn{z \le 0} and non-negative for \eqn{z \ge 0}, so
 #'     \eqn{v_{\min}} and \eqn{v_{\max}} are each found on one side of the mode.
-#'   \item \strong{Normalization.} The kernel is rescaled by its value at the mode, so
+#'   \item **Normalization.** The kernel is rescaled by its value at the mode, so
 #'     that \eqn{\max K = 1} and \eqn{u_{\max} = 1}. Every quantity stays in a safe
 #'     numerical range whatever the height of the density, and all computations are
 #'     carried out on the log scale.
@@ -337,7 +337,7 @@ has_analytic_quantile <- function(distrib) {
 #'
 #' The bounds \eqn{v_{\min}, v_{\max}} are obtained by expanding geometrically away
 #' from the mode until \eqn{h} has clearly turned back towards zero (finite support
-#' bounds are used directly), then combining \code{\link[stats]{optimize}} with a grid
+#' bounds are used directly), then combining [stats::optimize()] with a grid
 #' search over the resulting bracket; the box is enclosing by construction for a
 #' unimodal kernel. Candidates are generated and filtered in vectorized batches whose
 #' size adapts to the observed acceptance rate.
@@ -357,7 +357,7 @@ has_analytic_quantile <- function(distrib) {
 #' \eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
 #' sampled through \eqn{X = Y^{1/4}}.
 #'
-#' A density diverging at \emph{both} edges, such as a Beta with both shapes below
+#' A density diverging at *both* edges, such as a Beta with both shapes below
 #' one, is beyond any single power: flattening one edge steepens the other. What
 #' does work is a map that behaves like a different power at each end,
 #' \deqn{T(u) = \frac{u^{p}}{u^{p} + (1-u)^{q}}, \qquad Y = a + (b-a)\,T(U),}
@@ -374,20 +374,20 @@ has_analytic_quantile <- function(distrib) {
 #' than rejecting it. It cannot place it any more finely than the arithmetic
 #' allows -- for a Beta(0.9, 0.1) some 2.5\% of the distribution lies within one
 #' unit in the last place of 1, and those draws come back equal to 1 exactly, which
-#' is also what \code{\link[stats]{rbeta}} does.
+#' is also what [stats::rbeta()] does.
 #'
-#' @return A numeric vector of length \code{n}.
+#' @return A numeric vector of length `n`.
 #'
 #' @section Requirements:
-#' The kernel must be unimodal and the parameters in \code{theta} must be scalars.
+#' The kernel must be unimodal and the parameters in `theta` must be scalars.
 #' Densities that diverge at one or at both edges of their support are handled by
 #' the reparametrizations described below.
 #'
-#' Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
+#' Heavy tails are not an obstacle: with the default `r = 2` the sampler
 #' handles a Student's t with half a degree of freedom and a Pareto with infinite
 #' mean, and multimodal densities are usually accepted as well.
 #'
-#' @seealso \code{\link{distrib_rng}}, \code{\link{check_distrib}}
+#' @seealso [distrib_rng()], [check_distrib()]
 #'
 #' @examples
 #' # A distribution defined by its density alone still gets a fast sampler
@@ -480,7 +480,7 @@ rng_grou <- function(distrib, n, theta, r = 2) {
 #' Ratio-of-Uniforms for a Density Diverging at Both Edges
 #'
 #' @description
-#' Samples a density unbounded at \emph{both} ends of a finite support, by
+#' Samples a density unbounded at *both* ends of a finite support, by
 #' mapping the interval through a transform behaving like a different power at
 #' each end.
 #'
@@ -501,13 +501,13 @@ rng_grou <- function(distrib, n, theta, r = 2) {
 #' @param lp A function giving the log-density.
 #' @param b A length-2 numeric vector, the support.
 #' @param div The exponents at the two edges, from
-#'   \code{\link{lp_edge_divergence}}.
+#'   [lp_edge_divergence()].
 #' @param n The number of draws wanted.
 #' @param r The ratio-of-uniforms tuning parameter.
 #'
-#' @return A numeric vector of draws, or \code{NULL} if the sampler gives up.
+#' @return A numeric vector of draws, or `NULL` if the sampler gives up.
 #'
-#' @seealso \code{\link{grou_core}}, \code{\link{lp_edge_divergence}}
+#' @seealso [grou_core()], [lp_edge_divergence()]
 #' @keywords internal
 grou_two_sided <- function(lp, b, div, n, r) {
   a <- b[1]
@@ -584,7 +584,7 @@ grou_two_sided <- function(lp, b, div, n, r) {
 #'
 #' @description
 #' For each finite edge, the exponent \eqn{\alpha} of a divergence
-#' \eqn{f(y) \sim \lvert y - a \rvert^{\alpha - 1}}, or \code{NA} when the
+#' \eqn{f(y) \sim \lvert y - a \rvert^{\alpha - 1}}, or `NA` when the
 #' density stays bounded there.
 #'
 #' @details
@@ -595,17 +595,17 @@ grou_two_sided <- function(lp, b, div, n, r) {
 #' Detecting and measuring are the same operation. Walking
 #' towards the edge in decades lifts the log-density by
 #' \eqn{(1 - \alpha)\log 10} per step when it diverges, and by an amount that
-#' dies away when it does not. So the probe establishing \emph{whether} the
-#' density diverges also reports \emph{how fast}, to about four decimals, with no
+#' dies away when it does not. So the probe establishing *whether* the
+#' density diverges also reports *how fast*, to about four decimals, with no
 #' search, reducing the cost per draw by several orders of magnitude for
 #' strongly divergent shapes.
 #'
 #' @param lp A function giving the log-density.
 #' @param b A length-2 numeric vector, the support.
 #'
-#' @return A numeric vector of length 2, named \code{lower} and \code{upper}.
+#' @return A numeric vector of length 2, named `lower` and `upper`.
 #'
-#' @seealso \code{\link{grou_two_sided}}, \code{\link{rng_grou}}
+#' @seealso [grou_two_sided()], [rng_grou()]
 #' @keywords internal
 lp_edge_divergence <- function(lp, b) {
   probe <- function(edge, inward) {
@@ -631,12 +631,12 @@ lp_edge_divergence <- function(lp, b) {
 #' The sampler itself, on a bare log-density over an interval.
 #'
 #' @details
-#' Kept separate from the \code{distrib} object so that it can also be run on a
+#' Kept separate from the `distrib` object so that it can also be run on a
 #' reparametrized density, which is how the divergence transforms reuse it.
 #'
-#' Two devices make it safe. The kernel is \strong{recentered at the mode},
+#' Two devices make it safe. The kernel is **recentered at the mode**,
 #' without which a density located at \eqn{\mu = 1000} produces a degenerate
-#' bounding box; and it is \strong{normalized to a maximum of one}. With those it
+#' bounding box; and it is **normalized to a maximum of one**. With those it
 #' rejects far less often than expected: bimodal densities, a Student t with half
 #' a degree of freedom and a Pareto with infinite mean are all fine. The only
 #' genuine rejection is a density that diverges at an edge, which is handled by
@@ -647,9 +647,9 @@ lp_edge_divergence <- function(lp, b) {
 #' @param n The number of draws wanted.
 #' @param r The ratio-of-uniforms tuning parameter.
 #'
-#' @return A numeric vector of draws, or \code{NULL} if no bounding box is found.
+#' @return A numeric vector of draws, or `NULL` if no bounding box is found.
 #'
-#' @seealso \code{\link{rng_grou}}, \code{\link{find_lp_anchor}}
+#' @seealso [rng_grou()], [find_lp_anchor()]
 #' @keywords internal
 grou_core <- function(lp, b, n, r) {
   m <- find_lp_anchor(lp, b)
@@ -763,18 +763,18 @@ grou_core <- function(lp, b, n, r) {
 #' Fallback method for continuous distributions that do not implement a native RNG.
 #' Two strategies are available and the method picks between them automatically:
 #' \itemize{
-#'   \item \strong{Inverse transform}, \code{distrib_quantile(distrib, runif(n), theta)},
+#'   \item **Inverse transform**, `distrib_quantile(distrib, runif(n), theta)`,
 #'     when the distribution provides its own quantile function. This is exact and
 #'     costs one quantile evaluation per draw.
-#'   \item \strong{Generalized Ratio-of-Uniforms} (\code{\link{rng_grou}}) otherwise.
+#'   \item **Generalized Ratio-of-Uniforms** ([rng_grou()]) otherwise.
 #'     Inverting a purely numerical CDF costs one root-finding step per draw, which
-#'     makes simulation-based tools (\code{approx = "mc"}, \code{\link{check_distrib}})
+#'     makes simulation-based tools (`approx = "mc"`, [check_distrib()])
 #'     impractical; GRoU only evaluates the density, so it is orders of magnitude faster.
 #' }
 #' GRoU requires a bounded, unimodal density; if it cannot build its bounding
 #' rectangle the method warns and reverts to inverse transform sampling. Vector-valued
-#' \code{theta} is handled by grouping the draws by distinct parameter values.
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' `theta` is handled by grouping the draws by distinct parameter values.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters.
 #' @keywords internal
@@ -835,7 +835,7 @@ S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
 #'
 #' Requires a finite lower bound, which every standard count distribution has.
 #'
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param theta A named list of parameters.
 #' @param need_p Grow the table until it covers at least this probability.
 #' @param need_k Grow the table until it reaches at least this support point.
@@ -876,11 +876,11 @@ disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 
 #' Fallback method: discrete distributions that do not implement an analytical CDF
 #' get one by summing the pmf from the (finite) lower bound of the support up to
 #' \eqn{\lfloor q \rfloor}.
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
 #' @keywords internal
 #' @return A numeric vector of cumulative probabilities.
 S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
@@ -919,11 +919,11 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #' Fallback method: discrete distributions that do not implement an analytical
 #' quantile function get one by inverting the cumulative pmf table: the quantile is
 #' the smallest support point \eqn{k} with \eqn{F(k) \ge p}.
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
+#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
 #' @keywords internal
 #' @return A numeric vector of quantiles.
 S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
@@ -989,7 +989,7 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #' table is built once per distinct parameter value and the whole sample is
 #' located in it with a single binary search, which costs a fraction of a
 #' microsecond per draw.
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters.
 #' @keywords internal
@@ -1002,35 +1002,35 @@ S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta) {
 #' Does This Distribution Compute Its Expected Information Exactly?
 #'
 #' @description
-#' \code{TRUE} when the distribution registers its own
-#' \code{\link{distrib_expected_hessian}} method, rather than inheriting the
+#' `TRUE` when the distribution registers its own
+#' [distrib_expected_hessian()] method, rather than inheriting the
 #' one that approximates the expectation.
 #'
 #' @details
-#' The question decides whether the \code{approx} argument means anything. A
-#' family with a closed form ignores it, and \code{\link{fit_distrib}} rejects
+#' The question decides whether the `approx` argument means anything. A
+#' family with a closed form ignores it, and [fit_distrib()] rejects
 #' the argument in that case instead of accepting it and doing something else:
 #' the Laplace is the example the package already documents, where
-#' \code{approx} has no effect at all because
+#' `approx` has no effect at all because
 #' \eqn{\mathcal{I}(\theta) = 1/b^{2}} is written out.
 #'
-#' The comparison goes through \code{\link{is_class}} rather than
-#' \code{identical()}, for the reason recorded there.
+#' The comparison goes through [is_class()] rather than
+#' `identical()`, for the reason recorded there.
 #'
-#' The argument is called \code{x} and not \code{distrib}, which is not a
+#' The argument is called `x` and not `distrib`, which is not a
 #' matter of taste. The base class of this package is itself named
-#' \code{distrib}, so an argument of that name SHADOWS it, and the comparison
+#' `distrib`, so an argument of that name SHADOWS it, and the comparison
 #' against the base class then compared the owning class with the distribution
 #' object instead. The consequence was silent and exactly backwards: every
 #' family whose expected information comes from the base class -- which is the
 #' whole set this predicate exists to identify -- was reported as having a
 #' closed form.
 #'
-#' @param x An object inheriting from class \code{"distrib"}.
+#' @param x An object inheriting from class `"distrib"`.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{has_analytic_quantile}}, \code{\link{is_class}}
+#' @seealso [has_analytic_quantile()], [is_class()]
 #' @keywords internal
 has_exact_expected_hessian <- function(x) {
   expected_hessian_exact(x)
@@ -1040,26 +1040,26 @@ has_exact_expected_hessian <- function(x) {
 #' Is a Family's Expected Information Written Out?
 #'
 #' @description
-#' The question \code{\link{has_exact_expected_hessian}} asks, as a generic, so
+#' The question [has_exact_expected_hessian()] asks, as a generic, so
 #' that a family whose registered method is not what its owner suggests can say
 #' so.
 #'
 #' @details
-#' The default reads the class the \code{\link{distrib_expected_hessian}}
+#' The default reads the class the [distrib_expected_hessian()]
 #' method is registered on: the base classes carry the approximating method and
 #' every other registration is, by default, a family that wrote the expectation
 #' out.
 #'
-#' \strong{Reading the owner is not sufficient, and two families prove it.} A
+#' **Reading the owner is not sufficient, and two families prove it.** A
 #' method registered on a family's own class may still be a CHAIN onto a parent
 #' that approximates, and then the owner says "written out" about arithmetic
 #' that is a quadrature. Measured at 100 observations, where thirty-four
 #' families answer in a median of 0.183 ms:
-#' \code{skewnormal2_distrib()} costs 5220 ms -- more than the
-#' \code{skewnormal1_distrib()} it chains onto, which costs 2230 -- and
-#' \code{pseudohuber_distrib()} costs 10980 ms. Both were reported as exact.
-#' The consequences were real rather than cosmetic: \code{\link{fit_distrib}}
-#' rejected a legitimate \code{fisher_scoring(approx = )} on those two with a
+#' `skewnormal2_distrib()` costs 5220 ms -- more than the
+#' `skewnormal1_distrib()` it chains onto, which costs 2230 -- and
+#' `pseudohuber_distrib()` costs 10980 ms. Both were reported as exact.
+#' The consequences were real rather than cosmetic: [fit_distrib()]
+#' rejected a legitimate `fisher_scoring(approx = )` on those two with a
 #' message stating that the family "computes its expected information in
 #' closed form", which is untrue, and its standard-error branch entered a
 #' multi-second quadrature believing it cheap.
@@ -1067,12 +1067,12 @@ has_exact_expected_hessian <- function(x) {
 #' A family that chains onto another therefore answers for its parent, which is
 #' what the two methods registered here do.
 #'
-#' @param x An object inheriting from class \code{"distrib"}.
+#' @param x An object inheriting from class `"distrib"`.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{has_exact_expected_hessian}},
-#'   \code{\link{distrib_dexpected_hessian}}
+#' @seealso [has_exact_expected_hessian()],
+#'   [distrib_dexpected_hessian()]
 #'
 #' @keywords internal
 #' @name expected_hessian_exact

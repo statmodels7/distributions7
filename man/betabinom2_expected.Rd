@@ -7,7 +7,7 @@
 betabinom2_expected(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link{BetaBinom2Distrib}} object.}
+\item{distrib}{A \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}} object.}
 
 \item{y}{A numeric vector, used only for its length.}
 
@@ -23,6 +23,6 @@ Averages a derivative over the support \eqn{\{0, \dots, n\}} weighted by the
 mass function, which is exact because the support is finite.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }
 \keyword{internal}

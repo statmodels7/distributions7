@@ -28,5 +28,5 @@ The term \eqn{\mathbb{E}[\psi_1(Y+\theta)]} has no closed form and is evaluated 
 summing over the support up to a far-tail quantile (with a tail-mass correction).
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

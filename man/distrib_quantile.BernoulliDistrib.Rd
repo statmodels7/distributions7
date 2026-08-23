@@ -23,5 +23,5 @@ inverse of the CDF:
 \deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

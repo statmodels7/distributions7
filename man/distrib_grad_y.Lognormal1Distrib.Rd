@@ -20,5 +20,5 @@ response. With \eqn{r = \log y - \mu}:
 \eqn{\partial^2 \ell / \partial y^2 = \dfrac{1}{y^2}\left(1 + \dfrac{r-1}{\sigma^2}\right)}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

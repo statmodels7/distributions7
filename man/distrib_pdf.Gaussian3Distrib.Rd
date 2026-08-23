@@ -20,5 +20,5 @@ A numeric vector.
       \exp\left\{-\dfrac{\tau(y-\mu)^2}{2}\right\}}
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

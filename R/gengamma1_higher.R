@@ -23,13 +23,13 @@ NULL
 #' to four, assembled from the five terms of the log-density.
 #'
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
+#' @param theta A list containing `a`, `d` and `p`.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of component vectors, keyed as
-#'   \code{\link{deriv_names}}.
+#'   [deriv_names()].
 #'
-#' @seealso \code{\link{gengamma1_distrib}}, \code{\link{fdb2}}
+#' @seealso [gengamma1_distrib()], [fdb2()]
 #' @keywords internal
 gengamma_components <- function(y, theta, order) {
   a <- theta[[1]]
@@ -106,20 +106,20 @@ gengamma_components <- function(y, theta, order) {
 #' @title Generalized Gamma Third and Fourth Derivatives
 #' @name distrib_deriv3.GenGamma1Distrib
 #' @description
-#' Closed form at both orders, from \code{\link{gengamma_components}}: the
+#' Closed form at both orders, from [gengamma_components()]: the
 #' log-density is elementary apart from \eqn{\lgamma(d/p)} and
 #' \eqn{\exp(p\log(y/a))}, and each of those is a univariate function of a
 #' two-variable map, so the written-out composition covers every component.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),

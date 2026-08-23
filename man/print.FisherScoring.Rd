@@ -4,7 +4,7 @@
 \alias{print.FisherScoring}
 \title{Print a Fisher Scoring Specification}
 \arguments{
-\item{x}{A \code{\link{FisherScoring}} object.}
+\item{x}{A \code{\link[=FisherScoring]{FisherScoring()}} object.}
 
 \item{...}{Unused.}
 }

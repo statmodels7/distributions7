@@ -23,5 +23,5 @@ The moment-to-cumulant relation applied to the ratios
 second order is the familiar mixture Hessian.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

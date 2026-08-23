@@ -22,7 +22,7 @@ Returns \eqn{F(\ell^-)} and the normalizing constant
 Both endpoints are \strong{included} in the truncated support, so any mass
 sitting exactly on the lower one has to be added back:
 \eqn{F(\ell^-) = F(\ell) - P(Y = \ell)}. That correction is the \emph{atom}
-case, not the discrete case -- see \code{\link{parent_mass_at}}.
+case, not the discrete case -- see \code{\link[=parent_mass_at]{parent_mass_at()}}.
 
 An interval carrying no probability under the given parameters is reported
 rather than returned, since the truncated law is not defined there.

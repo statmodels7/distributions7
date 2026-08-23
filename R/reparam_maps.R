@@ -14,9 +14,9 @@ NULL
 #' The derivatives of \eqn{h(u(x))} for scalar chains, Faa di Bruno written
 #' out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to order four.
 #'
-#' @param h A list of the outer derivatives \code{h1} to \code{h4} at the
+#' @param h A list of the outer derivatives `h1` to `h4` at the
 #'   inner value.
-#' @param u A list of the inner derivatives \code{u1} to \code{u4}.
+#' @param u A list of the inner derivatives `u1` to `u4`.
 #' @return A list with the four derivatives of the composition.
 #' @keywords internal
 fdb1 <- function(h, u) {
@@ -35,11 +35,11 @@ fdb1 <- function(h, u) {
 #' The fourteen partials of \eqn{h(u(x, z))} for a scalar outer \eqn{h} and
 #' a bivariate inner \eqn{u}, Faa di Bruno written out component by
 #' component. The inner partials arrive as a named list with entries
-#' \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx},
-#' \code{xxz}, \code{xzz}, \code{zzz}, \code{xxxx}, \code{xxxz},
-#' \code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero.
+#' `x`, `z`, `xx`, `xz`, `zz`, `xxx`,
+#' `xxz`, `xzz`, `zzz`, `xxxx`, `xxxz`,
+#' `xxzz`, `xzzz`, `zzzz`; missing entries count as zero.
 #'
-#' @param h A list of the outer derivatives \code{h1} to \code{h4} at the
+#' @param h A list of the outer derivatives `h1` to `h4` at the
 #'   inner value.
 #' @param u The named list of inner partials.
 #' @return A named list of the fourteen partials of the composition, keyed

@@ -33,7 +33,7 @@ Beta1Distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{Beta1Distrib}.
@@ -57,9 +57,9 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.Beta1Distrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.Beta1Distrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link{continuous_distrib}}.
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

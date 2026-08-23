@@ -21,6 +21,6 @@ bounds the parameter there rather than letting the map return a
 exists.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }
 \keyword{internal}

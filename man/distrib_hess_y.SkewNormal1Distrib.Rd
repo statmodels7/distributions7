@@ -17,5 +17,5 @@ A numeric vector.
 Closed form: \eqn{\partial^2 \ell / \partial y^2 = (\alpha^2 R' - 1)/\sigma^2}.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

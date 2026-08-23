@@ -20,5 +20,5 @@ with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, whose variance
 \eqn{Y \mid \lambda} from the Poisson.
 }
 \seealso{
-\code{\link{pig1_distrib}}
+\code{\link[=pig1_distrib]{pig1_distrib()}}
 }

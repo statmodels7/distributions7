@@ -8,7 +8,7 @@ exponential_distrib(link_mu = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{ExponentialDistrib}.
@@ -66,6 +66,6 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 }
 \seealso{
-\code{\link{gamma2_distrib}}, \code{\link{weibull1_distrib}},
-\code{\link{geometric_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}},
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

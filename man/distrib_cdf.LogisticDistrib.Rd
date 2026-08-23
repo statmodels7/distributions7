@@ -22,5 +22,5 @@ Computes the cumulative distribution function for the Logistic distribution:
 \deqn{F(q; \mu, \sigma) = \dfrac{1}{1 + \exp\left(-\dfrac{q-\mu}{\sigma}\right)}}
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

@@ -17,7 +17,7 @@ A named list of fourth-derivative component vectors.
 }
 \description{
 Closed-form observed fourth-order derivatives of the Logistic log-density, in the
-notation of \code{\link{distrib_deriv3.LogisticDistrib}}:
+notation of \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}}:
 \deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = \dfrac{g_4}{\sigma^4}}
 \deqn{\dfrac{\partial^4 \ell}{\partial \mu^3 \partial \sigma} = \dfrac{3g_3 + z g_4}{\sigma^4}}
 \deqn{\dfrac{\partial^4 \ell}{\partial \mu^2 \partial \sigma^2} = \dfrac{6g_2 + 6z g_3 + z^2 g_4}{\sigma^4}}
@@ -25,8 +25,8 @@ notation of \code{\link{distrib_deriv3.LogisticDistrib}}:
 \deqn{\dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}}
 
 The expected fourth derivatives are not available in closed form, so
-\code{expected = TRUE} is routed to \code{\link{expected_derivative_methods}}.
+\code{expected = TRUE} is routed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

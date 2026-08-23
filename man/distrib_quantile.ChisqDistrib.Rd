@@ -18,8 +18,8 @@
 A numeric vector of quantiles.
 }
 \description{
-The inverse of \code{\link[stats]{pchisq}}.
+The inverse of \code{\link[stats:Chisquare]{stats::pchisq()}}.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

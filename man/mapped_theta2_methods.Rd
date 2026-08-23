@@ -24,6 +24,6 @@ and \code{hess2}.
 kernels while its map onto a parent is tabulated.
 }
 \seealso{
-\code{\link{mapped_theta2}}, \code{\link{reparam_map_derivs}}
+\code{\link[=mapped_theta2]{mapped_theta2()}}, \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}
 }
 \keyword{internal}

@@ -20,10 +20,10 @@ A named list of derivative components of \eqn{F}.
 }
 \description{
 Chains the standard-coordinate table of
-\code{\link{sn_cdf_std_derivs}} through \eqn{z = (q-\mu)/\sigma}, the
+\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} through \eqn{z = (q-\mu)/\sigma}, the
 shape passing straight through as the second index of that table.
 }
 \seealso{
-\code{\link{sn_cdf_std_derivs}}
+\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}}
 }
 \keyword{internal}

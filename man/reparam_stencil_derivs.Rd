@@ -17,13 +17,13 @@ reparam_stencil_derivs(map, params, parent_params)
 A function usable as \code{reparam_derivs}.
 }
 \description{
-The numerical fallback behind \code{\link{reparam_tables}}: every
+The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: every
 partial of the map is one central stencil of
-\code{\link[numericals7]{fd_derivative}} in each direction, applied to
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} in each direction, applied to
 the analytic map, iterated across DISTINCT directions (a cross-variable
 composition, which is not the forbidden same-variable nesting).
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

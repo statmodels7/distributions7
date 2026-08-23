@@ -19,5 +19,5 @@ A numeric vector.
 \deqn{f(y) = \dfrac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

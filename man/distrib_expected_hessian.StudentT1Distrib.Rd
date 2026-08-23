@@ -28,5 +28,5 @@ with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
 The parameter \eqn{\mu} is orthogonal to \eqn{\sigma} and \eqn{\nu} (mixed expected derivatives are 0).
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

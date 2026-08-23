@@ -7,14 +7,14 @@
 expectation(distrib, f, theta, ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from \code{\link{distrib}}.}
+\item{distrib}{An object inheriting from \code{\link[=distrib]{distrib()}}.}
 
 \item{f}{The function whose expectation is taken, with signature
 \code{f(y, theta, ...)}. It is evaluated elementwise: \code{y} arrives as
 a numeric vector and every component of \code{theta}, like every argument
 passed through \code{...}, as a vector of the same length, so \code{f}
 must be vectorized in all of them jointly -- which any expression built
-from arithmetic and the \code{distrib_*} generics already is.}
+from arithmetic and the \verb{distrib_*} generics already is.}
 
 \item{theta}{A named list of parameters. Vectors are supported and are
 recycled against any vectors in \code{...}, so several parameter values can
@@ -37,5 +37,5 @@ expectation(poisson_distrib(), function(y, theta, k = 1) y^k,
 
 }
 \seealso{
-\code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+\code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
 }

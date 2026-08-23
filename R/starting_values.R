@@ -4,7 +4,7 @@ NULL
 #' A Starting Value Drawn from the Data
 #'
 #' @description
-#' Returns a starting value for \code{\link{fit_distrib}}, computed from the
+#' Returns a starting value for [fit_distrib()], computed from the
 #' response rather than guessed.
 #'
 #' @details
@@ -25,17 +25,17 @@ NULL
 #' family the harder one contains.
 #'
 #' A method may return several starting values, as a list, and
-#' \code{fit_distrib()} will try each; the first is the one it prefers.
+#' `fit_distrib()` will try each; the first is the one it prefers.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y The response.
 #' @param n_start How many starting values are wanted. A method free to supply
 #'   only one may ignore it.
 #' @param ... Passed to methods.
 #'
-#' @return A list of named parameter lists, on the \strong{parameter} scale.
+#' @return A list of named parameter lists, on the **parameter** scale.
 #'
-#' @seealso \code{\link{fit_distrib}}, \code{\link{generate_random_theta}}
+#' @seealso [fit_distrib()], [generate_random_theta()]
 #'
 #' @examples
 #' set.seed(1)
@@ -59,10 +59,10 @@ distrib_start <- S7::new_generic("distrib_start", "distrib",
 #' @title Random Starting Values
 #' @name distrib_start.distrib
 #' @description
-#' The default: \code{n_start} draws from \code{\link{generate_random_theta}},
+#' The default: `n_start` draws from [generate_random_theta()],
 #' which uses the parameter domains and not the data. A family with a better
 #' idea registers its own method.
-#' @param distrib A \code{\link{distrib}} object.
+#' @param distrib A [distrib()] object.
 #' @param y The response, unused here.
 #' @param n_start How many to draw.
 #' @param ... Unused.
@@ -90,7 +90,7 @@ S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
 #' @param y The response, an \eqn{n \times p} matrix.
 #' @param p The dimension.
 #'
-#' @return A list with \code{mu} and \code{sigma}.
+#' @return A list with `mu` and `sigma`.
 #'
 #' @keywords internal
 mv_moment_start <- function(y, p) {
@@ -115,7 +115,7 @@ mv_moment_start <- function(y, p) {
 #' supplied, or the matrix parameter's own inverse map when it has one.
 #'
 #' @details
-#' \code{\link[parameters7]{param_free}} is exact or rejected: a parameter that
+#' [parameters7::param_free()] is exact or rejected: a parameter that
 #' cannot represent the matrix signals an error rather than returning
 #' something plausible. That is the right contract for reporting an estimate and the
 #' wrong one for choosing where to begin, so a rejection here falls back to a
@@ -125,7 +125,7 @@ mv_moment_start <- function(y, p) {
 #' @param s A \pkg{parameters7} structure.
 #' @param m The matrix to represent.
 #'
-#' @return A numeric vector of length \code{s@n_free}.
+#' @return A numeric vector of length `s@n_free`.
 #'
 #' @keywords internal
 param_free_or_fit <- function(s, m) {
@@ -159,7 +159,7 @@ param_free_or_fit <- function(s, m) {
 #' @details
 #' When the matrix parameter parametrizes the precision the sample covariance is
 #' inverted first, since that is the matrix the matrix parameter has to represent.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y The response.
 #' @param n_start Unused; one starting value is enough when it is the estimate.
 #' @param ... Unused.
@@ -185,7 +185,7 @@ S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5
 #' The scale matrix is the covariance divided by \eqn{\nu/(\nu-2)}, and that
 #' factor is applied, since a starting value that confused the two would begin
 #' with a scale a third too large.
-#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param distrib A [MvStudentTDistrib()] object.
 #' @param y The response.
 #' @param n_start Unused.
 #' @param ... Unused.
@@ -205,12 +205,12 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
 #' @description Method of moments: the sample mean for \eqn{\mu}, and
 #' \eqn{(s^2 - \bar y)/\bar y^2} for \eqn{\sigma}, floored just above zero
 #' when the sample is underdispersed.
-#' @param distrib A \code{Pig1Distrib} object.
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param n_start Ignored; one moment start is returned.
 #' @param ... Unused.
 #' @return A list with one named parameter list.
-#' @seealso \code{\link{pig1_distrib}}
+#' @seealso [pig1_distrib()]
 S7::method(distrib_start, Pig1Distrib) <- function(distrib, y, n_start = 5L, ...) {
   mu <- max(mean(y), 1e-8)
   list(list(mu = mu, sigma = max((stats::var(y) - mu) / mu^2, 1e-3)))
@@ -219,14 +219,14 @@ S7::method(distrib_start, Pig1Distrib) <- function(distrib, y, n_start = 5L, ...
 #' @title Orthogonal Poisson-Inverse Gaussian Starting Values
 #' @name distrib_start.Pig2Distrib
 #' @description The moment start of
-#' \code{\link[=distrib_start.Pig1Distrib]{pig1}}, mapped onto
+#' [`pig1()`][distrib_start.Pig1Distrib], mapped onto
 #' \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
-#' @param distrib A \code{Pig2Distrib} object.
+#' @param distrib A `Pig2Distrib` object.
 #' @param y A numeric vector of observations.
 #' @param n_start Ignored; one moment start is returned.
 #' @param ... Unused.
 #' @return A list with one named parameter list.
-#' @seealso \code{\link{pig2_distrib}}
+#' @seealso [pig2_distrib()]
 S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...) {
   mu <- max(mean(y), 1e-8)
   sg <- max((stats::var(y) - mu) / mu^2, 1e-3)
@@ -242,17 +242,17 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 #'
 #' @details
 #' The base method draws each parameter from its own domain and never looks
-#' at \code{y}, which is fine while the response is of order one and fails
+#' at `y`, which is fine while the response is of order one and fails
 #' completely when it is not: on a response of mean 919 and standard
 #' deviation 169 the draws are of order one, the first Newton step is taken
 #' from a point where the residuals are hundreds of standard deviations
 #' wide, and the scale runs to the largest representable double. Measured
-#' on a gaussian, \code{fit_distrib()} recovers N(5, 2) and N(50, 20) and
+#' on a gaussian, `fit_distrib()` recovers N(5, 2) and N(50, 20) and
 #' fails on N(500, 200): the defect is a threshold in the scale of the data,
 #' not in the family.
 #'
 #' What makes a general fix possible is that every shipped family already
-#' declares \code{params_interpretation}. A parameter that means a location
+#' declares `params_interpretation`. A parameter that means a location
 #' is started at the sample median, one that means a spread at the sample
 #' standard deviation or its square, and one whose meaning is a shape, a
 #' dispersion or a probability is left to the draw, those being of order one
@@ -271,7 +271,7 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 #'
 #' @return A list of named lists, one per start.
 #'
-#' @seealso \code{\link{distrib_start}}, \code{\link{fit_distrib}}
+#' @seealso [distrib_start()], [fit_distrib()]
 #'
 #' @keywords internal
 start_from_moments <- function(distrib, y, n_start = 5L, ...) {
@@ -367,11 +367,11 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' A starting value should be an estimate, not a guess, and for most
 #' families the moment estimate is one line: the mean and the variance of
 #' the sample are set equal to the family's own and the pair is inverted.
-#' \code{\link{fit_distrib}} then refines it by maximum likelihood, and
+#' [fit_distrib()] then refines it by maximum likelihood, and
 #' \pkg{statmodels7} takes the result as the intercept of each equation.
 #'
-#' The inversions are written against each family's \code{mean()} and
-#' \code{variance()} rather than from memory, and the tests check them that
+#' The inversions are written against each family's `mean()` and
+#' `variance()` rather than from memory, and the tests check them that
 #' way: a family's moment estimate applied to a large sample from a known
 #' parameter must return that parameter.
 #'
@@ -384,16 +384,16 @@ S7::method(distrib_start, discrete_distrib) <- start_from_moments
 #' inversion is neither closed nor standard -- the generalized gamma, the
 #' skew normal in its direct parametrization, the skew t, the elastic net --
 #' are not listed and fall back to
-#' \code{\link{start_from_moments}}'s reading of
-#' \code{params_interpretation}.
+#' [start_from_moments()]'s reading of
+#' `params_interpretation`.
 #'
 #' @param distrib A univariate distribution.
 #' @param y The response.
 #'
-#' @return A named list of parameters, or \code{NULL} where this family has
+#' @return A named list of parameters, or `NULL` where this family has
 #'   no entry.
 #'
-#' @seealso \code{\link{distrib_start}}, \code{\link{start_from_moments}}
+#' @seealso [distrib_start()], [start_from_moments()]
 #'
 #' @keywords internal
 moment_estimates <- function(distrib, y) {
@@ -545,7 +545,7 @@ moment_estimates <- function(distrib, y) {
 #' @param theta A named list.
 #' @param distrib The distribution whose bounds apply.
 #'
-#' @return \code{theta}, each element strictly inside its own bounds.
+#' @return `theta`, each element strictly inside its own bounds.
 #'
 #' @keywords internal
 clamp_to_bounds <- function(theta, distrib) {

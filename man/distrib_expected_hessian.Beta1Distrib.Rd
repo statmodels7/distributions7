@@ -25,5 +25,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\phi}.
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \phi}\right] = -\phi \left[ \mu\psi_1(\mu\phi) - (1-\mu)\psi_1((1-\mu)\phi) \right]}
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

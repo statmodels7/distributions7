@@ -64,36 +64,36 @@ NULL
 #' @title S7 Class for the Elastic-Net Distribution
 #' @name EnetDistrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the density
+#' @description A subclass of `continuous_distrib` for the density
 #' whose negative logarithm is the elastic-net penalty,
 #' \eqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu| -
 #' \lambda(1-\alpha)(y-\mu)^2/2\}}: the product of a Laplace and a
 #' Gaussian, normalized. At \eqn{\alpha \to 1} it is the Laplace of
-#' \code{\link{Laplace2Distrib}} and at \eqn{\alpha \to 0} the Gaussian,
+#' [Laplace2Distrib()] and at \eqn{\alpha \to 0} the Gaussian,
 #' both of which remain families of their own; \eqn{\alpha} is confined
 #' to the open interval, as every bounded parameter in this package is.
 #' Like the Laplace, its log-likelihood is not differentiable in
 #' \eqn{\mu}.
 #' @inheritParams distrib
-#' @return An object of class \code{EnetDistrib}.
-#' @seealso \code{\link{enet_distrib}}, \code{\link{laplace2_distrib}}
+#' @return An object of class `EnetDistrib`.
+#' @seealso [enet_distrib()], [laplace2_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y()}},
-#'   \code{\link[=distrib_grad_y.EnetDistrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.EnetDistrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.EnetDistrib]{distrib_rng()}},
-#'   \code{\link[=mean.distrib]{mean()}},
-#'   \code{\link[=skewness]{skewness()}},
-#'   \code{\link[=variance]{variance()}}
+#'   [`distrib_cdf()`][distrib_cdf.EnetDistrib],
+#'   [`distrib_cross_y()`][distrib_cross_y.EnetDistrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.EnetDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.EnetDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.EnetDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.EnetDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.EnetDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.EnetDistrib],
+#'   [`distrib_rng()`][distrib_rng.EnetDistrib],
+#'   [`mean()`][mean.distrib],
+#'   [`skewness()`][skewness],
+#'   [`variance()`][variance]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 EnetDistrib <- S7::new_class("EnetDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -107,12 +107,12 @@ EnetDistrib <- S7::new_class("EnetDistrib", parent = continuous_distrib)
 #' \eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}}, where \eqn{M} is the Mills ratio.
 #' The constant is evaluated through the log Mills ratio, both factors of
 #' which underflow separately.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
                                                  log = FALSE, ...) {
   p <- .enet_parts(theta)
@@ -128,13 +128,13 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #' Each half of the density is a truncated Gaussian, so
 #' \eqn{F(q) = \Phi(\sqrt{c}\,z - x) / (2\Phi(-x))} for \eqn{z \le 0} and
 #' its reflection above, with \eqn{z = q-\mu} and \eqn{x = a/\sqrt{c}}.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns the log-probability.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param lower.tail Logical; if `TRUE` (default), \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns the log-probability.
 #' @return A numeric vector of probabilities.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
                                                  lower.tail = TRUE,
                                                  log.p = FALSE) {
@@ -155,16 +155,16 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #' @title Elastic-Net Quantile Function
 #' @name distrib_quantile.EnetDistrib
 #' @description The distribution function of
-#' \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}} inverted in
+#' [`distrib_cdf()`][distrib_cdf.EnetDistrib] inverted in
 #' closed form, each half being a truncated Gaussian.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are
 #'   \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is on the log scale.
+#' @param log.p Logical; if `TRUE`, `p` is on the log scale.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE) {
@@ -181,11 +181,11 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #' @title Elastic-Net Random Generation
 #' @name distrib_rng.EnetDistrib
 #' @description Inverse transform on the closed-form quantile function.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param n The number of draws.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @return A numeric vector of draws.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
@@ -213,13 +213,13 @@ S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta) {
 #' \eqn{-(1+xG)/(2c)} for \eqn{a} and \eqn{c}; the chain to
 #' \eqn{(\lambda, \alpha)} is linear, \eqn{a = \lambda\alpha} and
 #' \eqn{c = \lambda(1-\alpha)}.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param ... Ignored.
 #' @return A named list of score components.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
                                                       scale = c("parameter",
                                                                 "link"), ...) {
@@ -245,13 +245,13 @@ S7::method(distrib_gradient, EnetDistrib) <- function(distrib, y, theta,
 #' of \eqn{\log Z} carried through the bilinear map
 #' \eqn{(\lambda,\alpha) \mapsto (a, c)}, whose own cross term
 #' contributes the \eqn{\lambda\alpha} entry.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param ... Ignored.
 #' @return A named list of Hessian components.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
                                                      scale = c("parameter",
                                                                "link"), ...) {
@@ -291,14 +291,14 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #'   I_{ac} = \operatorname{Cov}\!\left(-|z|, -\tfrac{z^2}{2}\right), \quad
 #'   I_{cc} = \tfrac{1}{4}\operatorname{Var}(z^2),}
 #'
-#' which \code{.enet_logz_derivs()} computes for the observed Hessian
+#' which `.enet_logz_derivs()` computes for the observed Hessian
 #' already. The map to \eqn{(\lambda, \alpha)} is bilinear, so the
 #' information transforms by \eqn{J'IJ} with no second-derivative term.
 #'
 #' Two of the three rate entries of the observed Hessian carry no data at
 #' all and are therefore their own expectations, which is why
-#' \code{lambda_lambda} and \code{alpha_alpha} below repeat them exactly.
-#' The third does not: \code{lambda_alpha} carries \eqn{-|z| + z^2/2},
+#' `lambda_lambda` and `alpha_alpha` below repeat them exactly.
+#' The third does not: `lambda_alpha` carries \eqn{-|z| + z^2/2},
 #' whose expectation \eqn{\partial_a \log Z - \partial_c \log Z} cancels
 #' the constant of the same value sitting beside it and leaves the
 #' \eqn{\log Z} term alone.
@@ -320,16 +320,16 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' Gaussian's. The location stays orthogonal to both rates, every
 #' cross-expectation vanishing by symmetry.
 #'
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param expected Ignored; the answer is exact.
 #' @param approx Ignored; the answer is exact.
 #' @param nsim Ignored; the answer is exact.
 #' @param ... Ignored.
 #' @return A named list of expected Hessian components.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
     approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
@@ -354,11 +354,11 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' @name distrib_grad_y.EnetDistrib
 #' @description \eqn{\ell^{(y)} = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},
 #' undefined at the location.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @return A numeric vector.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta) {
   p <- .enet_parts(theta)
   z <- y - p$mu
@@ -370,11 +370,11 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta) {
 #' @description \eqn{\ell^{(yy)} = -c}: the absolute value contributes
 #' nothing away from the location, so the curvature in the response is the
 #' Gaussian part alone.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @return A numeric vector.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta) {
   p <- .enet_parts(theta)
   rep(-p$c, length(y))
@@ -385,13 +385,13 @@ S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta) {
 #' @description \eqn{\partial^2\ell/\partial y\,\partial\theta_i},
 #' obtained by differentiating \eqn{\ell^{(y)} = -a\,\mathrm{sgn}(z) - cz}
 #' in each parameter.
-#' @param distrib An \code{EnetDistrib} object.
+#' @param distrib An `EnetDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param ... Ignored.
 #' @return A named list, one component per parameter.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
                                                      scale = c("parameter",
                                                                "link"), ...) {
@@ -410,11 +410,11 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' @description The density is symmetric about \eqn{\mu}, so the mean is
 #' the location and the skewness zero. The variance is
 #' \eqn{(1+xG)/c}, which is \eqn{-2\,\partial \log Z/\partial c}.
-#' @param x An \code{EnetDistrib} object.
-#' @param theta A list containing \code{mu}, \code{lambda} and \code{alpha}.
+#' @param x An `EnetDistrib` object.
+#' @param theta A list containing `mu`, `lambda` and `alpha`.
 #' @param ... Ignored.
 #' @return A numeric vector.
-#' @seealso \code{\link{enet_distrib}}
+#' @seealso [enet_distrib()]
 S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
   .enet_parts(theta)$mu
 }
@@ -437,10 +437,10 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' @description
 #' The density whose negative logarithm is the elastic-net penalty: the
 #' product of a Laplace and a Gaussian at the same location, normalized.
-#' It exists so that \code{\link[penalties7]{elasticnet_penalty}} is the
+#' It exists so that [penalties7::elasticnet_penalty()] is the
 #' same construction as ridge and lasso -- a
-#' \code{\link[penalties7]{distrib_penalty}} over a
-#' \code{\link{fixed}} family -- rather than a branch of its own.
+#' [penalties7::distrib_penalty()] over a
+#' [fixed()] family -- rather than a branch of its own.
 #'
 #' @details
 #' Writing \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, the
@@ -465,7 +465,7 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' @param link_lambda A link for the overall rate, positive.
 #' @param link_alpha A link for the mixing weight, in \eqn{(0,1)}.
 #'
-#' @return An object of class \code{\link{EnetDistrib}}.
+#' @return An object of class [EnetDistrib()].
 #'
 #' @examples
 #' d <- enet_distrib()
@@ -477,11 +477,11 @@ S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
 #' distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
 #' distrib_pdf(laplace2_distrib(), 0.7, list(mu = 0, lambda = 2))
 #'
-#' @seealso \code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
+#' @seealso [laplace2_distrib()], [gaussian1_distrib()]
 #' @references
 #' Zou, H. and Hastie, T. (2005). Regularization and variable selection
-#' via the elastic net. \emph{Journal of the Royal Statistical Society,
-#' Series B} 67, 301-320.
+#' via the elastic net. *Journal of the Royal Statistical Society,
+#' Series B* 67, 301-320.
 #'
 #' @export
 enet_distrib <- function(link_mu = identity_link(),

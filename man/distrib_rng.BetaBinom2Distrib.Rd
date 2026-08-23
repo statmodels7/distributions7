@@ -17,5 +17,5 @@ A numeric vector of counts.
 A beta draw for the probability, then a binomial draw.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

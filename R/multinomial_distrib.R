@@ -4,28 +4,28 @@ NULL
 #' @title S7 Class for the Multinomial Distribution
 #' @name MultinomialDistrib
 #'
-#' @description A subclass of \code{multivariate_distrib} representing the
+#' @description A subclass of `multivariate_distrib` representing the
 #'   multinomial distribution, the first multivariate family here whose
 #'   support is a set of points rather than a region.
 #' @inheritParams multivariate_distrib
 #' @param size The number of trials, a constant of the distribution.
 #' @param param The \pkg{parameters7} simplex carrying the probabilities.
-#' @return An object of class \code{MultinomialDistrib}.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @return An object of class `MultinomialDistrib`.
+#' @seealso [multinomial_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.MultinomialDistrib]{distrib_rng()}},
-#'   \code{\link[=mv_location.MultinomialDistrib]{mv_location()}},
-#'   \code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal()}},
-#'   \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma()}},
-#'   \code{\link[=mv_support.MultinomialDistrib]{mv_support()}}
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.MultinomialDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.MultinomialDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.MultinomialDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.MultinomialDistrib],
+#'   [`distrib_rng()`][distrib_rng.MultinomialDistrib],
+#'   [`mv_location()`][mv_location.MultinomialDistrib],
+#'   [`mv_marginal()`][mv_marginal.MultinomialDistrib],
+#'   [`mv_sigma()`][mv_sigma.MultinomialDistrib],
+#'   [`mv_support()`][mv_support.MultinomialDistrib]
 #'
-#' Everything else is inherited from \code{\link{multivariate_distrib}}.
+#' Everything else is inherited from [multivariate_distrib()].
 MultinomialDistrib <- S7::new_class("MultinomialDistrib",
   parent = multivariate_distrib,
   properties = list(size = S7::class_numeric, param = S7::class_any)
@@ -37,13 +37,13 @@ MultinomialDistrib <- S7::new_class("MultinomialDistrib",
 #' The probability vector and the simplex's first two derivatives, computed
 #' once per call.
 #'
-#' @param distrib A \code{\link{MultinomialDistrib}} object.
+#' @param distrib A [MultinomialDistrib()] object.
 #' @param theta A named list of parameters.
 #'
-#' @return A list with \code{prob}, \code{A}, \code{B}, \code{idx} and
-#'   \code{k}.
+#' @return A list with `prob`, `A`, `B`, `idx` and
+#'   `k`.
 #'
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 #'
 #' @keywords internal
 mn_parts <- function(distrib, theta) {
@@ -63,12 +63,12 @@ mn_parts <- function(distrib, theta) {
 #' @description
 #' \deqn{P(Y = y) = \dfrac{n!}{\prod_j y_j!}\prod_j p_j^{y_j}}
 #' for a row of non-negative integers summing to \eqn{n}.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation, each summing to the size.
 #' @param theta A named list of parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-probability.
-#' @return A numeric vector, one entry per row of \code{y}.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @param log Logical; if `TRUE`, returns the log-probability.
+#' @return A numeric vector, one entry per row of `y`.
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- mn_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
@@ -84,13 +84,13 @@ S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log =
 
 #' @title Multinomial Random Generation
 #' @name distrib_rng.MultinomialDistrib
-#' @description \code{\link[stats]{rmultinom}}, transposed so that one row is
+#' @description [stats::rmultinom()], transposed so that one row is
 #'   one observation.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param n The number of draws.
 #' @param theta A named list of parameters.
-#' @return A matrix with \code{n} rows.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @return A matrix with `n` rows.
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta) {
   p <- mn_parts(distrib, theta)
   t(stats::rmultinom(n, size = distrib@size, prob = p$prob))
@@ -101,11 +101,11 @@ S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta) {
 #' @description
 #' Every vector of non-negative integers summing to the size, enumerated as a
 #' matrix with one row per point.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param theta Ignored; the support does not depend on the parameters.
 #' @param ... Unused.
-#' @return A matrix with \code{choose(n + p - 1, p - 1)} rows.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @return A matrix with `choose(n + p - 1, p - 1)` rows.
+#' @seealso [multinomial_distrib()]
 S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
   numericals7::compositions(distrib@size, distrib@n_dim)
 }
@@ -116,13 +116,13 @@ S7::method(mv_support, MultinomialDistrib) <- function(distrib, theta, ...) {
 #' \deqn{\dfrac{\partial\ell}{\partial\eta_k}
 #'       = \sum_j \dfrac{y_j}{p_j}A_{jk}, \qquad
 #'       A = \dfrac{\partial p}{\partial\eta}}
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list, one component per parameter.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_gradient, MultinomialDistrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"), ...) {
   p <- mn_parts(distrib, theta)
@@ -139,13 +139,13 @@ S7::method(distrib_gradient, MultinomialDistrib) <- function(distrib, y, theta,
 #' @description
 #' \deqn{\ell^{(\eta_k\eta_l)} = \sum_j\left(\dfrac{y_j}{p_j}B_{j,kl}
 #'       - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right)}
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second-derivative components.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"), ...) {
   p <- mn_parts(distrib, theta)
@@ -176,15 +176,15 @@ S7::method(distrib_hessian, MultinomialDistrib) <- function(distrib, y, theta,
 #' constant, and
 #' \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
 #'       = -n\sum_j \dfrac{A_{jk}A_{jl}}{p_j}}
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second-derivative components.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(distrib_expected_hessian, MultinomialDistrib) <- function(distrib, y, theta,
                                                                       scale = c("parameter", "link"),
                                                                       approx = c("bartlett", "integrate", "mc", "opg"),
@@ -205,10 +205,10 @@ S7::method(distrib_expected_hessian, MultinomialDistrib) <- function(distrib, y,
 #' @title Multinomial Mean Vector
 #' @name mv_location.MultinomialDistrib
 #' @description \eqn{n p}, the size times the probability vector.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param theta A named list of parameters.
 #' @return A numeric vector summing to the size.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(mv_location, MultinomialDistrib) <- function(distrib, theta) {
   distrib@size * mn_parts(distrib, theta)$prob
 }
@@ -218,10 +218,10 @@ S7::method(mv_location, MultinomialDistrib) <- function(distrib, theta) {
 #' @description
 #' \deqn{\operatorname{Cov}(Y_i, Y_j) = n(\delta_{ij}p_i - p_i p_j)}
 #' singular by construction, the coordinates summing to the size.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param theta A named list of parameters.
 #' @return A symmetric matrix.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 S7::method(mv_sigma, MultinomialDistrib) <- function(distrib, theta) {
   p <- mn_parts(distrib, theta)$prob
   distrib@size * (diag(p, nrow = length(p)) - tcrossprod(p))
@@ -229,12 +229,12 @@ S7::method(mv_sigma, MultinomialDistrib) <- function(distrib, theta) {
 
 #' @title Mean of a Multinomial
 #' @name mean.MultinomialDistrib
-#' @description The vector \eqn{np}, which \code{\link{mv_location}} returns.
-#' @param x A \code{MultinomialDistrib} object.
+#' @description The vector \eqn{np}, which [mv_location()] returns.
+#' @param x A `MultinomialDistrib` object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector summing to the size.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 #' @keywords internal
 S7::method(mean, MultinomialDistrib) <- function(x, theta, ...) {
   mv_location(x, theta)
@@ -242,13 +242,13 @@ S7::method(mean, MultinomialDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of a Multinomial
 #' @name variance.MultinomialDistrib
-#' @description The covariance matrix \code{\link{mv_sigma}} carries, singular
+#' @description The covariance matrix [mv_sigma()] carries, singular
 #'   because the counts sum to the size.
-#' @param x A \code{MultinomialDistrib} object.
+#' @param x A `MultinomialDistrib` object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A symmetric \eqn{p \times p} matrix.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @seealso [multinomial_distrib()]
 #' @keywords internal
 S7::method(variance, MultinomialDistrib) <- function(x, theta, ...) {
   mv_sigma(x, theta)
@@ -259,12 +259,12 @@ S7::method(variance, MultinomialDistrib) <- function(x, theta, ...) {
 #' @description
 #' A single coordinate is \eqn{\mathrm{Binomial}(n, p_j)}, the other outcomes
 #' collapsing into a single failure.
-#' @param distrib A \code{MultinomialDistrib} object.
+#' @param distrib A `MultinomialDistrib` object.
 #' @param theta A named list of parameters.
 #' @param which The coordinate wanted.
 #' @param ... Unused.
-#' @return A list with the marginal \code{distrib} and its \code{theta}.
-#' @seealso \code{\link{multinomial_distrib}}
+#' @return A list with the marginal `distrib` and its `theta`.
+#' @seealso [multinomial_distrib()]
 S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, ...) {
   if (length(which) != 1L) {
     stop(paste0(
@@ -293,18 +293,18 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' \deqn{\mathbb{E}[Y_j] = n p_j, \qquad \operatorname{Var}(Y_j) = n p_j (1 - p_j), \qquad \operatorname{Cov}(Y_j, Y_k) = -n p_j p_k.}
 #'
 #' The support is finite, so every expectation is an exact sum;
-#' \code{\link{mv_support}} returns it. The marginals are binomial.
+#' [mv_support()] returns it. The marginals are binomial.
 #'
 #' @param n_dim The number of categories \eqn{p}.
 #' @param size The number of trials \eqn{n}. A constant of the distribution
-#'   rather than a parameter, as for \code{\link{binomial_distrib}}.
-#' @param probs A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
-#'   same dimension. Defaults to \code{parameters7::simplex(n_dim)}.
+#'   rather than a parameter, as for [binomial_distrib()].
+#' @param probs A \pkg{parameters7} [parameters7::simplex()] of the
+#'   same dimension. Defaults to `parameters7::simplex(n_dim)`.
 #'
 #' @details
-#' The first family here that is multivariate and \strong{discrete}, so its
+#' The first family here that is multivariate and **discrete**, so its
 #' support is a finite set of points --- every vector of non-negative integers
-#' summing to \eqn{n} --- rather than a region. \code{\link{mv_support}}
+#' summing to \eqn{n} --- rather than a region. [mv_support()]
 #' enumerates them, which is what lets an expectation be an exact sum and the
 #' validator check the total mass by addition rather than by sampling.
 #'
@@ -313,10 +313,10 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' multivariate gaussian: the constraint that they be positive and sum to one
 #' lives in the parameter, where a scalar link could not express it.
 #'
-#' \strong{Probability mass function:}
+#' **Probability mass function:**
 #' \deqn{P(Y=y) = \dfrac{n!}{\prod_j y_j!}\prod_j p_j^{y_j}}
 #'
-#' \strong{Score and information.} With \eqn{A = \partial p/\partial\eta},
+#' **Score and information.** With \eqn{A = \partial p/\partial\eta},
 #' \deqn{\dfrac{\partial\ell}{\partial\eta_k} = \sum_j \dfrac{y_j}{p_j}A_{jk},
 #'       \qquad
 #'       \mathbb{E}[\ell^{(\eta_k\eta_l)}]
@@ -325,19 +325,19 @@ S7::method(mv_marginal, MultinomialDistrib) <- function(distrib, theta, which, .
 #' second-derivative term into \eqn{n\sum_j B_{j,kl}}, which vanishes: the
 #' probabilities sum to one, so every derivative of their sum is zero.
 #'
-#' \strong{Moments:} mean \eqn{np} and
+#' **Moments:** mean \eqn{np} and
 #' \eqn{\operatorname{Cov}(Y_i,Y_j) = n(\delta_{ij}p_i - p_ip_j)}, singular by
 #' construction.
 #'
-#' \strong{The marginals are binomial}, coordinate \eqn{j} being
+#' **The marginals are binomial**, coordinate \eqn{j} being
 #' \eqn{\mathrm{Binomial}(n, p_j)} with the other categories collapsed into a
 #' single failure.
 #'
-#' @return An S7 object of class \code{MultinomialDistrib}.
+#' @return An S7 object of class `MultinomialDistrib`.
 #'
-#' @seealso \code{\link{binomial_distrib}}, \code{\link{dirichlet_distrib}}
+#' @seealso [binomial_distrib()], [dirichlet_distrib()]
 #'   for the family that is conjugate to it,
-#'   \code{\link[parameters7]{simplex}}
+#'   [parameters7::simplex()]
 #'
 #' @importFrom linkfunctions7 identity_link
 #' @importFrom stats rmultinom

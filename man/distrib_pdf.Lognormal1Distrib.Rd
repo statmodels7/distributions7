@@ -20,5 +20,5 @@ Computes the probability density function for the Lognormal distribution:
 \deqn{f(y; \mu, \sigma^2) = \dfrac{1}{y\sqrt{2\pi\sigma^2}} \exp\left\{-\dfrac{(\log y - \mu)^2}{2\sigma^2}\right\}}
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

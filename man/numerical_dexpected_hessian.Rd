@@ -23,20 +23,20 @@ numerical_dexpected_hessian(
 
 \item{scale}{Either \code{"parameter"} or \code{"link"}.}
 
-\item{approx, nsim}{Passed to \code{\link{distrib_expected_hessian}}.}
+\item{approx, nsim}{Passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.}
 
 \item{h_rel}{The relative step, a cube root of machine epsilon by default,
 which is what a central difference balances.}
 }
 \value{
-A named list keyed as \code{\link{dexpected_names}}.
+A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}.
 }
 \description{
-The default route behind \code{\link{distrib_dexpected_hessian}}: a central
+The default route behind \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}: a central
 difference in each parameter of the family's own expected information.
 }
 \details{
-The step is \code{\link{fd_steps}}', which shrinks near a finite boundary so
+The step is \code{\link[=fd_steps]{fd_steps()}}', which shrinks near a finite boundary so
 that both evaluation points stay strictly inside the parameter's open
 domain. On the link scale the domain is the whole line and no clamp is
 needed, so the step is the plain relative one.
@@ -47,6 +47,6 @@ be a difference of a difference, which the package forbids everywhere, and
 it would cost 2p of the dearest call the family has.
 }
 \seealso{
-\code{\link{distrib_dexpected_hessian}}, \code{\link{fd_steps}}
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}, \code{\link[=fd_steps]{fd_steps()}}
 }
 \keyword{internal}

@@ -21,5 +21,5 @@ The likelihood separates, so mixed components vanish at every order; the
 constant \eqn{\log(1-f_0)}.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

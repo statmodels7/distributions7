@@ -25,6 +25,6 @@ The chain rule on the parent's, exact whenever the parent's are and the
 stencil otherwise, as at the two orders below.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

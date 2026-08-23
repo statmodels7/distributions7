@@ -23,5 +23,5 @@ A named list with the \code{mu} component.
 the only order that involves the response.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

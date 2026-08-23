@@ -13,7 +13,7 @@
 \item{expected}{Logical; if \code{TRUE}, the expectation is approximated
 numerically.}
 
-\item{approx}{Strategy for the expectation; see \code{\link{distrib_deriv4}}.}
+\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv4]{distrib_deriv4()}}.}
 
 \item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
 }
@@ -22,9 +22,9 @@ A named list of fourth-derivative component vectors.
 }
 \description{
 Closed-form fourth-order derivatives of the skew normal log-density, in the
-notation of \code{\link{distrib_deriv3.SkewNormal1Distrib}}. The expected
+notation of \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}. The expected
 derivatives are approximated numerically, as at third order.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

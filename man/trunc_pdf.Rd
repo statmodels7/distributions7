@@ -23,7 +23,7 @@ The parent's density divided by \eqn{Z}, and zero outside the interval.
 }
 \details{
 One of the shared method bodies. Truncation treats the two kinds of parent
-identically once \code{\link{trunc_constants}} has resolved the one place they
+identically once \code{\link[=trunc_constants]{trunc_constants()}} has resolved the one place they
 differ, so these bodies are written once and registered on both classes.
 }
 \keyword{internal}

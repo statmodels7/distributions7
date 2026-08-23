@@ -20,6 +20,6 @@ A named list, one component per Hessian entry.
 \eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}.
 }
 \seealso{
-\code{\link{trunc_M}}, \code{\link{trunc_score_mean}}
+\code{\link[=trunc_M]{trunc_M()}}, \code{\link[=trunc_score_mean]{trunc_score_mean()}}
 }
 \keyword{internal}

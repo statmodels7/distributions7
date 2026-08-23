@@ -4,7 +4,7 @@
 \alias{distrib_rng.MvGaussianDistrib}
 \title{Multivariate Gaussian Generator}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{n}{The number of observations to draw.}
 

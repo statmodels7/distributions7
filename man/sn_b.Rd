@@ -14,6 +14,6 @@ A single number.
 and appears in every quantity of the skew normal's first moment.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }
 \keyword{internal}

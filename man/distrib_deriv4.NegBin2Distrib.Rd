@@ -24,5 +24,5 @@ expected pure-\eqn{\theta} derivative involves \eqn{\mathbb{E}[\psi_3(Y+\theta)]
 evaluated by summation over the support (with a far-tail correction).
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

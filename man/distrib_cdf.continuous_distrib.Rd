@@ -23,6 +23,6 @@ CDF get one by numerical integration of \code{distrib_pdf}. An approximate mode
 is located first and the integral is taken over the side of the mode containing
 \eqn{q} (using the complement for the other side), so that the quadrature nodes
 concentrate where the probability mass is. All quantiles are integrated in one
-batched call to \code{\link[numericals7]{quad_vec}}, one row per quantile.
+batched call to \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}}, one row per quantile.
 }
 \keyword{internal}

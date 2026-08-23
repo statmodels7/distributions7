@@ -23,5 +23,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}}
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

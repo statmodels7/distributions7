@@ -14,7 +14,7 @@ A named list, parallel to \code{hess_names(params)}, each element a
 character pair.
 }
 \description{
-Maps each name produced by \code{\link{hess_names}} back to the pair of
+Maps each name produced by \code{\link[=hess_names]{hess_names()}} back to the pair of
 parameters it differentiates with respect to.
 }
 \details{
@@ -27,9 +27,9 @@ pieces, and taking the first and the last silently yields
 \code{c("log", "scale")}. Building the map from the parameter vector cannot
 be fooled.
 
-\code{\link{deriv_indices}} is the same idea for orders above two.
+\code{\link[=deriv_indices]{deriv_indices()}} is the same idea for orders above two.
 }
 \seealso{
-\code{\link{hess_names}}, \code{\link{deriv_indices}}
+\code{\link[=hess_names]{hess_names()}}, \code{\link[=deriv_indices]{deriv_indices()}}
 }
 \keyword{internal}

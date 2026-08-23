@@ -14,6 +14,6 @@
 A single number.
 }
 \description{
-The sample variance of a numeric vector, delegated to \code{\link[stats]{var}}.
+The sample variance of a numeric vector, delegated to \code{\link[stats:cor]{stats::var()}}.
 }
 \keyword{internal}

@@ -16,5 +16,5 @@ A symmetric matrix.
 singular by construction, the coordinates summing to the size.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

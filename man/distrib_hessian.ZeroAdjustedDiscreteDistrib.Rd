@@ -19,5 +19,5 @@ the truncation adds the correction
 \eqn{H_{corr} = \dfrac{(1-f(0))f''(0) + f'(0)^2}{(1-f(0))^2}} for \eqn{y > 0}.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

@@ -22,13 +22,13 @@ A named list of expected derivative component vectors, each of length
 }
 \description{
 Integrates each observed derivative component directly against the density,
-component by component, through \code{\link{expectation}}.
+component by component, through \code{\link[=expectation]{expectation()}}.
 }
 \details{
 This estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a regular
 model that is the quantity wanted; for a non-regular one it is not the
-information, and \code{\link{expected_by_bartlett}} is the route that stays
-valid (see \code{\link{laplace_distrib}}).
+information, and \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} is the route that stays
+valid (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
 
 Quadrature is unreliable when the observed derivative is itself a finite
 difference, since it then integrates numerical noise, so the error is caught
@@ -36,6 +36,6 @@ and re-raised naming the component and pointing at the alternatives rather
 than surfacing as an opaque failure from the integrator.
 }
 \seealso{
-\code{\link{expected_derivative_methods}}
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
 }
 \keyword{internal}

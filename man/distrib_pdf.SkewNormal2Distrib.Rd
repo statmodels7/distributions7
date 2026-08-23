@@ -19,5 +19,5 @@ A numeric vector.
 The skew normal density at the implied direct parameters.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

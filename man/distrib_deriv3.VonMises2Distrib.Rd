@@ -36,5 +36,5 @@ collapses to a single term. The pure \eqn{\rho} components carry the full
 one-variable chain rule on \eqn{\log I_0}.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }

@@ -29,7 +29,7 @@ The identity of order \eqn{k} states that
 \deqn{\sum_{\pi} \mathbb{E}\left[\prod_{B \in \pi} \ell_B\right] = 0,}
 the sum running over every partition \eqn{\pi} of the index set. The
 single-block partition is the target, so it equals minus the sum of all the
-others -- which is why \code{\link[numericals7]{set_partitions}} is the whole algorithm and
+others -- which is why \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}} is the whole algorithm and
 why the top-order derivative is never needed.
 
 At order 2 this reduces to the outer product of gradients,
@@ -40,6 +40,6 @@ is not the information, while the score variance still is. That is why it is
 the default at order 2 and why \code{"opg"} is accepted as a spelling of it.
 }
 \seealso{
-\code{\link{expected_derivative_methods}}, \code{\link[numericals7]{set_partitions}}
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, \code{\link[numericals7:set_partitions]{numericals7::set_partitions()}}
 }
 \keyword{internal}

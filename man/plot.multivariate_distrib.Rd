@@ -4,7 +4,7 @@
 \alias{plot.multivariate_distrib}
 \title{Panels of a Multivariate Density}
 \arguments{
-\item{x}{An object inheriting from class \code{\link{multivariate_distrib}}.}
+\item{x}{An object inheriting from class \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters. Generated at random when
 missing, as for a univariate distribution.}
@@ -27,7 +27,7 @@ marginal below it.
 }
 \details{
 The picture is built from marginals, so it exists exactly when
-\code{\link{mv_marginal}} does. Above about three coordinates the panel
+\code{\link[=mv_marginal]{mv_marginal()}} does. Above about three coordinates the panel
 matrix stops being readable, so a larger distribution is rejected with the
 suggestion of choosing coordinates rather than being drawn illegibly.
 
@@ -45,6 +45,6 @@ plot(d, theta)
 
 }
 \seealso{
-\code{\link{mv_marginal}}, \code{\link{plot.distrib_fit}}
+\code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}
 }
 \keyword{internal}

@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Bernoulli distribution.
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

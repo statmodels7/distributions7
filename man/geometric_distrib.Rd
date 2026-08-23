@@ -8,7 +8,7 @@ geometric_distrib(link_mu = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{GeometricDistrib}.
@@ -63,6 +63,6 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 }
 \seealso{
-\code{\link{negbin2_distrib}}, \code{\link{poisson_distrib}},
-\code{\link{exponential_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}, \code{\link[=poisson_distrib]{poisson_distrib()}},
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

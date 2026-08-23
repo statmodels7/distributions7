@@ -24,5 +24,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\phi}.
 \deqn{\dfrac{\partial \ell}{\partial \phi} = \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2}}
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

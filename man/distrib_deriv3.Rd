@@ -30,12 +30,12 @@ Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{approx}{How the expectation is approximated when \code{expected = TRUE}
 and the distribution has no closed-form expected third derivatives; ignored
 otherwise. One of \code{"integrate"} (default), \code{"bartlett"} (equivalently
-\code{"opg"}) or \code{"mc"}. See \code{\link{expected_derivative_methods}}.}
+\code{"opg"}) or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
 
 \item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
 
@@ -43,17 +43,17 @@ otherwise. One of \code{"integrate"} (default), \code{"bartlett"} (equivalently
 }
 \value{
 A named list of derivative-component vectors, keyed as in
-\code{\link{deriv_names}(distrib@params, 3)} (e.g. \code{"mu_mu_sigma"}).
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} (e.g. \code{"mu_mu_sigma"}).
 }
 \description{
 Computes the unique third-order partial derivatives of the log-likelihood with
 respect to the distribution's parameters. Distributions with a closed-form
 implementation provide it directly (in C++); the others fall back to finite
-differences of the Hessian (see \code{\link{numerical_deriv3}}).
+differences of the Hessian (see \code{\link[=numerical_deriv3]{numerical_deriv3()}}).
 }
 \examples{
 distrib_deriv3(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
 \seealso{
-\code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv4}}
+\code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

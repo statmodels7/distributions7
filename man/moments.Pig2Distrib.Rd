@@ -17,7 +17,7 @@
 A numeric vector.
 }
 \description{
-The cumulants of \code{\link[=moments.Pig1Distrib]{pig1}}
-at the dispersion \code{\link{pig2_sigma}} implies.
+The cumulants of \code{\link[=moments.Pig1Distrib]{pig1()}}
+at the dispersion \code{\link[=pig2_sigma]{pig2_sigma()}} implies.
 }
 \keyword{internal}

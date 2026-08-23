@@ -22,5 +22,5 @@ A named list of fourth-derivative component vectors.
 Closed-form fourth-order derivatives of the Inverse-Gaussian log-density (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

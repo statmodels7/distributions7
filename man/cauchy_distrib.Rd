@@ -8,10 +8,10 @@ cauchy_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{CauchyDistrib} (inheriting from \code{continuous_distrib}) representing the Cauchy distribution.
@@ -54,9 +54,9 @@ higher) are \strong{undefined}.
 \item \eqn{\sigma \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- cauchy_distrib()
@@ -69,12 +69,12 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.CauchyDistrib}} for the density function.
-\item \code{\link{distrib_cdf.CauchyDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.CauchyDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.CauchyDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.CauchyDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.CauchyDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.CauchyDistrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf.CauchyDistrib()}} for the density function.
+\item \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf.CauchyDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile.CauchyDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.CauchyDistrib]{distrib_rng.CauchyDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient.CauchyDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian.CauchyDistrib()}} for the analytical expected Hessian.
 }
 }

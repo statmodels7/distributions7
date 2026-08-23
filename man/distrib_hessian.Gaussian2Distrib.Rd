@@ -23,5 +23,5 @@ A named list of second derivatives.
       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}}
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

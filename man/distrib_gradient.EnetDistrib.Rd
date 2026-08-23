@@ -26,5 +26,5 @@ and the two rate components are the data terms less the derivatives of
 \eqn{c = \lambda(1-\alpha)}.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

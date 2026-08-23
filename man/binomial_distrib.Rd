@@ -8,7 +8,7 @@ binomial_distrib(link_mu = logit_link(), size = 1)
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu} (probability).
-Defaults to \code{\link[linkfunctions7]{logit_link}} to ensure the parameter stays within (0, 1).}
+Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
 
 \item{size}{Integer or Numeric Vector. The number of trials \eqn{n}.
 Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.}
@@ -48,8 +48,8 @@ skewness \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}, excess kurtosis
 \item \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
 }
 \examples{
 d <- binomial_distrib(size = 5)
@@ -62,12 +62,12 @@ distrib_gradient(d, 0:5, theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.BinomialDistrib}} for the probability mass function.
-\item \code{\link{distrib_cdf.BinomialDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.BinomialDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.BinomialDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.BinomialDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.BinomialDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.BinomialDistrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf.BinomialDistrib()}} for the probability mass function.
+\item \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile.BinomialDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.BinomialDistrib]{distrib_rng.BinomialDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient.BinomialDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}} for the analytical expected Hessian.
 }
 }

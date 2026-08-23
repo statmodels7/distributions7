@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Inverse transform sampling on the parent, exact for a discrete cdf.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

@@ -11,11 +11,11 @@
 \item{theta}{A named list of parameters.}
 }
 \value{
-A named list of Hessian component vectors in \code{\link{hess_names}} order.
+A named list of Hessian component vectors in \code{\link[=hess_names]{hess_names()}} order.
 }
 \description{
 Fallback method: distributions that do not implement an analytical Hessian get
 one computed by finite differences of the log-density
-(see \code{\link{numerical_hessian}}).
+(see \code{\link[=numerical_hessian]{numerical_hessian()}}).
 }
 \keyword{internal}

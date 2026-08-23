@@ -23,9 +23,9 @@ to \eqn{\mu} is \strong{zero} almost everywhere:
       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
 
 The degeneracy of \eqn{\partial^2 \ell / \partial \mu^2} means Newton-Raphson
-cannot update \eqn{\mu}; use \code{\link{distrib_expected_hessian}} (Fisher
+cannot update \eqn{\mu}; use \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} (Fisher
 scoring), which supplies the correct information \eqn{1/\sigma^2} for \eqn{\mu}.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

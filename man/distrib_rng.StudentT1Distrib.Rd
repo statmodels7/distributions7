@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Student's t distribution.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

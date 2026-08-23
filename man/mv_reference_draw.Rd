@@ -8,7 +8,7 @@ mv_reference_draw(distrib, theta, n, ...)
 }
 \arguments{
 \item{distrib}{An object inheriting from class
-\code{\link{multivariate_distrib}}.}
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters.}
 
@@ -38,9 +38,9 @@ and the estimate would be zero. The draws and the log-density must be taken
 with respect to the same dominating measure the family's density is written
 against.
 
-This is consumed by \code{\link{check_distrib}} and by nothing else. A
+This is consumed by \code{\link[=check_distrib]{check_distrib()}} and by nothing else. A
 discrete family does not need it, its normalization being an exact sum over
-\code{\link{mv_support}}.
+\code{\link[=mv_support]{mv_support()}}.
 }
 \examples{
 d <- mvgaussian_distrib(2)
@@ -50,5 +50,5 @@ str(mv_reference_draw(d, theta, 5))
 
 }
 \seealso{
-\code{\link{check_distrib}}, \code{\link{mv_support}}
+\code{\link[=check_distrib]{check_distrib()}}, \code{\link[=mv_support]{mv_support()}}
 }

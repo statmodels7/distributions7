@@ -15,13 +15,13 @@
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}.
 }
 \description{
 Closed form in the location and scale block; the components involving the
 degrees of freedom are differenced, having no elementary form.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }
 \keyword{internal}

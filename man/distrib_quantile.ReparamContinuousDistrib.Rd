@@ -27,6 +27,6 @@ A numeric vector.
 The parent's quantile function at the mapped parameters.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

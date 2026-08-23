@@ -16,7 +16,7 @@ A single logical.
 \code{TRUE} for either of the two truncated classes.
 }
 \details{
-Used by \code{\link{truncated}} to collapse nested truncation to the
+Used by \code{\link[=truncated]{truncated()}} to collapse nested truncation to the
 intersection of the intervals. Nesting would be correct, but it pays the
 quadrature cost twice for a law that a single truncation already describes.
 }

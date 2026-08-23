@@ -21,20 +21,20 @@ NULL
 #' \eqn{S = e^{L}} gives \eqn{\partial^{I}S = S\,B_{I}}, with \eqn{B_{I}} the
 #' complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
 #' turns that into \eqn{\partial^{I}F = -S\,B_{I}}. The survival function is
-#' evaluated as \code{exp(L)} rather than as \code{1 - F}, which keeps the far
+#' evaluated as `exp(L)` rather than as `1 - F`, which keeps the far
 #' tail from cancelling.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 1 to 4.
-#' @param Lval The value of \eqn{L} at \code{q}.
+#' @param Lval The value of \eqn{L} at `q`.
 #' @param Lderiv A function of a character vector of parameter names returning
 #'   the corresponding partial derivative of \eqn{L}.
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{bell_f_ratio}}
+#' @seealso [bell_f_ratio()]
 #' @keywords internal
 surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
                              inside = NULL) {
@@ -57,10 +57,10 @@ surv_cdf_deriv_k <- function(distrib, q, theta, order, Lval, Lderiv,
 #' the four methods.
 #'
 #' @param cls The S7 class.
-#' @param pieces A function of \code{(distrib, q, theta)} returning a list with
-#'   \code{Lval} and \code{Lderiv}.
+#' @param pieces A function of `(distrib, q, theta)` returning a list with
+#'   `Lval` and `Lderiv`.
 #'
-#' @return Invisibly \code{NULL}; called for the registration.
+#' @return Invisibly `NULL`; called for the registration.
 #'
 #' @keywords internal
 register_surv_cdf <- function(cls, pieces) {
@@ -102,14 +102,14 @@ register_surv_cdf <- function(cls, pieces) {
 #' Closed form at every order from the survival function
 #' \eqn{S = \exp(-q/\mu)}, whose logarithm has the partial derivatives
 #' \eqn{\partial^{j}L/\partial\mu^{j} = -q(-1)^{j}j!/\mu^{j+1}}.
-#' @param distrib An \code{ExponentialDistrib} object.
+#' @param distrib An `ExponentialDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{exponential_distrib}}
+#' @seealso [exponential_distrib()]
 #' @keywords internal
 register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
   mu <- theta[[1]]
@@ -132,14 +132,14 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 #' and those are elementary: \eqn{\partial^{j}h/\partial\mu^{j} =
 #' \sigma(-1)^{j}(j-1)!/\mu^{j}}, the same without the \eqn{\sigma} when one
 #' index names the shape, and zero when two do.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 #' @keywords internal
 register_surv_cdf(Weibull1Distrib, function(distrib, q, theta) {
   mu <- theta[[1]]
@@ -203,7 +203,7 @@ register_surv_cdf(Weibull1Distrib, function(distrib, q, theta) {
 #'
 #' @return A list of five numeric vectors, orders 0 to 4.
 #'
-#' @seealso \code{\link{gpd_surv_pieces}}
+#' @seealso [gpd_surv_pieces()]
 #' @keywords internal
 gpd_lambda_derivs <- function(u) {
   R <- 4L
@@ -246,13 +246,13 @@ gpd_lambda_derivs <- function(u) {
 #' and the product with \eqn{z} by Leibniz over the scale indices alone, the
 #' shape not entering \eqn{z}.
 #'
-#' @param distrib A \code{GPDDistrib} object.
+#' @param distrib A `GPDDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{sigma} and \code{xi}.
+#' @param theta A list containing `sigma` and `xi`.
 #'
-#' @return A list with \code{Lval}, \code{Lderiv} and \code{inside}.
+#' @return A list with `Lval`, `Lderiv` and `inside`.
 #'
-#' @seealso \code{\link{gpd_lambda_derivs}}, \code{\link{register_surv_cdf}}
+#' @seealso [gpd_lambda_derivs()], [register_surv_cdf()]
 #' @keywords internal
 gpd_surv_pieces <- function(distrib, q, theta) {
   sigma <- theta[[1]]
@@ -311,13 +311,13 @@ gpd_surv_pieces <- function(distrib, q, theta) {
 #' \eqn{-(q/\sigma)\Lambda(\xi q/\sigma)} with \eqn{\Lambda(u) = \log(1+u)/u},
 #' which carries no division by the shape, so the exponential limit
 #' \eqn{\xi \to 0} is an ordinary point of the formula rather than a branch.
-#' @param distrib A \code{GPDDistrib} object.
+#' @param distrib A `GPDDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{sigma} and \code{xi}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `sigma` and `xi`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{gpd_distrib}}
+#' @seealso [gpd_distrib()]
 #' @keywords internal
 register_surv_cdf(GPDDistrib, gpd_surv_pieces)

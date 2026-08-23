@@ -22,5 +22,5 @@ Computes the quantile function (inverse CDF) for the Gaussian distribution:
 \deqn{Q(p; \mu, \sigma) = \mu + \sigma \Phi^{-1}(p)}
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

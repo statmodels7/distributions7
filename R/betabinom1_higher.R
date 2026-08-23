@@ -37,15 +37,15 @@ md_betabinom1 <- function(psi) {
 #' shape parametrization's derivatives through the map
 #' \eqn{(a, b) = (\mu/\sigma, (1-\mu)/\sigma)}.
 #'
-#' @param distrib A \code{\link{BetaBinom1Distrib}} object.
+#' @param distrib A [BetaBinom1Distrib()] object.
 #' @param y A numeric vector of counts.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of component vectors, keyed as
-#'   \code{\link{deriv_names}}.
+#'   [deriv_names()].
 #'
-#' @seealso \code{\link{betabinom1_distrib}}, \code{\link{chain_derivatives}}
+#' @seealso [betabinom1_distrib()], [chain_derivatives()]
 #' @keywords internal
 betabinom1_components <- function(distrib, y, theta, order) {
   m <- theta[[1]]
@@ -67,19 +67,19 @@ betabinom1_components <- function(distrib, y, theta, order) {
 #' Closed form at both orders. The shape parametrization carries closed
 #' derivatives at every order, and this one is that one at
 #' \eqn{a = \mu/\sigma} and \eqn{b = (1-\mu)/\sigma}, so the partition sum of
-#' \code{\link{chain_derivatives}} over the map delivers them. Every partial
+#' [chain_derivatives()] over the map delivers them. Every partial
 #' of the map with two or more \eqn{\mu} vanishes, both shapes being linear in
 #' \eqn{\mu} at fixed \eqn{\sigma}.
-#' @param distrib A \code{BetaBinom1Distrib} object.
+#' @param distrib A `BetaBinom1Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{betabinom1_distrib}}
+#' @seealso [betabinom1_distrib()]
 S7::method(distrib_deriv3, BetaBinom1Distrib) <- function(distrib, y, theta,
                                                            expected = FALSE,
                                                            scale = c("parameter", "link"),

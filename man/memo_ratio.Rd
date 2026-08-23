@@ -24,6 +24,6 @@ memoizing across the partition sum is the difference between one integration
 per block and one per occurrence.
 }
 \seealso{
-\code{\link{trunc_deriv_k}}
+\code{\link[=trunc_deriv_k]{trunc_deriv_k()}}
 }
 \keyword{internal}

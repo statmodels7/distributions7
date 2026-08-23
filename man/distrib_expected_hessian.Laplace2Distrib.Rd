@@ -14,7 +14,7 @@
 A list containing the vectors of expected second derivatives.
 }
 \description{
-As for \code{\link{laplace_distrib}}, the second Bartlett identity fails in
+As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the second Bartlett identity fails in
 \eqn{\mu} and the expected Hessian is defined from the variance of the
 score:
 
@@ -25,5 +25,5 @@ score:
 Because the closed form exists, the \code{approx} argument is ignored.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

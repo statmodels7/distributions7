@@ -4,7 +4,7 @@
 \alias{distrib_expected_hessian.MvStudentTDistrib}
 \title{Multivariate Student t Expected Information}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{y}{A numeric matrix of observations.}
 
@@ -55,5 +55,5 @@ with it being odd in \eqn{z}. Each reduces to the Gaussian's as
 freedom ceasing to be identified in the limit.
 }
 \seealso{
-\code{\link{mvstudent_t_distrib}}
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}
 }

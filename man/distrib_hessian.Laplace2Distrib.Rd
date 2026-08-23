@@ -21,11 +21,11 @@ Almost everywhere,
 
 The log-likelihood is linear in \eqn{\lambda} apart from the
 \eqn{\log\lambda} term, so every derivative in \eqn{\lambda} beyond the
-first is free of the data. As for \code{\link{laplace_distrib}}, the zero
+first is free of the data. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the zero
 second derivative in \eqn{\mu} means Newton-Raphson cannot update
-\eqn{\mu}; \code{\link{distrib_expected_hessian}} supplies the Fisher
+\eqn{\mu}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} supplies the Fisher
 information \eqn{\lambda^2}.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

@@ -21,5 +21,5 @@ with \eqn{L_0} affine in \eqn{\zeta}, so the derivatives follow from the
 moment-to-cumulant expansion over set partitions.
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

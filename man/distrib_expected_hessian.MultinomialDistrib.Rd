@@ -29,5 +29,5 @@ constant, and
       = -n\sum_j \dfrac{A_{jk}A_{jl}}{p_j}}
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

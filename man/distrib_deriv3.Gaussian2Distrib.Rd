@@ -27,5 +27,5 @@ A named list of third-derivative components.
 Closed form, observed or expected.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

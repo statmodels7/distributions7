@@ -19,7 +19,7 @@ A named list with one numeric vector per parameter.
 }
 \description{
 The parent's block carried by the first-order chain rule, exactly as
-\code{\link{distrib_cross_y}} is: a derivative in the response does not
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} is: a derivative in the response does not
 interact with a reparametrization of the parameters.
 }
 \keyword{internal}

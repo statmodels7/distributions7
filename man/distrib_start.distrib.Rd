@@ -4,7 +4,7 @@
 \alias{distrib_start.distrib}
 \title{Random Starting Values}
 \arguments{
-\item{distrib}{A \code{\link{distrib}} object.}
+\item{distrib}{A \code{\link[=distrib]{distrib()}} object.}
 
 \item{y}{The response, unused here.}
 
@@ -16,7 +16,7 @@
 A list of named parameter lists.
 }
 \description{
-The default: \code{n_start} draws from \code{\link{generate_random_theta}},
+The default: \code{n_start} draws from \code{\link[=generate_random_theta]{generate_random_theta()}},
 which uses the parameter domains and not the data. A family with a better
 idea registers its own method.
 }

@@ -12,13 +12,13 @@ student_t1_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_nu}{A link function object for the degrees of freedom parameter \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{StudentT1Distrib} (inheriting from \code{continuous_distrib}) representing the Student's t distribution.
@@ -49,7 +49,7 @@ The (location-scale) Student's t distribution has location \eqn{\mu}, scale
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma\,\partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
-The observed Hessian is available via \code{\link{distrib_hessian.StudentT1Distrib}}.
+The observed Hessian is available via \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}}.
 
 \strong{Moments} (defined for \eqn{\nu} large enough): mean \eqn{\mu} (\eqn{\nu>1}),
 variance \eqn{\sigma^2\nu/(\nu-2)} (\eqn{\nu>2}), skewness 0 (\eqn{\nu>3}),
@@ -62,9 +62,9 @@ excess kurtosis \eqn{6/(\nu-4)} (\eqn{\nu>4}).
 \item \eqn{\nu \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order observed derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}; the expected ones use the numerical fallback) and
-response derivatives (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}})
+Analytical third- and fourth-order observed derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}; the expected ones use the numerical fallback) and
+response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}})
 are also available.
 }
 \examples{
@@ -78,12 +78,12 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.StudentT1Distrib}} for the probability density function.
-\item \code{\link{distrib_cdf.StudentT1Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.StudentT1Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.StudentT1Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.StudentT1Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.StudentT1Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.StudentT1Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.StudentT1Distrib]{distrib_pdf.StudentT1Distrib()}} for the probability density function.
+\item \code{\link[=distrib_cdf.StudentT1Distrib]{distrib_cdf.StudentT1Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile.StudentT1Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.StudentT1Distrib]{distrib_rng.StudentT1Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian.StudentT1Distrib()}} for the analytical expected Hessian.
 }
 }

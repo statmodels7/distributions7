@@ -4,7 +4,7 @@
 \alias{mv_sigma.MvStudentTDistrib}
 \title{The Scale Matrix of a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }
@@ -14,6 +14,6 @@ A \eqn{p \times p} numeric matrix.
 \description{
 The scale matrix, not the covariance. The two differ by
 \eqn{\nu/(\nu-2)}, and only the scale matrix exists for every admissible
-\eqn{\nu}; the covariance is \code{\link{variance}}.
+\eqn{\nu}; the covariance is \code{\link[=variance]{variance()}}.
 }
 \keyword{internal}

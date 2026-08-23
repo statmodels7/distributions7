@@ -16,7 +16,7 @@ mv_pairs_panels(
 )
 }
 \arguments{
-\item{d}{A \code{\link{multivariate_distrib}} object.}
+\item{d}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters, already aligned.}
 
@@ -36,8 +36,8 @@ mv_pairs_panels(
 Invisibly \code{NULL}.
 }
 \description{
-The common engine of \code{\link{plot.multivariate_distrib}} and the
-multivariate branch of \code{\link{plot.distrib_fit}}: one panel per pair of
+The common engine of \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}} and the
+multivariate branch of \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}: one panel per pair of
 coordinates, the marginal densities on the diagonal.
 }
 \details{

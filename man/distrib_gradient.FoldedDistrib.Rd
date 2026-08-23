@@ -24,5 +24,5 @@ the score of a two-component mixture, the components being the two
 preimages.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

@@ -18,5 +18,5 @@ A Gamma draw raised to the power \eqn{1/p} and scaled, which is the
 representation the family is defined by rather than an approximation of it.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

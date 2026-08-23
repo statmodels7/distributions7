@@ -21,5 +21,5 @@ Computes the probability density function for the Pseudo-Huber distribution:
 where \eqn{K_1} is the modified Bessel function of the second kind.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

@@ -18,10 +18,10 @@ vectors, returning the terms elementwise.}
 A numeric vector of sums, one per row.
 }
 \description{
-Sums \code{term(k, i)} over the integers of \code{[from, to]} for each of
+Sums \code{term(k, i)} over the integers of \verb{[from, to]} for each of
 \code{n_rows} parameter rows at once. A finite support is summed directly
 in one matrix evaluation; a support unbounded above goes through
-\code{\link[numericals7]{series_vec}}; one unbounded below is reflected;
+\code{\link[numericals7:series_vec]{numericals7::series_vec()}}; one unbounded below is reflected;
 one unbounded on both sides is folded around zero. A row whose series
 does not converge raises an error naming it.
 }

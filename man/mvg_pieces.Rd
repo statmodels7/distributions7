@@ -7,7 +7,7 @@
 mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{theta}{A named list of parameters, already aligned.}
 

@@ -30,5 +30,5 @@ A named list of expected second-derivative components.
 The location and the concentration are therefore orthogonal.
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

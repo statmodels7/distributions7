@@ -26,5 +26,5 @@ Let \eqn{r = y - \mu}, \eqn{D = \sqrt{\nu + (r/\sigma)^2}},
 \deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = -\dfrac{r^2}{2\sigma^3 D^3}}
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

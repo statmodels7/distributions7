@@ -18,5 +18,5 @@ Draws from the parent and takes the absolute value, which is
 the definition rather than an approximation of it.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

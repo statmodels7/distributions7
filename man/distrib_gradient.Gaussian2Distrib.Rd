@@ -23,5 +23,5 @@ With \eqn{r = y - \mu} and \eqn{v = \sigma^2},
       \dfrac{\partial\ell}{\partial v} = \dfrac{r^2 - v}{2v^2}}
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

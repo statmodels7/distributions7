@@ -31,6 +31,6 @@ at all, so \eqn{\mu} disappears from the likelihood and the pmf is literally
 the same for \eqn{\mu = 0.2} and \eqn{\mu = 0.9}.
 }
 \seealso{
-\code{\link{n_support_points}}, \code{\link{check_not_stacked}}
+\code{\link[=n_support_points]{n_support_points()}}, \code{\link[=check_not_stacked]{check_not_stacked()}}
 }
 \keyword{internal}

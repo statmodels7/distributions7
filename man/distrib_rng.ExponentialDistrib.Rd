@@ -15,8 +15,8 @@ A numeric vector of length \code{n}.
 }
 \description{
 Draws from the exponential distribution through
-\code{\link[stats]{rexp}}.
+\code{\link[stats:Exponential]{stats::rexp()}}.
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

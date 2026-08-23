@@ -23,10 +23,10 @@ one's resultant length implies.
 The map touches the second parameter only and the response not at all, so
 the distribution function is the other family's at
 \eqn{\kappa = A^{-1}(\rho)}. What it replaces is the base class's
-quadrature, one per observation; see \code{\link{vm_cdf}} for the series
+quadrature, one per observation; see \code{\link[=vm_cdf]{vm_cdf()}} for the series
 and for how many terms it takes.
 }
 \seealso{
-\code{\link{vm_cdf}}, \code{\link{vonmises2_distrib}}
+\code{\link[=vm_cdf]{vm_cdf()}}, \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }
 \keyword{internal}

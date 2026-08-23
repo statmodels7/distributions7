@@ -24,5 +24,5 @@ The survival function is exact on the log scale, which is what a censored
 observation in the far tail needs.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

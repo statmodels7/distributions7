@@ -18,5 +18,5 @@ A list containing the vectors of expected second derivatives.
   = -\operatorname{Cov}_T(s_i, s_j)}
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

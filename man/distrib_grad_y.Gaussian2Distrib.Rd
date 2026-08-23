@@ -19,5 +19,5 @@ A numeric vector.
 \eqn{\partial\ell/\partial y = -(y-\mu)/v}.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

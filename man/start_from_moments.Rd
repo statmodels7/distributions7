@@ -49,6 +49,6 @@ validator treats bounds as open. Only the first start is data-based; the
 rest stay random, so a caller asking for several still explores.
 }
 \seealso{
-\code{\link{distrib_start}}, \code{\link{fit_distrib}}
+\code{\link[=distrib_start]{distrib_start()}}, \code{\link[=fit_distrib]{fit_distrib()}}
 }
 \keyword{internal}

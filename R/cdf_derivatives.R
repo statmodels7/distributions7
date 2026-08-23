@@ -34,13 +34,13 @@ NULL
 #'
 #' @details
 #' Every route to a cdf derivative in this file produces derivatives of \eqn{F}
-#' itself; the \code{lower.tail} and \code{log} arguments are handled once, here,
+#' itself; the `lower.tail` and `log` arguments are handled once, here,
 #' rather than in each of them. Switching tail flips the sign, since
 #' \eqn{S = 1 - F}, and switching to the log scale divides by the probability,
 #' which for a second derivative brings in the familiar
 #' \eqn{d^2 \log P = d^2 P / P - (dP/P)(dP/P)}.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param Fq The cdf evaluated at the quantile.
 #' @param dF1 A named list of first derivatives of \eqn{F}.
 #' @param dF2 An optional named list of second derivatives of \eqn{F}.
@@ -49,7 +49,7 @@ NULL
 #'
 #' @return A named list of derivative component vectors.
 #'
-#' @seealso \code{\link{distrib_grad_cdf}}, \code{\link{distrib_hess_cdf}}
+#' @seealso [distrib_grad_cdf()], [distrib_hess_cdf()]
 #' @keywords internal
 cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
   params <- distrib@params
@@ -98,14 +98,14 @@ cdf_tail_scale <- function(distrib, Fq, dF1, dF2 = NULL, lower.tail, log) {
 #' sum proves nothing, because it is the same sum computed twice. A discrete
 #' implementation has to be checked against finite differences of the cdf.
 #'
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 1 or 2.
 #'
 #' @return A named list of derivative component vectors of \eqn{F}.
 #'
-#' @seealso \code{\link{cdf_tail_scale}}
+#' @seealso [cdf_tail_scale()]
 #' @keywords internal
 discrete_cdf_deriv <- function(distrib, q, theta, order) {
   params <- distrib@params
@@ -142,23 +142,23 @@ discrete_cdf_deriv <- function(distrib, q, theta, order) {
 #' Numerical Derivatives of the Distribution Function
 #'
 #' @description
-#' Central finite differences of \code{\link{distrib_cdf}} with respect to each
-#' parameter. These power the default \code{\link{distrib_grad_cdf}} and
-#' \code{\link{distrib_hess_cdf}} methods for continuous distributions that do
+#' Central finite differences of [distrib_cdf()] with respect to each
+#' parameter. These power the default [distrib_grad_cdf()] and
+#' [distrib_hess_cdf()] methods for continuous distributions that do
 #' not supply a closed form.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order Either 1 or 2.
 #' @param h_rel Numeric. Relative finite-difference step.
 #' @param which Character vector naming the components to differentiate, or
-#'   \code{NULL} (default) for all of them: parameter names at first order and
-#'   \code{\link{hess_names}} components at second. Used by families that have
+#'   `NULL` (default) for all of them: parameter names at first order and
+#'   [hess_names()] components at second. Used by families that have
 #'   a closed form for some components and not others, so that only the
 #'   remaining ones cost cdf evaluations.
 #' @return A named list of derivative components of \eqn{F}, not of its logarithm.
-#' @seealso \code{\link{distrib_grad_cdf}}
+#' @seealso [distrib_grad_cdf()]
 #' @examples
 #' numerical_cdf_deriv(gaussian1_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
 #'
@@ -216,11 +216,11 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #' @title Default Log-CDF Gradient for Continuous Distributions
 #' @name distrib_grad_cdf.continuous_distrib
 #' @description Fallback: finite differences of the distribution function.
-#' @param distrib A \code{continuous_distrib} object.
+#' @param distrib A `continuous_distrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
 #' @keywords internal
 S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
@@ -233,12 +233,12 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #' @title Default Log-CDF Hessian for Continuous Distributions
 #' @name distrib_hess_cdf.continuous_distrib
 #' @description Fallback: finite differences of the distribution function.
-#' @param distrib A \code{continuous_distrib} object.
+#' @param distrib A `continuous_distrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
 #' @keywords internal
 S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
                                                              lower.tail = TRUE, log = TRUE) {
@@ -255,11 +255,11 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
 #' @description
 #' Exact: the partial expectation of the score is a finite sum over the support
 #' up to \eqn{q}, so nothing is differenced.
-#' @param distrib A \code{discrete_distrib} object.
+#' @param distrib A `discrete_distrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
 #' @keywords internal
 S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
@@ -272,12 +272,12 @@ S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
 #' @title Log-CDF Hessian for Discrete Distributions
 #' @name distrib_hess_cdf.discrete_distrib
 #' @description Exact, by the same finite sum as the gradient.
-#' @param distrib A \code{discrete_distrib} object.
+#' @param distrib A `discrete_distrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
 #' @keywords internal
 S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE) {
@@ -322,14 +322,14 @@ S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
 #' distribution already provides. This covers the censored-regression workhorses
 #' -- Gaussian, logistic, Cauchy, Laplace.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters, location first and scale second.
 #' @param order The derivative order, 1 or 2.
 #'
 #' @return A named list of derivative component vectors of \eqn{F}.
 #'
-#' @seealso \code{\link{loc_scale_grad_cdf}}, \code{\link{loc_scale_hess_cdf}}
+#' @seealso [loc_scale_grad_cdf()], [loc_scale_hess_cdf()]
 #' @keywords internal
 loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
   mu <- theta[[1]]
@@ -347,11 +347,11 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #' Location-Scale CDF Gradient
 #'
 #' @description
-#' The \code{\link{distrib_grad_cdf}} body shared by the location-scale families:
-#' \code{\link{loc_scale_cdf_deriv}} at order 1, put on the requested tail and
+#' The [distrib_grad_cdf()] body shared by the location-scale families:
+#' [loc_scale_cdf_deriv()] at order 1, put on the requested tail and
 #' scale.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param lower.tail Logical; whether the lower tail is wanted.
@@ -368,9 +368,9 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 #' Location-Scale CDF Hessian
 #'
 #' @description
-#' The \code{\link{distrib_hess_cdf}} body shared by the location-scale families.
+#' The [distrib_hess_cdf()] body shared by the location-scale families.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param lower.tail Logical; whether the lower tail is wanted.
@@ -391,73 +391,73 @@ loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 #' Closed form, from the location-scale structure:
 #' \eqn{\partial F/\partial\mu = -f(y)} and
 #' \eqn{\partial F/\partial\sigma = -z f(y)} with \eqn{z = (y-\mu)/\sigma}.
-#' @param distrib A \code{Gaussian1Distrib} object.
+#' @param distrib A `Gaussian1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{gaussian1_distrib}}
+#' @seealso [gaussian1_distrib()]
 S7::method(distrib_grad_cdf, Gaussian1Distrib) <- loc_scale_grad_cdf
 
 #' @title Gaussian Log-CDF Second Derivatives
 #' @name distrib_hess_cdf.Gaussian1Distrib
 #' @description Closed form, from the same location-scale structure.
-#' @param distrib A \code{Gaussian1Distrib} object.
+#' @param distrib A `Gaussian1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
-#' @seealso \code{\link{gaussian1_distrib}}
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
+#' @seealso [gaussian1_distrib()]
 S7::method(distrib_hess_cdf, Gaussian1Distrib) <- loc_scale_hess_cdf
 
 #' @title Logistic Log-CDF Derivatives
 #' @name distrib_grad_cdf.LogisticDistrib
 #' @description Closed form, from the location-scale structure.
-#' @param distrib A \code{LogisticDistrib} object.
+#' @param distrib A `LogisticDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{logistic_distrib}}
+#' @seealso [logistic_distrib()]
 S7::method(distrib_grad_cdf, LogisticDistrib) <- loc_scale_grad_cdf
 
 #' @title Logistic Log-CDF Second Derivatives
 #' @name distrib_hess_cdf.LogisticDistrib
 #' @description Closed form, from the location-scale structure.
-#' @param distrib A \code{LogisticDistrib} object.
+#' @param distrib A `LogisticDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
-#' @seealso \code{\link{logistic_distrib}}
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
+#' @seealso [logistic_distrib()]
 S7::method(distrib_hess_cdf, LogisticDistrib) <- loc_scale_hess_cdf
 
 #' @title Cauchy Log-CDF Derivatives
 #' @name distrib_grad_cdf.CauchyDistrib
 #' @description Closed form, from the location-scale structure.
-#' @param distrib A \code{CauchyDistrib} object.
+#' @param distrib A `CauchyDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{cauchy_distrib}}
+#' @seealso [cauchy_distrib()]
 S7::method(distrib_grad_cdf, CauchyDistrib) <- loc_scale_grad_cdf
 
 #' @title Cauchy Log-CDF Second Derivatives
 #' @name distrib_hess_cdf.CauchyDistrib
 #' @description Closed form, from the location-scale structure.
-#' @param distrib A \code{CauchyDistrib} object.
+#' @param distrib A `CauchyDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
-#' @seealso \code{\link{cauchy_distrib}}
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
+#' @seealso [cauchy_distrib()]
 S7::method(distrib_hess_cdf, CauchyDistrib) <- loc_scale_hess_cdf
 
 #' @title Laplace Log-CDF Derivatives
@@ -465,14 +465,14 @@ S7::method(distrib_hess_cdf, CauchyDistrib) <- loc_scale_hess_cdf
 #' @description
 #' Closed form, from the location-scale structure. Note that the second
 #' derivatives inherit the kink at \eqn{y = \mu}, where \eqn{\partial\ell/\partial y}
-#' does not exist; \code{\link{param_smoothness}} records this.
-#' @param distrib A \code{LaplaceDistrib} object.
+#' does not exist; [param_smoothness()] records this.
+#' @param distrib A `LaplaceDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{laplace_distrib}}
+#' @seealso [laplace_distrib()]
 S7::method(distrib_grad_cdf, LaplaceDistrib) <- loc_scale_grad_cdf
 
 #' @title Laplace Log-CDF Second Derivatives
@@ -482,13 +482,13 @@ S7::method(distrib_grad_cdf, LaplaceDistrib) <- loc_scale_grad_cdf
 #' of \eqn{F} in \eqn{\mu} genuinely does not exist --- it jumps between
 #' \eqn{\pm 1/(2\sigma^{2})} --- so the value returned there is the one-sided limit
 #' the sign convention picks out, and is reported rather than smoothed.
-#' @param distrib A \code{LaplaceDistrib} object.
+#' @param distrib A `LaplaceDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
-#' @seealso \code{\link{laplace_distrib}}
+#' @param theta A list containing `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
+#' @seealso [laplace_distrib()]
 S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
 
 #' @title Laplace Log-CDF Derivatives in Location and Rate
@@ -497,14 +497,14 @@ S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
 #' Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
 #' \eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. The second
 #' derivatives inherit the kink at \eqn{q = \mu} exactly as those of
-#' \code{\link{laplace_distrib}} do.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' [laplace_distrib()] do.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
                                                           lower.tail = TRUE, log = TRUE) {
   f <- distrib_pdf(distrib, q, theta)
@@ -522,13 +522,13 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' \eqn{\partial^{2} F/\partial\lambda^{2} = -s a^{2} f/\lambda}. At the kink the
 #' second derivative in \eqn{\mu} does not exist, and the value returned is the
 #' one-sided limit the sign convention picks out.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
-#' @return A named list keyed as \code{\link{hess_names}}.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @param theta A list containing `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
+#' @return A named list keyed as [hess_names()].
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
                                                           lower.tail = TRUE, log = TRUE) {
   lam <- theta[[2]]
@@ -562,13 +562,13 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' \eqn{\partial F/\partial\mu = -y f(y)} and
 #' \eqn{\partial F/\partial\sigma^{2} = -y f(y) z/(2\sigma)} with
 #' \eqn{z = (\log y - \mu)/\sigma}.
-#' @param distrib A \code{Lognormal1Distrib} object.
+#' @param distrib A `Lognormal1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{sigma2}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `sigma2`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{lognormal1_distrib}}
+#' @seealso [lognormal1_distrib()]
 S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE) {
   s <- sqrt(theta[[2]])
@@ -607,13 +607,13 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 #' @description
 #' Closed form: the sum defining \eqn{F} telescopes, leaving
 #' \eqn{\partial F(k)/\partial\mu = -f(k)}.
-#' @param distrib A \code{PoissonDistrib} object.
+#' @param distrib A `PoissonDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list with one element.
-#' @seealso \code{\link{poisson_distrib}}
+#' @seealso [poisson_distrib()]
 S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
                                                          lower.tail = TRUE, log = TRUE) {
   d1 <- list(mu = -distrib_pdf(distrib, floor(q), theta) * (q >= 0))
@@ -624,13 +624,13 @@ S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
 #' @name distrib_grad_cdf.BinomialDistrib
 #' @description
 #' Closed form: \eqn{\partial F(k)/\partial\mu = -n\,\mathrm{dbinom}(k; n-1, \mu)}.
-#' @param distrib A \code{BinomialDistrib} object.
+#' @param distrib A `BinomialDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list with one element.
-#' @seealso \code{\link{binomial_distrib}}
+#' @seealso [binomial_distrib()]
 S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
                                                           lower.tail = TRUE, log = TRUE) {
   n <- distrib@size
@@ -643,13 +643,13 @@ S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
 #' @description
 #' Closed form, the binomial identity at \eqn{n = 1}: the derivative is
 #' \eqn{-1} at \eqn{k = 0} and zero at \eqn{k = 1}.
-#' @param distrib A \code{BernoulliDistrib} object.
+#' @param distrib A `BernoulliDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list with one element.
-#' @seealso \code{\link{bernoulli_distrib}}
+#' @seealso [bernoulli_distrib()]
 S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
                                                            lower.tail = TRUE, log = TRUE) {
   d1 <- list(mu = -stats::dbinom(floor(q), 0, theta[[1]]) * (q >= 0))
@@ -663,13 +663,13 @@ S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
 #' which reduces to the Poisson identity as \eqn{\theta\to\infty}. The \eqn{\theta}
 #' direction is a derivative of the incomplete beta in its parameter, has no
 #' elementary form, and keeps the exact summation.
-#' @param distrib A \code{NegBin2Distrib} object.
+#' @param distrib A `NegBin2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu} and \code{theta}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu` and `theta`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{negbin2_distrib}}
+#' @seealso [negbin2_distrib()]
 S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
                                                         lower.tail = TRUE, log = TRUE) {
   k <- floor(q)
@@ -697,11 +697,11 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
 #' derivative of a hypergeometric-type integral with no elementary form, so it is
 #' differenced; the other two are exact.
 #'
-#' For the pseudo-Huber this is an \strong{accuracy} gain rather than merely a
+#' For the pseudo-Huber this is an **accuracy** gain rather than merely a
 #' speed one. Its cdf is itself a quadrature, so differencing it is good to only
-#' about \code{1e-6}, whereas \eqn{\partial F/\partial \mu = -f} is exact.
+#' about `1e-6`, whereas \eqn{\partial F/\partial \mu = -f} is exact.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param lower.tail Logical; whether the lower tail is wanted.
@@ -725,24 +725,24 @@ partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log
 #' @description
 #' Closed form in the location and scale, \eqn{-f(y)} and \eqn{-z f(y)}; the
 #' degrees of freedom are differenced, having no elementary form.
-#' @param distrib A \code{StudentT1Distrib} object.
+#' @param distrib A `StudentT1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{nu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`, `sigma` and `nu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{student_t1_distrib}}
+#' @seealso [student_t1_distrib()]
 S7::method(distrib_grad_cdf, StudentT1Distrib) <- partial_loc_scale_grad_cdf
 
 #' @title Pseudo-Huber Log-CDF Gradient
 #' @name distrib_grad_cdf.PseudoHuberDistrib
 #' @description
 #' Closed form in the location and scale; the shape \eqn{\nu} is differenced.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{nu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`, `sigma` and `nu`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @return A named list, one vector per parameter.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_grad_cdf, PseudoHuberDistrib) <- partial_loc_scale_grad_cdf

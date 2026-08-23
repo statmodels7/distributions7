@@ -18,5 +18,5 @@ A numeric vector.
 undefined at the location.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

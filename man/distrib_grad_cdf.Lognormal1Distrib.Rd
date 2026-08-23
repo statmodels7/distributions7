@@ -24,5 +24,5 @@ Closed form. On the log scale the lognormal is a location-scale family, so
 \eqn{z = (\log y - \mu)/\sigma}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

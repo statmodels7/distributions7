@@ -4,7 +4,7 @@ NULL
 #' Record One Check Result
 #'
 #' @description
-#' Builds the single-row data frame that \code{\link{check_distrib}} accumulates
+#' Builds the single-row data frame that [check_distrib()] accumulates
 #' into its report.
 #'
 #' @param name The check's name, as it appears in the report.
@@ -13,10 +13,10 @@ NULL
 #'   discrepancy.
 #' @param detail An optional message, used to carry the reason for a failure.
 #'
-#' @return A one-row data frame with columns \code{check}, \code{status},
-#'   \code{statistic} and \code{detail}.
+#' @return A one-row data frame with columns `check`, `status`,
+#'   `statistic` and `detail`.
 #'
-#' @seealso \code{\link{check_distrib}}, \code{\link{safe_check}}
+#' @seealso [check_distrib()], [safe_check()]
 #' @keywords internal
 new_check <- function(name, ok, stat, detail = NA_character_) {
   data.frame(
@@ -39,11 +39,11 @@ new_check <- function(name, ok, stat, detail = NA_character_) {
 #'
 #' @param name The check's name, used for the row built on failure.
 #' @param expr The expression to evaluate; normally returns a row from
-#'   \code{\link{new_check}}.
+#'   [new_check()].
 #'
-#' @return The value of \code{expr}, or a failed row carrying the error message.
+#' @return The value of `expr`, or a failed row carrying the error message.
 #'
-#' @seealso \code{\link{check_distrib}}, \code{\link{new_check}}
+#' @seealso [check_distrib()], [new_check()]
 #' @keywords internal
 safe_check <- function(name, expr) {
   tryCatch(expr, error = function(e) new_check(name, FALSE, NA_real_, conditionMessage(e)))
@@ -52,49 +52,49 @@ safe_check <- function(name, expr) {
 #' Numerically Validate a Distribution
 #'
 #' @description
-#' Runs a battery of numerical self-consistency checks on a \code{distrib} object.
+#' Runs a battery of numerical self-consistency checks on a `distrib` object.
 #' Validates a user-defined distribution: it verifies that the density integrates (or sums) to one, that the
 #' CDF, quantile function and random generator agree with each other and with the
 #' density, and that every analytical derivative matches its finite-difference
 #' counterpart.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameter values at which to run the checks. If
-#'   \code{NULL} (default) a random admissible value is drawn with
-#'   \code{\link{generate_random_theta}}.
+#'   `NULL` (default) a random admissible value is drawn with
+#'   [generate_random_theta()].
 #' @param n Integer. Number of observations used for the derivative comparisons.
 #'   Defaults to 100.
 #' @param nsim Integer. Monte Carlo sample size used for the random generator and
 #'   expected-information checks. Defaults to 200000.
 #' @param orders Integer vector. Which parameter-derivative orders to check.
-#'   Defaults to \code{1:4}; use e.g. \code{1:2} for a faster run.
+#'   Defaults to `1:4`; use e.g. `1:2` for a faster run.
 #' @param tol Numeric. Relative tolerance for the finite-difference comparisons.
-#'   Defaults to \code{1e-3}.
-#' @param verbose Logical. If \code{TRUE} (default) a readable report is printed.
+#'   Defaults to `1e-3`.
+#' @param verbose Logical. If `TRUE` (default) a readable report is printed.
 #'
-#' @return Invisibly, a \code{data.frame} with one row per check and columns
-#'   \code{check}, \code{status} (\code{"OK"} or \code{"FAIL"}), \code{statistic}
-#'   and \code{detail}.
+#' @return Invisibly, a `data.frame` with one row per check and columns
+#'   `check`, `status` (`"OK"` or `"FAIL"`), `statistic`
+#'   and `detail`.
 #'
 #' @details
 #' The checks performed are:
 #' \itemize{
-#'   \item \strong{density}: non-negativity and integration/summation to 1 over the support.
-#'   \item \strong{cdf}: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
-#'   \item \strong{quantile}: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
+#'   \item **density**: non-negativity and integration/summation to 1 over the support.
+#'   \item **cdf**: values in \eqn{[0,1]} and monotonicity along a grid of quantiles.
+#'   \item **quantile**: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 #'     distributions, and the generalized-inverse inequalities for discrete ones).
-#'   \item \strong{rng}: the sample mean and variance of a large draw agree with
-#'     \code{\link{mean}} and \code{\link{variance}} within Monte Carlo error.
-#'   \item \strong{gradient, hessian, deriv3, deriv4}: analytical values against
-#'     \code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
-#'     \code{\link{numerical_deriv3}} and \code{\link{numerical_deriv4}}.
-#'   \item \strong{expected information}: \code{\link{distrib_expected_hessian}} against a
+#'   \item **rng**: the sample mean and variance of a large draw agree with
+#'     [mean()] and [variance()] within Monte Carlo error.
+#'   \item **gradient, hessian, deriv3, deriv4**: analytical values against
+#'     [numerical_gradient()], [numerical_hessian()],
+#'     [numerical_deriv3()] and [numerical_deriv4()].
+#'   \item **expected information**: [distrib_expected_hessian()] against a
 #'     Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 #'     product of the score is used as reference because it remains valid when the
-#'     log-likelihood is not differentiable in a parameter (see \code{\link{laplace_distrib}}).
-#'   \item \strong{response derivatives} (continuous only): \code{\link{distrib_grad_y}} and
-#'     \code{\link{distrib_hess_y}} against finite differences in \eqn{y}.
-#'   \item \strong{link scale}: \code{scale = "link"} derivatives against finite
+#'     log-likelihood is not differentiable in a parameter (see [laplace_distrib()]).
+#'   \item **response derivatives** (continuous only): [distrib_grad_y()] and
+#'     [distrib_hess_y()] against finite differences in \eqn{y}.
+#'   \item **link scale**: `scale = "link"` derivatives against finite
 #'     differences of the log-likelihood in \eqn{\eta}.
 #' }
 #' Distributions that rely on the numerical fallbacks will trivially pass the
@@ -102,8 +102,8 @@ safe_check <- function(name, expr) {
 #' coincide by construction.
 #'
 #' Mixed distributions --- a density with point masses on top of it, as produced by
-#' \code{\link{zero_adjusted}()} on a continuous parent --- are handled as long as they
-#' declare their atoms through \code{\link{distrib_atoms}}. The density is then expected
+#' [zero_adjusted()] on a continuous parent --- are handled as long as they
+#' declare their atoms through [distrib_atoms()]. The density is then expected
 #' to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
 #' are checked as generalized inverses rather than exact ones, and finite differences in
 #' \eqn{y} are kept away from the atoms, where no derivative exists.
@@ -115,8 +115,8 @@ safe_check <- function(name, expr) {
 #' check_distrib(poisson_distrib(), orders = 1:2, nsim = 5e4)
 #' }
 #'
-#' @seealso \code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
-#'   \code{\link{link_scale_derivatives}}
+#' @seealso [numerical_gradient()], [numerical_hessian()],
+#'   [link_scale_derivatives()]
 #' @export
 check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
                           orders = 1:4, tol = 1e-3, verbose = TRUE) {
@@ -418,18 +418,18 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
 #' Print a Validation Table
 #'
 #' @description
-#' Renders what \code{\link{check_distrib}} found, in the same shape for a
+#' Renders what [check_distrib()] found, in the same shape for a
 #' univariate and a multivariate distribution.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param out The data frame of checks.
 #' @param theta The parameters the checks were run at.
 #' @param n The number of observations used.
 #' @param nsim The Monte Carlo sample size used.
 #'
-#' @return Invisibly \code{NULL}.
+#' @return Invisibly `NULL`.
 #'
-#' @seealso \code{\link{check_distrib}}
+#' @seealso [check_distrib()]
 #' @keywords internal
 print_check_table <- function(distrib, out, theta, n, nsim) {
   cat("Distribution: ", distrib@distrib_name, "\n", sep = "")
@@ -456,14 +456,14 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #'
 #' @description
 #' Flags the observations where a central difference has actually converged, so
-#' that \code{\link{check_distrib}} compares an analytical derivative only
+#' that [check_distrib()] compares an analytical derivative only
 #' against a reference that is itself reliable.
 #'
 #' @details
 #' A log-likelihood with a kink -- the Laplace's location is the example the
 #' package ships -- has no derivative exactly at the kink, and a central
 #' difference straddling it returns a number that is simply wrong. An observation
-#' landing within a step of that point therefore makes the \emph{reference}
+#' landing within a step of that point therefore makes the *reference*
 #' invalid, not the analytical value being tested, and comparing against it
 #' reports a failure for code that is right. Because the draws are random, that
 #' happened rarely and unpredictably.
@@ -474,31 +474,31 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' dropped, so the check keeps its full strength -- a gradient made 5\% wrong is
 #' still caught.
 #'
-#' Two details are load-bearing. The two estimates are compared \strong{relative
-#' to their own magnitude} rather than against a denominator floored at one: near
+#' Two details are load-bearing. The two estimates are compared **relative
+#' to their own magnitude** rather than against a denominator floored at one: near
 #' a kink both are tiny yet differ by a factor of two, which a floor of one
 #' flattens into apparent agreement. And if no observation survives, all are kept:
 #' a systematic disagreement is a real failure and should be reported, not hidden
 #' by the guard meant to protect against a local one.
 #'
-#' Note the placement. This is defined \emph{after} \code{check_distrib()}, not
+#' Note the placement. This is defined *after* `check_distrib()`, not
 #' before it: a roxygen block attaches to whatever object follows it, so a helper
 #' slipped in between silently steals the documentation of the function it
 #' belongs to -- which had already happened once here, leaving the package with a
-#' \code{fd_is_reliable.Rd} and no \code{check_distrib.Rd}.
+#' `fd_is_reliable.Rd` and no `check_distrib.Rd`.
 #'
 #' @param fd_at A function of one argument, the relative step, returning the
 #'   finite-difference reference computed with that step.
-#' @param ref The reference already computed at \code{h_rel}, a named list of
+#' @param ref The reference already computed at `h_rel`, a named list of
 #'   component vectors.
-#' @param h_rel The relative step \code{ref} was computed with.
-#' @param smooth_all Logical; \code{TRUE} when every parameter is declared
+#' @param h_rel The relative step `ref` was computed with.
+#' @param smooth_all Logical; `TRUE` when every parameter is declared
 #'   smooth, in which case no observation is ever dropped and the guard does not
 #'   run at all.
 #'
-#' @return A logical vector as long as the components of \code{ref}.
+#' @return A logical vector as long as the components of `ref`.
 #'
-#' @seealso \code{\link{check_distrib}}
+#' @seealso [check_distrib()]
 #' @keywords internal
 fd_is_reliable <- function(fd_at, ref, h_rel, smooth_all) {
   n <- length(ref[[1L]])

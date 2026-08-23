@@ -28,9 +28,9 @@ log-likelihood and its derivatives to fourth order are exact, computed by
 a compiled kernel that carries a bivariate jet through the closed
 expression. The expected information has no closed form and goes through
 the summation strategies of
-\code{\link{expected_derivative_methods}}. For the parametrization in
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. For the parametrization in
 which \eqn{\mu} and the second parameter are orthogonal, see
-\code{\link{pig2_distrib}}.
+\code{\link[=pig2_distrib]{pig2_distrib()}}.
 }
 \section{The distribution}{
 
@@ -57,5 +57,5 @@ Poisson-inverse-Gaussian regression model. \emph{Canadian Journal of
 Statistics} 17(2), 171--181.
 }
 \seealso{
-\code{\link{pig2_distrib}}, \code{\link{negbin2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

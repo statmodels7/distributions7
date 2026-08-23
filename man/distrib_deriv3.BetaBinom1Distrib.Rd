@@ -30,10 +30,10 @@ A named list of fourth-derivative components.
 Closed form at both orders. The shape parametrization carries closed
 derivatives at every order, and this one is that one at
 \eqn{a = \mu/\sigma} and \eqn{b = (1-\mu)/\sigma}, so the partition sum of
-\code{\link{chain_derivatives}} over the map delivers them. Every partial
+\code{\link[=chain_derivatives]{chain_derivatives()}} over the map delivers them. Every partial
 of the map with two or more \eqn{\mu} vanishes, both shapes being linear in
 \eqn{\mu} at fixed \eqn{\sigma}.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

@@ -8,13 +8,13 @@ betabinom1_distrib(size, link_mu = logit_link(), link_sigma = log_link())
 }
 \arguments{
 \item{size}{The number of trials \eqn{n}. A constant of the distribution
-rather than a parameter, as for \code{\link{binomial_distrib}}.}
+rather than a parameter, as for \code{\link[=binomial_distrib]{binomial_distrib()}}.}
 
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{logit_link}}, the mean being a proportion.}
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the mean being a proportion.}
 
 \item{link_sigma}{A link function object for \eqn{\sigma}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{BetaBinom1Distrib}.
@@ -75,6 +75,6 @@ variance(binomial_distrib(size = 10), list(mu = 0.3))
 
 }
 \seealso{
-\code{\link{binomial_distrib}}, \code{\link{beta1_distrib}},
-\code{\link{negbin2_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}, \code{\link[=beta1_distrib]{beta1_distrib()}},
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

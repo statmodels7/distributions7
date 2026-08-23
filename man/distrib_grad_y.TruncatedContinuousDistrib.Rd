@@ -19,5 +19,5 @@ derivative is the parent's. Outside, the log-density is \eqn{-\infty} and no
 derivative exists, so \code{NaN} is returned.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

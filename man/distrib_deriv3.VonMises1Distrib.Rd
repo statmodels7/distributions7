@@ -38,5 +38,5 @@ one \eqn{\mu} and two or more \eqn{\kappa} vanishes exactly. The pure
 \eqn{A' = 1 - A/\kappa - A^2}.
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

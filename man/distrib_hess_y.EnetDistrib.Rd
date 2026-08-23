@@ -19,5 +19,5 @@ nothing away from the location, so the curvature in the response is the
 Gaussian part alone.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

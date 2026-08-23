@@ -19,6 +19,6 @@ A numeric vector of atom locations, possibly empty.
 The parent's, unchanged: a reparametrization does not move mass.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

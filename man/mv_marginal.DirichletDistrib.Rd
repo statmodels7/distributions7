@@ -24,5 +24,5 @@ the remaining mass is collapsed into one of its own, so that case is
 rejected.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

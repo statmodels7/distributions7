@@ -21,13 +21,13 @@ The parent's density at \eqn{+x} and at \eqn{-x}, their sum, and the weight
 \eqn{w = f(x)/L} the first carries.
 }
 \details{
-Every method of \code{\link{FoldedDistrib}} needs the same four quantities,
+Every method of \code{\link[=FoldedDistrib]{FoldedDistrib()}} needs the same four quantities,
 and computing them once keeps the parent's density from being evaluated
 twice per call. Points outside the folded support contribute nothing and are
 returned with a zero density rather than being dropped, so that the result
 aligns with the input.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }
 \keyword{internal}

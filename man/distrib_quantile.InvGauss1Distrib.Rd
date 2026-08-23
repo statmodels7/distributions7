@@ -20,8 +20,8 @@ A numeric vector of quantiles.
 \description{
 Computes the quantile function for the Inverse-Gaussian distribution as the
 inverse of the CDF, \eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no
-closed form; it is obtained numerically via \code{\link[statmod]{qinvgauss}}.
+closed form; it is obtained numerically via \code{\link[statmod:invgauss]{statmod::qinvgauss()}}.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

@@ -27,5 +27,5 @@ A named list of fourth-derivative components.
 Closed form, observed or expected.
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

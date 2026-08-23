@@ -12,19 +12,19 @@
 \code{FALSE}.
 }
 \description{
-The method above calls \code{\link{expected_derivative}} and then replaces
+The method above calls \code{\link[=expected_derivative]{expected_derivative()}} and then replaces
 two components that vanish by symmetry, so the registration improves the
 approximation rather than replacing it.
 }
 \details{
 Measured at 100 observations it costs 10980 ms, where the families that
 write their expected information out answer in a median of 0.183 ms.
-Reported as exact, it made \code{\link{fit_distrib}} reject a legitimate
+Reported as exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
 \code{fisher_scoring(approx = )} here with a message that was untrue, and
 take a quadrature it believed was a formula when assembling the standard
 errors.
 }
 \seealso{
-\code{\link{expected_hessian_exact}}
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}
 }
 \keyword{internal}

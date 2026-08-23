@@ -4,7 +4,7 @@
 \alias{distrib_expected_hessian.multivariate_distrib}
 \title{Expected Information of a Multivariate Distribution}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations; only its row count is
 used, the expectation being over the distribution rather than the data.}
@@ -21,7 +21,7 @@ used, the expectation being over the distribution rather than the data.}
 \item{...}{Unused.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}(distrib@params)}.
+A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Fallback for a multivariate family with no closed form: the expectation is
@@ -31,7 +31,7 @@ taken over draws from the distribution itself.
 The one-dimensional routes do not survive the move to \eqn{p} dimensions.
 \code{"integrate"} builds its quadrature over an interval and is rejected
 here; \code{"bartlett"} in the univariate package reaches
-\code{\link{expectation}}, which is that same quadrature. What does
+\code{\link[=expectation]{expectation()}}, which is that same quadrature. What does
 generalize is sampling, so both remaining routes draw from the family's own
 generator and differ in what they average:
 
@@ -45,7 +45,7 @@ degenerate.
 Both are Monte Carlo, so both carry an error of order
 \eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
 scoring with a noisy information. That is a deliberate choice a caller
-makes, which is why \code{\link{fit_distrib}} rejects the argument for a
+makes, which is why \code{\link[=fit_distrib]{fit_distrib()}} rejects the argument for a
 family that has an exact expression.
 }
 \keyword{internal}

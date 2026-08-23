@@ -24,5 +24,5 @@ The normal distribution function at standard deviation
 \eqn{1/\sqrt{\tau}}.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

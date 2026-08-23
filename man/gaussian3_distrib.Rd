@@ -12,16 +12,16 @@ gaussian3_distrib(link_mu = identity_link(), link_tau = log_link())
 \item{link_tau}{Link function for \eqn{\tau}. Defaults to the log.}
 }
 \value{
-An S7 object of class \code{\link{Gaussian3Distrib}}.
+An S7 object of class \code{\link[=Gaussian3Distrib]{Gaussian3Distrib()}}.
 }
 \description{
 Creates a Gaussian distribution object parametrized by its mean and its
 \strong{precision} \eqn{\tau = 1/\sigma^2}.
 }
 \details{
-This is the same law as \code{\link{gaussian1_distrib}} in different
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different
 coordinates, and a separate family for the same reason
-\code{\link{gaussian2_distrib}} is: the parameter here \emph{is} the
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is: the parameter here \emph{is} the
 precision, and that is what the estimate, the standard error and the
 interval describe.
 
@@ -52,5 +52,5 @@ distrib_pdf(gaussian1_distrib(), 0.5, list(mu = 1, sigma = 2))
 
 }
 \seealso{
-\code{\link{gaussian1_distrib}}, \code{\link{gaussian2_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

@@ -12,7 +12,7 @@ grou_two_sided(lp, b, div, n, r)
 \item{b}{A length-2 numeric vector, the support.}
 
 \item{div}{The exponents at the two edges, from
-\code{\link{lp_edge_divergence}}.}
+\code{\link[=lp_edge_divergence]{lp_edge_divergence()}}.}
 
 \item{n}{The number of draws wanted.}
 
@@ -41,6 +41,6 @@ wants. Both exponents come from the same probe that detected the divergence,
 so nothing has to be searched for.
 }
 \seealso{
-\code{\link{grou_core}}, \code{\link{lp_edge_divergence}}
+\code{\link[=grou_core]{grou_core()}}, \code{\link[=lp_edge_divergence]{lp_edge_divergence()}}
 }
 \keyword{internal}

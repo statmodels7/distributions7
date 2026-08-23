@@ -19,5 +19,5 @@ A list containing the vectors of expected second derivatives.
 the covariance of the parent's score under the truncated distribution.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

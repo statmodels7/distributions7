@@ -20,5 +20,5 @@ Computes the probability density function for the Beta distribution:
 \deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\mu\phi)\Gamma((1-\mu)\phi)} y^{\mu\phi-1} (1-y)^{(1-\mu)\phi-1}}
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

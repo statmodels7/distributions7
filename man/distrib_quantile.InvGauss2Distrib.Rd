@@ -24,5 +24,5 @@ The inverse gaussian quantile function at dispersion
 \eqn{1/\lambda}.
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

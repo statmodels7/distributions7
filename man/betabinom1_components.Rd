@@ -7,7 +7,7 @@
 betabinom1_components(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link{BetaBinom1Distrib}} object.}
+\item{distrib}{A \code{\link[=BetaBinom1Distrib]{BetaBinom1Distrib()}} object.}
 
 \item{y}{A numeric vector of counts.}
 
@@ -17,7 +17,7 @@ betabinom1_components(distrib, y, theta, order)
 }
 \value{
 A named list of component vectors, keyed as
-\code{\link{deriv_names}}.
+\code{\link[=deriv_names]{deriv_names()}}.
 }
 \description{
 The components of any order from one to four, obtained by carrying the
@@ -25,6 +25,6 @@ shape parametrization's derivatives through the map
 \eqn{(a, b) = (\mu/\sigma, (1-\mu)/\sigma)}.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}, \code{\link{chain_derivatives}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, \code{\link[=chain_derivatives]{chain_derivatives()}}
 }
 \keyword{internal}

@@ -30,11 +30,11 @@ partial_loc_scale_cross2_y(
 A named list with one numeric vector per parameter.
 }
 \description{
-The \code{\link{distrib_cross2_y}} body shared by the families that are
+The \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} body shared by the families that are
 location-scale in both their parameters, and the partial form for those
 with a shape parameter beyond the two.
 }
 \seealso{
-\code{\link{loc_scale_cross2_block}}
+\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}}
 }
 \keyword{internal}

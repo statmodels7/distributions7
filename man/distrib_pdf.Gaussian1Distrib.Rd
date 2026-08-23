@@ -20,5 +20,5 @@ Computes the probability density function for the Gaussian distribution:
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

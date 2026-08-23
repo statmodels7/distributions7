@@ -24,5 +24,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
 \deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi\left(\dfrac{\mu^2}{\sigma^2}\right) + \mu + \mu\left(\log\left(\dfrac{\mu}{\sigma^2}\right) + \log(y)\right) - y\right]}{(\sigma^2)^2}}
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

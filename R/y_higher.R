@@ -33,24 +33,24 @@ NULL
 #'
 #' @description
 #' One central stencil of the requested order applied to
-#' \code{distrib_pdf(..., log = TRUE)}.
+#' `distrib_pdf(..., log = TRUE)`.
 #'
 #' @details
 #' The stencil reaches two steps either side, so the step is clamped to half
-#' of what \code{\link{fd_steps_y}} allows: a Gamma observation near zero
+#' of what [fd_steps_y()] allows: a Gamma observation near zero
 #' would otherwise be differentiated at a point outside the support. The
 #' relative step is \eqn{\varepsilon^{1/(k+2)}}, which balances the
 #' \eqn{h^{2}} truncation against the \eqn{\varepsilon/h^{k}} rounding.
 #'
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 3 or 4.
 #' @param h_rel Relative finite-difference step.
 #'
-#' @return A numeric vector the length of \code{y}.
+#' @return A numeric vector the length of `y`.
 #'
-#' @seealso \code{\link{numerical_hess_y}}
+#' @seealso [numerical_hess_y()]
 #'
 #' @examples
 #' numerical_deriv_y(gaussian1_distrib(), c(-1, 0, 1),
@@ -73,7 +73,7 @@ numerical_deriv_y <- function(distrib, y, theta, order,
 #' @description
 #' \eqn{\partial^{3}\ell/\partial y^{3}} and
 #' \eqn{\partial^{4}\ell/\partial y^{4}}, completing the sequence begun by
-#' \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}.
+#' [distrib_grad_y()] and [distrib_hess_y()].
 #'
 #' @details
 #' A family whose response enters only as \eqn{y - \mu} gets these from the
@@ -85,14 +85,14 @@ numerical_deriv_y <- function(distrib, y, theta, order,
 #' As with the orders below, a discrete family has no such derivative and the
 #' generic rejects rather than returning a difference across the lattice.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param ... Passed to methods.
 #'
-#' @return A numeric vector the length of \code{y}.
+#' @return A numeric vector the length of `y`.
 #'
-#' @seealso \code{\link{distrib_hess_y}}, \code{\link{numerical_deriv_y}}
+#' @seealso [distrib_hess_y()], [numerical_deriv_y()]
 #'
 #' @examples
 #' distrib_deriv3_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
@@ -121,7 +121,7 @@ distrib_deriv4_y <- S7::new_generic(
 #' @title Default Third and Fourth Response Derivatives
 #' @name distrib_deriv3_y.continuous_distrib
 #' @description One stencil of the order asked for, on the log-density.
-#' @param distrib A \code{continuous_distrib} object.
+#' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -142,7 +142,7 @@ S7::method(distrib_deriv4_y, continuous_distrib) <- function(distrib, y, theta,
 #' The Response Derivative of a Location Family
 #'
 #' @description
-#' Builds the order-\code{k} response derivative of a family whose response
+#' Builds the order-`k` response derivative of a family whose response
 #' enters only as \eqn{y - \mu}, as \eqn{(-1)^{k}} times the pure derivative
 #' in the location.
 #'
@@ -196,23 +196,23 @@ rm(.cls)
 #' The k-th Response Derivative of an Elementary Term
 #'
 #' @description
-#' \code{dy_log} differentiates \eqn{c\log y}, \code{dy_log1m} differentiates
-#' \eqn{c\log(1-y)}, \code{dy_pow} differentiates \eqn{c\,y^{p}},
-#' \code{dy_logaff} differentiates \eqn{c\log(a + by)} and \code{dy_cos}
+#' `dy_log` differentiates \eqn{c\log y}, `dy_log1m` differentiates
+#' \eqn{c\log(1-y)}, `dy_pow` differentiates \eqn{c\,y^{p}},
+#' `dy_logaff` differentiates \eqn{c\log(a + by)} and `dy_cos`
 #' differentiates \eqn{c\cos(y-m)}.
 #'
 #' @details
-#' A term linear in \eqn{y} is \code{dy_pow} at \eqn{p = 1} and vanishes from
+#' A term linear in \eqn{y} is `dy_pow` at \eqn{p = 1} and vanishes from
 #' the second order, so it needs no case of its own.
 #'
 #' @param c The coefficient.
 #' @param y The response.
 #' @param k The derivative order.
-#' @param p The exponent, for \code{dy_pow}.
-#' @param a,b The affine coefficients, for \code{dy_logaff}.
-#' @param m The location, for \code{dy_cos}.
+#' @param p The exponent, for `dy_pow`.
+#' @param a,b The affine coefficients, for `dy_logaff`.
+#' @param m The location, for `dy_cos`.
 #'
-#' @return A numeric vector the length of \code{y}.
+#' @return A numeric vector the length of `y`.
 #'
 #' @keywords internal
 dy_log <- function(c, y, k) c * (-1)^(k - 1L) * factorial(k - 1L) / y^k
@@ -247,7 +247,7 @@ dy_cos <- function(c, m, y, k) c * cos(y - m + k * pi / 2)
 #' @param y The response.
 #' @param k The derivative order, 1 to 4.
 #'
-#' @return A numeric vector the length of \code{y}.
+#' @return A numeric vector the length of `y`.
 #'
 #' @keywords internal
 dy_of_log <- function(gd, y, k) {
@@ -260,13 +260,13 @@ dy_of_log <- function(gd, y, k) {
 #' Register the Third and Fourth Response Derivatives of a Family
 #'
 #' @description
-#' Turns a function of \code{(distrib, y, theta, k)} into the two methods, so
+#' Turns a function of `(distrib, y, theta, k)` into the two methods, so
 #' that a family writes its rule once instead of twice.
 #'
 #' @param cls The S7 class.
 #' @param f The rule.
 #'
-#' @return Invisibly \code{NULL}; called for the registration.
+#' @return Invisibly `NULL`; called for the registration.
 #'
 #' @keywords internal
 register_dy_k <- function(cls, f) {

@@ -4,7 +4,7 @@
 \alias{distrib_cdf.multivariate_distrib}
 \title{No Distribution Function in Several Dimensions}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{q}{A numeric matrix of quantiles.}
 
@@ -19,6 +19,6 @@ Never returns; raises an error.
 Rejected. The distribution function of a multivariate law is an integral over
 an orthant, which has no closed form for the gaussian and no
 one-dimensional fallback to stand in for it, and the quadrature registered
-on \code{\link{continuous_distrib}} integrates over an interval.
+on \code{\link[=continuous_distrib]{continuous_distrib()}} integrates over an interval.
 }
 \keyword{internal}

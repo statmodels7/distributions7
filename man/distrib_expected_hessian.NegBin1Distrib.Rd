@@ -32,5 +32,5 @@ the exact mass to a far-tail quantile, as the NB2 kernel does; \code{approx}
 is therefore ignored.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

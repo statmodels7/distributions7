@@ -4,7 +4,7 @@
 \alias{distrib_pdf.MvGaussianDistrib}
 \title{Multivariate Gaussian Density}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations, or a vector of length
 \eqn{p} for one observation.}

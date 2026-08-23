@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Logistic distribution.
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

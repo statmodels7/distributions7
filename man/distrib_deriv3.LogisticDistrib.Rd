@@ -30,8 +30,8 @@ Since \eqn{z} depends on both parameters, each component is a polynomial in
 \deqn{\dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}}
 
 The expected third derivatives are not available in closed form, so
-\code{expected = TRUE} is routed to \code{\link{expected_derivative_methods}}.
+\code{expected = TRUE} is routed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

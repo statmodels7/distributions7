@@ -30,6 +30,6 @@ sum at fourth order asks for the same handful of components repeatedly, and
 the parent's derivative may itself be expensive.
 }
 \seealso{
-\code{\link{canon_key}}
+\code{\link[=canon_key]{canon_key()}}
 }
 \keyword{internal}

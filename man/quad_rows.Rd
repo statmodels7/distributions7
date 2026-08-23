@@ -15,7 +15,7 @@ quad_rows(integrand, lower, upper)
 A numeric vector of integrals, \code{NA} for failed rows.
 }
 \description{
-Calls \code{\link[numericals7]{quad_vec}} with its warning muffled and
+Calls \code{\link[numericals7:quad_vec]{numericals7::quad_vec()}} with its warning muffled and
 returns the per-row integrals, \code{NA} where the accuracy was not
 reached; the caller decides what a failed row means and names it.
 }

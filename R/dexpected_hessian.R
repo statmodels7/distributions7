@@ -40,40 +40,40 @@ NULL
 #' \deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
 #'   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],}
 #' the first term is fully symmetric and the second is not, so the result is
-#' keyed by \code{\link{dexpected_names}} rather than by the sorted triples
-#' \code{\link{deriv_names}} uses at order three.
+#' keyed by [dexpected_names()] rather than by the sorted triples
+#' [deriv_names()] uses at order three.
 #'
-#' \strong{The default method differences the family's own expected
-#' information}, one central stencil per parameter, which is a single
+#' **The default method differences the family's own expected
+#' information**, one central stencil per parameter, which is a single
 #' difference of an analytic quantity wherever that quantity is a written-out
 #' formula. It is refused where it is not: see
-#' \code{\link{has_exact_expected_hessian}}.
+#' [has_exact_expected_hessian()].
 #'
-#' On \code{scale = "link"} the difference is taken along the free scale of the
+#' On `scale = "link"` the difference is taken along the free scale of the
 #' parameter being differentiated, and the expected information is read on the
 #' link scale at each of the two points, so the chain rule is never written out
 #' here and cannot disagree with the one
-#' \code{\link{distrib_expected_hessian}} already applies.
+#' [distrib_expected_hessian()] already applies.
 #'
-#' @param distrib A distribution object inheriting from \code{distrib}.
+#' @param distrib A distribution object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, each of length 1 or
-#'   \code{length(y)}.
-#' @param scale \code{"parameter"} for \eqn{\partial/\partial\theta_c},
-#'   \code{"link"} for \eqn{\partial/\partial\eta_c} of the link-scale expected
+#'   `length(y)`.
+#' @param scale `"parameter"` for \eqn{\partial/\partial\theta_c},
+#'   `"link"` for \eqn{\partial/\partial\eta_c} of the link-scale expected
 #'   information.
-#' @param approx,nsim Passed to \code{\link{distrib_expected_hessian}}.
+#' @param approx,nsim Passed to [distrib_expected_hessian()].
 #' @param ... Passed to methods.
 #'
 #' @return A named list of numeric vectors, keyed as
-#'   \code{\link{dexpected_names}(distrib@params)}.
+#'   [`dexpected_names(distrib@params)`][dexpected_names].
 #'
 #' @examples
 #' d <- gaussian1_distrib()
 #' str(distrib_dexpected_hessian(d, 0, list(mu = 0, sigma = 1)))
 #'
-#' @seealso \code{\link{distrib_expected_hessian}},
-#'   \code{\link{dexpected_names}}, \code{\link{has_exact_expected_hessian}}
+#' @seealso [distrib_expected_hessian()],
+#'   [dexpected_names()], [has_exact_expected_hessian()]
 #'
 #' @export
 distrib_dexpected_hessian <- S7::new_generic(
@@ -91,15 +91,15 @@ distrib_dexpected_hessian <- S7::new_generic(
 #' @title Default Derivative of the Expected Information
 #' @name distrib_dexpected_hessian.distrib
 #' @description
-#' One central difference of \code{\link{distrib_expected_hessian}} per
+#' One central difference of [distrib_expected_hessian()] per
 #' parameter, refused where that quantity is itself approximated.
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param approx,nsim Passed through.
 #' @param ... Unused.
-#' @return A named list keyed as \code{\link{dexpected_names}}.
+#' @return A named list keyed as [dexpected_names()].
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
@@ -113,24 +113,24 @@ S7::method(distrib_dexpected_hessian, distrib) <- function(
 #'
 #' @description
 #' One key per pair \eqn{(a,b)} and differentiating parameter \eqn{c}, built by
-#' joining \code{\link{hess_names}} with the parameter differentiated in.
+#' joining [hess_names()] with the parameter differentiated in.
 #'
 #' @details
 #' The keys are BUILT and never parsed, which is the package's rule wherever a
 #' component name is a concatenation of parameter names: a parameter whose own
 #' name contains an underscore makes the string ambiguous to read back, and
-#' \code{\link{dexpected_key}} exists so that a consumer composes the same
+#' [dexpected_key()] exists so that a consumer composes the same
 #' string this function enumerates.
 #'
 #' @param params A character vector of parameter names, in the family's order.
 #'
-#' @return A character vector, \code{length(hess_names(params)) *
-#'   length(params)} long.
+#' @return A character vector, `length(hess_names(params)) *
+#'   length(params)` long.
 #'
 #' @examples
 #' dexpected_names(c("mu", "sigma"))
 #'
-#' @seealso \code{\link{dexpected_key}}, \code{\link{hess_names}}
+#' @seealso [dexpected_key()], [hess_names()]
 #'
 #' @export
 dexpected_names <- function(params) {
@@ -142,11 +142,11 @@ dexpected_names <- function(params) {
 #' The Key of One Component of the Expected Information's Derivative
 #'
 #' @description
-#' The name under which \code{\link{distrib_dexpected_hessian}} returns
+#' The name under which [distrib_dexpected_hessian()] returns
 #' \eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}.
 #'
 #' @param params A character vector of parameter names, in the family's order.
-#' @param a,b Indices into \code{params}; their order does not matter, the
+#' @param a,b Indices into `params`; their order does not matter, the
 #'   component being symmetric in them.
 #' @param k The index of the parameter differentiated in, which does matter.
 #'
@@ -155,7 +155,7 @@ dexpected_names <- function(params) {
 #' @examples
 #' dexpected_key(c("mu", "sigma"), 1, 2, 2)
 #'
-#' @seealso \code{\link{dexpected_names}}
+#' @seealso [dexpected_names()]
 #'
 #' @export
 dexpected_key <- function(params, a, b, k) {
@@ -176,16 +176,16 @@ dexpected_key <- function(params, a, b, k) {
 #' Differencing the Expected Information Once
 #'
 #' @description
-#' The default route behind \code{\link{distrib_dexpected_hessian}}: a central
+#' The default route behind [distrib_dexpected_hessian()]: a central
 #' difference in each parameter of the family's own expected information.
 #'
 #' @details
-#' The step is \code{\link{fd_steps}}', which shrinks near a finite boundary so
+#' The step is [fd_steps()]', which shrinks near a finite boundary so
 #' that both evaluation points stay strictly inside the parameter's open
 #' domain. On the link scale the domain is the whole line and no clamp is
 #' needed, so the step is the plain relative one.
 #'
-#' \strong{It refuses rather than approximating an approximation.} Where the
+#' **It refuses rather than approximating an approximation.** Where the
 #' expected information is obtained by quadrature or by simulation, this would
 #' be a difference of a difference, which the package forbids everywhere, and
 #' it would cost 2p of the dearest call the family has.
@@ -193,14 +193,14 @@ dexpected_key <- function(params, a, b, k) {
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
-#' @param approx,nsim Passed to \code{\link{distrib_expected_hessian}}.
+#' @param scale Either `"parameter"` or `"link"`.
+#' @param approx,nsim Passed to [distrib_expected_hessian()].
 #' @param h_rel The relative step, a cube root of machine epsilon by default,
 #'   which is what a central difference balances.
 #'
-#' @return A named list keyed as \code{\link{dexpected_names}}.
+#' @return A named list keyed as [dexpected_names()].
 #'
-#' @seealso \code{\link{distrib_dexpected_hessian}}, \code{\link{fd_steps}}
+#' @seealso [distrib_dexpected_hessian()], [fd_steps()]
 #'
 #' @keywords internal
 numerical_dexpected_hessian <- function(distrib, y, theta,

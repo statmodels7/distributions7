@@ -19,7 +19,7 @@ check_distrib(
 
 \item{theta}{A named list of parameter values at which to run the checks. If
 \code{NULL} (default) a random admissible value is drawn with
-\code{\link{generate_random_theta}}.}
+\code{\link[=generate_random_theta]{generate_random_theta()}}.}
 
 \item{n}{Integer. Number of observations used for the derivative comparisons.
 Defaults to 100.}
@@ -55,16 +55,16 @@ The checks performed are:
 \item \strong{quantile}: round-trip against the CDF (\eqn{F(Q(p)) = p} for continuous
 distributions, and the generalized-inverse inequalities for discrete ones).
 \item \strong{rng}: the sample mean and variance of a large draw agree with
-\code{\link{mean}} and \code{\link{variance}} within Monte Carlo error.
+\code{\link[=mean]{mean()}} and \code{\link[=variance]{variance()}} within Monte Carlo error.
 \item \strong{gradient, hessian, deriv3, deriv4}: analytical values against
-\code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
-\code{\link{numerical_deriv3}} and \code{\link{numerical_deriv4}}.
-\item \strong{expected information}: \code{\link{distrib_expected_hessian}} against a
+\code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
+\code{\link[=numerical_deriv3]{numerical_deriv3()}} and \code{\link[=numerical_deriv4]{numerical_deriv4()}}.
+\item \strong{expected information}: \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} against a
 Monte Carlo estimate of \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}. The outer
 product of the score is used as reference because it remains valid when the
-log-likelihood is not differentiable in a parameter (see \code{\link{laplace_distrib}}).
-\item \strong{response derivatives} (continuous only): \code{\link{distrib_grad_y}} and
-\code{\link{distrib_hess_y}} against finite differences in \eqn{y}.
+log-likelihood is not differentiable in a parameter (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
+\item \strong{response derivatives} (continuous only): \code{\link[=distrib_grad_y]{distrib_grad_y()}} and
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} against finite differences in \eqn{y}.
 \item \strong{link scale}: \code{scale = "link"} derivatives against finite
 differences of the log-likelihood in \eqn{\eta}.
 }
@@ -73,8 +73,8 @@ corresponding derivative checks, since analytical and numerical values then
 coincide by construction.
 
 Mixed distributions --- a density with point masses on top of it, as produced by
-\code{\link{zero_adjusted}()} on a continuous parent --- are handled as long as they
-declare their atoms through \code{\link{distrib_atoms}}. The density is then expected
+\code{\link[=zero_adjusted]{zero_adjusted()}} on a continuous parent --- are handled as long as they
+declare their atoms through \code{\link[=distrib_atoms]{distrib_atoms()}}. The density is then expected
 to integrate to one minus the atomic mass, quantiles falling inside a jump of the CDF
 are checked as generalized inverses rather than exact ones, and finite differences in
 \eqn{y} are kept away from the atoms, where no derivative exists.
@@ -88,6 +88,6 @@ check_distrib(poisson_distrib(), orders = 1:2, nsim = 5e4)
 
 }
 \seealso{
-\code{\link{numerical_gradient}}, \code{\link{numerical_hessian}},
-\code{\link{link_scale_derivatives}}
+\code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}},
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}
 }

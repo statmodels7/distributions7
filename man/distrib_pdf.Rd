@@ -35,5 +35,5 @@ distrib_pdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_pdf(poisson_distrib(), 0:3, list(mu = 2), log = TRUE)
 }
 \seealso{
-\code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
+\code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

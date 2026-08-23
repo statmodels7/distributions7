@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \eqn{F_Y(q) = F_X(g^{-1}(q))}, with tails swapped for decreasing transformations.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

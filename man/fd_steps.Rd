@@ -35,6 +35,6 @@ A parameter already on or outside its boundary cannot be rescued this way, and
 is reported rather than differentiated.
 }
 \seealso{
-\code{\link{numerical_gradient}}, \code{\link{numerical_hessian}}
+\code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=numerical_hessian]{numerical_hessian()}}
 }
 \keyword{internal}

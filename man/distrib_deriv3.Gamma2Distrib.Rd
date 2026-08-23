@@ -22,5 +22,5 @@ A named list of third-derivative component vectors.
 Closed-form third-order derivatives of the Gamma log-density (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

@@ -37,5 +37,5 @@ distrib_cdf(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_cdf(poisson_distrib(), 0:3, list(mu = 2), lower.tail = FALSE)
 }
 \seealso{
-\code{\link{distrib_pdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}, \code{\link{distrib_atoms}}
+\code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

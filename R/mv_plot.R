@@ -13,7 +13,7 @@ NULL
 #'
 #' @details
 #' The picture is built from marginals, so it exists exactly when
-#' \code{\link{mv_marginal}} does. Above about three coordinates the panel
+#' [mv_marginal()] does. Above about three coordinates the panel
 #' matrix stops being readable, so a larger distribution is rejected with the
 #' suggestion of choosing coordinates rather than being drawn illegibly.
 #'
@@ -22,7 +22,7 @@ NULL
 #' means, and computing a probability level would need the orthant integral
 #' this package does not approximate in several dimensions.
 #'
-#' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
+#' @param x An object inheriting from class [multivariate_distrib()].
 #' @param theta A named list or vector of parameters. Generated at random when
 #'   missing, as for a univariate distribution.
 #' @param which The coordinates to show. Defaults to all of them.
@@ -30,9 +30,9 @@ NULL
 #' @param col_fit Color of the density and of the contours.
 #' @param ... Passed to the underlying plotting calls.
 #'
-#' @return \code{x}, invisibly.
+#' @return `x`, invisibly.
 #'
-#' @seealso \code{\link{mv_marginal}}, \code{\link{plot.distrib_fit}}
+#' @seealso [mv_marginal()], [plot.distrib_fit()]
 #'
 #' @examples
 #' d <- mvgaussian_distrib(3)
@@ -73,27 +73,27 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #' Draw the Panel Matrix of a Multivariate Density
 #'
 #' @description
-#' The common engine of \code{\link{plot.multivariate_distrib}} and the
-#' multivariate branch of \code{\link{plot.distrib_fit}}: one panel per pair of
+#' The common engine of [plot.multivariate_distrib()] and the
+#' multivariate branch of [plot.distrib_fit()]: one panel per pair of
 #' coordinates, the marginal densities on the diagonal.
 #'
 #' @details
-#' When \code{data} is supplied the diagonal also carries a kernel density
+#' When `data` is supplied the diagonal also carries a kernel density
 #' estimate of the observed coordinate and the off-diagonal panels carry the
 #' observations, so that the fitted shape and the sample are read against each
 #' other in the same frame. The kernel estimate is the comparison that does not
 #' assume the model: it is what the data say without the family's help.
 #'
-#' @param d A \code{\link{multivariate_distrib}} object.
+#' @param d A [multivariate_distrib()] object.
 #' @param theta A named list of parameters, already aligned.
-#' @param which The coordinates to show, or \code{NULL} for all.
+#' @param which The coordinates to show, or `NULL` for all.
 #' @param n_grid Points per axis.
 #' @param col_fit Color of the fitted density.
-#' @param data An \eqn{n \times p} matrix of observations, or \code{NULL}.
+#' @param data An \eqn{n \times p} matrix of observations, or `NULL`.
 #' @param col_data Color of the observed summary.
 #' @param ... Unused.
 #'
-#' @return Invisibly \code{NULL}.
+#' @return Invisibly `NULL`.
 #'
 #' @keywords internal
 mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
@@ -222,11 +222,11 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 #' structure -- the leading block of an AR(1) is AR(1), but a block of a
 #' compound-symmetry matrix taken at scattered indices need not be, and a
 #' precision block is not the inverse of the covariance block at all.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @param which An integer vector of coordinates.
 #' @param ... Unused.
-#' @return A list with \code{distrib} and \code{theta}.
+#' @return A list with `distrib` and `theta`.
 #' @keywords internal
 S7::method(mv_marginal, MvGaussianDistrib) <- function(distrib, theta, which, ...) {
   mu <- as.numeric(mv_location(distrib, theta))[which]

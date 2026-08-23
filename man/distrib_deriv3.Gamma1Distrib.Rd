@@ -30,5 +30,5 @@ A named list of third-derivative components.
 Closed form, observed or expected.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

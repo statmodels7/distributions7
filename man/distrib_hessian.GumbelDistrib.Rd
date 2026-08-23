@@ -27,5 +27,5 @@ Closed-form second derivatives of the Gumbel log-density:
         = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.}
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

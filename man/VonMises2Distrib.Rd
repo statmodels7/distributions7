@@ -33,7 +33,7 @@ VonMises2Distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{VonMises2Distrib}.
@@ -51,9 +51,9 @@ Methods implemented for this class:
 \code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link{continuous_distrib}}.
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \seealso{
-\code{\link{vonmises2_distrib}}, \code{\link{vonmises1_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}, \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

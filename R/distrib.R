@@ -4,39 +4,39 @@
 #' The base S7 class for probability distributions.
 #' It carries the name, the parameters with their domains and links, and the support.
 #'
-#' @param distrib_name A single character string specifying the name of the distribution (e.g., \code{"student t"}).
-#' @param dimension A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).
-#' @param bounds A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.
-#' @param params A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).
-#' @param params_interpretation A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).
+#' @param distrib_name A single character string specifying the name of the distribution (e.g., `"student t"`).
+#' @param dimension A character string indicating the dimensionality (`"univariate"` or `"multivariate"`).
+#' @param bounds A numeric vector of length 2 defining the overall support of the distribution `c(lower, upper)`.
+#' @param params A character vector containing the names of the distribution parameters (e.g., `c("mu", "sigma")`).
+#' @param params_interpretation A character vector (typically named) providing the statistical interpretation of each parameter (e.g., `c(mu = "location")`).
 #' @param n_params A numeric value specifying the total number of parameters.
 #' @param params_bounds A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.
 #' @param link_params A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.
-#' @param params_smooth An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).
+#' @param params_smooth An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all `TRUE` (leave empty). Set an entry to `FALSE` for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see [distrib_expected_hessian()]).
 #'
 #' @import S7
 #' @section Methods:
 #' Registered on the base class, so every distribution inherits them unless it
 #' registers something more specific. Those that compute derivatives do so by
 #' finite differences, which is why a subclass that implements nothing but
-#' \code{\link{distrib_pdf}} is already fully functional. Note that
-#' \code{distrib_pdf} itself has no default: the density is the one thing a
+#' [distrib_pdf()] is already fully functional. Note that
+#' `distrib_pdf` itself has no default: the density is the one thing a
 #' distribution must supply.
 #'
-#'   \code{\link[=distrib_deriv3.distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.distrib]{distrib_hessian()}},
-#'   \code{\link[=generate_random_theta.distrib]{generate_random_theta()}},
-#'   \code{\link[=kurtosis]{kurtosis()}},
-#'   \code{\link[=mean.distrib]{mean()}},
-#'   \code{\link[=print.distrib]{print()}},
-#'   \code{\link[=skewness]{skewness()}},
-#'   \code{\link[=std_dev]{std_dev()}},
-#'   \code{\link[=variance]{variance()}}
+#'   [`distrib_deriv3()`][distrib_deriv3.distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.distrib],
+#'   [`distrib_gradient()`][distrib_gradient.distrib],
+#'   [`distrib_hessian()`][distrib_hessian.distrib],
+#'   [`generate_random_theta()`][generate_random_theta.distrib],
+#'   [`kurtosis()`][kurtosis],
+#'   [`mean()`][mean.distrib],
+#'   [`print()`][print.distrib],
+#'   [`skewness()`][skewness],
+#'   [`std_dev()`][std_dev],
+#'   [`variance()`][variance]
 #'
-#' @return An object of class \code{distrib}.
+#' @return An object of class `distrib`.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -44,7 +44,7 @@
 #' d@params
 #' d@params_bounds
 #'
-#' @seealso \code{\link{continuous_distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
+#' @seealso [continuous_distrib()], [discrete_distrib()], [multivariate_distrib()]
 #' @export
 distrib <- S7::new_class("distrib",
   properties = list(
@@ -122,9 +122,9 @@ distrib <- S7::new_class("distrib",
 #' Ordinary distributions have nothing to declare here: a continuous one has no
 #' atoms and a discrete one is made of nothing else. Only a mixed distribution
 #' registers something more specific.
-#' @param distrib A \code{distrib} object.
+#' @param distrib A `distrib` object.
 #' @param theta A named list of parameters.
-#' @return A list with empty \code{y} and \code{p}.
+#' @return A list with empty `y` and `p`.
 #' @keywords internal
 S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
   list(y = numeric(0), p = numeric(0))
@@ -135,10 +135,10 @@ S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
 #' @description
 #' Returns a named logical vector indicating, for each parameter of a distribution,
 #' whether the log-likelihood is differentiable with respect to it. This reads the
-#' \code{params_smooth} property, defaulting to all \code{TRUE} when the property was
+#' `params_smooth` property, defaulting to all `TRUE` when the property was
 #' left empty.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @return A named logical vector, one entry per parameter.
 #' @examples
 #' param_smoothness(gaussian1_distrib())
@@ -146,7 +146,7 @@ S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
 #' # the Laplace location is a kink, so it is not smooth
 #' param_smoothness(laplace_distrib())
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [hess_names()], [expand_params()], [transpose_params()], [check_params_dim()], [check_theta_bounds()], [generate_random_theta()]
 #' @export
 param_smoothness <- function(distrib) {
   ps <- distrib@params_smooth
@@ -159,32 +159,32 @@ param_smoothness <- function(distrib) {
 
 #' S7 Class for Continuous Distributions
 #'
-#' @description A subclass of \code{distrib} specifically for continuous probability distributions.
+#' @description A subclass of `distrib` specifically for continuous probability distributions.
 #' @inheritParams distrib
 #'
 #' @section Methods:
 #' Defaults for continuous distributions, built from the density alone: the cdf by
 #' quadrature, the quantile function by root finding, and the generator by
-#' Generalized Ratio-of-Uniforms (\code{\link{rng_grou}}) or inverse transform when
+#' Generalized Ratio-of-Uniforms ([rng_grou()]) or inverse transform when
 #' an analytical quantile is available.
 #'
-#'   \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_hess_y.continuous_distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.continuous_distrib]{distrib_rng()}},
-#'   \code{\link[=expectation]{expectation()}},
-#'   \code{\link[=plot.continuous_distrib]{plot()}}
+#'   [`distrib_cdf()`][distrib_cdf.continuous_distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.continuous_distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.continuous_distrib],
+#'   [`distrib_quantile()`][distrib_quantile.continuous_distrib],
+#'   [`distrib_rng()`][distrib_rng.continuous_distrib],
+#'   [`expectation()`][expectation],
+#'   [`plot()`][plot.continuous_distrib]
 #'
-#' Everything else is inherited from \code{\link{distrib}}.
+#' Everything else is inherited from [distrib()].
 #'
-#' @return An object of class \code{continuous_distrib}.
+#' @return An object of class `continuous_distrib`.
 #'
 #' @examples
 #' S7::S7_inherits(gaussian1_distrib(), continuous_distrib)
 #' S7::S7_inherits(poisson_distrib(), continuous_distrib)
 #'
-#' @seealso \code{\link{distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
+#' @seealso [distrib()], [discrete_distrib()], [multivariate_distrib()]
 #' @export
 continuous_distrib <- S7::new_class("continuous_distrib",
   parent = distrib
@@ -192,7 +192,7 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 
 #' S7 Class for Discrete Distributions
 #'
-#' @description A subclass of \code{distrib} specifically for discrete probability distributions.
+#' @description A subclass of `distrib` specifically for discrete probability distributions.
 #' @inheritParams distrib
 #'
 #' @section Methods:
@@ -200,21 +200,21 @@ continuous_distrib <- S7::new_class("continuous_distrib",
 #' alone by accumulating it over the support; they require a finite lower bound,
 #' which every standard count distribution has.
 #'
-#'   \code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.discrete_distrib]{distrib_rng()}},
-#'   \code{\link[=expectation]{expectation()}},
-#'   \code{\link[=plot.discrete_distrib]{plot()}}
+#'   [`distrib_cdf()`][distrib_cdf.discrete_distrib],
+#'   [`distrib_quantile()`][distrib_quantile.discrete_distrib],
+#'   [`distrib_rng()`][distrib_rng.discrete_distrib],
+#'   [`expectation()`][expectation],
+#'   [`plot()`][plot.discrete_distrib]
 #'
-#' Everything else is inherited from \code{\link{distrib}}.
+#' Everything else is inherited from [distrib()].
 #'
-#' @return An object of class \code{discrete_distrib}.
+#' @return An object of class `discrete_distrib`.
 #'
 #' @examples
 #' S7::S7_inherits(poisson_distrib(), discrete_distrib)
 #' S7::S7_inherits(gaussian1_distrib(), discrete_distrib)
 #'
-#' @seealso \code{\link{distrib}}, \code{\link{continuous_distrib}}, \code{\link{multivariate_distrib}}
+#' @seealso [distrib()], [continuous_distrib()], [multivariate_distrib()]
 #' @export
 discrete_distrib <- S7::new_class("discrete_distrib",
   parent = distrib

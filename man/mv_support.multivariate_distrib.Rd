@@ -4,7 +4,7 @@
 \alias{mv_support.multivariate_distrib}
 \title{No Enumerable Support}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
@@ -17,6 +17,6 @@ Never returns; raises an error.
 The base-class method, which rejects.
 }
 \seealso{
-\code{\link{mv_support}}
+\code{\link[=mv_support]{mv_support()}}
 }
 \keyword{internal}

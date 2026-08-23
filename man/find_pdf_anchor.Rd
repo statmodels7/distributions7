@@ -32,6 +32,6 @@ of the mode. The grid refinement
 instead stops on the width of the bracket measured in \eqn{y}.
 }
 \seealso{
-\code{\link{find_lp_anchor}}, \code{\link{rng_grou}}
+\code{\link[=find_lp_anchor]{find_lp_anchor()}}, \code{\link[=rng_grou]{rng_grou()}}
 }
 \keyword{internal}

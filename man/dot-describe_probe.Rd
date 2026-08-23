@@ -17,6 +17,6 @@ Renders the point a map was probed at, so that a failure names it instead of
 leaving the caller to guess.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

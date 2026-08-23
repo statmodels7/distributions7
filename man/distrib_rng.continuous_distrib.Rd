@@ -20,9 +20,9 @@ Two strategies are available and the method picks between them automatically:
 \item \strong{Inverse transform}, \code{distrib_quantile(distrib, runif(n), theta)},
 when the distribution provides its own quantile function. This is exact and
 costs one quantile evaluation per draw.
-\item \strong{Generalized Ratio-of-Uniforms} (\code{\link{rng_grou}}) otherwise.
+\item \strong{Generalized Ratio-of-Uniforms} (\code{\link[=rng_grou]{rng_grou()}}) otherwise.
 Inverting a purely numerical CDF costs one root-finding step per draw, which
-makes simulation-based tools (\code{approx = "mc"}, \code{\link{check_distrib}})
+makes simulation-based tools (\code{approx = "mc"}, \code{\link[=check_distrib]{check_distrib()}})
 impractical; GRoU only evaluates the density, so it is orders of magnitude faster.
 }
 GRoU requires a bounded, unimodal density; if it cannot build its bounding

@@ -23,5 +23,5 @@ which does not involve the response, so it coincides with the expected
 information.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

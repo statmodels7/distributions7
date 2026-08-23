@@ -30,5 +30,5 @@ A named list with the \code{mu_mu_mu_mu} component.
       -6\left(\dfrac{1}{\mu^3} - \dfrac{1}{(1+\mu)^3}\right)}
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

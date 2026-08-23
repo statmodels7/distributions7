@@ -14,7 +14,7 @@ A function suitable for registering as an S7 method.
 }
 \description{
 Builds the order-\code{k} derivative method for the hurdle form of
-\code{\link{zero_adjusted}}.
+\code{\link[=zero_adjusted]{zero_adjusted()}}.
 }
 \details{
 The likelihood separates completely, so every mixed index vanishes at every

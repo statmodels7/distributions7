@@ -20,5 +20,5 @@ A numeric vector of density values.
       \qquad y > 0}
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

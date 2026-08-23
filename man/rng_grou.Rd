@@ -25,7 +25,7 @@ A numeric vector of length \code{n}.
 Draws from a continuous distribution using the Generalized Ratio-of-Uniforms
 (GRoU) method. The sampler needs nothing but the (log) density: no CDF, no
 quantile function and no inversion. It is the engine behind the default
-\code{\link{distrib_rng}} method for continuous distributions that provide
+\code{\link[=distrib_rng]{distrib_rng()}} method for continuous distributions that provide
 neither a native RNG nor an analytical quantile function.
 }
 \details{
@@ -54,7 +54,7 @@ carried out on the log scale.
 
 The bounds \eqn{v_{\min}, v_{\max}} are obtained by expanding geometrically away
 from the mode until \eqn{h} has clearly turned back towards zero (finite support
-bounds are used directly), then combining \code{\link[stats]{optimize}} with a grid
+bounds are used directly), then combining \code{\link[stats:optimize]{stats::optimize()}} with a grid
 search over the resulting bracket; the box is enclosing by construction for a
 unimodal kernel. Candidates are generated and filtered in vectorized batches whose
 size adapts to the observed acceptance rate.
@@ -92,7 +92,7 @@ calibrated once where the density can be evaluated. This keeps the mass rather
 than rejecting it. It cannot place it any more finely than the arithmetic
 allows -- for a Beta(0.9, 0.1) some 2.5\\% of the distribution lies within one
 unit in the last place of 1, and those draws come back equal to 1 exactly, which
-is also what \code{\link[stats]{rbeta}} does.
+is also what \code{\link[stats:Beta]{stats::rbeta()}} does.
 }
 
 \section{Requirements}{
@@ -127,5 +127,5 @@ c(mean = mean(y), var = var(y)) # ~ 2 and ~ 2 * 1.5^2
 
 }
 \seealso{
-\code{\link{distrib_rng}}, \code{\link{check_distrib}}
+\code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=check_distrib]{check_distrib()}}
 }

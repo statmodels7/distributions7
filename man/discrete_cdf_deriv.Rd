@@ -35,6 +35,6 @@ sum proves nothing, because it is the same sum computed twice. A discrete
 implementation has to be checked against finite differences of the cdf.
 }
 \seealso{
-\code{\link{cdf_tail_scale}}
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}
 }
 \keyword{internal}

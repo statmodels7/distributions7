@@ -26,7 +26,7 @@ An object of class \code{FisherScoring}.
 }
 \description{
 The S7 class of Fisher scoring specifications, returned by
-\code{\link{fisher_scoring}} and passed to \code{\link{fit_distrib}} through
+\code{\link[=fisher_scoring]{fisher_scoring()}} and passed to \code{\link[=fit_distrib]{fit_distrib()}} through
 its \code{method} argument.
 }
 \examples{
@@ -35,5 +35,5 @@ S7::S7_inherits(fs, FisherScoring)
 fs@approx
 }
 \seealso{
-\code{\link{fisher_scoring}}
+\code{\link[=fisher_scoring]{fisher_scoring()}}
 }

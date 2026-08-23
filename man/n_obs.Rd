@@ -30,5 +30,5 @@ n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
 
 }
 \seealso{
-\code{\link{multivariate_distrib}}
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}
 }

@@ -41,8 +41,8 @@ reproduces the hand-written score and Hessian, which is what licenses it
 at the orders where there is nothing to compare against.
 
 The expected derivatives have no closed form here and go through
-\code{\link{expected_derivative}}.
+\code{\link[=expected_derivative]{expected_derivative()}}.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

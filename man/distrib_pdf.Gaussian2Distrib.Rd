@@ -20,5 +20,5 @@ A numeric vector.
       \exp\left\{-\dfrac{(y-\mu)^2}{2\sigma^2}\right\}}
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

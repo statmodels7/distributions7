@@ -20,5 +20,5 @@ independent standard normal and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}.
 No inversion or rejection is involved.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

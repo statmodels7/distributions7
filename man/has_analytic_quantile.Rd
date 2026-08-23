@@ -28,6 +28,6 @@ Note that \code{identical()} does not work for this -- S7 wraps the method
 object, so comparing against the fallback fails even when it is the fallback.
 }
 \seealso{
-\code{\link{rng_grou}}
+\code{\link[=rng_grou]{rng_grou()}}
 }
 \keyword{internal}

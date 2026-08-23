@@ -17,7 +17,7 @@
 \value{
 A list of length \code{order}; element \code{k} is the table of
 order-\code{k} derivatives, keyed as
-\code{\link{deriv_names}(c("mu", "a", "c"), k)}.
+\code{\link[=deriv_names]{deriv_names(c("mu", "a", "c"), k)}}.
 }
 \description{
 The log-density's derivatives with respect to \eqn{(\mu, a, c)} -- the
@@ -31,7 +31,7 @@ term is quadratic in \eqn{z} and linear in each rate. Every derivative
 of order three or more is therefore a derivative of the normalizing
 constant, apart from
 \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}, and the
-normalizer is one pass of \code{\link{chain_assemble}} over
+normalizer is one pass of \code{\link[=chain_assemble]{chain_assemble()}} over
 \eqn{L(x(a,c))}: the inner derivatives are \eqn{-G, -G', -G'', -G'''}
 and the map has \eqn{\partial^{2}x/\partial a^{2} = 0}, which leaves a
 short table.

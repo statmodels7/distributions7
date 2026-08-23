@@ -18,5 +18,5 @@ Generates random numbers by inverse transform, which is exact here because
 the quantile function is elementary.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

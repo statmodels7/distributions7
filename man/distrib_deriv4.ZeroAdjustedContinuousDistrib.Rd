@@ -16,8 +16,8 @@
 A named list of derivative components.
 }
 \description{
-As \code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{the third}}, at fourth order.
+As \code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{the third()}}, at fourth order.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

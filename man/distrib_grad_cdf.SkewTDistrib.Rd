@@ -24,6 +24,6 @@ Closed form in the location and scale; the shape and the degrees of freedom
 are differenced.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }
 \keyword{internal}

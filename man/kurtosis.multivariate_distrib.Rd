@@ -4,7 +4,7 @@
 \alias{kurtosis.multivariate_distrib}
 \title{No Kurtosis Without Saying Which One}
 \arguments{
-\item{x}{A \code{\link{multivariate_distrib}} object.}
+\item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
@@ -18,6 +18,6 @@ Rejected, for the reason given at
 \code{\link[=skewness.multivariate_distrib]{skewness()}}.
 }
 \seealso{
-\code{\link{mv_marginal}}
+\code{\link[=mv_marginal]{mv_marginal()}}
 }
 \keyword{internal}

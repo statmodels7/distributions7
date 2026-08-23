@@ -21,6 +21,6 @@ The gradient of the total log-likelihood with respect to \eqn{\eta}, summed
 over observations.
 }
 \seealso{
-\code{\link{fit_hess_matrix}}
+\code{\link[=fit_hess_matrix]{fit_hess_matrix()}}
 }
 \keyword{internal}

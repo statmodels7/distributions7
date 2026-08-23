@@ -24,8 +24,8 @@ A named list of third-derivative components.
 }
 \description{
 The exact third derivatives in \eqn{(\mu, \alpha)}, from the
-compiled fourth-order kernel described in \code{\link{pig_hd_block}}.
+compiled fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }

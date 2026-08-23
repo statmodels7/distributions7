@@ -21,5 +21,5 @@ the location and the skewness zero. The variance is
 \eqn{(1+xG)/c}, which is \eqn{-2\,\partial \log Z/\partial c}.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

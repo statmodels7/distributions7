@@ -19,5 +19,5 @@ A named list of fourth-derivative component vectors.
 Closed-form fourth-order derivatives of the Cauchy log-density (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

@@ -24,5 +24,5 @@ with \eqn{t_\nu} the standard Student \eqn{t} density and \eqn{T_{\nu+1}} the
 Student \eqn{t} distribution function on one more degree of freedom.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

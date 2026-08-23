@@ -25,5 +25,5 @@ with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{2(y - \mu)}{\sigma^3}}
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

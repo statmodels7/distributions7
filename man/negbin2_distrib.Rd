@@ -8,10 +8,10 @@ negbin2_distrib(link_mu = log_link(), link_theta = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{log_link}}.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_theta}{A link function object for the dispersion parameter \eqn{\theta}.
-Defaults to \code{\link[linkfunctions7]{log_link}}.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
 An S7 object of class \code{NegBin2Distrib} (inheriting from \code{discrete_distrib}) representing the Negative Binomial distribution.
@@ -58,8 +58,8 @@ skewness \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}, excess kurtosis
 \item \eqn{\theta \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
 }
 \examples{
 d <- negbin2_distrib()
@@ -77,12 +77,12 @@ tests. \emph{Journal of Applied Econometrics} 1, 29-53.
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.NegBin2Distrib}} for the probability mass function.
-\item \code{\link{distrib_cdf.NegBin2Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.NegBin2Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.NegBin2Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.NegBin2Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.NegBin2Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.NegBin2Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} for the probability mass function.
+\item \code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.NegBin2Distrib]{distrib_quantile.NegBin2Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.NegBin2Distrib]{distrib_rng.NegBin2Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for the analytical expected Hessian.
 }
 }

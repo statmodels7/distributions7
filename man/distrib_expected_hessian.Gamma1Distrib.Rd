@@ -34,5 +34,5 @@ natural parametrization for a generalized linear model. The expectation uses
 \eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

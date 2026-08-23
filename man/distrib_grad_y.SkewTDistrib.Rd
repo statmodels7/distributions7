@@ -18,5 +18,5 @@ Closed form: \eqn{\partial \ell / \partial y = D/\sigma}, which is minus the
 derivative in \eqn{\mu}, as it must be for a location family.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

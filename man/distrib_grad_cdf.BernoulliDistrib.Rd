@@ -22,5 +22,5 @@ Closed form, the binomial identity at \eqn{n = 1}: the derivative is
 \eqn{-1} at \eqn{k = 0} and zero at \eqn{k = 1}.
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

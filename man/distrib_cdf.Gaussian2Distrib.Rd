@@ -24,5 +24,5 @@ The normal distribution function, with the standard deviation
 taken as the square root of the variance parameter.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

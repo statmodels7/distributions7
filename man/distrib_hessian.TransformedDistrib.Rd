@@ -18,5 +18,5 @@ The observed Hessian of the transformed model equals the parent's observed Hessi
 evaluated at \eqn{x = g^{-1}(y)}.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

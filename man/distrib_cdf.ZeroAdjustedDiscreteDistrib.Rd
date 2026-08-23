@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{F_{ZA}(q) = \pi + (1-\pi)\dfrac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge 0)}
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

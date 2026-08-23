@@ -27,6 +27,6 @@ which carries no division by the shape, so the exponential limit
 \eqn{\xi \to 0} is an ordinary point of the formula rather than a branch.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }
 \keyword{internal}

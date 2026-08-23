@@ -36,6 +36,6 @@ moment is computed from. Delegating keeps the parent's closed forms instead
 of falling through to a quadrature.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

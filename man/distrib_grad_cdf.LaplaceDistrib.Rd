@@ -20,8 +20,8 @@ A named list, one vector per parameter.
 \description{
 Closed form, from the location-scale structure. Note that the second
 derivatives inherit the kink at \eqn{y = \mu}, where \eqn{\partial\ell/\partial y}
-does not exist; \code{\link{param_smoothness}} records this.
+does not exist; \code{\link[=param_smoothness]{param_smoothness()}} records this.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

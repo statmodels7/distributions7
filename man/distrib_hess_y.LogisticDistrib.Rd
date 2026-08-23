@@ -17,5 +17,5 @@ A numeric vector.
 Closed-form \eqn{\partial^2 \ell / \partial y^2 = -\mathrm{sech}^2(z/2)/(2\sigma^2)}, \eqn{z = (y-\mu)/\sigma}.
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

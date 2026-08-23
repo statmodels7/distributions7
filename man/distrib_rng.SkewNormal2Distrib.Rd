@@ -17,5 +17,5 @@ A numeric vector.
 The parent's generator at the implied parameters.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

@@ -18,12 +18,12 @@ numerical_deriv4(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 }
 \value{
 A named list of fourth-derivative component vectors, keyed as in
-\code{\link{deriv_names}(distrib@params, 4)}.
+\code{\link[=deriv_names]{deriv_names(distrib@params, 4)}}.
 }
 \description{
 Computes the unique fourth-order partial derivatives of the log-density by second
-central differences of \code{\link{distrib_hessian}}. This powers the default
-\code{\link{distrib_deriv4}} method for distributions without a closed-form
+central differences of \code{\link[=distrib_hessian]{distrib_hessian()}}. This powers the default
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} method for distributions without a closed-form
 implementation.
 }
 \details{
@@ -38,5 +38,5 @@ numerical_deriv4(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{numerical_deriv3}}, \code{\link{distrib_deriv4}}
+\code{\link[=numerical_deriv3]{numerical_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

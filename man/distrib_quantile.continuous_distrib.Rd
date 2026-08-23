@@ -19,7 +19,7 @@ A numeric vector of quantiles.
 }
 \description{
 Fallback method: continuous distributions that do not implement an analytical
-quantile function get one by root-finding on \code{\link{distrib_cdf}} (which may
+quantile function get one by root-finding on \code{\link[=distrib_cdf]{distrib_cdf()}} (which may
 itself be the numerical fallback). Brackets start from an approximate mode and
 expand geometrically, with the step scaled by the density height at the mode.
 }

@@ -21,8 +21,8 @@ loc_scale_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 A named list of gradient component vectors.
 }
 \description{
-The \code{\link{distrib_grad_cdf}} body shared by the location-scale families:
-\code{\link{loc_scale_cdf_deriv}} at order 1, put on the requested tail and
+The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body shared by the location-scale families:
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested tail and
 scale.
 }
 \keyword{internal}

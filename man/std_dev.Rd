@@ -10,22 +10,22 @@ std_dev(x, ...)
 \item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
 
 \item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link{moment}}. For numeric vectors: \code{na.rm}.}
+\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
 }
 \value{
 A numeric vector.
 }
 \description{
-Computes the standard deviation as the square root of \code{\link{variance}}.
+Computes the standard deviation as the square root of \code{\link[=variance]{variance()}}.
 }
 \details{
 \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
-For numeric vectors the sample standard deviation \code{\link[stats]{sd}} is returned.
+For numeric vectors the sample standard deviation \code{\link[stats:sd]{stats::sd()}} is returned.
 }
 \examples{
 std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
 
 }
 \seealso{
-\code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
 }

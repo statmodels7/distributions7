@@ -21,5 +21,5 @@ A named list of second derivatives.
 The same sums with the trigamma function.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

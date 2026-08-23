@@ -23,6 +23,6 @@ Taken from the cdf derivatives where those are exact, and from quadrature
 otherwise.
 }
 \seealso{
-\code{\link{trunc_score_mean_quad}}, \code{\link{trunc_M}}
+\code{\link[=trunc_score_mean_quad]{trunc_score_mean_quad()}}, \code{\link[=trunc_M]{trunc_M()}}
 }
 \keyword{internal}

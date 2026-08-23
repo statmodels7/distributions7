@@ -19,5 +19,5 @@ A named list with the \code{mu_mu_mu} component.
 Closed-form third-order derivative of the Binomial log-mass (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{binomial_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}
 }

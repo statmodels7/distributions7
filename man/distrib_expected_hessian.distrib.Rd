@@ -17,11 +17,11 @@ A named list of expected Hessian component vectors.
 Fallback method: the expected Hessian is computed as the negative Fisher
 information via the outer product of the score (gradient),
 \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}, obtained by numerical
-\code{\link{expectation}}. This first-Bartlett form equals \eqn{\mathbb{E}[H]}
+\code{\link[=expectation]{expectation()}}. This first-Bartlett form equals \eqn{\mathbb{E}[H]}
 for regular (twice-differentiable) models but, unlike \eqn{\mathbb{E}[H]},
 remains valid when the log-likelihood is non-differentiable in a parameter
 (e.g. the location of a Laplace distribution), where the observed Hessian is
-degenerate. The score is taken from \code{\link{distrib_gradient}}, so it uses
+degenerate. The score is taken from \code{\link[=distrib_gradient]{distrib_gradient()}}, so it uses
 the analytical gradient when available and finite differences otherwise.
 }
 \keyword{internal}

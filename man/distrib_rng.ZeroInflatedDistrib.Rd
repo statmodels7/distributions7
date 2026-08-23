@@ -18,5 +18,5 @@ Draws from the wrapped distribution, then replaces a Bernoulli(\eqn{\zeta}) frac
 of the draws with structural zeros.
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

@@ -27,5 +27,5 @@ the last free of the data, the family being an exponential family in
 \eqn{\log y}.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

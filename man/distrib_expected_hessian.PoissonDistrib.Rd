@@ -23,5 +23,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

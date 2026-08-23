@@ -12,14 +12,14 @@ gaussian2_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 \item{link_sigma2}{Link function for \eqn{\sigma^2}. Defaults to the log.}
 }
 \value{
-An S7 object of class \code{\link{Gaussian2Distrib}}.
+An S7 object of class \code{\link[=Gaussian2Distrib]{Gaussian2Distrib()}}.
 }
 \description{
 Creates a Gaussian distribution object parametrized by its mean and its
 \strong{variance}.
 }
 \details{
-This is the same law as \code{\link{gaussian1_distrib}} in different
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different
 coordinates: \eqn{\sigma^2} here is the square of the \eqn{\sigma} there.
 The two are separate families rather than one family under a link, because a
 link changes the scale a parameter is \emph{modeled} on while leaving the
@@ -51,5 +51,5 @@ distrib_pdf(gaussian1_distrib(), 0.5, list(mu = 1, sigma = 2))
 
 }
 \seealso{
-\code{\link{gaussian1_distrib}}, \code{\link{gaussian3_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

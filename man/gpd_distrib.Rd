@@ -8,10 +8,10 @@ gpd_distrib(link_sigma = log_link(), link_xi = identity_link())
 }
 \arguments{
 \item{link_sigma}{A link function object for \eqn{\sigma}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_xi}{A link function object for \eqn{\xi}. Defaults to
-\code{\link[linkfunctions7]{identity_link}}, the shape being free to take
+\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the shape being free to take
 either sign.}
 }
 \value{
@@ -23,7 +23,7 @@ parametrized by a scale \eqn{\sigma} and a shape \eqn{\xi}.
 }
 \details{
 The family of exceedances over a high threshold, and the natural companion
-of \code{\link{gumbel_distrib}} in an analysis of extremes.
+of \code{\link[=gumbel_distrib]{gumbel_distrib()}} in an analysis of extremes.
 
 \strong{Density and distribution function:}
 \deqn{f(y) = \dfrac{1}{\sigma}\left(1 + \dfrac{\xi y}{\sigma}\right)^{-1/\xi-1},
@@ -37,7 +37,7 @@ pass through zero during a fit.
 mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a mean
 parametrization would leave the family undescribable exactly where it is
 most used --- the heavy-tailed regime. This is the argument that keeps
-\code{\link{mv_sigma}} and \code{\link{variance}} apart for the multivariate
+\code{\link[=mv_sigma]{mv_sigma()}} and \code{\link[=variance]{variance()}} apart for the multivariate
 \eqn{t}: a parametrization must not depend on a moment that need not exist.
 
 \strong{The support depends on the parameters when \eqn{\xi < 0}}, being
@@ -54,7 +54,7 @@ integrable: near the upper endpoint the second derivative grows like
 \eqn{(1-u)^{-2|\xi|}} in the probability scale, which is integrable if
 and only if \eqn{|\xi| < 1/2};
 \item below \eqn{\xi = -1/2} the information does not exist,
-\code{\link{distrib_expected_hessian}} returns \code{NA}, and the
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}, and the
 classical asymptotics of the maximum likelihood estimator do not hold
 (Smith, 1985).
 }
@@ -96,6 +96,6 @@ Davison, A. C. and Smith, R. L. (1990). Models for exceedances over high
 thresholds. \emph{Journal of the Royal Statistical Society B} 52, 393-442.
 }
 \seealso{
-\code{\link{gumbel_distrib}}, \code{\link{exponential_distrib}},
-\code{\link{weibull1_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}},
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

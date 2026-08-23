@@ -24,8 +24,8 @@ location-scale identity with \eqn{\ell^{(y)} = (\alpha R - z)/\sigma} and
 \eqn{\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2} substituted, and the shape
 component is \eqn{(R + t R')/\sigma}, the response entering \eqn{\alpha}
 only through \eqn{t}. The three are assembled from a single evaluation of
-\code{\link[numericals7]{mills_ratio}} rather than by calling
-\code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}, which would
+\code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}} rather than by calling
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, which would
 evaluate it twice more.
 }
 \keyword{internal}

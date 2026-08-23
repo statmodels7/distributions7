@@ -7,7 +7,7 @@
 mv_flat_theta(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }

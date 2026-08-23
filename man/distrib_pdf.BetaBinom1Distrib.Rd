@@ -21,5 +21,5 @@ A numeric vector of probability values.
       \alpha = \dfrac{\mu}{\sigma}, \quad \beta = \dfrac{1-\mu}{\sigma}}
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

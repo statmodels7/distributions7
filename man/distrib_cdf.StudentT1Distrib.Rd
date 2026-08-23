@@ -24,5 +24,5 @@ distribution:
 where \eqn{T_\nu} is the CDF of the standard Student's t with \eqn{\nu} degrees of freedom.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

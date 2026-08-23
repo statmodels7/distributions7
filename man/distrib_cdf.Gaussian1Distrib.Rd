@@ -22,5 +22,5 @@ Computes the cumulative distribution function for the Gaussian distribution:
 \deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

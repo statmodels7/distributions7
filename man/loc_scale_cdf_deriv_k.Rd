@@ -33,12 +33,12 @@ polynomial in the response derivatives of \eqn{\log f}. The map is
 for \eqn{i \ge 2} because \eqn{z} is linear in the location.
 
 This is what the response derivatives of order three and four are for:
-with only \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}
+with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}
 the construction stops at second order, which is where
-\code{\link{loc_scale_cdf_deriv}} stops. At orders one and two the two
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders one and two the two
 agree exactly.
 }
 \seealso{
-\code{\link{loc_scale_cdf_deriv}}, \code{\link{chain_assemble}}
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}, \code{\link[=chain_assemble]{chain_assemble()}}
 }
 \keyword{internal}

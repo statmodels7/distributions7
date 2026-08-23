@@ -19,5 +19,5 @@ A named list with the \code{mu_mu_mu} component.
 Closed-form third-order derivative of the Bernoulli log-mass (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

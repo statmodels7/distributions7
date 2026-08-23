@@ -34,7 +34,7 @@ multivariate_distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 }
@@ -52,13 +52,13 @@ far as the rest of the package is concerned. A mean vector contributes
 \eqn{p} of them and a covariance matrix contributes the free values of the
 \pkg{parameters7} structure that parametrizes it, so \code{theta} remains
 the named list of numbers every generic already understands, and the
-derivative bookkeeping -- \code{\link{deriv_names}}, the Hessian keys, the
-link scale, \code{\link{fit_distrib}} -- needs no special case. The
+derivative bookkeeping -- \code{\link[=deriv_names]{deriv_names()}}, the Hessian keys, the
+link scale, \code{\link[=fit_distrib]{fit_distrib()}} -- needs no special case. The
 constraint on the matrix lives inside the matrix parameter rather than in a link,
 which is why the links of a multivariate distribution are all the identity:
 the free values are already unconstrained.
 
-This class is a sibling of \code{\link{continuous_distrib}} rather than a
+This class is a sibling of \code{\link[=continuous_distrib]{continuous_distrib()}} rather than a
 subclass of it, and deliberately. The defaults registered there are
 one-dimensional -- a cdf by quadrature over an interval, a quantile by root
 finding, a generator by ratio-of-uniforms on a scalar density -- and none of
@@ -76,5 +76,5 @@ c(n_dim = d@n_dim, n_params = d@n_params)
 
 }
 \seealso{
-\code{\link{mvgaussian_distrib}}, \code{\link{n_obs}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, \code{\link[=n_obs]{n_obs()}}
 }

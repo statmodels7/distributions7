@@ -23,5 +23,5 @@ A numeric vector.
 The parent's quantile function at the implied parameters.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

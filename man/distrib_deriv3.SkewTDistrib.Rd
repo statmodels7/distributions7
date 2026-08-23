@@ -13,7 +13,7 @@
 \item{expected}{Logical; if \code{TRUE}, the expectation is approximated
 numerically.}
 
-\item{approx}{Strategy for the expectation; see \code{\link{distrib_deriv3}}.}
+\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv3]{distrib_deriv3()}}.}
 
 \item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
 }
@@ -34,5 +34,5 @@ distribution function in its degrees of freedom has no elementary form, so
 this is the same obstruction, and the same remedy, as the Hessian's.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

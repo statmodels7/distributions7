@@ -18,5 +18,5 @@ Draws zeros with probability \eqn{\pi} and otherwise samples from the zero-trunc
 parent via inverse transform sampling.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

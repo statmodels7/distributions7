@@ -13,7 +13,7 @@
 \item{expected}{Logical; if \code{TRUE}, the expectation is approximated
 numerically.}
 
-\item{approx}{Strategy for the expectation; see \code{\link{distrib_deriv4}}.}
+\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv4]{distrib_deriv4()}}.}
 
 \item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
 }
@@ -22,7 +22,7 @@ A named list of fourth-derivative component vectors.
 }
 \description{
 Fourth-order derivatives assembled with the discipline of
-\code{\link{distrib_deriv3.SkewTDistrib}}: the generic construction serves
+\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}: the generic construction serves
 every component whose Hessian entry is closed form, and the ones it would
 nest are replaced by one stencil each -- \eqn{(i, \nu, \nu, \nu)} by a
 third-difference of the closed-form score component \eqn{i}, and
@@ -31,5 +31,5 @@ pure-\eqn{\nu} component is the least accurate quantity the family reports,
 at roughly four significant digits.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

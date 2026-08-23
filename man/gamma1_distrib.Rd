@@ -12,7 +12,7 @@ gamma1_distrib(link_mu = log_link(), link_phi = log_link())
 \item{link_phi}{Link function for \eqn{\phi}. Defaults to the log.}
 }
 \value{
-An S7 object of class \code{\link{Gamma1Distrib}}.
+An S7 object of class \code{\link[=Gamma1Distrib]{Gamma1Distrib()}}.
 }
 \description{
 Creates a gamma distribution object parametrized by its mean and a
@@ -25,7 +25,7 @@ multiplies it, so the mean and the dispersion are orthogonal and the score
 in \eqn{\mu} is \eqn{(y-\mu)/(\phi\mu^2)}. The shape is \eqn{1/\phi} and the
 rate \eqn{1/(\phi\mu)}.
 
-It is the same law as \code{\link{gamma2_distrib}}, which carries the mean
+It is the same law as \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which carries the mean
 and the \emph{variance}: the two are related by
 \eqn{\sigma^2 = \phi\mu^2}. They are separate families because the second
 parameter is a different quantity in each, with its own interpretation,
@@ -54,5 +54,5 @@ distrib_pdf(gamma2_distrib(), 3, list(mu = 3, sigma2 = 0.5 * 9))
 
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

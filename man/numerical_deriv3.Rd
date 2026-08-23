@@ -18,18 +18,18 @@ numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 }
 \value{
 A named list of third-derivative component vectors, keyed as in
-\code{\link{deriv_names}(distrib@params, 3)}.
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}.
 }
 \description{
 Computes the unique third-order partial derivatives of the log-density by central
-finite differences of \code{\link{distrib_hessian}}. This powers the default
-\code{\link{distrib_deriv3}} method for distributions without a closed-form
+finite differences of \code{\link[=distrib_hessian]{distrib_hessian()}}. This powers the default
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} method for distributions without a closed-form
 implementation, and is the reference used to validate the analytical kernels.
 }
 \details{
 Each component \eqn{\partial^3 \ell / \partial\theta_i\partial\theta_j\partial\theta_k}
 (with \eqn{i \le j \le k}) is obtained by differentiating the Hessian entry
-\eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by \code{max(1, |theta|)} and
+\eqn{(i, j)} along \eqn{\theta_k}. Steps are scaled by \verb{max(1, |theta|)} and
 shrunk near parameter-domain boundaries.
 }
 \examples{
@@ -37,5 +37,5 @@ numerical_deriv3(gaussian1_distrib(), 0, list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{numerical_deriv4}}, \code{\link{distrib_deriv3}}
+\code{\link[=numerical_deriv4]{numerical_deriv4()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}
 }

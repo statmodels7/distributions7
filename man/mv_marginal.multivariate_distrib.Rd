@@ -4,7 +4,7 @@
 \alias{mv_marginal.multivariate_distrib}
 \title{No Marginal Without a Closed Form}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 

@@ -13,10 +13,10 @@ loc_scale_deriv_cdf_k(order)
 A function suitable for registering as an S7 method.
 }
 \description{
-The \code{\link{distrib_deriv3_cdf}} and \code{\link{distrib_deriv4_cdf}}
+The \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} and \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}
 bodies shared by the location-scale families.
 }
 \seealso{
-\code{\link{loc_scale_cdf_deriv_k}}
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}
 }
 \keyword{internal}

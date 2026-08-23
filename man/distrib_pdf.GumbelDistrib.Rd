@@ -22,5 +22,5 @@ Computes the probability density function for the Gumbel distribution, with
   \exp\left\{-z - e^{-z}\right\}}
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

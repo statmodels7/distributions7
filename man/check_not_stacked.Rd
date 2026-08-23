@@ -29,11 +29,11 @@ total mass at zero, which one parameter already describes.
 
 The distributions this rejects are well-defined but not estimable, and
 nothing detects that at run time: the pmf sums to one,
-\code{\link{check_distrib}} passes, and a fit converges to an arbitrary
+\code{\link[=check_distrib]{check_distrib()}} passes, and a fit converges to an arbitrary
 point of a flat ridge. The constructor is therefore the only place the
 condition can be enforced.
 }
 \seealso{
-\code{\link{zero_inflated}}, \code{\link{zero_adjusted}}
+\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=zero_adjusted]{zero_adjusted()}}
 }
 \keyword{internal}

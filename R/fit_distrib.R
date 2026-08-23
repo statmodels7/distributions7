@@ -14,12 +14,12 @@ NULL
 #' Only the first element of each parameter is taken: a fit estimates one
 #' \eqn{\theta} for the whole sample.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters on the natural scale.
 #'
-#' @return A numeric vector of length \code{length(distrib@params)}.
+#' @return A numeric vector of length `length(distrib@params)`.
 #'
-#' @seealso \code{\link{fit_theta_from_eta}}, the inverse.
+#' @seealso [fit_theta_from_eta()], the inverse.
 #' @keywords internal
 fit_eta_from_theta <- function(distrib, theta) {
   params <- distrib@params
@@ -34,18 +34,18 @@ fit_eta_from_theta <- function(distrib, theta) {
 #' Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)}.
 #'
 #' @details
-#' The inverse of \code{\link{fit_eta_from_theta}}. Because every link maps onto
+#' The inverse of [fit_eta_from_theta()]. Because every link maps onto
 #' its parameter's domain by construction, a \eqn{\theta} obtained this way is
 #' admissible whatever the optimizer proposed -- which is the reason for working
 #' on the link scale at all, and the reason a confidence interval built there and
 #' mapped back cannot run outside the domain.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param eta A numeric vector of linear predictors, one per parameter.
 #'
 #' @return A named list of parameters on the natural scale.
 #'
-#' @seealso \code{\link{fit_eta_from_theta}}
+#' @seealso [fit_eta_from_theta()]
 #' @keywords internal
 fit_theta_from_eta <- function(distrib, eta) {
   params <- distrib@params
@@ -67,12 +67,12 @@ fit_theta_from_eta <- function(distrib, eta) {
 #' from the link scale, where it is computed, to the parameter scale, where it is
 #' reported.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param eta A numeric vector of linear predictors, one per parameter.
 #'
-#' @return A numeric vector of length \code{length(distrib@params)}.
+#' @return A numeric vector of length `length(distrib@params)`.
 #'
-#' @seealso \code{\link{fit_distrib}}
+#' @seealso [fit_distrib()]
 #' @keywords internal
 fit_dtheta_deta <- function(distrib, eta) {
   params <- distrib@params
@@ -87,13 +87,13 @@ fit_dtheta_deta <- function(distrib, eta) {
 #' The gradient of the total log-likelihood with respect to \eqn{\eta}, summed
 #' over observations.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters on the natural scale.
 #'
-#' @return A numeric vector of length \code{length(distrib@params)}.
+#' @return A numeric vector of length `length(distrib@params)`.
 #'
-#' @seealso \code{\link{fit_hess_matrix}}
+#' @seealso [fit_hess_matrix()]
 #' @keywords internal
 fit_score <- function(distrib, y, theta, threads = 1L) {
   g <- distrib_gradient(distrib, y, theta, scale = "link", threads = threads)
@@ -108,23 +108,23 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'
 #' @details
 #' Derivative components are stored one per unique index pair, since the Hessian
-#' is symmetric; this fills both triangles. Passing \code{expected = TRUE} gives
+#' is symmetric; this fills both triangles. Passing `expected = TRUE` gives
 #' the expected Hessian, which is what makes Fisher scoring possible -- and what
 #' allows a fit on a non-regular family such as the Laplace, where the observed
 #' Hessian is degenerate but the information is not.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters on the natural scale.
 #' @param expected Logical; whether to use the expected Hessian.
 #' @param approx How the expectation is approximated when the distribution has
-#'   no closed form for it. Ignored when it has one, and when \code{expected}
-#'   is \code{FALSE}.
-#' @param nsim Monte Carlo sample size, used when \code{approx = "mc"}.
+#'   no closed form for it. Ignored when it has one, and when `expected`
+#'   is `FALSE`.
+#' @param nsim Monte Carlo sample size, used when `approx = "mc"`.
 #'
 #' @return A symmetric numeric matrix with dimnames taken from the parameters.
 #'
-#' @seealso \code{\link{fit_score}}, \code{\link{fit_distrib}}
+#' @seealso [fit_score()], [fit_distrib()]
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
                             approx = "bartlett", nsim = 10000, threads = 1L) {
@@ -154,13 +154,13 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
 #' The sum of the log-density over the observations, the objective the fit
 #' maximizes.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters on the natural scale.
 #'
 #' @return A single number.
 #'
-#' @seealso \code{\link{fit_distrib}}
+#' @seealso [fit_distrib()]
 #' @keywords internal
 fit_loglik <- function(distrib, y, theta) {
   sum(distrib_pdf(distrib, y, theta, log = TRUE))
@@ -169,11 +169,11 @@ fit_loglik <- function(distrib, y, theta) {
 #' @title S7 Class for Maximum-Likelihood Fits
 #' @name distrib_fit_class
 #' @description
-#' Object returned by \code{\link{fit_distrib}}, holding the estimates on both the
+#' Object returned by [fit_distrib()], holding the estimates on both the
 #' parameter and the link scale together with their uncertainty.
-#' @param distrib The fitted \code{distrib} object.
+#' @param distrib The fitted `distrib` object.
 #' @param y The observations the fit was computed from, kept so that the fitted
-#'   distribution can be compared with the data (see \code{\link{plot.distrib_fit}}).
+#'   distribution can be compared with the data (see [plot.distrib_fit()]).
 #' @param n Number of observations.
 #' @param coefficients Named estimates on the parameter scale.
 #' @param se Standard errors on the parameter scale (delta method).
@@ -191,21 +191,21 @@ fit_loglik <- function(distrib, y, theta) {
 #' @param criterion Which stopping rule ended the run, as optimizers7 reports it.
 #' @param note Any remark the optimizer attached to the run.
 #' @param counts How many times the objective and its gradient were evaluated.
-#' @param score The max-norm of the score \strong{per observation} at the
+#' @param score The max-norm of the score **per observation** at the
 #'   reported optimum, which is the quantity the stopping rule tested.
 #' @param elapsed Seconds spent optimizing, summed over every starting value
 #'   and every fallback attempted.
 #' @param level Confidence level.
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=coef.distrib_fit]{coef()}},
-#'   \code{\link[=logLik.distrib_fit]{logLik()}},
-#'   \code{\link[=plot.distrib_fit]{plot()}},
-#'   \code{\link[=print.distrib_fit]{print()}},
-#'   \code{\link[=simulate.distrib_fit]{simulate()}},
-#'   \code{\link[=vcov.distrib_fit]{vcov()}}
+#'   [`coef()`][coef.distrib_fit],
+#'   [`logLik()`][logLik.distrib_fit],
+#'   [`plot()`][plot.distrib_fit],
+#'   [`print()`][print.distrib_fit],
+#'   [`simulate()`][simulate.distrib_fit],
+#'   [`vcov()`][vcov.distrib_fit]
 #'
-#' @return An object of class \code{distrib_fit}.
+#' @return An object of class `distrib_fit`.
 #'
 #' @examples
 #' set.seed(1)
@@ -215,7 +215,7 @@ fit_loglik <- function(distrib, y, theta) {
 #' coef(fit)
 #' logLik(fit)
 #'
-#' @seealso \code{\link{fit_distrib}}
+#' @seealso [fit_distrib()]
 #' @export
 distrib_fit <- S7::new_class("distrib_fit",
   properties = list(
@@ -249,73 +249,73 @@ distrib_fit <- S7::new_class("distrib_fit",
 #'
 #' @description
 #' Fits a distribution to an i.i.d. sample by maximum likelihood. The optimization
-#' is carried out on the \strong{link (real) scale}, where the parameters are
+#' is carried out on the **link (real) scale**, where the parameters are
 #' unconstrained, using the analytical score and information supplied by the
-#' distribution (\code{scale = "link"}). Estimates are then mapped back to the
+#' distribution (`scale = "link"`). Estimates are then mapped back to the
 #' parameter scale and reported with standard errors and confidence intervals.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
-#' @param start Optional named list of starting values \strong{on the parameter
-#'   scale}. If \code{NULL} (default) they come from
-#'   \code{\link{distrib_start}}, which lets a family compute them from the
+#' @param start Optional named list of starting values **on the parameter
+#'   scale**. If `NULL` (default) they come from
+#'   [distrib_start()], which lets a family compute them from the
 #'   data; families that do not say otherwise fall back to random draws, with
 #'   restarts.
 #' @param method How to optimize. One argument, taking one of three things:
 #'   \itemize{
-#'     \item \code{\link{fisher_scoring}()}, the default --- Newton's method
-#'       with the \strong{expected} information in place of the Hessian, the
+#'     \item [fisher_scoring()], the default --- Newton's method
+#'       with the **expected** information in place of the Hessian, the
 #'       object carrying how that information is to be obtained when the family
 #'       has no closed form for it;
 #'     \item an optimizer object from \pkg{optimizers7}, used as given and
-#'       receiving the analytical gradient and the \strong{observed} Hessian,
-#'       so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
+#'       receiving the analytical gradient and the **observed** Hessian,
+#'       so that `method = lbfgs(criterion = crit_grad(1e-12))` selects
 #'       both the algorithm and the stopping rule;
-#'     \item one of the strings \code{"fisher"}, \code{"newton"} or
-#'       \code{"bfgs"}, kept as short names for the three ready-made
+#'     \item one of the strings `"fisher"`, `"newton"` or
+#'       `"bfgs"`, kept as short names for the three ready-made
 #'       strategies. The first two fall back to BFGS if they fail to converge;
 #'       an optimizer the caller chose is never silently replaced.
 #'   }
 #'   The iteration limit and the stopping rule belong to the method and are
-#'   set there: on an optimizer object through its own \code{maxit} and
-#'   \code{criterion}, on \code{\link{fisher_scoring}()} through the same two
+#'   set there: on an optimizer object through its own `maxit` and
+#'   `criterion`, on [fisher_scoring()] through the same two
 #'   arguments, and otherwise left at the defaults of
-#'   \code{\link[optimizers7]{crit_grad}} and of the optimizer. The objective
-#'   handed to the optimizer is the \emph{mean} negative log-likelihood, so a
-#'   tolerance on its gradient is a tolerance on the score \strong{per
-#'   observation} whatever the sample size, and
-#'   \code{\link[optimizers7]{crit_grad}} documents why its default sits where
+#'   [optimizers7::crit_grad()] and of the optimizer. The objective
+#'   handed to the optimizer is the *mean* negative log-likelihood, so a
+#'   tolerance on its gradient is a tolerance on the score **per
+#'   observation** whatever the sample size, and
+#'   [optimizers7::crit_grad()] documents why its default sits where
 #'   it does.
 #' @param level Confidence level for the intervals. Defaults to 0.95.
-#' @param n_start How many starting values to ask \code{\link{distrib_start}}
-#'   for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
+#' @param n_start How many starting values to ask [distrib_start()]
+#'   for when `start` is `NULL`. Defaults to 5. A family that returns
 #'   its own estimate returns one and ignores this.
 #' @param threads How many threads the fit may use, as
-#'   \code{\link[numericals7]{n_threads}} constructs it. The default,
-#'   \code{n_threads(1)}, is sequential and takes exactly the sequential
+#'   [numericals7::n_threads()] constructs it. The default,
+#'   `n_threads(1)`, is sequential and takes exactly the sequential
 #'   code path. The count reaches the family's compiled per-observation
 #'   kernels as an argument; the result does not depend on it, bit for bit,
 #'   because every parallel region decomposes its work over the elements of
 #'   its output and never splits a reduction.
 #'
-#' @return An object of class \code{\link{distrib_fit}}; see its documentation for
-#'   the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
+#' @return An object of class [distrib_fit()]; see its documentation for
+#'   the available components. `coef()`, `vcov()` and `logLik()`
 #'   methods are provided.
 #'
 #' @details
-#' \strong{Why the link scale.} Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
+#' **Why the link scale.** Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
 #' the constrained \eqn{\theta} removes the need for box constraints: a variance
 #' can never become negative, a probability never leaves \eqn{(0,1)}. The score and
 #' information on that scale are obtained exactly (not numerically) through the
-#' chain rule described in \code{\link{link_scale_derivatives}}.
+#' chain rule described in [link_scale_derivatives()].
 #'
-#' \strong{Standard errors.} The variance-covariance matrix on the link scale is
+#' **Standard errors.** The variance-covariance matrix on the link scale is
 #' the inverse of the information at the optimum. It is mapped to the parameter
 #' scale by the delta method,
 #' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J, \qquad
 #'       J = \mathrm{diag}\!\left(\frac{d g^{-1}}{d\eta}\Big|_{\hat\eta}\right)}
 #'
-#' \strong{Confidence intervals.} Intervals are built symmetrically on the link
+#' **Confidence intervals.** Intervals are built symmetrically on the link
 #' scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,\mathrm{se}(\hat\eta)}, and then mapped
 #' through \eqn{g^{-1}}. This guarantees that the reported limits always respect the
 #' parameter's domain (a variance interval cannot contain negative values), which a
@@ -336,8 +336,8 @@ distrib_fit <- S7::new_class("distrib_fit",
 #' fit_distrib(b, rbinom(50, 1, 0.9))
 #' }
 #'
-#' @seealso \code{\link{link_scale_derivatives}}, \code{\link{check_distrib}},
-#'   \code{\link[optimizers7]{minimize}}
+#' @seealso [link_scale_derivatives()], [check_distrib()],
+#'   [optimizers7::minimize()]
 #' @importFrom stats qnorm setNames
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
@@ -709,7 +709,7 @@ fit_distrib <- function(distrib, y, start = NULL,
 #'
 #' @return A character string.
 #'
-#' @seealso \code{\link{print.distrib_fit}}
+#' @seealso [print.distrib_fit()]
 #' @keywords internal
 fit_format_elapsed <- function(sec) {
   if (!length(sec) || !is.finite(sec)) return(NA_character_)
@@ -721,10 +721,10 @@ fit_format_elapsed <- function(sec) {
 #' Print Method for Maximum-Likelihood Fits
 #'
 #' @name print.distrib_fit
-#' @param x A \code{\link{distrib_fit}} object.
+#' @param x A [distrib_fit()] object.
 #' @param digits Number of significant digits. Defaults to 4.
 #' @param ... Unused.
-#' @return \code{x}, invisibly.
+#' @return `x`, invisibly.
 S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   lo <- paste0(format((1 - x@level) / 2 * 100, trim = TRUE), "%")
   hi <- paste0(format((1 + x@level) / 2 * 100, trim = TRUE), "%")
@@ -850,8 +850,8 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
 #' Extract Estimates from a Maximum-Likelihood Fit
 #'
 #' @name coef.distrib_fit
-#' @param object A \code{\link{distrib_fit}} object.
-#' @param scale Either \code{"parameter"} (default) or \code{"link"}.
+#' @param object A [distrib_fit()] object.
+#' @param scale Either `"parameter"` (default) or `"link"`.
 #' @param ... Unused.
 #' @return A named numeric vector of estimates.
 #' @importFrom stats coef
@@ -863,8 +863,8 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #' Variance-Covariance Matrix of a Maximum-Likelihood Fit
 #'
 #' @name vcov.distrib_fit
-#' @param object A \code{\link{distrib_fit}} object.
-#' @param scale Either \code{"parameter"} (default) or \code{"link"}.
+#' @param object A [distrib_fit()] object.
+#' @param scale Either `"parameter"` (default) or `"link"`.
 #' @param ... Unused.
 #' @return A variance-covariance matrix.
 #' @importFrom stats vcov
@@ -883,12 +883,12 @@ S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link")
 #' domain. The two ends are sorted after mapping, because a link need not be
 #' increasing.
 #'
-#' @param object A \code{\link{distrib_fit}} object.
+#' @param object A [distrib_fit()] object.
 #' @param parm Parameters to report, given by name or position. Defaults to all.
 #' @param level Confidence level. Defaults to the level the fit was computed at,
 #'   and any other value is obtained from the stored estimates and standard
 #'   errors without refitting.
-#' @param scale Either \code{"parameter"} (default) or \code{"link"}.
+#' @param scale Either `"parameter"` (default) or `"link"`.
 #' @param ... Unused.
 #' @return A two-column matrix of confidence limits, one row per parameter.
 #' @importFrom stats confint qnorm
@@ -929,9 +929,9 @@ S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
 #' Log-Likelihood of a Maximum-Likelihood Fit
 #'
 #' @name logLik.distrib_fit
-#' @param object A \code{\link{distrib_fit}} object.
+#' @param object A [distrib_fit()] object.
 #' @param ... Unused.
-#' @return An object of class \code{logLik}.
+#' @return An object of class `logLik`.
 #' @importFrom stats logLik
 S7::method(logLik, distrib_fit) <- function(object, ...) {
   structure(object@loglik,
@@ -950,18 +950,18 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
 #' was fitted to, which makes the result directly comparable with the observations
 #' and suitable for a parametric bootstrap or a posterior-predictive style check.
 #'
-#' @param object A \code{\link{distrib_fit}} object.
+#' @param object A [distrib_fit()] object.
 #' @param nsim Number of replicates to draw. Defaults to 1.
 #' @param seed Optional seed. If supplied it is used to initialize the generator,
-#'   and the state of \code{.Random.seed} in effect before the call is restored
+#'   and the state of `.Random.seed` in effect before the call is restored
 #'   afterwards, so that simulating does not disturb the calling stream. The seed
-#'   actually used is attached to the result as the \code{"seed"} attribute.
+#'   actually used is attached to the result as the `"seed"` attribute.
 #' @param ... Unused.
 #'
-#' @return A data frame with \code{nsim} columns named \code{sim_1}, ...,
-#'   \code{sim_nsim}, each holding one replicate of \code{object@n} draws.
+#' @return A data frame with `nsim` columns named `sim_1`, ...,
+#'   `sim_nsim`, each holding one replicate of `object@n` draws.
 #'
-#' @seealso \code{\link{fit_distrib}}, \code{\link{plot.distrib_fit}}
+#' @seealso [fit_distrib()], [plot.distrib_fit()]
 #'
 #' @examples
 #' set.seed(1)
@@ -1014,19 +1014,19 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' bars with the fitted probability mass overlaid, since a kernel density would
 #' misrepresent a discrete sample.
 #'
-#' @param x A \code{\link{distrib_fit}} object.
+#' @param x A [distrib_fit()] object.
 #' @param n_grid Number of points at which the fitted density is evaluated
 #'   (continuous distributions only). Defaults to 512.
-#' @param rug Logical; draw a rug of the observations. Defaults to \code{TRUE}
+#' @param rug Logical; draw a rug of the observations. Defaults to `TRUE`
 #'   when there are at most 2000 of them.
-#' @param legend Logical; add a legend. Defaults to \code{TRUE}.
+#' @param legend Logical; add a legend. Defaults to `TRUE`.
 #' @param col_fit,col_data Colors of the fitted curve and of the empirical
 #'   summary.
 #' @param mv_which For a multivariate fit, which coordinates to show. Defaults
 #'   to all of them, and at most three are drawn: above that the panel matrix
 #'   stops being readable.
-#' @param ... Further arguments passed to \code{\link[graphics]{plot}}, for
-#'   instance \code{main}, \code{xlab} or \code{xlim}.
+#' @param ... Further arguments passed to [graphics::plot()], for
+#'   instance `main`, `xlab` or `xlim`.
 #'
 #' @details
 #' A univariate fit is drawn as the fitted density over a histogram or, for a
@@ -1035,10 +1035,10 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' data on the diagonal, the fitted contours over the observations below it,
 #' and the fitted correlation above.
 #'
-#' @return \code{x}, invisibly.
+#' @return `x`, invisibly.
 #'
-#' @seealso \code{\link{fit_distrib}}, \code{\link{simulate.distrib_fit}},
-#'   \code{\link{plot.multivariate_distrib}}
+#' @seealso [fit_distrib()], [simulate.distrib_fit()],
+#'   [plot.multivariate_distrib()]
 #'
 #' @examples
 #' set.seed(1)

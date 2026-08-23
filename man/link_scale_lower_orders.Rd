@@ -23,7 +23,7 @@ list of order-\eqn{m} parameter-scale derivatives.
 }
 \description{
 Collects the parameter-scale derivatives of every order strictly below
-\code{order}, in the layout \code{\link{to_link_scale}} expects.
+\code{order}, in the layout \code{\link[=to_link_scale]{to_link_scale()}} expects.
 }
 \details{
 Faa di Bruno mixes all lower orders into each link-scale component, so they
@@ -34,6 +34,6 @@ merely unavailable, which is also why the expected information transforms as a
 plain congruence.
 }
 \seealso{
-\code{\link{to_link_scale}}
+\code{\link[=to_link_scale]{to_link_scale()}}
 }
 \keyword{internal}

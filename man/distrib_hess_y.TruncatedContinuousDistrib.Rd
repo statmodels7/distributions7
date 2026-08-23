@@ -17,5 +17,5 @@ A numeric vector.
 As \code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y()}}, at second order.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

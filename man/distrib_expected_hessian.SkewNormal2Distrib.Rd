@@ -28,5 +28,5 @@ is not: there the score for \eqn{\alpha} is proportional to the score for
 the location and the information loses a rank.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

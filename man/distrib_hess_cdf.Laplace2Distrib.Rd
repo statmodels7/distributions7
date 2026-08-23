@@ -15,7 +15,7 @@
 \item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}}.
+A named list keyed as \code{\link[=hess_names]{hess_names()}}.
 }
 \description{
 Closed form, exact away from \eqn{q = \mu}: with \eqn{s = \mathrm{sign}(q-\mu)}
@@ -27,5 +27,5 @@ second derivative in \eqn{\mu} does not exist, and the value returned is the
 one-sided limit the sign convention picks out.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

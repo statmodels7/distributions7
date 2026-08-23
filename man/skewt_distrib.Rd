@@ -13,19 +13,19 @@ skewt_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for the location \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{identity_link}}.}
+\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale \eqn{\sigma}. Defaults
-to \code{\link[linkfunctions7]{log_link}}.}
+to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
 \item{link_alpha}{A link function object for the shape \eqn{\alpha}, which is
-unconstrained. Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_nu}{A link function object for the degrees of freedom \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7]{log_link}}.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
-An S7 object of class \code{\link{SkewTDistrib}} (inheriting from
+An S7 object of class \code{\link[=SkewTDistrib]{SkewTDistrib()}} (inheriting from
 \code{continuous_distrib}).
 }
 \description{
@@ -38,7 +38,7 @@ skew normal (\eqn{\nu \to \infty}) and the gaussian (both).
 This is the four-parameter family a location-scale-shape framework wants: the
 scale, the skewness and the tail weight are three separate parameters, each
 of which can be given its own linear predictor. The skew normal of
-\code{\link{skewnormal1_distrib}} can reach a skewness of at most \eqn{0.995}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} can reach a skewness of at most \eqn{0.995}
 and an excess kurtosis of at most \eqn{0.87}; adding \eqn{\nu} removes both
 bounds.
 
@@ -74,7 +74,7 @@ score \tab about \eqn{10^{-8}} \cr
 \strong{The tolerance a fit can ask for.} The score in \eqn{\nu} cannot be
 computed more accurately than the table above, so a stopping rule on the
 gradient cannot be satisfied below that level however good the optimizer is.
-\code{\link{fit_distrib}} tests the score \strong{per observation}, and its
+\code{\link[=fit_distrib]{fit_distrib()}} tests the score \strong{per observation}, and its
 default of \eqn{10^{-10}} leaves room: on samples of 500 to 4000 the summed
 score reaches \eqn{10^{-10}} to \eqn{3 \times 10^{-9}}, which is
 \eqn{10^{-13}} per observation, and the fit converges in four or five
@@ -96,8 +96,8 @@ kurtosis \eqn{\nu > 4}, and each returns \code{NaN} below its threshold. The
 density is perfectly well defined there, which is why the moments and the
 parameters are kept apart.
 
-\strong{Special cases.} \eqn{\alpha = 0} is \code{\link{student_t1_distrib}};
-large \eqn{\nu} approaches \code{\link{skewnormal1_distrib}}. The information
+\strong{Special cases.} \eqn{\alpha = 0} is \code{\link[=student_t1_distrib]{student_t1_distrib()}};
+large \eqn{\nu} approaches \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}. The information
 is singular in \eqn{\alpha} at \eqn{\alpha = 0} for the same reason as in the
 skew normal.
 
@@ -139,5 +139,5 @@ perturbation of symmetry with emphasis on a multivariate skew t distribution.
 \emph{Journal of the Royal Statistical Society, Series B} 65, 367-389.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}, \code{\link{student_t1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

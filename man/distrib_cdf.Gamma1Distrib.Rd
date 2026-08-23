@@ -23,5 +23,5 @@ A numeric vector.
 The gamma distribution function at the implied shape and rate.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

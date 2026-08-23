@@ -7,7 +7,7 @@
 mv_refuse(distrib, what, why)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{what}{The name of the quantity.}
 

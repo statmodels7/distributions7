@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Gaussian distribution.
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

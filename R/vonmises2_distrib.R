@@ -11,21 +11,21 @@ NULL
 #' @title S7 Class for the von Mises Distribution in Its Resultant Length
 #' @name VonMises2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the von Mises
+#' @description A subclass of `continuous_distrib` for the von Mises
 #'   written in its mean direction and its mean resultant length.
 #' @inheritParams distrib
-#' @return An object of class \code{VonMises2Distrib}.
-#' @seealso \code{\link{vonmises2_distrib}}, \code{\link{vonmises1_distrib}}
+#' @return An object of class `VonMises2Distrib`.
+#' @seealso [vonmises2_distrib()], [vonmises1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.VonMises2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}}
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.VonMises2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.VonMises2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.VonMises2Distrib],
+#'   [`distrib_rng()`][distrib_rng.VonMises2Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 VonMises2Distrib <- S7::new_class("VonMises2Distrib", parent = continuous_distrib)
 
 #' The Pieces a von Mises Derivative in rho Needs
@@ -34,11 +34,11 @@ VonMises2Distrib <- S7::new_class("VonMises2Distrib", parent = continuous_distri
 #' The concentration, its four derivatives in \eqn{\rho}, and the derivatives
 #' of \eqn{A} at that concentration, computed once per call.
 #'
-#' @param theta A list with \code{mu} and \code{rho}.
+#' @param theta A list with `mu` and `rho`.
 #'
-#' @return A list with \code{kappa}, \code{kd} and \code{ad}.
+#' @return A list with `kappa`, `kd` and `ad`.
 #'
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 #'
 #' @keywords internal
 vm2_parts <- function(theta) {
@@ -52,12 +52,12 @@ vm2_parts <- function(theta) {
 #' @name distrib_pdf.VonMises2Distrib
 #' @description
 #' The von Mises density at the concentration \eqn{\kappa = A^{-1}(\rho)}.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list with \code{mu} and \code{rho}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `mu` and `rho`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
                                                      log = FALSE, ...,
                                                      threads = 1L) {
@@ -69,11 +69,11 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' @title von Mises Random Generation in the Resultant Length
 #' @name distrib_rng.VonMises2Distrib
 #' @description Delegates to the concentration parametrization.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{mu} and \code{rho}.
+#' @param theta A list with `mu` and `rho`.
 #' @return A numeric vector of angles.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta) {
   distrib_rng(vonmises1_distrib(), n,
               list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa))
@@ -87,13 +87,13 @@ S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta) {
 #'         = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho)}
 #' The map touches only the second parameter, so the chain rule is the
 #' one-variable one and no cancellation is involved.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list with \code{mu} and \code{rho}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `rho`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ...) {
   p <- vm2_parts(theta)
@@ -111,13 +111,13 @@ S7::method(distrib_gradient, VonMises2Distrib) <- function(distrib, y, theta,
 #'                          + \ell^{(\kappa)}\kappa'',}
 #' with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)} and
 #' \eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)}.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list with \code{mu} and \code{rho}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `rho`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
                                                           scale = c("parameter", "link"), ...) {
   p <- vm2_parts(theta)
@@ -141,15 +141,15 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' The last is the inverse of the information in \eqn{\kappa}, which is what a
 #' one-to-one reparametrization of a single parameter must give, and the two
 #' parameters stay orthogonal.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list with \code{mu} and \code{rho}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `rho`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
@@ -167,14 +167,14 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' @name mean.VonMises2Distrib
 #' @description
 #' The ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-#' numerically as they are for \code{\link{vonmises1_distrib}}: \eqn{\mu} is
-#' the mean \emph{direction} and \eqn{\rho} the mean resultant length, and
+#' numerically as they are for [vonmises1_distrib()]: \eqn{\mu} is
+#' the mean *direction* and \eqn{\rho} the mean resultant length, and
 #' neither is an ordinary moment.
-#' @param x A \code{VonMises2Distrib} object.
-#' @param theta A list with \code{mu} and \code{rho}.
+#' @param x A `VonMises2Distrib` object.
+#' @param theta A list with `mu` and `rho`.
 #' @param ... Passed on.
 #' @return A numeric vector.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 #' @keywords internal
 S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
   mean(vonmises1_distrib(), list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), ...)
@@ -185,18 +185,18 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' Creates a von Mises distribution object parametrized by its mean direction
-#' and its \strong{mean resultant length} \eqn{\rho = A(\kappa)}, which lives
+#' and its **mean resultant length** \eqn{\rho = A(\kappa)}, which lives
 #' in \eqn{(0, 1)}.
 #'
 #' @details
-#' The concentration \eqn{\kappa} of \code{\link{vonmises1_distrib}} is
+#' The concentration \eqn{\kappa} of [vonmises1_distrib()] is
 #' unbounded and hard to read; the resultant length is bounded, is the quantity
 #' circular statistics reports, and is one minus the circular variance. The two
 #' are related by \eqn{\rho = I_1(\kappa)/I_0(\kappa)}, a strictly increasing
 #' bijection.
 #'
 #' That bijection has no closed inverse, which is why this is a family of its
-#' own rather than a \code{\link{reparametrize}} of the other: \eqn{\kappa} is
+#' own rather than a [reparametrize()] of the other: \eqn{\kappa} is
 #' obtained by root finding on \eqn{\log\kappa}, and its four derivatives come
 #' from the inverse function rule applied to \eqn{A' \dots A''''}, which the
 #' Bessel recurrences give from the same two evaluations \eqn{A} already needs.
@@ -206,9 +206,9 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' closed form and the two parameters are orthogonal, as they are in the
 #' concentration parametrization.
 #'
-#' \strong{The moments are not the parameters.} \code{\link{mean}} returns the
+#' **The moments are not the parameters.** [mean()] returns the
 #' ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from
-#' \eqn{\mu} whenever \eqn{\mu \ne 0}; see \code{\link{vonmises1_distrib}}.
+#' \eqn{\mu} whenever \eqn{\mu \ne 0}; see [vonmises1_distrib()].
 #'
 #' @section The distribution:
 #' \deqn{f(y) = \frac{e^{\kappa\cos(y-\mu)}}{2\pi I_{0}(\kappa)}, \qquad \kappa = A^{-1}(\rho)}
@@ -221,9 +221,9 @@ S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
 #' @param link_rho Link function for the resultant length. Defaults to the
 #'   logit, the natural link onto \eqn{(0, 1)}.
 #'
-#' @return An S7 object of class \code{\link{VonMises2Distrib}}.
+#' @return An S7 object of class [VonMises2Distrib()].
 #'
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 #'
 #' @examples
 #' d <- vonmises2_distrib()
@@ -260,16 +260,16 @@ vonmises2_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' \eqn{\mu}-derivatives are linear in \eqn{\kappa}, so the composition
 #' collapses to a single term. The pure \eqn{\rho} components carry the full
 #' one-variable chain rule on \eqn{\log I_0}.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{rho}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `mu` and `rho`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{vonmises2_distrib}}
+#' @seealso [vonmises2_distrib()]
 S7::method(distrib_deriv3, VonMises2Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
@@ -326,14 +326,14 @@ S7::method(distrib_deriv4, VonMises2Distrib) <- function(distrib, y, theta,
 #' The map touches the second parameter only and the response not at all, so
 #' the distribution function is the other family's at
 #' \eqn{\kappa = A^{-1}(\rho)}. What it replaces is the base class's
-#' quadrature, one per observation; see \code{\link{vm_cdf}} for the series
+#' quadrature, one per observation; see [vm_cdf()] for the series
 #' and for how many terms it takes.
-#' @param distrib A \code{VonMises2Distrib} object.
+#' @param distrib A `VonMises2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list with \code{mu} and \code{rho}.
+#' @param theta A named list with `mu` and `rho`.
 #' @param ... Unused.
-#' @return The distribution function at \code{q}.
-#' @seealso \code{\link{vm_cdf}}, \code{\link{vonmises2_distrib}}
+#' @return The distribution function at `q`.
+#' @seealso [vm_cdf()], [vonmises2_distrib()]
 #' @keywords internal
 S7::method(distrib_cdf, VonMises2Distrib) <- function(distrib, q, theta,
                                                       ...) {

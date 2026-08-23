@@ -13,7 +13,7 @@ NULL
 #' shrunk so that \eqn{y \pm h} stays strictly inside the distribution's support.
 #'
 #' @details
-#' The response counterpart of \code{\link{fd_steps}}, and clamped for the same
+#' The response counterpart of [fd_steps()], and clamped for the same
 #' reason: a Gamma observation close to zero would otherwise be differentiated
 #' using a point outside the support, where the density is not defined.
 #'
@@ -21,9 +21,9 @@ NULL
 #' @param bounds A length-2 numeric vector, the distribution's support.
 #' @param h_rel The relative step size.
 #'
-#' @return A numeric vector of steps, the same length as \code{y}.
+#' @return A numeric vector of steps, the same length as `y`.
 #'
-#' @seealso \code{\link{fd_steps}}, \code{\link{numerical_grad_y}}
+#' @seealso [fd_steps()], [numerical_grad_y()]
 #' @keywords internal
 fd_steps_y <- function(y, bounds, h_rel) {
   h <- h_rel * pmax(1, abs(y))
@@ -36,16 +36,16 @@ fd_steps_y <- function(y, bounds, h_rel) {
 #'
 #' @description
 #' Computes \eqn{\partial \ell / \partial y} by central finite differences of
-#' \code{distrib_pdf(..., log = TRUE)}. Powers the default \code{\link{distrib_grad_y}}
+#' `distrib_pdf(..., log = TRUE)`. Powers the default [distrib_grad_y()]
 #' method for continuous distributions without a closed form.
 #'
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   \code{.Machine$double.eps^(1/3)}.
-#' @return A numeric vector of the same length as \code{y}.
-#' @seealso \code{\link{numerical_hess_y}}, \code{\link{distrib_grad_y}}
+#'   `.Machine$double.eps^(1/3)`.
+#' @return A numeric vector of the same length as `y`.
+#' @seealso [numerical_hess_y()], [distrib_grad_y()]
 #' @examples
 #' numerical_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
@@ -60,16 +60,16 @@ numerical_grad_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' @description
 #' Computes \eqn{\partial^2 \ell / \partial y^2} by a central three-point stencil of
-#' \code{distrib_pdf(..., log = TRUE)}. Powers the default \code{\link{distrib_hess_y}}
+#' `distrib_pdf(..., log = TRUE)`. Powers the default [distrib_hess_y()]
 #' method for continuous distributions without a closed form.
 #'
-#' @param distrib An object inheriting from class \code{"continuous_distrib"}.
+#' @param distrib An object inheriting from class `"continuous_distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param h_rel Numeric. Relative finite-difference step. Defaults to
-#'   \code{.Machine$double.eps^(1/4)}.
-#' @return A numeric vector of the same length as \code{y}.
-#' @seealso \code{\link{numerical_grad_y}}, \code{\link{distrib_hess_y}}
+#'   `.Machine$double.eps^(1/4)`.
+#' @return A numeric vector of the same length as `y`.
+#' @seealso [numerical_grad_y()], [distrib_hess_y()]
 #' @examples
 #' numerical_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 #'
@@ -83,8 +83,8 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 
 #' @title Default Response Gradient for Continuous Distributions
 #' @name distrib_grad_y.continuous_distrib
-#' @description Fallback: \eqn{\partial \ell / \partial y} via finite differences (see \code{\link{numerical_grad_y}}).
-#' @param distrib A \code{continuous_distrib} object.
+#' @description Fallback: \eqn{\partial \ell / \partial y} via finite differences (see [numerical_grad_y()]).
+#' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @return A numeric vector.
@@ -95,8 +95,8 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta) {
 
 #' @title Default Response Hessian for Continuous Distributions
 #' @name distrib_hess_y.continuous_distrib
-#' @description Fallback: \eqn{\partial^2 \ell / \partial y^2} via finite differences (see \code{\link{numerical_hess_y}}).
-#' @param distrib A \code{continuous_distrib} object.
+#' @description Fallback: \eqn{\partial^2 \ell / \partial y^2} via finite differences (see [numerical_hess_y()]).
+#' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @return A numeric vector.

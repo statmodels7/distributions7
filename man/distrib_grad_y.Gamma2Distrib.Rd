@@ -21,5 +21,5 @@ using the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
 \eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2}.
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

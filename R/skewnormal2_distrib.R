@@ -21,7 +21,7 @@ NULL
 #'
 #' @return A single number.
 #'
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 #'
 #' @keywords internal
 sn_b <- function() sqrt(2 / pi)
@@ -36,12 +36,12 @@ sn_b <- function() sqrt(2 / pi)
 #' @details
 #' A skewness beyond it belongs to no skew normal, which is why the constructor
 #' bounds the parameter there rather than letting the map return a
-#' \code{NaN} several frames down. It is also the reason the skew \eqn{t}
+#' `NaN` several frames down. It is also the reason the skew \eqn{t}
 #' exists.
 #'
 #' @return A single number.
 #'
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 #'
 #' @keywords internal
 sn_max_skew <- function() {
@@ -69,15 +69,15 @@ sn_max_skew <- function() {
 #' The function is written once and used twice: on plain numbers for the
 #' density, and on jets for the derivatives. The sign is taken from the plain
 #' value before any jet is seeded, which is what a jet cannot do for itself and
-#' what makes this a family rather than a \code{\link{reparametrize}}.
+#' what makes this a family rather than a [reparametrize()].
 #'
 #' @param mu,sigma,gamma1 The centered parameters, numbers or jets.
 #' @param s The sign of \eqn{\gamma_1}, taken from its plain value.
 #'
-#' @return A named list with \code{mu}, \code{sigma} and \code{alpha}, the
+#' @return A named list with `mu`, `sigma` and `alpha`, the
 #'   parent's parameters.
 #'
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 #'
 #' @keywords internal
 sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
@@ -96,39 +96,39 @@ sn_cp_to_dp <- function(mu, sigma, gamma1, s) {
 #' @title S7 Class for the Skew Normal in Its Centered Parametrization
 #' @name SkewNormal2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the skew normal
+#' @description A subclass of `continuous_distrib` for the skew normal
 #'   written in its mean, standard deviation and skewness.
 #' @inheritParams distrib
-#' @return An object of class \code{SkewNormal2Distrib}.
-#' @seealso \code{\link{skewnormal2_distrib}}, \code{\link{skewnormal1_distrib}}
+#' @return An object of class `SkewNormal2Distrib`.
+#' @seealso [skewnormal2_distrib()], [skewnormal1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.SkewNormal2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.SkewNormal2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.SkewNormal2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.SkewNormal2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.SkewNormal2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.SkewNormal2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.SkewNormal2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.SkewNormal2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.SkewNormal2Distrib],
+#'   [`distrib_rng()`][distrib_rng.SkewNormal2Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 SkewNormal2Distrib <- S7::new_class("SkewNormal2Distrib",
                                     parent = continuous_distrib)
 
 #' The Direct Parameters a Centered Triple Implies
 #'
 #' @description
-#' Runs \code{\link{sn_cp_to_dp}} on plain numbers, which every probability
-#' function needs before delegating to \code{\link{skewnormal1_distrib}}.
+#' Runs [sn_cp_to_dp()] on plain numbers, which every probability
+#' function needs before delegating to [skewnormal1_distrib()].
 #'
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #'
 #' @return A named list of the direct parameters.
 #'
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 #'
 #' @keywords internal
 sn2_theta <- function(theta) {
@@ -141,13 +141,13 @@ sn2_theta <- function(theta) {
 #'
 #' @description
 #' The parent's derivatives carried into the centered coordinates by the
-#' partition sum of \code{\link{chain_derivatives}}.
+#' partition sum of [chain_derivatives()].
 #'
-#' @param distrib A \code{\link{SkewNormal2Distrib}} object.
+#' @param distrib A [SkewNormal2Distrib()] object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param order The derivative order.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
 #'
 #' @details
 #' The map to the direct parametrization runs through
@@ -159,11 +159,11 @@ sn2_theta <- function(theta) {
 #' ones diverge at that rate, which is a property of the CENTERED
 #' parametrization and not of the family. It is rejected here, where the map
 #' is used and the reason can be named, rather than left to reach a
-#' comparison against \code{NA} several frames further on.
+#' comparison against `NA` several frames further on.
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 #'
 #' @keywords internal
 sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
@@ -195,12 +195,12 @@ sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #' @title Skew Normal Density in the Centered Parametrization
 #' @name distrib_pdf.SkewNormal2Distrib
 #' @description The skew normal density at the implied direct parameters.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   distrib_pdf(skewnormal1_distrib(), y, sn2_theta(theta), log = log)
 }
@@ -208,14 +208,14 @@ S7::method(distrib_pdf, SkewNormal2Distrib) <- function(distrib, y, theta, log =
 #' @title Skew Normal Distribution Function in the Centered Parametrization
 #' @name distrib_cdf.SkewNormal2Distrib
 #' @description The skew normal distribution function, through Owen's T.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Passed on.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_cdf, SkewNormal2Distrib) <- function(distrib, q, theta,
                                                          lower.tail = TRUE,
                                                          log.p = FALSE, ...) {
@@ -226,14 +226,14 @@ S7::method(distrib_cdf, SkewNormal2Distrib) <- function(distrib, q, theta,
 #' @title Skew Normal Quantile Function in the Centered Parametrization
 #' @name distrib_quantile.SkewNormal2Distrib
 #' @description The parent's quantile function at the implied parameters.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is a log-probability.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is a log-probability.
 #' @param ... Passed on.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
                                                               lower.tail = TRUE,
                                                               log.p = FALSE, ...) {
@@ -244,11 +244,11 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #' @title Skew Normal Random Generation in the Centered Parametrization
 #' @name distrib_rng.SkewNormal2Distrib
 #' @description The parent's generator at the implied parameters.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta) {
   distrib_rng(skewnormal1_distrib(), n, sn2_theta(theta))
 }
@@ -260,13 +260,13 @@ S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta) {
 #' components in \eqn{\gamma_1} stay of order one however small \eqn{\gamma_1}
 #' is, although the Jacobian itself grows without bound: the divergent parts
 #' cancel, which is what the centered parametrization is for.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_gradient, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"), ...) {
   sn2_chain(distrib, y, theta, 1L)
@@ -275,13 +275,13 @@ S7::method(distrib_gradient, SkewNormal2Distrib) <- function(distrib, y, theta,
 #' @title Skew Normal Observed Hessian in the Centered Parametrization
 #' @name distrib_hessian.SkewNormal2Distrib
 #' @description The second-order chain rule through the same map.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"), ...) {
   sn2_chain(distrib, y, theta, 2L)[hess_names(distrib@params)]
@@ -291,18 +291,18 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 #' @name distrib_expected_hessian.SkewNormal2Distrib
 #' @description
 #' The parent's expected information carried by the same congruence. It is
-#' \strong{non-singular at zero skewness}, which the direct parametrization's
+#' **non-singular at zero skewness**, which the direct parametrization's
 #' is not: there the score for \eqn{\alpha} is proportional to the score for
 #' the location and the information loses a rank.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                                       scale = c("parameter", "link"),
                                                                       approx = c("bartlett", "integrate", "mc", "opg"),
@@ -313,19 +313,19 @@ S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y,
 #' @title The Centered Skew Normal Does Not Write Its Expected Information Out
 #' @name expected_hessian_exact.SkewNormal2Distrib
 #' @description
-#' The method above is the CHAIN onto \code{\link{skewnormal1_distrib}}, whose
+#' The method above is the CHAIN onto [skewnormal1_distrib()], whose
 #' expected information is the base class's quadrature, so the registration
 #' says where the arithmetic is assembled and not that it is closed form.
 #' @details
 #' Measured at 100 observations it costs 5220 ms against the parent's 2230 --
 #' more than what it chains onto, the chain being paid on top -- where the
 #' families that do write it out answer in a median of 0.183 ms. Reported as
-#' exact, it made \code{\link{fit_distrib}} reject a legitimate
-#' \code{fisher_scoring(approx = )} here with a message that was untrue.
-#' @param x A \code{SkewNormal2Distrib} object.
+#' exact, it made [fit_distrib()] reject a legitimate
+#' `fisher_scoring(approx = )` here with a message that was untrue.
+#' @param x A `SkewNormal2Distrib` object.
 #' @param ... Unused.
-#' @return \code{FALSE}.
-#' @seealso \code{\link{expected_hessian_exact}}
+#' @return `FALSE`.
+#' @seealso [expected_hessian_exact()]
 #' @keywords internal
 S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
   expected_hessian_exact(skewnormal1_distrib())
@@ -334,16 +334,16 @@ S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
 #' @title Skew Normal Third-Order Derivatives in the Centered Parametrization
 #' @name distrib_deriv3.SkewNormal2Distrib
 #' @description The partition sum at order three.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
@@ -354,16 +354,16 @@ S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(distrib, y, theta, ex
 #' @title Skew Normal Fourth-Order Derivatives in the Centered Parametrization
 #' @name distrib_deriv4.SkewNormal2Distrib
 #' @description The partition sum at order four.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_deriv4, SkewNormal2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
@@ -375,12 +375,12 @@ S7::method(distrib_deriv4, SkewNormal2Distrib) <- function(distrib, y, theta, ex
 #' @name distrib_grad_y.SkewNormal2Distrib
 #' @description The parent's, unchanged: the coordinates change, the response
 #'   does not.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Passed on.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_grad_y, SkewNormal2Distrib) <- function(distrib, y, theta, ...) {
   distrib_grad_y(skewnormal1_distrib(), y, sn2_theta(theta), ...)
 }
@@ -388,12 +388,12 @@ S7::method(distrib_grad_y, SkewNormal2Distrib) <- function(distrib, y, theta, ..
 #' @title Skew Normal Second Response Derivative in the Centered Parametrization
 #' @name distrib_hess_y.SkewNormal2Distrib
 #' @description The parent's, unchanged.
-#' @param distrib A \code{SkewNormal2Distrib} object.
+#' @param distrib A `SkewNormal2Distrib` object.
 #' @param y The response.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Passed on.
 #' @return A numeric vector.
-#' @seealso \code{\link{skewnormal2_distrib}}
+#' @seealso [skewnormal2_distrib()]
 S7::method(distrib_hess_y, SkewNormal2Distrib) <- function(distrib, y, theta, ...) {
   distrib_hess_y(skewnormal1_distrib(), y, sn2_theta(theta), ...)
 }
@@ -401,8 +401,8 @@ S7::method(distrib_hess_y, SkewNormal2Distrib) <- function(distrib, y, theta, ..
 #' @title Mean of the Skew Normal in the Centered Parametrization
 #' @name mean.SkewNormal2Distrib
 #' @description \eqn{\mu}, the parameter itself: that is what centered means.
-#' @param x A \code{SkewNormal2Distrib} object.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param x A `SkewNormal2Distrib` object.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -414,8 +414,8 @@ S7::method(mean, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Skew Normal in the Centered Parametrization
 #' @name variance.SkewNormal2Distrib
 #' @description \eqn{\sigma^2}, the square of the parameter.
-#' @param x A \code{SkewNormal2Distrib} object.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param x A `SkewNormal2Distrib` object.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -427,8 +427,8 @@ S7::method(variance, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Skew Normal in the Centered Parametrization
 #' @name skewness.SkewNormal2Distrib
 #' @description \eqn{\gamma_1}, the parameter itself.
-#' @param x A \code{SkewNormal2Distrib} object.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param x A `SkewNormal2Distrib` object.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -442,8 +442,8 @@ S7::method(skewness, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @description
 #' The parent's, at the implied direct parameters: the centered parametrization
 #' fixes the first three moments and leaves the fourth to follow.
-#' @param x A \code{SkewNormal2Distrib} object.
-#' @param theta A list with \code{mu}, \code{sigma} and \code{gamma1}.
+#' @param x A `SkewNormal2Distrib` object.
+#' @param theta A list with `mu`, `sigma` and `gamma1`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -459,31 +459,31 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' standard deviation and its skewness.
 #'
 #' @details
-#' The direct parametrization of \code{\link{skewnormal1_distrib}} carries a
+#' The direct parametrization of [skewnormal1_distrib()] carries a
 #' location, a scale and a shape, none of which is a moment. Here all three
 #' parameters are moments, and the family is Azzalini's centered
 #' parametrization.
 #'
-#' \strong{Why this is not a reparametrize().} The map passes through
+#' **Why this is not a reparametrize().** The map passes through
 #' \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
 #' follow. It carries a sign, which a jet cannot take of itself, so the sign is
 #' read off the plain value before any jet is seeded. And
 #' \eqn{\partial\alpha/\partial\gamma_1} grows without bound as
 #' \eqn{\gamma_1 \to 0}: measured, 3.9 at \eqn{\gamma_1 = 0.5} and 258 at
 #' \eqn{10^{-4}}. The value of the parametrization is that the score
-#' does \strong{not} follow it, the divergent contributions canceling, so the
+#' does **not** follow it, the divergent contributions canceling, so the
 #' variance of the score in \eqn{\gamma_1} is 0.158 at \eqn{\gamma_1 = 0.05}
 #' and 0.158 again at \eqn{0.01}.
 #'
-#' \strong{What that costs in arithmetic.} The cancellation is between terms of
+#' **What that costs in arithmetic.** The cancellation is between terms of
 #' size proportional to the Jacobian, so the significant digits lost grow like
 #' the logarithm of it: negligible over the range a fit visits, and severe only
 #' within a few multiples of \eqn{10^{-8}} of exact symmetry. The
-#' \strong{expected information}, unlike the direct parametrization's, is
+#' **expected information**, unlike the direct parametrization's, is
 #' non-singular at zero skewness, which is the property the parametrization
 #' exists for.
 #'
-#' \strong{The bound on the skewness.} A skew normal cannot reach
+#' **The bound on the skewness.** A skew normal cannot reach
 #' \eqn{|\gamma_1| > 0.9952717}, whatever \eqn{\alpha} is, so the parameter is
 #' bounded there. That ceiling is the reason the skew \eqn{t} exists.
 #'
@@ -499,9 +499,9 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #' @param link_gamma1 Link function for the skewness. Defaults to a link
 #'   bounded to the reachable interval.
 #'
-#' @return An S7 object of class \code{\link{SkewNormal2Distrib}}.
+#' @return An S7 object of class [SkewNormal2Distrib()].
 #'
-#' @seealso \code{\link{skewnormal1_distrib}}, \code{\link{skewt_distrib}}
+#' @seealso [skewnormal1_distrib()], [skewt_distrib()]
 #'
 #' @examples
 #' d <- skewnormal2_distrib()
@@ -512,8 +512,8 @@ S7::method(kurtosis, SkewNormal2Distrib) <- function(x, theta, ...) {
 #'   skewness = skewness(d, theta))
 #'
 #' @references
-#' Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
-#' Families}. Cambridge University Press. The centred parametrization is
+#' Azzalini, A. and Capitanio, A. (2014). *The Skew-Normal and Related
+#' Families*. Cambridge University Press. The centred parametrization is
 #' section 3.1.4.
 #'
 #' @export

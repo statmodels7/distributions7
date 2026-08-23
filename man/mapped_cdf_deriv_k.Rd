@@ -56,6 +56,6 @@ noise, and the truncation wrapper reads that distinction to choose its own
 route.
 }
 \seealso{
-\code{\link{mapped_cdf_deriv}}
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}
 }
 \keyword{internal}

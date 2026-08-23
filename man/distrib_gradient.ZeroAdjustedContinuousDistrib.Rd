@@ -19,5 +19,5 @@ parent's score at \eqn{y \neq 0} and 0 at \eqn{y=0}; for \eqn{\pi}:
 \deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y \neq 0)\dfrac{1}{1-\pi}}
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

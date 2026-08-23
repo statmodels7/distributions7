@@ -20,5 +20,5 @@ A numeric vector of density values.
 (mixed density: point mass at 0 plus scaled continuous density).
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

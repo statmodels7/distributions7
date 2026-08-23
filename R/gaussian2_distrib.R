@@ -4,27 +4,27 @@ NULL
 #' @title S7 Class for the Gaussian Distribution in Mean and Variance
 #' @name Gaussian2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the Gaussian
-#'   written in its mean and its \strong{variance}.
+#' @description A subclass of `continuous_distrib` for the Gaussian
+#'   written in its mean and its **variance**.
 #' @inheritParams distrib
-#' @return An object of class \code{Gaussian2Distrib}.
-#' @seealso \code{\link{gaussian2_distrib}}, \code{\link{gaussian1_distrib}}
+#' @return An object of class `Gaussian2Distrib`.
+#' @seealso [gaussian2_distrib()], [gaussian1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.Gaussian2Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.Gaussian2Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.Gaussian2Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.Gaussian2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.Gaussian2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.Gaussian2Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.Gaussian2Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.Gaussian2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Gaussian2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Gaussian2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Gaussian2Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.Gaussian2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Gaussian2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Gaussian2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Gaussian2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.Gaussian2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Gaussian2Distrib],
+#'   [`distrib_rng()`][distrib_rng.Gaussian2Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 Gaussian2Distrib <- S7::new_class("Gaussian2Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -34,12 +34,12 @@ Gaussian2Distrib <- S7::new_class("Gaussian2Distrib", parent = continuous_distri
 #' @description
 #' \deqn{f(y) = \dfrac{1}{\sqrt{2\pi\sigma^2}}
 #'       \exp\left\{-\dfrac{(y-\mu)^2}{2\sigma^2}\right\}}
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_pdf, Gaussian2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dnorm(y, mean = theta[[1]], sd = sqrt(theta[[2]]), log = log)
 }
@@ -48,14 +48,14 @@ S7::method(distrib_pdf, Gaussian2Distrib) <- function(distrib, y, theta, log = F
 #' @name distrib_cdf.Gaussian2Distrib
 #' @description The normal distribution function, with the standard deviation
 #'   taken as the square root of the variance parameter.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_cdf, Gaussian2Distrib) <- function(distrib, q, theta,
                                                        lower.tail = TRUE,
                                                        log.p = FALSE, ...) {
@@ -66,14 +66,14 @@ S7::method(distrib_cdf, Gaussian2Distrib) <- function(distrib, q, theta,
 #' @title Gaussian Quantile Function in Mean and Variance
 #' @name distrib_quantile.Gaussian2Distrib
 #' @description The normal quantile function.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is given as a log-probability.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is given as a log-probability.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_quantile, Gaussian2Distrib) <- function(distrib, p, theta,
                                                             lower.tail = TRUE,
                                                             log.p = FALSE, ...) {
@@ -83,12 +83,12 @@ S7::method(distrib_quantile, Gaussian2Distrib) <- function(distrib, p, theta,
 
 #' @title Gaussian Random Generation in Mean and Variance
 #' @name distrib_rng.Gaussian2Distrib
-#' @description Delegates to \code{\link[stats]{rnorm}}.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @description Delegates to [stats::rnorm()].
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{mu} and \code{sigma2}.
+#' @param theta A list with `mu` and `sigma2`.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_rng, Gaussian2Distrib) <- function(distrib, n, theta) {
   stats::rnorm(n, mean = theta[[1]], sd = sqrt(theta[[2]]))
 }
@@ -99,13 +99,13 @@ S7::method(distrib_rng, Gaussian2Distrib) <- function(distrib, n, theta) {
 #' With \eqn{r = y - \mu} and \eqn{v = \sigma^2},
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{r}{v}, \qquad
 #'       \dfrac{\partial\ell}{\partial v} = \dfrac{r^2 - v}{2v^2}}
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_gradient, Gaussian2Distrib) <- function(distrib, y, theta,
                                                             scale = c("parameter", "link"), ..., threads = 1L) {
   gaussian2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -117,13 +117,13 @@ S7::method(distrib_gradient, Gaussian2Distrib) <- function(distrib, y, theta,
 #' \deqn{\ell^{(\mu\mu)} = -\dfrac{1}{v}, \qquad
 #'       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
 #'       \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}}
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ..., threads = 1L) {
   gaussian2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
@@ -137,15 +137,15 @@ S7::method(distrib_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(vv)}] = -\dfrac{1}{2v^2}}
 #' The two parameters are orthogonal, as they are in every parametrization of
 #' this family.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
@@ -156,16 +156,16 @@ S7::method(distrib_expected_hessian, Gaussian2Distrib) <- function(distrib, y, t
 #' @title Gaussian Third-Order Derivatives in Mean and Variance
 #' @name distrib_deriv3.Gaussian2Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
@@ -180,16 +180,16 @@ S7::method(distrib_deriv3, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' @title Gaussian Fourth-Order Derivatives in Mean and Variance
 #' @name distrib_deriv4.Gaussian2Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `sigma2`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_deriv4, Gaussian2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
@@ -204,12 +204,12 @@ S7::method(distrib_deriv4, Gaussian2Distrib) <- function(distrib, y, theta, expe
 #' @title Gaussian Response Derivatives in Mean and Variance
 #' @name distrib_grad_y.Gaussian2Distrib
 #' @description \eqn{\partial\ell/\partial y = -(y-\mu)/v}.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
+#' @param theta A list with `mu` and `sigma2`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_grad_y, Gaussian2Distrib) <- function(distrib, y, theta, ...) {
   -(y - theta[[1]]) / theta[[2]]
 }
@@ -217,12 +217,12 @@ S7::method(distrib_grad_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' @title Gaussian Second Response Derivative in Mean and Variance
 #' @name distrib_hess_y.Gaussian2Distrib
 #' @description \eqn{\partial^2\ell/\partial y^2 = -1/v}, free of the response.
-#' @param distrib A \code{Gaussian2Distrib} object.
+#' @param distrib A `Gaussian2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{sigma2}.
+#' @param theta A list with `mu` and `sigma2`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{gaussian2_distrib}}
+#' @seealso [gaussian2_distrib()]
 S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...) {
   rep(-1 / theta[[2]], length.out = length(y))
 }
@@ -232,18 +232,18 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #'
 #' @description
 #' Creates a Gaussian distribution object parametrized by its mean and its
-#' \strong{variance}.
+#' **variance**.
 #'
 #' @details
-#' This is the same law as \code{\link{gaussian1_distrib}} in different
+#' This is the same law as [gaussian1_distrib()] in different
 #' coordinates: \eqn{\sigma^2} here is the square of the \eqn{\sigma} there.
 #' The two are separate families rather than one family under a link, because a
-#' link changes the scale a parameter is \emph{modeled} on while leaving the
+#' link changes the scale a parameter is *modeled* on while leaving the
 #' parameter what it was, whereas here the parameter, its interpretation, its
 #' standard error and its confidence interval are all about the variance.
 #'
 #' The numbering follows the literature where it has one: this parametrization
-#' is \code{NO2} in \pkg{gamlss}.
+#' is `NO2` in \pkg{gamlss}.
 #'
 #' Derivatives are closed form to fourth order, observed and expected, and the
 #' two parameters are orthogonal.
@@ -257,9 +257,9 @@ S7::method(distrib_hess_y, Gaussian2Distrib) <- function(distrib, y, theta, ...)
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the identity.
 #' @param link_sigma2 Link function for \eqn{\sigma^2}. Defaults to the log.
 #'
-#' @return An S7 object of class \code{\link{Gaussian2Distrib}}.
+#' @return An S7 object of class [Gaussian2Distrib()].
 #'
-#' @seealso \code{\link{gaussian1_distrib}}, \code{\link{gaussian3_distrib}}
+#' @seealso [gaussian1_distrib()], [gaussian3_distrib()]
 #'
 #' @examples
 #' d <- gaussian2_distrib()

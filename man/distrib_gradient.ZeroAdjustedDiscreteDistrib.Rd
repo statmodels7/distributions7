@@ -20,5 +20,5 @@ the parent's score plus the truncation correction \eqn{\dfrac{f(0)}{1-f(0)} S(0)
 \deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y>0)\dfrac{1}{1-\pi}}
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

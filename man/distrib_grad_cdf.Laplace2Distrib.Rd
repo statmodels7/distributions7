@@ -21,8 +21,8 @@ A named list, one vector per parameter.
 Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
 \eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. The second
 derivatives inherit the kink at \eqn{q = \mu} exactly as those of
-\code{\link{laplace_distrib}} do.
+\code{\link[=laplace_distrib]{laplace_distrib()}} do.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

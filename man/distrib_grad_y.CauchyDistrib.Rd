@@ -20,5 +20,5 @@ Let \eqn{r = y - \mu} and \eqn{d = \sigma^2 + r^2}:
 \eqn{\partial^2 \ell / \partial y^2 = 2(r^2 - \sigma^2)/d^2}.
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

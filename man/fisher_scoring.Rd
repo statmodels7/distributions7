@@ -16,20 +16,20 @@ fisher_scoring(
 no closed-form expected information: \code{"bartlett"} (the default, the
 outer product of the score, equivalently \code{"opg"}), \code{"integrate"}
 for quadrature of the observed information, or \code{"mc"} for Monte
-Carlo. See \code{\link{expected_derivative_methods}}.}
+Carlo. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
 
 \item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
 
 \item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} for
-the default of \code{\link[optimizers7]{newton}}.}
+the default of \code{\link[optimizers7:newton]{optimizers7::newton()}}.}
 
 \item{maxit}{An iteration limit, or \code{NULL} for the same default.}
 }
 \value{
-An object of class \code{\link{FisherScoring}}.
+An object of class \code{\link[=FisherScoring]{FisherScoring()}}.
 }
 \description{
-Returns a specification of Fisher scoring for \code{\link{fit_distrib}},
+Returns a specification of Fisher scoring for \code{\link[=fit_distrib]{fit_distrib()}},
 carrying how the expected information is to be obtained when the
 distribution has no closed form for it.
 }
@@ -74,7 +74,7 @@ the argument in that case rather than accepting something it will not use.
 Fisher scoring is Newton's method with one matrix replaced, so how the run
 stops and how long it may take are set here, as they would be on any other
 optimizer. Both default to \code{NULL}, meaning the defaults of
-\code{\link[optimizers7]{newton}} and \code{\link[optimizers7]{crit_grad}}
+\code{\link[optimizers7:newton]{optimizers7::newton()}} and \code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}}
 stand.
 }
 \examples{
@@ -98,5 +98,5 @@ try(fit_distrib(d, y, method = fisher_scoring(approx = "mc")))
 
 }
 \seealso{
-\code{\link{fit_distrib}}, \code{\link{expected_derivative_methods}}
+\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
 }

@@ -41,6 +41,6 @@ Bartlett identity; the two names describe the same computation from different
 traditions.
 }
 \seealso{
-\code{\link{expected_derivative_methods}}
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
 }
 \keyword{internal}

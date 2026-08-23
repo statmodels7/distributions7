@@ -23,5 +23,5 @@ Closed-form fourth-order derivatives of the Beta log-density. As for the third
 order, they do not depend on \eqn{y}, so observed and expected coincide.
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

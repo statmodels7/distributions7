@@ -36,7 +36,7 @@ FixedMultivariateDistrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
 \item{n_dim}{The number of coordinates, carried from the parent: fixing a
 parameter removes it from the parameter set and leaves the dimension of
@@ -52,10 +52,10 @@ An object of class \code{FixedMultivariateDistrib}.
 \description{
 A subclass of \code{multivariate_distrib} representing a multivariate
 distribution in which some parameters of the wrapped distribution are held
-at known values. Constructed by \code{\link{fixed}}.
+at known values. Constructed by \code{\link[=fixed]{fixed()}}.
 }
 \details{
-Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
+Identical in behavior to \code{\link[=FixedContinuousDistrib]{FixedContinuousDistrib()}}: every method
 splices the fixed values into \code{theta} and delegates to the parent, and
 the derivative methods keep only the components among the free parameters.
 The multivariate branch sits beside the continuous and discrete ones rather
@@ -68,5 +68,5 @@ multivariate family at zero leaves the matrix parameter alone, which is what
 a random effect is distributed by.
 }
 \seealso{
-\code{\link{fixed}}
+\code{\link[=fixed]{fixed()}}
 }

@@ -30,5 +30,5 @@ Fisher scoring and Newton's method take the same step on the parameter scale
 here.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

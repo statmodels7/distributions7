@@ -19,7 +19,7 @@ A named list of first derivatives.
 }
 \description{
 First derivatives of the log-density. Three of the four are closed form:
-with \eqn{D = A + QB} in the notation of \code{\link{skewt_pieces}},
+with \eqn{D = A + QB} in the notation of \code{\link[=skewt_pieces]{skewt_pieces()}},
 \deqn{\dfrac{\partial \ell}{\partial \mu} = -\dfrac{D}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1 + zD}{\sigma},
@@ -36,5 +36,5 @@ by a single central difference of the log-density, never by differencing
 another difference.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

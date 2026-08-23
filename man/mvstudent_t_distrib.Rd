@@ -16,7 +16,7 @@ Defaults to \code{parameters7::log_cholesky(n_dim)}.}
 \code{linkfunctions7::log_link()}.}
 }
 \value{
-An object of class \code{\link{MvStudentTDistrib}}.
+An object of class \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}}.
 }
 \description{
 The elliptical \eqn{t} on \eqn{\mathbb{R}^p}, with density
@@ -27,8 +27,8 @@ The elliptical \eqn{t} on \eqn{\mathbb{R}^p}, with density
 \eqn{\Sigma} is the \strong{scale} matrix and not the covariance: the
 covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists at all, and for
 \eqn{\nu \le 2} it does not while the distribution is perfectly well
-defined. \code{\link{mv_sigma}} returns the scale matrix, which is the thing
-the parametrization carries, and \code{\link{variance}} returns the
+defined. \code{\link[=mv_sigma]{mv_sigma()}} returns the scale matrix, which is the thing
+the parametrization carries, and \code{\link[=variance]{variance()}} returns the
 covariance, which is a moment. Keeping the two apart is what lets a fit run
 at \eqn{\nu = 1.5}.
 
@@ -39,7 +39,7 @@ carry identity links; \code{nu} is positive and carries a log link by
 default, so unlike the multivariate gaussian this family's link scale is not
 its parameter scale.
 
-\strong{Reading a fit.} \code{\link{mv_summary}} reports the square roots of
+\strong{Reading a fit.} \code{\link[=mv_summary]{mv_summary()}} reports the square roots of
 the diagonal of the \strong{scale} matrix and the correlations. The
 correlations are the response's as well, a positive multiple of a matrix
 leaving them alone, but the diagonal quantities are not standard deviations
@@ -53,7 +53,7 @@ does not: the observations far from the center get a weight
 resistant. The gaussian is the limit \eqn{\nu \to \infty}.
 
 \strong{The expected information} has no closed form here and is
-approximated by sampling. \code{\link{fit_distrib}} therefore accepts
+approximated by sampling. \code{\link[=fit_distrib]{fit_distrib()}} therefore accepts
 \code{approx}, which it rejects for a family that computes it exactly.
 }
 \section{The distribution}{
@@ -65,8 +65,8 @@ on \eqn{y \in \mathbb{R}^{p}}, with
 
 Here \eqn{\Sigma} is the scale matrix and not the covariance, which
 is what lets the family be fitted where the second moment does not
-exist; \code{\link{mv_sigma}} returns the first and
-\code{\link{variance}} the second.
+exist; \code{\link[=mv_sigma]{mv_sigma()}} returns the first and
+\code{\link[=variance]{variance()}} the second.
 }
 
 \examples{
@@ -87,5 +87,5 @@ variance(d, theta)
 
 }
 \seealso{
-\code{\link{mvgaussian_distrib}}, \code{\link{student_t1_distrib}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

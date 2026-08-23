@@ -19,5 +19,5 @@ factor \eqn{1-\pi} does not depend on \eqn{y}. At \eqn{y = 0} the log-density ju
 to the atom and no derivative exists, so \code{NaN} is returned.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

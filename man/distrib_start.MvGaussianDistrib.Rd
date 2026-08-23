@@ -4,7 +4,7 @@
 \alias{distrib_start.MvGaussianDistrib}
 \title{The Maximum Likelihood Estimate as a Starting Value}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{The response.}
 

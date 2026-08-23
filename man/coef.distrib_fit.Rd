@@ -4,7 +4,7 @@
 \alias{coef.distrib_fit}
 \title{Extract Estimates from a Maximum-Likelihood Fit}
 \arguments{
-\item{object}{A \code{\link{distrib_fit}} object.}
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
 \item{scale}{Either \code{"parameter"} (default) or \code{"link"}.}
 

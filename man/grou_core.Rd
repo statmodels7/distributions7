@@ -34,6 +34,6 @@ genuine rejection is a density that diverges at an edge, which is handled by
 transforming it away.
 }
 \seealso{
-\code{\link{rng_grou}}, \code{\link{find_lp_anchor}}
+\code{\link[=rng_grou]{rng_grou()}}, \code{\link[=find_lp_anchor]{find_lp_anchor()}}
 }
 \keyword{internal}

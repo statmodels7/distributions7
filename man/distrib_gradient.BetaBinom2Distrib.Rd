@@ -24,5 +24,5 @@ A named list of first derivatives.
 and the same with \eqn{n-y} and \eqn{\beta}.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

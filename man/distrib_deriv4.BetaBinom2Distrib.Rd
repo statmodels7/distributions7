@@ -28,5 +28,5 @@ Closed form, with the expectation an exact sum over the
 support.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

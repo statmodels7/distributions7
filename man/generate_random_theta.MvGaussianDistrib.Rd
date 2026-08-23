@@ -4,7 +4,7 @@
 \alias{generate_random_theta.MvGaussianDistrib}
 \title{Random Parameters for a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{...}{Unused.}
 }

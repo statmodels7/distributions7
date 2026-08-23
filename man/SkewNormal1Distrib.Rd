@@ -33,7 +33,7 @@ SkewNormal1Distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{SkewNormal1Distrib}.
@@ -60,11 +60,11 @@ Methods implemented for this class:
 \code{\link[=skewness]{skewness()}},
 \code{\link[=variance]{variance()}}
 
-Everything else is inherited from \code{\link{continuous_distrib}}, including
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, including
 the quantile function, which is obtained by root finding on the distribution
 function, and the expected information, which has no closed form here.
 }
 
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

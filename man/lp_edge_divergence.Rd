@@ -33,6 +33,6 @@ search, reducing the cost per draw by several orders of magnitude for
 strongly divergent shapes.
 }
 \seealso{
-\code{\link{grou_two_sided}}, \code{\link{rng_grou}}
+\code{\link[=grou_two_sided]{grou_two_sided()}}, \code{\link[=rng_grou]{rng_grou()}}
 }
 \keyword{internal}

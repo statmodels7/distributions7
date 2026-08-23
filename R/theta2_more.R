@@ -20,8 +20,8 @@ NULL
 #' The Mixed Grid of a Family Written Out Against a Tabulated Map
 #'
 #' @description
-#' \code{distrib_cross2_y}, \code{distrib_grad_y_hess} and
-#' \code{distrib_hess_y_hess} for a family that carries its own class and
+#' `distrib_cross2_y`, `distrib_grad_y_hess` and
+#' `distrib_hess_y_hess` for a family that carries its own class and
 #' kernels while its map onto a parent is tabulated.
 #'
 #' @param parent The parent distribution.
@@ -29,10 +29,10 @@ NULL
 #' @param tables A function of the new parameters returning the map's keyed
 #'   partial tables.
 #'
-#' @return A list of three method bodies, named \code{cross2}, \code{grad2}
-#'   and \code{hess2}.
+#' @return A list of three method bodies, named `cross2`, `grad2`
+#'   and `hess2`.
 #'
-#' @seealso \code{\link{mapped_theta2}}, \code{\link{reparam_map_derivs}}
+#' @seealso [mapped_theta2()], [reparam_map_derivs()]
 #' @keywords internal
 mapped_theta2_methods <- function(parent, th_par, tables) {
   list(
@@ -66,20 +66,20 @@ mapped_theta2_methods <- function(parent, th_par, tables) {
 #'
 #' @details
 #' The derivation of the scale components of
-#' \code{\link{loc_scale_theta2_block}} never used the location, only that
+#' [loc_scale_theta2_block()] never used the location, only that
 #' \eqn{\sigma} is a scale, so the formulas hold unchanged with \eqn{z =
 #' y/\sigma}. Any other parameter is a shape and is not covered.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param order \code{1} for the block of \code{\link{distrib_grad_y}},
-#'   \code{2} for that of \code{\link{distrib_hess_y}}.
+#' @param order `1` for the block of [distrib_grad_y()],
+#'   `2` for that of [distrib_hess_y()].
 #' @param at The index of the scale parameter.
 #'
 #' @return A numeric vector.
 #'
-#' @seealso \code{\link{loc_scale_theta2_block}}
+#' @seealso [loc_scale_theta2_block()]
 #' @keywords internal
 scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
   s <- theta[[at]]
@@ -110,9 +110,9 @@ scale_only_theta2 <- function(distrib, y, theta, order = 1L, at = 1L) {
 #'
 #' @param at The index of the scale parameter.
 #'
-#' @return A list of two method bodies, named \code{grad2} and \code{hess2}.
+#' @return A list of two method bodies, named `grad2` and `hess2`.
 #'
-#' @seealso \code{\link{scale_only_theta2}}
+#' @seealso [scale_only_theta2()]
 #' @keywords internal
 scale_only_theta2_methods <- function(at = 1L) {
   body <- function(order) {
@@ -138,14 +138,14 @@ scale_only_theta2_methods <- function(at = 1L) {
 #' The Scale Component of the Response Curvature's Derivative
 #'
 #' @description
-#' \code{\link{distrib_cross2_y}} for a family with no location: the same
-#' identity as \code{\link{loc_scale_cross2_block}} with \eqn{z = y/\sigma}.
+#' [distrib_cross2_y()] for a family with no location: the same
+#' identity as [loc_scale_cross2_block()] with \eqn{z = y/\sigma}.
 #'
 #' @param at The index of the scale parameter.
 #'
 #' @return A method body.
 #'
-#' @seealso \code{\link{loc_scale_cross2_block}}
+#' @seealso [loc_scale_cross2_block()]
 #' @keywords internal
 scale_only_cross2_method <- function(at = 1L) {
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -248,14 +248,14 @@ rm(.s)
 #' the transformation.
 #'
 #' @param y A numeric vector of observations.
-#' @param theta A named list containing \code{mu} and \code{sigma2}.
-#' @param order \code{1} for the block of \code{\link{distrib_grad_y}},
-#'   \code{2} for that of \code{\link{distrib_hess_y}}.
+#' @param theta A named list containing `mu` and `sigma2`.
+#' @param order `1` for the block of [distrib_grad_y()],
+#'   `2` for that of [distrib_hess_y()].
 #' @param second Whether the second-order theta components are wanted.
 #'
 #' @return A named list, keyed by parameter or by parameter pair.
 #'
-#' @seealso \code{\link{distrib_grad_y_hess}}
+#' @seealso [distrib_grad_y_hess()]
 #' @keywords internal
 lognormal_theta_chain <- function(y, theta, order, second) {
   t <- base::log(y)
@@ -275,9 +275,9 @@ lognormal_theta_chain <- function(y, theta, order, second) {
 #' The gaussian's own components at \eqn{t = \log y}: the transformation
 #' carries no parameter, so \eqn{t} does not move with \eqn{\theta} and only
 #' the Jacobian of the response derivatives enters.
-#' @param distrib A \code{Lognormal1Distrib} object.
+#' @param distrib A `Lognormal1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma2}.
+#' @param theta A list containing `mu` and `sigma2`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list, keyed by parameter or by parameter pair.

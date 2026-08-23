@@ -27,11 +27,11 @@ A named list of third-derivative components.
 A named list of fourth-derivative components.
 }
 \description{
-Closed form at both orders, from \code{\link{gengamma_components}}: the
+Closed form at both orders, from \code{\link[=gengamma_components]{gengamma_components()}}: the
 log-density is elementary apart from \eqn{\lgamma(d/p)} and
 \eqn{\exp(p\log(y/a))}, and each of those is a univariate function of a
 two-variable map, so the written-out composition covers every component.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

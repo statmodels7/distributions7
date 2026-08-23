@@ -4,7 +4,7 @@
 \alias{distrib_hessian.MvGaussianDistrib}
 \title{Multivariate Gaussian Observed Hessian}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 
@@ -15,7 +15,7 @@
 \item{...}{Unused.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}(distrib@params)}.
+A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Closed form. With \eqn{w = \Sigma^{-1}(y-\mu)}, \eqn{A_k} and \eqn{A_{kl}}

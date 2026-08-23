@@ -24,7 +24,7 @@ A logical vector as long as the components of \code{ref}.
 }
 \description{
 Flags the observations where a central difference has actually converged, so
-that \code{\link{check_distrib}} compares an analytical derivative only
+that \code{\link[=check_distrib]{check_distrib()}} compares an analytical derivative only
 against a reference that is itself reliable.
 }
 \details{
@@ -56,6 +56,6 @@ belongs to -- which had already happened once here, leaving the package with a
 \code{fd_is_reliable.Rd} and no \code{check_distrib.Rd}.
 }
 \seealso{
-\code{\link{check_distrib}}
+\code{\link[=check_distrib]{check_distrib()}}
 }
 \keyword{internal}

@@ -19,5 +19,5 @@ with rank-one corrections at \eqn{y=0} (see the old package documentation for th
 derivation).
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

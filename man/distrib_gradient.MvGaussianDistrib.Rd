@@ -4,7 +4,7 @@
 \alias{distrib_gradient.MvGaussianDistrib}
 \title{Multivariate Gaussian Score}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

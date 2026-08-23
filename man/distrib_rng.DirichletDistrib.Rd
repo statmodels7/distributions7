@@ -18,5 +18,5 @@ Independent Gamma draws with the shapes \eqn{\alpha_j}, normalized by their
 sum, which is the representation the family is defined by.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

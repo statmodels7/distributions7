@@ -4,24 +4,24 @@ NULL
 #' @title S7 Class for the von Mises Distribution
 #' @name VonMises1Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} representing the von
+#' @description A subclass of `continuous_distrib` representing the von
 #'   Mises distribution on the circle.
 #' @inheritParams distrib
-#' @return An object of class \code{VonMises1Distrib}.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @return An object of class `VonMises1Distrib`.
+#' @seealso [vonmises1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_grad_y.VonMises1Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_hess_y.VonMises1Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng()}}
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.VonMises1Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.VonMises1Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.VonMises1Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.VonMises1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.VonMises1Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.VonMises1Distrib],
+#'   [`distrib_rng()`][distrib_rng.VonMises1Distrib]
 #'
 #' The distribution function and the quantile come from
-#' \code{\link{continuous_distrib}}, by quadrature and root finding over the
+#' [continuous_distrib()], by quadrature and root finding over the
 #' bounded support.
 VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distrib)
 
@@ -32,12 +32,12 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #' @description
 #' \deqn{f(y) = \dfrac{e^{\kappa \cos(y - \mu)}}{2\pi I_0(\kappa)},
 #'       \qquad y \in [-\pi, \pi)}
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing `mu` and `kappa`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
                                                      log = FALSE, ...,
                                                      threads = 1L) {
@@ -60,11 +60,11 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #' The rejection algorithm of Best and Fisher (1979), which draws from a
 #' wrapped Cauchy envelope and accepts with a probability that does not
 #' involve the Bessel function at all.
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @return A numeric vector of length \code{n}, in \eqn{[-\pi, \pi)}.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @param theta A list containing `mu` and `kappa`.
+#' @return A numeric vector of length `n`, in \eqn{[-\pi, \pi)}.
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta) {
   mu <- theta[[1]]
   k <- theta[[2]]
@@ -93,13 +93,13 @@ S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta) {
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
 #'       \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa)}
 #' with \eqn{A = I_1/I_0}, the derivative of \eqn{\log I_0}.
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `mu` and `kappa`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
-#' @return A named list with the \code{mu} and \code{kappa} components.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @return A named list with the `mu` and `kappa` components.
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ...) {
   d <- y - theta[[1]]
@@ -114,13 +114,13 @@ S7::method(distrib_gradient, VonMises1Distrib) <- function(distrib, y, theta,
 #'       \ell^{(\kappa\kappa)} = -A'(\kappa)}
 #' the last free of the data, \eqn{\log I_0} being the only place
 #' \eqn{\kappa} appears alone.
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `mu` and `kappa`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second-derivative components.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
                                                           scale = c("parameter", "link"), ...) {
   d <- y - theta[[1]]
@@ -138,15 +138,15 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\mu\kappa)}] = 0, \qquad
 #'       \mathbb{E}[\ell^{(\kappa\kappa)}] = -A'(\kappa)}
 #' The location and the concentration are therefore orthogonal.
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `mu` and `kappa`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second-derivative components.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
@@ -162,12 +162,12 @@ S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, t
 #' @name distrib_grad_y.VonMises1Distrib
 #' @description
 #' \deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu)}
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
+#' @param theta A list containing `mu` and `kappa`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_grad_y, VonMises1Distrib) <- function(distrib, y, theta, ...) {
   -theta[[2]] * sin(y - theta[[1]])
 }
@@ -176,12 +176,12 @@ S7::method(distrib_grad_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' @name distrib_hess_y.VonMises1Distrib
 #' @description
 #' \deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu)}
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
+#' @param theta A list containing `mu` and `kappa`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...) {
   -theta[[2]] * cos(y - theta[[1]])
 }
@@ -196,9 +196,9 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' concentration \eqn{\kappa}.
 #'
 #' @param link_mu A link function object for \eqn{\mu}. Defaults to
-#'   \code{\link[linkfunctions7]{bounded_link}} on \eqn{(-\pi, \pi)}.
+#'   [linkfunctions7::bounded_link()] on \eqn{(-\pi, \pi)}.
 #' @param link_kappa A link function object for \eqn{\kappa}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   [linkfunctions7::log_link()] to ensure positivity.
 #'
 #' @details
 #' The observation is an angle and the support is a circle, written here as
@@ -206,17 +206,17 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' that topology: the two ends of the interval are the same point, so a density
 #' need not vanish at either.
 #'
-#' \strong{Density:}
+#' **Density:**
 #' \deqn{f(y) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)}}
 #' The normalizing constant is a modified Bessel function, and it is evaluated
 #' exponentially scaled with the exponent added back, so a concentration past
 #' \eqn{\kappa = 700} does not overflow.
 #'
-#' \strong{Moments.} \code{\link{mean}}, \code{\link{variance}},
-#' \code{\link{skewness}} and \code{\link{kurtosis}} are the ordinary moments
+#' **Moments.** [mean()], [variance()],
+#' [skewness()] and [kurtosis()] are the ordinary moments
 #' of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, and they are obtained
 #' numerically. They are not the circular quantities and they are not what
-#' \eqn{\mu} and \eqn{\kappa} describe: \eqn{\mu} is the mean \emph{direction},
+#' \eqn{\mu} and \eqn{\kappa} describe: \eqn{\mu} is the mean *direction*,
 #' and \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the
 #' interval is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the
 #' density is not symmetric about \eqn{\mu} on it. At \eqn{\mu = 1.2} and
@@ -225,7 +225,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' \eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form, and neither is
 #' returned by a generic whose name means something else.
 #'
-#' \strong{Score, observed and expected Hessian.} Writing
+#' **Score, observed and expected Hessian.** Writing
 #' \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} for the derivative of
 #' \eqn{\log I_0},
 #' \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
@@ -233,15 +233,15 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' and every second derivative is closed form, with
 #' \eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2} obtained from the
 #' Bessel recurrences rather than from a further evaluation. Since
-#' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, \strong{the two parameters
-#' are orthogonal}: the expected information is diagonal, and Fisher scoring
+#' \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, **the two parameters
+#' are orthogonal**: the expected information is diagonal, and Fisher scoring
 #' updates the direction and the concentration independently.
 #'
 #' \eqn{A(\kappa)} is the mean resultant length, so \eqn{A'(\kappa)} is the
 #' variance of \eqn{\cos(Y-\mu)} and is positive, which is what makes the
 #' information positive definite.
 #'
-#' \strong{The mean direction is carried on a bounded chart}, the default link
+#' **The mean direction is carried on a bounded chart**, the default link
 #' mapping the free scale onto \eqn{(-\pi, \pi)}. That keeps the parameter
 #' identified, at the cost that a fit cannot walk across the boundary: data
 #' concentrated near \eqn{\pm\pi} are better rotated before fitting than
@@ -249,7 +249,7 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' would make the likelihood periodic and every maximum one of infinitely
 #' many.
 #'
-#' \strong{Parameter domains:}
+#' **Parameter domains:**
 #' \itemize{
 #'   \item \eqn{\mu \in (-\pi, \pi)}
 #'   \item \eqn{\kappa \in (0, +\infty)}
@@ -259,15 +259,15 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #' class by quadrature over the bounded support, with the quantile by root
 #' finding on it.
 #'
-#' @return An S7 object of class \code{VonMises1Distrib}.
+#' @return An S7 object of class `VonMises1Distrib`.
 #'
 #' @references
 #' Best, D. J. and Fisher, N. I. (1979). Efficient simulation of the von Mises
-#' distribution. \emph{Applied Statistics} 28, 152-157.
+#' distribution. *Applied Statistics* 28, 152-157.
 #'
-#' Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}. Wiley.
+#' Mardia, K. V. and Jupp, P. E. (2000). *Directional Statistics*. Wiley.
 #'
-#' @seealso \code{\link{gaussian1_distrib}} for the analogous family on the line
+#' @seealso [gaussian1_distrib()] for the analogous family on the line
 #'
 #' @importFrom linkfunctions7 bounded_link log_link
 #' @importFrom stats runif
@@ -309,16 +309,16 @@ vonmises1_distrib <- function(link_mu = bounded_link(lwr = -pi, upr = pi),
 #' \eqn{\kappa} ones are minus the derivatives of \eqn{A(\kappa)}, which
 #' \pkg{numericals7} supplies from the Riccati recursion
 #' \eqn{A' = 1 - A/\kappa - A^2}.
-#' @param distrib A \code{VonMises1Distrib} object.
+#' @param distrib A `VonMises1Distrib` object.
 #' @param y A numeric vector of angles.
-#' @param theta A list containing \code{mu} and \code{kappa}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `mu` and `kappa`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{vonmises1_distrib}}
+#' @seealso [vonmises1_distrib()]
 S7::method(distrib_deriv3, VonMises1Distrib) <- function(distrib, y, theta,
                                                          scale = c("parameter", "link"),
                                                          expected = FALSE,
@@ -385,7 +385,7 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
 #' around the circle.
 #'
 #' Only the RATIOS \eqn{I_j/I_0} are needed and
-#' \code{\link[numericals7]{bessel_i_ratios}} gives them by a backward
+#' [numericals7::bessel_i_ratios()] gives them by a backward
 #' recurrence whose loop runs over the series index rather than over the
 #' data. That is what makes the series cheaper: \eqn{n} quadratures become a
 #' few dozen vectorized steps.
@@ -402,9 +402,9 @@ S7::method(distrib_deriv4, VonMises1Distrib) <- function(distrib, y, theta,
 #' @param mu The mean directions.
 #' @param kappa The concentrations.
 #'
-#' @return The distribution function at \code{y}.
+#' @return The distribution function at `y`.
 #'
-#' @seealso \code{\link[numericals7]{bessel_i_ratios}}
+#' @seealso [numericals7::bessel_i_ratios()]
 #'
 #' @keywords internal
 vm_cdf <- function(y, mu, kappa) {

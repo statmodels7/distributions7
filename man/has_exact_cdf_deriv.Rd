@@ -26,7 +26,7 @@ closed form that route differences its cdf, carrying more relative error
 into the Hessian than the quadrature does.
 
 That is invisible in the Hessian itself but not downstream:
-\code{\link{numerical_deriv4}} differentiates the analytical Hessian, so a
+\code{\link[=numerical_deriv4]{numerical_deriv4()}} differentiates the analytical Hessian, so a
 noisier Hessian degrades the \emph{reference} the fourth-order check compares
 against, and the check fails on code that is right.
 
@@ -36,6 +36,6 @@ an inherited fallback gives \code{continuous_distrib}. \code{identical()} on
 the method object does not answer the question, because S7 wraps it.
 }
 \seealso{
-\code{\link{trunc_mass_derivs}}
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}}
 }
 \keyword{internal}

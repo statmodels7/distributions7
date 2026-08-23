@@ -8,7 +8,7 @@ mv_derived(distrib, theta, ...)
 }
 \arguments{
 \item{distrib}{An object inheriting from class
-\code{\link{multivariate_distrib}}.}
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
 \item{theta}{A named list or vector of parameters.}
 
@@ -39,18 +39,18 @@ that an optimizer can move freely; they are not quantities anyone reads.
 The logarithm of the third diagonal entry of a Cholesky factor has an
 estimate and a standard error, and neither answers a question. This generic
 names the quantities that do, and supplies
-\eqn{\partial g/\partial\theta} so that \code{\link{mv_summary}} can apply
+\eqn{\partial g/\partial\theta} so that \code{\link[=mv_summary]{mv_summary()}} can apply
 the delta method to them.
 
 Each quantity also declares the scale its confidence interval should be
-built on, exactly as \code{\link{fit_distrib}} builds a univariate interval
+built on, exactly as \code{\link[=fit_distrib]{fit_distrib()}} builds a univariate interval
 on the link scale and maps it back: a standard deviation is intervalled on
 the log scale so that the interval cannot reach zero, a correlation on
 Fisher's \eqn{z = \mathrm{artanh}(\rho)} so that it cannot leave
 \eqn{(-1, 1)}, and an unconstrained quantity on its own scale.
 
-The default method, registered on \code{\link{multivariate_distrib}},
-returns the distinct entries of the matrix \code{\link{mv_sigma}} produces,
+The default method, registered on \code{\link[=multivariate_distrib]{multivariate_distrib()}},
+returns the distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces,
 named after the coordinates they belong to, with a Jacobian obtained by one
 central difference. A family whose matrix is not a covariance therefore
 still reports something on its original scale, which is better than
@@ -64,5 +64,5 @@ mv_derived(d, theta)$value
 
 }
 \seealso{
-\code{\link{mv_summary}}, \code{\link{mv_sigma}}
+\code{\link[=mv_summary]{mv_summary()}}, \code{\link[=mv_sigma]{mv_sigma()}}
 }

@@ -19,5 +19,5 @@ A numeric vector.
 \eqn{\partial^2\ell/\partial y^2 = -(a-1)/y^2}.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

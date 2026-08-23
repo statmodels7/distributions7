@@ -19,5 +19,5 @@ Inverse transform sampling on the parent: \eqn{Y = Q(F(\ell^-) + U Z)} with
 terminates in one pass however small \eqn{Z} is.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

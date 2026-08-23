@@ -20,5 +20,5 @@ Change of variables: \eqn{f_Y(y) = f_X(g^{-1}(y)) \cdot |J(y)|}. Computed in log
 singular log-densities are clamped to avoid \code{Inf - Inf} during integration.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

@@ -20,5 +20,5 @@ A numeric vector of density values.
       \qquad y \in [-\pi, \pi)}
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

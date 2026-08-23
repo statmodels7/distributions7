@@ -27,5 +27,5 @@ A named list of fourth-derivative components.
 The partition sum at order four.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

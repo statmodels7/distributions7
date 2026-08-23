@@ -22,5 +22,5 @@ Computes the quantile function (inverse CDF) for the Cauchy distribution:
 \deqn{Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\right)}
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

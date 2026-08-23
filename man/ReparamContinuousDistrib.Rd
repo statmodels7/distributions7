@@ -52,25 +52,25 @@ ReparamDiscreteDistrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
 \item{parent_distrib}{The distribution being rewritten.}
 
 \item{reparam_map}{The map from the new parameters to the parent's.}
 
 \item{reparam_derivs}{The function returning the map's keyed partial
-tables, as \code{\link{reparam_tables}} consumes them.}
+tables, as \code{\link[=reparam_tables]{reparam_tables()}} consumes them.}
 }
 \value{
 An object of the corresponding class.
 }
 \description{
-The wrapper \code{\link{reparametrize}} returns: the same law as its parent,
+The wrapper \code{\link[=reparametrize]{reparametrize()}} returns: the same law as its parent,
 written in different coordinates. There is one class per kind of parent, so
 that a continuous parent keeps the defaults registered on
-\code{\link{continuous_distrib}} and a discrete one those of
-\code{\link{discrete_distrib}}.
+\code{\link[=continuous_distrib]{continuous_distrib()}} and a discrete one those of
+\code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }

@@ -26,5 +26,5 @@ Closed-form first derivatives of the Gumbel log-density, written in
         = \dfrac{z(1 - w) - 1}{\sigma}}
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

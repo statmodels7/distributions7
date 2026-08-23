@@ -40,6 +40,6 @@ The location and scale pairs in closed form and every pair touching a shape
 parameter by one central difference of the analytic first-order component.
 }
 \seealso{
-\code{\link{loc_scale_theta2_block}}
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
 }
 \keyword{internal}

@@ -19,7 +19,7 @@ A named list with one numeric vector per parameter.
 }
 \description{
 Fallback: one central difference of
-\code{\link{distrib_hess_y}} in each parameter (see
-\code{\link{numerical_cross2_y}}).
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter (see
+\code{\link[=numerical_cross2_y]{numerical_cross2_y()}}).
 }
 \keyword{internal}

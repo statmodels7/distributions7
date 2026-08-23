@@ -8,7 +8,7 @@ chisq_distrib(link_mu = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{ChisqDistrib}.
@@ -39,7 +39,7 @@ nothing to average. \eqn{\mathbb{E}[\log y] = \psi(\mu/2) + \log 2} is what
 makes the score have mean zero.
 
 That coincidence does not carry to the scale a fit optimizes on. The
-second-order chain rule of \code{\link{distrib_hessian}} adds a term
+second-order chain rule of \code{\link[=distrib_hessian]{distrib_hessian()}} adds a term
 \eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian, and the
 expected version drops it because the score has mean zero, while a sample
 does not. Fisher scoring and Newton's method therefore take different steps
@@ -73,5 +73,5 @@ distrib_expected_hessian(d, c(1, 4, 9), theta)
 
 }
 \seealso{
-\code{\link{gamma2_distrib}}, \code{\link{exponential_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}}
 }

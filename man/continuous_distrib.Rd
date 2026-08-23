@@ -33,7 +33,7 @@ continuous_distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{continuous_distrib}.
@@ -45,7 +45,7 @@ A subclass of \code{distrib} specifically for continuous probability distributio
 
 Defaults for continuous distributions, built from the density alone: the cdf by
 quadrature, the quantile function by root finding, and the generator by
-Generalized Ratio-of-Uniforms (\code{\link{rng_grou}}) or inverse transform when
+Generalized Ratio-of-Uniforms (\code{\link[=rng_grou]{rng_grou()}}) or inverse transform when
 an analytical quantile is available.
 
 \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf()}},
@@ -56,7 +56,7 @@ an analytical quantile is available.
 \code{\link[=expectation]{expectation()}},
 \code{\link[=plot.continuous_distrib]{plot()}}
 
-Everything else is inherited from \code{\link{distrib}}.
+Everything else is inherited from \code{\link[=distrib]{distrib()}}.
 }
 
 \examples{
@@ -65,5 +65,5 @@ S7::S7_inherits(poisson_distrib(), continuous_distrib)
 
 }
 \seealso{
-\code{\link{distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
+\code{\link[=distrib]{distrib()}}, \code{\link[=discrete_distrib]{discrete_distrib()}}, \code{\link[=multivariate_distrib]{multivariate_distrib()}}
 }

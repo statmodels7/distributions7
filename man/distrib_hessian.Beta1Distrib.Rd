@@ -21,5 +21,5 @@ Computes the analytical observed Hessian (second derivatives) of the Beta log-de
 with respect to the parameters \eqn{\mu} and \eqn{\phi}.
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

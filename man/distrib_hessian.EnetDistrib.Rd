@@ -25,5 +25,5 @@ of \eqn{\log Z} carried through the bilinear map
 contributes the \eqn{\lambda\alpha} entry.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

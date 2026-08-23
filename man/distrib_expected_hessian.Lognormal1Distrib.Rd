@@ -18,5 +18,5 @@ Computes the analytical expected Hessian of the Lognormal log-density
 with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

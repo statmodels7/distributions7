@@ -25,5 +25,5 @@ The map touches only the second parameter, so the chain rule is the
 one-variable one and no cancellation is involved.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }

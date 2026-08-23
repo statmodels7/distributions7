@@ -7,16 +7,16 @@
 mv_param_block(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }
 \value{
-A list in the shape of \code{\link{mv_derived}}, or \code{NULL}.
+A list in the shape of \code{\link[=mv_derived]{mv_derived()}}, or \code{NULL}.
 }
 \description{
 The block a \pkg{parameters7} family declares through
-\code{\link[parameters7]{param_readable}}, with its Jacobian widened from
+\code{\link[parameters7:param_readable]{parameters7::param_readable()}}, with its Jacobian widened from
 the free vector to the whole parameter vector of the distribution.
 }
 \details{

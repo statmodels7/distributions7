@@ -19,5 +19,5 @@ A named list of third-derivative component vectors.
 Closed-form third-order derivatives of the Lognormal log-density (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

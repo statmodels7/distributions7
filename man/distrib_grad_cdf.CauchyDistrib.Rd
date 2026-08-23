@@ -21,5 +21,5 @@ A named list, one vector per parameter.
 Closed form, from the location-scale structure.
 }
 \seealso{
-\code{\link{cauchy_distrib}}
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}
 }

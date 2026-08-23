@@ -28,5 +28,5 @@ With \eqn{s = 1/\phi} and \eqn{z = y/\mu},
 the first being the score of a gamma generalized linear model.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

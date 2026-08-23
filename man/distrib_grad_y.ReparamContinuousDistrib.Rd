@@ -20,6 +20,6 @@ The parent's, unchanged: a reparametrization touches the parameters and not
 the response.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

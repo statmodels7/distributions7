@@ -15,7 +15,7 @@ canon_key(block, params)
 A single string.
 }
 \description{
-Names a block of parameters the way \code{\link{deriv_names}} does: in the
+Names a block of parameters the way \code{\link[=deriv_names]{deriv_names()}} does: in the
 order the distribution declares them, joined by an underscore.
 }
 \keyword{internal}

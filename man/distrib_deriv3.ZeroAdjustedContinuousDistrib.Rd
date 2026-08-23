@@ -20,5 +20,5 @@ There is no truncation constant, so away from the atom the \eqn{\theta}
 derivatives are the parent's and the mixed ones vanish.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

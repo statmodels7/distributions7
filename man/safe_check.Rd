@@ -10,7 +10,7 @@ safe_check(name, expr)
 \item{name}{The check's name, used for the row built on failure.}
 
 \item{expr}{The expression to evaluate; normally returns a row from
-\code{\link{new_check}}.}
+\code{\link[=new_check]{new_check()}}.}
 }
 \value{
 The value of \code{expr}, or a failed row carrying the error message.
@@ -26,6 +26,6 @@ would end the run and hide every check after it -- the least useful moment to
 stop being informative.
 }
 \seealso{
-\code{\link{check_distrib}}, \code{\link{new_check}}
+\code{\link[=check_distrib]{check_distrib()}}, \code{\link[=new_check]{new_check()}}
 }
 \keyword{internal}

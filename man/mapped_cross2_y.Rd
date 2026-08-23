@@ -21,10 +21,10 @@ mapped_cross2_y(distrib, parent, th_par, maps, y)
 A named list with one numeric vector per new parameter.
 }
 \description{
-The same first-order chain rule \code{\link{mapped_cross_y}} takes, on the
+The same first-order chain rule \code{\link[=mapped_cross_y]{mapped_cross_y()}} takes, on the
 second response derivative.
 }
 \seealso{
-\code{\link{mapped_cross_y}}
+\code{\link[=mapped_cross_y]{mapped_cross_y()}}
 }
 \keyword{internal}

@@ -9,7 +9,7 @@ plot_labels(x, ps)
 \arguments{
 \item{x}{A distribution object.}
 
-\item{ps}{The value of \code{\link{plot_settings}}.}
+\item{ps}{The value of \code{\link[=plot_settings]{plot_settings()}}.}
 }
 \value{
 A list with \code{legend} (character, length \code{ps$k}, or

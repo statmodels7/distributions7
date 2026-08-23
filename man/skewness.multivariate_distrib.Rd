@@ -4,7 +4,7 @@
 \alias{skewness.multivariate_distrib}
 \title{No Skewness Without Saying Which One}
 \arguments{
-\item{x}{A \code{\link{multivariate_distrib}} object.}
+\item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
@@ -19,11 +19,11 @@ choice among several -- Mardia's, Malkovich-Afifi's, or the vector of
 coordinatewise marginal skewnesses -- and they do not agree. Returning any
 of them under the bare name would be a wrong answer in the shape of a right
 one, so the caller names the quantity it wants instead. Note that
-\code{\link{mv_marginal}} is not a way round this for an elliptical family,
+\code{\link[=mv_marginal]{mv_marginal()}} is not a way round this for an elliptical family,
 whose marginal is a smaller multivariate distribution and rejects in turn;
 it is for the Dirichlet and the multinomial, whose marginals are univariate.
 }
 \seealso{
-\code{\link{mv_marginal}}
+\code{\link[=mv_marginal]{mv_marginal()}}
 }
 \keyword{internal}

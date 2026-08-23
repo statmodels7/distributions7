@@ -24,5 +24,5 @@ direction is a derivative of the incomplete beta in its parameter, has no
 elementary form, and keeps the exact summation.
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

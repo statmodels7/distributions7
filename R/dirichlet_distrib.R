@@ -4,26 +4,26 @@ NULL
 #' @title S7 Class for the Dirichlet Distribution
 #' @name DirichletDistrib
 #'
-#' @description A subclass of \code{multivariate_distrib} representing the
+#' @description A subclass of `multivariate_distrib` representing the
 #'   Dirichlet distribution on the simplex, written in a mean vector and a
 #'   concentration.
 #' @inheritParams multivariate_distrib
 #' @param param The \pkg{parameters7} simplex carrying the mean.
-#' @return An object of class \code{DirichletDistrib}.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @return An object of class `DirichletDistrib`.
+#' @seealso [dirichlet_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_expected_hessian.DirichletDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.DirichletDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.DirichletDistrib]{distrib_rng()}},
-#'   \code{\link[=mv_location.DirichletDistrib]{mv_location()}},
-#'   \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal()}},
-#'   \code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}}
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.DirichletDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.DirichletDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.DirichletDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.DirichletDistrib],
+#'   [`distrib_rng()`][distrib_rng.DirichletDistrib],
+#'   [`mv_location()`][mv_location.DirichletDistrib],
+#'   [`mv_marginal()`][mv_marginal.DirichletDistrib],
+#'   [`mv_sigma()`][mv_sigma.DirichletDistrib]
 #'
-#' Everything else is inherited from \code{\link{multivariate_distrib}}, which
+#' Everything else is inherited from [multivariate_distrib()], which
 #' rejects the distribution function and the quantile.
 DirichletDistrib <- S7::new_class("DirichletDistrib",
   parent = multivariate_distrib,
@@ -43,14 +43,14 @@ DirichletDistrib <- S7::new_class("DirichletDistrib",
 #' every second-derivative vector. They are what make the expected information
 #' closed form, since the terms carrying the data drop out under expectation.
 #'
-#' @param distrib A \code{\link{DirichletDistrib}} object.
+#' @param distrib A [DirichletDistrib()] object.
 #' @param theta A named list of parameters.
 #'
-#' @return A list with \code{mu}, \code{phi}, \code{alpha}, \code{A} (a
-#'   \eqn{p \times (p-1)} matrix), \code{B} (the second derivatives, keyed by
-#'   tuple) and \code{idx} (their index tuples).
+#' @return A list with `mu`, `phi`, `alpha`, `A` (a
+#'   \eqn{p \times (p-1)} matrix), `B` (the second derivatives, keyed by
+#'   tuple) and `idx` (their index tuples).
 #'
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 #'
 #' @keywords internal
 dir_parts <- function(distrib, theta) {
@@ -75,12 +75,12 @@ dir_parts <- function(distrib, theta) {
 #' tuple rather than by position.
 #'
 #' @param idx The tuple index list, as returned by
-#'   \code{parameters7::param_tuple_indices()}.
+#'   `parameters7::param_tuple_indices()`.
 #' @param k,l The two free-value positions.
 #'
 #' @return An integer position into the second-derivative list.
 #'
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 #'
 #' @keywords internal
 dir_b_index <- function(idx, k, l) {
@@ -96,13 +96,13 @@ dir_b_index <- function(idx, k, l) {
 #' @description
 #' \deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_j \Gamma(\alpha_j)}
 #'       \prod_j y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu}
-#' evaluated on the open simplex, one row of \code{y} per observation.
-#' @param distrib A \code{DirichletDistrib} object.
+#' evaluated on the open simplex, one row of `y` per observation.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation, each summing to one.
 #' @param theta A named list of parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
-#' @return A numeric vector, one entry per row of \code{y}.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @param log Logical; if `TRUE`, returns the log-density.
+#' @return A numeric vector, one entry per row of `y`.
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   p <- dir_parts(distrib, theta)
   y <- if (is.matrix(y)) y else matrix(y, nrow = 1L)
@@ -123,11 +123,11 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #' @description
 #' Independent Gamma draws with the shapes \eqn{\alpha_j}, normalized by their
 #' sum, which is the representation the family is defined by.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param n The number of draws.
 #' @param theta A named list of parameters.
-#' @return A matrix with \code{n} rows, each summing to one.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @return A matrix with `n` rows, each summing to one.
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta) {
   p <- dir_parts(distrib, theta)
   d <- length(p$alpha)
@@ -143,13 +143,13 @@ S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta) {
 #' \deqn{\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_j g_j A_{jk},
 #'       \qquad
 #'       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_j g_j \mu_j}
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list, one component per parameter.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_gradient, DirichletDistrib) <- function(distrib, y, theta,
                                                             scale = c("parameter", "link"), ...) {
   p <- dir_parts(distrib, theta)
@@ -171,13 +171,13 @@ S7::method(distrib_gradient, DirichletDistrib) <- function(distrib, y, theta,
 #'       \ell^{(\phi\phi)} = \psi'(\phi) - \sum_j t_j \mu_j^2}
 #' the last free of the data, the family being an exponential family in
 #' \eqn{\log y}.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second-derivative components.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ...) {
   p <- dir_parts(distrib, theta)
@@ -218,15 +218,15 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -\phi^2\sum_j t_j A_{jk}A_{jl},
 #'       \qquad
 #'       \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_j t_j \mu_j A_{jk}}
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param y A matrix with one row per observation.
 #' @param theta A named list of parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second-derivative components.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
@@ -257,10 +257,10 @@ S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, t
 #' @title Dirichlet Mean Vector
 #' @name mv_location.DirichletDistrib
 #' @description The simplex the mean parameter carries, which is the mean.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @return A numeric vector summing to one.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(mv_location, DirichletDistrib) <- function(distrib, theta) {
   dir_parts(distrib, theta)$mu
 }
@@ -271,10 +271,10 @@ S7::method(mv_location, DirichletDistrib) <- function(distrib, theta) {
 #' \deqn{\operatorname{Cov}(Y_i, Y_j)
 #'       = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}}
 #' singular by construction, the coordinates summing to a constant.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @return A symmetric matrix.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 S7::method(mv_sigma, DirichletDistrib) <- function(distrib, theta) {
   p <- dir_parts(distrib, theta)
   (diag(p$mu, nrow = length(p$mu)) - tcrossprod(p$mu)) / (p$phi + 1)
@@ -283,11 +283,11 @@ S7::method(mv_sigma, DirichletDistrib) <- function(distrib, theta) {
 #' @title Mean of a Dirichlet
 #' @name mean.DirichletDistrib
 #' @description The mean vector, which is a parameter of the family.
-#' @param x A \code{DirichletDistrib} object.
+#' @param x A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector summing to one.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 #' @keywords internal
 S7::method(mean, DirichletDistrib) <- function(x, theta, ...) {
   mv_location(x, theta)
@@ -295,13 +295,13 @@ S7::method(mean, DirichletDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of a Dirichlet
 #' @name variance.DirichletDistrib
-#' @description The covariance matrix \code{\link{mv_sigma}} carries, singular
+#' @description The covariance matrix [mv_sigma()] carries, singular
 #'   because the coordinates sum to one.
-#' @param x A \code{DirichletDistrib} object.
+#' @param x A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A symmetric \eqn{p \times p} matrix.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @seealso [dirichlet_distrib()]
 #' @keywords internal
 S7::method(variance, DirichletDistrib) <- function(x, theta, ...) {
   mv_sigma(x, theta)
@@ -315,12 +315,12 @@ S7::method(variance, DirichletDistrib) <- function(x, theta, ...) {
 #' with respect to the same dominating measure the family's density is written
 #' against. The base class's gaussian proposal lives in \eqn{\mathbb{R}^p} and
 #' would place no mass at all on the simplex.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @param n The number of draws.
 #' @param ... Unused.
-#' @return A list with the draws \code{y} and their log-density \code{logd}.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @return A list with the draws `y` and their log-density `logd`.
+#' @seealso [dirichlet_distrib()]
 #' @keywords internal
 S7::method(mv_reference_draw, DirichletDistrib) <- function(distrib, theta, n, ...) {
   p <- distrib@n_dim
@@ -337,12 +337,12 @@ S7::method(mv_reference_draw, DirichletDistrib) <- function(distrib, theta, n, .
 #' every marginal. A group of coordinates is again Dirichlet, but only after
 #' the remaining mass is collapsed into one of its own, so that case is
 #' rejected.
-#' @param distrib A \code{DirichletDistrib} object.
+#' @param distrib A `DirichletDistrib` object.
 #' @param theta A named list of parameters.
 #' @param which The coordinate wanted.
 #' @param ... Unused.
-#' @return A list with the marginal \code{distrib} and its \code{theta}.
-#' @seealso \code{\link{dirichlet_distrib}}
+#' @return A list with the marginal `distrib` and its `theta`.
+#' @seealso [dirichlet_distrib()]
 S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...) {
   if (length(which) != 1L) {
     stop(paste0(
@@ -381,14 +381,14 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' with that same \eqn{\phi}.
 #'
 #' @param n_dim The number of coordinates \eqn{p}.
-#' @param mean A \pkg{parameters7} \code{\link[parameters7]{simplex}} of the
+#' @param mean A \pkg{parameters7} [parameters7::simplex()] of the
 #'   same dimension, carrying the mean. Defaults to
-#'   \code{parameters7::simplex(n_dim)}.
+#'   `parameters7::simplex(n_dim)`.
 #' @param link_phi A link function object for \eqn{\phi}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   [linkfunctions7::log_link()] to ensure positivity.
 #'
 #' @details
-#' The first family here that is multivariate and \strong{not elliptical}, and
+#' The first family here that is multivariate and **not elliptical**, and
 #' therefore the second real test of that layer: there is no location and
 #' scale to separate, the support is a simplex rather than a Euclidean space,
 #' and the covariance is singular by construction because the coordinates sum
@@ -397,20 +397,20 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' The parametrization follows the same design as the multivariate gaussian's.
 #' The constrained object --- here a point of the simplex rather than a
 #' positive definite matrix --- is carried by a \pkg{parameters7} parameter and
-#' \strong{flattened into scalars} with identity links, so every generic of the
+#' **flattened into scalars** with identity links, so every generic of the
 #' package indexes it as it always did. The shapes are
 #' \eqn{\alpha = \phi\mu}.
 #'
-#' \strong{Density:}
+#' **Density:**
 #' \deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_j\Gamma(\alpha_j)}
 #'       \prod_j y_j^{\alpha_j-1}}
 #'
-#' \strong{Moments:} mean \eqn{\mu} and
+#' **Moments:** mean \eqn{\mu} and
 #' \eqn{\operatorname{Cov}(Y_i,Y_j) = (\delta_{ij}\mu_i - \mu_i\mu_j)/(\phi+1)},
 #' so \eqn{\phi} is a precision: the larger it is, the tighter the draws about
 #' the mean.
 #'
-#' \strong{The expected information is closed form}, which two identities make
+#' **The expected information is closed form**, which two identities make
 #' possible. Differentiating \eqn{\sum_j\mu_j = 1} once and twice shows that
 #' the columns of \eqn{A = \partial\mu/\partial\eta} sum to zero and so does
 #' every second-derivative vector of the simplex; and
@@ -419,22 +419,22 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' carrying the data is therefore a constant times one of those zero sums, and
 #' drops out.
 #'
-#' \strong{The marginals are Beta}, coordinate \eqn{j} being
+#' **The marginals are Beta**, coordinate \eqn{j} being
 #' \eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, so
-#' \code{\link{mv_marginal}} returns an object rather than signaling an error --- which
+#' [mv_marginal()] returns an object rather than signaling an error --- which
 #' is what makes this family a useful test of that generic rather than another
 #' rejection. Several coordinates together are again Dirichlet, but only after
 #' the remaining mass is collapsed into a coordinate of its own, so that case
 #' is rejected rather than returned under a name that would mislead.
 #'
 #' The distribution function and the quantile are rejected by
-#' \code{\link{multivariate_distrib}}, as for every family of that class.
+#' [multivariate_distrib()], as for every family of that class.
 #'
-#' @return An S7 object of class \code{DirichletDistrib}.
+#' @return An S7 object of class `DirichletDistrib`.
 #'
-#' @seealso \code{\link{beta1_distrib}} for the two-coordinate case seen on the
-#'   line, \code{\link{mvgaussian_distrib}},
-#'   \code{\link[parameters7]{simplex}}
+#' @seealso [beta1_distrib()] for the two-coordinate case seen on the
+#'   line, [mvgaussian_distrib()],
+#'   [parameters7::simplex()]
 #'
 #' @importFrom linkfunctions7 log_link identity_link
 #' @importFrom stats rgamma

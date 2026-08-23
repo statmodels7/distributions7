@@ -20,13 +20,13 @@ NULL
 #' variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 #'
 #' @details
-#' The parameters of \code{\link{lognormal1_distrib}} describe \eqn{\log Y}, so
+#' The parameters of [lognormal1_distrib()] describe \eqn{\log Y}, so
 #' neither of them is a moment of \eqn{Y}. Here they are, through
 #' \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
 #'       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)}
 #' which is the parametrization a regression on the mean wants.
 #'
-#' Built with \code{\link{reparametrize}}, so every derivative to fourth order,
+#' Built with [reparametrize()], so every derivative to fourth order,
 #' observed and expected, is exact.
 #'
 #' @section The distribution:
@@ -40,7 +40,7 @@ NULL
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso \code{\link{lognormal1_distrib}}, \code{\link{reparametrize}}
+#' @seealso [lognormal1_distrib()], [reparametrize()]
 #'
 #' @examples
 #' d <- lognormal2_distrib()
@@ -72,15 +72,15 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #' shape.
 #'
 #' @details
-#' The first parameter of \code{\link{weibull1_distrib}} is the scale and not
+#' The first parameter of [weibull1_distrib()] is the scale and not
 #' the mean: the mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}. Inverting that gives
 #' the map used here,
 #' \deqn{\mu = \dfrac{m}{\Gamma(1 + 1/\sigma)},}
 #' so every derivative becomes a derivative of the gamma function, which is
-#' why \code{\link{weibull1_distrib}} is not written this way.
+#' why [weibull1_distrib()] is not written this way.
 #'
-#' The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
-#' Leaving \code{weibull2} unused is deliberate: it names a different
+#' The number follows gamlss, where the Weibull in the mean is `WEI3`.
+#' Leaving `weibull2` unused is deliberate: it names a different
 #' parametrization there.
 #'
 #' @section The distribution:
@@ -94,7 +94,7 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso \code{\link{weibull1_distrib}}, \code{\link{reparametrize}}
+#' @seealso [weibull1_distrib()], [reparametrize()]
 #'
 #' @examples
 #' d <- weibull3_distrib()
@@ -103,8 +103,8 @@ lognormal2_distrib <- function(link_mean = log_link(), link_var = log_link()) {
 #'
 #' @references
 #' Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
-#' for location, scale and shape. \emph{Journal of the Royal Statistical
-#' Society, Series C} 54, 507-554.
+#' for location, scale and shape. *Journal of the Royal Statistical
+#' Society, Series C* 54, 507-554.
 #'
 #' @export
 weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
@@ -130,12 +130,12 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 #' standard deviation rather than the scale.
 #'
 #' @details
-#' The scale of \code{\link{student_t1_distrib}} is not the standard
+#' The scale of [student_t1_distrib()] is not the standard
 #' deviation: the two differ by \eqn{\sqrt{\nu/(\nu-2)}}. Here the map is
 #' \deqn{\sigma_{\text{scale}} = \sigma\sqrt{\dfrac{\nu-2}{\nu}},}
 #' which exists only for \eqn{\nu > 2}, and the constructor bounds \eqn{\nu}
 #' there rather than letting the map return a complex number several frames
-#' down. This is \code{TF2} in gamlss.
+#' down. This is `TF2` in gamlss.
 #'
 #' The restriction is the point rather than a limitation: a family
 #' parametrized by a standard deviation is a family whose standard deviation
@@ -155,7 +155,7 @@ weibull3_distrib <- function(link_mean = log_link(), link_sigma = log_link()) {
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso \code{\link{student_t1_distrib}}, \code{\link{reparametrize}}
+#' @seealso [student_t1_distrib()], [reparametrize()]
 #'
 #' @examples
 #' d <- student_t2_distrib()
@@ -191,7 +191,7 @@ student_t2_distrib <- function(link_mu = identity_link(),
 #' mean.
 #'
 #' @details
-#' The Stacy parametrization of \code{\link{gengamma1_distrib}} carries a
+#' The Stacy parametrization of [gengamma1_distrib()] carries a
 #' scale, a shape and a power, and exposes no mean at all, which is awkward for
 #' a family a regression would put a linear predictor on. Since
 #' \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is
@@ -209,7 +209,7 @@ student_t2_distrib <- function(link_mu = identity_link(),
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso \code{\link{gengamma1_distrib}}, \code{\link{reparametrize}}
+#' @seealso [gengamma1_distrib()], [reparametrize()]
 #'
 #' @examples
 #' d <- gengamma2_distrib()
@@ -238,18 +238,18 @@ gengamma2_distrib <- function(link_mean = log_link(), link_d = log_link(),
 #' Inverse Gaussian Distribution in the Mean and Shape, Obtained
 #'
 #' @description
-#' The same family as \code{\link{invgauss2_distrib}}, obtained through
-#' \code{\link{reparametrize}} rather than written out.
+#' The same family as [invgauss2_distrib()], obtained through
+#' [reparametrize()] rather than written out.
 #'
 #' @details
 #' This exists as a check rather than as a second way of doing the same thing.
-#' \code{\link{invgauss2_distrib}} carries its own kernels, so the two are
+#' [invgauss2_distrib()] carries its own kernels, so the two are
 #' independent implementations of one object and their agreement needs no
 #' tolerance to be chosen. It is not exported for that reason.
 #'
 #' @return A reparametrized distribution object.
 #'
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 #'
 #' @keywords internal
 invgauss2_by_reparam <- function() {

@@ -23,5 +23,5 @@ Closed form, from the location-scale structure:
 \eqn{\partial F/\partial\sigma = -z f(y)} with \eqn{z = (y-\mu)/\sigma}.
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

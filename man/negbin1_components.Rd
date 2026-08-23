@@ -15,7 +15,7 @@ negbin1_components(y, theta, order)
 }
 \value{
 A named list of component vectors, keyed as
-\code{\link{deriv_names}}.
+\code{\link[=deriv_names]{deriv_names()}}.
 }
 \description{
 The components of \eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at
@@ -23,6 +23,6 @@ any order from one to four, from the sparse form of the log-likelihood in
 the size \eqn{r = \mu/\theta}.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }
 \keyword{internal}

@@ -27,12 +27,12 @@ A named list of third-derivative components.
 A named list of fourth-derivative components.
 }
 \description{
-Closed form at both orders, from \code{\link{negbin1_components}}. In the
+Closed form at both orders, from \code{\link[=negbin1_components]{negbin1_components()}}. In the
 size \eqn{r = \mu/\theta} the log-likelihood is
 \eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite piece is
 \eqn{G(\mu/\theta)} and its mixed derivatives follow a recursion in the
 powers of \eqn{r} and the order of \eqn{G}.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

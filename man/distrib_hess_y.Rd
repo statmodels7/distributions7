@@ -29,5 +29,5 @@ fall back to finite differences of the log-density.
 distrib_hess_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
 \seealso{
-\code{\link{distrib_grad_y}}, \code{\link{distrib_cross_y}}
+\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_cross_y]{distrib_cross_y()}}
 }

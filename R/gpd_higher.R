@@ -35,23 +35,23 @@ NULL
 #'
 #' @details
 #' The shape direction goes through the series of \eqn{\log(1+\xi z)/\xi}
-#' wherever \eqn{\lvert\xi z\rvert} is below \code{cut}, which is the
+#' wherever \eqn{\lvert\xi z\rvert} is below `cut`, which is the
 #' region where the Leibniz form's terms of size \eqn{\xi^{-(b+1)}} cancel
 #' against each other; elsewhere the Leibniz form is used directly. The
 #' threshold is exposed so that a test can force either route where both are
 #' accurate and compare them.
 #'
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{sigma} and \code{xi}.
+#' @param theta A list containing `sigma` and `xi`.
 #' @param order The derivative order, 1 to 4.
 #' @param cut The value of \eqn{\lvert\xi z\rvert} below which the series
 #'   is used.
 #' @param threads How many threads the series kernel may use.
 #'
 #' @return A named list of component vectors, keyed as
-#'   \code{\link{deriv_names}}.
+#'   [deriv_names()].
 #'
-#' @seealso \code{\link{gpd_distrib}}, \code{\link{fdb2}}
+#' @seealso [gpd_distrib()], [fdb2()]
 #' @keywords internal
 gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
   sg <- theta[[1]]
@@ -144,20 +144,20 @@ gpd_components <- function(y, theta, order, cut = 0.2, threads = 1L) {
 #' @title Generalized Pareto Third and Fourth Derivatives
 #' @name distrib_deriv3.GPDDistrib
 #' @description
-#' Closed form at both orders, from \code{\link{gpd_components}}: the
+#' Closed form at both orders, from [gpd_components()]: the
 #' log-density splits into \eqn{-\log\sigma}, \eqn{-\log t} and
 #' \eqn{-\log(t)/\xi}, and the last is taken from its series where the
 #' Leibniz form's terms cancel.
-#' @param distrib A \code{GPDDistrib} object.
+#' @param distrib A `GPDDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{sigma} and \code{xi}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `sigma` and `xi`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{gpd_distrib}}
+#' @seealso [gpd_distrib()]
 S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),

@@ -8,10 +8,10 @@ gamma2_distrib(link_mu = log_link(), link_sigma2 = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_sigma2}{A link function object for the variance parameter \eqn{\sigma^2}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{Gamma2Distrib} (inheriting from \code{continuous_distrib}) representing the Gamma distribution.
@@ -41,7 +41,7 @@ rate \eqn{\lambda} are recovered as
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2}\right] = \dfrac{2\mu(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^3}}
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^4}}
-The observed Hessian is available via \code{\link{distrib_hessian.Gamma2Distrib}}.
+The observed Hessian is available via \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}}.
 
 \strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2},
 skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
@@ -52,9 +52,9 @@ skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
 \item \eqn{\sigma^2 \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and response derivatives (\code{\link{distrib_grad_y}},
-\code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- gamma2_distrib()
@@ -67,12 +67,12 @@ distrib_gradient(d, c(0.5, 1, 2), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.Gamma2Distrib}} for the probability density function.
-\item \code{\link{distrib_cdf.Gamma2Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.Gamma2Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.Gamma2Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.Gamma2Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.Gamma2Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.Gamma2Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the probability density function.
+\item \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf.Gamma2Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.Gamma2Distrib]{distrib_quantile.Gamma2Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.Gamma2Distrib]{distrib_rng.Gamma2Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}} for the analytical expected Hessian.
 }
 }

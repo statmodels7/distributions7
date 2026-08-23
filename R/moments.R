@@ -6,20 +6,20 @@ NULL
 #'
 #' @description
 #' Computes raw moments \eqn{E[Y^p]} or central moments \eqn{E[(Y-\mu)^p]} of a
-#' distribution numerically, via \code{\link{expectation}} (numerical integration
+#' distribution numerically, via [expectation()] (numerical integration
 #' for continuous distributions, series summation for discrete ones).
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters. Vectors are supported (vectorized computation).
-#' @param p Numeric. The order of the moment. Can be a vector (recycled against \code{theta}).
-#' @param central Logical. If \code{TRUE}, computes the central moment \eqn{E[(Y-\mu)^p]},
-#'   where \eqn{\mu = E[Y]} (computed numerically unless \code{mu} is supplied).
-#' @param mu Optional numeric. The centering value(s) used when \code{central = TRUE}.
-#'   If \code{NULL}, the mean is computed numerically.
-#' @param ... Additional arguments passed to \code{\link{expectation}}.
+#' @param p Numeric. The order of the moment. Can be a vector (recycled against `theta`).
+#' @param central Logical. If `TRUE`, computes the central moment \eqn{E[(Y-\mu)^p]},
+#'   where \eqn{\mu = E[Y]} (computed numerically unless `mu` is supplied).
+#' @param mu Optional numeric. The centering value(s) used when `central = TRUE`.
+#'   If `NULL`, the mean is computed numerically.
+#' @param ... Additional arguments passed to [expectation()].
 #'
 #' @return A numeric vector of moments, with length equal to the maximum length
-#'   among \code{theta} components and \code{p}.
+#'   among `theta` components and `p`.
 #'
 #' @examples
 #' \dontrun{
@@ -28,7 +28,7 @@ NULL
 #' moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE) # 9
 #' }
 #'
-#' @seealso \code{\link{expectation}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+#' @seealso [expectation()], [variance()], [std_dev()], [skewness()], [kurtosis()]
 #' @export
 moment <- function(distrib, theta, p = 1, central = FALSE, mu = NULL, ...) {
   if (central) {
@@ -55,12 +55,12 @@ moment <- function(distrib, theta, p = 1, central = FALSE, mu = NULL, ...) {
 #' @name mean.distrib
 #' @description
 #' Computes the expected value \eqn{E[Y]} of a distribution object numerically via
-#' \code{\link{moment}}. Distribution classes with a closed-form mean may override
+#' [moment()]. Distribution classes with a closed-form mean may override
 #' this method with an analytical version.
 #'
-#' @param x An object inheriting from class \code{"distrib"}.
+#' @param x An object inheriting from class `"distrib"`.
 #' @param theta A named list of parameters. Vectors are supported.
-#' @param ... Additional arguments passed to \code{\link{moment}}.
+#' @param ... Additional arguments passed to [moment()].
 #' @return A numeric vector of means.
 #' @keywords internal
 S7::method(mean, distrib) <- function(x, theta, ...) {
@@ -70,35 +70,35 @@ S7::method(mean, distrib) <- function(x, theta, ...) {
 #' Variance of a Distribution or Sample
 #'
 #' @description
-#' Computes the variance. For \code{distrib} objects the second central moment is
+#' Computes the variance. For `distrib` objects the second central moment is
 #' evaluated numerically (analytical methods may override this for specific
-#' distributions); for numeric vectors the sample variance \code{\link[stats]{var}} is returned.
+#' distributions); for numeric vectors the sample variance [stats::var()] is returned.
 #'
 #' @details
 #' \deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
 #'
 #' A family with a closed form registers its own method; otherwise the
 #' expectation is the quadrature or the exact sum of
-#' \code{\link{expectation}}.
+#' [expectation()].
 #'
-#' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
-#' @param ... For \code{distrib} objects: \code{theta} (a named list of parameters) and
-#'   further arguments passed to \code{\link{moment}}. For numeric vectors: \code{na.rm}.
+#' @param x An object inheriting from class `"distrib"`, or a numeric vector.
+#' @param ... For `distrib` objects: `theta` (a named list of parameters) and
+#'   further arguments passed to [moment()]. For numeric vectors: `na.rm`.
 #' @return A numeric vector.
 #' @examples
 #' variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #' variance(poisson_distrib(), list(mu = 3))
 #'
-#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{std_dev}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+#' @seealso [expectation()], [moment()], [std_dev()], [skewness()], [kurtosis()]
 #' @export
 variance <- S7::new_generic("variance", "x")
 
 #' @title Variance of a Distribution
 #' @name variance.distrib
-#' @description Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the center.
-#' @param x A \code{distrib} object.
+#' @description Computes the second central moment through [moment()], the mean being evaluated first and passed as the center.
+#' @param x A `distrib` object.
 #' @param theta A named list of parameters.
-#' @param ... Passed to \code{\link{moment}}.
+#' @param ... Passed to [moment()].
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(variance, distrib) <- function(x, theta, ...) {
@@ -108,7 +108,7 @@ S7::method(variance, distrib) <- function(x, theta, ...) {
 
 #' @title Sample Variance
 #' @name variance.numeric
-#' @description The sample variance of a numeric vector, delegated to \code{\link[stats]{var}}.
+#' @description The sample variance of a numeric vector, delegated to [stats::var()].
 #' @param x A numeric vector.
 #' @param na.rm Remove missing values first?
 #' @param ... Unused.
@@ -121,29 +121,29 @@ S7::method(variance, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' Standard Deviation of a Distribution or Sample
 #'
 #' @description
-#' Computes the standard deviation as the square root of \code{\link{variance}}.
+#' Computes the standard deviation as the square root of [variance()].
 #'
 #' @details
 #' \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
-#' For numeric vectors the sample standard deviation \code{\link[stats]{sd}} is returned.
+#' For numeric vectors the sample standard deviation [stats::sd()] is returned.
 #'
-#' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
-#' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
-#'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
+#' @param x An object inheriting from class `"distrib"`, or a numeric vector.
+#' @param ... For `distrib` objects: `theta` and further arguments passed to
+#'   [moment()]. For numeric vectors: `na.rm`.
 #' @return A numeric vector.
 #' @examples
 #' std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
 #'
-#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{skewness}}, \code{\link{kurtosis}}
+#' @seealso [expectation()], [moment()], [variance()], [skewness()], [kurtosis()]
 #' @export
 std_dev <- S7::new_generic("std_dev", "x")
 
 #' @title Standard Deviation of a Distribution
 #' @name std_dev.distrib
-#' @description The square root of \code{\link{variance}}.
-#' @param x A \code{distrib} object.
+#' @description The square root of [variance()].
+#' @param x A `distrib` object.
 #' @param theta A named list of parameters.
-#' @param ... Passed to \code{\link{moment}}.
+#' @param ... Passed to [moment()].
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(std_dev, distrib) <- function(x, theta, ...) {
@@ -152,7 +152,7 @@ S7::method(std_dev, distrib) <- function(x, theta, ...) {
 
 #' @title Sample Standard Deviation
 #' @name std_dev.numeric
-#' @description The sample standard deviation of a numeric vector, delegated to \code{\link[stats]{sd}}.
+#' @description The sample standard deviation of a numeric vector, delegated to [stats::sd()].
 #' @param x A numeric vector.
 #' @param na.rm Remove missing values first?
 #' @param ... Unused.
@@ -169,29 +169,29 @@ S7::method(std_dev, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #'
 #' \deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right].}
 #'
-#' For \code{distrib} objects it is
-#' evaluated numerically via \code{\link{moment}}; for numeric vectors the sample
+#' For `distrib` objects it is
+#' evaluated numerically via [moment()]; for numeric vectors the sample
 #' skewness (population denominator) is returned.
 #'
-#' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
-#' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
-#'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
+#' @param x An object inheriting from class `"distrib"`, or a numeric vector.
+#' @param ... For `distrib` objects: `theta` and further arguments passed to
+#'   [moment()]. For numeric vectors: `na.rm`.
 #' @return A numeric vector.
 #' @examples
 #' skewness(gaussian1_distrib(), list(mu = 0, sigma = 1))
 #' skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{kurtosis}}
+#' @seealso [expectation()], [moment()], [variance()], [std_dev()], [kurtosis()]
 #' @export
 skewness <- S7::new_generic("skewness", "x")
 
 # distrib method: theta is a named list of parameters
 #' @title Skewness of a Distribution
 #' @name skewness.distrib
-#' @description Computes the standardized third central moment through \code{\link{moment}}.
-#' @param x A \code{distrib} object.
+#' @description Computes the standardized third central moment through [moment()].
+#' @param x A `distrib` object.
 #' @param theta A named list of parameters.
-#' @param ... Passed to \code{\link{moment}}.
+#' @param ... Passed to [moment()].
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(skewness, distrib) <- function(x, theta, ...) {
@@ -224,28 +224,28 @@ S7::method(skewness, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
 #'
 #' For
-#' \code{distrib} objects it is evaluated numerically via \code{\link{moment}}; for
+#' `distrib` objects it is evaluated numerically via [moment()]; for
 #' numeric vectors the sample excess kurtosis (population denominator) is returned.
 #'
-#' @param x An object inheriting from class \code{"distrib"}, or a numeric vector.
-#' @param ... For \code{distrib} objects: \code{theta} and further arguments passed to
-#'   \code{\link{moment}}. For numeric vectors: \code{na.rm}.
+#' @param x An object inheriting from class `"distrib"`, or a numeric vector.
+#' @param ... For `distrib` objects: `theta` and further arguments passed to
+#'   [moment()]. For numeric vectors: `na.rm`.
 #' @return A numeric vector.
 #' @examples
 #' kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1))
 #' kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 #'
-#' @seealso \code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{skewness}}
+#' @seealso [expectation()], [moment()], [variance()], [std_dev()], [skewness()]
 #' @export
 kurtosis <- S7::new_generic("kurtosis", "x")
 
 # distrib method: theta is a named list of parameters
 #' @title Kurtosis of a Distribution
 #' @name kurtosis.distrib
-#' @description Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link{moment}}.
-#' @param x A \code{distrib} object.
+#' @description Computes the excess kurtosis, the standardized fourth central moment minus three through [moment()].
+#' @param x A `distrib` object.
 #' @param theta A named list of parameters.
-#' @param ... Passed to \code{\link{moment}}.
+#' @param ... Passed to [moment()].
 #' @return A numeric vector.
 #' @keywords internal
 S7::method(kurtosis, distrib) <- function(x, theta, ...) {
@@ -277,7 +277,7 @@ S7::method(kurtosis, S7::class_numeric) <- function(x, na.rm = FALSE, ...) {
 #' @title Mean of the Negative Binomial Distribution
 #' @name mean.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
-#' @param x A \code{NegBin2Distrib}.
+#' @param x A `NegBin2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -290,7 +290,7 @@ S7::method(mean, NegBin2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Negative Binomial Distribution
 #' @name variance.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{Var(Y) = \mu + \mu^2/\theta}.
-#' @param x A \code{NegBin2Distrib}.
+#' @param x A `NegBin2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -303,7 +303,7 @@ S7::method(variance, NegBin2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Negative Binomial Distribution
 #' @name skewness.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}.
-#' @param x A \code{NegBin2Distrib}.
+#' @param x A `NegBin2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -318,7 +318,7 @@ S7::method(skewness, NegBin2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Negative Binomial Distribution
 #' @name kurtosis.NegBin2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
-#' @param x A \code{NegBin2Distrib}.
+#' @param x A `NegBin2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -333,7 +333,7 @@ S7::method(kurtosis, NegBin2Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Pseudo-Huber Distribution
 #' @name mean.PseudoHuberDistrib
 #' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}, by symmetry.
-#' @param x A \code{PseudoHuberDistrib}.
+#' @param x A `PseudoHuberDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -346,7 +346,7 @@ S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Pseudo-Huber Distribution
 #' @name variance.PseudoHuberDistrib
 #' @description Closed form, replacing the numerical default: a closed form in exponentially scaled Bessel functions.
-#' @param x A \code{PseudoHuberDistrib}.
+#' @param x A `PseudoHuberDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -362,7 +362,7 @@ S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Pseudo-Huber Distribution
 #' @name skewness.PseudoHuberDistrib
 #' @description Closed form, replacing the numerical default: zero, by symmetry.
-#' @param x A \code{PseudoHuberDistrib}.
+#' @param x A `PseudoHuberDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -375,7 +375,7 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Pseudo-Huber Distribution
 #' @name kurtosis.PseudoHuberDistrib
 #' @description Closed form, replacing the numerical default: a closed form in exponentially scaled Bessel functions.
-#' @param x A \code{PseudoHuberDistrib}.
+#' @param x A `PseudoHuberDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -392,7 +392,7 @@ S7::method(kurtosis, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Laplace Distribution
 #' @name mean.LaplaceDistrib
 #' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
-#' @param x A \code{LaplaceDistrib}.
+#' @param x A `LaplaceDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -405,7 +405,7 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Laplace Distribution
 #' @name variance.LaplaceDistrib
 #' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2\sigma^2}.
-#' @param x A \code{LaplaceDistrib}.
+#' @param x A `LaplaceDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -418,7 +418,7 @@ S7::method(variance, LaplaceDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Laplace Distribution
 #' @name skewness.LaplaceDistrib
 #' @description Closed form, replacing the numerical default: zero, by symmetry.
-#' @param x A \code{LaplaceDistrib}.
+#' @param x A `LaplaceDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -431,7 +431,7 @@ S7::method(skewness, LaplaceDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Laplace Distribution
 #' @name kurtosis.LaplaceDistrib
 #' @description Closed form, replacing the numerical default: \eqn{3} (excess).
-#' @param x A \code{LaplaceDistrib}.
+#' @param x A `LaplaceDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -444,7 +444,7 @@ S7::method(kurtosis, LaplaceDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Laplace Distribution in Location and Rate
 #' @name mean.Laplace2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
-#' @param x A \code{Laplace2Distrib}.
+#' @param x A `Laplace2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -457,7 +457,7 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Laplace Distribution in Location and Rate
 #' @name variance.Laplace2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{Var(Y) = 2/\lambda^2}.
-#' @param x A \code{Laplace2Distrib}.
+#' @param x A `Laplace2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -470,7 +470,7 @@ S7::method(variance, Laplace2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Laplace Distribution in Location and Rate
 #' @name skewness.Laplace2Distrib
 #' @description Closed form, replacing the numerical default: zero, by symmetry.
-#' @param x A \code{Laplace2Distrib}.
+#' @param x A `Laplace2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -483,7 +483,7 @@ S7::method(skewness, Laplace2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Laplace Distribution in Location and Rate
 #' @name kurtosis.Laplace2Distrib
 #' @description Closed form, replacing the numerical default: \eqn{3} (excess).
-#' @param x A \code{Laplace2Distrib}.
+#' @param x A `Laplace2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -509,7 +509,7 @@ S7::method(kurtosis, Laplace2Distrib) <- function(x, theta, ...) {
 #' @param sigma The shape parameter.
 #' @param k How many factors to return.
 #'
-#' @return A list of numeric vectors, \code{g1} to \code{gk}.
+#' @return A list of numeric vectors, `g1` to `gk`.
 #'
 #' @keywords internal
 weibull_gamma_factors <- function(sigma, k = 4L) {
@@ -522,7 +522,7 @@ weibull_gamma_factors <- function(sigma, k = 4L) {
 #' @name mean.Weibull1Distrib
 #' @description Closed form: \eqn{\mu\,\Gamma(1 + 1/\sigma)}. The scale
 #'   \eqn{\mu} is not the mean, which is what this method reports.
-#' @param x A \code{\link{Weibull1Distrib}}.
+#' @param x A [Weibull1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -536,7 +536,7 @@ S7::method(mean, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name variance.Weibull1Distrib
 #' @description Closed form: \eqn{\mu^2\left(g_2 - g_1^2\right)} with
 #'   \eqn{g_k = \Gamma(1 + k/\sigma)}.
-#' @param x A \code{\link{Weibull1Distrib}}.
+#' @param x A [Weibull1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -551,7 +551,7 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Weibull1Distrib
 #' @description Closed form:
 #'   \eqn{(g_3 - 3g_1g_2 + 2g_1^3)/(g_2 - g_1^2)^{3/2}}, free of the scale.
-#' @param x A \code{\link{Weibull1Distrib}}.
+#' @param x A [Weibull1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -568,7 +568,7 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #' @description Closed form, excess:
 #'   \eqn{(g_4 - 4g_1g_3 + 6g_1^2g_2 - 3g_1^4)/(g_2 - g_1^2)^2 - 3}, free of
 #'   the scale.
-#' @param x A \code{\link{Weibull1Distrib}}.
+#' @param x A [Weibull1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -591,7 +591,7 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
 #' @name mean.GumbelDistrib
 #' @description Closed form: \eqn{\mu + \gamma\sigma}, with \eqn{\gamma} the
 #'   Euler-Mascheroni constant.
-#' @param x A \code{\link{GumbelDistrib}}.
+#' @param x A [GumbelDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -604,7 +604,7 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Gumbel Distribution
 #' @name variance.GumbelDistrib
 #' @description Closed form: \eqn{\pi^2\sigma^2/6}.
-#' @param x A \code{\link{GumbelDistrib}}.
+#' @param x A [GumbelDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -618,7 +618,7 @@ S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
 #' @name skewness.GumbelDistrib
 #' @description Closed form: \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395},
 #'   the same for every location and scale.
-#' @param x A \code{\link{GumbelDistrib}}.
+#' @param x A [GumbelDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -635,7 +635,7 @@ S7::method(skewness, GumbelDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.GumbelDistrib
 #' @description Closed form, excess: \eqn{12/5}, the same for every location
 #'   and scale.
-#' @param x A \code{\link{GumbelDistrib}}.
+#' @param x A [GumbelDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -662,7 +662,7 @@ S7::method(kurtosis, GumbelDistrib) <- function(x, theta, ...) {
 #'
 #' @param alpha The shape parameter.
 #'
-#' @return A list with \code{delta} and \code{bd}.
+#' @return A list with `delta` and `bd`.
 #'
 #' @keywords internal
 skewnormal_delta <- function(alpha) {
@@ -674,7 +674,7 @@ skewnormal_delta <- function(alpha) {
 #' @name mean.SkewNormal1Distrib
 #' @description Closed form: \eqn{\mu + \sigma b \delta} with
 #'   \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}.
-#' @param x A \code{\link{SkewNormal1Distrib}}.
+#' @param x A [SkewNormal1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -687,7 +687,7 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Skew Normal Distribution
 #' @name variance.SkewNormal1Distrib
 #' @description Closed form: \eqn{\sigma^2\left(1 - b^2\delta^2\right)}.
-#' @param x A \code{\link{SkewNormal1Distrib}}.
+#' @param x A [SkewNormal1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -702,7 +702,7 @@ S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @description Closed form:
 #'   \eqn{\tfrac{4-\pi}{2}(b\delta)^3/(1 - b^2\delta^2)^{3/2}}. Its range is
 #'   \eqn{(-0.9953, 0.9953)}, whatever the shape.
-#' @param x A \code{\link{SkewNormal1Distrib}}.
+#' @param x A [SkewNormal1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -718,7 +718,7 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @description Closed form, excess:
 #'   \eqn{2(\pi - 3)(b\delta)^4/(1 - b^2\delta^2)^2}. It is non-negative and
 #'   bounded above by about \eqn{0.8692}.
-#' @param x A \code{\link{SkewNormal1Distrib}}.
+#' @param x A [SkewNormal1Distrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -746,13 +746,13 @@ S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'
 #' @details
 #' \eqn{b_\nu} is finite only for \eqn{\nu > 1} and \eqn{\sigma_z^2} only for
-#' \eqn{\nu > 2}; each is \code{NaN} otherwise, and the moments that use it
+#' \eqn{\nu > 2}; each is `NaN` otherwise, and the moments that use it
 #' inherit that.
 #'
 #' @param alpha The shape parameter.
 #' @param nu The degrees of freedom.
 #'
-#' @return A list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}.
+#' @return A list with `delta`, `bnu`, `mz` and `vz`.
 #'
 #' @keywords internal
 skewt_moment_pieces <- function(alpha, nu) {
@@ -766,8 +766,8 @@ skewt_moment_pieces <- function(alpha, nu) {
 #' @title Mean of the Skew t Distribution
 #' @name mean.SkewTDistrib
 #' @description Closed form for \eqn{\nu > 1}: \eqn{\mu + \sigma\delta b_\nu};
-#'   \code{NaN} otherwise, the mean not existing there.
-#' @param x A \code{\link{SkewTDistrib}}.
+#'   `NaN` otherwise, the mean not existing there.
+#' @param x A [SkewTDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -781,8 +781,8 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Skew t Distribution
 #' @name variance.SkewTDistrib
 #' @description Closed form for \eqn{\nu > 2}:
-#'   \eqn{\sigma^2\{\nu/(\nu-2) - \mu_z^2\}}; \code{NaN} otherwise.
-#' @param x A \code{\link{SkewTDistrib}}.
+#'   \eqn{\sigma^2\{\nu/(\nu-2) - \mu_z^2\}}; `NaN` otherwise.
+#' @param x A [SkewTDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -795,8 +795,8 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Skew t Distribution
 #' @name skewness.SkewTDistrib
 #' @description Closed form for \eqn{\nu > 3}, from Azzalini and Capitanio
-#'   (2003); \code{NaN} otherwise. Unlike the skew normal's, it is unbounded.
-#' @param x A \code{\link{SkewTDistrib}}.
+#'   (2003); `NaN` otherwise. Unlike the skew normal's, it is unbounded.
+#' @param x A [SkewTDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -813,8 +813,8 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Skew t Distribution
 #' @name kurtosis.SkewTDistrib
 #' @description Closed form, excess, for \eqn{\nu > 4}, from Azzalini and
-#'   Capitanio (2003); \code{NaN} otherwise.
-#' @param x A \code{\link{SkewTDistrib}}.
+#'   Capitanio (2003); `NaN` otherwise.
+#' @param x A [SkewTDistrib()].
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -845,7 +845,7 @@ S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
 #' Recycle a Constant Moment to the Length of the Parameters
 #'
 #' @description
-#' Returns \code{value} repeated to the length the parameters imply, which is
+#' Returns `value` repeated to the length the parameters imply, which is
 #' what a moment that does not depend on them still has to be.
 #'
 #' @param theta An aligned named list of parameters.
@@ -864,7 +864,7 @@ moment_const <- function(theta, k, value) {
 #' @title Mean of the Gaussian Distribution
 #' @name mean.Gaussian1Distrib
 #' @description Closed form: \eqn{E[Y] = \mu}.
-#' @param x A \code{Gaussian1Distrib}.
+#' @param x A `Gaussian1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -877,7 +877,7 @@ S7::method(mean, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Gaussian Distribution
 #' @name variance.Gaussian1Distrib
 #' @description Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}.
-#' @param x A \code{Gaussian1Distrib}.
+#' @param x A `Gaussian1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -890,7 +890,7 @@ S7::method(variance, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Gaussian Distribution
 #' @name skewness.Gaussian1Distrib
 #' @description Closed form: zero, the density being symmetric.
-#' @param x A \code{Gaussian1Distrib}.
+#' @param x A `Gaussian1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -902,7 +902,7 @@ S7::method(skewness, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Gaussian Distribution
 #' @name kurtosis.Gaussian1Distrib
 #' @description Closed form: zero excess, which is what the scale is set by.
-#' @param x A \code{Gaussian1Distrib}.
+#' @param x A `Gaussian1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -916,14 +916,14 @@ S7::method(kurtosis, Gaussian1Distrib) <- function(x, theta, ...) {
 #' @title The Cauchy Distribution Has No Moments
 #' @name mean.CauchyDistrib
 #' @description
-#' \code{NaN}. No moment of the Cauchy exists, the tails being too heavy for
-#' \eqn{\int |y| f(y) \, dy} to converge, and \code{NaN} is returned rather
+#' `NaN`. No moment of the Cauchy exists, the tails being too heavy for
+#' \eqn{\int |y| f(y) \, dy} to converge, and `NaN` is returned rather
 #' than the artifact of the divergent quadrature the numerical default would
 #' attempt.
-#' @param x A \code{CauchyDistrib}.
+#' @param x A `CauchyDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A numeric vector of \code{NaN}.
+#' @return A numeric vector of `NaN`.
 #' @keywords internal
 S7::method(mean, CauchyDistrib) <- function(x, theta, ...) {
   moment_const(align_theta(x, theta), 2L, NaN)
@@ -931,11 +931,11 @@ S7::method(mean, CauchyDistrib) <- function(x, theta, ...) {
 
 #' @title The Cauchy Distribution Has No Variance
 #' @name variance.CauchyDistrib
-#' @description \code{NaN}; see \code{\link[=mean.CauchyDistrib]{mean()}}.
-#' @param x A \code{CauchyDistrib}.
+#' @description `NaN`; see [`mean()`][mean.CauchyDistrib].
+#' @param x A `CauchyDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A numeric vector of \code{NaN}.
+#' @return A numeric vector of `NaN`.
 #' @keywords internal
 S7::method(variance, CauchyDistrib) <- function(x, theta, ...) {
   moment_const(align_theta(x, theta), 2L, NaN)
@@ -1024,11 +1024,11 @@ S7::method(skewness, CauchyDistrib) <- function(x, theta, ...) {
 
 #' @title The Cauchy Distribution Has No Kurtosis
 #' @name kurtosis.CauchyDistrib
-#' @description \code{NaN}; see \code{\link[=mean.CauchyDistrib]{mean()}}.
-#' @param x A \code{CauchyDistrib}.
+#' @description `NaN`; see [`mean()`][mean.CauchyDistrib].
+#' @param x A `CauchyDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A numeric vector of \code{NaN}.
+#' @return A numeric vector of `NaN`.
 #' @keywords internal
 S7::method(kurtosis, CauchyDistrib) <- function(x, theta, ...) {
   moment_const(align_theta(x, theta), 2L, NaN)
@@ -1039,7 +1039,7 @@ S7::method(kurtosis, CauchyDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Logistic Distribution
 #' @name mean.LogisticDistrib
 #' @description Closed form: \eqn{E[Y] = \mu}.
-#' @param x A \code{LogisticDistrib}.
+#' @param x A `LogisticDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1052,7 +1052,7 @@ S7::method(mean, LogisticDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Logistic Distribution
 #' @name variance.LogisticDistrib
 #' @description Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}.
-#' @param x A \code{LogisticDistrib}.
+#' @param x A `LogisticDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1065,7 +1065,7 @@ S7::method(variance, LogisticDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Logistic Distribution
 #' @name skewness.LogisticDistrib
 #' @description Closed form: zero, the density being symmetric.
-#' @param x A \code{LogisticDistrib}.
+#' @param x A `LogisticDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1077,7 +1077,7 @@ S7::method(skewness, LogisticDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Logistic Distribution
 #' @name kurtosis.LogisticDistrib
 #' @description Closed form: excess \eqn{6/5}, free of the parameters.
-#' @param x A \code{LogisticDistrib}.
+#' @param x A `LogisticDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1094,9 +1094,9 @@ S7::method(kurtosis, LogisticDistrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Student t Distribution
 #' @name mean.StudentT1Distrib
-#' @description Closed form: \eqn{\mu} for \eqn{\nu > 1}, and \code{NaN} below,
+#' @description Closed form: \eqn{\mu} for \eqn{\nu > 1}, and `NaN` below,
 #'   where the first moment does not exist.
-#' @param x A \code{StudentT1Distrib}.
+#' @param x A `StudentT1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1113,8 +1113,8 @@ S7::method(mean, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name variance.StudentT1Distrib
 #' @description
 #' Closed form: \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, infinite for
-#' \eqn{1 < \nu \le 2}, and \code{NaN} at or below one.
-#' @param x A \code{StudentT1Distrib}.
+#' \eqn{1 < \nu \le 2}, and `NaN` at or below one.
+#' @param x A `StudentT1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1131,9 +1131,9 @@ S7::method(variance, StudentT1Distrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Student t Distribution
 #' @name skewness.StudentT1Distrib
-#' @description Closed form: zero for \eqn{\nu > 3} by symmetry, \code{NaN}
+#' @description Closed form: zero for \eqn{\nu > 3} by symmetry, `NaN`
 #'   below, where the third moment does not exist.
-#' @param x A \code{StudentT1Distrib}.
+#' @param x A `StudentT1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1149,8 +1149,8 @@ S7::method(skewness, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.StudentT1Distrib
 #' @description
 #' Closed form: excess \eqn{6/(\nu-4)} for \eqn{\nu > 4}, infinite for
-#' \eqn{2 < \nu \le 4}, and \code{NaN} at or below two.
-#' @param x A \code{StudentT1Distrib}.
+#' \eqn{2 < \nu \le 4}, and `NaN` at or below two.
+#' @param x A `StudentT1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1173,7 +1173,7 @@ S7::method(kurtosis, StudentT1Distrib) <- function(x, theta, ...) {
 #' @name mean.Gamma2Distrib
 #' @description Closed form: \eqn{E[Y] = \mu}, a parameter of this
 #'   parametrization.
-#' @param x A \code{Gamma2Distrib}.
+#' @param x A `Gamma2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1187,7 +1187,7 @@ S7::method(mean, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name variance.Gamma2Distrib
 #' @description Closed form: \eqn{\sigma^2}, a parameter of this
 #'   parametrization.
-#' @param x A \code{Gamma2Distrib}.
+#' @param x A `Gamma2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1201,7 +1201,7 @@ S7::method(variance, Gamma2Distrib) <- function(x, theta, ...) {
 #' @name skewness.Gamma2Distrib
 #' @description Closed form: \eqn{2/\sqrt{a}} with shape
 #'   \eqn{a = \mu^2/\sigma^2}, hence \eqn{2\sigma/\mu}.
-#' @param x A \code{Gamma2Distrib}.
+#' @param x A `Gamma2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1214,7 +1214,7 @@ S7::method(skewness, Gamma2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Gamma Distribution
 #' @name kurtosis.Gamma2Distrib
 #' @description Closed form: excess \eqn{6/a = 6\sigma^2/\mu^2}.
-#' @param x A \code{Gamma2Distrib}.
+#' @param x A `Gamma2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1229,7 +1229,7 @@ S7::method(kurtosis, Gamma2Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Exponential Distribution
 #' @name mean.ExponentialDistrib
 #' @description Closed form: \eqn{E[Y] = \mu}, the parameter itself.
-#' @param x An \code{ExponentialDistrib}.
+#' @param x An `ExponentialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1241,7 +1241,7 @@ S7::method(mean, ExponentialDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Exponential Distribution
 #' @name variance.ExponentialDistrib
 #' @description Closed form: \eqn{\mu^2}; the coefficient of variation is one.
-#' @param x An \code{ExponentialDistrib}.
+#' @param x An `ExponentialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1253,7 +1253,7 @@ S7::method(variance, ExponentialDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Exponential Distribution
 #' @name skewness.ExponentialDistrib
 #' @description Closed form: 2, free of the parameter.
-#' @param x An \code{ExponentialDistrib}.
+#' @param x An `ExponentialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1265,7 +1265,7 @@ S7::method(skewness, ExponentialDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Exponential Distribution
 #' @name kurtosis.ExponentialDistrib
 #' @description Closed form: excess 6, free of the parameter.
-#' @param x An \code{ExponentialDistrib}.
+#' @param x An `ExponentialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1282,7 +1282,7 @@ S7::method(kurtosis, ExponentialDistrib) <- function(x, theta, ...) {
 #' @name mean.ChisqDistrib
 #' @description Closed form: \eqn{\mu}, which for this family is also the
 #'   degrees of freedom.
-#' @param x A \code{ChisqDistrib}.
+#' @param x A `ChisqDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1294,7 +1294,7 @@ S7::method(mean, ChisqDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Chi-Squared Distribution
 #' @name variance.ChisqDistrib
 #' @description Closed form: \eqn{2\mu}.
-#' @param x A \code{ChisqDistrib}.
+#' @param x A `ChisqDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1306,7 +1306,7 @@ S7::method(variance, ChisqDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Chi-Squared Distribution
 #' @name skewness.ChisqDistrib
 #' @description Closed form: \eqn{\sqrt{8/\mu}}.
-#' @param x A \code{ChisqDistrib}.
+#' @param x A `ChisqDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1318,7 +1318,7 @@ S7::method(skewness, ChisqDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Chi-Squared Distribution
 #' @name kurtosis.ChisqDistrib
 #' @description Closed form: excess \eqn{12/\mu}.
-#' @param x A \code{ChisqDistrib}.
+#' @param x A `ChisqDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1335,7 +1335,7 @@ S7::method(kurtosis, ChisqDistrib) <- function(x, theta, ...) {
 #' @name mean.Lognormal1Distrib
 #' @description Closed form: \eqn{\exp(\mu + \sigma^2/2)}. The parameters
 #'   describe \eqn{\log Y}, so \eqn{\mu} is not the mean.
-#' @param x A \code{Lognormal1Distrib}.
+#' @param x A `Lognormal1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1349,7 +1349,7 @@ S7::method(mean, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name variance.Lognormal1Distrib
 #' @description Closed form:
 #'   \eqn{(e^{\sigma^2}-1)\,e^{2\mu+\sigma^2}}.
-#' @param x A \code{Lognormal1Distrib}.
+#' @param x A `Lognormal1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1363,7 +1363,7 @@ S7::method(variance, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @name skewness.Lognormal1Distrib
 #' @description Closed form:
 #'   \eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}}, free of \eqn{\mu}.
-#' @param x A \code{Lognormal1Distrib}.
+#' @param x A `Lognormal1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1379,7 +1379,7 @@ S7::method(skewness, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @description Closed form: excess
 #'   \eqn{e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6}, free of
 #'   \eqn{\mu}.
-#' @param x A \code{Lognormal1Distrib}.
+#' @param x A `Lognormal1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1397,7 +1397,7 @@ S7::method(kurtosis, Lognormal1Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Inverse Gaussian Distribution
 #' @name mean.InvGauss1Distrib
 #' @description Closed form: \eqn{\mu}, a parameter of this parametrization.
-#' @param x An \code{InvGauss1Distrib}.
+#' @param x An `InvGauss1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1411,7 +1411,7 @@ S7::method(mean, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @name variance.InvGauss1Distrib
 #' @description Closed form: \eqn{\phi\mu^3}, the dispersion multiplying the
 #'   cube of the mean.
-#' @param x An \code{InvGauss1Distrib}.
+#' @param x An `InvGauss1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1424,7 +1424,7 @@ S7::method(variance, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Inverse Gaussian Distribution
 #' @name skewness.InvGauss1Distrib
 #' @description Closed form: \eqn{3\sqrt{\phi\mu}}.
-#' @param x An \code{InvGauss1Distrib}.
+#' @param x An `InvGauss1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1437,7 +1437,7 @@ S7::method(skewness, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Inverse Gaussian Distribution
 #' @name kurtosis.InvGauss1Distrib
 #' @description Closed form: excess \eqn{15\phi\mu}.
-#' @param x An \code{InvGauss1Distrib}.
+#' @param x An `InvGauss1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1454,7 +1454,7 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Beta Distribution
 #' @name mean.Beta1Distrib
 #' @description Closed form: \eqn{\mu}, a parameter of this parametrization.
-#' @param x A \code{Beta1Distrib}.
+#' @param x A `Beta1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1468,7 +1468,7 @@ S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
 #' @name variance.Beta1Distrib
 #' @description Closed form: \eqn{\mu(1-\mu)/(\phi+1)}, which is why
 #'   \eqn{\phi} is called a precision.
-#' @param x A \code{Beta1Distrib}.
+#' @param x A `Beta1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1483,7 +1483,7 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
 #' @description Closed form in the shapes \eqn{a = \mu\phi} and
 #'   \eqn{b = (1-\mu)\phi}:
 #'   \eqn{2(b-a)\sqrt{a+b+1}\,/\,\{(a+b+2)\sqrt{ab}\}}.
-#' @param x A \code{Beta1Distrib}.
+#' @param x A `Beta1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1499,7 +1499,7 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
 #' @name kurtosis.Beta1Distrib
 #' @description Closed form in the shapes \eqn{a} and \eqn{b}: excess
 #'   \eqn{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}/\{ab(a+b+2)(a+b+3)\}}.
-#' @param x A \code{Beta1Distrib}.
+#' @param x A `Beta1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1521,7 +1521,7 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 #' @name mean.GPDDistrib
 #' @description Closed form: \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, and
 #'   infinite at or above one.
-#' @param x A \code{GPDDistrib}.
+#' @param x A `GPDDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1539,7 +1539,7 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
 #' @description Closed form:
 #'   \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, and infinite
 #'   at or above one half.
-#' @param x A \code{GPDDistrib}.
+#' @param x A `GPDDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1557,7 +1557,7 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
 #' @description Closed form:
 #'   \eqn{2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for \eqn{\xi < 1/3}, and infinite
 #'   at or above one third.
-#' @param x A \code{GPDDistrib}.
+#' @param x A `GPDDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1574,7 +1574,7 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
 #' @description Closed form: excess
 #'   \eqn{3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
 #'   \eqn{\xi < 1/4}, and infinite at or above one quarter.
-#' @param x A \code{GPDDistrib}.
+#' @param x A `GPDDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1616,7 +1616,7 @@ gengamma_raw_moments <- function(a, d, p) {
 #' @name mean.GenGamma1Distrib
 #' @description Closed form:
 #'   \eqn{a\,\Gamma((d+1)/p)/\Gamma(d/p)}.
-#' @param x A \code{GenGamma1Distrib}.
+#' @param x A `GenGamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1629,7 +1629,7 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Generalized Gamma Distribution
 #' @name variance.GenGamma1Distrib
 #' @description Closed form, from the first two raw moments.
-#' @param x A \code{GenGamma1Distrib}.
+#' @param x A `GenGamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1643,7 +1643,7 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Generalized Gamma Distribution
 #' @name skewness.GenGamma1Distrib
 #' @description Closed form, from the first three raw moments.
-#' @param x A \code{GenGamma1Distrib}.
+#' @param x A `GenGamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1658,7 +1658,7 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Generalized Gamma Distribution
 #' @name kurtosis.GenGamma1Distrib
 #' @description Closed form, from the first four raw moments; excess.
-#' @param x A \code{GenGamma1Distrib}.
+#' @param x A `GenGamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1675,7 +1675,7 @@ S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Poisson Distribution
 #' @name mean.PoissonDistrib
 #' @description Closed form: \eqn{\mu}.
-#' @param x A \code{PoissonDistrib}.
+#' @param x A `PoissonDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1687,7 +1687,7 @@ S7::method(mean, PoissonDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Poisson Distribution
 #' @name variance.PoissonDistrib
 #' @description Closed form: \eqn{\mu}, equal to the mean.
-#' @param x A \code{PoissonDistrib}.
+#' @param x A `PoissonDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1699,7 +1699,7 @@ S7::method(variance, PoissonDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Poisson Distribution
 #' @name skewness.PoissonDistrib
 #' @description Closed form: \eqn{1/\sqrt{\mu}}.
-#' @param x A \code{PoissonDistrib}.
+#' @param x A `PoissonDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1711,7 +1711,7 @@ S7::method(skewness, PoissonDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Poisson Distribution
 #' @name kurtosis.PoissonDistrib
 #' @description Closed form: excess \eqn{1/\mu}.
-#' @param x A \code{PoissonDistrib}.
+#' @param x A `PoissonDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1725,7 +1725,7 @@ S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Bernoulli Distribution
 #' @name mean.BernoulliDistrib
 #' @description Closed form: \eqn{\mu}, the success probability.
-#' @param x A \code{BernoulliDistrib}.
+#' @param x A `BernoulliDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1737,7 +1737,7 @@ S7::method(mean, BernoulliDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Bernoulli Distribution
 #' @name variance.BernoulliDistrib
 #' @description Closed form: \eqn{\mu(1-\mu)}.
-#' @param x A \code{BernoulliDistrib}.
+#' @param x A `BernoulliDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1750,7 +1750,7 @@ S7::method(variance, BernoulliDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Bernoulli Distribution
 #' @name skewness.BernoulliDistrib
 #' @description Closed form: \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}.
-#' @param x A \code{BernoulliDistrib}.
+#' @param x A `BernoulliDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1764,7 +1764,7 @@ S7::method(skewness, BernoulliDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.BernoulliDistrib
 #' @description Closed form: excess
 #'   \eqn{\{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}.
-#' @param x A \code{BernoulliDistrib}.
+#' @param x A `BernoulliDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1780,7 +1780,7 @@ S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Binomial Distribution
 #' @name mean.BinomialDistrib
 #' @description Closed form: \eqn{n\mu}.
-#' @param x A \code{BinomialDistrib}.
+#' @param x A `BinomialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1792,7 +1792,7 @@ S7::method(mean, BinomialDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Binomial Distribution
 #' @name variance.BinomialDistrib
 #' @description Closed form: \eqn{n\mu(1-\mu)}.
-#' @param x A \code{BinomialDistrib}.
+#' @param x A `BinomialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1805,7 +1805,7 @@ S7::method(variance, BinomialDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Binomial Distribution
 #' @name skewness.BinomialDistrib
 #' @description Closed form: \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}.
-#' @param x A \code{BinomialDistrib}.
+#' @param x A `BinomialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1819,7 +1819,7 @@ S7::method(skewness, BinomialDistrib) <- function(x, theta, ...) {
 #' @name kurtosis.BinomialDistrib
 #' @description Closed form: excess
 #'   \eqn{\{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}.
-#' @param x A \code{BinomialDistrib}.
+#' @param x A `BinomialDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1837,7 +1837,7 @@ S7::method(kurtosis, BinomialDistrib) <- function(x, theta, ...) {
 #' @title Mean of the Geometric Distribution
 #' @name mean.GeometricDistrib
 #' @description Closed form: \eqn{\mu}, the parameter itself.
-#' @param x A \code{GeometricDistrib}.
+#' @param x A `GeometricDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1849,7 +1849,7 @@ S7::method(mean, GeometricDistrib) <- function(x, theta, ...) {
 #' @title Variance of the Geometric Distribution
 #' @name variance.GeometricDistrib
 #' @description Closed form: \eqn{\mu(1+\mu)}.
-#' @param x A \code{GeometricDistrib}.
+#' @param x A `GeometricDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1862,7 +1862,7 @@ S7::method(variance, GeometricDistrib) <- function(x, theta, ...) {
 #' @title Skewness of the Geometric Distribution
 #' @name skewness.GeometricDistrib
 #' @description Closed form: \eqn{(1+2\mu)/\sqrt{\mu(1+\mu)}}.
-#' @param x A \code{GeometricDistrib}.
+#' @param x A `GeometricDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1875,7 +1875,7 @@ S7::method(skewness, GeometricDistrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Geometric Distribution
 #' @name kurtosis.GeometricDistrib
 #' @description Closed form: excess \eqn{6 + 1/\{\mu(1+\mu)\}}.
-#' @param x A \code{GeometricDistrib}.
+#' @param x A `GeometricDistrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1894,7 +1894,7 @@ S7::method(kurtosis, GeometricDistrib) <- function(x, theta, ...) {
 #' @title Mean of the NB1 Negative Binomial Distribution
 #' @name mean.NegBin1Distrib
 #' @description Closed form: \eqn{\mu}.
-#' @param x A \code{NegBin1Distrib}.
+#' @param x A `NegBin1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1907,7 +1907,7 @@ S7::method(mean, NegBin1Distrib) <- function(x, theta, ...) {
 #' @title Variance of the NB1 Negative Binomial Distribution
 #' @name variance.NegBin1Distrib
 #' @description Closed form: \eqn{\mu(1+\theta)}, linear in the mean.
-#' @param x A \code{NegBin1Distrib}.
+#' @param x A `NegBin1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1921,7 +1921,7 @@ S7::method(variance, NegBin1Distrib) <- function(x, theta, ...) {
 #' @name skewness.NegBin1Distrib
 #' @description Closed form: \eqn{(1+2\theta)/\sqrt{\mu(1+\theta)}}, which
 #'   tends to the Poisson \eqn{1/\sqrt{\mu}} as \eqn{\theta \to 0}.
-#' @param x A \code{NegBin1Distrib}.
+#' @param x A `NegBin1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -1938,7 +1938,7 @@ S7::method(skewness, NegBin1Distrib) <- function(x, theta, ...) {
 #' @description Closed form: excess
 #'   \eqn{6\theta/\mu + 1/\{\mu(1+\theta)\}}, which tends to the Poisson
 #'   \eqn{1/\mu} as \eqn{\theta \to 0}.
-#' @param x A \code{NegBin1Distrib}.
+#' @param x A `NegBin1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2034,7 +2034,7 @@ betabinom_central <- function(mu, sigma, n) {
 #' @title Mean of the Beta-Binomial Distribution
 #' @name mean.BetaBinom1Distrib
 #' @description Closed form: \eqn{n\mu}, the shapes canceling.
-#' @param x A \code{BetaBinom1Distrib}.
+#' @param x A `BetaBinom1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2049,7 +2049,7 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @description
 #' Closed form: \eqn{n\mu(1-\mu)(1+n\sigma)/(1+\sigma)}, the binomial variance
 #' inflated by the dispersion.
-#' @param x A \code{BetaBinom1Distrib}.
+#' @param x A `BetaBinom1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2062,7 +2062,7 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Beta-Binomial Distribution
 #' @name skewness.BetaBinom1Distrib
 #' @description Closed form, from the falling factorial moments.
-#' @param x A \code{BetaBinom1Distrib}.
+#' @param x A `BetaBinom1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2076,7 +2076,7 @@ S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Beta-Binomial Distribution
 #' @name kurtosis.BetaBinom1Distrib
 #' @description Closed form, from the falling factorial moments; excess.
-#' @param x A \code{BetaBinom1Distrib}.
+#' @param x A `BetaBinom1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2095,7 +2095,7 @@ S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Gaussian in Mean and Variance
 #' @name mean.Gaussian2Distrib
 #' @description Closed form: \eqn{\mu}.
-#' @param x A \code{Gaussian2Distrib}.
+#' @param x A `Gaussian2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2108,7 +2108,7 @@ S7::method(mean, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Gaussian in Mean and Variance
 #' @name variance.Gaussian2Distrib
 #' @description Closed form: \eqn{\sigma^2}, the parameter itself.
-#' @param x A \code{Gaussian2Distrib}.
+#' @param x A `Gaussian2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2121,7 +2121,7 @@ S7::method(variance, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Gaussian in Mean and Variance
 #' @name skewness.Gaussian2Distrib
 #' @description Closed form: zero.
-#' @param x A \code{Gaussian2Distrib}.
+#' @param x A `Gaussian2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2133,7 +2133,7 @@ S7::method(skewness, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Gaussian in Mean and Variance
 #' @name kurtosis.Gaussian2Distrib
 #' @description Closed form: zero excess.
-#' @param x A \code{Gaussian2Distrib}.
+#' @param x A `Gaussian2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2145,7 +2145,7 @@ S7::method(kurtosis, Gaussian2Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Gaussian in Mean and Precision
 #' @name mean.Gaussian3Distrib
 #' @description Closed form: \eqn{\mu}.
-#' @param x A \code{Gaussian3Distrib}.
+#' @param x A `Gaussian3Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2158,7 +2158,7 @@ S7::method(mean, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Gaussian in Mean and Precision
 #' @name variance.Gaussian3Distrib
 #' @description Closed form: \eqn{1/\tau}.
-#' @param x A \code{Gaussian3Distrib}.
+#' @param x A `Gaussian3Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2171,7 +2171,7 @@ S7::method(variance, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Gaussian in Mean and Precision
 #' @name skewness.Gaussian3Distrib
 #' @description Closed form: zero.
-#' @param x A \code{Gaussian3Distrib}.
+#' @param x A `Gaussian3Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2183,7 +2183,7 @@ S7::method(skewness, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Gaussian in Mean and Precision
 #' @name kurtosis.Gaussian3Distrib
 #' @description Closed form: zero excess.
-#' @param x A \code{Gaussian3Distrib}.
+#' @param x A `Gaussian3Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2195,7 +2195,7 @@ S7::method(kurtosis, Gaussian3Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Gamma in Mean and Dispersion
 #' @name mean.Gamma1Distrib
 #' @description Closed form: \eqn{\mu}, the parameter itself.
-#' @param x A \code{Gamma1Distrib}.
+#' @param x A `Gamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2209,7 +2209,7 @@ S7::method(mean, Gamma1Distrib) <- function(x, theta, ...) {
 #' @name variance.Gamma1Distrib
 #' @description Closed form: \eqn{\phi\mu^2}, which is what the
 #'   parametrization is defined by.
-#' @param x A \code{Gamma1Distrib}.
+#' @param x A `Gamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2222,7 +2222,7 @@ S7::method(variance, Gamma1Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Gamma in Mean and Dispersion
 #' @name skewness.Gamma1Distrib
 #' @description Closed form: \eqn{2\sqrt{\phi}}, free of the mean.
-#' @param x A \code{Gamma1Distrib}.
+#' @param x A `Gamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2235,7 +2235,7 @@ S7::method(skewness, Gamma1Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Gamma in Mean and Dispersion
 #' @name kurtosis.Gamma1Distrib
 #' @description Closed form: excess \eqn{6\phi}, free of the mean.
-#' @param x A \code{Gamma1Distrib}.
+#' @param x A `Gamma1Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2250,7 +2250,7 @@ S7::method(kurtosis, Gamma1Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Inverse Gaussian in Mean and Shape
 #' @name mean.InvGauss2Distrib
 #' @description Closed form: \eqn{\mu}.
-#' @param x An \code{InvGauss2Distrib}.
+#' @param x An `InvGauss2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2263,7 +2263,7 @@ S7::method(mean, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Inverse Gaussian in Mean and Shape
 #' @name variance.InvGauss2Distrib
 #' @description Closed form: \eqn{\mu^3/\lambda}.
-#' @param x An \code{InvGauss2Distrib}.
+#' @param x An `InvGauss2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2276,7 +2276,7 @@ S7::method(variance, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Inverse Gaussian in Mean and Shape
 #' @name skewness.InvGauss2Distrib
 #' @description Closed form: \eqn{3\sqrt{\mu/\lambda}}.
-#' @param x An \code{InvGauss2Distrib}.
+#' @param x An `InvGauss2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2289,7 +2289,7 @@ S7::method(skewness, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Inverse Gaussian in Mean and Shape
 #' @name kurtosis.InvGauss2Distrib
 #' @description Closed form: excess \eqn{15\mu/\lambda}.
-#' @param x An \code{InvGauss2Distrib}.
+#' @param x An `InvGauss2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2302,7 +2302,7 @@ S7::method(kurtosis, InvGauss2Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Beta in Its Shapes
 #' @name mean.Beta2Distrib
 #' @description Closed form: \eqn{\alpha/(\alpha+\beta)}.
-#' @param x A \code{Beta2Distrib}.
+#' @param x A `Beta2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2316,7 +2316,7 @@ S7::method(mean, Beta2Distrib) <- function(x, theta, ...) {
 #' @name variance.Beta2Distrib
 #' @description Closed form:
 #'   \eqn{\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}}.
-#' @param x A \code{Beta2Distrib}.
+#' @param x A `Beta2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2333,7 +2333,7 @@ S7::method(variance, Beta2Distrib) <- function(x, theta, ...) {
 #' @description Closed form:
 #'   \eqn{2(\beta-\alpha)\sqrt{\alpha+\beta+1}/
 #'        \{(\alpha+\beta+2)\sqrt{\alpha\beta}\}}.
-#' @param x A \code{Beta2Distrib}.
+#' @param x A `Beta2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2348,7 +2348,7 @@ S7::method(skewness, Beta2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Beta in Its Shapes
 #' @name kurtosis.Beta2Distrib
 #' @description Closed form; excess.
-#' @param x A \code{Beta2Distrib}.
+#' @param x A `Beta2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2364,7 +2364,7 @@ S7::method(kurtosis, Beta2Distrib) <- function(x, theta, ...) {
 #' @title Mean of the Beta-Binomial in Its Shapes
 #' @name mean.BetaBinom2Distrib
 #' @description Closed form: \eqn{n\alpha/(\alpha+\beta)}.
-#' @param x A \code{BetaBinom2Distrib}.
+#' @param x A `BetaBinom2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2378,7 +2378,7 @@ S7::method(mean, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @title Variance of the Beta-Binomial in Its Shapes
 #' @name variance.BetaBinom2Distrib
 #' @description Closed form, from the falling factorial moments.
-#' @param x A \code{BetaBinom2Distrib}.
+#' @param x A `BetaBinom2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2392,7 +2392,7 @@ S7::method(variance, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @title Skewness of the Beta-Binomial in Its Shapes
 #' @name skewness.BetaBinom2Distrib
 #' @description Closed form, from the falling factorial moments.
-#' @param x A \code{BetaBinom2Distrib}.
+#' @param x A `BetaBinom2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2407,7 +2407,7 @@ S7::method(skewness, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' @title Kurtosis of the Beta-Binomial in Its Shapes
 #' @name kurtosis.BetaBinom2Distrib
 #' @description Closed form, from the falling factorial moments; excess.
-#' @param x A \code{BetaBinom2Distrib}.
+#' @param x A `BetaBinom2Distrib`.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector.
@@ -2430,8 +2430,8 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
 #' \eqn{\kappa_3 = \mu + 3\sigma\mu^2 + 3\sigma^2\mu^3},
 #' \eqn{\kappa_4 = \mu + 7\sigma\mu^2 + 18\sigma^2\mu^3 + 15\sigma^3\mu^4};
 #' skewness and excess kurtosis are the standardized ratios.
-#' @param x A \code{Pig1Distrib} object.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param x A `Pig1Distrib` object.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal
@@ -2468,10 +2468,10 @@ S7::method(kurtosis, Pig1Distrib) <- function(x, theta, ...) {
 
 #' @title Closed Moments of the Orthogonal Poisson-Inverse Gaussian
 #' @name moments.Pig2Distrib
-#' @description The cumulants of \code{\link[=moments.Pig1Distrib]{pig1}}
-#' at the dispersion \code{\link{pig2_sigma}} implies.
-#' @param x A \code{Pig2Distrib} object.
-#' @param theta A list containing \code{mu} and \code{alpha}.
+#' @description The cumulants of [`pig1()`][moments.Pig1Distrib]
+#' at the dispersion [pig2_sigma()] implies.
+#' @param x A `Pig2Distrib` object.
+#' @param theta A list containing `mu` and `alpha`.
 #' @param ... Unused.
 #' @return A numeric vector.
 #' @keywords internal

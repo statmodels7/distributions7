@@ -20,5 +20,5 @@ does not depend on \eqn{\theta}, the expected Hessian of the transformed model i
 by the change of variables). No Monte Carlo approximation is needed.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

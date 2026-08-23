@@ -25,5 +25,5 @@ non-zero components are
 one the gradient carries, and \code{params_smooth} records it.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

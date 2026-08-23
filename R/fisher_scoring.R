@@ -5,15 +5,15 @@ NULL
 #' @name FisherScoring
 #' @description
 #' The S7 class of Fisher scoring specifications, returned by
-#' \code{\link{fisher_scoring}} and passed to \code{\link{fit_distrib}} through
-#' its \code{method} argument.
+#' [fisher_scoring()] and passed to [fit_distrib()] through
+#' its `method` argument.
 #' @param approx How the expectation is approximated when the distribution has
 #'   no closed-form expected information.
-#' @param nsim Monte Carlo sample size, used when \code{approx = "mc"}.
-#' @param criterion The stopping rule, or \code{NULL} to take the fit's.
-#' @param maxit The iteration limit, or \code{NULL} to take the fit's.
-#' @return An object of class \code{FisherScoring}.
-#' @seealso \code{\link{fisher_scoring}}
+#' @param nsim Monte Carlo sample size, used when `approx = "mc"`.
+#' @param criterion The stopping rule, or `NULL` to take the fit's.
+#' @param maxit The iteration limit, or `NULL` to take the fit's.
+#' @return An object of class `FisherScoring`.
+#' @seealso [fisher_scoring()]
 #' @examples
 #' fs <- fisher_scoring(approx = "mc", nsim = 2000)
 #' S7::S7_inherits(fs, FisherScoring)
@@ -31,21 +31,21 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' Fisher Scoring, With Its Own Settings
 #'
 #' @description
-#' Returns a specification of Fisher scoring for \code{\link{fit_distrib}},
+#' Returns a specification of Fisher scoring for [fit_distrib()],
 #' carrying how the expected information is to be obtained when the
 #' distribution has no closed form for it.
 #'
 #' @details
-#' \code{fit_distrib()} takes one argument saying how to optimize, and it takes
+#' `fit_distrib()` takes one argument saying how to optimize, and it takes
 #' either an optimizer of \pkg{optimizers7} or this. The two are the same kind
 #' of thing said in the same place:
 #'
 #' \tabular{ll}{
-#'   \code{method = fisher_scoring()} \tab Newton's method with the
-#'     \strong{expected} information \cr
-#'   \code{method = optimizers7::newton()} \tab Newton's method with the
-#'     \strong{observed} Hessian \cr
-#'   \code{method = optimizers7::lbfgs()} \tab whatever that optimizer does
+#'   `method = fisher_scoring()` \tab Newton's method with the
+#'     **expected** information \cr
+#'   `method = optimizers7::newton()` \tab Newton's method with the
+#'     **observed** Hessian \cr
+#'   `method = optimizers7::lbfgs()` \tab whatever that optimizer does
 #' }
 #'
 #' Writing \eqn{s(\eta) = \partial l / \partial \eta} for the score on the
@@ -70,28 +70,28 @@ FisherScoring <- S7::new_class("FisherScoring",
 #' another. What it does need, and an optimizer cannot carry, is a statement of
 #' how that matrix is to be obtained when the family does not supply it in
 #' closed form --- and that is what this object holds. A family that does
-#' supply one ignores \code{approx} entirely, and \code{fit_distrib()} rejects
+#' supply one ignores `approx` entirely, and `fit_distrib()` rejects
 #' the argument in that case rather than accepting something it will not use.
 #'
 #' Fisher scoring is Newton's method with one matrix replaced, so how the run
 #' stops and how long it may take are set here, as they would be on any other
-#' optimizer. Both default to \code{NULL}, meaning the defaults of
-#' \code{\link[optimizers7]{newton}} and \code{\link[optimizers7]{crit_grad}}
+#' optimizer. Both default to `NULL`, meaning the defaults of
+#' [optimizers7::newton()] and [optimizers7::crit_grad()]
 #' stand.
 #'
 #' @param approx How the expectation is approximated when the distribution has
-#'   no closed-form expected information: \code{"bartlett"} (the default, the
-#'   outer product of the score, equivalently \code{"opg"}), \code{"integrate"}
-#'   for quadrature of the observed information, or \code{"mc"} for Monte
-#'   Carlo. See \code{\link{expected_derivative_methods}}.
-#' @param nsim Monte Carlo sample size, used when \code{approx = "mc"}.
-#' @param criterion A stopping rule from \pkg{optimizers7}, or \code{NULL} for
-#'   the default of \code{\link[optimizers7]{newton}}.
-#' @param maxit An iteration limit, or \code{NULL} for the same default.
+#'   no closed-form expected information: `"bartlett"` (the default, the
+#'   outer product of the score, equivalently `"opg"`), `"integrate"`
+#'   for quadrature of the observed information, or `"mc"` for Monte
+#'   Carlo. See [expected_derivative_methods()].
+#' @param nsim Monte Carlo sample size, used when `approx = "mc"`.
+#' @param criterion A stopping rule from \pkg{optimizers7}, or `NULL` for
+#'   the default of [optimizers7::newton()].
+#' @param maxit An iteration limit, or `NULL` for the same default.
 #'
-#' @return An object of class \code{\link{FisherScoring}}.
+#' @return An object of class [FisherScoring()].
 #'
-#' @seealso \code{\link{fit_distrib}}, \code{\link{expected_derivative_methods}}
+#' @seealso [fit_distrib()], [expected_derivative_methods()]
 #'
 #' @examples
 #' set.seed(1)
@@ -137,9 +137,9 @@ fisher_scoring <- function(approx = c("bartlett", "integrate", "mc", "opg"),
 #' @title Print a Fisher Scoring Specification
 #' @name print.FisherScoring
 #' @description Reports the strategy and any settings that override the fit's.
-#' @param x A \code{\link{FisherScoring}} object.
+#' @param x A [FisherScoring()] object.
 #' @param ... Unused.
-#' @return \code{x}, invisibly.
+#' @return `x`, invisibly.
 #' @keywords internal
 S7::method(print, FisherScoring) <- function(x, ...) {
   cat("Fisher scoring\n")

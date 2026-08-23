@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Draws zeros with probability \eqn{\pi} and otherwise samples from the parent distribution.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

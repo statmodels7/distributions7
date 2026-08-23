@@ -5,25 +5,25 @@ NULL
 #' @name ZeroAdjustedDiscreteDistrib
 #'
 #' @description
-#' A subclass of \code{discrete_distrib} representing the zero-adjusted (hurdle) version
-#' of a wrapped discrete distribution: the probability mass at zero is \emph{replaced} by
-#' \eqn{\pi} (parameter \code{za}), and positive values follow the zero-truncated parent.
+#' A subclass of `discrete_distrib` representing the zero-adjusted (hurdle) version
+#' of a wrapped discrete distribution: the probability mass at zero is *replaced* by
+#' \eqn{\pi} (parameter `za`), and positive values follow the zero-truncated parent.
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{discrete_distrib} object.
-#' @return An object of class \code{ZeroAdjustedDiscreteDistrib}.
-#' @seealso \code{\link{zero_adjusted}}
+#' @param parent_distrib The wrapped `discrete_distrib` object.
+#' @return An object of class `ZeroAdjustedDiscreteDistrib`.
+#' @seealso [zero_adjusted()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.ZeroAdjustedDiscreteDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.ZeroAdjustedDiscreteDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.ZeroAdjustedDiscreteDistrib],
+#'   [`distrib_rng()`][distrib_rng.ZeroAdjustedDiscreteDistrib]
 #'
-#' Everything else is inherited from \code{\link{discrete_distrib}}.
+#' Everything else is inherited from [discrete_distrib()].
 ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -35,26 +35,26 @@ ZeroAdjustedDiscreteDistrib <- S7::new_class("ZeroAdjustedDiscreteDistrib",
 #' @name ZeroAdjustedContinuousDistrib
 #'
 #' @description
-#' A subclass of \code{continuous_distrib} representing the zero-adjusted version of a
+#' A subclass of `continuous_distrib` representing the zero-adjusted version of a
 #' wrapped continuous distribution: a point mass at zero with probability \eqn{\pi}
-#' (parameter \code{za}) mixed with the original continuous distribution.
+#' (parameter `za`) mixed with the original continuous distribution.
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{continuous_distrib} object.
-#' @return An object of class \code{ZeroAdjustedContinuousDistrib}.
-#' @seealso \code{\link{zero_adjusted}}
+#' @param parent_distrib The wrapped `continuous_distrib` object.
+#' @return An object of class `ZeroAdjustedContinuousDistrib`.
+#' @seealso [zero_adjusted()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.ZeroAdjustedContinuousDistrib]{distrib_rng()}},
-#'   \code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation()}}
+#'   [`distrib_cdf()`][distrib_cdf.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.ZeroAdjustedContinuousDistrib],
+#'   [`distrib_rng()`][distrib_rng.ZeroAdjustedContinuousDistrib],
+#'   [`expectation()`][expectation.ZeroAdjustedContinuousDistrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -68,12 +68,12 @@ ZeroAdjustedContinuousDistrib <- S7::new_class("ZeroAdjustedContinuousDistrib",
 #' @name distrib_pdf.ZeroAdjustedDiscreteDistrib
 #' @description
 #' \deqn{P(Y=0) = \pi, \qquad P(Y=y) = (1-\pi)\dfrac{f(y;\theta)}{1-f(0;\theta)} \ \ (y>0)}
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param log Logical; if `TRUE`, returns the log-probability.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -91,13 +91,13 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #' @name distrib_cdf.ZeroAdjustedDiscreteDistrib
 #' @description
 #' \deqn{F_{ZA}(q) = \pi + (1-\pi)\dfrac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge 0)}
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -120,13 +120,13 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #' @description
 #' Inverts the hurdle CDF: 0 for \eqn{p \le \pi}, otherwise the parent quantile at
 #' \eqn{u(1-f(0)) + f(0)} with \eqn{u = (p-\pi)/(1-\pi)}.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
+#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -160,11 +160,11 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #' @description
 #' Draws zeros with probability \eqn{\pi} and otherwise samples from the zero-truncated
 #' parent via inverse transform sampling.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param n Number of observations to generate.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -193,11 +193,11 @@ S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, the
 #' the parent's score plus the truncation correction \eqn{\dfrac{f(0)}{1-f(0)} S(0)}
 #' (and 0 at \eqn{y=0}); for \eqn{\pi}:
 #' \deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y>0)\dfrac{1}{1-\pi}}
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of first derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -225,11 +225,11 @@ S7::method(distrib_gradient, ZeroAdjustedDiscreteDistrib) <- function(distrib, y
 #' Observed Hessian of the hurdle model. The mixed blocks are identically zero;
 #' the truncation adds the correction
 #' \eqn{H_{corr} = \dfrac{(1-f(0))f''(0) + f'(0)^2}{(1-f(0))^2}} for \eqn{y > 0}.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of second derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -277,11 +277,11 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' Expected Hessian of the hurdle model:
 #' \eqn{E[H_{\pi\pi}] = -\dfrac{1}{\pi(1-\pi)}}, mixed blocks are 0, and
 #' \eqn{E[H_{\theta\theta}] = (1-\pi)\left(\dfrac{E[H] - f(0)H(0)}{1-f(0)} + H_{corr}\right)}.
-#' @param distrib A \code{ZeroAdjustedDiscreteDistrib} object.
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of expected second derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -327,12 +327,12 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
 #' @description
 #' \deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \ \ (y \neq 0)}
 #' (mixed density: point mass at 0 plus scaled continuous density).
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -347,13 +347,13 @@ S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, t
 #' @name distrib_cdf.ZeroAdjustedContinuousDistrib
 #' @description
 #' \deqn{F_Y(q) = (1-\pi)F_W(q;\theta) + \pi\,\mathbb{I}(q \ge 0)}
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logs.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -371,13 +371,13 @@ S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, t
 #' Inverts the mixed CDF, handling the jump of size \eqn{\pi} at 0: quantiles falling in
 #' the jump are 0; on either side the parent's quantile function is used on the rescaled
 #' probability.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are given as logs.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
+#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -423,11 +423,11 @@ S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #' @name distrib_rng.ZeroAdjustedContinuousDistrib
 #' @description
 #' Draws zeros with probability \eqn{\pi} and otherwise samples from the parent distribution.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param n Number of observations to generate.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -448,11 +448,11 @@ S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, t
 #' The likelihood separates completely: for the parent's parameters the score is the
 #' parent's score at \eqn{y \neq 0} and 0 at \eqn{y=0}; for \eqn{\pi}:
 #' \deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y \neq 0)\dfrac{1}{1-\pi}}
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of first derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -471,11 +471,11 @@ S7::method(distrib_gradient, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #' Observed Hessian of the zero-adjusted continuous model: the mixed blocks are 0, the
 #' \eqn{\pi\pi} block is \eqn{-1/\pi^2} at \eqn{y=0} and \eqn{-1/(1-\pi)^2} otherwise,
 #' and the \eqn{\theta\theta} block is the parent's Hessian at \eqn{y \neq 0} (0 at \eqn{y=0}).
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of second derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -502,11 +502,11 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #' @description
 #' Expected Hessian: \eqn{E[H_{\pi\pi}] = -\dfrac{1}{\pi(1-\pi)}}, mixed blocks are 0,
 #' and \eqn{E[H_{\theta\theta}] = (1-\pi) E[H_W]}.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A list containing the vectors of expected second derivatives.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
@@ -533,10 +533,10 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
 #' @description
 #' The single point mass at zero, with probability \eqn{\pi}. This is what makes the
 #' object a mixed distribution: its density integrates to \eqn{1 - \pi}, not to 1.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @return A list with \code{y = 0} and \code{p = za}.
-#' @seealso \code{\link{zero_adjusted}}, \code{\link{distrib_atoms}}
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @return A list with `y = 0` and `p = za`.
+#' @seealso [zero_adjusted()], [distrib_atoms()]
 S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, theta) {
   list(y = 0, p = unname(theta[[distrib@n_params]][1]))
 }
@@ -545,13 +545,13 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #'
 #' @description
 #' Evaluates a response derivative of the parent away from the atom, and returns
-#' \code{NaN} at it.
+#' `NaN` at it.
 #'
 #' @details
 #' The log-density jumps at zero -- \eqn{\log \pi} on one side,
 #' \eqn{\log((1-\pi) f(y))} on the other -- so no derivative in \eqn{y} exists
 #' there. The finite-difference default inherited from
-#' \code{\link{continuous_distrib}} would straddle the jump and return a
+#' [continuous_distrib()] would straddle the jump and return a
 #' number for it, which is worse than an error. Away from zero the \eqn{1-\pi}
 #' factor is constant in \eqn{y}, so the parent's own derivative is exact and
 #' nothing needs correcting.
@@ -560,12 +560,12 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, including the atom probability.
 #' @param fun The parent's response-derivative function, e.g.
-#'   \code{\link{distrib_grad_y}}.
+#'   [distrib_grad_y()].
 #'
-#' @return A numeric vector as long as \code{y}, \code{NaN} wherever
-#'   \code{y == 0}.
+#' @return A numeric vector as long as `y`, `NaN` wherever
+#'   `y == 0`.
 #'
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 #' @keywords internal
 za_y_deriv <- function(distrib, y, theta, fun) {
   pars <- split_mix_theta(distrib, theta)
@@ -583,12 +583,12 @@ za_y_deriv <- function(distrib, y, theta, fun) {
 #' @description
 #' \eqn{\partial \ell / \partial y} equals the parent's for \eqn{y \neq 0}, since the
 #' factor \eqn{1-\pi} does not depend on \eqn{y}. At \eqn{y = 0} the log-density jumps
-#' to the atom and no derivative exists, so \code{NaN} is returned.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' to the atom and no derivative exists, so `NaN` is returned.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A numeric vector.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
   za_y_deriv(distrib, y, theta, distrib_grad_y)
 }
@@ -597,12 +597,12 @@ S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #' @name distrib_hess_y.ZeroAdjustedContinuousDistrib
 #' @description
 #' \eqn{\partial^2 \ell / \partial y^2} equals the parent's for \eqn{y \neq 0} and is
-#' \code{NaN} at the atom.
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
+#' `NaN` at the atom.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by \code{za}.
+#' @param theta A list with the parent's parameters followed by `za`.
 #' @return A numeric vector.
-#' @seealso \code{\link{zero_adjusted}}
+#' @seealso [zero_adjusted()]
 S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
   za_y_deriv(distrib, y, theta, distrib_hess_y)
 }
@@ -613,12 +613,12 @@ S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #' The zero-adjusted continuous distribution has a point mass at 0 that plain numerical
 #' integration would miss. The expectation decomposes exactly as
 #' \deqn{E[f(Y)] = \pi f(0) + (1-\pi) E_W[f(W)]}
-#' @param distrib A \code{ZeroAdjustedContinuousDistrib} object.
-#' @param f A function \code{f(y, theta, ...)} (receives the full theta, including \code{za}).
-#' @param theta A list with the parent's parameters followed by \code{za}.
-#' @param ... Additional arguments passed to \code{f}.
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
+#' @param f A function `f(y, theta, ...)` (receives the full theta, including `za`).
+#' @param theta A list with the parent's parameters followed by `za`.
+#' @param ... Additional arguments passed to `f`.
 #' @keywords internal
-#' @return A numeric scalar, the expectation of \code{f} under the distribution.
+#' @return A numeric scalar, the expectation of `f` under the distribution.
 S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, theta, ...) {
   pars <- split_mix_theta(distrib, theta)
   za_name <- distrib@params[distrib@n_params]
@@ -643,14 +643,14 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #'
 #' @description
 #' Creates a zero-adjusted version of an existing distribution: the probability of a
-#' zero becomes a parameter of its own, \eqn{\pi} (parameter \code{za}), and everything
+#' zero becomes a parameter of its own, \eqn{\pi} (parameter `za`), and everything
 #' else is left to the parent. What that means depends on the parent's type, and the
 #' constructor dispatches on it:
 #' \itemize{
-#'   \item \strong{Discrete} (support including 0): a \strong{hurdle} model. The mass the
+#'   \item **Discrete** (support including 0): a **hurdle** model. The mass the
 #'     parent puts at zero is removed, the parent is renormalized over the positive
 #'     values, and \eqn{\pi} takes its place.
-#'   \item \strong{Continuous}: a \strong{mixed} distribution. Nothing has to be removed,
+#'   \item **Continuous**: a **mixed** distribution. Nothing has to be removed,
 #'     since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the
 #'     density is scaled by \eqn{1-\pi}.
 #' }
@@ -659,15 +659,15 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' no claim filed, no purchase made, no rainfall --- and the parent describes only what
 #' happens once that mechanism has been passed. When the zeros instead come partly from
 #' the parent itself and partly from a separate one, so that no single zero can be
-#' attributed, use \code{\link{zero_inflated}}.
+#' attributed, use [zero_inflated()].
 #'
-#' @param distrib An object inheriting from \code{discrete_distrib} (with 0 in its
-#'   support) or from \code{continuous_distrib}.
+#' @param distrib An object inheriting from `discrete_distrib` (with 0 in its
+#'   support) or from `continuous_distrib`.
 #' @param link_za A link function object for the zero probability \eqn{\pi}.
-#'   Defaults to \code{\link[linkfunctions7]{logit_link}}.
+#'   Defaults to [linkfunctions7::logit_link()].
 #'
 #' @details
-#' \strong{Discrete parent (hurdle).}
+#' **Discrete parent (hurdle).**
 #' \deqn{
 #' P(Y=y; \theta, \pi) =
 #' \begin{cases}
@@ -682,11 +682,11 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' the mixed blocks of the information matrix are exactly zero and the two halves could
 #' in principle be fitted separately.
 #'
-#' \strong{Continuous parent (mixed).}
+#' **Continuous parent (mixed).**
 #' \deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \neq 0)}
 #' Here \eqn{f_Y} is a density with respect to Lebesgue measure plus a point mass at
 #' zero, so it integrates to \eqn{1 - \pi}: the remainder is the atom, which
-#' \code{\link{distrib_atoms}} reports and \code{\link{check_distrib}} accounts for. The
+#' [distrib_atoms()] reports and [check_distrib()] accounts for. The
 #' classical members of this family --- zero-adjusted gamma, inverse Gaussian or
 #' lognormal for semicontinuous data, zero-adjusted beta for proportions --- all have a
 #' parent supported on \eqn{(0, \infty)} or \eqn{(0,1)}, where zero sits on the boundary.
@@ -694,16 +694,16 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' model, but note that \eqn{y = 0} then no longer identifies its own mechanism: the
 #' atom sits where the density is positive.
 #'
-#' \strong{Choosing between the two wrappers.} Zero-inflation can only add zeros, since
+#' **Choosing between the two wrappers.** Zero-inflation can only add zeros, since
 #' \eqn{P(Y=0) = \zeta + (1-\zeta)f(0) > f(0)}; the hurdle replaces \eqn{f(0)} outright
-#' and so also covers the case of \emph{fewer} zeros than the parent implies. Where both
+#' and so also covers the case of *fewer* zeros than the parent implies. Where both
 #' apply they are not nested, and they differ in interpretation more than in fit:
 #' zero-inflation keeps \eqn{\theta} as the parameters of the original count process,
 #' while the hurdle re-reads them as those of a truncated one. Prefer the hurdle when a
 #' zero is observable evidence of a distinct decision, and zero-inflation when the two
 #' kinds of zero are genuinely indistinguishable.
 #'
-#' \strong{What the parent must be.} A discrete parent must have 0 in its support: with
+#' **What the parent must be.** A discrete parent must have 0 in its support: with
 #' \eqn{f(0) = 0} there is no mass to remove. Construction also fails when the result
 #' would not be identified:
 #' \itemize{
@@ -711,16 +711,16 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #'     zero-inflated or zero-adjusted distribution cancels its zero parameter out of the
 #'     likelihood entirely, leaving an identically zero score;
 #'   \item the support is too small to carry one more parameter: a distribution on
-#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least \code{n_params + 2}
+#'     \eqn{k} points has \eqn{k-1} free probabilities, so at least `n_params + 2`
 #'     support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
-#'     concentrated on \eqn{\{1\}}, and \code{mu} vanishes from the likelihood.
+#'     concentrated on \eqn{\{1\}}, and `mu` vanishes from the likelihood.
 #' }
 #' A continuous parent whose support does not reach zero (say \eqn{(2, 5)}) is accepted
 #' with a warning: the atom is then disconnected from the rest of the distribution,
 #' which is legitimate but rarely intended.
 #'
-#' @return An S7 object of class \code{ZeroAdjustedDiscreteDistrib} or
-#'   \code{ZeroAdjustedContinuousDistrib}.
+#' @return An S7 object of class `ZeroAdjustedDiscreteDistrib` or
+#'   `ZeroAdjustedContinuousDistrib`.
 #'
 #' @examples
 #' # Hurdle Poisson: the mass at zero is exactly za, not dpois(0, mu)
@@ -734,8 +734,8 @@ S7::method(expectation, ZeroAdjustedContinuousDistrib) <- function(distrib, f, t
 #' # The truncated part of a zero-adjusted Bernoulli has no free parameter
 #' try(zero_adjusted(bernoulli_distrib()))
 #'
-#' @seealso \code{\link{zero_inflated}} for the mixture counterpart,
-#'   \code{\link{distrib_atoms}}, \code{\link{check_distrib}}.
+#' @seealso [zero_inflated()] for the mixture counterpart,
+#'   [distrib_atoms()], [check_distrib()].
 #' @importFrom linkfunctions7 logit_link
 #' @export
 zero_adjusted <- function(distrib, link_za = logit_link()) {

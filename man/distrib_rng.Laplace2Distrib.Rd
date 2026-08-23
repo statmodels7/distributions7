@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates draws by inverse-transform sampling.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

@@ -18,7 +18,7 @@ Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -33,19 +33,19 @@ parameter, each a vector along \code{y}.
 }
 \details{
 This is the off-diagonal block of the joint Hessian in \eqn{(y, \theta)},
-whose diagonal blocks are \code{\link{distrib_hess_y}} and
-\code{\link{distrib_hessian}}. It is what joint estimation over both
+whose diagonal blocks are \code{\link[=distrib_hess_y]{distrib_hess_y()}} and
+\code{\link[=distrib_hessian]{distrib_hessian()}}. It is what joint estimation over both
 arguments needs, and what the gradient of a profiled objective needs
 through the implicit function theorem.
 
 On the link scale the component for \eqn{\eta_i} is the parameter-scale
 component multiplied by \eqn{h_i'(\eta_i)}: the response derivative is
 untouched by a reparametrization of \eqn{\theta}, so only the first-order
-diagonal chain rule enters, exactly as for \code{\link{distrib_gradient}}.
+diagonal chain rule enters, exactly as for \code{\link[=distrib_gradient]{distrib_gradient()}}.
 
 Distributions with a closed form provide it directly; the others fall back
-to one central difference of \code{\link{distrib_grad_y}} in each
-parameter (see \code{\link{numerical_cross_y}}).
+to one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each
+parameter (see \code{\link[=numerical_cross_y]{numerical_cross_y()}}).
 }
 \examples{
 d <- gaussian1_distrib()
@@ -53,5 +53,5 @@ distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}
+\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}}
 }

@@ -4,7 +4,7 @@
 \alias{mv_marginal.MvStudentTDistrib}
 \title{Marginal of a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 

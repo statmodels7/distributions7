@@ -30,5 +30,5 @@ distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
   sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 }
 \seealso{
-\code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_atoms}}
+\code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }

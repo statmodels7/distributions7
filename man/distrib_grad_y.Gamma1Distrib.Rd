@@ -20,5 +20,5 @@ A numeric vector.
 shape and rate.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

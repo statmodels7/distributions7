@@ -23,5 +23,5 @@ With \eqn{r = y - \mu},
       \dfrac{\partial\ell}{\partial\tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2}}
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

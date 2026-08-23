@@ -22,5 +22,5 @@ Inverts the hurdle CDF: 0 for \eqn{p \le \pi}, otherwise the parent quantile at
 \eqn{u(1-f(0)) + f(0)} with \eqn{u = (p-\pi)/(1-\pi)}.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

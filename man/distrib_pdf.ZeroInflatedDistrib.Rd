@@ -20,5 +20,5 @@ A numeric vector of density values.
 where \eqn{f} is the PMF of the wrapped distribution.
 }
 \seealso{
-\code{\link{zero_inflated}}
+\code{\link[=zero_inflated]{zero_inflated()}}
 }

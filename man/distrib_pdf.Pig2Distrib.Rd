@@ -16,11 +16,11 @@
 A numeric vector of probability values.
 }
 \description{
-The same law as \code{\link[=distrib_pdf.Pig1Distrib]{pig1's}} at
+The same law as \code{\link[=distrib_pdf.Pig1Distrib]{pig1's()}} at
 \eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2}: the parameter
 \eqn{\alpha} of this parametrization is exactly the argument
 \eqn{\sqrt{1 + 2\sigma\mu}/\sigma} the Bessel function is evaluated at.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }

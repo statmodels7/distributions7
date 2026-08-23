@@ -19,6 +19,6 @@ Runs the map on plain numbers, which is what every probability function
 needs before delegating to the parent.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

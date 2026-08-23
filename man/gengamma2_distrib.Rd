@@ -25,7 +25,7 @@ Creates a generalized gamma distribution object whose first parameter is the
 mean.
 }
 \details{
-The Stacy parametrization of \code{\link{gengamma1_distrib}} carries a
+The Stacy parametrization of \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} carries a
 scale, a shape and a power, and exposes no mean at all, which is awkward for
 a family a regression would put a linear predictor on. Since
 \eqn{\mathbb{E}[Y] = a\,\Gamma((d+1)/p)/\Gamma(d/p)}, the map is
@@ -46,5 +46,5 @@ mean(d, theta)
 
 }
 \seealso{
-\code{\link{gengamma1_distrib}}, \code{\link{reparametrize}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, \code{\link[=reparametrize]{reparametrize()}}
 }

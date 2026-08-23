@@ -14,7 +14,7 @@ sn_cdf_std_derivs(z, al, order)
 \item{order}{The highest total order, 1 to 4.}
 }
 \value{
-A nested list, \code{[[i + 1]][[j + 1]]}.
+A nested list, \verb{[[i + 1]][[j + 1]]}.
 }
 \description{
 Returns \eqn{\partial^{i}_{z}\partial^{j}_{\alpha}G} for
@@ -31,6 +31,6 @@ by Faa di Bruno over \eqn{u}, which is bilinear and so has only three
 non-zero partial derivatives.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }
 \keyword{internal}

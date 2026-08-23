@@ -22,7 +22,7 @@ A named list (one element per parameter) of gradient vectors.
 \description{
 Computes the gradient of the log-density with respect to each parameter by
 central finite differences of \code{distrib_pdf(..., log = TRUE)}. This powers
-the default \code{\link{distrib_gradient}} method for distributions that do not
+the default \code{\link[=distrib_gradient]{distrib_gradient()}} method for distributions that do not
 implement an analytical gradient: any \code{distrib} subclass that defines only
 \code{distrib_pdf} gets its score function for free.
 }
@@ -38,7 +38,7 @@ so the cost is two density evaluations per parameter. Truncation is of
 order \eqn{h^{2}} and rounding of order \eqn{\varepsilon / h}, which the
 default \eqn{h \propto \varepsilon^{1/3}} balances.
 
-Steps are scaled by \code{max(1, |theta|)} and automatically shrunk near the
+Steps are scaled by \verb{max(1, |theta|)} and automatically shrunk near the
 boundaries of \code{distrib@params_bounds} so that the evaluation points remain
 inside the parameter domain. Accuracy is roughly \code{eps^(2/3)} (about 8
 significant digits): sufficient for optimization, but slower and less precise
@@ -49,5 +49,5 @@ numerical_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{numerical_hessian}}, \code{\link{distrib_gradient}}
+\code{\link[=numerical_hessian]{numerical_hessian()}}, \code{\link[=distrib_gradient]{distrib_gradient()}}
 }

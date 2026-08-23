@@ -19,5 +19,5 @@ A numeric vector.
 \deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\mu/2 - 1}{y} - \dfrac{1}{2}}
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

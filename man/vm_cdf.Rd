@@ -36,7 +36,7 @@ distribution function of the family as written -- the support is
 around the circle.
 
 Only the RATIOS \eqn{I_j/I_0} are needed and
-\code{\link[numericals7]{bessel_i_ratios}} gives them by a backward
+\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} gives them by a backward
 recurrence whose loop runs over the series index rather than over the
 data. That is what makes the series cheaper: \eqn{n} quadratures become a
 few dozen vectorized steps.
@@ -50,6 +50,6 @@ forms an \eqn{n \times m} matrix, which at a hundred thousand points and a
 concentration of a hundred is already hundreds of megabytes.
 }
 \seealso{
-\code{\link[numericals7]{bessel_i_ratios}}
+\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}}
 }
 \keyword{internal}

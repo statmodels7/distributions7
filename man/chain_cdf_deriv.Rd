@@ -28,7 +28,7 @@ parametrization, given the map's partial derivatives.
 }
 \details{
 The map derivatives arrive in the keyed form
-\code{\link{reparam_map_derivs}} produces, so a missing key is an exact
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} produces, so a missing key is an exact
 zero, and the result is exact whenever the parent's own cdf derivatives
 are. It is the caller's business to check that they are: applied to a
 parent whose derivatives are themselves differenced, the chain adds an
@@ -36,6 +36,6 @@ exact transformation to an approximate quantity and buys nothing over
 differencing the new cdf directly.
 }
 \seealso{
-\code{\link{cdf_tail_scale}}, \code{\link{chain_derivatives}}
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, \code{\link[=chain_derivatives]{chain_derivatives()}}
 }
 \keyword{internal}

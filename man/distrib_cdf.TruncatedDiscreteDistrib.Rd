@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{F_T(q) = \dfrac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

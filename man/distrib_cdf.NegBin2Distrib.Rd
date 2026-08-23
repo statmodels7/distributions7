@@ -22,5 +22,5 @@ Computes the cumulative distribution function for the Negative Binomial distribu
 \deqn{F(q; \mu, \theta) = \sum_{k=0}^{\lfloor q \rfloor} P(Y=k; \mu, \theta)}
 }
 \seealso{
-\code{\link{negbin2_distrib}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}
 }

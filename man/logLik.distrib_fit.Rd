@@ -4,7 +4,7 @@
 \alias{logLik.distrib_fit}
 \title{Log-Likelihood of a Maximum-Likelihood Fit}
 \arguments{
-\item{object}{A \code{\link{distrib_fit}} object.}
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
 \item{...}{Unused.}
 }

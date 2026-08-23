@@ -21,5 +21,5 @@ with \eqn{g = \partial \log f/\partial y}. The minus sign is the chain rule
 through the reflected preimage.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

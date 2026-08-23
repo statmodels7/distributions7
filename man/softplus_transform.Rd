@@ -10,7 +10,7 @@ softplus_transform(a = 1)
 \item{a}{Numeric. Positive scale parameter. Defaults to 1.}
 }
 \value{
-A \code{\link{transformer}} object.
+A \code{\link[=transformer]{transformer()}} object.
 }
 \description{
 Transformer for the inverse-softplus map \eqn{Y = \frac{1}{a}\log(e^{aX} - 1)},
@@ -23,5 +23,5 @@ distrib_pdf(d, 1, list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link{log_transform}}, \code{\link{exp_transform}}, \code{\link{sqrt_transform}}, \code{\link{inverse_transform}}, \code{\link{power_transform}}, \code{\link{bc_transform}}, \code{\link{yj_transform}}, \code{\link{asinh_transform}}, \code{\link{logit_transform}}, \code{\link{expit_transform}}, \code{\link{affine_transform}}, \code{\link{transformation}}
+\code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}}, \code{\link[=sqrt_transform]{sqrt_transform()}}, \code{\link[=inverse_transform]{inverse_transform()}}, \code{\link[=power_transform]{power_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}, \code{\link[=asinh_transform]{asinh_transform()}}, \code{\link[=logit_transform]{logit_transform()}}, \code{\link[=expit_transform]{expit_transform()}}, \code{\link[=affine_transform]{affine_transform()}}, \code{\link[=transformation]{transformation()}}
 }

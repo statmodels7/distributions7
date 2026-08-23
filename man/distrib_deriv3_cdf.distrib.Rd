@@ -23,7 +23,7 @@ A named list of third-derivative components.
 A named list of fourth-derivative components.
 }
 \description{
-The route of \code{\link{cdf_tables}} for the class, put on
+The route of \code{\link[=cdf_tables]{cdf_tables()}} for the class, put on
 the requested tail and scale.
 }
 \keyword{internal}

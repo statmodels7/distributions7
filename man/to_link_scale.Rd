@@ -26,7 +26,7 @@ turning derivatives with respect to \eqn{\theta} into derivatives with respect
 to the unconstrained \eqn{\eta}.
 }
 \details{
-The mathematics is set out in \code{\link{link_scale_derivatives}}. Two things
+The mathematics is set out in \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}. Two things
 in the implementation are deliberate and are the reason it is not simply a
 transcription of the formula:
 
@@ -42,6 +42,6 @@ counter in mixed radix rather than by building the combinations with
 together and is paid once per component on every call.
 }
 \seealso{
-\code{\link{link_scale_derivatives}}, \code{\link{bell_partial}}
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=bell_partial]{bell_partial()}}
 }
 \keyword{internal}

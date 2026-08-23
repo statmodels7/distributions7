@@ -19,5 +19,5 @@ Observed Hessian of the zero-adjusted continuous model: the mixed blocks are 0, 
 and the \eqn{\theta\theta} block is the parent's Hessian at \eqn{y \neq 0} (0 at \eqn{y=0}).
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

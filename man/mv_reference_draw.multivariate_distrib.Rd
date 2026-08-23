@@ -4,7 +4,7 @@
 \alias{mv_reference_draw.multivariate_distrib}
 \title{An Inflated Gaussian Proposal}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 
@@ -21,6 +21,6 @@ Requires the covariance to be non-singular, which is what a support of full
 dimension gives.
 }
 \seealso{
-\code{\link{mv_reference_draw}}
+\code{\link[=mv_reference_draw]{mv_reference_draw()}}
 }
 \keyword{internal}

@@ -19,12 +19,12 @@ Creates a Weibull distribution object parametrized by its mean and its
 shape.
 }
 \details{
-The first parameter of \code{\link{weibull1_distrib}} is the scale and not
+The first parameter of \code{\link[=weibull1_distrib]{weibull1_distrib()}} is the scale and not
 the mean: the mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}. Inverting that gives
 the map used here,
 \deqn{\mu = \dfrac{m}{\Gamma(1 + 1/\sigma)},}
 so every derivative becomes a derivative of the gamma function, which is
-why \code{\link{weibull1_distrib}} is not written this way.
+why \code{\link[=weibull1_distrib]{weibull1_distrib()}} is not written this way.
 
 The number follows gamlss, where the Weibull in the mean is \code{WEI3}.
 Leaving \code{weibull2} unused is deliberate: it names a different
@@ -50,5 +50,5 @@ for location, scale and shape. \emph{Journal of the Royal Statistical
 Society, Series C} 54, 507-554.
 }
 \seealso{
-\code{\link{weibull1_distrib}}, \code{\link{reparametrize}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}, \code{\link[=reparametrize]{reparametrize()}}
 }

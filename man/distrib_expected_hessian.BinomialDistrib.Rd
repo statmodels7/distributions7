@@ -20,5 +20,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
 }
 \seealso{
-\code{\link{binomial_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}
 }

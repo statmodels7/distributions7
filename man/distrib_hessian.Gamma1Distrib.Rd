@@ -26,5 +26,5 @@ carried across by the one-variable chain rule, which is what keeps the
 polygamma functions to one evaluation each.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

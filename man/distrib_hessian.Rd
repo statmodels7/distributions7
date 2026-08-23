@@ -18,13 +18,13 @@ Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
 \value{
 A named list of numeric vectors, keyed as
-\code{\link{hess_names}(distrib@params)} (e.g. \code{"mu_sigma"}).
+\code{\link[=hess_names]{hess_names(distrib@params)}} (e.g. \code{"mu_sigma"}).
 }
 \description{
 Computes the analytical observed second derivatives (Hessian matrix) of the log-likelihood with respect to the distribution's parameters.
@@ -36,7 +36,7 @@ of parameters,
 \deqn{l^{(ij)} = \frac{\partial^{2} l}{\partial \theta_i \partial \theta_j},}
 
 evaluated at the observed \eqn{y} (see
-\code{\link{distrib_expected_hessian}} for its expectation). On the link
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for its expectation). On the link
 scale the reparametrization \eqn{\theta_i = h_i(\eta_i)} is diagonal, so
 the second-order chain rule carries a first-order term on the diagonal
 alone:
@@ -53,5 +53,5 @@ d <- gaussian1_distrib()
 distrib_hessian(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 }
 \seealso{
-\code{\link{distrib_gradient}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+\code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

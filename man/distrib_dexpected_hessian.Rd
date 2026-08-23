@@ -26,13 +26,13 @@ distrib_dexpected_hessian(
 \code{"link"} for \eqn{\partial/\partial\eta_c} of the link-scale expected
 information.}
 
-\item{approx, nsim}{Passed to \code{\link{distrib_expected_hessian}}.}
+\item{approx, nsim}{Passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.}
 
 \item{...}{Passed to methods.}
 }
 \value{
 A named list of numeric vectors, keyed as
-\code{\link{dexpected_names}(distrib@params)}.
+\code{\link[=dexpected_names]{dexpected_names(distrib@params)}}.
 }
 \description{
 \eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}, one component per
@@ -43,20 +43,20 @@ The components are symmetric in \eqn{(a,b)} and NOT in \eqn{c}: writing
 \deqn{\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],}
 the first term is fully symmetric and the second is not, so the result is
-keyed by \code{\link{dexpected_names}} rather than by the sorted triples
-\code{\link{deriv_names}} uses at order three.
+keyed by \code{\link[=dexpected_names]{dexpected_names()}} rather than by the sorted triples
+\code{\link[=deriv_names]{deriv_names()}} uses at order three.
 
 \strong{The default method differences the family's own expected
 information}, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a written-out
 formula. It is refused where it is not: see
-\code{\link{has_exact_expected_hessian}}.
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}.
 
 On \code{scale = "link"} the difference is taken along the free scale of the
 parameter being differentiated, and the expected information is read on the
 link scale at each of the two points, so the chain rule is never written out
 here and cannot disagree with the one
-\code{\link{distrib_expected_hessian}} already applies.
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} already applies.
 }
 \examples{
 d <- gaussian1_distrib()
@@ -64,6 +64,6 @@ str(distrib_dexpected_hessian(d, 0, list(mu = 0, sigma = 1)))
 
 }
 \seealso{
-\code{\link{distrib_expected_hessian}},
-\code{\link{dexpected_names}}, \code{\link{has_exact_expected_hessian}}
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}},
+\code{\link[=dexpected_names]{dexpected_names()}}, \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}
 }

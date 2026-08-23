@@ -20,5 +20,5 @@ Computes the probability mass function for the Bernoulli distribution:
 \deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}}
 }
 \seealso{
-\code{\link{bernoulli_distrib}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
 }

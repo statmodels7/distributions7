@@ -8,10 +8,10 @@ gaussian1_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{Gaussian1Distrib} (inheriting from \code{continuous_distrib}) representing the Gaussian distribution.
@@ -54,9 +54,9 @@ standard deviation \eqn{\sigma}.
 \item \eqn{\sigma \in (0, +\infty)}
 }
 
-Analytical third- and fourth-order derivatives (\code{\link{distrib_deriv3}},
-\code{\link{distrib_deriv4}}) and derivatives with respect to the response
-(\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}}) are also available.
+Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and derivatives with respect to the response
+(\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
 }
 \examples{
 d <- gaussian1_distrib()
@@ -69,12 +69,12 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.Gaussian1Distrib}} for the density function.
-\item \code{\link{distrib_cdf.Gaussian1Distrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.Gaussian1Distrib}} for the quantile function.
-\item \code{\link{distrib_rng.Gaussian1Distrib}} for random number generation.
-\item \code{\link{distrib_gradient.Gaussian1Distrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.Gaussian1Distrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.Gaussian1Distrib}} for the analytical expected Hessian.
+\item \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} for the density function.
+\item \code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf.Gaussian1Distrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.Gaussian1Distrib]{distrib_quantile.Gaussian1Distrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.Gaussian1Distrib]{distrib_rng.Gaussian1Distrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the analytical expected Hessian.
 }
 }

@@ -31,5 +31,5 @@ distribution function in its degrees of freedom -- does not arise here, and
 all four orders close.
 }
 \seealso{
-\code{\link{mvstudent_t_distrib}}
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}
 }

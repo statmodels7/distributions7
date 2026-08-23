@@ -11,7 +11,7 @@ zero_adjusted(distrib, link_za = logit_link())
 support) or from \code{continuous_distrib}.}
 
 \item{link_za}{A link function object for the zero probability \eqn{\pi}.
-Defaults to \code{\link[linkfunctions7]{logit_link}}.}
+Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}.}
 }
 \value{
 An S7 object of class \code{ZeroAdjustedDiscreteDistrib} or
@@ -35,7 +35,7 @@ Zero-adjustment is the right wrapper when zeros come from their own mechanism --
 no claim filed, no purchase made, no rainfall --- and the parent describes only what
 happens once that mechanism has been passed. When the zeros instead come partly from
 the parent itself and partly from a separate one, so that no single zero can be
-attributed, use \code{\link{zero_inflated}}.
+attributed, use \code{\link[=zero_inflated]{zero_inflated()}}.
 }
 \details{
 \strong{Discrete parent (hurdle).}
@@ -57,7 +57,7 @@ in principle be fitted separately.
 \deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \neq 0)}
 Here \eqn{f_Y} is a density with respect to Lebesgue measure plus a point mass at
 zero, so it integrates to \eqn{1 - \pi}: the remainder is the atom, which
-\code{\link{distrib_atoms}} reports and \code{\link{check_distrib}} accounts for. The
+\code{\link[=distrib_atoms]{distrib_atoms()}} reports and \code{\link[=check_distrib]{check_distrib()}} accounts for. The
 classical members of this family --- zero-adjusted gamma, inverse Gaussian or
 lognormal for semicontinuous data, zero-adjusted beta for proportions --- all have a
 parent supported on \eqn{(0, \infty)} or \eqn{(0,1)}, where zero sits on the boundary.
@@ -104,6 +104,6 @@ try(zero_adjusted(bernoulli_distrib()))
 
 }
 \seealso{
-\code{\link{zero_inflated}} for the mixture counterpart,
-\code{\link{distrib_atoms}}, \code{\link{check_distrib}}.
+\code{\link[=zero_inflated]{zero_inflated()}} for the mixture counterpart,
+\code{\link[=distrib_atoms]{distrib_atoms()}}, \code{\link[=check_distrib]{check_distrib()}}.
 }

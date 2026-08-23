@@ -21,5 +21,5 @@ A numeric vector, one entry per row of \code{y}.
 evaluated on the open simplex, one row of \code{y} per observation.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

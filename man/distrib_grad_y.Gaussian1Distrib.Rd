@@ -19,5 +19,5 @@ Closed-form derivatives of the Gaussian log-density with respect to the response
 \eqn{\partial^2 \ell / \partial y^2 = -1/\sigma^2}.
 }
 \seealso{
-\code{\link{gaussian1_distrib}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

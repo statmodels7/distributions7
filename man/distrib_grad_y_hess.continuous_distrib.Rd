@@ -20,7 +20,7 @@ A named list keyed by parameter pair.
 }
 \description{
 Fallback: one central difference of the analytic
-\code{\link{distrib_cross_y}} or \code{\link{distrib_cross2_y}} in each
-parameter (see \code{\link{numerical_theta2_y}}).
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} in each
+parameter (see \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}).
 }
 \keyword{internal}

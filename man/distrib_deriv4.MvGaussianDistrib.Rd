@@ -4,7 +4,7 @@
 \alias{distrib_deriv4.MvGaussianDistrib}
 \title{Multivariate Gaussian Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 
@@ -21,6 +21,6 @@ A named list of fourth-derivative component vectors.
 }
 \description{
 Closed form; the same algebra as
-\code{\link{distrib_deriv3.MvGaussianDistrib}} one order up.
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} one order up.
 }
 \keyword{internal}

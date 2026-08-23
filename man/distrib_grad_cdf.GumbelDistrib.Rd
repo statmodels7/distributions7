@@ -23,6 +23,6 @@ Closed form from the location-scale structure, as for the Gaussian:
 \eqn{\partial F/\partial\mu = -f} and \eqn{\partial F/\partial\sigma = -zf}.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }
 \keyword{internal}

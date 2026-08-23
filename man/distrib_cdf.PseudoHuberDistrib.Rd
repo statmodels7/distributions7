@@ -23,5 +23,5 @@ by numerical integration of the density. The distribution is symmetric around
 \eqn{\mu}, so the upper tail is computed by reflection.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

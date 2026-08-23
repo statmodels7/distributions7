@@ -55,7 +55,7 @@ rather than derived separately.
 
 \strong{What this costs.} \eqn{m_i} and \eqn{M_{ij}} have no closed form for a
 general parent, and are obtained by quadrature (continuous) or summation
-(discrete) through \code{\link{expectation}}. Derivatives of a truncated
+(discrete) through \code{\link[=expectation]{expectation()}}. Derivatives of a truncated
 distribution are therefore substantially more expensive than the parent's, and
 third and fourth derivatives fall back to finite differences of the analytical
 Hessian.
@@ -73,12 +73,12 @@ parent would hide the mistake.
 parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
 \code{n_params + 1} points are needed.
 \item A parent that models a probability of zero ---
-\code{\link{zero_inflated}()} or \code{\link{zero_adjusted}()} --- when the
+\code{\link[=zero_inflated]{zero_inflated()}} or \code{\link[=zero_adjusted]{zero_adjusted()}} --- when the
 truncation removes \eqn{0} from the support. Truncating zero away cancels
 that parameter out of the likelihood entirely, leaving an identically zero
 score. Truncating elsewhere, as in
 \code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is fine and the
-point mass is carried through \code{\link{distrib_atoms}}.
+point mass is carried through \code{\link[=distrib_atoms]{distrib_atoms()}}.
 }
 Truncating an already truncated distribution is allowed and is collapsed into a
 single object over the intersection of the two intervals, rather than nested.
@@ -98,6 +98,6 @@ try(truncated(gamma2_distrib(), lower = -2))
 
 }
 \seealso{
-\code{\link{zero_inflated}}, \code{\link{zero_adjusted}},
-\code{\link{transformation}}, \code{\link{check_distrib}}
+\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=zero_adjusted]{zero_adjusted()}},
+\code{\link[=transformation]{transformation()}}, \code{\link[=check_distrib]{check_distrib()}}
 }

@@ -7,7 +7,7 @@
 sn2_chain(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link{SkewNormal2Distrib}} object.}
+\item{distrib}{A \code{\link[=SkewNormal2Distrib]{SkewNormal2Distrib()}} object.}
 
 \item{y}{The response.}
 
@@ -22,7 +22,7 @@ A named list of component vectors.
 }
 \description{
 The parent's derivatives carried into the centered coordinates by the
-partition sum of \code{\link{chain_derivatives}}.
+partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}.
 }
 \details{
 The map to the direct parametrization runs through
@@ -37,6 +37,6 @@ is used and the reason can be named, rather than left to reach a
 comparison against \code{NA} several frames further on.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }
 \keyword{internal}

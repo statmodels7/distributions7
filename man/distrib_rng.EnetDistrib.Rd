@@ -17,5 +17,5 @@ A numeric vector of draws.
 Inverse transform on the closed-form quantile function.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

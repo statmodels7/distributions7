@@ -4,26 +4,26 @@ NULL
 #' @title S7 Class for the Inverse Gaussian in Mean and Shape
 #' @name InvGauss2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the inverse
+#' @description A subclass of `continuous_distrib` for the inverse
 #'   gaussian in its classical parametrization, the mean and the shape
 #'   \eqn{\lambda}.
 #' @inheritParams distrib
-#' @return An object of class \code{InvGauss2Distrib}.
-#' @seealso \code{\link{invgauss2_distrib}}, \code{\link{invgauss1_distrib}}
+#' @return An object of class `InvGauss2Distrib`.
+#' @seealso [invgauss2_distrib()], [invgauss1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.InvGauss2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.InvGauss2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.InvGauss2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.InvGauss2Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.InvGauss2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.InvGauss2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.InvGauss2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.InvGauss2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.InvGauss2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.InvGauss2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.InvGauss2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.InvGauss2Distrib],
+#'   [`distrib_rng()`][distrib_rng.InvGauss2Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 InvGauss2Distrib <- S7::new_class("InvGauss2Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -33,12 +33,12 @@ InvGauss2Distrib <- S7::new_class("InvGauss2Distrib", parent = continuous_distri
 #' @description
 #' \deqn{f(y) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
 #'       \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\}}
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `mu` and `lambda`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_pdf, InvGauss2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   statmod::dinvgauss(y, mean = theta[[1]], dispersion = 1 / theta[[2]], log = log)
 }
@@ -47,14 +47,14 @@ S7::method(distrib_pdf, InvGauss2Distrib) <- function(distrib, y, theta, log = F
 #' @name distrib_cdf.InvGauss2Distrib
 #' @description The inverse gaussian distribution function at dispersion
 #'   \eqn{1/\lambda}.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param theta A list with `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
                                                        lower.tail = TRUE,
                                                        log.p = FALSE, ...) {
@@ -66,14 +66,14 @@ S7::method(distrib_cdf, InvGauss2Distrib) <- function(distrib, q, theta,
 #' @name distrib_quantile.InvGauss2Distrib
 #' @description The inverse gaussian quantile function at dispersion
 #'   \eqn{1/\lambda}.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is a log-probability.
+#' @param theta A list with `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is a log-probability.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
                                                             lower.tail = TRUE,
                                                             log.p = FALSE, ...) {
@@ -83,12 +83,12 @@ S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
 
 #' @title Inverse Gaussian Random Generation in Mean and Shape
 #' @name distrib_rng.InvGauss2Distrib
-#' @description Delegates to \code{\link[statmod]{rinvgauss}}.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @description Delegates to [statmod::rinvgauss()].
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{mu} and \code{lambda}.
+#' @param theta A list with `mu` and `lambda`.
 #' @return A numeric vector.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta) {
   statmod::rinvgauss(n, mean = theta[[1]], dispersion = 1 / theta[[2]])
 }
@@ -100,13 +100,13 @@ S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta) {
 #'       \qquad
 #'       \dfrac{\partial\ell}{\partial\lambda}
 #'         = \dfrac{1}{2\lambda} - \dfrac{(y-\mu)^2}{2\mu^2 y}}
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `lambda`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
                                                             scale = c("parameter", "link"), ..., threads = 1L) {
   invgauss2_gradient_cpp(y, theta[[1]], theta[[2]], threads)
@@ -118,13 +118,13 @@ S7::method(distrib_gradient, InvGauss2Distrib) <- function(distrib, y, theta,
 #' \deqn{\ell^{(\mu\mu)} = \dfrac{\lambda(2\mu-3y)}{\mu^4}, \qquad
 #'       \ell^{(\mu\lambda)} = \dfrac{y-\mu}{\mu^3}, \qquad
 #'       \ell^{(\lambda\lambda)} = -\dfrac{1}{2\lambda^2}}
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `lambda`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ..., threads = 1L) {
   invgauss2_hessian_cpp(y, theta[[1]], theta[[2]], threads)
@@ -139,15 +139,15 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #'       \mathbb{E}[\ell^{(\mu\lambda)}] = 0, \qquad
 #'       \mathbb{E}[\ell^{(\lambda\lambda)}] = -\dfrac{1}{2\lambda^2}}
 #' The mean and the shape are orthogonal.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `lambda`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
@@ -158,16 +158,16 @@ S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, t
 #' @title Inverse Gaussian Third-Order Derivatives in Mean and Shape
 #' @name distrib_deriv3.InvGauss2Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `lambda`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
@@ -178,16 +178,16 @@ S7::method(distrib_deriv3, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' @title Inverse Gaussian Fourth-Order Derivatives in Mean and Shape
 #' @name distrib_deriv4.InvGauss2Distrib
 #' @description Closed form, observed or expected.
-#' @param distrib An \code{InvGauss2Distrib} object.
+#' @param distrib An `InvGauss2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{mu} and \code{lambda}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `mu` and `lambda`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{invgauss2_distrib}}
+#' @seealso [invgauss2_distrib()]
 S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                           scale = c("parameter", "link"),
                                                           approx = c("integrate", "bartlett", "mc", "opg"),
@@ -204,7 +204,7 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}.
 #'
 #' @details
-#' The same law as \code{\link{invgauss1_distrib}}, which carries a dispersion
+#' The same law as [invgauss1_distrib()], which carries a dispersion
 #' \eqn{\phi = 1/\lambda}. The map between them is one coordinate at a time,
 #' the mean being untouched, which is what makes both sets of derivatives
 #' elementary.
@@ -222,9 +222,9 @@ S7::method(distrib_deriv4, InvGauss2Distrib) <- function(distrib, y, theta, expe
 #' @param link_mu Link function for \eqn{\mu}. Defaults to the log.
 #' @param link_lambda Link function for \eqn{\lambda}. Defaults to the log.
 #'
-#' @return An S7 object of class \code{\link{InvGauss2Distrib}}.
+#' @return An S7 object of class [InvGauss2Distrib()].
 #'
-#' @seealso \code{\link{invgauss1_distrib}}
+#' @seealso [invgauss1_distrib()]
 #'
 #' @examples
 #' d <- invgauss2_distrib()

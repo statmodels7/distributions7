@@ -19,7 +19,7 @@ reparam_chain(distrib, y, theta, order, expected = FALSE)
 }
 \value{
 A named list of component vectors, keyed as
-\code{\link{deriv_names}} keys them.
+\code{\link[=deriv_names]{deriv_names()}} keys them.
 }
 \description{
 Carries a derivative of the parent's log-density into the new coordinates.
@@ -32,7 +32,7 @@ With \eqn{\theta = h(\psi)}, the derivative of order \eqn{|I|} is
 the outer sum running over the set partitions of the \strong{positions} of
 \eqn{I} and the inner one over the assignment of a parent parameter to each
 block. This is Faa di Bruno with a dense Jacobian, and it is the same
-partition enumeration the wrappers of \code{\link{zero_inflated}} and the
+partition enumeration the wrappers of \code{\link[=zero_inflated]{zero_inflated()}} and the
 rest already use.
 
 Blocks index positions rather than variables, which is what makes a repeated
@@ -44,6 +44,6 @@ place of the observed ones. The first-order term drops, the score having
 mean zero.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

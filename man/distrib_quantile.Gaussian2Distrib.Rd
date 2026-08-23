@@ -23,5 +23,5 @@ A numeric vector.
 The normal quantile function.
 }
 \seealso{
-\code{\link{gaussian2_distrib}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
 }

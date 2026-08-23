@@ -14,6 +14,6 @@
 A numeric vector.
 }
 \description{
-Fallback: \eqn{\partial \ell / \partial y} via finite differences (see \code{\link{numerical_grad_y}}).
+Fallback: \eqn{\partial \ell / \partial y} via finite differences (see \code{\link[=numerical_grad_y]{numerical_grad_y()}}).
 }
 \keyword{internal}

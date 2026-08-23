@@ -21,10 +21,10 @@ loc_scale_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 A named list with one numeric vector per parameter.
 }
 \description{
-The \code{\link{distrib_cross_y}} body shared by the families that are
+The \code{\link[=distrib_cross_y]{distrib_cross_y()}} body shared by the families that are
 location-scale in both their parameters.
 }
 \seealso{
-\code{\link{loc_scale_cross_block}}
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}}
 }
 \keyword{internal}

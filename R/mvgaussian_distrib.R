@@ -6,16 +6,16 @@ NULL
 #' @description
 #' The S7 class of multivariate gaussian distributions, parametrized by a mean
 #' vector and by a \pkg{parameters7} structure for the covariance or the
-#' precision. Constructed by \code{\link{mvgaussian_distrib}}.
+#' precision. Constructed by [mvgaussian_distrib()].
 #'
 #' @inheritParams multivariate_distrib
 #' @param param The \pkg{parameters7} structure carrying the matrix.
 #' @param inverted Whether the matrix parameter parametrizes the precision rather than
 #'   the covariance.
 #'
-#' @return An object of class \code{MvGaussianDistrib}.
+#' @return An object of class `MvGaussianDistrib`.
 #'
-#' @seealso \code{\link{mvgaussian_distrib}}
+#' @seealso [mvgaussian_distrib()]
 #'
 #' @examples
 #' S7::S7_inherits(mvgaussian_distrib(2), MvGaussianDistrib)
@@ -38,26 +38,26 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' \pkg{parameters7}.
 #'
 #' @details
-#' Exactly one of \code{sigma} and \code{omega} may be given, and
+#' Exactly one of `sigma` and `omega` may be given, and
 #' the name of the argument decides which side of the model the matrix parameter
 #' parametrizes: the covariance in the first case, the precision in the second.
 #' One constructor returns one of two behaviors, in the manner of
-#' \code{\link{truncated}}, which chooses between its continuous and discrete
+#' [truncated()], which chooses between its continuous and discrete
 #' classes from the arguments it is handed.
 #'
 #' The precision form is the cheaper one and is preferable where the
 #' modeling allows it. Written in \eqn{\Omega}, the log-density, the score and
 #' the Hessian are multiplications, and the first term of the score is the
-#' parameter's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
+#' parameter's own `param_dlogdet()`; written in \eqn{\Sigma} the same
 #' quantities need a solve at every step.
 #'
-#' \strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
+#' **Parameters.** The mean contributes `mu1`, ..., `mup`, and
 #' the matrix parameter contributes its free values prefixed by the matrix they
-#' describe: \code{sigma_} for a covariance and \code{omega_} for a precision.
+#' describe: `sigma_` for a covariance and `omega_` for a precision.
 #' A two-dimensional gaussian on an unstructured covariance therefore has five
-#' parameters, \code{mu1}, \code{mu2}, \code{sigma_log_L1},
-#' \code{sigma_log_L2} and \code{sigma_L2.1}, while the same structure on the
-#' precision gives \code{omega_log_L1} and the rest. The prefix is what
+#' parameters, `mu1`, `mu2`, `sigma_log_L1`,
+#' `sigma_log_L2` and `sigma_L2.1`, while the same structure on the
+#' precision gives `omega_log_L1` and the rest. The prefix is what
 #' distinguishes the two models in a printed table, since the name of a free
 #' value says how the matrix is built and not which matrix it is.
 #'
@@ -65,26 +65,26 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' identity: the constraint that makes the matrix positive definite lives
 #' inside the matrix parameter, which is why it needs no link to express it. A
 #' practical consequence is that the parameter scale and the link scale
-#' coincide here, so \code{scale = "link"} changes nothing.
+#' coincide here, so `scale = "link"` changes nothing.
 #'
-#' \strong{Reading a fit.} The free values are coordinates, not quantities
-#' anybody reads. \code{\link{mv_summary}} carries the fit's variance matrix
+#' **Reading a fit.** The free values are coordinates, not quantities
+#' anybody reads. [mv_summary()] carries the fit's variance matrix
 #' onto the standard deviations and correlations by the delta method, and
-#' \code{print()} shows them; a precision parametrization also reports the
+#' `print()` shows them; a precision parametrization also reports the
 #' conditional variances and the partial correlations, which are what it
 #' describes directly. The conditional variance is
 #' \eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, and its ratio to the
 #' marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
 #' on all the others.
 #'
-#' \strong{Rank.} A rank-deficient structure is rejected. A singular covariance
+#' **Rank.** A rank-deficient structure is rejected. A singular covariance
 #' gives a law supported on a subspace, with no density against Lebesgue
 #' measure, and a singular precision gives a quadratic form that is flat along
 #' its null space and does not normalize. The two are different failures and
 #' both are failures; a structure of that kind is a legitimate penalty and not
 #' a legitimate density.
 #'
-#' \strong{The response} is an \eqn{n \times p} matrix, one row per
+#' **The response** is an \eqn{n \times p} matrix, one row per
 #' observation. A plain vector of length \eqn{p} is read as a single
 #' observation.
 #'
@@ -101,14 +101,14 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #'
 #' @param n_dim The dimension \eqn{p}.
 #' @param sigma A \pkg{parameters7} structure for the covariance.
-#'   Defaults to \code{parameters7::log_cholesky(n_dim)} when neither structure
+#'   Defaults to `parameters7::log_cholesky(n_dim)` when neither structure
 #'   is given.
 #' @param omega A \pkg{parameters7} structure for the precision.
 #'
-#' @return An object of class \code{\link{MvGaussianDistrib}}.
+#' @return An object of class [MvGaussianDistrib()].
 #'
-#' @seealso \code{\link{gaussian1_distrib}}, \code{\link{fit_distrib}},
-#'   \code{\link[parameters7]{log_cholesky}}
+#' @seealso [gaussian1_distrib()], [fit_distrib()],
+#'   [parameters7::log_cholesky()]
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)
@@ -228,13 +228,13 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
 #' sign flipped for a precision, which is the one place the two forms differ in
 #' anything but cost.
 #'
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters, already aligned.
 #' @param derivs Whether the matrix parameter's first derivative matrices are needed.
 #' @param derivs2 Whether its second derivatives are needed as well.
 #'
-#' @return A list with \code{mu}, \code{sigma}, \code{sigma_inv},
-#'   \code{logdet}, \code{eta}, and optionally \code{a} and \code{a2}, the
+#' @return A list with `mu`, `sigma`, `sigma_inv`,
+#'   `logdet`, `eta`, and optionally `a` and `a2`, the
 #'   derivatives of the covariance with respect to the free values.
 #'
 #' @keywords internal
@@ -295,7 +295,7 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 #' @title Mean of a Multivariate Gaussian
 #' @name mv_location.MvGaussianDistrib
 #' @description The first \eqn{p} parameters, which are the mean vector.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @return A named numeric vector of length \eqn{p}.
 #' @keywords internal
@@ -306,7 +306,7 @@ S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
 #' @description
 #' The covariance, assembled from the matrix parameter and inverted first when the
 #' structure parametrizes the precision.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @return A \eqn{p \times p} numeric matrix.
 #' @keywords internal
@@ -325,9 +325,9 @@ S7::method(mv_sigma, MvGaussianDistrib) <- function(distrib, theta) {
 #' what every derivative of a multivariate gaussian is written in.
 #'
 #' @param y An \eqn{n \times p} matrix.
-#' @param pc The result of \code{\link{mvg_pieces}}.
+#' @param pc The result of [mvg_pieces()].
 #'
-#' @return A list with \code{r}, the residuals, and \code{w}, the rows of
+#' @return A list with `r`, the residuals, and `w`, the rows of
 #'   \eqn{R \Sigma^{-1}}.
 #'
 #' @keywords internal
@@ -344,11 +344,11 @@ mvg_residuals <- function(y, pc) {
 #'   - \frac{1}{2}(y-\mu)^\top \Sigma^{-1} (y-\mu),}
 #' evaluated row by row. The quadratic form goes through the matrix parameter's own
 #' factor rather than through an explicit inverse.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations, or a vector of length
 #'   \eqn{p} for one observation.
 #' @param theta A named list of parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector with one value per observation.
 #' @keywords internal
 S7::method(distrib_pdf, MvGaussianDistrib) <- function(distrib, y, theta,
@@ -369,7 +369,7 @@ S7::method(distrib_pdf, MvGaussianDistrib) <- function(distrib, y, theta,
 #' \eqn{\mu + L z} with \eqn{z} standard normal and \eqn{LL^\top = \Sigma}, the
 #' factor taken from the matrix parameter where it parametrizes the covariance and
 #' from a factorization of the inverse otherwise.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param n The number of observations to draw.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -397,8 +397,8 @@ S7::method(distrib_rng, MvGaussianDistrib) <- function(distrib, n, theta, ...) {
 #'   -\frac{1}{2}\frac{\partial \log|\Sigma|}{\partial \eta_k}
 #'   + \frac{1}{2} w^\top A_k w.}
 #' The first term of the second expression is the matrix parameter's own
-#' \code{param_dlogdet()}, so no trace is formed here.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' `param_dlogdet()`, so no trace is formed here.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic; the two scales coincide here.
@@ -438,12 +438,12 @@ S7::method(distrib_gradient, MvGaussianDistrib) <- function(distrib, y, theta,
 #' \deqn{\ell^{(\eta_k \eta_l)} =
 #'   -\tfrac{1}{2}\frac{\partial^2 \log|\Sigma|}{\partial\eta_k \partial\eta_l}
 #'   + \tfrac{1}{2} w^\top A_{kl} w - w^\top A_l \Sigma^{-1} A_k w.}
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic; the two scales coincide here.
 #' @param ... Unused.
-#' @return A named list keyed as \code{\link{hess_names}(distrib@params)}.
+#' @return A named list keyed as [`hess_names(distrib@params)`][hess_names].
 #' @keywords internal
 S7::method(distrib_hessian, MvGaussianDistrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"),
@@ -490,17 +490,17 @@ S7::method(distrib_hessian, MvGaussianDistrib) <- function(distrib, y, theta,
 #' Index Pairs Behind the Hessian Keys of a Multivariate Distribution
 #'
 #' @description
-#' The positions in \code{distrib@params} of each unordered pair, in the order
-#' \code{\link{hess_names}} uses.
+#' The positions in `distrib@params` of each unordered pair, in the order
+#' [hess_names()] uses.
 #'
 #' @details
-#' \code{\link{hess_pairs}} returns pairs of parameter NAMES, which is what a
+#' [hess_pairs()] returns pairs of parameter NAMES, which is what a
 #' univariate method wants when it looks a component up. A multivariate method
 #' needs the positions instead, to tell a mean component from a matrix one, so
 #' the names are matched back rather than the enumeration being written a
 #' second time.
 #'
-#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param distrib A [multivariate_distrib()] object.
 #'
 #' @return A list of integer vectors of length 2.
 #'
@@ -515,7 +515,7 @@ mv_hess_indices <- function(distrib) {
 #'
 #' @description
 #' A lookup from a pair of free-value positions to the position of the
-#' corresponding component of \code{param_d2()}.
+#' corresponding component of `param_d2()`.
 #'
 #' @details
 #' Built from \pkg{parameters7}'s own enumeration rather than by taking a
@@ -524,7 +524,7 @@ mv_hess_indices <- function(distrib) {
 #'
 #' @param s A \pkg{parameters7} structure.
 #'
-#' @return A named list of integers, keyed \code{"k:l"} with \eqn{k \le l}.
+#' @return A named list of integers, keyed `"k:l"` with \eqn{k \le l}.
 #'
 #' @keywords internal
 param_pair_lookup <- function(s) {
@@ -550,14 +550,14 @@ param_pair_lookup <- function(s) {
 #' scoring on this family so well behaved. The matrix block needs no second
 #' derivative at all: the terms in \eqn{A_{kl}} cancel between the
 #' log-determinant and the quadratic form.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic; the two scales coincide here.
 #' @param approx Ignored: the expectation is exact.
 #' @param nsim Ignored.
 #' @param ... Unused.
-#' @return A named list keyed as \code{\link{hess_names}(distrib@params)}.
+#' @return A named list keyed as [`hess_names(distrib@params)`][hess_names].
 #' @keywords internal
 S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
@@ -596,7 +596,7 @@ S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
 #' observation. The shape differs from the univariate case, where the
 #' derivative in a scalar response is a vector: here it is an
 #' \eqn{n \times p} matrix.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -614,7 +614,7 @@ S7::method(distrib_grad_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' @description
 #' \eqn{\partial^2 \ell / \partial y \partial y^\top = -\Sigma^{-1}}, the same
 #' matrix at every observation, so it is returned once rather than repeated.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
@@ -647,7 +647,7 @@ S7::method(distrib_hess_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' The link scale is the parameter scale here: the mean components carry the
 #' identity link and so do the matrix parameter's free values, which are
 #' unconstrained by construction.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic.
@@ -698,12 +698,12 @@ S7::method(distrib_cross_y, MvGaussianDistrib) <-
 #' the first two involving a mean is exactly zero and the rest are one matrix
 #' rather than one per row. Only the third carries the observation, through
 #' \eqn{w}.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic.
 #' @param ... Unused.
-#' @return A named list, keyed by parameter for \code{distrib_cross2_y} and by
+#' @return A named list, keyed by parameter for `distrib_cross2_y` and by
 #'   parameter pair for the other two.
 #' @keywords internal
 S7::method(distrib_cross2_y, MvGaussianDistrib) <-
@@ -779,11 +779,11 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
 #' The Second Derivative of the Covariance, by Position
 #'
 #' @description
-#' \code{param_d2} keyed by the pair of free values rather than by the string
+#' `param_d2` keyed by the pair of free values rather than by the string
 #' the structure names it with, the key being CONSTRUCTED from the sorted
 #' pair and never parsed out of a name.
 #'
-#' @param pc The result of \code{\link{mvg_pieces}} with \code{derivs2}.
+#' @param pc The result of [mvg_pieces()] with `derivs2`.
 #' @param k,l Positions among the structure's free values.
 #'
 #' @return A \eqn{p \times p} numeric matrix.
@@ -798,7 +798,7 @@ mvg_a2 <- function(pc, k, l) {
 #' @title Mean of a Multivariate Gaussian
 #' @name mean.MvGaussianDistrib
 #' @description The mean vector, which is a parameter of the family.
-#' @param x A \code{\link{MvGaussianDistrib}} object.
+#' @param x A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A numeric vector of length \eqn{p}.
@@ -814,7 +814,7 @@ S7::method(mean, MvGaussianDistrib) <- function(x, theta, ...) {
 #' The covariance matrix, which the matrix parameter carries. The return is a matrix
 #' rather than the numeric vector a univariate distribution gives, since that
 #' is what the second moment of a vector is.
-#' @param x A \code{\link{MvGaussianDistrib}} object.
+#' @param x A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
 #' @return A \eqn{p \times p} numeric matrix.
@@ -832,7 +832,7 @@ S7::method(variance, MvGaussianDistrib) <- function(x, theta, ...) {
 #' range, which for a log-Cholesky diagonal spans four orders of magnitude in
 #' the resulting variances and gives a starting covariance no fit recovers
 #' from.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param ... Unused.
 #' @return A named list of scalars.
 #' @keywords internal
@@ -858,13 +858,13 @@ S7::method(generate_random_theta, MvGaussianDistrib) <- function(distrib, ...) {
 #' Student t needs the same tensors of its scale matrix and there must be one
 #' copy of the expansion: its first draft double counted the mixed terms, which
 #' only a comparison against a stencil caught.
-#' @param pc The pieces, as returned by \code{\link{mvg_pieces}} or
-#'   \code{mvt_pieces()}: a list carrying \code{s}, \code{eta} and
-#'   \code{sigma_inv}.
+#' @param pc The pieces, as returned by [mvg_pieces()] or
+#'   `mvt_pieces()`: a list carrying `s`, `eta` and
+#'   `sigma_inv`.
 #' @param order The highest order wanted.
 #' @param inverted Whether the free values parametrize the precision, in which
 #'   case the tensors are the parameter's own.
-#' @return A list with the accessor \code{get}, the log-determinant sign and
+#' @return A list with the accessor `get`, the log-determinant sign and
 #'   the pieces.
 #' @keywords internal
 mvg_ptensors <- function(pc, order, inverted = FALSE) {
@@ -973,10 +973,10 @@ mv_ordered_partitions <- function(pos) {
 #'
 #' @description
 #' Shared engine for the third and fourth derivatives: enumerates the
-#' parameter tuples the way \code{\link{deriv_names}} does, splits each into
+#' parameter tuples the way [deriv_names()] does, splits each into
 #' mean and structure indices, and reads the surviving cases off the
 #' gaussian's algebra.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param order 3 or 4.
@@ -1046,7 +1046,7 @@ mvg_higher <- function(distrib, y, theta, order) {
 #' The precision's derivative tensors \eqn{P_t} come directly from the
 #' structure under a precision parametrization, and by the Leibniz recursion
 #' on \eqn{P_k = -P A_k P} under a covariance one.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param expected Logical; the expectation is approximated by sampling, as
@@ -1068,8 +1068,8 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #' @title Multivariate Gaussian Fourth Derivatives
 #' @name distrib_deriv4.MvGaussianDistrib
 #' @description Closed form; the same algebra as
-#'   \code{\link{distrib_deriv3.MvGaussianDistrib}} one order up.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#'   [distrib_deriv3.MvGaussianDistrib()] one order up.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param y An \eqn{n \times p} matrix of observations.
 #' @param theta A named list of parameters.
 #' @param expected Logical; the expectation is approximated by sampling.

@@ -27,5 +27,5 @@ A named list of third-derivative components.
 The partition sum at order three.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

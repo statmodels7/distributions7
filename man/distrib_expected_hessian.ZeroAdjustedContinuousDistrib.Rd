@@ -18,5 +18,5 @@ Expected Hessian: \eqn{E[H_{\pi\pi}] = -\dfrac{1}{\pi(1-\pi)}}, mixed blocks are
 and \eqn{E[H_{\theta\theta}] = (1-\pi) E[H_W]}.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

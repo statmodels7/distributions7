@@ -20,5 +20,5 @@ with respect to the parameter \eqn{\mu}.
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}}
 }
 \seealso{
-\code{\link{binomial_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}
 }

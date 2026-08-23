@@ -28,5 +28,5 @@ quadrature per observation, which is cheaper and more accurate than the base
 class's route of integrating the density over a semi-infinite range.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

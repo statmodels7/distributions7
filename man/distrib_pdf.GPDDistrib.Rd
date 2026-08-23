@@ -21,5 +21,5 @@ A numeric vector of density values.
 with the exponential density as the limit at \eqn{\xi = 0}.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

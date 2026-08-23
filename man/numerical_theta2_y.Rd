@@ -26,8 +26,8 @@ Computes the second-order mixed components by one central difference of an
 analytic first-order component in each parameter.
 }
 \details{
-The reference is \code{\link{distrib_cross_y}} or
-\code{\link{distrib_cross2_y}}, so a distribution with a closed form for
+The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a distribution with a closed form for
 those pays for exactly one difference. A mixed pair is differenced both ways
 and averaged: the two agree in exact arithmetic and not quite in floating
 point, the steps differing, and a second derivative of a scalar has to come

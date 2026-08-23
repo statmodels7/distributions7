@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Poisson distribution.
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

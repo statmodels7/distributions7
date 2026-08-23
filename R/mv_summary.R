@@ -15,41 +15,41 @@ NULL
 #' The logarithm of the third diagonal entry of a Cholesky factor has an
 #' estimate and a standard error, and neither answers a question. This generic
 #' names the quantities that do, and supplies
-#' \eqn{\partial g/\partial\theta} so that \code{\link{mv_summary}} can apply
+#' \eqn{\partial g/\partial\theta} so that [mv_summary()] can apply
 #' the delta method to them.
 #'
 #' Each quantity also declares the scale its confidence interval should be
-#' built on, exactly as \code{\link{fit_distrib}} builds a univariate interval
+#' built on, exactly as [fit_distrib()] builds a univariate interval
 #' on the link scale and maps it back: a standard deviation is intervalled on
 #' the log scale so that the interval cannot reach zero, a correlation on
 #' Fisher's \eqn{z = \mathrm{artanh}(\rho)} so that it cannot leave
 #' \eqn{(-1, 1)}, and an unconstrained quantity on its own scale.
 #'
-#' The default method, registered on \code{\link{multivariate_distrib}},
-#' returns the distinct entries of the matrix \code{\link{mv_sigma}} produces,
+#' The default method, registered on [multivariate_distrib()],
+#' returns the distinct entries of the matrix [mv_sigma()] produces,
 #' named after the coordinates they belong to, with a Jacobian obtained by one
 #' central difference. A family whose matrix is not a covariance therefore
 #' still reports something on its original scale, which is better than
 #' reporting a Cholesky coordinate.
 #'
 #' @param distrib An object inheriting from class
-#'   \code{\link{multivariate_distrib}}.
+#'   [multivariate_distrib()].
 #' @param theta A named list or vector of parameters.
 #' @param ... Passed to methods.
 #'
 #' @return A list with
 #'   \describe{
-#'     \item{\code{value}}{a named numeric vector of the quantities;}
-#'     \item{\code{jacobian}}{a matrix with one row per quantity and one column
-#'       per parameter of \code{distrib};}
-#'     \item{\code{transform}}{a character vector, one of \code{"identity"},
-#'       \code{"log"} or \code{"atanh"} per quantity, naming the scale its
+#'     \item{`value`}{a named numeric vector of the quantities;}
+#'     \item{`jacobian`}{a matrix with one row per quantity and one column
+#'       per parameter of `distrib`;}
+#'     \item{`transform`}{a character vector, one of `"identity"`,
+#'       `"log"` or `"atanh"` per quantity, naming the scale its
 #'       interval is built on;}
-#'     \item{\code{block}}{a character vector labeling the group each quantity
+#'     \item{`block`}{a character vector labeling the group each quantity
 #'       belongs to, used to lay the printed summary out.}
 #'   }
 #'
-#' @seealso \code{\link{mv_summary}}, \code{\link{mv_sigma}}
+#' @seealso [mv_summary()], [mv_sigma()]
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)
@@ -75,7 +75,7 @@ mv_derived <- S7::new_generic("mv_derived", "distrib",
 #' @param p The side of the matrix.
 #' @param prefix The string the labels start with.
 #'
-#' @return A list with \code{i}, \code{j} and \code{name}.
+#' @return A list with `i`, `j` and `name`.
 #'
 #' @keywords internal
 mv_entry_index <- function(p, prefix) {
@@ -92,21 +92,21 @@ mv_entry_index <- function(p, prefix) {
 #'
 #' @description
 #' The block a \pkg{parameters7} family declares through
-#' \code{\link[parameters7]{param_readable}}, with its Jacobian widened from
+#' [parameters7::param_readable()], with its Jacobian widened from
 #' the free vector to the whole parameter vector of the distribution.
 #'
 #' @details
 #' The free values of the structure occupy a contiguous stretch of
-#' \code{distrib@params}, after the means and before anything the family adds
+#' `distrib@params`, after the means and before anything the family adds
 #' of its own, so widening the Jacobian is placing its columns in that stretch
 #' and leaving the rest at zero: the quantities depend on no other parameter.
-#' A family that declares nothing yields \code{NULL} and the summary is what
+#' A family that declares nothing yields `NULL` and the summary is what
 #' it was.
 #'
-#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param distrib A [multivariate_distrib()] object.
 #' @param theta A named list of parameters.
 #'
-#' @return A list in the shape of \code{\link{mv_derived}}, or \code{NULL}.
+#' @return A list in the shape of [mv_derived()], or `NULL`.
 #'
 #' @keywords internal
 mv_param_block <- function(distrib, theta) {
@@ -140,15 +140,15 @@ mv_param_block <- function(distrib, theta) {
 #' Append One Block of Derived Quantities to Another
 #'
 #' @description
-#' Concatenates two lists in the shape of \code{\link{mv_derived}}, returning
-#' the first unchanged when the second is \code{NULL}.
+#' Concatenates two lists in the shape of [mv_derived()], returning
+#' the first unchanged when the second is `NULL`.
 #'
-#' @param out A list as described in \code{\link{mv_derived}}.
-#' @param extra A list of the same shape, or \code{NULL}.
+#' @param out A list as described in [mv_derived()].
+#' @param extra A list of the same shape, or `NULL`.
 #'
-#' @return A list as described in \code{\link{mv_derived}}.
+#' @return A list as described in [mv_derived()].
 #'
-#' @seealso \code{\link{mv_param_block}}
+#' @seealso [mv_param_block()]
 #'
 #' @keywords internal
 mv_append_block <- function(out, extra) {
@@ -165,14 +165,14 @@ mv_append_block <- function(out, extra) {
 #' @title Matrix Entries as the Default Interpretable Quantities
 #' @name mv_derived.multivariate_distrib
 #' @description
-#' The distinct entries of the matrix \code{\link{mv_sigma}} returns, with a
+#' The distinct entries of the matrix [mv_sigma()] returns, with a
 #' Jacobian from one central difference in each parameter. This is what a
 #' family gets when it says nothing more specific: the matrix on its own scale,
 #' named after the coordinates, rather than the matrix parameter's coordinates.
-#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param distrib A [multivariate_distrib()] object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A list as described in \code{\link{mv_derived}}.
+#' @return A list as described in [mv_derived()].
 #' @keywords internal
 S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
@@ -228,14 +228,14 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'
 #' @param sigma The matrix.
 #' @param a A list of derivative matrices, one per parameter, in the order of
-#'   the distribution's parameters. Entries may be \code{NULL} for parameters
+#'   the distribution's parameters. Entries may be `NULL` for parameters
 #'   the matrix does not depend on.
 #' @param params The parameter names, used to label the Jacobian's columns.
 #' @param sd_label The label the diagonal quantities are named with.
 #' @param cor_label The label the off-diagonal quantities are named with.
 #' @param sd_block,cor_block The headings the two groups print under.
 #'
-#' @return A list as described in \code{\link{mv_derived}}.
+#' @return A list as described in [mv_derived()].
 #'
 #' @keywords internal
 mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
@@ -301,21 +301,21 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #' @description
 #' Returns \eqn{\partial\Sigma/\partial\theta_k} for each parameter of a
 #' multivariate distribution built on a \pkg{parameters7} structure, as a list
-#' aligned with \code{distrib@params} and \code{NULL} where the covariance does
+#' aligned with `distrib@params` and `NULL` where the covariance does
 #' not depend on the parameter.
 #'
 #' @details
 #' The mean components and, for a Student \eqn{t}, the degrees of freedom leave
-#' the matrix alone, so those entries are \code{NULL} and cost nothing. When
+#' the matrix alone, so those entries are `NULL` and cost nothing. When
 #' the matrix parameter parametrizes the precision the chain rule of an inverse
 #' applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
 #'
-#' @param distrib A distribution carrying a \code{param} property.
+#' @param distrib A distribution carrying a `param` property.
 #' @param theta A named list of parameters, already aligned.
 #' @param n_before How many parameters precede the matrix parameter's free values.
 #'
-#' @return A list of matrices and \code{NULL}s, of length
-#'   \code{distrib@n_params}.
+#' @return A list of matrices and `NULL`s, of length
+#'   `distrib@n_params`.
 #'
 #' @keywords internal
 mv_sigma_derivs <- function(distrib, theta, n_before) {
@@ -340,14 +340,14 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' @description
 #' The standard deviations and correlations of the response, whichever side the
 #' structure parametrizes. A precision structure additionally reports the
-#' \strong{partial} correlations, which are what it describes directly:
+#' **partial** correlations, which are what it describes directly:
 #' \eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}} is the correlation of two
 #' coordinates given all the others, and it is zero exactly where the precision
 #' has a zero.
-#' @param distrib A \code{\link{MvGaussianDistrib}} object.
+#' @param distrib A [MvGaussianDistrib()] object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A list as described in \code{\link{mv_derived}}.
+#' @return A list as described in [mv_derived()].
 #' @keywords internal
 S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
@@ -419,15 +419,15 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' @title Scale Standard Deviations and Correlations of a Multivariate t
 #' @name mv_derived.MvStudentTDistrib
 #' @description
-#' The square roots of the diagonal of the \strong{scale} matrix and the
+#' The square roots of the diagonal of the **scale** matrix and the
 #' correlations it implies. The correlations are those of the response as well,
 #' since the covariance is \eqn{\nu\Sigma/(\nu-2)} and a positive multiple of a
 #' matrix leaves its correlations alone; the diagonal quantities are not
 #' standard deviations of the response and are named to say so.
-#' @param distrib A \code{\link{MvStudentTDistrib}} object.
+#' @param distrib A [MvStudentTDistrib()] object.
 #' @param theta A named list of parameters.
 #' @param ... Unused.
-#' @return A list as described in \code{\link{mv_derived}}.
+#' @return A list as described in [mv_derived()].
 #' @keywords internal
 S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
@@ -445,36 +445,36 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'
 #' @description
 #' Reports the standard deviations, correlations and whatever else
-#' \code{\link{mv_derived}} declares for the fitted distribution, each with its
+#' [mv_derived()] declares for the fitted distribution, each with its
 #' standard error and confidence interval.
 #'
 #' @details
 #' A multivariate fit estimates the free values of a \pkg{parameters7}
 #' structure, and those are coordinates rather than quantities: the estimate
-#' and standard error of \code{sigma_log_L2} answer no question anybody asked.
+#' and standard error of `sigma_log_L2` answer no question anybody asked.
 #' This function carries the fit's variance matrix onto the quantities that do,
 #' by the delta method,
 #' \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
 #'   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
 #'   \qquad J = \partial g/\partial\theta,}
-#' with \eqn{J} taken from \code{\link{mv_derived}}, in closed form for the
+#' with \eqn{J} taken from [mv_derived()], in closed form for the
 #' families that ship with the package.
 #'
 #' Each interval is built on the scale the quantity declares and mapped back,
-#' which is the same discipline \code{\link{fit_distrib}} applies to a
+#' which is the same discipline [fit_distrib()] applies to a
 #' univariate parameter: a standard deviation is intervalled on the log scale
 #' and a correlation on Fisher's \eqn{z}, so neither interval can leave the set
 #' its quantity lives in. An interval on the raw scale would routinely put a
 #' correlation above one.
 #'
-#' @param object A \code{\link{distrib_fit}} of a multivariate distribution.
+#' @param object A [distrib_fit()] of a multivariate distribution.
 #' @param level The confidence level. Defaults to the fit's own.
 #'
 #' @return A data frame with one row per quantity and the columns
-#'   \code{Estimate}, \code{Std. Error} and the two confidence limits, carrying
-#'   the attribute \code{"block"} that names the group each row belongs to.
+#'   `Estimate`, `Std. Error` and the two confidence limits, carrying
+#'   the attribute `"block"` that names the group each row belongs to.
 #'
-#' @seealso \code{\link{mv_derived}}, \code{\link{confint.distrib_fit}}
+#' @seealso [mv_derived()], [confint.distrib_fit()]
 #'
 #' @examples
 #' set.seed(1)

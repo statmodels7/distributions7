@@ -20,5 +20,5 @@ A numeric vector of density values.
 the two preimages of \eqn{x} under the absolute value added together.
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

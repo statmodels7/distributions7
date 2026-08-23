@@ -32,5 +32,5 @@ algorithms that rely on the observed Hessian (e.g., Newton-Raphson). In such cas
 Hessian (\code{distrib_expected_hessian}) is recommended for more stable convergence.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

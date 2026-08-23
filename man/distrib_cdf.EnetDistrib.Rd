@@ -23,5 +23,5 @@ Each half of the density is a truncated Gaussian, so
 its reflection above, with \eqn{z = q-\mu} and \eqn{x = a/\sqrt{c}}.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

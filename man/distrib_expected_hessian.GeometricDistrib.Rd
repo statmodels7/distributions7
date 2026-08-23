@@ -28,5 +28,5 @@ the reciprocal of the variance, as it must be for a family written in its
 mean.
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

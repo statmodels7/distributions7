@@ -44,6 +44,6 @@ allows a fit on a non-regular family such as the Laplace, where the observed
 Hessian is degenerate but the information is not.
 }
 \seealso{
-\code{\link{fit_score}}, \code{\link{fit_distrib}}
+\code{\link[=fit_score]{fit_score()}}, \code{\link[=fit_distrib]{fit_distrib()}}
 }
 \keyword{internal}

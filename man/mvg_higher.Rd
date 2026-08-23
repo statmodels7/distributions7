@@ -7,7 +7,7 @@
 mvg_higher(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 
@@ -20,7 +20,7 @@ A named list of derivative component vectors.
 }
 \description{
 Shared engine for the third and fourth derivatives: enumerates the
-parameter tuples the way \code{\link{deriv_names}} does, splits each into
+parameter tuples the way \code{\link[=deriv_names]{deriv_names()}} does, splits each into
 mean and structure indices, and reads the surviving cases off the
 gaussian's algebra.
 }

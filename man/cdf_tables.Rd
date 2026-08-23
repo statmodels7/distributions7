@@ -32,7 +32,7 @@ route -- exact sum for a discrete family, one stencil on the analytic
 distribution function for a continuous one -- in a single statement.
 }
 \seealso{
-\code{\link{cdf_scale_k}}, \code{\link{discrete_cdf_deriv_k}},
-\code{\link{numerical_cdf_deriv_k}}
+\code{\link[=cdf_scale_k]{cdf_scale_k()}}, \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}},
+\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}
 }
 \keyword{internal}

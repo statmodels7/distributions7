@@ -19,5 +19,5 @@ With \eqn{z = (y-\mu)/\sigma}: \eqn{\partial \ell / \partial y = -\tanh(z/2)/\si
 and \eqn{\partial^2 \ell / \partial y^2 = -\mathrm{sech}^2(z/2)/(2\sigma^2)}.
 }
 \seealso{
-\code{\link{logistic_distrib}}
+\code{\link[=logistic_distrib]{logistic_distrib()}}
 }

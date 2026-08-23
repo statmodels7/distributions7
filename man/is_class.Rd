@@ -34,6 +34,6 @@ only, while every other check stayed green. Identity is kept as a fast path
 and name-with-package as the answer.
 }
 \seealso{
-\code{\link{has_analytic_quantile}}, \code{\link{has_exact_cdf_deriv}}
+\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}
 }
 \keyword{internal}

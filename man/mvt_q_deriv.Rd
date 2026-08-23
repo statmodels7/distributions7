@@ -12,7 +12,7 @@ mvt_q_deriv(b, r, pget, p)
 \item{r}{The \eqn{n \times p} matrix of residuals.}
 
 \item{pget}{The accessor for \eqn{\partial^{t}\Sigma^{-1}}, as returned by
-\code{\link{mvg_ptensors}}.}
+\code{\link[=mvg_ptensors]{mvg_ptensors()}}.}
 
 \item{p}{The dimension.}
 }

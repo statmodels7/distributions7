@@ -15,11 +15,11 @@ A numeric vector.
 }
 \description{
 The ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-numerically as they are for \code{\link{vonmises1_distrib}}: \eqn{\mu} is
+numerically as they are for \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}: \eqn{\mu} is
 the mean \emph{direction} and \eqn{\rho} the mean resultant length, and
 neither is an ordinary moment.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }
 \keyword{internal}

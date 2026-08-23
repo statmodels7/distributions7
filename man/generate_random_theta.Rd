@@ -23,5 +23,5 @@ set.seed(1)
 generate_random_theta(gamma2_distrib())
 }
 \seealso{
-\code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}
+\code{\link[=deriv_names]{deriv_names()}}, \code{\link[=hess_names]{hess_names()}}, \code{\link[=expand_params]{expand_params()}}, \code{\link[=transpose_params]{transpose_params()}}, \code{\link[=check_params_dim]{check_params_dim()}}, \code{\link[=check_theta_bounds]{check_theta_bounds()}}, \code{\link[=param_smoothness]{param_smoothness()}}
 }

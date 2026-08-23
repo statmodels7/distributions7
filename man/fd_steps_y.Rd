@@ -21,11 +21,11 @@ The step for a central difference in the response: scaled by \eqn{|y|} and
 shrunk so that \eqn{y \pm h} stays strictly inside the distribution's support.
 }
 \details{
-The response counterpart of \code{\link{fd_steps}}, and clamped for the same
+The response counterpart of \code{\link[=fd_steps]{fd_steps()}}, and clamped for the same
 reason: a Gamma observation close to zero would otherwise be differentiated
 using a point outside the support, where the density is not defined.
 }
 \seealso{
-\code{\link{fd_steps}}, \code{\link{numerical_grad_y}}
+\code{\link[=fd_steps]{fd_steps()}}, \code{\link[=numerical_grad_y]{numerical_grad_y()}}
 }
 \keyword{internal}

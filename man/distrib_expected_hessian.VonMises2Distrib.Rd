@@ -33,5 +33,5 @@ one-to-one reparametrization of a single parameter must give, and the two
 parameters stay orthogonal.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }

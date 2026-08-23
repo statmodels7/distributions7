@@ -23,7 +23,7 @@ given order, with the multiplicities and the lookup keys, for one vector
 of parameter names.
 }
 \details{
-\code{\link{to_link_scale}} used to rebuild this on every call: the
+\code{\link[=to_link_scale]{to_link_scale()}} used to rebuild this on every call: the
 multi-index list, a \code{unique} and a \code{tabulate} per component,
 and a \code{sort} and a \code{paste} per combination to spell the key of
 the parameter-scale component to look up. None of it depends on the

@@ -27,5 +27,5 @@ The lower tail is exact on the log scale, since \eqn{\log F = -e^{-z}}, and
 the upper tail uses \code{expm1}, so neither loses precision in its own tail.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

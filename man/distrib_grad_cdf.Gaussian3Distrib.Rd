@@ -23,6 +23,6 @@ Closed form, by the chain rule on the scale parametrization's derivatives
 through \eqn{\sigma = \tau^{-1/2}}.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }
 \keyword{internal}

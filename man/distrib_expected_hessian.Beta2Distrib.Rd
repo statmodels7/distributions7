@@ -27,5 +27,5 @@ to average. Fisher scoring and Newton's method therefore take the same step
 on the parameter scale here.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

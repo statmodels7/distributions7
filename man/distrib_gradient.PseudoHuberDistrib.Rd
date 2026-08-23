@@ -22,5 +22,5 @@ Let \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}:
 \deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2} \left[ \dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})} \right]}
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

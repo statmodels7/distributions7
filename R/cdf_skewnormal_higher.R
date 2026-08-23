@@ -43,8 +43,8 @@ recip_1p_sq <- function(a, j) {
 #' @description
 #' Returns \eqn{\partial^{i}_{z}\partial^{j}_{\alpha}G} for
 #' \eqn{G(z, \alpha) = \Phi(z) - 2T(z, \alpha)}, over the pairs with
-#' \eqn{1 \le i + j \le} \code{order}, as a list indexed by \code{i + 1} then
-#' \code{j + 1}.
+#' \eqn{1 \le i + j \le} `order`, as a list indexed by `i + 1` then
+#' `j + 1`.
 #'
 #' @details
 #' The first derivatives are \eqn{G_{z} = 2\varphi(z)\Phi(u)} and
@@ -58,9 +58,9 @@ recip_1p_sq <- function(a, j) {
 #' @param al The shape.
 #' @param order The highest total order, 1 to 4.
 #'
-#' @return A nested list, \code{[[i + 1]][[j + 1]]}.
+#' @return A nested list, `[[i + 1]][[j + 1]]`.
 #'
-#' @seealso \code{\link{skewnormal1_distrib}}
+#' @seealso [skewnormal1_distrib()]
 #' @keywords internal
 sn_cdf_std_derivs <- function(z, al, order) {
   n <- length(z)
@@ -125,17 +125,17 @@ sn_cdf_std_derivs <- function(z, al, order) {
 #'
 #' @description
 #' Chains the standard-coordinate table of
-#' \code{\link{sn_cdf_std_derivs}} through \eqn{z = (q-\mu)/\sigma}, the
+#' [sn_cdf_std_derivs()] through \eqn{z = (q-\mu)/\sigma}, the
 #' shape passing straight through as the second index of that table.
 #'
-#' @param distrib A \code{SkewNormal1Distrib} object.
+#' @param distrib A `SkewNormal1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
+#' @param theta A list containing `mu`, `sigma` and `alpha`.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{sn_cdf_std_derivs}}
+#' @seealso [sn_cdf_std_derivs()]
 #' @keywords internal
 sn_cdf_deriv_k <- function(distrib, q, theta, order) {
   params <- distrib@params
@@ -186,14 +186,14 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' first order and never has to be differentiated again. The location and the
 #' scale then enter only through \eqn{z}, by the same chain rule the other
 #' location-scale families use.
-#' @param distrib A \code{SkewNormal1Distrib} object.
+#' @param distrib A `SkewNormal1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{mu}, \code{sigma} and \code{alpha}.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param theta A list containing `mu`, `sigma` and `alpha`.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{skewnormal1_distrib}}
+#' @seealso [skewnormal1_distrib()]
 #' @keywords internal
 local({
   make <- function(o) {

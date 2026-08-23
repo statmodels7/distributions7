@@ -21,8 +21,8 @@ A named list of third-derivative component vectors.
 \description{
 Closed-form observed third-order derivatives of the Student's t log-density. The
 expected third derivatives have no closed form, so \code{expected = TRUE} falls
-back to the numerical \code{\link{expectation}} of the observed derivatives.
+back to the numerical \code{\link[=expectation]{expectation()}} of the observed derivatives.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

@@ -20,9 +20,9 @@ A numeric vector of quantiles.
 \description{
 Computes the quantile function for the Beta distribution as the inverse of the CDF,
 \eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no elementary closed form; it
-is obtained numerically (via \code{\link[stats]{qbeta}}) on the mean/precision
+is obtained numerically (via \code{\link[stats:Beta]{stats::qbeta()}}) on the mean/precision
 reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}.
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

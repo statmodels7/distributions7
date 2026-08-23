@@ -19,5 +19,5 @@ A numeric vector of density values.
 \deqn{f(y; \mu) = \dfrac{1}{\mu} e^{-y/\mu}, \qquad y > 0}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

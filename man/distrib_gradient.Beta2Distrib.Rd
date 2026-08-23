@@ -26,5 +26,5 @@ The data enter only through \eqn{\log y} and \eqn{\log(1-y)}, which is what
 makes every higher derivative free of them.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

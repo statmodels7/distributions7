@@ -17,25 +17,25 @@ numerical_hessian(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 (optimal for second differences).}
 }
 \value{
-A named list of Hessian component vectors, in \code{\link{hess_names}} order
+A named list of Hessian component vectors, in \code{\link[=hess_names]{hess_names()}} order
 (diagonal elements first, then the upper-triangular mixed derivatives).
 }
 \description{
 Computes the observed Hessian of the log-density with respect to the parameters
 by central finite differences of \code{distrib_pdf(..., log = TRUE)}. This powers
-the default \code{\link{distrib_hessian}} method for distributions that do not
+the default \code{\link[=distrib_hessian]{distrib_hessian()}} method for distributions that do not
 implement an analytical Hessian.
 }
 \details{
 Diagonal components use the three-point stencil
 \eqn{(\ell(\theta+h) - 2\ell(\theta) + \ell(\theta-h))/h^2}; mixed components use
 the four-point cross stencil. Steps are scaled and clamped as in
-\code{\link{numerical_gradient}}. Accuracy is roughly \code{sqrt(eps)}.
+\code{\link[=numerical_gradient]{numerical_gradient()}}. Accuracy is roughly \code{sqrt(eps)}.
 }
 \examples{
 numerical_hessian(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{numerical_gradient}}, \code{\link{distrib_hessian}}
+\code{\link[=numerical_gradient]{numerical_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}
 }

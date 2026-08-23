@@ -22,9 +22,9 @@ A named list of component vectors.
 }
 \description{
 Assembles the components of a derivative of the given order, named as
-\code{\link{deriv_names}} names them.
+\code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }
 \keyword{internal}

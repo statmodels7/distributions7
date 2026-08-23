@@ -20,5 +20,5 @@ A numeric vector of density values.
 with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta)}.
 }
 \seealso{
-\code{\link{truncated}}
+\code{\link[=truncated]{truncated()}}
 }

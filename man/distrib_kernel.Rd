@@ -13,7 +13,7 @@ distrib_kernel(distrib, param)
 derivatives are taken with respect to.}
 }
 \value{
-A list of three functions of \code{(y, theta, eta)}:
+A list of three functions of \verb{(y, theta, eta)}:
 \code{logdens}, \code{score} and \code{curvature}.
 }
 \description{
@@ -40,7 +40,7 @@ The Jacobian of the parametrization is diagonal, so with
   \frac{\partial^2 \ell}{\partial \eta_p^2}
     = \ell_{pp}\,h'(\eta_p)^2 + \ell_p\,h''(\eta_p),}
 
-which is what \code{\link{to_link_scale}} computes for those two
+which is what \code{\link[=to_link_scale]{to_link_scale()}} computes for those two
 components and nothing else.
 
 The bargain is that the caller takes on what the generic was doing.
@@ -48,7 +48,7 @@ The bargain is that the caller takes on what the generic was doing.
 unnamed and of a length the family accepts against \code{y}; nothing is
 checked. The entry for \code{param} is replaced, so its value on the way
 in is immaterial. The inverse link is clamped strictly inside its bounds
-exactly as \code{\link[linkfunctions7]{linkinv}} does, because that is a
+exactly as \code{\link[linkfunctions7:linkinv]{linkfunctions7::linkinv()}} does, because that is a
 correctness property and not an optimization.
 }
 \examples{
@@ -62,5 +62,5 @@ distrib_gradient(d, 0.7, list(mu = 0, sigma = 1.4),
 
 }
 \seealso{
-\code{\link{to_link_scale}}, \code{\link{link_scale_derivatives}}
+\code{\link[=to_link_scale]{to_link_scale()}}, \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}
 }

@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Generates random numbers from the Binomial distribution.
 }
 \seealso{
-\code{\link{binomial_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}
 }

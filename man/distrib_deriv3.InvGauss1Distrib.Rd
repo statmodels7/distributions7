@@ -22,5 +22,5 @@ A named list of third-derivative component vectors.
 Closed-form third-order derivatives of the Inverse-Gaussian log-density (observed, or expected when \code{expected = TRUE}).
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

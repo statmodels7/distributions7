@@ -16,7 +16,7 @@ is given.}
 \item{omega}{A \pkg{parameters7} structure for the precision.}
 }
 \value{
-An object of class \code{\link{MvGaussianDistrib}}.
+An object of class \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}}.
 }
 \description{
 The gaussian distribution on \eqn{\mathbb{R}^p}, with the mean a vector of
@@ -28,7 +28,7 @@ Exactly one of \code{sigma} and \code{omega} may be given, and
 the name of the argument decides which side of the model the matrix parameter
 parametrizes: the covariance in the first case, the precision in the second.
 One constructor returns one of two behaviors, in the manner of
-\code{\link{truncated}}, which chooses between its continuous and discrete
+\code{\link[=truncated]{truncated()}}, which chooses between its continuous and discrete
 classes from the arguments it is handed.
 
 The precision form is the cheaper one and is preferable where the
@@ -54,7 +54,7 @@ practical consequence is that the parameter scale and the link scale
 coincide here, so \code{scale = "link"} changes nothing.
 
 \strong{Reading a fit.} The free values are coordinates, not quantities
-anybody reads. \code{\link{mv_summary}} carries the fit's variance matrix
+anybody reads. \code{\link[=mv_summary]{mv_summary()}} carries the fit's variance matrix
 onto the standard deviations and correlations by the delta method, and
 \code{print()} shows them; a precision parametrization also reports the
 conditional variances and the partial correlations, which are what it
@@ -106,6 +106,6 @@ mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 
 }
 \seealso{
-\code{\link{gaussian1_distrib}}, \code{\link{fit_distrib}},
-\code{\link[parameters7]{log_cholesky}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=fit_distrib]{fit_distrib()}},
+\code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}}
 }

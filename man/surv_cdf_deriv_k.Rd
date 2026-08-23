@@ -35,6 +35,6 @@ evaluated as \code{exp(L)} rather than as \code{1 - F}, which keeps the far
 tail from cancelling.
 }
 \seealso{
-\code{\link{bell_f_ratio}}
+\code{\link[=bell_f_ratio]{bell_f_ratio()}}
 }
 \keyword{internal}

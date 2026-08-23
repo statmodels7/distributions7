@@ -19,6 +19,6 @@ A numeric vector.
 The parent's, unchanged.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

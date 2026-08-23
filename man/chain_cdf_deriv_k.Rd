@@ -29,9 +29,9 @@ new ones, for a map given as keyed partial tables.
 \details{
 The parent's tables are taken on the natural scale, \code{lower.tail = TRUE}
 and \code{log = FALSE}, because the chain rule applies to \eqn{F} itself; the
-tail and the logarithm are put on afterwards by \code{\link{cdf_scale_k}}.
+tail and the logarithm are put on afterwards by \code{\link[=cdf_scale_k]{cdf_scale_k()}}.
 }
 \seealso{
-\code{\link{chain_assemble}}, \code{\link{chain_cdf_deriv}}
+\code{\link[=chain_assemble]{chain_assemble()}}, \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}
 }
 \keyword{internal}

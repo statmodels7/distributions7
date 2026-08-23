@@ -35,6 +35,6 @@ distribution already provides. This covers the censored-regression workhorses
 -- Gaussian, logistic, Cauchy, Laplace.
 }
 \seealso{
-\code{\link{loc_scale_grad_cdf}}, \code{\link{loc_scale_hess_cdf}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}}, \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}
 }
 \keyword{internal}

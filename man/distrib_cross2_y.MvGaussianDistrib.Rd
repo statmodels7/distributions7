@@ -6,7 +6,7 @@
 \alias{distrib_grad_y_hess.MvGaussianDistrib}
 \title{Multivariate Gaussian Higher Mixed Response Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

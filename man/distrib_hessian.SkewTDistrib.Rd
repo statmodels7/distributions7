@@ -22,7 +22,7 @@ Second derivatives of the log-density. The block in
 \eqn{(\mu, \sigma, \alpha)} is closed form; every component involving
 \eqn{\nu} comes from one finite-difference stencil applied to the
 log-density, for the reason given in
-\code{\link{distrib_gradient.SkewTDistrib}}.
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
 }
 \details{
 With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'},
@@ -46,5 +46,5 @@ and the four-point mixed one otherwise; the mixed stencil differences two
 difference of a difference.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

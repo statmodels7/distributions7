@@ -13,7 +13,7 @@ A component of length \eqn{k > 1} draws \eqn{k} sets of stems.}
 
 \item{legend}{Whether to draw the key when several settings are plotted.}
 
-\item{...}{Additional arguments passed to the base \code{\link{plot}} function.
+\item{...}{Additional arguments passed to the base \code{\link[=plot]{plot()}} function.
 \code{col} and \code{lty} given here win and are recycled over the settings.}
 }
 \value{
@@ -24,7 +24,7 @@ Visualizes the Probability Mass Function (PMF) of a discrete distribution object
 }
 \details{
 A parameter given as a vector asks for one setting per element, exactly as
-in \code{\link{plot.continuous_distrib}}. Several settings are drawn as
+in \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}. Several settings are drawn as
 several sets of stems, shifted sideways so that one does not stand in front
 of another, and separated by color and line type together.
 }

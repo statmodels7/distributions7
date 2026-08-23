@@ -26,7 +26,7 @@ numerical_cdf_deriv(
 
 \item{which}{Character vector naming the components to differentiate, or
 \code{NULL} (default) for all of them: parameter names at first order and
-\code{\link{hess_names}} components at second. Used by families that have
+\code{\link[=hess_names]{hess_names()}} components at second. Used by families that have
 a closed form for some components and not others, so that only the
 remaining ones cost cdf evaluations.}
 }
@@ -34,9 +34,9 @@ remaining ones cost cdf evaluations.}
 A named list of derivative components of \eqn{F}, not of its logarithm.
 }
 \description{
-Central finite differences of \code{\link{distrib_cdf}} with respect to each
-parameter. These power the default \code{\link{distrib_grad_cdf}} and
-\code{\link{distrib_hess_cdf}} methods for continuous distributions that do
+Central finite differences of \code{\link[=distrib_cdf]{distrib_cdf()}} with respect to each
+parameter. These power the default \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} methods for continuous distributions that do
 not supply a closed form.
 }
 \examples{
@@ -44,5 +44,5 @@ numerical_cdf_deriv(gaussian1_distrib(), 1, list(mu = 0, sigma = 1), order = 1)
 
 }
 \seealso{
-\code{\link{distrib_grad_cdf}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}
 }

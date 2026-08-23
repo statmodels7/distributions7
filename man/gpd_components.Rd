@@ -20,7 +20,7 @@ is used.}
 }
 \value{
 A named list of component vectors, keyed as
-\code{\link{deriv_names}}.
+\code{\link[=deriv_names]{deriv_names()}}.
 }
 \description{
 The components of \eqn{\partial^{a+b}\ell/\partial\sigma^a\partial\xi^b} at
@@ -35,6 +35,6 @@ threshold is exposed so that a test can force either route where both are
 accurate and compare them.
 }
 \seealso{
-\code{\link{gpd_distrib}}, \code{\link{fdb2}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}, \code{\link[=fdb2]{fdb2()}}
 }
 \keyword{internal}

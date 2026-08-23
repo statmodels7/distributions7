@@ -23,15 +23,15 @@ is an exact zero.
 \details{
 When the family supplies \code{map_derivs}, the tables are its
 hand-written closed forms; the shipped second parametrizations all do,
-and the formulas live in \code{\link{reparam_map_derivs}}. Otherwise
+and the formulas live in \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Otherwise
 each needed partial comes from one finite-difference stencil of
-\code{\link[numericals7]{fd_derivative}} applied to the analytic map --
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to the analytic map --
 a single stencil per order, never a chain of differences, at the
 accuracy that construction carries (about 1e-8 at first order, fading
 with the order). Exact tables are therefore the recommendation for any
 family fitted in earnest.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

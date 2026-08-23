@@ -18,5 +18,5 @@ Closed form: \eqn{\partial \ell / \partial y = (\alpha R - z)/\sigma}, which
 is minus the derivative in \eqn{\mu}, as it must be for a location family.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

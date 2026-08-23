@@ -24,6 +24,6 @@ Only the first element of each parameter is taken: a fit estimates one
 \eqn{\theta} for the whole sample.
 }
 \seealso{
-\code{\link{fit_theta_from_eta}}, the inverse.
+\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the inverse.
 }
 \keyword{internal}

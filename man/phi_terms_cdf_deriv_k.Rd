@@ -31,6 +31,6 @@ one Faa di Bruno pass over \eqn{x}. Nothing is transcribed: both sums run on
 the package's own partition enumeration.
 }
 \seealso{
-\code{\link{bell_f_ratio}}
+\code{\link[=bell_f_ratio]{bell_f_ratio()}}
 }
 \keyword{internal}

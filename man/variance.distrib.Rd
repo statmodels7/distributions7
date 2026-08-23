@@ -8,12 +8,12 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{...}{Passed to \code{\link{moment}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}}.}
 }
 \value{
 A numeric vector.
 }
 \description{
-Computes the second central moment through \code{\link{moment}}, the mean being evaluated first and passed as the center.
+Computes the second central moment through \code{\link[=moment]{moment()}}, the mean being evaluated first and passed as the center.
 }
 \keyword{internal}

@@ -35,5 +35,5 @@ Closed-form second derivatives, with \eqn{R' = -R(t + R)}:
       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

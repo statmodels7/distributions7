@@ -32,13 +32,13 @@ NULL
 #' the size \eqn{r = \mu/\theta}.
 #'
 #' @param y A numeric vector of counts.
-#' @param theta A list containing \code{mu} and \code{theta}.
+#' @param theta A list containing `mu` and `theta`.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of component vectors, keyed as
-#'   \code{\link{deriv_names}}.
+#'   [deriv_names()].
 #'
-#' @seealso \code{\link{negbin1_distrib}}
+#' @seealso [negbin1_distrib()]
 #' @keywords internal
 negbin1_components <- function(y, theta, order) {
   mu <- theta[[1]]
@@ -117,21 +117,21 @@ negbin1_components <- function(y, theta, order) {
 #' @title NB1 Third and Fourth Derivatives
 #' @name distrib_deriv3.NegBin1Distrib
 #' @description
-#' Closed form at both orders, from \code{\link{negbin1_components}}. In the
+#' Closed form at both orders, from [negbin1_components()]. In the
 #' size \eqn{r = \mu/\theta} the log-likelihood is
 #' \eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite piece is
 #' \eqn{G(\mu/\theta)} and its mixed derivatives follow a recursion in the
 #' powers of \eqn{r} and the order of \eqn{G}.
-#' @param distrib A \code{NegBin1Distrib} object.
+#' @param distrib A `NegBin1Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list containing \code{mu} and \code{theta}.
-#' @param expected Logical; if \code{TRUE}, the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx The approximation used when \code{expected} is \code{TRUE}.
-#' @param nsim Monte Carlo draws when \code{approx = "mc"}.
+#' @param theta A list containing `mu` and `theta`.
+#' @param expected Logical; if `TRUE`, the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx The approximation used when `expected` is `TRUE`.
+#' @param nsim Monte Carlo draws when `approx = "mc"`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{negbin1_distrib}}
+#' @seealso [negbin1_distrib()]
 S7::method(distrib_deriv3, NegBin1Distrib) <- function(distrib, y, theta,
                                                         expected = FALSE,
                                                         scale = c("parameter", "link"),

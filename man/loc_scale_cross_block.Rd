@@ -23,6 +23,6 @@ A list of two component vectors, unnamed.
 \eqn{z = (y-\mu)/\sigma}.
 }
 \seealso{
-\code{\link{distrib_cross_y}}
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}
 }
 \keyword{internal}

@@ -22,5 +22,5 @@ The regularized lower incomplete gamma function
 \eqn{P(\mu/2, q/2)}.
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

@@ -23,6 +23,6 @@ A numeric vector.
 The parent's density at the mapped parameters.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

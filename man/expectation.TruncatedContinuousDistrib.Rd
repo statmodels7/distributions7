@@ -18,8 +18,8 @@ A numeric scalar, the expectation of \code{f} under the distribution.
 \description{
 The inherited continuous method integrates the density over
 \eqn{[\ell, u]}, which is correct unless the parent carries point masses ---
-as it does when it is a \code{\link{zero_adjusted}()} continuous distribution.
+as it does when it is a \code{\link[=zero_adjusted]{zero_adjusted()}} continuous distribution.
 Those masses are added explicitly, exactly as in
-\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{the untruncated case}}.
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{the untruncated case()}}.
 }
 \keyword{internal}

@@ -28,5 +28,5 @@ Closed form. Every third derivative is free of the response, so the observed
 and the expected ones coincide and \code{expected} changes nothing.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

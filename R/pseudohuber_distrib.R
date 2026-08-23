@@ -4,32 +4,32 @@ NULL
 #' @title S7 Class for Pseudo-Huber Distribution
 #' @name PseudoHuberDistrib
 #'
-#' @description A subclass of \code{continuous_distrib} representing the Pseudo-Huber distribution,
+#' @description A subclass of `continuous_distrib` representing the Pseudo-Huber distribution,
 #' whose density is defined by the Pseudo-Huber loss kernel (a special case of the
 #' Generalized Hyperbolic distribution).
 #' @inheritParams distrib
-#' @return An object of class \code{PseudoHuberDistrib}.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @return An object of class `PseudoHuberDistrib`.
+#' @seealso [pseudohuber_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.PseudoHuberDistrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}},
-#'   \code{\link[=kurtosis]{kurtosis()}},
-#'   \code{\link[=mean.distrib]{mean()}},
-#'   \code{\link[=skewness]{skewness()}},
-#'   \code{\link[=variance]{variance()}}
+#'   [`distrib_cdf()`][distrib_cdf.PseudoHuberDistrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.PseudoHuberDistrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.PseudoHuberDistrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.PseudoHuberDistrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.PseudoHuberDistrib],
+#'   [`distrib_gradient()`][distrib_gradient.PseudoHuberDistrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.PseudoHuberDistrib],
+#'   [`distrib_hessian()`][distrib_hessian.PseudoHuberDistrib],
+#'   [`distrib_pdf()`][distrib_pdf.PseudoHuberDistrib],
+#'   [`distrib_quantile()`][distrib_quantile.PseudoHuberDistrib],
+#'   [`distrib_rng()`][distrib_rng.PseudoHuberDistrib],
+#'   [`kurtosis()`][kurtosis],
+#'   [`mean()`][mean.distrib],
+#'   [`skewness()`][skewness],
+#'   [`variance()`][variance]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -41,12 +41,12 @@ PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_di
 #' \deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu} K_1(\sqrt{\nu})} \exp\left( - \sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2} \right)}
 #' where \eqn{K_1} is the modified Bessel function of the second kind.
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
@@ -69,13 +69,13 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' by numerical integration of the density. The distribution is symmetric around
 #' \eqn{\mu}, so the upper tail is computed by reflection.
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   all_params <- expand_params(c(list(.q = q), theta))
   qv <- all_params$.q
@@ -114,13 +114,13 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower
 #' on the numerical CDF. Symmetry around \eqn{\mu} is exploited: \eqn{Q(1/2) = \mu} and
 #' \eqn{Q(p) = 2\mu - Q(1-p)} for \eqn{p > 1/2}.
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
@@ -168,11 +168,11 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' Generates random numbers from the Pseudo-Huber distribution via inverse transform
 #' sampling (numerical quantile function applied to uniform draws).
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param n Number of observations to generate.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
@@ -187,11 +187,11 @@ S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta) {
 #' \deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma} \left( \dfrac{r^2}{\sigma^2 D} - 1 \right)}
 #' \deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2} \left[ \dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})} \right]}
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A list containing the vectors of first derivatives.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_gradient, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pseudohuber_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
@@ -210,11 +210,11 @@ S7::method(distrib_gradient, PseudoHuberDistrib) <- function(distrib, y, theta, 
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \nu} = -\dfrac{r}{2\sigma^2 D^3}}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = -\dfrac{r^2}{2\sigma^3 D^3}}
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A list containing the vectors of second derivatives.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pseudohuber_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]])
 }
@@ -224,15 +224,15 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' @description
 #' Computes the expected Hessian of the Pseudo-Huber log-density.
 #' No closed form exists, so the non-zero components are evaluated by numerical
-#' integration of the observed Hessian against the density (via \code{\link{expectation}}).
+#' integration of the observed Hessian against the density (via [expectation()]).
 #' By symmetry \eqn{\mathbb{E}[r] = \mathbb{E}[r^3] = 0}, hence the \eqn{\mu\sigma} and
 #' \eqn{\mu\nu} components are exactly 0.
 #'
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A list containing the vectors of expected second derivatives.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   n <- length(y)
   out <- expected_derivative(distrib, y, theta, order = 2L,
@@ -246,20 +246,20 @@ S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y,
 #' @title The Pseudo-Huber Does Not Write Its Expected Information Out
 #' @name expected_hessian_exact.PseudoHuberDistrib
 #' @description
-#' The method above calls \code{\link{expected_derivative}} and then replaces
+#' The method above calls [expected_derivative()] and then replaces
 #' two components that vanish by symmetry, so the registration improves the
 #' approximation rather than replacing it.
 #' @details
 #' Measured at 100 observations it costs 10980 ms, where the families that
 #' write their expected information out answer in a median of 0.183 ms.
-#' Reported as exact, it made \code{\link{fit_distrib}} reject a legitimate
-#' \code{fisher_scoring(approx = )} here with a message that was untrue, and
+#' Reported as exact, it made [fit_distrib()] reject a legitimate
+#' `fisher_scoring(approx = )` here with a message that was untrue, and
 #' take a quadrature it believed was a formula when assembling the standard
 #' errors.
-#' @param x A \code{PseudoHuberDistrib} object.
+#' @param x A `PseudoHuberDistrib` object.
 #' @param ... Unused.
-#' @return \code{FALSE}.
-#' @seealso \code{\link{expected_hessian_exact}}
+#' @return `FALSE`.
+#' @seealso [expected_hessian_exact()]
 #' @keywords internal
 S7::method(expected_hessian_exact, PseudoHuberDistrib) <- function(x, ...) {
   FALSE
@@ -271,15 +271,15 @@ S7::method(expected_hessian_exact, PseudoHuberDistrib) <- function(x, ...) {
 #' Closed-form observed third-order derivatives of the Pseudo-Huber log-density.
 #' Bessel functions enter only through the pure-\eqn{\nu} component; the
 #' exponentially scaled forms are used so that large \eqn{\nu} does not overflow.
-#' The expected third derivatives have no closed form, so \code{expected = TRUE}
-#' is handled by the strategies in \code{\link{expected_derivative_methods}}.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' The expected third derivatives have no closed form, so `expected = TRUE`
+#' is handled by the strategies in [expected_derivative_methods()].
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
-#' @param expected Logical; if \code{TRUE}, returns the (approximated) expected derivatives.
-#' @param approx,nsim Passed to \code{\link{expected_derivative_methods}} when \code{expected = TRUE}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
+#' @param expected Logical; if `TRUE`, returns the (approximated) expected derivatives.
+#' @param approx,nsim Passed to [expected_derivative_methods()] when `expected = TRUE`.
 #' @return A named list of third-derivative component vectors.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 3L,
@@ -293,16 +293,16 @@ S7::method(distrib_deriv3, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' @name distrib_deriv4.PseudoHuberDistrib
 #' @description
 #' Closed-form observed fourth-order derivatives of the Pseudo-Huber log-density
-#' (see \code{\link{distrib_deriv3.PseudoHuberDistrib}} for the Bessel handling).
+#' (see [distrib_deriv3.PseudoHuberDistrib()] for the Bessel handling).
 #' The expected fourth derivatives have no closed form and are handled by the
-#' strategies in \code{\link{expected_derivative_methods}}.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' strategies in [expected_derivative_methods()].
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
-#' @param expected Logical; if \code{TRUE}, returns the (approximated) expected derivatives.
-#' @param approx,nsim Passed to \code{\link{expected_derivative_methods}} when \code{expected = TRUE}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
+#' @param expected Logical; if `TRUE`, returns the (approximated) expected derivatives.
+#' @param approx,nsim Passed to [expected_derivative_methods()] when `expected = TRUE`.
 #' @return A named list of fourth-derivative component vectors.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) {
     expected_derivative(distrib, y, theta, order = 4L,
@@ -319,11 +319,11 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' response. Let \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}:
 #' \eqn{\partial \ell / \partial y = -r/(\sigma^2 D)} and
 #' \eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A numeric vector.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
   r <- y - mu
@@ -335,11 +335,11 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' @title Pseudo-Huber Response Second Derivative
 #' @name distrib_hess_y.PseudoHuberDistrib
 #' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}, \eqn{D = \sqrt{\nu + ((y-\mu)/\sigma)^2}}.
-#' @param distrib A \code{PseudoHuberDistrib} object.
+#' @param distrib A `PseudoHuberDistrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.
+#' @param theta A list containing the parameters `mu`, `sigma` and `nu`.
 #' @return A numeric vector.
-#' @seealso \code{\link{pseudohuber_distrib}}
+#' @seealso [pseudohuber_distrib()]
 S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
   r <- y - mu
@@ -358,18 +358,18 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' case of the Generalized Hyperbolic distribution.
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
+#'   Defaults to [linkfunctions7::identity_link()].
 #' @param link_sigma A link function object for the scale parameter \eqn{\sigma}.
-#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   Defaults to [linkfunctions7::log_link()] to ensure positivity.
 #' @param link_nu A link function object for the shape parameter \eqn{\nu}.
-#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   Defaults to [linkfunctions7::log_link()] to ensure positivity.
 #'
 #' @details
 #' The probability density function is:
 #' \deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu} K_1(\sqrt{\nu})} \exp\left( - \sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2} \right)}
 #' where \eqn{K_1} is the modified Bessel function of the second kind.
 #'
-#' \strong{Moments:}
+#' **Moments:**
 #' \itemize{
 #'   \item Expected value: \eqn{\mathbb{E}(Y) = \mu}
 #'   \item Variance: \eqn{\mathbb{V}(Y) = \sigma^2 \sqrt{\nu}\, \dfrac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})}}
@@ -377,40 +377,40 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #'   \item Excess kurtosis: \eqn{3 \dfrac{K_3(\sqrt{\nu}) K_1(\sqrt{\nu})}{K_2(\sqrt{\nu})^2} - 3}
 #' }
 #'
-#' \strong{Score} (with \eqn{r = y-\mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
+#' **Score** (with \eqn{r = y-\mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
 #' \eqn{K_1'} the derivative of \eqn{K_1}):
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right)}
 #' \deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[\dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\,K_1(\sqrt{\nu})}\right]}
 #' The observed Hessian is available in closed form via
-#' \code{\link{distrib_hessian.PseudoHuberDistrib}}; the expected Hessian has no
+#' [distrib_hessian.PseudoHuberDistrib()]; the expected Hessian has no
 #' closed form and is obtained by numerical integration.
 #'
-#' \strong{Parameter Domains:}
+#' **Parameter Domains:**
 #' \itemize{
 #'   \item \eqn{\mu \in (-\infty, +\infty)}
 #'   \item \eqn{\sigma \in (0, +\infty)}
 #'   \item \eqn{\nu \in (0, +\infty)}
 #' }
 #'
-#' \strong{Note:} The CDF, quantile function and RNG have no closed form and rely on
+#' **Note:** The CDF, quantile function and RNG have no closed form and rely on
 #' numerical integration / root-finding, so they are slower than for the other
-#' distributions in the package. Response derivatives (\code{\link{distrib_grad_y}},
-#' \code{\link{distrib_hess_y}}) are available in closed form; third- and
+#' distributions in the package. Response derivatives ([distrib_grad_y()],
+#' [distrib_hess_y()]) are available in closed form; third- and
 #' fourth-order parameter derivatives use the numerical fallback.
 #'
 #' @seealso
 #' \itemize{
-#'   \item \code{\link{distrib_pdf.PseudoHuberDistrib}} for the density function.
-#'   \item \code{\link{distrib_cdf.PseudoHuberDistrib}} for the cumulative distribution function.
-#'   \item \code{\link{distrib_quantile.PseudoHuberDistrib}} for the quantile function.
-#'   \item \code{\link{distrib_rng.PseudoHuberDistrib}} for random number generation.
-#'   \item \code{\link{distrib_gradient.PseudoHuberDistrib}} for the analytical gradient.
-#'   \item \code{\link{distrib_hessian.PseudoHuberDistrib}} for the analytical observed Hessian.
-#'   \item \code{\link{distrib_expected_hessian.PseudoHuberDistrib}} for the expected Hessian.
+#'   \item [distrib_pdf.PseudoHuberDistrib()] for the density function.
+#'   \item [distrib_cdf.PseudoHuberDistrib()] for the cumulative distribution function.
+#'   \item [distrib_quantile.PseudoHuberDistrib()] for the quantile function.
+#'   \item [distrib_rng.PseudoHuberDistrib()] for random number generation.
+#'   \item [distrib_gradient.PseudoHuberDistrib()] for the analytical gradient.
+#'   \item [distrib_hessian.PseudoHuberDistrib()] for the analytical observed Hessian.
+#'   \item [distrib_expected_hessian.PseudoHuberDistrib()] for the expected Hessian.
 #' }
 #'
-#' @return An S7 object of class \code{PseudoHuberDistrib} (inheriting from \code{continuous_distrib}) representing the Pseudo-Huber distribution.
+#' @return An S7 object of class `PseudoHuberDistrib` (inheriting from `continuous_distrib`) representing the Pseudo-Huber distribution.
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats runif uniroot

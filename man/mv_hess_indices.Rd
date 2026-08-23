@@ -7,17 +7,17 @@
 mv_hess_indices(distrib)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 }
 \value{
 A list of integer vectors of length 2.
 }
 \description{
 The positions in \code{distrib@params} of each unordered pair, in the order
-\code{\link{hess_names}} uses.
+\code{\link[=hess_names]{hess_names()}} uses.
 }
 \details{
-\code{\link{hess_pairs}} returns pairs of parameter NAMES, which is what a
+\code{\link[=hess_pairs]{hess_pairs()}} returns pairs of parameter NAMES, which is what a
 univariate method wants when it looks a component up. A multivariate method
 needs the positions instead, to tell a mean component from a matrix one, so
 the names are matched back rather than the enumeration being written a

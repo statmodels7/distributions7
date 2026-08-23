@@ -8,13 +8,13 @@ gumbel_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{identity_link}}.}
+\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale \eqn{\sigma}. Defaults
-to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
-An S7 object of class \code{\link{GumbelDistrib}} (inheriting from
+An S7 object of class \code{\link[=GumbelDistrib]{GumbelDistrib()}} (inheriting from
 \code{continuous_distrib}).
 }
 \description{
@@ -52,7 +52,7 @@ fitted.
         = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}}
 
 \strong{Expected Hessian:} see
-\code{\link{distrib_expected_hessian.GumbelDistrib}}. Note that
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}}. Note that
 \eqn{E[\partial^2 \ell / \partial \mu \, \partial \sigma}] does not vanish:
 the location and the scale are \strong{not} orthogonal here, unlike in a
 symmetric location-scale family, because the density is skewed.
@@ -62,13 +62,13 @@ symmetric location-scale family, because the density is skewed.
 and excess kurtosis \eqn{12/5}, the last two free of both parameters.
 
 \strong{Relation to the Weibull.} If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is
-Weibull, so \code{\link{weibull1_distrib}} is this family on the log scale and
+Weibull, so \code{\link[=weibull1_distrib]{weibull1_distrib()}} is this family on the log scale and
 reversed; the two share the expectations that produce their information
 matrices.
 
 \strong{Minima.} The distribution of minima is the reflection: fit this
-family to \eqn{-Y}, or use \code{\link{transformation}} with
-\code{\link{affine_transform}(scale = -1)}.
+family to \eqn{-Y}, or use \code{\link[=transformation]{transformation()}} with
+\code{\link[=affine_transform]{affine_transform(scale = -1)}}.
 
 \strong{Higher orders.} Third and fourth derivatives are closed form,
 observed and expected: with \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
@@ -101,5 +101,5 @@ Coles, S. (2001). \emph{An Introduction to Statistical Modeling of Extreme
 Values}, chapter 3. Springer.
 }
 \seealso{
-\code{\link{weibull1_distrib}}, \code{\link{gpd_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}, \code{\link[=gpd_distrib]{gpd_distrib()}}
 }

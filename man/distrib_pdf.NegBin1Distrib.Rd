@@ -20,5 +20,5 @@ The negative binomial mass at size \eqn{\mu/\theta} and success probability
 \eqn{1/(1+\theta)}, which is what makes the variance \eqn{\mu(1+\theta)}.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

@@ -18,5 +18,5 @@ Generates random numbers from the Laplace distribution by inverse-transform
 sampling.
 }
 \seealso{
-\code{\link{laplace_distrib}}
+\code{\link[=laplace_distrib]{laplace_distrib()}}
 }

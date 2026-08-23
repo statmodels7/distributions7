@@ -23,11 +23,11 @@ recycles a scalar \code{y} up to \eqn{n} when \code{theta} is vectorized.
 \details{
 An empty \code{y} is allowed through untouched, giving empty derivatives, the
 way \code{dnorm(numeric(0))} gives \code{numeric(0)} and the way
-\code{\link{distrib_pdf}} already behaves. Without the special case the
+\code{\link[=distrib_pdf]{distrib_pdf()}} already behaves. Without the special case the
 recycling check below rejects it with the nonsensical message
 \code{"'y' must have length 1 or 1, not 0"}.
 }
 \seealso{
-\code{\link{align_theta}}, \code{\link{check_params_dim}}
+\code{\link[=align_theta]{align_theta()}}, \code{\link[=check_params_dim]{check_params_dim()}}
 }
 \keyword{internal}

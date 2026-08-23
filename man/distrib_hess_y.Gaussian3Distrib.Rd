@@ -19,5 +19,5 @@ A numeric vector.
 \eqn{\partial^2\ell/\partial y^2 = -\tau}, free of the response.
 }
 \seealso{
-\code{\link{gaussian3_distrib}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
 }

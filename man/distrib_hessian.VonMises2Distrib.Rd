@@ -26,5 +26,5 @@ with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)} and
 \eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)}.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }

@@ -13,7 +13,7 @@
 \item{expected}{Logical; if \code{TRUE}, the expectation is approximated
 numerically.}
 
-\item{approx}{Strategy for the expectation; see \code{\link{distrib_deriv3}}.}
+\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv3]{distrib_deriv3()}}.}
 
 \item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
 }
@@ -29,5 +29,5 @@ derivatives have no closed form (the same integrals as the expected
 information) and come from \code{expected_derivative()}.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

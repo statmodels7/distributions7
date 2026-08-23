@@ -8,10 +8,10 @@ logistic_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
 \item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{LogisticDistrib} (inheriting from \code{continuous_distrib}) representing the Logistic distribution.
@@ -41,7 +41,7 @@ The Logistic distribution is a location-scale distribution with location
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{3\sigma^2}, \quad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}, \quad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
-The observed Hessian is available via \code{\link{distrib_hessian.LogisticDistrib}}.
+The observed Hessian is available via \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}}.
 
 \strong{Moments:} mean \eqn{\mu}, variance \eqn{\pi^2\sigma^2/3}, skewness 0,
 excess kurtosis \eqn{6/5}.
@@ -52,11 +52,11 @@ excess kurtosis \eqn{6/5}.
 \item \eqn{\sigma \in (0, +\infty)}
 }
 
-Response derivatives (\code{\link{distrib_grad_y}}, \code{\link{distrib_hess_y}})
+Response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}})
 and observed third- and fourth-order parameter derivatives
-(\code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}) are available in
+(\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}) are available in
 closed form. The corresponding expected derivatives are not: they are obtained
-through \code{\link{expected_derivative_methods}}. Seven of the nine components are
+through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. Seven of the nine components are
 nonetheless known exactly, and the location-scale structure of the family forbids
 any of them from depending on \eqn{\mu}:
 \deqn{\mathbb{E}\left[\dfrac{\partial^3 \ell}{\partial \mu^2 \partial \sigma}\right] = \dfrac{1}{2\sigma^3}, \qquad
@@ -75,13 +75,13 @@ distrib_gradient(d, c(-1, 0, 1), theta)
 }
 \seealso{
 \itemize{
-\item \code{\link{distrib_pdf.LogisticDistrib}} for the probability density function.
-\item \code{\link{distrib_cdf.LogisticDistrib}} for the cumulative distribution function.
-\item \code{\link{distrib_quantile.LogisticDistrib}} for the quantile function.
-\item \code{\link{distrib_rng.LogisticDistrib}} for random number generation.
-\item \code{\link{distrib_gradient.LogisticDistrib}} for the analytical gradient.
-\item \code{\link{distrib_hessian.LogisticDistrib}} for the analytical observed Hessian.
-\item \code{\link{distrib_expected_hessian.LogisticDistrib}} for the analytical expected Hessian.
-\item \code{\link{distrib_deriv3.LogisticDistrib}} and \code{\link{distrib_deriv4.LogisticDistrib}} for the observed higher-order derivatives.
+\item \code{\link[=distrib_pdf.LogisticDistrib]{distrib_pdf.LogisticDistrib()}} for the probability density function.
+\item \code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf.LogisticDistrib()}} for the cumulative distribution function.
+\item \code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile.LogisticDistrib()}} for the quantile function.
+\item \code{\link[=distrib_rng.LogisticDistrib]{distrib_rng.LogisticDistrib()}} for random number generation.
+\item \code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient.LogisticDistrib()}} for the analytical gradient.
+\item \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the analytical observed Hessian.
+\item \code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}} for the analytical expected Hessian.
+\item \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} and \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} for the observed higher-order derivatives.
 }
 }

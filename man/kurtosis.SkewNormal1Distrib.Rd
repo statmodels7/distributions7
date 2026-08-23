@@ -4,7 +4,7 @@
 \alias{kurtosis.SkewNormal1Distrib}
 \title{Kurtosis of the Skew Normal Distribution}
 \arguments{
-\item{x}{A \code{\link{SkewNormal1Distrib}}.}
+\item{x}{A \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}}.}
 
 \item{theta}{A named list of parameters.}
 

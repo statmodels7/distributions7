@@ -13,10 +13,10 @@ scale_only_cross2_method(at = 1L)
 A method body.
 }
 \description{
-\code{\link{distrib_cross2_y}} for a family with no location: the same
-identity as \code{\link{loc_scale_cross2_block}} with \eqn{z = y/\sigma}.
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for a family with no location: the same
+identity as \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} with \eqn{z = y/\sigma}.
 }
 \seealso{
-\code{\link{loc_scale_cross2_block}}
+\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}}
 }
 \keyword{internal}

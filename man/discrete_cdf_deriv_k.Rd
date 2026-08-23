@@ -19,22 +19,22 @@ discrete_cdf_deriv_k(distrib, q, theta, order)
 A named list of derivative components of \eqn{F}.
 }
 \description{
-The general form of \code{\link{discrete_cdf_deriv}}: evaluates
+The general form of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}: evaluates
 \eqn{d^I F(q) = \sum_{y \le q} f(y)\,(d^I f/f)(y)} for any order up to
 four.
 }
 \details{
 The quantity summed is the complete Bell polynomial in the log-derivatives,
-which \code{\link{bell_f_ratio}} computes, so the order enters only through
+which \code{\link[=bell_f_ratio]{bell_f_ratio()}} computes, so the order enters only through
 how many of the family's derivative tables are fetched. At orders one and
 two this reproduces the written-out \eqn{f g} and
-\eqn{f(h + g_i g_j)} of \code{\link{discrete_cdf_deriv}}.
+\eqn{f(h + g_i g_j)} of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}.
 
 As there, a test must not check this against the partial-expectation sum,
 which is the same sum twice; finite differences of the cdf are the
 independent reference.
 }
 \seealso{
-\code{\link{discrete_cdf_deriv}}, \code{\link{bell_f_ratio}}
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}, \code{\link[=bell_f_ratio]{bell_f_ratio()}}
 }
 \keyword{internal}

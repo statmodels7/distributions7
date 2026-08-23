@@ -13,7 +13,7 @@ declares_atoms(parent)
 A single logical.
 }
 \description{
-Answers whether a distribution registers \code{\link{distrib_atoms}} for
+Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for
 itself rather than inheriting the base class's empty answer.
 }
 \details{
@@ -30,6 +30,6 @@ object instead -- answering \code{TRUE} for every family, which is exactly
 what it did before this helper existed.
 }
 \seealso{
-\code{\link{folded}}, \code{\link{distrib_atoms}}
+\code{\link[=folded]{folded()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
 }
 \keyword{internal}

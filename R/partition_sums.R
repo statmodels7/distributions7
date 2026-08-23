@@ -21,7 +21,7 @@ NULL
 #'
 #' @return A list of partitions, each a list of character-vector blocks.
 #'
-#' @seealso \code{\link[numericals7]{set_partitions}}
+#' @seealso [numericals7::set_partitions()]
 #' @keywords internal
 index_partitions <- function(idx) {
   lapply(numericals7::set_partitions(length(idx)), function(p) lapply(p, function(b) idx[b]))
@@ -30,7 +30,7 @@ index_partitions <- function(idx) {
 #' Canonical Component Name of a Block
 #'
 #' @description
-#' Names a block of parameters the way \code{\link{deriv_names}} does: in the
+#' Names a block of parameters the way [deriv_names()] does: in the
 #' order the distribution declares them, joined by an underscore.
 #'
 #' @param block A character vector of parameter names.
@@ -60,7 +60,7 @@ canon_key <- function(block, params) {
 #'
 #' @return A numeric vector.
 #'
-#' @seealso \code{\link{log_deriv}}, the companion identity.
+#' @seealso [log_deriv()], the companion identity.
 #' @keywords internal
 bell_f_ratio <- function(idx, ell) {
   total <- 0
@@ -80,7 +80,7 @@ bell_f_ratio <- function(idx, ell) {
 #'
 #' @details
 #' The moment-to-cumulant relation. What makes it the right tool here is that
-#' only the \strong{ratios} \eqn{d^B L / L} are needed, never \eqn{L}'s own
+#' only the **ratios** \eqn{d^B L / L} are needed, never \eqn{L}'s own
 #' derivatives -- and the ratios are exactly what each wrapper can supply
 #' cheaply, a truncated expectation for truncation and an affine expression for
 #' the zero wrappers.
@@ -90,7 +90,7 @@ bell_f_ratio <- function(idx, ell) {
 #'
 #' @return A numeric vector.
 #'
-#' @seealso \code{\link{bell_f_ratio}}, the companion identity.
+#' @seealso [bell_f_ratio()], the companion identity.
 #' @keywords internal
 log_deriv <- function(idx, ratio) {
   total <- 0
@@ -106,7 +106,7 @@ log_deriv <- function(idx, ratio) {
 #' Look Up the Parent's Derivative Components by Block
 #'
 #' @description
-#' Fetches the parent's derivatives up to \code{max_order} and returns a function
+#' Fetches the parent's derivatives up to `max_order` and returns a function
 #' giving the component belonging to any block.
 #'
 #' @details
@@ -122,7 +122,7 @@ log_deriv <- function(idx, ratio) {
 #'
 #' @return A function of one block, returning that component's vector.
 #'
-#' @seealso \code{\link{canon_key}}
+#' @seealso [canon_key()]
 #' @keywords internal
 parent_ell <- function(parent, y, theta, max_order, params) {
   d <- vector("list", max_order)

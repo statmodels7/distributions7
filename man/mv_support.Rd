@@ -7,7 +7,7 @@
 mv_support(distrib, theta, ...)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list of parameters. Families whose support does not
 depend on them ignore it.}
@@ -41,7 +41,7 @@ is the weak compositions of \eqn{n} into \eqn{p} parts,
   \textstyle\sum_{j=1}^{p} y_j = n\Bigr\},
   \qquad \lvert\mathcal{S}\rvert = \binom{n + p - 1}{p - 1},}
 
-enumerated by \code{\link[numericals7]{compositions}}. Every expectation is
+enumerated by \code{\link[numericals7:compositions]{numericals7::compositions()}}. Every expectation is
 then the finite sum \eqn{\sum_{y \in \mathcal{S}} g(y) f(y; \theta)}.
 }
 \examples{
@@ -50,5 +50,5 @@ nrow(mv_support(d, list(probs_alr1 = 0, probs_alr2 = 0)))
 
 }
 \seealso{
-\code{\link{multinomial_distrib}}, \code{\link[numericals7]{compositions}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}, \code{\link[numericals7:compositions]{numericals7::compositions()}}
 }

@@ -18,16 +18,16 @@ A single logical.
 }
 \description{
 A generic so that a family whose registered
-\code{\link{distrib_expected_hessian}} method is not what its owning class
-suggests can say so; \code{\link{has_exact_expected_hessian}} asks it and
-\code{\link{expected_hessian_exact.distrib}} is the default.
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} method is not what its owning class
+suggests can say so; \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks it and
+\code{\link[=expected_hessian_exact.distrib]{expected_hessian_exact.distrib()}} is the default.
 
-The question \code{\link{has_exact_expected_hessian}} asks, as a generic, so
+The question \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks, as a generic, so
 that a family whose registered method is not what its owner suggests can say
 so.
 }
 \details{
-The default reads the class the \code{\link{distrib_expected_hessian}}
+The default reads the class the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
 method is registered on: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
 out.
@@ -40,7 +40,7 @@ families answer in a median of 0.183 ms:
 \code{skewnormal2_distrib()} costs 5220 ms -- more than the
 \code{skewnormal1_distrib()} it chains onto, which costs 2230 -- and
 \code{pseudohuber_distrib()} costs 10980 ms. Both were reported as exact.
-The consequences were real rather than cosmetic: \code{\link{fit_distrib}}
+The consequences were real rather than cosmetic: \code{\link[=fit_distrib]{fit_distrib()}}
 rejected a legitimate \code{fisher_scoring(approx = )} on those two with a
 message stating that the family "computes its expected information in
 closed form", which is untrue, and its standard-error branch entered a
@@ -54,10 +54,10 @@ distributions7:::expected_hessian_exact(gaussian1_distrib())
 
 }
 \seealso{
-\code{\link{has_exact_expected_hessian}},
-\code{\link{distrib_dexpected_hessian}}
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}},
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
 
-\code{\link{has_exact_expected_hessian}},
-\code{\link{distrib_dexpected_hessian}}
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}},
+\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
 }
 \keyword{internal}

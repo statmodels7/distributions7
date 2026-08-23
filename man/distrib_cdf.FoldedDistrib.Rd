@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{P(|Y| \le q) = F(q) - F(-q)}
 }
 \seealso{
-\code{\link{folded}}
+\code{\link[=folded]{folded()}}
 }

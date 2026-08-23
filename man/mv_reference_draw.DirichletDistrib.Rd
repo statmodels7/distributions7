@@ -23,6 +23,6 @@ against. The base class's gaussian proposal lives in \eqn{\mathbb{R}^p} and
 would place no mass at all on the simplex.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }
 \keyword{internal}

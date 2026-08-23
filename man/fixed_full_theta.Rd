@@ -27,6 +27,6 @@ the wrapper is as vectorized in \code{theta} as its parent -- while the
 fixed values are scalars by construction.
 }
 \seealso{
-\code{\link{fixed}}
+\code{\link[=fixed]{fixed()}}
 }
 \keyword{internal}

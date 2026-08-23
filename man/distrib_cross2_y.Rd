@@ -19,7 +19,7 @@ parameters. Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -32,7 +32,7 @@ Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, one
 component per parameter, each a vector along \code{y}.
 }
 \details{
-\code{\link{distrib_hess_y}} says how curved the log-density is in the
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} says how curved the log-density is in the
 response; this says how that curvature moves with each parameter. It
 completes the surface a marginal likelihood needs: where a penalty is
 \eqn{-\log f(D\beta;\theta)}, its Hessian in the coefficients is
@@ -42,11 +42,11 @@ completes the surface a marginal likelihood needs: where a penalty is
 On the link scale the component for \eqn{\eta_i} is the parameter-scale
 component multiplied by \eqn{h_i'(\eta_i)}: the response derivatives are
 untouched by a reparametrization of \eqn{\theta}, so only the first-order
-diagonal chain rule enters, exactly as for \code{\link{distrib_cross_y}}.
+diagonal chain rule enters, exactly as for \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
 
 Distributions with a closed form provide it directly; the others fall back
-to one central difference of \code{\link{distrib_hess_y}} in each parameter
-(see \code{\link{numerical_cross2_y}}). The reference is the analytic
+to one central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter
+(see \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}). The reference is the analytic
 response Hessian, so a family with one pays for exactly one difference.
 }
 \examples{
@@ -55,5 +55,5 @@ distrib_cross2_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 
 }
 \seealso{
-\code{\link{distrib_hess_y}}, \code{\link{distrib_cross_y}}
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_cross_y]{distrib_cross_y()}}
 }

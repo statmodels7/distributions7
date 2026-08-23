@@ -17,5 +17,5 @@ A numeric vector of zeros.
 Closed-form \eqn{\partial^2 \ell / \partial y^2 = 0} (almost everywhere).
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

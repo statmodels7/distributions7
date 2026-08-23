@@ -10,7 +10,7 @@ skewness(x, ...)
 \item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
 
 \item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link{moment}}. For numeric vectors: \code{na.rm}.}
+\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
 }
 \value{
 A numeric vector.
@@ -21,7 +21,7 @@ Computes the skewness (third standardized moment):
 \deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right].}
 
 For \code{distrib} objects it is
-evaluated numerically via \code{\link{moment}}; for numeric vectors the sample
+evaluated numerically via \code{\link[=moment]{moment()}}; for numeric vectors the sample
 skewness (population denominator) is returned.
 }
 \examples{
@@ -30,5 +30,5 @@ skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
 
 }
 \seealso{
-\code{\link{expectation}}, \code{\link{moment}}, \code{\link{variance}}, \code{\link{std_dev}}, \code{\link{kurtosis}}
+\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=kurtosis]{kurtosis()}}
 }

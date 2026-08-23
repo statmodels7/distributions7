@@ -7,25 +7,25 @@
 has_mv_support(x)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{\link{multivariate_distrib}}.}
+\item{x}{An object inheriting from class \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 }
 \value{
 A single logical.
 }
 \description{
-\code{TRUE} when the family registers \code{\link{mv_support}}, which is
+\code{TRUE} when the family registers \code{\link[=mv_support]{mv_support()}}, which is
 what a discrete multivariate family does and a continuous one cannot.
 }
 \details{
 The question is asked of the method rather than of the class, because the
-multivariate branch sits beside \code{\link{continuous_distrib}} and
-\code{\link{discrete_distrib}} rather than under either, so there is no
+multivariate branch sits beside \code{\link[=continuous_distrib]{continuous_distrib()}} and
+\code{\link[=discrete_distrib]{discrete_distrib()}} rather than under either, so there is no
 class to test. The owning class of a method is read through
-\code{\link{is_class}}, never with \code{identical()}, which is object
+\code{\link[=is_class]{is_class()}}, never with \code{identical()}, which is object
 identity and fails whenever the package's code is re-evaluated rather than
 loaded.
 }
 \seealso{
-\code{\link{mv_support}}, \code{\link{check_distrib}}
+\code{\link[=mv_support]{mv_support()}}, \code{\link[=check_distrib]{check_distrib()}}
 }
 \keyword{internal}

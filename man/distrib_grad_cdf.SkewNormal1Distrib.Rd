@@ -29,6 +29,6 @@ scale then enter only through \eqn{z}, by the same chain rule the other
 location-scale families use.
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }
 \keyword{internal}

@@ -18,8 +18,8 @@
 A numeric vector of quantiles.
 }
 \description{
-\code{\link[stats]{qnbinom}} at the same size and probability.
+\code{\link[stats:NegBinomial]{stats::qnbinom()}} at the same size and probability.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

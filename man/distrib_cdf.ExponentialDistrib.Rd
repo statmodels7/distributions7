@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{F(q; \mu) = 1 - e^{-q/\mu}}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

@@ -17,11 +17,11 @@ observed_deriv(distrib, y, theta, order)
 }
 \value{
 A named list of derivative component vectors, keyed as
-\code{\link{hess_names}} at order 2 and \code{\link{deriv_names}} above it.
+\code{\link[=hess_names]{hess_names()}} at order 2 and \code{\link[=deriv_names]{deriv_names()}} above it.
 }
 \description{
-Routes to \code{\link{distrib_gradient}}, \code{\link{distrib_hessian}},
-\code{\link{distrib_deriv3}} or \code{\link{distrib_deriv4}} according to
+Routes to \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}},
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} or \code{\link[=distrib_deriv4]{distrib_deriv4()}} according to
 \code{order}, so that code working at an order fixed only at run time does not
 have to branch.
 }

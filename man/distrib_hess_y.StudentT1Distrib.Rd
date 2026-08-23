@@ -17,5 +17,5 @@ A numeric vector.
 Closed-form \eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/(\nu\sigma^2 + r^2)^2}, \eqn{r = y - \mu}.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

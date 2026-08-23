@@ -21,13 +21,13 @@ fit_distrib(
 
 \item{start}{Optional named list of starting values \strong{on the parameter
 scale}. If \code{NULL} (default) they come from
-\code{\link{distrib_start}}, which lets a family compute them from the
+\code{\link[=distrib_start]{distrib_start()}}, which lets a family compute them from the
 data; families that do not say otherwise fall back to random draws, with
 restarts.}
 
 \item{method}{How to optimize. One argument, taking one of three things:
 \itemize{
-\item \code{\link{fisher_scoring}()}, the default --- Newton's method
+\item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default --- Newton's method
 with the \strong{expected} information in place of the Hessian, the
 object carrying how that information is to be obtained when the family
 has no closed form for it;
@@ -42,23 +42,23 @@ an optimizer the caller chose is never silently replaced.
 }
 The iteration limit and the stopping rule belong to the method and are
 set there: on an optimizer object through its own \code{maxit} and
-\code{criterion}, on \code{\link{fisher_scoring}()} through the same two
+\code{criterion}, on \code{\link[=fisher_scoring]{fisher_scoring()}} through the same two
 arguments, and otherwise left at the defaults of
-\code{\link[optimizers7]{crit_grad}} and of the optimizer. The objective
+\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} and of the optimizer. The objective
 handed to the optimizer is the \emph{mean} negative log-likelihood, so a
 tolerance on its gradient is a tolerance on the score \strong{per
 observation} whatever the sample size, and
-\code{\link[optimizers7]{crit_grad}} documents why its default sits where
+\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} documents why its default sits where
 it does.}
 
 \item{level}{Confidence level for the intervals. Defaults to 0.95.}
 
-\item{n_start}{How many starting values to ask \code{\link{distrib_start}}
+\item{n_start}{How many starting values to ask \code{\link[=distrib_start]{distrib_start()}}
 for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
 its own estimate returns one and ignores this.}
 
 \item{threads}{How many threads the fit may use, as
-\code{\link[numericals7]{n_threads}} constructs it. The default,
+\code{\link[numericals7:n_threads]{numericals7::n_threads()}} constructs it. The default,
 \code{n_threads(1)}, is sequential and takes exactly the sequential
 code path. The count reaches the family's compiled per-observation
 kernels as an argument; the result does not depend on it, bit for bit,
@@ -66,7 +66,7 @@ because every parallel region decomposes its work over the elements of
 its output and never splits a reduction.}
 }
 \value{
-An object of class \code{\link{distrib_fit}}; see its documentation for
+An object of class \code{\link[=distrib_fit]{distrib_fit()}}; see its documentation for
 the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
 methods are provided.
 }
@@ -82,7 +82,7 @@ parameter scale and reported with standard errors and confidence intervals.
 the constrained \eqn{\theta} removes the need for box constraints: a variance
 can never become negative, a probability never leaves \eqn{(0,1)}. The score and
 information on that scale are obtained exactly (not numerically) through the
-chain rule described in \code{\link{link_scale_derivatives}}.
+chain rule described in \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
 
 \strong{Standard errors.} The variance-covariance matrix on the link scale is
 the inverse of the information at the optimum. It is mapped to the parameter
@@ -113,6 +113,6 @@ fit_distrib(b, rbinom(50, 1, 0.9))
 
 }
 \seealso{
-\code{\link{link_scale_derivatives}}, \code{\link{check_distrib}},
-\code{\link[optimizers7]{minimize}}
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=check_distrib]{check_distrib()}},
+\code{\link[optimizers7:minimize]{optimizers7::minimize()}}
 }

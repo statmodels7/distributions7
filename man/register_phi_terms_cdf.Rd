@@ -9,8 +9,8 @@ register_phi_terms_cdf(cls, term_fn)
 \arguments{
 \item{cls}{The S7 class.}
 
-\item{term_fn}{A function of \code{(distrib, q, theta)} returning the term
-list \code{\link{phi_terms_cdf_deriv_k}} consumes.}
+\item{term_fn}{A function of \verb{(distrib, q, theta)} returning the term
+list \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} consumes.}
 }
 \value{
 Invisibly \code{NULL}; called for the registration.

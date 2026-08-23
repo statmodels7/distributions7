@@ -18,7 +18,7 @@ component being symmetric in them.}
 A single string.
 }
 \description{
-The name under which \code{\link{distrib_dexpected_hessian}} returns
+The name under which \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}} returns
 \eqn{\partial\,\mathbb{E}[\ell_{ab}]/\partial\theta_c}.
 }
 \examples{
@@ -26,5 +26,5 @@ dexpected_key(c("mu", "sigma"), 1, 2, 2)
 
 }
 \seealso{
-\code{\link{dexpected_names}}
+\code{\link[=dexpected_names]{dexpected_names()}}
 }

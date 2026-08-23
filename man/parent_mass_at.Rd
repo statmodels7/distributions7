@@ -30,10 +30,10 @@ zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
 \code{continuous_distrib}. Truncating it from above, with the atom retained,
 then drops exactly that mass out of the normalizing constant -- and the
 resulting density integrates to something other than one while every formula
-still reads correctly. Asking \code{\link{distrib_atoms}} instead of asking
+still reads correctly. Asking \code{\link[=distrib_atoms]{distrib_atoms()}} instead of asking
 the class cannot make that mistake.
 }
 \seealso{
-\code{\link{distrib_atoms}}, \code{\link{trunc_constants}}
+\code{\link[=distrib_atoms]{distrib_atoms()}}, \code{\link[=trunc_constants]{trunc_constants()}}
 }
 \keyword{internal}

@@ -16,8 +16,8 @@
 A named list of fourth-derivative component vectors.
 }
 \description{
-Fallback method: observed fourth derivatives via \code{\link{numerical_deriv4}}
+Fallback method: observed fourth derivatives via \code{\link[=numerical_deriv4]{numerical_deriv4()}}
 (second differences of the Hessian); expected fourth derivatives via the
-\code{\link{expectation}} of the observed ones.
+\code{\link[=expectation]{expectation()}} of the observed ones.
 }
 \keyword{internal}

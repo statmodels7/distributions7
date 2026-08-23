@@ -14,8 +14,8 @@
 A numeric vector.
 }
 \description{
-Delegates to \code{\link[statmod]{rinvgauss}}.
+Delegates to \code{\link[statmod:invgauss]{statmod::rinvgauss()}}.
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

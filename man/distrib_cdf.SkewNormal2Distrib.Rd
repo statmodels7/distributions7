@@ -23,5 +23,5 @@ A numeric vector.
 The skew normal distribution function, through Owen's T.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

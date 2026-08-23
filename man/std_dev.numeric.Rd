@@ -14,6 +14,6 @@
 A single number.
 }
 \description{
-The sample standard deviation of a numeric vector, delegated to \code{\link[stats]{sd}}.
+The sample standard deviation of a numeric vector, delegated to \code{\link[stats:sd]{stats::sd()}}.
 }
 \keyword{internal}

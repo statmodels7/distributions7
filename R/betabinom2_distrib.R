@@ -4,24 +4,24 @@ NULL
 #' @title S7 Class for the Beta-Binomial in Its Shapes
 #' @name BetaBinom2Distrib
 #'
-#' @description A subclass of \code{discrete_distrib} for the beta-binomial in
+#' @description A subclass of `discrete_distrib` for the beta-binomial in
 #'   its canonical parametrization, the two beta shapes.
 #' @inheritParams distrib
 #' @param size The number of trials, a constant of the distribution.
-#' @return An object of class \code{BetaBinom2Distrib}.
-#' @seealso \code{\link{betabinom2_distrib}}, \code{\link{betabinom1_distrib}}
+#' @return An object of class `BetaBinom2Distrib`.
+#' @seealso [betabinom2_distrib()], [betabinom1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.BetaBinom2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.BetaBinom2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.BetaBinom2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.BetaBinom2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_rng.BetaBinom2Distrib]{distrib_rng()}}
+#'   [`distrib_deriv3()`][distrib_deriv3.BetaBinom2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.BetaBinom2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.BetaBinom2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.BetaBinom2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.BetaBinom2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.BetaBinom2Distrib],
+#'   [`distrib_rng()`][distrib_rng.BetaBinom2Distrib]
 #'
-#' Everything else is inherited from \code{\link{discrete_distrib}}.
+#' Everything else is inherited from [discrete_distrib()].
 BetaBinom2Distrib <- S7::new_class("BetaBinom2Distrib",
   parent = discrete_distrib,
   properties = list(size = S7::class_numeric)
@@ -45,13 +45,13 @@ BetaBinom2Distrib <- S7::new_class("BetaBinom2Distrib",
 #' @param y A numeric vector of observations.
 #' @param a,b The two shapes.
 #' @param n The size.
-#' @param k The polygamma order, \code{order - 1}.
+#' @param k The polygamma order, `order - 1`.
 #' @param i The number of \eqn{a} indices in the component.
 #' @param j The number of \eqn{b} indices.
 #'
 #' @return A numeric vector.
 #'
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 #'
 #' @keywords internal
 betabinom2_component <- function(y, a, b, n, k, i, j) {
@@ -67,7 +67,7 @@ betabinom2_component <- function(y, a, b, n, k, i, j) {
 #'
 #' @description
 #' Assembles the components of a derivative of the given order, named as
-#' \code{\link{deriv_names}} names them.
+#' [deriv_names()] names them.
 #'
 #' @param y A numeric vector of observations.
 #' @param a,b The two shapes.
@@ -77,7 +77,7 @@ betabinom2_component <- function(y, a, b, n, k, i, j) {
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 #'
 #' @keywords internal
 betabinom2_derivs <- function(y, a, b, n, order, params) {
@@ -95,12 +95,12 @@ betabinom2_derivs <- function(y, a, b, n, order, params) {
 #' @name distrib_pdf.BetaBinom2Distrib
 #' @description
 #' \deqn{P(Y = y) = \binom{n}{y}\dfrac{B(y+\alpha, n-y+\beta)}{B(\alpha,\beta)}}
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @param theta A list with `alpha` and `beta`.
+#' @param log Logical; if `TRUE`, returns the log-probability.
 #' @return A numeric vector.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   a <- theta[[1]]
   b <- theta[[2]]
@@ -127,7 +127,7 @@ S7::method(distrib_pdf, BetaBinom2Distrib) <- function(distrib, y, theta, log = 
 #' The two beta functions are of magnitude \eqn{(\alpha+\beta)\log(\alpha+\beta)}
 #' and their difference is of order one, so the ordinary route carries an
 #' absolute error of \eqn{\varepsilon} times that magnitude and is used only
-#' while this stays below \code{1e-8}. Beyond it the shifts are integers, so
+#' while this stays below `1e-8`. Beyond it the shifts are integers, so
 #' each log-gamma difference is an exact sum of logarithms,
 #' \deqn{\log\Gamma(\alpha+y) - \log\Gamma(\alpha) =
 #'       \sum_{j=0}^{y-1}\log(\alpha+j),}
@@ -165,11 +165,11 @@ betabinom_log_mass <- function(y, a, b, n) {
 #' @title Beta-Binomial Random Generation in Its Shapes
 #' @name distrib_rng.BetaBinom2Distrib
 #' @description A beta draw for the probability, then a binomial draw.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @return A numeric vector of counts.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta) {
   p <- stats::rbeta(n, shape1 = theta[[1]], shape2 = theta[[2]])
   stats::rbinom(n, size = distrib@size, prob = p)
@@ -182,13 +182,13 @@ S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta) {
 #'         = \psi(y+\alpha) - \psi(n+\alpha+\beta)
 #'           - \psi(\alpha) + \psi(\alpha+\beta)}
 #' and the same with \eqn{n-y} and \eqn{\beta}.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                              scale = c("parameter", "link"), ...) {
   a <- theta[[1]]
@@ -202,13 +202,13 @@ S7::method(distrib_gradient, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' @title Beta-Binomial Analytical Observed Hessian in Its Shapes
 #' @name distrib_hessian.BetaBinom2Distrib
 #' @description The same sums with the trigamma function.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                             scale = c("parameter", "link"), ...) {
   d <- betabinom2_derivs(y, theta[[1]], theta[[2]], distrib@size, 2L,
@@ -219,18 +219,18 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #' @title Beta-Binomial Analytical Expected Hessian in Its Shapes
 #' @name distrib_expected_hessian.BetaBinom2Distrib
 #' @description
-#' An \strong{exact finite sum} over the support, the family being discrete on
+#' An **exact finite sum** over the support, the family being discrete on
 #' \eqn{\{0, \dots, n\}}: the expectation is a weighted sum of at most
 #' \eqn{n+1} terms rather than a quadrature or a sample.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is an exact sum.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
                                                                      approx = c("bartlett", "integrate", "mc", "opg"),
@@ -244,14 +244,14 @@ S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, 
 #' Averages a derivative over the support \eqn{\{0, \dots, n\}} weighted by the
 #' mass function, which is exact because the support is finite.
 #'
-#' @param distrib A \code{\link{BetaBinom2Distrib}} object.
+#' @param distrib A [BetaBinom2Distrib()] object.
 #' @param y A numeric vector, used only for its length.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param order The derivative order.
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 #'
 #' @keywords internal
 betabinom2_expected <- function(distrib, y, theta, order) {
@@ -271,16 +271,16 @@ betabinom2_expected <- function(distrib, y, theta, order) {
 #' @name distrib_deriv3.BetaBinom2Distrib
 #' @description Closed form, with the expectation an exact sum over the
 #'   support.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
@@ -296,16 +296,16 @@ S7::method(distrib_deriv3, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' @name distrib_deriv4.BetaBinom2Distrib
 #' @description Closed form, with the expectation an exact sum over the
 #'   support.
-#' @param distrib A \code{BetaBinom2Distrib} object.
+#' @param distrib A `BetaBinom2Distrib` object.
 #' @param y A numeric vector of counts.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param expected Logical; if \code{TRUE}, returns the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param expected Logical; if `TRUE`, returns the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{betabinom2_distrib}}
+#' @seealso [betabinom2_distrib()]
 S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                            scale = c("parameter", "link"),
                                                            approx = c("integrate", "bartlett", "mc", "opg"),
@@ -325,13 +325,13 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' parametrization, the two beta shapes.
 #'
 #' @details
-#' The same law as \code{\link{betabinom1_distrib}}, which carries a mean
+#' The same law as [betabinom1_distrib()], which carries a mean
 #' proportion and a dispersion: \eqn{\alpha = \mu/\sigma} and
 #' \eqn{\beta = (1-\mu)/\sigma}.
 #'
 #' Every derivative is a sum of polygamma functions, since the log-mass is a
 #' sum of log-gamma terms and differentiating it \eqn{k} times replaces each
-#' by \eqn{\psi^{(k-1)}}. The expectations are \strong{exact finite sums} over
+#' by \eqn{\psi^{(k-1)}}. The expectations are **exact finite sums** over
 #' \eqn{\{0, \dots, n\}} rather than quadratures.
 #'
 #' @section The distribution:
@@ -344,9 +344,9 @@ S7::method(distrib_deriv4, BetaBinom2Distrib) <- function(distrib, y, theta, exp
 #' @param link_alpha Link function for \eqn{\alpha}. Defaults to the log.
 #' @param link_beta Link function for \eqn{\beta}. Defaults to the log.
 #'
-#' @return An S7 object of class \code{\link{BetaBinom2Distrib}}.
+#' @return An S7 object of class [BetaBinom2Distrib()].
 #'
-#' @seealso \code{\link{betabinom1_distrib}}
+#' @seealso [betabinom1_distrib()]
 #'
 #' @examples
 #' d <- betabinom2_distrib(size = 10)

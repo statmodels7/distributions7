@@ -27,11 +27,11 @@ A named list of third-derivative components.
 A named list of fourth-derivative components.
 }
 \description{
-Closed form at both orders, from \code{\link{gpd_components}}: the
+Closed form at both orders, from \code{\link[=gpd_components]{gpd_components()}}: the
 log-density splits into \eqn{-\log\sigma}, \eqn{-\log t} and
 \eqn{-\log(t)/\xi}, and the last is taken from its series where the
 Leibniz form's terms cancel.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

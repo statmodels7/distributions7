@@ -4,7 +4,7 @@
 \alias{distrib_cross_y.MvStudentTDistrib}
 \title{Multivariate Student t Mixed Response-Parameter Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

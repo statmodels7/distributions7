@@ -4,7 +4,7 @@
 \alias{distrib_hessian.MvStudentTDistrib}
 \title{Multivariate Student t Observed Hessian}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 
@@ -15,7 +15,7 @@
 \item{...}{Unused.}
 }
 \value{
-A named list keyed as \code{\link{hess_names}(distrib@params)}.
+A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
 Closed form, obtained by differentiating the score of

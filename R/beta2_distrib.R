@@ -4,27 +4,27 @@ NULL
 #' @title S7 Class for the Beta Distribution in Its Shapes
 #' @name Beta2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the beta in its
+#' @description A subclass of `continuous_distrib` for the beta in its
 #'   canonical parametrization, the two shapes.
 #' @inheritParams distrib
-#' @return An object of class \code{Beta2Distrib}.
-#' @seealso \code{\link{beta2_distrib}}, \code{\link{beta1_distrib}}
+#' @return An object of class `Beta2Distrib`.
+#' @seealso [beta2_distrib()], [beta1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_deriv3.Beta2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Beta2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_expected_hessian.Beta2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.Beta2Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_hess_y.Beta2Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.Beta2Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.Beta2Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.Beta2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Beta2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Beta2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Beta2Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.Beta2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Beta2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Beta2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Beta2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.Beta2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Beta2Distrib],
+#'   [`distrib_rng()`][distrib_rng.Beta2Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 Beta2Distrib <- S7::new_class("Beta2Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -33,12 +33,12 @@ Beta2Distrib <- S7::new_class("Beta2Distrib", parent = continuous_distrib)
 #' @name distrib_pdf.Beta2Distrib
 #' @description
 #' \deqn{f(y) = \dfrac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations in \eqn{(0, 1)}.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list with `alpha` and `beta`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_pdf, Beta2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dbeta(y, shape1 = theta[[1]], shape2 = theta[[2]], log = log)
 }
@@ -46,14 +46,14 @@ S7::method(distrib_pdf, Beta2Distrib) <- function(distrib, y, theta, log = FALSE
 #' @title Beta Distribution Function in Its Shapes
 #' @name distrib_cdf.Beta2Distrib
 #' @description The incomplete beta function.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param theta A list with `alpha` and `beta`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_cdf, Beta2Distrib) <- function(distrib, q, theta,
                                                    lower.tail = TRUE,
                                                    log.p = FALSE, ...) {
@@ -64,14 +64,14 @@ S7::method(distrib_cdf, Beta2Distrib) <- function(distrib, q, theta,
 #' @title Beta Quantile Function in Its Shapes
 #' @name distrib_quantile.Beta2Distrib
 #' @description The inverse of the incomplete beta function.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is a log-probability.
+#' @param theta A list with `alpha` and `beta`.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is a log-probability.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_quantile, Beta2Distrib) <- function(distrib, p, theta,
                                                         lower.tail = TRUE,
                                                         log.p = FALSE, ...) {
@@ -81,12 +81,12 @@ S7::method(distrib_quantile, Beta2Distrib) <- function(distrib, p, theta,
 
 #' @title Beta Random Generation in Its Shapes
 #' @name distrib_rng.Beta2Distrib
-#' @description Delegates to \code{\link[stats]{rbeta}}.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @description Delegates to [stats::rbeta()].
+#' @param distrib A `Beta2Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta) {
   stats::rbeta(n, shape1 = theta[[1]], shape2 = theta[[2]])
 }
@@ -100,13 +100,13 @@ S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta) {
 #'         = \log(1-y) - \psi(\beta) + \psi(\alpha+\beta)}
 #' The data enter only through \eqn{\log y} and \eqn{\log(1-y)}, which is what
 #' makes every higher derivative free of them.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_gradient, Beta2Distrib) <- function(distrib, y, theta,
                                                         scale = c("parameter", "link"), ...) {
   a <- theta[[1]]
@@ -127,13 +127,13 @@ S7::method(distrib_gradient, Beta2Distrib) <- function(distrib, y, theta,
 #' at every order beyond the first, which is why this family needs no
 #' expectation anywhere.
 #'
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param n The number of observations to recycle to.
 #' @param order The derivative order, 2, 3 or 4.
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 #'
 #' @keywords internal
 beta2_higher <- function(theta, n, order) {
@@ -169,13 +169,13 @@ beta2_higher <- function(theta, n, order) {
 #'       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
 #'       \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta)}
 #' free of the data.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
                                                        scale = c("parameter", "link"), ...) {
   h <- beta2_higher(theta, length(y), 2L)
@@ -188,15 +188,15 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #' Equal to the observed Hessian: it is free of the data, so there is nothing
 #' to average. Fisher scoring and Newton's method therefore take the same step
 #' on the parameter scale here.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list with `alpha` and `beta`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is exact.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
                                                                 approx = c("bartlett", "integrate", "mc", "opg"),
@@ -207,18 +207,18 @@ S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta
 
 #' @title Beta Third-Order Derivatives in Its Shapes
 #' @name distrib_deriv3.Beta2Distrib
-#' @description Closed form and free of the data, so \code{expected} changes
+#' @description Closed form and free of the data, so `expected` changes
 #'   nothing.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param expected Logical; makes no difference here.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                       scale = c("parameter", "link"),
                                                       approx = c("integrate", "bartlett", "mc", "opg"),
@@ -228,18 +228,18 @@ S7::method(distrib_deriv3, Beta2Distrib) <- function(distrib, y, theta, expected
 
 #' @title Beta Fourth-Order Derivatives in Its Shapes
 #' @name distrib_deriv4.Beta2Distrib
-#' @description Closed form and free of the data, so \code{expected} changes
+#' @description Closed form and free of the data, so `expected` changes
 #'   nothing.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param expected Logical; makes no difference here.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_deriv4, Beta2Distrib) <- function(distrib, y, theta, expected = FALSE,
                                                       scale = c("parameter", "link"),
                                                       approx = c("integrate", "bartlett", "mc", "opg"),
@@ -251,12 +251,12 @@ S7::method(distrib_deriv4, Beta2Distrib) <- function(distrib, y, theta, expected
 #' @name distrib_grad_y.Beta2Distrib
 #' @description
 #' \eqn{\partial\ell/\partial y = (\alpha-1)/y - (\beta-1)/(1-y)}.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_grad_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
   (theta[[1]] - 1) / y - (theta[[2]] - 1) / (1 - y)
 }
@@ -265,12 +265,12 @@ S7::method(distrib_grad_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' @name distrib_hess_y.Beta2Distrib
 #' @description
 #' \eqn{\partial^2\ell/\partial y^2 = -(\alpha-1)/y^2 - (\beta-1)/(1-y)^2}.
-#' @param distrib A \code{Beta2Distrib} object.
+#' @param distrib A `Beta2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list with \code{alpha} and \code{beta}.
+#' @param theta A list with `alpha` and `beta`.
 #' @param ... Unused.
 #' @return A numeric vector.
-#' @seealso \code{\link{beta2_distrib}}
+#' @seealso [beta2_distrib()]
 S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
   -(theta[[1]] - 1) / y^2 - (theta[[2]] - 1) / (1 - y)^2
 }
@@ -283,7 +283,7 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' shapes \eqn{\alpha} and \eqn{\beta}.
 #'
 #' @details
-#' The same law as \code{\link{beta1_distrib}}, which carries the mean and a
+#' The same law as [beta1_distrib()], which carries the mean and a
 #' precision: \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}. The
 #' mean parametrization is the one a regression wants; this one is the one the
 #' family is usually written in and the one a conjugate analysis produces, the
@@ -304,9 +304,9 @@ S7::method(distrib_hess_y, Beta2Distrib) <- function(distrib, y, theta, ...) {
 #' @param link_alpha Link function for \eqn{\alpha}. Defaults to the log.
 #' @param link_beta Link function for \eqn{\beta}. Defaults to the log.
 #'
-#' @return An S7 object of class \code{\link{Beta2Distrib}}.
+#' @return An S7 object of class [Beta2Distrib()].
 #'
-#' @seealso \code{\link{beta1_distrib}}
+#' @seealso [beta1_distrib()]
 #'
 #' @examples
 #' d <- beta2_distrib()

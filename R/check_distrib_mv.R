@@ -4,7 +4,7 @@ NULL
 #' Validate a Multivariate Distribution
 #'
 #' @description
-#' The battery \code{\link{check_distrib}} runs on a multivariate distribution,
+#' The battery [check_distrib()] runs on a multivariate distribution,
 #' where the one-dimensional checks have no counterpart.
 #'
 #' @details
@@ -18,24 +18,24 @@ NULL
 #'
 #' What replaces them are checks that do generalize:
 #' \enumerate{
-#'   \item \strong{the density is positive and finite} on a sample;
-#'   \item \strong{the density integrates to one}. For a family that enumerates
-#'     its support through \code{\link{mv_support}} this is an exact sum over
+#'   \item **the density is positive and finite** on a sample;
+#'   \item **the density integrates to one**. For a family that enumerates
+#'     its support through [mv_support()] this is an exact sum over
 #'     that support; otherwise it is importance sampling from the proposal
-#'     \code{\link{mv_reference_draw}} supplies, which by default is a gaussian
+#'     [mv_reference_draw()] supplies, which by default is a gaussian
 #'     with the same mean and an inflated covariance. The proposal is
 #'     deliberately not the distribution itself, which would make the ratio
 #'     identically one and the check vacuous;
-#'   \item \strong{the score has mean zero}, the first Bartlett identity, under
+#'   \item **the score has mean zero**, the first Bartlett identity, under
 #'     the distribution's own generator -- so it is also a check that the
 #'     generator and the density describe the same law;
-#'   \item \strong{gradient and Hessian} against finite differences of the
+#'   \item **gradient and Hessian** against finite differences of the
 #'     summed log-density;
-#'   \item \strong{the expected information} against the Monte Carlo average of
+#'   \item **the expected information** against the Monte Carlo average of
 #'     the observed Hessian, and against the variance of the score, which is the
 #'     second Bartlett identity;
-#'   \item \strong{the generator} against the first two moments;
-#'   \item \strong{the response derivatives} against finite differences in
+#'   \item **the generator** against the first two moments;
+#'   \item **the response derivatives** against finite differences in
 #'     \eqn{y}.
 #' }
 #'
@@ -43,18 +43,18 @@ NULL
 #' already omits the checks that a discrete family has no counterpart for. A
 #' family with an enumerable support is discrete and has no derivative in the
 #' response, and the multivariate base class rejects
-#' \code{\link{distrib_grad_y}} by design, so a family that has not registered
+#' [distrib_grad_y()] by design, so a family that has not registered
 #' one has made a choice rather than left a gap.
 #'
-#' @param distrib A \code{\link{multivariate_distrib}} object.
+#' @param distrib A [multivariate_distrib()] object.
 #' @param theta A named list of parameters, already aligned.
 #' @param n The number of observations drawn for the derivative checks.
 #' @param nsim The Monte Carlo sample size.
 #' @param tol The relative tolerance.
 #'
-#' @return A list of one-row data frames, as \code{\link{check_distrib}} builds.
+#' @return A list of one-row data frames, as [check_distrib()] builds.
 #'
-#' @seealso \code{\link{check_distrib}}
+#' @seealso [check_distrib()]
 #' @keywords internal
 check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
   p <- distrib@n_dim
@@ -188,23 +188,23 @@ check_distrib_mv <- function(distrib, theta, n, nsim, tol) {
 #' Whether a Multivariate Family Enumerates Its Support
 #'
 #' @description
-#' \code{TRUE} when the family registers \code{\link{mv_support}}, which is
+#' `TRUE` when the family registers [mv_support()], which is
 #' what a discrete multivariate family does and a continuous one cannot.
 #'
 #' @details
 #' The question is asked of the method rather than of the class, because the
-#' multivariate branch sits beside \code{\link{continuous_distrib}} and
-#' \code{\link{discrete_distrib}} rather than under either, so there is no
+#' multivariate branch sits beside [continuous_distrib()] and
+#' [discrete_distrib()] rather than under either, so there is no
 #' class to test. The owning class of a method is read through
-#' \code{\link{is_class}}, never with \code{identical()}, which is object
+#' [is_class()], never with `identical()`, which is object
 #' identity and fails whenever the package's code is re-evaluated rather than
 #' loaded.
 #'
-#' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
+#' @param x An object inheriting from class [multivariate_distrib()].
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{mv_support}}, \code{\link{check_distrib}}
+#' @seealso [mv_support()], [check_distrib()]
 #' @keywords internal
 has_mv_support <- function(x) {
   # A wrapper delegates every accessor, so what the question means is whether
@@ -218,14 +218,14 @@ has_mv_support <- function(x) {
 #' Whether a Multivariate Family Implements Its Response Derivatives
 #'
 #' @description
-#' \code{TRUE} when \code{\link{distrib_grad_y}} comes from the family rather
+#' `TRUE` when [distrib_grad_y()] comes from the family rather
 #' than from the base class, whose method rejects.
 #'
-#' @param x An object inheriting from class \code{\link{multivariate_distrib}}.
+#' @param x An object inheriting from class [multivariate_distrib()].
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{has_mv_support}}, \code{\link{check_distrib}}
+#' @seealso [has_mv_support()], [check_distrib()]
 #' @keywords internal
 has_mv_grad_y <- function(x) {
   # see has_mv_support(): the wrapper delegates, so the family is asked
@@ -243,18 +243,18 @@ has_mv_grad_y <- function(x) {
 #'
 #' @details
 #' The nodes, the weights and the step are \pkg{numericals7}'s.
-#' \code{\link[numericals7]{fd_derivative}} is not called directly because its
-#' \code{f} maps a vector of points to the values at those points, while this
+#' [numericals7::fd_derivative()] is not called directly because its
+#' `f` maps a vector of points to the values at those points, while this
 #' one maps a whole vector to a single number.
 #'
 #' @param f A function of a numeric vector, returning one number.
 #' @param x The point.
 #' @param h_rel Deprecated and unused; the step is
-#'   \code{\link[numericals7]{fd_step}}'s.
+#'   [numericals7::fd_step()]'s.
 #'
-#' @return A numeric vector the length of \code{x}.
+#' @return A numeric vector the length of `x`.
 #'
-#' @seealso \code{\link[numericals7]{fd_weights}}
+#' @seealso [numericals7::fd_weights()]
 #'
 #' @keywords internal
 numDeriv_grad <- function(f, x, h_rel = NULL) {
@@ -291,11 +291,11 @@ numDeriv_grad <- function(f, x, h_rel = NULL) {
 #' @param x The point.
 #' @param k,l The coordinates to differentiate in.
 #' @param h_rel Deprecated and unused; the step is
-#'   \code{\link[numericals7]{fd_step}}'s at order two.
+#'   [numericals7::fd_step()]'s at order two.
 #'
 #' @return A single number.
 #'
-#' @seealso \code{\link[numericals7]{fd_weights}}
+#' @seealso [numericals7::fd_weights()]
 #'
 #' @keywords internal
 fd_second <- function(f, x, k, l, h_rel = NULL) {

@@ -23,5 +23,5 @@ The second derivatives of the same expressions. The mixed
 the first shape entering the log-density through \eqn{-d\log a} alone.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
 }

@@ -24,5 +24,5 @@ mean/precision reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\p
 where \eqn{I_q(\cdot, \cdot)} is the regularized incomplete beta function.
 }
 \seealso{
-\code{\link{beta1_distrib}}
+\code{\link[=beta1_distrib]{beta1_distrib()}}
 }

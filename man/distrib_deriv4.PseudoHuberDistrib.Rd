@@ -12,17 +12,17 @@
 
 \item{expected}{Logical; if \code{TRUE}, returns the (approximated) expected derivatives.}
 
-\item{approx, nsim}{Passed to \code{\link{expected_derivative_methods}} when \code{expected = TRUE}.}
+\item{approx, nsim}{Passed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} when \code{expected = TRUE}.}
 }
 \value{
 A named list of fourth-derivative component vectors.
 }
 \description{
 Closed-form observed fourth-order derivatives of the Pseudo-Huber log-density
-(see \code{\link{distrib_deriv3.PseudoHuberDistrib}} for the Bessel handling).
+(see \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}} for the Bessel handling).
 The expected fourth derivatives have no closed form and are handled by the
-strategies in \code{\link{expected_derivative_methods}}.
+strategies in \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

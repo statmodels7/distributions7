@@ -20,5 +20,5 @@ A numeric vector, one entry per row of \code{y}.
 for a row of non-negative integers summing to \eqn{n}.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

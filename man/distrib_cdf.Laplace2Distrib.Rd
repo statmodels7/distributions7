@@ -21,5 +21,5 @@ A numeric vector of cumulative probabilities.
 \deqn{F(q; \mu, \lambda) = \begin{cases} \dfrac{1}{2}\exp\left(\lambda(q-\mu)\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\lambda(q-\mu)\right) & q \ge \mu \end{cases}}
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

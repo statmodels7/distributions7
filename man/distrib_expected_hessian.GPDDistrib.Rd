@@ -30,8 +30,8 @@ The closed form of Smith (1985), valid for \eqn{\xi > -1/2}:
       \mathbb{E}\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
         = \dfrac{-2}{(1+2\xi)(1+\xi)}}
 At \eqn{\xi \le -1/2} the information does not exist and \code{NA} is
-returned rather than a number; see \code{\link{gpd_distrib}}.
+returned rather than a number; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \seealso{
-\code{\link{gpd_distrib}}
+\code{\link[=gpd_distrib]{gpd_distrib()}}
 }

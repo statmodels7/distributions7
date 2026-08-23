@@ -27,5 +27,5 @@ An \strong{exact finite sum} over the support, the family being discrete on
 \eqn{n+1} terms rather than a quadrature or a sample.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

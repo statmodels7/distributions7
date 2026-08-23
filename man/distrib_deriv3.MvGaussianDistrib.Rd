@@ -4,7 +4,7 @@
 \alias{distrib_deriv3.MvGaussianDistrib}
 \title{Multivariate Gaussian Third Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

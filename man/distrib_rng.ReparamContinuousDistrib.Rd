@@ -21,6 +21,6 @@ A numeric vector.
 The parent's generator at the mapped parameters.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

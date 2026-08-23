@@ -17,6 +17,6 @@ A list with \code{shape} and \code{rate}.
 \eqn{\phi\mu^2}.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }
 \keyword{internal}

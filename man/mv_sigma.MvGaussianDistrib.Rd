@@ -4,7 +4,7 @@
 \alias{mv_sigma.MvGaussianDistrib}
 \title{The Covariance a Multivariate Gaussian Carries}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{theta}{A named list of parameters.}
 }

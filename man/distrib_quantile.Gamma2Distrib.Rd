@@ -20,9 +20,9 @@ A numeric vector of quantiles.
 \description{
 Computes the quantile function for the Gamma distribution as the inverse of the
 CDF, \eqn{Q(p; \mu, \sigma^2) = F^{-1}(p; \mu, \sigma^2)}. There is no elementary
-closed form; it is obtained numerically (via \code{\link[stats]{qgamma}}) on the
+closed form; it is obtained numerically (via \code{\link[stats:GammaDist]{stats::qgamma()}}) on the
 shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2}, \eqn{\lambda = \mu/\sigma^2}.
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

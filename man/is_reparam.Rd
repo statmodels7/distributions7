@@ -16,6 +16,6 @@ A single logical.
 \code{TRUE} for either of the two wrapper classes.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

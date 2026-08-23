@@ -35,7 +35,7 @@ DirichletDistrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
@@ -61,10 +61,10 @@ Methods implemented for this class:
 \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal()}},
 \code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}}
 
-Everything else is inherited from \code{\link{multivariate_distrib}}, which
+Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, which
 rejects the distribution function and the quantile.
 }
 
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

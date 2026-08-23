@@ -6,7 +6,7 @@
 \alias{distrib_cross_y.multivariate_distrib}
 \title{Response Derivatives of a Multivariate Distribution}
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

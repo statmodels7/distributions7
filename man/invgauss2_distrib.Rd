@@ -12,7 +12,7 @@ invgauss2_distrib(link_mu = log_link(), link_lambda = log_link())
 \item{link_lambda}{Link function for \eqn{\lambda}. Defaults to the log.}
 }
 \value{
-An S7 object of class \code{\link{InvGauss2Distrib}}.
+An S7 object of class \code{\link[=InvGauss2Distrib]{InvGauss2Distrib()}}.
 }
 \description{
 Creates an inverse gaussian distribution object in the classical
@@ -20,7 +20,7 @@ parametrization, the mean \eqn{\mu} and the shape \eqn{\lambda}, with
 \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}.
 }
 \details{
-The same law as \code{\link{invgauss1_distrib}}, which carries a dispersion
+The same law as \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}, which carries a dispersion
 \eqn{\phi = 1/\lambda}. The map between them is one coordinate at a time,
 the mean being untouched, which is what makes both sets of derivatives
 elementary.
@@ -48,5 +48,5 @@ distrib_pdf(invgauss1_distrib(), 2, list(mu = 2, phi = 1 / 3))
 
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

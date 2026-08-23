@@ -17,6 +17,6 @@ A numeric vector summing to one.
 The mean vector, which is a parameter of the family.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }
 \keyword{internal}

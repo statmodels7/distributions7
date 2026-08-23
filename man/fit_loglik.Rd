@@ -21,6 +21,6 @@ The sum of the log-density over the observations, the objective the fit
 maximizes.
 }
 \seealso{
-\code{\link{fit_distrib}}
+\code{\link[=fit_distrib]{fit_distrib()}}
 }
 \keyword{internal}

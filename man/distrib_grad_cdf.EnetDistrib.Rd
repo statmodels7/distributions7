@@ -34,6 +34,6 @@ contains: the second derivative in \eqn{\mu} carries a point mass at
 \eqn{q = \mu}, and the formulas below hold on either side of it.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }
 \keyword{internal}

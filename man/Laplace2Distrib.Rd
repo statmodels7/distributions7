@@ -33,7 +33,7 @@ Laplace2Distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{Laplace2Distrib}.
@@ -41,7 +41,7 @@ An object of class \code{Laplace2Distrib}.
 \description{
 A subclass of \code{continuous_distrib} for the Laplace
 (double-exponential) distribution written in its location \eqn{\mu} and its
-\strong{rate} \eqn{\lambda = 1/\sigma}. Like \code{\link{LaplaceDistrib}},
+\strong{rate} \eqn{\lambda = 1/\sigma}. Like \code{\link[=LaplaceDistrib]{LaplaceDistrib()}},
 its log-likelihood is not differentiable in \eqn{\mu}.
 }
 \section{Methods}{
@@ -63,9 +63,9 @@ Methods implemented for this class:
 \code{\link[=skewness]{skewness()}},
 \code{\link[=variance]{variance()}}
 
-Everything else is inherited from \code{\link{continuous_distrib}}.
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
 \seealso{
-\code{\link{laplace2_distrib}}, \code{\link{laplace_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=laplace_distrib]{laplace_distrib()}}
 }

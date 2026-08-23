@@ -22,5 +22,5 @@ The generalized inverse
 \eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
 }
 \seealso{
-\code{\link{geometric_distrib}}
+\code{\link[=geometric_distrib]{geometric_distrib()}}
 }

@@ -17,5 +17,5 @@ A numeric vector.
 Closed-form \eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}, \eqn{D = \sqrt{\nu + ((y-\mu)/\sigma)^2}}.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

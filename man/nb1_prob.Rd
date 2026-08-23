@@ -17,6 +17,6 @@ A numeric vector in \eqn{(0, 1)}.
 \eqn{1+\theta} at every mean.
 }
 \seealso{
-\code{\link{negbin1_distrib}}, \code{\link{nb1_size}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}, \code{\link[=nb1_size]{nb1_size()}}
 }
 \keyword{internal}

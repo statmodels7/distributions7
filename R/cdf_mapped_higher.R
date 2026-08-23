@@ -17,9 +17,9 @@ NULL
 #' new ones, for a map given as keyed partial tables.
 #'
 #' @details
-#' The parent's tables are taken on the natural scale, \code{lower.tail = TRUE}
-#' and \code{log = FALSE}, because the chain rule applies to \eqn{F} itself; the
-#' tail and the logarithm are put on afterwards by \code{\link{cdf_scale_k}}.
+#' The parent's tables are taken on the natural scale, `lower.tail = TRUE`
+#' and `log = FALSE`, because the chain rule applies to \eqn{F} itself; the
+#' tail and the logarithm are put on afterwards by [cdf_scale_k()].
 #'
 #' @param parent The distribution being mapped.
 #' @param q A numeric vector of quantiles.
@@ -30,7 +30,7 @@ NULL
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{chain_assemble}}, \code{\link{chain_cdf_deriv}}
+#' @seealso [chain_assemble()], [chain_cdf_deriv()]
 #' @keywords internal
 chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
   D <- lapply(seq_len(order), function(k) {
@@ -73,7 +73,7 @@ chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
 #'
 #' @return A named list of derivative component vectors.
 #'
-#' @seealso \code{\link{mapped_cdf_deriv}}
+#' @seealso [mapped_cdf_deriv()]
 #' @keywords internal
 mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
                                lower.tail, log, q_par = q) {
@@ -98,14 +98,14 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
 #'
 #' @param cls The S7 class.
 #' @param parent_fn A function of no arguments returning the parent.
-#' @param th_fn A function of \code{theta} returning the parent's parameters.
+#' @param th_fn A function of `theta` returning the parent's parameters.
 #' @param md_fn The map's table function.
 #' @param q_fn The transformation of the response, when the parent is the same
 #'   law on a transformed scale. The identity by default.
 #' @param orders The orders to register, 3 and 4 by default. A family whose
 #'   written-out route stops below the fourth order takes the rest here.
 #'
-#' @return Invisibly \code{NULL}; called for the registration.
+#' @return Invisibly `NULL`; called for the registration.
 #'
 #' @keywords internal
 register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
@@ -131,11 +131,11 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
 #' @param distrib A reparametrized distribution.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters.
-#' @param lower.tail Logical; if \code{TRUE} (default), the lower tail.
-#' @param log Logical; if \code{TRUE} (default), derivatives of the log probability.
+#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
+#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
 #' @param ... Unused.
 #' @return A named list, one vector per component.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 S7::method(distrib_deriv3_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
@@ -198,7 +198,7 @@ S7::method(distrib_deriv4_cdf, GumbelDistrib) <- loc_scale_deriv_cdf_k(4L)
 #' Higher Log-CDF Derivatives When Only Some Parameters Are Location-Scale
 #'
 #' @description
-#' The higher-order companion of \code{\link{partial_loc_scale_hess_cdf}}: the
+#' The higher-order companion of [partial_loc_scale_hess_cdf()]: the
 #' components over the location and the scale from the location-scale
 #' construction, and the components naming a shape parameter from the stencil.
 #'
@@ -206,7 +206,7 @@ S7::method(distrib_deriv4_cdf, GumbelDistrib) <- loc_scale_deriv_cdf_k(4L)
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
-#' @seealso \code{\link{loc_scale_cdf_deriv_k}}
+#' @seealso [loc_scale_cdf_deriv_k()]
 #' @keywords internal
 partial_loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {

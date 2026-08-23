@@ -17,6 +17,6 @@ The concentration, its four derivatives in \eqn{\rho}, and the derivatives
 of \eqn{A} at that concentration, computed once per call.
 }
 \seealso{
-\code{\link{vonmises2_distrib}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
 }
 \keyword{internal}

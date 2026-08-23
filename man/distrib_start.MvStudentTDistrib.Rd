@@ -4,7 +4,7 @@
 \alias{distrib_start.MvStudentTDistrib}
 \title{The Gaussian Estimate as a Starting Value for a t}
 \arguments{
-\item{distrib}{A \code{\link{MvStudentTDistrib}} object.}
+\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
 \item{y}{The response.}
 

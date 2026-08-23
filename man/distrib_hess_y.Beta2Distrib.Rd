@@ -19,5 +19,5 @@ A numeric vector.
 \eqn{\partial^2\ell/\partial y^2 = -(\alpha-1)/y^2 - (\beta-1)/(1-y)^2}.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

@@ -24,5 +24,5 @@ The distribution function of
 closed form, each half being a truncated Gaussian.
 }
 \seealso{
-\code{\link{enet_distrib}}
+\code{\link[=enet_distrib]{enet_distrib()}}
 }

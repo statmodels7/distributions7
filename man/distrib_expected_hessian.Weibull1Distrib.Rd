@@ -37,5 +37,5 @@ with \eqn{\gamma} the Euler-Mascheroni constant. Because the closed form
 exists, the \code{approx} argument is ignored.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

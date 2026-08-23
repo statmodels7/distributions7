@@ -19,13 +19,13 @@ Creates a lognormal distribution object parametrized by the mean and the
 variance of \eqn{Y} itself, rather than of \eqn{\log Y}.
 }
 \details{
-The parameters of \code{\link{lognormal1_distrib}} describe \eqn{\log Y}, so
+The parameters of \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} describe \eqn{\log Y}, so
 neither of them is a moment of \eqn{Y}. Here they are, through
 \deqn{\mu_{\log} = \log\dfrac{m^2}{\sqrt{v + m^2}}, \qquad
       \sigma^2_{\log} = \log\left(1 + \dfrac{v}{m^2}\right)}
 which is the parametrization a regression on the mean wants.
 
-Built with \code{\link{reparametrize}}, so every derivative to fourth order,
+Built with \code{\link[=reparametrize]{reparametrize()}}, so every derivative to fourth order,
 observed and expected, is exact.
 }
 \section{The distribution}{
@@ -43,5 +43,5 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 }
 \seealso{
-\code{\link{lognormal1_distrib}}, \code{\link{reparametrize}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}, \code{\link[=reparametrize]{reparametrize()}}
 }

@@ -33,7 +33,7 @@ distrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
 An object of class \code{distrib}.
@@ -47,7 +47,7 @@ It carries the name, the parameters with their domains and links, and the suppor
 Registered on the base class, so every distribution inherits them unless it
 registers something more specific. Those that compute derivatives do so by
 finite differences, which is why a subclass that implements nothing but
-\code{\link{distrib_pdf}} is already fully functional. Note that
+\code{\link[=distrib_pdf]{distrib_pdf()}} is already fully functional. Note that
 \code{distrib_pdf} itself has no default: the density is the one thing a
 distribution must supply.
 
@@ -73,5 +73,5 @@ d@params_bounds
 
 }
 \seealso{
-\code{\link{continuous_distrib}}, \code{\link{discrete_distrib}}, \code{\link{multivariate_distrib}}
+\code{\link[=continuous_distrib]{continuous_distrib()}}, \code{\link[=discrete_distrib]{discrete_distrib()}}, \code{\link[=multivariate_distrib]{multivariate_distrib()}}
 }

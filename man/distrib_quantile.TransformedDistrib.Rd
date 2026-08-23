@@ -21,5 +21,5 @@ A numeric vector of quantiles.
 \eqn{Q_Y(p) = g(Q_X(p))}, with tails swapped for decreasing transformations.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

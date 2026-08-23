@@ -23,7 +23,7 @@ closed form where the inversion has one.
 A starting value should be an estimate, not a guess, and for most
 families the moment estimate is one line: the mean and the variance of
 the sample are set equal to the family's own and the pair is inverted.
-\code{\link{fit_distrib}} then refines it by maximum likelihood, and
+\code{\link[=fit_distrib]{fit_distrib()}} then refines it by maximum likelihood, and
 \pkg{statmodels7} takes the result as the intercept of each equation.
 
 The inversions are written against each family's \code{mean()} and
@@ -40,10 +40,10 @@ length; a starting value is allowed to be approximate. Families whose
 inversion is neither closed nor standard -- the generalized gamma, the
 skew normal in its direct parametrization, the skew t, the elastic net --
 are not listed and fall back to
-\code{\link{start_from_moments}}'s reading of
+\code{\link[=start_from_moments]{start_from_moments()}}'s reading of
 \code{params_interpretation}.
 }
 \seealso{
-\code{\link{distrib_start}}, \code{\link{start_from_moments}}
+\code{\link[=distrib_start]{distrib_start()}}, \code{\link[=start_from_moments]{start_from_moments()}}
 }
 \keyword{internal}

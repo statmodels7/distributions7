@@ -7,7 +7,7 @@
 as_mv_matrix(distrib, y)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{y}{The response.}
 }

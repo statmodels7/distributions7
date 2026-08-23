@@ -25,6 +25,6 @@ because each of their log-likelihoods is the parent's log-density plus, or
 instead of, \eqn{\log L} for some \eqn{\theta}-dependent \eqn{L}.
 }
 \seealso{
-\code{\link{log_deriv}}, the companion identity.
+\code{\link[=log_deriv]{log_deriv()}}, the companion identity.
 }
 \keyword{internal}

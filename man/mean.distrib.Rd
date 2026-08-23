@@ -8,14 +8,14 @@
 
 \item{theta}{A named list of parameters. Vectors are supported.}
 
-\item{...}{Additional arguments passed to \code{\link{moment}}.}
+\item{...}{Additional arguments passed to \code{\link[=moment]{moment()}}.}
 }
 \value{
 A numeric vector of means.
 }
 \description{
 Computes the expected value \eqn{E[Y]} of a distribution object numerically via
-\code{\link{moment}}. Distribution classes with a closed-form mean may override
+\code{\link[=moment]{moment()}}. Distribution classes with a closed-form mean may override
 this method with an analytical version.
 }
 \keyword{internal}

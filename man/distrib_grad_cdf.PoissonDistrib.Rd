@@ -22,5 +22,5 @@ Closed form: the sum defining \eqn{F} telescopes, leaving
 \eqn{\partial F(k)/\partial\mu = -f(k)}.
 }
 \seealso{
-\code{\link{poisson_distrib}}
+\code{\link[=poisson_distrib]{poisson_distrib()}}
 }

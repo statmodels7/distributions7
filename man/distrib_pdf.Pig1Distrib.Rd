@@ -26,5 +26,5 @@ prefactors cancel down to
 probability zero.
 }
 \seealso{
-\code{\link{pig1_distrib}}
+\code{\link[=pig1_distrib]{pig1_distrib()}}
 }

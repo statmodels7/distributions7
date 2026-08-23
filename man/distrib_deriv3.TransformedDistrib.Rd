@@ -20,5 +20,5 @@ Exactly the parent's, evaluated at \eqn{x = g^{-1}(y)}: the Jacobian does not
 depend on \eqn{\theta}, so it leaves every derivative in \eqn{\theta} untouched.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

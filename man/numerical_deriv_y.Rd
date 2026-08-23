@@ -32,7 +32,7 @@ One central stencil of the requested order applied to
 }
 \details{
 The stencil reaches two steps either side, so the step is clamped to half
-of what \code{\link{fd_steps_y}} allows: a Gamma observation near zero
+of what \code{\link[=fd_steps_y]{fd_steps_y()}} allows: a Gamma observation near zero
 would otherwise be differentiated at a point outside the support. The
 relative step is \eqn{\varepsilon^{1/(k+2)}}, which balances the
 \eqn{h^{2}} truncation against the \eqn{\varepsilon/h^{k}} rounding.
@@ -43,5 +43,5 @@ numerical_deriv_y(gaussian1_distrib(), c(-1, 0, 1),
 
 }
 \seealso{
-\code{\link{numerical_hess_y}}
+\code{\link[=numerical_hess_y]{numerical_hess_y()}}
 }

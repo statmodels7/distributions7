@@ -11,10 +11,10 @@ vonmises1_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{bounded_link}} on \eqn{(-\pi, \pi)}.}
+\code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} on \eqn{(-\pi, \pi)}.}
 
 \item{link_kappa}{A link function object for \eqn{\kappa}. Defaults to
-\code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 }
 \value{
 An S7 object of class \code{VonMises1Distrib}.
@@ -36,8 +36,8 @@ The normalizing constant is a modified Bessel function, and it is evaluated
 exponentially scaled with the exponent added back, so a concentration past
 \eqn{\kappa = 700} does not overflow.
 
-\strong{Moments.} \code{\link{mean}}, \code{\link{variance}},
-\code{\link{skewness}} and \code{\link{kurtosis}} are the ordinary moments
+\strong{Moments.} \code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}},
+\code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the ordinary moments
 of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, and they are obtained
 numerically. They are not the circular quantities and they are not what
 \eqn{\mu} and \eqn{\kappa} describe: \eqn{\mu} is the mean \emph{direction},
@@ -102,5 +102,5 @@ distribution. \emph{Applied Statistics} 28, 152-157.
 Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}. Wiley.
 }
 \seealso{
-\code{\link{gaussian1_distrib}} for the analogous family on the line
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line
 }

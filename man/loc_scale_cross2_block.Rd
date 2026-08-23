@@ -23,11 +23,11 @@ A list of two component vectors, unnamed.
 family whose response enters only through \eqn{z = (y-\mu)/\sigma}.
 }
 \details{
-The same identity as \code{\link{loc_scale_cross_block}} one derivative
+The same identity as \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} one derivative
 further in the response, and it reads the family's own third response
 derivative rather than differencing its second.
 }
 \seealso{
-\code{\link{distrib_cross2_y}}
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}
 }
 \keyword{internal}

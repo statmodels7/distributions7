@@ -17,5 +17,5 @@ A symmetric matrix.
 singular by construction, the coordinates summing to a constant.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

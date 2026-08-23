@@ -4,7 +4,7 @@
 \alias{distrib_cross_y.MvGaussianDistrib}
 \title{Multivariate Gaussian Mixed Response-Parameter Derivatives}
 \arguments{
-\item{distrib}{A \code{\link{MvGaussianDistrib}} object.}
+\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
 \item{y}{An \eqn{n \times p} matrix of observations.}
 

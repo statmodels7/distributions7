@@ -21,6 +21,6 @@ Locates the \eqn{(k, l)} entry in the list of second derivatives a
 tuple rather than by position.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }
 \keyword{internal}

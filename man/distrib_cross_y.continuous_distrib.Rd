@@ -18,7 +18,7 @@
 A named list with one numeric vector per parameter.
 }
 \description{
-Fallback: one central difference of \code{\link{distrib_grad_y}}
-in each parameter (see \code{\link{numerical_cross_y}}).
+Fallback: one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}}
+in each parameter (see \code{\link[=numerical_cross_y]{numerical_cross_y()}}).
 }
 \keyword{internal}

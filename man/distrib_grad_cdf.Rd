@@ -49,7 +49,7 @@ of integration does not depend on \eqn{\theta},
 so the gradient of the log distribution function is a \emph{partial mean of
 the score}. For a discrete distribution the integral is a finite sum and the
 identity is exact, which is how the default method computes it there; for a
-continuous one the default differentiates \code{\link{distrib_cdf}}
+continuous one the default differentiates \code{\link[=distrib_cdf]{distrib_cdf()}}
 numerically, and distributions with a closed form register it directly.
 }
 \examples{
@@ -61,5 +61,5 @@ distrib_grad_cdf(d, 1, theta, lower.tail = FALSE)
 
 }
 \seealso{
-\code{\link{distrib_hess_cdf}}, \code{\link{distrib_gradient}}
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_gradient]{distrib_gradient()}}
 }

@@ -4,24 +4,24 @@ NULL
 #' @title S7 Class for the Poisson-Inverse Gaussian Distribution
 #' @name Pig1Distrib
 #'
-#' @description A subclass of \code{discrete_distrib} representing the
+#' @description A subclass of `discrete_distrib` representing the
 #'   Poisson-inverse Gaussian distribution on \eqn{\{0, 1, 2, \dots\}} in its
-#'   mean-dispersion parametrization, gamlss's \code{PIG}.
+#'   mean-dispersion parametrization, gamlss's `PIG`.
 #' @inheritParams distrib
-#' @return An object of class \code{Pig1Distrib}.
-#' @seealso \code{\link{pig1_distrib}}, \code{\link{pig2_distrib}}
+#' @return An object of class `Pig1Distrib`.
+#' @seealso [pig1_distrib()], [pig2_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}}
+#'   [`distrib_pdf()`][distrib_pdf.Pig1Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Pig1Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Pig1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Pig1Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Pig1Distrib],
+#'   [`distrib_rng()`][distrib_rng.Pig1Distrib]
 #'
 #' Everything else, the distribution function and the quantile included, is
-#' inherited from \code{\link{discrete_distrib}}.
+#' inherited from [discrete_distrib()].
 Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 
 #' Log-Likelihood Derivatives of the Poisson-Inverse Gaussian
@@ -45,8 +45,8 @@ Pig1Distrib <- S7::new_class("Pig1Distrib", parent = discrete_distrib)
 #' @param y A numeric vector of observations.
 #' @param theta The aligned parameter list.
 #' @param cols The kernel columns wanted, by name.
-#' @param kernel The compiled kernel, \code{pig1_hd_cpp} or
-#'   \code{pig2_hd_cpp}.
+#' @param kernel The compiled kernel, `pig1_hd_cpp` or
+#'   `pig2_hd_cpp`.
 #' @param threads How many threads that kernel may use.
 #' @return A named list of derivative component vectors.
 #' @keywords internal
@@ -77,12 +77,12 @@ pig_hd_block <- function(y, theta, cols, kernel, threads = 1L) {
 #' \eqn{\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt{c})/\sigma
 #'   + \log S_y(\alpha) - \log y!}. A non-integer or negative \eqn{y} has
 #' probability zero.
-#' @param distrib A \code{Pig1Distrib} object.
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param log Logical; if \code{TRUE}, returns the log-probability.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param log Logical; if `TRUE`, returns the log-probability.
 #' @return A numeric vector of probability values.
-#' @seealso \code{\link{pig1_distrib}}
+#' @seealso [pig1_distrib()]
 S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
   out <- pig_hd_block(y, theta, c(l = "l"), pig1_hd_cpp, threads)$l
   out[is.nan(out)] <- -Inf
@@ -92,14 +92,14 @@ S7::method(distrib_pdf, Pig1Distrib) <- function(distrib, y, theta, log = FALSE,
 #' @title Poisson-Inverse Gaussian Analytical Gradient
 #' @name distrib_gradient.Pig1Distrib
 #' @description The exact score in \eqn{(\mu, \sigma)}, from the compiled
-#' fourth-order kernel described in \code{\link{pig_hd_block}}.
-#' @param distrib A \code{Pig1Distrib} object.
+#' fourth-order kernel described in [pig_hd_block()].
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
-#' @return A named list with the \code{mu} and \code{sigma} components.
-#' @seealso \code{\link{pig1_distrib}}
+#' @return A named list with the `mu` and `sigma` components.
+#' @seealso [pig1_distrib()]
 S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
                                                       scale = c("parameter", "link"), ..., threads = 1L) {
   pig_hd_block(y, theta, c(mu = "d10", sigma = "d01"), pig1_hd_cpp, threads)
@@ -108,14 +108,14 @@ S7::method(distrib_gradient, Pig1Distrib) <- function(distrib, y, theta,
 #' @title Poisson-Inverse Gaussian Analytical Observed Hessian
 #' @name distrib_hessian.Pig1Distrib
 #' @description The exact second derivatives in \eqn{(\mu, \sigma)}, from
-#' the compiled fourth-order kernel described in \code{\link{pig_hd_block}}.
-#' @param distrib A \code{Pig1Distrib} object.
+#' the compiled fourth-order kernel described in [pig_hd_block()].
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `mu` and `sigma`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second-derivative components.
-#' @seealso \code{\link{pig1_distrib}}
+#' @seealso [pig1_distrib()]
 S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
                                                      scale = c("parameter", "link"), ..., threads = 1L) {
   pig_hd_block(y, theta,
@@ -126,17 +126,17 @@ S7::method(distrib_hessian, Pig1Distrib) <- function(distrib, y, theta,
 #' @title Poisson-Inverse Gaussian Analytical Third Derivatives
 #' @name distrib_deriv3.Pig1Distrib
 #' @description The exact third derivatives in \eqn{(\mu, \sigma)}, from the
-#' compiled fourth-order kernel described in \code{\link{pig_hd_block}}.
-#' @param distrib A \code{Pig1Distrib} object.
+#' compiled fourth-order kernel described in [pig_hd_block()].
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param expected Logical; the expected version goes through the generic's
 #'   strategies.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx,nsim Passed on when \code{expected} is \code{TRUE}.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx,nsim Passed on when `expected` is `TRUE`.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{pig1_distrib}}
+#' @seealso [pig1_distrib()]
 S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
@@ -155,17 +155,17 @@ S7::method(distrib_deriv3, Pig1Distrib) <- function(distrib, y, theta,
 #' @title Poisson-Inverse Gaussian Analytical Fourth Derivatives
 #' @name distrib_deriv4.Pig1Distrib
 #' @description The exact fourth derivatives in \eqn{(\mu, \sigma)}, from
-#' the compiled fourth-order kernel described in \code{\link{pig_hd_block}}.
-#' @param distrib A \code{Pig1Distrib} object.
+#' the compiled fourth-order kernel described in [pig_hd_block()].
+#' @param distrib A `Pig1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param expected Logical; the expected version goes through the generic's
 #'   strategies.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
-#' @param approx,nsim Passed on when \code{expected} is \code{TRUE}.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
+#' @param approx,nsim Passed on when `expected` is `TRUE`.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{pig1_distrib}}
+#' @seealso [pig1_distrib()]
 S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
                                                     expected = FALSE,
                                                     scale = c("parameter", "link"),
@@ -189,11 +189,11 @@ S7::method(distrib_deriv4, Pig1Distrib) <- function(distrib, y, theta,
 #' with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, whose variance
 #' \eqn{\sigma\mu^2} is exactly what the mixing construction requires, and
 #' \eqn{Y \mid \lambda} from the Poisson.
-#' @param distrib A \code{Pig1Distrib} object.
+#' @param distrib A `Pig1Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list containing \code{mu} and \code{sigma}.
-#' @return A numeric vector of length \code{n}.
-#' @seealso \code{\link{pig1_distrib}}
+#' @param theta A list containing `mu` and `sigma`.
+#' @return A numeric vector of length `n`.
+#' @seealso [pig1_distrib()]
 S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
   lam <- statmod::rinvgauss(n, mean = rep_len(theta[[1]], n),
                             shape = rep_len(theta[[1]], n) / rep_len(theta[[2]], n))
@@ -207,7 +207,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #' @description
 #' Creates a Poisson-inverse Gaussian distribution in its mean-dispersion
 #' parametrization: mean \eqn{\mu} and variance \eqn{\mu + \sigma\mu^2},
-#' gamlss's \code{PIG} (Rigby and Stasinopoulos, 2005). The family is the
+#' gamlss's `PIG` (Rigby and Stasinopoulos, 2005). The family is the
 #' Poisson mixed over an inverse Gaussian rate, an overdispersed count model
 #' with a heavier tail than the negative binomial at the same variance.
 #'
@@ -218,9 +218,9 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #' a compiled kernel that carries a bivariate jet through the closed
 #' expression. The expected information has no closed form and goes through
 #' the summation strategies of
-#' \code{\link{expected_derivative_methods}}. For the parametrization in
+#' [expected_derivative_methods()]. For the parametrization in
 #' which \eqn{\mu} and the second parameter are orthogonal, see
-#' \code{\link{pig2_distrib}}.
+#' [pig2_distrib()].
 #'
 #' @section The distribution:
 #' \deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}}
@@ -228,18 +228,18 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #'
 #' \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu + \sigma\mu^{2}}
 #'
-#' @param link_mu The link for \eqn{\mu}; defaults to \code{log_link()}.
-#' @param link_sigma The link for \eqn{\sigma}; defaults to \code{log_link()}.
+#' @param link_mu The link for \eqn{\mu}; defaults to `log_link()`.
+#' @param link_sigma The link for \eqn{\sigma}; defaults to `log_link()`.
 #'
-#' @return A \code{Pig1Distrib} object.
+#' @return A `Pig1Distrib` object.
 #'
 #' @references
 #' Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
-#' for location, scale and shape. \emph{Applied Statistics} 54(3), 507--554.
+#' for location, scale and shape. *Applied Statistics* 54(3), 507--554.
 #'
 #' Dean, C., Lawless, J. F., and Willmot, G. E. (1989). A mixed
-#' Poisson-inverse-Gaussian regression model. \emph{Canadian Journal of
-#' Statistics} 17(2), 171--181.
+#' Poisson-inverse-Gaussian regression model. *Canadian Journal of
+#' Statistics* 17(2), 171--181.
 #'
 #' @examples
 #' d <- pig1_distrib()
@@ -248,7 +248,7 @@ S7::method(distrib_rng, Pig1Distrib) <- function(distrib, n, theta) {
 #' mean(d, theta)
 #' variance(d, theta)
 #'
-#' @seealso \code{\link{pig2_distrib}}, \code{\link{negbin2_distrib}}
+#' @seealso [pig2_distrib()], [negbin2_distrib()]
 #' @export
 pig1_distrib <- function(link_mu = log_link(), link_sigma = log_link()) {
   Pig1Distrib(

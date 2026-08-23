@@ -25,5 +25,5 @@ the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
 where \eqn{\gamma(\cdot, \cdot)} is the lower incomplete gamma function.
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

@@ -4,7 +4,7 @@
 \alias{simulate.distrib_fit}
 \title{Simulate from a Fitted Distribution}
 \arguments{
-\item{object}{A \code{\link{distrib_fit}} object.}
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
 \item{nsim}{Number of replicates to draw. Defaults to 1.}
 
@@ -38,5 +38,5 @@ quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 
 }
 \seealso{
-\code{\link{fit_distrib}}, \code{\link{plot.distrib_fit}}
+\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}
 }

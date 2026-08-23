@@ -4,7 +4,7 @@
 \alias{mean.Weibull1Distrib}
 \title{Mean of the Weibull Distribution}
 \arguments{
-\item{x}{A \code{\link{Weibull1Distrib}}.}
+\item{x}{A \code{\link[=Weibull1Distrib]{Weibull1Distrib()}}.}
 
 \item{theta}{A named list of parameters.}
 

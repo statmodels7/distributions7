@@ -21,5 +21,5 @@ Closed form, almost everywhere. The only non-zero component is
 the expected derivatives coincide.
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

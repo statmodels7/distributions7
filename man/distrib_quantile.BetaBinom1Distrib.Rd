@@ -23,5 +23,5 @@ The generalized inverse
 sum.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

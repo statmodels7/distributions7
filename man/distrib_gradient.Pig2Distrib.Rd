@@ -19,8 +19,8 @@ A named list with the \code{mu} and \code{alpha} components.
 }
 \description{
 The exact score in \eqn{(\mu, \alpha)}, from the compiled
-fourth-order kernel described in \code{\link{pig_hd_block}}.
+fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }

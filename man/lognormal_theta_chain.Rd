@@ -11,8 +11,8 @@ lognormal_theta_chain(y, theta, order, second)
 
 \item{theta}{A named list containing \code{mu} and \code{sigma2}.}
 
-\item{order}{\code{1} for the block of \code{\link{distrib_grad_y}},
-\code{2} for that of \code{\link{distrib_hess_y}}.}
+\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
 
 \item{second}{Whether the second-order theta components are wanted.}
 }
@@ -24,6 +24,6 @@ The gaussian's components at \eqn{t = \log y}, carried by the Jacobian of
 the transformation.
 }
 \seealso{
-\code{\link{distrib_grad_y_hess}}
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}
 }
 \keyword{internal}

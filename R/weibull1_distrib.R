@@ -4,31 +4,31 @@ NULL
 #' @title S7 Class for the Weibull Distribution
 #' @name Weibull1Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} representing the Weibull
+#' @description A subclass of `continuous_distrib` representing the Weibull
 #' distribution, parametrized by a scale and a shape.
 #' @inheritParams distrib
-#' @return An object of class \code{Weibull1Distrib}.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @return An object of class `Weibull1Distrib`.
+#' @seealso [weibull1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.Weibull1Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.Weibull1Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.Weibull1Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Weibull1Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.Weibull1Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.Weibull1Distrib]{distrib_rng()}},
-#'   \code{\link[=kurtosis]{kurtosis()}},
-#'   \code{\link[=mean.distrib]{mean()}},
-#'   \code{\link[=skewness]{skewness()}},
-#'   \code{\link[=variance]{variance()}}
+#'   [`distrib_cdf()`][distrib_cdf.Weibull1Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Weibull1Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.Weibull1Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Weibull1Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Weibull1Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Weibull1Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Weibull1Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Weibull1Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.Weibull1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Weibull1Distrib],
+#'   [`distrib_rng()`][distrib_rng.Weibull1Distrib],
+#'   [`kurtosis()`][kurtosis],
+#'   [`mean()`][mean.distrib],
+#'   [`skewness()`][skewness],
+#'   [`variance()`][variance]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 Weibull1Distrib <- S7::new_class("Weibull1Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -44,13 +44,13 @@ Weibull1Distrib <- S7::new_class("Weibull1Distrib", parent = continuous_distrib)
 #' \eqn{u} is the substitution that makes the family tractable: under the model
 #' \eqn{u \sim \mathrm{Exp}(1)} whatever the parameters are, so an expectation
 #' of any polynomial in \eqn{u} and \eqn{\log u} is a derivative of the gamma
-#' function at 2, which is what \code{\link{distrib_expected_hessian}} uses.
+#' function at 2, which is what [distrib_expected_hessian()] uses.
 #'
 #' @param y A numeric vector of observations.
 #' @param mu The scale parameter.
 #' @param sigma The shape parameter.
 #'
-#' @return A list with \code{z}, \code{lz} and \code{u}.
+#' @return A list with `z`, `lz` and `u`.
 #'
 #' @keywords internal
 weibull_pieces <- function(y, mu, sigma) {
@@ -66,12 +66,12 @@ weibull_pieces <- function(y, mu, sigma) {
 #' \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
 #'   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
 #'   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}}
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   stats::dweibull(x = y, shape = theta[[2]], scale = theta[[1]], log = log)
 }
@@ -83,13 +83,13 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #' \deqn{F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}}
 #' The survival function is exact on the log scale, which is what a censored
 #' observation in the far tail needs.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::pweibull(
     q = q, shape = theta[[2]], scale = theta[[1]],
@@ -102,13 +102,13 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #' @description
 #' Computes the quantile function for the Weibull distribution:
 #' \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   stats::qweibull(
     p = p, shape = theta[[2]], scale = theta[[1]],
@@ -121,11 +121,11 @@ S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, low
 #' @description
 #' Generates random numbers by inverse transform, which is exact here because
 #' the quantile function is elementary.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param n Number of observations to generate.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta) {
   stats::rweibull(n = n, shape = theta[[2]], scale = theta[[1]])
 }
@@ -139,13 +139,13 @@ S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta) {
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
 #'         + (1 - u)\log z}
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
@@ -167,13 +167,13 @@ S7::method(distrib_gradient, Weibull1Distrib) <- function(distrib, y, theta, sca
 #'         = -\dfrac{1}{\sigma^2} - u (\log z)^2,}
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
 #'         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).}
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
@@ -200,16 +200,16 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #' \deqn{E\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
 #'         = \dfrac{1 - \gamma}{\mu},}
 #' with \eqn{\gamma} the Euler-Mascheroni constant. Because the closed form
-#' exists, the \code{approx} argument is ignored.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' exists, the `approx` argument is ignored.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param scale Either \code{"parameter"} or \code{"link"}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param scale Either `"parameter"` or `"link"`.
 #' @param approx Ignored; the expectation is exact.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
@@ -226,15 +226,15 @@ S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, th
 #' @name distrib_deriv3.Weibull1Distrib
 #' @description
 #' Closed-form third-order derivatives of the Weibull log-density (observed, or
-#' expected when \code{expected = TRUE}). With \eqn{u = (y/\mu)^{\sigma}} and
+#' expected when `expected = TRUE`). With \eqn{u = (y/\mu)^{\sigma}} and
 #' \eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
 #' \eqn{L u}; the expected values use \eqn{E[u L^k] = \Gamma^{(k)}(2)/\sigma^k}.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param expected Logical; if `TRUE`, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) weibull_deriv3_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else weibull_deriv3_cpp(y, theta[[1]], theta[[2]], threads)
@@ -244,14 +244,14 @@ S7::method(distrib_deriv3, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @name distrib_deriv4.Weibull1Distrib
 #' @description
 #' Closed-form fourth-order derivatives of the Weibull log-density (observed,
-#' or expected when \code{expected = TRUE}), in the notation of
-#' \code{\link{distrib_deriv3.Weibull1Distrib}}.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' or expected when `expected = TRUE`), in the notation of
+#' [distrib_deriv3.Weibull1Distrib()].
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
-#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @param theta A list containing the parameters `mu` and `sigma`.
+#' @param expected Logical; if `TRUE`, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
   if (expected) weibull_deriv4_expected_cpp(y, theta[[1]], theta[[2]], threads)
   else weibull_deriv4_cpp(y, theta[[1]], theta[[2]], threads)
@@ -261,11 +261,11 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @name distrib_grad_y.Weibull1Distrib
 #' @description
 #' Closed form: \eqn{\partial \ell / \partial y = (\sigma - 1 - \sigma u)/y}.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
 #' @return A numeric vector.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta) {
   sigma <- theta[[2]]
   p <- weibull_pieces(y, theta[[1]], sigma)
@@ -277,11 +277,11 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' @description
 #' Closed form:
 #' \eqn{\partial^2 \ell / \partial y^2 = -(\sigma - 1)(1 + \sigma u)/y^2}.
-#' @param distrib A \code{Weibull1Distrib} object.
+#' @param distrib A `Weibull1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{sigma}.
+#' @param theta A list containing the parameters `mu` and `sigma`.
 #' @return A numeric vector.
-#' @seealso \code{\link{weibull1_distrib}}
+#' @seealso [weibull1_distrib()]
 S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
   sigma <- theta[[2]]
   p <- weibull_pieces(y, theta[[1]], sigma)
@@ -297,36 +297,36 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' a scale \eqn{\mu} and a shape \eqn{\sigma}, both positive.
 #'
 #' @param link_mu A link function object for the scale \eqn{\mu}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}}.
+#'   [linkfunctions7::log_link()].
 #' @param link_sigma A link function object for the shape \eqn{\sigma}.
-#'   Defaults to \code{\link[linkfunctions7]{log_link}}.
+#'   Defaults to [linkfunctions7::log_link()].
 #'
 #' @details
-#' \strong{Parametrization.} \eqn{\mu} is the \strong{scale} and not the mean.
+#' **Parametrization.** \eqn{\mu} is the **scale** and not the mean.
 #' The mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a
 #' mean parametrization would make every derivative a derivative of the gamma
 #' function and its inverse. The scale-shape form keeps the whole family
-#' elementary, and \code{\link{mean.Weibull1Distrib}} reports the mean.
-#' This is the parametrization of \code{WEI} in \pkg{gamlss}.
+#' elementary, and [mean.Weibull1Distrib()] reports the mean.
+#' This is the parametrization of `WEI` in \pkg{gamlss}.
 #'
-#' \strong{Probability density function:}
+#' **Probability density function:**
 #' \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
 #'   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
 #'   \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y > 0}
 #'
-#' \strong{Cumulative distribution function:}
+#' **Cumulative distribution function:**
 #' \deqn{F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}}
 #'
-#' \strong{Quantile function:}
+#' **Quantile function:**
 #' \deqn{Q(p; \mu, \sigma) = \mu\left\{-\log(1-p)\right\}^{1/\sigma}}
 #'
-#' \strong{Score}, with \eqn{u = (y/\mu)^{\sigma}} and \eqn{z = y/\mu}:
+#' **Score**, with \eqn{u = (y/\mu)^{\sigma}} and \eqn{z = y/\mu}:
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\sigma}{\mu}(u - 1),
 #'       \qquad
 #'       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
 #'         + (1 - u)\log z}
 #'
-#' \strong{Observed Hessian:}
+#' **Observed Hessian:**
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
 #'         = \dfrac{\sigma}{\mu^2}\left\{1 - (1 + \sigma) u\right\}, \quad
 #'       \dfrac{\partial^2 \ell}{\partial \sigma^2}
@@ -334,38 +334,38 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #'       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
 #'         = \dfrac{u - 1 + \sigma u \log z}{\mu}}
 #'
-#' \strong{Expected Hessian:} see
-#' \code{\link{distrib_expected_hessian.Weibull1Distrib}}. The substitution
+#' **Expected Hessian:** see
+#' [distrib_expected_hessian.Weibull1Distrib()]. The substitution
 #' \eqn{u \sim \mathrm{Exp}(1)} turns every expectation into a derivative of
 #' \eqn{\Gamma} at 2.
 #'
-#' \strong{Moments.} With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is
+#' **Moments.** With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is
 #' \eqn{\mu g_1} and the variance \eqn{\mu^2 (g_2 - g_1^2)}; the skewness and
 #' the excess kurtosis follow from \eqn{g_3} and \eqn{g_4} and do not depend on
 #' \eqn{\mu}.
 #'
-#' \strong{Special cases.} \eqn{\sigma = 1} is the exponential distribution with
+#' **Special cases.** \eqn{\sigma = 1} is the exponential distribution with
 #' mean \eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh distribution. The hazard is
 #' increasing for \eqn{\sigma > 1} and decreasing for \eqn{\sigma < 1}, which is
 #' what the family is used for.
 #'
-#' \strong{Higher orders.} Third and fourth derivatives are closed form,
+#' **Higher orders.** Third and fourth derivatives are closed form,
 #' observed and expected: with \eqn{u = (y/\mu)^{\sigma}} and
 #' \eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
 #' \eqn{Lu}, and every expectation is a derivative of \eqn{\Gamma} at 2.
 #'
-#' \strong{Parameter Domains:}
+#' **Parameter Domains:**
 #' \itemize{
 #'   \item \eqn{\mu \in (0, +\infty)}
 #'   \item \eqn{\sigma \in (0, +\infty)}
 #' }
 #'
-#' @return An S7 object of class \code{\link{Weibull1Distrib}} (inheriting from
-#'   \code{continuous_distrib}).
+#' @return An S7 object of class [Weibull1Distrib()] (inheriting from
+#'   `continuous_distrib`).
 #'
 #' @references
 #' Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
-#' \emph{Continuous Univariate Distributions, Volume 1}, 2nd edition, chapter 21.
+#' *Continuous Univariate Distributions, Volume 1*, 2nd edition, chapter 21.
 #' Wiley.
 #'
 #' @importFrom linkfunctions7 log_link
@@ -386,7 +386,7 @@ S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' max(abs(distrib_pdf(d, c(0.5, 1, 2), list(mu = 2, sigma = 1)) -
 #'         stats::dexp(c(0.5, 1, 2), rate = 1 / 2)))
 #'
-#' @seealso \code{\link{weibull3_distrib}}, \code{\link{gumbel_distrib}}
+#' @seealso [weibull3_distrib()], [gumbel_distrib()]
 #' @export
 weibull1_distrib <- function(link_mu = log_link(), link_sigma = log_link()) {
   Weibull1Distrib(

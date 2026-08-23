@@ -24,7 +24,7 @@ NULL
 #' CDF Derivatives on the Requested Tail and Scale, at Any Order
 #'
 #' @description
-#' The general form of \code{\link{cdf_tail_scale}}: converts derivatives of
+#' The general form of [cdf_tail_scale()]: converts derivatives of
 #' \eqn{F} of every order up to the one wanted into derivatives of whichever
 #' tail was asked for, on the natural or the log scale.
 #'
@@ -34,14 +34,14 @@ NULL
 #' \eqn{d^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
 #' \prod_{B} (d^B P / P)}, which at second order is the familiar
 #' \eqn{d^2 P/P - (dP/P)(dP/P)} and at third and fourth is what
-#' \code{\link{log_deriv}} sums. Only the ratios are needed, which is why
-#' every order up to \code{order} has to be supplied.
+#' [log_deriv()] sums. Only the ratios are needed, which is why
+#' every order up to `order` has to be supplied.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param Fq The cdf evaluated at the quantile.
-#' @param dF A list of length \code{order}; element \code{k} is the table of
+#' @param dF A list of length `order`; element `k` is the table of
 #'   \eqn{k}-th derivatives of \eqn{F}, keyed as
-#'   \code{\link{deriv_names}(distrib@params, k)}.
+#'   [`deriv_names(distrib@params, k)`][deriv_names].
 #' @param order The derivative order wanted, 1 to 4.
 #' @param lower.tail Logical; whether the lower tail is wanted.
 #' @param log Logical; whether derivatives of the log probability are wanted.
@@ -49,7 +49,7 @@ NULL
 #' @return A named list of derivative component vectors of the requested
 #'   order.
 #'
-#' @seealso \code{\link{cdf_tail_scale}}, \code{\link{log_deriv}}
+#' @seealso [cdf_tail_scale()], [log_deriv()]
 #' @keywords internal
 cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
   params <- distrib@params
@@ -70,29 +70,29 @@ cdf_scale_k <- function(distrib, Fq, dF, order, lower.tail, log) {
 #' CDF Derivatives of a Discrete Distribution, at Any Order
 #'
 #' @description
-#' The general form of \code{\link{discrete_cdf_deriv}}: evaluates
+#' The general form of [discrete_cdf_deriv()]: evaluates
 #' \eqn{d^I F(q) = \sum_{y \le q} f(y)\,(d^I f/f)(y)} for any order up to
 #' four.
 #'
 #' @details
 #' The quantity summed is the complete Bell polynomial in the log-derivatives,
-#' which \code{\link{bell_f_ratio}} computes, so the order enters only through
+#' which [bell_f_ratio()] computes, so the order enters only through
 #' how many of the family's derivative tables are fetched. At orders one and
 #' two this reproduces the written-out \eqn{f g} and
-#' \eqn{f(h + g_i g_j)} of \code{\link{discrete_cdf_deriv}}.
+#' \eqn{f(h + g_i g_j)} of [discrete_cdf_deriv()].
 #'
 #' As there, a test must not check this against the partial-expectation sum,
 #' which is the same sum twice; finite differences of the cdf are the
 #' independent reference.
 #'
-#' @param distrib An object inheriting from class \code{"discrete_distrib"}.
+#' @param distrib An object inheriting from class `"discrete_distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{discrete_cdf_deriv}}, \code{\link{bell_f_ratio}}
+#' @seealso [discrete_cdf_deriv()], [bell_f_ratio()]
 #' @keywords internal
 discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
   params <- distrib@params
@@ -120,7 +120,7 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'
 #' @description
 #' One product stencil of the requested order applied to
-#' \code{\link{distrib_cdf}}, which is analytic for every family in the
+#' [distrib_cdf()], which is analytic for every family in the
 #' catalog.
 #'
 #' @details
@@ -130,9 +130,9 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' difference. The step is \eqn{\varepsilon^{1/(k+2)}} scaled by the
 #' parameter, which balances the \eqn{h^{2}} truncation against the
 #' \eqn{\varepsilon/h^{k}} rounding, and is chosen per observation because
-#' \code{theta} may vary by observation.
+#' `theta` may vary by observation.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order The derivative order, 3 or 4.
@@ -140,7 +140,7 @@ discrete_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{numerical_cdf_deriv}}
+#' @seealso [numerical_cdf_deriv()]
 #' @keywords internal
 numerical_cdf_deriv_k <- function(distrib, q, theta, order,
                                   h_rel = .Machine$double.eps^(1 / (order + 2))) {
@@ -183,7 +183,7 @@ numerical_cdf_deriv_k <- function(distrib, q, theta, order,
 #' CDF Derivative Tables of Every Order Up To One
 #'
 #' @description
-#' The derivatives of \eqn{F} of orders 1 to \code{order}, by whichever route
+#' The derivatives of \eqn{F} of orders 1 to `order`, by whichever route
 #' the class uses.
 #'
 #' @details
@@ -194,16 +194,16 @@ numerical_cdf_deriv_k <- function(distrib, q, theta, order,
 #' route -- exact sum for a discrete family, one stencil on the analytic
 #' distribution function for a continuous one -- in a single statement.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param order The highest order wanted, 1 to 4.
 #'
-#' @return A list of length \code{order} of named derivative tables of
+#' @return A list of length `order` of named derivative tables of
 #'   \eqn{F}.
 #'
-#' @seealso \code{\link{cdf_scale_k}}, \code{\link{discrete_cdf_deriv_k}},
-#'   \code{\link{numerical_cdf_deriv_k}}
+#' @seealso [cdf_scale_k()], [discrete_cdf_deriv_k()],
+#'   [numerical_cdf_deriv_k()]
 #' @keywords internal
 cdf_tables <- function(distrib, q, theta, order) {
   discrete <- S7::S7_inherits(distrib, discrete_distrib)
@@ -225,19 +225,19 @@ cdf_tables <- function(distrib, q, theta, order) {
 #' and its fourth-order analogue, on either tail.
 #'
 #' @details
-#' These complete the sequence begun by \code{\link{distrib_grad_cdf}} and
-#' \code{\link{distrib_hess_cdf}}. What consumes them is truncation: with only
-#' the first two orders available, \code{\link{truncated}} pays one quadrature
+#' These complete the sequence begun by [distrib_grad_cdf()] and
+#' [distrib_hess_cdf()]. What consumes them is truncation: with only
+#' the first two orders available, [truncated()] pays one quadrature
 #' per component at orders three and four, and with these it pays two calls on
 #' the parent instead.
 #'
 #' A discrete family uses the exact finite sum and a continuous one one
 #' product stencil on its analytic distribution function; see
-#' \code{\link{discrete_cdf_deriv_k}} and \code{\link{numerical_cdf_deriv_k}}.
+#' [discrete_cdf_deriv_k()] and [numerical_cdf_deriv_k()].
 #' A family with a closed form registers its own method, as at the orders
 #' below.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param lower.tail Logical; whether the lower tail is wanted.
@@ -245,9 +245,9 @@ cdf_tables <- function(distrib, q, theta, order) {
 #' @param ... Passed to methods.
 #'
 #' @return A named list of derivative component vectors, keyed as
-#'   \code{\link{deriv_names}(distrib@params, 3)} or \code{4}.
+#'   [`deriv_names(distrib@params, 3)`][deriv_names] or `4`.
 #'
-#' @seealso \code{\link{distrib_hess_cdf}}, \code{\link{truncated}}
+#' @seealso [distrib_hess_cdf()], [truncated()]
 #'
 #' @examples
 #' distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
@@ -275,9 +275,9 @@ distrib_deriv4_cdf <- S7::new_generic(
 
 #' @title Default Third Log-CDF Derivatives
 #' @name distrib_deriv3_cdf.distrib
-#' @description The route of \code{\link{cdf_tables}} for the class, put on
+#' @description The route of [cdf_tables()] for the class, put on
 #'   the requested tail and scale.
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters.
 #' @param lower.tail Logical.
@@ -319,19 +319,19 @@ S7::method(distrib_deriv4_cdf, distrib) <- function(distrib, q, theta,
 #' for \eqn{i \ge 2} because \eqn{z} is linear in the location.
 #'
 #' This is what the response derivatives of order three and four are for:
-#' with only \code{\link{distrib_grad_y}} and \code{\link{distrib_hess_y}}
+#' with only [distrib_grad_y()] and [distrib_hess_y()]
 #' the construction stops at second order, which is where
-#' \code{\link{loc_scale_cdf_deriv}} stops. At orders one and two the two
+#' [loc_scale_cdf_deriv()] stops. At orders one and two the two
 #' agree exactly.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of parameters, location first and scale second.
 #' @param order The derivative order, 1 to 4.
 #'
 #' @return A named list of derivative components of \eqn{F}.
 #'
-#' @seealso \code{\link{loc_scale_cdf_deriv}}, \code{\link{chain_assemble}}
+#' @seealso [loc_scale_cdf_deriv()], [chain_assemble()]
 #' @keywords internal
 loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
   s <- theta[[2]]
@@ -363,14 +363,14 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
 #' Location-Scale Third and Fourth Log-CDF Derivatives
 #'
 #' @description
-#' The \code{\link{distrib_deriv3_cdf}} and \code{\link{distrib_deriv4_cdf}}
+#' The [distrib_deriv3_cdf()] and [distrib_deriv4_cdf()]
 #' bodies shared by the location-scale families.
 #'
 #' @param order The derivative order, 3 or 4.
 #'
 #' @return A function suitable for registering as an S7 method.
 #'
-#' @seealso \code{\link{loc_scale_cdf_deriv_k}}
+#' @seealso [loc_scale_cdf_deriv_k()]
 #' @keywords internal
 loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {

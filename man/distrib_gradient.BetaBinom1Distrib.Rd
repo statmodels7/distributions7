@@ -30,5 +30,5 @@ and likewise in \eqn{\beta}, with \eqn{\alpha = \mu/\sigma} and
 \eqn{\beta = (1-\mu)/\sigma}.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

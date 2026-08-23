@@ -20,5 +20,5 @@ shape \eqn{\alpha} and \eqn{V \sim \chi^2_\nu} independent of it. No
 inversion or rejection is involved.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

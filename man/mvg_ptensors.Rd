@@ -7,7 +7,7 @@
 mvg_ptensors(pc, order, inverted = FALSE)
 }
 \arguments{
-\item{pc}{The pieces, as returned by \code{\link{mvg_pieces}} or
+\item{pc}{The pieces, as returned by \code{\link[=mvg_pieces]{mvg_pieces()}} or
 \code{mvt_pieces()}: a list carrying \code{s}, \code{eta} and
 \code{sigma_inv}.}
 

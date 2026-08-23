@@ -12,7 +12,7 @@ numDeriv_grad(f, x, h_rel = NULL)
 \item{x}{The point.}
 
 \item{h_rel}{Deprecated and unused; the step is
-\code{\link[numericals7]{fd_step}}'s.}
+\code{\link[numericals7:fd_step]{numericals7::fd_step()}}'s.}
 }
 \value{
 A numeric vector the length of \code{x}.
@@ -23,11 +23,11 @@ need and which keeps \pkg{numDeriv} a suggestion rather than a requirement.
 }
 \details{
 The nodes, the weights and the step are \pkg{numericals7}'s.
-\code{\link[numericals7]{fd_derivative}} is not called directly because its
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} is not called directly because its
 \code{f} maps a vector of points to the values at those points, while this
 one maps a whole vector to a single number.
 }
 \seealso{
-\code{\link[numericals7]{fd_weights}}
+\code{\link[numericals7:fd_weights]{numericals7::fd_weights()}}
 }
 \keyword{internal}

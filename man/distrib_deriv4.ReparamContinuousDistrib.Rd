@@ -40,6 +40,6 @@ A named list of fourth-derivative components.
 The partition sum at order four, observed or expected.
 }
 \seealso{
-\code{\link{reparametrize}}
+\code{\link[=reparametrize]{reparametrize()}}
 }
 \keyword{internal}

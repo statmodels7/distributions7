@@ -35,6 +35,6 @@ which for a second derivative brings in the familiar
 \eqn{d^2 \log P = d^2 P / P - (dP/P)(dP/P)}.
 }
 \seealso{
-\code{\link{distrib_grad_cdf}}, \code{\link{distrib_hess_cdf}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}
 }
 \keyword{internal}

@@ -24,10 +24,10 @@ evaluated at \eqn{\eta = g(\theta)}, up to \code{order}.
 \details{
 This is the hot path of the link scale, so it is written against the
 order-specific generics of \pkg{linkfunctions7} rather than the convenience
-router; see the comment in the body for why, and \code{\link{link_scale_derivatives}}
+router; see the comment in the body for why, and \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}
 for what the derivatives are then used for.
 }
 \seealso{
-\code{\link{to_link_scale}}
+\code{\link[=to_link_scale]{to_link_scale()}}
 }
 \keyword{internal}

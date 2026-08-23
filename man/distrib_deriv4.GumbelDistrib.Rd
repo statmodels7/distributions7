@@ -18,8 +18,8 @@ A named list of fourth-derivative component vectors.
 \description{
 Closed-form fourth-order derivatives of the Gumbel log-density (observed,
 or expected when \code{expected = TRUE}), in the notation of
-\code{\link{distrib_deriv3.GumbelDistrib}}.
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}}.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

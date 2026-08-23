@@ -27,5 +27,5 @@ differences of trigammas; the mixed shape component carries only the
 separately otherwise.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

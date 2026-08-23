@@ -18,5 +18,5 @@ Draws a probability from the Beta and then a Binomial with it,
 which is the hierarchy the family is defined by.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

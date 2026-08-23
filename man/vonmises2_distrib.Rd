@@ -17,7 +17,7 @@ bounded to \eqn{(-\pi, \pi)}.}
 logit, the natural link onto \eqn{(0, 1)}.}
 }
 \value{
-An S7 object of class \code{\link{VonMises2Distrib}}.
+An S7 object of class \code{\link[=VonMises2Distrib]{VonMises2Distrib()}}.
 }
 \description{
 Creates a von Mises distribution object parametrized by its mean direction
@@ -25,14 +25,14 @@ and its \strong{mean resultant length} \eqn{\rho = A(\kappa)}, which lives
 in \eqn{(0, 1)}.
 }
 \details{
-The concentration \eqn{\kappa} of \code{\link{vonmises1_distrib}} is
+The concentration \eqn{\kappa} of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is
 unbounded and hard to read; the resultant length is bounded, is the quantity
 circular statistics reports, and is one minus the circular variance. The two
 are related by \eqn{\rho = I_1(\kappa)/I_0(\kappa)}, a strictly increasing
 bijection.
 
 That bijection has no closed inverse, which is why this is a family of its
-own rather than a \code{\link{reparametrize}} of the other: \eqn{\kappa} is
+own rather than a \code{\link[=reparametrize]{reparametrize()}} of the other: \eqn{\kappa} is
 obtained by root finding on \eqn{\log\kappa}, and its four derivatives come
 from the inverse function rule applied to \eqn{A' \dots A''''}, which the
 Bessel recurrences give from the same two evaluations \eqn{A} already needs.
@@ -42,9 +42,9 @@ one-variable one and the derivatives are exact. The expected information is
 closed form and the two parameters are orthogonal, as they are in the
 concentration parametrization.
 
-\strong{The moments are not the parameters.} \code{\link{mean}} returns the
+\strong{The moments are not the parameters.} \code{\link[=mean]{mean()}} returns the
 ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from
-\eqn{\mu} whenever \eqn{\mu \ne 0}; see \code{\link{vonmises1_distrib}}.
+\eqn{\mu} whenever \eqn{\mu \ne 0}; see \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.
 }
 \section{The distribution}{
 
@@ -64,5 +64,5 @@ d@params_bounds$rho
 
 }
 \seealso{
-\code{\link{vonmises1_distrib}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
 }

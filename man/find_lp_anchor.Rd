@@ -15,7 +15,7 @@ find_lp_anchor(lp_raw, b)
 A single number.
 }
 \description{
-The search behind \code{\link{find_pdf_anchor}}, expressed on a plain
+The search behind \code{\link[=find_pdf_anchor]{find_pdf_anchor()}}, expressed on a plain
 log-density over an interval.
 }
 \details{
@@ -24,6 +24,6 @@ a reparametrized density, which is what the divergence-removing transforms in
 this file produce and which has no distribution object of its own.
 }
 \seealso{
-\code{\link{find_pdf_anchor}}
+\code{\link[=find_pdf_anchor]{find_pdf_anchor()}}
 }
 \keyword{internal}

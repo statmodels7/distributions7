@@ -23,5 +23,5 @@ Computes the cumulative distribution function for the Inverse-Gaussian distribut
 where \eqn{\Phi} is the standard normal CDF.
 }
 \seealso{
-\code{\link{invgauss1_distrib}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
 }

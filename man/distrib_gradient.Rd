@@ -18,7 +18,7 @@ Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{...}{Additional arguments passed to the specific method.}
 }
@@ -37,5 +37,5 @@ distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1))
 distrib_gradient(d, c(-1, 0, 1), list(mu = 0, sigma = 1), scale = "link")
 }
 \seealso{
-\code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+\code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

@@ -19,5 +19,5 @@ A numeric vector of density values.
 \deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y-\mu|\right)}
 }
 \seealso{
-\code{\link{laplace2_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}
 }

@@ -5,19 +5,19 @@ NULL
 #' @name ReparamContinuousDistrib
 #'
 #' @description
-#' The wrapper \code{\link{reparametrize}} returns: the same law as its parent,
+#' The wrapper [reparametrize()] returns: the same law as its parent,
 #' written in different coordinates. There is one class per kind of parent, so
 #' that a continuous parent keeps the defaults registered on
-#' \code{\link{continuous_distrib}} and a discrete one those of
-#' \code{\link{discrete_distrib}}.
+#' [continuous_distrib()] and a discrete one those of
+#' [discrete_distrib()].
 #'
 #' @inheritParams distrib
 #' @param parent_distrib The distribution being rewritten.
 #' @param reparam_map The map from the new parameters to the parent's.
 #' @param reparam_derivs The function returning the map's keyed partial
-#'   tables, as \code{\link{reparam_tables}} consumes them.
+#'   tables, as [reparam_tables()] consumes them.
 #' @return An object of the corresponding class.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 ReparamContinuousDistrib <- S7::new_class("ReparamContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -41,13 +41,13 @@ ReparamDiscreteDistrib <- S7::new_class("ReparamDiscreteDistrib",
 #' Is This a Reparametrized Distribution?
 #'
 #' @description
-#' \code{TRUE} for either of the two wrapper classes.
+#' `TRUE` for either of the two wrapper classes.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 is_reparam <- function(distrib) {
@@ -66,7 +66,7 @@ is_reparam <- function(distrib) {
 #'
 #' @return A named list of the parent's parameters.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 reparam_theta <- function(distrib, theta) {
@@ -92,11 +92,11 @@ reparam_theta <- function(distrib, theta) {
 #' is an exact zero.
 #'
 #' @details
-#' When the family supplies \code{map_derivs}, the tables are its
+#' When the family supplies `map_derivs`, the tables are its
 #' hand-written closed forms; the shipped second parametrizations all do,
-#' and the formulas live in \code{\link{reparam_map_derivs}}. Otherwise
+#' and the formulas live in [reparam_map_derivs()]. Otherwise
 #' each needed partial comes from one finite-difference stencil of
-#' \code{\link[numericals7]{fd_derivative}} applied to the analytic map --
+#' [numericals7::fd_derivative()] applied to the analytic map --
 #' a single stencil per order, never a chain of differences, at the
 #' accuracy that construction carries (about 1e-8 at first order, fading
 #' with the order). Exact tables are therefore the recommendation for any
@@ -107,7 +107,7 @@ reparam_theta <- function(distrib, theta) {
 #'
 #' @return A list over parent parameters of keyed partial tables.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 reparam_tables <- function(distrib, theta) {
@@ -119,9 +119,9 @@ reparam_tables <- function(distrib, theta) {
 #' One Stencil Per Map Partial
 #'
 #' @description
-#' The numerical fallback behind \code{\link{reparam_tables}}: every
+#' The numerical fallback behind [reparam_tables()]: every
 #' partial of the map is one central stencil of
-#' \code{\link[numericals7]{fd_derivative}} in each direction, applied to
+#' [numericals7::fd_derivative()] in each direction, applied to
 #' the analytic map, iterated across DISTINCT directions (a cross-variable
 #' composition, which is not the forbidden same-variable nesting).
 #'
@@ -129,9 +129,9 @@ reparam_tables <- function(distrib, theta) {
 #' @param params The new parameter names.
 #' @param parent_params The parent parameter names.
 #'
-#' @return A function usable as \code{reparam_derivs}.
+#' @return A function usable as `reparam_derivs`.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 reparam_stencil_derivs <- function(map, params, parent_params) {
@@ -197,10 +197,10 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #' \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
 #'       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
 #'       \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial \psi_B}}
-#' the outer sum running over the set partitions of the \strong{positions} of
+#' the outer sum running over the set partitions of the **positions** of
 #' \eqn{I} and the inner one over the assignment of a parent parameter to each
 #' block. This is Faa di Bruno with a dense Jacobian, and it is the same
-#' partition enumeration the wrappers of \code{\link{zero_inflated}} and the
+#' partition enumeration the wrappers of [zero_inflated()] and the
 #' rest already use.
 #'
 #' Blocks index positions rather than variables, which is what makes a repeated
@@ -215,12 +215,12 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #' @param y The response.
 #' @param theta A named list of the new parameters.
 #' @param order The derivative order, 1 to 4.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
 #'
 #' @return A named list of component vectors, keyed as
-#'   \code{\link{deriv_names}} keys them.
+#'   [deriv_names()] keys them.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
@@ -241,22 +241,22 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #'
 #' @description
 #' Carries the parent's derivatives into new coordinates, given the jets of the
-#' map. Separated from \code{\link{reparam_chain}} so that a family written in
-#' its own right, rather than obtained through \code{\link{reparametrize}},
+#' map. Separated from [reparam_chain()] so that a family written in
+#' its own right, rather than obtained through [reparametrize()],
 #' can use the same machinery instead of a second copy of it.
 #'
 #' @param parent The distribution whose derivatives are being carried.
 #' @param y The response.
 #' @param th_par The parent's parameters, as plain numbers.
 #' @param maps The keyed partial tables of the map, as
-#'   \code{\link{reparam_tables}} returns them.
+#'   [reparam_tables()] returns them.
 #' @param new_params The names of the new parameters.
 #' @param order The derivative order, 1 to 4.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
@@ -290,30 +290,30 @@ chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
 #' Faa di Bruno Over Set Partitions, on Tables
 #'
 #' @description
-#' The partition sum of \code{\link{chain_derivatives}}, taking the inner
+#' The partition sum of [chain_derivatives()], taking the inner
 #' derivatives as tables rather than fetching them from a distribution.
 #'
 #' @details
 #' Separated so that a family whose own derivatives are easiest to write in
 #' coordinates it does not expose can carry them into the ones it does,
-#' without a second copy of the enumeration. \code{\link{enet_distrib}} is
+#' without a second copy of the enumeration. [enet_distrib()] is
 #' the case: its derivatives are compact in the two rates \eqn{(a, c)} and
 #' the family is parametrized by \eqn{(\lambda, \alpha)}, which is a
 #' bilinear map away.
 #'
-#' @param D A list of length \code{order}; \code{D[[k]]} is the inner
-#'   derivative table of order \code{k}, keyed as
-#'   \code{\link{deriv_names}(inner_params, k)}.
+#' @param D A list of length `order`; `D[[k]]` is the inner
+#'   derivative table of order `k`, keyed as
+#'   [`deriv_names(inner_params, k)`][deriv_names].
 #' @param inner_params The names of the inner coordinates.
 #' @param maps Per inner coordinate, a keyed table of the map's partials in
-#'   the outer coordinates, as \code{\link{reparam_tables}} returns them.
+#'   the outer coordinates, as [reparam_tables()] returns them.
 #' @param new_params The names of the outer parameters.
 #' @param order The derivative order, 1 to 4.
 #' @param n The length to recycle a constant component to.
 #'
 #' @return A named list of component vectors.
 #'
-#' @seealso \code{\link{chain_derivatives}}
+#' @seealso [chain_derivatives()]
 #'
 #' @keywords internal
 chain_assemble <- function(D, inner_params, maps, new_params, order, n) {
@@ -382,9 +382,9 @@ chain_assemble <- function(D, inner_params, maps, new_params, order, n) {
 #' @param distrib A reparametrized distribution.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the new parameters.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_pdf <- function(distrib, y, theta, log = FALSE, ...) {
   distrib_pdf(distrib@parent_distrib, y, reparam_theta(distrib, theta), log = log)
@@ -398,11 +398,11 @@ S7::method(distrib_pdf, ReparamDiscreteDistrib) <- reparam_pdf
 #' @param distrib A reparametrized distribution.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the new parameters.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, returns log-probabilities.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, returns log-probabilities.
 #' @param ... Passed to the parent.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   distrib_cdf(distrib@parent_distrib, q, reparam_theta(distrib, theta),
@@ -417,11 +417,11 @@ S7::method(distrib_cdf, ReparamDiscreteDistrib) <- reparam_cdf
 #' @param distrib A reparametrized distribution.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list of the new parameters.
-#' @param lower.tail Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is a log-probability.
+#' @param lower.tail Logical; if `TRUE`, probabilities are \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is a log-probability.
 #' @param ... Passed to the parent.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   distrib_quantile(distrib@parent_distrib, p, reparam_theta(distrib, theta),
@@ -437,7 +437,7 @@ S7::method(distrib_quantile, ReparamDiscreteDistrib) <- reparam_quantile
 #' @param n The number of draws.
 #' @param theta A named list of the new parameters.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_rng <- function(distrib, n, theta) {
   distrib_rng(distrib@parent_distrib, n, reparam_theta(distrib, theta))
@@ -453,10 +453,10 @@ S7::method(distrib_rng, ReparamDiscreteDistrib) <- reparam_rng
 #' @param distrib A reparametrized distribution.
 #' @param y The response.
 #' @param theta A named list of the new parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of first derivatives.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   reparam_chain(distrib, y, theta, 1L)
@@ -473,10 +473,10 @@ S7::method(distrib_gradient, ReparamDiscreteDistrib) <- reparam_gradient
 #' @param distrib A reparametrized distribution.
 #' @param y The response.
 #' @param theta A named list of the new parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second derivatives.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   reparam_chain(distrib, y, theta, 2L)[hess_names(distrib@params)]
@@ -495,12 +495,12 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' @param distrib A reparametrized distribution.
 #' @param y The response.
 #' @param theta A named list of the new parameters.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent when it has no closed form.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of expected second derivatives.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_expected_hessian <- function(distrib, y, theta,
                                      scale = c("parameter", "link"),
@@ -517,13 +517,13 @@ S7::method(distrib_expected_hessian, ReparamDiscreteDistrib) <- reparam_expected
 #' @param distrib A reparametrized distribution.
 #' @param y The response.
 #' @param theta A named list of the new parameters.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of third-derivative components.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_deriv3 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
@@ -540,13 +540,13 @@ S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
 #' @param distrib A reparametrized distribution.
 #' @param y The response.
 #' @param theta A named list of the new parameters.
-#' @param expected Logical; if \code{TRUE}, carries the expected derivatives.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param expected Logical; if `TRUE`, carries the expected derivatives.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Passed to the parent.
 #' @param nsim Passed to the parent.
 #' @param ... Unused.
 #' @return A named list of fourth-derivative components.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_deriv4 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
@@ -567,7 +567,7 @@ S7::method(distrib_deriv4, ReparamDiscreteDistrib) <- reparam_deriv4
 #' @param theta A named list of the new parameters.
 #' @param ... Passed to the parent.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 S7::method(distrib_grad_y, ReparamContinuousDistrib) <- function(distrib, y, theta, ...) {
   distrib_grad_y(distrib@parent_distrib, y, reparam_theta(distrib, theta), ...)
@@ -581,7 +581,7 @@ S7::method(distrib_grad_y, ReparamContinuousDistrib) <- function(distrib, y, the
 #' @param theta A named list of the new parameters.
 #' @param ... Passed to the parent.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 S7::method(distrib_hess_y, ReparamContinuousDistrib) <- function(distrib, y, theta, ...) {
   distrib_hess_y(distrib@parent_distrib, y, reparam_theta(distrib, theta), ...)
@@ -593,7 +593,7 @@ S7::method(distrib_hess_y, ReparamContinuousDistrib) <- function(distrib, y, the
 #' @param distrib A reparametrized distribution.
 #' @param theta A named list of the new parameters.
 #' @return A numeric vector of atom locations, possibly empty.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_atoms <- function(distrib, theta) {
   distrib_atoms(distrib@parent_distrib, reparam_theta(distrib, theta))
@@ -612,7 +612,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'
 #' @return A single string.
 #'
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #'
 #' @keywords internal
 .describe_probe <- function(probe) {
@@ -623,16 +623,16 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' Write a Distribution in Different Coordinates
 #'
 #' @description
-#' Returns the same law as \code{distrib}, parametrized by quantities of the
+#' Returns the same law as `distrib`, parametrized by quantities of the
 #' caller's choosing.
 #'
 #' @details
 #' A reparametrization is not a link. A link changes the scale a parameter is
-#' \emph{modeled} on and leaves the parameter what it was; here the parameter
-#' \emph{is} the new quantity, and that is what the estimate, the standard
+#' *modeled* on and leaves the parameter what it was; here the parameter
+#' *is* the new quantity, and that is what the estimate, the standard
 #' error and the confidence interval describe.
 #'
-#' \strong{The map is written in ordinary R.} It takes a named list of the new
+#' **The map is written in ordinary R.** It takes a named list of the new
 #' parameters and returns a named list of the parent's, and nothing in it
 #' mentions derivatives:
 #'
@@ -642,13 +642,13 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' }
 #'
 #' The derivatives of the map come from running that same expression on
-#' \strong{jets} -- values carrying every partial derivative to fourth order --
+#' **jets** -- values carrying every partial derivative to fourth order --
 #' so they are exact at every order with no chain rule transcribed. The
 #' arithmetic operators and the mathematical functions dispatch on them. A map
 #' that branches on the value of a parameter is rejected rather than
 #' approximated, a comparison having no derivative to carry.
 #'
-#' \strong{What is exact and what is inherited.} The derivatives of the
+#' **What is exact and what is inherited.** The derivatives of the
 #' log-density are carried by
 #' \deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
 #'       \ell^{(i_1 \dots i_{|\pi|})}(\theta)
@@ -661,7 +661,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #' The density, the distribution function, the quantile function, the generator
 #' and the response derivatives are the parent's at the mapped parameters.
 #'
-#' \strong{Cost.} A parameter that varies by observation needs one run of the
+#' **Cost.** A parameter that varies by observation needs one run of the
 #' map per observation; scalar parameters need one run in total, which is the
 #' case a fit is in.
 #'
@@ -678,7 +678,7 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   the new parameters to fourth order, keyed by the sorted tuple of
 #'   new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
 #'   an exact zero. The shipped second parametrizations supply hand-written
-#'   tables (see \code{\link{reparam_map_derivs}}); when \code{NULL}, each
+#'   tables (see [reparam_map_derivs()]); when `NULL`, each
 #'   needed partial comes from one finite-difference stencil on the map.
 #' @param interpretation An optional named character vector describing each new
 #'   parameter; defaults to the parameter names.
@@ -686,10 +686,10 @@ S7::method(distrib_atoms, ReparamDiscreteDistrib) <- reparam_atoms
 #'   the new parameters appended.
 #'
 #' @return A distribution object of class
-#'   \code{\link{ReparamContinuousDistrib}} or
-#'   \code{\link{ReparamDiscreteDistrib}}.
+#'   [ReparamContinuousDistrib()] or
+#'   [ReparamDiscreteDistrib()].
 #'
-#' @seealso \code{\link{fixed}}, \code{\link{transformation}}
+#' @seealso [fixed()], [transformation()]
 #'
 #' @examples
 #' # a gaussian in its mean and variance, obtained rather than written
@@ -818,7 +818,7 @@ reparametrize <- function(distrib, map, params, bounds, links,
 #' @param theta A named list of the new parameters.
 #' @param ... Passed to the parent.
 #' @return A numeric vector.
-#' @seealso \code{\link{reparametrize}}
+#' @seealso [reparametrize()]
 #' @keywords internal
 reparam_mean <- function(x, theta, ...) {
   mean(x@parent_distrib, reparam_theta(x, theta), ...)

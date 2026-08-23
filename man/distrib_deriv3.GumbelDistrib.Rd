@@ -24,5 +24,5 @@ and \eqn{E[z] = \gamma}, since \eqn{w} is standard exponential under the
 model.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

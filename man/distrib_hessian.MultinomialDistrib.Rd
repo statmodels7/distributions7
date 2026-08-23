@@ -22,5 +22,5 @@ A named list of second-derivative components.
       - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right)}
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

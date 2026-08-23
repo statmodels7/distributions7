@@ -18,15 +18,15 @@ enet_distrib(
 \item{link_alpha}{A link for the mixing weight, in \eqn{(0,1)}.}
 }
 \value{
-An object of class \code{\link{EnetDistrib}}.
+An object of class \code{\link[=EnetDistrib]{EnetDistrib()}}.
 }
 \description{
 The density whose negative logarithm is the elastic-net penalty: the
 product of a Laplace and a Gaussian at the same location, normalized.
-It exists so that \code{\link[penalties7]{elasticnet_penalty}} is the
+It exists so that \code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}} is the
 same construction as ridge and lasso -- a
-\code{\link[penalties7]{distrib_penalty}} over a
-\code{\link{fixed}} family -- rather than a branch of its own.
+\code{\link[penalties7:distrib_penalty]{penalties7::distrib_penalty()}} over a
+\code{\link[=fixed]{fixed()}} family -- rather than a branch of its own.
 }
 \details{
 Writing \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, the
@@ -66,5 +66,5 @@ via the elastic net. \emph{Journal of the Royal Statistical Society,
 Series B} 67, 301-320.
 }
 \seealso{
-\code{\link{laplace2_distrib}}, \code{\link{gaussian1_distrib}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
 }

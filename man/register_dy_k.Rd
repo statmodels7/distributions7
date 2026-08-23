@@ -15,7 +15,7 @@ register_dy_k(cls, f)
 Invisibly \code{NULL}; called for the registration.
 }
 \description{
-Turns a function of \code{(distrib, y, theta, k)} into the two methods, so
+Turns a function of \verb{(distrib, y, theta, k)} into the two methods, so
 that a family writes its rule once instead of twice.
 }
 \keyword{internal}

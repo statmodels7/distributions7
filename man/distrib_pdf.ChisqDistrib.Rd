@@ -20,5 +20,5 @@ A numeric vector of density values.
       \qquad y > 0}
 }
 \seealso{
-\code{\link{chisq_distrib}}
+\code{\link[=chisq_distrib]{chisq_distrib()}}
 }

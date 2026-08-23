@@ -26,13 +26,13 @@ Each parameter must have length 1 or \code{length(y)}.}
 the parameters \eqn{\theta} on their natural (constrained) scale, or
 \code{"link"} for derivatives with respect to the unconstrained linear
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link{link_scale_derivatives}}.}
+See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
 \item{approx}{How the expectation is approximated \strong{when the distribution
 has no closed-form expected Hessian}; ignored otherwise. One of
 \code{"bartlett"} (default, equivalently \code{"opg"}: the outer product of
 the score), \code{"integrate"} (quadrature/summation of the observed Hessian)
-or \code{"mc"} (Monte Carlo). See \code{\link{expected_derivative_methods}}
+or \code{"mc"} (Monte Carlo). See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
 for the accuracy/speed trade-offs.}
 
 \item{nsim}{Monte Carlo sample size used when \code{approx = "mc"}. Defaults to 10000.}
@@ -41,7 +41,7 @@ for the accuracy/speed trade-offs.}
 }
 \value{
 A named list of numeric vectors, keyed as
-\code{\link{hess_names}(distrib@params)}, holding the expected second
+\code{\link[=hess_names]{hess_names(distrib@params)}}, holding the expected second
 derivatives, that is minus the Fisher information.
 }
 \description{
@@ -64,5 +64,5 @@ distrib_expected_hessian(
 )
 }
 \seealso{
-\code{\link{distrib_gradient}}, \code{\link{distrib_hessian}}, \code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+\code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

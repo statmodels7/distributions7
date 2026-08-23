@@ -36,7 +36,7 @@ MvGaussianDistrib(
 
 \item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
 
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link{distrib_expected_hessian}}).}
+\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
@@ -51,12 +51,12 @@ An object of class \code{MvGaussianDistrib}.
 \description{
 The S7 class of multivariate gaussian distributions, parametrized by a mean
 vector and by a \pkg{parameters7} structure for the covariance or the
-precision. Constructed by \code{\link{mvgaussian_distrib}}.
+precision. Constructed by \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.
 }
 \examples{
 S7::S7_inherits(mvgaussian_distrib(2), MvGaussianDistrib)
 
 }
 \seealso{
-\code{\link{mvgaussian_distrib}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}
 }

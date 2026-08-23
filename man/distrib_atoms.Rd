@@ -23,7 +23,7 @@ zero.
 Returns the locations and probabilities of the point masses a distribution
 places on individual values --- the discrete part of a \emph{mixed}
 distribution, one that is neither purely continuous nor purely discrete.
-\code{\link{zero_adjusted}} applied to a continuous distribution builds exactly
+\code{\link[=zero_adjusted]{zero_adjusted()}} applied to a continuous distribution builds exactly
 such an object: a point mass at zero next to a density.
 }
 \details{
@@ -31,7 +31,7 @@ The default returns no atoms, which is the right answer for every ordinary
 distribution: a continuous one has none, and a discrete one is made of nothing
 else, so listing them would be pointless. The generic exists for the case in
 between, where a routine written for densities has to be told that part of the
-mass is not in the integral --- \code{\link{check_distrib}} uses it to know
+mass is not in the integral --- \code{\link[=check_distrib]{check_distrib()}} uses it to know
 that the density is expected to integrate to \eqn{1 - \sum p} rather than 1,
 and to keep its finite differences away from the jumps.
 }
@@ -41,5 +41,5 @@ distrib_atoms(zero_adjusted(gamma2_distrib()), list(mu = 2, sigma2 = 1, za = 0.3
 
 }
 \seealso{
-\code{\link{distrib_pdf}}, \code{\link{distrib_cdf}}, \code{\link{distrib_quantile}}, \code{\link{distrib_rng}}
+\code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}}, \code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}
 }

@@ -28,7 +28,7 @@ A named list of derivative components of \eqn{F}.
 }
 \description{
 One product stencil of the requested order applied to
-\code{\link{distrib_cdf}}, which is analytic for every family in the
+\code{\link[=distrib_cdf]{distrib_cdf()}}, which is analytic for every family in the
 catalog.
 }
 \details{
@@ -41,6 +41,6 @@ parameter, which balances the \eqn{h^{2}} truncation against the
 \code{theta} may vary by observation.
 }
 \seealso{
-\code{\link{numerical_cdf_deriv}}
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}
 }
 \keyword{internal}

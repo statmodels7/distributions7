@@ -14,7 +14,7 @@ A function suitable for registering as an S7 method.
 }
 \description{
 Builds the order-\code{k} derivative method for the mixed form of
-\code{\link{zero_adjusted}}.
+\code{\link[=zero_adjusted]{zero_adjusted()}}.
 }
 \details{
 A continuous parent puts no mass at zero, so there is no truncation constant

@@ -17,7 +17,7 @@ trunc_rng(distrib, n, theta)
 A numeric vector of draws.
 }
 \description{
-Draws by inverse transform through \code{\link{trunc_quantile}}, which is
+Draws by inverse transform through \code{\link[=trunc_quantile]{trunc_quantile()}}, which is
 exact and needs no rejection.
 }
 \keyword{internal}

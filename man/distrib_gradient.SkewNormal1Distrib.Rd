@@ -28,5 +28,5 @@ Closed-form first derivatives, with \eqn{z = (y-\mu)/\sigma},
       \dfrac{\partial \ell}{\partial \alpha} = z R.}
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

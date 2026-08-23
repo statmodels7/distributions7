@@ -17,6 +17,6 @@ How many points the distribution's support contains, \code{Inf} when it is
 unbounded.
 }
 \seealso{
-\code{\link{check_support_is_rich_enough}}
+\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}}
 }
 \keyword{internal}

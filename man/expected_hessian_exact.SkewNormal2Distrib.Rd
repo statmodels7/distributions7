@@ -12,7 +12,7 @@
 \code{FALSE}.
 }
 \description{
-The method above is the CHAIN onto \code{\link{skewnormal1_distrib}}, whose
+The method above is the CHAIN onto \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, whose
 expected information is the base class's quadrature, so the registration
 says where the arithmetic is assembled and not that it is closed form.
 }
@@ -20,10 +20,10 @@ says where the arithmetic is assembled and not that it is closed form.
 Measured at 100 observations it costs 5220 ms against the parent's 2230 --
 more than what it chains onto, the chain being paid on top -- where the
 families that do write it out answer in a median of 0.183 ms. Reported as
-exact, it made \code{\link{fit_distrib}} reject a legitimate
+exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
 \code{fisher_scoring(approx = )} here with a message that was untrue.
 }
 \seealso{
-\code{\link{expected_hessian_exact}}
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}
 }
 \keyword{internal}

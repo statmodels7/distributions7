@@ -24,5 +24,5 @@ is, although the Jacobian itself grows without bound: the divergent parts
 cancel, which is what the centered parametrization is for.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
 }

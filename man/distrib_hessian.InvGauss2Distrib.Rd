@@ -23,5 +23,5 @@ A named list of second derivatives.
       \ell^{(\lambda\lambda)} = -\dfrac{1}{2\lambda^2}}
 }
 \seealso{
-\code{\link{invgauss2_distrib}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
 }

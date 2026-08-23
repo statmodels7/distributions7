@@ -13,11 +13,11 @@ partial_loc_scale_deriv_cdf_k(order)
 A function suitable for registering as an S7 method.
 }
 \description{
-The higher-order companion of \code{\link{partial_loc_scale_hess_cdf}}: the
+The higher-order companion of \code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}}: the
 components over the location and the scale from the location-scale
 construction, and the components naming a shape parameter from the stencil.
 }
 \seealso{
-\code{\link{loc_scale_cdf_deriv_k}}
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}
 }
 \keyword{internal}

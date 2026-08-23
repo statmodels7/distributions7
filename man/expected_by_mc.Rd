@@ -30,12 +30,12 @@ per observation: the expectation depends on \eqn{\theta} alone, so observations
 sharing a \eqn{\theta} share an answer, and a model with a scalar \eqn{\theta}
 costs one simulation however long \code{y} is.
 
-Estimates the same quantity as \code{\link{expected_by_integrate}}, with an
+Estimates the same quantity as \code{\link[=expected_by_integrate]{expected_by_integrate()}}, with an
 error falling as \eqn{1/\sqrt{n_{sim}}}, and is stochastic unless the seed is
 fixed. Its cost is the cost of sampling, so it is the wrong choice for a
 distribution whose RNG falls back to inverse transform on a numerical quantile.
 }
 \seealso{
-\code{\link{expected_derivative_methods}}
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
 }
 \keyword{internal}

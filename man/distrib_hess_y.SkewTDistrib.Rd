@@ -17,5 +17,5 @@ A numeric vector.
 Closed form: \eqn{\partial^2 \ell / \partial y^2 = D'/\sigma^2}.
 }
 \seealso{
-\code{\link{skewt_distrib}}
+\code{\link[=skewt_distrib]{skewt_distrib()}}
 }

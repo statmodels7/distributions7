@@ -14,10 +14,10 @@
 A symmetric \eqn{p \times p} matrix.
 }
 \description{
-The covariance matrix \code{\link{mv_sigma}} carries, singular
+The covariance matrix \code{\link[=mv_sigma]{mv_sigma()}} carries, singular
 because the coordinates sum to one.
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }
 \keyword{internal}

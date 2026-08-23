@@ -18,23 +18,23 @@ NULL
 #' Hyperparameter Hessians of the Response Derivatives
 #'
 #' @description
-#' \code{distrib_grad_y_hess()} computes
+#' `distrib_grad_y_hess()` computes
 #' \eqn{\partial^3 \ell / \partial y\, \partial\theta_i \partial\theta_j} and
-#' \code{distrib_hess_y_hess()} computes
+#' `distrib_hess_y_hess()` computes
 #' \eqn{\partial^4 \ell / \partial y^2\, \partial\theta_i \partial\theta_j},
 #' one component per unordered pair of parameters, each a vector along
-#' \code{y}.
+#' `y`.
 #'
 #' @details
 #' These are the second-order column of the mixed grid whose first-order one
-#' is \code{\link{distrib_cross_y}} and \code{\link{distrib_cross2_y}}: how the
+#' is [distrib_cross_y()] and [distrib_cross2_y()]: how the
 #' response gradient and the response curvature CURVE in the parameters. A
 #' marginal likelihood needs them to differentiate its Laplace approximation
 #' twice, the penalty being a negative log-density evaluated at the
 #' coefficients.
 #'
-#' The components are keyed by \code{\link{hess_names}}, the same enumeration
-#' \code{\link{distrib_hessian}} uses, so a consumer that looks a pair up finds
+#' The components are keyed by [hess_names()], the same enumeration
+#' [distrib_hessian()] uses, so a consumer that looks a pair up finds
 #' it under the name it already knows.
 #'
 #' On the link scale each component is multiplied by \eqn{h_i'(\eta_i)
@@ -42,15 +42,15 @@ NULL
 #' \eqn{h_i''(\eta_i)} times the corresponding first-order component: the
 #' response derivatives are untouched by a reparametrization of \eqn{\theta},
 #' so this is the ordinary diagonal chain rule at second order, exactly as for
-#' \code{\link{distrib_hessian}}.
+#' [distrib_hessian()].
 #'
 #' Distributions with closed forms provide them; the others take one central
 #' difference of the analytic first-order quantity in each parameter (see
-#' \code{\link{numerical_theta2_y}}). The two differences act on different
+#' [numerical_theta2_y()]). The two differences act on different
 #' parameters off the diagonal, so they compose into a single mixed stencil
 #' rather than the nested differencing of one variable the package forbids.
 #'
-#' @param distrib A distribution object inheriting from the \code{distrib}
+#' @param distrib A distribution object inheriting from the `distrib`
 #'   class.
 #' @param y A numeric vector of observations.
 #' @param theta A named list (or named numeric vector) of distribution
@@ -59,14 +59,14 @@ NULL
 #' @param ... Additional arguments passed to the specific method.
 #'
 #' @return A named list with one numeric vector per parameter pair, keyed by
-#'   \code{hess_names(distrib@params)}.
+#'   `hess_names(distrib@params)`.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
 #' distrib_grad_y_hess(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #' distrib_hess_y_hess(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
 #'
-#' @seealso \code{\link{distrib_cross_y}}, \code{\link{distrib_cross2_y}}
+#' @seealso [distrib_cross_y()], [distrib_cross2_y()]
 #' @export
 distrib_grad_y_hess <- S7::new_generic("distrib_grad_y_hess", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   args <- check_derivative_args(distrib, y, theta)
@@ -115,7 +115,7 @@ distrib_hess_y_hess <- S7::new_generic("distrib_hess_y_hess", "distrib", functio
 #' @param second The parameter-scale second-order components.
 #' @param first The parameter-scale first-order components.
 #'
-#' @return A named list keyed as \code{second}.
+#' @return A named list keyed as `second`.
 #'
 #' @keywords internal
 theta2_link_scale <- function(distrib, y, theta, second, first) {
@@ -142,8 +142,8 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' analytic first-order component in each parameter.
 #'
 #' @details
-#' The reference is \code{\link{distrib_cross_y}} or
-#' \code{\link{distrib_cross2_y}}, so a distribution with a closed form for
+#' The reference is [distrib_cross_y()] or
+#' [distrib_cross2_y()], so a distribution with a closed form for
 #' those pays for exactly one difference. A mixed pair is differenced both ways
 #' and averaged: the two agree in exact arithmetic and not quite in floating
 #' point, the steps differing, and a second derivative of a scalar has to come
@@ -152,11 +152,11 @@ theta2_link_scale <- function(distrib, y, theta, second, first) {
 #' @param distrib A distribution object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param inner A function of \code{theta} returning the first-order
+#' @param inner A function of `theta` returning the first-order
 #'   components, one per parameter.
 #' @param h_rel The relative step.
 #'
-#' @return A named list keyed by \code{hess_names(distrib@params)}.
+#' @return A named list keyed by `hess_names(distrib@params)`.
 #'
 #' @examples
 #' d <- gaussian1_distrib()
@@ -191,9 +191,9 @@ numerical_theta2_y <- function(distrib, y, theta, inner,
 #' @title Default Second-Order Mixed Derivatives for Continuous Distributions
 #' @name distrib_grad_y_hess.continuous_distrib
 #' @description Fallback: one central difference of the analytic
-#'   \code{\link{distrib_cross_y}} or \code{\link{distrib_cross2_y}} in each
-#'   parameter (see \code{\link{numerical_theta2_y}}).
-#' @param distrib A \code{continuous_distrib} object.
+#'   [distrib_cross_y()] or [distrib_cross2_y()] in each
+#'   parameter (see [numerical_theta2_y()]).
+#' @param distrib A `continuous_distrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -229,9 +229,9 @@ S7::method(distrib_hess_y_hess, continuous_distrib) <- function(distrib, y, thet
 #' and the only component of the fourth derivative that does not vanish is
 #' \eqn{\partial^4\ell/\partial y^2\partial\sigma^2 = -6/\sigma^4}, the
 #' curvature carrying no location at all.
-#' @param distrib A \code{Gaussian1Distrib} object.
+#' @param distrib A `Gaussian1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{mu} and \code{sigma}.
+#' @param theta A list containing `mu` and `sigma`.
 #' @param scale Handled by the generic before dispatch.
 #' @param ... Unused.
 #' @return A named list keyed by parameter pair.

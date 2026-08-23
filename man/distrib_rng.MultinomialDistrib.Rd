@@ -14,9 +14,9 @@
 A matrix with \code{n} rows.
 }
 \description{
-\code{\link[stats]{rmultinom}}, transposed so that one row is
+\code{\link[stats:Multinom]{stats::rmultinom()}}, transposed so that one row is
 one observation.
 }
 \seealso{
-\code{\link{multinomial_distrib}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}
 }

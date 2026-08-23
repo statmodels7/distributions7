@@ -4,33 +4,33 @@ NULL
 #' @title S7 Class for the Laplace Distribution in Location and Rate
 #' @name Laplace2Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} for the Laplace
+#' @description A subclass of `continuous_distrib` for the Laplace
 #' (double-exponential) distribution written in its location \eqn{\mu} and its
-#' \strong{rate} \eqn{\lambda = 1/\sigma}. Like \code{\link{LaplaceDistrib}},
+#' **rate** \eqn{\lambda = 1/\sigma}. Like [LaplaceDistrib()],
 #' its log-likelihood is not differentiable in \eqn{\mu}.
 #' @inheritParams distrib
-#' @return An object of class \code{Laplace2Distrib}.
-#' @seealso \code{\link{laplace2_distrib}}, \code{\link{laplace_distrib}}
+#' @return An object of class `Laplace2Distrib`.
+#' @seealso [laplace2_distrib()], [laplace_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_grad_y.Laplace2Distrib]{distrib_grad_y()}},
-#'   \code{\link[=distrib_gradient.Laplace2Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hess_y.Laplace2Distrib]{distrib_hess_y()}},
-#'   \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3()}},
-#'   \code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4()}},
-#'   \code{\link[=distrib_pdf.Laplace2Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng()}},
-#'   \code{\link[=kurtosis]{kurtosis()}},
-#'   \code{\link[=mean.distrib]{mean()}},
-#'   \code{\link[=skewness]{skewness()}},
-#'   \code{\link[=variance]{variance()}}
+#'   [`distrib_cdf()`][distrib_cdf.Laplace2Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.Laplace2Distrib],
+#'   [`distrib_grad_y()`][distrib_grad_y.Laplace2Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.Laplace2Distrib],
+#'   [`distrib_hess_y()`][distrib_hess_y.Laplace2Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.Laplace2Distrib],
+#'   [`distrib_deriv3()`][distrib_deriv3.Laplace2Distrib],
+#'   [`distrib_deriv4()`][distrib_deriv4.Laplace2Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.Laplace2Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.Laplace2Distrib],
+#'   [`distrib_rng()`][distrib_rng.Laplace2Distrib],
+#'   [`kurtosis()`][kurtosis],
+#'   [`mean()`][mean.distrib],
+#'   [`skewness()`][skewness],
+#'   [`variance()`][variance]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 Laplace2Distrib <- S7::new_class("Laplace2Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -39,12 +39,12 @@ Laplace2Distrib <- S7::new_class("Laplace2Distrib", parent = continuous_distrib)
 #' @name distrib_pdf.Laplace2Distrib
 #' @description
 #' \deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y-\mu|\right)}
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing the parameters `mu` and `lambda`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FALSE, ...) {
   mu <- theta[[1]]
   lam <- theta[[2]]
@@ -56,13 +56,13 @@ S7::method(distrib_pdf, Laplace2Distrib) <- function(distrib, y, theta, log = FA
 #' @name distrib_cdf.Laplace2Distrib
 #' @description
 #' \deqn{F(q; \mu, \lambda) = \begin{cases} \dfrac{1}{2}\exp\left(\lambda(q-\mu)\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\lambda(q-\mu)\right) & q \ge \mu \end{cases}}
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   mu <- theta[[1]]
   lam <- theta[[2]]
@@ -75,13 +75,13 @@ S7::method(distrib_cdf, Laplace2Distrib) <- function(distrib, q, theta, lower.ta
 #' @name distrib_quantile.Laplace2Distrib
 #' @description
 #' \deqn{Q(p; \mu, \lambda) = \mu - \dfrac{1}{\lambda}\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
-#' @param lower.tail Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.
+#' @param log.p Logical; if `TRUE`, probabilities \eqn{p} are given as \eqn{\log(p)}.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   mu <- theta[[1]]
   lam <- theta[[2]]
@@ -93,11 +93,11 @@ S7::method(distrib_quantile, Laplace2Distrib) <- function(distrib, p, theta, low
 #' @title Laplace Random Generation in Location and Rate
 #' @name distrib_rng.Laplace2Distrib
 #' @description Generates draws by inverse-transform sampling.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param n Number of observations to generate.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A numeric vector of random draws.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
@@ -112,11 +112,11 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta) {
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \lambda\,\mathrm{sign}(y-\mu), \qquad
 #'       \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |y-\mu|}
 #'
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A list containing the vectors of first derivatives.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_gradient, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mu <- theta[[1]]
   lam <- theta[[2]]
@@ -137,16 +137,16 @@ S7::method(distrib_gradient, Laplace2Distrib) <- function(distrib, y, theta, sca
 #'
 #' The log-likelihood is linear in \eqn{\lambda} apart from the
 #' \eqn{\log\lambda} term, so every derivative in \eqn{\lambda} beyond the
-#' first is free of the data. As for \code{\link{laplace_distrib}}, the zero
+#' first is free of the data. As for [laplace_distrib()], the zero
 #' second derivative in \eqn{\mu} means Newton-Raphson cannot update
-#' \eqn{\mu}; \code{\link{distrib_expected_hessian}} supplies the Fisher
+#' \eqn{\mu}; [distrib_expected_hessian()] supplies the Fisher
 #' information \eqn{\lambda^2}.
 #'
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A list containing the vectors of second derivatives.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mu <- theta[[1]]
   lam <- theta[[2]]
@@ -161,7 +161,7 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' @title Laplace Analytical Expected Hessian in Location and Rate
 #' @name distrib_expected_hessian.Laplace2Distrib
 #' @description
-#' As for \code{\link{laplace_distrib}}, the second Bartlett identity fails in
+#' As for [laplace_distrib()], the second Bartlett identity fails in
 #' \eqn{\mu} and the expected Hessian is defined from the variance of the
 #' score:
 #'
@@ -169,13 +169,13 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \lambda}\right] = 0, \qquad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \lambda^2}\right] = -\dfrac{1}{\lambda^2}}
 #'
-#' Because the closed form exists, the \code{approx} argument is ignored.
+#' Because the closed form exists, the `approx` argument is ignored.
 #'
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A list containing the vectors of expected second derivatives.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   lam <- theta[[2]]
   n <- length(y)
@@ -192,12 +192,12 @@ S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, th
 #' Closed form, almost everywhere. The only non-zero component is
 #' \eqn{\ell^{(\lambda\lambda\lambda)} = 2/\lambda^3}, which is free of the
 #' data, so the observed and the expected derivatives coincide.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
-#' @param expected Logical; if \code{TRUE}, returns the expected third derivatives.
+#' @param theta A list containing the parameters `mu` and `lambda`.
+#' @param expected Logical; if `TRUE`, returns the expected third derivatives.
 #' @return A named list of third-derivative component vectors.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   lam <- theta[[2]]
   n <- length(y)
@@ -216,12 +216,12 @@ S7::method(distrib_deriv3, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' Closed form, almost everywhere. The only non-zero component is
 #' \eqn{\ell^{(\lambda\lambda\lambda\lambda)} = -6/\lambda^4}; the observed and
 #' the expected derivatives coincide.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
-#' @param expected Logical; if \code{TRUE}, returns the expected fourth derivatives.
+#' @param theta A list containing the parameters `mu` and `lambda`.
+#' @param expected Logical; if `TRUE`, returns the expected fourth derivatives.
 #' @return A named list of fourth-derivative component vectors.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_deriv4, Laplace2Distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   lam <- theta[[2]]
   n <- length(y)
@@ -241,11 +241,11 @@ S7::method(distrib_deriv4, Laplace2Distrib) <- function(distrib, y, theta, expec
 #' \eqn{\partial \ell / \partial y = -\lambda\,\mathrm{sign}(y-\mu)}, almost
 #' everywhere; the analytic form is provided because finite differences would
 #' be inaccurate across the kink at \eqn{y = \mu}.
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A numeric vector.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_grad_y, Laplace2Distrib) <- function(distrib, y, theta) {
   -theta[[2]] * sign(y - theta[[1]])
 }
@@ -253,11 +253,11 @@ S7::method(distrib_grad_y, Laplace2Distrib) <- function(distrib, y, theta) {
 #' @title Laplace Response Second Derivative in Location and Rate
 #' @name distrib_hess_y.Laplace2Distrib
 #' @description Closed-form \eqn{\partial^2 \ell / \partial y^2 = 0} (almost everywhere).
-#' @param distrib A \code{Laplace2Distrib} object.
+#' @param distrib A `Laplace2Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing the parameters \code{mu} and \code{lambda}.
+#' @param theta A list containing the parameters `mu` and `lambda`.
 #' @return A numeric vector of zeros.
-#' @seealso \code{\link{laplace2_distrib}}
+#' @seealso [laplace2_distrib()]
 S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta) {
   rep(0, length.out = length(y))
 }
@@ -268,55 +268,55 @@ S7::method(distrib_hess_y, Laplace2Distrib) <- function(distrib, y, theta) {
 #'
 #' @description
 #' Creates a Laplace (double-exponential) distribution object parametrized by
-#' location (\eqn{\mu}) and \strong{rate} (\eqn{\lambda}).
+#' location (\eqn{\mu}) and **rate** (\eqn{\lambda}).
 #'
 #' @details
-#' This is the same law as \code{\link{laplace_distrib}} in different
+#' This is the same law as [laplace_distrib()] in different
 #' coordinates: \eqn{\lambda} here is \eqn{1/\sigma} there. The rate form is
 #' the one a penalty consumes, because the negative log-density at fixed
 #' \eqn{\mu = 0} is \eqn{\lambda \lvert y \rvert} up to a constant: the lasso
 #' penalty is linear in \eqn{\lambda}, and its derivatives in \eqn{\lambda}
 #' beyond the first carry no data at all.
 #'
-#' \strong{Probability density function:}
+#' **Probability density function:**
 #' \deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y-\mu|\right)}
 #'
-#' \strong{Score} (defined almost everywhere):
+#' **Score** (defined almost everywhere):
 #' \deqn{\dfrac{\partial \ell}{\partial \mu} = \lambda\,\mathrm{sign}(y-\mu), \qquad
 #'       \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |y-\mu|}
 #'
-#' \strong{Observed Hessian} (almost everywhere):
+#' **Observed Hessian** (almost everywhere):
 #' \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \quad
 #'       \dfrac{\partial^2 \ell}{\partial \mu\,\partial \lambda} = \mathrm{sign}(y-\mu), \quad
 #'       \dfrac{\partial^2 \ell}{\partial \lambda^2} = -\dfrac{1}{\lambda^2}}
 #'
-#' \strong{Expected Hessian} (Fisher information from the score variance):
+#' **Expected Hessian** (Fisher information from the score variance):
 #' \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\lambda^2, \quad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \lambda^2}\right] = -\dfrac{1}{\lambda^2}, \quad
 #'       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \lambda}\right] = 0}
 #'
-#' \strong{Moments:} mean \eqn{\mu}, variance \eqn{2/\lambda^2}, skewness 0,
+#' **Moments:** mean \eqn{\mu}, variance \eqn{2/\lambda^2}, skewness 0,
 #' excess kurtosis 3.
 #'
 #' The kink at \eqn{y = \mu} and its consequences are those of
-#' \code{\link{laplace_distrib}}: \code{params_smooth = c(mu = FALSE, lambda
-#' = TRUE)}, the observed Hessian cannot update \eqn{\mu}, and the expected
+#' [laplace_distrib()]: `params_smooth = c(mu = FALSE, lambda
+#' = TRUE)`, the observed Hessian cannot update \eqn{\mu}, and the expected
 #' Hessian comes from the variance of the score.
 #'
-#' \strong{Parameter Domains:}
+#' **Parameter Domains:**
 #' \itemize{
 #'   \item \eqn{\mu \in (-\infty, +\infty)}
 #'   \item \eqn{\lambda \in (0, +\infty)}
 #' }
 #'
 #' @param link_mu A link function object for the location parameter \eqn{\mu}.
-#'   Defaults to \code{\link[linkfunctions7]{identity_link}}.
+#'   Defaults to [linkfunctions7::identity_link()].
 #' @param link_lambda A link function object for the rate parameter \eqn{\lambda}.
-#'   Defaults to \code{\link[linkfunctions7]{log_link}} to ensure positivity.
+#'   Defaults to [linkfunctions7::log_link()] to ensure positivity.
 #'
-#' @return An S7 object of class \code{Laplace2Distrib} (inheriting from \code{continuous_distrib}).
+#' @return An S7 object of class `Laplace2Distrib` (inheriting from `continuous_distrib`).
 #'
-#' @seealso \code{\link{laplace_distrib}}
+#' @seealso [laplace_distrib()]
 #'
 #' @importFrom linkfunctions7 identity_link log_link
 #' @importFrom stats runif

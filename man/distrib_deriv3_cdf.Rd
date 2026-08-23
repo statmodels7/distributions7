@@ -24,22 +24,22 @@ distrib_deriv4_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 }
 \value{
 A named list of derivative component vectors, keyed as
-\code{\link{deriv_names}(distrib@params, 3)} or \code{4}.
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} or \code{4}.
 }
 \description{
 \eqn{\partial^{3}\log F(q)/\partial\theta_i\partial\theta_j\partial\theta_k}
 and its fourth-order analogue, on either tail.
 }
 \details{
-These complete the sequence begun by \code{\link{distrib_grad_cdf}} and
-\code{\link{distrib_hess_cdf}}. What consumes them is truncation: with only
-the first two orders available, \code{\link{truncated}} pays one quadrature
+These complete the sequence begun by \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}. What consumes them is truncation: with only
+the first two orders available, \code{\link[=truncated]{truncated()}} pays one quadrature
 per component at orders three and four, and with these it pays two calls on
 the parent instead.
 
 A discrete family uses the exact finite sum and a continuous one one
 product stencil on its analytic distribution function; see
-\code{\link{discrete_cdf_deriv_k}} and \code{\link{numerical_cdf_deriv_k}}.
+\code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}} and \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}.
 A family with a closed form registers its own method, as at the orders
 below.
 }
@@ -50,5 +50,5 @@ distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))
 
 }
 \seealso{
-\code{\link{distrib_hess_cdf}}, \code{\link{truncated}}
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=truncated]{truncated()}}
 }

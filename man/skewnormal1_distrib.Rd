@@ -12,16 +12,16 @@ skewnormal1_distrib(
 }
 \arguments{
 \item{link_mu}{A link function object for the location \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7]{identity_link}}.}
+\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
 \item{link_sigma}{A link function object for the scale \eqn{\sigma}. Defaults
-to \code{\link[linkfunctions7]{log_link}} to ensure positivity.}
+to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
 
 \item{link_alpha}{A link function object for the shape \eqn{\alpha}, which is
-unconstrained. Defaults to \code{\link[linkfunctions7]{identity_link}}.}
+unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 }
 \value{
-An S7 object of class \code{\link{SkewNormal1Distrib}} (inheriting from
+An S7 object of class \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}} (inheriting from
 \code{continuous_distrib}).
 }
 \description{
@@ -39,17 +39,17 @@ identically one and the family reduces to the gaussian.
 
 \strong{Cumulative distribution function:}
 \deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha)}
-with \eqn{T} Owen's T function; see \code{\link[numericals7]{owen_t}}. The quantile
+with \eqn{T} Owen's T function; see \code{\link[numericals7:owen_t]{numericals7::owen_t()}}. The quantile
 function has no closed form and comes from the base class by root finding.
 
 \strong{Score and observed Hessian} are closed form, written in the inverse
 Mills ratio \eqn{R(t) = \phi(t)/\Phi(t)} at \eqn{t = \alpha z} and its
 derivative \eqn{R' = -R(t+R)}; see
-\code{\link{distrib_gradient.SkewNormal1Distrib}} and
-\code{\link{distrib_hessian.SkewNormal1Distrib}}.
+\code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}} and
+\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}}.
 
 \strong{Expected information.} There is no elementary closed form, so none
-is registered and \code{\link{distrib_expected_hessian}} approximates it by
+is registered and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it by
 the strategy named in \code{approx}, the default being the score variance.
 
 \strong{Singularity at the gaussian.} At \eqn{\alpha = 0} the expected
@@ -106,5 +106,5 @@ Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
 Families}. Cambridge University Press.
 }
 \seealso{
-\code{\link{skewnormal2_distrib}}, \code{\link{skewt_distrib}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}
 }

@@ -8,9 +8,9 @@ Nothing. This page documents the \code{scale} argument shared by the
 derivative generics named above; the value returned is theirs.
 }
 \description{
-The derivative generics of the package (\code{\link{distrib_gradient}},
-\code{\link{distrib_hessian}}, \code{\link{distrib_expected_hessian}},
-\code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}) accept a
+The derivative generics of the package (\code{\link[=distrib_gradient]{distrib_gradient()}},
+\code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}) accept a
 \code{scale} argument selecting the parameterization the derivatives are taken
 with respect to:
 \itemize{
@@ -46,10 +46,10 @@ score has zero expectation, so the information transforms as the congruence
 \eqn{\mathrm{diag}(h')\,\mathbb{E}[H]\,\mathrm{diag}(h')}.
 
 The inverse-link derivatives \eqn{h', h'', h''', h''''} are obtained from
-\code{\link[linkfunctions7]{linkinvderiv}}, so link-scale derivatives are
+\code{\link[linkfunctions7:linkinvderiv]{linkfunctions7::linkinvderiv()}}, so link-scale derivatives are
 available up to order 4 for every link in \pkg{linkfunctions7}.
 }
 \seealso{
-\code{\link{distrib_gradient}}, \code{\link{distrib_hessian}},
-\code{\link{distrib_deriv3}}, \code{\link{distrib_deriv4}}
+\code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}},
+\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}
 }

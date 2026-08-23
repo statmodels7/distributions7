@@ -5,23 +5,23 @@ NULL
 #' @name FixedContinuousDistrib
 #'
 #' @description
-#' A subclass of \code{continuous_distrib} representing a continuous
+#' A subclass of `continuous_distrib` representing a continuous
 #' distribution in which some parameters of the wrapped distribution are held
-#' at known values. Constructed by \code{\link{fixed}}.
+#' at known values. Constructed by [fixed()].
 #'
 #' @details
 #' The free parameters are the parent's minus the fixed ones, in the parent's
-#' order. Every method splices the fixed values back into \code{theta} at their
+#' order. Every method splices the fixed values back into `theta` at their
 #' positions and delegates to the parent, so the parent's closed forms are used
 #' whenever they exist; a derivative method then keeps only the components in
 #' which every index is a free parameter. No method of this class computes
 #' anything of its own.
 #'
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{continuous_distrib} object.
+#' @param parent_distrib The wrapped `continuous_distrib` object.
 #' @param fixed_params A named list of the fixed parameter values.
-#' @return An object of class \code{FixedContinuousDistrib}.
-#' @seealso \code{\link{fixed}}
+#' @return An object of class `FixedContinuousDistrib`.
+#' @seealso [fixed()]
 FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -34,20 +34,20 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @name FixedDiscreteDistrib
 #'
 #' @description
-#' A subclass of \code{discrete_distrib} representing a discrete distribution
+#' A subclass of `discrete_distrib` representing a discrete distribution
 #' in which some parameters of the wrapped distribution are held at known
-#' values. Constructed by \code{\link{fixed}}.
+#' values. Constructed by [fixed()].
 #'
 #' @details
-#' Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
-#' splices the fixed values into \code{theta} and delegates to the parent, and
+#' Identical in behavior to [FixedContinuousDistrib()]: every method
+#' splices the fixed values into `theta` and delegates to the parent, and
 #' the derivative methods keep only the components among the free parameters.
 #'
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{discrete_distrib} object.
+#' @param parent_distrib The wrapped `discrete_distrib` object.
 #' @param fixed_params A named list of the fixed parameter values.
-#' @return An object of class \code{FixedDiscreteDistrib}.
-#' @seealso \code{\link{fixed}}
+#' @return An object of class `FixedDiscreteDistrib`.
+#' @seealso [fixed()]
 FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -60,13 +60,13 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @name FixedMultivariateDistrib
 #'
 #' @description
-#' A subclass of \code{multivariate_distrib} representing a multivariate
+#' A subclass of `multivariate_distrib` representing a multivariate
 #' distribution in which some parameters of the wrapped distribution are held
-#' at known values. Constructed by \code{\link{fixed}}.
+#' at known values. Constructed by [fixed()].
 #'
 #' @details
-#' Identical in behavior to \code{\link{FixedContinuousDistrib}}: every method
-#' splices the fixed values into \code{theta} and delegates to the parent, and
+#' Identical in behavior to [FixedContinuousDistrib()]: every method
+#' splices the fixed values into `theta` and delegates to the parent, and
 #' the derivative methods keep only the components among the free parameters.
 #' The multivariate branch sits beside the continuous and discrete ones rather
 #' than under either, so the generics a multivariate family rejects by design
@@ -78,13 +78,13 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' a random effect is distributed by.
 #'
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped \code{multivariate_distrib} object.
+#' @param parent_distrib The wrapped `multivariate_distrib` object.
 #' @param fixed_params A named list of the fixed parameter values.
 #' @param n_dim The number of coordinates, carried from the parent: fixing a
 #'   parameter removes it from the parameter set and leaves the dimension of
 #'   the response alone.
-#' @return An object of class \code{FixedMultivariateDistrib}.
-#' @seealso \code{\link{fixed}}
+#' @return An object of class `FixedMultivariateDistrib`.
+#' @seealso [fixed()]
 FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
   parent = multivariate_distrib,
   properties = list(
@@ -96,14 +96,14 @@ FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
 #' Is This a Fixed-Parameter Wrapper?
 #'
 #' @description
-#' \code{TRUE} for a distribution produced by \code{\link{fixed}}, in any of
+#' `TRUE` for a distribution produced by [fixed()], in any of
 #' its three forms.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{fixed}}
+#' @seealso [fixed()]
 #' @keywords internal
 is_fixed <- function(distrib) {
   S7::S7_inherits(distrib, FixedContinuousDistrib) ||
@@ -114,15 +114,15 @@ is_fixed <- function(distrib) {
 #' Splice the Fixed Values Back Into a Full Parameter List
 #'
 #' @description
-#' Combines the wrapper's free \code{theta} with its fixed values into the full
+#' Combines the wrapper's free `theta` with its fixed values into the full
 #' parameter list of the parent, in the parent's order.
 #'
 #' @details
-#' \code{theta} is aligned against the wrapper first, so the function is safe
-#' to call both from generic-dispatched methods, whose \code{theta} is already
-#' aligned, and from delegating methods such as \code{mean()}, whose
-#' \code{theta} arrives as the caller wrote it. Free values may be vectors --
-#' the wrapper is as vectorized in \code{theta} as its parent -- while the
+#' `theta` is aligned against the wrapper first, so the function is safe
+#' to call both from generic-dispatched methods, whose `theta` is already
+#' aligned, and from delegating methods such as `mean()`, whose
+#' `theta` arrives as the caller wrote it. Free values may be vectors --
+#' the wrapper is as vectorized in `theta` as its parent -- while the
 #' fixed values are scalars by construction.
 #'
 #' @param distrib A fixed-parameter wrapper object.
@@ -130,7 +130,7 @@ is_fixed <- function(distrib) {
 #'
 #' @return A named list covering every parameter of the parent.
 #'
-#' @seealso \code{\link{fixed}}
+#' @seealso [fixed()]
 #' @keywords internal
 fixed_full_theta <- function(distrib, theta) {
   theta <- align_theta(distrib, theta)
@@ -554,7 +554,7 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' @description
 #' Returns the distribution obtained by holding some parameters of
-#' \code{distrib} at known values, leaving only the others to be supplied and
+#' `distrib` at known values, leaving only the others to be supplied and
 #' estimated.
 #'
 #' @details
@@ -566,13 +566,13 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'   \qquad l^{(i_1 \cdots i_k)}_{\mathrm{fix}} = l^{(i_1 \cdots i_k)},
 #'   \quad i_1, \dots, i_k \in F.}
 #'
-#' The result is the same law with a smaller parameter set: \code{theta}
+#' The result is the same law with a smaller parameter set: `theta`
 #' carries only the free parameters, every generic answers as the parent does
 #' at the full vector, and the derivative components are the parent's
 #' restricted to the free indices -- a subvector of the score, a submatrix of
 #' the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
 #' no normalizing constant changes, so the parent's closed forms are used
-#' throughout, and \code{\link{fit_distrib}} estimates the free parameters
+#' throughout, and [fit_distrib()] estimates the free parameters
 #' with standard errors and intervals for them alone.
 #'
 #' Fixed values are single numbers, strictly inside the open domain of their
@@ -587,13 +587,13 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' @param distrib The distribution whose parameters are to be fixed.
 #' @param ... The fixed values, named after the parameters they fix, as in
-#'   \code{fixed(gaussian1_distrib(), mu = 0)}.
+#'   `fixed(gaussian1_distrib(), mu = 0)`.
 #'
-#' @return An object of class \code{FixedContinuousDistrib} or
-#'   \code{FixedDiscreteDistrib}, matching the parent.
+#' @return An object of class `FixedContinuousDistrib` or
+#'   `FixedDiscreteDistrib`, matching the parent.
 #'
-#' @seealso \code{\link{zero_inflated}}, \code{\link{truncated}},
-#'   \code{\link{transformation}}
+#' @seealso [zero_inflated()], [truncated()],
+#'   [transformation()]
 #'
 #' @examples
 #' # a gaussian with known mean: only sigma remains

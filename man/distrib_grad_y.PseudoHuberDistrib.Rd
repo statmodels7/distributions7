@@ -20,5 +20,5 @@ response. Let \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}:
 \eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}.
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

@@ -21,5 +21,5 @@ A numeric vector of quantiles.
 \deqn{Q(p; \mu) = -\mu \log(1 - p)}
 }
 \seealso{
-\code{\link{exponential_distrib}}
+\code{\link[=exponential_distrib]{exponential_distrib()}}
 }

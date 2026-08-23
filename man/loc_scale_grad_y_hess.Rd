@@ -26,11 +26,11 @@ loc_scale_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 A named list keyed by parameter pair.
 }
 \description{
-The \code{\link{distrib_grad_y_hess}} and
-\code{\link{distrib_hess_y_hess}} bodies shared by the families that are
+The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} bodies shared by the families that are
 location-scale in both their parameters.
 }
 \seealso{
-\code{\link{loc_scale_theta2_block}}
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
 }
 \keyword{internal}

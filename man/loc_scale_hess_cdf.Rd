@@ -21,6 +21,6 @@ loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 A named list of Hessian component vectors.
 }
 \description{
-The \code{\link{distrib_hess_cdf}} body shared by the location-scale families.
+The \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body shared by the location-scale families.
 }
 \keyword{internal}

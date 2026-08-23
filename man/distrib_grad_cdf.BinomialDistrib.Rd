@@ -21,5 +21,5 @@ A named list with one element.
 Closed form: \eqn{\partial F(k)/\partial\mu = -n\,\mathrm{dbinom}(k; n-1, \mu)}.
 }
 \seealso{
-\code{\link{binomial_distrib}}
+\code{\link[=binomial_distrib]{binomial_distrib()}}
 }

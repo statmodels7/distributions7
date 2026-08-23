@@ -30,5 +30,5 @@ The support being finite, the expectation is an exact sum rather than a
 quadrature, and \code{approx} is therefore ignored.
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

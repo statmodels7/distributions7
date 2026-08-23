@@ -14,7 +14,7 @@ A function suitable for registering as an S7 method.
 }
 \description{
 Builds the order-\code{k} derivative method for
-\code{\link{transformation}}.
+\code{\link[=transformation]{transformation()}}.
 }
 \details{
 There is nothing to do. The Jacobian does not depend on \eqn{\theta}, so every

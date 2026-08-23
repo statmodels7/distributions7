@@ -36,6 +36,6 @@ sixth terms; one in \eqn{b} alone the second, third, fifth and sixth; a
 mixed one only the two terms carrying \eqn{a+b}.
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }
 \keyword{internal}

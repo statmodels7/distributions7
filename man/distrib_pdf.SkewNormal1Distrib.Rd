@@ -20,5 +20,5 @@ Computes the probability density function, with \eqn{z = (y-\mu)/\sigma}:
 \deqn{f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\,\phi(z)\,\Phi(\alpha z)}
 }
 \seealso{
-\code{\link{skewnormal1_distrib}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
 }

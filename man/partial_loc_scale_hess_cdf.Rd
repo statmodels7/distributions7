@@ -21,11 +21,11 @@ partial_loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 A named list of Hessian component vectors.
 }
 \description{
-The second-order companion of \code{\link{partial_loc_scale_grad_cdf}}: the
+The second-order companion of \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}: the
 three components in the location and scale in closed form, the components
 involving a shape parameter by finite differences.
 }
 \seealso{
-\code{\link{loc_scale_cdf_deriv}}
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}
 }
 \keyword{internal}

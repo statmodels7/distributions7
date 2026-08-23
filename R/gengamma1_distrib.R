@@ -4,23 +4,23 @@ NULL
 #' @title S7 Class for the Generalized Gamma Distribution
 #' @name GenGamma1Distrib
 #'
-#' @description A subclass of \code{continuous_distrib} representing the
+#' @description A subclass of `continuous_distrib` representing the
 #'   generalized gamma distribution in Stacy's three-parameter form.
 #' @inheritParams distrib
-#' @return An object of class \code{GenGamma1Distrib}.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @return An object of class `GenGamma1Distrib`.
+#' @seealso [gengamma1_distrib()]
 #'
 #' @section Methods:
 #' Methods implemented for this class:
-#'   \code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf()}},
-#'   \code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}},
-#'   \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient()}},
-#'   \code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian()}},
-#'   \code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
-#'   \code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile()}},
-#'   \code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng()}}
+#'   [`distrib_cdf()`][distrib_cdf.GenGamma1Distrib],
+#'   [`distrib_expected_hessian()`][distrib_expected_hessian.GenGamma1Distrib],
+#'   [`distrib_gradient()`][distrib_gradient.GenGamma1Distrib],
+#'   [`distrib_hessian()`][distrib_hessian.GenGamma1Distrib],
+#'   [`distrib_pdf()`][distrib_pdf.GenGamma1Distrib],
+#'   [`distrib_quantile()`][distrib_quantile.GenGamma1Distrib],
+#'   [`distrib_rng()`][distrib_rng.GenGamma1Distrib]
 #'
-#' Everything else is inherited from \code{\link{continuous_distrib}}.
+#' Everything else is inherited from [continuous_distrib()].
 GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -30,12 +30,12 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 #' @description
 #' \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\, y^{d-1} e^{-(y/a)^{p}},
 #'       \qquad y > 0}
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param log Logical; if \code{TRUE}, returns the log-density.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param log Logical; if `TRUE`, returns the log-density.
 #' @return A numeric vector of density values.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = FALSE, ..., threads = 1L) {
   out <- gengamma_logpdf_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
   if (log) out else exp(out)
@@ -47,13 +47,13 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #' \eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularized lower incomplete gamma
 #' function, since \eqn{(Y/a)^{p}} is Gamma with shape \eqn{d/p} and unit
 #' rate.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param q A numeric vector of quantiles.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param lower.tail Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, probabilities are returned as logarithms.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param lower.tail Logical; if `TRUE` (default), \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, probabilities are returned as logarithms.
 #' @return A numeric vector of cumulative probabilities.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
                                                       log.p = FALSE) {
@@ -68,13 +68,13 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #' @description
 #' \eqn{Q(u) = a\,\{Q_{\Gamma}(u; d/p)\}^{1/p}}, inverting the same
 #' representation the distribution function uses.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param p A numeric vector of probabilities.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param lower.tail Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.
-#' @param log.p Logical; if \code{TRUE}, \code{p} is given as its logarithm.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param lower.tail Logical; if `TRUE` (default), `p` is \eqn{P(Y \le q)}.
+#' @param log.p Logical; if `TRUE`, `p` is given as its logarithm.
 #' @return A numeric vector of quantiles.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
                                                            log.p = FALSE) {
@@ -89,11 +89,11 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #' @description
 #' A Gamma draw raised to the power \eqn{1/p} and scaled, which is the
 #' representation the family is defined by rather than an approximation of it.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param n The number of draws.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @return A numeric vector of length \code{n}.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @param theta A list containing `a`, `d` and `p`.
+#' @return A numeric vector of length `n`.
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta) {
   a <- theta[[1]]; d <- theta[[2]]; p <- theta[[3]]
   a * stats::rgamma(n, shape = d / p, rate = 1)^(1 / p)
@@ -107,13 +107,13 @@ S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta) {
 #'       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
 #'       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
 #'         + \dfrac{d\,\psi(k)}{p^{2}} - wL}
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
-#' @return A named list with the \code{a}, \code{d} and \code{p} components.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @return A named list with the `a`, `d` and `p` components.
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
                                                            scale = c("parameter", "link"), ..., threads = 1L) {
   gengamma_gradient_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
@@ -125,13 +125,13 @@ S7::method(distrib_gradient, GenGamma1Distrib) <- function(distrib, y, theta,
 #' The second derivatives of the same expressions. The mixed
 #' \eqn{a}--\eqn{d} component is \eqn{-1/a}, free of the data, the scale and
 #' the first shape entering the log-density through \eqn{-d\log a} alone.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param ... Unused.
 #' @return A named list of second-derivative components.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           scale = c("parameter", "link"), ..., threads = 1L) {
   gengamma_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
@@ -144,16 +144,16 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' \eqn{u = (Y/a)^{p}}, which is Gamma with shape \eqn{k = d/p} and unit rate:
 #' \eqn{\mathbb{E}[u] = k}, \eqn{\mathbb{E}[u\log u] = k\psi(k+1)} and
 #' \eqn{\mathbb{E}[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}}, so
-#' \code{approx} is ignored.
-#' @param distrib A \code{GenGamma1Distrib} object.
+#' `approx` is ignored.
+#' @param distrib A `GenGamma1Distrib` object.
 #' @param y A numeric vector of observations.
-#' @param theta A list containing \code{a}, \code{d} and \code{p}.
-#' @param scale Either \code{"parameter"} or \code{"link"}; handled by the generic.
+#' @param theta A list containing `a`, `d` and `p`.
+#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
 #' @param approx Ignored; the expectation is closed form.
 #' @param nsim Ignored.
 #' @param ... Unused.
 #' @return A named list of expected second-derivative components.
-#' @seealso \code{\link{gengamma1_distrib}}
+#' @seealso [gengamma1_distrib()]
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
@@ -170,67 +170,67 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #' Stacy's form, with a scale \eqn{a} and two shapes \eqn{d} and \eqn{p}.
 #'
 #' @param link_a A link function object for \eqn{a}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}}.
+#'   [linkfunctions7::log_link()].
 #' @param link_d A link function object for \eqn{d}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}}.
+#'   [linkfunctions7::log_link()].
 #' @param link_p A link function object for \eqn{p}. Defaults to
-#'   \code{\link[linkfunctions7]{log_link}}.
+#'   [linkfunctions7::log_link()].
 #'
 #' @details
 #' The flexible family for a positive response, and the one that makes a
 #' choice between the gamma, the Weibull and the lognormal something to
 #' estimate rather than to assume.
 #'
-#' \strong{Density:}
+#' **Density:**
 #' \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}}}
 #'
-#' \strong{What it nests}, which Stacy's parametrization is chosen to make
+#' **What it nests**, which Stacy's parametrization is chosen to make
 #' visible:
 #' \itemize{
-#'   \item \eqn{p = 1} is the \link[=gamma2_distrib]{gamma} with shape \eqn{d}
+#'   \item \eqn{p = 1} is the [gamma][gamma2_distrib] with shape \eqn{d}
 #'     and scale \eqn{a};
-#'   \item \eqn{d = p} is the \link[=weibull1_distrib]{Weibull} with shape
+#'   \item \eqn{d = p} is the [Weibull][weibull1_distrib] with shape
 #'     \eqn{p} and scale \eqn{a};
-#'   \item \eqn{d = p = 1} is the \link[=exponential_distrib]{exponential};
+#'   \item \eqn{d = p = 1} is the [exponential][exponential_distrib];
 #'   \item \eqn{p \to 0} with \eqn{d/p} held large approaches the
-#'     \link[=lognormal1_distrib]{lognormal}.
+#'     [lognormal][lognormal1_distrib].
 #' }
 #' The first three are exact and testable; the fourth is a limit and is not
 #' reached at any admissible value.
 #'
-#' \strong{Score and information.} Writing \eqn{w = (y/a)^{p}},
+#' **Score and information.** Writing \eqn{w = (y/a)^{p}},
 #' \eqn{L = \log(y/a)} and \eqn{k = d/p},
 #' \deqn{\dfrac{\partial\ell}{\partial a} = \dfrac{pw-d}{a}, \qquad
 #'       \dfrac{\partial\ell}{\partial d} = L - \dfrac{\psi(k)}{p}, \qquad
 #'       \dfrac{\partial\ell}{\partial p} = \dfrac{1}{p}
 #'         + \dfrac{d\psi(k)}{p^{2}} - wL}
-#' and the expected information is \strong{closed form}: \eqn{u = w} is Gamma
+#' and the expected information is **closed form**: \eqn{u = w} is Gamma
 #' with shape \eqn{k} and unit rate, so every expectation the Hessian needs is
 #' one of \eqn{\mathbb{E}[u] = k}, \eqn{\mathbb{E}[u\log u] = k\psi(k+1)} and
 #' \eqn{\mathbb{E}[u(\log u)^{2}] = k\{\psi(k+1)^2 + \psi'(k+1)\}}. That is the
 #' same device the Weibull and the Gumbel use, where the corresponding
 #' variable is standard exponential.
 #'
-#' \strong{Moments:}
+#' **Moments:**
 #' \eqn{\mathbb{E}[Y^{r}] = a^{r}\Gamma\{(d+r)/p\}/\Gamma(d/p)}, finite for
 #' every \eqn{r > -d}.
 #'
-#' \strong{Parameter domains:} all three are positive.
+#' **Parameter domains:** all three are positive.
 #'
-#' The three parameters are \strong{weakly identified together} on small
+#' The three parameters are **weakly identified together** on small
 #' samples: \eqn{d} and \eqn{p} enter the density largely through their ratio,
 #' and the profile likelihood in that direction is flat. A fit of all three
 #' wants several hundred observations, and holding one with
-#' \code{\link{fixed}} is often the better model.
+#' [fixed()] is often the better model.
 #'
-#' @return An S7 object of class \code{GenGamma1Distrib}.
+#' @return An S7 object of class `GenGamma1Distrib`.
 #'
 #' @references
 #' Stacy, E. W. (1962). A generalization of the gamma distribution.
-#' \emph{Annals of Mathematical Statistics} 33, 1187-1192.
+#' *Annals of Mathematical Statistics* 33, 1187-1192.
 #'
-#' @seealso \code{\link{gamma2_distrib}}, \code{\link{weibull1_distrib}},
-#'   \code{\link{lognormal1_distrib}}, \code{\link{exponential_distrib}}
+#' @seealso [gamma2_distrib()], [weibull1_distrib()],
+#'   [lognormal1_distrib()], [exponential_distrib()]
 #'
 #' @importFrom linkfunctions7 log_link
 #' @importFrom stats pgamma qgamma rgamma

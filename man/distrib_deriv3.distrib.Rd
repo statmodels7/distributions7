@@ -16,8 +16,8 @@
 A named list of third-derivative component vectors.
 }
 \description{
-Fallback method: observed third derivatives via \code{\link{numerical_deriv3}}
+Fallback method: observed third derivatives via \code{\link[=numerical_deriv3]{numerical_deriv3()}}
 (finite differences of the Hessian); expected third derivatives via the
-\code{\link{expectation}} of the observed ones.
+\code{\link[=expectation]{expectation()}} of the observed ones.
 }
 \keyword{internal}

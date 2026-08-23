@@ -19,5 +19,5 @@ Expected Hessian of the hurdle model:
 \eqn{E[H_{\theta\theta}] = (1-\pi)\left(\dfrac{E[H] - f(0)H(0)}{1-f(0)} + H_{corr}\right)}.
 }
 \seealso{
-\code{\link{zero_adjusted}}
+\code{\link[=zero_adjusted]{zero_adjusted()}}
 }

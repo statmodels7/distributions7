@@ -20,5 +20,5 @@ The gamma density at shape \eqn{a = 1/\phi} and rate
 \eqn{b = 1/(\phi\mu)}.
 }
 \seealso{
-\code{\link{gamma1_distrib}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}
 }

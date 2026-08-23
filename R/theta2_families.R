@@ -43,17 +43,17 @@ NULL
 #' for \eqn{B = \sigma^2\ell^{(yy)}} they are \eqn{\sigma^3\ell^{(yyy)}} and
 #' \eqn{\sigma^4\ell^{(yyyy)}}. Nothing new is differentiated.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, location first and scale second.
-#' @param order \code{1} for the block of \code{\link{distrib_grad_y}},
-#'   \code{2} for that of \code{\link{distrib_hess_y}}.
+#' @param order `1` for the block of [distrib_grad_y()],
+#'   `2` for that of [distrib_hess_y()].
 #'
 #' @return A named list of three components, keyed
-#'   \code{mu_mu}, \code{sigma_sigma}, \code{mu_sigma} under the family's own
+#'   `mu_mu`, `sigma_sigma`, `mu_sigma` under the family's own
 #'   parameter names.
 #'
-#' @seealso \code{\link{distrib_grad_y_hess}}
+#' @seealso [distrib_grad_y_hess()]
 #' @keywords internal
 loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
   params <- distrib@params
@@ -93,17 +93,17 @@ loc_scale_theta2_block <- function(distrib, y, theta, order = 1L) {
 #' family whose response enters only through \eqn{z = (y-\mu)/\sigma}.
 #'
 #' @details
-#' The same identity as \code{\link{loc_scale_cross_block}} one derivative
+#' The same identity as [loc_scale_cross_block()] one derivative
 #' further in the response, and it reads the family's own third response
 #' derivative rather than differencing its second.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters, location first and scale second.
 #'
 #' @return A list of two component vectors, unnamed.
 #'
-#' @seealso \code{\link{distrib_cross2_y}}
+#' @seealso [distrib_cross2_y()]
 #' @keywords internal
 loc_scale_cross2_block <- function(distrib, y, theta) {
   s <- theta[[2]]
@@ -118,11 +118,11 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #' Second-Response Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The \code{\link{distrib_cross2_y}} body shared by the families that are
+#' The [distrib_cross2_y()] body shared by the families that are
 #' location-scale in both their parameters, and the partial form for those
 #' with a shape parameter beyond the two.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -130,7 +130,7 @@ loc_scale_cross2_block <- function(distrib, y, theta) {
 #'
 #' @return A named list with one numeric vector per parameter.
 #'
-#' @seealso \code{\link{loc_scale_cross2_block}}
+#' @seealso [loc_scale_cross2_block()]
 #' @keywords internal
 loc_scale_cross2_y <- function(distrib, y, theta,
                                scale = c("parameter", "link"), ...) {
@@ -152,11 +152,11 @@ partial_loc_scale_cross2_y <- function(distrib, y, theta,
 #' Second-Order Mixed Derivatives of a Location-Scale Family
 #'
 #' @description
-#' The \code{\link{distrib_grad_y_hess}} and
-#' \code{\link{distrib_hess_y_hess}} bodies shared by the families that are
+#' The [distrib_grad_y_hess()] and
+#' [distrib_hess_y_hess()] bodies shared by the families that are
 #' location-scale in both their parameters.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -164,7 +164,7 @@ partial_loc_scale_cross2_y <- function(distrib, y, theta,
 #'
 #' @return A named list keyed by parameter pair.
 #'
-#' @seealso \code{\link{loc_scale_theta2_block}}
+#' @seealso [loc_scale_theta2_block()]
 #' @keywords internal
 loc_scale_grad_y_hess <- function(distrib, y, theta,
                                   scale = c("parameter", "link"), ...) {
@@ -185,7 +185,7 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' The location and scale pairs in closed form and every pair touching a shape
 #' parameter by one central difference of the analytic first-order component.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
 #' @param scale Handled by the generic before dispatch.
@@ -193,7 +193,7 @@ loc_scale_hess_y_hess <- function(distrib, y, theta,
 #'
 #' @return A named list keyed by parameter pair.
 #'
-#' @seealso \code{\link{loc_scale_theta2_block}}
+#' @seealso [loc_scale_theta2_block()]
 #' @keywords internal
 partial_loc_scale_grad_y_hess <- function(distrib, y, theta,
                                           scale = c("parameter", "link"),
@@ -216,10 +216,10 @@ partial_loc_scale_hess_y_hess <- function(distrib, y, theta,
 #' Takes the differenced components and replaces the three that the
 #' location-scale identity gives in closed form.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
-#' @param order \code{1} or \code{2}.
+#' @param order `1` or `2`.
 #'
 #' @return A named list keyed by parameter pair.
 #'

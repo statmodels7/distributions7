@@ -15,7 +15,7 @@ gengamma_components(y, theta, order)
 }
 \value{
 A named list of component vectors, keyed as
-\code{\link{deriv_names}}.
+\code{\link[=deriv_names]{deriv_names()}}.
 }
 \description{
 The components of \eqn{\partial^{\alpha+\beta+\gamma}\ell /
@@ -23,6 +23,6 @@ The components of \eqn{\partial^{\alpha+\beta+\gamma}\ell /
 to four, assembled from the five terms of the log-density.
 }
 \seealso{
-\code{\link{gengamma1_distrib}}, \code{\link{fdb2}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, \code{\link[=fdb2]{fdb2()}}
 }
 \keyword{internal}

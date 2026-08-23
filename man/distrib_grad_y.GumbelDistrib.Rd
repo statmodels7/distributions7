@@ -18,5 +18,5 @@ Closed form: \eqn{\partial \ell / \partial y = (w - 1)/\sigma}, which is
 minus the derivative in \eqn{\mu}, as it must be for a location family.
 }
 \seealso{
-\code{\link{gumbel_distrib}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}
 }

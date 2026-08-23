@@ -9,7 +9,7 @@ register_surv_cdf(cls, pieces)
 \arguments{
 \item{cls}{The S7 class.}
 
-\item{pieces}{A function of \code{(distrib, q, theta)} returning a list with
+\item{pieces}{A function of \verb{(distrib, q, theta)} returning a list with
 \code{Lval} and \code{Lderiv}.}
 }
 \value{

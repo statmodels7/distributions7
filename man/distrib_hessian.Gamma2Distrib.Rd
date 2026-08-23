@@ -21,5 +21,5 @@ Computes the analytical observed Hessian (second derivatives) of the Gamma log-d
 with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
 }
 \seealso{
-\code{\link{gamma2_distrib}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}
 }

@@ -10,7 +10,7 @@ mv_location(distrib, theta)
 mv_sigma(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link{multivariate_distrib}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
 \item{theta}{A named list or vector of parameters.
 
@@ -33,7 +33,7 @@ into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
 PARAMETRIZATION carries, whichever side the matrix parameter describes: the
 covariance for a gaussian, and the scale matrix for a Student t, whose
 covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
-of freedom. The moment is \code{\link{variance}}, and keeping the two apart
+of freedom. The moment is \code{\link[=variance]{variance()}}, and keeping the two apart
 is what lets a heavy-tailed family be described at all.
 }
 \examples{
@@ -44,5 +44,5 @@ mv_sigma(d, theta)
 
 }
 \seealso{
-\code{\link{mvgaussian_distrib}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}
 }

@@ -25,5 +25,5 @@ With \eqn{g_j = \log y_j - \psi(\alpha_j)} and
       \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_j g_j \mu_j}
 }
 \seealso{
-\code{\link{dirichlet_distrib}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
 }

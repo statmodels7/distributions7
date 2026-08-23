@@ -8,12 +8,12 @@
 
 \item{theta}{A named list of parameters.}
 
-\item{...}{Passed to \code{\link{moment}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}}.}
 }
 \value{
 A numeric vector.
 }
 \description{
-Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link{moment}}.
+Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link[=moment]{moment()}}.
 }
 \keyword{internal}

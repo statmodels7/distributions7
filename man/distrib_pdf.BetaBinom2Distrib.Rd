@@ -19,5 +19,5 @@ A numeric vector.
 \deqn{P(Y = y) = \binom{n}{y}\dfrac{B(y+\alpha, n-y+\beta)}{B(\alpha,\beta)}}
 }
 \seealso{
-\code{\link{betabinom2_distrib}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
 }

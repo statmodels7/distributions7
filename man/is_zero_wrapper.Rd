@@ -13,10 +13,10 @@ is_zero_wrapper(distrib)
 A single logical.
 }
 \description{
-\code{TRUE} for a distribution produced by \code{\link{zero_inflated}} or
-\code{\link{zero_adjusted}}, in either of its two forms.
+\code{TRUE} for a distribution produced by \code{\link[=zero_inflated]{zero_inflated()}} or
+\code{\link[=zero_adjusted]{zero_adjusted()}}, in either of its two forms.
 }
 \seealso{
-\code{\link{check_not_stacked}}
+\code{\link[=check_not_stacked]{check_not_stacked()}}
 }
 \keyword{internal}

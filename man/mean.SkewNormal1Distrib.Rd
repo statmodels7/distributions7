@@ -4,7 +4,7 @@
 \alias{mean.SkewNormal1Distrib}
 \title{Mean of the Skew Normal Distribution}
 \arguments{
-\item{x}{A \code{\link{SkewNormal1Distrib}}.}
+\item{x}{A \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}}.}
 
 \item{theta}{A named list of parameters.}
 

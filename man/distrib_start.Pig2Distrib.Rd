@@ -17,9 +17,9 @@ A list with one named parameter list.
 }
 \description{
 The moment start of
-\code{\link[=distrib_start.Pig1Distrib]{pig1}}, mapped onto
+\code{\link[=distrib_start.Pig1Distrib]{pig1()}}, mapped onto
 \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
 }
 \seealso{
-\code{\link{pig2_distrib}}
+\code{\link[=pig2_distrib]{pig2_distrib()}}
 }

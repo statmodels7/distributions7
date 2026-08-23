@@ -7,16 +7,16 @@
 has_mv_grad_y(x)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{\link{multivariate_distrib}}.}
+\item{x}{An object inheriting from class \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 }
 \value{
 A single logical.
 }
 \description{
-\code{TRUE} when \code{\link{distrib_grad_y}} comes from the family rather
+\code{TRUE} when \code{\link[=distrib_grad_y]{distrib_grad_y()}} comes from the family rather
 than from the base class, whose method rejects.
 }
 \seealso{
-\code{\link{has_mv_support}}, \code{\link{check_distrib}}
+\code{\link[=has_mv_support]{has_mv_support()}}, \code{\link[=check_distrib]{check_distrib()}}
 }
 \keyword{internal}

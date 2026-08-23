@@ -17,5 +17,5 @@ A numeric vector of random draws.
 Draws from the parent distribution and applies \eqn{g}.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

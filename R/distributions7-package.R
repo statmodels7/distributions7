@@ -11,12 +11,12 @@ NULL
 #' Register the Package's S7 Methods on Load
 #'
 #' @description
-#' Calls \code{S7::methods_register()}, which is what makes methods registered on
+#' Calls `S7::methods_register()`, which is what makes methods registered on
 #' generics owned by other packages take effect.
 #'
 #' @details
-#' It matters here for the S3 generics the package extends -- \code{print},
-#' \code{plot}, \code{mean}, \code{simulate} -- whose owners are \pkg{base} and
+#' It matters here for the S3 generics the package extends -- `print`,
+#' `plot`, `mean`, `simulate` -- whose owners are \pkg{base} and
 #' \pkg{stats}. Standard R load hook; not called directly.
 #'
 #' @param ... Ignored; R calls the hook with the library path and package name.

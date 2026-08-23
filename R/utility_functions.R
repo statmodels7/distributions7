@@ -6,7 +6,7 @@
 #' This prevents silently wrong results when a user supplies a named list in a
 #' different order (e.g. `list(sigma = 2, mu = 0)` for a Gaussian).
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
+#' @param distrib An object inheriting from class `"distrib"`.
 #' @param theta A named list (or named numeric vector) of parameters, or an
 #'   unnamed list/vector given in the order of `distrib@params`.
 #'
@@ -67,20 +67,20 @@ align_theta <- function(distrib, theta) {
 #'
 #' @description
 #' Verifies that every supplied parameter value lies strictly inside the
-#' distribution's \code{params_bounds}, and is finite. Domains are treated as
-#' \strong{open} intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
+#' distribution's `params_bounds`, and is finite. Domains are treated as
+#' **open** intervals: for instance a Gaussian requires \eqn{\sigma > 0} and a
 #' Bernoulli requires \eqn{0 < \mu < 1}, since the log-likelihood and its
 #' derivatives are not defined at the boundary.
 #'
 #' This is called automatically by every generic (through the internal
-#' \code{align_theta()}), so passing an out-of-domain value raises an informative
-#' error instead of silently producing \code{NaN}. It is exported so that it can
+#' `align_theta()`), so passing an out-of-domain value raises an informative
+#' error instead of silently producing `NaN`. It is exported so that it can
 #' also be used directly, e.g. when writing an optimizer.
 #'
-#' @param distrib An object inheriting from class \code{"distrib"}.
-#' @param theta A list of parameter values, ordered as \code{distrib@params}.
+#' @param distrib An object inheriting from class `"distrib"`.
+#' @param theta A list of parameter values, ordered as `distrib@params`.
 #'
-#' @return Invisibly \code{NULL}. Raises an error listing every offending
+#' @return Invisibly `NULL`. Raises an error listing every offending
 #'   parameter, the offending value(s) and the expected domain.
 #'
 #' @examples
@@ -90,7 +90,7 @@ align_theta <- function(distrib, theta) {
 #' check_theta_bounds(d, list(mu = 0, sigma = -1)) # error: sigma outside (0, Inf)
 #' }
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [hess_names()], [expand_params()], [transpose_params()], [check_params_dim()], [param_smoothness()], [generate_random_theta()]
 #' @export
 check_theta_bounds <- function(distrib, theta) {
   check_bounds_fast(distrib@params, distrib@params_bounds, theta, distrib@distrib_name)
@@ -99,11 +99,11 @@ check_theta_bounds <- function(distrib, theta) {
 #' Check Parameter Domains, Taking the Properties as Arguments
 #'
 #' @description
-#' The body behind \code{\link{check_theta_bounds}}, differing only in that it
+#' The body behind [check_theta_bounds()], differing only in that it
 #' receives the distribution's properties instead of reaching for them.
 #'
 #' @details
-#' \code{align_theta()} calls this on every generic invocation, so its fixed cost
+#' `align_theta()` calls this on every generic invocation, so its fixed cost
 #' is the package's fixed cost. Reading an S7 property costs a couple of
 #' microseconds, which is material against a budget of a few tens, and the caller
 #' has already read the properties it needs.
@@ -114,13 +114,13 @@ check_theta_bounds <- function(distrib, theta) {
 #'
 #' @param params A character vector of parameter names.
 #' @param param_bounds A named list of length-2 domain vectors.
-#' @param theta A list of parameter values, ordered as \code{params}.
+#' @param theta A list of parameter values, ordered as `params`.
 #' @param distrib_name The distribution's name, used in the message.
 #'
-#' @return Invisibly \code{NULL}; raises an error if any value is outside its
+#' @return Invisibly `NULL`; raises an error if any value is outside its
 #'   open domain or not finite.
 #'
-#' @seealso \code{\link{check_theta_bounds}}
+#' @seealso [check_theta_bounds()]
 #' @keywords internal
 check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
   problems <- character()
@@ -200,7 +200,7 @@ check_bounds_fast <- function(params, param_bounds, theta, distrib_name) {
 #' check_params_dim(list(mu = 1:3, sigma = 1), n = 5)
 #' }
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [hess_names()], [expand_params()], [transpose_params()], [check_theta_bounds()], [param_smoothness()], [generate_random_theta()]
 #' @export
 check_params_dim <- function(theta, n) {
   len_theta <- lengths(theta)
@@ -241,7 +241,7 @@ check_params_dim <- function(theta, n) {
 #' @examples
 #' expand_params(list(mu = 0, sigma = 1), n = 3)
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [hess_names()], [transpose_params()], [check_params_dim()], [check_theta_bounds()], [param_smoothness()], [generate_random_theta()]
 #' @export
 expand_params <- function(theta, n) {
   lens <- lengths(theta)
@@ -268,10 +268,10 @@ expand_params <- function(theta, n) {
 #' @description
 #' Generates the names of the unique second-order partial derivatives (Hessian
 #' components) for a vector of parameter names: first the diagonal elements
-#' (\code{"mu_mu"}, ...), then the upper-triangular off-diagonal elements in
-#' row-major order (\code{"mu_sigma"}, ...).
+#' (`"mu_mu"`, ...), then the upper-triangular off-diagonal elements in
+#' row-major order (`"mu_sigma"`, ...).
 #'
-#' @param params A character vector of parameter names (e.g., \code{c("mu", "sigma")}).
+#' @param params A character vector of parameter names (e.g., `c("mu", "sigma")`).
 #'
 #' @return A character vector of length \eqn{n + n(n-1)/2}.
 #'
@@ -279,7 +279,7 @@ expand_params <- function(theta, n) {
 #' hess_names(c("mu", "sigma"))
 #' # "mu_mu" "sigma_sigma" "mu_sigma"
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [expand_params()], [transpose_params()], [check_params_dim()], [check_theta_bounds()], [param_smoothness()], [generate_random_theta()]
 #' @export
 hess_names <- function(params) {
   n_params <- length(params)
@@ -308,9 +308,9 @@ hess_names <- function(params) {
 #' @details
 #' Several places here ask "did this method come from the base class, or did the
 #' subclass register its own?", and answer it with the documented S7 trick of
-#' reading \code{attr(m, "signature")[[1]]}. The comparison that follows must not
-#' be \code{identical()}: on S7 class objects that is object identity, so it
-#' returns \code{FALSE} for a class re-created from the same definition — which
+#' reading `attr(m, "signature")[[1]]`. The comparison that follows must not
+#' be `identical()`: on S7 class objects that is object identity, so it
+#' returns `FALSE` for a class re-created from the same definition — which
 #' is what happens whenever the package's code is re-evaluated rather than
 #' loaded, as it is under coverage instrumentation.
 #'
@@ -325,7 +325,7 @@ hess_names <- function(params) {
 #'
 #' @return A single logical.
 #'
-#' @seealso \code{\link{has_analytic_quantile}}, \code{\link{has_exact_cdf_deriv}}
+#' @seealso [has_analytic_quantile()], [has_exact_cdf_deriv()]
 #' @keywords internal
 is_class <- function(cls, base) {
   if (identical(cls, base)) return(TRUE)
@@ -337,27 +337,27 @@ is_class <- function(cls, base) {
 #' Invert the Hessian Component Names
 #'
 #' @description
-#' Maps each name produced by \code{\link{hess_names}} back to the pair of
+#' Maps each name produced by [hess_names()] back to the pair of
 #' parameters it differentiates with respect to.
 #'
 #' @details
-#' The wrappers need to go from \code{"mu_sigma"} back to
-#' \code{c("mu", "sigma")} in order to combine the parent's score with its
-#' Hessian. Splitting the string on \code{"_"} is the obvious way and it is
+#' The wrappers need to go from `"mu_sigma"` back to
+#' `c("mu", "sigma")` in order to combine the parent's score with its
+#' Hessian. Splitting the string on `"_"` is the obvious way and it is
 #' wrong: a parameter whose own name contains an underscore
-#' (\code{"log_scale"}) makes \code{"log_scale_log_scale"} split into four
+#' (`"log_scale"`) makes `"log_scale_log_scale"` split into four
 #' pieces, and taking the first and the last silently yields
-#' \code{c("log", "scale")}. Building the map from the parameter vector cannot
+#' `c("log", "scale")`. Building the map from the parameter vector cannot
 #' be fooled.
 #'
-#' \code{\link{deriv_indices}} is the same idea for orders above two.
+#' [deriv_indices()] is the same idea for orders above two.
 #'
 #' @param params A character vector of parameter names.
 #'
-#' @return A named list, parallel to \code{hess_names(params)}, each element a
+#' @return A named list, parallel to `hess_names(params)`, each element a
 #'   character pair.
 #'
-#' @seealso \code{\link{hess_names}}, \code{\link{deriv_indices}}
+#' @seealso [hess_names()], [deriv_indices()]
 #' @keywords internal
 hess_pairs <- function(params) {
   nms <- hess_names(params)
@@ -377,15 +377,15 @@ hess_pairs <- function(params) {
 #' Generate Names for Higher-Order Derivative Components
 #'
 #' @description
-#' Generates the names of the unique partial derivatives of a given \code{order}
+#' Generates the names of the unique partial derivatives of a given `order`
 #' with respect to a vector of parameters. Because mixed partial derivatives are
 #' symmetric, only one representative per multi-index is listed, using
-#' non-decreasing parameter order (e.g. \code{"mu_mu_sigma"} but not
-#' \code{"mu_sigma_mu"}). For \code{order = 2} this coincides with the set of
-#' \code{\link{hess_names}} (though possibly in a different order).
+#' non-decreasing parameter order (e.g. `"mu_mu_sigma"` but not
+#' `"mu_sigma_mu"`). For `order = 2` this coincides with the set of
+#' [hess_names()] (though possibly in a different order).
 #'
-#' @param params A character vector of parameter names (e.g., \code{c("mu", "sigma")}).
-#' @param order A positive integer, the derivative order (e.g. \code{3} or \code{4}).
+#' @param params A character vector of parameter names (e.g., `c("mu", "sigma")`).
+#' @param order A positive integer, the derivative order (e.g. `3` or `4`).
 #'
 #' @return A character vector of the \eqn{\binom{p + \text{order} - 1}{\text{order}}}
 #'   unique component names, where \eqn{p} is the number of parameters.
@@ -394,7 +394,7 @@ hess_pairs <- function(params) {
 #' deriv_names(c("mu", "sigma"), 3)
 #' # "mu_mu_mu" "mu_mu_sigma" "mu_sigma_sigma" "sigma_sigma_sigma"
 #'
-#' @seealso \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{transpose_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [hess_names()], [expand_params()], [transpose_params()], [check_params_dim()], [check_theta_bounds()], [param_smoothness()], [generate_random_theta()]
 #' @export
 deriv_names <- function(params, order) {
   vapply(deriv_indices(params, order),
@@ -405,33 +405,33 @@ deriv_names <- function(params, order) {
 #' Index Tuples Behind the Higher-Order Derivative Names
 #'
 #' @description
-#' The multi-indices \code{\link{deriv_names}} names, in exactly the same order:
-#' non-decreasing tuples of length \code{order} over \code{seq_along(params)},
+#' The multi-indices [deriv_names()] names, in exactly the same order:
+#' non-decreasing tuples of length `order` over `seq_along(params)`,
 #' enumerated lexicographically.
 #'
 #' @details
 #' This exists so that nothing has to recover an index tuple by splitting a
 #' component name back apart. Splitting fails for a parameter whose own name
-#' contains an underscore: \code{"mu_log_scale_log_scale"} splits into five
-#' pieces, and matching those against \code{params} yields \code{NA}s. The
+#' contains an underscore: `"mu_log_scale_log_scale"` splits into five
+#' pieces, and matching those against `params` yields `NA`s. The
 #' multivariate families carry such names by construction
-#' (\code{sigma_log_L1}), so the parsing route is wrong for shipped families
+#' (`sigma_log_L1`), so the parsing route is wrong for shipped families
 #' as well as user-defined ones. Generating the indices and the names from the
 #' same enumeration removes the possibility of disagreement.
 #'
-#' Note that this is \strong{not} interchangeable with
-#' \code{deriv_index_list()} in \code{link_scale.R}: that one is ordered to match
-#' \code{\link{hess_names}} at order 2, which puts the diagonal first, whereas
-#' this one is lexicographic throughout to match \code{\link{deriv_names}}. At
-#' order 2 use \code{\link{hess_pairs}}.
+#' Note that this is **not** interchangeable with
+#' `deriv_index_list()` in `link_scale.R`: that one is ordered to match
+#' [hess_names()] at order 2, which puts the diagonal first, whereas
+#' this one is lexicographic throughout to match [deriv_names()]. At
+#' order 2 use [hess_pairs()].
 #'
 #' @param params A character vector of parameter names.
 #' @param order A positive integer, the derivative order.
 #'
-#' @return A list of integer vectors, each of length \code{order}, parallel to
-#'   \code{deriv_names(params, order)}.
+#' @return A list of integer vectors, each of length `order`, parallel to
+#'   `deriv_names(params, order)`.
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_pairs}}
+#' @seealso [deriv_names()], [hess_pairs()]
 #' @keywords internal
 deriv_indices <- function(params, order) {
   p <- length(params)
@@ -451,16 +451,16 @@ deriv_indices <- function(params, order) {
 #' Transposes a list structure (swapping "columns" and "rows") and simplifies the
 #' inner elements into atomic vectors.
 #'
-#' Turns a list of \code{k} equal-length vectors into a list of \code{n} vectors of
-#' length \code{k}, one per observation, keeping the names.
+#' Turns a list of `k` equal-length vectors into a list of `n` vectors of
+#' length `k`, one per observation, keeping the names.
 #'
 #' @param theta A list to be transposed.
-#' @return A \code{list} where each element has been transposed and simplified to an atomic vector.
+#' @return A `list` where each element has been transposed and simplified to an atomic vector.
 #'
 #' @examples
 #' transpose_params(list(mu = c(0, 1), sigma = c(1, 2)))
 #'
-#' @seealso \code{\link{deriv_names}}, \code{\link{hess_names}}, \code{\link{expand_params}}, \code{\link{check_params_dim}}, \code{\link{check_theta_bounds}}, \code{\link{param_smoothness}}, \code{\link{generate_random_theta}}
+#' @seealso [deriv_names()], [hess_names()], [expand_params()], [check_params_dim()], [check_theta_bounds()], [param_smoothness()], [generate_random_theta()]
 #' @export
 transpose_params <- function(theta) {
   if (!length(theta)) return(list())

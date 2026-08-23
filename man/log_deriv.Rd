@@ -26,6 +26,6 @@ cheaply, a truncated expectation for truncation and an affine expression for
 the zero wrappers.
 }
 \seealso{
-\code{\link{bell_f_ratio}}, the companion identity.
+\code{\link[=bell_f_ratio]{bell_f_ratio()}}, the companion identity.
 }
 \keyword{internal}

@@ -18,5 +18,5 @@ Closed form:
 \eqn{\partial^2 \ell / \partial y^2 = -(\sigma - 1)(1 + \sigma u)/y^2}.
 }
 \seealso{
-\code{\link{weibull1_distrib}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}
 }

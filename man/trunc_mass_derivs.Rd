@@ -22,7 +22,7 @@ derivatives, or \code{NULL} when that route is not available.
 }
 \details{
 Replaces one quadrature per component with two calls on the parent. Gated by
-\code{\link{has_exact_cdf_deriv}}, and the callers fall back to quadrature on
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}, and the callers fall back to quadrature on
 \code{NULL}.
 }
 \keyword{internal}

@@ -24,5 +24,5 @@ A named list of second derivatives.
 free of the data.
 }
 \seealso{
-\code{\link{beta2_distrib}}
+\code{\link[=beta2_distrib]{beta2_distrib()}}
 }

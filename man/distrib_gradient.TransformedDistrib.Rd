@@ -18,5 +18,5 @@ The Jacobian does not depend on the parameters, so the score of the transformed 
 equals the parent's score evaluated at \eqn{x = g^{-1}(y)}.
 }
 \seealso{
-\code{\link{transformation}}
+\code{\link[=transformation]{transformation()}}
 }

@@ -24,5 +24,5 @@ distribution:
 where \eqn{T_\nu^{-1}} is the standard Student's t quantile function with \eqn{\nu} degrees of freedom.
 }
 \seealso{
-\code{\link{student_t1_distrib}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}
 }

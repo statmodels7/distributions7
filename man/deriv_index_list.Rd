@@ -17,19 +17,19 @@ A list of integer vectors, each of length \code{order}.
 \description{
 Canonical (non-decreasing) index tuples for a derivative order, in exactly the
 output order of the corresponding name helper: parameter order at order 1,
-\code{\link{hess_names}} at order 2, \code{\link{deriv_names}} from order 3 up.
+\code{\link[=hess_names]{hess_names()}} at order 2, \code{\link[=deriv_names]{deriv_names()}} from order 3 up.
 }
 \details{
 The order-2 case is the one to be careful with. \code{hess_names()} lists the
 diagonal first and the off-diagonal afterwards, whereas \code{deriv_names()}
 is lexicographic throughout; pairing this helper with \code{deriv_names()}
-would therefore label \code{"mu_sigma"} with the tuple \code{(sigma, sigma)}.
+would therefore label \code{"mu_sigma"} with the tuple \verb{(sigma, sigma)}.
 Orders 3 and 4 agree between the two conventions, so the mismatch is invisible
-until someone reuses the helper at order 2. Use \code{\link{deriv_indices}}
-when the names come from \code{deriv_names()}, and \code{\link{hess_pairs}}
+until someone reuses the helper at order 2. Use \code{\link[=deriv_indices]{deriv_indices()}}
+when the names come from \code{deriv_names()}, and \code{\link[=hess_pairs]{hess_pairs()}}
 when they come from \code{hess_names()}.
 }
 \seealso{
-\code{\link{deriv_indices}}, \code{\link{hess_pairs}}
+\code{\link[=deriv_indices]{deriv_indices()}}, \code{\link[=hess_pairs]{hess_pairs()}}
 }
 \keyword{internal}

@@ -18,5 +18,5 @@ Computes the analytical gradient (first derivatives) of the Lognormal log-densit
 with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
 }
 \seealso{
-\code{\link{lognormal1_distrib}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
 }

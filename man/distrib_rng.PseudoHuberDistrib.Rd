@@ -18,5 +18,5 @@ Generates random numbers from the Pseudo-Huber distribution via inverse transfor
 sampling (numerical quantile function applied to uniform draws).
 }
 \seealso{
-\code{\link{pseudohuber_distrib}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
 }

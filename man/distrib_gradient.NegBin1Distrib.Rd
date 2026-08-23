@@ -28,5 +28,5 @@ and the derivative in \eqn{\theta} adds the terms in which \eqn{\theta}
 appears outside \eqn{r}.
 }
 \seealso{
-\code{\link{negbin1_distrib}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}
 }

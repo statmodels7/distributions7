@@ -14,14 +14,14 @@ betabinom2_distrib(size, link_alpha = log_link(), link_beta = log_link())
 \item{link_beta}{Link function for \eqn{\beta}. Defaults to the log.}
 }
 \value{
-An S7 object of class \code{\link{BetaBinom2Distrib}}.
+An S7 object of class \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}}.
 }
 \description{
 Creates a beta-binomial distribution object in its canonical
 parametrization, the two beta shapes.
 }
 \details{
-The same law as \code{\link{betabinom1_distrib}}, which carries a mean
+The same law as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which carries a mean
 proportion and a dispersion: \eqn{\alpha = \mu/\sigma} and
 \eqn{\beta = (1-\mu)/\sigma}.
 
@@ -46,5 +46,5 @@ c(mean = mean(d, theta), variance = variance(d, theta))
 
 }
 \seealso{
-\code{\link{betabinom1_distrib}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
 }

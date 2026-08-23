@@ -27,7 +27,7 @@ Creates a Student t distribution object whose second parameter is the
 standard deviation rather than the scale.
 }
 \details{
-The scale of \code{\link{student_t1_distrib}} is not the standard
+The scale of \code{\link[=student_t1_distrib]{student_t1_distrib()}} is not the standard
 deviation: the two differ by \eqn{\sqrt{\nu/(\nu-2)}}. Here the map is
 \deqn{\sigma_{\text{scale}} = \sigma\sqrt{\dfrac{\nu-2}{\nu}},}
 which exists only for \eqn{\nu > 2}, and the constructor bounds \eqn{\nu}
@@ -53,5 +53,5 @@ variance(d, theta)
 
 }
 \seealso{
-\code{\link{student_t1_distrib}}, \code{\link{reparametrize}}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}, \code{\link[=reparametrize]{reparametrize()}}
 }
