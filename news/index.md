@@ -1,5 +1,45 @@
 # Changelog
 
+## distributions7 0.38.0
+
+- The von Mises distribution function is a series and no longer a
+  quadrature. Both parametrizations used the base class’s fallback – one
+  numerical integration of the density per observation – which made them
+  the dearest families in the package by three orders of magnitude:
+  measured, a residual over a million observations cost 136 seconds
+  against 0.13 to 0.47 for every other family, and the whole of it was
+  inside `distrib_cdf`.
+
+- What replaces it is the Fourier expansion of the density integrated
+  term by term, whose second sine is the lower limit of integration and
+  is what makes it the distribution function of the family AS WRITTEN,
+  on with the location inside it rather than a variable wrapped around
+  the circle. Only the ratios are needed, and
+  [`numericals7::bessel_i_ratios()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratios.html)
+  gives them by a recurrence whose loop runs over the series index.
+
+- Measured against the quadrature it replaces, at concentrations from
+  0.05 to 200 and three locations: agreement between 1e-15 and 5e-15,
+  which is the quadrature’s own accuracy, and **61x to 71x faster**. A
+  hundred thousand points now take 0.76 seconds where the quadrature
+  took some forty. The quantile, which root-finds on the distribution
+  function, and every cdf-derivative fallback of the family are faster
+  by the same factor.
+
+- HOW MANY TERMS is measured rather than assumed. Against the same
+  series at four times the length, machine precision is reached at 10
+  terms at , 26 at 10, 90 at 100, 242 at 1000 and 404 at 3000 – always
+  under , which is the rule used and which a test pins at four
+  concentrations. The sum is accumulated over blocks of observations:
+  the natural expression forms an matrix, which at a hundred thousand
+  points and a concentration of a hundred is already hundreds of
+  megabytes.
+
+- Both von Mises families leave the list of those whose distribution
+  function is not available in closed form. What remains on it are the
+  six with the genuine obstruction, where the derivative of an
+  incomplete gamma or beta in its shape is hypergeometric.
+
 ## distributions7 0.37.1
 
 - [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)

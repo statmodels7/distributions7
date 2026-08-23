@@ -1869,6 +1869,9 @@ divergent density.
 - [`reparam_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ReparamContinuousDistrib.md)
   : Distribution Function of a Reparametrized Distribution
 
+- [`distrib_cdf.VonMises2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.md)
+  : von Mises Distribution Function in the Resultant Length
+
 - [`distrib_cdf.continuous_distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md)
   : Default Numerical CDF for Continuous Distributions
 
@@ -3444,6 +3447,9 @@ divergent density.
 
 - [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
   : The Pieces a von Mises Derivative in rho Needs
+
+- [`vm_cdf()`](https://statmodels7.github.io/distributions7/reference/vm_cdf.md)
+  : The Distribution Function of a von Mises by Its Bessel Series
 
 - [`weibull_gamma_factors()`](https://statmodels7.github.io/distributions7/reference/weibull_gamma_factors.md)
   : Gamma Factors of a Weibull's Moments

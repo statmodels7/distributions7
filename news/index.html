@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.37.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,14 @@
       <small>Source: <a href="https://github.com/statmodels7/distributions7/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.38.0" id="distributions7-0380">distributions7 0.38.0<a class="anchor" aria-label="anchor" href="#distributions7-0380"></a></h2>
+<ul><li><p>The von Mises distribution function is a series and no longer a quadrature. Both parametrizations used the base class’s fallback – one numerical integration of the density per observation – which made them the dearest families in the package by three orders of magnitude: measured, a residual over a million observations cost 136 seconds against 0.13 to 0.47 for every other family, and the whole of it was inside <code>distrib_cdf</code>.</p></li>
+<li><p>What replaces it is the Fourier expansion of the density integrated term by term,  whose second sine is the lower limit of integration and is what makes it the distribution function of the family AS WRITTEN, on  with the location inside it rather than a variable wrapped around the circle. Only the ratios  are needed, and <code><a href="https://statmodels7.github.io/numericals7/reference/bessel_i_ratios.html" class="external-link">numericals7::bessel_i_ratios()</a></code> gives them by a recurrence whose loop runs over the series index.</p></li>
+<li><p>Measured against the quadrature it replaces, at concentrations from 0.05 to 200 and three locations: agreement between 1e-15 and 5e-15, which is the quadrature’s own accuracy, and <strong>61x to 71x faster</strong>. A hundred thousand points now take 0.76 seconds where the quadrature took some forty. The quantile, which root-finds on the distribution function, and every cdf-derivative fallback of the family are faster by the same factor.</p></li>
+<li><p>HOW MANY TERMS is measured rather than assumed. Against the same series at four times the length, machine precision is reached at 10 terms at , 26 at 10, 90 at 100, 242 at 1000 and 404 at 3000 – always under , which is the rule used and which a test pins at four concentrations. The sum is accumulated over blocks of observations: the natural expression forms an  matrix, which at a hundred thousand points and a concentration of a hundred is already hundreds of megabytes.</p></li>
+<li><p>Both von Mises families leave the list of those whose distribution function is not available in closed form. What remains on it are the six with the genuine obstruction, where the derivative of an incomplete gamma or beta in its shape is hypergeometric.</p></li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.37.1" id="distributions7-0371">distributions7 0.37.1<a class="anchor" aria-label="anchor" href="#distributions7-0371"></a></h2>
 <ul><li>

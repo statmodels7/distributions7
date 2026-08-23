@@ -168,6 +168,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.TransformedDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.TruncatedDiscreteDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.Weibull1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedContinuousDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedDiscreteDistrib.html</loc></url>
@@ -1218,6 +1219,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/variance.numeric.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vcov.distrib_fit.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vm2_parts.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/vm_cdf.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/weibull1_distrib.html</loc></url>
