@@ -2,27 +2,75 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{distrib_gradient.Gaussian1Distrib}
 \alias{distrib_gradient.Gaussian1Distrib}
-\title{Gaussian Analytical Gradient}
+\title{Gaussian Score}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Gaussian log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the first derivatives of the Gaussian log-density with respect to
+\eqn{\mu} and \eqn{\sigma}, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2},
+      \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}.}
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}}
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
+returns the parameter scale; the transformation happens in the generic.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma > 0} the standard deviation. \eqn{\eta_j} is the coordinate of
+parameter \eqn{j} on the unconstrained scale of its link, and \eqn{h_j' =
+\partial \theta_j / \partial \eta_j} the chain-rule factor onto it.
+}
+
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+all.equal(g$mu, (y - 0.4) / 1.5^2)
+all.equal(g$sigma, ((y - 0.4)^2 - 1.5^2) / 1.5^3)
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(1)
+z <- rnorm(200, mean = 3, sd = 2)
+mle <- list(mu = mean(z), sigma = sqrt(mean((z - mean(z))^2)))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
+
+# On the link scale the sigma component is multiplied by h' = sigma,
+# the derivative of the inverse log link; mu rides the identity and is
+# unchanged.
+distrib_gradient(d, y, th, scale = "link")$sigma / g$sigma
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for their expectation,
+\code{\link[=distrib_grad_y.Gaussian1Distrib]{distrib_grad_y.Gaussian1Distrib()}} for the derivative in the response,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

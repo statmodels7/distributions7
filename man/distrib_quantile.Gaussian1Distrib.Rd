@@ -4,23 +4,52 @@
 \alias{distrib_quantile.Gaussian1Distrib}
 \title{Gaussian Quantile Function}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give \code{-Inf} and \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities, which is how a quantile deep in a tail is
+requested without the probability underflowing. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
-Computes the quantile function (inverse CDF) for the Gaussian distribution:
-\deqn{Q(p; \mu, \sigma) = \mu + \sigma \Phi^{-1}(p)}
+Computes the Gaussian quantile function
+\deqn{Q(p; \mu, \sigma) = \mu + \sigma\,\Phi^{-1}(p)}
+by calling \code{\link[stats:Normal]{stats::qnorm()}}. The Gaussian distribution function is strictly
+increasing on the whole line, so \eqn{Q} is its exact inverse and the round
+trip through \code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf.Gaussian1Distrib()}} returns \code{p}.
+}
+\examples{
+d <- gaussian1_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The median is mu and the quartiles are symmetric about it.
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# A quantile 40 standard deviations out, asked for on the log scale
+# because the probability itself is zero in double precision.
+distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma = 1),
+                 log.p = TRUE)
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf.Gaussian1Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Gaussian1Distrib]{distrib_rng.Gaussian1Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

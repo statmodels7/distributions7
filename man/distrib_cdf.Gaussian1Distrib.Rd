@@ -4,23 +4,52 @@
 \alias{distrib_cdf.Gaussian1Distrib}
 \title{Gaussian Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Gaussian distribution:
+Computes the Gaussian distribution function
 \deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
+with \eqn{\Phi} the standard normal distribution function, by calling
+\code{\link[stats:Normal]{stats::pnorm()}}. Both tails are available exactly: \code{lower.tail = FALSE}
+evaluates \eqn{1 - F} without forming the difference, and \code{log.p = TRUE}
+returns a logarithm that stays finite where the probability itself
+underflows to zero.
+}
+\examples{
+d <- gaussian1_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The method is stats::pnorm at this parametrization.
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          pnorm(c(-1.2, 0.3, 2.5), mean = 0.4, sd = 1.5))
+
+# The two tails sum to one.
+distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
+
+# Forty standard deviations out the upper tail underflows; its log does not.
+distrib_cdf(d, 40, list(mu = 0, sigma = 1), lower.tail = FALSE)
+distrib_cdf(d, 40, list(mu = 0, sigma = 1), lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_quantile.Gaussian1Distrib]{distrib_quantile.Gaussian1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the derivatives of this function in the
+parameters, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

@@ -4,18 +4,40 @@
 \alias{distrib_rng.Gaussian1Distrib}
 \title{Gaussian Random Number Generator}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting.
+\code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Gaussian distribution.
+Draws \code{n} independent Gaussian variates by calling \code{\link[stats:Normal]{stats::rnorm()}}, so the
+draws come from R's own normal generator and depend on \code{.Random.seed} in the
+usual way. The inverse-transform fallback the base class supplies is
+bypassed.
+}
+\examples{
+d <- gaussian1_distrib()
+
+# Same generator as stats::rnorm, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), sigma = c(1, 1.5, 2)))
+set.seed(2)
+identical(a, rnorm(3, mean = c(0, 1, 2), sd = c(1, 1.5, 2)))
+
+# The sample moments recover the parameters.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
+c(mean = mean(z), sd = sd(z))
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_quantile.Gaussian1Distrib]{distrib_quantile.Gaussian1Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

@@ -2,27 +2,80 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{distrib_deriv4.Gaussian1Distrib}
 \alias{distrib_deriv4.Gaussian1Distrib}
-\title{Gaussian Analytical Fourth-Order Derivatives}
+\title{Gaussian Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_sigma}, \code{mu_mu_sigma_sigma}, \code{mu_sigma_sigma_sigma} and
+\code{sigma_sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the closed-form fourth-order partial derivatives of the Gaussian
-log-density with respect to \eqn{\mu} and \eqn{\sigma} (observed, or expected when
-\code{expected = TRUE}).
+Computes the five distinct fourth derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Writing
+\eqn{r = y - \mu},
+\deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu\sigma)} = 0, \qquad
+      \ell^{(\mu\mu\sigma\sigma)} = -\dfrac{6}{\sigma^4}, \qquad
+      \ell^{(\mu\sigma\sigma\sigma)} = -\dfrac{24 r}{\sigma^5}, \qquad
+      \ell^{(\sigma\sigma\sigma\sigma)} = \dfrac{6}{\sigma^4} - \dfrac{60 r^2}{\sigma^6}.}
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
+\eqn{-54/\sigma^4} in the last component and zero in the two odd ones. Both
+routes are closed form, so \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k l)}} is the fourth derivative of the log-density with
+respect to parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+d4 <- distrib_deriv4(d, y, th)
+names(d4)
+
+# Quadratic in mu, so the two components with three or more mu are zero.
+c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma[1])
+
+# The mixed second-second component is constant at -6/sigma^4.
+all.equal(d4$mu_mu_sigma_sigma, rep(-6 / 1.5^4, 3))
+
+# Expected values: -54/sigma^4 in the pure sigma component.
+lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
+-54 / 1.5^4
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3.Gaussian1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
+\code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the second-order
+expectation these extend.
 }

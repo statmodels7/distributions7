@@ -2,28 +2,81 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{distrib_expected_hessian.Gaussian1Distrib}
 \alias{distrib_expected_hessian.Gaussian1Distrib}
-\title{Gaussian Analytical Expected Hessian}
+\title{Gaussian Expected Hessian}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))} and constant within itself
+when the parameters are.
 }
 \description{
-Computes the analytical expected Hessian of the Gaussian log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2},
+      \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2},
+      \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
+They follow from \eqn{\mathbb{E}[(Y-\mu)^2] = \sigma^2} and
+\eqn{\mathbb{E}[Y-\mu] = 0}. The negative of this matrix is the Fisher
+information for one observation; the zero off-diagonal says the mean and the
+standard deviation are orthogonal, so their estimates are asymptotically
+independent.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0}
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is \eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]},
+the expectation of the \strong{observed information} under the model. The Gaussian
+is a regular family, so the second Bartlett identity holds and this equals
+the variance of the score.
+}
+
+\examples{
+d <- gaussian1_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The three constants, one value per observation.
+lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
+
+# The mean and the standard deviation are orthogonal: the mixed entry is 0.
+distrib_expected_hessian(d, 0, th)$mu_sigma
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fit_distrib]{fit_distrib()}} and \code{\link[=fisher_scoring]{fisher_scoring()}}, which invert
+it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

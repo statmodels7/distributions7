@@ -2,28 +2,65 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{distrib_hessian.Gaussian1Distrib}
 \alias{distrib_hessian.Gaussian1Distrib}
-\title{Gaussian Analytical Observed Hessian}
+\title{Gaussian Observed Hessian}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Gaussian log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the three distinct second derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y - \mu)^2}{\sigma^4},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{2(y - \mu)}{\sigma^3}.}
+Only the curvature in \eqn{\mu} is free of the data; the other two components
+vary with the residual, and their expectations are
+\code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}}.
+}
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+h <- distrib_hessian(d, y, th)
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y - \mu)^2}{\sigma^4}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{2(y - \mu)}{\sigma^3}}
+# The curvature in mu is constant at -1/sigma^2; the other two are not.
+h$mu_mu
+all.equal(h$sigma_sigma, (1.5^2 - 3 * (y - 0.4)^2) / 1.5^4)
+all.equal(h$mu_sigma, -2 * (y - 0.4) / 1.5^3)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3.Gaussian1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

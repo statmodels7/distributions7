@@ -2,79 +2,125 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{gaussian1_distrib}
 \alias{gaussian1_distrib}
-\title{Gaussian Distribution Object (Standard Deviation Parameterization)}
+\title{Gaussian Distribution, Mean and Standard Deviation}
 \usage{
 gaussian1_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
+over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the standard
+deviation \eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which
+maps \eqn{(0, \infty)} onto the line and so keeps every fitted value
+positive.}
 }
 \value{
-An S7 object of class \code{Gaussian1Distrib} (inheriting from \code{continuous_distrib}) representing the Gaussian distribution.
+An S7 object of class \code{Gaussian1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gaussian1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Gaussian distribution parameterized by mean (\eqn{\mu}) and standard deviation (\eqn{\sigma}).
+Builds the distribution object for the Gaussian (normal) family parametrized
+by its mean \eqn{\mu} and its standard deviation \eqn{\sigma > 0}. The
+returned object carries closed-form derivatives of the log-density to fourth
+order, in the parameters and in the response, and closed-form moments, so
+every generic of the toolkit answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the identity for
+the mean, which is already free, and the logarithm for the standard
+deviation, which keeps it positive at every predictor.
 }
-\details{
-The Gaussian (Normal) distribution is parameterized by its mean \eqn{\mu} and
-standard deviation \eqn{\sigma}.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\,\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\},}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\sigma \in (0, \infty)}. The
+distribution function is \eqn{F(q) = \Phi((q-\mu)/\sigma)} and the quantile
+function \eqn{Q(p) = \mu + \sigma \Phi^{-1}(p)}, with \eqn{\Phi} the standard
+normal distribution function.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sqrt{2\pi}\,\sigma} \exp\left\{-\dfrac{1}{2}\left(\dfrac{y-\mu}{\sigma}\right)^2\right\}}
+The mean is \eqn{\mu}, the variance \eqn{\sigma^2}, and both the skewness and
+the excess kurtosis are 0. Two sibling parametrizations of the same law are
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, in the mean and the variance, and
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}, in the mean and the precision.
+}
 
-\strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
-\deqn{F(q; \mu, \sigma) = \Phi\left(\dfrac{q-\mu}{\sigma}\right)}
-
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu + \sigma\,\Phi^{-1}(p)}
-
-\strong{Score} (gradient of the log-density):
+\section{Derivatives}{
+The score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\sigma^2}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3}}
-
-\strong{Observed Hessian:}
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y - \mu)^2 - \sigma^2}{\sigma^3},}
+the observed Hessian
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}, \quad
       \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^2 - 3(y-\mu)^2}{\sigma^4}, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{2(y-\mu)}{\sigma^3}}
-
-\strong{Expected Hessian} (negative Fisher information):
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{2(y-\mu)}{\sigma^3},}
+and its expectation
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2}{\sigma^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
+The zero off-diagonal makes the mean and the standard deviation orthogonal,
+so their maximum likelihood estimates are asymptotically independent.
 
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2}, skewness 0, excess kurtosis 0.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3.Gaussian1Distrib()}} and \code{\link[=distrib_deriv4.Gaussian1Distrib]{distrib_deriv4.Gaussian1Distrib()}},
+as are the derivatives in the response,
+\code{\link[=distrib_grad_y.Gaussian1Distrib]{distrib_grad_y.Gaussian1Distrib()}} and \code{\link[=distrib_hess_y.Gaussian1Distrib]{distrib_hess_y.Gaussian1Distrib()}}.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and derivatives with respect to the response
-(\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale and reaches
+the closed-form estimates \eqn{\hat\mu = \bar y} and
+\eqn{\hat\sigma^2 = n^{-1}\sum (y_i - \bar y)^2}, the maximum likelihood
+estimate of the variance with divisor \eqn{n}. The example below checks
+both against the sample.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma > 0} the standard deviation. \eqn{\eta} is a parameter on the
+unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- gaussian1_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density and the distribution function are R's own.
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+all.equal(distrib_pdf(d, y, th), dnorm(y, 0.4, 1.5))
 
+# Moments in closed form: skewness and excess kurtosis are 0.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# Fitting recovers the closed-form maximum likelihood estimates, with the
+# variance divided by n.
+set.seed(7)
+z <- distrib_rng(d, 400, list(mu = 3, sigma = 2))
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = mean(z), sigma = sqrt(mean((z - mean(z))^2))))
+
+# A different link changes the scale the optimizer moves on, not the answer.
+d2 <- gaussian1_distrib(link_sigma = linkfunctions7::sqrt_link())
+all.equal(coef(fit_distrib(d2, z)), coef(fit), tolerance = 1e-6)
+
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 13.
+Wiley, New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} for the density function.
-\item \code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf.Gaussian1Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.Gaussian1Distrib]{distrib_quantile.Gaussian1Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.Gaussian1Distrib]{distrib_rng.Gaussian1Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for the same law in the
+variance and in the precision; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the Gaussian on a
+log scale; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for heavier tails;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{Gaussian1Distrib} for the class.
 }

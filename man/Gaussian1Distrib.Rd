@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{Gaussian1Distrib}
 \alias{Gaussian1Distrib}
-\title{S7 Class for Gaussian Distribution}
+\title{Gaussian Distribution Class, Mean and Standard Deviation}
 \usage{
 Gaussian1Distrib(
   distrib_name = character(0),
@@ -36,14 +36,31 @@ Gaussian1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Gaussian1Distrib}.
+An S7 object of class \code{Gaussian1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} they hold \code{"gaussian1"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "mean", sigma = "standard deviation")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Gaussian (Normal) distribution.
+The S7 class of the Gaussian (normal) family parametrized by its mean
+\eqn{\mu} and its standard deviation \eqn{\sigma > 0}, with density
+\eqn{f(y) = (2\pi)^{-1/2}\sigma^{-1}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the
+whole real line. It inherits from \code{continuous_distrib}, so it answers every
+generic of the \code{distrib} contract; the eleven methods listed below are
+registered on it directly and everything else comes from the parent.
+
+Build one with \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Gaussian1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Gaussian1Distrib]{distrib_deriv4()}},
@@ -59,6 +76,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- gaussian1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_bounds
+d@params_interpretation
+
+# The links carry each parameter to the unconstrained scale an optimizer
+# moves on: the mean is already free, the standard deviation rides a log.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} to build one;
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the same law in mean and variance and
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for mean and precision;
+\code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} and \code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}}
+for the closed forms this class supplies.
 }

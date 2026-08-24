@@ -2,20 +2,47 @@
 % Please edit documentation in R/gaussian1_distrib.R
 \name{distrib_hess_y.Gaussian1Distrib}
 \alias{distrib_hess_y.Gaussian1Distrib}
-\title{Gaussian Response Second Derivative}
+\title{Gaussian Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{sigma} must
+be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{length(y)}, every entry
+\eqn{-1/\sigma^2}.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = -1/\sigma^2}.
+Computes the second derivative of the Gaussian log-density with respect to
+the response,
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{\sigma^2},}
+in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
+is constant within a parameter setting and is recycled to the length of \code{y}.
+Being a location family, the Gaussian has the same curvature in the response
+as in its location, and this equals the \code{mu_mu} component of
+\code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}}.
+}
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same curvature as in the location.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Negative everywhere, so the log-density is concave in the response.
+all(distrib_hess_y(d, y, th) < 0)
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=distrib_grad_y.Gaussian1Distrib]{distrib_grad_y.Gaussian1Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Gaussian1Distrib]{distrib_hessian.Gaussian1Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
