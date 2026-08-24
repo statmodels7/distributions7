@@ -2,20 +2,51 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_hess_y.CauchyDistrib}
 \alias{distrib_hess_y.CauchyDistrib}
-\title{Cauchy Response Second Derivative}
+\title{Cauchy Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = 2(r^2 - \sigma^2)/(\sigma^2 + r^2)^2}, \eqn{r = y - \mu}.
+Computes the second derivative of the Cauchy log-density with respect to the
+response,
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{2(r^2 - \sigma^2)}{(\sigma^2 + r^2)^2},
+      \qquad r = y - \mu,}
+in closed form. Being a location family, the Cauchy has the same curvature in
+the response as in its location, so this equals the \code{mu_mu} component of
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}}. It is negative only for \eqn{|r| <
+\sigma}: the log-density is concave near the location and convex in the
+tails, which is what the heavy tails look like on the log scale.
+}
+\examples{
+d <- cauchy_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same curvature as in the location.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Concave within one scale unit of the location, convex beyond it.
+z <- c(0, 1, 1.5, 2, 5)
+data.frame(r = z * 1.5,
+           hess_y = distrib_hess_y(d, 0.4 + z * 1.5, th),
+           concave = distrib_hess_y(d, 0.4 + z * 1.5, th) < 0)
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_grad_y.CauchyDistrib]{distrib_grad_y.CauchyDistrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

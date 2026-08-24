@@ -4,18 +4,46 @@
 \alias{distrib_rng.CauchyDistrib}
 \title{Cauchy Random Number Generator}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled.
+\code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Cauchy distribution.
+Draws \code{n} independent Cauchy variates by calling \code{\link[stats:Cauchy]{stats::rcauchy()}}, so the
+draws come from R's own generator and depend on \code{.Random.seed} in the usual
+way. The generalized ratio-of-uniforms fallback the base class supplies is
+bypassed.
+
+A sample from this family carries extreme values at a rate that does not
+diminish with \code{n}, and its running mean does not settle: the sample mean of
+\code{n} Cauchy draws is itself Cauchy with the same scale, whatever \code{n} is.
+}
+\examples{
+d <- cauchy_distrib()
+
+# Same generator as stats::rcauchy, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.4, sigma = 1.5))
+set.seed(2)
+identical(a, rcauchy(3, location = 0.4, scale = 1.5))
+
+# The sample median converges on mu; the sample mean does not converge at
+# all, being itself Cauchy at every sample size.
+set.seed(4)
+z <- distrib_rng(d, 1e5, list(mu = 3, sigma = 2))
+n <- c(1e2, 1e3, 1e4, 1e5)
+rbind(median = vapply(n, function(k) median(z[1:k]), numeric(1)),
+      mean   = vapply(n, function(k) mean(z[1:k]), numeric(1)))
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile.CauchyDistrib()}} for the inverse-transform route,
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for the non-convergence of the sample mean, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

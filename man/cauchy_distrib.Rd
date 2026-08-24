@@ -2,79 +2,125 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{cauchy_distrib}
 \alias{cauchy_distrib}
-\title{Cauchy Distribution Object}
+\title{Cauchy Distribution}
 \usage{
 cauchy_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{CauchyDistrib} (inheriting from \code{continuous_distrib}) representing the Cauchy distribution.
+An S7 object of class \code{CauchyDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"cauchy"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Cauchy distribution, parameterized by location (\eqn{\mu})
-and scale (\eqn{\sigma}).
+Builds the distribution object for the Cauchy family with location
+\eqn{\mu} and scale \eqn{\sigma > 0}, the Student's t on one degree of
+freedom. The returned object carries closed-form derivatives of the
+log-density to fourth order, in the parameters and in the response, so every
+generic of the toolkit answers without a numerical fallback.
+
+No moment of this family exists, so the two parameters are the median and
+the half-interquartile range. Its tails decay like \eqn{y^{-2}}, and the
+resulting score is bounded, which makes a Cauchy likelihood a standard
+choice when the data carry gross outliers.
 }
-\details{
-The Cauchy distribution is a heavy-tailed location-scale distribution with
-location \eqn{\mu} and scale \eqn{\sigma}. Its moments (mean, variance, and
-higher) are \strong{undefined}.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]},}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\sigma \in (0, \infty)}. The
+distribution function is
+\eqn{F(q) = 1/2 + \pi^{-1}\arctan((q-\mu)/\sigma)} and the quantile function
+\eqn{Q(p) = \mu + \sigma\tan(\pi(p - 1/2))}.
+}
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{\pi \sigma \left[1 + \left(\dfrac{y-\mu}{\sigma}\right)^2\right]}}
+\section{No moments}{
+The density decays like \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,dy} diverges
+for every \eqn{p \ge 1} and the family has no mean, no variance and no
+higher moment. \code{mean()}, \code{variance()}, \code{skewness()} and \code{kurtosis()} return
+\code{NaN} directly, without attempting a quadrature over a divergent integral;
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} gives the argument in full. What the family does
+have is a median, equal to \eqn{\mu}, and quartiles at \eqn{\mu \pm \sigma},
+so \eqn{\sigma} is the half-interquartile range.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \sigma) = \dfrac{1}{2} + \dfrac{1}{\pi}\arctan\left(\dfrac{q-\mu}{\sigma}\right)}
-
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \tfrac{1}{2}\right)\right)}
-
-\strong{Score} (with \eqn{d = \sigma^2 + (y-\mu)^2}):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2(y-\mu)}{d}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y-\mu)^2 - \sigma^2}{\sigma d}}
-
-\strong{Observed Hessian:}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(y-\mu)^2 - 2\sigma^2}{d^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 (y-\mu)^2 - (y-\mu)^4}{\sigma^2 d^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{4\sigma(y-\mu)}{d^2}}
-
-\strong{Expected Hessian:}
+\section{Derivatives}{
+With \eqn{r = y - \mu} and \eqn{d = \sigma^2 + r^2} the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2r}{d}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{r^2 - \sigma^2}{\sigma d},}
+the observed Hessian
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(r^2 - \sigma^2)}{d^2}, \quad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 r^2 - r^4}{\sigma^2 d^2}, \quad
+      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{4\sigma r}{d^2},}
+and its expectation
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
+The information in the location is half a Gaussian's at the same scale. Every
+derivative is bounded in \eqn{y}, so an expectation of any of them exists
+even though no moment of \eqn{Y} does.
 
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.CauchyDistrib]{distrib_deriv3.CauchyDistrib()}} and \code{\link[=distrib_deriv4.CauchyDistrib]{distrib_deriv4.CauchyDistrib()}}, as are
+the derivatives in the response.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+\section{Estimation}{
+There is no closed-form estimate: the likelihood equations are polynomial in
+\eqn{\mu} of degree \eqn{2n - 1} and are solved numerically. Because the
+score redescends, the log-likelihood can carry several local maxima, and
+\code{\link[=fit_distrib]{fit_distrib()}} starts from a data-based value and takes Fisher scoring
+steps, whose expected information is positive definite where the observed
+one need not be.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale. Neither is a moment. \eqn{\eta} is a parameter on
+the unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- cauchy_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density and the distribution function are R's own.
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+all.equal(distrib_pdf(d, y, th), dcauchy(y, 0.4, 1.5))
 
+# No moment exists; the median and the half-interquartile range do.
+c(mean = mean(d, th), variance = variance(d, th))
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+
+# Fitting a contaminated sample: the Cauchy location tracks the bulk where
+# the sample mean is dragged away by the outliers.
+set.seed(5)
+z <- c(rnorm(200, mean = 3, sd = 1), rnorm(10, mean = 60, sd = 1))
+fit <- fit_distrib(d, z)
+c(cauchy_mu = unname(coef(fit)["mu"]),
+  median = median(z), mean = mean(z))
+
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 16.
+Wiley, New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf.CauchyDistrib()}} for the density function.
-\item \code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf.CauchyDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile.CauchyDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.CauchyDistrib]{distrib_rng.CauchyDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient.CauchyDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian.CauchyDistrib()}} for the analytical expected Hessian.
-}
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}, of which this is the case \eqn{\nu = 1}, and which
+estimates the degrees of freedom instead of fixing them;
+\code{\link[=laplace_distrib]{laplace_distrib()}} and \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for the other robust
+location families; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the light-tailed comparison;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \link{CauchyDistrib} for the class.
 }

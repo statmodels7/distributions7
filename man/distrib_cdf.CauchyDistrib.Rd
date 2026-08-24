@@ -4,23 +4,50 @@
 \alias{distrib_cdf.CauchyDistrib}
 \title{Cauchy Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Cauchy distribution:
+Computes the Cauchy distribution function
 \deqn{F(q; \mu, \sigma) = \dfrac{1}{2} + \dfrac{1}{\pi}\arctan\left(\dfrac{q-\mu}{\sigma}\right)}
+by calling \code{\link[stats:Cauchy]{stats::pcauchy()}}. Far out in either tail the probability
+behaves like \eqn{1/(\pi |z|)} with \eqn{z = (q-\mu)/\sigma}, so it decays
+at a polynomial rate and \code{lower.tail = FALSE} returns an ordinary number
+where a light-tailed family returns zero.
+}
+\examples{
+d <- cauchy_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The method is stats::pcauchy at this parametrization.
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          pcauchy(c(-1.2, 0.3, 2.5), location = 0.4, scale = 1.5))
+
+# A hundred scale units out the tail is 1/(100 pi), not zero.
+distrib_cdf(d, 0.4 + 100 * 1.5, th, lower.tail = FALSE)
+1 / (100 * pi)
+
+# The two tails sum to one.
+distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_quantile.CauchyDistrib]{distrib_quantile.CauchyDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.CauchyDistrib]{distrib_pdf.CauchyDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}} for
+the generic.
 }

@@ -2,23 +2,50 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_grad_y.CauchyDistrib}
 \alias{distrib_grad_y.CauchyDistrib}
-\title{Cauchy Response Derivatives}
+\title{Cauchy First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Cauchy log-density with respect to the response.
-Let \eqn{r = y - \mu} and \eqn{d = \sigma^2 + r^2}:
-\eqn{\partial \ell / \partial y = -2r/d} and
-\eqn{\partial^2 \ell / \partial y^2 = 2(r^2 - \sigma^2)/d^2}.
+Computes the first derivative of the Cauchy log-density with respect to the
+response,
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{2r}{\sigma^2 + r^2},
+      \qquad r = y - \mu,}
+in closed form. The Cauchy is a location family in \eqn{\mu}, so the response
+enters the log-density only through \eqn{r} and this derivative is the
+negative of the score in \eqn{\mu}. It is bounded by \eqn{1/\sigma}, unlike
+the corresponding derivative of a Gaussian, which grows without bound.
+}
+\examples{
+d <- cauchy_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+r <- y - 0.4
+all.equal(distrib_grad_y(d, y, th), -2 * r / (1.5^2 + r^2))
+
+# A location family: the derivative in the response is minus the score in
+# the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Bounded by 1/sigma however far out the observation is.
+max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
+1 / 1.5
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_hess_y.CauchyDistrib]{distrib_hess_y.CauchyDistrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient.CauchyDistrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

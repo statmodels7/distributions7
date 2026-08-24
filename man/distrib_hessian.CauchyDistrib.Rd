@@ -2,25 +2,70 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_hessian.CauchyDistrib}
 \alias{distrib_hessian.CauchyDistrib}
-\title{Cauchy Analytical Observed Hessian}
+\title{Cauchy Observed Hessian}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}.
+The three name the distinct entries of a symmetric \eqn{2 \times 2} matrix
+per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Cauchy log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the three distinct second derivatives of the Cauchy log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form. Writing \eqn{r = y - \mu} and \eqn{d = \sigma^2 + r^2},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(r^2 - \sigma^2)}{d^2},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 r^2 - r^4}{\sigma^2 d^2},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{4\sigma r}{d^2}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{2(y-\mu)^2 - 2\sigma^2}{(\sigma^2 + (y-\mu)^2)^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 4\sigma^2 (y-\mu)^2 - (y-\mu)^4}{\sigma^2(\sigma^2 + (y-\mu)^2)^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{4\sigma (y-\mu)}{(\sigma^2 + (y-\mu)^2)^2}}
+The curvature in \eqn{\mu} turns \strong{positive} wherever \eqn{|r| > \sigma}, so
+a single observation beyond one scale unit contributes convexity and the
+observed information can fail to be positive definite. The expected values
+are well behaved, which is why Fisher scoring is the steadier route on this
+family; see \code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian.CauchyDistrib()}}.
+}
+\examples{
+d <- cauchy_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+h <- distrib_hessian(d, y, th)
+
+# The closed forms, written out.
+r <- y - 0.4; dd <- 1.5^2 + r^2
+all.equal(h$mu_mu, 2 * (r^2 - 1.5^2) / dd^2)
+all.equal(h$mu_sigma, -4 * 1.5 * r / dd^2)
+
+# The curvature in mu is positive wherever |r| exceeds sigma.
+data.frame(r = r, mu_mu = h$mu_mu, beyond_sigma = abs(r) > 1.5)
+
+# A central difference of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient.CauchyDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian.CauchyDistrib()}} for the expectation of this
+quantity, \code{\link[=fisher_scoring]{fisher_scoring()}} for the estimation route that uses it, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

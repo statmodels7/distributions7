@@ -2,22 +2,77 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_deriv3.CauchyDistrib}
 \alias{distrib_deriv3.CauchyDistrib}
-\title{Cauchy Analytical Third-Order Derivatives}
+\title{Cauchy Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form third-order derivatives of the Cauchy log-density (observed, or expected when \code{expected = TRUE}).
+Computes the four distinct third derivatives of the Cauchy log-density with
+respect to \eqn{\mu} and \eqn{\sigma}, in closed form. Every component is a
+rational function of \eqn{r = y - \mu} and \eqn{\sigma} over a power of
+\eqn{d = \sigma^2 + r^2}, so all of them are bounded in \eqn{y} and decay as
+\eqn{|r|} grows.
+
+With \code{expected = TRUE} the expectations under the model are returned, also
+in closed form: the two components odd in \eqn{r} vanish by symmetry, and
+the other two are \eqn{1/(2\sigma^3)} and \eqn{3/(2\sigma^3)}. Both routes
+are closed form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- cauchy_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# Expected values: the two components odd in the residual vanish.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+c(1 / (2 * 1.5^3), 3 / (2 * 1.5^3))
+
+# A central difference of the Hessian reproduces the observed component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.CauchyDistrib]{distrib_deriv4.CauchyDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

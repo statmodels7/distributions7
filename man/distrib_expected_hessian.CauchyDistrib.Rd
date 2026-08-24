@@ -2,25 +2,79 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_expected_hessian.CauchyDistrib}
 \alias{distrib_expected_hessian.CauchyDistrib}
-\title{Cauchy Analytical Expected Hessian}
+\title{Cauchy Expected Hessian}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the analytical expected Hessian of the Cauchy log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] =
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2},
+      \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right] = 0.}
+The information in the location is \eqn{1/(2\sigma^2)}, half of a Gaussian's
+\eqn{1/\sigma^2} at the same scale, which is the price the heavy tails
+charge. The zero off-diagonal says the location and the scale are
+orthogonal. The expectations exist even though no moment of the family does:
+they are expectations of bounded functions of \eqn{y}, not of \eqn{y}.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{2\sigma^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{2\sigma^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0}
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The Cauchy is a
+regular family in both parameters, so the second Bartlett identity holds and
+this equals the variance of the score.
+}
+
+\examples{
+d <- cauchy_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# Both diagonal entries are -1/(2 sigma^2); the mixed entry is 0.
+lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
+-1 / (2 * 1.5^2)
+
+# Half the information a Gaussian of the same scale carries in its location.
+distrib_expected_hessian(gaussian1_distrib(), 0, th)$mu_mu
+
+# The observed Hessian averages onto it over a large sample, even though
+# the sample mean of the same draws does not converge at all.
+set.seed(3)
+z <- distrib_rng(d, 2e5, th)
+vapply(distrib_hessian(d, z, th), mean, numeric(1))
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the observed quantity this is
+the expectation of, \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for the
+light-tailed comparison, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
+and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

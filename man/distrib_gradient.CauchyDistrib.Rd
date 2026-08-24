@@ -2,24 +2,74 @@
 % Please edit documentation in R/cauchy_distrib.R
 \name{distrib_gradient.CauchyDistrib}
 \alias{distrib_gradient.CauchyDistrib}
-\title{Cauchy Analytical Gradient}
+\title{Cauchy Score}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Cauchy log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the first derivatives of the Cauchy log-density with respect to
+\eqn{\mu} and \eqn{\sigma}, one value per observation, in closed form.
+Writing \eqn{r = y - \mu} and \eqn{d = \sigma^2 + r^2},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2r}{d},
+      \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{r^2 - \sigma^2}{\sigma d}.}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{2(y-\mu)}{\sigma^2 + (y-\mu)^2}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{(y-\mu)^2 - \sigma^2}{\sigma(\sigma^2 + (y-\mu)^2)}}
+The score in \eqn{\mu} is \strong{redescending}: it rises to \eqn{1/\sigma} at
+\eqn{r = \sigma} and falls back towards zero as \eqn{|r|} grows, so an
+observation far from the location contributes almost nothing to the
+estimating equation. That is the mechanism behind the robustness of a Cauchy
+likelihood, and it is also why the log-likelihood can have several local
+maxima.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale. Neither is a moment: no moment of this family
+exists.
+}
+
+\examples{
+d <- cauchy_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- y - 0.4; dd <- 1.5^2 + r^2
+all.equal(g$mu, 2 * r / dd)
+all.equal(g$sigma, (r^2 - 1.5^2) / (1.5 * dd))
+
+# The score redescends: it peaks at r = sigma, where it is 1/sigma, and
+# decays afterwards. An outlier is discounted, not chased.
+r <- c(0, 0.75, 1.5, 3, 6, 12)
+round(distrib_gradient(d, 0.4 + r, th)$mu, 4)
+1 / 1.5
+
+# A Gaussian score at the same residuals grows without bound instead.
+round(distrib_gradient(gaussian1_distrib(), 0.4 + r, th)$mu, 4)
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.CauchyDistrib]{distrib_expected_hessian.CauchyDistrib()}} for their expectation,
+\code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the unbounded score of a
+light-tailed family, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

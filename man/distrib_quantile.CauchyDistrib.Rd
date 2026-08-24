@@ -4,23 +4,52 @@
 \alias{distrib_quantile.CauchyDistrib}
 \title{Cauchy Quantile Function}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give \code{-Inf} and \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
-Computes the quantile function (inverse CDF) for the Cauchy distribution:
+Computes the Cauchy quantile function
 \deqn{Q(p; \mu, \sigma) = \mu + \sigma \tan\left(\pi\left(p - \dfrac{1}{2}\right)\right)}
+by calling \code{\link[stats:Cauchy]{stats::qcauchy()}}. The median is \eqn{\mu} and the quartiles are
+\eqn{\mu \pm \sigma}, so the two parameters are read off this function
+directly: they are the median and the half-interquartile range, the
+location and spread this family has in place of a mean and a standard
+deviation.
+}
+\examples{
+d <- cauchy_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The median is mu and the quartiles are mu -/+ sigma exactly.
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.01, 0.5, 0.99)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# The tails are heavy, so the extreme quantiles are far out: the 99.9th
+# percentile sits at over 300 scale units.
+(distrib_quantile(d, 0.999, th) - 0.4) / 1.5
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=distrib_cdf.CauchyDistrib]{distrib_cdf.CauchyDistrib()}}, which this inverts;
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for why the median and the half-interquartile
+range are what this family offers; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }
