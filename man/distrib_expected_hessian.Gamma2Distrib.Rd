@@ -2,28 +2,105 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_expected_hessian.Gamma2Distrib}
 \alias{distrib_expected_hessian.Gamma2Distrib}
-\title{Gamma Analytical Expected Hessian}
+\title{Gamma Expected Hessian in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma2_sigma2} and
+\code{mu_sigma2}, in that order, each of length
+\code{max(length(y), length(mu), length(sigma2))} and constant within itself
+when the parameters are.
 }
 \description{
-Computes the analytical expected Hessian of the Gamma log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. With \eqn{\alpha =
+\mu^2/\sigma^2} and \eqn{\psi_1} the trigamma function,
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] =
+        \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
+      \mathbb{E}\left[\ell^{(\sigma^2\sigma^2)}\right] =
+        -\dfrac{\mu^2\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
+               {(\sigma^2)^4},}
+\deqn{\mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] =
+        \dfrac{2\mu\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
+              {(\sigma^2)^3}.}
+They follow from \eqn{\mathbb{E}[Y] = \mu} and
+\eqn{\mathbb{E}[\log Y] = \psi(\alpha) - \log\lambda}.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right)}{(\sigma^2)^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2\left(\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right) - \sigma^2\right)}{(\sigma^2)^4}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma^2}\right] = \dfrac{2\mu\left(\mu^2\psi_1\left(\dfrac{\mu^2}{\sigma^2}\right) - \sigma^2\right)}{(\sigma^2)^3}}
+\strong{The mixed entry does not vanish}, so the mean and the variance are not
+orthogonal in this parametrization; their maximum likelihood estimates are
+asymptotically correlated. \code{\link[=gamma1_distrib]{gamma1_distrib()}} carries the same law with a
+dispersion in place of the variance, and there the mixed entry is exactly
+zero. The matrix is negative definite throughout, so the information it
+negates is positive definite.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The gamma is a
+regular family, so the second Bartlett identity holds and this equals the
+variance of the score.
+}
+
+\examples{
+d <- gamma2_distrib()
+th <- list(mu = 3, sigma2 = 2)
+
+# The three constants, one value per observation.
+eh <- lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
+eh
+
+# Written out with the trigamma function.
+al <- 9 / 2
+c((3 * 2 - 4 * 9 * trigamma(al)) / 2^2,
+  -9 * (9 * trigamma(al) - 2) / 2^4,
+  2 * 3 * (9 * trigamma(al) - 2) / 2^3)
+
+# The mixed entry is not zero: the mean and the variance are correlated.
+# In gamma1, the same law in the dispersion, it is exactly zero.
+c(gamma2 = eh$mu_sigma2,
+  gamma1 = distrib_expected_hessian(gamma1_distrib(), 0,
+                                    list(mu = 3, phi = 2 / 9))$mu_phi)
+
+# Negative definite all the same, so the information is positive definite.
+M <- matrix(c(eh$mu_mu, eh$mu_sigma2, eh$mu_sigma2, eh$sigma2_sigma2), 2)
+eigen(M, only.values = TRUE)$values
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the observed quantity this is
+the expectation of, \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for the
+orthogonal parametrization of the same law, \code{\link[=fisher_scoring]{fisher_scoring()}}, which
+inverts it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

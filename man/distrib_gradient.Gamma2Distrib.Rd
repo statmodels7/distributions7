@@ -2,27 +2,78 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_gradient.Gamma2Distrib}
 \alias{distrib_gradient.Gamma2Distrib}
-\title{Gamma Analytical Gradient}
+\title{Gamma Score in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, each of
+length \code{max(length(y), length(mu), length(sigma2))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Gamma log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
+Computes the first derivatives of the gamma log-density with respect to
+\eqn{\mu} and \eqn{\sigma^2}, one value per observation, in closed form.
+With \eqn{\alpha = \mu^2/\sigma^2} and \eqn{\lambda = \mu/\sigma^2},
+\deqn{\dfrac{\partial \ell}{\partial \mu} =
+      \dfrac{-2\mu\psi(\alpha) + 2\mu\log\lambda + \mu + 2\mu\log y - y}
+            {\sigma^2},}
+\deqn{\dfrac{\partial \ell}{\partial \sigma^2} =
+      -\dfrac{\mu\left\{-\mu\psi(\alpha) + \mu
+        + \mu(\log\lambda + \log y) - y\right\}}{(\sigma^2)^2},}
+with \eqn{\psi} the digamma function. Both components carry the digamma,
+because both parameters move the shape; in \code{\link[=gamma1_distrib]{gamma1_distrib()}}, where the
+second parameter is a dispersion, only the second component does.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{-2\mu\psi\left(\dfrac{\mu^2}{\sigma^2}\right) + 2\mu\log\left(\dfrac{\mu}{\sigma^2}\right) + \mu + 2\mu\log(y) - y}{\sigma^2}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi\left(\dfrac{\mu^2}{\sigma^2}\right) + \mu + \mu\left(\log\left(\dfrac{\mu}{\sigma^2}\right) + \log(y)\right) - y\right]}{(\sigma^2)^2}}
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\sigma^2 > 0} the variance. \eqn{\psi} is the digamma function,
+\eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- gamma2_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, sigma2 = 2)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out with the digamma function.
+al <- 9 / 2
+lam <- 3 / 2
+all.equal(g$mu,
+          (-2 * 3 * digamma(al) + 2 * 3 * log(lam) + 3 +
+             2 * 3 * log(y) - y) / 2)
+all.equal(g$sigma2,
+          -3 * (-3 * digamma(al) + 3 + 3 * (log(lam) + log(y)) - y) / 2^2)
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the same score in the dispersion,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

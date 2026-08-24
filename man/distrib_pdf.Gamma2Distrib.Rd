@@ -2,23 +2,64 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_pdf.Gamma2Distrib}
 \alias{distrib_pdf.Gamma2Distrib}
-\title{Gamma Probability Density Function}
+\title{Gamma Probability Density Function in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is \eqn{(0, \infty)};
+a negative value gives 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Gamma distribution:
-\deqn{f(y; \mu, \sigma^2) = \dfrac{1}{\Gamma\left(\dfrac{\mu^2}{\sigma^2}\right)} \left(\dfrac{\mu}{\sigma^2}\right)^{\dfrac{\mu^2}{\sigma^2}} y^{\dfrac{\mu^2}{\sigma^2}-1} \exp\left(-\dfrac{\mu}{\sigma^2} y\right)}
+Computes the gamma density
+\deqn{f(y; \mu, \sigma^2) = \dfrac{\lambda^{\alpha}}{\Gamma(\alpha)}
+      y^{\alpha - 1} e^{-\lambda y}, \qquad
+      \alpha = \dfrac{\mu^2}{\sigma^2}, \quad
+      \lambda = \dfrac{\mu}{\sigma^2}, \quad y > 0,}
+by calling \code{\link[stats:GammaDist]{stats::dgamma()}} at that shape and rate. With \code{log = TRUE} the
+logarithm is formed inside \code{dgamma()} and stays finite where the density
+itself underflows.
+
+The density is unbounded at the origin when \eqn{\sigma^2 > \mu^2}, where
+the shape falls below one; it is flat there when \eqn{\sigma^2 = \mu^2},
+the exponential case, and vanishes at the origin when
+\eqn{\sigma^2 < \mu^2}.
+}
+\examples{
+d <- gamma2_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, sigma2 = 2)
+
+# The method is stats::dgamma at shape mu^2/sigma2 and rate mu/sigma2.
+all.equal(distrib_pdf(d, y, th),
+          dgamma(y, shape = 9 / 2, rate = 3 / 2))
+
+# The same law as gamma1 at phi = sigma2/mu^2.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(gamma1_distrib(), y, list(mu = 3, phi = 2 / 9)))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(1, 3, 9), sigma2 = 2))
+
+# Far out in the tail the density underflows and its logarithm does not.
+distrib_pdf(d, 1e4, th)
+distrib_pdf(d, 1e4, th, log = TRUE)
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf.Gamma2Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for the derivatives of the log-density,
+\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the same density in the dispersion, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -2,20 +2,49 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_hess_y.Gamma2Distrib}
 \alias{distrib_hess_y.Gamma2Distrib}
-\title{Gamma Response Second Derivative}
+\title{Gamma Second Derivative in the Response, Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
+value is infinite unless the shape is exactly 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive; they enter only through the shape.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2}, \eqn{\alpha = \mu^2/\sigma^2}.
+Computes the second derivative of the gamma log-density with respect to the
+response, in closed form at the implied shape \eqn{\alpha = \mu^2/\sigma^2}:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}.}
+The rate drops out, the log-density being linear in \eqn{y} apart from the
+\eqn{(\alpha-1)\log y} term. The sign follows the shape: the log-density is
+concave in the response when \eqn{\sigma^2 < \mu^2}, exactly flat when
+\eqn{\sigma^2 = \mu^2}, where the family is exponential, and convex when
+\eqn{\sigma^2 > \mu^2}.
+}
+\examples{
+d <- gamma2_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, sigma2 = 2)
+
+all.equal(distrib_hess_y(d, y, th), -(9 / 2 - 1) / y^2)
+
+# Only the shape survives, so a setting with the same mu^2/sigma2 agrees.
+all.equal(distrib_hess_y(d, y, th),
+          distrib_hess_y(d, y, list(mu = 6, sigma2 = 8)))
+
+# Concave below sigma2 = mu^2, flat at it, convex above.
+vapply(c(2, 9, 20),
+       function(v) distrib_hess_y(d, 3, list(mu = 3, sigma2 = v)),
+       numeric(1))
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_grad_y.Gamma2Distrib]{distrib_grad_y.Gamma2Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

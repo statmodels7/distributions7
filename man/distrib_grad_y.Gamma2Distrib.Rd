@@ -2,24 +2,57 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_grad_y.Gamma2Distrib}
 \alias{distrib_grad_y.Gamma2Distrib}
-\title{Gamma Response Derivatives}
+\title{Gamma First Derivative in the Response, Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
+value is infinite unless the shape is exactly 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Gamma log-density with respect to the response,
-using the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
-\eqn{\lambda = \mu/\sigma^2}:
-\eqn{\partial \ell / \partial y = (\alpha-1)/y - \lambda} and
-\eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2}.
+Computes the first derivative of the gamma log-density with respect to the
+response, in closed form at the implied shape \eqn{\alpha = \mu^2/\sigma^2}
+and rate \eqn{\lambda = \mu/\sigma^2}:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\alpha - 1}{y} - \lambda.}
+It changes sign at the mode \eqn{y = (\alpha-1)/\lambda}, so it is positive
+below the mode and negative above it. When \eqn{\sigma^2 = \mu^2} the shape
+is 1, the first term drops out and the derivative is the constant
+\eqn{-1/\mu} of an exponential; when \eqn{\sigma^2 > \mu^2} the density has
+no interior mode and the derivative is negative throughout.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- gamma2_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, sigma2 = 2)
+
+# Written out at the implied shape and rate.
+all.equal(distrib_grad_y(d, y, th), (9 / 2 - 1) / y - 3 / 2)
+
+# Zero at the mode, positive below it and negative above.
+mode <- (9 / 2 - 1) / (3 / 2)
+c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
+
+# At sigma2 = mu^2 the family is exponential and the derivative is constant.
+distrib_grad_y(d, y, list(mu = 3, sigma2 = 9))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_hess_y.Gamma2Distrib]{distrib_hess_y.Gamma2Distrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

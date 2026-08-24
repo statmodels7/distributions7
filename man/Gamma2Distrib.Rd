@@ -2,7 +2,7 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{Gamma2Distrib}
 \alias{Gamma2Distrib}
-\title{S7 Class for Gamma Distribution}
+\title{Gamma Distribution Class, Mean and Variance}
 \usage{
 Gamma2Distrib(
   distrib_name = character(0),
@@ -36,15 +36,31 @@ Gamma2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Gamma2Distrib}.
+An S7 object of class \code{Gamma2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=gamma2_distrib]{gamma2_distrib()}} they hold \code{"gamma2"}, \code{"univariate"},
+\code{c(0, Inf)}, \code{c("mu", "sigma2")}, the interpretations
+\code{c(mu = "mean", sigma2 = "variance")}, \code{2}, the domain \eqn{(0, \infty)}
+for both parameters, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Gamma distribution
-under the mean-variance parameterization.
+The S7 class of the gamma family parametrized by its mean \eqn{\mu > 0} and
+its variance \eqn{\sigma^2 > 0}, so that the shape is
+\eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. It
+inherits from \code{continuous_distrib}, so it answers every generic of the
+\code{distrib} contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+Build one with \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which supplies the two link functions and
+fills the properties in. This page documents the raw S7 constructor, which
+takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4()}},
@@ -60,6 +76,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- gamma2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# The second parameter is the variance itself, so it is what variance()
+# returns and what the fitted standard error describes.
+variance(d, list(mu = 3, sigma2 = 2))
+}
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}} to build one;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} for the same law in mean and dispersion, where the two
+parameters are orthogonal and these are not;
+\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} and \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for
+the closed forms this class supplies.
 }

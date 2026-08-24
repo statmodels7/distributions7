@@ -2,77 +2,148 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{gamma2_distrib}
 \alias{gamma2_distrib}
-\title{Gamma Distribution Object (Mean-Variance Parameterization)}
+\title{Gamma Distribution, Mean and Variance}
 \usage{
 gamma2_distrib(link_mu = log_link(), link_sigma2 = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted mean positive.}
 
-\item{link_sigma2}{A link function object for the variance parameter \eqn{\sigma^2}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma2}{A \code{link} object from \code{linkfunctions7} for the variance
+\eqn{\sigma^2}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{Gamma2Distrib} (inheriting from \code{continuous_distrib}) representing the Gamma distribution.
+An S7 object of class \code{Gamma2Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gamma2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "sigma2")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Gamma distribution parameterized by mean (\eqn{\mu}) and variance (\eqn{\sigma^2}).
+Builds the distribution object for the gamma family parametrized by its mean
+\eqn{\mu > 0} and its variance \eqn{\sigma^2 > 0}, so that the shape is
+\eqn{\alpha = \mu^2/\sigma^2} and the rate \eqn{\lambda = \mu/\sigma^2}. The
+returned object carries closed-form derivatives of the log-density to fourth
+order, in the parameters and in the response, and closed-form moments, so
+every generic of the toolkit answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
 }
-\details{
-The Gamma distribution is given a mean/variance parameterization: \eqn{\mu} is
-the mean and \eqn{\sigma^2} the variance. The standard shape \eqn{\alpha} and
-rate \eqn{\lambda} are recovered as
-\deqn{\alpha = \dfrac{\mu^2}{\sigma^2}, \qquad \lambda = \dfrac{\mu}{\sigma^2}}
+\section{The parametrization}{
+The density on \eqn{y \in (0, \infty)} is
+\deqn{f(y; \mu, \sigma^2) = \dfrac{\lambda^{\alpha}}{\Gamma(\alpha)}\,
+      y^{\alpha-1} e^{-\lambda y}, \qquad
+      \alpha = \dfrac{\mu^2}{\sigma^2}, \quad
+      \lambda = \dfrac{\mu}{\sigma^2},}
+the distribution function \eqn{F(q) = \gamma(\alpha, \lambda q)/\Gamma(\alpha)}
+with \eqn{\gamma} the lower incomplete gamma function, and the quantile
+function its numerical inverse. The mean is \eqn{\mu}, the variance
+\eqn{\sigma^2}, the skewness \eqn{2\sqrt{\sigma^2}/\mu} and the excess
+kurtosis \eqn{6\sigma^2/\mu^2}.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma^2) = \dfrac{\lambda^\alpha}{\Gamma(\alpha)}\, y^{\alpha-1} e^{-\lambda y}, \quad y > 0}
-
-\strong{Cumulative distribution function} (\eqn{\gamma} the lower incomplete gamma function):
-\deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
-
-\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
-
-\strong{Score} (\eqn{\psi} the digamma function):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{-2\mu\psi(\alpha) + 2\mu\log\lambda + \mu + 2\mu\log y - y}{\sigma^2}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma^2} = -\dfrac{\mu\left[-\mu\psi(\alpha) + \mu + \mu(\log\lambda + \log y) - y\right]}{(\sigma^2)^2}}
-
-\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function):
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2}\right] = \dfrac{2\mu(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^3}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{\mu^2(\mu^2\psi_1(\alpha) - \sigma^2)}{(\sigma^2)^4}}
-The observed Hessian is available via \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}}.
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\sigma^2},
-skewness \eqn{2\sqrt{\sigma^2}/\mu}, excess kurtosis \eqn{6\sigma^2/\mu^2}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
-\item \eqn{\sigma^2 \in (0, +\infty)}
+This is the same law as \code{\link[=gamma1_distrib]{gamma1_distrib()}}, which carries the mean and a
+\emph{dispersion}, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
+separate families because the second parameter is a different quantity in
+each, with its own interpretation, standard error and interval. The choice
+between them is not only cosmetic: see the next section.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+\section{Derivatives, and orthogonality}{
+Writing \eqn{\psi} for the digamma function and \eqn{\psi_1} for the
+trigamma, the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} =
+      \dfrac{-2\mu\psi(\alpha) + 2\mu\log\lambda + \mu + 2\mu\log y - y}
+            {\sigma^2}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma^2} =
+      -\dfrac{\mu\left\{-\mu\psi(\alpha) + \mu + \mu(\log\lambda + \log y)
+        - y\right\}}{(\sigma^2)^2},}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] =
+        \dfrac{3\sigma^2 - 4\mu^2\psi_1(\alpha)}{(\sigma^2)^2}, \qquad
+      \mathbb{E}\left[\ell^{(\sigma^2\sigma^2)}\right] =
+        -\dfrac{\mu^2\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
+               {(\sigma^2)^4},}
+\deqn{\mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] =
+        \dfrac{2\mu\left\{\mu^2\psi_1(\alpha) - \sigma^2\right\}}
+              {(\sigma^2)^3}.}
+
+\strong{The mixed entry does not vanish.} The mean and the variance are not
+orthogonal here, so their estimates are asymptotically correlated and a
+mean equation fitted with the variance held at a wrong value is biased. In
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}, where the second parameter is the dispersion
+\eqn{\phi = \sigma^2/\mu^2}, the same entry is exactly zero. That is the
+reason a generalized linear model uses the dispersion.
+
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.Gamma2Distrib]{distrib_deriv3.Gamma2Distrib()}} and \code{\link[=distrib_deriv4.Gamma2Distrib]{distrib_deriv4.Gamma2Distrib()}}, as
+are the derivatives in the response, \code{\link[=distrib_grad_y.Gamma2Distrib]{distrib_grad_y.Gamma2Distrib()}} and
+\code{\link[=distrib_hess_y.Gamma2Distrib]{distrib_hess_y.Gamma2Distrib()}}. The derivatives of the \emph{distribution}
+function in the parameters have no elementary form, the derivative of an
+incomplete gamma in its shape being hypergeometric, and are taken by finite
+difference on the analytic cdf.
 }
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The mean has
+the closed-form estimate \eqn{\hat\mu = \bar y}; the variance has none and
+is reached numerically, landing near but not at the sample variance. The
+example below shows both.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\sigma^2 > 0} the variance. \eqn{\alpha} and \eqn{\lambda} are the
+implied shape and rate. \eqn{\psi} is the digamma function and \eqn{\psi_m}
+its \eqn{m}th derivative. \eqn{\eta} is a parameter on the unconstrained
+scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- gamma2_distrib()
-d@params
+d
 
-theta <- list(mu = 2, sigma2 = 1)
-distrib_pdf(d, c(0.5, 1, 2), theta)
-distrib_gradient(d, c(0.5, 1, 2), theta)
+# The density is stats::dgamma at shape mu^2/sigma2 and rate mu/sigma2.
+y <- c(1, 3, 5)
+th <- list(mu = 3, sigma2 = 2)
+all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 9 / 2, rate = 3 / 2))
 
+# Moments: skewness 2 sqrt(sigma2)/mu, excess kurtosis 6 sigma2/mu^2.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(2 * sqrt(2) / 3, 6 * 2 / 9)
+
+# Fitting recovers the parameters. The mean is the sample mean exactly;
+# the variance is close to the sample variance without equalling it.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted  = coef(fit),
+      moments = c(mu = mean(z), sigma2 = var(z)))
+
+# The mean and the variance are correlated here, so the mixed entry of the
+# expected Hessian is non-zero; in gamma1 it is exactly zero.
+c(gamma2 = distrib_expected_hessian(d, 0, th)$mu_sigma2,
+  gamma1 = distrib_expected_hessian(gamma1_distrib(), 0,
+                                    list(mu = 3, phi = 2 / 9))$mu_phi)
+
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 17.
+Wiley, New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the probability density function.
-\item \code{\link[=distrib_cdf.Gamma2Distrib]{distrib_cdf.Gamma2Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.Gamma2Distrib]{distrib_quantile.Gamma2Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.Gamma2Distrib]{distrib_rng.Gamma2Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.Gamma2Distrib]{distrib_gradient.Gamma2Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.Gamma2Distrib]{distrib_hessian.Gamma2Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.Gamma2Distrib]{distrib_expected_hessian.Gamma2Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} for the same law in the mean and the dispersion, which is
+the orthogonal parametrization; \code{\link[=exponential_distrib]{exponential_distrib()}} for the case
+\eqn{\sigma^2 = \mu^2}; \code{\link[=invgauss2_distrib]{invgauss2_distrib()}} and \code{\link[=lognormal2_distrib]{lognormal2_distrib()}} for
+other positive families written in the mean and the variance;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{Gamma2Distrib} for the class.
 }

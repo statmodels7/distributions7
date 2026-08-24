@@ -2,28 +2,62 @@
 % Please edit documentation in R/gamma2_distrib.R
 \name{distrib_cdf.Gamma2Distrib}
 \alias{distrib_cdf.Gamma2Distrib}
-\title{Gamma Cumulative Distribution Function}
+\title{Gamma Cumulative Distribution Function in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gamma2Distrib} object.}
+\item{distrib}{A \code{Gamma2Distrib} object, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma2))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Gamma distribution, using
-the shape/rate reparameterization \eqn{\alpha = \mu^2/\sigma^2},
-\eqn{\lambda = \mu/\sigma^2}:
-\deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)}}
-where \eqn{\gamma(\cdot, \cdot)} is the lower incomplete gamma function.
+Computes the gamma distribution function, the regularized incomplete gamma
+function
+\deqn{F(q; \mu, \sigma^2) = \dfrac{\gamma(\alpha, \lambda q)}{\Gamma(\alpha)},
+      \qquad \alpha = \dfrac{\mu^2}{\sigma^2}, \quad
+      \lambda = \dfrac{\mu}{\sigma^2},}
+with \eqn{\gamma} the lower incomplete gamma function, by calling
+\code{\link[stats:GammaDist]{stats::pgamma()}} at that shape and rate. Both tails are available exactly:
+\code{lower.tail = FALSE} evaluates \eqn{1 - F} without forming the difference,
+and \code{log.p = TRUE} returns a logarithm that stays finite where the
+probability itself underflows to zero.
+}
+\examples{
+d <- gamma2_distrib()
+th <- list(mu = 3, sigma2 = 2)
+
+# The method is stats::pgamma at the implied shape and rate.
+all.equal(distrib_cdf(d, c(1, 3, 5), th),
+          pgamma(c(1, 3, 5), shape = 9 / 2, rate = 3 / 2))
+
+# The two tails sum to one.
+distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
+
+# The gamma is right skewed, so less than half the mass lies below the mean.
+distrib_cdf(d, 3, th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 3000, th, lower.tail = FALSE)
+distrib_cdf(d, 3000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=distrib_quantile.Gamma2Distrib]{distrib_quantile.Gamma2Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for
+the derivatives of this function in the parameters, which the gamma takes
+by finite difference because the derivative of an incomplete gamma in its
+shape is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }
