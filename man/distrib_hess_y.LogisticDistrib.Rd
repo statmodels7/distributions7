@@ -2,20 +2,50 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_hess_y.LogisticDistrib}
 \alias{distrib_hess_y.LogisticDistrib}
-\title{Logistic Response Second Derivative}
+\title{Logistic Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = -\mathrm{sech}^2(z/2)/(2\sigma^2)}, \eqn{z = (y-\mu)/\sigma}.
+Computes the second derivative of the logistic log-density with respect to
+the response,
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{1}{2\sigma^2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right),
+      \qquad z = \dfrac{y-\mu}{\sigma},}
+in closed form. It is negative everywhere, so the log-density is concave in
+the response throughout, and it decays to zero in either tail. Being a
+location family, the logistic has the same curvature in the response as in
+its location, so this equals the \code{mu_mu} component of
+\code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}}.
+}
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same curvature as in the location.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Concave everywhere, unlike the Cauchy, which turns convex in its tails.
+all(distrib_hess_y(d, seq(-50, 50, length.out = 1e3), th) < 0)
+any(distrib_hess_y(cauchy_distrib(), seq(-50, 50, length.out = 1e3), th) > 0)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_grad_y.LogisticDistrib]{distrib_grad_y.LogisticDistrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the curvature in the
+parameters, \code{\link[=distrib_hess_y.CauchyDistrib]{distrib_hess_y.CauchyDistrib()}} for a family that is convex
+in its tails, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

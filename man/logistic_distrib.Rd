@@ -2,86 +2,118 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{logistic_distrib}
 \alias{logistic_distrib}
-\title{Logistic Distribution Object}
+\title{Logistic Distribution}
 \usage{
 logistic_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
+over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{LogisticDistrib} (inheriting from \code{continuous_distrib}) representing the Logistic distribution.
+An S7 object of class \code{LogisticDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"logistic"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Logistic distribution parameterized by location (\eqn{\mu})
-and scale (\eqn{\sigma}).
+Builds the distribution object for the logistic family with mean \eqn{\mu}
+and scale \eqn{\sigma > 0}. The returned object carries closed-form
+derivatives of the log-density to fourth order in the parameters and in the
+response, and closed-form moments.
+
+The family is symmetric about \eqn{\mu} with variance
+\eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale and not a standard
+deviation. Its distribution function is the logistic sigmoid, the same curve
+\code{linkfunctions7} uses as the inverse logit link.
 }
-\details{
-The Logistic distribution is a location-scale distribution with location
-\eqn{\mu} and scale \eqn{\sigma}.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma) = \dfrac{\exp\left(-\dfrac{y-\mu}{\sigma}\right)}{\sigma \left[1 + \exp\left(-\dfrac{y-\mu}{\sigma}\right)\right]^2},}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\sigma \in (0, \infty)}. The
+distribution function is \eqn{F(q) = [1 + e^{-(q-\mu)/\sigma}]^{-1}} and the
+quantile function \eqn{Q(p) = \mu + \sigma \log(p/(1-p))}.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma) = \dfrac{\exp\left(-\dfrac{y-\mu}{\sigma}\right)}{\sigma\left[1 + \exp\left(-\dfrac{y-\mu}{\sigma}\right)\right]^2}}
+The mean and the median are \eqn{\mu}, the variance is
+\eqn{\pi^2 \sigma^2/3}, the skewness is 0 and the excess kurtosis is
+\eqn{6/5}. A logistic and a Gaussian matched on their variance are close in
+the body and differ in the tails, the logistic's decaying exponentially
+rather than as a square exponential.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \sigma) = \dfrac{1}{1 + \exp\left(-\dfrac{q-\mu}{\sigma}\right)}}
-
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu + \sigma \log\left(\dfrac{p}{1-p}\right)}
-
-\strong{Score:}
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right), \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - \dfrac{y-\mu}{\sigma}\tanh\left(\dfrac{y-\mu}{2\sigma}\right)\right]}
-
-\strong{Expected Hessian:}
+\section{Derivatives}{
+With \eqn{z = (y-\mu)/\sigma} the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma}\tanh\left(\dfrac{z}{2}\right), \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z\tanh\left(\dfrac{z}{2}\right)\right],}
+and the expected Hessian is
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{3\sigma^2}, \quad
       \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{3+\pi^2}{9\sigma^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
-The observed Hessian is available via \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}}.
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0.}
 
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\pi^2\sigma^2/3}, skewness 0,
-excess kurtosis \eqn{6/5}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+Third and fourth orders are closed form \strong{observed} and numerical
+\strong{expected}: two of the nine expectations at those orders require
+\eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
+form, so \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} and
+\code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} route their \code{expected = TRUE} branch to
+\code{\link[=expected_derivative]{expected_derivative()}}. This is the only place in this family where a
+numerical route is taken.
 }
 
-Response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}})
-and observed third- and fourth-order parameter derivatives
-(\code{\link[=distrib_deriv3]{distrib_deriv3()}}, \code{\link[=distrib_deriv4]{distrib_deriv4()}}) are available in
-closed form. The corresponding expected derivatives are not: they are obtained
-through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. Seven of the nine components are
-nonetheless known exactly, and the location-scale structure of the family forbids
-any of them from depending on \eqn{\mu}:
-\deqn{\mathbb{E}\left[\dfrac{\partial^3 \ell}{\partial \mu^2 \partial \sigma}\right] = \dfrac{1}{2\sigma^3}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^3 \ell}{\partial \sigma^3}\right] = \dfrac{\pi^2+2}{2\sigma^3}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^4 \ell}{\partial \mu^4}\right] = \dfrac{1}{15\sigma^4},}
-the remaining ones in that list being zero by symmetry.
+\section{Estimation}{
+There is no closed-form estimate; \code{\link[=fit_distrib]{fit_distrib()}} maximizes the
+log-likelihood on the link scale. The log-likelihood is concave in
+\eqn{\mu} for a fixed \eqn{\sigma}, so the location is well determined.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma > 0} the scale, with standard deviation \eqn{\pi\sigma/\sqrt 3}.
+\eqn{z = (y-\mu)/\sigma} is the standardized residual. \eqn{\eta} is a
+parameter on the unconstrained scale of its link.
+}
+
 \examples{
 d <- logistic_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density and the distribution function are R's own.
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+all.equal(distrib_pdf(d, y, th), dlogis(y, 0.4, 1.5))
 
+# sigma is a scale: the standard deviation is pi sigma / sqrt(3).
+c(sd_from_variance = sqrt(variance(d, th)), pi * 1.5 / sqrt(3))
+
+# Fitting recovers the parameters.
+set.seed(9)
+z <- distrib_rng(d, 3000, list(mu = 2, sigma = 1))
+coef(fit_distrib(d, z))
+
+# Matched on variance, a logistic sits close to a Gaussian in the body and
+# puts more mass in the tails.
+g <- gaussian1_distrib()
+s <- pi * 1.5 / sqrt(3)
+rbind(logistic = distrib_cdf(d, 0.4 + c(1, 2, 3, 4) * s, th,
+                             lower.tail = FALSE),
+      gaussian = distrib_cdf(g, 0.4 + c(1, 2, 3, 4) * s,
+                             list(mu = 0.4, sigma = s), lower.tail = FALSE))
+
+}
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995).
+\emph{Continuous Univariate Distributions}, Volume 2, 2nd edition, Chapter 23.
+Wiley, New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.LogisticDistrib]{distrib_pdf.LogisticDistrib()}} for the probability density function.
-\item \code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf.LogisticDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile.LogisticDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.LogisticDistrib]{distrib_rng.LogisticDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient.LogisticDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}} for the analytical expected Hessian.
-\item \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} and \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} for the observed higher-order derivatives.
-}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the light-tailed comparison;
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}, the asymmetric extreme-value relative;
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, whose inverse is this distribution function;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \link{LogisticDistrib} for the class.
 }

@@ -4,18 +4,39 @@
 \alias{distrib_rng.LogisticDistrib}
 \title{Logistic Random Number Generator}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled.
+\code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Logistic distribution.
+Draws \code{n} independent logistic variates by calling \code{\link[stats:Logistic]{stats::rlogis()}}, so the
+draws come from R's own generator and depend on \code{.Random.seed} in the usual
+way. The generalized ratio-of-uniforms fallback the base class supplies is
+bypassed.
+}
+\examples{
+d <- logistic_distrib()
+
+# Same generator as stats::rlogis, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.4, sigma = 1.5))
+set.seed(2)
+identical(a, rlogis(3, location = 0.4, scale = 1.5))
+
+# The sample variance recovers pi^2 sigma^2 / 3, not sigma^2.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
+c(mean = mean(z), var = var(z), pi_sq_over_3 = pi^2 * 4 / 3)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile.LogisticDistrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

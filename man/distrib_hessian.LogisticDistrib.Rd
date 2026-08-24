@@ -2,25 +2,65 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_hessian.LogisticDistrib}
 \alias{distrib_hessian.LogisticDistrib}
-\title{Logistic Analytical Observed Hessian}
+\title{Logistic Observed Hessian}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}.
+The three name the distinct entries of a symmetric \eqn{2 \times 2} matrix
+per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Logistic log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the three distinct second derivatives of the logistic log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form. Writing \eqn{z = (y - \mu)/\sigma},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{2\sigma^2} \mathrm{sech}^2\left(\dfrac{z}{2}\right),}
+\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{1}{\sigma^2}\left[1 - \dfrac{z^2}{2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right) - 2 z \tanh\left(\dfrac{z}{2}\right)\right],}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{1}{\sigma^2}\left[\tanh\left(\dfrac{z}{2}\right) + \dfrac{z}{2}\,\mathrm{sech}^2\left(\dfrac{z}{2}\right)\right].}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{2\sigma^2} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right)}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{1}{\sigma^2} \left[ 1 - \dfrac{(y-\mu)^2}{2\sigma^2} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right) - \dfrac{2(y-\mu)}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{1}{\sigma^2} \left[ \tanh\left(\dfrac{y-\mu}{2\sigma}\right) + \dfrac{y-\mu}{2\sigma} \text{sech}^2\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
+The curvature in \eqn{\mu} is negative everywhere and vanishes as
+\eqn{|z|} grows, so a distant observation carries almost no information
+about the location. The expectations are
+\code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}}.
+}
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+h <- distrib_hessian(d, y, th)
+
+# The closed form for the location, written out.
+z <- (y - 0.4) / 1.5
+all.equal(h$mu_mu, -(1 - tanh(z / 2)^2) / (2 * 1.5^2))
+
+# Concave in mu everywhere, and flattening as the residual grows.
+round(distrib_hessian(d, 0.4 + c(0, 1.5, 3, 6, 12), th)$mu_mu, 6)
+
+# A central difference of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient.LogisticDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}} for the expectation of this
+quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

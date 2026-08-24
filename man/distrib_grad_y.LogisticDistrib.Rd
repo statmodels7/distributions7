@@ -2,22 +2,48 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_grad_y.LogisticDistrib}
 \alias{distrib_grad_y.LogisticDistrib}
-\title{Logistic Response Derivatives}
+\title{Logistic First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Logistic log-density with respect to the response.
-With \eqn{z = (y-\mu)/\sigma}: \eqn{\partial \ell / \partial y = -\tanh(z/2)/\sigma}
-and \eqn{\partial^2 \ell / \partial y^2 = -\mathrm{sech}^2(z/2)/(2\sigma^2)}.
+Computes the first derivative of the logistic log-density with respect to
+the response,
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{1}{\sigma}\tanh\left(\dfrac{z}{2}\right),
+      \qquad z = \dfrac{y-\mu}{\sigma},}
+in closed form. The logistic is a location family in \eqn{\mu}, so the
+response enters the log-density only through \eqn{z} and this derivative is
+the negative of the score in \eqn{\mu}. It is bounded by \eqn{1/\sigma}.
+}
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+all.equal(distrib_grad_y(d, y, th), -tanh((y - 0.4) / (2 * 1.5)) / 1.5)
+
+# A location family: the derivative in the response is minus the score in
+# the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Bounded by 1/sigma however far out the observation is.
+max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
+1 / 1.5
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_hess_y.LogisticDistrib]{distrib_hess_y.LogisticDistrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient.LogisticDistrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

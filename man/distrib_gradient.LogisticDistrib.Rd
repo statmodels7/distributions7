@@ -2,24 +2,75 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_gradient.LogisticDistrib}
 \alias{distrib_gradient.LogisticDistrib}
-\title{Logistic Analytical Gradient}
+\title{Logistic Score}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Logistic log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma}.
+Computes the first derivatives of the logistic log-density with respect to
+\eqn{\mu} and \eqn{\sigma}, one value per observation, in closed form.
+Writing \eqn{z = (y - \mu)/\sigma},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{z}{2}\right),
+      \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma}\left[1 - z \tanh\left(\dfrac{z}{2}\right)\right].}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right)}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = -\dfrac{1}{\sigma} \left[ 1 - \dfrac{y-\mu}{\sigma} \tanh\left(\dfrac{y-\mu}{2\sigma}\right) \right]}
+The score in \eqn{\mu} is bounded by \eqn{1/\sigma} and saturates rather
+than redescending: a distant observation contributes a fixed amount instead
+of an unbounded one, as it would under a Gaussian, or a vanishing one, as it
+would under a Cauchy.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean,
+\eqn{\sigma > 0} the scale and \eqn{z = (y-\mu)/\sigma} the standardized
+residual. \eqn{\sigma} is not the standard deviation, which is
+\eqn{\pi\sigma/\sqrt{3}}.
+}
+
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+z <- (y - 0.4) / 1.5
+all.equal(g$mu, tanh(z / 2) / 1.5)
+all.equal(g$sigma, -(1 - z * tanh(z / 2)) / 1.5)
+
+# The score in mu saturates at 1/sigma instead of growing.
+round(distrib_gradient(d, 0.4 + c(0, 1.5, 3, 6, 12, 60), th)$mu, 4)
+1 / 1.5
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(9)
+zz <- distrib_rng(d, 3000, list(mu = 2, sigma = 1))
+fit <- fit_distrib(d, zz)
+round(vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1)), 8)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}} for their expectation,
+\code{\link[=distrib_gradient.CauchyDistrib]{distrib_gradient.CauchyDistrib()}} for a redescending score and
+\code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for an unbounded one, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

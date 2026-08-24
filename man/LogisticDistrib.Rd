@@ -2,7 +2,7 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{LogisticDistrib}
 \alias{LogisticDistrib}
-\title{S7 Class for Logistic Distribution}
+\title{Logistic Distribution Class}
 \usage{
 LogisticDistrib(
   distrib_name = character(0),
@@ -36,14 +36,35 @@ LogisticDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{LogisticDistrib}.
+An S7 object of class \code{LogisticDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=logistic_distrib]{logistic_distrib()}} they hold \code{"logistic"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "mean", sigma = "scale")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Logistic distribution.
+The S7 class of the logistic family with mean \eqn{\mu} and scale
+\eqn{\sigma > 0}, whose distribution function is the logistic sigmoid
+\eqn{F(q) = [1 + e^{-(q-\mu)/\sigma}]^{-1}} on the whole real line. It
+inherits from \code{continuous_distrib}, so it answers every generic of the
+\code{distrib} contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+The family is symmetric about \eqn{\mu}, which is therefore both the mean
+and the median. Its variance is \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is
+\strong{not} the standard deviation, and its excess kurtosis is \eqn{6/5},
+slightly heavier than a Gaussian's.
+
+Build one with \code{\link[=logistic_distrib]{logistic_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4()}},
@@ -59,6 +80,21 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- logistic_distrib()
+S7::S7_inherits(d, continuous_distrib)
+d@params_interpretation
+
+# sigma is a scale, not a standard deviation: the variance is pi^2 sigma^2/3.
+th <- list(mu = 0.4, sigma = 1.5)
+c(variance = variance(d, th), pi_sq_over_3 = pi^2 * 1.5^2 / 3)
+
+# Symmetric, so the mean is the median; the excess kurtosis is 6/5.
+c(mean = mean(d, th), median = distrib_quantile(d, 0.5, th),
+  excess_kurtosis = kurtosis(d, th))
+}
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=logistic_distrib]{logistic_distrib()}} to build one;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, which it resembles with slightly heavier tails;
+\code{\link[=distrib_expected_hessian.LogisticDistrib]{distrib_expected_hessian.LogisticDistrib()}} for the information.
 }

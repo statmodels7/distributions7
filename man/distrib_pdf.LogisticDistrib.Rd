@@ -4,21 +4,50 @@
 \alias{distrib_pdf.LogisticDistrib}
 \title{Logistic Probability Density Function}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive; a zero or negative value
+gives \code{NaN} with a warning from \code{\link[stats:Logistic]{stats::dlogis()}}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Logistic distribution:
+Computes the logistic density
 \deqn{f(y; \mu, \sigma) = \dfrac{\exp\left(-\dfrac{y-\mu}{\sigma}\right)}{\sigma \left[1 + \exp\left(-\dfrac{y-\mu}{\sigma}\right)\right]^2}}
+by calling \code{\link[stats:Logistic]{stats::dlogis()}} at \code{location = mu} and \code{scale = sigma}. The
+density is symmetric about \eqn{\mu} and its tails decay exponentially,
+like \eqn{e^{-|y-\mu|/\sigma}}, so they are heavier than a Gaussian's.
+}
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+
+# The method is stats::dlogis at this parametrization.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)),
+          dlogis(y, location = 0.4, scale = 1.5))
+
+# Symmetric about mu: equal densities at equal distances either side.
+distrib_pdf(d, 0.4 + c(-2, 2), list(mu = 0.4, sigma = 1.5))
+
+# The density and the distribution function are linked by
+# f = F (1 - F) / sigma, the logistic sigmoid's own derivative.
+F <- distrib_cdf(d, y, list(mu = 0.4, sigma = 1.5))
+all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.5)), F * (1 - F) / 1.5)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_cdf.LogisticDistrib]{distrib_cdf.LogisticDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.LogisticDistrib]{distrib_gradient.LogisticDistrib()}} for the derivatives of the
+log-density, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

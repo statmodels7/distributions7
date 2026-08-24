@@ -4,23 +4,52 @@
 \alias{distrib_cdf.LogisticDistrib}
 \title{Logistic Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned, which stays finite far into either tail.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Logistic distribution:
+Computes the logistic distribution function
 \deqn{F(q; \mu, \sigma) = \dfrac{1}{1 + \exp\left(-\dfrac{q-\mu}{\sigma}\right)}}
+by calling \code{\link[stats:Logistic]{stats::plogis()}}. This is the logistic sigmoid, the inverse of
+the logit link, so the same curve appears here as a distribution function
+and in \code{linkfunctions7} as an inverse link.
+}
+\examples{
+d <- logistic_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The method is stats::plogis at this parametrization.
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          plogis(c(-1.2, 0.3, 2.5), location = 0.4, scale = 1.5))
+
+# Symmetric: F(mu - a) + F(mu + a) = 1.
+distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
+
+# It is the inverse logit link, so the two agree exactly.
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), list(mu = 0, sigma = 1)),
+          linkfunctions7::linkinv(linkfunctions7::logit_link(),
+                                  c(-1.2, 0.3, 2.5)))
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_quantile.LogisticDistrib]{distrib_quantile.LogisticDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.LogisticDistrib]{distrib_pdf.LogisticDistrib()}} for the density,
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, whose inverse is this curve, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

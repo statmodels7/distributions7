@@ -2,31 +2,77 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_deriv4.LogisticDistrib}
 \alias{distrib_deriv4.LogisticDistrib}
-\title{Logistic Analytical Fourth-Order Derivatives}
+\title{Logistic Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the approximated expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned, by the numerical route. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
+\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the sample size used when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use for the observed values. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_sigma}, \code{mu_mu_sigma_sigma}, \code{mu_sigma_sigma_sigma} and
+\code{sigma_sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form observed fourth-order derivatives of the Logistic log-density, in the
-notation of \code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}}:
-\deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = \dfrac{g_4}{\sigma^4}}
-\deqn{\dfrac{\partial^4 \ell}{\partial \mu^3 \partial \sigma} = \dfrac{3g_3 + z g_4}{\sigma^4}}
-\deqn{\dfrac{\partial^4 \ell}{\partial \mu^2 \partial \sigma^2} = \dfrac{6g_2 + 6z g_3 + z^2 g_4}{\sigma^4}}
-\deqn{\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_2 + 9z^2 g_3 + z^3 g_4}{\sigma^4}}
-\deqn{\dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}}
+Computes the five distinct fourth derivatives of the logistic log-density
+with respect to \eqn{\mu} and \eqn{\sigma}. The observed values are closed
+form, as polynomials in \eqn{z = (y-\mu)/\sigma} with the \eqn{g_j} of
+\code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} as coefficients:
+\deqn{\dfrac{\partial^4 \ell}{\partial \mu^4} = \dfrac{g_4}{\sigma^4}, \qquad
+      \dfrac{\partial^4 \ell}{\partial \mu^3 \partial \sigma} = \dfrac{3g_3 + z g_4}{\sigma^4}, \qquad
+      \dfrac{\partial^4 \ell}{\partial \mu^2 \partial \sigma^2} = \dfrac{6g_2 + 6z g_3 + z^2 g_4}{\sigma^4},}
+\deqn{\dfrac{\partial^4 \ell}{\partial \mu \partial \sigma^3} = \dfrac{6g_1 + 18z g_2 + 9z^2 g_3 + z^3 g_4}{\sigma^4}, \qquad
+      \dfrac{\partial^4 \ell}{\partial \sigma^4} = \dfrac{6 + 24z g_1 + 36z^2 g_2 + 12z^3 g_3 + z^4 g_4}{\sigma^4}.}
 
-The expected fourth derivatives are not available in closed form, so
-\code{expected = TRUE} is routed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+With \code{expected = TRUE} the values are \strong{numerical}, for the reason given on
+\code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}}: two of the nine expectations at these
+two orders have no elementary form. The method routes to
+\code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and \code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k l)}} is the fourth derivative of the log-density with
+respect to parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+names(distrib_deriv4(d, y, th))
+
+# A central difference of the third order reproduces the fourth.
+eps <- 1e-5
+up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu_mu
+dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
+          tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_deriv3.LogisticDistrib]{distrib_deriv3.LogisticDistrib()}} for the order below and for the
+\eqn{g_j} used here; \code{\link[=expected_derivative]{expected_derivative()}} for the numerical route;
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

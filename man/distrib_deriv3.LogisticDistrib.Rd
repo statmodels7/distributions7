@@ -2,36 +2,88 @@
 % Please edit documentation in R/logistic_distrib.R
 \name{distrib_deriv3.LogisticDistrib}
 \alias{distrib_deriv3.LogisticDistrib}
-\title{Logistic Analytical Third-Order Derivatives}
+\title{Logistic Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the approximated expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned, by the numerical route described above. Defaults to
+\code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{One of \code{"integrate"} (the default), \code{"bartlett"}, \code{"mc"} or
+\code{"opg"}, matched by \code{\link[base:match.arg]{base::match.arg()}}. Read \strong{only} when
+\code{expected = TRUE}, where it selects how the expectation is approximated.}
+
+\item{nsim}{A single positive integer, the sample size used when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use for the observed values. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form observed third-order derivatives of the Logistic log-density.
-
-Writing \eqn{z = (y-\mu)/\sigma}, \eqn{t = 1/(1+e^{-z})} and \eqn{u = 1-t}, the
-log-density is \eqn{\ell = -\log\sigma + g(z)} with
+Computes the four distinct third derivatives of the logistic log-density
+with respect to \eqn{\mu} and \eqn{\sigma}. The observed values are closed
+form. Writing \eqn{z = (y-\mu)/\sigma}, \eqn{t = 1/(1+e^{-z})} and
+\eqn{u = 1-t}, the log-density is \eqn{\ell = -\log\sigma + g(z)} with
 \eqn{g(z) = -z - 2\log(1+e^{-z})}, whose derivatives in \eqn{z} are
 \deqn{g_1 = 1-2t, \quad g_2 = -2tu, \quad g_3 = -2tu(1-2t), \quad g_4 = -2tu(1-6tu).}
-Since \eqn{z} depends on both parameters, each component is a polynomial in
-\eqn{z} with the \eqn{g_j} as coefficients:
-\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{g_3}{\sigma^3}}
-\deqn{\dfrac{\partial^3 \ell}{\partial \mu^2 \partial \sigma} = -\dfrac{2g_2 + z g_3}{\sigma^3}}
-\deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}}
-\deqn{\dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}}
+Both parameters enter only through \eqn{z}, so each component is a
+polynomial in \eqn{z} with the \eqn{g_j} as coefficients:
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{g_3}{\sigma^3}, \qquad
+      \dfrac{\partial^3 \ell}{\partial \mu^2 \partial \sigma} = -\dfrac{2g_2 + z g_3}{\sigma^3},}
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu \partial \sigma^2} = -\dfrac{2g_1 + 4z g_2 + z^2 g_3}{\sigma^3}, \qquad
+      \dfrac{\partial^3 \ell}{\partial \sigma^3} = -\dfrac{2 + 6z g_1 + 6z^2 g_2 + z^3 g_3}{\sigma^3}.}
 
-The expected third derivatives are not available in closed form, so
-\code{expected = TRUE} is routed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+With \code{expected = TRUE} the values are \strong{numerical}, unlike the orders below
+them. Two of the nine expectations at this order and the next require
+\eqn{\int w^k \mathrm{sech}^4 w \tanh^2 w \, dw}, which has no elementary
+form, so the method routes to \code{\link[=expected_derivative]{expected_derivative()}} and \code{approx} and
+\code{nsim} are read. The default there is \code{"integrate"}, one quadrature per
+component.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- logistic_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the observed component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.5))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.5))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
+
+# The expected values are numerical here: the pure-mu component is zero by
+# symmetry and comes back at the quadrature's own accuracy, not at zero.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=distrib_hessian.LogisticDistrib]{distrib_hessian.LogisticDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.LogisticDistrib]{distrib_deriv4.LogisticDistrib()}} for the order above;
+\code{\link[=expected_derivative]{expected_derivative()}} for the numerical route the expected values take;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
