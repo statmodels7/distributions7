@@ -2,27 +2,84 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_gradient.Beta1Distrib}
 \alias{distrib_gradient.Beta1Distrib}
-\title{Beta Analytical Gradient}
+\title{Beta Score in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+a logarithm infinite and the score non-finite.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{phi}, each of length
+\code{max(length(y), length(mu), length(phi))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Beta log-density
-with respect to the parameters \eqn{\mu} and \eqn{\phi}.
+Computes the first derivatives of the beta log-density with respect to
+\eqn{\mu} and \eqn{\phi}, one value per observation, in closed form. With
+\eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\psi} the digamma
+function,
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \phi\left\{
+        \log\dfrac{y}{1-y} - \psi(\alpha) + \psi(\beta)\right\},}
+\deqn{\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\alpha)
+      - (1-\mu)\psi(\beta) + \mu\log y + (1-\mu)\log(1-y).}
+The data enter only through \eqn{\log y} and \eqn{\log(1-y)}, the beta being
+an exponential family in the shapes, and the mean component sees them only
+through the log-odds \eqn{\log\{y/(1-y)\}}.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \phi \left[ \log\left(\dfrac{y}{1-y}\right) - \psi(\mu\phi) + \psi((1-\mu)\phi) \right]}
-\deqn{\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\mu\phi) - (1-\mu)\psi((1-\mu)\phi) + \mu \log(y) + (1-\mu) \log(1-y)}
+The two expectations that make the score have mean zero are
+\eqn{\mathbb{E}[\log Y] = \psi(\alpha) - \psi(\phi)} and
+\eqn{\mathbb{E}[\log(1-Y)] = \psi(\beta) - \psi(\phi)}.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu \in (0,1)} the
+mean and \eqn{\phi > 0} the precision. \eqn{\psi} is the digamma function,
+\eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out with the digamma function.
+a <- 0.4 * 5
+b <- 0.6 * 5
+all.equal(g$mu, 5 * (log(y / (1 - y)) - digamma(a) + digamma(b)))
+all.equal(g$phi, digamma(5) - 0.4 * digamma(a) - 0.6 * digamma(b) +
+                 0.4 * log(y) + 0.6 * log(1 - y))
+
+# The mean component vanishes where the log-odds equal psi(a) - psi(b).
+distrib_gradient(d, plogis(digamma(a) - digamma(b)), th)$mu
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(6)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}} for their expectation,
+\code{\link[=distrib_grad_y.Beta1Distrib]{distrib_grad_y.Beta1Distrib()}} for the derivative in the response, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

@@ -2,20 +2,43 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_rng.Beta1Distrib}
 \alias{distrib_rng.Beta1Distrib}
-\title{Beta Random Number Generator}
+\title{Beta Random Number Generator in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. \code{mu}
+must lie strictly in \eqn{(0, 1)} and \code{phi} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws in \eqn{(0, 1)}.
 }
 \description{
-Generates random numbers from the Beta distribution.
+Draws \code{n} independent beta variates by calling \code{\link[stats:Beta]{stats::rbeta()}} at shapes
+\eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}, so the draws come from
+R's own beta generator and depend on \code{.Random.seed} in the usual way. The
+ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- beta1_distrib()
+
+# Same generator as stats::rbeta at the implied shapes.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.4, phi = 5))
+set.seed(2)
+identical(a, rbeta(3, 2, 3))
+
+# The sample moments recover the parameters: the mean directly, and the
+# precision as mu(1 - mu)/var - 1.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 0.4, phi = 5))
+c(mu = mean(z), phi = mean(z) * (1 - mean(z)) / var(z) - 1)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_quantile.Beta1Distrib]{distrib_quantile.Beta1Distrib()}} for the inverse-transform route,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

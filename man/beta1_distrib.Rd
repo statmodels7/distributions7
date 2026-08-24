@@ -2,76 +2,160 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{beta1_distrib}
 \alias{beta1_distrib}
-\title{Beta Distribution Object (Mean-Precision Parameterization)}
+\title{Beta Distribution, Mean and Precision}
 \usage{
 beta1_distrib(link_mu = logit_link(), link_phi = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, which maps
+\eqn{(0, 1)} onto the line and so keeps every fitted mean inside the unit
+interval.}
 
-\item{link_phi}{A link function object for the precision parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_phi}{A \code{link} object from \code{linkfunctions7} for the precision
+\eqn{\phi}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line.}
 }
 \value{
-An S7 object of class \code{Beta1Distrib} (inheriting from \code{continuous_distrib}) representing the Beta distribution.
+An S7 object of class \code{Beta1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"beta1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, 1)}, \code{params} \code{c("mu", "phi")}, \code{n_params}
+\code{2}, \code{params_bounds} the list of \eqn{(0, 1)} and \eqn{(0, \infty)}, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Beta distribution parameterized by mean (\eqn{\mu}) and precision (\eqn{\phi}).
+Builds the distribution object for the beta family on \eqn{(0, 1)}
+parametrized by its mean \eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0},
+so that the shapes are \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}.
+This is the parametrization beta regression uses. The returned object carries
+closed-form derivatives of the log-density to fourth order, in the parameters
+and in the response, and closed-form moments, so every generic of the toolkit
+answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the logit for
+the mean, which lives in \eqn{(0, 1)}, and the logarithm for the precision,
+which is positive.
 }
-\details{
-The Beta distribution is given a mean/precision parameterization: \eqn{\mu} is
-the mean and \eqn{\phi} a precision parameter. The standard shapes are
-\deqn{\alpha = \mu\phi, \qquad \beta = (1-\mu)\phi}
+\section{The parametrization}{
+The density on \eqn{y \in (0, 1)} is
+\deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\alpha)\Gamma(\beta)}\,
+      y^{\alpha-1}(1-y)^{\beta-1}, \qquad \alpha = \mu\phi, \quad
+      \beta = (1-\mu)\phi,}
+the distribution function \eqn{F(q) = I_q(\alpha, \beta)} with \eqn{I} the
+regularized incomplete beta function, and the quantile function its
+numerical inverse. The mean is \eqn{\mu}, the variance
+\eqn{\mu(1-\mu)/(\phi+1)} and the skewness
+\eqn{2(1-2\mu)\sqrt{\phi+1}/\{(\phi+2)\sqrt{\mu(1-\mu)}\}}.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\alpha)\Gamma(\beta)}\, y^{\alpha-1} (1-y)^{\beta-1}, \quad 0 < y < 1}
+The name \emph{precision} is earned: at a fixed mean the variance falls as
+\eqn{1/(\phi+1)}, so \eqn{\phi} says how tightly the mass concentrates. Two
+settings are worth recognizing. At \eqn{\mu = 1/2} and \eqn{\phi = 2} both
+shapes are 1 and the density is the uniform. Where a shape falls below one,
+which happens when \eqn{\phi} is small, the density is unbounded at the
+corresponding endpoint.
 
-\strong{Cumulative distribution function} (\eqn{I_q} the regularized incomplete beta function):
-\deqn{F(q; \mu, \phi) = I_q(\alpha, \beta)}
+This is the same law as \code{\link[=beta2_distrib]{beta2_distrib()}}, which carries the mean and the
+\emph{variance}, the two being related by \eqn{\sigma^2 = \mu(1-\mu)/(\phi+1)}.
+They are separate families because the second parameter is a different
+quantity in each, with its own interpretation, standard error and interval.
+}
 
-\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
+\section{Derivatives}{
+With \eqn{\psi} the digamma function and \eqn{\psi_1} the trigamma, the
+score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \phi\left\{
+        \log\dfrac{y}{1-y} - \psi(\alpha) + \psi(\beta)\right\}, \qquad
+      \dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\alpha)
+        - (1-\mu)\psi(\beta) + \mu\log y + (1-\mu)\log(1-y),}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] =
+        -\phi^2\left\{\psi_1(\alpha) + \psi_1(\beta)\right\}, \qquad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] = \psi_1(\phi)
+        - \mu^2\psi_1(\alpha) - (1-\mu)^2\psi_1(\beta),}
+\deqn{\mathbb{E}\left[\ell^{(\mu\phi)}\right] =
+        -\phi\left\{\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right\}.}
+The mixed entry is zero only at \eqn{\mu = 1/2}, so the mean and the
+precision are in general not orthogonal.
+}
 
-\strong{Score} (\eqn{\psi} the digamma function):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \phi\left[\log\left(\dfrac{y}{1-y}\right) - \psi(\alpha) + \psi(\beta)\right]}
-\deqn{\dfrac{\partial \ell}{\partial \phi} = \psi(\phi) - \mu\psi(\alpha) - (1-\mu)\psi(\beta) + \mu\log y + (1-\mu)\log(1-y)}
-
-\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function; the observed and
-expected Hessians coincide, as they do not depend on \eqn{y}):
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\phi^2\left[\psi_1(\alpha) + \psi_1(\beta)\right], \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi} = -\phi\left[\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right]}
-\deqn{\dfrac{\partial^2 \ell}{\partial \phi^2} = \psi_1(\phi) - \mu^2\psi_1(\alpha) - (1-\mu)^2\psi_1(\beta)}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1-\mu)/(\phi+1)},
-skewness \eqn{\dfrac{2(1-2\mu)\sqrt{\phi+1}}{(\phi+2)\sqrt{\mu(1-\mu)}}}.
-
-\strong{Parameter domains:}
+\section{Where the response stops entering}{
+The data reach the log-density only through
+\eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which is linear in the shapes
+and so at most quadratic in \eqn{(\mu, \phi)} through the bilinear map
+\eqn{\alpha = \mu\phi}. Two consequences follow, and both are visible in the
+methods:
 \itemize{
-\item \eqn{\mu \in (0, 1)}
-\item \eqn{\phi \in (0, +\infty)}
+\item the observed Hessian equals its expectation in \code{mu_mu} and \code{phi_phi} and
+differs in \code{mu_phi} by the log-odds residual
+\eqn{\log\{y/(1-y)\} - \psi(\alpha) + \psi(\beta)}, whose expectation is
+zero;
+\item \strong{every} third and fourth derivative is free of the response, so
+\code{\link[=distrib_deriv3.Beta1Distrib]{distrib_deriv3.Beta1Distrib()}} and \code{\link[=distrib_deriv4.Beta1Distrib]{distrib_deriv4.Beta1Distrib()}} return
+the same numbers whether or not \code{expected = TRUE} is asked for.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+The derivatives of the \emph{distribution} function in the parameters have no
+elementary form, the derivative of an incomplete beta in its shapes being
+hypergeometric, and are taken by finite difference on the analytic cdf.
 }
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form: both estimating equations involve digamma
+functions of the shapes. The method of moments supplies the starting values
+\eqn{\hat\mu = \bar y} and \eqn{\hat\phi = \bar y(1-\bar y)/s^2 - 1}, and
+the example below shows them landing beside the estimates.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu \in (0,1)} the
+mean and \eqn{\phi > 0} the precision. \eqn{\alpha} and \eqn{\beta} are the
+implied shapes. \eqn{\psi} is the digamma function and \eqn{\psi_m} its
+\eqn{m}th derivative. \eqn{\eta} is a parameter on the unconstrained scale
+of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- beta1_distrib()
-d@params
+d
 
-theta <- list(mu = 0.4, phi = 5)
-distrib_pdf(d, c(0.2, 0.5, 0.8), theta)
-distrib_gradient(d, c(0.2, 0.5, 0.8), theta)
+# The density is stats::dbeta at shape1 = mu phi, shape2 = (1 - mu) phi.
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 3))
 
+# Moments: variance mu(1 - mu)/(phi + 1), so phi is a precision.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+0.4 * 0.6 / (5 + 1)
+
+# Both shapes are 1 at mu = 1/2, phi = 2: the beta is the uniform.
+distrib_pdf(d, y, list(mu = 0.5, phi = 2))
+
+# Fitting recovers the parameters; the moment estimates start it off.
+set.seed(6)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted  = coef(fit),
+      moments = c(mu = mean(z),
+                  phi = mean(z) * (1 - mean(z)) / var(z) - 1))
+
+# Every third derivative is free of the response, so it is a constant.
+lapply(distrib_deriv3(d, y, th), unique)
+
+}
+\references{
+Ferrari, S. and Cribari-Neto, F. (2004). Beta regression for modelling
+rates and proportions. \emph{Journal of Applied Statistics} \strong{31}, 799-815.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} for the probability density function.
-\item \code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf.Beta1Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.Beta1Distrib]{distrib_quantile.Beta1Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.Beta1Distrib]{distrib_rng.Beta1Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in the mean and the variance;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the beta as a mixing law over a binomial
+probability; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} for a response at the endpoints rather
+than between them; \code{\link[=zero_adjusted]{zero_adjusted()}} and \code{\link[=truncated]{truncated()}} for the wrappers a
+response with mass at 0 or 1 needs; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+same battery this one passes; \link{Beta1Distrib} for the class.
 }

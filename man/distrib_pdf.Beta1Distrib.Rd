@@ -2,23 +2,63 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_pdf.Beta1Distrib}
 \alias{distrib_pdf.Beta1Distrib}
-\title{Beta Probability Density Function}
+\title{Beta Probability Density Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is \eqn{(0, 1)}; a
+value outside \eqn{[0, 1]} gives 0, and the endpoints give 0, a finite
+value or \code{Inf} according to the shapes.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Beta distribution:
-\deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\mu\phi)\Gamma((1-\mu)\phi)} y^{\mu\phi-1} (1-y)^{(1-\mu)\phi-1}}
+Computes the beta density
+\deqn{f(y; \mu, \phi) = \dfrac{\Gamma(\phi)}{\Gamma(\mu\phi)\,
+      \Gamma((1-\mu)\phi)}\, y^{\mu\phi - 1}(1-y)^{(1-\mu)\phi - 1},
+      \qquad 0 < y < 1,}
+by calling \code{\link[stats:Beta]{stats::dbeta()}} at \code{shape1 = mu * phi} and
+\code{shape2 = (1 - mu) * phi}. With \code{log = TRUE} the logarithm is formed inside
+\code{dbeta()} and stays finite where the density itself underflows.
+
+The shape of the density is governed by whether each shape parameter
+exceeds one. It is unbounded at 0 when \eqn{\mu\phi < 1} and at 1 when
+\eqn{(1-\mu)\phi < 1}; at \eqn{\mu = 1/2} and \eqn{\phi = 2} both shapes are
+1 and the density is the uniform.
+}
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+
+# The method is stats::dbeta at shape1 = mu phi and shape2 = (1 - mu) phi.
+all.equal(distrib_pdf(d, y, th), dbeta(y, 0.4 * 5, 0.6 * 5))
+
+# Both shapes are 1 at mu = 1/2, phi = 2, where the beta is the uniform.
+distrib_pdf(d, y, list(mu = 0.5, phi = 2))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(0.2, 0.5, 0.8), phi = 5))
+
+# Near the boundary the density underflows and its logarithm does not.
+distrib_pdf(d, 1e-40, list(mu = 0.4, phi = 50))
+distrib_pdf(d, 1e-40, list(mu = 0.4, phi = 50), log = TRUE)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf.Beta1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the derivatives of the log-density,
+\code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf.Beta2Distrib()}} for the same density in the variance, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

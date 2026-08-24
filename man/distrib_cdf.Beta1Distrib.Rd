@@ -2,27 +2,61 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_cdf.Beta1Distrib}
 \alias{distrib_cdf.Beta1Distrib}
-\title{Beta Cumulative Distribution Function}
+\title{Beta Cumulative Distribution Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below 0 gives a
+lower-tail probability of 0 and one at or above 1 gives 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(phi))}. With \code{log.p = TRUE} the values
+are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Beta distribution, using the
-mean/precision reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}:
-\deqn{F(q; \mu, \phi) = I_q(\alpha, \beta)}
-where \eqn{I_q(\cdot, \cdot)} is the regularized incomplete beta function.
+Computes the beta distribution function, the regularized incomplete beta
+function
+\deqn{F(q; \mu, \phi) = I_q(\alpha, \beta), \qquad \alpha = \mu\phi, \quad
+      \beta = (1-\mu)\phi,}
+by calling \code{\link[stats:Beta]{stats::pbeta()}} at that pair of shapes. Both tails are available
+exactly: \code{lower.tail = FALSE} evaluates \eqn{1 - F} without forming the
+difference, and \code{log.p = TRUE} returns a logarithm that stays finite where
+the probability itself underflows to zero.
+}
+\examples{
+d <- beta1_distrib()
+th <- list(mu = 0.4, phi = 5)
+
+# The method is stats::pbeta at the implied shapes.
+all.equal(distrib_cdf(d, c(0.2, 0.5, 0.8), th),
+          pbeta(c(0.2, 0.5, 0.8), 2, 3))
+
+# The two tails sum to one.
+distrib_cdf(d, 0.5, th) + distrib_cdf(d, 0.5, th, lower.tail = FALSE)
+
+# At mu = 1/2 and phi = 2 the beta is the uniform, so F(q) = q.
+distrib_cdf(d, c(0.2, 0.5, 0.8), list(mu = 0.5, phi = 2))
+
+# Near the lower boundary the probability underflows and its log does not.
+distrib_cdf(d, 1e-30, list(mu = 0.4, phi = 50))
+distrib_cdf(d, 1e-30, list(mu = 0.4, phi = 50), log.p = TRUE)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_quantile.Beta1Distrib]{distrib_quantile.Beta1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
+derivatives of this function in the parameters, which the beta takes by
+finite difference because the derivative of an incomplete beta in its
+shapes is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

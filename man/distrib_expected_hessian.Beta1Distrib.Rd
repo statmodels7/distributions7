@@ -2,28 +2,96 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_expected_hessian.Beta1Distrib}
 \alias{distrib_expected_hessian.Beta1Distrib}
-\title{Beta Analytical Expected Hessian}
+\title{Beta Expected Hessian in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{phi_phi} and
+\code{mu_phi}, in that order, each of length
+\code{max(length(y), length(mu), length(phi))} and constant within itself when
+the parameters are.
 }
 \description{
-Computes the analytical expected Hessian of the Beta log-density
-with respect to the parameters \eqn{\mu} and \eqn{\phi}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. With \eqn{\alpha = \mu\phi},
+\eqn{\beta = (1-\mu)\phi} and \eqn{\psi_1} the trigamma function,
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] =
+        -\phi^2\left\{\psi_1(\alpha) + \psi_1(\beta)\right\}, \qquad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] = \psi_1(\phi)
+        - \mu^2\psi_1(\alpha) - (1-\mu)^2\psi_1(\beta),}
+\deqn{\mathbb{E}\left[\ell^{(\mu\phi)}\right] =
+        -\phi\left\{\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right\}.}
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\phi^2 \left[ \psi_1(\mu\phi) + \psi_1((1-\mu)\phi) \right]}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = \psi_1(\phi) - \mu^2\psi_1(\mu\phi) - (1-\mu)^2\psi_1((1-\mu)\phi)}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \phi}\right] = -\phi \left[ \mu\psi_1(\mu\phi) - (1-\mu)\psi_1((1-\mu)\phi) \right]}
+The first two are the observed values themselves, being free of the data.
+The third drops the log-odds residual the observed mixed entry carries,
+whose expectation is zero because
+\eqn{\mathbb{E}[\log\{Y/(1-Y)\}] = \psi(\alpha) - \psi(\beta)}.
+
+The mixed entry does not vanish, so the mean and the precision are not
+orthogonal; their maximum likelihood estimates are asymptotically
+correlated. It does vanish at \eqn{\mu = 1/2}, where the two shapes are
+equal and the density is symmetric.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The beta is a
+regular family, so the second Bartlett identity holds and this equals the
+variance of the score.
+}
+
+\examples{
+d <- beta1_distrib()
+th <- list(mu = 0.4, phi = 5)
+eh <- distrib_expected_hessian(d, c(0.2, 0.5, 0.8), th)
+lapply(eh, unique)
+
+# Written out with the trigamma function.
+a <- 0.4 * 5
+b <- 0.6 * 5
+c(-5^2 * (trigamma(a) + trigamma(b)),
+  trigamma(5) - 0.4^2 * trigamma(a) - 0.6^2 * trigamma(b),
+  -5 * (0.4 * trigamma(a) - 0.6 * trigamma(b)))
+
+# The observed mixed entry averages onto it over a large sample; the other
+# two are equal to it observation by observation.
+set.seed(9)
+z <- distrib_rng(d, 5e5, th)
+c(observed = mean(distrib_hessian(d, z, th)$mu_phi),
+  expected = eh$mu_phi[1])
+
+# The mixed entry vanishes at mu = 1/2, where the density is symmetric.
+distrib_expected_hessian(d, 0.5, list(mu = 0.5, phi = 5))$mu_phi
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the observed quantity this is
+the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

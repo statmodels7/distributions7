@@ -2,20 +2,52 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_hess_y.Beta1Distrib}
 \alias{distrib_hess_y.Beta1Distrib}
-\title{Beta Response Second Derivative}
+\title{Beta Second Derivative in the Response, Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+the value infinite unless the corresponding shape is exactly 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2 - (\beta-1)/(1-y)^2}.
+Computes the second derivative of the beta log-density with respect to the
+response, in closed form at the implied shapes \eqn{\alpha = \mu\phi} and
+\eqn{\beta = (1-\mu)\phi}:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}
+      - \dfrac{\beta - 1}{(1 - y)^2}.}
+It is negative throughout, so the log-density is concave in the response,
+whenever both shapes are at least one; a shape below one makes the
+corresponding term positive and can turn the curvature positive near that
+endpoint. At \eqn{\mu = 1/2} and \eqn{\phi = 2} both shapes are 1 and the
+curvature is exactly zero, the density being the uniform.
+}
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+
+a <- 0.4 * 5
+b <- 0.6 * 5
+all.equal(distrib_hess_y(d, y, th),
+          -(a - 1) / y^2 - (b - 1) / (1 - y)^2)
+
+# Concave everywhere while both shapes exceed one.
+all(distrib_hess_y(d, y, th) < 0)
+
+# Exactly flat at mu = 1/2, phi = 2, where the beta is the uniform.
+distrib_hess_y(d, y, list(mu = 0.5, phi = 2))
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_grad_y.Beta1Distrib]{distrib_grad_y.Beta1Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

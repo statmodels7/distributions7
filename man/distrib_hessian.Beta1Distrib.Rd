@@ -2,24 +2,84 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_hessian.Beta1Distrib}
 \alias{distrib_hessian.Beta1Distrib}
-\title{Beta Analytical Observed Hessian}
+\title{Beta Observed Hessian in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. Only the mixed
+entry reads it.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{phi_phi} and
+\code{mu_phi}, in that order, each of length
+\code{max(length(y), length(mu), length(phi))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Beta log-density
-with respect to the parameters \eqn{\mu} and \eqn{\phi}.
+Computes the three distinct second derivatives of the beta log-density with
+respect to \eqn{\mu} and \eqn{\phi}, one value per observation, in closed
+form. With \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and
+\eqn{\psi_1} the trigamma function,
+\deqn{\ell^{(\mu\mu)} = -\phi^2\left\{\psi_1(\alpha) + \psi_1(\beta)\right\},
+      \qquad
+      \ell^{(\phi\phi)} = \psi_1(\phi) - \mu^2\psi_1(\alpha)
+        - (1-\mu)^2\psi_1(\beta),}
+\deqn{\ell^{(\mu\phi)} = \log\dfrac{y}{1-y} - \psi(\alpha) + \psi(\beta)
+      - \phi\left\{\mu\psi_1(\alpha) - (1-\mu)\psi_1(\beta)\right\}.}
+
+Two of the three are free of the data. The mixed entry is not: it carries
+the log-odds residual \eqn{\log\{y/(1-y)\} - \psi(\alpha) + \psi(\beta)},
+which is the mean component of the score divided by \eqn{\phi} and has
+expectation zero. So this Hessian and
+\code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}} agree in \code{mu_mu} and \code{phi_phi} and
+differ in \code{mu_phi} by exactly that residual.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives. \eqn{\psi}
+and \eqn{\psi_1} are the digamma and trigamma functions.
+}
+
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+h <- distrib_hessian(d, y, th)
+
+# Two entries are constant across the observations and one is not.
+h
+
+# The mixed entry differs from its expectation by the log-odds residual.
+a <- 0.4 * 5
+b <- 0.6 * 5
+all.equal(h$mu_phi - distrib_expected_hessian(d, y, th)$mu_phi,
+          log(y / (1 - y)) - digamma(a) + digamma(b))
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 0.4, phi = 5 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.4, phi = 5 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_phi, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Beta1Distrib]{distrib_deriv3.Beta1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

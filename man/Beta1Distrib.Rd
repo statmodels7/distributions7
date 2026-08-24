@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{Beta1Distrib}
 \alias{Beta1Distrib}
-\title{S7 Class for Beta Distribution}
+\title{Beta Distribution Class, Mean and Precision}
 \usage{
 Beta1Distrib(
   distrib_name = character(0),
@@ -36,15 +36,32 @@ Beta1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Beta1Distrib}.
+An S7 object of class \code{Beta1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=beta1_distrib]{beta1_distrib()}} they hold \code{"beta1"}, \code{"univariate"},
+\code{c(0, 1)}, \code{c("mu", "phi")}, the interpretations
+\code{c(mu = "mean", phi = "precision")}, \code{2}, the domains \eqn{(0, 1)} and
+\eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Beta distribution
-under the mean-precision parameterization.
+The S7 class of the beta family on \eqn{(0, 1)} parametrized by its mean
+\eqn{\mu \in (0, 1)} and a precision \eqn{\phi > 0}, so that the shapes are
+\eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi} and the variance is
+\eqn{\mu(1-\mu)/(\phi+1)}. It inherits from \code{continuous_distrib}, so it
+answers every generic of the \code{distrib} contract; the eleven methods listed
+below are registered on it directly and everything else comes from the
+parent.
+
+Build one with \code{\link[=beta1_distrib]{beta1_distrib()}}, which supplies the two link functions and
+fills the properties in. This page documents the raw S7 constructor, which
+takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Beta1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Beta1Distrib]{distrib_deriv4()}},
@@ -60,6 +77,22 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- beta1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@params_bounds
+
+# phi is a precision: the variance falls as it grows, at a fixed mean.
+vapply(c(1, 5, 50), function(p) variance(d, list(mu = 0.4, phi = p)),
+       numeric(1))
+}
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=beta1_distrib]{beta1_distrib()}} to build one;
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the same law in mean and variance;
+\code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} and \code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the
+closed forms this class supplies.
 }

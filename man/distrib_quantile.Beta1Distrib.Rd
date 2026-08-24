@@ -2,27 +2,54 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_quantile.Beta1Distrib}
 \alias{distrib_quantile.Beta1Distrib}
-\title{Beta Quantile Function}
+\title{Beta Quantile Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give 0 and 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles in \eqn{[0, 1]}, of length
+\code{max(length(p), length(mu), length(phi))}.
 }
 \description{
-Computes the quantile function for the Beta distribution as the inverse of the CDF,
-\eqn{Q(p; \mu, \phi) = F^{-1}(p; \mu, \phi)}. There is no elementary closed form; it
-is obtained numerically (via \code{\link[stats:Beta]{stats::qbeta()}}) on the mean/precision
-reparameterization \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}.
+Computes the beta quantile function, the inverse of the regularized
+incomplete beta function in its argument, by calling \code{\link[stats:Beta]{stats::qbeta()}} at
+shapes \eqn{\alpha = \mu\phi} and \eqn{\beta = (1-\mu)\phi}. There is no
+elementary closed form; \code{qbeta()} inverts the distribution function
+numerically. The beta distribution function is strictly increasing on
+\eqn{(0, 1)}, so the round trip through \code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf.Beta1Distrib()}}
+returns \code{p}.
+}
+\examples{
+d <- beta1_distrib()
+th <- list(mu = 0.4, phi = 5)
+
+# A central 95 percent interval, asymmetric about the mean of 0.4.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# At mu = 1/2 and phi = 2 the beta is the uniform, so Q(p) = p.
+distrib_quantile(d, p, list(mu = 0.5, phi = 2))
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_cdf.Beta1Distrib]{distrib_cdf.Beta1Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Beta1Distrib]{distrib_rng.Beta1Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

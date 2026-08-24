@@ -2,27 +2,82 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_deriv3.Beta1Distrib}
 \alias{distrib_deriv3.Beta1Distrib}
-\title{Beta Analytical Third-Order Derivatives}
+\title{Beta Third-Order Derivatives in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 
-\item{expected}{Logical; ignored (observed and expected coincide).}
+\item{expected}{Logical of length 1, and without effect here, the observed
+and expected third derivatives being the same numbers. Defaults to
+\code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
+\code{mu_phi_phi} and \code{phi_phi_phi}, each of length \code{length(y)} and constant
+within itself when the parameters are. The names enumerate the distinct
+multi-indices of order three in two parameters.
 }
 \description{
-Closed-form third-order derivatives of the Beta log-density. Because the
-\eqn{y}-terms of the log-density are linear in the parameters, these derivatives
-do not depend on \eqn{y}; the observed and expected values therefore coincide.
+Computes the four distinct third derivatives of the beta log-density with
+respect to \eqn{\mu} and \eqn{\phi}, in closed form as combinations of
+\eqn{\psi_2}, the second derivative of the digamma function, at
+\eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi} and \eqn{\phi}.
+
+\strong{Every component of this order is free of the response.} The data enter
+the log-density only through \eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)},
+which is linear in the shapes and so at most quadratic in \eqn{(\mu, \phi)}
+through the bilinear map \eqn{\alpha = \mu\phi}; three derivatives kill it.
+The observed and expected values therefore coincide exactly, and \code{expected}
+selects nothing: the same kernel runs either way and the two results are
+identical to the bit. \code{approx} and \code{nsim} are ignored for the same reason.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. \eqn{\psi} is the digamma function and
+\eqn{\psi_m} its \eqn{m}th derivative.
+}
+
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+d3 <- distrib_deriv3(d, y, th)
+
+# Four constants: nothing at this order depends on the observation.
+lapply(d3, unique)
+
+# So asking for the expectation changes nothing.
+identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 0.4 + eps, phi = 5))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, phi = 5))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_hessian.Beta1Distrib]{distrib_hessian.Beta1Distrib()}} for the order below, whose mixed
+entry is the last one to carry the response, and
+\code{\link[=distrib_deriv4.Beta1Distrib]{distrib_deriv4.Beta1Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

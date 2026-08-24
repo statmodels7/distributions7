@@ -2,23 +2,60 @@
 % Please edit documentation in R/beta1_distrib.R
 \name{distrib_grad_y.Beta1Distrib}
 \alias{distrib_grad_y.Beta1Distrib}
-\title{Beta Response Derivatives}
+\title{Beta First Derivative in the Response, Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Beta1Distrib} object.}
+\item{distrib}{A \code{Beta1Distrib} object, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+the value infinite unless the corresponding shape is exactly 1.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
+strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Beta log-density with respect to the response,
-with \eqn{\alpha = \mu\phi}, \eqn{\beta = (1-\mu)\phi}:
-\eqn{\partial \ell / \partial y = (\alpha-1)/y - (\beta-1)/(1-y)} and
-\eqn{\partial^2 \ell / \partial y^2 = -(\alpha-1)/y^2 - (\beta-1)/(1-y)^2}.
+Computes the first derivative of the beta log-density with respect to the
+response, in closed form at the implied shapes \eqn{\alpha = \mu\phi} and
+\eqn{\beta = (1-\mu)\phi}:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\alpha - 1}{y}
+      - \dfrac{\beta - 1}{1 - y}.}
+Where both shapes exceed one it changes sign at the mode
+\eqn{(\alpha-1)/(\alpha+\beta-2)}, so it is positive below the mode and
+negative above it. Where a shape falls below one the density is unbounded at
+the corresponding endpoint and the derivative does not change sign there.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- beta1_distrib()
+y <- c(0.2, 0.5, 0.8)
+th <- list(mu = 0.4, phi = 5)
+
+# Written out at the implied shapes.
+a <- 0.4 * 5
+b <- 0.6 * 5
+all.equal(distrib_grad_y(d, y, th), (a - 1) / y - (b - 1) / (1 - y))
+
+# Zero at the mode (a - 1)/(a + b - 2), positive below and negative above.
+mode <- (a - 1) / (a + b - 2)
+c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
+
+# At mu = 1/2 and phi = 2 both shapes are 1 and the density is flat.
+distrib_grad_y(d, y, list(mu = 0.5, phi = 2))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=distrib_hess_y.Beta1Distrib]{distrib_hess_y.Beta1Distrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }
