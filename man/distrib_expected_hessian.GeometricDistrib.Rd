@@ -2,31 +2,75 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{distrib_expected_hessian.GeometricDistrib}
 \alias{distrib_expected_hessian.GeometricDistrib}
-\title{Geometric Analytical Expected Hessian}
+\title{Geometric Expected Hessian}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))} and constant at \eqn{-1/(\mu(1+\mu))}.
 }
 \description{
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
-      = -\dfrac{1}{\mu(1+\mu)}}
-the reciprocal of the variance, as it must be for a family written in its
-mean.
+Returns the expectation of the observed second derivative under the model,
+in closed form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1+\mu)},}
+which follows from \eqn{\mathbb{E}[Y] = \mu} killing the data term. The
+Fisher information is \eqn{1/(\mu(1+\mu))}, the reciprocal of the variance,
+so it is smaller than a Poisson's \eqn{1/\mu} at the same mean: the extra
+dispersion is paid for in precision.
+
+Because the value does not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
+\strong{observed information} under the model. The geometric is a regular family,
+so the second Bartlett identity holds and this equals the variance of the
+score.
+}
+
+\examples{
+d <- geometric_distrib()
+th <- list(mu = 3)
+
+# A single number, the reciprocal of the variance.
+unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
+-1 / (3 * (1 + 3))
+
+# Less information than a Poisson of the same mean, the variance being
+# larger.
+c(geometric = -distrib_expected_hessian(d, 0, th)$mu_mu,
+  poisson = -distrib_expected_hessian(poisson_distrib(), 0, th)$mu_mu)
+
+# The observed value averages onto it over a large sample.
+set.seed(5)
+z <- distrib_rng(d, 2e5, th)
+c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
+  expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=distrib_hessian.GeometricDistrib]{distrib_hessian.GeometricDistrib()}} for the observed quantity this
+is the expectation of, \code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the
+equidispersed comparison, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

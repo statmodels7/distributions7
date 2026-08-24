@@ -4,23 +4,43 @@
 \alias{distrib_quantile.GeometricDistrib}
 \title{Geometric Quantile Function}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{p}. \code{mu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of non-negative integers, of length
+\code{max(length(p), length(mu))}.
 }
 \description{
-The generalized inverse
-\eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
+Computes the generalized inverse of the geometric distribution function,
+\deqn{Q(p; \mu) = \min\{k \in \{0, 1, 2, \dots\} : F(k; \mu) \ge p\},}
+by calling \code{\link[stats:Geometric]{stats::qgeom()}} at \code{prob = 1/(1+mu)}. The distribution function
+is a step function, so the round trip through
+\code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf.GeometricDistrib()}} returns a probability \strong{at least} \code{p}.
+}
+\examples{
+d <- geometric_distrib()
+th <- list(mu = 3)
+
+# Integers, and the median well below the mean, the mass being at zero.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# The round trip overshoots, the support being a lattice.
+p <- c(0.025, 0.5, 0.975)
+rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf.GeometricDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

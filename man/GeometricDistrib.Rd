@@ -2,7 +2,7 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{GeometricDistrib}
 \alias{GeometricDistrib}
-\title{S7 Class for the Geometric Distribution}
+\title{Geometric Distribution Class}
 \usage{
 GeometricDistrib(
   distrib_name = character(0),
@@ -36,16 +36,39 @@ GeometricDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{GeometricDistrib}.
+An S7 object of class \code{GeometricDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=geometric_distrib]{geometric_distrib()}} they hold \code{"geometric"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{"mu"}, \code{c(mu = "mean")}, \code{1}, the domain
+\eqn{(0, \infty)}, and the one link.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the
-geometric distribution on \eqn{\{0, 1, 2, \dots\}} in its mean
-parametrization.
+The S7 class of the geometric family parametrized by its \strong{mean}
+\eqn{\mu > 0}: the number of failures before the first success in
+independent trials, each succeeding with probability
+\eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so its support is
+counted rather than integrated and no derivative with respect to the
+response is defined.
+
+The parametrization is by the mean rather than by the probability, which is
+what the modelling layer above needs: a link carries \eqn{\mu} to the
+unconstrained scale and the probability follows. R's own \code{dgeom} takes
+\code{prob}, and the methods convert through \code{\link[=geom_prob]{geom_prob()}}.
+
+The variance is \eqn{\mu(1+\mu)}, always above the mean, so this family is
+overdispersed relative to a Poisson of the same mean. It is the negative
+binomial at a dispersion of one, and it is the only discrete law that is
+memoryless.
+
+Build one with \code{\link[=geometric_distrib]{geometric_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.GeometricDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.GeometricDistrib]{distrib_deriv4()}},
@@ -59,6 +82,25 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+d <- geometric_distrib()
+S7::S7_inherits(d, discrete_distrib)
+d@params
+d@params_interpretation
+
+# Overdispersed by construction: the variance is mu(1+mu), above the mean.
+vapply(c(0.5, 3, 20), function(m) {
+  th <- list(mu = m)
+  c(mean = mean(d, th), var = variance(d, th))
+}, numeric(2))
+
+# The mass is R's own at prob = 1/(1+mu).
+all.equal(distrib_pdf(d, c(0, 2, 7), list(mu = 3)),
+          dgeom(c(0, 2, 7), prob = 1 / 4))
+}
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=geometric_distrib]{geometric_distrib()}} to build one;
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}, of which this is the case \eqn{\theta = 1};
+\code{\link[=exponential_distrib]{exponential_distrib()}}, its memoryless continuous counterpart;
+\code{\link[=poisson_distrib]{poisson_distrib()}} for the equidispersed alternative.
 }

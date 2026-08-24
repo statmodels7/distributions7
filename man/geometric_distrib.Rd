@@ -2,67 +2,117 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{geometric_distrib}
 \alias{geometric_distrib}
-\title{Geometric Distribution Object}
+\title{Geometric Distribution}
 \usage{
 geometric_distrib(link_mu = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{GeometricDistrib}.
+An S7 object of class \code{GeometricDistrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"geometric"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{"mu"},
+\code{params_interpretation} \code{c(mu = "mean")}, \code{n_params} \code{1}, \code{params_bounds}
+the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 }
 \description{
-Creates a distribution object for the geometric distribution on
-\eqn{\{0, 1, 2, \dots\}}, parametrized by its mean \eqn{\mu}.
+Builds the distribution object for the geometric family parametrized by its
+\strong{mean} \eqn{\mu > 0}: the number of failures before the first success in
+independent trials of success probability \eqn{p = 1/(1+\mu)}. The returned
+object carries closed-form derivatives of the log-mass to fourth order,
+observed and expected, and closed-form moments.
+
+The variance is \eqn{\mu(1+\mu)}, always above the mean, so a geometric fit
+is an overdispersed alternative to a Poisson with no extra parameter to
+estimate. It is the negative binomial at a dispersion of exactly one, and it
+is the only discrete law that is memoryless.
 }
-\details{
-The distribution counts the failures before the first success, so the
-support includes zero and the success probability is \eqn{p = 1/(1+\mu)}.
+\section{The parametrization}{
+The mass on \eqn{y \in \{0, 1, 2, \dots\}} is
+\deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}\left(\dfrac{\mu}{1+\mu}\right)^{y},}
+with \eqn{\mu \in (0, \infty)}. The family is parametrized by the mean and
+not by the success probability, so that a link can carry it to the
+unconstrained scale; \code{\link[=geom_prob]{geom_prob()}} converts, giving \eqn{p = 1/(1+\mu)} for
+the base R functions.
 
-\strong{Probability mass function:}
-\deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}\left(\dfrac{\mu}{1+\mu}\right)^{y}}
-
-\strong{Score, observed and expected Hessian:}
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu(1+\mu)},
-      \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}
-      + \dfrac{y+1}{(1+\mu)^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
-      = -\dfrac{1}{\mu(1+\mu)}}
-
-Every order is the same expression evaluated at \eqn{\mu} and at
-\eqn{1+\mu},
-\deqn{\ell^{(j)} = (-1)^{j-1}(j-1)!\left(\dfrac{y}{\mu^{j}}
-      - \dfrac{y+1}{(1+\mu)^{j}}\right), \qquad
-      \mathbb{E}[\ell^{(j)}] = (-1)^{j-1}(j-1)!\left(\mu^{1-j}
-      - (1+\mu)^{1-j}\right)}
-so the expected orders are closed form and vanish at \eqn{j = 1}.
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1+\mu)}, so the family
-is overdispersed relative to the Poisson at every mean.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
+The mean is \eqn{\mu}, the variance \eqn{\mu(1+\mu)}, and the mode is always
+0: consecutive masses differ by the constant factor \eqn{\mu/(1+\mu)},
+whatever the mean is. The distribution is right skewed at every parameter
+value.
 }
 
-The family is the negative binomial at \eqn{\theta = 1}, so
-\code{fixed(negbin2_distrib(), theta = 1)} describes the same law and is used
-in the tests as an independent implementation.
+\section{Overdispersion and memorylessness}{
+The variance exceeds the mean by \eqn{\mu^2}, so this family sits above a
+Poisson of the same mean and is a one-parameter answer to overdispersion.
+The price is precision: the information is \eqn{1/(\mu(1+\mu))} against a
+Poisson's \eqn{1/\mu}. Where the amount of overdispersion should itself be
+estimated, \code{\link[=negbin2_distrib]{negbin2_distrib()}} adds the parameter and contains this family
+at \eqn{\theta = 1}.
+
+The survival function is \eqn{P(Y > q) = (\mu/(1+\mu))^{q+1}}, so
+\eqn{P(Y > s + t \mid Y > s) = P(Y > t)}: the count already accumulated
+tells nothing about the count remaining. The geometric is the only discrete
+law with this property, as the exponential is the only continuous one, and
+the two are counterparts.
 }
+
+\section{Estimation}{
+The maximum likelihood estimate is the sample mean, \eqn{\hat\mu = \bar y},
+in closed form; the score is the residual divided by the variance and its
+sum vanishes there.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
+with variance \eqn{\mu(1+\mu)}. The success probability is
+\eqn{p = 1/(1+\mu)}. Counting starts at zero: \eqn{Y} is the number of
+failures \strong{before} the first success, not the number of trials.
+}
+
 \examples{
 d <- geometric_distrib()
-d@params
+d
 
-theta <- list(mu = 2)
-distrib_pdf(d, 0:4, theta)
-distrib_gradient(d, 0:4, theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+# The mass is R's own at prob = 1/(1+mu), and sums to one.
+all.equal(distrib_pdf(d, c(0, 2, 7), list(mu = 3)),
+          dgeom(c(0, 2, 7), prob = 1 / 4))
+sum(distrib_pdf(d, 0:400, list(mu = 3)))
+
+# Overdispersed by construction: the variance is mu(1+mu).
+vapply(c(0.5, 3, 20), function(m) {
+  th <- list(mu = m)
+  c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
+}, numeric(3))
+
+# Memoryless, as the exponential is on the continuous side.
+vapply(c(0, 2, 10, 50), function(s)
+  distrib_cdf(d, s + 1, list(mu = 3), lower.tail = FALSE) /
+    distrib_cdf(d, s, list(mu = 3), lower.tail = FALSE), numeric(1))
+
+# It is a negative binomial at a dispersion of one.
+all.equal(distrib_pdf(d, c(0, 2, 7), list(mu = 3)),
+          distrib_pdf(fixed(negbin2_distrib(), theta = 1), c(0, 2, 7),
+                      list(mu = 3)))
+
+# The estimate is the sample mean, in closed form.
+set.seed(5)
+z <- distrib_rng(d, 2000, list(mu = 2.5))
+c(fitted = unname(coef(fit_distrib(d, z))), sample_mean = mean(z))
 
 }
+\references{
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Chapter 5.
+Wiley, Hoboken.
+}
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}, \code{\link[=poisson_distrib]{poisson_distrib()}},
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}, of which this is the case \eqn{\theta = 1};
+\code{\link[=poisson_distrib]{poisson_distrib()}} for the equidispersed alternative;
+\code{\link[=exponential_distrib]{exponential_distrib()}}, the memoryless continuous counterpart;
+\code{\link[=geom_prob]{geom_prob()}} for the conversion to the success probability;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the mean; \link{GeometricDistrib} for the class.
 }

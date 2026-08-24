@@ -2,25 +2,54 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{distrib_hessian.GeometricDistrib}
 \alias{distrib_hessian.GeometricDistrib}
-\title{Geometric Analytical Observed Hessian}
+\title{Geometric Observed Hessian}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} =
-      -\dfrac{y}{\mu^2} + \dfrac{y+1}{(1+\mu)^2}}
+Computes the second derivative of the geometric log-mass with respect to the
+mean, one value per observation, in closed form. Differentiating
+\eqn{(y-\mu)/(\mu(1+\mu))} gives
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
+      = \dfrac{-\mu(1+\mu) - (y-\mu)(1+2\mu)}{\mu^2(1+\mu)^2},}
+which depends on the data through \eqn{y} alone. Its expectation is
+\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}}.
+}
+\examples{
+d <- geometric_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# A central difference of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 3 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 3 - eps))$mu
+all.equal((up - dn) / (2 * eps), distrib_hessian(d, y, th)$mu_mu,
+          tolerance = 1e-6)
+
+# It varies with the count, unlike the expected value.
+rbind(observed = distrib_hessian(d, y, th)$mu_mu,
+      expected = distrib_expected_hessian(d, y, th)$mu_mu)
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=distrib_gradient.GeometricDistrib]{distrib_gradient.GeometricDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}} for the expectation of this
+quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

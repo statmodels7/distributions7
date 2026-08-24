@@ -2,25 +2,56 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{distrib_gradient.GeometricDistrib}
 \alias{distrib_gradient.GeometricDistrib}
-\title{Geometric Analytical Gradient}
+\title{Geometric Score}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} component.
+A named list of one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1+\mu)}}
-the deviation from the mean over the variance.
+Computes the first derivative of the geometric log-mass with respect to the
+mean, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1+\mu)}.}
+The residual is divided by the variance \eqn{\mu(1+\mu)}, and the sum
+vanishes exactly at \eqn{\hat\mu = \bar y}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
+with variance \eqn{\mu(1+\mu)}. The success probability is
+\eqn{p = 1/(1+\mu)}.
+}
+
+\examples{
+d <- geometric_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# The closed form, written out: the residual over the variance.
+all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / (3 * (1 + 3)))
+
+# The summed score vanishes at the sample mean, which is the estimate.
+set.seed(5)
+z <- distrib_rng(d, 2000, list(mu = 2.5))
+sum(distrib_gradient(d, z, list(mu = mean(z)))$mu)
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=distrib_hessian.GeometricDistrib]{distrib_hessian.GeometricDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.GeometricDistrib]{distrib_expected_hessian.GeometricDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

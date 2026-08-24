@@ -4,21 +4,49 @@
 \alias{distrib_pdf.GeometricDistrib}
 \title{Geometric Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A non-integer or negative value gives 0
+with a warning from \code{\link[stats:Geometric]{stats::dgeom()}}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. A value of length 1 is recycled.
+\code{mu} must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
+stays finite for a count far above the mean. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(y), length(mu))}, one value per observation.
 }
 \description{
-\deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}
-      \left(\dfrac{\mu}{1+\mu}\right)^{y}, \qquad y = 0, 1, 2, \dots}
+Computes the geometric probability mass
+\deqn{P(Y = y; \mu) = \dfrac{1}{1+\mu}\left(\dfrac{\mu}{1+\mu}\right)^{y},
+      \qquad y = 0, 1, 2, \dots}
+by calling \code{\link[stats:Geometric]{stats::dgeom()}} at \code{prob = 1/(1+mu)}, which \code{\link[=geom_prob]{geom_prob()}}
+supplies. The mass falls geometrically, by the constant factor
+\eqn{\mu/(1+\mu)} at every step, so its maximum is always at zero however
+large the mean is.
+}
+\examples{
+d <- geometric_distrib()
+y <- c(0, 2, 7)
+
+# The method is stats::dgeom at prob = 1/(1+mu).
+all.equal(distrib_pdf(d, y, list(mu = 3)), dgeom(y, prob = 1 / (1 + 3)))
+
+# A probability mass: it sums to one over the support.
+sum(distrib_pdf(d, 0:400, list(mu = 3)))
+
+# The ratio of consecutive masses is the constant mu/(1+mu), so the mode is
+# always at zero.
+m <- distrib_pdf(d, 0:5, list(mu = 3))
+c(ratios = unique(round(m[-1] / m[-length(m)], 12)), mu_over_1_plus_mu = 3 / 4)
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=geom_prob]{geom_prob()}} for the conversion, \code{\link[=distrib_cdf.GeometricDistrib]{distrib_cdf.GeometricDistrib()}}
+for the distribution function, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -2,33 +2,72 @@
 % Please edit documentation in R/geometric_distrib.R
 \name{distrib_deriv3.GeometricDistrib}
 \alias{distrib_deriv3.GeometricDistrib}
-\title{Geometric Analytical Third-Order Derivative}
+\title{Geometric Third-Order Derivative}
 \arguments{
-\item{distrib}{A \code{GeometricDistrib} object.}
+\item{distrib}{A \code{GeometricDistrib} object, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivative.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available for both routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu_mu} component.
+A named list of one numeric vector, \code{mu_mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\ell^{(\mu\mu\mu)} = 2\left(\dfrac{y}{\mu^3}
-      - \dfrac{y+1}{(1+\mu)^3}\right), \qquad
-      \mathbb{E}[\ell^{(\mu\mu\mu)}] =
-      2\left(\dfrac{1}{\mu^2} - \dfrac{1}{(1+\mu)^2}\right)}
+Computes the third derivative of the geometric log-mass with respect to the
+mean, in closed form. The log-mass is
+\eqn{y\log\mu - (y+1)\log(1+\mu)}, so every derivative is a combination of
+\eqn{\mu^{-k}} and \eqn{(1+\mu)^{-k}} with the data entering linearly
+through \eqn{y}.
+
+With \code{expected = TRUE} the expectation is returned, obtained by substituting
+\eqn{\mathbb{E}[Y] = \mu}. Both routes are closed form, so no quadrature is
+run and \code{approx} and \code{nsim} are ignored.
+
+The family has one parameter, so there is one component rather than the four
+a two-parameter family carries at this order.
+}
+\section{Notation}{
+
+\eqn{\ell^{(\mu\mu\mu)}} is the third derivative of the log-mass with
+respect to \eqn{\mu}. Parenthesized superscripts name derivatives.
+}
+
+\examples{
+d <- geometric_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# A central difference of the Hessian reproduces the observed value.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 3 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 3 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
+          tolerance = 1e-5)
+
+# The expected value is one number, the data term having been averaged out.
+unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=distrib_hessian.GeometricDistrib]{distrib_hessian.GeometricDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.GeometricDistrib]{distrib_deriv4.GeometricDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

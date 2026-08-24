@@ -7,20 +7,30 @@
 geom_prob(mu)
 }
 \arguments{
-\item{mu}{The mean, a positive numeric vector.}
+\item{mu}{The mean, a positive numeric vector of any length.}
 }
 \value{
-A numeric vector of probabilities in \eqn{(0, 1)}.
+A numeric vector of probabilities in \eqn{(0, 1)}, of the length of
+\code{mu}.
 }
 \description{
-Converts the mean into the success probability the base R functions take.
+Converts a geometric mean into the success probability that the base R
+functions \code{\link[stats:Geometric]{stats::dgeom()}}, \code{\link[stats:Geometric]{stats::pgeom()}}, \code{\link[stats:Geometric]{stats::qgeom()}} and
+\code{\link[stats:Geometric]{stats::rgeom()}} take as their \code{prob} argument.
 }
 \details{
-The mean number of failures before the first success is
-\eqn{(1-p)/p}, so \eqn{p = 1/(1+\mu)}. Writing it once keeps the four
-functions that call \pkg{stats} from each repeating the algebra.
+The mean number of failures before the first success is \eqn{(1-p)/p}, so
+\eqn{p = 1/(1+\mu)}. Writing it once keeps the four methods that call
+\pkg{stats} from each repeating the algebra, and keeps them from drifting
+apart if the parametrization ever changes.
+
+The map is decreasing and carries \eqn{(0, \infty)} onto \eqn{(0, 1)}: a
+large mean is a small success probability. No validation is performed, so a
+non-positive \code{mu} returns a value outside \eqn{(0, 1)} and the caller sees
+the failure at the base R function.
 }
 \seealso{
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=geometric_distrib]{geometric_distrib()}} for the family, and
+\code{\link[=distrib_pdf.GeometricDistrib]{distrib_pdf.GeometricDistrib()}} for the first of the four callers.
 }
 \keyword{internal}
