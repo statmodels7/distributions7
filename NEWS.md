@@ -159,7 +159,7 @@
   log1p(y/r) - log1p(theta) = log1p( theta (y - mu) / (mu (1 + theta)) )
   ```
 
-  so none of the leading behaviour is formed and then subtracted, and the
+  so none of the leading behavior is formed and then subtracted, and the
   trigamma pair goes through `psi_T_rest()` with its own leading term
   `(y/r)/(y+r)` written out.  The expected information sums the DIFFERENCE
   term by term rather than taking `psi'(r)` off an expectation of
@@ -314,8 +314,8 @@
 
 * `src/psi_diff.h` carries `psi_A_rest()`, `psi_T_rest()` and `psi_Ew()`,
   each taking the SHIFT -- a count, a size or a dimension, and therefore an
-  integer -- and returning the difference with its own leading behaviour
-  subtracted, so a caller pairing it with that behaviour cancels
+  integer -- and returning the difference with its own leading behavior
+  subtracted, so a caller pairing it with that behavior cancels
   symbolically.  The header states which families reach which boundary and
   what each direct form was measured to cost.
 
