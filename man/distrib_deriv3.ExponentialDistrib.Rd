@@ -2,31 +2,75 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_deriv3.ExponentialDistrib}
 \alias{distrib_deriv3.ExponentialDistrib}
-\title{Exponential Analytical Third-Order Derivative}
+\title{Exponential Third-Order Derivative}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivative.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected value.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu_mu} component.
+A named list of one numeric vector, \code{mu_mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\ell^{(\mu\mu\mu)} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4},
-      \qquad \mathbb{E}[\ell^{(\mu\mu\mu)}] = \dfrac{4}{\mu^3}}
+Computes the third derivative of the exponential log-density with respect to
+the mean, in closed form:
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = -\dfrac{2}{\mu^3} + \dfrac{6y}{\mu^4}.}
+With \code{expected = TRUE} the expectation is returned, obtained by substituting
+\eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
+form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+
+The family has one parameter, so there is one component rather than the four
+a two-parameter family carries at this order.
+}
+\section{Notation}{
+
+\eqn{\ell^{(\mu\mu\mu)}} is the third derivative of the log-density with
+respect to \eqn{\mu}. Parenthesized superscripts name derivatives; a
+subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- exponential_distrib()
+y <- c(0.3, 1.1, 4.0)
+th <- list(mu = 2)
+
+# The closed form, written out.
+all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, -2 / 2^3 + 6 * y / 2^4)
+
+# The expected value is 4/mu^3.
+unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
+4 / 2^3
+
+# A central difference of the Hessian reproduces the observed value.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 2 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 2 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
+          tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian.ExponentialDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.ExponentialDistrib]{distrib_deriv4.ExponentialDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

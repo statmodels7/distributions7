@@ -2,21 +2,41 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_rng.ExponentialDistrib}
 \alias{distrib_rng.ExponentialDistrib}
-\title{Exponential Random Generation}
+\title{Exponential Random Number Generator}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
+of length \code{n} draws one variate per mean. \code{mu} must be strictly positive.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of \code{n} non-negative draws.
 }
 \description{
-Draws from the exponential distribution through
-\code{\link[stats:Exponential]{stats::rexp()}}.
+Draws \code{n} independent exponential variates by calling \code{\link[stats:Exponential]{stats::rexp()}} at
+\code{rate = 1/mu}, so the draws come from R's own generator and depend on
+\code{.Random.seed} in the usual way. The generalized ratio-of-uniforms fallback
+the base class supplies is bypassed.
+}
+\examples{
+d <- exponential_distrib()
+
+# Same generator as stats::rexp, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 2))
+set.seed(2)
+identical(a, rexp(3, rate = 1 / 2))
+
+# The sample mean and standard deviation both estimate mu.
+set.seed(21)
+z <- distrib_rng(d, 2e4, list(mu = 3))
+c(mean = mean(z), sd = sd(z))
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile.ExponentialDistrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the mean back, and \code{\link[=distrib_rng]{distrib_rng()}} for
+the generic.
 }

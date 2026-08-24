@@ -2,23 +2,39 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_hess_y.ExponentialDistrib}
 \alias{distrib_hess_y.ExponentialDistrib}
-\title{Exponential Response Hessian}
+\title{Exponential Second Derivative in the Response}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, which is not read.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of zeros.
+A numeric vector of zeros, of length \code{length(y)}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = 0}
-the log-density being linear in the response.
+Returns zero for every observation. The exponential log-density is linear in
+\eqn{y} on the whole support, so its second derivative in the response
+vanishes everywhere; there is no kink to qualify the statement, unlike the
+Laplace, whose zero holds only away from a point.
+}
+\examples{
+d <- exponential_distrib()
+th <- list(mu = 2)
+
+distrib_hess_y(d, c(0.3, 1.1, 4.0), th)
+
+# The first derivative is constant, so its difference is zero everywhere,
+# with no exceptional point.
+eps <- 1e-6
+y <- c(1e-8, 0.5, 5, 50)
+(distrib_grad_y(d, y + eps, th) - distrib_grad_y(d, y - eps, th)) / (2 * eps)
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y.ExponentialDistrib()}} for the constant first
+derivative; \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y.LaplaceDistrib()}}, which is zero for a
+different reason; \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

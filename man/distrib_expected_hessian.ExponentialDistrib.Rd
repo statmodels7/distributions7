@@ -2,29 +2,74 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_expected_hessian.ExponentialDistrib}
 \alias{distrib_expected_hessian.ExponentialDistrib}
-\title{Exponential Analytical Expected Hessian}
+\title{Exponential Expected Hessian}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))} and constant at \eqn{-1/\mu^2}.
 }
 \description{
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu^2}}
-obtained from the observed form by \eqn{\mathbb{E}[y] = \mu}.
+Returns the expectation of the observed second derivative under the model,
+in closed form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu^2},}
+which follows from \eqn{\mathbb{E}[Y] = \mu} substituted into
+\eqn{(\mu - 2y)/\mu^3}. The Fisher information for one observation is
+\eqn{1/\mu^2}, so the asymptotic standard error of \eqn{\hat\mu} is
+\eqn{\mu/\sqrt n}, which is the standard error of a sample mean of variance
+\eqn{\mu^2}.
+
+Because the value does not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
+\strong{observed information} under the model. The exponential is a regular
+family, so the second Bartlett identity holds and this equals the variance
+of the score.
+}
+
+\examples{
+d <- exponential_distrib()
+th <- list(mu = 2)
+
+# A single number, -1/mu^2.
+unique(distrib_expected_hessian(d, c(0.3, 1.1, 4.0), th)$mu_mu)
+-1 / 2^2
+
+# The observed value averages onto it over a large sample.
+set.seed(21)
+z <- distrib_rng(d, 2e5, th)
+c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
+  expected = distrib_expected_hessian(d, 0, th)$mu_mu)
+
+# It is the variance of the score, this family being regular.
+c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
+  information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian.ExponentialDistrib()}} for the observed quantity
+this is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

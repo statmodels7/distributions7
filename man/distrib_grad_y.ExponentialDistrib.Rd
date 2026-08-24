@@ -2,22 +2,49 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_grad_y.ExponentialDistrib}
 \alias{distrib_grad_y.ExponentialDistrib}
-\title{Exponential Response Gradient}
+\title{Exponential First Derivative in the Response}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{length(y)}, every entry \eqn{-1/\mu}.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{1}{\mu}}
+Returns \eqn{-1/\mu} for every observation. The log-density is
+\eqn{-\log\mu - y/\mu}, which is \strong{linear} in \eqn{y}, so its derivative in
+the response is the constant slope \eqn{-1/\mu} and carries no information
+about where the observation fell.
+
+That linearity is the memorylessness of the family stated on the log scale:
+the log survival function is \eqn{-q/\mu}, a straight line, so the hazard is
+constant.
+}
+\examples{
+d <- exponential_distrib()
+y <- c(0.3, 1.1, 4.0)
+th <- list(mu = 2)
+
+distrib_grad_y(d, y, th)
+-1 / 2
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
+
+# The same slope appears in the log survival function: a constant hazard.
+diff(distrib_cdf(d, c(1, 2, 3), th, lower.tail = FALSE, log.p = TRUE))
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y.ExponentialDistrib()}} for the second derivative,
+which is zero; \code{\link[=distrib_gradient.ExponentialDistrib]{distrib_gradient.ExponentialDistrib()}} for the score in
+the mean; \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

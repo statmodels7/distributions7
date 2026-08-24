@@ -2,7 +2,7 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{ExponentialDistrib}
 \alias{ExponentialDistrib}
-\title{S7 Class for the Exponential Distribution}
+\title{Exponential Distribution Class}
 \usage{
 ExponentialDistrib(
   distrib_name = character(0),
@@ -36,23 +36,44 @@ ExponentialDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{ExponentialDistrib}.
+An S7 object of class \code{ExponentialDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=exponential_distrib]{exponential_distrib()}} they hold \code{"exponential"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{"mu"}, \code{c(mu = "mean")}, \code{1}, the domain
+\eqn{(0, \infty)}, and the one link.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the
-exponential distribution in its mean parametrization.
+The S7 class of the exponential family parametrized by its \strong{mean}
+\eqn{\mu > 0}, with density \eqn{f(y) = \mu^{-1}e^{-y/\mu}} on
+\eqn{[0, \infty)}. It inherits from \code{continuous_distrib}, so it answers
+every generic of the \code{distrib} contract; the eleven methods listed below are
+registered on it directly.
+
+This is the only single-parameter continuous family in the package, so every
+derivative array it returns has one component per order and its information
+is a number.
+
+The parametrization is by the mean, not by the rate: R's own \code{dexp} takes
+\code{rate}, and the methods pass \code{rate = 1/mu}. The mean is the scale of the
+distribution, so \eqn{\mu} is also its standard deviation.
+
+Build one with \code{\link[=exponential_distrib]{exponential_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.ExponentialDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.ExponentialDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.ExponentialDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_gradient.ExponentialDistrib]{distrib_gradient()}},
 \code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian()}},
+\code{\link[=distrib_gradient.ExponentialDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.ExponentialDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.ExponentialDistrib]{distrib_rng()}}
@@ -60,6 +81,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- exponential_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# One parameter, the mean, on the positive half line.
+d@params
+d@n_params
+d@bounds
+
+# The mean is also the standard deviation, and the shape is fixed: the
+# skewness is 2 and the excess kurtosis 6 at every mu.
+th <- list(mu = 2)
+c(mean = mean(d, th), sd = std_dev(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+}
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=exponential_distrib]{exponential_distrib()}} to build one;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} and \code{\link[=weibull1_distrib]{weibull1_distrib()}}, both of which contain this
+family at a unit shape; \code{\link[=geometric_distrib]{geometric_distrib()}} for its discrete analogue.
 }

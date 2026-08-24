@@ -2,24 +2,54 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_cdf.ExponentialDistrib}
 \alias{distrib_cdf.ExponentialDistrib}
-\title{Exponential Distribution Function}
+\title{Exponential Cumulative Distribution Function}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A negative value gives 0.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{q}. \code{mu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are the survival
+function \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu))}.
 }
 \description{
-\deqn{F(q; \mu) = 1 - e^{-q/\mu}}
+Computes the exponential distribution function
+\deqn{F(q; \mu) = 1 - \exp\left(-\dfrac{q}{\mu}\right), \qquad q \ge 0,}
+by calling \code{\link[stats:Exponential]{stats::pexp()}} at \code{rate = 1/mu}. With \code{lower.tail = FALSE} the
+survival function \eqn{\exp(-q/\mu)} is returned directly, without forming
+the difference, so it stays exact far into the tail; combined with
+\code{log.p = TRUE} it is simply \eqn{-q/\mu}.
+}
+\examples{
+d <- exponential_distrib()
+th <- list(mu = 2)
+
+# The method is stats::pexp at rate = 1/mu.
+all.equal(distrib_cdf(d, c(0.3, 1.1, 4.0), th),
+          pexp(c(0.3, 1.1, 4.0), rate = 1 / 2))
+
+# The survival function on the log scale is exactly -q/mu.
+distrib_cdf(d, c(10, 100, 1000), th, lower.tail = FALSE, log.p = TRUE)
+-c(10, 100, 1000) / 2
+
+# Memoryless: the chance of surviving another unit does not depend on how
+# long the wait has already been.
+c(distrib_cdf(d, 4, th, lower.tail = FALSE) /
+    distrib_cdf(d, 3, th, lower.tail = FALSE),
+  distrib_cdf(d, 1, th, lower.tail = FALSE))
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_quantile.ExponentialDistrib]{distrib_quantile.ExponentialDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.ExponentialDistrib]{distrib_pdf.ExponentialDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}}
+for the generic.
 }

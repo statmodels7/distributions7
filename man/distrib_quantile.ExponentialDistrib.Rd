@@ -4,22 +4,49 @@
 \alias{distrib_quantile.ExponentialDistrib}
 \title{Exponential Quantile Function}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. \code{p = 1} gives \code{Inf}; a value outside the
+range gives \code{NaN} with a warning.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{p}. \code{mu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}, and the quantile is
+then \eqn{-\mu\log p}, which is exact deep in the tail.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles in \eqn{[0, \infty)}, of length
+\code{max(length(p), length(mu))}.
 }
 \description{
+Computes the exponential quantile function
 \deqn{Q(p; \mu) = -\mu \log(1 - p)}
+by calling \code{\link[stats:Exponential]{stats::qexp()}} at \code{rate = 1/mu}. The median is
+\eqn{\mu \log 2 \approx 0.693\mu}, below the mean, the distribution being
+right skewed at every parameter value.
+}
+\examples{
+d <- exponential_distrib()
+th <- list(mu = 2)
+
+# The median is mu log 2, below the mean.
+c(median = distrib_quantile(d, 0.5, th), mu_log2 = 2 * log(2), mean = 2)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# Asked from the upper tail the quantile is -mu log p, exact however small.
+distrib_quantile(d, 1e-300, th, lower.tail = FALSE)
+-2 * log(1e-300)
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_cdf.ExponentialDistrib]{distrib_cdf.ExponentialDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

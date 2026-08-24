@@ -2,70 +2,133 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{exponential_distrib}
 \alias{exponential_distrib}
-\title{Exponential Distribution Object}
+\title{Exponential Distribution}
 \usage{
 exponential_distrib(link_mu = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{ExponentialDistrib}.
+An S7 object of class \code{ExponentialDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"exponential"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{"mu"},
+\code{params_interpretation} \code{c(mu = "mean")}, \code{n_params} \code{1}, \code{params_bounds}
+the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 }
 \description{
-Creates a distribution object for the exponential distribution parametrized
-by its mean \eqn{\mu}.
+Builds the distribution object for the exponential family parametrized by
+its \strong{mean} \eqn{\mu > 0}, with density \eqn{\mu^{-1}e^{-y/\mu}} on
+\eqn{[0, \infty)}. The returned object carries closed-form derivatives of
+the log-density to fourth order and closed-form moments.
+
+The family has one parameter and a fixed shape: the standard deviation
+equals the mean, the skewness is 2 and the excess kurtosis is 6 whatever
+\eqn{\mu} is. It is the only continuous law with a constant hazard, which is
+the memorylessness the details set out.
 }
-\details{
-The exponential distribution models waiting times on \eqn{y > 0}, with mean
-\eqn{\mu} and variance \eqn{\mu^2}: the coefficient of variation is one, and
-fixing it is what distinguishes the family from the Gamma.
+\section{The parametrization}{
+The density on \eqn{y \in [0, \infty)} is
+\deqn{f(y; \mu) = \dfrac{1}{\mu}\exp\left(-\dfrac{y}{\mu}\right),}
+with \eqn{\mu \in (0, \infty)}. The distribution function is
+\eqn{F(q) = 1 - e^{-q/\mu}} and the quantile function
+\eqn{Q(p) = -\mu\log(1-p)}.
 
-\strong{Density:} \deqn{f(y; \mu) = \dfrac{1}{\mu} e^{-y/\mu}}
+The mean and the standard deviation are both \eqn{\mu}, so the coefficient
+of variation is 1; the skewness is 2 and the excess kurtosis 6, neither
+depending on the parameter. The median is \eqn{\mu\log 2}, below the mean.
 
-\strong{Distribution function:} \deqn{F(q; \mu) = 1 - e^{-q/\mu}}
-
-\strong{Score, observed and expected Hessian:}
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu^2}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{1}{\mu^2} - \dfrac{2y}{\mu^3},
-      \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu^2}}
-
-Every order follows the same pattern, the log-density being a logarithm plus
-a reciprocal:
-\deqn{\ell^{(k)} = \dfrac{(-1)^k (k-1)!}{\mu^k}
-      + \dfrac{(-1)^{k+1} k!\, y}{\mu^{k+1}}, \qquad
-      \mathbb{E}[\ell^{(k)}] = \dfrac{(-1)^k (k-1)! (1-k)}{\mu^k}}
-so the expected orders are closed form as well, and vanish at \eqn{k = 1}.
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu^2}, skewness 2, excess
-kurtosis 6.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
+R parametrizes its own \code{dexp} by the \strong{rate}, \eqn{1/\mu}, and the methods
+convert. \code{\link[=laplace2_distrib]{laplace2_distrib()}} is the corresponding choice for the Laplace,
+where the rate is what the package carries.
 }
 
-The family is the Weibull with unit shape, so
-\code{fixed(weibull1_distrib(), sigma = 1)} describes the same law and is
-used in the tests as an independent implementation. It is \strong{not} a
-Gamma with a fixed parameter: this package writes the Gamma in
-\eqn{(\mu, \sigma^2)}, whose shape is \eqn{\mu^2/\sigma^2}, so unit shape is
-the relation \eqn{\sigma^2 = \mu^2} between two parameters rather than a
-value one of them can be held at.
+\section{Memorylessness}{
+The survival function is \eqn{P(Y > q) = e^{-q/\mu}}, so
+\eqn{P(Y > s + t \mid Y > s) = P(Y > t)} for every \eqn{s, t \ge 0}: a wait
+already endured tells nothing about the wait remaining. Equivalently the
+hazard \eqn{f/(1-F)} is the constant \eqn{1/\mu}. On the log scale this is
+the statement that both \eqn{\log f} and \eqn{\log(1-F)} are straight lines
+in \eqn{y}, which is why \code{\link[=distrib_grad_y.ExponentialDistrib]{distrib_grad_y.ExponentialDistrib()}} is a constant
+and \code{\link[=distrib_hess_y.ExponentialDistrib]{distrib_hess_y.ExponentialDistrib()}} is zero.
+
+The exponential is the only continuous law with this property, so a fitted
+exponential is also the statement that the process has no memory. When it
+does, \code{\link[=weibull1_distrib]{weibull1_distrib()}} and \code{\link[=gamma1_distrib]{gamma1_distrib()}} both contain this family
+at a unit shape and let the hazard rise or fall.
 }
+
+\section{Derivatives}{
+Writing \eqn{\ell = -\log\mu - y/\mu}, the four orders are
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu^2}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{\mu - 2y}{\mu^3}, \qquad
+      \dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{6y - 2\mu}{\mu^4}, \qquad
+      \dfrac{\partial^4 \ell}{\partial \mu^4} = \dfrac{6\mu - 24y}{\mu^5},}
+and their expectations follow by substituting \eqn{\mathbb{E}[Y] = \mu}:
+\eqn{0}, \eqn{-1/\mu^2}, \eqn{4/\mu^3} and \eqn{-18/\mu^4}. The information
+is \eqn{1/\mu^2}, so the asymptotic standard error of \eqn{\hat\mu} is
+\eqn{\mu/\sqrt n}.
+}
+
+\section{Estimation}{
+The maximum likelihood estimate is the sample mean, \eqn{\hat\mu = \bar y},
+in closed form. \code{\link[=fit_distrib]{fit_distrib()}} reaches it on the link scale; the example
+below checks it.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
+which is also the standard deviation and the reciprocal of the rate. The
+\strong{hazard} is \eqn{f(y)/(1 - F(y))}, the instantaneous failure rate given
+survival to \eqn{y}.
+}
+
 \examples{
 d <- exponential_distrib()
-d@params
+d
 
-theta <- list(mu = 2)
-distrib_pdf(d, c(0.5, 1, 3), theta)
-distrib_gradient(d, c(0.5, 1, 3), theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+# The density is R's own at rate = 1/mu.
+y <- c(0.3, 1.1, 4.0)
+all.equal(distrib_pdf(d, y, list(mu = 2)), dexp(y, rate = 1 / 2))
+
+# A fixed shape: the standard deviation is the mean, and the skewness and
+# excess kurtosis do not move with mu.
+vapply(c(0.5, 2, 10), function(m) {
+  th <- list(mu = m)
+  c(sd = std_dev(d, th), skew = skewness(d, th), kurt = kurtosis(d, th))
+}, numeric(3))
+
+# Memoryless: the chance of surviving one more unit is the same at every
+# elapsed time.
+vapply(c(0, 1, 5, 20), function(s)
+  distrib_cdf(d, s + 1, list(mu = 2), lower.tail = FALSE) /
+    distrib_cdf(d, s, list(mu = 2), lower.tail = FALSE), numeric(1))
+
+# The estimate is the sample mean, in closed form.
+set.seed(21)
+z <- distrib_rng(d, 1000, list(mu = 3))
+c(fitted = unname(coef(fit_distrib(d, z))), sample_mean = mean(z))
+
+# It is a Weibull of unit shape, which fixed() produces from the larger
+# family; the two densities agree exactly.
+all.equal(distrib_pdf(d, y, list(mu = 2)),
+          distrib_pdf(fixed(weibull1_distrib(), sigma = 1), y,
+                      list(mu = 2)))
 
 }
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 19.
+Wiley, New York.
+}
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}},
-\code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} and \code{\link[=weibull1_distrib]{weibull1_distrib()}}, which contain this family at a
+unit shape and let the hazard vary; \code{\link[=geometric_distrib]{geometric_distrib()}}, its
+memoryless discrete counterpart; \code{\link[=gpd_distrib]{gpd_distrib()}}, which contains it at a
+zero shape; \code{\link[=fixed]{fixed()}}, which produces it from a larger family by holding a
+shape; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the mean; \link{ExponentialDistrib} for the
+class.
 }

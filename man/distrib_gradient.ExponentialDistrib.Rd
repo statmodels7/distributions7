@@ -2,26 +2,64 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_gradient.ExponentialDistrib}
 \alias{distrib_gradient.ExponentialDistrib}
-\title{Exponential Analytical Gradient}
+\title{Exponential Score}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} component.
+A named list of one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu^2}}
-the score of a one-parameter family written as the deviation from the mean
-over the variance.
+Computes the first derivative of the exponential log-density with respect to
+the mean, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu^2}.}
+The log-density is \eqn{-\log\mu - y/\mu}, so the score is proportional to
+the residual and its sum vanishes exactly at \eqn{\hat\mu = \bar y}. The
+family has one parameter, so the returned list has one component.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
+which is also the standard deviation of this family.
+}
+
+\examples{
+d <- exponential_distrib()
+y <- c(0.3, 1.1, 4.0)
+th <- list(mu = 2)
+
+# The closed form, written out.
+all.equal(distrib_gradient(d, y, th)$mu, (y - 2) / 2^2)
+
+# One component, the family having one parameter.
+names(distrib_gradient(d, y, th))
+
+# The summed score vanishes at the sample mean, which is the estimate.
+set.seed(21)
+z <- distrib_rng(d, 1000, list(mu = 3))
+sum(distrib_gradient(d, z, list(mu = mean(z)))$mu)
+
+# On the link scale the component is multiplied by h' = mu, the derivative
+# of the inverse log link.
+distrib_gradient(d, y, th, scale = "link")$mu / distrib_gradient(d, y, th)$mu
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_hessian.ExponentialDistrib]{distrib_hessian.ExponentialDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian.ExponentialDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

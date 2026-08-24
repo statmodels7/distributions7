@@ -2,24 +2,57 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_hessian.ExponentialDistrib}
 \alias{distrib_hessian.ExponentialDistrib}
-\title{Exponential Analytical Observed Hessian}
+\title{Exponential Observed Hessian}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{1}{\mu^2} - \dfrac{2y}{\mu^3}}
+Computes the second derivative of the exponential log-density with respect
+to the mean, one value per observation, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{1}{\mu^2} - \dfrac{2y}{\mu^3}
+      = \dfrac{\mu - 2y}{\mu^3}.}
+It is positive wherever \eqn{y < \mu/2}, so a single observation below half
+the mean contributes convexity; summed over a sample the curvature is
+negative at the estimate, where \eqn{\bar y = \mu}. The expectation is
+\code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian.ExponentialDistrib()}}.
+}
+\examples{
+d <- exponential_distrib()
+y <- c(0.3, 1.1, 4.0)
+th <- list(mu = 2)
+h <- distrib_hessian(d, y, th)
+
+# The closed form, written out.
+all.equal(h$mu_mu, (2 - 2 * y) / 2^3)
+
+# Positive below mu/2, negative above it.
+data.frame(y = y, mu_mu = h$mu_mu, below_half = y < 2 / 2)
+
+# A central difference of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 2 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 2 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_gradient.ExponentialDistrib]{distrib_gradient.ExponentialDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.ExponentialDistrib]{distrib_expected_hessian.ExponentialDistrib()}} for the expectation of
+this quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

@@ -2,22 +2,50 @@
 % Please edit documentation in R/exponential_distrib.R
 \name{distrib_pdf.ExponentialDistrib}
 \alias{distrib_pdf.ExponentialDistrib}
-\title{Exponential Density}
+\title{Exponential Probability Density Function}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is \eqn{[0, \infty)};
+\code{\link[stats:Exponential]{stats::dexp()}} returns 0 for a negative value.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. A value of length 1 is recycled.
+\code{mu} must be strictly positive; a non-positive value gives \code{NaN} with a
+warning from \code{\link[stats:Exponential]{stats::dexp()}}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu))}, one value per observation.
 }
 \description{
-\deqn{f(y; \mu) = \dfrac{1}{\mu} e^{-y/\mu}, \qquad y > 0}
+Computes the exponential density
+\deqn{f(y; \mu) = \dfrac{1}{\mu}\exp\left(-\dfrac{y}{\mu}\right), \qquad y \ge 0,}
+by calling \code{\link[stats:Exponential]{stats::dexp()}} at \code{rate = 1/mu}. The parametrization here is by
+the mean, so the reciprocal is taken inside the method; a reader passing
+\code{rate} where \code{mu} is expected gets the reciprocal distribution.
+}
+\examples{
+d <- exponential_distrib()
+y <- c(0.3, 1.1, 4.0)
+
+# The method is stats::dexp at rate = 1/mu.
+all.equal(distrib_pdf(d, y, list(mu = 2)), dexp(y, rate = 1 / 2))
+
+# The log-density is exactly linear in y, with slope -1/mu.
+diff(distrib_pdf(d, c(1, 2, 3), list(mu = 2), log = TRUE))
+-1 / 2
+
+# The maximum is at the origin and equals 1/mu.
+distrib_pdf(d, 0, list(mu = 2))
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=distrib_cdf.ExponentialDistrib]{distrib_cdf.ExponentialDistrib()}} for the distribution function,
+\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}}, which contains this at a unit shape, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }
