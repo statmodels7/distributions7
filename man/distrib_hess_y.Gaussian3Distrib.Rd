@@ -2,22 +2,49 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_hess_y.Gaussian3Distrib}
 \alias{distrib_hess_y.Gaussian3Distrib}
-\title{Gaussian Second Response Derivative in Mean and Precision}
+\title{Gaussian Second Derivative in the Response, Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{tau} must
+be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{length(y)}, every entry \eqn{-\tau}.
 }
 \description{
-\eqn{\partial^2\ell/\partial y^2 = -\tau}, free of the response.
+Computes the second derivative of the Gaussian log-density with respect to
+the response,
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\tau,}
+in closed form. It does not depend on \eqn{y} or on \eqn{\mu}, so the value
+is constant within a parameter setting and is recycled to the length of \code{y}.
+Being a location family, the Gaussian has the same curvature in the response
+as in its location, and this equals the \code{mu_mu} component of
+\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}}. In this parametrization that curvature
+is the parameter itself, which is the sense in which the precision measures
+how sharply the log-density peaks.
+}
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, tau = 0.25)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same curvature as in the location, and here that
+# curvature is minus the parameter.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Negative everywhere, so the log-density is concave in the response.
+all(distrib_hess_y(d, y, th) < 0)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_grad_y.Gaussian3Distrib]{distrib_grad_y.Gaussian3Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

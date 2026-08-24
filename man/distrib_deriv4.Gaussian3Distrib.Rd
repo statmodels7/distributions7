@@ -4,29 +4,77 @@
 \alias{distrib_deriv4.Gaussian3Distrib}
 \title{Gaussian Fourth-Order Derivatives in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{expected}{Logical of length 1, and without effect here, the observed
+and expected fourth derivatives being the same numbers. Defaults to
+\code{FALSE}.}
 
-\item{expected}{Logical; makes no difference here.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{tau} must
+be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored.}
+\item{approx}{Ignored, a closed form being available.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_tau}, \code{mu_mu_tau_tau}, \code{mu_tau_tau_tau} and \code{tau_tau_tau_tau},
+each of length \code{length(y)}. Only the last is non-zero.
 }
 \description{
-Closed form, and free of the response: the only non-zero component is
-\eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}.
+Computes the five distinct fourth derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{\tau}, in closed form. Four of the five
+are exactly zero and the fifth is a constant:
+\deqn{\ell^{(\tau\tau\tau\tau)} = -\dfrac{3}{\tau^4}.}
+This is the flattest of the three parametrizations of the Gaussian at fourth
+order; the log-density is quadratic in \eqn{\mu} and its \eqn{\tau} part is
+\eqn{\tfrac{1}{2}\log\tau} plus a term linear in \eqn{\tau}, so every mixed
+component past \eqn{\ell^{(\mu\mu\tau)}} vanishes. Like the third order,
+the values are free of the response, so \code{expected}, \code{approx} and \code{nsim} are
+all without effect.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijkl)}} is the fourth derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, tau = 0.25)
+d4 <- distrib_deriv4(d, y, th)
+
+# One non-zero component out of five, at -3/tau^4.
+lapply(d4, unique)
+-3 / 0.25^4
+
+# Free of the response, so asking for the expectation changes nothing.
+identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
+
+# A central difference of the third order reproduces it.
+eps <- 1e-6
+up <- distrib_deriv3(d, y, list(mu = 1, tau = 0.25 + eps))$tau_tau_tau
+dn <- distrib_deriv3(d, y, list(mu = 1, tau = 0.25 - eps))$tau_tau_tau
+all.equal((up - dn) / (2 * eps), d4$tau_tau_tau_tau, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_deriv3.Gaussian3Distrib]{distrib_deriv3.Gaussian3Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.Gaussian1Distrib]{distrib_deriv4.Gaussian1Distrib()}} for the same order in the standard
+deviation, where three of the five are non-zero, and \code{\link[=distrib_deriv4]{distrib_deriv4()}}
+for the generic.
 }

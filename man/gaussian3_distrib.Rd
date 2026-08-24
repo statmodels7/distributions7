@@ -2,55 +2,131 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{gaussian3_distrib}
 \alias{gaussian3_distrib}
-\title{Gaussian Distribution in Mean and Precision}
+\title{Gaussian Distribution, Mean and Precision}
 \usage{
 gaussian3_distrib(link_mu = identity_link(), link_tau = log_link())
 }
 \arguments{
-\item{link_mu}{Link function for \eqn{\mu}. Defaults to the identity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
+over the whole line already.}
 
-\item{link_tau}{Link function for \eqn{\tau}. Defaults to the log.}
+\item{link_tau}{A \code{link} object from \code{linkfunctions7} for the precision
+\eqn{\tau}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{\link[=Gaussian3Distrib]{Gaussian3Distrib()}}.
+An S7 object of class \code{Gaussian3Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gaussian3"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "tau")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a Gaussian distribution object parametrized by its mean and its
-\strong{precision} \eqn{\tau = 1/\sigma^2}.
+Builds the distribution object for the Gaussian (normal) family parametrized
+by its mean \eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}. The
+returned object carries closed-form derivatives of the log-density to fourth
+order, in the parameters and in the response, and closed-form moments, so
+every generic of the toolkit answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the identity for
+the mean, which is already free, and the logarithm for the precision, which
+keeps it positive at every predictor.
 }
-\details{
-This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different
-coordinates, and a separate family for the same reason
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is: the parameter here \emph{is} the
-precision, and that is what the estimate, the standard error and the
-interval describe.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \tau) = \sqrt{\dfrac{\tau}{2\pi}}
+      \exp\left\{-\dfrac{\tau(y-\mu)^{2}}{2}\right\},}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\tau \in (0, \infty)}. The
+mean is \eqn{\mu}, the variance \eqn{1/\tau}, and both the skewness and the
+excess kurtosis are 0.
 
-It is the flattest of the three parametrizations. Every third derivative is
-free of the response, so the observed and the expected ones coincide, and
-the only non-zero fourth derivative is
-\eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}.
-
-The precision is the parametrization a Bayesian conjugate analysis uses,
-the gamma being conjugate for \eqn{\tau} at known \eqn{\mu}.
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates, and
+a separate family for the reason \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is: the parameter
+here \emph{is} the precision, and that is what the estimate, the standard error
+and the interval describe. The precision is the parametrization a Bayesian
+conjugate analysis uses, the gamma being conjugate for \eqn{\tau} at known
+\eqn{\mu}.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \sqrt{\frac{\tau}{2\pi}}\exp\!\left\{-\frac{\tau(y-\mu)^{2}}{2}\right\}}
-on \eqn{y \in \mathbb{R}}.
+\section{Derivatives}{
+Writing \eqn{r = y - \mu}, the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \tau r, \qquad
+      \dfrac{\partial \ell}{\partial \tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2},}
+the observed Hessian
+\deqn{\ell^{(\mu\mu)} = -\tau, \quad
+      \ell^{(\mu\tau)} = r, \quad
+      \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2},}
+and its expectation
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\tau, \quad
+      \mathbb{E}\left[\ell^{(\mu\tau)}\right] = 0, \quad
+      \mathbb{E}\left[\ell^{(\tau\tau)}\right] = -\dfrac{1}{2\tau^2}.}
+The zero off-diagonal makes the mean and the precision orthogonal, so their
+maximum likelihood estimates are asymptotically independent.
 
-\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = 1/\tau}
+It is the flattest of the three parametrizations. The log-density is
+quadratic in \eqn{\mu} and, in \eqn{\tau}, is \eqn{\tfrac{1}{2}\log\tau}
+plus a term linear in \eqn{\tau}, so every third and fourth derivative is
+free of the response: at third order only \eqn{\ell^{(\mu\mu\tau)} = -1} and
+\eqn{\ell^{(\tau\tau\tau)} = 1/\tau^3} survive, and at fourth order only
+\eqn{\ell^{(\tau\tau\tau\tau)} = -3/\tau^4}. Asking those methods for the
+expectation returns the same numbers.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale and reaches
+the closed-form estimates \eqn{\hat\mu = \bar y} and
+\eqn{\hat\tau = 1 / \{n^{-1}\sum (y_i - \bar y)^2\}}, the reciprocal of the
+maximum likelihood variance with divisor \eqn{n}. The example below checks
+both against the sample.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\tau = 1/\sigma^2 > 0} the precision. \eqn{\ell^{(ij)}} is a second
+derivative of \eqn{\ell} in parameters \eqn{i} and \eqn{j}. \eqn{\eta} is a
+parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- gaussian3_distrib()
-theta <- list(mu = 1, tau = 0.25)
-distrib_pdf(d, c(0, 1, 2), theta)
-variance(d, theta)
+d
 
-# the same law as gaussian1 with sigma = 2
-distrib_pdf(gaussian1_distrib(), 0.5, list(mu = 1, sigma = 2))
+# The same law as gaussian1 at sigma = 1/sqrt(tau).
+y <- c(-1.2, 0.3, 2.5)
+all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
+          distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
+
+# Moments in closed form: the variance is the reciprocal of the parameter.
+th <- list(mu = 1, tau = 0.25)
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# Fitting recovers the closed-form maximum likelihood estimates.
+set.seed(7)
+z <- distrib_rng(d, 400, list(mu = 3, tau = 0.25))
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = mean(z), tau = 1 / mean((z - mean(z))^2)))
+
+# The estimate is a precision, so the interval it reports is an interval for
+# the precision and stays positive.
+confint(fit)
 
 }
+\references{
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A. and
+Rubin, D. B. (2013). \emph{Bayesian Data Analysis}, 3rd edition, Chapter 2.
+Chapman and Hall/CRC, Boca Raton.
+}
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} and \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the same law in the
+standard deviation and in the variance; \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the conjugate
+prior of \eqn{\tau} at known \eqn{\mu}; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and
+\code{\link[=laplace_distrib]{laplace_distrib()}} for heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+same battery this one passes; \link{Gaussian3Distrib} for the class.
 }

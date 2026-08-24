@@ -2,23 +2,59 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_pdf.Gaussian3Distrib}
 \alias{distrib_pdf.Gaussian3Distrib}
-\title{Gaussian Density in Mean and Precision}
+\title{Gaussian Probability Density Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{tau} must be strictly positive; a zero gives \code{sd = Inf} and a
+density of 0, and a negative value gives \code{NaN} with a warning from
+\code{\link[stats:Normal]{stats::dnorm()}}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(tau))}, one value per observation.
 }
 \description{
-\deqn{f(y) = \sqrt{\dfrac{\tau}{2\pi}}
+Computes the Gaussian density
+\deqn{f(y; \mu, \tau) = \sqrt{\dfrac{\tau}{2\pi}}
       \exp\left\{-\dfrac{\tau(y-\mu)^2}{2}\right\}}
+by calling \code{\link[stats:Normal]{stats::dnorm()}} at \code{mean = mu} and \code{sd = 1/sqrt(tau)}, so the
+accuracy and the underflow behavior are R's own. With \code{log = TRUE} the
+logarithm is formed inside \code{dnorm()} and stays finite far into the tails,
+where the density itself underflows to zero.
+}
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+
+# The method is stats::dnorm at the reciprocal square root of tau.
+all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
+          dnorm(y, mean = 1, sd = 2))
+
+# Same law as gaussian1 at sigma = 1/sqrt(tau), to the last bit.
+all.equal(distrib_pdf(d, y, list(mu = 1, tau = 0.25)),
+          distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(0, 1, 2), tau = c(1, 0.25, 0.0625)))
+
+# In the far tail the density underflows and its logarithm does not.
+distrib_pdf(d, 40, list(mu = 0, tau = 1))
+distrib_pdf(d, 40, list(mu = 0, tau = 1), log = TRUE)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_cdf.Gaussian3Distrib]{distrib_cdf.Gaussian3Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Gaussian3Distrib]{distrib_gradient.Gaussian3Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} for the same density in the
+standard deviation, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

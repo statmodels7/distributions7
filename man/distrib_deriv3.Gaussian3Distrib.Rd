@@ -4,29 +4,78 @@
 \alias{distrib_deriv3.Gaussian3Distrib}
 \title{Gaussian Third-Order Derivatives in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{expected}{Logical of length 1, and without effect here, the observed
+and expected third derivatives being the same numbers. Defaults to
+\code{FALSE}.}
 
-\item{expected}{Logical; makes no difference here.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{tau} must
+be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored.}
+\item{approx}{Ignored, a closed form being available.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_tau},
+\code{mu_tau_tau} and \code{tau_tau_tau}, each of length \code{length(y)}. The names
+enumerate the distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed form. Every third derivative is free of the response, so the observed
-and the expected ones coincide and \code{expected} changes nothing.
+Computes the four distinct third derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{\tau}, in closed form:
+\deqn{\ell^{(\mu\mu\mu)} = 0, \qquad
+      \ell^{(\mu\mu\tau)} = -1, \qquad
+      \ell^{(\mu\tau\tau)} = 0, \qquad
+      \ell^{(\tau\tau\tau)} = \dfrac{1}{\tau^3}.}
+Every one of them is free of the response, so the observed and the expected
+values coincide and \code{expected} selects nothing: the same kernel runs either
+way and the two results are identical to the bit. \code{approx} and \code{nsim} are
+ignored for the same reason.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, tau = 0.25)
+d3 <- distrib_deriv3(d, y, th)
+
+# Two of the four are non-zero, and both are constants.
+lapply(d3, unique)
+1 / 0.25^3
+
+# Free of the response, so asking for the expectation changes nothing.
+identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 1, tau = 0.25 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 1, tau = 0.25 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_tau, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.Gaussian3Distrib]{distrib_deriv4.Gaussian3Distrib()}} for the order above;
+\code{\link[=distrib_deriv3.Gaussian1Distrib]{distrib_deriv3.Gaussian1Distrib()}} for the same order in the standard
+deviation, where two components do carry the residual; and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

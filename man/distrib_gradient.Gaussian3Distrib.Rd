@@ -2,26 +2,81 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_gradient.Gaussian3Distrib}
 \alias{distrib_gradient.Gaussian3Distrib}
-\title{Gaussian Analytical Gradient in Mean and Precision}
+\title{Gaussian Score in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{tau} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{tau}, each of length
+\code{max(length(y), length(mu), length(tau))}.
 }
 \description{
-With \eqn{r = y - \mu},
-\deqn{\dfrac{\partial\ell}{\partial\mu} = \tau r, \qquad
-      \dfrac{\partial\ell}{\partial\tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2}}
+Computes the first derivatives of the Gaussian log-density with respect to
+\eqn{\mu} and \eqn{\tau}, one value per observation, in closed form. With
+\eqn{r = y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \tau r,
+      \qquad
+      \dfrac{\partial \ell}{\partial \tau} = \dfrac{1}{2\tau} - \dfrac{r^2}{2}.}
+The precision component is linear in \eqn{r^2}. That linearity is why every
+third and fourth derivative of this parametrization is free of the response.
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
+returns the parameter scale; the transformation happens in the generic.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\tau = 1/\sigma^2 > 0} the precision. \eqn{\eta_j} is the coordinate of
+parameter \eqn{j} on the unconstrained scale of its link, and \eqn{h_j' =
+\partial \theta_j / \partial \eta_j} the chain-rule factor onto it.
+}
+
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, tau = 0.25)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- y - 1
+all.equal(g$mu, 0.25 * r)
+all.equal(g$tau, 1 / (2 * 0.25) - r^2 / 2)
+
+# The summed score vanishes at the maximum likelihood estimate, where the
+# precision is the reciprocal of the variance with divisor n.
+set.seed(1)
+z <- rnorm(200, mean = 3, sd = 2)
+mle <- list(mu = mean(z), tau = 1 / mean((z - mean(z))^2))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
+
+# log(tau) is minus twice log(sigma), so the link-scale score here is minus
+# half gaussian1's.
+distrib_gradient(d, y, th, scale = "link")$tau /
+  distrib_gradient(gaussian1_distrib(), y, list(mu = 1, sigma = 2),
+                   scale = "link")$sigma
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Gaussian3Distrib]{distrib_expected_hessian.Gaussian3Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the same score in the standard
+deviation, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

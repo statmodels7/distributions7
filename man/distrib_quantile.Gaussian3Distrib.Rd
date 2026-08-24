@@ -4,25 +4,54 @@
 \alias{distrib_quantile.Gaussian3Distrib}
 \title{Gaussian Quantile Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give \code{-Inf} and \code{Inf}.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{tau} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as a log-probability.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities, which is how a quantile deep in a tail is
+requested without the probability underflowing. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(tau))}.
 }
 \description{
-The normal quantile function at standard deviation
-\eqn{1/\sqrt{\tau}}.
+Computes the Gaussian quantile function
+\deqn{Q(p; \mu, \tau) = \mu + \dfrac{\Phi^{-1}(p)}{\sqrt{\tau}}}
+by calling \code{\link[stats:Normal]{stats::qnorm()}} at \code{sd = 1/sqrt(tau)}. The Gaussian distribution
+function is strictly increasing on the whole line, so \eqn{Q} is its exact
+inverse and the round trip through \code{\link[=distrib_cdf.Gaussian3Distrib]{distrib_cdf.Gaussian3Distrib()}} returns
+\code{p}.
+}
+\examples{
+d <- gaussian3_distrib()
+th <- list(mu = 1, tau = 0.25)
+
+# The median is mu and the quartiles are symmetric about it.
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# Four times the precision halves the distance from the median.
+distrib_quantile(d, 0.975, list(mu = 0, tau = 1)) -
+  distrib_quantile(d, 0.975, list(mu = 0, tau = 4))
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_cdf.Gaussian3Distrib]{distrib_cdf.Gaussian3Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Gaussian3Distrib]{distrib_rng.Gaussian3Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

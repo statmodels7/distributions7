@@ -2,27 +2,56 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_cdf.Gaussian3Distrib}
 \alias{distrib_cdf.Gaussian3Distrib}
-\title{Gaussian Distribution Function in Mean and Precision}
+\title{Gaussian Cumulative Distribution Function in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{tau} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(tau))}. With \code{log.p = TRUE} the values
+are logarithms and are non-positive.
 }
 \description{
-The normal distribution function at standard deviation
-\eqn{1/\sqrt{\tau}}.
+Computes the Gaussian distribution function
+\deqn{F(q; \mu, \tau) = \Phi\left(\sqrt{\tau}\,(q-\mu)\right)}
+with \eqn{\Phi} the standard normal distribution function, by calling
+\code{\link[stats:Normal]{stats::pnorm()}} at \code{sd = 1/sqrt(tau)}. Both tails are available exactly:
+\code{lower.tail = FALSE} evaluates \eqn{1 - F} without forming the difference,
+and \code{log.p = TRUE} returns a logarithm that stays finite where the
+probability itself underflows to zero.
+}
+\examples{
+d <- gaussian3_distrib()
+th <- list(mu = 1, tau = 0.25)
+
+# The method is stats::pnorm at sd = 1/sqrt(tau).
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          pnorm(c(-1.2, 0.3, 2.5), mean = 1, sd = 2))
+
+# The two tails sum to one.
+distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
+
+# Forty standard deviations out the upper tail underflows; its log does not.
+distrib_cdf(d, 40, list(mu = 0, tau = 1), lower.tail = FALSE)
+distrib_cdf(d, 40, list(mu = 0, tau = 1), lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_quantile.Gaussian3Distrib]{distrib_quantile.Gaussian3Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Gaussian3Distrib]{distrib_pdf.Gaussian3Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the derivatives of this function in the
+parameters, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

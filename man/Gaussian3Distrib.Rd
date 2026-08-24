@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{Gaussian3Distrib}
 \alias{Gaussian3Distrib}
-\title{S7 Class for the Gaussian Distribution in Mean and Precision}
+\title{Gaussian Distribution Class, Mean and Precision}
 \usage{
 Gaussian3Distrib(
   distrib_name = character(0),
@@ -36,15 +36,31 @@ Gaussian3Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Gaussian3Distrib}.
+An S7 object of class \code{Gaussian3Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} they hold \code{"gaussian3"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "tau")}, the interpretations
+\code{c(mu = "mean", tau = "precision")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} for the Gaussian
-written in its mean and its \strong{precision}.
+The S7 class of the Gaussian (normal) family parametrized by its mean
+\eqn{\mu} and its precision \eqn{\tau = 1/\sigma^2 > 0}, with density
+\eqn{f(y) = (\tau/2\pi)^{1/2}\exp\{-\tau(y-\mu)^2/2\}} on the whole real
+line. It inherits from \code{continuous_distrib}, so it answers every generic of
+the \code{distrib} contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+Build one with \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Gaussian3Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Gaussian3Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Gaussian3Distrib]{distrib_deriv4()}},
@@ -60,6 +76,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- gaussian3_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@params_bounds
+
+# The precision is the reciprocal of the variance, so a large tau is a
+# tight distribution.
+variance(d, list(mu = 0, tau = 100))
+}
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}} to build one;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the same law in mean and standard deviation and
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for mean and variance;
+\code{\link[=distrib_pdf.Gaussian3Distrib]{distrib_pdf.Gaussian3Distrib()}} and \code{\link[=distrib_gradient.Gaussian3Distrib]{distrib_gradient.Gaussian3Distrib()}}
+for the closed forms this class supplies.
 }

@@ -2,33 +2,82 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_expected_hessian.Gaussian3Distrib}
 \alias{distrib_expected_hessian.Gaussian3Distrib}
-\title{Gaussian Analytical Expected Hessian in Mean and Precision}
+\title{Gaussian Expected Hessian in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{tau} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_tau} and
+\code{tau_tau}, each of length \code{max(length(y), length(mu), length(tau))} and
+constant within itself when the parameters are.
 }
 \description{
-\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\tau, \qquad
-      \mathbb{E}[\ell^{(\mu\tau)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\tau\tau)}] = -\dfrac{1}{2\tau^2}}
-Only the mixed entry differs from the observed Hessian, which is what makes
-Fisher scoring and Newton's method take the same step on the parameter scale
-here.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\tau, \qquad
+      \mathbb{E}\left[\ell^{(\mu\tau)}\right] = 0, \qquad
+      \mathbb{E}\left[\ell^{(\tau\tau)}\right] = -\dfrac{1}{2\tau^2}.}
+They follow from \eqn{\mathbb{E}[Y-\mu] = 0}, the other two entries being
+free of the data already. The negative of this matrix is the Fisher
+information for one observation; the zero off-diagonal says the mean and the
+precision are orthogonal, so their estimates are asymptotically independent.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The Gaussian is
+a regular family, so the second Bartlett identity holds and this equals the
+variance of the score.
+}
+
+\examples{
+d <- gaussian3_distrib()
+th <- list(mu = 1, tau = 0.25)
+
+# The three constants, one value per observation.
+lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
+
+# The information transforms by the delta method: with dtau/dsigma =
+# -2/sigma^3, the precision entry carries onto gaussian1's -2/sigma^2.
+distrib_expected_hessian(d, 0, th)$tau_tau * (2 / 2^3)^2
+distrib_expected_hessian(gaussian1_distrib(), 0,
+                         list(mu = 1, sigma = 2))$sigma_sigma
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_hessian.Gaussian3Distrib]{distrib_hessian.Gaussian3Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=distrib_expected_hessian.Gaussian1Distrib]{distrib_expected_hessian.Gaussian1Distrib()}} for
+the same information in the standard deviation, \code{\link[=fisher_scoring]{fisher_scoring()}}, which
+inverts it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

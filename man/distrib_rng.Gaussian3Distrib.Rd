@@ -2,20 +2,42 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_rng.Gaussian3Distrib}
 \alias{distrib_rng.Gaussian3Distrib}
-\title{Gaussian Random Generation in Mean and Precision}
+\title{Gaussian Random Number Generator in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. \code{tau}
+must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} draws.
 }
 \description{
-Delegates to \code{\link[stats:Normal]{stats::rnorm()}}.
+Draws \code{n} independent Gaussian variates by calling \code{\link[stats:Normal]{stats::rnorm()}} at
+\code{sd = 1/sqrt(tau)}, so the draws come from R's own normal generator and
+depend on \code{.Random.seed} in the usual way. The inverse-transform fallback
+the base class supplies is bypassed.
+}
+\examples{
+d <- gaussian3_distrib()
+
+# Same generator as stats::rnorm at sd = 1/sqrt(tau).
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = c(0, 1, 2), tau = c(1, 0.25, 0.0625)))
+set.seed(2)
+identical(a, rnorm(3, mean = c(0, 1, 2), sd = c(1, 2, 4)))
+
+# The sample moments recover the parameters, the precision as 1/var.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, tau = 0.25))
+c(mean = mean(z), tau = 1 / var(z))
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_quantile.Gaussian3Distrib]{distrib_quantile.Gaussian3Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

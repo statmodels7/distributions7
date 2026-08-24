@@ -2,27 +2,79 @@
 % Please edit documentation in R/gaussian3_distrib.R
 \name{distrib_hessian.Gaussian3Distrib}
 \alias{distrib_hessian.Gaussian3Distrib}
-\title{Gaussian Analytical Observed Hessian in Mean and Precision}
+\title{Gaussian Observed Hessian in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{tau} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_tau} and
+\code{tau_tau}, each of length \code{max(length(y), length(mu), length(tau))}. The
+three name the distinct entries of a symmetric \eqn{2 \times 2} matrix per
+observation.
 }
 \description{
-\deqn{\ell^{(\mu\mu)} = -\tau, \qquad \ell^{(\mu\tau)} = r, \qquad
-      \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}}
-The mean block is free of the data here, as it is in every parametrization
-of this family, and so is the precision block.
+Computes the three distinct second derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{\tau}, one value per observation, in
+closed form. With \eqn{r = y - \mu},
+\deqn{\ell^{(\mu\mu)} = -\tau, \qquad
+      \ell^{(\mu\tau)} = r, \qquad
+      \ell^{(\tau\tau)} = -\dfrac{1}{2\tau^2}.}
+Two of the three are free of the data, so the observed and the expected
+Hessians differ in the mixed entry alone. That entry sums to
+\eqn{\sum_i (y_i - \mu)}, which vanishes at \eqn{\hat\mu = \bar y}: the two
+matrices agree exactly once the mean equation is solved and differ before
+that, so Fisher scoring and Newton's method take the same step at the
+maximum and different steps on the way there.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density with respect
+to parameters \eqn{i} and \eqn{j}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- gaussian3_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, tau = 0.25)
+h <- distrib_hessian(d, y, th)
+
+# Two of the three are constants; only the mixed entry carries the data.
+h$mu_mu
+h$tau_tau
+all.equal(h$mu_tau, y - 1)
+
+# The mixed entry sums to zero at the estimated mean and not elsewhere.
+set.seed(3)
+z <- distrib_rng(d, 500, list(mu = 3, tau = 0.25))
+c(at_mle = sum(distrib_hessian(d, z, list(mu = mean(z), tau = 0.25))$mu_tau),
+  at_2   = sum(distrib_hessian(d, z, list(mu = 2, tau = 0.25))$mu_tau))
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 1, tau = 0.25 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 1, tau = 0.25 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_tau, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_gradient.Gaussian3Distrib]{distrib_gradient.Gaussian3Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Gaussian3Distrib]{distrib_expected_hessian.Gaussian3Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Gaussian3Distrib]{distrib_deriv3.Gaussian3Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }
