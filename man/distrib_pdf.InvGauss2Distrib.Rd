@@ -2,23 +2,59 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_pdf.InvGauss2Distrib}
 \alias{distrib_pdf.InvGauss2Distrib}
-\title{Inverse Gaussian Density in Mean and Shape}
+\title{Inverse Gaussian Probability Density Function in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is
+\eqn{(0, \infty)}; a value at or below zero gives 0.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(lambda))}, one value per observation.
 }
 \description{
-\deqn{f(y) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
-      \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\}}
+Computes the inverse Gaussian density
+\deqn{f(y; \mu, \lambda) = \sqrt{\dfrac{\lambda}{2\pi y^3}}
+      \exp\left\{-\dfrac{\lambda(y-\mu)^2}{2\mu^2 y}\right\},
+      \qquad y > 0,}
+by calling \code{\link[statmod:invgauss]{statmod::dinvgauss()}} at \code{mean = mu} and
+\code{dispersion = 1/lambda}, that package writing the family in the dispersion.
+With \code{log = TRUE} the logarithm is formed inside \code{dinvgauss()} and stays
+finite where the density itself underflows.
+}
+\examples{
+d <- invgauss2_distrib()
+y <- c(1, 2, 3)
+th <- list(mu = 2, lambda = 3)
+
+# The method is statmod::dinvgauss at dispersion 1/lambda.
+all.equal(distrib_pdf(d, y, th),
+          statmod::dinvgauss(y, mean = 2, dispersion = 1 / 3))
+
+# The same law as invgauss1 at phi = 1/lambda.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(invgauss1_distrib(), y, list(mu = 2, phi = 1 / 3)))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(1, 2, 4), lambda = 3))
+
+# Far out in the tail the density underflows and its logarithm does not.
+distrib_pdf(d, 1e4, th)
+distrib_pdf(d, 1e4, th, log = TRUE)
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf.InvGauss2Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient.InvGauss2Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf.InvGauss1Distrib]{distrib_pdf.InvGauss1Distrib()}} for the same density in the
+dispersion, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

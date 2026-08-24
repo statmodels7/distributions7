@@ -2,33 +2,88 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_expected_hessian.InvGauss2Distrib}
 \alias{distrib_expected_hessian.InvGauss2Distrib}
-\title{Inverse Gaussian Analytical Expected Hessian in Mean and Shape}
+\title{Inverse Gaussian Expected Hessian in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_lambda} and
+\code{lambda_lambda}, in that order, each of length
+\code{max(length(y), length(mu), length(lambda))} and constant within itself
+when the parameters are.
 }
 \description{
-The response enters every derivative linearly, so the expectations need only
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. Every second derivative is at
+most linear in the response, so the expectations need only
 \eqn{\mathbb{E}[Y] = \mu}:
-\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\dfrac{\lambda}{\mu^3}, \qquad
-      \mathbb{E}[\ell^{(\mu\lambda)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\lambda\lambda)}] = -\dfrac{1}{2\lambda^2}}
-The mean and the shape are orthogonal.
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\lambda}{\mu^3},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\lambda)}\right] = 0, \qquad
+      \mathbb{E}\left[\ell^{(\lambda\lambda)}\right] =
+        -\dfrac{1}{2\lambda^2}.}
+The pure shape entry is the observed value itself, being free of the data.
+
+Both diagonal entries are negative at every parameter setting, so the
+information is positive definite everywhere. The zero off-diagonal says the
+mean and the shape are orthogonal, so the mean equation can be fitted with
+the shape held at any value without biasing it.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The inverse
+Gaussian is a regular family, so the second Bartlett identity holds and this
+equals the variance of the score. \eqn{\lambda} names this family's shape
+parameter.
+}
+
+\examples{
+d <- invgauss2_distrib()
+th <- list(mu = 2, lambda = 3)
+
+# The three constants, one value per observation.
+lapply(distrib_expected_hessian(d, c(1, 2, 3), th), unique)
+c(-3 / 2^3, 0, -1 / (2 * 3^2))
+
+# The pure shape entry equals the observed one at every observation.
+identical(distrib_expected_hessian(d, c(1, 2, 3), th)$lambda_lambda,
+          distrib_hessian(d, c(1, 2, 3), th)$lambda_lambda)
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian.InvGauss2Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
+and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

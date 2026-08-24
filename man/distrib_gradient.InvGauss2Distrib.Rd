@@ -2,27 +2,79 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_gradient.InvGauss2Distrib}
 \alias{distrib_gradient.InvGauss2Distrib}
-\title{Inverse Gaussian Analytical Gradient in Mean and Shape}
+\title{Inverse Gaussian Score in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{lambda}, each of
+length \code{max(length(y), length(mu), length(lambda))}.
 }
 \description{
-\deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{\lambda(y-\mu)}{\mu^3},
+Computes the first derivatives of the inverse Gaussian log-density with
+respect to \eqn{\mu} and \eqn{\lambda}, one value per observation, in closed
+form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\lambda(y-\mu)}{\mu^3},
       \qquad
-      \dfrac{\partial\ell}{\partial\lambda}
-        = \dfrac{1}{2\lambda} - \dfrac{(y-\mu)^2}{2\mu^2 y}}
+      \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{2\lambda}
+        - \dfrac{(y-\mu)^2}{2\mu^2 y}.}
+The log-density is \strong{linear in the shape} apart from
+\eqn{\tfrac12\log\lambda}. Every derivative of this family is elementary for
+that reason, and every expectation reduces to
+\eqn{\mathbb{E}[Y] = \mu} and \eqn{\mathbb{E}[(Y-\mu)^2/Y] = \mu^2/\lambda}.
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\lambda > 0} the shape, with
+\eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. Here \eqn{\lambda} names this
+family's shape parameter throughout.
+}
+
+\examples{
+d <- invgauss2_distrib()
+y <- c(1, 2, 3)
+th <- list(mu = 2, lambda = 3)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+all.equal(g$mu, 3 * (y - 2) / 2^3)
+all.equal(g$lambda, 1 / (2 * 3) - (y - 2)^2 / (2 * 2^2 * y))
+
+# The mean component vanishes at y = mu, whatever the shape.
+distrib_gradient(d, 2, list(mu = 2, lambda = c(0.5, 3, 30)))$mu
+
+# Both estimating equations solve in closed form, so the summed score
+# vanishes at the sample mean and 1/(mean(1/y) - 1/mean(y)).
+set.seed(3)
+z <- distrib_rng(d, 2000, th)
+mle <- list(mu = mean(z), lambda = 1 / (mean(1 / z) - 1 / mean(z)))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian.InvGauss2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.InvGauss2Distrib]{distrib_expected_hessian.InvGauss2Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the same score in the
+dispersion, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

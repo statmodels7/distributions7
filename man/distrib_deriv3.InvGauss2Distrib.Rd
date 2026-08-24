@@ -4,28 +4,83 @@
 \alias{distrib_deriv3.InvGauss2Distrib}
 \title{Inverse Gaussian Third-Order Derivatives in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. With
+\code{expected = TRUE} only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_lambda},
+\code{mu_lambda_lambda} and \code{lambda_lambda_lambda}, each of length
+\code{max(length(y), length(mu), length(lambda))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed form, observed or expected.
+Computes the four distinct third derivatives of the inverse Gaussian
+log-density with respect to \eqn{\mu} and \eqn{\lambda}, in closed form:
+\deqn{\ell^{(\mu\mu\mu)} = \dfrac{\lambda(12y - 6\mu)}{\mu^5}, \qquad
+      \ell^{(\mu\mu\lambda)} = \dfrac{2\mu - 3y}{\mu^4}, \qquad
+      \ell^{(\mu\lambda\lambda)} = 0, \qquad
+      \ell^{(\lambda\lambda\lambda)} = \dfrac{1}{\lambda^3}.}
+The log-density is linear in \eqn{\lambda} apart from
+\eqn{\tfrac12\log\lambda}, so any component naming the shape twice and the
+mean once is exactly zero and the pure shape component carries only the
+logarithm. \code{expected} is passed straight to the kernel, which substitutes
+\eqn{\mathbb{E}[Y] = \mu}; both routes are closed form, so \code{approx} and
+\code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. \eqn{\lambda} names this family's shape
+parameter.
+}
+
+\examples{
+d <- invgauss2_distrib()
+y <- c(1, 2, 3)
+th <- list(mu = 2, lambda = 3)
+d3 <- distrib_deriv3(d, y, th)
+
+# The mixed mu-lambda-lambda component is exactly zero.
+d3$mu_lambda_lambda
+
+# The pure shape component is 1/lambda^3, free of the data.
+unique(d3$lambda_lambda_lambda)
+1 / 3^3
+
+# Expected values: y is replaced by mu.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 2 + eps, lambda = 3))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 2 - eps, lambda = 3))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_hessian.InvGauss2Distrib]{distrib_hessian.InvGauss2Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.InvGauss2Distrib]{distrib_deriv4.InvGauss2Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

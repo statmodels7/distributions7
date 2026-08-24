@@ -2,7 +2,7 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{InvGauss2Distrib}
 \alias{InvGauss2Distrib}
-\title{S7 Class for the Inverse Gaussian in Mean and Shape}
+\title{Inverse Gaussian Distribution Class, Mean and Shape}
 \usage{
 InvGauss2Distrib(
   distrib_name = character(0),
@@ -36,16 +36,31 @@ InvGauss2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{InvGauss2Distrib}.
+An S7 object of class \code{InvGauss2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=invgauss2_distrib]{invgauss2_distrib()}} they hold \code{"invgauss2"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "lambda")}, the interpretations
+\code{c(mu = "mean", lambda = "shape")}, \code{2}, the domain \eqn{(0, \infty)} for
+both parameters, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} for the inverse
-gaussian in its classical parametrization, the mean and the shape
-\eqn{\lambda}.
+The S7 class of the inverse Gaussian family on \eqn{(0, \infty)} in its
+classical parametrization, the mean \eqn{\mu > 0} and the shape
+\eqn{\lambda > 0}, so that \eqn{\operatorname{Var}(Y) = \mu^3/\lambda}. It
+inherits from \code{continuous_distrib}, so it answers every generic of the
+\code{distrib} contract; the nine methods listed below are registered on it in
+this file and everything else comes from the parent.
+
+Build one with \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_cdf.InvGauss2Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.InvGauss2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.InvGauss2Distrib]{distrib_deriv4()}},
@@ -56,9 +71,35 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.InvGauss2Distrib]{distrib_rng()}}
 
+Three more are registered elsewhere in the package and are closed form too:
+\code{\link[=distrib_grad_y.InvGauss2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.InvGauss2Distrib]{distrib_hess_y()}} and
+\code{\link[=distrib_cross_y.InvGauss2Distrib]{distrib_cross_y()}}, the derivatives
+in the response and the mixed block, and
+\code{\link[=distrib_grad_cdf.InvGauss2Distrib]{distrib_grad_cdf()}} for the
+derivatives of the distribution function.
+
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- invgauss2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# lambda is a shape, so a larger value is a tighter law at a fixed mean.
+vapply(c(1, 3, 30), function(l) variance(d, list(mu = 2, lambda = l)),
+       numeric(1))
+}
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}} to build one;
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for the same law in mean and dispersion
+\eqn{\phi = 1/\lambda};
+\code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf.InvGauss2Distrib()}} and
+\code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient.InvGauss2Distrib()}} for the closed forms this class
+supplies.
 }

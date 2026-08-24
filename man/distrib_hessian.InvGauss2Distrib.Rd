@@ -2,26 +2,78 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_hessian.InvGauss2Distrib}
 \alias{distrib_hessian.InvGauss2Distrib}
-\title{Inverse Gaussian Analytical Observed Hessian in Mean and Shape}
+\title{Inverse Gaussian Observed Hessian in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_lambda} and
+\code{lambda_lambda}, in that order, each of length
+\code{max(length(y), length(mu), length(lambda))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-\deqn{\ell^{(\mu\mu)} = \dfrac{\lambda(2\mu-3y)}{\mu^4}, \qquad
-      \ell^{(\mu\lambda)} = \dfrac{y-\mu}{\mu^3}, \qquad
-      \ell^{(\lambda\lambda)} = -\dfrac{1}{2\lambda^2}}
+Computes the three distinct second derivatives of the inverse Gaussian
+log-density with respect to \eqn{\mu} and \eqn{\lambda}, one value per
+observation, in closed form:
+\deqn{\ell^{(\mu\mu)} = \dfrac{\lambda(2\mu - 3y)}{\mu^4}, \qquad
+      \ell^{(\mu\lambda)} = \dfrac{y - \mu}{\mu^3}, \qquad
+      \ell^{(\lambda\lambda)} = -\dfrac{1}{2\lambda^2}.}
+
+The shape parametrization is better behaved than the dispersion one at
+second order. The pure shape entry is a negative constant, free of the data,
+where the corresponding entry of \code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} can be
+positive; only the curvature in \eqn{\mu} can turn positive here, and it
+does so wherever \eqn{y < 2\mu/3}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{\lambda} names this family's shape parameter.
+}
+
+\examples{
+d <- invgauss2_distrib()
+y <- c(1, 2, 3)
+th <- list(mu = 2, lambda = 3)
+h <- distrib_hessian(d, y, th)
+h
+
+# The three closed forms, written out.
+all.equal(h$mu_mu, 3 * (2 * 2 - 3 * y) / 2^4)
+all.equal(h$mu_lambda, (y - 2) / 2^3)
+all.equal(h$lambda_lambda, rep(-1 / (2 * 3^2), 3))
+
+# The curvature in mu is positive below 2 mu/3 and negative above.
+c(at_1 = distrib_hessian(d, 1, th)$mu_mu,
+  at_3 = distrib_hessian(d, 3, th)$mu_mu)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 2 + eps, lambda = 3))$mu
+dn <- distrib_gradient(d, y, list(mu = 2 - eps, lambda = 3))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_gradient.InvGauss2Distrib]{distrib_gradient.InvGauss2Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.InvGauss2Distrib]{distrib_expected_hessian.InvGauss2Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.InvGauss2Distrib]{distrib_deriv3.InvGauss2Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

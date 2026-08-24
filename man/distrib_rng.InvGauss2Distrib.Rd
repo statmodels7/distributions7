@@ -2,20 +2,44 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_rng.InvGauss2Distrib}
 \alias{distrib_rng.InvGauss2Distrib}
-\title{Inverse Gaussian Random Generation in Mean and Shape}
+\title{Inverse Gaussian Random Number Generator in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. Both
+must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-Delegates to \code{\link[statmod:invgauss]{statmod::rinvgauss()}}.
+Draws \code{n} independent inverse Gaussian variates by calling
+\code{\link[statmod:invgauss]{statmod::rinvgauss()}} at \code{mean = mu} and \code{dispersion = 1/lambda}, so the
+draws come from that package's generator and depend on \code{.Random.seed} in the
+usual way. The ratio-of-uniforms fallback the base class supplies is
+bypassed.
+}
+\examples{
+d <- invgauss2_distrib()
+
+# Same generator as statmod::rinvgauss at dispersion 1/lambda.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 2, lambda = 3))
+set.seed(2)
+identical(a, statmod::rinvgauss(3, mean = 2, dispersion = 1 / 3))
+
+# Both maximum likelihood estimates are closed form: the mean is the sample
+# mean and the shape the reciprocal of mean(1/y) - 1/ybar.
+set.seed(3)
+z <- distrib_rng(d, 2e4, list(mu = 2, lambda = 3))
+c(mu = mean(z), lambda = 1 / (mean(1 / z) - 1 / mean(z)))
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile.InvGauss2Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

@@ -2,27 +2,66 @@
 % Please edit documentation in R/invgauss2_distrib.R
 \name{distrib_cdf.InvGauss2Distrib}
 \alias{distrib_cdf.InvGauss2Distrib}
-\title{Inverse Gaussian Distribution Function in Mean and Shape}
+\title{Inverse Gaussian Cumulative Distribution Function in Mean and Shape}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list with \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(lambda))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-The inverse gaussian distribution function at dispersion
-\eqn{1/\lambda}.
+Computes the inverse Gaussian distribution function, which is elementary in
+the standard normal distribution function \eqn{\Phi}:
+\deqn{F(q; \mu, \lambda) = \Phi\left\{\sqrt{\dfrac{\lambda}{q}}
+        \left(\dfrac{q}{\mu} - 1\right)\right\}
+      + e^{2\lambda/\mu}\,
+      \Phi\left\{-\sqrt{\dfrac{\lambda}{q}}
+        \left(\dfrac{q}{\mu} + 1\right)\right\},}
+by calling \code{\link[statmod:invgauss]{statmod::pinvgauss()}} at \code{mean = mu} and
+\code{dispersion = 1/lambda}. Both tails are available exactly, and
+\code{log.p = TRUE} returns a logarithm that stays finite where the probability
+itself underflows. The exponential factor overflows at ordinary settings, so
+that function evaluates the expression on the log scale.
+}
+\examples{
+d <- invgauss2_distrib()
+th <- list(mu = 2, lambda = 3)
+
+# The method is statmod::pinvgauss at dispersion 1/lambda.
+all.equal(distrib_cdf(d, c(1, 2, 3), th),
+          statmod::pinvgauss(c(1, 2, 3), mean = 2, dispersion = 1 / 3))
+
+# The two tails sum to one.
+distrib_cdf(d, 2, th) + distrib_cdf(d, 2, th, lower.tail = FALSE)
+
+# The law is right skewed, so most of the mass sits below the mean.
+distrib_cdf(d, 2, th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 1e4, th, lower.tail = FALSE)
+distrib_cdf(d, 1e4, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_quantile.InvGauss2Distrib]{distrib_quantile.InvGauss2Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf.InvGauss2Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf.InvGauss2Distrib]{distrib_grad_cdf.InvGauss2Distrib()}} for the derivatives of this function
+in the parameters, which are closed form here, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }
