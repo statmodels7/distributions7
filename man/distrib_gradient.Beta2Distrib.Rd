@@ -2,29 +2,77 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_gradient.Beta2Distrib}
 \alias{distrib_gradient.Beta2Distrib}
-\title{Beta Analytical Gradient in Its Shapes}
+\title{Beta Score in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+a logarithm infinite and the score non-finite.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{alpha} and \code{beta}, each of
+length \code{max(length(y), length(alpha), length(beta))}.
 }
 \description{
-\deqn{\dfrac{\partial\ell}{\partial\alpha}
-        = \log y - \psi(\alpha) + \psi(\alpha+\beta), \qquad
-      \dfrac{\partial\ell}{\partial\beta}
-        = \log(1-y) - \psi(\beta) + \psi(\alpha+\beta)}
-The data enter only through \eqn{\log y} and \eqn{\log(1-y)}, which is what
-makes every higher derivative free of them.
+Computes the first derivatives of the beta log-density with respect to
+\eqn{\alpha} and \eqn{\beta}, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \alpha} = \log y - \psi(\alpha)
+        + \psi(\alpha+\beta), \qquad
+      \dfrac{\partial \ell}{\partial \beta} = \log(1-y) - \psi(\beta)
+        + \psi(\alpha+\beta),}
+with \eqn{\psi} the digamma function. The beta is an exponential family in
+the shapes with sufficient statistics \eqn{\log y} and \eqn{\log(1-y)}, so
+each component is the corresponding statistic minus its expectation. That
+is also why every derivative beyond this one is free of the response.
+
+The value is computed in plain R, this family carrying no compiled kernel,
+and \eqn{\log(1-y)} is formed with \code{\link[base:Log]{base::log1p()}} so that it stays accurate
+at \code{y} near zero.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\alpha, \beta > 0}
+the two shapes. \eqn{\psi} is the digamma function,
+\eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out with the digamma function.
+all.equal(g$alpha, log(y) - digamma(2) + digamma(7))
+all.equal(g$beta, log1p(-y) - digamma(5) + digamma(7))
+
+# Each component is a sufficient statistic minus its expectation, so the
+# sample mean of log(y) matches psi(alpha) - psi(alpha + beta).
+set.seed(8)
+z <- distrib_rng(d, 2e5, th)
+c(sample = mean(log(z)), theory = digamma(2) - digamma(7))
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+zz <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, zz)
+vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}} for the second derivatives,
+\code{\link[=distrib_gradient.Beta1Distrib]{distrib_gradient.Beta1Distrib()}} for the same score in the mean and the
+precision, \code{\link[=beta2_higher]{beta2_higher()}} for the orders above, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

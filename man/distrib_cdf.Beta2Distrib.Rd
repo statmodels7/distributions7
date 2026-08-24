@@ -2,26 +2,60 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_cdf.Beta2Distrib}
 \alias{distrib_cdf.Beta2Distrib}
-\title{Beta Distribution Function in Its Shapes}
+\title{Beta Cumulative Distribution Function in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below 0 gives a
+lower-tail probability of 0 and one at or above 1 gives 1.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(alpha), length(beta))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-The incomplete beta function.
+Computes the beta distribution function, the regularized incomplete beta
+function \eqn{F(q) = I_q(\alpha, \beta)}, by calling \code{\link[stats:Beta]{stats::pbeta()}} at
+\code{shape1 = alpha} and \code{shape2 = beta}. Both tails are available exactly:
+\code{lower.tail = FALSE} evaluates \eqn{1 - F} without forming the difference,
+and \code{log.p = TRUE} returns a logarithm that stays finite where the
+probability itself underflows to zero.
+}
+\examples{
+d <- beta2_distrib()
+th <- list(alpha = 2, beta = 5)
+
+# The method is stats::pbeta at these two shapes.
+all.equal(distrib_cdf(d, c(0.1, 0.3, 0.7), th),
+          pbeta(c(0.1, 0.3, 0.7), 2, 5))
+
+# The two tails sum to one.
+distrib_cdf(d, 0.3, th) + distrib_cdf(d, 0.3, th, lower.tail = FALSE)
+
+# Both shapes 1 is the uniform, so F(q) = q.
+distrib_cdf(d, c(0.1, 0.3, 0.7), list(alpha = 1, beta = 1))
+
+# Near the lower boundary the probability underflows and its log does not.
+distrib_cdf(d, 1e-30, list(alpha = 20, beta = 5))
+distrib_cdf(d, 1e-30, list(alpha = 20, beta = 5), log.p = TRUE)
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_quantile.Beta2Distrib]{distrib_quantile.Beta2Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf.Beta2Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
+derivatives of this function in the parameters, which the beta takes by
+finite difference because the derivative of an incomplete beta in its
+shapes is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

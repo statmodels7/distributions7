@@ -2,22 +2,59 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_grad_y.Beta2Distrib}
 \alias{distrib_grad_y.Beta2Distrib}
-\title{Beta Response Derivatives in Its Shapes}
+\title{Beta First Derivative in the Response, the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+the value infinite unless the corresponding shape is exactly 1.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(alpha), length(beta))}, one value per observation.
 }
 \description{
-\eqn{\partial\ell/\partial y = (\alpha-1)/y - (\beta-1)/(1-y)}.
+Computes the first derivative of the beta log-density with respect to the
+response, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\alpha - 1}{y}
+      - \dfrac{\beta - 1}{1 - y}.}
+Where both shapes exceed one it changes sign at the mode
+\eqn{(\alpha-1)/(\alpha+\beta-2)}, so it is positive below the mode and
+negative above it. Where a shape falls below one the density is unbounded at
+the corresponding endpoint and the derivative does not change sign there. At
+\eqn{\alpha = \beta = 1} it is identically zero, the density being the
+uniform.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+
+all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - (5 - 1) / (1 - y))
+
+# Zero at the mode (alpha - 1)/(alpha + beta - 2).
+mode <- (2 - 1) / (2 + 5 - 2)
+c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
+
+# Identically zero at alpha = beta = 1, where the density is the uniform.
+distrib_grad_y(d, y, list(alpha = 1, beta = 1))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_hess_y.Beta2Distrib]{distrib_hess_y.Beta2Distrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient.Beta2Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

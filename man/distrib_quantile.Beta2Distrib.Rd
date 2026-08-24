@@ -2,26 +2,54 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_quantile.Beta2Distrib}
 \alias{distrib_quantile.Beta2Distrib}
-\title{Beta Quantile Function in Its Shapes}
+\title{Beta Quantile Function in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; the endpoints give 0 and 1.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is a log-probability.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of quantiles in \eqn{[0, 1]}, of length
+\code{max(length(p), length(alpha), length(beta))}.
 }
 \description{
-The inverse of the incomplete beta function.
+Computes the beta quantile function, the inverse of the regularized
+incomplete beta function in its argument, by calling \code{\link[stats:Beta]{stats::qbeta()}} at
+\code{shape1 = alpha} and \code{shape2 = beta}. There is no elementary closed form;
+\code{qbeta()} inverts the distribution function numerically. The beta
+distribution function is strictly increasing on \eqn{(0, 1)}, so the round
+trip through \code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf.Beta2Distrib()}} returns \code{p}.
+}
+\examples{
+d <- beta2_distrib()
+th <- list(alpha = 2, beta = 5)
+
+# A central 95 percent interval, asymmetric about the mean of 2/7.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# Both shapes 1 is the uniform, so Q(p) = p.
+distrib_quantile(d, p, list(alpha = 1, beta = 1))
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf.Beta2Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Beta2Distrib]{distrib_rng.Beta2Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

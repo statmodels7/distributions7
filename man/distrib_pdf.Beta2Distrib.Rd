@@ -2,22 +2,61 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_pdf.Beta2Distrib}
 \alias{distrib_pdf.Beta2Distrib}
-\title{Beta Density in Its Shapes}
+\title{Beta Probability Density Function in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations in \eqn{(0, 1)}.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. A value outside
+\eqn{[0, 1]} gives 0, and the endpoints give 0, a finite value or \code{Inf}
+according to the shapes.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(alpha), length(beta))}, one value per observation.
 }
 \description{
-\deqn{f(y) = \dfrac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
+Computes the beta density
+\deqn{f(y; \alpha, \beta) = \dfrac{y^{\alpha-1}(1-y)^{\beta-1}}
+      {B(\alpha, \beta)}, \qquad 0 < y < 1,}
+with \eqn{B} the beta function, by calling \code{\link[stats:Beta]{stats::dbeta()}} at
+\code{shape1 = alpha} and \code{shape2 = beta}. With \code{log = TRUE} the logarithm is
+formed inside \code{dbeta()} and stays finite where the density itself
+underflows.
+
+The density is unbounded at 0 when \eqn{\alpha < 1} and at 1 when
+\eqn{\beta < 1}; at \eqn{\alpha = \beta = 1} it is the uniform.
+}
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+
+# The method is stats::dbeta at these two shapes.
+all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
+
+# The same law as beta1 at mu = alpha/(alpha + beta), phi = alpha + beta.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(beta1_distrib(), y, list(mu = 2 / 7, phi = 7)))
+
+# Both shapes 1 is the uniform.
+distrib_pdf(d, y, list(alpha = 1, beta = 1))
+
+# Near the boundary the density underflows and its logarithm does not.
+distrib_pdf(d, 1e-40, list(alpha = 20, beta = 5))
+distrib_pdf(d, 1e-40, list(alpha = 20, beta = 5), log = TRUE)
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf.Beta2Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient.Beta2Distrib()}} for the derivatives of the log-density,
+\code{\link[=distrib_pdf.Beta1Distrib]{distrib_pdf.Beta1Distrib()}} for the same density in the mean and the
+precision, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

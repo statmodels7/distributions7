@@ -2,30 +2,82 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_expected_hessian.Beta2Distrib}
 \alias{distrib_expected_hessian.Beta2Distrib}
-\title{Beta Analytical Expected Hessian in Its Shapes}
+\title{Beta Expected Hessian in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is exact.}
+\item{approx}{Ignored, the expectation being exact. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
+and \code{alpha_beta}, in that order, each of length \code{length(y)}.
 }
 \description{
-Equal to the observed Hessian: it is free of the data, so there is nothing
-to average. Fisher scoring and Newton's method therefore take the same step
-on the parameter scale here.
+Returns the same three numbers as \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, the
+observed Hessian being free of the response and so equal to its own
+expectation:
+\deqn{\mathbb{E}\left[\ell^{(\alpha\alpha)}\right] = \psi'(\alpha+\beta)
+        - \psi'(\alpha), \qquad
+      \mathbb{E}\left[\ell^{(\alpha\beta)}\right] = \psi'(\alpha+\beta),
+      \qquad
+      \mathbb{E}\left[\ell^{(\beta\beta)}\right] = \psi'(\alpha+\beta)
+        - \psi'(\beta).}
+Nothing is averaged, integrated or simulated, so \code{approx} and \code{nsim} are
+ignored and \code{y} is read only for its length.
+
+The consequence for fitting is that Fisher scoring and Newton's method take
+the same step on the parameter scale, both inverting the same matrix. On the
+\strong{link} scale they differ, the chain rule there adding a term in the score,
+which does read the data.
+
+The mixed entry \eqn{\psi'(\alpha+\beta)} is positive and never zero, so the
+two shapes are not orthogonal at any parameter setting.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The beta is a
+regular family, so the second Bartlett identity holds and this equals the
+variance of the score.
+}
+
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+lapply(distrib_expected_hessian(d, y, th), unique)
+
+# Identical to the observed Hessian, so the two fitting methods coincide.
+identical(distrib_expected_hessian(d, y, th), distrib_hessian(d, y, th))
+
+set.seed(8)
+z <- distrib_rng(d, 2000, th)
+rbind(newton = coef(fit_distrib(d, z, method = "newton")),
+      fisher = coef(fit_distrib(d, z, method = "fisher")))
+
+# The mixed entry is psi'(alpha + beta), positive at every setting, so the
+# two shapes are never orthogonal.
+distrib_expected_hessian(d, 0.5, th)$alpha_beta
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, which returns the same numbers;
+\code{\link[=distrib_expected_hessian.Beta1Distrib]{distrib_expected_hessian.Beta1Distrib()}}, where the same law in the mean
+and the precision does have an observed Hessian that reads the data;
+\code{\link[=fisher_scoring]{fisher_scoring()}}; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

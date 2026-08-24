@@ -2,31 +2,78 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_deriv4.Beta2Distrib}
 \alias{distrib_deriv4.Beta2Distrib}
-\title{Beta Fourth-Order Derivatives in Its Shapes}
+\title{Beta Fourth-Order Derivatives in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{expected}{Logical; makes no difference here.}
+\item{expected}{Logical of length 1, and without effect here, the observed
+and expected fourth derivatives being the same numbers. Defaults to
+\code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored.}
+\item{approx}{Ignored, a closed form being available.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of five numeric vectors,
+\code{alpha_alpha_alpha_alpha}, \code{alpha_alpha_alpha_beta},
+\code{alpha_alpha_beta_beta}, \code{alpha_beta_beta_beta} and \code{beta_beta_beta_beta},
+each of length \code{length(y)} and constant within itself when the parameters
+are.
 }
 \description{
-Closed form and free of the data, so \code{expected} changes
-nothing.
+Computes the five distinct fourth derivatives of the beta log-density with
+respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
+\deqn{\ell^{(\alpha^4)} = \psi'''(\alpha+\beta) - \psi'''(\alpha), \qquad
+      \ell^{(\beta^4)} = \psi'''(\alpha+\beta) - \psi'''(\beta),}
+and every one of the three mixed components equal to
+\eqn{\psi'''(\alpha+\beta)}, with \eqn{\psi'''} the third derivative of the
+digamma function.
+
+As at third order the values are free of the response, so \code{expected},
+\code{approx} and \code{nsim} are all without effect and the result is identical to
+the bit whichever is asked for.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijkl)}} is the fourth derivative of the log-density in
+parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. \eqn{\psi} is the digamma
+function and \eqn{\psi^{(m)}} its \eqn{m}th derivative.
+}
+
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+d4 <- distrib_deriv4(d, y, th)
+
+# Five constants, and the three mixed components are one number.
+lapply(d4, unique)
+psigamma(7, deriv = 3)
+
+# Free of the response, so asking for the expectation changes nothing.
+identical(d4, distrib_deriv4(d, y, th, expected = TRUE))
+
+# A central difference of the third order reproduces it.
+eps <- 1e-6
+up <- distrib_deriv3(d, y, list(alpha = 2 + eps, beta = 5))$alpha_alpha_alpha
+dn <- distrib_deriv3(d, y, list(alpha = 2 - eps, beta = 5))$alpha_alpha_alpha
+all.equal((up - dn) / (2 * eps), d4$alpha_alpha_alpha_alpha,
+          tolerance = 1e-3)
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_deriv3.Beta2Distrib]{distrib_deriv3.Beta2Distrib()}} for the order below,
+\code{\link[=beta2_higher]{beta2_higher()}}, which computes this, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the
+generic.
 }

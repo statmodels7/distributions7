@@ -2,53 +2,144 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{beta2_distrib}
 \alias{beta2_distrib}
-\title{Beta Distribution in Its Shapes}
+\title{Beta Distribution, the Two Shapes}
 \usage{
 beta2_distrib(link_alpha = log_link(), link_beta = log_link())
 }
 \arguments{
-\item{link_alpha}{Link function for \eqn{\alpha}. Defaults to the log.}
+\item{link_alpha}{A \code{link} object from \code{linkfunctions7} for the first shape
+\eqn{\alpha}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 
-\item{link_beta}{Link function for \eqn{\beta}. Defaults to the log.}
+\item{link_beta}{A \code{link} object from \code{linkfunctions7} for the second shape
+\eqn{\beta}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{\link[=Beta2Distrib]{Beta2Distrib()}}.
+An S7 object of class \code{Beta2Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"beta2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, 1)}, \code{params} \code{c("alpha", "beta")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a beta distribution object in its canonical parametrization, the two
-shapes \eqn{\alpha} and \eqn{\beta}.
+Builds the distribution object for the beta family on \eqn{(0, 1)} in its
+canonical parametrization, the two shapes \eqn{\alpha > 0} and
+\eqn{\beta > 0}. The returned object carries closed-form derivatives of the
+log-density to fourth order, in the parameters and in the response, and
+closed-form moments, so every generic of the toolkit answers without a
+numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both shapes being positive.
 }
-\details{
-The same law as \code{\link[=beta1_distrib]{beta1_distrib()}}, which carries the mean and a
-precision: \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}. The
-mean parametrization is the one a regression wants; this one is the one the
-family is usually written in and the one a conjugate analysis produces, the
+\section{The parametrization}{
+The density on \eqn{y \in (0, 1)} is
+\deqn{f(y; \alpha, \beta) = \dfrac{y^{\alpha-1}(1-y)^{\beta-1}}
+      {B(\alpha, \beta)},}
+with \eqn{B} the beta function, the distribution function
+\eqn{F(q) = I_q(\alpha, \beta)} the regularized incomplete beta function,
+and the quantile function its numerical inverse. The mean is
+\eqn{\alpha/(\alpha+\beta)} and the variance
+\eqn{\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}}. At
+\eqn{\alpha = \beta = 1} the density is the uniform, and where either shape
+falls below one the density is unbounded at the corresponding endpoint.
+
+This is the same law as \code{\link[=beta1_distrib]{beta1_distrib()}}, which carries the mean and a
+precision, with \eqn{\alpha = \mu\varphi} and \eqn{\beta = (1-\mu)\varphi}.
+The mean parametrization is the one a regression wants; this one is how the
+family is usually written, and it is what a conjugate analysis produces, the
 beta being conjugate for a binomial probability.
-
-The data enter the log-density only through \eqn{\log y} and
-\eqn{\log(1-y)}, both of which are linear in the parameters. Every
-derivative beyond the first is therefore free of the data, so the observed
-and the expected ones coincide at orders two, three and four, and Fisher
-scoring and Newton's method take the same step on the parameter scale.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \frac{y^{\alpha-1}(1-y)^{\beta-1}}{B(\alpha, \beta)}}
-on \eqn{y \in (0, 1)}.
+\section{Where the response stops entering}{
+The beta is an exponential family in the shapes, with sufficient statistics
+\eqn{\log y} and \eqn{\log(1-y)}, so the score is
+\deqn{\dfrac{\partial \ell}{\partial \alpha} = \log y - \psi(\alpha)
+        + \psi(\alpha+\beta), \qquad
+      \dfrac{\partial \ell}{\partial \beta} = \log(1-y) - \psi(\beta)
+        + \psi(\alpha+\beta),}
+each a statistic minus its expectation. The data enter only through
+\eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which is linear in the two
+parameters, so the second derivative already kills it:
+\deqn{\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
+      \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
+      \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta).}
 
-\deqn{\mathbb{E}[Y] = \frac{\alpha}{\alpha+\beta}, \qquad \operatorname{Var}(Y) = \frac{\alpha\beta}{(\alpha+\beta)^{2}(\alpha+\beta+1)}}
+Three consequences follow. The observed and expected Hessians are the same
+matrix, so Fisher scoring and Newton's method take the same step on the
+parameter scale, and asking any method for \code{expected = TRUE} returns the
+same numbers. Every third and fourth derivative is likewise a difference of
+polygamma functions and free of the data. And the mixed entry
+\eqn{\psi'(\alpha+\beta)} is positive at every setting, so the two shapes
+are never orthogonal.
+
+The derivatives of the \emph{distribution} function in the parameters have no
+elementary form, the derivative of an incomplete beta in its shapes being
+hypergeometric, and are taken by finite difference on the analytic cdf.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form, both estimating equations involving digamma
+functions. The method of moments supplies the starting values through the
+concentration \eqn{k = \bar y(1-\bar y)/s^2 - 1}, with
+\eqn{\hat\alpha = k\bar y} and \eqn{\hat\beta = k(1-\bar y)}, and the
+example below shows them landing beside the estimates.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\alpha, \beta > 0}
+the two shapes. \eqn{\psi} is the digamma function and \eqn{\psi^{(m)}} its
+\eqn{m}th derivative. \eqn{\eta} is a parameter on the unconstrained scale
+of its link, with \eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- beta2_distrib()
-theta <- list(alpha = 2, beta = 5)
-distrib_pdf(d, c(0.1, 0.3, 0.7), theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+d
 
-# the same law as beta1 with mu = alpha/(alpha+beta), phi = alpha+beta
-distrib_pdf(beta1_distrib(), 0.3, list(mu = 2 / 7, phi = 7))
+# The density is stats::dbeta at these two shapes.
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+all.equal(distrib_pdf(d, y, th), dbeta(y, 2, 5))
+
+# Moments: the mean is the ratio, and neither parameter is a mean.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(2 / 7, 2 * 5 / (7^2 * 8))
+
+# The same law as beta1 at mu = alpha/(alpha + beta), phi = alpha + beta.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(beta1_distrib(), y, list(mu = 2 / 7, phi = 7)))
+
+# Fitting recovers the shapes; the moment estimates start it off.
+set.seed(8)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+m <- mean(z)
+k <- m * (1 - m) / var(z) - 1
+rbind(fitted  = coef(fit),
+      moments = c(alpha = k * m, beta = k * (1 - m)))
+
+# Every derivative past the first is free of the response, so Newton and
+# Fisher scoring invert the same matrix and reach the same point.
+rbind(newton = coef(fit_distrib(d, z, method = "newton")),
+      fisher = coef(fit_distrib(d, z, method = "fisher")))
 
 }
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995).
+\emph{Continuous Univariate Distributions}, Volume 2, 2nd edition, Chapter 25.
+Wiley, New York.
+}
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the same law in the mean and a precision, which is the
+parametrization a regression uses; \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the beta as a
+mixing law over a binomial probability; \code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family a
+ratio of gammas turns into this one; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+same battery this one passes; \link{Beta2Distrib} for the class.
 }

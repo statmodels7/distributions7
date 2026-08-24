@@ -7,25 +7,39 @@
 beta2_higher(theta, n, order)
 }
 \arguments{
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector. Both must be strictly positive.}
 
-\item{n}{The number of observations to recycle to.}
+\item{n}{The length to recycle each component to, normally \code{length(y)}.}
 
-\item{order}{The derivative order, 2, 3 or 4.}
+\item{order}{The derivative order, \code{2L}, \code{3L} or \code{4L}. Any other value falls
+through to the fourth-order branch.}
 }
 \value{
-A named list of component vectors.
+A named list of numeric vectors, each of length \code{n}: three
+components at order 2 (\code{alpha_alpha}, \code{alpha_beta}, \code{beta_beta}), four at
+order 3 and five at order 4, named for the distinct multi-indices.
 }
 \description{
-Orders two to four, which are free of the data: each is a difference of
-polygamma functions at \eqn{\alpha}, \eqn{\beta} and \eqn{\alpha+\beta}.
+Returns the derivatives of the beta log-density in the two shapes at order
+2, 3 or 4. Each component is a difference of polygamma functions at
+\eqn{\alpha}, \eqn{\beta} and \eqn{\alpha+\beta}: with \eqn{k = }\code{order - 1},
+a component naming only \eqn{\alpha} is
+\eqn{\psi^{(k)}(\alpha+\beta) - \psi^{(k)}(\alpha)}, one naming only
+\eqn{\beta} is \eqn{\psi^{(k)}(\alpha+\beta) - \psi^{(k)}(\beta)}, and any
+mixed component is \eqn{\psi^{(k)}(\alpha+\beta)}.
 }
 \details{
-Being free of the data, the observed and the expected derivatives coincide
-at every order beyond the first, which is why this family needs no
-expectation anywhere.
+The data enter the log-density only through
+\eqn{(\alpha-1)\log y + (\beta-1)\log(1-y)}, which is linear in the two
+parameters, so the second derivative already kills it. Every order from two
+upwards is therefore free of the response, the observed and the expected
+derivatives are the same numbers, and no expectation is computed anywhere in
+this family. The three polygamma values are evaluated once each and recycled.
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the family, and
+\code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}}, \code{\link[=distrib_deriv3.Beta2Distrib]{distrib_deriv3.Beta2Distrib()}} and
+\code{\link[=distrib_deriv4.Beta2Distrib]{distrib_deriv4.Beta2Distrib()}} for the methods that call it.
 }
 \keyword{internal}

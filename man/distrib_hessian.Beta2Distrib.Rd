@@ -2,27 +2,70 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_hessian.Beta2Distrib}
 \alias{distrib_hessian.Beta2Distrib}
-\title{Beta Analytical Observed Hessian in Its Shapes}
+\title{Beta Observed Hessian in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
+and \code{alpha_beta}, in that order, each of length \code{length(y)}. The three
+name the distinct entries of a symmetric \eqn{2 \times 2} matrix per
+observation.
 }
 \description{
+Computes the three distinct second derivatives of the beta log-density with
+respect to \eqn{\alpha} and \eqn{\beta}, in closed form:
 \deqn{\ell^{(\alpha\alpha)} = \psi'(\alpha+\beta) - \psi'(\alpha), \qquad
       \ell^{(\alpha\beta)} = \psi'(\alpha+\beta), \qquad
-      \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta)}
-free of the data.
+      \ell^{(\beta\beta)} = \psi'(\alpha+\beta) - \psi'(\beta),}
+with \eqn{\psi'} the trigamma function. \strong{All three are free of the
+response}, the data entering the log-density only through a term linear in
+the parameters. The values are constant within a parameter setting and are
+recycled to the length of \code{y}, and they equal
+\code{\link[=distrib_expected_hessian.Beta2Distrib]{distrib_expected_hessian.Beta2Distrib()}} exactly.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{\psi'} is the trigamma function.
+}
+
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+h <- distrib_hessian(d, y, th)
+h
+
+# Written out with the trigamma function.
+c(trigamma(7) - trigamma(2), trigamma(7) - trigamma(5), trigamma(7))
+
+# Free of the response, so it equals its own expectation to the bit.
+identical(h, distrib_expected_hessian(d, y, th))
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(alpha = 2 + eps, beta = 5))$alpha
+dn <- distrib_gradient(d, y, list(alpha = 2 - eps, beta = 5))$alpha
+all.equal((up - dn) / (2 * eps), h$alpha_alpha, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient.Beta2Distrib()}} for the score, which is the one
+quantity here that does read the data;
+\code{\link[=distrib_expected_hessian.Beta2Distrib]{distrib_expected_hessian.Beta2Distrib()}}, which returns the same numbers;
+\code{\link[=beta2_higher]{beta2_higher()}}, which computes this; and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
+generic.
 }

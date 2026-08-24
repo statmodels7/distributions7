@@ -2,20 +2,45 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_rng.Beta2Distrib}
 \alias{distrib_rng.Beta2Distrib}
-\title{Beta Random Generation in Its Shapes}
+\title{Beta Random Number Generator in the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. Both
+must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} draws in \eqn{(0, 1)}.
 }
 \description{
-Delegates to \code{\link[stats:Beta]{stats::rbeta()}}.
+Draws \code{n} independent beta variates by calling \code{\link[stats:Beta]{stats::rbeta()}} at
+\code{shape1 = alpha} and \code{shape2 = beta}, so the draws come from R's own beta
+generator and depend on \code{.Random.seed} in the usual way. The
+ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- beta2_distrib()
+
+# Same generator as stats::rbeta at these two shapes.
+set.seed(2)
+a <- distrib_rng(d, 3, list(alpha = 2, beta = 5))
+set.seed(2)
+identical(a, rbeta(3, 2, 5))
+
+# The sample moments recover the shapes through the concentration
+# k = mean(1 - mean)/var - 1, with alpha = k mean and beta = k(1 - mean).
+set.seed(8)
+z <- distrib_rng(d, 2e4, list(alpha = 2, beta = 5))
+m <- mean(z)
+k <- m * (1 - m) / var(z) - 1
+c(alpha = k * m, beta = k * (1 - m))
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_quantile.Beta2Distrib]{distrib_quantile.Beta2Distrib()}} for the inverse-transform route,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

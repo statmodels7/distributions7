@@ -2,22 +2,50 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{distrib_hess_y.Beta2Distrib}
 \alias{distrib_hess_y.Beta2Distrib}
-\title{Beta Second Response Derivative in Its Shapes}
+\title{Beta Second Derivative in the Response, the Shapes}
 \arguments{
-\item{distrib}{A \code{Beta2Distrib} object.}
+\item{distrib}{A \code{Beta2Distrib} object, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations in \eqn{(0, 1)}. An endpoint makes
+the value infinite unless the corresponding shape is exactly 1.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(alpha), length(beta))}, one value per observation.
 }
 \description{
-\eqn{\partial^2\ell/\partial y^2 = -(\alpha-1)/y^2 - (\beta-1)/(1-y)^2}.
+Computes the second derivative of the beta log-density with respect to the
+response, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\alpha - 1}{y^2}
+      - \dfrac{\beta - 1}{(1 - y)^2}.}
+It is negative throughout, so the log-density is concave in the response,
+whenever both shapes are at least one; a shape below one makes the
+corresponding term positive and can turn the curvature positive near that
+endpoint. At \eqn{\alpha = \beta = 1} it is exactly zero, the density being
+the uniform.
+}
+\examples{
+d <- beta2_distrib()
+y <- c(0.1, 0.3, 0.7)
+th <- list(alpha = 2, beta = 5)
+
+all.equal(distrib_hess_y(d, y, th),
+          -(2 - 1) / y^2 - (5 - 1) / (1 - y)^2)
+
+# Concave everywhere while both shapes exceed one.
+all(distrib_hess_y(d, y, th) < 0)
+
+# Exactly flat at alpha = beta = 1, where the beta is the uniform.
+distrib_hess_y(d, y, list(alpha = 1, beta = 1))
 }
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}
+\code{\link[=distrib_grad_y.Beta2Distrib]{distrib_grad_y.Beta2Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Beta2Distrib]{distrib_hessian.Beta2Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

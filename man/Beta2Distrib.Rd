@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta2_distrib.R
 \name{Beta2Distrib}
 \alias{Beta2Distrib}
-\title{S7 Class for the Beta Distribution in Its Shapes}
+\title{Beta Distribution Class, the Two Shapes}
 \usage{
 Beta2Distrib(
   distrib_name = character(0),
@@ -36,15 +36,31 @@ Beta2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Beta2Distrib}.
+An S7 object of class \code{Beta2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=beta2_distrib]{beta2_distrib()}} they hold \code{"beta2"}, \code{"univariate"},
+\code{c(0, 1)}, \code{c("alpha", "beta")}, the interpretations
+\code{c(alpha = "shape", beta = "shape")}, \code{2}, the domain \eqn{(0, \infty)}
+for both parameters, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} for the beta in its
-canonical parametrization, the two shapes.
+The S7 class of the beta family on \eqn{(0, 1)} in its canonical
+parametrization, the two shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, with
+density \eqn{y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)}. It inherits from
+\code{continuous_distrib}, so it answers every generic of the \code{distrib} contract;
+the eleven methods listed below are registered on it directly and everything
+else comes from the parent.
+
+Build one with \code{\link[=beta2_distrib]{beta2_distrib()}}, which supplies the two link functions and
+fills the properties in. This page documents the raw S7 constructor, which
+takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Beta2Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Beta2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Beta2Distrib]{distrib_deriv4()}},
@@ -60,6 +76,21 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- beta2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# Both parameters are shapes, so neither is a mean: the mean is their ratio.
+mean(d, list(alpha = 2, beta = 5))
+}
 \seealso{
-\code{\link[=beta2_distrib]{beta2_distrib()}}, \code{\link[=beta1_distrib]{beta1_distrib()}}
+\code{\link[=beta2_distrib]{beta2_distrib()}} to build one;
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the same law in mean and precision;
+\code{\link[=distrib_pdf.Beta2Distrib]{distrib_pdf.Beta2Distrib()}} and \code{\link[=distrib_gradient.Beta2Distrib]{distrib_gradient.Beta2Distrib()}} for the
+closed forms this class supplies.
 }
