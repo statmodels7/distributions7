@@ -2,23 +2,81 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{distrib_expected_hessian.BinomialDistrib}
 \alias{distrib_expected_hessian.BinomialDistrib}
-\title{Binomial Analytical Expected Hessian}
+\title{Binomial Expected Hessian}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of expected second derivatives.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu), length(distrib@size))}, constant at
+\eqn{-n/(\mu(1-\mu))} where \code{size} is.
 }
 \description{
-Computes the analytical expected Hessian of the Binomial log-probability
-with respect to the parameter \eqn{\mu}.
+Returns the expectation of the observed second derivative under the model,
+in closed form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)},}
+which follows from \eqn{\mathbb{E}[Y] = n\mu} in
+\eqn{-y/\mu^2 - (n-y)/(1-\mu)^2}. The Fisher information is
+\eqn{n/(\mu(1-\mu))}, so it grows in proportion to the number of trials and
+is smallest at \eqn{\mu = 1/2}.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
+On the \strong{link} scale with the default logit the value is
+\eqn{-n\mu(1-\mu)}, and so is the observed Hessian: the logit is the
+canonical link and the two coincide exactly, which is what makes iteratively
+reweighted least squares Fisher scoring and Newton's method at once.
+
+Because the value does not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
+\strong{observed information} under the model. The binomial is a regular family,
+so the second Bartlett identity holds and this equals the variance of the
+score.
+}
+
+\examples{
+d <- binomial_distrib(size = 10)
+th <- list(mu = 0.3)
+
+# A single number, -n divided by the Bernoulli variance.
+unique(distrib_expected_hessian(d, c(0, 4, 10), th)$mu_mu)
+-10 / (0.3 * 0.7)
+
+# It grows in proportion to the number of trials.
+vapply(c(1, 10, 100), function(n)
+  -distrib_expected_hessian(binomial_distrib(size = n), 0, th)$mu_mu,
+  numeric(1))
+
+# On the canonical logit link the observed and expected values agree
+# exactly, at every observation.
+rbind(observed = distrib_hessian(d, c(0, 4, 10), th, scale = "link")$mu_mu,
+      expected = distrib_expected_hessian(d, c(0, 4, 10), th,
+                                          scale = "link")$mu_mu)
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

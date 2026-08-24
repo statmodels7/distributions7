@@ -4,21 +4,49 @@
 \alias{distrib_pdf.BinomialDistrib}
 \title{Binomial Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts of successes, integers between 0 and
+\code{size}. Any other value gives 0 with a warning from \code{\link[stats:Binomial]{stats::dbinom()}}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. A value of length 1 is recycled.
+\code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
+stays finite where the mass underflows. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(y), length(mu), length(distrib@size))}.
 }
 \description{
-Computes the probability mass function for the Binomial distribution:
-\deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}}
+Computes the binomial probability mass
+\deqn{P(Y = y; \mu) = \binom{n}{y}\mu^{y}(1-\mu)^{n-y}, \qquad y = 0, 1, \dots, n,}
+by calling \code{\link[stats:Binomial]{stats::dbinom()}} at \code{size = distrib@size}. The number of trials
+comes from the object rather than from \code{theta}, \code{size} being fixed data and
+not a parameter.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+
+# The method is stats::dbinom at the object's own size.
+all.equal(distrib_pdf(d, c(0, 4, 10), list(mu = 0.3)),
+          dbinom(c(0, 4, 10), size = 10, prob = 0.3))
+
+# A probability mass: it sums to one over 0:n.
+sum(distrib_pdf(d, 0:10, list(mu = 0.3)))
+
+# size may be one value per observation, which is what grouped binary data
+# with unequal group sizes needs.
+g <- binomial_distrib(size = c(5, 10, 20))
+distrib_pdf(g, c(1, 4, 8), list(mu = 0.3))
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf.BernoulliDistrib()}} for one trial,
+\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} for the distribution function, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

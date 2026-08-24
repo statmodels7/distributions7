@@ -2,23 +2,64 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{distrib_hessian.BinomialDistrib}
 \alias{distrib_hessian.BinomialDistrib}
-\title{Binomial Analytical Observed Hessian}
+\title{Binomial Observed Hessian}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts of successes.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of second derivatives.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu), length(distrib@size))}.
 }
 \description{
-Computes the analytical observed Hessian (second derivative) of the Binomial log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the second derivative of the binomial log-mass with respect to the
+probability, one value per observation, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}.}
+It is negative for every admissible \eqn{\mu} and depends on the data
+through \eqn{y} alone.
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}}
+On the \strong{link} scale with the default logit the chain rule gives
+\eqn{\partial^2\ell/\partial\eta^2 = -n\mu(1-\mu)}, which carries \strong{no data
+at all}: the defining property of a canonical link, and what makes the
+observed and the expected information the same matrix there. See
+\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}}.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+y <- c(0, 4, 10)
+th <- list(mu = 0.3)
+
+# The closed form, written out.
+all.equal(distrib_hessian(d, y, th)$mu_mu,
+          -y / 0.3^2 - (10 - y) / 0.7^2)
+
+# On the canonical logit link the curvature carries no data: one value,
+# repeated, equal to -n mu (1-mu).
+distrib_hessian(d, y, th, scale = "link")$mu_mu
+-10 * 0.3 * 0.7
+
+# A central difference of the score reproduces the parameter-scale value.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 0.3 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.3 - eps))$mu
+all.equal((up - dn) / (2 * eps), distrib_hessian(d, y, th)$mu_mu,
+          tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient.BinomialDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}} for the expectation of this
+quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

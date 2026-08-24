@@ -2,23 +2,67 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{distrib_gradient.BinomialDistrib}
 \alias{distrib_gradient.BinomialDistrib}
-\title{Binomial Analytical Gradient}
+\title{Binomial Score}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts of successes.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of first derivatives.
+A named list of one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu), length(distrib@size))}.
 }
 \description{
-Computes the analytical gradient (first derivative) of the Binomial log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the first derivative of the binomial log-mass with respect to the
+probability, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y}{\mu} - \dfrac{n - y}{1-\mu}
+      = \dfrac{y - n\mu}{\mu(1-\mu)}.}
+The residual is measured against \eqn{n\mu}, the expected count, and divided
+by \eqn{\mu(1-\mu)}. Its sum vanishes at \eqn{\hat\mu = \sum y_i / \sum n_i},
+the pooled proportion.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}}
+On the \strong{link} scale with the default logit the generic's chain rule gives
+\eqn{\partial\ell/\partial\eta = y - n\mu}, the raw residual: the logit is
+the canonical link of this family.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
+and \eqn{\mu \in (0,1)} the success probability, with mean \eqn{n\mu} and
+variance \eqn{n\mu(1-\mu)}. \eqn{\eta = \log(\mu/(1-\mu))} is the log odds.
+}
+
+\examples{
+d <- binomial_distrib(size = 10)
+y <- c(0, 4, 10)
+th <- list(mu = 0.3)
+
+# The closed form, written out.
+all.equal(distrib_gradient(d, y, th)$mu, (y - 10 * 0.3) / (0.3 * 0.7))
+
+# On the canonical logit link the score is the raw residual.
+distrib_gradient(d, y, th, scale = "link")$mu
+y - 10 * 0.3
+
+# The summed score vanishes at the pooled proportion.
+set.seed(4)
+z <- distrib_rng(d, 500, list(mu = 0.3))
+sum(distrib_gradient(d, z, list(mu = sum(z) / (500 * 10)))$mu)
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

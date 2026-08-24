@@ -2,7 +2,7 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{BinomialDistrib}
 \alias{BinomialDistrib}
-\title{S7 Class for Binomial Distribution}
+\title{Binomial Distribution Class}
 \usage{
 BinomialDistrib(
   distrib_name = character(0),
@@ -36,18 +36,44 @@ BinomialDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{size}{Integer or Numeric Vector. The number of trials \eqn{n}.
-Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.}
+\item{size}{A numeric vector, the number of trials. A single value applies
+to every observation; a vector of the length of the response gives one
+count of trials per observation. Not a parameter: it is fixed data, and
+the object stores it in the \code{size} property.}
 }
 \value{
-An object of class \code{BinomialDistrib}.
+An S7 object of class \code{BinomialDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's —
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params}, \code{params_smooth} — plus
+\code{size}. For an object built by \code{\link[=binomial_distrib]{binomial_distrib()}} they hold
+\code{"binomial"}, \code{"univariate"}, \code{c(0, max(size))}, \code{"mu"},
+\code{c(mu = "probability")}, \code{1}, the domain \eqn{(0, 1)}, the one link, and
+the \code{size} given.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the Binomial distribution.
+The S7 class of the binomial family: the number of successes in \code{size}
+independent trials, each succeeding with probability \eqn{\mu \in (0, 1)}.
+It inherits from \code{discrete_distrib}, so its support is counted rather than
+integrated and no derivative with respect to the response is defined.
+
+The class adds one property to the parent's, \code{size}, and that is what makes
+it worth documenting separately from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}: \strong{\code{size} is a
+constant of the object, not a parameter}. It is not estimated, it carries
+no link and no bound, and it does not appear in \code{params}. It may be a single
+number or one value per observation, which is how grouped binary data with
+unequal group sizes is described.
+
+The default link is the logit, the \strong{canonical} link here: on its scale the
+observed and the expected information coincide.
+
+Build one with \code{\link[=binomial_distrib]{binomial_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties plus \code{size} and validates
+none of the relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.BinomialDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4()}},
@@ -61,6 +87,27 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+d <- binomial_distrib(size = 10)
+S7::S7_inherits(d, discrete_distrib)
+
+# size is a property of the object; only mu is a parameter.
+d@size
+d@params
+d@bounds
+
+# The mean is n p and the variance n p (1-p).
+th <- list(mu = 0.3)
+c(mean = mean(d, th), var = variance(d, th), n_p = 10 * 0.3)
+
+# size = 1 is the Bernoulli, exactly.
+all.equal(distrib_pdf(binomial_distrib(size = 1), c(0, 1), th),
+          distrib_pdf(bernoulli_distrib(), c(0, 1), th))
+}
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=binomial_distrib]{binomial_distrib()}} to build one;
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}, the case \code{size = 1};
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} and \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} when the probability
+varies between groups; \code{\link[=poisson_distrib]{poisson_distrib()}}, the limit of many trials at a
+small probability.
 }

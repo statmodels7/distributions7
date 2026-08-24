@@ -4,23 +4,50 @@
 \alias{distrib_cdf.BinomialDistrib}
 \title{Binomial Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer is floored, a negative
+value gives 0, and a value at or above \code{size} gives 1.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{q}. \code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+computed directly and so exact in the upper tail.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(distrib@size))}.
 }
 \description{
-Computes the cumulative distribution function for the Binomial distribution:
-\deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
+Computes the binomial distribution function
+\deqn{F(q; \mu) = \sum_{k = 0}^{\lfloor q \rfloor} \binom{n}{k}\mu^{k}(1-\mu)^{n-k}}
+by calling \code{\link[stats:Binomial]{stats::pbinom()}} at \code{size = distrib@size}, which evaluates it
+through the incomplete beta function rather than by summing. The function is
+a step function, constant between integers, and reaches 1 at \code{size}.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+th <- list(mu = 0.3)
+
+# The method is stats::pbinom at the object's own size.
+all.equal(distrib_cdf(d, c(0, 4, 10), th),
+          pbinom(c(0, 4, 10), size = 10, prob = 0.3))
+
+# A step function reaching one at size.
+distrib_cdf(d, c(3, 3.5, 3.9, 10, 20), th)
+
+# The jump at an integer is exactly the mass there.
+c(jump = distrib_cdf(d, 4, th) - distrib_cdf(d, 3, th),
+  mass = distrib_pdf(d, 4, th))
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile.BinomialDistrib()}} for the generalized inverse,
+\code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf.BinomialDistrib()}} for the mass, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

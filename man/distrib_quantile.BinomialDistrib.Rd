@@ -4,24 +4,44 @@
 \alias{distrib_quantile.BinomialDistrib}
 \title{Binomial Quantile Function}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{p}. \code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of integers between 0 and \code{size}, of length
+\code{max(length(p), length(mu), length(distrib@size))}.
 }
 \description{
-Computes the quantile function for the Binomial distribution, the generalized
-inverse of the CDF:
-\deqn{Q(p; \mu, n) = \min\left\{y \in \{0, 1, \dots, n\} : F(y; \mu, n) \ge p\right\}}
+Computes the generalized inverse of the binomial distribution function,
+\deqn{Q(p; \mu) = \min\{k \in \{0, \dots, n\} : F(k; \mu) \ge p\},}
+by calling \code{\link[stats:Binomial]{stats::qbinom()}} at \code{size = distrib@size}. The distribution
+function is a step function, so the round trip through
+\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} returns a probability \strong{at least} \code{p}.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+th <- list(mu = 0.3)
+
+# Integers, bounded by size.
+distrib_quantile(d, c(0.025, 0.5, 0.975, 1), th)
+
+# The round trip overshoots, the support being a lattice.
+p <- c(0.025, 0.5, 0.975)
+rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

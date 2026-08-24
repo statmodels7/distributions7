@@ -4,18 +4,46 @@
 \alias{distrib_rng.BinomialDistrib}
 \title{Binomial Random Number Generator}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials, and may be one value per
+draw.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of length \code{n}. A value of length 1 is recycled. \code{mu} must
+lie in \eqn{(0, 1)}.}
 }
 \value{
-A numeric vector of random draws.
+An integer vector of \code{n} counts, each between 0 and the
+corresponding \code{size}.
 }
 \description{
-Generates random numbers from the Binomial distribution.
+Draws \code{n} independent counts of successes by calling \code{\link[stats:Binomial]{stats::rbinom()}} at
+\code{size = distrib@size}, so the draws come from R's own generator and depend
+on \code{.Random.seed} in the usual way.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+
+# Same generator as stats::rbinom, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 5, list(mu = 0.3))
+set.seed(2)
+identical(a, rbinom(5, size = 10, prob = 0.3))
+
+# The sample mean estimates n p and the variance n p (1-p).
+set.seed(4)
+z <- distrib_rng(d, 2e4, list(mu = 0.3))
+c(mean = mean(z), n_p = 10 * 0.3,
+  var = var(z), n_p_q = 10 * 0.3 * 0.7)
+
+# Unequal group sizes, one per draw.
+set.seed(5)
+g <- binomial_distrib(size = c(5, 10, 20, 50))
+rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the probability back, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

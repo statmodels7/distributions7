@@ -2,22 +2,74 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{distrib_deriv3.BinomialDistrib}
 \alias{distrib_deriv3.BinomialDistrib}
-\title{Binomial Analytical Third-Order Derivatives}
+\title{Binomial Third-Order Derivative}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}}. Its
+\code{size} property supplies the number of trials.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts of successes. With \code{expected = TRUE}
+only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivative.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the observed value. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both routes.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu_mu} component.
+A named list of one numeric vector, \code{mu_mu_mu}, of length
+\code{max(length(y), length(mu), length(distrib@size))}.
 }
 \description{
-Closed-form third-order derivative of the Binomial log-mass (observed, or expected when \code{expected = TRUE}).
+Computes the third derivative of the binomial log-mass with respect to the
+probability, in closed form:
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3} - \dfrac{2(n-y)}{(1-\mu)^3}.}
+With \code{expected = TRUE} the expectation is returned, obtained by substituting
+\eqn{\mathbb{E}[Y] = n\mu}, which gives \eqn{2n/\mu^2 - 2n/(1-\mu)^2}. Both
+routes are closed form, so no quadrature is run and \code{approx} and \code{nsim} are
+ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(\mu\mu\mu)}} is the third derivative of the log-mass with
+respect to \eqn{\mu}. Parenthesized superscripts name derivatives.
+}
+
+\examples{
+d <- binomial_distrib(size = 10)
+y <- c(0, 4, 10)
+th <- list(mu = 0.3)
+
+# The closed form, written out.
+all.equal(distrib_deriv3(d, y, th)$mu_mu_mu,
+          2 * y / 0.3^3 - 2 * (10 - y) / 0.7^3)
+
+# The expected value, and zero at mu = 1/2 by symmetry.
+unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
+2 * 10 / 0.3^2 - 2 * 10 / 0.7^2
+distrib_deriv3(d, 0, list(mu = 0.5), expected = TRUE)$mu_mu_mu
+
+# A central difference of the Hessian reproduces the observed value.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 0.3 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.3 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
+          tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.BinomialDistrib]{distrib_deriv4.BinomialDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

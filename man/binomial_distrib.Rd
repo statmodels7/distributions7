@@ -2,72 +2,129 @@
 % Please edit documentation in R/binomial_distrib.R
 \name{binomial_distrib}
 \alias{binomial_distrib}
-\title{Binomial Distribution Object}
+\title{Binomial Distribution}
 \usage{
 binomial_distrib(link_mu = logit_link(), size = 1)
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu} (probability).
-Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the probability
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the canonical link,
+which maps \eqn{(0, 1)} onto the whole line.
+\code{\link[linkfunctions7:probit_link]{linkfunctions7::probit_link()}} and \code{\link[linkfunctions7:cloglog_link]{linkfunctions7::cloglog_link()}} are
+the usual alternatives; under either the observed and expected information
+differ.}
 
-\item{size}{Integer or Numeric Vector. The number of trials \eqn{n}.
-Can be a single scalar (default 1) or a vector of the same length as the observations \eqn{y}.}
+\item{size}{A numeric vector of trial counts, positive integers. A single
+value applies to every observation; a vector of the length of the response
+gives one count per observation. Defaults to \code{1}, which makes the object a
+Bernoulli; pass the group sizes for grouped data. The value is stored in
+the \code{size} property and sets \code{bounds} to \code{c(0, max(size))}.}
 }
 \value{
-An S7 object of class \code{BinomialDistrib} (inheriting from \code{discrete_distrib}) representing the Binomial distribution.
+An S7 object of class \code{BinomialDistrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"binomial"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, max(size))}, \code{size} as given, \code{params}
+\code{"mu"}, \code{params_interpretation} \code{c(mu = "probability")}, \code{n_params} \code{1},
+\code{params_bounds} the list of \eqn{(0, 1)}, and \code{link_params} the one link.
 }
 \description{
-Creates a distribution object for the Binomial distribution parameterized by the probability of success \eqn{\mu} and a number of trials \eqn{n} (size).
+Builds the distribution object for the binomial family: the number of
+successes in \code{size} independent trials, each succeeding with probability
+\eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
+the log-mass to fourth order, observed and expected, and closed-form moments.
+
+\strong{\code{size} is fixed data and not a parameter.} It is carried on the object,
+it is not estimated, it has no link and no bound, and it does not appear in
+\code{params}. Giving it one value per observation is how grouped binary data
+with unequal group sizes is described.
+
+The default link is the logit, the canonical link here, so the observed and
+the expected information coincide on its scale.
 }
-\details{
-The Binomial distribution models the number of successes in \eqn{n} independent
-trials, each with success probability \eqn{\mu}. The number of trials \eqn{n} is
-fixed in the constructor (\code{size}) and treated as known.
+\section{The parametrization}{
+The mass on \eqn{y \in \{0, 1, \dots, n\}} is
+\deqn{P(Y = y; \mu) = \binom{n}{y}\mu^{y}(1-\mu)^{n-y},}
+with \eqn{n} the number of trials and \eqn{\mu \in (0, 1)}. The mean is
+\eqn{n\mu}, the variance \eqn{n\mu(1-\mu)}, the skewness
+\eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}} and the excess kurtosis
+\eqn{(1-6\mu(1-\mu))/(n\mu(1-\mu))}. Both shape measures shrink like
+\eqn{1/n}, which is the central limit theorem visible in the moments.
 
-\strong{Probability mass function:}
-\deqn{P(Y=y; \mu, n) = \dbinom{n}{y} \mu^y (1-\mu)^{n-y}, \quad y \in \{0, 1, \dots, n\}}
-
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, n) = \sum_{k=0}^{\lfloor q \rfloor} \dbinom{n}{k} \mu^k (1-\mu)^{n-k}}
-
-\strong{Quantile function:} the generalized inverse
-\eqn{Q(p) = \min\{y : F(y) \ge p\}}.
-
-\strong{Score, observed and expected Hessian} (with respect to \eqn{\mu}):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - n\mu}{\mu(1-\mu)}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{n-y}{(1-\mu)^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{n}{\mu(1-\mu)}}
-
-\strong{Moments:} mean \eqn{n\mu}, variance \eqn{n\mu(1-\mu)},
-skewness \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}, excess kurtosis
-\eqn{(1 - 6\mu(1-\mu))/(n\mu(1-\mu))}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, 1)}
-\item \eqn{n \in \mathbb{Z}^+} (fixed in the constructor, may vary per observation)
+As \eqn{n \to \infty} with \eqn{n\mu} held, the family tends to a Poisson of
+that mean; \code{\link[=poisson_distrib]{poisson_distrib()}} is the limit and is the family to use when
+the number of trials is large and unrecorded.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
+\section{size is data}{
+The number of trials sits on the object rather than in \code{theta}, so it takes
+no link, is not counted in \code{n_params}, and cannot be estimated. Two
+consequences worth knowing: the same object cannot be reused across data
+sets with different group sizes, and \code{bounds} records \code{c(0, max(size))}, so
+a vector \code{size} gives a bound that is correct for the largest group and
+loose for the rest.
 }
+
+\section{The canonical link}{
+The log-mass is linear in \eqn{y} once \eqn{\eta = \log(\mu/(1-\mu))} is the
+parameter, so the logit is canonical and on its scale
+\deqn{\dfrac{\partial \ell}{\partial \eta} = y - n\mu, \qquad
+      \dfrac{\partial^2 \ell}{\partial \eta^2} = -n\mu(1-\mu),}
+the second carrying no data. Under a probit or a complementary log-log link
+the observed and expected information differ.
+}
+
+\section{Estimation}{
+The maximum likelihood estimate is the pooled proportion,
+\eqn{\hat\mu = \sum y_i / \sum n_i}, in closed form. If the observed counts
+are more variable than \eqn{n\mu(1-\mu)} allows, the binomial is the wrong
+family and \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} adds the dispersion parameter it lacks.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{n} the number of trials
+and \eqn{\mu \in (0,1)} the success probability.
+\eqn{\eta = \log(\mu/(1-\mu))} is the log odds. The \strong{canonical} link of an
+exponential family makes the log-mass linear in the sufficient statistic.
+}
+
 \examples{
-d <- binomial_distrib(size = 5)
-d@params
+d <- binomial_distrib(size = 10)
+d
 
-theta <- list(mu = 0.3)
-distrib_pdf(d, 0:5, theta)
-distrib_gradient(d, 0:5, theta)
+# The mass is R's own and sums to one over 0:n.
+all.equal(distrib_pdf(d, c(0, 4, 10), list(mu = 0.3)),
+          dbinom(c(0, 4, 10), size = 10, prob = 0.3))
+sum(distrib_pdf(d, 0:10, list(mu = 0.3)))
 
+# size = 1 is the Bernoulli, exactly.
+all.equal(distrib_pdf(binomial_distrib(size = 1), c(0, 1), list(mu = 0.3)),
+          distrib_pdf(bernoulli_distrib(), c(0, 1), list(mu = 0.3)))
+
+# Skewness shrinks like 1/sqrt(n): the central limit theorem in the moments.
+vapply(c(1, 10, 100), function(n)
+  skewness(binomial_distrib(size = n), list(mu = 0.3)), numeric(1))
+
+# Many trials at a small probability is a Poisson of the same mean.
+rbind(binomial = distrib_pdf(binomial_distrib(size = 1000),
+                             0:5, list(mu = 3 / 1000)),
+      poisson = distrib_pdf(poisson_distrib(), 0:5, list(mu = 3)))
+
+# Grouped data with unequal group sizes: one size per observation.
+set.seed(5)
+g <- binomial_distrib(size = c(5, 10, 20, 50))
+rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))
+
+}
+\references{
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Chapter 3.
+Wiley, Hoboken.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf.BinomialDistrib()}} for the probability mass function.
-\item \code{\link[=distrib_cdf.BinomialDistrib]{distrib_cdf.BinomialDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.BinomialDistrib]{distrib_quantile.BinomialDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.BinomialDistrib]{distrib_rng.BinomialDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.BinomialDistrib]{distrib_gradient.BinomialDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.BinomialDistrib]{distrib_hessian.BinomialDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.BinomialDistrib]{distrib_expected_hessian.BinomialDistrib()}} for the analytical expected Hessian.
-}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}, the case \code{size = 1};
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} and \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for overdispersed grouped
+binary data; \code{\link[=poisson_distrib]{poisson_distrib()}}, the many-trials limit;
+\code{\link[=multinomial_distrib]{multinomial_distrib()}} for more than two categories;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the probability; \link{BinomialDistrib} for the class.
 }
