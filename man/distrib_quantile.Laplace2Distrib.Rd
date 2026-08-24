@@ -2,24 +2,48 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_quantile.Laplace2Distrib}
 \alias{distrib_quantile.Laplace2Distrib}
-\title{Laplace Quantile Function in Location and Rate}
+\title{Laplace Quantile Function, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. The endpoints give \code{-Inf} and \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)} and \code{p} is replaced by
+\code{1 - p} before the formula is applied.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are
+exponentiated first. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(lambda))}.
 }
 \description{
-\deqn{Q(p; \mu, \lambda) = \mu - \dfrac{1}{\lambda}\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
+Computes the Laplace quantile function in the rate parametrization,
+\deqn{Q(p; \mu, \lambda) = \mu - \dfrac{\mathrm{sign}(p - \tfrac{1}{2})}{\lambda}\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
+one expression covering both arms. The median is \eqn{\mu} and the quartiles
+are \eqn{\mu \pm \log(2)/\lambda}.
+}
+\examples{
+d <- laplace2_distrib()
+th <- list(mu = 0.4, lambda = 2)
+
+# The median is mu and the quartiles are mu -/+ log(2)/lambda.
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+0.4 + c(-1, 0, 1) * log(2) / 2
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf.Laplace2Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng.Laplace2Distrib()}}, which draws through it; and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

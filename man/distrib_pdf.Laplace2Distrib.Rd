@@ -2,22 +2,54 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_pdf.Laplace2Distrib}
 \alias{distrib_pdf.Laplace2Distrib}
-\title{Laplace Density in Location and Rate}
+\title{Laplace Probability Density Function, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive; the arithmetic is performed
+as written, so a non-positive value gives \code{NaN} without a warning of its
+own.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(lambda))}, one value per observation.
 }
 \description{
-\deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y-\mu|\right)}
+Computes the Laplace density in the rate parametrization,
+\deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y - \mu|\right),}
+from the log-density \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is formed
+first and exponentiated only when \code{log = FALSE}. It equals the density of
+\code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\sigma = 1/\lambda}.
+}
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+
+# The density, written out.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 2)),
+          exp(-2 * abs(y - 0.4)) * 2 / 2)
+
+# The same law as the scale parametrization at lambda = 1/sigma.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
+          distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
+
+# A larger rate concentrates the mass: the peak is lambda/2.
+vapply(c(0.5, 1, 2), function(l) distrib_pdf(d, 0.4,
+                                             list(mu = 0.4, lambda = l)),
+       numeric(1))
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf.LaplaceDistrib()}} for the scale parametrization,
+\code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf.Laplace2Distrib()}} for the distribution function, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

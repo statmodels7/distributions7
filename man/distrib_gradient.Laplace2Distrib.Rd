@@ -2,25 +2,66 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_gradient.Laplace2Distrib}
 \alias{distrib_gradient.Laplace2Distrib}
-\title{Laplace Analytical Gradient in Location and Rate}
+\title{Laplace Score, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{lambda}, each of
+length \code{max(length(y), length(mu), length(lambda))}.
 }
 \description{
-The derivative with respect to \eqn{\mu} exists only almost everywhere
-(there is a kink at \eqn{y = \mu}, a set of probability zero); the
-subgradient value 0 is returned there.
+Computes the first derivatives of the Laplace log-density with respect to
+\eqn{\mu} and \eqn{\lambda}, one value per observation, in closed form.
+Writing \eqn{r = y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \lambda\,\mathrm{sign}(r),
+      \qquad
+      \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |r|.}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \lambda\,\mathrm{sign}(y-\mu), \qquad
-      \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |y-\mu|}
+Both are simpler than their scale-parametrization counterparts: the rate is
+the natural parameter of the exponential family in \eqn{|r|}, so its score
+is the difference between \eqn{1/\lambda} and the sufficient statistic. The
+score in \eqn{\mu} again carries only the sign of the residual, so the
+estimate of \eqn{\mu} is the sample median.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. \eqn{r = y-\mu}
+is the residual. Here \eqn{\lambda} is a rate and not a penalty parameter,
+though the lasso penalty is this family with \eqn{\mu} held at zero.
+}
+
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- y - 0.4
+all.equal(g$mu, 2 * sign(r))
+all.equal(g$lambda, 1 / 2 - abs(r))
+
+# The rate's score vanishes summed at 1/mean|r|, its estimate.
+set.seed(12)
+z <- distrib_rng(d, 2000, list(mu = 3, lambda = 0.5))
+lam_hat <- 1 / mean(abs(z - median(z)))
+sum(distrib_gradient(d, z, list(mu = median(z), lambda = lam_hat))$lambda)
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}} for the scale parametrization,
+\code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian.Laplace2Distrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

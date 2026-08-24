@@ -2,28 +2,80 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_expected_hessian.Laplace2Distrib}
 \alias{distrib_expected_hessian.Laplace2Distrib}
-\title{Laplace Analytical Expected Hessian in Location and Rate}
+\title{Laplace Expected Hessian, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, a strategy
+averaging the observed second derivative would answer 0 in the location.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{lambda_lambda} and
+\code{mu_lambda}, each of length \code{length(y)}.
 }
 \description{
-As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the second Bartlett identity fails in
-\eqn{\mu} and the expected Hessian is defined from the variance of the
-score:
+Returns the negative of the Fisher information, in closed form and with no
+quadrature or simulation:
+\deqn{-I(\mu) = -\lambda^2, \qquad
+      -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
+      -I(\mu, \lambda) = 0.}
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\lambda^2, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \lambda}\right] = 0, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \lambda^2}\right] = -\dfrac{1}{\lambda^2}}
+For \eqn{\mu} this is the \strong{variance of the score} and not the expectation
+of \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, which is identically zero: the
+family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
+there, exactly as in \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}. With
+\eqn{\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)} the variance is
+\eqn{\lambda^2}. The mixed entry vanishes because
+\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0} by symmetry, and the rate entry does
+equal its observed counterpart, that one carrying no data.
 
-Because the closed form exists, the \code{approx} argument is ignored.
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is the variance of the score. For a regular
+family it also equals the expectation of the \strong{observed information}, by
+the second Bartlett identity; this family is not regular in \eqn{\mu} and
+the two differ there.
+}
+
+\examples{
+d <- laplace2_distrib()
+th <- list(mu = 0.4, lambda = 2)
+
+# -lambda^2 in the location, -1/lambda^2 in the rate, 0 mixed.
+lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
+c(-2^2, -1 / 2^2)
+
+# The location entry is the variance of the score.
+set.seed(12)
+z <- distrib_rng(d, 1e5, th)
+c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
+  information = -distrib_expected_hessian(d, 0, th)$mu_mu)
+
+# It agrees with the scale parametrization once the chain rule is applied:
+# I(mu) is the same number, the location being shared.
+-distrib_expected_hessian(laplace_distrib(), 0,
+                          list(mu = 0.4, sigma = 1 / 2))$mu_mu
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, whose \code{mu_mu} is zero;
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} for the same argument in the
+scale parametrization; \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts this matrix; and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

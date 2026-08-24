@@ -2,30 +2,62 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_hessian.Laplace2Distrib}
 \alias{distrib_hessian.Laplace2Distrib}
-\title{Laplace Analytical Observed Hessian in Location and Rate}
+\title{Laplace Observed Hessian, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{lambda_lambda} and
+\code{mu_lambda}, each of length \code{length(y)}. \code{mu_mu} is a vector of zeros and
+\code{lambda_lambda} is constant at \eqn{-1/\lambda^2}.
 }
 \description{
-Almost everywhere,
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu \partial \lambda} = \mathrm{sign}(y-\mu), \qquad
-      \dfrac{\partial^2 \ell}{\partial \lambda^2} = -\dfrac{1}{\lambda^2}}
+Computes the three distinct second derivatives of the Laplace log-density
+with respect to \eqn{\mu} and \eqn{\lambda}, one value per observation, in
+closed form. Writing \eqn{r = y - \mu},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0,
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \lambda^2} = -\dfrac{1}{\lambda^2},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \lambda} = \mathrm{sign}(r).}
 
-The log-likelihood is linear in \eqn{\lambda} apart from the
-\eqn{\log\lambda} term, so every derivative in \eqn{\lambda} beyond the
-first is free of the data. As for \code{\link[=laplace_distrib]{laplace_distrib()}}, the zero
-second derivative in \eqn{\mu} means Newton-Raphson cannot update
-\eqn{\mu}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} supplies the Fisher
-information \eqn{\lambda^2}.
+The first entry is exactly zero for every observation, the log-density being
+piecewise linear in \eqn{\mu}; see
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} for what that costs. The curvature in
+\eqn{\lambda} carries no data at all, so in this parametrization the
+observed and expected values agree in that entry.
+}
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+h <- distrib_hessian(d, y, th)
+
+# Zero in the location, constant in the rate, a sign in the mixed entry.
+h$mu_mu
+h$lambda_lambda
+all.equal(h$mu_lambda, sign(y - 0.4))
+
+# The rate entry already equals its own expectation; the location one
+# does not, and the expected page says why.
+rbind(observed = vapply(h, function(v) v[1], numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, y, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian.Laplace2Distrib()}} for the information,
+whose location entry differs from this one;
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} for the scale parametrization; and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

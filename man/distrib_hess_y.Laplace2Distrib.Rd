@@ -2,20 +2,43 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_hess_y.Laplace2Distrib}
 \alias{distrib_hess_y.Laplace2Distrib}
-\title{Laplace Response Second Derivative in Location and Rate}
+\title{Laplace Second Derivative in the Response, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}. Neither is read.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of zeros.
+A numeric vector of zeros, of length \code{length(y)}.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = 0} (almost everywhere).
+Returns zero for every observation. The log-density
+\eqn{\log(\lambda/2) - \lambda|y-\mu|} is linear in \eqn{y} on each side of
+the location, so its second derivative in the response vanishes wherever it
+exists. At \eqn{y = \mu} the first derivative drops from \eqn{\lambda} to
+\eqn{-\lambda} and the second derivative does not exist; the returned zero
+is the value away from that single point.
+}
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same as the curvature in the location.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# The first derivative drops by 2 lambda across the location.
+diff(distrib_grad_y(d, 0.4 + c(-1e-9, 1e-9), th))
+-2 * 2
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_grad_y.Laplace2Distrib]{distrib_grad_y.Laplace2Distrib()}} for the first derivative, which
+drops at the location; \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y.LaplaceDistrib()}} for the scale
+parametrization; \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

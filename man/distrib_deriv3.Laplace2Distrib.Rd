@@ -2,24 +2,68 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_deriv3.Laplace2Distrib}
 \alias{distrib_deriv3.Laplace2Distrib}
-\title{Laplace Third-Order Derivatives in Location and Rate}
+\title{Laplace Third-Order Derivatives, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{lambda}
+must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Ignored: the observed values do not depend on the data, so
+they are already their own expectations. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, for the same reason as \code{expected}.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_lambda},
+\code{mu_lambda_lambda} and \code{lambda_lambda_lambda}, each of length \code{length(y)}.
+The first three are zero and the last is constant at \eqn{2/\lambda^3}.
 }
 \description{
-Closed form, almost everywhere. The only non-zero component is
-\eqn{\ell^{(\lambda\lambda\lambda)} = 2/\lambda^3}, which is free of the
-data, so the observed and the expected derivatives coincide.
+Computes the four distinct third derivatives of the Laplace log-density with
+respect to \eqn{\mu} and \eqn{\lambda}. In this parametrization the
+log-density is \eqn{\log(\lambda/2) - \lambda|y-\mu|}, which is \strong{linear in
+\eqn{\lambda}} apart from \eqn{\log\lambda}, and piecewise linear in
+\eqn{\mu}. Every third derivative involving \eqn{\mu} at all is therefore
+zero, and the only surviving component comes from \eqn{\log\lambda}:
+\deqn{\dfrac{\partial^3 \ell}{\partial \lambda^3} = \dfrac{2}{\lambda^3},}
+with \code{mu_mu_mu}, \code{mu_mu_lambda} and \code{mu_lambda_lambda} all zero.
+
+None of these depends on the data, so the observed and expected values
+coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no effect.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives.
+}
+
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+d3 <- distrib_deriv3(d, y, th)
+
+# Only the pure-rate component survives.
+vapply(d3, function(v) v[1], numeric(1))
+2 / 2^3
+
+# expected = TRUE changes nothing, the values carrying no data.
+identical(d3, distrib_deriv3(d, y, th, expected = TRUE))
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3.LaplaceDistrib()}} for the scale parametrization,
+where the picture is less sparse; \code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4.Laplace2Distrib()}} for
+the order above; \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

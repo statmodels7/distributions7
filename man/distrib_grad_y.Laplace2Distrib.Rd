@@ -2,22 +2,48 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_grad_y.Laplace2Distrib}
 \alias{distrib_grad_y.Laplace2Distrib}
-\title{Laplace Response Derivative in Location and Rate}
+\title{Laplace First Derivative in the Response, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{lambda} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(lambda))}, taking the values
+\eqn{-\lambda}, 0 and \eqn{\lambda} only.
 }
 \description{
-\eqn{\partial \ell / \partial y = -\lambda\,\mathrm{sign}(y-\mu)}, almost
-everywhere; the analytic form is provided because finite differences would
-be inaccurate across the kink at \eqn{y = \mu}.
+Computes the first derivative of the Laplace log-density with respect to the
+response,
+\deqn{\dfrac{\partial \ell}{\partial y} = -\lambda\,\mathrm{sign}(y - \mu),}
+in closed form. The family is a location family in \eqn{\mu}, so this is the
+negative of the score in \eqn{\mu}. It takes only the three values
+\eqn{-\lambda}, 0 and \eqn{\lambda}; at \eqn{y = \mu} exactly, \code{sign(0)} is
+0 and the method returns 0, the midpoint of the subdifferential, the
+derivative not existing there.
+}
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+
+all.equal(distrib_grad_y(d, y, th), -2 * sign(y - 0.4))
+
+# A location family: minus the score in the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Three values only, and 0 at the kink itself.
+distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_hess_y.Laplace2Distrib]{distrib_hess_y.Laplace2Distrib()}} for the second derivative, which
+is zero; \code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y.LaplaceDistrib()}} for the scale parametrization;
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

@@ -2,24 +2,69 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_deriv4.Laplace2Distrib}
 \alias{distrib_deriv4.Laplace2Distrib}
-\title{Laplace Fourth-Order Derivatives in Location and Rate}
+\title{Laplace Fourth-Order Derivatives, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}. \code{mu} is not
+read. \code{lambda} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Ignored: the observed values do not depend on the data, so
+they are already their own expectations. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, for the same reason as \code{expected}.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_lambda}, \code{mu_mu_lambda_lambda}, \code{mu_lambda_lambda_lambda} and
+\code{lambda_lambda_lambda_lambda}, each of length \code{length(y)}. The first four
+are zero and the last is constant at \eqn{-6/\lambda^4}.
 }
 \description{
-Closed form, almost everywhere. The only non-zero component is
-\eqn{\ell^{(\lambda\lambda\lambda\lambda)} = -6/\lambda^4}; the observed and
-the expected derivatives coincide.
+Computes the five distinct fourth derivatives of the Laplace log-density
+with respect to \eqn{\mu} and \eqn{\lambda}. As at third order, every
+component involving \eqn{\mu} is zero and the only survivor comes from
+\eqn{\log\lambda}:
+\deqn{\dfrac{\partial^4 \ell}{\partial \lambda^4} = -\dfrac{6}{\lambda^4}.}
+
+None of these depends on the data, so the observed and expected values
+coincide: \code{expected}, \code{approx} and \code{nsim} are accepted and have no effect.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k l)}} is the fourth derivative of the log-density with
+respect to parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- laplace2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, lambda = 2)
+
+# Only the pure-rate component survives.
+vapply(distrib_deriv4(d, y, th), function(v) v[1], numeric(1))
+-6 / 2^4
+
+# A central difference of the third order reproduces it.
+eps <- 1e-5
+up <- distrib_deriv3(d, y, list(mu = 0.4, lambda = 2 + eps))
+dn <- distrib_deriv3(d, y, list(mu = 0.4, lambda = 2 - eps))
+all.equal((up$lambda_lambda_lambda - dn$lambda_lambda_lambda) / (2 * eps),
+          distrib_deriv4(d, y, th)$lambda_lambda_lambda_lambda,
+          tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3.Laplace2Distrib()}} for the order below;
+\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4.LaplaceDistrib()}} for the scale parametrization;
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

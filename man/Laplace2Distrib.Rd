@@ -2,7 +2,7 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{Laplace2Distrib}
 \alias{Laplace2Distrib}
-\title{S7 Class for the Laplace Distribution in Location and Rate}
+\title{Laplace Distribution Class, Location and Rate}
 \usage{
 Laplace2Distrib(
   distrib_name = character(0),
@@ -36,36 +36,72 @@ Laplace2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Laplace2Distrib}.
+An S7 object of class \code{Laplace2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=laplace2_distrib]{laplace2_distrib()}} they hold \code{"laplace2"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "lambda")}, the interpretations
+\code{c(mu = "location", lambda = "rate")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, the two links, and
+\code{c(mu = FALSE, lambda = TRUE)} for \code{params_smooth}.
 }
 \description{
-A subclass of \code{continuous_distrib} for the Laplace
-(double-exponential) distribution written in its location \eqn{\mu} and its
-\strong{rate} \eqn{\lambda = 1/\sigma}. Like \code{\link[=LaplaceDistrib]{LaplaceDistrib()}},
-its log-likelihood is not differentiable in \eqn{\mu}.
+The S7 class of the Laplace (double exponential) family written by its
+\strong{rate} \eqn{\lambda > 0} in place of its scale, with density
+\eqn{f(y) = (\lambda/2)\exp(-\lambda|y-\mu|)} on the whole real line. It is
+the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}; the
+parametrization differs and the derivatives with it. It inherits from
+\code{continuous_distrib}, so it answers every generic of the \code{distrib} contract.
+
+The rate form is the one a lasso penalty is written in: with \eqn{\mu = 0}
+the negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so
+\eqn{\lambda} is the penalty's own tuning parameter and larger values shrink
+harder. \code{penalties7::lasso_penalty()} is this family with the location held
+at zero.
+
+Like \code{\link[=laplace_distrib]{laplace_distrib()}}, this family has a \strong{kink} at \eqn{y = \mu} and is
+non-regular in its location; \code{params_smooth} is \code{c(mu = FALSE, lambda = TRUE)}.
+
+Build one with \code{\link[=laplace2_distrib]{laplace2_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Laplace2Distrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_grad_y.Laplace2Distrib]{distrib_grad_y()}},
 \code{\link[=distrib_gradient.Laplace2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.Laplace2Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.Laplace2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Laplace2Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.Laplace2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_rng.Laplace2Distrib]{distrib_rng()}}
 
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- laplace2_distrib()
+d@params
+d@params_interpretation
+d@params_smooth
+
+# The same law as laplace_distrib() at lambda = 1/sigma.
+y <- c(-1.2, 0.3, 2.5)
+all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
+          distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
+
+# The variance is 2/lambda^2, so a larger rate is a tighter distribution.
+vapply(c(0.5, 1, 2), function(l) variance(d, list(mu = 0, lambda = l)),
+       numeric(1))
+}
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} to build one;
+\code{\link[=laplace_distrib]{laplace_distrib()}} for the same law in its scale;
+\code{\link[=enet_distrib]{enet_distrib()}}, which mixes this family with a Gaussian.
 }

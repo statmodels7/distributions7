@@ -2,71 +2,126 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{laplace2_distrib}
 \alias{laplace2_distrib}
-\title{Laplace Distribution in Location and Rate}
+\title{Laplace Distribution, Location and Rate}
 \usage{
 laplace2_distrib(link_mu = identity_link(), link_lambda = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_lambda}{A link function object for the rate parameter \eqn{\lambda}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_lambda}{A \code{link} object from \code{linkfunctions7} for the rate
+\eqn{\lambda}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{Laplace2Distrib} (inheriting from \code{continuous_distrib}).
+An S7 object of class \code{Laplace2Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"laplace2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "lambda")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, \code{link_params} the two links given here, and
+\code{params_smooth} \code{c(mu = FALSE, lambda = TRUE)}.
 }
 \description{
-Creates a Laplace (double-exponential) distribution object parametrized by
-location (\eqn{\mu}) and \strong{rate} (\eqn{\lambda}).
+Builds the distribution object for the Laplace (double exponential) family
+written by its \strong{rate} \eqn{\lambda > 0}, with density
+\eqn{(\lambda/2)\exp(-\lambda|y-\mu|)}. It is the same law as
+\code{\link[=laplace_distrib]{laplace_distrib()}} at \eqn{\lambda = 1/\sigma}, and every quantity that
+does not involve the second parameter is identical between them.
+
+The rate form is the one penalized regression uses: with \eqn{\mu = 0} the
+negative log-density is \eqn{\lambda|y| - \log(\lambda/2)}, so \eqn{\lambda}
+is a shrinkage parameter and larger values penalize harder.
+\code{penalties7::lasso_penalty()} is this family with the location held at zero.
 }
-\details{
-This is the same law as \code{\link[=laplace_distrib]{laplace_distrib()}} in different
-coordinates: \eqn{\lambda} here is \eqn{1/\sigma} there. The rate form is
-the one a penalty consumes, because the negative log-density at fixed
-\eqn{\mu = 0} is \eqn{\lambda \lvert y \rvert} up to a constant: the lasso
-penalty is linear in \eqn{\lambda}, and its derivatives in \eqn{\lambda}
-beyond the first carry no data at all.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2}\exp\left(-\lambda|y-\mu|\right),}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\lambda \in (0, \infty)}. The
+mean and median are \eqn{\mu}, the variance is \eqn{2/\lambda^2}, the
+skewness is 0 and the excess kurtosis is 3.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \lambda) = \dfrac{\lambda}{2} \exp\left(-\lambda|y-\mu|\right)}
-
-\strong{Score} (defined almost everywhere):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \lambda\,\mathrm{sign}(y-\mu), \qquad
-      \dfrac{\partial \ell}{\partial \lambda} = \dfrac{1}{\lambda} - |y-\mu|}
-
-\strong{Observed Hessian} (almost everywhere):
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \lambda} = \mathrm{sign}(y-\mu), \quad
-      \dfrac{\partial^2 \ell}{\partial \lambda^2} = -\dfrac{1}{\lambda^2}}
-
-\strong{Expected Hessian} (Fisher information from the score variance):
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\lambda^2, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \lambda^2}\right] = -\dfrac{1}{\lambda^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \lambda}\right] = 0}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{2/\lambda^2}, skewness 0,
-excess kurtosis 3.
-
-The kink at \eqn{y = \mu} and its consequences are those of
-\code{\link[=laplace_distrib]{laplace_distrib()}}: \code{params_smooth = c(mu = FALSE, lambda = TRUE)}, the observed Hessian cannot update \eqn{\mu}, and the expected
-Hessian comes from the variance of the score.
-
-\strong{Parameter Domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\lambda \in (0, +\infty)}
+Against \code{\link[=laplace_distrib]{laplace_distrib()}} the map is \eqn{\lambda = 1/\sigma}. The
+location is shared, so its score, its information and its derivatives in the
+response are the same quantities read at the same point; the second
+parameter's are not, and this parametrization's are the simpler of the two,
+\eqn{\lambda} being the natural parameter of the exponential family in
+\eqn{|y - \mu|}.
 }
+
+\section{The kink}{
+\eqn{|y - \mu|} is not differentiable at \eqn{y = \mu}, so this family is
+non-regular in its location exactly as \code{\link[=laplace_distrib]{laplace_distrib()}} is: the observed
+second derivative in \eqn{\mu} is zero, the information is
+\eqn{\lambda^2}, obtained as the variance of the score, and \code{params_smooth}
+is \code{c(mu = FALSE, lambda = TRUE)}. The consequences are set out on
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}.
+
+A second consequence is visible at the higher orders. The log-density is
+\eqn{\log(\lambda/2) - \lambda|r|}, linear in \eqn{\lambda} apart from
+\eqn{\log\lambda} and piecewise linear in \eqn{\mu}, so \strong{every} third and
+fourth derivative except the pure-\eqn{\lambda} ones is exactly zero, and
+none of them depends on the data. \code{expected = TRUE} therefore returns the
+same values at those orders.
 }
+
+\section{Estimation}{
+Both estimates are closed form: \eqn{\hat\mu} is the sample median and
+\eqn{\hat\lambda} the reciprocal of the mean absolute deviation about it.
+\code{\link[=fit_distrib]{fit_distrib()}} reaches them by Fisher scoring, which inverts the
+information above.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. Here
+\eqn{\lambda} is a distribution parameter; the same letter names a smoothing
+parameter in \code{penalties7} and above, and the two meet in the lasso, which is
+this family with \eqn{\mu} held at zero.
+}
+
 \examples{
 d <- laplace2_distrib()
-theta <- list(mu = 0, lambda = 2)
-distrib_pdf(d, c(-1, 0, 1), theta)
+d
 
-# the same law as laplace_distrib with sigma = 1/2
-distrib_pdf(laplace_distrib(), 0.7, list(mu = 0, sigma = 0.5))
+# The same law as the scale parametrization at lambda = 1/sigma.
+y <- c(-1.2, 0.3, 2.5)
+all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
+          distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
+
+# The variance is 2/lambda^2: a larger rate is a tighter distribution.
+vapply(c(0.5, 1, 2), function(l) variance(d, list(mu = 0, lambda = l)),
+       numeric(1))
+
+# Both estimates are closed form.
+set.seed(12)
+z <- distrib_rng(d, 2000, list(mu = 3, lambda = 0.5))
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = median(z),
+                 lambda = 1 / mean(abs(z - median(z)))))
+
+# Holding the location at zero gives the prior a lasso penalty is written
+# from: the negative log-density is lambda |y| up to a constant.
+prior <- fixed(d, mu = 0)
+prior@params
+-distrib_pdf(prior, c(-2, 0, 2), list(lambda = 0.5), log = TRUE)
+0.5 * abs(c(-2, 0, 2)) - log(0.5 / 2)
 
 }
+\references{
+Kotz, S., Kozubowski, T. J. and Podgorski, K. (2001).
+\emph{The Laplace Distribution and Generalizations}. Birkhauser, Boston.
+
+Tibshirani, R. (1996). Regression shrinkage and selection via the lasso.
+\emph{Journal of the Royal Statistical Society, Series B}, \strong{58}(1), 267--288.
+}
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=laplace_distrib]{laplace_distrib()}} for the scale parametrization;
+\code{\link[=enet_distrib]{enet_distrib()}}, which mixes this family with a Gaussian and contains it as
+the pure-\eqn{\ell_1} case; \code{\link[=fixed]{fixed()}}, which holds the location at zero to
+produce a prior; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
+\link{Laplace2Distrib} for the class.
 }

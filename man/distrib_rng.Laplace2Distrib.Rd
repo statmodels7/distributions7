@@ -2,20 +2,43 @@
 % Please edit documentation in R/laplace2_distrib.R
 \name{distrib_rng.Laplace2Distrib}
 \alias{distrib_rng.Laplace2Distrib}
-\title{Laplace Random Generation in Location and Rate}
+\title{Laplace Random Number Generator, Rate Parametrization}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws. One uniform variate
+is consumed per draw.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled.
+\code{lambda} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates draws by inverse-transform sampling.
+Draws \code{n} independent Laplace variates by \strong{inverse transform}: \code{n} uniform
+variates from \code{\link[stats:Uniform]{stats::runif()}} are passed through
+\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile.Laplace2Distrib()}}. The quantile function is elementary
+and exact, so this is cheaper and more accurate than the generalized
+ratio-of-uniforms fallback the base class supplies.
+}
+\examples{
+d <- laplace2_distrib()
+
+# Inverse transform, so the draws are the quantiles of the uniforms drawn.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.4, lambda = 2))
+set.seed(2)
+identical(a, distrib_quantile(d, runif(3), list(mu = 0.4, lambda = 2)))
+
+# The sample variance recovers 2/lambda^2.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, lambda = 0.5))
+c(mean = mean(z), var = var(z), two_over_lambda_sq = 2 / 0.5^2)
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_quantile.Laplace2Distrib]{distrib_quantile.Laplace2Distrib()}}, through which the draws are
+made; \code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng.LaplaceDistrib()}} for the scale parametrization; and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
