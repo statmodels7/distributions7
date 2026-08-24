@@ -2,26 +2,62 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{distrib_hessian.PoissonDistrib}
 \alias{distrib_hessian.PoissonDistrib}
-\title{Poisson Analytical Observed Hessian}
+\title{Poisson Observed Hessian}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of second derivatives.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-Computes the analytical observed Hessian (second derivative) of the Poisson log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the second derivative of the Poisson log-mass with respect to the
+mean, one value per observation, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}.}
+It depends on the data only through \eqn{y}, and is exactly zero at an
+observed count of zero; the curvature at \eqn{y = 0} comes entirely from the
+\eqn{-\mu} term of the log-mass, which is linear.
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}}
+On the \strong{link} scale with the default logarithm the chain rule gives
+\eqn{\partial^2\ell/\partial\eta^2 = -\mu}, which carries \strong{no data at
+all}. That is the defining property of a canonical link, and it makes the
+observed and the expected information the same matrix there; see
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}}.
+}
+\examples{
+d <- poisson_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# The closed form, written out; zero at an observed zero.
+all.equal(distrib_hessian(d, y, th)$mu_mu, -y / 3^2)
+
+# On the canonical log link the curvature carries no data: one value,
+# repeated, equal to -mu.
+distrib_hessian(d, y, th, scale = "link")$mu_mu
+
+# A central difference of the score reproduces the parameter-scale value.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 3 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 3 - eps))$mu
+all.equal((up - dn) / (2 * eps), distrib_hessian(d, y, th)$mu_mu,
+          tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient.PoissonDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the expectation of this
+quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

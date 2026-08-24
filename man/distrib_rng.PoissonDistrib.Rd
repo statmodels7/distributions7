@@ -4,18 +4,39 @@
 \alias{distrib_rng.PoissonDistrib}
 \title{Poisson Random Number Generator}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
+of length \code{n} draws one count per mean. \code{mu} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+An integer vector of \code{n} non-negative counts.
 }
 \description{
-Generates random numbers from the Poisson distribution.
+Draws \code{n} independent Poisson counts by calling \code{\link[stats:Poisson]{stats::rpois()}}, so the
+draws come from R's own generator and depend on \code{.Random.seed} in the usual
+way. The cumulative-table fallback the discrete base class supplies is
+bypassed.
+}
+\examples{
+d <- poisson_distrib()
+
+# Same generator as stats::rpois, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 5, list(mu = 3))
+set.seed(2)
+identical(a, rpois(5, lambda = 3))
+
+# The sample mean and variance both estimate mu, this family being
+# equidispersed.
+set.seed(4)
+z <- distrib_rng(d, 2e4, list(mu = 4.2))
+c(mean = mean(z), var = var(z))
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the mean back, and \code{\link[=distrib_rng]{distrib_rng()}} for
+the generic.
 }

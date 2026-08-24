@@ -2,66 +2,119 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{poisson_distrib}
 \alias{poisson_distrib}
-\title{Poisson Distribution Object}
+\title{Poisson Distribution}
 \usage{
 poisson_distrib(link_mu = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and is the \strong{canonical} link of this
+family.}
 }
 \value{
-An S7 object of class \code{PoissonDistrib} (inheriting from \code{discrete_distrib}) representing the Poisson distribution.
+An S7 object of class \code{PoissonDistrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"poisson"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{"mu"},
+\code{params_interpretation} \code{c(mu = "mean")}, \code{n_params} \code{1}, \code{params_bounds}
+the list of \eqn{(0, \infty)}, and \code{link_params} the one link given here.
 }
 \description{
-Creates a distribution object for the Poisson distribution parameterized by the mean parameter \eqn{\mu}.
+Builds the distribution object for the Poisson family parametrized by its
+mean \eqn{\mu > 0}, with mass \eqn{e^{-\mu}\mu^y/y!} on the non-negative
+integers. The returned object carries closed-form derivatives of the
+log-mass to fourth order, observed and expected, and closed-form moments.
+
+The family is \strong{equidispersed}: its variance equals its mean at every
+parameter value. Real counts are usually more variable than that, so a
+Poisson fit is often the null a count analysis argues against;
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} and \code{\link[=negbin1_distrib]{negbin1_distrib()}} add a dispersion parameter and
+both contain this family in a limit.
 }
-\details{
-The Poisson distribution models counts \eqn{y \in \{0, 1, 2, \dots\}} with mean
-(and variance) \eqn{\mu}.
+\section{The parametrization}{
+The mass on \eqn{y \in \{0, 1, 2, \dots\}} is
+\deqn{P(Y = y; \mu) = \dfrac{e^{-\mu}\mu^{y}}{y!},}
+with \eqn{\mu \in (0, \infty)}. The mean and the variance are both
+\eqn{\mu}, the skewness is \eqn{\mu^{-1/2}} and the excess kurtosis
+\eqn{\mu^{-1}}, so the distribution is right skewed at a small mean and
+close to Gaussian at a large one.
+}
 
-\strong{Probability mass function:}
-\deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
+\section{The canonical link, and what it buys}{
+The log-mass is \eqn{y\log\mu - \mu - \log y!}, which is linear in \eqn{y}
+once \eqn{\eta = \log\mu} is the parameter. The logarithm is therefore the
+canonical link, and on its scale
+\deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
+      \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu.}
+The second of these carries no data, so the observed and the expected
+information coincide: Fisher scoring and Newton's method take the same step,
+and the iteratively reweighted least squares of a Poisson log-linear model
+is both at once. Under any other link the two differ and the choice matters.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
-
-\strong{Quantile function:} the generalized inverse
-\eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
-
-\strong{Score, observed and expected Hessian:}
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}, \qquad
+\section{Derivatives}{
+On the parameter scale, with \eqn{\ell = y\log\mu - \mu - \log y!},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\mu}, \qquad
       \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu}, skewness \eqn{1/\sqrt{\mu}},
-excess kurtosis \eqn{1/\mu}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
+      \dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}, \qquad
+      \dfrac{\partial^4 \ell}{\partial \mu^4} = -\dfrac{6y}{\mu^4},}
+and their expectations follow by substituting \eqn{\mathbb{E}[Y] = \mu}:
+\eqn{0}, \eqn{-1/\mu}, \eqn{2/\mu^2} and \eqn{-6/\mu^3}.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
+\section{Estimation}{
+The maximum likelihood estimate is the sample mean, \eqn{\hat\mu = \bar y},
+in closed form. A quick check of the equidispersion assumption is to compare
+the sample variance with it; the example below does that on data drawn from
+the family and on data that is not.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
+which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
+link scale. The \strong{canonical} link of an exponential family is the one that
+makes the log-mass linear in the sufficient statistic.
+}
+
 \examples{
 d <- poisson_distrib()
-d@params
+d
 
-theta <- list(mu = 2)
-distrib_pdf(d, 0:5, theta)
-distrib_gradient(d, 0:5, theta)
+# The mass is R's own and sums to one over the support.
+y <- c(0, 2, 7)
+all.equal(distrib_pdf(d, y, list(mu = 3)), dpois(y, 3))
+sum(distrib_pdf(d, 0:200, list(mu = 3)))
 
+# Equidispersed, and closer to symmetric as the mean grows.
+vapply(c(0.5, 3, 20), function(m) {
+  th <- list(mu = m)
+  c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
+}, numeric(3))
+
+# The estimate is the sample mean, in closed form.
+set.seed(4)
+z <- distrib_rng(d, 1000, list(mu = 4.2))
+c(fitted = unname(coef(fit_distrib(d, z))), sample_mean = mean(z))
+
+# Equidispersion is a testable assumption. Drawn from the family the
+# sample variance matches the mean; drawn with extra variability it does
+# not, and a negative binomial is the family to reach for.
+set.seed(6)
+over <- rpois(1000, lambda = rgamma(1000, shape = 2, rate = 2 / 4.2))
+rbind(poisson = c(mean = mean(z), var = var(z)),
+      overdispersed = c(mean = mean(over), var = var(over)))
+
+}
+\references{
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Chapter 4.
+Wiley, Hoboken.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf.PoissonDistrib()}} for the probability mass function.
-\item \code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile.PoissonDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.PoissonDistrib]{distrib_rng.PoissonDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient.PoissonDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the analytical expected Hessian.
-}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} and \code{\link[=negbin1_distrib]{negbin1_distrib()}} for overdispersed counts, both
+of which contain this family in a limit; \code{\link[=binomial_distrib]{binomial_distrib()}}, of which it
+is the many-trials limit; \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for excess
+zeros; \code{\link[=geometric_distrib]{geometric_distrib()}} for a memoryless count law;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the mean; \link{PoissonDistrib} for the class.
 }

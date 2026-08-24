@@ -4,23 +4,51 @@
 \alias{distrib_cdf.PoissonDistrib}
 \title{Poisson Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer is floored, and a
+negative value gives 0.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{q}. \code{mu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+computed directly and so exact far into the upper tail.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu))}.
 }
 \description{
-Computes the cumulative distribution function for the Poisson distribution:
-\deqn{F(q; \mu) = \sum_{k=0}^{\lfloor q \rfloor} \dfrac{\mu^k e^{-\mu}}{k!}}
+Computes the Poisson distribution function
+\deqn{F(q; \mu) = P(Y \le q) = \sum_{k = 0}^{\lfloor q \rfloor} \dfrac{e^{-\mu}\mu^{k}}{k!}}
+by calling \code{\link[stats:Poisson]{stats::ppois()}}, which evaluates it through the incomplete gamma
+function rather than by summing. The function is a step function, constant
+between integers, so \code{F(2)} and \code{F(2.9)} are the same number.
+}
+\examples{
+d <- poisson_distrib()
+th <- list(mu = 3)
+
+# The method is stats::ppois.
+all.equal(distrib_cdf(d, c(0, 2, 7), th), ppois(c(0, 2, 7), lambda = 3))
+
+# A step function: constant between integers.
+distrib_cdf(d, c(2, 2.5, 2.9), th)
+
+# The jump at an integer is exactly the mass there.
+c(jump = distrib_cdf(d, 2, th) - distrib_cdf(d, 1, th),
+  mass = distrib_pdf(d, 2, th))
+
+# The upper tail is exact where its complement would have rounded to one.
+distrib_cdf(d, 60, th, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile.PoissonDistrib()}} for the generalized inverse,
+\code{\link[=distrib_pdf.PoissonDistrib]{distrib_pdf.PoissonDistrib()}} for the mass, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

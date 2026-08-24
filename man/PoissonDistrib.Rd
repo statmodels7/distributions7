@@ -2,7 +2,7 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{PoissonDistrib}
 \alias{PoissonDistrib}
-\title{S7 Class for Poisson Distribution}
+\title{Poisson Distribution Class}
 \usage{
 PoissonDistrib(
   distrib_name = character(0),
@@ -36,14 +36,36 @@ PoissonDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{PoissonDistrib}.
+An S7 object of class \code{PoissonDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=poisson_distrib]{poisson_distrib()}} they hold \code{"poisson"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{"mu"}, \code{c(mu = "mean")}, \code{1}, the domain
+\eqn{(0, \infty)}, and the one link.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the Poisson distribution.
+The S7 class of the Poisson family parametrized by its mean \eqn{\mu > 0},
+with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative integers. It
+inherits from \code{discrete_distrib}, so its support is counted rather than
+integrated: expectations are exact sums and no derivative with respect to
+the response is defined.
+
+The mean and the variance are both \eqn{\mu}, which is the constraint a
+count model most often has to relax; \code{\link[=negbin2_distrib]{negbin2_distrib()}} and
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} do that, and both contain this family in the limit.
+
+The default link is the logarithm, which is the \strong{canonical} link here. On
+its scale the observed and the expected information coincide, so Fisher
+scoring and Newton's method take the same step.
+
+Build one with \code{\link[=poisson_distrib]{poisson_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.PoissonDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.PoissonDistrib]{distrib_deriv4()}},
@@ -54,9 +76,33 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.PoissonDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.PoissonDistrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}. Derivatives with
+respect to the response are refused by that parent: the support is a
+lattice, so there is nothing to differentiate along.
 }
 
+\examples{
+d <- poisson_distrib()
+S7::S7_inherits(d, discrete_distrib)
+d@params
+d@bounds
+
+# Equidispersion: the mean is the variance at every parameter value.
+vapply(c(0.5, 3, 20), function(m) {
+  th <- list(mu = m)
+  c(mean = mean(d, th), var = variance(d, th))
+}, numeric(2))
+
+# The log link is canonical, so on its scale the observed and the expected
+# information are the same number.
+th <- list(mu = 3)
+rbind(observed = distrib_hessian(d, c(0, 2, 7), th, scale = "link")$mu_mu,
+      expected = distrib_expected_hessian(d, c(0, 2, 7), th,
+                                          scale = "link")$mu_mu)
+}
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=poisson_distrib]{poisson_distrib()}} to build one;
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} and \code{\link[=negbin1_distrib]{negbin1_distrib()}} for overdispersed counts;
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for excess zeros;
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the information.
 }

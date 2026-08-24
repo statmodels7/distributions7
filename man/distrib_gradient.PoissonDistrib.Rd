@@ -2,26 +2,67 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{distrib_gradient.PoissonDistrib}
 \alias{distrib_gradient.PoissonDistrib}
-\title{Poisson Analytical Gradient}
+\title{Poisson Score}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of first derivatives.
+A named list of one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-Computes the analytical gradient (first derivative) of the Poisson log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the first derivative of the Poisson log-mass with respect to the
+mean, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y}{\mu} - 1 = \dfrac{y - \mu}{\mu}.}
+The log-mass is \eqn{y\log\mu - \mu - \log y!}, so the score is the residual
+divided by the mean and its sum vanishes exactly at \eqn{\hat\mu = \bar y}.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu}}
+On the \strong{link} scale with the default logarithm the generic's chain rule
+gives \eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the log
+is the canonical link of this family and the score there is the sufficient
+statistic minus its mean.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu > 0} the mean,
+which is also the variance. \eqn{\eta = \log\mu} is the parameter on the
+link scale. A \strong{canonical} link is the one for which the log-mass is linear
+in the sufficient statistic times \eqn{\eta}.
+}
+
+\examples{
+d <- poisson_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# The closed form, written out.
+all.equal(distrib_gradient(d, y, th)$mu, (y - 3) / 3)
+
+# On the canonical log link the score is the raw residual.
+distrib_gradient(d, y, th, scale = "link")$mu
+y - 3
+
+# The summed score vanishes at the sample mean, which is the estimate.
+set.seed(4)
+z <- distrib_rng(d, 1000, list(mu = 4.2))
+sum(distrib_gradient(d, z, list(mu = mean(z)))$mu)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.PoissonDistrib]{distrib_expected_hessian.PoissonDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

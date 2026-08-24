@@ -4,24 +4,48 @@
 \alias{distrib_quantile.PoissonDistrib}
 \title{Poisson Quantile Function}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{p}. \code{mu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of non-negative integers, of length
+\code{max(length(p), length(mu))}.
 }
 \description{
-Computes the quantile function for the Poisson distribution, defined as the
-generalized inverse of the CDF:
-\deqn{Q(p; \mu) = \min\left\{y \in \mathbb{N}_0 : F(y; \mu) \ge p\right\}}
+Computes the generalized inverse of the Poisson distribution function,
+\deqn{Q(p; \mu) = \min\{k \in \{0, 1, 2, \dots\} : F(k; \mu) \ge p\},}
+by calling \code{\link[stats:Poisson]{stats::qpois()}}. The distribution function is a step function,
+so its inverse is a step function too and the round trip through
+\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} returns a probability \strong{at least} \code{p}, not
+\code{p} itself.
+}
+\examples{
+d <- poisson_distrib()
+th <- list(mu = 3)
+
+# Integers, being the smallest count whose cumulative mass reaches p.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# The round trip overshoots, the support being a lattice.
+p <- c(0.025, 0.5, 0.975)
+rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
+
+# It is the smallest k with F(k) >= p, which the definition checks.
+k <- distrib_quantile(d, 0.9, th)
+c(k = k, F_k = distrib_cdf(d, k, th), F_k_minus_1 = distrib_cdf(d, k - 1, th))
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

@@ -2,25 +2,75 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{distrib_deriv3.PoissonDistrib}
 \alias{distrib_deriv3.PoissonDistrib}
-\title{Poisson Analytical Third-Order Derivatives}
+\title{Poisson Third-Order Derivative}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivative.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the observed value. Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected value.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu_mu} component.
+A named list of one numeric vector, \code{mu_mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-Closed-form third-order derivative of the Poisson log-mass (observed, or expected when \code{expected = TRUE}).
+Computes the third derivative of the Poisson log-mass with respect to the
+mean, in closed form:
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3} = \dfrac{2y}{\mu^3}.}
+With \code{expected = TRUE} the expectation is returned, obtained by substituting
+\eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
+form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+
+The family has one parameter, so there is one component rather than the four
+a two-parameter family carries at this order.
+}
+\section{Notation}{
+
+\eqn{\ell^{(\mu\mu\mu)}} is the third derivative of the log-mass with
+respect to \eqn{\mu}. Parenthesized superscripts name derivatives; a
+subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- poisson_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# The closed form, written out; zero at an observed zero.
+all.equal(distrib_deriv3(d, y, th)$mu_mu_mu, 2 * y / 3^3)
+
+# The expected value is 2/mu^2.
+unique(distrib_deriv3(d, y, th, expected = TRUE)$mu_mu_mu)
+2 / 3^2
+
+# A central difference of the Hessian reproduces the observed value.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 3 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 3 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
+          tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.PoissonDistrib]{distrib_deriv4.PoissonDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

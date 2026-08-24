@@ -2,26 +2,82 @@
 % Please edit documentation in R/poisson_distrib.R
 \name{distrib_expected_hessian.PoissonDistrib}
 \alias{distrib_expected_hessian.PoissonDistrib}
-\title{Poisson Analytical Expected Hessian}
+\title{Poisson Expected Hessian}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of expected second derivatives.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))} and constant at \eqn{-1/\mu}.
 }
 \description{
-Computes the analytical expected Hessian of the Poisson log-probability
-with respect to the parameter \eqn{\mu}.
+Returns the expectation of the observed second derivative under the model,
+in closed form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu},}
+which follows from \eqn{\mathbb{E}[Y] = \mu} in \eqn{-y/\mu^2}. The Fisher
+information for one observation is \eqn{1/\mu}, so the asymptotic standard
+error of \eqn{\hat\mu} is \eqn{\sqrt{\mu/n}}, the standard error of a
+sample mean whose variance is \eqn{\mu}.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu}}
+On the \strong{link} scale with the default logarithm the value is \eqn{-\mu},
+and so is the observed Hessian: the log is the canonical link, the observed
+curvature there carries no data, and the two coincide exactly. Fisher
+scoring and Newton's method therefore take the same step on a Poisson model
+with a log link, which is why the two are not distinguished in the classical
+generalized-linear-model literature for this case.
+
+Because the value does not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
+\strong{observed information} under the model. The Poisson is a regular family,
+so the second Bartlett identity holds and this equals the variance of the
+score.
+}
+
+\examples{
+d <- poisson_distrib()
+th <- list(mu = 3)
+
+# A single number, -1/mu.
+unique(distrib_expected_hessian(d, c(0, 2, 7), th)$mu_mu)
+-1 / 3
+
+# On the canonical log link the observed and the expected values agree
+# exactly, at every observation.
+rbind(observed = distrib_hessian(d, c(0, 2, 7), th, scale = "link")$mu_mu,
+      expected = distrib_expected_hessian(d, c(0, 2, 7), th,
+                                          scale = "link")$mu_mu)
+
+# It is the variance of the score, this family being regular.
+set.seed(4)
+z <- distrib_rng(d, 2e5, th)
+c(var_of_score = mean(distrib_gradient(d, z, th)$mu^2),
+  information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_hessian.PoissonDistrib]{distrib_hessian.PoissonDistrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

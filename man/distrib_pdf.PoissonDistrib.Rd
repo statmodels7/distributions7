@@ -4,21 +4,49 @@
 \alias{distrib_pdf.PoissonDistrib}
 \title{Poisson Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A non-integer or negative value gives 0
+with a warning from \code{\link[stats:Poisson]{stats::dpois()}}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. A value of length 1 is recycled.
+\code{mu} must be strictly positive; a negative value gives \code{NaN} with a
+warning.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
+stays finite for a count far above the mean where the mass itself
+underflows. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(y), length(mu))}, one value per observation.
 }
 \description{
-Computes the probability mass function for the Poisson distribution:
-\deqn{P(Y=y; \mu) = \dfrac{\mu^y e^{-\mu}}{y!}}
+Computes the Poisson probability mass
+\deqn{P(Y = y; \mu) = \dfrac{e^{-\mu}\mu^{y}}{y!}, \qquad y = 0, 1, 2, \dots}
+by calling \code{\link[stats:Poisson]{stats::dpois()}}. The \code{pdf} in the generic's name is the density
+with respect to counting measure, so what this returns is a probability and
+is at most 1.
+}
+\examples{
+d <- poisson_distrib()
+y <- c(0, 2, 7)
+
+# The method is stats::dpois.
+all.equal(distrib_pdf(d, y, list(mu = 3)), dpois(y, lambda = 3))
+
+# A probability mass: it sums to one over the support.
+sum(distrib_pdf(d, 0:200, list(mu = 3)))
+
+# Far above the mean the mass underflows and its logarithm does not.
+distrib_pdf(d, 400, list(mu = 3))
+distrib_pdf(d, 400, list(mu = 3), log = TRUE)
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_cdf.PoissonDistrib]{distrib_cdf.PoissonDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.PoissonDistrib]{distrib_gradient.PoissonDistrib()}} for the derivatives of the log-mass,
+and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }
