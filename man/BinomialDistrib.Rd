@@ -43,9 +43,9 @@ the object stores it in the \code{size} property.}
 }
 \value{
 An S7 object of class \code{BinomialDistrib}, inheriting from
-\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's —
-\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
-\code{n_params}, \code{params_bounds}, \code{link_params}, \code{params_smooth} — plus
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's
+(\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params}, \code{params_smooth}) plus
 \code{size}. For an object built by \code{\link[=binomial_distrib]{binomial_distrib()}} they hold
 \code{"binomial"}, \code{"univariate"}, \code{c(0, max(size))}, \code{"mu"},
 \code{c(mu = "probability")}, \code{1}, the domain \eqn{(0, 1)}, the one link, and
@@ -54,12 +54,13 @@ the \code{size} given.
 \description{
 The S7 class of the binomial family: the number of successes in \code{size}
 independent trials, each succeeding with probability \eqn{\mu \in (0, 1)}.
-It inherits from \code{discrete_distrib}, so its support is counted rather than
-integrated and no derivative with respect to the response is defined.
+It inherits from \code{discrete_distrib}, so expectations over its support are
+sums and no derivative with respect to the response is defined.
 
-The class adds one property to the parent's, \code{size}, and that is what makes
-it worth documenting separately from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}: \strong{\code{size} is a
-constant of the object, not a parameter}. It is not estimated, it carries
+The class adds one property to the parent's, \code{size}, and that property is
+the reason it is documented separately from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}:
+\strong{\code{size} is a constant of the object, not a parameter}. It is not
+estimated, it carries
 no link and no bound, and it does not appear in \code{params}. It may be a single
 number or one value per observation, which is how grouped binary data with
 unequal group sizes is described.

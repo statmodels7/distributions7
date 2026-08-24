@@ -403,8 +403,8 @@ S7::method(distrib_hessian, LogisticDistrib) <- function(distrib, y, theta, scal
 #' so the location and the scale are orthogonal and their estimates are
 #' asymptotically independent. The information in the location is
 #' \eqn{1/(3\sigma^2)}, a third of a Gaussian's \eqn{1/\sigma^2} at the same
-#' \eqn{\sigma}; compared at equal variance rather than at equal \eqn{\sigma}
-#' the two are much closer, the logistic variance being \eqn{\pi^2\sigma^2/3}.
+#' \eqn{\sigma}. Compared at equal variance the two are much closer, the
+#' logistic variance being \eqn{\pi^2\sigma^2/3}.
 #'
 #' Because the values do not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -709,7 +709,7 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta) {
 #' response, and closed-form moments.
 #'
 #' The family is symmetric about \eqn{\mu} with variance
-#' \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale and not a standard
+#' \eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
 #' deviation. Its distribution function is the logistic sigmoid, the same curve
 #' `linkfunctions7` uses as the inverse logit link.
 #'
@@ -732,8 +732,8 @@ S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta) {
 #' The mean and the median are \eqn{\mu}, the variance is
 #' \eqn{\pi^2 \sigma^2/3}, the skewness is 0 and the excess kurtosis is
 #' \eqn{6/5}. A logistic and a Gaussian matched on their variance are close in
-#' the body and differ in the tails, the logistic's decaying exponentially
-#' rather than as a square exponential.
+#' the body and differ in the tails, the logistic's decaying exponentially and
+#' the Gaussian's as a square exponential.
 #'
 #' # Derivatives
 #'

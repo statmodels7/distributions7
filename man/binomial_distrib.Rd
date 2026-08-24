@@ -33,8 +33,8 @@ successes in \code{size} independent trials, each succeeding with probability
 \eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
 the log-mass to fourth order, observed and expected, and closed-form moments.
 
-\strong{\code{size} is fixed data and not a parameter.} It is carried on the object,
-it is not estimated, it has no link and no bound, and it does not appear in
+\strong{\code{size} is fixed data, not a parameter.} It is carried on the object, it
+is not estimated, it has no link and no bound, and it does not appear in
 \code{params}. Giving it one value per observation is how grouped binary data
 with unequal group sizes is described.
 

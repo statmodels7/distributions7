@@ -16,8 +16,8 @@ NULL
 #' differentiable. This makes the family non-regular in its location: the
 #' observed second derivative in \eqn{\mu} is 0 almost everywhere while the
 #' information is \eqn{1/\sigma^2}. The class records that by setting
-#' `params_smooth` to `c(mu = FALSE, sigma = TRUE)`, which is what
-#' [check_distrib()] and the finite-difference guards consult.
+#' `params_smooth` to `c(mu = FALSE, sigma = TRUE)`, which [check_distrib()]
+#' and the finite-difference guards consult.
 #'
 #' Build one with [laplace_distrib()]. This page documents the raw S7
 #' constructor, which takes the parent's properties and validates none of the
@@ -82,7 +82,7 @@ LaplaceDistrib <- S7::new_class("LaplaceDistrib", parent = continuous_distrib)
 #' from the log-density \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is formed
 #' first and exponentiated only when `log = FALSE`. The density is continuous
 #' everywhere and has a corner at \eqn{y = \mu}, where the two exponential arms
-#' meet; that corner is what makes the family non-regular in its location.
+#' meet. That corner makes the family non-regular in its location.
 #'
 #' @param distrib A `LaplaceDistrib` object, from [laplace_distrib()].
 #' @param y A numeric vector of observations. Every real value is in the
@@ -762,8 +762,8 @@ S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' is piecewise linear in \eqn{\mu} with a corner. Three consequences, all
 #' visible in the methods:
 #'
-#' - the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying the sign
-#'   of the residual and not its size;
+#' - the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying only
+#'   the sign of the residual;
 #' - the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 #'   [distrib_hessian.LaplaceDistrib()] returns a vector of zeros;
 #' - the second Bartlett identity fails, and the information is **defined** as

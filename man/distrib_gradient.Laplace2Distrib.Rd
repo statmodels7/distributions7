@@ -39,8 +39,9 @@ estimate of \eqn{\mu} is the sample median.
 
 \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. \eqn{r = y-\mu}
-is the residual. Here \eqn{\lambda} is a rate and not a penalty parameter,
-though the lasso penalty is this family with \eqn{\mu} held at zero.
+is the residual. Here \eqn{\lambda} is a rate; the same letter names a
+penalty parameter above, and the two meet in the lasso, which is this
+family with \eqn{\mu} held at zero.
 }
 
 \examples{

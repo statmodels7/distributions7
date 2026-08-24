@@ -7,9 +7,8 @@ NULL
 #' @description
 #' The S7 class of the Poisson family parametrized by its mean \eqn{\mu > 0},
 #' with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative integers. It
-#' inherits from `discrete_distrib`, so its support is counted rather than
-#' integrated: expectations are exact sums and no derivative with respect to
-#' the response is defined.
+#' inherits from `discrete_distrib`, so expectations over its support are exact
+#' sums and no derivative with respect to the response is defined.
 #'
 #' The mean and the variance are both \eqn{\mu}, which is the constraint a
 #' count model most often has to relax; [negbin2_distrib()] and
@@ -131,8 +130,8 @@ S7::method(distrib_pdf, PoissonDistrib) <- function(distrib, y, theta, log = FAL
 #' Computes the Poisson distribution function
 #' \deqn{F(q; \mu) = P(Y \le q) = \sum_{k = 0}^{\lfloor q \rfloor} \dfrac{e^{-\mu}\mu^{k}}{k!}}
 #' by calling [stats::ppois()], which evaluates it through the incomplete gamma
-#' function rather than by summing. The function is a step function, constant
-#' between integers, so `F(2)` and `F(2.9)` are the same number.
+#' function. The function is a step function, constant between integers, so
+#' `F(2)` and `F(2.9)` are the same number.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
 #' @param q A numeric vector of quantiles. A non-integer is floored, and a
@@ -463,8 +462,8 @@ S7::method(distrib_expected_hessian, PoissonDistrib) <- function(distrib, y, the
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
 #' form, so no quadrature is run and `approx` and `nsim` are ignored.
 #'
-#' The family has one parameter, so there is one component rather than the four
-#' a two-parameter family carries at this order.
+#' The family has one parameter, so there is one component, where a
+#' two-parameter family carries four at this order.
 #'
 #' @param distrib A `PoissonDistrib` object, from [poisson_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length

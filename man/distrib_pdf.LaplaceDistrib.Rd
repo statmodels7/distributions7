@@ -30,7 +30,7 @@ Computes the Laplace density
 from the log-density \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is formed
 first and exponentiated only when \code{log = FALSE}. The density is continuous
 everywhere and has a corner at \eqn{y = \mu}, where the two exponential arms
-meet; that corner is what makes the family non-regular in its location.
+meet. That corner makes the family non-regular in its location.
 }
 \examples{
 d <- laplace_distrib()

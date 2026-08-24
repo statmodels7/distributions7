@@ -47,9 +47,8 @@ object built by \code{\link[=poisson_distrib]{poisson_distrib()}} they hold \cod
 \description{
 The S7 class of the Poisson family parametrized by its mean \eqn{\mu > 0},
 with mass \eqn{P(Y = y) = e^{-\mu}\mu^y/y!} on the non-negative integers. It
-inherits from \code{discrete_distrib}, so its support is counted rather than
-integrated: expectations are exact sums and no derivative with respect to
-the response is defined.
+inherits from \code{discrete_distrib}, so expectations over its support are exact
+sums and no derivative with respect to the response is defined.
 
 The mean and the variance are both \eqn{\mu}, which is the constraint a
 count model most often has to relax; \code{\link[=negbin2_distrib]{negbin2_distrib()}} and

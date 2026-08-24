@@ -10,8 +10,8 @@
 
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
-of length \code{n} draws one variate per probability, which is what a
-regression on a Bernoulli response needs. \code{mu} must lie in \eqn{(0, 1)}.}
+of length \code{n} draws one variate per probability, the shape a regression
+on a Bernoulli response supplies. \code{mu} must lie in \eqn{(0, 1)}.}
 }
 \value{
 An integer vector of \code{n} zeros and ones.

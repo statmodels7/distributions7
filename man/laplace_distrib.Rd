@@ -57,8 +57,8 @@ lasso penalty uses.
 is piecewise linear in \eqn{\mu} with a corner. Three consequences, all
 visible in the methods:
 \itemize{
-\item the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying the sign
-of the residual and not its size;
+\item the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying only
+the sign of the residual;
 \item the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} returns a vector of zeros;
 \item the second Bartlett identity fails, and the information is \strong{defined} as

@@ -47,8 +47,8 @@ domain \eqn{(0, 1)}, and the one link.
 \description{
 The S7 class of the Bernoulli family parametrized by its success probability
 \eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and
-\eqn{P(Y = 0) = 1 - \mu}. It inherits from \code{discrete_distrib}, so its
-support is counted rather than integrated and no derivative with respect to
+\eqn{P(Y = 0) = 1 - \mu}. It inherits from \code{discrete_distrib}, so
+expectations over its support are sums and no derivative with respect to
 the response is defined.
 
 The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied

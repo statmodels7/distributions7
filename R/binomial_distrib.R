@@ -7,12 +7,13 @@ NULL
 #' @description
 #' The S7 class of the binomial family: the number of successes in `size`
 #' independent trials, each succeeding with probability \eqn{\mu \in (0, 1)}.
-#' It inherits from `discrete_distrib`, so its support is counted rather than
-#' integrated and no derivative with respect to the response is defined.
+#' It inherits from `discrete_distrib`, so expectations over its support are
+#' sums and no derivative with respect to the response is defined.
 #'
-#' The class adds one property to the parent's, `size`, and that is what makes
-#' it worth documenting separately from [bernoulli_distrib()]: **`size` is a
-#' constant of the object, not a parameter**. It is not estimated, it carries
+#' The class adds one property to the parent's, `size`, and that property is
+#' the reason it is documented separately from [bernoulli_distrib()]:
+#' **`size` is a constant of the object, not a parameter**. It is not
+#' estimated, it carries
 #' no link and no bound, and it does not appear in `params`. It may be a single
 #' number or one value per observation, which is how grouped binary data with
 #' unequal group sizes is described.
@@ -31,9 +32,9 @@ NULL
 #'   the object stores it in the `size` property.
 #'
 #' @return An S7 object of class `BinomialDistrib`, inheriting from
-#'   `discrete_distrib` and from `distrib`. Its properties are the parent's —
-#'   `distrib_name`, `dimension`, `bounds`, `params`, `params_interpretation`,
-#'   `n_params`, `params_bounds`, `link_params`, `params_smooth` — plus
+#'   `discrete_distrib` and from `distrib`. Its properties are the parent's
+#'   (`distrib_name`, `dimension`, `bounds`, `params`, `params_interpretation`,
+#'   `n_params`, `params_bounds`, `link_params`, `params_smooth`) plus
 #'   `size`. For an object built by [binomial_distrib()] they hold
 #'   `"binomial"`, `"univariate"`, `c(0, max(size))`, `"mu"`,
 #'   `c(mu = "probability")`, `1`, the domain \eqn{(0, 1)}, the one link, and
@@ -140,8 +141,8 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #' Computes the binomial distribution function
 #' \deqn{F(q; \mu) = \sum_{k = 0}^{\lfloor q \rfloor} \binom{n}{k}\mu^{k}(1-\mu)^{n-k}}
 #' by calling [stats::pbinom()] at `size = distrib@size`, which evaluates it
-#' through the incomplete beta function rather than by summing. The function is
-#' a step function, constant between integers, and reaches 1 at `size`.
+#' through the incomplete beta function. The function is a step function,
+#' constant between integers, and reaches 1 at `size`.
 #'
 #' @param distrib A `BinomialDistrib` object, from [binomial_distrib()]. Its
 #'   `size` property supplies the number of trials.
@@ -408,8 +409,8 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #'
 #' On the **link** scale with the default logit the value is
 #' \eqn{-n\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-#' canonical link and the two coincide exactly, which is what makes iteratively
-#' reweighted least squares Fisher scoring and Newton's method at once.
+#' canonical link and the two coincide exactly, so iteratively reweighted
+#' least squares is Fisher scoring and Newton's method at once.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -598,8 +599,8 @@ S7::method(distrib_deriv4, BinomialDistrib) <- function(distrib, y, theta, expec
 #' \eqn{\mu \in (0, 1)}. The returned object carries closed-form derivatives of
 #' the log-mass to fourth order, observed and expected, and closed-form moments.
 #'
-#' **`size` is fixed data and not a parameter.** It is carried on the object,
-#' it is not estimated, it has no link and no bound, and it does not appear in
+#' **`size` is fixed data, not a parameter.** It is carried on the object, it
+#' is not estimated, it has no link and no bound, and it does not appear in
 #' `params`. Giving it one value per observation is how grouped binary data
 #' with unequal group sizes is described.
 #'

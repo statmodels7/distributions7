@@ -29,7 +29,7 @@ derivatives of the log-density to fourth order in the parameters and in the
 response, and closed-form moments.
 
 The family is symmetric about \eqn{\mu} with variance
-\eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale and not a standard
+\eqn{\pi^2\sigma^2/3}, so \eqn{\sigma} is a scale, not a standard
 deviation. Its distribution function is the logistic sigmoid, the same curve
 \code{linkfunctions7} uses as the inverse logit link.
 }
@@ -43,8 +43,8 @@ quantile function \eqn{Q(p) = \mu + \sigma \log(p/(1-p))}.
 The mean and the median are \eqn{\mu}, the variance is
 \eqn{\pi^2 \sigma^2/3}, the skewness is 0 and the excess kurtosis is
 \eqn{6/5}. A logistic and a Gaussian matched on their variance are close in
-the body and differ in the tails, the logistic's decaying exponentially
-rather than as a square exponential.
+the body and differ in the tails, the logistic's decaying exponentially and
+the Gaussian's as a square exponential.
 }
 
 \section{Derivatives}{

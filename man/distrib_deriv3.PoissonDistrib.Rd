@@ -40,8 +40,8 @@ With \code{expected = TRUE} the expectation is returned, obtained by substitutin
 \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{2/\mu^2}. Both routes are closed
 form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
 
-The family has one parameter, so there is one component rather than the four
-a two-parameter family carries at this order.
+The family has one parameter, so there is one component, where a
+two-parameter family carries four at this order.
 }
 \section{Notation}{
 

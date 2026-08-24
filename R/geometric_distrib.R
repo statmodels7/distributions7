@@ -9,12 +9,12 @@ NULL
 #' \eqn{\mu > 0}: the number of failures before the first success in
 #' independent trials, each succeeding with probability
 #' \eqn{p = 1/(1+\mu)}. It inherits from `discrete_distrib`, so its support is
-#' counted rather than integrated and no derivative with respect to the
-#' response is defined.
+#' a set of isolated points, so expectations are sums and no derivative with
+#' respect to the response is defined.
 #'
-#' The parametrization is by the mean rather than by the probability, which is
-#' what the modelling layer above needs: a link carries \eqn{\mu} to the
-#' unconstrained scale and the probability follows. R's own `dgeom` takes
+#' The parametrization is by the mean, the quantity the modeling layer above
+#' models: a link carries \eqn{\mu} to the unconstrained scale and the
+#' probability follows. R's own `dgeom` takes
 #' `prob`, and the methods convert through [geom_prob()].
 #'
 #' The variance is \eqn{\mu(1+\mu)}, always above the mean, so this family is
@@ -451,8 +451,8 @@ S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, t
 #' \eqn{\mathbb{E}[Y] = \mu}. Both routes are closed form, so no quadrature is
 #' run and `approx` and `nsim` are ignored.
 #'
-#' The family has one parameter, so there is one component rather than the four
-#' a two-parameter family carries at this order.
+#' The family has one parameter, so there is one component, where a
+#' two-parameter family carries four at this order.
 #'
 #' @param distrib A `GeometricDistrib` object, from [geometric_distrib()].
 #' @param y A numeric vector of counts. With `expected = TRUE` only its length

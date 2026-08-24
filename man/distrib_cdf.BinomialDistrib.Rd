@@ -28,8 +28,8 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 Computes the binomial distribution function
 \deqn{F(q; \mu) = \sum_{k = 0}^{\lfloor q \rfloor} \binom{n}{k}\mu^{k}(1-\mu)^{n-k}}
 by calling \code{\link[stats:Binomial]{stats::pbinom()}} at \code{size = distrib@size}, which evaluates it
-through the incomplete beta function rather than by summing. The function is
-a step function, constant between integers, and reaches 1 at \code{size}.
+through the incomplete beta function. The function is a step function,
+constant between integers, and reaches 1 at \code{size}.
 }
 \examples{
 d <- binomial_distrib(size = 10)

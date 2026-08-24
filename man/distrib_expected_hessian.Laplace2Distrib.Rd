@@ -34,8 +34,9 @@ quadrature or simulation:
       -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
       -I(\mu, \lambda) = 0.}
 
-For \eqn{\mu} this is the \strong{variance of the score} and not the expectation
-of \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, which is identically zero: the
+For \eqn{\mu} this is the \strong{variance of the score}. It is not the
+expectation of \code{\link[=distrib_hessian.Laplace2Distrib]{distrib_hessian.Laplace2Distrib()}}, which is identically
+zero: the
 family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
 there, exactly as in \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}. With
 \eqn{\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)} the variance is

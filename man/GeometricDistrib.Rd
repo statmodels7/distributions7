@@ -49,12 +49,12 @@ The S7 class of the geometric family parametrized by its \strong{mean}
 \eqn{\mu > 0}: the number of failures before the first success in
 independent trials, each succeeding with probability
 \eqn{p = 1/(1+\mu)}. It inherits from \code{discrete_distrib}, so its support is
-counted rather than integrated and no derivative with respect to the
-response is defined.
+a set of isolated points, so expectations are sums and no derivative with
+respect to the response is defined.
 
-The parametrization is by the mean rather than by the probability, which is
-what the modelling layer above needs: a link carries \eqn{\mu} to the
-unconstrained scale and the probability follows. R's own \code{dgeom} takes
+The parametrization is by the mean, the quantity the modeling layer above
+models: a link carries \eqn{\mu} to the unconstrained scale and the
+probability follows. R's own \code{dgeom} takes
 \code{prob}, and the methods convert through \code{\link[=geom_prob]{geom_prob()}}.
 
 The variance is \eqn{\mu(1+\mu)}, always above the mean, so this family is

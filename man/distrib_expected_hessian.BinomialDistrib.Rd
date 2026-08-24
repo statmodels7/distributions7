@@ -41,8 +41,8 @@ is smallest at \eqn{\mu = 1/2}.
 
 On the \strong{link} scale with the default logit the value is
 \eqn{-n\mu(1-\mu)}, and so is the observed Hessian: the logit is the
-canonical link and the two coincide exactly, which is what makes iteratively
-reweighted least squares Fisher scoring and Newton's method at once.
+canonical link and the two coincide exactly, so iteratively reweighted
+least squares is Fisher scoring and Newton's method at once.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

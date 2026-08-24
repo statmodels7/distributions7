@@ -42,8 +42,8 @@ On the \strong{link} scale with the default logit the value is
 \eqn{-\mu(1-\mu)}, and so is the observed Hessian: the logit is the
 canonical link, the observed curvature there carries no data, and the two
 coincide exactly. Fisher scoring and Newton's method therefore take the same
-step on a logistic regression, which is what makes iteratively reweighted
-least squares both at once.
+step on a logistic regression, so iteratively reweighted least squares is
+both at once.
 
 Because the value does not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

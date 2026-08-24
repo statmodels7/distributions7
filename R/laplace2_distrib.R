@@ -300,8 +300,9 @@ S7::method(distrib_rng, Laplace2Distrib) <- function(distrib, n, theta) {
 #' @section Notation:
 #' \eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
 #' \eqn{\lambda > 0} the rate, with variance \eqn{2/\lambda^2}. \eqn{r = y-\mu}
-#' is the residual. Here \eqn{\lambda} is a rate and not a penalty parameter,
-#' though the lasso penalty is this family with \eqn{\mu} held at zero.
+#' is the residual. Here \eqn{\lambda} is a rate; the same letter names a
+#' penalty parameter above, and the two meet in the lasso, which is this
+#' family with \eqn{\mu} held at zero.
 #'
 #' @seealso [distrib_gradient.LaplaceDistrib()] for the scale parametrization,
 #'   [distrib_expected_hessian.Laplace2Distrib()] for the information, and
@@ -405,8 +406,9 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #'       -I(\lambda) = -\dfrac{1}{\lambda^2}, \qquad
 #'       -I(\mu, \lambda) = 0.}
 #'
-#' For \eqn{\mu} this is the **variance of the score** and not the expectation
-#' of [distrib_hessian.Laplace2Distrib()], which is identically zero: the
+#' For \eqn{\mu} this is the **variance of the score**. It is not the
+#' expectation of [distrib_hessian.Laplace2Distrib()], which is identically
+#' zero: the
 #' family has a kink at \eqn{y = \mu} and the second Bartlett identity fails
 #' there, exactly as in [distrib_expected_hessian.LaplaceDistrib()]. With
 #' \eqn{\partial\ell/\partial\mu = \lambda\,\mathrm{sign}(r)} the variance is

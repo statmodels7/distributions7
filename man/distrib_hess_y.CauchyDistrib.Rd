@@ -27,7 +27,7 @@ in closed form. Being a location family, the Cauchy has the same curvature in
 the response as in its location, so this equals the \code{mu_mu} component of
 \code{\link[=distrib_hessian.CauchyDistrib]{distrib_hessian.CauchyDistrib()}}. It is negative only for \eqn{|r| <
 \sigma}: the log-density is concave near the location and convex in the
-tails, which is what the heavy tails look like on the log scale.
+tails, which is how heavy tails appear on the log scale.
 }
 \examples{
 d <- cauchy_distrib()

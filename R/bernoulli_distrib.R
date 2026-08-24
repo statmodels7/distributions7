@@ -7,8 +7,8 @@ NULL
 #' @description
 #' The S7 class of the Bernoulli family parametrized by its success probability
 #' \eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and
-#' \eqn{P(Y = 0) = 1 - \mu}. It inherits from `discrete_distrib`, so its
-#' support is counted rather than integrated and no derivative with respect to
+#' \eqn{P(Y = 0) = 1 - \mu}. It inherits from `discrete_distrib`, so
+#' expectations over its support are sums and no derivative with respect to
 #' the response is defined.
 #'
 #' The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied
@@ -228,8 +228,8 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of length `n`. A value of length 1 is recycled, so a vector
-#'   of length `n` draws one variate per probability, which is what a
-#'   regression on a Bernoulli response needs. `mu` must lie in \eqn{(0, 1)}.
+#'   of length `n` draws one variate per probability, the shape a regression
+#'   on a Bernoulli response supplies. `mu` must lie in \eqn{(0, 1)}.
 #'
 #' @return An integer vector of `n` zeros and ones.
 #'
@@ -394,8 +394,8 @@ S7::method(distrib_hessian, BernoulliDistrib) <- function(distrib, y, theta, sca
 #' \eqn{-\mu(1-\mu)}, and so is the observed Hessian: the logit is the
 #' canonical link, the observed curvature there carries no data, and the two
 #' coincide exactly. Fisher scoring and Newton's method therefore take the same
-#' step on a logistic regression, which is what makes iteratively reweighted
-#' least squares both at once.
+#' step on a logistic regression, so iteratively reweighted least squares is
+#' both at once.
 #'
 #' Because the value does not depend on the data, `approx` and `nsim` are
 #' ignored. `y` is read only for its length.
@@ -459,8 +459,8 @@ S7::method(distrib_expected_hessian, BernoulliDistrib) <- function(distrib, y, t
 #' \eqn{2/\mu^2 - 2/(1-\mu)^2}. Both routes are closed form, so no quadrature
 #' is run and `approx` and `nsim` are ignored.
 #'
-#' The family has one parameter, so there is one component rather than the four
-#' a two-parameter family carries at this order.
+#' The family has one parameter, so there is one component, where a
+#' two-parameter family carries four at this order.
 #'
 #' @param distrib A `BernoulliDistrib` object, from [bernoulli_distrib()].
 #' @param y A numeric vector of zeros and ones. With `expected = TRUE` only its

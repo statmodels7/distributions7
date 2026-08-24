@@ -42,8 +42,8 @@ The mixed entry vanishes because the family is symmetric about \eqn{\mu},
 so the location and the scale are orthogonal and their estimates are
 asymptotically independent. The information in the location is
 \eqn{1/(3\sigma^2)}, a third of a Gaussian's \eqn{1/\sigma^2} at the same
-\eqn{\sigma}; compared at equal variance rather than at equal \eqn{\sigma}
-the two are much closer, the logistic variance being \eqn{\pi^2\sigma^2/3}.
+\eqn{\sigma}. Compared at equal variance the two are much closer, the
+logistic variance being \eqn{\pi^2\sigma^2/3}.
 
 Because the values do not depend on the data, \code{approx} and \code{nsim} are
 ignored. \code{y} is read only for its length.

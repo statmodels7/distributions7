@@ -58,8 +58,8 @@ The density has a \strong{kink} at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
 differentiable. This makes the family non-regular in its location: the
 observed second derivative in \eqn{\mu} is 0 almost everywhere while the
 information is \eqn{1/\sigma^2}. The class records that by setting
-\code{params_smooth} to \code{c(mu = FALSE, sigma = TRUE)}, which is what
-\code{\link[=check_distrib]{check_distrib()}} and the finite-difference guards consult.
+\code{params_smooth} to \code{c(mu = FALSE, sigma = TRUE)}, which \code{\link[=check_distrib]{check_distrib()}}
+and the finite-difference guards consult.
 
 Build one with \code{\link[=laplace_distrib]{laplace_distrib()}}. This page documents the raw S7
 constructor, which takes the parent's properties and validates none of the

@@ -432,8 +432,8 @@ S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y,
 #' \eqn{\mathbb{E}[Y] = \mu}, which gives \eqn{4/\mu^3}. Both routes are closed
 #' form, so no quadrature is run and `approx` and `nsim` are ignored.
 #'
-#' The family has one parameter, so there is one component rather than the four
-#' a two-parameter family carries at this order.
+#' The family has one parameter, so there is one component, where a
+#' two-parameter family carries four at this order.
 #'
 #' @param distrib An `ExponentialDistrib` object, from [exponential_distrib()].
 #' @param y A numeric vector of observations. With `expected = TRUE` only its

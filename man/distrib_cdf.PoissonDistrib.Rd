@@ -27,8 +27,8 @@ A numeric vector of probabilities in \eqn{[0, 1]}, of length
 Computes the Poisson distribution function
 \deqn{F(q; \mu) = P(Y \le q) = \sum_{k = 0}^{\lfloor q \rfloor} \dfrac{e^{-\mu}\mu^{k}}{k!}}
 by calling \code{\link[stats:Poisson]{stats::ppois()}}, which evaluates it through the incomplete gamma
-function rather than by summing. The function is a step function, constant
-between integers, so \code{F(2)} and \code{F(2.9)} are the same number.
+function. The function is a step function, constant between integers, so
+\code{F(2)} and \code{F(2.9)} are the same number.
 }
 \examples{
 d <- poisson_distrib()
