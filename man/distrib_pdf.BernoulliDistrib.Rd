@@ -4,21 +4,48 @@
 \alias{distrib_pdf.BernoulliDistrib}
 \title{Bernoulli Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{y}{A numeric vector of observations (\code{0} or \code{1}).}
+\item{y}{A numeric vector of zeros and ones. Any other value gives 0 with a
+warning from \code{\link[stats:Binomial]{stats::dbinom()}}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. A value of length 1 is recycled.
+\code{mu} must lie in \eqn{(0, 1)}; a value outside \eqn{[0, 1]} gives \code{NaN}
+with a warning.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
+stays finite for a probability so small that the mass underflows.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(y), length(mu))}, one value per observation.
 }
 \description{
-Computes the probability mass function for the Bernoulli distribution:
-\deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}}
+Computes the Bernoulli probability mass
+\deqn{P(Y = y; \mu) = \mu^{y}(1-\mu)^{1-y}, \qquad y \in \{0, 1\},}
+by calling \code{\link[stats:Binomial]{stats::dbinom()}} at \code{size = 1}. The \code{pdf} in the generic's name
+is the density with respect to counting measure, so what this returns is a
+probability.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# The method is stats::dbinom at size 1.
+all.equal(distrib_pdf(d, c(0, 1, 1), list(mu = 0.3)),
+          dbinom(c(0, 1, 1), size = 1, prob = 0.3))
+
+# The two masses are 1 - p and p, and sum to one.
+distrib_pdf(d, c(0, 1), list(mu = 0.3))
+
+# A probability may vary by observation, one value each.
+distrib_pdf(d, c(0, 1, 1), list(mu = c(0.1, 0.5, 0.9)))
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_pdf.BinomialDistrib]{distrib_pdf.BinomialDistrib()}} for several trials,
+\code{\link[=distrib_gradient.BernoulliDistrib]{distrib_gradient.BernoulliDistrib()}} for the derivatives of the log-mass,
+and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

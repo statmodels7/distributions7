@@ -2,23 +2,63 @@
 % Please edit documentation in R/bernoulli_distrib.R
 \name{distrib_hessian.BernoulliDistrib}
 \alias{distrib_hessian.BernoulliDistrib}
-\title{Bernoulli Analytical Observed Hessian}
+\title{Bernoulli Observed Hessian}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of zeros and ones.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of second derivatives.
+A named list of one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-Computes the analytical observed Hessian (second derivative) of the Bernoulli log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the second derivative of the Bernoulli log-mass with respect to the
+probability, one value per observation, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}.}
+It is negative for every admissible \eqn{\mu} and takes one of two values
+according to whether the observation is 0 or 1.
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}}
+On the \strong{link} scale with the default logit the chain rule gives
+\eqn{\partial^2\ell/\partial\eta^2 = -\mu(1-\mu)}, which carries \strong{no data
+at all}. That is the defining property of a canonical link and makes the
+observed and the expected information the same matrix there; see
+\code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian.BernoulliDistrib()}}.
+}
+\examples{
+d <- bernoulli_distrib()
+y <- c(0, 1, 1)
+th <- list(mu = 0.3)
+
+# The closed form, written out; two values only.
+all.equal(distrib_hessian(d, y, th)$mu_mu,
+          -y / 0.3^2 - (1 - y) / 0.7^2)
+
+# On the canonical logit link the curvature carries no data: one value,
+# repeated, equal to -mu(1-mu).
+distrib_hessian(d, y, th, scale = "link")$mu_mu
+-0.3 * 0.7
+
+# A central difference of the score reproduces the parameter-scale value.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 0.3 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.3 - eps))$mu
+all.equal((up - dn) / (2 * eps), distrib_hessian(d, y, th)$mu_mu,
+          tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_gradient.BernoulliDistrib]{distrib_gradient.BernoulliDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian.BernoulliDistrib()}} for the expectation of this
+quantity, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

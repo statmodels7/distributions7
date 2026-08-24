@@ -4,23 +4,48 @@
 \alias{distrib_cdf.BernoulliDistrib}
 \title{Bernoulli Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer is floored.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{q}. \code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu))}.
 }
 \description{
-Computes the cumulative distribution function for the Bernoulli distribution:
-\deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
+Computes the Bernoulli distribution function by calling \code{\link[stats:Binomial]{stats::pbinom()}} at
+\code{size = 1}. It takes three values only:
+\deqn{F(q; \mu) = \begin{cases}
+  0, & q < 0,\\
+  1 - \mu, & 0 \le q < 1,\\
+  1, & q \ge 1.
+\end{cases}}
+}
+\examples{
+d <- bernoulli_distrib()
+th <- list(mu = 0.3)
+
+# Three values, whatever q is.
+distrib_cdf(d, c(-1, 0, 0.5, 1, 2), th)
+
+# The jump at 1 is exactly the mass there.
+c(jump = distrib_cdf(d, 1, th) - distrib_cdf(d, 0, th),
+  mass = distrib_pdf(d, 1, th))
+
+# The method is stats::pbinom at size 1.
+all.equal(distrib_cdf(d, c(0, 1), th), pbinom(c(0, 1), size = 1, prob = 0.3))
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_quantile.BernoulliDistrib]{distrib_quantile.BernoulliDistrib()}} for the generalized inverse,
+\code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf.BernoulliDistrib()}} for the mass, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

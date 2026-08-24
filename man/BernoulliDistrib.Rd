@@ -2,7 +2,7 @@
 % Please edit documentation in R/bernoulli_distrib.R
 \name{BernoulliDistrib}
 \alias{BernoulliDistrib}
-\title{S7 Class for Bernoulli Distribution}
+\title{Bernoulli Distribution Class}
 \usage{
 BernoulliDistrib(
   distrib_name = character(0),
@@ -36,14 +36,37 @@ BernoulliDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{BernoulliDistrib}.
+An S7 object of class \code{BernoulliDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=bernoulli_distrib]{bernoulli_distrib()}} they hold \code{"bernoulli"},
+\code{"univariate"}, \code{c(0, 1)}, \code{"mu"}, \code{c(mu = "probability")}, \code{1}, the
+domain \eqn{(0, 1)}, and the one link.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the Bernoulli distribution.
+The S7 class of the Bernoulli family parametrized by its success probability
+\eqn{\mu \in (0, 1)}, with mass \eqn{P(Y = 1) = \mu} and
+\eqn{P(Y = 0) = 1 - \mu}. It inherits from \code{discrete_distrib}, so its
+support is counted rather than integrated and no derivative with respect to
+the response is defined.
+
+The mean is \eqn{\mu} and the variance \eqn{\mu(1-\mu)}, so the two are tied
+and the family has no dispersion parameter of its own. The default link is
+the logit, which is the \strong{canonical} link here: on its scale the observed
+and the expected information coincide.
+
+A Bernoulli is a binomial on one trial. \code{\link[=binomial_distrib]{binomial_distrib()}} with
+\code{size = 1} gives the same law, and the two are worth keeping apart only
+because the binomial carries a \code{size} property this class does not.
+
+Build one with \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.BernoulliDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.BernoulliDistrib]{distrib_deriv4()}},
@@ -57,6 +80,27 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+d <- bernoulli_distrib()
+S7::S7_inherits(d, discrete_distrib)
+d@params_interpretation
+d@params_bounds
+
+# The default link is the logit, the canonical one.
+d@link_params$mu@link_name
+
+# Mean and variance are tied: p and p(1-p), maximal at p = 1/2.
+vapply(c(0.1, 0.5, 0.9), function(p) {
+  th <- list(mu = p)
+  c(mean = mean(d, th), var = variance(d, th))
+}, numeric(2))
+
+# The two masses sum to one.
+sum(distrib_pdf(d, c(0, 1), list(mu = 0.3)))
+}
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=bernoulli_distrib]{bernoulli_distrib()}} to build one;
+\code{\link[=binomial_distrib]{binomial_distrib()}}, of which this is the one-trial case;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for a binomial whose probability varies;
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the canonical link.
 }

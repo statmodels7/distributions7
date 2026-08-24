@@ -4,18 +4,43 @@
 \alias{distrib_rng.BernoulliDistrib}
 \title{Bernoulli Random Number Generator}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
+of length \code{n} draws one variate per probability, which is what a
+regression on a Bernoulli response needs. \code{mu} must lie in \eqn{(0, 1)}.}
 }
 \value{
-A numeric vector of random draws.
+An integer vector of \code{n} zeros and ones.
 }
 \description{
-Generates random numbers from the Bernoulli distribution.
+Draws \code{n} independent zero-one variates by calling \code{\link[stats:Binomial]{stats::rbinom()}} at
+\code{size = 1}, so the draws come from R's own generator and depend on
+\code{.Random.seed} in the usual way.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# Same generator as stats::rbinom, so the same seed gives the same draws.
+set.seed(2)
+a <- distrib_rng(d, 5, list(mu = 0.3))
+set.seed(2)
+identical(a, rbinom(5, size = 1, prob = 0.3))
+
+# The sample proportion estimates mu.
+set.seed(4)
+z <- distrib_rng(d, 2e4, list(mu = 0.3))
+c(proportion = mean(z), variance = var(z), p_times_q = 0.3 * 0.7)
+
+# A probability per observation, which is what a regression supplies.
+set.seed(5)
+p <- plogis(seq(-2, 2, length.out = 6))
+rbind(p = round(p, 3), draw = distrib_rng(d, 6, list(mu = p)))
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the probability back, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

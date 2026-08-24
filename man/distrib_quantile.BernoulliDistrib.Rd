@@ -4,24 +4,42 @@
 \alias{distrib_quantile.BernoulliDistrib}
 \title{Bernoulli Quantile Function}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{p}. \code{mu} must lie in \eqn{(0, 1)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of zeros and ones, of length
+\code{max(length(p), length(mu))}.
 }
 \description{
-Computes the quantile function for the Bernoulli distribution, the generalized
-inverse of the CDF:
-\deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
+Computes the generalized inverse of the Bernoulli distribution function by
+calling \code{\link[stats:Binomial]{stats::qbinom()}} at \code{size = 1}. It returns 0 while
+\eqn{p \le 1 - \mu} and 1 afterwards, so the whole function is one step at
+\eqn{1 - \mu}.
+}
+\examples{
+d <- bernoulli_distrib()
+th <- list(mu = 0.3)
+
+# One step, at p = 1 - mu.
+distrib_quantile(d, c(0.1, 0.5, 0.69, 0.71, 0.99), th)
+
+# The median is 0 whenever mu < 1/2 and 1 whenever mu > 1/2.
+vapply(c(0.3, 0.7), function(p) distrib_quantile(d, 0.5, list(mu = p)),
+       numeric(1))
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf.BernoulliDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

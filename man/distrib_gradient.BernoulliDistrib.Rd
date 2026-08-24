@@ -2,23 +2,69 @@
 % Please edit documentation in R/bernoulli_distrib.R
 \name{distrib_gradient.BernoulliDistrib}
 \alias{distrib_gradient.BernoulliDistrib}
-\title{Bernoulli Analytical Gradient}
+\title{Bernoulli Score}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of zeros and ones.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with the single component \code{mu}, a numeric vector
+of length 1 or of the length of \code{y}. \code{mu} must lie in \eqn{(0, 1)}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vector of first derivatives.
+A named list of one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
-Computes the analytical gradient (first derivative) of the Bernoulli log-probability
-with respect to the parameter \eqn{\mu}.
+Computes the first derivative of the Bernoulli log-mass with respect to the
+probability, one value per observation, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y}{\mu} - \dfrac{1-y}{1-\mu}
+      = \dfrac{y - \mu}{\mu(1-\mu)}.}
+The residual is divided by the variance, so an observation near a
+probability of 0 or 1 that goes the other way contributes an arbitrarily
+large score.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}}
+On the \strong{link} scale with the default logit the generic's chain rule gives
+\eqn{\partial\ell/\partial\eta = y - \mu}, the raw residual: the logit is
+the canonical link of this family.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
+success probability, with variance \eqn{\mu(1-\mu)}.
+\eqn{\eta = \log(\mu/(1-\mu))} is the parameter on the link scale, the log
+odds. A \strong{canonical} link makes the log-mass linear in the sufficient
+statistic times \eqn{\eta}.
+}
+
+\examples{
+d <- bernoulli_distrib()
+y <- c(0, 1, 1)
+th <- list(mu = 0.3)
+
+# The closed form, written out.
+all.equal(distrib_gradient(d, y, th)$mu, (y - 0.3) / (0.3 * 0.7))
+
+# On the canonical logit link the score is the raw residual.
+distrib_gradient(d, y, th, scale = "link")$mu
+y - 0.3
+
+# The summed score vanishes at the sample proportion, which is the estimate.
+set.seed(4)
+z <- distrib_rng(d, 1000, list(mu = 0.3))
+sum(distrib_gradient(d, z, list(mu = mean(z)))$mu)
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian.BernoulliDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

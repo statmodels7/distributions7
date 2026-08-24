@@ -2,67 +2,125 @@
 % Please edit documentation in R/bernoulli_distrib.R
 \name{bernoulli_distrib}
 \alias{bernoulli_distrib}
-\title{Bernoulli Distribution Object}
+\title{Bernoulli Distribution}
 \usage{
 bernoulli_distrib(link_mu = logit_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu} (probability).
-Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}} to ensure the parameter stays within (0, 1).}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the probability
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the canonical link,
+which maps \eqn{(0, 1)} onto the whole line.
+\code{\link[linkfunctions7:probit_link]{linkfunctions7::probit_link()}} and \code{\link[linkfunctions7:cloglog_link]{linkfunctions7::cloglog_link()}} are
+the usual alternatives; under either the observed and expected information
+differ.}
 }
 \value{
-An S7 object of class \code{BernoulliDistrib} (inheriting from \code{discrete_distrib}) representing the Bernoulli distribution.
+An S7 object of class \code{BernoulliDistrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"bernoulli"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, 1)}, \code{params} \code{"mu"},
+\code{params_interpretation} \code{c(mu = "probability")}, \code{n_params} \code{1},
+\code{params_bounds} the list of \eqn{(0, 1)}, and \code{link_params} the one link
+given here.
 }
 \description{
-Creates a distribution object for the Bernoulli distribution parameterized by the probability of success \eqn{\mu}.
+Builds the distribution object for the Bernoulli family parametrized by its
+success probability \eqn{\mu \in (0, 1)}. The returned object carries
+closed-form derivatives of the log-mass to fourth order, observed and
+expected, and closed-form moments.
+
+This is the response distribution of logistic regression, and the default
+link is the logit that gives that model its name. The logit is the canonical
+link here, so the observed and the expected information coincide on its
+scale and iteratively reweighted least squares is Fisher scoring and
+Newton's method at once.
 }
-\details{
-The Bernoulli distribution models a binary outcome \eqn{y \in \{0, 1\}} with
-success probability \eqn{\mu}.
+\section{The parametrization}{
+The mass on \eqn{y \in \{0, 1\}} is
+\deqn{P(Y = y; \mu) = \mu^{y}(1-\mu)^{1-y},}
+with \eqn{\mu \in (0, 1)}. The mean is \eqn{\mu}, the variance
+\eqn{\mu(1-\mu)}, the skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}} and the
+excess kurtosis \eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}. The family has no
+dispersion parameter: fixing the mean fixes the variance, which is why
+overdispersion in binary data has to come from elsewhere, most often from a
+random effect or from grouping.
+}
 
-\strong{Probability mass function:}
-\deqn{P(Y=y; \mu) = \mu^y (1-\mu)^{1-y}, \quad y \in \{0, 1\}}
+\section{The canonical link}{
+The log-mass is \eqn{y\log(\mu/(1-\mu)) + \log(1-\mu)}, linear in \eqn{y}
+once \eqn{\eta = \log(\mu/(1-\mu))} is the parameter. The logit is therefore
+the canonical link, and on its scale
+\deqn{\dfrac{\partial \ell}{\partial \eta} = y - \mu, \qquad
+      \dfrac{\partial^2 \ell}{\partial \eta^2} = -\mu(1-\mu).}
+The second carries no data, so the observed and the expected information
+coincide. Under a probit or a complementary log-log link they do not, and
+the choice between Fisher scoring and Newton's method becomes a real one.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu) = \begin{cases} 0 & q < 0 \\ 1-\mu & 0 \le q < 1 \\ 1 & q \ge 1 \end{cases}}
-
-\strong{Quantile function} (generalized inverse):
-\deqn{Q(p; \mu) = \begin{cases} 0 & p \le 1-\mu \\ 1 & p > 1-\mu \end{cases}}
-
-\strong{Score, observed and expected Hessian:}
+\section{Derivatives}{
+On the parameter scale,
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\mu(1-\mu)}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\mu(1-\mu)}}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu(1-\mu)},
-skewness \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}, excess kurtosis
-\eqn{(1 - 6\mu(1-\mu))/(\mu(1-\mu))}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, 1)}
+      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{y}{\mu^2} - \dfrac{1-y}{(1-\mu)^2},}
+with expectations \eqn{0} and \eqn{-1/(\mu(1-\mu))}. The information is the
+reciprocal of the variance, so it is smallest at \eqn{\mu = 1/2} and grows
+without bound towards either endpoint: a near-certain outcome is very
+informative about its own probability.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
+\section{Estimation}{
+The maximum likelihood estimate is the sample proportion,
+\eqn{\hat\mu = \bar y}, in closed form. A sample of all zeros or all ones
+drives the estimate to the boundary, where the logit is infinite; that is
+separation, and it is a property of the data.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation and \eqn{\mu \in (0,1)} the
+success probability. \eqn{\eta = \log(\mu/(1-\mu))} is the log odds, the
+parameter on the link scale. The \strong{canonical} link of an exponential family
+is the one that makes the log-mass linear in the sufficient statistic.
+}
+
 \examples{
 d <- bernoulli_distrib()
-d@params
+d
 
-theta <- list(mu = 0.3)
-distrib_pdf(d, c(0, 1), theta)
-distrib_gradient(d, c(0, 1), theta)
+# The two masses, summing to one.
+distrib_pdf(d, c(0, 1), list(mu = 0.3))
 
+# Mean and variance are tied, the variance being maximal at 1/2.
+vapply(c(0.1, 0.5, 0.9), function(p) {
+  th <- list(mu = p)
+  c(mean = mean(d, th), var = variance(d, th), skew = skewness(d, th))
+}, numeric(3))
+
+# The estimate is the sample proportion, in closed form.
+set.seed(4)
+z <- distrib_rng(d, 1000, list(mu = 0.3))
+c(fitted = unname(coef(fit_distrib(d, z))), proportion = mean(z))
+
+# On the canonical logit link the observed and expected information agree;
+# under a probit they do not.
+th <- list(mu = 0.3)
+probit <- bernoulli_distrib(link_mu = linkfunctions7::probit_link())
+rbind(logit = c(obs = distrib_hessian(d, 1, th, scale = "link")$mu_mu,
+                exp = distrib_expected_hessian(d, 1, th,
+                                               scale = "link")$mu_mu),
+      probit = c(obs = distrib_hessian(probit, 1, th, scale = "link")$mu_mu,
+                 exp = distrib_expected_hessian(probit, 1, th,
+                                                scale = "link")$mu_mu))
+
+}
+\references{
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Chapter 3.
+Wiley, Hoboken.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.BernoulliDistrib]{distrib_pdf.BernoulliDistrib()}} for the probability mass function.
-\item \code{\link[=distrib_cdf.BernoulliDistrib]{distrib_cdf.BernoulliDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.BernoulliDistrib]{distrib_quantile.BernoulliDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.BernoulliDistrib]{distrib_rng.BernoulliDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.BernoulliDistrib]{distrib_gradient.BernoulliDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.BernoulliDistrib]{distrib_hessian.BernoulliDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.BernoulliDistrib]{distrib_expected_hessian.BernoulliDistrib()}} for the analytical expected Hessian.
-}
+\code{\link[=binomial_distrib]{binomial_distrib()}}, of which this is the one-trial case;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} and \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for grouped binary data
+that is overdispersed; \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}},
+\code{\link[linkfunctions7:probit_link]{linkfunctions7::probit_link()}} and \code{\link[linkfunctions7:cloglog_link]{linkfunctions7::cloglog_link()}} for the
+usual links; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the probability;
+\link{BernoulliDistrib} for the class.
 }
