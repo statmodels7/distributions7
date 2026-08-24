@@ -2,7 +2,7 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{Gaussian2Distrib}
 \alias{Gaussian2Distrib}
-\title{S7 Class for the Gaussian Distribution in Mean and Variance}
+\title{Gaussian Distribution Class, Mean and Variance}
 \usage{
 Gaussian2Distrib(
   distrib_name = character(0),
@@ -36,15 +36,31 @@ Gaussian2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Gaussian2Distrib}.
+An S7 object of class \code{Gaussian2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} they hold \code{"gaussian2"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma2")}, the interpretations
+\code{c(mu = "mean", sigma2 = "variance")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} for the Gaussian
-written in its mean and its \strong{variance}.
+The S7 class of the Gaussian (normal) family parametrized by its mean
+\eqn{\mu} and its variance \eqn{\sigma^2 > 0}, with density
+\eqn{f(y) = (2\pi\sigma^2)^{-1/2}\exp\{-(y-\mu)^2/(2\sigma^2)\}} on the
+whole real line. It inherits from \code{continuous_distrib}, so it answers every
+generic of the \code{distrib} contract; the eleven methods listed below are
+registered on it directly and everything else comes from the parent.
+
+Build one with \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Gaussian2Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4()}},
@@ -60,6 +76,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- gaussian2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@params_bounds
+
+# The second parameter is the variance, so the second interpretation and
+# the fitted standard error both describe the variance.
+d@params_interpretation[["sigma2"]]
+}
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} to build one;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the same law in mean and standard deviation and
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for mean and precision;
+\code{\link[=distrib_pdf.Gaussian2Distrib]{distrib_pdf.Gaussian2Distrib()}} and \code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}}
+for the closed forms this class supplies.
 }

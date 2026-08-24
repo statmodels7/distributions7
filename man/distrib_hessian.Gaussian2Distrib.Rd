@@ -2,26 +2,71 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{distrib_hessian.Gaussian2Distrib}
 \alias{distrib_hessian.Gaussian2Distrib}
-\title{Gaussian Analytical Observed Hessian in Mean and Variance}
+\title{Gaussian Observed Hessian in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma2} and
+\code{sigma2_sigma2}, each of length
+\code{max(length(y), length(mu), length(sigma2))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
+Computes the three distinct second derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{v = \sigma^2}, one value per observation,
+in closed form. With \eqn{r = y - \mu},
 \deqn{\ell^{(\mu\mu)} = -\dfrac{1}{v}, \qquad
       \ell^{(\mu v)} = -\dfrac{r}{v^2}, \qquad
-      \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}}
+      \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3}.}
+Only the curvature in \eqn{\mu} is free of the data; the other two vary with
+the residual, and their expectations are
+\code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density with respect
+to parameters \eqn{i} and \eqn{j}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- gaussian2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, sigma2 = 4)
+h <- distrib_hessian(d, y, th)
+
+# The curvature in mu is constant at -1/v; the other two are not.
+h$mu_mu
+r <- y - 1
+all.equal(h$mu_sigma2, -r / 4^2)
+all.equal(h$sigma2_sigma2, 1 / (2 * 4^2) - r^2 / 4^3)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 1, sigma2 = 4 + eps))$sigma2
+dn <- distrib_gradient(d, y, list(mu = 1, sigma2 = 4 - eps))$sigma2
+all.equal((up - dn) / (2 * eps), h$sigma2_sigma2, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3.Gaussian2Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

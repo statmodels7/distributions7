@@ -2,23 +2,58 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{distrib_pdf.Gaussian2Distrib}
 \alias{distrib_pdf.Gaussian2Distrib}
-\title{Gaussian Density in Mean and Variance}
+\title{Gaussian Probability Density Function in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive; a zero or negative value
+makes \code{sqrt(sigma2)} zero or \code{NaN} and \code{\link[stats:Normal]{stats::dnorm()}} warns.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-\deqn{f(y) = \dfrac{1}{\sqrt{2\pi\sigma^2}}
+Computes the Gaussian density
+\deqn{f(y; \mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^2}}
       \exp\left\{-\dfrac{(y-\mu)^2}{2\sigma^2}\right\}}
+by calling \code{\link[stats:Normal]{stats::dnorm()}} at \code{mean = mu} and \code{sd = sqrt(sigma2)}, so the
+accuracy and the underflow behavior are R's own. With \code{log = TRUE} the
+logarithm is formed inside \code{dnorm()} and stays finite far into the tails,
+where the density itself underflows to zero.
+}
+\examples{
+d <- gaussian2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+
+# The method is stats::dnorm at the square root of the variance.
+all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
+          dnorm(y, mean = 1, sd = 2))
+
+# Same law as gaussian1 at sigma = sqrt(sigma2), to the last bit.
+all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
+          distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(0, 1, 2), sigma2 = c(1, 2.25, 4)))
+
+# In the far tail the density underflows and its logarithm does not.
+distrib_pdf(d, 40, list(mu = 0, sigma2 = 1))
+distrib_pdf(d, 40, list(mu = 0, sigma2 = 1), log = TRUE)
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_cdf.Gaussian2Distrib]{distrib_cdf.Gaussian2Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf.Gaussian1Distrib]{distrib_pdf.Gaussian1Distrib()}} for the same density in the
+standard deviation, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

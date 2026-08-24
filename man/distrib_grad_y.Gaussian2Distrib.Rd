@@ -2,22 +2,52 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{distrib_grad_y.Gaussian2Distrib}
 \alias{distrib_grad_y.Gaussian2Distrib}
-\title{Gaussian Response Derivatives in Mean and Variance}
+\title{Gaussian First Derivative in the Response, Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-\eqn{\partial\ell/\partial y = -(y-\mu)/v}.
+Computes the first derivative of the Gaussian log-density with respect to
+the response,
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{y - \mu}{v},
+      \qquad v = \sigma^2,}
+in closed form. The Gaussian is a location family in \eqn{\mu}, so the
+response enters the log-density only through \eqn{y - \mu} and this
+derivative is the negative of the score in \eqn{\mu}. Quantile residuals and
+the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- gaussian2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, sigma2 = 4)
+
+all.equal(distrib_grad_y(d, y, th), -(y - 1) / 4)
+
+# A location family: the derivative in the response is minus the score in
+# the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-5
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_hess_y.Gaussian2Distrib]{distrib_hess_y.Gaussian2Distrib()}} for the second derivative in
+the response, \code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic and the
+finite-difference fallback a family without a closed form takes.
 }

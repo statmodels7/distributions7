@@ -2,27 +2,58 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{distrib_cdf.Gaussian2Distrib}
 \alias{distrib_cdf.Gaussian2Distrib}
-\title{Gaussian Distribution Function in Mean and Variance}
+\title{Gaussian Cumulative Distribution Function in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma2))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-The normal distribution function, with the standard deviation
-taken as the square root of the variance parameter.
+Computes the Gaussian distribution function
+\deqn{F(q; \mu, \sigma^2) = \Phi\left(\dfrac{q-\mu}{\sigma}\right),
+      \qquad \sigma = \sqrt{\sigma^2},}
+with \eqn{\Phi} the standard normal distribution function, by calling
+\code{\link[stats:Normal]{stats::pnorm()}}. Both tails are available exactly: \code{lower.tail = FALSE}
+evaluates \eqn{1 - F} without forming the difference, and \code{log.p = TRUE}
+returns a logarithm that stays finite where the probability itself
+underflows to zero.
+}
+\examples{
+d <- gaussian2_distrib()
+th <- list(mu = 1, sigma2 = 4)
+
+# The method is stats::pnorm at sd = sqrt(sigma2).
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          pnorm(c(-1.2, 0.3, 2.5), mean = 1, sd = 2))
+
+# The two tails sum to one.
+distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
+
+# Forty standard deviations out the upper tail underflows; its log does not.
+distrib_cdf(d, 40, list(mu = 0, sigma2 = 1), lower.tail = FALSE)
+distrib_cdf(d, 40, list(mu = 0, sigma2 = 1), lower.tail = FALSE,
+            log.p = TRUE)
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_quantile.Gaussian2Distrib]{distrib_quantile.Gaussian2Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Gaussian2Distrib]{distrib_pdf.Gaussian2Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the derivatives of this function in the
+parameters, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

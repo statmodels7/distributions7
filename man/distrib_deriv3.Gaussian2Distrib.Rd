@@ -4,28 +4,87 @@
 \alias{distrib_deriv3.Gaussian2Distrib}
 \title{Gaussian Third-Order Derivatives in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma2},
+\code{mu_sigma2_sigma2} and \code{sigma2_sigma2_sigma2}, each of length
+\code{max(length(y), length(mu), length(sigma2))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed form, observed or expected.
+Computes the four distinct third derivatives of the Gaussian log-density
+with respect to \eqn{\mu} and \eqn{v = \sigma^2}, in closed form. Writing
+\eqn{r = y - \mu},
+\deqn{\ell^{(\mu\mu\mu)} = 0, \qquad
+      \ell^{(\mu\mu v)} = \dfrac{1}{v^2}, \qquad
+      \ell^{(\mu v v)} = \dfrac{2r}{v^3}, \qquad
+      \ell^{(vvv)} = \dfrac{3r^2}{v^4} - \dfrac{1}{v^3}.}
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{r} with 0 and \eqn{r^2} with \eqn{v}: the component odd in \eqn{r}
+vanishes and \eqn{\ell^{(vvv)}} becomes \eqn{2/v^3}. Both routes are closed
+form, so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does.
+}
+
+\examples{
+d <- gaussian2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, sigma2 = 4)
+d3 <- distrib_deriv3(d, y, th)
+
+# The log-density is quadratic in mu, so the third derivative there is 0.
+d3$mu_mu_mu
+
+# The other three, written out.
+r <- y - 1
+all.equal(d3$mu_mu_sigma2, rep(1 / 4^2, 3))
+all.equal(d3$mu_sigma2_sigma2, 2 * r / 4^3)
+all.equal(d3$sigma2_sigma2_sigma2, 3 * r^2 / 4^4 - 1 / 4^3)
+
+# Expected values: the component odd in the residual vanishes and the pure
+# variance component becomes 2/v^3.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+2 / 4^3
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 1, sigma2 = 4 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 1, sigma2 = 4 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma2, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_hessian.Gaussian2Distrib]{distrib_hessian.Gaussian2Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4.Gaussian2Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
+without a closed form takes.
 }

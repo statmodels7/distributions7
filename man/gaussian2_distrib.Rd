@@ -2,54 +2,131 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{gaussian2_distrib}
 \alias{gaussian2_distrib}
-\title{Gaussian Distribution in Mean and Variance}
+\title{Gaussian Distribution, Mean and Variance}
 \usage{
 gaussian2_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 }
 \arguments{
-\item{link_mu}{Link function for \eqn{\mu}. Defaults to the identity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the mean ranging
+over the whole line already.}
 
-\item{link_sigma2}{Link function for \eqn{\sigma^2}. Defaults to the log.}
+\item{link_sigma2}{A \code{link} object from \code{linkfunctions7} for the variance
+\eqn{\sigma^2}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{\link[=Gaussian2Distrib]{Gaussian2Distrib()}}.
+An S7 object of class \code{Gaussian2Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gaussian2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma2")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a Gaussian distribution object parametrized by its mean and its
-\strong{variance}.
+Builds the distribution object for the Gaussian (normal) family parametrized
+by its mean \eqn{\mu} and its variance \eqn{\sigma^2 > 0}. The returned
+object carries closed-form derivatives of the log-density to fourth order,
+in the parameters and in the response, and closed-form moments, so every
+generic of the toolkit answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the identity for
+the mean, which is already free, and the logarithm for the variance, which
+keeps it positive at every predictor.
 }
-\details{
-This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different
-coordinates: \eqn{\sigma^2} here is the square of the \eqn{\sigma} there.
-The two are separate families rather than one family under a link, because a
-link changes the scale a parameter is \emph{modeled} on while leaving the
-parameter what it was, whereas here the parameter, its interpretation, its
-standard error and its confidence interval are all about the variance.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^{2}}}
+      \exp\left\{-\dfrac{(y-\mu)^{2}}{2\sigma^{2}}\right\},}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\sigma^2 \in (0, \infty)}. The
+mean is \eqn{\mu}, the variance \eqn{\sigma^2}, and both the skewness and
+the excess kurtosis are 0. The numbering follows the literature where it has
+one: this parametrization is \code{NO2} in the gamlss family catalog.
 
-The numbering follows the literature where it has one: this parametrization
-is \code{NO2} in \pkg{gamlss}.
-
-Derivatives are closed form to fourth order, observed and expected, and the
-two parameters are orthogonal.
+This is the same law as \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} in different coordinates,
+\eqn{\sigma^2} here being the square of the \eqn{\sigma} there. The two are
+separate families and not one family under a link, because a link changes
+the scale a parameter is \emph{modeled} on and leaves the parameter what it was,
+while here the parameter, its interpretation, its standard error and its
+confidence interval are all about the variance.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \frac{1}{\sqrt{2\pi\sigma^{2}}}\exp\!\left\{-\frac{(y-\mu)^{2}}{2\sigma^{2}}\right\}}
-on \eqn{y \in \mathbb{R}}.
+\section{Derivatives}{
+Writing \eqn{r = y - \mu} and \eqn{v = \sigma^2}, the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{v}, \qquad
+      \dfrac{\partial \ell}{\partial v} = \dfrac{r^2 - v}{2v^2},}
+the observed Hessian
+\deqn{\ell^{(\mu\mu)} = -\dfrac{1}{v}, \quad
+      \ell^{(\mu v)} = -\dfrac{r}{v^2}, \quad
+      \ell^{(vv)} = \dfrac{1}{2v^2} - \dfrac{r^2}{v^3},}
+and its expectation
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{v}, \quad
+      \mathbb{E}\left[\ell^{(\mu v)}\right] = 0, \quad
+      \mathbb{E}\left[\ell^{(vv)}\right] = -\dfrac{1}{2v^2}.}
+The zero off-diagonal makes the mean and the variance orthogonal, so their
+maximum likelihood estimates are asymptotically independent. Orthogonality
+holds in all three parametrizations of this family, the mean being
+orthogonal to any smooth function of the spread alone.
 
-\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3.Gaussian2Distrib()}} and \code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4.Gaussian2Distrib()}},
+as are the derivatives in the response,
+\code{\link[=distrib_grad_y.Gaussian2Distrib]{distrib_grad_y.Gaussian2Distrib()}} and \code{\link[=distrib_hess_y.Gaussian2Distrib]{distrib_hess_y.Gaussian2Distrib()}}.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale and reaches
+the closed-form estimates \eqn{\hat\mu = \bar y} and
+\eqn{\hat\sigma^2 = n^{-1}\sum (y_i - \bar y)^2}, the maximum likelihood
+estimate with divisor \eqn{n}. The example below checks both against the
+sample.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma^2 > 0} the variance. \eqn{\ell^{(ij)}} is a second derivative of
+\eqn{\ell} in parameters \eqn{i} and \eqn{j}. \eqn{\eta} is a parameter on
+the unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- gaussian2_distrib()
-theta <- list(mu = 1, sigma2 = 4)
-distrib_pdf(d, c(0, 1, 2), theta)
-variance(d, theta)
+d
 
-# the same law as gaussian1 with sigma = 2
-distrib_pdf(gaussian1_distrib(), 0.5, list(mu = 1, sigma = 2))
+# The same law as gaussian1 at sigma = sqrt(sigma2).
+y <- c(-1.2, 0.3, 2.5)
+all.equal(distrib_pdf(d, y, list(mu = 1, sigma2 = 4)),
+          distrib_pdf(gaussian1_distrib(), y, list(mu = 1, sigma = 2)))
+
+# Moments in closed form: the variance is the parameter itself.
+th <- list(mu = 1, sigma2 = 4)
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# Fitting recovers the closed-form maximum likelihood estimates, with the
+# variance divided by n.
+set.seed(7)
+z <- distrib_rng(d, 400, list(mu = 3, sigma2 = 4))
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = mean(z), sigma2 = mean((z - mean(z))^2)))
+
+# The estimate is a variance, so the interval it reports is an interval for
+# the variance and stays positive.
+confint(fit)
 
 }
+\references{
+Rigby, R. A. and Stasinopoulos, D. M. (2005). Generalized additive models
+for location, scale and shape. \emph{Journal of the Royal Statistical Society:
+Series C} \strong{54}, 507-554.
+}
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} and \code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for the same law in the
+standard deviation and in the precision; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the
+Gaussian on a log scale; \code{\link[=student_t1_distrib]{student_t1_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for
+heavier tails; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
+\code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the same battery
+this one passes; \link{Gaussian2Distrib} for the class.
 }

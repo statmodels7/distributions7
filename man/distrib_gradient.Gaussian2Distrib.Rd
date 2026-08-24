@@ -2,26 +2,79 @@
 % Please edit documentation in R/gaussian2_distrib.R
 \name{distrib_gradient.Gaussian2Distrib}
 \alias{distrib_gradient.Gaussian2Distrib}
-\title{Gaussian Analytical Gradient in Mean and Variance}
+\title{Gaussian Score in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, each of
+length \code{max(length(y), length(mu), length(sigma2))}.
 }
 \description{
-With \eqn{r = y - \mu} and \eqn{v = \sigma^2},
-\deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{r}{v}, \qquad
-      \dfrac{\partial\ell}{\partial v} = \dfrac{r^2 - v}{2v^2}}
+Computes the first derivatives of the Gaussian log-density with respect to
+\eqn{\mu} and \eqn{v = \sigma^2}, one value per observation, in closed form.
+With \eqn{r = y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{v},
+      \qquad
+      \dfrac{\partial \ell}{\partial v} = \dfrac{r^2 - v}{2v^2}.}
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
+returns the parameter scale; the transformation happens in the generic.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{v = \sigma^2 > 0} the variance. \eqn{\eta_j} is the coordinate of
+parameter \eqn{j} on the unconstrained scale of its link, and \eqn{h_j' =
+\partial \theta_j / \partial \eta_j} the chain-rule factor onto it.
+}
+
+\examples{
+d <- gaussian2_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 1, sigma2 = 4)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- y - 1
+all.equal(g$mu, r / 4)
+all.equal(g$sigma2, (r^2 - 4) / (2 * 4^2))
+
+# The summed score vanishes at the maximum likelihood estimate, where the
+# variance carries the divisor n.
+set.seed(1)
+z <- rnorm(200, mean = 3, sd = 2)
+mle <- list(mu = mean(z), sigma2 = mean((z - mean(z))^2))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
+
+# Both parametrizations ride a log link on the spread, and log(sigma^2) is
+# twice log(sigma), so the link-scale score here is half gaussian1's.
+distrib_gradient(d, y, th, scale = "link")$sigma2 /
+  distrib_gradient(gaussian1_distrib(), y, list(mu = 1, sigma = 2),
+                   scale = "link")$sigma
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_hessian.Gaussian2Distrib]{distrib_hessian.Gaussian2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Gaussian2Distrib]{distrib_expected_hessian.Gaussian2Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.Gaussian1Distrib]{distrib_gradient.Gaussian1Distrib()}} for the same score in the standard
+deviation, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }
