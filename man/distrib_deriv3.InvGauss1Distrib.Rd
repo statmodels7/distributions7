@@ -2,25 +2,79 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_deriv3.InvGauss1Distrib}
 \alias{distrib_deriv3.InvGauss1Distrib}
-\title{Inverse-Gaussian Analytical Third-Order Derivatives}
+\title{Inverse Gaussian Third-Order Derivatives in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. With
+\code{expected = TRUE} only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
+\code{mu_phi_phi} and \code{phi_phi_phi}, each of length
+\code{max(length(y), length(mu), length(phi))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed-form third-order derivatives of the Inverse-Gaussian log-density (observed, or expected when \code{expected = TRUE}).
+Computes the four distinct third derivatives of the inverse Gaussian
+log-density with respect to \eqn{\mu} and \eqn{\phi}, in closed form. The
+log-density is a linear combination of \eqn{y}, \eqn{1/y} and \eqn{\log y}
+with coefficients rational in the parameters, so every derivative is a
+rational function of \eqn{(\mu, \phi)} times one of those three statistics.
+
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{Y} with \eqn{\mu} and \eqn{1/Y} with \eqn{1/\mu + \phi}. Both routes
+are closed form, so no quadrature is run and \code{approx} and \code{nsim} are
+ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name derivatives.
+}
+
+\examples{
+d <- invgauss1_distrib()
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# The expected values are constants at a fixed parameter setting, and the
+# mixed mu-phi-phi component is exactly zero, the score in mu being linear
+# in y and the two parameters entering it as a product.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 1 + eps, phi = 2))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 1 - eps, phi = 2))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.InvGauss1Distrib]{distrib_deriv4.InvGauss1Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
+without a closed form takes.
 }

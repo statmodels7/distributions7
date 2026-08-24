@@ -2,35 +2,83 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_hessian.InvGauss1Distrib}
 \alias{distrib_hessian.InvGauss1Distrib}
-\title{Inverse-Gaussian Analytical Observed Hessian}
+\title{Inverse Gaussian Observed Hessian in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{phi_phi} and
+\code{mu_phi}, in that order, each of length
+\code{max(length(y), length(mu), length(phi))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Inverse-Gaussian log-density
-with respect to the parameters \eqn{\mu} and \eqn{\phi}.
+Computes the three distinct second derivatives of the inverse Gaussian
+log-density with respect to \eqn{\mu} and \eqn{\phi}, one value per
+observation, in closed form:
+\deqn{\ell^{(\mu\mu)} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \qquad
+      \ell^{(\phi\phi)} =
+        \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \qquad
+      \ell^{(\mu\phi)} = -\dfrac{y - \mu}{\phi^2\mu^3}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{3y - 2\mu}{\phi\mu^4}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \phi^2} = \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \phi} = -\dfrac{y - \mu}{\phi^2\mu^3}}
+\strong{Neither diagonal entry is negative at every observation.} The curvature
+in \eqn{\mu} turns positive wherever \eqn{y < 2\mu/3}, and the curvature in
+\eqn{\phi} is negative only where \eqn{\phi < 2(y-\mu)^2/(\mu^2 y)}, so at
+\eqn{y = \mu} it is \eqn{+1/(2\phi^2)}. An observation near the mean
+therefore contributes positive curvature in the dispersion, and a Newton
+step taken on the observed Hessian can move the wrong way. The expected
+Hessian is negative definite everywhere, which is why
+\code{\link[=fisher_scoring]{fisher_scoring()}} is the more stable route here; see
+\code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}}.
+}
+\section{Notation}{
 
-\strong{Note:} The observed Hessian with respect to \eqn{\phi} is not guaranteed to be negative for all
-observed values of \eqn{y}. Specifically, \eqn{\partial^2 \ell/\partial \phi^2 < 0} only when
-\eqn{\phi < 2(y-\mu)^2/(\mu^2 y)}. This condition may be violated when observations are far from the mean
-or when the dispersion parameter is large, potentially causing numerical instability in optimization
-algorithms that rely on the observed Hessian (e.g., Newton-Raphson). In such cases, using the expected
-Hessian (\code{distrib_expected_hessian}) is recommended for more stable convergence.
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+}
+
+\examples{
+d <- invgauss1_distrib()
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+h <- distrib_hessian(d, y, th)
+h
+
+# The three closed forms, written out.
+all.equal(h$mu_mu, -(3 * y - 2 * 1) / (2 * 1^4))
+all.equal(h$phi_phi, (2 - 2 * (y - 1)^2 / (1^2 * y)) / (2 * 2^3))
+all.equal(h$mu_phi, -(y - 1) / (2^2 * 1^3))
+
+# Positive curvature in mu below 2 mu/3, and in phi at y = mu.
+c(mu_mu_at_half = distrib_hessian(d, 0.5, th)$mu_mu,
+  phi_phi_at_mu = distrib_hessian(d, 1, th)$phi_phi,
+  one_over_2phi2 = 1 / (2 * 2^2))
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 1, phi = 2 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 1, phi = 2 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_phi, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.InvGauss1Distrib]{distrib_deriv3.InvGauss1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

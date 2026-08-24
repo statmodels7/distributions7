@@ -2,20 +2,51 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_hess_y.InvGauss1Distrib}
 \alias{distrib_hess_y.InvGauss1Distrib}
-\title{Inverse-Gaussian Response Second Derivative}
+\title{Inverse Gaussian Second Derivative in the Response}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. The value
+diverges as \code{y} approaches zero.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{phi} must
+be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{max(length(y), length(phi))}, one value
+per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = 3/(2y^2) - 1/(\phi y^3)}.
+Computes the second derivative of the inverse Gaussian log-density with
+respect to the response, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = \dfrac{3}{2y^2}
+      - \dfrac{1}{\phi y^3}.}
+The mean drops out, the log-density depending on \eqn{\mu} only through
+terms linear in \eqn{y} and constant in it. The sign changes at
+\eqn{y = 2/(3\phi)}: the log-density is concave in the response below that
+point and \strong{convex above it}, so an inverse Gaussian log-likelihood is not
+a concave function of an observation over the whole support.
+}
+\examples{
+d <- invgauss1_distrib()
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+
+all.equal(distrib_hess_y(d, y, th), 1.5 / y^2 - 1 / (2 * y^3))
+
+# The mean does not enter.
+identical(distrib_hess_y(d, y, th),
+          distrib_hess_y(d, y, list(mu = 300, phi = 2)))
+
+# Concave below 2/(3 phi) and convex above it.
+cut <- 2 / (3 * 2)
+c(below = distrib_hess_y(d, cut / 2, th),
+  at = distrib_hess_y(d, cut, th),
+  above = distrib_hess_y(d, 2 * cut, th))
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_grad_y.InvGauss1Distrib]{distrib_grad_y.InvGauss1Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

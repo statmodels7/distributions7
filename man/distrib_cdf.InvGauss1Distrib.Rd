@@ -2,26 +2,74 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_cdf.InvGauss1Distrib}
 \alias{distrib_cdf.InvGauss1Distrib}
-\title{Inverse-Gaussian Cumulative Distribution Function}
+\title{Inverse Gaussian Cumulative Distribution Function in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(phi))}. With \code{log.p = TRUE} the values
+are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Inverse-Gaussian distribution:
-\deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\dfrac{1}{\phi q}}\left(\dfrac{q}{\mu}+1\right)\right)}
-where \eqn{\Phi} is the standard normal CDF.
+Computes the inverse Gaussian distribution function, which is elementary in
+the standard normal distribution function \eqn{\Phi}:
+\deqn{F(q; \mu, \phi) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
+        \left(\dfrac{q}{\mu} - 1\right)\right\}
+      + e^{2/(\phi\mu)}\,
+      \Phi\left\{-\sqrt{\dfrac{1}{\phi q}}
+        \left(\dfrac{q}{\mu} + 1\right)\right\},}
+by calling \code{\link[statmod:invgauss]{statmod::pinvgauss()}} at \code{mean = mu} and \code{dispersion = phi}.
+Both tails are available exactly, and \code{log.p = TRUE} returns a logarithm
+that stays finite where the probability itself underflows.
+
+The exponential factor is the reason this expression is evaluated on the
+log scale rather than as written: \eqn{e^{2/(\phi\mu)}} overflows at
+ordinary settings, at \eqn{\mu = 0.01} and \eqn{\phi = 0.1} the exponent
+already being 2000, and it multiplies a normal tail that underflows by the
+same amount.
+}
+\examples{
+d <- invgauss1_distrib()
+th <- list(mu = 1, phi = 2)
+q <- c(0.5, 1, 2)
+
+# The method is statmod::pinvgauss at this parametrization.
+all.equal(distrib_cdf(d, q, th),
+          statmod::pinvgauss(q, mean = 1, dispersion = 2))
+
+# The closed form above, evaluated directly at these safe values.
+a <- sqrt(1 / (2 * q)) * (q / 1 - 1)
+b <- -sqrt(1 / (2 * q)) * (q / 1 + 1)
+pnorm(a) + exp(2 / (2 * 1)) * pnorm(b)
+
+# The two tails sum to one.
+distrib_cdf(d, 2, th) + distrib_cdf(d, 2, th, lower.tail = FALSE)
+
+# The law is heavily right skewed, so most of the mass sits below the mean.
+distrib_cdf(d, 1, th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 1e4, th, lower.tail = FALSE)
+distrib_cdf(d, 1e4, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_quantile.InvGauss1Distrib]{distrib_quantile.InvGauss1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.InvGauss1Distrib]{distrib_pdf.InvGauss1Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for
+the derivatives of this function in the parameters, which are closed form
+here because the expression above is elementary, and \code{\link[=distrib_cdf]{distrib_cdf()}} for
+the generic.
 }

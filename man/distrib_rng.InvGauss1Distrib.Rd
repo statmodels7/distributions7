@@ -2,20 +2,43 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_rng.InvGauss1Distrib}
 \alias{distrib_rng.InvGauss1Distrib}
-\title{Inverse-Gaussian Random Number Generator}
+\title{Inverse Gaussian Random Number Generator in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. Both
+must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-Generates random numbers from the Inverse-Gaussian distribution.
+Draws \code{n} independent inverse Gaussian variates by calling
+\code{\link[statmod:invgauss]{statmod::rinvgauss()}} at \code{mean = mu} and \code{dispersion = phi}, so the draws
+come from that package's generator and depend on \code{.Random.seed} in the usual
+way. The ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- invgauss1_distrib()
+
+# Same generator as statmod::rinvgauss at this parametrization.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 1, phi = 2))
+set.seed(2)
+identical(a, statmod::rinvgauss(3, mean = 1, dispersion = 2))
+
+# Both maximum likelihood estimates are closed form here: the mean is the
+# sample mean and the dispersion the mean of 1/y minus 1/ybar.
+set.seed(3)
+z <- distrib_rng(d, 2e4, list(mu = 1, phi = 2))
+c(mu = mean(z), phi = mean(1 / z) - 1 / mean(z))
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_quantile.InvGauss1Distrib]{distrib_quantile.InvGauss1Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

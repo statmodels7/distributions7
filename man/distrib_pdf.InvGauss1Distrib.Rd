@@ -2,23 +2,58 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_pdf.InvGauss1Distrib}
 \alias{distrib_pdf.InvGauss1Distrib}
-\title{Inverse-Gaussian Probability Density Function}
+\title{Inverse Gaussian Probability Density Function in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations (\eqn{y > 0}).}
+\item{y}{A numeric vector of observations. The support is
+\eqn{(0, \infty)}; a value at or below zero gives 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Inverse-Gaussian distribution:
-\deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}} \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}}
+Computes the inverse Gaussian density
+\deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}}
+      \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}, \qquad y > 0,}
+by calling \code{\link[statmod:invgauss]{statmod::dinvgauss()}} at \code{mean = mu} and \code{dispersion = phi}.
+With \code{log = TRUE} the logarithm is formed inside that function and stays
+finite where the density itself underflows, which happens quickly: the
+density falls off like \eqn{\exp\{-y/(2\phi\mu^2)\}} in the right tail and
+like \eqn{\exp\{-1/(2\phi y)\}} at the origin.
+}
+\examples{
+d <- invgauss1_distrib()
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+
+# The method is statmod::dinvgauss at this parametrization.
+all.equal(distrib_pdf(d, y, th),
+          statmod::dinvgauss(y, mean = 1, dispersion = 2))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(0.5, 1, 2), phi = 2))
+
+# The density vanishes at the origin faster than any power.
+distrib_pdf(d, c(1e-2, 1e-3, 1e-4), th)
+
+# Far out in the tail the density underflows and its logarithm does not.
+distrib_pdf(d, 1e4, th)
+distrib_pdf(d, 1e4, th, log = TRUE)
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_cdf.InvGauss1Distrib]{distrib_cdf.InvGauss1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf.InvGauss2Distrib]{distrib_pdf.InvGauss2Distrib()}} for the same density in the
+variance, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

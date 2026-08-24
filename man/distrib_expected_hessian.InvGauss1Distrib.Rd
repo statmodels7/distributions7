@@ -2,28 +2,91 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_expected_hessian.InvGauss1Distrib}
 \alias{distrib_expected_hessian.InvGauss1Distrib}
-\title{Inverse-Gaussian Analytical Expected Hessian}
+\title{Inverse Gaussian Expected Hessian in Mean and Dispersion}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{phi_phi} and
+\code{mu_phi}, in that order, each of length
+\code{max(length(y), length(mu), length(phi))} and constant within itself when
+the parameters are.
 }
 \description{
-Computes the analytical expected Hessian of the Inverse-Gaussian log-density
-with respect to the parameters \eqn{\mu} and \eqn{\phi}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^3},
+      \qquad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] = -\dfrac{1}{2\phi^2},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
+They follow from \eqn{\mathbb{E}[Y] = \mu} and
+\eqn{\mathbb{E}[(Y-\mu)^2/Y] = \phi\mu^2}. The second identity is the one
+that gives the score in \eqn{\phi} mean zero.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\phi\mu^3}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = -\dfrac{1}{2\phi^2}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \phi}\right] = 0}
+Both diagonal entries are negative at every parameter setting, so the
+information is positive definite everywhere, where the observed Hessian of
+\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} is not. The zero off-diagonal says the
+mean and the dispersion are orthogonal, so the mean equation can be fitted
+with the dispersion held at any value without biasing it: this is the
+generalized linear model parametrization, with variance function
+\eqn{V(\mu) = \mu^3}.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The inverse
+Gaussian is a regular family, so the second Bartlett identity holds and this
+equals the variance of the score.
+}
+
+\examples{
+d <- invgauss1_distrib()
+th <- list(mu = 1, phi = 2)
+
+# The three constants, one value per observation.
+lapply(distrib_expected_hessian(d, c(0.5, 1, 2), th), unique)
+c(-1 / (2 * 1^3), -1 / (2 * 2^2), 0)
+
+# Negative definite at every setting, where the observed Hessian is
+# positive in phi at y = mu.
+c(expected = distrib_expected_hessian(d, 1, th)$phi_phi,
+  observed = distrib_hessian(d, 1, th)$phi_phi)
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
+and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

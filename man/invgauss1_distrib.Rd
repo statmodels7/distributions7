@@ -2,79 +2,148 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{invgauss1_distrib}
 \alias{invgauss1_distrib}
-\title{Inverse-Gaussian Distribution Object (Mean-Dispersion Parameterization)}
+\title{Inverse Gaussian Distribution, Mean and Dispersion}
 \usage{
 invgauss1_distrib(link_mu = log_link(), link_phi = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted mean positive.}
 
-\item{link_phi}{A link function object for the dispersion parameter \eqn{\phi}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_phi}{A \code{link} object from \code{linkfunctions7} for the dispersion
+\eqn{\phi}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same reason.}
 }
 \value{
-An S7 object of class \code{InvGauss1Distrib} (inheriting from \code{continuous_distrib}) representing the Inverse-Gaussian distribution.
+An S7 object of class \code{InvGauss1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"invgauss1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "phi")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Inverse-Gaussian distribution parameterized by mean (\eqn{\mu}) and dispersion (\eqn{\phi}).
+Builds the distribution object for the inverse Gaussian family on
+\eqn{(0, \infty)} parametrized by its mean \eqn{\mu > 0} and a dispersion
+\eqn{\phi > 0}, so that \eqn{\operatorname{Var}(Y) = \phi\mu^3}. This is the
+generalized linear model parametrization, with variance function
+\eqn{V(\mu) = \mu^3}. The returned object carries closed-form derivatives of
+the log-density to fourth order, in the parameters and in the response, and
+closed-form moments, so every generic of the toolkit answers without a
+numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
 }
-\details{
-The Inverse-Gaussian distribution is given a mean/dispersion parameterization,
-with mean \eqn{\mu} and dispersion \eqn{\phi}.
+\section{The parametrization}{
+The density on \eqn{y \in (0, \infty)} is
+\deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}}
+      \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\},}
+the mean is \eqn{\mu}, the variance \eqn{\phi\mu^3}, the skewness
+\eqn{3\sqrt{\phi\mu}} and the excess kurtosis \eqn{15\phi\mu}. The
+distribution function is elementary in the standard normal one,
+\deqn{F(q) = \Phi\left\{\sqrt{\dfrac{1}{\phi q}}
+        \left(\dfrac{q}{\mu} - 1\right)\right\}
+      + e^{2/(\phi\mu)}\,\Phi\left\{-\sqrt{\dfrac{1}{\phi q}}
+        \left(\dfrac{q}{\mu} + 1\right)\right\},}
+and the quantile function is its numerical inverse.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \phi) = \sqrt{\dfrac{1}{2\pi\phi y^3}} \exp\left\{-\dfrac{(y-\mu)^2}{2\phi\mu^2 y}\right\}, \quad y > 0}
+The law is the first-passage time of a Brownian motion with drift, which is
+why it is skewed however small the dispersion and why its variance grows
+with the cube of the mean. Beside the gamma, whose variance function is
+\eqn{\mu^2}, it puts more mass both near zero and far out.
 
-\strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
-\deqn{F(q; \mu, \phi) = \Phi\!\left(\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}-1\right)\right) + e^{2/(\phi\mu)}\, \Phi\!\left(-\sqrt{\tfrac{1}{\phi q}}\left(\tfrac{q}{\mu}+1\right)\right)}
-
-\strong{Quantile function:} no closed form; the numerical inverse of the CDF.
-
-\strong{Score:}
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^3}, \qquad
-      \dfrac{\partial \ell}{\partial \phi} = \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2}}
-
-\strong{Observed Hessian:}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{3y - 2\mu}{\phi\mu^4}, \quad
-      \dfrac{\partial^2 \ell}{\partial \phi^2} = \dfrac{\phi - 2(y-\mu)^2/(\mu^2 y)}{2\phi^3}, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi} = -\dfrac{y - \mu}{\phi^2\mu^3}}
-
-\strong{Expected Hessian:}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\phi\mu^3}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \phi^2}\right] = -\dfrac{1}{2\phi^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \phi}\right] = 0}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\phi\mu^3},
-skewness \eqn{3\sqrt{\phi\mu}}, excess kurtosis \eqn{15\phi\mu}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
-\item \eqn{\phi \in (0, +\infty)}
+This is the same law as \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}, which carries the mean and
+the \emph{variance}, the two being related by \eqn{\sigma^2 = \phi\mu^3}. They
+are separate families because the second parameter is a different quantity
+in each, with its own interpretation, standard error and interval.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+\section{Derivatives}{
+The score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^3},
+      \qquad
+      \dfrac{\partial \ell}{\partial \phi} =
+        \dfrac{(y - \mu)^2 - y\mu^2\phi}{2y\phi^2\mu^2},}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^3},
+      \qquad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] = -\dfrac{1}{2\phi^2},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0.}
+The zero off-diagonal makes the mean and the dispersion orthogonal, so the
+mean equation can be fitted with the dispersion held at any value without
+biasing it. Note that the expected curvature in \eqn{\phi} is
+\eqn{-1/(2\phi^2)} whatever the mean, so the dispersion is estimated with
+the same precision at every scale of the response.
+
+The observed Hessian is a different matter, and the method page says so at
+length: neither diagonal entry is negative at every observation. That is the
+practical reason to fit this family by \code{\link[=fisher_scoring]{fisher_scoring()}}.
+
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.InvGauss1Distrib]{distrib_deriv3.InvGauss1Distrib()}} and \code{\link[=distrib_deriv4.InvGauss1Distrib]{distrib_deriv4.InvGauss1Distrib()}},
+as are the derivatives in the response,
+\code{\link[=distrib_grad_y.InvGauss1Distrib]{distrib_grad_y.InvGauss1Distrib()}} and \code{\link[=distrib_hess_y.InvGauss1Distrib]{distrib_hess_y.InvGauss1Distrib()}}.
+The derivatives of the \emph{distribution} function in the parameters are closed
+form too, the expression above being elementary.
 }
+
+\section{Estimation}{
+Both maximum likelihood estimates are available in closed form, which few
+two-parameter families offer:
+\deqn{\hat\mu = \bar y, \qquad
+      \hat\phi = \dfrac{1}{n}\sum_i \dfrac{1}{y_i} - \dfrac{1}{\bar y}.}
+\code{\link[=fit_distrib]{fit_distrib()}} reaches them numerically on the link scale, and the example
+below checks both against the sample.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\phi > 0} the dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^3}.
+\eqn{\Phi} is the standard normal distribution function. \eqn{\eta} is a
+parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- invgauss1_distrib()
-d@params
+d
 
-theta <- list(mu = 1, phi = 2)
-distrib_pdf(d, c(0.5, 1, 2), theta)
-distrib_gradient(d, c(0.5, 1, 2), theta)
+# The density is statmod::dinvgauss at this parametrization.
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+all.equal(distrib_pdf(d, y, th),
+          statmod::dinvgauss(y, mean = 1, dispersion = 2))
 
+# Moments: variance phi mu^3, skewness 3 sqrt(phi mu), kurtosis 15 phi mu.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(2 * 1^3, 3 * sqrt(2 * 1), 15 * 2 * 1)
+
+# Fitting recovers the closed-form maximum likelihood estimates.
+set.seed(3)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = mean(z), phi = mean(1 / z) - 1 / mean(z)))
+
+# The mean and the dispersion are orthogonal: the mixed entry is 0.
+distrib_expected_hessian(d, 1, th)$mu_phi
+
+}
+\references{
+Chhikara, R. S. and Folks, J. L. (1989). \emph{The Inverse Gaussian
+Distribution: Theory, Methodology, and Applications}. Marcel Dekker,
+New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.InvGauss1Distrib]{distrib_pdf.InvGauss1Distrib()}} for the probability density function.
-\item \code{\link[=distrib_cdf.InvGauss1Distrib]{distrib_cdf.InvGauss1Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.InvGauss1Distrib]{distrib_quantile.InvGauss1Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.InvGauss1Distrib]{distrib_rng.InvGauss1Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.InvGauss1Distrib]{distrib_hessian.InvGauss1Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.InvGauss1Distrib]{distrib_expected_hessian.InvGauss1Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}} for the same law in the mean and the variance;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} for the other positive generalized linear model family,
+with variance function \eqn{\mu^2}; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for a third;
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the counts this law mixes a Poisson into;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{InvGauss1Distrib} for the class.
 }

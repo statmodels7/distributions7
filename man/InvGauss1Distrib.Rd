@@ -2,7 +2,7 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{InvGauss1Distrib}
 \alias{InvGauss1Distrib}
-\title{S7 Class for Inverse-Gaussian Distribution}
+\title{Inverse Gaussian Distribution Class, Mean and Dispersion}
 \usage{
 InvGauss1Distrib(
   distrib_name = character(0),
@@ -36,14 +36,31 @@ InvGauss1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{InvGauss1Distrib}.
+An S7 object of class \code{InvGauss1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} they hold \code{"invgauss1"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "phi")}, the interpretations
+\code{c(mu = "mean", phi = "dispersion")}, \code{2}, the domain \eqn{(0, \infty)}
+for both parameters, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Inverse-Gaussian distribution.
+The S7 class of the inverse Gaussian family on \eqn{(0, \infty)}
+parametrized by its mean \eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so
+that \eqn{\operatorname{Var}(Y) = \phi\mu^3}. It inherits from
+\code{continuous_distrib}, so it answers every generic of the \code{distrib} contract;
+the eleven methods listed below are registered on it directly and everything
+else comes from the parent.
+
+Build one with \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.InvGauss1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.InvGauss1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.InvGauss1Distrib]{distrib_deriv4()}},
@@ -59,6 +76,24 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- invgauss1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# The variance function is mu^3, so the spread grows faster with the mean
+# than a gamma's, whose variance function is mu^2.
+vapply(c(1, 2, 4), function(m) variance(d, list(mu = m, phi = 2)),
+       numeric(1))
+}
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}} to build one;
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}} for the same law in mean and variance;
+\code{\link[=distrib_pdf.InvGauss1Distrib]{distrib_pdf.InvGauss1Distrib()}} and
+\code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the closed forms this class
+supplies.
 }

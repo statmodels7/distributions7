@@ -2,23 +2,54 @@
 % Please edit documentation in R/invgauss1_distrib.R
 \name{distrib_grad_y.InvGauss1Distrib}
 \alias{distrib_grad_y.InvGauss1Distrib}
-\title{Inverse-Gaussian Response Derivatives}
+\title{Inverse Gaussian First Derivative in the Response}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. The value
+diverges as \code{y} approaches zero.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Inverse-Gaussian log-density with respect to the
-response:
-\eqn{\partial \ell / \partial y = -\dfrac{3}{2y} - \dfrac{y^2 - \mu^2}{2\phi\mu^2 y^2}} and
-\eqn{\partial^2 \ell / \partial y^2 = \dfrac{3}{2y^2} - \dfrac{1}{\phi y^3}}.
+Computes the first derivative of the inverse Gaussian log-density with
+respect to the response, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{3}{2y}
+      - \dfrac{y^2 - \mu^2}{2\phi\mu^2 y^2}.}
+The first term comes from the \eqn{y^{-3/2}} factor of the density and the
+second from the exponent. It changes sign at the mode, which for this family
+is \eqn{\mu\{(1 + 9\phi^2\mu^2/4)^{1/2} - 3\phi\mu/2\}}, always strictly
+below the mean.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- invgauss1_distrib()
+y <- c(0.5, 1, 2)
+th <- list(mu = 1, phi = 2)
+
+# Written out.
+all.equal(distrib_grad_y(d, y, th),
+          -1.5 / y - (y^2 - 1^2) / (2 * 2 * 1^2 * y^2))
+
+# Zero at the mode, which lies below the mean.
+mode <- 1 * (sqrt(1 + 9 * 2^2 * 1^2 / 4) - 3 * 2 * 1 / 2)
+c(mode = mode, mean = 1, at_mode = distrib_grad_y(d, mode, th))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=distrib_hess_y.InvGauss1Distrib]{distrib_hess_y.InvGauss1Distrib()}} for the second derivative in
+the response, \code{\link[=distrib_gradient.InvGauss1Distrib]{distrib_gradient.InvGauss1Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }
