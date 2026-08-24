@@ -2,20 +2,47 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_rng.NegBin2Distrib}
 \alias{distrib_rng.NegBin2Distrib}
-\title{Negative Binomial Random Number Generator}
+\title{Negative Binomial Random Number Generator, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one count per parameter setting. Both must
+be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} non-negative integers.
 }
 \description{
-Generates random numbers from the Negative Binomial distribution.
+Draws \code{n} independent negative binomial counts by calling
+\code{\link[stats:NegBinomial]{stats::rnbinom()}} at \code{size = theta} and \code{mu = mu}, so the draws come from
+R's own generator and depend on \code{.Random.seed} in the usual way. The
+cumulative-table fallback the base class supplies for a discrete family is
+bypassed.
+}
+\examples{
+d <- negbin2_distrib()
+
+# Same generator as stats::rnbinom at size = theta, mu = mu.
+set.seed(2)
+a <- distrib_rng(d, 5, list(mu = 4, theta = 2))
+set.seed(2)
+identical(a, rnbinom(5, size = 2, mu = 4))
+
+# The sample moments recover the parameters: the mean directly, and the
+# dispersion as mu^2/(var - mu).
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 4, theta = 2))
+c(mu = mean(z), theta = mean(z)^2 / (var(z) - mean(z)))
+
+# Overdispersion is the point: the variance is three times the mean here.
+c(mean = mean(z), var = var(z))
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_quantile.NegBin2Distrib]{distrib_quantile.NegBin2Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

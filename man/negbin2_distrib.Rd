@@ -2,87 +2,152 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{negbin2_distrib}
 \alias{negbin2_distrib}
-\title{Negative Binomial Distribution Object (NB2)}
+\title{Negative Binomial Distribution, NB2}
 \usage{
 negbin2_distrib(link_mu = log_link(), link_theta = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the mean parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted mean positive.}
 
-\item{link_theta}{A link function object for the dispersion parameter \eqn{\theta}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_theta}{A \code{link} object from \code{linkfunctions7} for the dispersion
+\eqn{\theta}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{NegBin2Distrib} (inheriting from \code{discrete_distrib}) representing the Negative Binomial distribution.
+An S7 object of class \code{NegBin2Distrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"negbin2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "theta")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Negative Binomial distribution (NB2)
-parameterized by mean (\eqn{\mu}) and dispersion (\eqn{\theta}).
+Builds the distribution object for the negative binomial family on the
+non-negative integers in the NB2 parametrization: the mean \eqn{\mu > 0} and
+a dispersion \eqn{\theta > 0}, so that
+\eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. This is the count model a
+regression reaches for when a Poisson is overdispersed. The returned object
+carries closed-form derivatives of the log-mass to fourth order and
+closed-form moments.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
 }
-\details{
-The Negative Binomial distribution (NB2) is given a mean/dispersion
-parameterization, with mean \eqn{\mu} and dispersion \eqn{\theta} (smaller
-\eqn{\theta} means more overdispersion). Write \eqn{s = \theta + \mu}.
+\section{The parametrization}{
+The mass on \eqn{y = 0, 1, 2, \ldots} is
+\deqn{P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+\theta)}{y!\,\Gamma(\theta)}
+      \left(\dfrac{\theta}{s}\right)^{\theta}
+      \left(\dfrac{\mu}{s}\right)^{y}, \qquad s = \theta + \mu,}
+the distribution function is the partial sum and the quantile function its
+generalized inverse. The mean is \eqn{\mu}, the variance
+\eqn{\mu + \mu^2/\theta}, the skewness
+\eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}} and the excess kurtosis
+\eqn{6/\theta + \theta/\{\mu(\theta+\mu)\}}.
 
-\strong{Probability mass function:}
-\deqn{P(Y=y; \mu, \theta) = \dfrac{\Gamma(y+\theta)}{y!\,\Gamma(\theta)} \left(\dfrac{\theta}{s}\right)^\theta \left(\dfrac{\mu}{s}\right)^y}
+The law is a Poisson whose rate is gamma distributed with mean \eqn{\mu} and
+shape \eqn{\theta}. Two limits follow: \eqn{\theta = 1} gives the geometric,
+\code{\link[=geometric_distrib]{geometric_distrib()}}, and \eqn{\theta \to \infty} gives the Poisson,
+\code{\link[=poisson_distrib]{poisson_distrib()}}. \strong{The dispersion reads the opposite way round from a
+variance}: a small \eqn{\theta} is heavy overdispersion and a large one is
+nearly a Poisson.
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \theta) = \sum_{k=0}^{\lfloor q \rfloor} P(Y=k; \mu, \theta)}
+The numbering follows Cameron and Trivedi: NB2 has a variance quadratic in
+the mean, and \code{\link[=negbin1_distrib]{negbin1_distrib()}} has one linear in it.
+}
 
-\strong{Quantile function:} the generalized inverse
-\eqn{Q(p) = \min\{y \in \mathbb{N}_0 : F(y) \ge p\}}.
+\section{Derivatives}{
+With \eqn{\psi} the digamma function, the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} =
+        \dfrac{\theta}{s}\left(\dfrac{y}{\mu} - 1\right), \qquad
+      \dfrac{\partial \ell}{\partial \theta} = \psi(y+\theta) - \psi(\theta)
+        + \log\dfrac{\theta}{s} + \dfrac{\mu - y}{s},}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\theta)}\right] = 0, \qquad
+      \mathbb{E}\left[\ell^{(\theta\theta)}\right] =
+        \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta s}.}
+The zero off-diagonal makes the mean and the dispersion orthogonal.
+}
 
-\strong{Score} (\eqn{\psi} the digamma function):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\theta}{s}\left(\dfrac{y}{\mu} - 1\right), \qquad
-      \dfrac{\partial \ell}{\partial \theta} = \psi(y+\theta) - \psi(\theta) + \log\left(\dfrac{\theta}{s}\right) + \dfrac{\mu - y}{s}}
-
-\strong{Observed Hessian} (\eqn{\psi_1} the trigamma function):
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{y+\theta}{s^2} - \dfrac{y}{\mu^2}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \theta} = \dfrac{y-\mu}{s^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \theta^2} = \psi_1(y+\theta) - \psi_1(\theta) + \dfrac{\mu}{\theta s} + \dfrac{y-\mu}{s^2}}
-
-\strong{Expected Hessian:}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\theta}{\mu s}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \theta^2}\right] = \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta s}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \theta}\right] = 0}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{\mu + \mu^2/\theta},
-skewness \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}, excess kurtosis
-\eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
-
-\strong{Parameter domains:}
+\section{Every derivative in theta cancels as theta grows}{
+The family tends to the Poisson as \eqn{\theta} grows, so every derivative
+in \eqn{\theta} vanishes there and is written as a sum of terms that cancel
+to leading order. The score and the observed Hessian are computed in forms
+that perform those cancellations symbolically, and are reliable throughout;
+the direct expression for the score is wrong by one part in a thousand at
+\eqn{\theta = 10^6} and changes sign at \eqn{10^8}. Two quantities are
+\strong{not} rewritten, and both pages say so:
 \itemize{
-\item \eqn{\mu \in (0, +\infty)}
-\item \eqn{\theta \in (0, +\infty)}
+\item the expected information in \eqn{\theta}, which is measured positive from
+about \eqn{\theta = 10^6} and so is unusable there
+(\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}});
+\item the third and fourth derivatives in \eqn{\theta}
+(\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}}, \code{\link[=distrib_deriv4.NegBin2Distrib]{distrib_deriv4.NegBin2Distrib()}}).
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) are also available.
+A fit reaches that regime routinely, a nearly equidispersed sample driving
+\eqn{\theta} towards its boundary.
 }
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The mean has
+the closed-form estimate \eqn{\hat\mu = \bar y}; the dispersion solves an
+equation in digamma functions and is reached numerically. The method of
+moments supplies the starting value \eqn{\bar y^2/(s^2 - \bar y)}, with
+\eqn{s^2} the sample variance.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu > 0} the mean and
+\eqn{\theta > 0} the dispersion. \eqn{\psi} is the digamma function and
+\eqn{\psi_m} its \eqn{m}th derivative. \eqn{\eta} is a parameter on the
+unconstrained scale of its link, with \eqn{\theta_j = g^{-1}(\eta_j)}.
+}
+
 \examples{
 d <- negbin2_distrib()
-d@params
+d
 
-theta <- list(mu = 3, theta = 2)
-distrib_pdf(d, 0:5, theta)
-distrib_gradient(d, 0:5, theta)
+# The mass is stats::dnbinom at size = theta, mu = mu.
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 2)
+all.equal(distrib_pdf(d, y, th), dnbinom(y, size = 2, mu = 4))
+
+# Moments: the variance exceeds the mean, by mu^2/theta.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(4 + 4^2 / 2, 6 / 2 + 2 / (4 * 6))
+
+# theta = 1 is the geometric and a large theta is the Poisson.
+all.equal(distrib_pdf(d, y, list(mu = 4, theta = 1)),
+          distrib_pdf(geometric_distrib(), y, list(mu = 4)))
+rbind(negbin = distrib_pdf(d, 0:4, list(mu = 3, theta = 1e6)),
+      poisson = dpois(0:4, 3))
+
+# Fitting recovers the parameters; the moment estimates start it off.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted  = coef(fit),
+      moments = c(mu = mean(z),
+                  theta = mean(z)^2 / (var(z) - mean(z))))
 
 }
 \references{
-Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
-on count data: comparisons and applications of some estimators and
-tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+Cameron, A. C. and Trivedi, P. K. (2013). \emph{Regression Analysis of Count
+Data}, 2nd edition, Chapter 3. Cambridge University Press, Cambridge.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} for the probability mass function.
-\item \code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.NegBin2Distrib]{distrib_quantile.NegBin2Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.NegBin2Distrib]{distrib_rng.NegBin2Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the NB1 parametrization, with a variance linear in
+the mean; \code{\link[=poisson_distrib]{poisson_distrib()}} for the equidispersed limit and
+\code{\link[=geometric_distrib]{geometric_distrib()}} for \eqn{\theta = 1}; \code{\link[=pig1_distrib]{pig1_distrib()}} for the
+Poisson mixed over an inverse Gaussian instead of a gamma;
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with excess zeros;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{NegBin2Distrib} for the class.
 }

@@ -2,28 +2,89 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_hessian.NegBin2Distrib}
 \alias{distrib_hessian.NegBin2Distrib}
-\title{Negative Binomial Analytical Observed Hessian}
+\title{Negative Binomial Observed Hessian, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{theta_theta} and
+\code{mu_theta}, in that order, each of length
+\code{max(length(y), length(mu), length(theta))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Negative Binomial log-probability
-with respect to the parameters \eqn{\mu} and \eqn{\theta}.
+Computes the three distinct second derivatives of the negative binomial
+log-mass with respect to \eqn{\mu} and \eqn{\theta}, one value per
+observation. Writing \eqn{s = \theta + \mu} and \eqn{\psi_1} for the
+trigamma function,
+\deqn{\ell^{(\mu\mu)} = \dfrac{y+\theta}{s^2} - \dfrac{y}{\mu^2}, \qquad
+      \ell^{(\mu\theta)} = \dfrac{y-\mu}{s^2}, \qquad
+      \ell^{(\theta\theta)} = \psi_1(y+\theta) - \psi_1(\theta)
+        + \dfrac{\mu}{\theta s} + \dfrac{y-\mu}{s^2}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{y+\theta}{(\theta+\mu)^2} - \dfrac{y}{\mu^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \theta^2} = \psi_1(y+\theta) - \psi_1(\theta) + \dfrac{\mu}{\theta(\theta+\mu)} + \dfrac{y-\mu}{(\theta+\mu)^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \theta} = \dfrac{y-\mu}{(\theta+\mu)^2}}
+The dispersion entry cancels at large \eqn{\theta} for the same reason the
+score does, and the kernel handles it the same way. Here the collapse is
+better than a series: with \eqn{a = \theta}, \eqn{b = \theta + y} and
+\eqn{c = \theta + \mu} the three leading terms combine \strong{exactly},
+\deqn{-\dfrac{y}{ab} + \dfrac{\mu}{ac} + \dfrac{y-\mu}{c^2}
+      = \dfrac{(y-\mu)^2}{b\,c^2},}
+so what is computed is that quotient plus the remainder
+\eqn{\psi_1(b) - \psi_1(a) + y/(ab)}, and only the remainder needs a series.
+To leading order the result is \eqn{\{(y-\mu)^2 - y\}/\theta^3}, which is
+the derivative of the score's leading term and is how the two derivations
+check each other.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-mass in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives. \eqn{\psi}
+and \eqn{\psi_1} are the digamma and trigamma functions.
+}
+
+\examples{
+d <- negbin2_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 2)
+h <- distrib_hessian(d, y, th)
+h
+
+# The three closed forms, written out at a dispersion where the direct
+# expression still has its digits.
+s <- 2 + 4
+all.equal(h$mu_mu, (y + 2) / s^2 - y / 4^2)
+all.equal(h$mu_theta, (y - 4) / s^2)
+all.equal(h$theta_theta,
+          trigamma(y + 2) - trigamma(2) + 4 / (2 * s) + (y - 4) / s^2)
+
+# The curvature in mu is positive at y = 0, so the observed information is
+# not positive definite at every count.
+h$mu_mu
+
+# It is the second derivative of the log-mass, so a central difference of
+# the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 4 + eps, theta = 2))$mu
+dn <- distrib_gradient(d, y, list(mu = 4 - eps, theta = 2))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

@@ -2,31 +2,105 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_expected_hessian.NegBin2Distrib}
 \alias{distrib_expected_hessian.NegBin2Distrib}
-\title{Negative Binomial Analytical Expected Hessian}
+\title{Negative Binomial Expected Hessian, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored. The mean and mixed entries are closed form and the
+dispersion entry is a truncated exact sum. Accepted so that the signature
+matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{theta_theta} and
+\code{mu_theta}, in that order, each of length
+\code{max(length(y), length(mu), length(theta))} and constant within itself
+when the parameters are.
 }
 \description{
-Computes the analytical expected Hessian of the Negative Binomial log-probability
-with respect to the parameters \eqn{\mu} and \eqn{\theta}.
+Returns the expectation of the observed Hessian under the model. With
+\eqn{s = \theta + \mu} and \eqn{\psi_1} the trigamma function,
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{\theta}{\mu s},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\theta)}\right] = 0, \qquad
+      \mathbb{E}\left[\ell^{(\theta\theta)}\right] =
+        \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta s}.}
+The mean entry and the mixed one are closed form, the latter vanishing
+because the observed mixed entry is \eqn{(y-\mu)/s^2} and
+\eqn{\mathbb{E}[Y] = \mu}. So the mean and the dispersion are orthogonal.
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\theta}{\mu(\theta+\mu)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \theta^2}\right] = \mathbb{E}[\psi_1(Y+\theta)] - \psi_1(\theta) + \dfrac{\mu}{\theta(\theta+\mu)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \theta}\right] = 0}
+\eqn{\mathbb{E}[\psi_1(Y+\theta)]} has no closed form. It is summed over the
+support through the mass recurrence, carried in log scale until the terms
+are representable, and stopped when the accumulated mass reaches
+\eqn{1 - 10^{-12}}. The sum is exact to that mass, so this entry is a
+truncated exact sum and not a quadrature or a simulation; \code{approx} and
+\code{nsim} are ignored, and \code{y} is read only for its length.
+}
+\section{A caveat at large theta}{
+The dispersion entry is a difference of two quantities that agree to
+leading order as \eqn{\theta} grows, and \strong{it is not rewritten to remove
+that cancellation}, unlike the score and the observed Hessian. Its leading
+order needs one term more of the observed Hessian than those two do, the
+\eqn{\theta^{-3}} term vanishing under expectation, so it is a derivation of
+its own. Measured at \eqn{\mu = 4}: it reads \eqn{-7.3\times 10^{-8}} at
+\eqn{\theta = 10^2}, \eqn{-3.6\times 10^{-16}} at \eqn{10^4} and
+\eqn{+1.7\times 10^{-16}} at \eqn{10^6}. The last is \strong{positive}, which an
+expected second derivative cannot be, so a Fisher scoring step taken there
+is not reliable. The example below shows the sign turning.
+}
 
-The term \eqn{\mathbb{E}[\psi_1(Y+\theta)]} has no closed form and is evaluated by
-summing over the support up to a far-tail quantile (with a tail-mass correction).
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The negative
+binomial is a regular family, so the second Bartlett identity holds and this
+equals the variance of the score.
+}
+
+\examples{
+d <- negbin2_distrib()
+th <- list(mu = 4, theta = 2)
+
+# The three entries, one value per observation.
+lapply(distrib_expected_hessian(d, c(0, 2, 6), th), unique)
+
+# The mean entry is closed form and the mixed one is exactly zero.
+c(closed = -2 / (4 * (2 + 4)),
+  mixed = distrib_expected_hessian(d, 0, th)$mu_theta)
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
+
+# The dispersion entry cancels at large theta and turns positive, which an
+# expected second derivative cannot be.
+vapply(c(1e2, 1e4, 1e6),
+       function(t) distrib_expected_hessian(d, 0,
+                     list(mu = 4, theta = t))$theta_theta,
+       numeric(1))
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step,
+and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

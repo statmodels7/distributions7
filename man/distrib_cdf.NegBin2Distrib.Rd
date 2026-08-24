@@ -2,25 +2,62 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_cdf.NegBin2Distrib}
 \alias{distrib_cdf.NegBin2Distrib}
-\title{Negative Binomial Cumulative Distribution Function}
+\title{Negative Binomial Cumulative Distribution Function, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer value is floored, and
+a value below zero gives a lower-tail probability of 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(theta))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Negative Binomial distribution:
-\deqn{F(q; \mu, \theta) = \sum_{k=0}^{\lfloor q \rfloor} P(Y=k; \mu, \theta)}
+Computes the negative binomial distribution function, the partial sum of the
+mass
+\deqn{F(q; \mu, \theta) = \sum_{k=0}^{\lfloor q \rfloor}
+      P(Y = k; \mu, \theta),}
+by calling \code{\link[stats:NegBinomial]{stats::pnbinom()}} at \code{size = theta} and \code{mu = mu}, which
+evaluates it through the incomplete beta function rather than by summing.
+The function is a step function, constant between consecutive integers.
+Both tails are available exactly, and \code{log.p = TRUE} returns a logarithm
+that stays finite where the probability itself underflows.
+}
+\examples{
+d <- negbin2_distrib()
+th <- list(mu = 4, theta = 2)
+
+# The method is stats::pnbinom at size = theta, mu = mu.
+all.equal(distrib_cdf(d, c(0, 2, 6), th), pnbinom(c(0, 2, 6), 2, mu = 4))
+
+# A step function: it does not move between two consecutive integers.
+distrib_cdf(d, c(2, 2.5, 2.999), th)
+
+# It is the partial sum of the mass.
+all.equal(distrib_cdf(d, 6, th), sum(distrib_pdf(d, 0:6, th)))
+
+# The two tails sum to one.
+distrib_cdf(d, 6, th) + distrib_cdf(d, 6, th, lower.tail = FALSE)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 2000, th, lower.tail = FALSE)
+distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_quantile.NegBin2Distrib]{distrib_quantile.NegBin2Distrib()}} for the generalized inverse,
+\code{\link[=distrib_pdf.NegBin2Distrib]{distrib_pdf.NegBin2Distrib()}} for the mass, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
+derivatives of this function in the parameters, which are an exact finite
+sum for a discrete family, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

@@ -2,26 +2,56 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_quantile.NegBin2Distrib}
 \alias{distrib_quantile.NegBin2Distrib}
-\title{Negative Binomial Quantile Function}
+\title{Negative Binomial Quantile Function, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN} with
+a warning; \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of non-negative integers, of length
+\code{max(length(p), length(mu), length(theta))}.
 }
 \description{
-Computes the quantile function for the Negative Binomial distribution, the
-generalized inverse of the CDF:
-\deqn{Q(p; \mu, \theta) = \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\}}
+Computes the generalized inverse of the distribution function,
+\deqn{Q(p; \mu, \theta) =
+      \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
+by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at \code{size = theta} and \code{mu = mu}. The support
+is a lattice, so the round trip through
+\code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}} does \strong{not} return \code{p}: it returns the mass
+up to the smallest integer whose cumulative probability reaches \code{p}, which
+overshoots.
+}
+\examples{
+d <- negbin2_distrib()
+th <- list(mu = 4, theta = 2)
+
+# A nominal central 95 percent interval on the counts.
+p <- c(0.025, 0.5, 0.975)
+q <- distrib_quantile(d, p, th)
+q
+
+# On a lattice the round trip overshoots: the cumulative probability at the
+# returned integer is at or above the one asked for, not equal to it.
+rbind(asked = p, reached = distrib_cdf(d, q, th))
+
+# The generalized inverse is a step function of p.
+distrib_quantile(d, c(0.3, 0.4, 0.5), th)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_cdf.NegBin2Distrib]{distrib_cdf.NegBin2Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.NegBin2Distrib]{distrib_rng.NegBin2Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

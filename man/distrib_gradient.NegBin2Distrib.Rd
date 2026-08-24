@@ -2,27 +2,107 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_gradient.NegBin2Distrib}
 \alias{distrib_gradient.NegBin2Distrib}
-\title{Negative Binomial Analytical Gradient}
+\title{Negative Binomial Score, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{theta}, each of
+length \code{max(length(y), length(mu), length(theta))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Negative Binomial log-probability
-with respect to the parameters \eqn{\mu} and \eqn{\theta}.
+Computes the first derivatives of the negative binomial log-mass with
+respect to \eqn{\mu} and \eqn{\theta}, one value per observation. Writing
+\eqn{s = \theta + \mu} and \eqn{\psi} for the digamma function,
+\deqn{\dfrac{\partial \ell}{\partial \mu} =
+        \dfrac{\theta}{s}\left(\dfrac{y}{\mu} - 1\right), \qquad
+      \dfrac{\partial \ell}{\partial \theta} = \psi(y+\theta) - \psi(\theta)
+        + \log\dfrac{\theta}{s} + \dfrac{\mu - y}{s}.}
+The mean component is the score of a generalized linear model with a
+quadratic variance function.
+}
+\section{The dispersion at large theta}{
+The dispersion component is \strong{not} computed as written above. As
+\eqn{\theta} grows the family tends to the Poisson and this derivative
+vanishes, its three terms cancelling to leading order:
+\eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
+\eqn{\log\{\theta/s\}} is \eqn{-\mu/\theta} and \eqn{(\mu-y)/s} is
+\eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is
+\eqn{O(\theta^{-2})} computed from terms of size \eqn{\theta^{-1}}. Written
+directly it is wrong by about one part in a thousand at \eqn{\theta = 10^6}
+and \strong{changes sign} at \eqn{10^8}.
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\theta}{\theta+\mu}\left(\dfrac{y}{\mu} - 1\right)}
-\deqn{\dfrac{\partial \ell}{\partial \theta} = \psi(y+\theta) - \psi(\theta) + \log\left(\dfrac{\theta}{\theta+\mu}\right) + \dfrac{\mu - y}{\theta+\mu}}
+The kernel performs each cancellation symbolically instead. With
+\eqn{a = \theta}, \eqn{b = \theta + y}, \eqn{c = \theta + \mu} and
+\eqn{w = (y-\mu)/c},
+\deqn{\dfrac{\partial \ell}{\partial \theta} =
+      \left\{\psi(b) - \psi(a) - \log(1 + y/a)\right\}
+      + \left\{\log(1 + w) - w\right\},}
+each bracket evaluated by its own series where the arguments are large. To
+leading order the result is \eqn{\{y - (y-\mu)^2\}/(2\theta^2)}, which the
+example below reproduces. A fit reaches that regime routinely: 2,000 counts
+drawn at a true \eqn{\theta} of 100 can report an estimate of order
+\eqn{10^7}, and where such a run stops is decided by this arithmetic.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu > 0} the mean and
+\eqn{\theta > 0} the dispersion, with
+\eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. \eqn{\psi} is the digamma
+function, \eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- negbin2_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 2)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out at a dispersion where the direct
+# expression still has its digits.
+s <- 2 + 4
+all.equal(g$mu, (2 / s) * (y / 4 - 1))
+all.equal(g$theta, digamma(y + 2) - digamma(2) + log(2 / s) + (4 - y) / s)
+
+# At large theta the direct form loses them and the kernel does not. The
+# value is {y - (y - mu)^2}/(2 theta^2) to leading order; at y = 3, mu = 4
+# that is 1/theta^2.
+cmp <- function(t) {
+  c(kernel = distrib_gradient(d, 3, list(mu = 4, theta = t))$theta,
+    direct = digamma(3 + t) - digamma(t) + log(t / (t + 4)) + 1 / (t + 4),
+    leading = 1 / t^2)
+}
+rbind(`1e+04` = cmp(1e4), `1e+06` = cmp(1e6), `1e+08` = cmp(1e8))
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for their expectation and for
+what it does at large \eqn{\theta}, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the
+generic.
 }

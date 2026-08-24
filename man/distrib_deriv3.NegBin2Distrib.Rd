@@ -2,27 +2,85 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_deriv3.NegBin2Distrib}
 \alias{distrib_deriv3.NegBin2Distrib}
-\title{Negative Binomial Analytical Third-Order Derivatives}
+\title{Negative Binomial Third-Order Derivatives, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, the expected values being closed form or exact sums.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_theta},
+\code{mu_theta_theta} and \code{theta_theta_theta}, each of length
+\code{max(length(y), length(mu), length(theta))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed-form third-order derivatives of the Negative Binomial log-mass. The
-expected pure-\eqn{\theta} derivative involves \eqn{\mathbb{E}[\psi_2(Y+\theta)]},
-evaluated by summation over the support (with a far-tail correction).
+Computes the four distinct third derivatives of the negative binomial
+log-mass with respect to \eqn{\mu} and \eqn{\theta}, in closed form. Writing
+\eqn{s = \theta + \mu}, the three components involving the mean are rational
+in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure dispersion
+component carries \eqn{\psi_2(y+\theta) - \psi_2(\theta)}, with
+\eqn{\psi_2} the second derivative of the digamma function.
+
+With \code{expected = TRUE} the expectations are returned. The three components
+involving the mean need only \eqn{\mathbb{E}[Y] = \mu}; the pure dispersion
+one needs \eqn{\mathbb{E}[\psi_2(Y+\theta)]}, which has no closed form and
+is summed over the support with a far-tail correction, exactly as the
+expected Hessian sums \eqn{\mathbb{E}[\psi_1(Y+\theta)]}. \code{approx} and
+\code{nsim} are ignored either way.
+
+The cancellation of \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}} applies here too and
+\strong{is not removed at this order}: the pure dispersion components lose their
+digits at large \eqn{\theta}, where the score itself is reliable to about
+five figures and no further.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-mass in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. \eqn{\psi} is the digamma function and
+\eqn{\psi_m} its \eqn{m}th derivative.
+}
+
+\examples{
+d <- negbin2_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 2)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+d3$mu_mu_mu
+
+# The expected values are constants at a fixed parameter setting.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 4 + eps, theta = 2))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 2))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_hessian.NegBin2Distrib]{distrib_hessian.NegBin2Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.NegBin2Distrib]{distrib_deriv4.NegBin2Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

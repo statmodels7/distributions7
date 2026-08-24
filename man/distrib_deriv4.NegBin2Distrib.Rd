@@ -2,27 +2,79 @@
 % Please edit documentation in R/negbin2_distrib.R
 \name{distrib_deriv4.NegBin2Distrib}
 \alias{distrib_deriv4.NegBin2Distrib}
-\title{Negative Binomial Analytical Fourth-Order Derivatives}
+\title{Negative Binomial Fourth-Order Derivatives, NB2}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, the expected values being closed form or exact sums.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_theta}, \code{mu_mu_theta_theta}, \code{mu_theta_theta_theta} and
+\code{theta_theta_theta_theta}, each of length
+\code{max(length(y), length(mu), length(theta))}.
 }
 \description{
-Closed-form fourth-order derivatives of the Negative Binomial log-mass. The
-expected pure-\eqn{\theta} derivative involves \eqn{\mathbb{E}[\psi_3(Y+\theta)]},
-evaluated by summation over the support (with a far-tail correction).
+Computes the five distinct fourth derivatives of the negative binomial
+log-mass with respect to \eqn{\mu} and \eqn{\theta}, in closed form, by the
+same route the third order takes: the components involving the mean are
+rational in \eqn{(\mu, \theta)} and linear in \eqn{y}, and the pure
+dispersion component carries \eqn{\psi_3(y+\theta) - \psi_3(\theta)}, with
+\eqn{\psi_3} the third derivative of the digamma function.
+
+With \code{expected = TRUE} the expectations are returned. The pure dispersion
+one needs \eqn{\mathbb{E}[\psi_3(Y+\theta)]}, summed over the support with a
+far-tail correction; the rest need only \eqn{\mathbb{E}[Y] = \mu}. \code{approx}
+and \code{nsim} are ignored either way, and the caveat about large \eqn{\theta}
+on \code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}} applies here as well.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijkl)}} is the fourth derivative of the log-mass in parameters
+\eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. \eqn{\psi} is the digamma function
+and \eqn{\psi_m} its \eqn{m}th derivative.
+}
+
+\examples{
+d <- negbin2_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 2)
+d4 <- distrib_deriv4(d, y, th)
+names(d4)
+
+# The expected values are constants at a fixed parameter setting.
+lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
+
+# A central difference of the third order reproduces it.
+eps <- 1e-6
+up <- distrib_deriv3(d, y, list(mu = 4 + eps, theta = 2))$mu_mu_mu
+dn <- distrib_deriv3(d, y, list(mu = 4 - eps, theta = 2))$mu_mu_mu
+all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-3)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}} for the order below,
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
+\code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for the second-order
+expectation these extend.
 }
