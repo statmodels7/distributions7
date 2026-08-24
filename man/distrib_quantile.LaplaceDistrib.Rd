@@ -4,23 +4,47 @@
 \alias{distrib_quantile.LaplaceDistrib}
 \title{Laplace Quantile Function}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. The endpoints give \code{-Inf} and \code{Inf}; a
+value outside the range gives \code{NaN}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)} and \code{p} is replaced by
+\code{1 - p} before the formula is applied.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are
+exponentiated first. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
-Computes the quantile function (inverse CDF) for the Laplace distribution:
-\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
+Computes the Laplace quantile function
+\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right),}
+one expression covering both arms. The median is \eqn{\mu}, and the two
+quartiles are \eqn{\mu \pm \sigma \log 2}.
+}
+\examples{
+d <- laplace_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The median is mu and the quartiles are mu -/+ sigma log 2.
+distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+0.4 + c(-1, 0, 1) * 1.5 * log(2)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf.LaplaceDistrib()}}, which this inverts;
+\code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng.LaplaceDistrib()}}, which draws through it; and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

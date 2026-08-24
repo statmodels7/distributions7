@@ -2,7 +2,7 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{LaplaceDistrib}
 \alias{LaplaceDistrib}
-\title{S7 Class for Laplace Distribution}
+\title{Laplace Distribution Class, Location and Scale}
 \usage{
 LaplaceDistrib(
   distrib_name = character(0),
@@ -36,35 +36,71 @@ LaplaceDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{LaplaceDistrib}.
+An S7 object of class \code{LaplaceDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=laplace_distrib]{laplace_distrib()}} they hold \code{"laplace"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "location", sigma = "scale")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, the two links, and
+\code{c(mu = FALSE, sigma = TRUE)} for \code{params_smooth}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Laplace
-(double-exponential) distribution. It is the canonical example of a distribution
-whose log-likelihood is \strong{not differentiable} in its location parameter.
+The S7 class of the Laplace (double exponential) family with location
+\eqn{\mu} and scale \eqn{\sigma > 0}, with density
+\eqn{f(y) = (2\sigma)^{-1}\exp(-|y-\mu|/\sigma)} on the whole real line. It
+inherits from \code{continuous_distrib}, so it answers every generic of the
+\code{distrib} contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+The density has a \strong{kink} at \eqn{y = \mu}, where \eqn{|y - \mu|} is not
+differentiable. This makes the family non-regular in its location: the
+observed second derivative in \eqn{\mu} is 0 almost everywhere while the
+information is \eqn{1/\sigma^2}. The class records that by setting
+\code{params_smooth} to \code{c(mu = FALSE, sigma = TRUE)}, which is what
+\code{\link[=check_distrib]{check_distrib()}} and the finite-difference guards consult.
+
+Build one with \code{\link[=laplace_distrib]{laplace_distrib()}}. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y()}},
 \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_rng.LaplaceDistrib]{distrib_rng()}}
 
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- laplace_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The class declares that the log-likelihood has a kink in mu.
+d@params_smooth
+
+# sigma is a scale, not a standard deviation: the variance is 2 sigma^2.
+th <- list(mu = 0.4, sigma = 1.5)
+c(variance = variance(d, th), two_sigma_sq = 2 * 1.5^2)
+
+# Heavier tailed than a Gaussian: the excess kurtosis is 3.
+kurtosis(d, th)
+}
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=laplace_distrib]{laplace_distrib()}} to build one;
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} for the same law written by its rate
+\eqn{\lambda = 1/\sigma};
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} for the information at the
+kink; \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for a smooth relative.
 }

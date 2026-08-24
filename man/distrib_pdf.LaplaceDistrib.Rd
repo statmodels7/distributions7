@@ -4,21 +4,53 @@
 \alias{distrib_pdf.LaplaceDistrib}
 \title{Laplace Probability Density Function}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive; the arithmetic is performed
+as written, so a non-positive value gives \code{NaN} or \code{Inf} without a
+warning of its own.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
+which is exact and finite at every real \code{y}. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Laplace distribution:
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y-\mu|}{\sigma}\right)}
+Computes the Laplace density
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y - \mu|}{\sigma}\right)}
+from the log-density \eqn{-\log(2\sigma) - |y-\mu|/\sigma}, which is formed
+first and exponentiated only when \code{log = FALSE}. The density is continuous
+everywhere and has a corner at \eqn{y = \mu}, where the two exponential arms
+meet; that corner is what makes the family non-regular in its location.
+}
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+# The density, written out.
+all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))
+
+# The log-density is exactly linear in |y - mu|, so it is a pair of
+# straight lines meeting at mu.
+round(distrib_pdf(d, 0.4 + c(-3, -1.5, 0, 1.5, 3), th, log = TRUE), 6)
+
+# Symmetric about mu, and at its maximum there.
+distrib_pdf(d, 0.4 + c(-2, 2), th)
+c(at_mu = distrib_pdf(d, 0.4, th), one_over_2sigma = 1 / (2 * 1.5))
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_cdf.LaplaceDistrib]{distrib_cdf.LaplaceDistrib()}} for the distribution function,
+\code{\link[=distrib_grad_y.LaplaceDistrib]{distrib_grad_y.LaplaceDistrib()}} for the kink at \eqn{y = \mu},
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} for the rate parametrization, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+for the generic.
 }

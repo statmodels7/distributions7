@@ -2,26 +2,74 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_deriv4.LaplaceDistrib}
 \alias{distrib_deriv4.LaplaceDistrib}
-\title{Laplace Analytical Fourth-Order Derivatives}
+\title{Laplace Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_sigma}, \code{mu_mu_sigma_sigma}, \code{mu_sigma_sigma_sigma} and
+\code{sigma_sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form fourth-order derivatives of the Laplace log-density, almost
-everywhere (observed, or expected when \code{expected = TRUE}), in the
-notation of \code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3.LaplaceDistrib()}}: the non-zero
-components are \eqn{\ell^{(\mu\sigma\sigma\sigma)} = -6s/\sigma^4} and
-\eqn{\ell^{(\sigma\sigma\sigma\sigma)} = 6/\sigma^4 - 24a/\sigma^5}.
+Computes the five distinct fourth derivatives of the Laplace log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, in closed form. As at third
+order, the log-density is linear in \eqn{\mu} on each side of the kink, so
+every component differentiating twice or more in \eqn{\mu} is zero and what
+survives comes from the \eqn{-\log\sigma} term and from \eqn{|r|/\sigma}.
+
+With \code{expected = TRUE} the expectations under the model are returned, also in
+closed form. Both routes are closed form, so \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k l)}} is the fourth derivative of the log-density with
+respect to parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+names(distrib_deriv4(d, y, th))
+
+# The pure-sigma component is 6/sigma^4 from the -log(sigma) term, less the
+# contribution of |r|/sigma.
+distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma
+
+# The expected values, in closed form.
+lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
+
+# A central difference of the third order reproduces the fourth.
+eps <- 1e-5
+up <- distrib_deriv3(d, y, list(mu = 0.4, sigma = 1.5 + eps))$sigma_sigma_sigma
+dn <- distrib_deriv3(d, y, list(mu = 0.4, sigma = 1.5 - eps))$sigma_sigma_sigma
+all.equal((up - dn) / (2 * eps),
+          distrib_deriv4(d, y, th)$sigma_sigma_sigma_sigma, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_deriv3.LaplaceDistrib]{distrib_deriv3.LaplaceDistrib()}} for the order below;
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

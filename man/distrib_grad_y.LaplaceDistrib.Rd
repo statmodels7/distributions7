@@ -2,23 +2,48 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_grad_y.LaplaceDistrib}
 \alias{distrib_grad_y.LaplaceDistrib}
-\title{Laplace Response Derivatives}
+\title{Laplace First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, taking the values
+\eqn{-1/\sigma}, 0 and \eqn{1/\sigma} only.
 }
 \description{
-Closed-form derivative of the Laplace log-density with respect to the response,
-\eqn{\partial \ell / \partial y = -\mathrm{sign}(y-\mu)/\sigma} (the second derivative
-is 0 almost everywhere). The analytic form is provided because finite differences
-would be inaccurate across the kink at \eqn{y = \mu}.
+Computes the first derivative of the Laplace log-density with respect to the
+response,
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{\mathrm{sign}(y - \mu)}{\sigma},}
+in closed form. The Laplace is a location family in \eqn{\mu}, so this is
+the negative of the score in \eqn{\mu}. It takes only three values, and at
+\eqn{y = \mu} exactly the method returns 0, the midpoint of the
+subdifferential; the derivative does not exist there, the log-density having
+a corner.
+}
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+
+all.equal(distrib_grad_y(d, y, th), -sign(y - 0.4) / 1.5)
+
+# A location family: minus the score in the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Three values only, and 0 at the kink itself.
+distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_hess_y.LaplaceDistrib]{distrib_hess_y.LaplaceDistrib()}} for the second derivative, which
+is zero; \code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}} for the score in the
+parameters; and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

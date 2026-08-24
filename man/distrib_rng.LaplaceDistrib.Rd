@@ -4,19 +4,42 @@
 \alias{distrib_rng.LaplaceDistrib}
 \title{Laplace Random Number Generator}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws. One uniform variate
+is consumed per draw.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled.
+\code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Laplace distribution by inverse-transform
-sampling.
+Draws \code{n} independent Laplace variates by \strong{inverse transform}: \code{n} uniform
+variates from \code{\link[stats:Uniform]{stats::runif()}} are passed through
+\code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile.LaplaceDistrib()}}. The quantile function is elementary and
+exact, so this is both cheaper and more accurate than the generalized
+ratio-of-uniforms fallback the base class supplies, which would have to
+reject draws around the kink.
+}
+\examples{
+d <- laplace_distrib()
+
+# Inverse transform, so the draws are the quantiles of the uniforms drawn.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.4, sigma = 1.5))
+set.seed(2)
+identical(a, distrib_quantile(d, runif(3), list(mu = 0.4, sigma = 1.5)))
+
+# The sample variance recovers 2 sigma^2, not sigma^2.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
+c(mean = mean(z), var = var(z), two_sigma_sq = 2 * 4)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile.LaplaceDistrib()}}, through which the draws are
+made; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back; and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

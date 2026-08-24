@@ -2,87 +2,131 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{laplace_distrib}
 \alias{laplace_distrib}
-\title{Laplace Distribution Object}
+\title{Laplace Distribution, Location and Scale}
 \usage{
 laplace_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{LaplaceDistrib} (inheriting from \code{continuous_distrib}).
+An S7 object of class \code{LaplaceDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"laplace"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, \code{link_params} the two links given here, and
+\code{params_smooth} \code{c(mu = FALSE, sigma = TRUE)}.
 }
 \description{
-Creates a distribution object for the Laplace (double-exponential) distribution,
-parameterized by location (\eqn{\mu}) and scale (\eqn{\sigma}). This is the reference
-example of a distribution whose log-likelihood is not differentiable in a
-parameter (\eqn{\mu}); see \strong{Details} for how the package handles this.
+Builds the distribution object for the Laplace (double exponential) family
+with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
+carries closed-form derivatives of the log-density to fourth order and
+closed-form moments.
+
+The family is symmetric about \eqn{\mu} with variance \eqn{2\sigma^2} and
+excess kurtosis 3, so it is heavier tailed than a Gaussian. Its maximum
+likelihood estimates are the sample median and the mean absolute deviation
+about it, both available in closed form.
+
+This family is \strong{not regular} in \eqn{\mu}: the density has a corner at
+\eqn{y = \mu} and the observed second derivative there is zero almost
+everywhere, while the information is \eqn{1/\sigma^2}. The object records
+this in \code{params_smooth}, and the details below say what follows from it.
 }
-\details{
-The Laplace (double-exponential) distribution has location \eqn{\mu} and scale
-\eqn{\sigma}.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma}\exp\left(-\dfrac{|y-\mu|}{\sigma}\right),}
+with \eqn{\mu \in (-\infty, \infty)} and \eqn{\sigma \in (0, \infty)}. The
+distribution function is one exponential on each side of \eqn{\mu} and the
+quantile function inverts it in closed form.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{2\sigma} \exp\left(-\dfrac{|y-\mu|}{\sigma}\right)}
+The mean and the median are \eqn{\mu}, the variance is \eqn{2\sigma^2}, the
+skewness is 0 and the excess kurtosis is 3. \code{\link[=laplace2_distrib]{laplace2_distrib()}} is the same
+law written by its rate \eqn{\lambda = 1/\sigma}, which is the form a
+lasso penalty uses.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \sigma) = \begin{cases} \tfrac{1}{2}\exp\left(\tfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \tfrac{1}{2}\exp\left(-\tfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
-
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu - \sigma\,\mathrm{sign}(p - \tfrac{1}{2})\,\log\left(1 - 2\left|p - \tfrac{1}{2}\right|\right)}
-
-\strong{Score} (defined almost everywhere):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
-
-\strong{Observed Hessian:}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma} = -\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
-
-\strong{Expected Hessian} (Fisher information from the score variance; see below):
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{\sigma^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right] = 0}
-
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{2\sigma^2}, skewness 0, excess kurtosis 3.
-
-\strong{Non-differentiability.}
-The density has a kink at \eqn{y = \mu}, so the log-likelihood is not
-differentiable in \eqn{\mu}. The package marks this via
-\code{params_smooth = c(mu = FALSE, sigma = TRUE)} and handles it as follows:
+\section{The kink, and what it costs}{
+\eqn{|y - \mu|} is not differentiable at \eqn{y = \mu}, so the log-density
+is piecewise linear in \eqn{\mu} with a corner. Three consequences, all
+visible in the methods:
 \itemize{
-\item the \strong{score} (\code{\link[=distrib_gradient]{distrib_gradient()}}) exists almost
-everywhere, equal to \eqn{\mathrm{sign}(y-\mu)/\sigma};
-\item the \strong{observed Hessian} (\code{\link[=distrib_hessian]{distrib_hessian()}}) has
-\eqn{\partial^2 \ell / \partial \mu^2 = 0}, so Newton-Raphson cannot update
-\eqn{\mu};
-\item the \strong{expected Hessian} (\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}) is
-implemented in closed form from the variance of the score, giving the correct
-Fisher information \eqn{1/\sigma^2} for \eqn{\mu} and making Fisher scoring the
-appropriate estimation method. Because the closed form exists, the
-\code{approx} argument is ignored for this distribution.
+\item the score in \eqn{\mu} is \eqn{\mathrm{sign}(r)/\sigma}, carrying the sign
+of the residual and not its size;
+\item the observed second derivative in \eqn{\mu} is 0 wherever it exists, so
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} returns a vector of zeros;
+\item the second Bartlett identity fails, and the information is \strong{defined} as
+the variance of the score, \eqn{1/\sigma^2}. That is what
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns.
 }
 
-\strong{Parameter Domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+\code{params_smooth} is \code{c(mu = FALSE, sigma = TRUE)}, and \code{\link[=check_distrib]{check_distrib()}}
+reads it to skip the finite-difference comparison in \eqn{\mu}, where a
+central difference straddling the corner returns a number that is not a
+derivative of anything.
 }
+
+\section{Estimation}{
+Both estimates are closed form: \eqn{\hat\mu} is the sample median and
+\eqn{\hat\sigma} the mean absolute deviation about it,
+\eqn{n^{-1}\sum|y_i - \hat\mu|}. \code{\link[=fit_distrib]{fit_distrib()}} reaches them by Fisher
+scoring, which inverts the information above; a Newton step could not,
+the observed Hessian being singular in \eqn{\mu}. The example below checks
+the fitted values against both closed forms.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale, with variance \eqn{2\sigma^2}. \eqn{r = y - \mu}
+is the residual. The \strong{observed information} is
+\eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top} at the data; the
+\strong{expected information} is the variance of the score, which for a regular
+family equals the expectation of the observed one and here does not.
+}
+
 \examples{
 d <- laplace_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density, written out.
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+all.equal(distrib_pdf(d, y, th), exp(-abs(y - 0.4) / 1.5) / (2 * 1.5))
+
+# sigma is a scale: the variance is 2 sigma^2 and the excess kurtosis is 3.
+c(variance = variance(d, th), kurtosis = kurtosis(d, th))
+
+# Both estimates are closed form: the median and the mean absolute
+# deviation about it.
+set.seed(12)
+z <- distrib_rng(d, 2000, list(mu = 3, sigma = 2))
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = median(z), sigma = mean(abs(z - median(z)))))
+
+# The family is not regular in mu: the observed curvature there is 0 and
+# the information is 1/sigma^2.
+c(observed = mean(distrib_hessian(d, z, th)$mu_mu),
+  expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 
 }
+\references{
+Kotz, S., Kozubowski, T. J. and Podgorski, K. (2001).
+\emph{The Laplace Distribution and Generalizations}. Birkhauser, Boston.
+}
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} for the rate parametrization;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the light-tailed comparison;
+\code{\link[=cauchy_distrib]{cauchy_distrib()}} and \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for the other robust location
+families, the second of which smooths this one's corner away;
+\code{\link[=enet_distrib]{enet_distrib()}}, which contains this family as its pure-\eqn{\ell_1} case;
+\code{\link[=fit_distrib]{fit_distrib()}} and \code{\link[=fisher_scoring]{fisher_scoring()}} to estimate the parameters;
+\link{LaplaceDistrib} for the class.
 }

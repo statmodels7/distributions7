@@ -2,26 +2,69 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_gradient.LaplaceDistrib}
 \alias{distrib_gradient.LaplaceDistrib}
-\title{Laplace Analytical Gradient}
+\title{Laplace Score}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Computes the analytical gradient of the Laplace log-density. Note that the
-derivative with respect to \eqn{\mu} exists only almost everywhere (there is a
-kink at \eqn{y = \mu}, a set of probability zero); the subgradient value 0 is
-returned there.
+Computes the first derivatives of the Laplace log-density with respect to
+\eqn{\mu} and \eqn{\sigma}, one value per observation, in closed form.
+Writing \eqn{r = y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(r)}{\sigma},
+      \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|r|}{\sigma} - 1\right).}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\mathrm{sign}(y-\mu)}{\sigma}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{|y-\mu|}{\sigma} - 1\right)}
+The score in \eqn{\mu} takes only the three values \eqn{-1/\sigma}, 0 and
+\eqn{+1/\sigma}: it carries the \strong{sign} of the residual and nothing about
+its size, which is why the maximum likelihood estimate of \eqn{\mu} is the
+sample median. At \eqn{r = 0} exactly, \code{sign(0)} is 0 and the method returns
+0, the midpoint of the subdifferential \eqn{[-1/\sigma, 1/\sigma]}; the
+derivative does not exist there.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale, with variance \eqn{2\sigma^2}. \eqn{r = y - \mu}
+is the residual.
+}
+
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- y - 0.4
+all.equal(g$mu, sign(r) / 1.5)
+all.equal(g$sigma, (abs(r) / 1.5 - 1) / 1.5)
+
+# The score in mu is a sign: three values, whatever the residual.
+unique(distrib_gradient(d, 0.4 + c(-100, -1, 0, 1, 100), th)$mu)
+
+# It vanishes summed at the sample median, which is the estimate of mu.
+set.seed(12)
+z <- distrib_rng(d, 401, list(mu = 3, sigma = 2))
+sum(distrib_gradient(d, z, list(mu = median(z), sigma = 2))$mu)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} for the second derivatives,
+which vanish in \eqn{\mu};
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} for the information, which
+does not; and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

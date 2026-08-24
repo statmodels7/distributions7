@@ -2,28 +2,79 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_deriv3.LaplaceDistrib}
 \alias{distrib_deriv3.LaplaceDistrib}
-\title{Laplace Analytical Third-Order Derivatives}
+\title{Laplace Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form third-order derivatives of the Laplace log-density, almost
-everywhere (observed, or expected when \code{expected = TRUE}). With
-\eqn{s = \mathrm{sign}(y-\mu)} and \eqn{a = \lvert y-\mu \rvert}, the only
-non-zero components are
-\eqn{\ell^{(\mu\sigma\sigma)} = 2s/\sigma^3} and
-\eqn{\ell^{(\sigma\sigma\sigma)} = -2/\sigma^3 + 6a/\sigma^4}; the kink at \eqn{y = \mu} is the same
-one the gradient carries, and \code{params_smooth} records it.
+Computes the four distinct third derivatives of the Laplace log-density with
+respect to \eqn{\mu} and \eqn{\sigma}, in closed form. The log-density is
+\eqn{-\log\sigma - \log 2 - |r|/\sigma} with \eqn{r = y - \mu}, so it is
+linear in \eqn{\mu} on each side of the kink and every component that
+differentiates twice or more in \eqn{\mu} is zero. What survives comes from
+\eqn{-\log\sigma} and from \eqn{|r|/\sigma}.
+
+With \code{expected = TRUE} the expectations under the model are returned, also in
+closed form, using \eqn{\mathbb{E}|r| = \sigma} and
+\eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}. Both routes are closed form, so no
+quadrature is run and \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(i j k)}} is the third derivative of the log-density with respect
+to parameters \eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name
+derivatives; a subscript on \eqn{\ell} never does. These are the derivatives
+that exist away from the kink at \eqn{y = \mu}.
+}
+
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# Linear in mu on each side of the kink, so every component that
+# differentiates twice in mu is zero.
+c(d3$mu_mu_mu[1], d3$mu_mu_sigma[1])
+
+# The expected values, in closed form.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+
+# A central difference of the Hessian reproduces the observed component,
+# away from the kink.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.4, sigma = 1.5 + eps))$sigma_sigma
+dn <- distrib_hessian(d, y, list(mu = 0.4, sigma = 1.5 - eps))$sigma_sigma
+all.equal((up - dn) / (2 * eps), d3$sigma_sigma_sigma, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.LaplaceDistrib]{distrib_deriv4.LaplaceDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

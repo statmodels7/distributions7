@@ -4,23 +4,59 @@
 \alias{distrib_cdf.LaplaceDistrib}
 \title{Laplace Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+computed as \eqn{1 - F}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned, taken after the probability itself is formed.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Laplace distribution:
-\deqn{F(q; \mu, \sigma) = \begin{cases} \dfrac{1}{2}\exp\left(\dfrac{q-\mu}{\sigma}\right) & q < \mu \\ 1 - \dfrac{1}{2}\exp\left(-\dfrac{q-\mu}{\sigma}\right) & q \ge \mu \end{cases}}
+Computes the Laplace distribution function, which is one exponential on each
+side of the location:
+\deqn{F(q; \mu, \sigma) = \begin{cases}
+  \tfrac{1}{2}\exp\!\left(\dfrac{q-\mu}{\sigma}\right), & q < \mu,\\[4pt]
+  1 - \tfrac{1}{2}\exp\!\left(-\dfrac{q-\mu}{\sigma}\right), & q \ge \mu.
+\end{cases}}
+The branch is selected per observation, and both arms are continuous at
+\eqn{q = \mu}, where the value is \eqn{1/2}. With \code{lower.tail = FALSE} the
+complement is taken after the branch, and with \code{log.p = TRUE} the logarithm
+of the result is taken; neither is computed in a way that avoids
+cancellation, so a probability that has already underflowed is not
+recovered.
+}
+\examples{
+d <- laplace_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# One half at the location, the two arms meeting there.
+distrib_cdf(d, 0.4, th)
+
+# Each arm is an exponential, written out.
+q <- c(-2, 3)
+all.equal(distrib_cdf(d, q, th),
+          ifelse(q < 0.4, 0.5 * exp((q - 0.4) / 1.5),
+                 1 - 0.5 * exp(-(q - 0.4) / 1.5)))
+
+# Symmetric: F(mu - a) + F(mu + a) = 1.
+distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_quantile.LaplaceDistrib]{distrib_quantile.LaplaceDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.LaplaceDistrib]{distrib_pdf.LaplaceDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}} for
+the generic.
 }

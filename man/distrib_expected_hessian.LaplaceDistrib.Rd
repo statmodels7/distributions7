@@ -2,30 +2,87 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_expected_hessian.LaplaceDistrib}
 \alias{distrib_expected_hessian.LaplaceDistrib}
-\title{Laplace Analytical Expected Hessian (Fisher Information)}
+\title{Laplace Expected Hessian}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's. This matters more here than elsewhere:
+the strategies that average the observed second derivative would return 0
+for the location, and only the score-based one recovers
+\eqn{1/\sigma^2}.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{length(y)} and constant within itself when the
+parameters are.
 }
 \description{
-Computes the expected Hessian (negative Fisher information) of the Laplace
-log-density. Because the log-likelihood is not differentiable in \eqn{\mu}, the
-second Bartlett identity fails: \eqn{\mathbb{E}[\partial^2 \ell / \partial \mu^2] = 0},
-yet the Fisher information for \eqn{\mu} is \eqn{1/\sigma^2}. The expected Hessian is
-therefore defined here from the variance of the score, which is what the Fisher
-information \emph{is} whenever the score exists, whether or not the identity
-relating it to \eqn{-\mathbb{E}[H]} holds:
+Returns the negative of the Fisher information, in closed form and with no
+quadrature or simulation:
+\deqn{-I(\mu) = -\dfrac{1}{\sigma^2}, \qquad
+      -I(\sigma) = -\dfrac{1}{\sigma^2}, \qquad
+      -I(\mu, \sigma) = 0.}
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma}\right] = 0, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{1}{\sigma^2}}
+For \eqn{\mu} this is \strong{not} the expectation of
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}}, which is identically zero. It is the
+variance of the score: \eqn{\partial\ell/\partial\mu = \mathrm{sign}(r)/\sigma}
+has mean 0 and square \eqn{1/\sigma^2} almost surely, so
+\eqn{\mathrm{Var} = 1/\sigma^2}. The mixed entry vanishes because the family
+is symmetric about \eqn{\mu}, so \eqn{\mathbb{E}[\mathrm{sign}(r)] = 0}.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{observed information} is \eqn{-\partial^2\ell/\partial\theta\,\partial\theta^\top}
+at the data. The \strong{expected information} is usually its expectation, and
+for a regular family the two agree with the variance of the score by the
+second Bartlett identity. The Laplace is \strong{not} regular in \eqn{\mu}: the
+first identity \eqn{\mathbb{E}[\partial\ell/\partial\mu] = 0} still holds,
+the second does not, and the information is \strong{defined} as the variance of
+the score. That is what this method returns.
+}
+
+\examples{
+d <- laplace_distrib()
+th <- list(mu = 0.4, sigma = 1.5)
+
+# Both diagonal entries are -1/sigma^2; the mixed entry is 0.
+lapply(distrib_expected_hessian(d, c(-1.2, 0.3, 2.5), th), unique)
+-1 / 1.5^2
+
+# It is the variance of the score, which the sample confirms; the mean of
+# the observed second derivative is 0 and does not.
+set.seed(12)
+z <- distrib_rng(d, 1e5, th)
+s <- distrib_gradient(d, z, th)$mu
+c(var_of_score = mean(s^2),
+  information = -distrib_expected_hessian(d, 0, th)$mu_mu,
+  mean_observed = mean(distrib_hessian(d, z, th)$mu_mu))
+
+# Fisher scoring can fit the family because this matrix is nonsingular;
+# a Newton step on the observed Hessian would divide by zero in mu.
+coef(fit_distrib(d, z))
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_hessian.LaplaceDistrib]{distrib_hessian.LaplaceDistrib()}}, whose \code{mu_mu} is zero;
+\code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}}, whose variance this is;
+\code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts this matrix and so fits this family
+where a Newton step could not; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
+generic and the strategies it offers a family with no closed form.
 }

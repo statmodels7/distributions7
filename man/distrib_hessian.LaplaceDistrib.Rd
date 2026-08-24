@@ -2,30 +2,73 @@
 % Please edit documentation in R/laplace_distrib.R
 \name{distrib_hessian.LaplaceDistrib}
 \alias{distrib_hessian.LaplaceDistrib}
-\title{Laplace Analytical Observed Hessian}
+\title{Laplace Observed Hessian}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}.
+\code{mu_mu} is a vector of zeros.
 }
 \description{
-Computes the analytical observed Hessian of the Laplace log-density. Because the
-log-density is piecewise linear in \eqn{\mu}, the second derivative with respect
-to \eqn{\mu} is \strong{zero} almost everywhere:
+Computes the three distinct second derivatives of the Laplace log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form. Writing \eqn{r = y - \mu},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0,
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|r|}{\sigma^3},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{\mathrm{sign}(r)}{\sigma^2}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = 0, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{\mathrm{sign}(y-\mu)}{\sigma^2}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma - 2|y-\mu|}{\sigma^3}}
+The first entry is \strong{exactly zero for every observation}, and that is the
+correct value: the log-density is piecewise linear in \eqn{\mu}, so away
+from \eqn{r = 0} its second derivative vanishes, and at \eqn{r = 0} the
+derivative does not exist. The curvature of the log-likelihood in the
+location is concentrated in a set of measure zero, and no expectation of
+this quantity sees it.
 
-The degeneracy of \eqn{\partial^2 \ell / \partial \mu^2} means Newton-Raphson
-cannot update \eqn{\mu}; use \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} (Fisher
-scoring), which supplies the correct information \eqn{1/\sigma^2} for \eqn{\mu}.
+The consequence is that the observed information here is \strong{not} the
+information. \code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}} returns
+\eqn{-1/\sigma^2}, obtained from the variance of the score, and that page
+explains which identity holds and which fails.
+}
+\examples{
+d <- laplace_distrib()
+y <- c(-1.2, 0.3, 2.5)
+th <- list(mu = 0.4, sigma = 1.5)
+h <- distrib_hessian(d, y, th)
+
+# The curvature in the location is exactly zero at every observation.
+h$mu_mu
+
+# The other two, written out.
+r <- y - 0.4
+all.equal(h$sigma_sigma, (1.5 - 2 * abs(r)) / 1.5^3)
+all.equal(h$mu_sigma, -sign(r) / 1.5^2)
+
+# Averaging the observed curvature in mu gives 0, and the information is
+# 1/sigma^2. The two disagree because this family is not regular in mu.
+set.seed(12)
+z <- distrib_rng(d, 1e5, th)
+c(observed_mean = mean(distrib_hessian(d, z, th)$mu_mu),
+  expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=distrib_expected_hessian.LaplaceDistrib]{distrib_expected_hessian.LaplaceDistrib()}}, which returns the
+information and is not the expectation of this;
+\code{\link[=distrib_gradient.LaplaceDistrib]{distrib_gradient.LaplaceDistrib()}} for the score;
+\code{\link[=fisher_scoring]{fisher_scoring()}}, the estimation route this family needs; and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }
