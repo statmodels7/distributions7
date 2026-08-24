@@ -7,16 +7,23 @@
 gamma1_shape_rate(theta)
 }
 \arguments{
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector. The two are used elementwise, so components of different lengths
+recycle in the usual way.}
 }
 \value{
-A list with \code{shape} and \code{rate}.
+A list of two numeric vectors, \code{shape} and \code{rate}, of the lengths
+the arithmetic produces.
 }
 \description{
-\eqn{a = 1/\phi} and \eqn{b = 1/(\phi\mu)}, which is what makes the variance
-\eqn{\phi\mu^2}.
+Converts the \code{gamma1} parameters to the shape and rate \code{\link[stats:GammaDist]{stats::dgamma()}}
+takes: \eqn{a = 1/\phi} and \eqn{b = 1/(\phi\mu)}. Under that pairing the
+mean \eqn{a/b} is \eqn{\mu} and the variance \eqn{a/b^2} is \eqn{\phi\mu^2}.
+Nothing is validated; a non-positive \code{phi} or \code{mu} propagates as an infinite
+or negative value to the caller.
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family and
+\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the density this feeds.
 }
 \keyword{internal}

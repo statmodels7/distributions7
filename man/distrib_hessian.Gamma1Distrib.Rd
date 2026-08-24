@@ -2,29 +2,81 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_hessian.Gamma1Distrib}
 \alias{distrib_hessian.Gamma1Distrib}
-\title{Gamma Analytical Observed Hessian in Mean and Dispersion}
+\title{Gamma Observed Hessian in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_phi} and
+\code{phi_phi}, each of length \code{max(length(y), length(mu), length(phi))}. The
+three name the distinct entries of a symmetric \eqn{2 \times 2} matrix per
+observation.
 }
 \description{
-Closed form. The derivatives in \eqn{\phi} are those in \eqn{s = 1/\phi}
-carried across by the one-variable chain rule, which is what keeps the
-polygamma functions to one evaluation each.
+Computes the three distinct second derivatives of the gamma log-density
+with respect to \eqn{\mu} and \eqn{\phi}, one value per observation, in
+closed form. With \eqn{s = 1/\phi} and \eqn{z = y/\mu},
+\deqn{\ell^{(\mu\mu)} = \dfrac{s(1 - 2z)}{\mu^2}, \qquad
+      \ell^{(\mu\phi)} = \dfrac{s^2(1 - z)}{\mu}, \qquad
+      \ell^{(\phi\phi)} = s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}
+        + 2s^3\left\{\log s + 1 - \psi(s) + \log z - z\right\}.}
+Every derivative in \eqn{\phi} is the corresponding derivative in \eqn{s}
+carried across by the one-variable chain rule, with
+\eqn{s' = -s^2} and \eqn{s'' = 2s^3}, so each polygamma function is
+evaluated once.
+
+The curvature in \eqn{\mu} turns \strong{positive} wherever \eqn{y < \mu/2}, so
+the observed information of a gamma is not positive definite at every data
+point. Its expectation is, which is one reason a gamma model is fitted by
+Fisher scoring; see \code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives. \eqn{\psi}
+and \eqn{\psi'} are the digamma and trigamma functions.
+}
+
+\examples{
+d <- gamma1_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+h <- distrib_hessian(d, y, th)
+
+# The curvature in mu, written out, and positive at y = 1 < mu/2 = 1.5.
+s <- 1 / 0.5
+z <- y / 3
+all.equal(h$mu_mu, s * (1 - 2 * z) / 3^2)
+h$mu_mu
+
+# The mixed entry vanishes at y = mu.
+distrib_hessian(d, 3, th)$mu_phi
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 3, phi = 0.5 + eps))$phi
+dn <- distrib_gradient(d, y, list(mu = 3, phi = 0.5 - eps))$phi
+all.equal((up - dn) / (2 * eps), h$phi_phi, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Gamma1Distrib]{distrib_deriv3.Gamma1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

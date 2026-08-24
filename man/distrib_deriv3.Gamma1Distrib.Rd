@@ -4,31 +4,87 @@
 \alias{distrib_deriv3.Gamma1Distrib}
 \title{Gamma Third-Order Derivatives in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. With
+\code{expected = TRUE} only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_phi},
+\code{mu_phi_phi} and \code{phi_phi_phi}, each of length
+\code{max(length(y), length(mu), length(phi))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed form, observed or expected.
+Computes the four distinct third derivatives of the gamma log-density with
+respect to \eqn{\mu} and \eqn{\phi}, in closed form. With \eqn{s = 1/\phi}
+and \eqn{z = y/\mu},
+\deqn{\ell^{(\mu\mu\mu)} = \dfrac{s(6z - 2)}{\mu^3}, \qquad
+      \ell^{(\mu\mu\phi)} = -\dfrac{s^2(1 - 2z)}{\mu^2}, \qquad
+      \ell^{(\mu\phi\phi)} = \dfrac{2s^3(z - 1)}{\mu},}
+and the pure dispersion component follows from the derivatives in \eqn{s} by
+Faa di Bruno on \eqn{s(\phi) = 1/\phi},
+\deqn{\ell^{(\phi\phi\phi)} = f_3 (s')^3 + 3 f_2 s' s'' + f_1 s''',}
+with \eqn{s' = -s^2}, \eqn{s'' = 2s^3}, \eqn{s''' = -6s^4} and \eqn{f_k} the
+\eqn{k}th derivative of \eqn{\ell} in \eqn{s}.
+
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{z} with 1 and \eqn{\log z} with \eqn{\psi(s) - \log s}: \eqn{f_1} and
+the two components odd in \eqn{z - 1} vanish. Both routes are closed form,
+so no quadrature is run and \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. \eqn{\psi} is the digamma function.
+}
+
+\examples{
+d <- gamma1_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+d3 <- distrib_deriv3(d, y, th)
+
+# The three components involving mu, written out.
+s <- 1 / 0.5
+z <- y / 3
+all.equal(d3$mu_mu_mu, s * (6 * z - 2) / 3^3)
+all.equal(d3$mu_mu_phi, -s^2 * (1 - 2 * z) / 3^2)
+all.equal(d3$mu_phi_phi, 2 * s^3 * (z - 1) / 3)
+
+# Expected values: the components odd in z - 1 vanish.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+
+# A central difference of the Hessian reproduces the same component.
+eps <- 1e-6
+up <- distrib_hessian(d, y, list(mu = 3, phi = 0.5 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 3, phi = 0.5 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_phi, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.Gamma1Distrib]{distrib_deriv4.Gamma1Distrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic and for the numerical route a family
+without a closed form takes.
 }

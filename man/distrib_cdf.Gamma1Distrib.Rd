@@ -2,26 +2,63 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_cdf.Gamma1Distrib}
 \alias{distrib_cdf.Gamma1Distrib}
-\title{Gamma Distribution Function in Mean and Dispersion}
+\title{Gamma Cumulative Distribution Function in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(phi))}. With \code{log.p = TRUE} the values
+are logarithms and are non-positive.
 }
 \description{
-The gamma distribution function at the implied shape and rate.
+Computes the gamma distribution function, the regularized incomplete gamma
+function
+\deqn{F(q; \mu, \phi) = \dfrac{1}{\Gamma(a)}\int_0^{bq} t^{a-1}e^{-t}\,dt,
+      \qquad a = \dfrac{1}{\phi}, \quad b = \dfrac{1}{\phi\mu},}
+by calling \code{\link[stats:GammaDist]{stats::pgamma()}} at that shape and rate. Both tails are
+available exactly: \code{lower.tail = FALSE} evaluates \eqn{1 - F} without
+forming the difference, and \code{log.p = TRUE} returns a logarithm that stays
+finite where the probability itself underflows to zero.
+}
+\examples{
+d <- gamma1_distrib()
+th <- list(mu = 3, phi = 0.5)
+
+# The method is stats::pgamma at the implied shape and rate.
+all.equal(distrib_cdf(d, c(1, 3, 5), th),
+          pgamma(c(1, 3, 5), shape = 2, rate = 1 / 1.5))
+
+# The two tails sum to one.
+distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
+
+# The gamma is right skewed, so less than half the mass lies below the mean.
+distrib_cdf(d, 3, th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 3000, th, lower.tail = FALSE)
+distrib_cdf(d, 3000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_quantile.Gamma1Distrib]{distrib_quantile.Gamma1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Gamma1Distrib]{distrib_pdf.Gamma1Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the derivatives of this function in the
+parameters, which the gamma takes by finite difference because the
+derivative of an incomplete gamma in its shape is hypergeometric, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

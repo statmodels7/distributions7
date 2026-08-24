@@ -2,23 +2,62 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_pdf.Gamma1Distrib}
 \alias{distrib_pdf.Gamma1Distrib}
-\title{Gamma Density in Mean and Dispersion}
+\title{Gamma Probability Density Function in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is \eqn{(0, \infty)};
+a negative value gives 0 and \code{y = 0} gives 0, \code{Inf} or the rate according
+to whether \eqn{\phi} is below, above or equal to 1.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-The gamma density at shape \eqn{a = 1/\phi} and rate
-\eqn{b = 1/(\phi\mu)}.
+Computes the gamma density
+\deqn{f(y; \mu, \phi) = \dfrac{y^{1/\phi - 1}\,e^{-y/(\phi\mu)}}
+      {(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)}, \qquad y > 0,}
+by calling \code{\link[stats:GammaDist]{stats::dgamma()}} at shape \eqn{a = 1/\phi} and rate
+\eqn{b = 1/(\phi\mu)}. With \code{log = TRUE} the logarithm is formed inside
+\code{dgamma()} and stays finite where the density itself underflows.
+
+The density is unbounded at the origin when \eqn{\phi > 1}, where the shape
+falls below one; it is flat there at \eqn{\phi = 1}, the exponential case,
+and vanishes at the origin for \eqn{\phi < 1}.
+}
+\examples{
+d <- gamma1_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+
+# The method is stats::dgamma at shape 1/phi and rate 1/(phi mu).
+all.equal(distrib_pdf(d, y, th),
+          dgamma(y, shape = 1 / 0.5, rate = 1 / (0.5 * 3)))
+
+# At phi = 1 the shape is 1 and the gamma is the exponential.
+all.equal(distrib_pdf(d, y, list(mu = 3, phi = 1)),
+          distrib_pdf(exponential_distrib(), y, list(mu = 3)))
+
+# A parameter may vary by observation, one value each.
+distrib_pdf(d, y, list(mu = c(1, 3, 9), phi = 0.5))
+
+# Far out in the tail the density underflows and its logarithm does not.
+distrib_pdf(d, 1e4, th)
+distrib_pdf(d, 1e4, th, log = TRUE)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf.Gamma1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the derivatives of the log-density,
+\code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion this uses, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+for the generic.
 }

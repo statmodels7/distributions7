@@ -2,20 +2,43 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_rng.Gamma1Distrib}
 \alias{distrib_rng.Gamma1Distrib}
-\title{Gamma Random Generation in Mean and Dispersion}
+\title{Gamma Random Number Generator in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. Both
+must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-Delegates to \code{\link[stats:GammaDist]{stats::rgamma()}}.
+Draws \code{n} independent gamma variates by calling \code{\link[stats:GammaDist]{stats::rgamma()}} at shape
+\eqn{a = 1/\phi} and rate \eqn{b = 1/(\phi\mu)}, so the draws come from R's
+own gamma generator and depend on \code{.Random.seed} in the usual way. The
+ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- gamma1_distrib()
+
+# Same generator as stats::rgamma at the implied shape and rate.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 3, phi = 0.5))
+set.seed(2)
+identical(a, rgamma(3, shape = 2, rate = 1 / 1.5))
+
+# The sample moments recover the parameters: the mean directly, and the
+# dispersion as the squared coefficient of variation.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 3, phi = 0.5))
+c(mu = mean(z), phi = var(z) / mean(z)^2)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_quantile.Gamma1Distrib]{distrib_quantile.Gamma1Distrib()}} for the inverse-transform route,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

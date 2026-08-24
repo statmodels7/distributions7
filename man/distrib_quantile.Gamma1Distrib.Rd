@@ -4,24 +4,52 @@
 \alias{distrib_quantile.Gamma1Distrib}
 \title{Gamma Quantile Function in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; \code{p = 0} gives 0 and \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as a log-probability.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities, which is how a quantile deep in a tail is
+requested without the probability underflowing. Defaults to \code{FALSE}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of quantiles in \eqn{[0, \infty]}, of length
+\code{max(length(p), length(mu), length(phi))}.
 }
 \description{
-The gamma quantile function at the implied shape and rate.
+Computes the gamma quantile function, the inverse of the regularized
+incomplete gamma function in its argument, by calling \code{\link[stats:GammaDist]{stats::qgamma()}} at
+shape \eqn{a = 1/\phi} and rate \eqn{b = 1/(\phi\mu)}. The gamma
+distribution function is strictly increasing on \eqn{(0, \infty)}, so the
+round trip through \code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf.Gamma1Distrib()}} returns \code{p}.
+}
+\examples{
+d <- gamma1_distrib()
+th <- list(mu = 3, phi = 0.5)
+
+# A central 95 percent interval, visibly asymmetric about the mean of 3.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# The median falls below the mean, the gamma being right skewed.
+c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_cdf.Gamma1Distrib]{distrib_cdf.Gamma1Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Gamma1Distrib]{distrib_rng.Gamma1Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

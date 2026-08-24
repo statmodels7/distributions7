@@ -2,31 +2,85 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_gradient.Gamma1Distrib}
 \alias{distrib_gradient.Gamma1Distrib}
-\title{Gamma Analytical Gradient in Mean and Dispersion}
+\title{Gamma Score in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{phi}, each of length
+\code{max(length(y), length(mu), length(phi))}.
 }
 \description{
-With \eqn{s = 1/\phi} and \eqn{z = y/\mu},
-\deqn{\dfrac{\partial\ell}{\partial\mu} = \dfrac{y-\mu}{\phi\mu^2}, \qquad
-      \dfrac{\partial\ell}{\partial\phi}
-        = -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\}}
-the first being the score of a gamma generalized linear model.
+Computes the first derivatives of the gamma log-density with respect to
+\eqn{\mu} and \eqn{\phi}, one value per observation, in closed form. With
+\eqn{s = 1/\phi} the shape and \eqn{z = y/\mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y - \mu}{\phi\mu^2},
+      \qquad
+      \dfrac{\partial \ell}{\partial \phi} =
+      -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},}
+with \eqn{\psi} the digamma function. The first is the score of a gamma
+generalized linear model, the residual divided by the variance function
+\eqn{\phi\mu^2}.
+
+The dispersion component is a difference of two quantities that agree to
+leading order as \eqn{s} grows: \eqn{\log s - \psi(s)} and
+\eqn{\log z - (z - 1)} each go to zero at the boundary this family tends
+towards. The kernel computes each of them as a polygamma minus its own
+asymptote, so the digits survive at large shape where the direct difference
+loses them.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\phi > 0} the dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+\eqn{\psi} is the digamma function, \eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- gamma1_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+g <- distrib_gradient(d, y, th)
+
+# The generalized linear model score: residual over the variance function.
+all.equal(g$mu, (y - 3) / (0.5 * 3^2))
+
+# The dispersion component, written out with the digamma function.
+s <- 1 / 0.5
+z <- y / 3
+all.equal(g$phi, -s^2 * (log(s) + 1 - digamma(s) + log(z) - z))
+
+# The mean component vanishes at y = mu, whatever the dispersion.
+distrib_gradient(d, 3, list(mu = 3, phi = c(0.1, 0.5, 2)))$mu
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(4)
+zz <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, zz)
+vapply(distrib_gradient(d, zz, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Gamma1Distrib]{distrib_expected_hessian.Gamma1Distrib()}} for their expectation,
+\code{\link[=distrib_grad_y.Gamma1Distrib]{distrib_grad_y.Gamma1Distrib()}} for the derivative in the response, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

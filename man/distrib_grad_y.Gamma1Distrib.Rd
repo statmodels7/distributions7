@@ -2,23 +2,61 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_grad_y.Gamma1Distrib}
 \alias{distrib_grad_y.Gamma1Distrib}
-\title{Gamma Response Derivatives in Mean and Dispersion}
+\title{Gamma First Derivative in the Response, Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
+value is infinite unless the shape is exactly 1.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(phi))}, one value per observation.
 }
 \description{
-\eqn{\partial\ell/\partial y = (a-1)/y - b} at the implied
-shape and rate.
+Computes the first derivative of the gamma log-density with respect to the
+response, in closed form at the implied shape \eqn{a = 1/\phi} and rate
+\eqn{b = 1/(\phi\mu)}:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{a - 1}{y} - b.}
+It changes sign at the mode \eqn{y = (a-1)/b}, so it is positive below the
+mode and negative above it. At \eqn{\phi = 1} the shape is 1, the first term
+drops out and the derivative is the constant \eqn{-1/\mu} of an exponential.
+At \eqn{\phi > 1} the shape falls below 1, the density has no interior mode
+and the derivative is negative throughout.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- gamma1_distrib()
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+
+# Written out at the implied shape and rate.
+all.equal(distrib_grad_y(d, y, th), (2 - 1) / y - 1 / 1.5)
+
+# Zero at the mode, positive below it and negative above.
+mode <- (1 / 0.5 - 1) / (1 / (0.5 * 3))
+c(mode = mode, at_mode = distrib_grad_y(d, mode, th))
+distrib_grad_y(d, c(0.5, 5), th)
+
+# At phi = 1 the family is exponential and the derivative is constant.
+distrib_grad_y(d, y, list(mu = 3, phi = 1))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y.Gamma1Distrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.Gamma1Distrib]{distrib_gradient.Gamma1Distrib()}} for the score in the
+parameters, \code{\link[=gamma1_shape_rate]{gamma1_shape_rate()}} for the conversion this uses, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

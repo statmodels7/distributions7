@@ -2,37 +2,97 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{distrib_expected_hessian.Gamma1Distrib}
 \alias{distrib_expected_hessian.Gamma1Distrib}
-\title{Gamma Analytical Expected Hessian in Mean and Dispersion}
+\title{Gamma Expected Hessian in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{Gamma1Distrib} object.}
+\item{distrib}{A \code{Gamma1Distrib} object, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_phi} and
+\code{phi_phi}, each of length \code{max(length(y), length(mu), length(phi))} and
+constant within itself when the parameters are.
 }
 \description{
-Closed form:
-\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\dfrac{1}{\phi\mu^2}, \qquad
-      \mathbb{E}[\ell^{(\mu\phi)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\phi\phi)}] = s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}}
-The mean and the dispersion are orthogonal, which is what makes this the
-natural parametrization for a generalized linear model. The expectation uses
-\eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. With \eqn{s = 1/\phi},
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^2},
+      \qquad
+      \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0,
+      \qquad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
+        s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
+They follow from \eqn{\mathbb{E}[Y] = \mu} and
+\eqn{\mathbb{E}[\log(Y/\mu)] = \psi(s) - \log s}, the second of which is
+exactly what makes the score in \eqn{\phi} have mean zero. The quantity
+\eqn{1/s - \psi'(s)} is negative for every \eqn{s > 0}, so the pure
+dispersion entry is negative and the information is positive definite
+everywhere, where the observed Hessian is not.
+
+The zero off-diagonal says the mean and the dispersion are orthogonal. That
+orthogonality is the reason this parametrization is the one a generalized
+linear model uses: the mean equation can be fitted with the dispersion held
+at any value without biasing it.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The gamma is a
+regular family, so the second Bartlett identity holds and this equals the
+variance of the score. \eqn{\psi'} is the trigamma function.
+}
+
+\examples{
+d <- gamma1_distrib()
+th <- list(mu = 3, phi = 0.5)
+
+# The three constants, one value per observation.
+lapply(distrib_expected_hessian(d, c(1, 3, 5), th), unique)
+
+# The dispersion entry, written out with the trigamma function.
+s <- 1 / 0.5
+s^4 * (1 / s - trigamma(s))
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e4, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
+
+# Negative definite at every parameter setting, where the observed Hessian
+# is positive in mu wherever y < mu/2.
+phi <- c(0.05, 0.5, 5)
+vapply(phi, function(p) {
+  s <- 1 / p
+  s^4 * (1 / s - trigamma(s))
+}, numeric(1))
 }
 \seealso{
-\code{\link[=gamma1_distrib]{gamma1_distrib()}}
+\code{\link[=distrib_hessian.Gamma1Distrib]{distrib_hessian.Gamma1Distrib()}} for the observed quantity this is
+the expectation of, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

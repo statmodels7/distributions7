@@ -2,57 +2,146 @@
 % Please edit documentation in R/gamma1_distrib.R
 \name{gamma1_distrib}
 \alias{gamma1_distrib}
-\title{Gamma Distribution in Mean and Dispersion}
+\title{Gamma Distribution, Mean and Dispersion}
 \usage{
 gamma1_distrib(link_mu = log_link(), link_phi = log_link())
 }
 \arguments{
-\item{link_mu}{Link function for \eqn{\mu}. Defaults to the log.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted mean positive.}
 
-\item{link_phi}{Link function for \eqn{\phi}. Defaults to the log.}
+\item{link_phi}{A \code{link} object from \code{linkfunctions7} for the dispersion
+\eqn{\phi}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same reason.}
 }
 \value{
-An S7 object of class \code{\link[=Gamma1Distrib]{Gamma1Distrib()}}.
+An S7 object of class \code{Gamma1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gamma1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "phi")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a gamma distribution object parametrized by its mean and a
-dispersion, with \eqn{\operatorname{Var}(Y) = \phi\mu^2}.
+Builds the distribution object for the gamma family parametrized by its mean
+\eqn{\mu > 0} and a dispersion \eqn{\phi > 0}, so that
+\eqn{\operatorname{Var}(Y) = \phi\mu^2}. This is the parametrization a
+generalized linear model uses. The returned object carries closed-form
+derivatives of the log-density to fourth order, in the parameters and in the
+response, and closed-form moments, so every generic of the toolkit answers
+without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
 }
-\details{
-This is the parametrization a generalized linear model uses: the variance
-function is \eqn{V(\mu) = \mu^2} and \eqn{\phi} is the dispersion that
-multiplies it, so the mean and the dispersion are orthogonal and the score
-in \eqn{\mu} is \eqn{(y-\mu)/(\phi\mu^2)}. The shape is \eqn{1/\phi} and the
-rate \eqn{1/(\phi\mu)}.
+\section{The parametrization}{
+The density on \eqn{y \in (0, \infty)} is
+\deqn{f(y; \mu, \phi) = \dfrac{y^{1/\phi - 1}\,e^{-y/(\phi\mu)}}
+      {(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)},}
+the gamma at shape \eqn{a = 1/\phi} and rate \eqn{b = 1/(\phi\mu)}. The mean
+is \eqn{\mu}, the variance \eqn{\phi\mu^2}, the skewness \eqn{2\sqrt{\phi}}
+and the excess kurtosis \eqn{6\phi}. The coefficient of variation is
+\eqn{\sqrt{\phi}} at every mean, so \eqn{\phi} measures relative rather than
+absolute spread.
 
-It is the same law as \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which carries the mean
-and the \emph{variance}: the two are related by
-\eqn{\sigma^2 = \phi\mu^2}. They are separate families because the second
-parameter is a different quantity in each, with its own interpretation,
-standard error and interval.
+The variance function is \eqn{V(\mu) = \mu^2} and \eqn{\phi} is the
+dispersion multiplying it, which makes the score in \eqn{\mu} the
+generalized linear model score \eqn{(y-\mu)/(\phi\mu^2)}. At \eqn{\phi = 1}
+the shape is 1 and the family is the exponential, \code{\link[=exponential_distrib]{exponential_distrib()}};
+at \eqn{\phi \to 0} it tends to a Gaussian with variance \eqn{\phi\mu^2}.
 
-Derivatives are closed form to fourth order, observed and expected. Those in
-\eqn{\phi} go through \eqn{s = 1/\phi} and the one-variable chain rule, so
-each polygamma function is evaluated once.
+This is the same law as \code{\link[=gamma2_distrib]{gamma2_distrib()}}, which carries the mean and the
+\emph{variance}, the two being related by \eqn{\sigma^2 = \phi\mu^2}. They are
+separate families because the second parameter is a different quantity in
+each, with its own interpretation, standard error and interval.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \frac{y^{1/\phi - 1}e^{-y/(\phi\mu)}}{(\phi\mu)^{1/\phi}\,\Gamma(1/\phi)}}
-on \eqn{y \in (0, \infty)}.
+\section{Derivatives}{
+Writing \eqn{s = 1/\phi} and \eqn{z = y/\mu}, the score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{y-\mu}{\phi\mu^2}, \qquad
+      \dfrac{\partial \ell}{\partial \phi} =
+      -s^2\left\{\log s + 1 - \psi(s) + \log z - z\right\},}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\phi\mu^2}, \quad
+      \mathbb{E}\left[\ell^{(\mu\phi)}\right] = 0, \quad
+      \mathbb{E}\left[\ell^{(\phi\phi)}\right] =
+        s^4\left\{\dfrac{1}{s} - \psi'(s)\right\}.}
+The zero off-diagonal makes the mean and the dispersion orthogonal, so the
+mean equation can be fitted with the dispersion held at any value without
+biasing it.
 
-\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \phi\mu^{2}}
+Every derivative in \eqn{\phi} is the corresponding derivative in \eqn{s}
+carried across by the one-variable chain rule, with \eqn{s' = -s^2},
+\eqn{s'' = 2s^3}, \eqn{s''' = -6s^4} and \eqn{s'''' = 24s^5}, so each
+polygamma function is evaluated once. Two quantities in those derivatives
+cancel as \eqn{s} grows, \eqn{\log s - \psi(s)} and its polygamma analogues;
+each is computed as a polygamma minus its own leading asymptote, so the
+digits survive at the large shape a nearly Gaussian gamma reaches.
+
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.Gamma1Distrib]{distrib_deriv3.Gamma1Distrib()}} and \code{\link[=distrib_deriv4.Gamma1Distrib]{distrib_deriv4.Gamma1Distrib()}}, as
+are the derivatives in the response, \code{\link[=distrib_grad_y.Gamma1Distrib]{distrib_grad_y.Gamma1Distrib()}} and
+\code{\link[=distrib_hess_y.Gamma1Distrib]{distrib_hess_y.Gamma1Distrib()}}. The derivatives of the \emph{distribution}
+function in the parameters have no elementary form here, the derivative of
+an incomplete gamma in its shape being hypergeometric, and are taken by
+finite difference on the analytic cdf.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The mean has
+the closed-form estimate \eqn{\hat\mu = \bar y}. The shape \eqn{\hat s} then
+solves
+\deqn{\log \hat s - \psi(\hat s) = -\dfrac{1}{n}\sum_i \log(y_i/\bar y),}
+which has no closed form and is reached numerically, and
+\eqn{\hat\phi = 1/\hat s}. The method of moments starting value is the
+squared coefficient of variation, and the example below shows it landing
+beside the estimate.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the mean and
+\eqn{\phi > 0} the dispersion. \eqn{\psi} and \eqn{\psi'} are the digamma
+and trigamma functions. \eqn{\eta} is a parameter on the unconstrained scale
+of its link, with \eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- gamma1_distrib()
-theta <- list(mu = 3, phi = 0.5)
-distrib_pdf(d, c(1, 3, 5), theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+d
 
-# the same law as gamma2 with sigma2 = phi * mu^2
-distrib_pdf(gamma2_distrib(), 3, list(mu = 3, sigma2 = 0.5 * 9))
+# The density is stats::dgamma at shape 1/phi and rate 1/(phi mu).
+y <- c(1, 3, 5)
+th <- list(mu = 3, phi = 0.5)
+all.equal(distrib_pdf(d, y, th), dgamma(y, shape = 2, rate = 1 / 1.5))
+
+# Moments in closed form: skewness 2 sqrt(phi), excess kurtosis 6 phi.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(2 * sqrt(0.5), 6 * 0.5)
+
+# Fitting recovers the parameters, the mean exactly at the sample mean.
+set.seed(4)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted  = coef(fit),
+      moments = c(mu = mean(z), phi = var(z) / mean(z)^2))
+
+# At phi = 1 the family is the exponential.
+all.equal(distrib_pdf(d, y, list(mu = 3, phi = 1)),
+          distrib_pdf(exponential_distrib(), y, list(mu = 3)))
 
 }
+\references{
+McCullagh, P. and Nelder, J. A. (1989). \emph{Generalized Linear Models}, 2nd
+edition, Chapter 8. Chapman and Hall, London.
+}
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}} for the same law in the mean and the variance;
+\code{\link[=exponential_distrib]{exponential_distrib()}} for the case \eqn{\phi = 1};
+\code{\link[=chisq_distrib]{chisq_distrib()}} and \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for relatives;
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}} and \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for other positive
+families with a multiplicative variance function; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+against the same battery this one passes; \link{Gamma1Distrib} for the class.
 }
