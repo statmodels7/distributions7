@@ -2,28 +2,73 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_deriv3.PseudoHuberDistrib}
 \alias{distrib_deriv3.PseudoHuberDistrib}
-\title{Pseudo-Huber Analytical Third-Order Derivatives}
+\title{Pseudo-Huber Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is read.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the (approximated) expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{approx, nsim}{Passed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} when \code{expected = TRUE}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. Read only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of ten numeric vectors, \code{mu_mu_mu} through
+\code{nu_nu_nu}, each of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Closed-form observed third-order derivatives of the Pseudo-Huber log-density.
-Bessel functions enter only through the pure-\eqn{\nu} component; the
-exponentially scaled forms are used so that large \eqn{\nu} does not overflow.
-The expected third derivatives have no closed form, so \code{expected = TRUE}
-is handled by the strategies in \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+Computes the ten distinct third derivatives of the pseudo-Huber log-density
+in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in a compiled
+kernel. Every component but the pure-\eqn{\nu} one is a rational function of
+\eqn{r = y - \mu}, \eqn{\sigma} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
+Bessel functions enter through \eqn{\nu} alone, and the exponentially scaled
+forms are used so that a large \eqn{\nu} does not overflow.
+
+\strong{The expected third derivatives have no closed form.} With
+\code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates
+the observed derivatives against the density by the strategy \code{approx} names.
+That is the one place on this page where \code{approx} and \code{nsim} are read.
+}
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-location
+# component, which is what says the closed form is the right one.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
+
+# The expected branch is a quadrature and takes a strategy; the components
+# odd in the residual come back at zero.
+vapply(distrib_deriv3(d, 0.4, th, expected = TRUE),
+       function(v) v[1], numeric(1))
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the order below,
+\code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4.PseudoHuberDistrib()}} for the order above,
+\code{\link[=expected_derivative]{expected_derivative()}} for the numerical expectation, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

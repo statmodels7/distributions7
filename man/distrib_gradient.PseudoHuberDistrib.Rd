@@ -2,25 +2,84 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_gradient.PseudoHuberDistrib}
 \alias{distrib_gradient.PseudoHuberDistrib}
-\title{Pseudo-Huber Analytical Gradient}
+\title{Pseudo-Huber Score}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, each
+of length \code{max(length(y), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Computes the analytical gradient of the Pseudo-Huber log-density.
-Let \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}:
+Computes the first derivatives of the pseudo-Huber log-density with respect
+to \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, one value per observation, in
+closed form. With \eqn{r = y - \mu} and
+\eqn{D = \sqrt{\nu + (r/\sigma)^2}},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma}
+        = \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right),}
+\deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
+  \dfrac{1}{\nu} + \dfrac{1}{D}
+  + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma} \left( \dfrac{r^2}{\sigma^2 D} - 1 \right)}
-\deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2} \left[ \dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})} \right]}
+The location component \strong{redescends}: it grows like \eqn{r/\sigma^2} near
+the location and tends to \eqn{\pm 1/\sigma} far from it, so a gross outlier
+contributes a bounded amount to the estimating equation. That bounded
+influence is the whole reason the pseudo-Huber loss exists, and here it is
+the score of a genuine likelihood.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries. This method always returns the parameter scale. The
+arithmetic runs in a compiled kernel; the Bessel ratio enters only the
+\eqn{\nu} component and is formed from the exponentially scaled functions.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale, \eqn{\nu > 0} the shape, \eqn{r = y - \mu} and
+\eqn{K_1} the modified Bessel function of the second kind of order one.
+}
+
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+g <- distrib_gradient(d, y, th)
+
+# The location and scale components, written out.
+r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
+all.equal(g$mu, r / (1.2^2 * D))
+all.equal(g$sigma, (r^2 / (1.2^2 * D) - 1) / 1.2)
+
+# numDeriv on the summed log-density reproduces the summed score.
+fn <- function(p)
+  sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2], nu = p[3]), log = TRUE))
+rbind(numeric = numDeriv::grad(fn, c(0.4, 1.2, 2)),
+      closed = vapply(g, sum, numeric(1)))
+
+# The location score is bounded by 1 / sigma, where a Gaussian's grows
+# without bound.
+rr <- c(1, 4, 16, 64)
+rbind(residual = rr,
+      pseudohuber = rr / (1.2^2 * sqrt(2 + (rr / 1.2)^2)),
+      gaussian = rr / 1.2^2,
+      bound = rep(1 / 1.2, 4))
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} for their expectation,
+\code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y.PseudoHuberDistrib()}} for the derivative in the response,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

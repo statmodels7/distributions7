@@ -4,24 +4,64 @@
 \alias{distrib_cdf.PseudoHuberDistrib}
 \title{Pseudo-Huber Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{q}. A component of length
+1 is recycled; a vector gives one integration per parameter setting.
+\code{sigma} and \code{nu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+formed as \eqn{1 - F}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned, taken after the quadrature, so it carries the
+quadrature's own accuracy rather than improving on it in the far tail.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma), length(nu))}, clamped to that
+range.
 }
 \description{
-Computes the cumulative distribution function for the Pseudo-Huber distribution
-by numerical integration of the density. The distribution is symmetric around
-\eqn{\mu}, so the upper tail is computed by reflection.
+Computes \eqn{F(q) = P(Y \le q)} by numerical integration of the density.
+The family has no elementary distribution function, so there is nothing
+closed form to call.
+
+Two devices keep the quadrature honest. The law is symmetric about
+\eqn{\mu}, so a quantile above the location is \strong{reflected},
+\eqn{F(q) = 1 - F(2\mu - q)}, and only the lower tail is ever integrated,
+where the integrand decays away from a finite endpoint. And every quantile
+is one \strong{row} of a single batched quadrature through \code{\link[=quad_rows]{quad_rows()}}, so a
+vector of \code{q} costs one call and not one call apiece.
+
+A row that fails to reach the requested accuracy signals an error naming the
+positions, instead of returning a plausible number.
+}
+\examples{
+d <- pseudohuber_distrib()
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+
+# The quadrature, and the symmetry the method exploits.
+distrib_cdf(d, c(-1, 0.4, 2), th)
+distrib_cdf(d, 0.4 - 1.5, th) + distrib_cdf(d, 0.4 + 1.5, th)
+
+# At the location it is one half exactly, the law being symmetric.
+distrib_cdf(d, 0.4, th)
+
+# It agrees with a direct integration of the density.
+c(method = distrib_cdf(d, 2, th),
+  integral = integrate(function(v) distrib_pdf(d, v, th), -Inf, 2)$value)
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf.PseudoHuberDistrib()}} for the integrand,
+\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf.PseudoHuberDistrib()}} for the derivatives of this
+function, which are closed form in the location and the scale, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

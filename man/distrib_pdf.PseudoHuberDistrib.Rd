@@ -4,22 +4,72 @@
 \alias{distrib_pdf.PseudoHuberDistrib}
 \title{Pseudo-Huber Probability Density Function}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation.
 }
 \description{
-Computes the probability density function for the Pseudo-Huber distribution:
-\deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu} K_1(\sqrt{\nu})} \exp\left( - \sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2} \right)}
-where \eqn{K_1} is the modified Bessel function of the second kind.
+Computes the pseudo-Huber density
+\deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu}\, K_1(\sqrt{\nu})}
+      \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),}
+with \eqn{K_1} the modified Bessel function of the second kind. The
+exponent is the negative pseudo-Huber loss, quadratic in the residual near
+the location and linear far from it. That exponent is the pseudo-Huber
+loss, and this density is its exponential.
+
+The normalizing constant is formed on the log scale through the
+\strong{exponentially scaled} Bessel function,
+\eqn{\log K_1(x) = \log\{e^x K_1(x)\} - x}. The Bessel terms are
+degree-homogeneous, so the scaled form is exact and stays finite where
+\eqn{K_1(\sqrt{\nu})} itself underflows, verified to \eqn{\nu = 2000}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
+shape and \eqn{K_1} the modified Bessel function of the second kind of order
+one, \code{besselK(x, 1)} in R.
+}
+
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+
+# The formula written out, with the Bessel constant.
+D <- sqrt(2 + ((y - 0.4) / 1.2)^2)
+all.equal(distrib_pdf(d, y, th),
+          exp(-D) / (2 * 1.2 * sqrt(2) * besselK(sqrt(2), 1)))
+
+# It integrates to one.
+integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
+
+# A small shape is a Laplace of scale sigma; a large one a Gaussian of
+# standard deviation sigma * nu^(1/4).
+yy <- c(0.5, 1, 2, 4)
+max(abs(distrib_pdf(d, yy, list(mu = 0, sigma = 1, nu = 1e-8)) -
+        0.5 * exp(-abs(yy))))
+max(abs(distrib_pdf(d, yy, list(mu = 0, sigma = 1, nu = 1e8)) -
+        dnorm(yy, 0, 100)))
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf.PseudoHuberDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}} for the derivatives of the
+log-density, \code{\link[=laplace_distrib]{laplace_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two
+limits, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

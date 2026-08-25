@@ -4,19 +4,39 @@
 \alias{distrib_rng.PseudoHuberDistrib}
 \title{Pseudo-Huber Random Number Generator}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of length \code{n}. A component of length 1 is
+recycled, so a vector of length \code{n} draws one variate per parameter
+setting. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Pseudo-Huber distribution via inverse transform
-sampling (numerical quantile function applied to uniform draws).
+Draws \code{n} independent variates by inverse transform: uniform variates from
+\code{\link[stats:Uniform]{stats::runif()}} passed through
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}}. Each draw therefore costs a
+root-find over a quadrature, which makes this the slowest generator in the
+package; a sample of a few thousand is comfortable, a sample of a million is
+not. The draws depend on \code{.Random.seed} in the usual way.
+}
+\examples{
+d <- pseudohuber_distrib()
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+
+# The sample moments recover the location and the Bessel-ratio variance.
+set.seed(6)
+z <- distrib_rng(d, 2000, th)
+rbind(sample = c(mean(z), var(z)),
+      theoretical = c(mean(d, th), variance(d, th)))
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the inversion,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

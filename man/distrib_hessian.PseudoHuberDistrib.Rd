@@ -2,29 +2,86 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_hessian.PseudoHuberDistrib}
 \alias{distrib_hessian.PseudoHuberDistrib}
-\title{Pseudo-Huber Analytical Observed Hessian}
+\title{Pseudo-Huber Observed Hessian}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of six numeric vectors, \code{mu_mu}, \code{sigma_sigma},
+\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}. The six name the
+distinct entries of a symmetric \eqn{3 \times 3} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian of the Pseudo-Huber log-density.
-Let \eqn{r = y - \mu}, \eqn{D = \sqrt{\nu + (r/\sigma)^2}},
-\eqn{R_1 = K_1'(\sqrt{\nu})/K_1(\sqrt{\nu})} and \eqn{R_2 = K_1''(\sqrt{\nu})/K_1(\sqrt{\nu})}:
+Computes the six distinct second derivatives of the pseudo-Huber log-density
+with respect to \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, one value per
+observation, in closed form. With \eqn{r = y - \mu},
+\eqn{D = \sqrt{\nu + (r/\sigma)^2}},
+\eqn{R_1 = K_1'(\sqrt{\nu})/K_1(\sqrt{\nu})} and
+\eqn{R_2 = K_1''(\sqrt{\nu})/K_1(\sqrt{\nu})},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\nu}{\sigma^2 D^3},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2}
+        = \dfrac{\sigma^4 - 3\sigma^2 r^2 D^{-1} + r^4 D^{-3}}{\sigma^6},}
+\deqn{\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4D^3}
+  + \dfrac{1}{2\nu^2}
+  + \dfrac{1}{4}\left(\dfrac{R_1}{\nu^{3/2}} + \dfrac{R_1^2}{\nu}
+    - \dfrac{R_2}{\nu}\right),}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
+        = \dfrac{-2\nu\sigma^2 r - r^3}{\sigma^2(\nu\sigma^2 + r^2)^{3/2}},
+      \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \nu}
+        = -\dfrac{r}{2\sigma^2 D^3}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}
+        = -\dfrac{r^2}{2\sigma^3 D^3}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\nu}{\sigma^2 D^3}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\sigma^4 - 3\sigma^2 r^2 D^{-1} + r^4 D^{-3}}{\sigma^6}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4D^3} + \dfrac{1}{2\nu^2} + \dfrac{1}{4}\left(\dfrac{R_1}{\nu^{3/2}} + \dfrac{R_1^2}{\nu} - \dfrac{R_2}{\nu}\right)}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = \dfrac{-2\nu\sigma^2 r - r^3}{\sigma^2(\nu\sigma^2 + r^2)^{3/2}}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \nu} = -\dfrac{r}{2\sigma^2 D^3}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = -\dfrac{r^2}{2\sigma^3 D^3}}
+The curvature in \eqn{\mu} is negative at every observation, unlike a
+Student t's, so the log-density is concave in the location however far out
+the residual is. What redescends is the score, not the curvature's sign.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale, \eqn{\nu > 0} the shape, \eqn{r = y - \mu} and
+\eqn{K_1} the modified Bessel function of the second kind of order one.
+}
+
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# The location entry, written out, and its sign.
+r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
+all.equal(h$mu_mu, -2 / (1.2^2 * D^3))
+
+# numDeriv on the summed log-density reproduces the summed matrix.
+fn <- function(p)
+  sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2], nu = p[3]), log = TRUE))
+H <- numDeriv::hessian(fn, c(0.4, 1.2, 2))
+rbind(numeric = c(H[1, 1], H[2, 2], H[3, 3], H[1, 2], H[1, 3], H[2, 3]),
+      closed = vapply(h, sum, numeric(1)))
+
+# The curvature in the location stays negative however far out y is.
+distrib_hessian(d, 0.4 + c(1, 10, 100), th)$mu_mu
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} for the expectation of
+this quantity, \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}} for the order above,
+and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

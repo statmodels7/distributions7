@@ -2,27 +2,67 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_deriv4.PseudoHuberDistrib}
 \alias{distrib_deriv4.PseudoHuberDistrib}
-\title{Pseudo-Huber Analytical Fourth-Order Derivatives}
+\title{Pseudo-Huber Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is read.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the (approximated) expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{approx, nsim}{Passed to \code{\link[=expected_derivative_methods]{expected_derivative_methods()}} when \code{expected = TRUE}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. Read only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of fifteen numeric vectors named for the multi-index
+they carry, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}, each of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Closed-form observed fourth-order derivatives of the Pseudo-Huber log-density
-(see \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}} for the Bessel handling).
-The expected fourth derivatives have no closed form and are handled by the
-strategies in \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+Computes the fifteen distinct fourth derivatives of the pseudo-Huber
+log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, \strong{in closed form}, in
+a compiled kernel. The Bessel handling is
+\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}}'s: the functions enter through
+\eqn{\nu} alone, in their exponentially scaled forms.
+
+\strong{The expected fourth derivatives have no closed form.} With
+\code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is the one
+place on this page where \code{approx} and \code{nsim} are read.
+}
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+d4 <- distrib_deriv4(d, y, th)
+length(d4)
+names(d4)[1:4]
+
+# A central difference of the third order reproduces the pure-location
+# component.
+eps <- 1e-4
+up <- distrib_deriv3(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 2))$mu_mu_mu
+dn <- distrib_deriv3(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 2))$mu_mu_mu
+all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3.PseudoHuberDistrib()}} for the order below and the
+Bessel handling, \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the second
+order, \code{\link[=expected_derivative]{expected_derivative()}} for the numerical expectation, and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

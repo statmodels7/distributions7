@@ -2,7 +2,7 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{PseudoHuberDistrib}
 \alias{PseudoHuberDistrib}
-\title{S7 Class for Pseudo-Huber Distribution}
+\title{Pseudo-Huber Distribution Class}
 \usage{
 PseudoHuberDistrib(
   distrib_name = character(0),
@@ -36,16 +36,33 @@ PseudoHuberDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{PseudoHuberDistrib}.
+An S7 object of class \code{PseudoHuberDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} they hold \code{"pseudo huber"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma", "nu")}, the
+interpretations \code{c(mu = "location", sigma = "scale", nu = "shape")}, \code{3},
+and the domains \eqn{(-\infty, \infty)}, \eqn{(0, \infty)},
+\eqn{(0, \infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Pseudo-Huber distribution,
-whose density is defined by the Pseudo-Huber loss kernel (a special case of the
-Generalized Hyperbolic distribution).
+The S7 class of the pseudo-Huber family, a location-scale family on the
+whole real line whose log-density is the negative pseudo-Huber loss
+\eqn{-\sqrt{\nu + z^2}}, with a shape \eqn{\nu > 0} interpolating between a
+Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}. It is the
+symmetric hyperbolic distribution, a special case of the generalized
+hyperbolic. It inherits from \code{continuous_distrib}; the eleven methods listed
+below are registered on it in this file.
+
+Build one with \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}, which supplies the three link
+functions and fills the properties in. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.PseudoHuberDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.PseudoHuberDistrib]{distrib_deriv4()}},
@@ -56,15 +73,38 @@ Methods implemented for this class:
 \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng()}}, and the predicate
+\code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact()}},
+which answers \code{FALSE} here.
+
+Registered from other files: the mixed derivative
+\code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y()}} and the
+distribution-function derivatives
+\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf.PseudoHuberDistrib]{distrib_hess_cdf()}}, plus the four
+moments \code{\link[=mean.PseudoHuberDistrib]{mean()}},
+\code{\link[=variance.PseudoHuberDistrib]{variance()}},
+\code{\link[=skewness.PseudoHuberDistrib]{skewness()}} and
+\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis()}} in \code{moments.R}.
 
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- pseudohuber_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+
+# This is the one family here whose expected information is not written
+# out, and the predicate says so.
+expected_hessian_exact(d)
+}
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} to build one;
+\code{\link[=laplace_distrib]{laplace_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two limits;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the other robust three-parameter family here;
+\code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf.PseudoHuberDistrib()}} for the density.
 }

@@ -4,27 +4,38 @@
 \alias{expected_hessian_exact.PseudoHuberDistrib}
 \title{The Pseudo-Huber Does Not Write Its Expected Information Out}
 \arguments{
-\item{x}{A \code{PseudoHuberDistrib} object.}
+\item{x}{A \code{PseudoHuberDistrib} object, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-\code{FALSE}.
+\code{FALSE}, a logical of length 1.
 }
 \description{
-The method above calls \code{\link[=expected_derivative]{expected_derivative()}} and then replaces
-two components that vanish by symmetry, so the registration improves the
-approximation rather than replacing it.
+Answers \code{FALSE}, declaring that this family's expected information is a
+numerical approximation and not a formula, so that callers who branch on the
+distinction branch correctly.
 }
 \details{
-Measured at 100 observations it costs 10980 ms, where the families that
-write their expected information out answer in a median of 0.183 ms.
-Reported as exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
-\code{fisher_scoring(approx = )} here with a message that was untrue, and
-take a quadrature it believed was a formula when assembling the standard
-errors.
+The predicate's default reads the class a method is registered on, which
+here would answer \code{TRUE} and be wrong.
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} is registered on this class,
+but what it does is call \code{\link[=expected_derivative]{expected_derivative()}} and then replace the two
+components that vanish by symmetry: it \strong{improves} the approximation rather
+than replacing it.
+
+The cost is the discriminator. Measured at 100 observations the method takes
+about 11 seconds, where the families that do write their information out
+answer in a median of 0.183 milliseconds. Two consequences were live before
+the declaration: \code{\link[=fit_distrib]{fit_distrib()}} rejected a legitimate
+\code{fisher_scoring(approx = )} here with a message saying the family computes
+its expected information in closed form, which is untrue; and its
+standard-error branch entered a multi-second quadrature believing it a
+formula.
 }
 \seealso{
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} for the generic and its default,
+\code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} for the method this
+describes, and \code{\link[=fisher_scoring]{fisher_scoring()}} for the consumer.
 }
 \keyword{internal}

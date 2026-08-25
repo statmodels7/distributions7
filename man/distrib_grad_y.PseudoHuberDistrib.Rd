@@ -2,23 +2,57 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_grad_y.PseudoHuberDistrib}
 \alias{distrib_grad_y.PseudoHuberDistrib}
-\title{Pseudo-Huber Response Derivatives}
+\title{Pseudo-Huber First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation.
 }
 \description{
-Closed-form derivatives of the Pseudo-Huber log-density with respect to the
-response. Let \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}:
-\eqn{\partial \ell / \partial y = -r/(\sigma^2 D)} and
-\eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}.
+Computes \eqn{\partial \ell / \partial y} in closed form. With
+\eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}},
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{r}{\sigma^2 D}.}
+The family is a location family in \eqn{\mu}, so this is exactly the
+negative of the location score
+\code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}}\verb{$mu}, and like it, it is
+\strong{bounded}: it tends to \eqn{\mp 1/\sigma} as the residual runs away. This
+quantity is what a quantile residual's delta-method standard error and a
+change of variable in the response both need.
+}
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+
+# The closed form, written out.
+r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
+all.equal(distrib_grad_y(d, y, th), -r / (1.2^2 * D))
+
+# A location family, so this is minus the location score.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# A central difference of the log-density in y reproduces it.
+eps <- 1e-6
+all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
+           distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
+          distrib_grad_y(d, y, th), tolerance = 1e-6)
+
+# Bounded by 1 / sigma however far out the response is.
+c(distrib_grad_y(d, 0.4 + c(10, 1000, 1e6), th), bound = -1 / 1.2)
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_hess_y.PseudoHuberDistrib]{distrib_hess_y.PseudoHuberDistrib()}} for the second derivative in
+the response, \code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y.PseudoHuberDistrib()}} for the mixed
+derivative, \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}} for the derivatives in
+the parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

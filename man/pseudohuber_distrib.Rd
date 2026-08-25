@@ -2,7 +2,7 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{pseudohuber_distrib}
 \alias{pseudohuber_distrib}
-\title{Pseudo-Huber Distribution Object (Location-Scale Parameterization)}
+\title{Pseudo-Huber Distribution, Location, Scale and Shape}
 \usage{
 pseudohuber_distrib(
   link_mu = identity_link(),
@@ -11,75 +11,180 @@ pseudohuber_distrib(
 )
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 
-\item{link_nu}{A link function object for the shape parameter \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_nu}{A \code{link} object from \code{linkfunctions7} for the shape
+\eqn{\nu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same reason.}
 }
 \value{
-An S7 object of class \code{PseudoHuberDistrib} (inheriting from \code{continuous_distrib}) representing the Pseudo-Huber distribution.
+An S7 object of class \code{PseudoHuberDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"pseudo huber"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params}
+\code{c("mu", "sigma", "nu")}, \code{n_params} \code{3}, \code{params_bounds} the domains
+\eqn{(-\infty, \infty)}, \eqn{(0, \infty)} and \eqn{(0, \infty)}, and
+\code{link_params} the three links given here.
 }
 \description{
-Creates a distribution object for the Pseudo-Huber distribution, whose density
-corresponds to the exponential of the negative Pseudo-Huber loss. It is a special
-case of the Generalized Hyperbolic distribution.
-}
-\details{
-The probability density function is:
-\deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu} K_1(\sqrt{\nu})} \exp\left( - \sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2} \right)}
-where \eqn{K_1} is the modified Bessel function of the second kind.
+Builds the distribution object for the pseudo-Huber family, whose
+log-density is the negative pseudo-Huber loss
+\eqn{-\sqrt{\nu + \{(y-\mu)/\sigma\}^2}}. It is the likelihood counterpart
+of that loss: the score is bounded, so a gross outlier contributes a limited
+amount to the estimating equation, and the shape \eqn{\nu > 0} interpolates
+between a Laplace at \eqn{\nu \to 0} and a Gaussian at \eqn{\nu \to \infty}.
+The family is the symmetric hyperbolic distribution, a special case of the
+generalized hyperbolic.
 
-\strong{Moments:}
-\itemize{
-\item Expected value: \eqn{\mathbb{E}(Y) = \mu}
-\item Variance: \eqn{\mathbb{V}(Y) = \sigma^2 \sqrt{\nu}\, \dfrac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})}}
-\item Skewness: 0 (symmetric)
-\item Excess kurtosis: \eqn{3 \dfrac{K_3(\sqrt{\nu}) K_1(\sqrt{\nu})}{K_2(\sqrt{\nu})^2} - 3}
+The returned object carries closed-form derivatives of the log-density to
+fourth order in the parameters and closed first and second derivatives in
+the response. The distribution function, the quantile and the expected
+information are numerical; that is the price of the family.
+}
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma, \nu) = \dfrac{1}{2 \sigma \sqrt{\nu}\, K_1(\sqrt{\nu})}
+      \exp\left(-\sqrt{\nu + \left(\dfrac{y-\mu}{\sigma}\right)^2}\right),}
+with \eqn{K_1} the modified Bessel function of the second kind. The exponent
+is quadratic in the residual near the location, where
+\eqn{\sqrt{\nu + z^2} \approx \sqrt{\nu} + z^2/(2\sqrt{\nu})}, and linear
+far from it, where it is \eqn{|z|}. That is the pseudo-Huber loss, and this
+family is its exponential.
+
+The Bessel terms are degree-homogeneous, so the exponentially scaled
+\code{besselK(x, nu, expon.scaled = TRUE)} is exact and avoids the overflow the
+unscaled form meets; the constant stays finite to \eqn{\nu = 2000}.
 }
 
-\strong{Score} (with \eqn{r = y-\mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}};
-\eqn{K_1'} the derivative of \eqn{K_1}):
+\section{The two limits, with their rates}{
+At \eqn{\nu \to 0} the exponent is \eqn{|y-\mu|/\sigma} and the family is
+the \strong{Laplace} with scale \eqn{\sigma}: measured at \eqn{\mu = 0},
+\eqn{\sigma = 1}, the largest gap over \eqn{y \in \{0.5, 1, 2, 4\}} is
+\code{4.9e-05} at \eqn{\nu = 10^{-4}} and \code{1.9e-12} at \eqn{10^{-12}}, so the
+approach is \eqn{O(\nu)}.
+
+At \eqn{\nu \to \infty} the exponent is
+\eqn{\sqrt{\nu} + (y-\mu)^2/(2\sqrt{\nu}\sigma^2)} and the family is the
+\strong{Gaussian} with standard deviation \eqn{\sigma\nu^{1/4}}: the largest gap
+is \code{1.5e-04} at \eqn{\nu = 10^4} and \code{1.5e-07} at \eqn{10^8}. Note that the
+spread grows with \eqn{\nu}, so \eqn{\sigma} alone is not the standard
+deviation.
+}
+
+\section{Moments}{
+Every moment is a ratio of Bessel functions at \eqn{\sqrt{\nu}}:
+\deqn{\mathbb{E}(Y) = \mu, \qquad
+      \operatorname{Var}(Y) = \sigma^2 \sqrt{\nu}\,
+        \dfrac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},}
+the skewness is 0 by symmetry, and the excess kurtosis is
+\eqn{3K_3(\sqrt{\nu})K_1(\sqrt{\nu})/K_2(\sqrt{\nu})^2 - 3}. The kurtosis
+falls as \eqn{\nu} grows, from 2.93 at \eqn{\nu = 0.01} through 1.86 at 1 to
+0.030 at \eqn{10^4}, tending to the Gaussian's 0.
+}
+
+\section{Derivatives}{
+Write \eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}}. The score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2 D}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right)}
-\deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[\dfrac{1}{\nu} + \dfrac{1}{D} + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\,K_1(\sqrt{\nu})}\right]}
-The observed Hessian is available in closed form via
-\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}}; the expected Hessian has no
-closed form and is obtained by numerical integration.
-
-\strong{Parameter Domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
-\item \eqn{\nu \in (0, +\infty)}
+      \dfrac{\partial \ell}{\partial \sigma}
+        = \dfrac{1}{\sigma}\left(\dfrac{r^2}{\sigma^2 D} - 1\right),}
+\deqn{\dfrac{\partial \ell}{\partial \nu} = -\dfrac{1}{2}\left[
+  \dfrac{1}{\nu} + \dfrac{1}{D}
+  + \dfrac{K_1'(\sqrt{\nu})}{\sqrt{\nu}\, K_1(\sqrt{\nu})}\right].}
+The location component is \strong{bounded by} \eqn{1/\sigma}, which is the
+family's whole point; the curvature in \eqn{\mu}, unlike a Student t's, is
+negative at every observation, so the log-density stays concave in the
+location. Orders three and four are closed form too, in compiled kernels, as
+are the derivatives in the response and the mixed derivative
+\code{\link[=distrib_cross_y.PseudoHuberDistrib]{distrib_cross_y.PseudoHuberDistrib()}}, whose \eqn{\nu} component is
+\eqn{r/(2\sigma^2 D^3)}.
 }
 
-\strong{Note:} The CDF, quantile function and RNG have no closed form and rely on
-numerical integration / root-finding, so they are slower than for the other
-distributions in the package. Response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are available in closed form; third- and
-fourth-order parameter derivatives use the numerical fallback.
+\section{What is numerical, and what it costs}{
+The distribution function has no elementary form and is a quadrature,
+batched over the quantiles and reflected about \eqn{\mu} so that only the
+lower tail is integrated. The quantile inverts it by root-finding, and the
+generator inverts it at uniform variates, so a sample costs one root-find
+per draw.
+
+The \strong{expected information has no closed form either}. Its four non-zero
+components come from \code{\link[=expected_derivative]{expected_derivative()}}, and the two containing
+\eqn{\mu} an odd number of times are replaced by exact zeros, the law being
+symmetric. That makes the location orthogonal to the scale and the shape.
+\code{\link[=expected_hessian_exact.PseudoHuberDistrib]{expected_hessian_exact.PseudoHuberDistrib()}} declares the approximation, so
+a caller who branches on the distinction branches correctly; at 100
+observations it costs about 11 seconds against a median of 0.183
+milliseconds for a family that writes its information out.
 }
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Given the
+cost of the expected information, \code{method = optimizers7::newton()} on the
+observed Hessian is the cheaper route here, and it is closed form.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale, \eqn{\nu > 0} the shape, \eqn{r = y - \mu},
+\eqn{D = \sqrt{\nu + (r/\sigma)^2}} and \eqn{K_m} the modified Bessel
+function of the second kind of order \eqn{m}, \code{besselK(x, m)} in R.
+\eqn{\eta} is a parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- pseudohuber_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1, nu = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density integrates to one.
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
 
+# Every moment is a Bessel ratio; the skewness is zero by symmetry.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# A small shape is a Laplace of scale sigma; a large one a Gaussian of
+# standard deviation sigma * nu^(1/4).
+yy <- c(0.5, 1, 2, 4)
+c(laplace = max(abs(distrib_pdf(d, yy, list(mu = 0, sigma = 1, nu = 1e-8)) -
+                    0.5 * exp(-abs(yy)))),
+  gaussian = max(abs(distrib_pdf(d, yy, list(mu = 0, sigma = 1, nu = 1e8)) -
+                     dnorm(yy, 0, 100))))
+
+# The location score is bounded, where a Gaussian's grows without bound.
+rr <- c(1, 4, 16, 64)
+rbind(residual = rr,
+      pseudohuber = distrib_gradient(d, 0.4 + rr, th)$mu,
+      gaussian = rr / 1.2^2)
+
+# The expected information is a quadrature here, and the family says so.
+expected_hessian_exact(d)
+
+# Fitting recovers the location and the scale; the shape is the hardest of
+# the three to pin down from a moderate sample.
+set.seed(5)
+z <- distrib_rng(d, 600, list(mu = 1, sigma = 2, nu = 2))
+coef(fit_distrib(d, z))
+
+}
+\references{
+Barndorff-Nielsen, O. (1978). Hyperbolic distributions and distributions on
+hyperbolae. \emph{Scandinavian Journal of Statistics}, \strong{5}(3), 151-157.
+
+Charbonnier, P., Blanc-Feraud, L., Aubert, G. and Barlaud, M. (1997).
+Deterministic edge-preserving regularization in computed imaging.
+\emph{IEEE Transactions on Image Processing}, \strong{6}(2), 298-311.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.PseudoHuberDistrib]{distrib_pdf.PseudoHuberDistrib()}} for the density function.
-\item \code{\link[=distrib_cdf.PseudoHuberDistrib]{distrib_cdf.PseudoHuberDistrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.PseudoHuberDistrib]{distrib_quantile.PseudoHuberDistrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.PseudoHuberDistrib]{distrib_rng.PseudoHuberDistrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.PseudoHuberDistrib]{distrib_gradient.PseudoHuberDistrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.PseudoHuberDistrib]{distrib_expected_hessian.PseudoHuberDistrib()}} for the expected Hessian.
-}
+\code{\link[=laplace_distrib]{laplace_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two limits;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the other robust three-parameter family here,
+whose score redescends to zero where this one flattens to a bound;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{PseudoHuberDistrib} for the class.
 }

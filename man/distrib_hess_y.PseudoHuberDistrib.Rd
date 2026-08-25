@@ -2,20 +2,55 @@
 % Please edit documentation in R/pseudohuber_distrib.R
 \name{distrib_hess_y.PseudoHuberDistrib}
 \alias{distrib_hess_y.PseudoHuberDistrib}
-\title{Pseudo-Huber Response Second Derivative}
+\title{Pseudo-Huber Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation, every entry negative.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = -\nu/(\sigma^2 D^3)}, \eqn{D = \sqrt{\nu + ((y-\mu)/\sigma)^2}}.
+Computes \eqn{\partial^2 \ell / \partial y^2} in closed form. With
+\eqn{r = y - \mu} and \eqn{D = \sqrt{\nu + (r/\sigma)^2}},
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\nu}{\sigma^2 D^3}.}
+The family is a location family, so this equals the pure-location entry of
+\code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}}, with no sign change; two derivatives
+in \eqn{\mu} carry two factors of \eqn{-1}. It is \strong{negative everywhere},
+so the log-density is concave in the response, and it decays like
+\eqn{|r|^{-3}} in the tails.
+}
+\examples{
+d <- pseudohuber_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 2)
+
+# The closed form, written out.
+r <- y - 0.4; D <- sqrt(2 + (r / 1.2)^2)
+all.equal(distrib_hess_y(d, y, th), -2 / (1.2^2 * D^3))
+
+# A location family, so this is the pure-location entry of the Hessian.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# A central difference of the first derivative reproduces it.
+eps <- 1e-5
+all.equal((distrib_grad_y(d, y + eps, th) -
+           distrib_grad_y(d, y - eps, th)) / (2 * eps),
+          distrib_hess_y(d, y, th), tolerance = 1e-6)
+
+# Negative everywhere, decaying like |r|^-3 in the tails.
+distrib_hess_y(d, 0.4 + c(1, 10, 100), th)
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=distrib_grad_y.PseudoHuberDistrib]{distrib_grad_y.PseudoHuberDistrib()}} for the first derivative in
+the response, \code{\link[=distrib_hessian.PseudoHuberDistrib]{distrib_hessian.PseudoHuberDistrib()}} for the second
+derivatives in the parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
