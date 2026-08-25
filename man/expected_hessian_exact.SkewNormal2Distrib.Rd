@@ -31,9 +31,10 @@ its expected information in closed form, which is untrue.
 }
 \examples{
 # Neither parametrization of the skew normal writes its information out.
-c(centered = expected_hessian_exact(skewnormal2_distrib()),
-  direct = expected_hessian_exact(skewnormal1_distrib()),
-  gaussian = expected_hessian_exact(gaussian1_distrib()))
+eh <- distributions7:::expected_hessian_exact
+c(centered = eh(skewnormal2_distrib()),
+  direct = eh(skewnormal1_distrib()),
+  gaussian = eh(gaussian1_distrib()))
 
 }
 \seealso{

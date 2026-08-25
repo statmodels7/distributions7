@@ -830,9 +830,10 @@ S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y,
 #'
 #' @examples
 #' # Neither parametrization of the skew normal writes its information out.
-#' c(centered = expected_hessian_exact(skewnormal2_distrib()),
-#'   direct = expected_hessian_exact(skewnormal1_distrib()),
-#'   gaussian = expected_hessian_exact(gaussian1_distrib()))
+#' eh <- distributions7:::expected_hessian_exact
+#' c(centered = eh(skewnormal2_distrib()),
+#'   direct = eh(skewnormal1_distrib()),
+#'   gaussian = eh(gaussian1_distrib()))
 #'
 #' @keywords internal
 S7::method(expected_hessian_exact, SkewNormal2Distrib) <- function(x, ...) {
