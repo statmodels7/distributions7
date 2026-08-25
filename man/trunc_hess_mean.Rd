@@ -7,14 +7,45 @@
 trunc_hess_mean(distrib, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A named list, one component per Hessian entry.
+A named list of numeric vectors, one component per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-\eqn{\mathbb{E}_T[H_{ij}]} for every Hessian component, by quadrature.
+Computes \eqn{\mathbb{E}_T[H_{ij}]} for every unordered pair of parameters,
+by quadrature. \code{\link[=trunc_M]{trunc_M()}} adds it to \code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}} where the
+parent's cdf derivatives are not exact, that sum being
+\eqn{d_{ij} Z / Z}.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+EH <- distributions7:::trunc_hess_mean(tn, theta)
+unlist(EH)
+
+# Against the same expectation taken by simulation.
+set.seed(1)
+ys <- distrib_rng(tn, 100000, theta)
+H <- distrib_hessian(gaussian1_distrib(), ys, theta)
+round(vapply(H, mean, numeric(1)), 3)
+round(unlist(EH), 3)
+}
+\seealso{
+\code{\link[=trunc_M]{trunc_M()}}, its one caller, and \code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}} for the
+other half of the sum.
 }
 \keyword{internal}

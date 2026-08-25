@@ -7,35 +7,64 @@
 has_exact_cdf_deriv(parent, order)
 }
 \arguments{
-\item{parent}{The parent distribution.}
+\item{parent}{The parent distribution, before wrapping.}
 
-\item{order}{The cdf derivative order, 1 to 4.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 }
 \value{
 A single logical.
 }
 \description{
-\code{TRUE} when the parent has a genuine closed-form cdf derivative of the
-given order, or is a discrete family whose cdf derivatives are an exact sum.
+Reports whether the parent has a genuine closed-form derivative of its
+distribution function at the given order, or is a discrete family, whose cdf
+derivatives are an exact finite sum. \code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} takes the cheap
+route only where this is \code{TRUE}, and falls back to quadrature otherwise.
 }
-\details{
-Replacing the quadrature for \eqn{d^B Z} with two calls on the parent's cdf
-derivative is roughly an order of magnitude faster, and is taken only where
-it is at least as accurate as what it replaces: when the parent has no
-closed form that route differences its cdf, carrying more relative error
-into the Hessian than the quadrature does.
+\section{Why the cheap route is gated}{
+Reading \eqn{d^B Z} off the parent's cdf derivatives replaces one quadrature
+per component with two calls on the parent: measured on a truncated
+gaussian's Hessian, 1.4 ms against 4.9 ms. Where the parent has no closed
+form, though, that route differences its distribution function and carries
+roughly \eqn{10^{-8}} of relative error into the Hessian, where the
+quadrature it replaced carried \eqn{10^{-10}}.
 
-That is invisible in the Hessian itself but not downstream:
-\code{\link[=numerical_deriv4]{numerical_deriv4()}} differentiates the analytical Hessian, so a
-noisier Hessian degrades the \emph{reference} the fourth-order check compares
-against, and the check fails on code that is right.
+That is invisible in the Hessian itself, and visible downstream:
+\code{\link[=numerical_deriv4]{numerical_deriv4()}} differentiates the analytical Hessian, so a noisier
+Hessian degrades the REFERENCE the fourth-order check compares against, and
+the check then fails on code that is right.
+}
 
-Detecting a genuine method uses the documented S7 trick:
-\code{attr(m, "signature")[[1]]} is the class the method was registered on, so
-an inherited fallback gives \code{continuous_distrib}. \code{identical()} on
-the method object does not answer the question, because S7 wraps it.
+\section{How a genuine method is recognized}{
+\code{attr(m, "signature")[[1]]} is the class the method was registered on, so an
+inherited fallback answers with a base class. \code{identical()} on the method
+object cannot be used for this, S7 wrapping it. The third- and
+fourth-order defaults sit on \code{distrib} where the first two sit on
+\code{continuous_distrib}, so both base classes are excluded or a stencil would
+be read as a closed form.
+
+The question is asked of the OWNING CLASS, so a family that registers a
+method combining closed components with a stencil in one direction answers
+\code{TRUE}. That is the intended reading: what the gate protects against is the
+generic differencing the cdf itself.
+}
+
+\examples{
+# A discrete family answers TRUE at every order: its cdf derivatives are an
+# exact sum.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))
+
+# The gaussian writes all four out.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))
+
+# The gamma does not, the derivative of an incomplete gamma in its shape
+# having no elementary form, so truncation falls back to quadrature there.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
 }
 \seealso{
-\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}}
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}}, its one caller, and \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for
+the generics it asks about.
 }
 \keyword{internal}

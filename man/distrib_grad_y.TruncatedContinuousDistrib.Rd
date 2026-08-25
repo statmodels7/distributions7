@@ -14,7 +14,7 @@
 A numeric vector.
 }
 \description{
-\eqn{Z} does not depend on \eqn{y}, so inside \eqn{[\ell, u]} the response
+\eqn{Z} does not depend on \eqn{y}, so inside \eqn{[L, U]} the response
 derivative is the parent's. Outside, the log-density is \eqn{-\infty} and no
 derivative exists, so \code{NaN} is returned.
 }

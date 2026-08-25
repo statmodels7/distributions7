@@ -7,26 +7,64 @@
 trunc_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; whether \code{p} is a lower-tail probability.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE}, \code{p} is read as an
+upper-tail probability.}
 
-\item{log.p}{Logical; whether \code{p} is given on the log scale.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE}, \code{p} is given on the log
+scale.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the length \code{p} and \code{theta} recycle
+to.
 }
 \description{
-Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the parent's quantile function.
+Inverts \code{\link[=trunc_cdf]{trunc_cdf()}} through the PARENT's quantile function, no
+root-finding of its own being needed: \eqn{F_T(q) = p} holds exactly when
+\eqn{F(q) = F(L^-) + pZ}. The generalized inverse of a discrete
+distribution function satisfies the same relation, so the discrete case
+needs no separate treatment and the body is registered on both classes.
 }
 \details{
-Inverse transform on the parent: \eqn{F_T(q) = p} exactly when
-\eqn{F(q) = F(\ell^-) + pZ}, so no root-finding of its own is needed. The
-generalized inverse of a discrete cdf satisfies the same relation, so the
-discrete case needs no separate treatment.
+\code{p} and \code{theta} are expanded to a common length before being combined.
+\eqn{F(L^-)} and \eqn{Z} follow the length of \code{theta} and \code{p} follows its
+own, so multiplying them directly would recycle silently where the two
+disagree.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_quantile(tn, c(0.1, 0.5, 0.9), theta)
+
+# It inverts the distribution function exactly.
+p <- c(0.1, 0.5, 0.9)
+max(abs(distrib_cdf(tn, distrib_quantile(tn, p, theta), theta) - p))
+
+# And every quantile lies inside the interval.
+range(distrib_quantile(tn, seq(0, 1, by = 0.25), theta))
+
+# A discrete parent needs no separate treatment.
+ztp <- truncated(poisson_distrib(), lower = 1)
+distrib_quantile(ztp, c(0.1, 0.5, 0.9), list(mu = 2))
+}
+\seealso{
+\code{\link[=distrib_quantile.TruncatedContinuousDistrib]{distrib_quantile.TruncatedContinuousDistrib()}} and
+\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile.TruncatedDiscreteDistrib()}}, the two registrations,
+\code{\link[=trunc_cdf]{trunc_cdf()}} for the inverse, and \code{\link[=trunc_rng]{trunc_rng()}}, which draws through it.
 }
 \keyword{internal}

@@ -16,8 +16,8 @@
 A numeric vector of density values.
 }
 \description{
-\deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (\ell \le y \le u), \qquad 0 \text{ otherwise}}
-with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta)}.
+\deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (L \le y \le U), \qquad 0 \text{ otherwise}}
+with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta)}.
 }
 \seealso{
 \code{\link[=truncated]{truncated()}}

@@ -7,18 +7,44 @@
 trunc_score_mean_quad(distrib, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A named list, one component per parameter.
+A named list of numeric vectors, one component per parameter, in
+\code{distrib@params} order.
 }
 \description{
-The original route for \eqn{\mathbb{E}_T[s_i]}, kept for the parents the cdf
-route cannot serve.
+Computes \eqn{m_i = \mathbb{E}_T[s_i]} by integrating the parent's score
+against the truncated law, one integral per parameter. It is the route
+\code{\link[=trunc_score_mean]{trunc_score_mean()}} falls back on for a parent whose cdf derivatives are
+not exact, and is the only route for a gamma or a beta, whose distribution
+function has no elementary derivative in its shape.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+# The two routes agree; only the cost differs.
+unlist(distributions7:::trunc_score_mean_quad(tn, theta))
+unlist(distributions7:::trunc_score_mean(tn, theta))
+
+# For a gamma parent this is the only route available.
+tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
+unlist(distributions7:::trunc_score_mean_quad(tg, list(mu = 2, sigma2 = 1)))
 }
 \seealso{
-\code{\link[=trunc_score_mean]{trunc_score_mean()}}
+\code{\link[=trunc_score_mean]{trunc_score_mean()}}, which prefers the cdf route where it is
+exact, and \code{\link[=expectation]{expectation()}}, which performs the integration.
 }
 \keyword{internal}

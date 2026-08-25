@@ -7,22 +7,67 @@
 trunc_mass_derivs(distrib, theta, order)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
 \item{order}{The derivative order, 1 or 2.}
 }
 \value{
-A named list of derivative components of \eqn{Z}, or \code{NULL}.
+A named list of derivative components of \eqn{Z}, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}, or \code{NULL} when the
+route is declined.
 }
 \description{
-Computes \eqn{d^B Z = d^B F(u) - d^B F(\ell^-)} from the parent's cdf
-derivatives, or \code{NULL} when that route is not available.
+Computes \eqn{d^B Z = d^B F(U) - d^B F(L^-)} from the parent's cdf
+derivatives, or returns \code{NULL} when that route is not available. Dividing
+the result by \eqn{Z} gives the truncated expectations
+\code{\link[=trunc_score_mean]{trunc_score_mean()}} and \code{\link[=trunc_M]{trunc_M()}} need, replacing one quadrature per
+component with two calls on the parent.
 }
-\details{
-Replaces one quadrature per component with two calls on the parent. Gated by
-\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}, and the callers fall back to quadrature on
-\code{NULL}.
+\section{The discrete correction}{
+The lower endpoint is included in the truncated support, so what leaves
+\eqn{Z} is \eqn{F(L)} minus the mass at \eqn{L}. Its derivatives lose that
+mass's derivatives with it, \eqn{d^I F(L^-) = d^I F(L) - f(L) B_I}, where
+\eqn{B_I} is the complete Bell polynomial in the parent's log-mass
+derivatives that \code{\link[=bell_f_ratio]{bell_f_ratio()}} assembles.
+}
+
+\section{When it declines}{
+\code{NULL} is returned, and the caller falls back to quadrature, in two
+situations. The first is accuracy, and is decided by
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}}. The second is correctness: a mixed parent with an
+atom sitting exactly on the lower endpoint, whose mass derivative is not the
+parent's own mass function.
+}
+
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+Z <- distributions7:::trunc_constants(tn, theta)$Z
+dZ <- distributions7:::trunc_mass_derivs(tn, theta, 1L)
+unlist(dZ) / Z
+
+# The same numbers the quadrature route returns, to machine precision.
+unlist(distributions7:::trunc_score_mean_quad(tn, theta))
+
+# A gamma parent has no closed-form cdf derivative, so the route declines
+# and the caller integrates instead.
+tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
+is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
+}
+\seealso{
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for the gate, \code{\link[=trunc_score_mean]{trunc_score_mean()}} and
+\code{\link[=trunc_M]{trunc_M()}} for the two callers, and \code{\link[=trunc_constants]{trunc_constants()}} for \eqn{Z}.
 }
 \keyword{internal}

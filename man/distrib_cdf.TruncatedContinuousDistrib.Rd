@@ -18,7 +18,7 @@
 A numeric vector of cumulative probabilities.
 }
 \description{
-\deqn{F_T(q) = \dfrac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
+\deqn{F_T(q) = \dfrac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
 }
 \seealso{
 \code{\link[=truncated]{truncated()}}

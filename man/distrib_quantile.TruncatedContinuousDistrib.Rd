@@ -18,7 +18,7 @@
 A numeric vector of quantiles.
 }
 \description{
-\deqn{Q_T(p) = Q\!\left(F(\ell^-;\theta) + p\,Z(\theta)\right)}
+\deqn{Q_T(p) = Q\!\left(F(L^-;\theta) + p\,Z(\theta)\right)}
 }
 \seealso{
 \code{\link[=truncated]{truncated()}}

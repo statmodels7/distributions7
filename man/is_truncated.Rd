@@ -7,17 +7,33 @@
 is_truncated(distrib)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}. Any other input
+returns \code{FALSE}; nothing raises.}
 }
 \value{
 A single logical.
 }
 \description{
-\code{TRUE} for either of the two truncated classes.
+Reports whether an object belongs to either truncated class. \code{\link[=truncated]{truncated()}}
+asks before wrapping, and collapses a nested truncation into a single
+object over the intersection of the two intervals. Nesting would be correct
+but would pay the quadrature cost of \code{\link[=trunc_score_mean]{trunc_score_mean()}} twice for a law
+one truncation already describes.
 }
-\details{
-Used by \code{\link[=truncated]{truncated()}} to collapse nested truncation to the
-intersection of the intervals. Nesting would be correct, but it pays the
-quadrature cost twice for a law that a single truncation already describes.
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+c(truncated = distributions7:::is_truncated(tn),
+  parent = distributions7:::is_truncated(gaussian1_distrib()))
+
+# Nesting collapses: one object, over the intersection.
+t2 <- truncated(truncated(gaussian1_distrib(), lower = -1), upper = 2)
+c(lower = t2@lower, upper = t2@upper)
+distributions7:::is_truncated(t2@parent_distrib)
+}
+\seealso{
+\code{\link[=truncated]{truncated()}}, which uses it, and \link{TruncatedContinuousDistrib} and
+\link{TruncatedDiscreteDistrib}, the two classes it recognizes.
 }
 \keyword{internal}

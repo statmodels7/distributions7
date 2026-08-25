@@ -36,13 +36,53 @@ NULL
 #' @name TruncatedContinuousDistrib
 #'
 #' @description
-#' A subclass of `continuous_distrib` representing a continuous distribution
-#' restricted to \eqn{[\ell, u]} and renormalized.
+#' Represents a continuous parent restricted to \eqn{[L, U]} and renormalized
+#' by the retained mass \eqn{Z(\theta)}. Construct one with [truncated()], which
+#' validates the endpoints, collapses a nested truncation and copies the
+#' parent's parameter metadata; calling the class directly does none of that.
+#'
+#' @details
+#' # What truncation adds, and what it does not
+#'
+#' It adds NO parameter. The endpoints are known constants, like a binomial's
+#' `size`, so the truncated object carries exactly the parent's `params`,
+#' `params_bounds` and `link_params`. What it adds is the
+#' \eqn{\theta}-dependent normalizing constant \eqn{Z}, and every derivative of
+#' \eqn{\ell_T = \ell - \log Z} carries its contribution.
+#'
+#' The support does not move with \eqn{\theta}. That is the condition under
+#' which \eqn{Z} may be differentiated under the integral sign, and it is what
+#' keeps truncation at fixed points a regular problem.
+#'
+#' # A mixed parent
+#'
+#' The parent may itself carry point masses, as [zero_adjusted()] of a
+#' continuous distribution does. Those atoms survive truncation where they lie
+#' inside the interval, rescaled by \eqn{1/Z}, and
+#' [distrib_atoms.TruncatedContinuousDistrib()] reports them. Two methods exist
+#' only for that case: [expectation.TruncatedContinuousDistrib()] adds the
+#' masses to the integral, and [parent_mass_at()] asks the parent for the mass
+#' on a single point instead of assuming a continuous parent has none.
+#'
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped `continuous_distrib` object.
-#' @param lower,upper The truncation points.
-#' @return An object of class `TruncatedContinuousDistrib`.
-#' @seealso [truncated()]
+#' @param parent_distrib The wrapped `continuous_distrib` object. Its
+#'   parameters become the truncated object's, unchanged.
+#' @param lower,upper The truncation points, `L` and `U`. Either may be
+#'   infinite, giving one-sided truncation, and both are included in the
+#'   support.
+#'
+#' @return An S7 object of class `TruncatedContinuousDistrib`, inheriting from
+#'   `continuous_distrib`.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [truncated()] for the constructor, [TruncatedDiscreteDistrib] for
+#'   the discrete branch, and [trunc_constants()] for \eqn{Z}.
 #'
 #' @section Methods:
 #' Methods implemented for this class:
@@ -59,6 +99,23 @@ NULL
 #'   [`expectation()`][expectation.TruncatedContinuousDistrib]
 #'
 #' Everything else is inherited from [continuous_distrib()].
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' class(tn)[1]
+#' c(name = tn@distrib_name, params = paste(tn@params, collapse = ", "))
+#' tn@bounds
+#'
+#' # The parameters are the parent's, unchanged: truncation adds none.
+#' identical(tn@params, gaussian1_distrib()@params)
+#' identical(tn@params_bounds, gaussian1_distrib()@params_bounds)
+#'
+#' # The density is the parent's divided by the retained mass.
+#' Z <- pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)
+#' c(truncated = distrib_pdf(tn, 0, theta),
+#'   parent_over_Z = dnorm(0, 0.3, 1.2) / Z)
 TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -72,14 +129,45 @@ TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
 #' @name TruncatedDiscreteDistrib
 #'
 #' @description
-#' A subclass of `discrete_distrib` representing a discrete distribution
-#' restricted to the support points in \eqn{[\ell, u]} and renormalized. Both
-#' endpoints are **included**.
+#' Represents a discrete parent restricted to the support points in
+#' \eqn{[L, U]} and renormalized by the retained mass \eqn{Z(\theta)}. Both
+#' endpoints are INCLUDED, so `truncated(poisson_distrib(), lower = 1)` is the
+#' zero-truncated Poisson on \eqn{\{1, 2, \dots\}} and keeps the mass at one.
+#' Construct one with [truncated()]; calling the class directly skips every
+#' validation the constructor performs.
+#'
+#' @details
+#' The lower endpoint being included is the one place the two truncation
+#' classes differ. The tail below the interval is \eqn{F(L^-) = F(L) - f(L)},
+#' so the mass sitting exactly on \eqn{L} has to be added back;
+#' [trunc_constants()] does that through [parent_mass_at()], and
+#' [trunc_mass_derivs()] applies the matching correction to the derivatives of
+#' \eqn{Z}.
+#'
+#' Truncation adds no parameter, so the object carries exactly the parent's
+#' `params`, `params_bounds` and `link_params`. What it can remove is
+#' IDENTIFIABILITY: \eqn{k} retained support points carry \eqn{k-1} free
+#' probabilities, so [truncated()] rejects an interval leaving fewer than
+#' `n_params + 1` of them.
+#'
 #' @inheritParams distrib
-#' @param parent_distrib The wrapped `discrete_distrib` object.
-#' @param lower,upper The truncation points, included in the support.
-#' @return An object of class `TruncatedDiscreteDistrib`.
-#' @seealso [truncated()]
+#' @param parent_distrib The wrapped `discrete_distrib` object. Its parameters
+#'   become the truncated object's, unchanged.
+#' @param lower,upper The truncation points, `L` and `U`, both included in the
+#'   support. Either may be infinite, and a finite one must be a whole number.
+#'
+#' @return An S7 object of class `TruncatedDiscreteDistrib`, inheriting from
+#'   `discrete_distrib`.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [truncated()] for the constructor, [TruncatedContinuousDistrib] for
+#'   the continuous branch, and [trunc_constants()] for \eqn{Z}.
 #'
 #' @section Methods:
 #' Methods implemented for this class:
@@ -92,6 +180,20 @@ TruncatedContinuousDistrib <- S7::new_class("TruncatedContinuousDistrib",
 #'   [`distrib_rng()`][distrib_rng.TruncatedDiscreteDistrib]
 #'
 #' Everything else is inherited from [discrete_distrib()].
+#'
+#' @examples
+#' ztp <- truncated(poisson_distrib(), lower = 1)
+#' class(ztp)[1]
+#' c(name = ztp@distrib_name, bounds = paste(ztp@bounds, collapse = ", "))
+#'
+#' # The lower endpoint is IN the support, so this is the zero-truncated
+#' # Poisson: mass at 0 is gone, mass at 1 is not.
+#' distrib_pdf(ztp, 0:3, list(mu = 2))
+#' dpois(1:3, 2) / (1 - dpois(0, 2))
+#'
+#' # An interval leaving too few support points is rejected by the
+#' # constructor, the parameter no longer being identified.
+#' try(truncated(bernoulli_distrib(), lower = 1))
 TruncatedDiscreteDistrib <- S7::new_class("TruncatedDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -105,21 +207,36 @@ TruncatedDiscreteDistrib <- S7::new_class("TruncatedDiscreteDistrib",
 # Internals
 # --------------------------------------------------------------------------
 
-#' Is This Distribution Already Truncated?
+#' @title Is This Distribution Already Truncated?
 #'
 #' @description
-#' `TRUE` for either of the two truncated classes.
+#' Reports whether an object belongs to either truncated class. [truncated()]
+#' asks before wrapping, and collapses a nested truncation into a single
+#' object over the intersection of the two intervals. Nesting would be correct
+#' but would pay the quadrature cost of [trunc_score_mean()] twice for a law
+#' one truncation already describes.
 #'
-#' @details
-#' Used by [truncated()] to collapse nested truncation to the
-#' intersection of the intervals. Nesting would be correct, but it pays the
-#' quadrature cost twice for a law that a single truncation already describes.
-#'
-#' @param distrib An object inheriting from class `"distrib"`.
+#' @param distrib An object inheriting from class `distrib`. Any other input
+#'   returns `FALSE`; nothing raises.
 #'
 #' @return A single logical.
 #'
+#' @seealso [truncated()], which uses it, and [TruncatedContinuousDistrib] and
+#'   [TruncatedDiscreteDistrib], the two classes it recognizes.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' c(truncated = distributions7:::is_truncated(tn),
+#'   parent = distributions7:::is_truncated(gaussian1_distrib()))
+#'
+#' # Nesting collapses: one object, over the intersection.
+#' t2 <- truncated(truncated(gaussian1_distrib(), lower = -1), upper = 2)
+#' c(lower = t2@lower, upper = t2@upper)
+#' distributions7:::is_truncated(t2@parent_distrib)
 is_truncated <- function(distrib) {
   S7::S7_inherits(distrib, TruncatedContinuousDistrib) ||
     S7::S7_inherits(distrib, TruncatedDiscreteDistrib)
@@ -134,33 +251,60 @@ is_truncated <- function(distrib) {
 # a continuous_distrib. Truncating it above, with the atom retained, then loses
 # exactly that mass from the normalizing constant -- and the resulting density
 # integrates to something other than one while every formula still looks right.
-#' Probability the Parent Puts on a Single Point
+#' @title Probability the Parent Puts on a Single Point
 #'
 #' @description
-#' \eqn{P(Y = x)} under the parent: the pmf for a discrete distribution, the
-#' atom's probability for a mixed one, and zero for an ordinary continuous
-#' distribution.
+#' Returns \eqn{P(Y = x)} under the parent: the mass function for a discrete
+#' parent, the atom's probability for a mixed one, and zero for an ordinary
+#' continuous parent. [trunc_constants()] needs it because the lower endpoint
+#' is included in the truncated support, so the tail below the interval is
+#' \eqn{F(L^-) = F(L) - P(Y = L)}.
 #'
 #' @details
-#' This is the one quantity separating the two truncation classes, and getting it
-#' wrong for a *mixed* parent is subtle. It is tempting to branch on whether
-#' the parent is a `discrete_distrib`; that looks right and is wrong. The cdf
-#' of `zero_adjusted(gamma2_distrib())` already includes the point mass at
-#' zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
-#' `continuous_distrib`. Truncating it from above, with the atom retained,
-#' then drops exactly that mass out of the normalizing constant -- and the
-#' resulting density integrates to something other than one while every formula
-#' still reads correctly. Asking [distrib_atoms()] instead of asking
-#' the class cannot make that mistake.
+#' The question is asked of the OBJECT, through [distrib_atoms()], never of its
+#' class. Branching on `discrete_distrib` looks right and is wrong: the
+#' distribution function of `zero_adjusted(gamma2_distrib())` already contains
+#' the point mass at zero, so \eqn{F(0) \ne F(0^-)} although the object is a
+#' `continuous_distrib`. Truncating such a parent from above, with the atom
+#' retained, would then drop exactly that mass out of \eqn{Z} while every
+#' formula still read correctly, and the density would integrate to something
+#' other than one.
 #'
-#' @param distrib A truncated distribution object.
-#' @param x The point to evaluate at.
-#' @param theta A named list of parameters.
+#' @param distrib A truncated distribution object, of either class. The branch
+#'   is taken on it, and the mass is asked of `distrib@parent_distrib`.
+#' @param x A single number, the point to evaluate at.
+#' @param theta A named list of the parent's parameters.
 #'
-#' @return A numeric vector of probabilities.
+#' @return A numeric vector of probabilities, of length one unless a parameter
+#'   in `theta` varies by observation.
 #'
-#' @seealso [distrib_atoms()], [trunc_constants()]
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [distrib_atoms()] for the declaration it reads, and
+#'   [trunc_constants()] for its one caller.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' # A discrete parent: the mass function.
+#' ztp <- truncated(poisson_distrib(), lower = 1)
+#' c(reported = distributions7:::parent_mass_at(ztp, 1, list(mu = 2)),
+#'   dpois = dpois(1, 2))
+#'
+#' # A mixed parent: the atom, although the object is a continuous_distrib.
+#' tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+#' th <- list(mu = 2, sigma2 = 1, za = 0.3)
+#' distributions7:::parent_mass_at(tz, 0, th)
+#'
+#' # An ordinary continuous parent: zero, at every point.
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#' distributions7:::parent_mass_at(tn, 0, theta)
 parent_mass_at <- function(distrib, x, theta) {
   parent <- distrib@parent_distrib
   if (S7::S7_inherits(distrib, TruncatedDiscreteDistrib)) {
@@ -174,27 +318,69 @@ parent_mass_at <- function(distrib, x, theta) {
 #
 # The lower endpoint is *included* in the truncated support, so any mass sitting
 # exactly on it has to be added back: F(lower^-) = F(lower) - P(Y = lower).
-#' The Truncation Constant and Lower Tail
+#' @title The Truncation Constant and Lower Tail
 #'
 #' @description
-#' Returns \eqn{F(\ell^-)} and the normalizing constant
-#' \eqn{Z = F(u) - F(\ell^-)}, vectorized in \eqn{\theta}.
+#' Returns the tail below the interval, \eqn{F(L^-)}, and the retained mass
+#' \eqn{Z = F(U) - F(L^-)}. Every method of a truncated distribution divides
+#' by \eqn{Z}, and [trunc_cdf()] and [trunc_quantile()] shift by \eqn{F(L^-)}
+#' as well.
 #'
 #' @details
-#' Both endpoints are **included** in the truncated support, so any mass
-#' sitting exactly on the lower one has to be added back:
-#' \eqn{F(\ell^-) = F(\ell) - P(Y = \ell)}. That correction is the *atom*
-#' case, not the discrete case -- see [parent_mass_at()].
+#' Both endpoints are INCLUDED in the truncated support, so any mass sitting
+#' exactly on the lower one is added back:
+#' \eqn{F(L^-) = F(L) - P(Y = L)}. That correction belongs to the ATOM case,
+#' not to the discrete case, so it goes through [parent_mass_at()]. An
+#' infinite endpoint contributes \eqn{0} or \eqn{1} without a call on the
+#' parent.
 #'
-#' An interval carrying no probability under the given parameters is reported
-#' rather than returned, since the truncated law is not defined there.
+#' Both quantities are vectorized in \eqn{\theta}, so a parameter varying by
+#' observation gives one constant per observation.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' An interval carrying no probability under the given parameters raises an
+#' error naming the interval and the computed mass, the truncated law not
+#' being defined there. That is a likely place for a search to wander to, so
+#' the message says which endpoints produced it.
 #'
-#' @return A list with `Fl` and `Z`.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters. A component may vary
+#'   by observation.
+#'
+#' @return A named list with `Fl`, the tail below the interval, and `Z`, the
+#'   retained mass; each a numeric vector following the length of `theta`.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [parent_mass_at()] for the endpoint correction,
+#'   [trunc_mass_derivs()] for the derivatives of \eqn{Z}, and [truncated()].
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' cs <- distributions7:::trunc_constants(tn, theta)
+#' unlist(cs)
+#' c(Z = cs$Z, direct = pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2))
+#'
+#' # A discrete parent: the mass at the lower endpoint is added back, so the
+#' # zero-truncated Poisson keeps everything except dpois(0, mu).
+#' ztp <- truncated(poisson_distrib(), lower = 1)
+#' cz <- distributions7:::trunc_constants(ztp, list(mu = 2))
+#' c(Z = cz$Z, direct = 1 - dpois(0, 2), Fl = cz$Fl)
+#'
+#' # Vectorized in theta.
+#' distributions7:::trunc_constants(tn, list(mu = c(0, 0.5), sigma = 1.2))$Z
+#'
+#' # An interval carrying no mass is reported, not returned.
+#' far <- truncated(gaussian1_distrib(), lower = 100, upper = 200)
+#' try(distributions7:::trunc_constants(far, theta))
 trunc_constants <- function(distrib, theta) {
   parent <- distrib@parent_distrib
   lo <- distrib@lower
@@ -216,14 +402,40 @@ trunc_constants <- function(distrib, theta) {
   list(Fl = Fl, Z = Z)
 }
 
-#' Which Observations Lie in the Truncated Support
+#' @title Which Observations Lie in the Truncated Support
 #'
-#' @param distrib A truncated distribution object.
+#' @description
+#' Tests `y >= L & y <= U`, with both endpoints included. [trunc_pdf()] uses it
+#' to set the log-density to \eqn{-\infty} outside the interval,
+#' [trunc_y_deriv()] to return `NaN` there, and
+#' [distrib_atoms.TruncatedContinuousDistrib()] to keep the parent's atoms that
+#' survive.
+#'
+#' @param distrib A truncated distribution object, of either class.
 #' @param y A numeric vector of observations.
 #'
 #' @return A logical vector as long as `y`.
 #'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_pdf()] and [trunc_y_deriv()], its two callers.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' # Both endpoints count as inside.
+#' distributions7:::trunc_inside(tn, c(-2, -1, 0, 2, 3))
+#'
+#' # Which is what makes the density positive at them and zero beyond.
+#' distrib_pdf(tn, c(-2, -1, 2, 3), theta)
 trunc_inside <- function(distrib, y) {
   y >= distrib@lower & y <= distrib@upper
 }
@@ -254,36 +466,67 @@ trunc_inside <- function(distrib, y) {
 # right. The route is therefore taken only where it is at least as accurate as
 # what it replaces -- a parent with a genuine closed form, or a discrete parent,
 # whose cdf derivatives are an exact finite sum.
-#' Can the Parent Supply Exact CDF Derivatives?
+#' @title Can the Parent Supply Exact CDF Derivatives?
 #'
 #' @description
-#' `TRUE` when the parent has a genuine closed-form cdf derivative of the
-#' given order, or is a discrete family whose cdf derivatives are an exact sum.
+#' Reports whether the parent has a genuine closed-form derivative of its
+#' distribution function at the given order, or is a discrete family, whose cdf
+#' derivatives are an exact finite sum. [trunc_mass_derivs()] takes the cheap
+#' route only where this is `TRUE`, and falls back to quadrature otherwise.
 #'
 #' @details
-#' Replacing the quadrature for \eqn{d^B Z} with two calls on the parent's cdf
-#' derivative is roughly an order of magnitude faster, and is taken only where
-#' it is at least as accurate as what it replaces: when the parent has no
-#' closed form that route differences its cdf, carrying more relative error
-#' into the Hessian than the quadrature does.
+#' # Why the cheap route is gated
 #'
-#' That is invisible in the Hessian itself but not downstream:
-#' [numerical_deriv4()] differentiates the analytical Hessian, so a
-#' noisier Hessian degrades the *reference* the fourth-order check compares
-#' against, and the check fails on code that is right.
+#' Reading \eqn{d^B Z} off the parent's cdf derivatives replaces one quadrature
+#' per component with two calls on the parent: measured on a truncated
+#' gaussian's Hessian, 1.4 ms against 4.9 ms. Where the parent has no closed
+#' form, though, that route differences its distribution function and carries
+#' roughly \eqn{10^{-8}} of relative error into the Hessian, where the
+#' quadrature it replaced carried \eqn{10^{-10}}.
 #'
-#' Detecting a genuine method uses the documented S7 trick:
-#' `attr(m, "signature")[[1]]` is the class the method was registered on, so
-#' an inherited fallback gives `continuous_distrib`. `identical()` on
-#' the method object does not answer the question, because S7 wraps it.
+#' That is invisible in the Hessian itself, and visible downstream:
+#' [numerical_deriv4()] differentiates the analytical Hessian, so a noisier
+#' Hessian degrades the REFERENCE the fourth-order check compares against, and
+#' the check then fails on code that is right.
 #'
-#' @param parent The parent distribution.
-#' @param order The cdf derivative order, 1 to 4.
+#' # How a genuine method is recognized
+#'
+#' `attr(m, "signature")[[1]]` is the class the method was registered on, so an
+#' inherited fallback answers with a base class. `identical()` on the method
+#' object cannot be used for this, S7 wrapping it. The third- and
+#' fourth-order defaults sit on `distrib` where the first two sit on
+#' `continuous_distrib`, so both base classes are excluded or a stencil would
+#' be read as a closed form.
+#'
+#' The question is asked of the OWNING CLASS, so a family that registers a
+#' method combining closed components with a stencil in one direction answers
+#' `TRUE`. That is the intended reading: what the gate protects against is the
+#' generic differencing the cdf itself.
+#'
+#' @param parent The parent distribution, before wrapping.
+#' @param order The derivative order, an integer from 1 to 4.
 #'
 #' @return A single logical.
 #'
-#' @seealso [trunc_mass_derivs()]
+#' @seealso [trunc_mass_derivs()], its one caller, and [distrib_grad_cdf()] for
+#'   the generics it asks about.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' # A discrete family answers TRUE at every order: its cdf derivatives are an
+#' # exact sum.
+#' vapply(1:4, function(k)
+#'   distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))
+#'
+#' # The gaussian writes all four out.
+#' vapply(1:4, function(k)
+#'   distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))
+#'
+#' # The gamma does not, the derivative of an incomplete gamma in its shape
+#' # having no elementary form, so truncation falls back to quadrature there.
+#' vapply(1:4, function(k)
+#'   distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
 has_exact_cdf_deriv <- function(parent, order) {
   if (S7::S7_inherits(parent, discrete_distrib)) return(TRUE)
   gen <- switch(order, distrib_grad_cdf, distrib_hess_cdf,
@@ -300,24 +543,67 @@ has_exact_cdf_deriv <- function(parent, order) {
   !is_class(reg, continuous_distrib) && !is_class(reg, distrib)
 }
 
-#' Derivatives of the Truncation Constant via the Parent's CDF
+#' @title Derivatives of the Truncation Constant via the Parent's CDF
 #'
 #' @description
-#' Computes \eqn{d^B Z = d^B F(u) - d^B F(\ell^-)} from the parent's cdf
-#' derivatives, or `NULL` when that route is not available.
+#' Computes \eqn{d^B Z = d^B F(U) - d^B F(L^-)} from the parent's cdf
+#' derivatives, or returns `NULL` when that route is not available. Dividing
+#' the result by \eqn{Z} gives the truncated expectations
+#' [trunc_score_mean()] and [trunc_M()] need, replacing one quadrature per
+#' component with two calls on the parent.
 #'
 #' @details
-#' Replaces one quadrature per component with two calls on the parent. Gated by
-#' [has_exact_cdf_deriv()], and the callers fall back to quadrature on
-#' `NULL`.
+#' # The discrete correction
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' The lower endpoint is included in the truncated support, so what leaves
+#' \eqn{Z} is \eqn{F(L)} minus the mass at \eqn{L}. Its derivatives lose that
+#' mass's derivatives with it, \eqn{d^I F(L^-) = d^I F(L) - f(L) B_I}, where
+#' \eqn{B_I} is the complete Bell polynomial in the parent's log-mass
+#' derivatives that [bell_f_ratio()] assembles.
+#'
+#' # When it declines
+#'
+#' `NULL` is returned, and the caller falls back to quadrature, in two
+#' situations. The first is accuracy, and is decided by
+#' [has_exact_cdf_deriv()]. The second is correctness: a mixed parent with an
+#' atom sitting exactly on the lower endpoint, whose mass derivative is not the
+#' parent's own mass function.
+#'
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
 #' @param order The derivative order, 1 or 2.
 #'
-#' @return A named list of derivative components of \eqn{Z}, or `NULL`.
+#' @return A named list of derivative components of \eqn{Z}, keyed as
+#'   [`deriv_names(distrib@params, order)`][deriv_names], or `NULL` when the
+#'   route is declined.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [has_exact_cdf_deriv()] for the gate, [trunc_score_mean()] and
+#'   [trunc_M()] for the two callers, and [trunc_constants()] for \eqn{Z}.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' Z <- distributions7:::trunc_constants(tn, theta)$Z
+#' dZ <- distributions7:::trunc_mass_derivs(tn, theta, 1L)
+#' unlist(dZ) / Z
+#'
+#' # The same numbers the quadrature route returns, to machine precision.
+#' unlist(distributions7:::trunc_score_mean_quad(tn, theta))
+#'
+#' # A gamma parent has no closed-form cdf derivative, so the route declines
+#' # and the caller integrates instead.
+#' tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
+#' is.null(distributions7:::trunc_mass_derivs(tg, list(mu = 2, sigma2 = 1), 1L))
 trunc_mass_derivs <- function(distrib, theta, order) {
   if (!has_exact_cdf_deriv(distrib@parent_distrib, order)) return(NULL)
   parent <- distrib@parent_distrib
@@ -354,23 +640,57 @@ trunc_mass_derivs <- function(distrib, theta, order) {
   stats::setNames(lapply(nms, function(nm) dU[[nm]] - dL[[nm]]), nms)
 }
 
-#' Mean of the Parent's Score Under the Truncated Law
+#' @title Mean of the Parent's Score Under the Truncated Law
 #'
 #' @description
-#' \eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the parent's score:
-#' the truncated score is \eqn{d_i \ell_T = s_i(y) - m_i}.
+#' Computes \eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the
+#' parent's score: the truncated score is \eqn{s_i(y) - m_i}. It is
+#' \eqn{d_i Z / Z}, because \eqn{d_i Z = \int_T f s_i}, so it comes from
+#' [trunc_mass_derivs()] where those are exact and from
+#' [trunc_score_mean_quad()] otherwise.
 #'
 #' @details
-#' Taken from the cdf derivatives where those are exact, and from quadrature
-#' otherwise.
+#' \eqn{m_i} is a function of \eqn{\theta} and of the endpoints alone, not of
+#' the data, so one evaluation serves a whole sample. It is also what makes
+#' derivatives of a truncated distribution dearer than the parent's: the
+#' quadrature route costs one integral per parameter.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
 #'
-#' @return A named list, one component per parameter.
+#' @return A named list of numeric vectors, one component per parameter, in
+#'   `distrib@params` order.
 #'
-#' @seealso [trunc_score_mean_quad()], [trunc_M()]
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_gradient()], which subtracts it, [trunc_M()] for the
+#'   second-order counterpart, and [trunc_score_mean_quad()] for the fallback.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' m <- distributions7:::trunc_score_mean(tn, theta)
+#' unlist(m)
+#'
+#' # The truncated score is the parent's, recentered by exactly this.
+#' y <- c(-0.5, 0, 1)
+#' g <- distrib_gradient(tn, y, theta)
+#' gp <- distrib_gradient(gaussian1_distrib(), y, theta)
+#' max(abs(unlist(g) - (unlist(gp) - rep(unlist(m), each = length(y)))))
+#'
+#' # It is also what makes the truncated score have mean zero, which the
+#' # untruncated score does not have over the interval.
+#' set.seed(1)
+#' ys <- distrib_rng(tn, 50000, theta)
+#' round(vapply(distrib_gradient(tn, ys, theta), mean, numeric(1)), 3)
 trunc_score_mean <- function(distrib, theta) {
   dZ <- trunc_mass_derivs(distrib, theta, 1L)
   if (!is.null(dZ)) {
@@ -380,20 +700,52 @@ trunc_score_mean <- function(distrib, theta) {
   trunc_score_mean_quad(distrib, theta)
 }
 
-#' Second-Order Truncated Moment of the Parent's Derivatives
+#' @title Second-Order Truncated Moment of the Parent's Derivatives
 #'
 #' @description
-#' \eqn{M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j]}, the quantity entering the
-#' truncated Hessian as
-#' \eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}.
+#' Computes \eqn{M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j]}, which is
+#' \eqn{d_{ij} Z / Z}, since \eqn{d_{ij} f / f = H_{ij} + s_i s_j}. It enters
+#' the truncated Hessian as
+#' \eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}, the subtracted part being
+#' the second derivative of \eqn{\log Z}.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' @details
+#' Where the parent has exact cdf derivatives the whole quantity comes from
+#' [trunc_mass_derivs()] at order two. Otherwise it is assembled from two
+#' quadratures, [trunc_hess_mean()] and [trunc_score_prod_mean()], which is
+#' also why [trunc_expected_hessian()] cannot use the cheap route: it needs the
+#' two pieces separately and \eqn{d_{ij} Z} only gives their sum.
 #'
-#' @return A named list, one component per Hessian entry.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
 #'
-#' @seealso [trunc_score_mean()]
+#' @return A named list of numeric vectors, one component per unordered pair of
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_hessian()], which subtracts it, [trunc_score_mean()] for the
+#'   first order, and [trunc_hess_mean()] and [trunc_score_prod_mean()] for the
+#'   two halves of the fallback.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' M <- distributions7:::trunc_M(tn, theta)
+#' unlist(M)
+#'
+#' # It is the sum of the two quadratures, whichever route was taken.
+#' EH <- distributions7:::trunc_hess_mean(tn, theta)
+#' ES <- distributions7:::trunc_score_prod_mean(tn, theta)
+#' max(abs(unlist(M) - (unlist(EH) + unlist(ES))))
 trunc_M <- function(distrib, theta) {
   dZ <- trunc_mass_derivs(distrib, theta, 2L)
   if (!is.null(dZ)) {
@@ -407,19 +759,44 @@ trunc_M <- function(distrib, theta) {
   stats::setNames(lapply(nms, function(nm) EH[[nm]] + ES[[nm]]), nms)
 }
 
-#' Truncated Score Mean by Quadrature
+#' @title Truncated Score Mean by Quadrature
 #'
 #' @description
-#' The original route for \eqn{\mathbb{E}_T[s_i]}, kept for the parents the cdf
-#' route cannot serve.
+#' Computes \eqn{m_i = \mathbb{E}_T[s_i]} by integrating the parent's score
+#' against the truncated law, one integral per parameter. It is the route
+#' [trunc_score_mean()] falls back on for a parent whose cdf derivatives are
+#' not exact, and is the only route for a gamma or a beta, whose distribution
+#' function has no elementary derivative in its shape.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
 #'
-#' @return A named list, one component per parameter.
+#' @return A named list of numeric vectors, one component per parameter, in
+#'   `distrib@params` order.
 #'
-#' @seealso [trunc_score_mean()]
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_score_mean()], which prefers the cdf route where it is
+#'   exact, and [expectation()], which performs the integration.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' # The two routes agree; only the cost differs.
+#' unlist(distributions7:::trunc_score_mean_quad(tn, theta))
+#' unlist(distributions7:::trunc_score_mean(tn, theta))
+#'
+#' # For a gamma parent this is the only route available.
+#' tg <- truncated(gamma2_distrib(), lower = 0.5, upper = 5)
+#' unlist(distributions7:::trunc_score_mean_quad(tg, list(mu = 2, sigma2 = 1)))
 trunc_score_mean_quad <- function(distrib, theta) {
   parent <- distrib@parent_distrib
   out <- lapply(distrib@params, function(p) {
@@ -428,17 +805,54 @@ trunc_score_mean_quad <- function(distrib, theta) {
   stats::setNames(out, distrib@params)
 }
 
-#' Truncated Mean of Products of Scores
+#' @title Truncated Mean of Products of Scores
 #'
 #' @description
-#' \eqn{\mathbb{E}_T[s_i s_j]} for every Hessian component, by quadrature.
+#' Computes \eqn{\mathbb{E}_T[s_i s_j]} for every unordered pair of parameters,
+#' by quadrature. Two consumers need it: [trunc_M()] adds it to
+#' [trunc_hess_mean()] where the cdf route is unavailable, and
+#' [trunc_expected_hessian()] uses it whatever the parent is, the expected
+#' Hessian being \eqn{-\mathrm{Cov}_T(s_i, s_j)}.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' @details
+#' This is the quantity that keeps a truncated expected information expensive
+#' even for a parent with closed-form cdf derivatives. Those give
+#' \eqn{d_{ij} Z}, which is \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]},
+#' and no rearrangement separates the two terms; the covariance needs the
+#' second alone.
 #'
-#' @return A named list, one component per Hessian entry.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
+#'
+#' @return A named list of numeric vectors, one component per unordered pair of
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_expected_hessian()] and [trunc_M()], its two consumers, and
+#'   [trunc_hess_mean()] for the other half of the second-order moment.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' ES <- distributions7:::trunc_score_prod_mean(tn, theta)
+#' unlist(ES)
+#'
+#' # Against the same expectation taken by simulation.
+#' set.seed(1)
+#' ys <- distrib_rng(tn, 100000, theta)
+#' g <- distrib_gradient(gaussian1_distrib(), ys, theta)
+#' round(c(mu_mu = mean(g$mu^2), sigma_sigma = mean(g$sigma^2),
+#'         mu_sigma = mean(g$mu * g$sigma)), 3)
+#' round(unlist(ES), 3)
 trunc_score_prod_mean <- function(distrib, theta) {
   parent <- distrib@parent_distrib
   pairs <- hess_pairs(distrib@params)
@@ -451,17 +865,45 @@ trunc_score_prod_mean <- function(distrib, theta) {
   stats::setNames(out, names(pairs))
 }
 
-#' Truncated Mean of the Parent's Hessian
+#' @title Truncated Mean of the Parent's Hessian
 #'
 #' @description
-#' \eqn{\mathbb{E}_T[H_{ij}]} for every Hessian component, by quadrature.
+#' Computes \eqn{\mathbb{E}_T[H_{ij}]} for every unordered pair of parameters,
+#' by quadrature. [trunc_M()] adds it to [trunc_score_prod_mean()] where the
+#' parent's cdf derivatives are not exact, that sum being
+#' \eqn{d_{ij} Z / Z}.
 #'
-#' @param distrib A truncated distribution object.
-#' @param theta A named list of parameters.
+#' @param distrib A truncated distribution object, of either class.
+#' @param theta A named list of the parent's parameters.
 #'
-#' @return A named list, one component per Hessian entry.
+#' @return A named list of numeric vectors, one component per unordered pair of
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_M()], its one caller, and [trunc_score_prod_mean()] for the
+#'   other half of the sum.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' EH <- distributions7:::trunc_hess_mean(tn, theta)
+#' unlist(EH)
+#'
+#' # Against the same expectation taken by simulation.
+#' set.seed(1)
+#' ys <- distrib_rng(tn, 100000, theta)
+#' H <- distrib_hessian(gaussian1_distrib(), ys, theta)
+#' round(vapply(H, mean, numeric(1)), 3)
+#' round(unlist(EH), 3)
 trunc_hess_mean <- function(distrib, theta) {
   parent <- distrib@parent_distrib
   nms <- hess_names(distrib@params)
@@ -477,24 +919,58 @@ trunc_hess_mean <- function(distrib, theta) {
 # are written once and registered on both classes.
 # --------------------------------------------------------------------------
 
-#' Density of a Truncated Distribution
+#' @title Density of a Truncated Distribution
 #'
 #' @description
-#' The parent's density divided by \eqn{Z}, and zero outside the interval.
+#' Evaluates the parent's density divided by the retained mass \eqn{Z}, and
+#' zero outside \eqn{[L, U]}. This is one of the shared method bodies:
+#' truncation treats the two kinds of parent identically once
+#' [trunc_constants()] has resolved the one place they differ, so the body is
+#' written once and registered on both classes.
 #'
 #' @details
-#' One of the shared method bodies. Truncation treats the two kinds of parent
-#' identically once [trunc_constants()] has resolved the one place they
-#' differ, so these bodies are written once and registered on both classes.
+#' The division is done on the LOG scale and the outside is set to
+#' \eqn{-\infty} there, so a point far in a tail keeps its precision instead of
+#' underflowing to zero before the division.
 #'
-#' @param distrib A truncated distribution object.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
-#' @param log Logical; if `TRUE`, returns the log-density.
+#' @param distrib A truncated distribution object, of either class.
+#' @param y A numeric vector of observations. A point outside \eqn{[L, U]}
+#'   gives `0`, or `-Inf` on the log scale.
+#' @param theta A named list of the parent's parameters.
+#' @param log Logical, default `FALSE`. When `TRUE` the log-density is
+#'   returned.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector.
+#' @return A numeric vector, of the length `y` and `theta` recycle to.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [distrib_pdf.TruncatedContinuousDistrib()] and
+#'   [distrib_pdf.TruncatedDiscreteDistrib()], the two registrations, and
+#'   [trunc_constants()] for \eqn{Z}.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' distrib_pdf(tn, c(-2, 0, 1, 3), theta)
+#'
+#' # The parent's density divided by the retained mass.
+#' Z <- distributions7:::trunc_constants(tn, theta)$Z
+#' dnorm(c(0, 1), 0.3, 1.2) / Z
+#'
+#' # Outside the interval, zero, and -Inf on the log scale.
+#' distrib_pdf(tn, c(-2, 3), theta, log = TRUE)
+#'
+#' # It integrates to one over the interval, which the parent's does not.
+#' integrate(function(y) distrib_pdf(tn, y, theta), -1, 2)$value
 trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
   Z <- trunc_constants(distrib, theta)$Z
   ld <- distrib_pdf(distrib@parent_distrib, y, theta, log = TRUE) - log(Z)
@@ -503,20 +979,55 @@ trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
   if (log) ld else exp(ld)
 }
 
-#' Distribution Function of a Truncated Distribution
+#' @title Distribution Function of a Truncated Distribution
 #'
 #' @description
-#' \eqn{F_T(q) = (F(q) - F(\ell^-))/Z}, clamped to \eqn{[0, 1]}.
+#' Evaluates \eqn{F_T(q) = (F(q) - F(L^-))/Z}, clamped to \eqn{[0, 1]}. One of
+#' the shared method bodies, registered on both truncated classes.
 #'
-#' @param distrib A truncated distribution object.
+#' @details
+#' The clamp is there to make the endpoints exact. It returns `0` at and below
+#' \eqn{L} and `1` at and above \eqn{U}, where the unclamped ratio would give a
+#' small negative number or one plus a rounding.
+#'
+#' @param distrib A truncated distribution object, of either class.
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list of parameters.
-#' @param lower.tail Logical; whether the lower tail is wanted.
-#' @param log.p Logical; whether to return the log probability.
+#' @param theta A named list of the parent's parameters.
+#' @param lower.tail Logical, default `TRUE`. When `FALSE` the upper tail
+#'   \eqn{1 - F_T(q)} is returned.
+#' @param log.p Logical, default `FALSE`. When `TRUE` the probability is
+#'   returned on the log scale.
 #'
-#' @return A numeric vector.
+#' @return A numeric vector of probabilities, of the length `q` and `theta`
+#'   recycle to.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [distrib_cdf.TruncatedContinuousDistrib()] and
+#'   [distrib_cdf.TruncatedDiscreteDistrib()], the two registrations, and
+#'   [trunc_quantile()] for the inverse.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' # Exactly 0 and 1 at the endpoints.
+#' distrib_cdf(tn, c(-1, 0.3, 2), theta)
+#'
+#' # Against the ratio written out.
+#' cs <- distributions7:::trunc_constants(tn, theta)
+#' (pnorm(0.3, 0.3, 1.2) - cs$Fl) / cs$Z
+#'
+#' # The two tails sum to one, on either scale.
+#' distrib_cdf(tn, 0.3, theta) + distrib_cdf(tn, 0.3, theta, lower.tail = FALSE)
+#' exp(distrib_cdf(tn, 0.3, theta, log.p = TRUE))
 trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   cs <- trunc_constants(distrib, theta)
   res <- (distrib_cdf(distrib@parent_distrib, q, theta) - cs$Fl) / cs$Z
@@ -525,26 +1036,61 @@ trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) log(res) else res
 }
 
-#' Quantile Function of a Truncated Distribution
+#' @title Quantile Function of a Truncated Distribution
 #'
 #' @description
-#' Inverts [trunc_cdf()] through the parent's quantile function.
+#' Inverts [trunc_cdf()] through the PARENT's quantile function, no
+#' root-finding of its own being needed: \eqn{F_T(q) = p} holds exactly when
+#' \eqn{F(q) = F(L^-) + pZ}. The generalized inverse of a discrete
+#' distribution function satisfies the same relation, so the discrete case
+#' needs no separate treatment and the body is registered on both classes.
 #'
 #' @details
-#' Inverse transform on the parent: \eqn{F_T(q) = p} exactly when
-#' \eqn{F(q) = F(\ell^-) + pZ}, so no root-finding of its own is needed. The
-#' generalized inverse of a discrete cdf satisfies the same relation, so the
-#' discrete case needs no separate treatment.
+#' `p` and `theta` are expanded to a common length before being combined.
+#' \eqn{F(L^-)} and \eqn{Z} follow the length of `theta` and `p` follows its
+#' own, so multiplying them directly would recycle silently where the two
+#' disagree.
 #'
-#' @param distrib A truncated distribution object.
-#' @param p A numeric vector of probabilities.
-#' @param theta A named list of parameters.
-#' @param lower.tail Logical; whether `p` is a lower-tail probability.
-#' @param log.p Logical; whether `p` is given on the log scale.
+#' @param distrib A truncated distribution object, of either class.
+#' @param p A numeric vector of probabilities, clamped to \eqn{[0, 1]}.
+#' @param theta A named list of the parent's parameters.
+#' @param lower.tail Logical, default `TRUE`. When `FALSE`, `p` is read as an
+#'   upper-tail probability.
+#' @param log.p Logical, default `FALSE`. When `TRUE`, `p` is given on the log
+#'   scale.
 #'
-#' @return A numeric vector of quantiles.
+#' @return A numeric vector of quantiles, of the length `p` and `theta` recycle
+#'   to.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [distrib_quantile.TruncatedContinuousDistrib()] and
+#'   [distrib_quantile.TruncatedDiscreteDistrib()], the two registrations,
+#'   [trunc_cdf()] for the inverse, and [trunc_rng()], which draws through it.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' distrib_quantile(tn, c(0.1, 0.5, 0.9), theta)
+#'
+#' # It inverts the distribution function exactly.
+#' p <- c(0.1, 0.5, 0.9)
+#' max(abs(distrib_cdf(tn, distrib_quantile(tn, p, theta), theta) - p))
+#'
+#' # And every quantile lies inside the interval.
+#' range(distrib_quantile(tn, seq(0, 1, by = 0.25), theta))
+#'
+#' # A discrete parent needs no separate treatment.
+#' ztp <- truncated(poisson_distrib(), lower = 1)
+#' distrib_quantile(ztp, c(0.1, 0.5, 0.9), list(mu = 2))
 trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
@@ -564,62 +1110,180 @@ trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) 
   distrib_quantile(distrib@parent_distrib, pmin(pmax(cs$Fl + p * cs$Z, 0), 1), th)
 }
 
-#' Random Generation From a Truncated Distribution
+#' @title Random Generation From a Truncated Distribution
 #'
 #' @description
-#' Draws by inverse transform through [trunc_quantile()], which is
-#' exact and needs no rejection.
+#' Draws by inverse transform through [trunc_quantile()],
+#' \eqn{Y = Q(F(L^-) + V Z)} with \eqn{V} uniform on \eqn{(0, 1)}. The draw is
+#' exact and terminates in one pass however small \eqn{Z} is, where rejection
+#' sampling from the parent would need \eqn{1/Z} draws on average. One of the
+#' shared bodies, registered on both classes.
 #'
-#' @param distrib A truncated distribution object.
-#' @param n The number of draws.
-#' @param theta A named list of parameters.
+#' @param distrib A truncated distribution object, of either class.
+#' @param n The number of draws, a single positive integer.
+#' @param theta A named list of the parent's parameters. A component varying by
+#'   observation must have length `n`.
 #'
-#' @return A numeric vector of draws.
+#' @return A numeric vector of `n` draws, every one inside \eqn{[L, U]}.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [distrib_rng.TruncatedContinuousDistrib()] and
+#'   [distrib_rng.TruncatedDiscreteDistrib()], the two registrations, and
+#'   [trunc_quantile()], which does the work.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' set.seed(1)
+#' y <- distrib_rng(tn, 5000, theta)
+#' c(inside = all(y >= -1 & y <= 2), min = min(y), max = max(y))
+#'
+#' # The sample mean tracks the truncated mean, not the parent's.
+#' c(sampled = mean(y), truncated = mean(tn, theta), parent = 0.3)
+#'
+#' # An interval carrying little mass costs no more than any other.
+#' far <- truncated(gaussian1_distrib(), lower = 4, upper = 5)
+#' set.seed(2)
+#' range(distrib_rng(far, 1000, theta))
 trunc_rng <- function(distrib, n, theta) {
   trunc_quantile(distrib, stats::runif(n), theta)
 }
 
-#' Score of a Truncated Distribution
+#' @title Score of a Truncated Distribution
 #'
 #' @description
-#' The parent's score recentered by its truncated mean,
-#' \eqn{d_i \ell_T = s_i(y) - m_i}.
+#' Computes the parent's score recentered by its truncated mean,
+#' \deqn{\frac{\partial \ell_T}{\partial \theta_i} = s_i(y) - m_i, \qquad
+#'   m_i = \mathbb{E}_T[s_i],}
+#' the subtraction being the derivative of \eqn{-\log Z}. One of the shared
+#' bodies, registered on both truncated classes.
 #'
 #' @details
-#' Truncation adds no parameter -- the endpoints are constants, like a binomial's
-#' size -- but it does add a \eqn{\theta}-dependent normalizing constant, and the
-#' recentering is that constant's contribution. The support does not depend on
-#' \eqn{\theta}, which is what licenses differentiating \eqn{Z} under the
-#' integral sign and keeps truncation at fixed points a regular problem.
+#' Truncation adds no parameter, the endpoints being constants, so the returned
+#' list has exactly the parent's components. What it adds is the
+#' \eqn{\theta}-dependent normalizing constant, and the recentering is that
+#' constant's whole contribution at first order. The support does not depend on
+#' \eqn{\theta}, which licenses differentiating \eqn{Z} under the integral sign
+#' and keeps truncation at fixed points a regular problem.
 #'
-#' @param distrib A truncated distribution object.
+#' @param distrib A truncated distribution object, of either class.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
+#' @param theta A named list of the parent's parameters.
+#' @param scale One of `"parameter"` (the default) or `"link"`, applied by the
+#'   generic before dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list, one component per parameter.
+#' @return A named list of numeric vectors, one component per parameter, in
+#'   `distrib@params` order.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_score_mean()] for \eqn{m_i}, [trunc_hessian()] for the
+#'   second order, and [distrib_gradient.TruncatedContinuousDistrib()] and
+#'   [distrib_gradient.TruncatedDiscreteDistrib()], the two registrations.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' y <- c(-0.5, 0, 1)
+#' g <- distrib_gradient(tn, y, theta)
+#' vapply(g, sum, numeric(1))
+#'
+#' # Against a numerical derivative of the truncated log-likelihood.
+#' ll <- function(v) {
+#'   t2 <- as.list(v); names(t2) <- tn@params
+#'   sum(distrib_pdf(tn, y, t2, log = TRUE))
+#' }
+#' max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+#'
+#' # It is the parent's score, shifted by one number per parameter.
+#' gp <- distrib_gradient(gaussian1_distrib(), y, theta)
+#' round(unlist(g) - unlist(gp), 8)
 trunc_gradient <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   m <- trunc_score_mean(distrib, theta)
   g <- distrib_gradient(distrib@parent_distrib, y, theta)
   stats::setNames(lapply(distrib@params, function(p) g[[p]] - m[[p]]), distrib@params)
 }
 
-#' Observed Hessian of a Truncated Distribution
+#' @title Observed Hessian of a Truncated Distribution
 #'
 #' @description
-#' \eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}.
+#' Computes
+#' \deqn{\frac{\partial^2 \ell_T}{\partial\theta_i \partial\theta_j}
+#'   = H_{ij}(y) - M_{ij} + m_i m_j,}
+#' the subtracted part \eqn{M_{ij} - m_i m_j} being the second derivative of
+#' \eqn{\log Z}. One of the shared bodies, registered on both truncated
+#' classes.
 #'
-#' @param distrib A truncated distribution object.
+#' @details
+#' Only \eqn{H_{ij}(y)} varies with the data; the correction is a function of
+#' \eqn{\theta} and the endpoints alone, so it is computed once and recycled to
+#' the length of `y`.
+#'
+#' @param distrib A truncated distribution object, of either class.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
+#' @param theta A named list of the parent's parameters.
+#' @param scale One of `"parameter"` (the default) or `"link"`, applied by the
+#'   generic before dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A named list, one component per Hessian entry.
+#' @return A named list of numeric vectors of length `length(y)`, one component
+#'   per unordered pair of parameters, keyed as
+#'   [`hess_names(distrib@params)`][hess_names].
 #'
-#' @seealso [trunc_M()], [trunc_score_mean()]
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_M()] and [trunc_score_mean()] for the two corrections,
+#'   [trunc_expected_hessian()] for the expectation, and
+#'   [distrib_hessian.TruncatedContinuousDistrib()] and
+#'   [distrib_hessian.TruncatedDiscreteDistrib()], the two registrations.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' y <- c(-0.5, 0, 1)
+#' H <- distrib_hessian(tn, y, theta)
+#' vapply(H, sum, numeric(1))
+#'
+#' # Against a numerical Hessian of the truncated log-likelihood.
+#' ll <- function(v) {
+#'   t2 <- as.list(v); names(t2) <- tn@params
+#'   sum(distrib_pdf(tn, y, t2, log = TRUE))
+#' }
+#' Hn <- numDeriv::hessian(ll, unlist(theta))
+#' ref <- vapply(distributions7:::hess_pairs(tn@params),
+#'               function(q) Hn[match(q[1], tn@params), match(q[2], tn@params)],
+#'               numeric(1))
+#' max(abs(vapply(H, sum, numeric(1)) - ref))
+#'
+#' # The correction is one number per component, not one per observation.
+#' Hp <- distrib_hessian(gaussian1_distrib(), y, theta)
+#' round(unlist(H) - unlist(Hp), 8)
 trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   n <- length(y)
   m <- trunc_score_mean(distrib, theta)
@@ -635,25 +1299,75 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
   expand_params(stats::setNames(res, names(pairs))[hess_names(distrib@params)], n)
 }
 
-#' Expected Hessian of a Truncated Distribution
+#' @title Expected Hessian of a Truncated Distribution
 #'
 #' @description
-#' \eqn{\mathbb{E}[d_{ij}\ell_T] = -\mathrm{Cov}_T(s_i, s_j)}, the second
-#' Bartlett identity under the truncated law.
+#' Computes
+#' \deqn{\mathbb{E}\left[\frac{\partial^2 \ell_T}{\partial\theta_i
+#'   \partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),}
+#' the second Bartlett identity under the truncated law: the parent's expected
+#' Hessian cancels exactly against the term it contributes to the second
+#' derivative of \eqn{\log Z}. One of the shared bodies, registered on both
+#' truncated classes.
 #'
 #' @details
-#' This still needs one quadrature per component even when the parent has exact
-#' cdf derivatives: those give \eqn{d^B Z} but cannot separate
-#' \eqn{\mathbb{E}_T[\ell^{(ij)}]} from \eqn{\mathbb{E}_T[\ell^{(i)}\ell^{(j)}]},
-#' and the covariance needs both.
+#' This needs one quadrature per component even where the parent has exact cdf
+#' derivatives. Those give \eqn{d_{ij} Z}, which is
+#' \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]}, and the covariance needs
+#' the second term on its own.
 #'
-#' @param distrib A truncated distribution object.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
+#' No component depends on the data, so every returned vector is constant.
+#' `approx` and `nsim` are accepted so that the signature matches the
+#' generic's, and neither is read: the identity above is exact, and what it
+#' rests on is computed by quadrature whatever `approx` says.
 #'
-#' @return A named list, one component per Hessian entry.
+#' @param distrib A truncated distribution object, of either class.
+#' @param y A numeric vector of observations. Only its length is used.
+#' @param theta A named list of the parent's parameters.
+#' @param scale One of `"parameter"` (the default) or `"link"`, applied by the
+#'   generic before dispatch.
+#' @param approx Ignored. Present so that the signature matches the generic's.
+#' @param nsim Ignored, for the same reason.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of numeric vectors of length `length(y)`, one component
+#'   per unordered pair of parameters, keyed as
+#'   [`hess_names(distrib@params)`][hess_names], each vector constant.
+#'
+#' @section Notation:
+#' \eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+#' support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+#' and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+#' and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+#' \eqn{\mathbb{E}_T} is expectation under the truncated law.
+#'
+#' @seealso [trunc_score_prod_mean()] and [trunc_score_mean()] for the two
+#'   pieces of the covariance, [trunc_hessian()] for the observed matrix, and
+#'   [distrib_expected_hessian.TruncatedContinuousDistrib()] and
+#'   [distrib_expected_hessian.TruncatedDiscreteDistrib()], the two
+#'   registrations.
 #'
 #' @keywords internal
+#'
+#' @examples
+#' tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+#' theta <- list(mu = 0.3, sigma = 1.2)
+#'
+#' EH <- distrib_expected_hessian(tn, 1, theta)
+#' unlist(EH)
+#'
+#' # Minus the covariance of the parent's score under the truncated law.
+#' m <- distributions7:::trunc_score_mean(tn, theta)
+#' ES <- distributions7:::trunc_score_prod_mean(tn, theta)
+#' c(mu_mu = -(ES$mu_mu - m$mu^2),
+#'   sigma_sigma = -(ES$sigma_sigma - m$sigma^2),
+#'   mu_sigma = -(ES$mu_sigma - m$mu * m$sigma))
+#'
+#' # And what averaging the observed Hessian over the truncated law gives.
+#' set.seed(1)
+#' ys <- distrib_rng(tn, 200000, theta)
+#' round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)
+#' round(vapply(EH, function(z) z[1], numeric(1)), 3)
 trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "link"),
                                    approx = c("bartlett", "integrate", "mc", "opg"),
                                    nsim = 10000, ...) {
@@ -678,8 +1392,8 @@ trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "li
 #' @title Truncated Probability Density Function
 #' @name distrib_pdf.TruncatedContinuousDistrib
 #' @description
-#' \deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (\ell \le y \le u), \qquad 0 \text{ otherwise}}
-#' with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta)}.
+#' \deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (L \le y \le U), \qquad 0 \text{ otherwise}}
+#' with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta)}.
 #' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of the parent's parameters.
@@ -691,8 +1405,8 @@ S7::method(distrib_pdf, TruncatedContinuousDistrib) <- trunc_pdf
 #' @title Truncated Probability Mass Function
 #' @name distrib_pdf.TruncatedDiscreteDistrib
 #' @description
-#' \deqn{P_T(Y = y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (\ell \le y \le u), \qquad 0 \text{ otherwise}}
-#' with \eqn{Z(\theta) = F(u;\theta) - F(\ell;\theta) + f(\ell;\theta)}, the mass
+#' \deqn{P_T(Y = y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (L \le y \le U), \qquad 0 \text{ otherwise}}
+#' with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta) + f(L;\theta)}, the mass
 #' at the lower endpoint being added back because the endpoint is included.
 #' @param distrib A `TruncatedDiscreteDistrib` object.
 #' @param y A numeric vector of observations.
@@ -704,7 +1418,7 @@ S7::method(distrib_pdf, TruncatedDiscreteDistrib) <- trunc_pdf
 
 #' @title Truncated Cumulative Distribution Function (Continuous)
 #' @name distrib_cdf.TruncatedContinuousDistrib
-#' @description \deqn{F_T(q) = \dfrac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
+#' @description \deqn{F_T(q) = \dfrac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
 #' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the parent's parameters.
@@ -716,7 +1430,7 @@ S7::method(distrib_cdf, TruncatedContinuousDistrib) <- trunc_cdf
 
 #' @title Truncated Cumulative Distribution Function (Discrete)
 #' @name distrib_cdf.TruncatedDiscreteDistrib
-#' @description \deqn{F_T(q) = \dfrac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
+#' @description \deqn{F_T(q) = \dfrac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
 #' @param distrib A `TruncatedDiscreteDistrib` object.
 #' @param q A numeric vector of quantiles.
 #' @param theta A named list of the parent's parameters.
@@ -728,7 +1442,7 @@ S7::method(distrib_cdf, TruncatedDiscreteDistrib) <- trunc_cdf
 
 #' @title Truncated Quantile Function (Continuous)
 #' @name distrib_quantile.TruncatedContinuousDistrib
-#' @description \deqn{Q_T(p) = Q\!\left(F(\ell^-;\theta) + p\,Z(\theta)\right)}
+#' @description \deqn{Q_T(p) = Q\!\left(F(L^-;\theta) + p\,Z(\theta)\right)}
 #' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list of the parent's parameters.
@@ -740,7 +1454,7 @@ S7::method(distrib_quantile, TruncatedContinuousDistrib) <- trunc_quantile
 
 #' @title Truncated Quantile Function (Discrete)
 #' @name distrib_quantile.TruncatedDiscreteDistrib
-#' @description \deqn{Q_T(p) = Q\!\left(F(\ell^-;\theta) + p\,Z(\theta)\right)}
+#' @description \deqn{Q_T(p) = Q\!\left(F(L^-;\theta) + p\,Z(\theta)\right)}
 #' @param distrib A `TruncatedDiscreteDistrib` object.
 #' @param p A numeric vector of probabilities.
 #' @param theta A named list of the parent's parameters.
@@ -753,8 +1467,8 @@ S7::method(distrib_quantile, TruncatedDiscreteDistrib) <- trunc_quantile
 #' @title Truncated Random Number Generator (Continuous)
 #' @name distrib_rng.TruncatedContinuousDistrib
 #' @description
-#' Inverse transform sampling on the parent: \eqn{Y = Q(F(\ell^-) + U Z)} with
-#' \eqn{U \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always
+#' Inverse transform sampling on the parent: \eqn{Y = Q(F(L^-) + V Z)} with
+#' \eqn{V \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always
 #' terminates in one pass however small \eqn{Z} is.
 #' @param distrib A `TruncatedContinuousDistrib` object.
 #' @param n Number of observations to generate.
@@ -866,7 +1580,7 @@ S7::method(distrib_atoms, TruncatedContinuousDistrib) <- function(distrib, theta
 #' @name expectation.TruncatedContinuousDistrib
 #' @description
 #' The inherited continuous method integrates the density over
-#' \eqn{[\ell, u]}, which is correct unless the parent carries point masses ---
+#' \eqn{[L, U]}, which is correct unless the parent carries point masses ---
 #' as it does when it is a [zero_adjusted()] continuous distribution.
 #' Those masses are added explicitly, exactly as in
 #' [`the untruncated case()`][expectation.ZeroAdjustedContinuousDistrib].
@@ -887,7 +1601,7 @@ S7::method(expectation, TruncatedContinuousDistrib) <- function(distrib, f, thet
 #' @title Truncated Continuous Response Gradient
 #' @name distrib_grad_y.TruncatedContinuousDistrib
 #' @description
-#' \eqn{Z} does not depend on \eqn{y}, so inside \eqn{[\ell, u]} the response
+#' \eqn{Z} does not depend on \eqn{y}, so inside \eqn{[L, U]} the response
 #' derivative is the parent's. Outside, the log-density is \eqn{-\infty} and no
 #' derivative exists, so `NaN` is returned.
 #' @param distrib A `TruncatedContinuousDistrib` object.
@@ -1022,7 +1736,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' Truncated Distribution Object
 #'
 #' @description
-#' Restricts an existing distribution to \eqn{[\ell, u]} and renormalizes it, so
+#' Restricts an existing distribution to \eqn{[L, U]} and renormalizes it, so
 #' that all the probability mass the parent placed outside the interval is
 #' redistributed inside it. Either endpoint may be omitted, giving one-sided
 #' truncation; at least one must be given.
@@ -1039,12 +1753,12 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #'   parent both must be whole numbers.
 #'
 #' @details
-#' Write \eqn{Z(\theta) = P(\ell \le Y \le u)} for the retained mass. Then
-#' \deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)}\ \ (\ell \le y \le u),
-#' \qquad F_T(q) = \frac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)},
-#' \qquad Q_T(p) = Q\!\left(F(\ell^-;\theta) + pZ(\theta)\right),}
-#' with \eqn{F(\ell^-) = F(\ell)} for a continuous parent and
-#' \eqn{F(\ell) - f(\ell)} for a discrete one, since the lower endpoint is kept.
+#' Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
+#' \deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)}\ \ (L \le y \le U),
+#' \qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)},
+#' \qquad Q_T(p) = Q\!\left(F(L^-;\theta) + pZ(\theta)\right),}
+#' with \eqn{F(L^-) = F(L)} for a continuous parent and
+#' \eqn{F(L) - f(L)} for a discrete one, since the lower endpoint is kept.
 #'
 #' **Truncation adds no parameter.** The endpoints are known constants, like
 #' a binomial's `size`, so the truncated distribution has exactly the

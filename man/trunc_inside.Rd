@@ -7,7 +7,7 @@
 trunc_inside(distrib, y)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
 \item{y}{A numeric vector of observations.}
 }
@@ -15,6 +15,32 @@ trunc_inside(distrib, y)
 A logical vector as long as \code{y}.
 }
 \description{
-Which Observations Lie in the Truncated Support
+Tests \code{y >= L & y <= U}, with both endpoints included. \code{\link[=trunc_pdf]{trunc_pdf()}} uses it
+to set the log-density to \eqn{-\infty} outside the interval,
+\code{\link[=trunc_y_deriv]{trunc_y_deriv()}} to return \code{NaN} there, and
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} to keep the parent's atoms that
+survive.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+# Both endpoints count as inside.
+distributions7:::trunc_inside(tn, c(-2, -1, 0, 2, 3))
+
+# Which is what makes the density positive at them and zero beyond.
+distrib_pdf(tn, c(-2, -1, 2, 3), theta)
+}
+\seealso{
+\code{\link[=trunc_pdf]{trunc_pdf()}} and \code{\link[=trunc_y_deriv]{trunc_y_deriv()}}, its two callers.
 }
 \keyword{internal}

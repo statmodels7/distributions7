@@ -7,20 +7,58 @@
 trunc_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE} the upper tail
+\eqn{1 - F_T(q)} is returned.}
 
-\item{log.p}{Logical; whether to return the log probability.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE} the probability is
+returned on the log scale.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities, of the length \code{q} and \code{theta}
+recycle to.
 }
 \description{
-\eqn{F_T(q) = (F(q) - F(\ell^-))/Z}, clamped to \eqn{[0, 1]}.
+Evaluates \eqn{F_T(q) = (F(q) - F(L^-))/Z}, clamped to \eqn{[0, 1]}. One of
+the shared method bodies, registered on both truncated classes.
+}
+\details{
+The clamp is there to make the endpoints exact. It returns \code{0} at and below
+\eqn{L} and \code{1} at and above \eqn{U}, where the unclamped ratio would give a
+small negative number or one plus a rounding.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+# Exactly 0 and 1 at the endpoints.
+distrib_cdf(tn, c(-1, 0.3, 2), theta)
+
+# Against the ratio written out.
+cs <- distributions7:::trunc_constants(tn, theta)
+(pnorm(0.3, 0.3, 1.2) - cs$Fl) / cs$Z
+
+# The two tails sum to one, on either scale.
+distrib_cdf(tn, 0.3, theta) + distrib_cdf(tn, 0.3, theta, lower.tail = FALSE)
+exp(distrib_cdf(tn, 0.3, theta, log.p = TRUE))
+}
+\seealso{
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} and
+\code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf.TruncatedDiscreteDistrib()}}, the two registrations, and
+\code{\link[=trunc_quantile]{trunc_quantile()}} for the inverse.
 }
 \keyword{internal}

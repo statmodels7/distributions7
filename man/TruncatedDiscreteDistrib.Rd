@@ -38,18 +38,47 @@ TruncatedDiscreteDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{parent_distrib}{The wrapped \code{discrete_distrib} object.}
+\item{parent_distrib}{The wrapped \code{discrete_distrib} object. Its parameters
+become the truncated object's, unchanged.}
 
-\item{lower, upper}{The truncation points, included in the support.}
+\item{lower, upper}{The truncation points, \code{L} and \code{U}, both included in the
+support. Either may be infinite, and a finite one must be a whole number.}
 }
 \value{
-An object of class \code{TruncatedDiscreteDistrib}.
+An S7 object of class \code{TruncatedDiscreteDistrib}, inheriting from
+\code{discrete_distrib}.
 }
 \description{
-A subclass of \code{discrete_distrib} representing a discrete distribution
-restricted to the support points in \eqn{[\ell, u]} and renormalized. Both
-endpoints are \strong{included}.
+Represents a discrete parent restricted to the support points in
+\eqn{[L, U]} and renormalized by the retained mass \eqn{Z(\theta)}. Both
+endpoints are INCLUDED, so \code{truncated(poisson_distrib(), lower = 1)} is the
+zero-truncated Poisson on \eqn{\{1, 2, \dots\}} and keeps the mass at one.
+Construct one with \code{\link[=truncated]{truncated()}}; calling the class directly skips every
+validation the constructor performs.
 }
+\details{
+The lower endpoint being included is the one place the two truncation
+classes differ. The tail below the interval is \eqn{F(L^-) = F(L) - f(L)},
+so the mass sitting exactly on \eqn{L} has to be added back;
+\code{\link[=trunc_constants]{trunc_constants()}} does that through \code{\link[=parent_mass_at]{parent_mass_at()}}, and
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} applies the matching correction to the derivatives of
+\eqn{Z}.
+
+Truncation adds no parameter, so the object carries exactly the parent's
+\code{params}, \code{params_bounds} and \code{link_params}. What it can remove is
+IDENTIFIABILITY: \eqn{k} retained support points carry \eqn{k-1} free
+probabilities, so \code{\link[=truncated]{truncated()}} rejects an interval leaving fewer than
+\code{n_params + 1} of them.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
 \section{Methods}{
 
 Methods implemented for this class:
@@ -64,6 +93,21 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+class(ztp)[1]
+c(name = ztp@distrib_name, bounds = paste(ztp@bounds, collapse = ", "))
+
+# The lower endpoint is IN the support, so this is the zero-truncated
+# Poisson: mass at 0 is gone, mass at 1 is not.
+distrib_pdf(ztp, 0:3, list(mu = 2))
+dpois(1:3, 2) / (1 - dpois(0, 2))
+
+# An interval leaving too few support points is rejected by the
+# constructor, the parameter no longer being identified.
+try(truncated(bernoulli_distrib(), lower = 1))
+}
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the constructor, \link{TruncatedContinuousDistrib} for
+the continuous branch, and \code{\link[=trunc_constants]{trunc_constants()}} for \eqn{Z}.
 }

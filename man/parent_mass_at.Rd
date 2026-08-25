@@ -7,33 +7,61 @@
 parent_mass_at(distrib, x, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class. The branch
+is taken on it, and the mass is asked of \code{distrib@parent_distrib}.}
 
-\item{x}{The point to evaluate at.}
+\item{x}{A single number, the point to evaluate at.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A numeric vector of probabilities.
+A numeric vector of probabilities, of length one unless a parameter
+in \code{theta} varies by observation.
 }
 \description{
-\eqn{P(Y = x)} under the parent: the pmf for a discrete distribution, the
-atom's probability for a mixed one, and zero for an ordinary continuous
-distribution.
+Returns \eqn{P(Y = x)} under the parent: the mass function for a discrete
+parent, the atom's probability for a mixed one, and zero for an ordinary
+continuous parent. \code{\link[=trunc_constants]{trunc_constants()}} needs it because the lower endpoint
+is included in the truncated support, so the tail below the interval is
+\eqn{F(L^-) = F(L) - P(Y = L)}.
 }
 \details{
-This is the one quantity separating the two truncation classes, and getting it
-wrong for a \emph{mixed} parent is subtle. It is tempting to branch on whether
-the parent is a \code{discrete_distrib}; that looks right and is wrong. The cdf
-of \code{zero_adjusted(gamma2_distrib())} already includes the point mass at
-zero, so \eqn{F(0) \neq F(0^-)} even though the object is a
-\code{continuous_distrib}. Truncating it from above, with the atom retained,
-then drops exactly that mass out of the normalizing constant -- and the
-resulting density integrates to something other than one while every formula
-still reads correctly. Asking \code{\link[=distrib_atoms]{distrib_atoms()}} instead of asking
-the class cannot make that mistake.
+The question is asked of the OBJECT, through \code{\link[=distrib_atoms]{distrib_atoms()}}, never of its
+class. Branching on \code{discrete_distrib} looks right and is wrong: the
+distribution function of \code{zero_adjusted(gamma2_distrib())} already contains
+the point mass at zero, so \eqn{F(0) \ne F(0^-)} although the object is a
+\code{continuous_distrib}. Truncating such a parent from above, with the atom
+retained, would then drop exactly that mass out of \eqn{Z} while every
+formula still read correctly, and the density would integrate to something
+other than one.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+# A discrete parent: the mass function.
+ztp <- truncated(poisson_distrib(), lower = 1)
+c(reported = distributions7:::parent_mass_at(ztp, 1, list(mu = 2)),
+  dpois = dpois(1, 2))
+
+# A mixed parent: the atom, although the object is a continuous_distrib.
+tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+th <- list(mu = 2, sigma2 = 1, za = 0.3)
+distributions7:::parent_mass_at(tz, 0, th)
+
+# An ordinary continuous parent: zero, at every point.
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+distributions7:::parent_mass_at(tn, 0, theta)
 }
 \seealso{
-\code{\link[=distrib_atoms]{distrib_atoms()}}, \code{\link[=trunc_constants]{trunc_constants()}}
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the declaration it reads, and
+\code{\link[=trunc_constants]{trunc_constants()}} for its one caller.
 }
 \keyword{internal}

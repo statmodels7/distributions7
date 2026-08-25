@@ -7,24 +7,69 @@
 trunc_constants(distrib, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters. A component may vary
+by observation.}
 }
 \value{
-A list with \code{Fl} and \code{Z}.
+A named list with \code{Fl}, the tail below the interval, and \code{Z}, the
+retained mass; each a numeric vector following the length of \code{theta}.
 }
 \description{
-Returns \eqn{F(\ell^-)} and the normalizing constant
-\eqn{Z = F(u) - F(\ell^-)}, vectorized in \eqn{\theta}.
+Returns the tail below the interval, \eqn{F(L^-)}, and the retained mass
+\eqn{Z = F(U) - F(L^-)}. Every method of a truncated distribution divides
+by \eqn{Z}, and \code{\link[=trunc_cdf]{trunc_cdf()}} and \code{\link[=trunc_quantile]{trunc_quantile()}} shift by \eqn{F(L^-)}
+as well.
 }
 \details{
-Both endpoints are \strong{included} in the truncated support, so any mass
-sitting exactly on the lower one has to be added back:
-\eqn{F(\ell^-) = F(\ell) - P(Y = \ell)}. That correction is the \emph{atom}
-case, not the discrete case -- see \code{\link[=parent_mass_at]{parent_mass_at()}}.
+Both endpoints are INCLUDED in the truncated support, so any mass sitting
+exactly on the lower one is added back:
+\eqn{F(L^-) = F(L) - P(Y = L)}. That correction belongs to the ATOM case,
+not to the discrete case, so it goes through \code{\link[=parent_mass_at]{parent_mass_at()}}. An
+infinite endpoint contributes \eqn{0} or \eqn{1} without a call on the
+parent.
 
-An interval carrying no probability under the given parameters is reported
-rather than returned, since the truncated law is not defined there.
+Both quantities are vectorized in \eqn{\theta}, so a parameter varying by
+observation gives one constant per observation.
+
+An interval carrying no probability under the given parameters raises an
+error naming the interval and the computed mass, the truncated law not
+being defined there. That is a likely place for a search to wander to, so
+the message says which endpoints produced it.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+cs <- distributions7:::trunc_constants(tn, theta)
+unlist(cs)
+c(Z = cs$Z, direct = pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2))
+
+# A discrete parent: the mass at the lower endpoint is added back, so the
+# zero-truncated Poisson keeps everything except dpois(0, mu).
+ztp <- truncated(poisson_distrib(), lower = 1)
+cz <- distributions7:::trunc_constants(ztp, list(mu = 2))
+c(Z = cz$Z, direct = 1 - dpois(0, 2), Fl = cz$Fl)
+
+# Vectorized in theta.
+distributions7:::trunc_constants(tn, list(mu = c(0, 0.5), sigma = 1.2))$Z
+
+# An interval carrying no mass is reported, not returned.
+far <- truncated(gaussian1_distrib(), lower = 100, upper = 200)
+try(distributions7:::trunc_constants(far, theta))
+}
+\seealso{
+\code{\link[=parent_mass_at]{parent_mass_at()}} for the endpoint correction,
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} for the derivatives of \eqn{Z}, and \code{\link[=truncated]{truncated()}}.
 }
 \keyword{internal}

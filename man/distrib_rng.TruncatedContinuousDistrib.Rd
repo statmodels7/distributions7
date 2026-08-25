@@ -14,8 +14,8 @@
 A numeric vector of random draws.
 }
 \description{
-Inverse transform sampling on the parent: \eqn{Y = Q(F(\ell^-) + U Z)} with
-\eqn{U \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always
+Inverse transform sampling on the parent: \eqn{Y = Q(F(L^-) + V Z)} with
+\eqn{V \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always
 terminates in one pass however small \eqn{Z} is.
 }
 \seealso{

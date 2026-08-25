@@ -7,19 +7,71 @@
 trunc_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one component per Hessian entry.
+A named list of numeric vectors of length \code{length(y)}, one component
+per unordered pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-\eqn{d_{ij}\ell_T = H_{ij}(y) - M_{ij} + m_i m_j}.
+Computes
+\deqn{\frac{\partial^2 \ell_T}{\partial\theta_i \partial\theta_j}
+  = H_{ij}(y) - M_{ij} + m_i m_j,}
+the subtracted part \eqn{M_{ij} - m_i m_j} being the second derivative of
+\eqn{\log Z}. One of the shared bodies, registered on both truncated
+classes.
+}
+\details{
+Only \eqn{H_{ij}(y)} varies with the data; the correction is a function of
+\eqn{\theta} and the endpoints alone, so it is computed once and recycled to
+the length of \code{y}.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+y <- c(-0.5, 0, 1)
+H <- distrib_hessian(tn, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the truncated log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- tn@params
+  sum(distrib_pdf(tn, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(tn@params),
+              function(q) Hn[match(q[1], tn@params), match(q[2], tn@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# The correction is one number per component, not one per observation.
+Hp <- distrib_hessian(gaussian1_distrib(), y, theta)
+round(unlist(H) - unlist(Hp), 8)
 }
 \seealso{
-\code{\link[=trunc_M]{trunc_M()}}, \code{\link[=trunc_score_mean]{trunc_score_mean()}}
+\code{\link[=trunc_M]{trunc_M()}} and \code{\link[=trunc_score_mean]{trunc_score_mean()}} for the two corrections,
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} for the expectation, and
+\code{\link[=distrib_hessian.TruncatedContinuousDistrib]{distrib_hessian.TruncatedContinuousDistrib()}} and
+\code{\link[=distrib_hessian.TruncatedDiscreteDistrib]{distrib_hessian.TruncatedDiscreteDistrib()}}, the two registrations.
 }
 \keyword{internal}

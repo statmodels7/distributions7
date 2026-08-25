@@ -7,22 +7,57 @@
 trunc_score_mean(distrib, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A named list, one component per parameter.
+A named list of numeric vectors, one component per parameter, in
+\code{distrib@params} order.
 }
 \description{
-\eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the parent's score:
-the truncated score is \eqn{d_i \ell_T = s_i(y) - m_i}.
+Computes \eqn{m_i = \mathbb{E}_T[s_i]}, the quantity that recenters the
+parent's score: the truncated score is \eqn{s_i(y) - m_i}. It is
+\eqn{d_i Z / Z}, because \eqn{d_i Z = \int_T f s_i}, so it comes from
+\code{\link[=trunc_mass_derivs]{trunc_mass_derivs()}} where those are exact and from
+\code{\link[=trunc_score_mean_quad]{trunc_score_mean_quad()}} otherwise.
 }
 \details{
-Taken from the cdf derivatives where those are exact, and from quadrature
-otherwise.
+\eqn{m_i} is a function of \eqn{\theta} and of the endpoints alone, not of
+the data, so one evaluation serves a whole sample. It is also what makes
+derivatives of a truncated distribution dearer than the parent's: the
+quadrature route costs one integral per parameter.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+m <- distributions7:::trunc_score_mean(tn, theta)
+unlist(m)
+
+# The truncated score is the parent's, recentered by exactly this.
+y <- c(-0.5, 0, 1)
+g <- distrib_gradient(tn, y, theta)
+gp <- distrib_gradient(gaussian1_distrib(), y, theta)
+max(abs(unlist(g) - (unlist(gp) - rep(unlist(m), each = length(y)))))
+
+# It is also what makes the truncated score have mean zero, which the
+# untruncated score does not have over the interval.
+set.seed(1)
+ys <- distrib_rng(tn, 50000, theta)
+round(vapply(distrib_gradient(tn, ys, theta), mean, numeric(1)), 3)
 }
 \seealso{
-\code{\link[=trunc_score_mean_quad]{trunc_score_mean_quad()}}, \code{\link[=trunc_M]{trunc_M()}}
+\code{\link[=trunc_gradient]{trunc_gradient()}}, which subtracts it, \code{\link[=trunc_M]{trunc_M()}} for the
+second-order counterpart, and \code{\link[=trunc_score_mean_quad]{trunc_score_mean_quad()}} for the fallback.
 }
 \keyword{internal}

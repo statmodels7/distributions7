@@ -7,14 +7,54 @@
 trunc_score_prod_mean(distrib, theta)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A named list, one component per Hessian entry.
+A named list of numeric vectors, one component per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-\eqn{\mathbb{E}_T[s_i s_j]} for every Hessian component, by quadrature.
+Computes \eqn{\mathbb{E}_T[s_i s_j]} for every unordered pair of parameters,
+by quadrature. Two consumers need it: \code{\link[=trunc_M]{trunc_M()}} adds it to
+\code{\link[=trunc_hess_mean]{trunc_hess_mean()}} where the cdf route is unavailable, and
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} uses it whatever the parent is, the expected
+Hessian being \eqn{-\mathrm{Cov}_T(s_i, s_j)}.
+}
+\details{
+This is the quantity that keeps a truncated expected information expensive
+even for a parent with closed-form cdf derivatives. Those give
+\eqn{d_{ij} Z}, which is \eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]},
+and no rearrangement separates the two terms; the covariance needs the
+second alone.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+ES <- distributions7:::trunc_score_prod_mean(tn, theta)
+unlist(ES)
+
+# Against the same expectation taken by simulation.
+set.seed(1)
+ys <- distrib_rng(tn, 100000, theta)
+g <- distrib_gradient(gaussian1_distrib(), ys, theta)
+round(c(mu_mu = mean(g$mu^2), sigma_sigma = mean(g$sigma^2),
+        mu_sigma = mean(g$mu * g$sigma)), 3)
+round(unlist(ES), 3)
+}
+\seealso{
+\code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} and \code{\link[=trunc_M]{trunc_M()}}, its two consumers, and
+\code{\link[=trunc_hess_mean]{trunc_hess_mean()}} for the other half of the second-order moment.
 }
 \keyword{internal}

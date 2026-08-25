@@ -38,17 +38,54 @@ TruncatedContinuousDistrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{parent_distrib}{The wrapped \code{continuous_distrib} object.}
+\item{parent_distrib}{The wrapped \code{continuous_distrib} object. Its
+parameters become the truncated object's, unchanged.}
 
-\item{lower, upper}{The truncation points.}
+\item{lower, upper}{The truncation points, \code{L} and \code{U}. Either may be
+infinite, giving one-sided truncation, and both are included in the
+support.}
 }
 \value{
-An object of class \code{TruncatedContinuousDistrib}.
+An S7 object of class \code{TruncatedContinuousDistrib}, inheriting from
+\code{continuous_distrib}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing a continuous distribution
-restricted to \eqn{[\ell, u]} and renormalized.
+Represents a continuous parent restricted to \eqn{[L, U]} and renormalized
+by the retained mass \eqn{Z(\theta)}. Construct one with \code{\link[=truncated]{truncated()}}, which
+validates the endpoints, collapses a nested truncation and copies the
+parent's parameter metadata; calling the class directly does none of that.
 }
+\section{What truncation adds, and what it does not}{
+It adds NO parameter. The endpoints are known constants, like a binomial's
+\code{size}, so the truncated object carries exactly the parent's \code{params},
+\code{params_bounds} and \code{link_params}. What it adds is the
+\eqn{\theta}-dependent normalizing constant \eqn{Z}, and every derivative of
+\eqn{\ell_T = \ell - \log Z} carries its contribution.
+
+The support does not move with \eqn{\theta}. That is the condition under
+which \eqn{Z} may be differentiated under the integral sign, and it is what
+keeps truncation at fixed points a regular problem.
+}
+
+\section{A mixed parent}{
+The parent may itself carry point masses, as \code{\link[=zero_adjusted]{zero_adjusted()}} of a
+continuous distribution does. Those atoms survive truncation where they lie
+inside the interval, rescaled by \eqn{1/Z}, and
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} reports them. Two methods exist
+only for that case: \code{\link[=expectation.TruncatedContinuousDistrib]{expectation.TruncatedContinuousDistrib()}} adds the
+masses to the integral, and \code{\link[=parent_mass_at]{parent_mass_at()}} asks the parent for the mass
+on a single point instead of assuming a continuous parent has none.
+}
+
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
 \section{Methods}{
 
 Methods implemented for this class:
@@ -67,6 +104,24 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+class(tn)[1]
+c(name = tn@distrib_name, params = paste(tn@params, collapse = ", "))
+tn@bounds
+
+# The parameters are the parent's, unchanged: truncation adds none.
+identical(tn@params, gaussian1_distrib()@params)
+identical(tn@params_bounds, gaussian1_distrib()@params_bounds)
+
+# The density is the parent's divided by the retained mass.
+Z <- pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)
+c(truncated = distrib_pdf(tn, 0, theta),
+  parent_over_Z = dnorm(0, 0.3, 1.2) / Z)
+}
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the constructor, \link{TruncatedDiscreteDistrib} for
+the discrete branch, and \code{\link[=trunc_constants]{trunc_constants()}} for \eqn{Z}.
 }

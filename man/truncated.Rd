@@ -19,7 +19,7 @@ An S7 object of class \code{TruncatedDiscreteDistrib} or
 \code{TruncatedContinuousDistrib}.
 }
 \description{
-Restricts an existing distribution to \eqn{[\ell, u]} and renormalizes it, so
+Restricts an existing distribution to \eqn{[L, U]} and renormalizes it, so
 that all the probability mass the parent placed outside the interval is
 redistributed inside it. Either endpoint may be omitted, giving one-sided
 truncation; at least one must be given.
@@ -30,12 +30,12 @@ included}, which for a discrete parent is the difference between
 supported on \eqn{\{1, 2, \dots\}} --- and truncating above 1.
 }
 \details{
-Write \eqn{Z(\theta) = P(\ell \le Y \le u)} for the retained mass. Then
-\deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)}\ \ (\ell \le y \le u),
-\qquad F_T(q) = \frac{F(q;\theta) - F(\ell^-;\theta)}{Z(\theta)},
-\qquad Q_T(p) = Q\!\left(F(\ell^-;\theta) + pZ(\theta)\right),}
-with \eqn{F(\ell^-) = F(\ell)} for a continuous parent and
-\eqn{F(\ell) - f(\ell)} for a discrete one, since the lower endpoint is kept.
+Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
+\deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)}\ \ (L \le y \le U),
+\qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)},
+\qquad Q_T(p) = Q\!\left(F(L^-;\theta) + pZ(\theta)\right),}
+with \eqn{F(L^-) = F(L)} for a continuous parent and
+\eqn{F(L) - f(L)} for a discrete one, since the lower endpoint is kept.
 
 \strong{Truncation adds no parameter.} The endpoints are known constants, like
 a binomial's \code{size}, so the truncated distribution has exactly the
