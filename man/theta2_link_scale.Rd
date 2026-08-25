@@ -7,26 +7,68 @@
 theta2_link_scale(distrib, y, theta, second, first)
 }
 \arguments{
-\item{distrib}{A distribution object.}
+\item{distrib}{A distribution object. Its \code{link_params} supply \eqn{h'} and
+\eqn{h''} through \code{\link[=inverse_link_derivs]{inverse_link_derivs()}}.}
 
-\item{y}{The response.}
+\item{y}{The response. Unused, and present so that the signature reads like
+its callers'.}
 
-\item{theta}{The parameters.}
+\item{theta}{A named list of parameters, on the parameter scale.}
 
-\item{second}{The parameter-scale second-order components.}
+\item{second}{The parameter-scale second-order components, keyed by
+parameter pair.}
 
-\item{first}{The parameter-scale first-order components.}
+\item{first}{The parameter-scale first-order components, keyed by parameter:
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the third-order quantity and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}
+for the fourth.}
 }
 \value{
-A named list keyed as \code{second}.
+A named list keyed exactly as \code{second}.
 }
 \description{
-Carries a component keyed by parameter pair onto the unconstrained scale.
+Carries a quantity keyed by parameter pair from the parameter scale onto the
+unconstrained one. Both \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}
+call it after dispatch, so a method returns the parameter scale and never
+has to know about links.
 }
 \details{
-The chain rule is diagonal, each parameter having its own link, so a pair
-\eqn{(i, j)} is multiplied by \eqn{h_i' h_j'} and a diagonal pair gains
-\eqn{h_i''} times the first-order component. The response derivatives do not
-enter it: a reparametrization of \eqn{\theta} leaves them alone.
+The chain rule is DIAGONAL, each parameter carrying its own link, so a pair
+\eqn{(i, j)} becomes
+\deqn{\frac{\partial^2}{\partial\eta_i \partial\eta_j}
+  = h_i'(\eta_i)\, h_j'(\eta_j) \frac{\partial^2}{\partial\theta_i
+    \partial\theta_j}
+  + \delta_{ij}\, h_i''(\eta_i) \frac{\partial}{\partial\theta_i}.}
+The response derivatives do not enter: a reparametrization of \eqn{\theta}
+leaves them alone, which is why \code{first} and \code{second} are the SAME quantity
+at two orders in \eqn{\theta} and no third argument is needed.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one to
+the other.
+}
+
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3)
+
+# What the generic does when scale = "link" is asked for.
+second <- distrib_grad_y_hess(d, y, theta)
+first <- distrib_cross_y(d, y, theta)
+linked <- distributions7:::theta2_link_scale(d, y, theta, second, first)
+identical(linked, distrib_grad_y_hess(d, y, theta, scale = "link"))
+
+# sigma rides a log link, so h' = h'' = sigma and the diagonal pair gains
+# the first-order term while the off-diagonal one does not.
+c(diagonal = second$sigma_sigma[1] * 1.3^2 + first$sigma[1] * 1.3,
+  off = second$mu_sigma[1] * 1 * 1.3)
+c(linked$sigma_sigma[1], linked$mu_sigma[1])
+}
+\seealso{
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, its two
+callers, and \code{\link[=inverse_link_derivs]{inverse_link_derivs()}} for the link derivatives.
 }
 \keyword{internal}

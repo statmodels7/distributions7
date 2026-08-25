@@ -2,25 +2,53 @@
 % Please edit documentation in R/cross_theta2_derivatives.R
 \name{distrib_grad_y_hess.continuous_distrib}
 \alias{distrib_grad_y_hess.continuous_distrib}
-\alias{distrib_hess_y_hess.continuous_distrib}
-\title{Default Second-Order Mixed Derivatives for Continuous Distributions}
+\title{Default Hyperparameter Hessian of the Response Gradient}
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object.}
+\item{distrib}{A \code{continuous_distrib} object with no closed form of its own.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list with one numeric vector per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Fallback: one central difference of the analytic
-\code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} in each
-parameter (see \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}).
+Falls back to one central difference of the analytic \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
+each parameter, through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}. Registering the fallback on
+\code{continuous_distrib} gives the third-order mixed derivative to every
+continuous family, whether or not it writes one out.
+}
+\details{
+The difference lands on an ANALYTIC quantity wherever the family provides
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} in closed form, so the answer carries the error of one
+stencil rather than two. Where that first-order quantity is itself a
+fallback the two differences act on different variables and still compose
+into a single mixed stencil.
+}
+\examples{
+# The gamma writes no closed form, so this method answers for it.
+d <- gamma2_distrib()
+y <- c(0.5, 1, 2)
+theta <- list(mu = 2, sigma2 = 1)
+attr(S7::method(distrib_grad_y_hess, S7::S7_class(d)), "signature")[[1]]
+
+g <- distrib_grad_y_hess(d, y, theta)
+c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
+
+# Against a numerical Hessian of the response gradient.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(f, c(2, 1))
+}
+\seealso{
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic,
+\code{\link[=distrib_hess_y_hess.continuous_distrib]{distrib_hess_y_hess.continuous_distrib()}} for the fourth-order twin, and
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}}, which does the work.
 }
 \keyword{internal}

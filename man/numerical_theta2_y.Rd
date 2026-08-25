@@ -7,35 +7,77 @@
 numerical_theta2_y(distrib, y, theta, inner, h_rel = .Machine$double.eps^(1/3))
 }
 \arguments{
-\item{distrib}{A distribution object.}
+\item{distrib}{A distribution object. Its \code{params} and \code{params_bounds} set
+the enumeration and the steps.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Passed to nothing here; \code{inner}
+has already closed over it.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, the point to differentiate at.}
 
-\item{inner}{A function of \code{theta} returning the first-order
-components, one per parameter.}
+\item{inner}{A function of \code{theta} alone returning the first-order
+components as a list with one entry per parameter, typically
+\code{function(th) distrib_cross_y(distrib, y, th)}.}
 
-\item{h_rel}{The relative step.}
+\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
+which is the optimal exponent for a central first difference.}
 }
 \value{
-A named list keyed by \code{hess_names(distrib@params)}.
+A named list with one numeric vector per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Computes the second-order mixed components by one central difference of an
-analytic first-order component in each parameter.
+Computes a second-order mixed component by one central difference, in each
+parameter, of an ANALYTIC first-order component. It is the fallback behind
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for a family that
+provides no closed form.
 }
 \details{
-The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a distribution with a closed form for
-those pays for exactly one difference. A mixed pair is differenced both ways
-and averaged: the two agree in exact arithmetic and not quite in floating
-point, the steps differing, and a second derivative of a scalar has to come
-out symmetric.
+The reference is \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, so a
+distribution with a closed form for those pays for exactly one difference
+and never differences a difference.
+
+A mixed pair is differenced BOTH WAYS and averaged. The two agree in exact
+arithmetic, and in floating point they differ, the two steps being
+different sizes, while a second derivative of a scalar has to come out
+symmetric. On a gamma the two orders differ by about
+\eqn{3\times 10^{-10}}, which is the size of the answer's own error.
+
+The step is \code{\link[=fd_steps]{fd_steps()}}'s, so a parameter near a bound is differenced
+inward rather than across it.
 }
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one to
+the other.
+}
+
 \examples{
 d <- gaussian1_distrib()
-numerical_theta2_y(d, c(-1, 0, 1), list(mu = 0, sigma = 1),
-                   function(th) distrib_cross_y(d, c(-1, 0, 1), th))
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3)
 
+num <- numerical_theta2_y(d, y, theta,
+                          function(th) distrib_cross_y(d, y, th))
+num$sigma_sigma
+
+# Against the gaussian's own closed form, which this family does not need
+# the fallback for.
+max(abs(unlist(num) - unlist(distrib_grad_y_hess(d, y, theta))))
+
+# A family that does take the fallback, checked against numDeriv.
+dg <- gamma2_distrib()
+yg <- c(0.5, 1, 2)
+thg <- list(mu = 2, sigma2 = 1)
+g <- distrib_grad_y_hess(dg, yg, thg)
+f <- function(v) distrib_grad_y(dg, yg[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(f, c(2, 1))
+c(g$mu_mu[1], g$mu_sigma2[1], g$sigma2_sigma2[1])
+
+}
+\seealso{
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, the two
+generics it serves, and \code{\link[=fd_steps]{fd_steps()}} for the step rule.
 }

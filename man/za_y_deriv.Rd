@@ -57,3 +57,4 @@ distributions7:::za_y_deriv(d, c(0, 2), theta, distrib_hess_y)
 \code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, the two methods it
 serves.
 }
+\keyword{internal}

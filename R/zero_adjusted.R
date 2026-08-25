@@ -1286,6 +1286,8 @@ S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, th
 #'   [distrib_hess_y.ZeroAdjustedContinuousDistrib()], the two methods it
 #'   serves.
 #'
+#' @keywords internal
+#'
 #' @examples
 #' d <- zero_adjusted(gaussian1_distrib())
 #' theta <- list(mu = 1, sigma = 2, za = 0.3)

@@ -2,30 +2,60 @@
 % Please edit documentation in R/cross_theta2_derivatives.R
 \name{distrib_grad_y_hess.Gaussian1Distrib}
 \alias{distrib_grad_y_hess.Gaussian1Distrib}
-\alias{distrib_hess_y_hess.Gaussian1Distrib}
-\title{Gaussian Second-Order Mixed Derivatives}
+\title{Gaussian Hyperparameter Hessian of the Response Gradient}
 \arguments{
 \item{distrib}{A \code{Gaussian1Distrib} object.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with \code{mu} and \code{sigma}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list of three numeric vectors of length \code{length(y)}, keyed
+\code{mu_mu}, \code{sigma_sigma} and \code{mu_sigma}.
 }
 \description{
-Closed forms. With \eqn{r = y - \mu}, the response gradient is
-\eqn{-r/\sigma^2} and the response curvature \eqn{-1/\sigma^2}, so
-\deqn{\partial^3\ell/\partial y\,\partial\mu^2 = 0, \quad
-  \partial^3\ell/\partial y\,\partial\mu\partial\sigma = -2/\sigma^3, \quad
-  \partial^3\ell/\partial y\,\partial\sigma^2 = -6r/\sigma^4,}
-and the only component of the fourth derivative that does not vanish is
-\eqn{\partial^4\ell/\partial y^2\partial\sigma^2 = -6/\sigma^4}, the
-curvature carrying no location at all.
+Closed form. With \eqn{r = y - \mu} the response gradient is
+\eqn{-r/\sigma^2}, so differentiating it twice in the parameters gives
+\deqn{\frac{\partial^3\ell}{\partial y\,\partial\mu^2} = 0, \qquad
+  \frac{\partial^3\ell}{\partial y\,\partial\mu\,\partial\sigma}
+    = -\frac{2}{\sigma^3}, \qquad
+  \frac{\partial^3\ell}{\partial y\,\partial\sigma^2}
+    = -\frac{6r}{\sigma^4}.}
+The location pair vanishes because the response gradient is LINEAR in
+\eqn{\mu}, and only the scale pair varies with the data.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one to
+the other.
+}
+
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3)
+g <- distrib_grad_y_hess(d, y, theta)
+g
+
+# The three formulas written out.
+r <- y - 0.4
+c(mu_mu = 0, mu_sigma = -2 / 1.3^3, sigma_sigma = -6 * r[1] / 1.3^4)
+
+# Against a numerical Hessian of the response gradient.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::hessian(f, c(0.4, 1.3))
+}
+\seealso{
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic,
+\code{\link[=distrib_hess_y_hess.Gaussian1Distrib]{distrib_hess_y_hess.Gaussian1Distrib()}} for the fourth-order twin, and
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the first-order column.
 }
 \keyword{internal}
