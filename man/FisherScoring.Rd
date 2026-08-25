@@ -2,7 +2,7 @@
 % Please edit documentation in R/fisher_scoring.R
 \name{FisherScoring}
 \alias{FisherScoring}
-\title{Fisher Scoring as an Object}
+\title{S7 Class for Fisher Scoring Specifications}
 \usage{
 FisherScoring(
   approx = character(0),
@@ -12,28 +12,44 @@ FisherScoring(
 )
 }
 \arguments{
-\item{approx}{How the expectation is approximated when the distribution has
-no closed-form expected information.}
+\item{approx}{How the expectation is approximated when the family has no
+closed-form expected information: one of \code{"bartlett"}, \code{"integrate"},
+\code{"mc"} or \code{"opg"}. Ignored by a family that has one, and \code{\link[=fit_distrib]{fit_distrib()}}
+rejects the call in that case.}
 
-\item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
+\item{nsim}{Monte Carlo sample size, a single positive number, read only
+when \code{approx = "mc"} is in force.}
 
-\item{criterion}{The stopping rule, or \code{NULL} to take the fit's.}
+\item{criterion}{A stopping rule from \pkg{optimizers7}, or \code{NULL} to take
+the default of \code{\link[optimizers7:newton]{optimizers7::newton()}}.}
 
-\item{maxit}{The iteration limit, or \code{NULL} to take the fit's.}
+\item{maxit}{An iteration limit, a single positive number, or \code{NULL} for the
+same default.}
 }
 \value{
-An object of class \code{FisherScoring}.
+An S7 object of class \code{FisherScoring} with those four properties.
 }
 \description{
-The S7 class of Fisher scoring specifications, returned by
-\code{\link[=fisher_scoring]{fisher_scoring()}} and passed to \code{\link[=fit_distrib]{fit_distrib()}} through
-its \code{method} argument.
+The class \code{\link[=fisher_scoring]{fisher_scoring()}} returns and \code{\link[=fit_distrib]{fit_distrib()}} accepts through its
+\code{method} argument. It holds the two things a Fisher scoring run needs that
+an ordinary optimizer cannot carry: how the expected information is to be
+obtained when the family has no closed form for it, and the stopping rule
+and iteration budget the run is to use.
+
+This page documents the raw S7 constructor, which validates nothing. Build
+one with \code{\link[=fisher_scoring]{fisher_scoring()}}, which checks all four arguments.
 }
 \examples{
 fs <- fisher_scoring(approx = "mc", nsim = 2000)
-S7::S7_inherits(fs, FisherScoring)
-fs@approx
+fs
+c(approx = fs@approx, nsim = fs@nsim)
+
+# The defaults leave the stopping rule and the budget to the fit.
+d <- fisher_scoring()
+c(criterion = is.null(d@criterion), maxit = is.null(d@maxit))
+
 }
 \seealso{
-\code{\link[=fisher_scoring]{fisher_scoring()}}
+\code{\link[=fisher_scoring]{fisher_scoring()}}, which builds and validates one;
+\code{\link[=fit_distrib]{fit_distrib()}}, which consumes it.
 }

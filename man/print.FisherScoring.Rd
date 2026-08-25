@@ -6,12 +6,25 @@
 \arguments{
 \item{x}{A \code{\link[=FisherScoring]{FisherScoring()}} object.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
-\code{x}, invisibly.
+\code{x}, invisibly. Called for the output it writes.
 }
 \description{
-Reports the strategy and any settings that override the fit's.
+Writes the strategy for the expected information, with the Monte Carlo
+sample size when that is the strategy, and then any setting that overrides
+the fit's: a stopping rule set here is reported as set, and an iteration
+limit by its value. The line about the strategy carries the reminder that a
+family with a closed-form expectation ignores it.
+}
+\examples{
+fisher_scoring()
+fisher_scoring(approx = "mc", nsim = 2000)
+fisher_scoring(criterion = optimizers7::crit_grad(1e-9), maxit = 50)
+
+}
+\seealso{
+\code{\link[=fisher_scoring]{fisher_scoring()}} for what each line reports.
 }
 \keyword{internal}
