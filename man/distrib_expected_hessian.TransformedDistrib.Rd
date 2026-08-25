@@ -2,23 +2,68 @@
 % Please edit documentation in R/transformations.R
 \name{distrib_expected_hessian.TransformedDistrib}
 \alias{distrib_expected_hessian.TransformedDistrib}
-\title{Transformed Analytical Expected Hessian}
+\title{Transformed Expected Information}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the transformed scale. Read
+only through the parent, which uses its length.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{approx}{Ignored: the delegation is exact. Present so that the
+signature matches the generic's. Note that it is not forwarded, so a
+parent whose OWN expected Hessian is approximate takes its own default.}
+
+\item{nsim}{Ignored, for the same reason.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of numeric vectors, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Since \eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log|J(y)|} and the Jacobian
-does not depend on \eqn{\theta}, the expected Hessian of the transformed model is
-\emph{exactly} the parent's expected Hessian (the expectation is just re-parameterized
-by the change of variables). No Monte Carlo approximation is needed.
+Returns the parent's expected Hessian, EXACTLY. Since
+\eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
+and the Jacobian does not depend on \eqn{\theta}, the expectation of the
+transformed model's second derivative is the parent's expectation
+reparametrized by the change of variables, which is the same number. No
+approximation runs and no Monte Carlo is needed, whatever \code{approx} says.
+}
+\details{
+This is the strongest of the three delegations: the score and the observed
+Hessian are the parent's AT A POINT, and this one is the parent's as a
+whole. A family that is a transformation of a family with a closed-form
+information therefore has one too, at no cost.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse and
+\eqn{\ell} a log-density.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+set.seed(2)
+y <- distrib_rng(d, 40, theta)
+
+EH <- distrib_expected_hessian(d, y, theta)
+vapply(EH, function(z) z[1], numeric(1))
+
+# It is the parent's, at the preimage.
+identical(EH, distrib_expected_hessian(gaussian1_distrib(), log(y), theta))
+
+# So a lognormal built this way inherits the gaussian's closed form, whose
+# mean block is -1 / sigma^2.
+c(reported = EH$mu_mu[1], theory = -1 / 0.8^2)
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_hessian.TransformedDistrib]{distrib_hessian.TransformedDistrib()}} for the observed matrix,
+\code{\link[=fit_distrib]{fit_distrib()}}, whose Fisher scoring inverts this, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -2,21 +2,66 @@
 % Please edit documentation in R/transformations.R
 \name{distrib_gradient.TransformedDistrib}
 \alias{distrib_gradient.TransformedDistrib}
-\title{Transformed Analytical Gradient}
+\title{Transformed Score}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the transformed scale.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The links are the parent's.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list with one numeric vector per parameter, in the parent's
+order.
 }
 \description{
-The Jacobian does not depend on the parameters, so the score of the transformed model
-equals the parent's score evaluated at \eqn{x = g^{-1}(y)}.
+Returns the parent's score evaluated at \eqn{x = g^{-1}(y)}. The Jacobian
+does not depend on the parameters, so the score of the transformed model IS
+the parent's; the change of variables moves where the score is read, not
+what it is.
+}
+\details{
+The transformation does not depend on \eqn{\theta}, so
+\eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
+has a second term that is a CONSTANT in the parameters and differentiates
+away. Every derivative in \eqn{\theta} is therefore the parent's own,
+evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
+derivatives are the exception and come from the base class, the Jacobian
+depending on \eqn{y}.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse and
+\eqn{\ell} a log-density.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+set.seed(2)
+y <- distrib_rng(d, 40, theta)
+
+g <- distrib_gradient(d, y, theta)
+vapply(g, sum, numeric(1))
+
+# It is literally the parent's score at the preimage.
+identical(g, distrib_gradient(gaussian1_distrib(), log(y), theta))
+
+# And it agrees with a numerical derivative of the TRANSFORMED
+# log-likelihood, the Jacobian having differentiated away.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_hessian.TransformedDistrib]{distrib_hessian.TransformedDistrib()}} for the second order,
+\code{\link[=distrib_grad_y]{distrib_grad_y()}}, which is NOT the parent's, and \code{\link[=distrib_gradient]{distrib_gradient()}}
+for the generic.
 }

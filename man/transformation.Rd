@@ -7,53 +7,93 @@
 transformation(distrib, transformer, new_name = NULL)
 }
 \arguments{
-\item{distrib}{An object inheriting from \code{continuous_distrib}.}
+\item{distrib}{An object inheriting from \code{continuous_distrib}. A discrete
+one is rejected.}
 
-\item{transformer}{A \code{\link[=transformer]{transformer()}} object (e.g. \code{\link[=log_transform]{log_transform()}},
-\code{\link[=bc_transform]{bc_transform(0.5)}}, \code{\link[=affine_transform]{affine_transform(1, 2)}}).}
+\item{transformer}{A \code{\link[=transformer]{transformer()}} object, such as \code{\link[=log_transform]{log_transform()}},
+\code{bc_transform(0.5)} or \code{affine_transform(1, 2)}. It is rejected where its
+own \code{valid_support} says it does not apply to \code{distrib@bounds}.}
 
-\item{new_name}{A single string naming the result, or \code{NULL} (the
-default) to compose the parent's name with the transformer's.}
+\item{new_name}{A single non-empty string naming the result, or \code{NULL}, the
+default, to compose the parent's name with the transformer's as
+\code{"g(parent)"}.}
 }
 \value{
-An S7 object of class \code{TransformedDistrib} (inheriting from \code{continuous_distrib}).
+An S7 object of class \link{TransformedDistrib}, carrying
+\code{parent_distrib} and \code{transformer}. Its \code{params}, \code{params_bounds} and
+\code{link_params} are the parent's unchanged; \code{bounds} is the transformer's
+image of the parent's; \code{params_interpretation} names the parent's scale in
+brackets; and \code{params_smooth} is the parent's, a kink in the parameters
+surviving a change of variables in the response untouched.
 }
 \description{
-Creates a new distribution object for \eqn{Y = g(X)}, where \eqn{X} follows an existing
-\strong{continuous} distribution and \eqn{g} is a bijective transformation described by
-a \code{\link[=transformer]{transformer()}} object.
+Builds the distribution of \eqn{Y = g(X)}, where \eqn{X} follows an existing
+CONTINUOUS distribution and \eqn{g} is a bijective transformation described
+by a \code{\link[=transformer]{transformer()}}. The result carries exactly the parent's parameters:
+the transformation adds none and removes none, and the density is the
+change-of-variables formula
+\deqn{f_Y(y) = f_X(g^{-1}(y)) \cdot \left\lvert\frac{d}{dy} g^{-1}(y)\right\rvert.}
 }
-\details{
-The density follows the change-of-variables formula
-\deqn{f_Y(y) = f_X(g^{-1}(y)) \cdot \left|\dfrac{d}{dy} g^{-1}(y)\right|}
-CDF, quantiles and RNG are obtained by mapping through \eqn{g} (with tails swapped for
-decreasing transformations). Since \eqn{g} does not depend on the parameters, the
-score, observed Hessian and expected Hessian coincide with the parent's, evaluated at
-\eqn{x = g^{-1}(y)}. Moments are available numerically via \code{\link[=moment]{moment()}}.
+\section{What comes from where}{
+The distribution function, the quantile function and the generator are
+obtained by mapping through \eqn{g}, with the tails swapped for a decreasing
+transformation. Since \eqn{g} does not depend on the parameters, the score,
+the observed Hessian and the expected Hessian COINCIDE with the parent's,
+evaluated at \eqn{x = g^{-1}(y)}; nothing is recomputed and no accuracy is
+lost. The moments are available numerically through \code{\link[=moment]{moment()}}.
+}
 
+\section{What is rejected}{
+A discrete parent, since a change of variables needs a density; a
+transformer that is not valid on the parent's support, which the transformer
+itself decides through its \code{valid_support}; and a \code{new_name} that is not a
+single non-empty string. A map that is not injective, such as the absolute
+value, cannot be a transformer at all and is \code{\link[=folded]{folded()}} instead.
+}
+
+\section{Naming the result}{
 Several standard families are a transformation of one already here, and
-\code{new_name} lets the result carry the name it is known by rather than
-the recipe that produced it: the inverse of a Gamma is an inverse Gamma, the
+\code{new_name} lets the result carry the name it is known by instead of the
+recipe that produced it: the reciprocal of a gamma is an inverse gamma, the
 exponential of a logistic a log-logistic, the exponential of an exponential
-a Pareto. Only the printed name changes; nothing about the distribution
-depends on it, and the default composes the parent's name with the
-transformer's as before.
-}
-\examples{
-\dontrun{
-# A lognormal built by transformation, equal to lognormal1_distrib()
-logn <- transformation(gaussian1_distrib(), exp_transform())
-distrib_pdf(logn, 2, list(mu = 0, sigma = 1))
-dlnorm(2, 0, 1)
+a Pareto. Only the printed name changes, and nothing about the distribution
+depends on it.
 }
 
-# the inverse of a Gamma is an inverse Gamma, and can say so
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{f_X} the parent's density, \eqn{f_Y} the
+transformed one and \eqn{\theta} the parameters shared by both.
+}
+
+\examples{
+# A lognormal built by transformation, equal to lognormal1_distrib() with
+# its second parameter read as a variance.
+logn <- transformation(gaussian1_distrib(), exp_transform())
+logn@params
+c(built = distrib_pdf(logn, 2, list(mu = 0, sigma = 1)), dlnorm = dlnorm(2))
+
+# The reciprocal of a gamma is an inverse gamma, and can say so.
 ig <- transformation(gamma2_distrib(), inverse_transform(),
                      new_name = "inverse gamma")
 ig@distrib_name
 
+# The derivatives are the parent's at the preimage, so a fit of the
+# transformed family is the parent's fit of the transformed data.
+set.seed(1)
+y <- distrib_rng(logn, 500, list(mu = 0, sigma = 1))
+rbind(transformed = coef(fit_distrib(logn, y)),
+      parent_on_logs = coef(fit_distrib(gaussian1_distrib(), log(y))))
+
+# Three refusals, each naming the condition that failed.
+try(transformation(poisson_distrib(), log_transform()))
+try(transformation(gaussian1_distrib(), log_transform()))
+try(transformation(gaussian1_distrib(), exp_transform(), new_name = ""))
+
 }
 \seealso{
-\code{\link[=transformer]{transformer()}}, \code{\link[=log_transform]{log_transform()}}, \code{\link[=exp_transform]{exp_transform()}},
-\code{\link[=affine_transform]{affine_transform()}}, \code{\link[=bc_transform]{bc_transform()}}, \code{\link[=yj_transform]{yj_transform()}}
+\code{\link[=transformer]{transformer()}} for the map and the twelve ready-made ones,
+\link{TransformedDistrib} for the class, \code{\link[=folded]{folded()}} for a map that is not
+injective, and \code{\link[=fixed]{fixed()}}, \code{\link[=truncated]{truncated()}}, \code{\link[=zero_inflated]{zero_inflated()}} and
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the other wrappers.
 }

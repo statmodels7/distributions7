@@ -40,7 +40,7 @@ NULL
 #' validates neither.
 #'
 #' @param parent_distrib The wrapped `continuous_distrib` object.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `FoldedDistrib`, inheriting from
 #'   `continuous_distrib` and from `distrib`. It carries `parent_distrib`

@@ -4,21 +4,64 @@
 \alias{distrib_pdf.TransformedDistrib}
 \title{Transformed Probability Density Function}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the TRANSFORMED scale. A point
+outside the transformed support gives \code{0}, the parent's density at its
+preimage being zero there.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the PARENT's parameters, unchanged by the
+transformation.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
+which is the quantity actually computed. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-Change of variables: \eqn{f_Y(y) = f_X(g^{-1}(y)) \cdot |J(y)|}. Computed in log space;
-singular log-densities are clamped to avoid \code{Inf - Inf} during integration.
+Computes the change-of-variables density
+\deqn{f_Y(y) = f_X(g^{-1}(y))\,\lvert J(y)\rvert,}
+entirely on the LOG scale and exponentiated at the end, so that a density
+and a Jacobian which would each overflow or underflow on their own combine
+as a sum of representable numbers.
+}
+\details{
+Two singular cases are handled explicitly. A parent log-density that is
+\code{+Inf}, which a density with a pole produces, is clamped to
+\code{log(.Machine$double.xmax)}, so that a quadrature over the transformed
+density meets a large number instead of \code{Inf - Inf}. A parent density of
+exactly zero WINS over an infinite Jacobian, so the result is \code{-Inf}. The
+point is outside the transformed support and \code{-Inf} says so, where the
+unguarded sum would give \code{NaN}.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse and
+\eqn{f_X}, \eqn{f_Y} the parent's and the transformed density.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+y <- c(0.5, 1, 3)
+
+distrib_pdf(d, y, theta)
+
+# The exponential of a gaussian is the lognormal.
+all.equal(distrib_pdf(d, y, theta), dlnorm(y, 0.5, 0.8))
+
+# It is a density: it integrates to one over the transformed support.
+integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
+
+# Written out, the parent's density at the preimage times the Jacobian.
+tr <- d@transformer
+all.equal(distrib_pdf(d, y, theta),
+          dnorm(tr@trans_inv(y), 0.5, 0.8) * tr@trans_abs_jac(y))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf.TransformedDistrib()}} for the distribution function,
+\code{\link[=transformation]{transformation()}} for the family, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

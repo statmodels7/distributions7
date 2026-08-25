@@ -41,7 +41,7 @@ NULL
 #' @param parent_distrib The wrapped `continuous_distrib` object.
 #' @param fixed_params A named list of the fixed values, one single finite
 #'   number each, strictly inside the corresponding parameter's open domain.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `FixedContinuousDistrib`, inheriting from
 #'   `continuous_distrib` and from `distrib`. It carries `parent_distrib` and
@@ -123,7 +123,7 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @param parent_distrib The wrapped `discrete_distrib` object.
 #' @param fixed_params A named list of the fixed values, one single finite
 #'   number each, strictly inside the corresponding parameter's open domain.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `FixedDiscreteDistrib`, inheriting from
 #'   `discrete_distrib` and from `distrib`. It carries `parent_distrib` and
@@ -209,7 +209,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @param n_dim The number of coordinates, carried from the parent: fixing a
 #'   parameter removes it from the parameter set and leaves the dimension of
 #'   the response alone.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `FixedMultivariateDistrib`, inheriting from
 #'   `multivariate_distrib` and from `distrib`. It carries `parent_distrib` and

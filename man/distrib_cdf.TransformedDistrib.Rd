@@ -4,22 +4,56 @@
 \alias{distrib_cdf.TransformedDistrib}
 \title{Transformed Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles on the transformed scale.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}. For a decreasing transformation this
+is inverted before reaching the parent.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned,
+computed by the parent. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
-\eqn{F_Y(q) = F_X(g^{-1}(q))}, with tails swapped for decreasing transformations.
+Computes \eqn{F_Y(q) = F_X(g^{-1}(q))} by evaluating the parent's own
+distribution function at the preimage. For a DECREASING transformation the
+tails swap: \code{lower.tail} is inverted before the parent is called, because
+\eqn{Y \le q} is \eqn{X \ge g^{-1}(q)} there.
+}
+\details{
+\code{lower.tail} and \code{log.p} are passed THROUGH to the parent and not applied
+afterwards, so a parent with an accurate upper tail or an accurate
+log-probability keeps that accuracy here.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation and \eqn{F_X}, \eqn{F_Y} the parent's and the
+transformed distribution function.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+q <- c(0.5, 1, 3)
+
+distrib_cdf(d, q, theta)
+all.equal(distrib_cdf(d, q, theta), plnorm(q, 0.5, 0.8))
+
+# A decreasing transformation swaps the tails: the reciprocal of a gamma.
+ig <- transformation(gamma1_distrib(), inverse_transform())
+th2 <- list(mu = 2, phi = 0.3)
+ig@transformer@decreasing
+c(transformed = distrib_cdf(ig, 0.5, th2),
+  parent_upper = distrib_cdf(gamma1_distrib(), 2, th2, lower.tail = FALSE))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} for the density,
+\code{\link[=distrib_quantile.TransformedDistrib]{distrib_quantile.TransformedDistrib()}}, which inverts this, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

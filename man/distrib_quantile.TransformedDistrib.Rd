@@ -4,22 +4,53 @@
 \alias{distrib_quantile.TransformedDistrib}
 \title{Transformed Quantile Function}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
 \item{p}{A numeric vector of probabilities.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}. For a decreasing transformation this is inverted before
+reaching the parent.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm
+and passed as such to the parent. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles on the transformed scale.
 }
 \description{
-\eqn{Q_Y(p) = g(Q_X(p))}, with tails swapped for decreasing transformations.
+Computes \eqn{Q_Y(p) = g(Q_X(p))} by evaluating the parent's own quantile
+function and mapping the result forward. For a DECREASING transformation the
+tails swap, so \code{lower.tail} is inverted before the parent is called and the
+\eqn{p}-th quantile of \eqn{Y} is \eqn{g} of the \eqn{(1-p)}-th of \eqn{X}.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation and \eqn{Q_X}, \eqn{Q_Y} the parent's and the
+transformed quantile function.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+p <- c(0.1, 0.5, 0.9)
+
+distrib_quantile(d, p, theta)
+all.equal(distrib_quantile(d, p, theta), qlnorm(p, 0.5, 0.8))
+
+# The round trip closes, the transformation being a bijection.
+max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
+
+# Under a decreasing transformation the p-th quantile is g of the
+# (1 - p)-th of the parent.
+ig <- transformation(gamma1_distrib(), inverse_transform())
+th2 <- list(mu = 2, phi = 0.3)
+c(transformed = distrib_quantile(ig, 0.9, th2),
+  mapped = 1 / distrib_quantile(gamma1_distrib(), 0.1, th2))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf.TransformedDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

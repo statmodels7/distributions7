@@ -28,8 +28,7 @@ NULL
 #'   one matrix inversion depends on it; the law is the same either way.
 #' @param n_dim The dimension \eqn{p} of one observation. A single positive
 #'   integer.
-#' @param ... The properties of the parent `distrib` class, listed under
-#'   Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `MvGaussianDistrib`, inheriting from
 #'   `multivariate_distrib` and from `distrib`. Beyond the parent's

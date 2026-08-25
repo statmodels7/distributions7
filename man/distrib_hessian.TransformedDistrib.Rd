@@ -2,21 +2,68 @@
 % Please edit documentation in R/transformations.R
 \name{distrib_hessian.TransformedDistrib}
 \alias{distrib_hessian.TransformedDistrib}
-\title{Transformed Analytical Observed Hessian}
+\title{Transformed Observed Hessian}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the transformed scale.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors, one per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The observed Hessian of the transformed model equals the parent's observed Hessian
-evaluated at \eqn{x = g^{-1}(y)}.
+Returns the parent's observed Hessian evaluated at \eqn{x = g^{-1}(y)}, for
+the reason the score has: the Jacobian is a constant in \eqn{\theta} and
+differentiates away twice over.
+}
+\details{
+The transformation does not depend on \eqn{\theta}, so
+\eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
+has a second term that is a CONSTANT in the parameters and differentiates
+away. Every derivative in \eqn{\theta} is therefore the parent's own,
+evaluated at \eqn{x = g^{-1}(y)}, and nothing is recomputed. The response
+derivatives are the exception and come from the base class, the Jacobian
+depending on \eqn{y}.
+}
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse and
+\eqn{\ell} a log-density.
+}
+
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+set.seed(2)
+y <- distrib_rng(d, 40, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# The parent's, at the preimage.
+identical(H, distrib_hessian(gaussian1_distrib(), log(y), theta))
+
+# Against a numerical Hessian of the transformed log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_gradient.TransformedDistrib]{distrib_gradient.TransformedDistrib()}} for the first order,
+\code{\link[=distrib_expected_hessian.TransformedDistrib]{distrib_expected_hessian.TransformedDistrib()}} for the expectation, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

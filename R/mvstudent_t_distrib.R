@@ -25,7 +25,7 @@ NULL
 #'   flattened into scalar parameters of the distribution.
 #' @param n_dim The dimension \eqn{p} of one observation. A single positive
 #'   integer.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `MvStudentTDistrib`, inheriting from
 #'   `multivariate_distrib` and from `distrib`. Beyond the parent's

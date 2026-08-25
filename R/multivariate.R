@@ -45,7 +45,7 @@ NULL
 #' @param n_dim The dimension \eqn{p} of one observation. A single positive
 #'   integer; the validator rejects anything else, and also rejects a
 #'   `dimension` property other than `"multivariate"`.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `multivariate_distrib`, inheriting from
 #'   `distrib`. Beyond the parent's `distrib_name`, `dimension`, `bounds`,

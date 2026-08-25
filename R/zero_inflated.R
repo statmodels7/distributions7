@@ -18,7 +18,7 @@ NULL
 #' which checks none of that.
 #'
 #' @param parent_distrib The wrapped `discrete_distrib` object.
-#' @param ... The properties of the parent `distrib` class, listed under Value.
+#' @inheritParams distrib
 #'
 #' @return An S7 object of class `ZeroInflatedDistrib`, inheriting from
 #'   `discrete_distrib` and from `distrib`. It carries `parent_distrib` beside

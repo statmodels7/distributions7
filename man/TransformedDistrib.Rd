@@ -42,16 +42,49 @@ TransformedDistrib(
 \item{transformer}{The \code{\link[=transformer]{transformer()}} defining \eqn{g}.}
 }
 \value{
-An object of class \code{TransformedDistrib}.
+An S7 object of class \code{TransformedDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. It carries \code{parent_distrib} and
+\code{transformer} beside the parent's properties. For an object built by
+\code{\link[=transformation]{transformation()}}, \code{params}, \code{params_bounds} and \code{link_params} are the
+parent's unchanged; \code{bounds} is the transformer's image of the parent's;
+\code{params_interpretation} is the parent's with the parent's name appended in
+brackets, since a mean on the transformed scale is not the parent's mean;
+and \code{distrib_name} is \code{"g(parent)"} or whatever \code{new_name} said.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the distribution of
-\eqn{Y = g(X)}, where \eqn{X} follows a wrapped continuous distribution and \eqn{g}
-is a bijective \code{\link[=transformer]{transformer()}}.
+The S7 class of the distribution of \eqn{Y = g(X)}, where \eqn{X} follows a
+wrapped continuous distribution and \eqn{g} is a BIJECTIVE \code{\link[=transformer]{transformer()}}.
+Its density is the change-of-variables formula
+\deqn{f_Y(y) = f_X(g^{-1}(y))\,\lvert J(y)\rvert,
+  \qquad J(y) = \frac{d}{dy}g^{-1}(y),}
+and it carries exactly the parent's parameters: the transformation adds none
+and removes none.
 }
+\section{Why the derivatives are the parent's}{
+\eqn{g} does not depend on \eqn{\theta}, so the Jacobian is a constant in
+the parameters and
+\eqn{\ell_Y(\theta; y) = \ell_X(\theta; g^{-1}(y)) + \log\lvert J(y)\rvert}
+differentiates in \eqn{\theta} to the parent's own derivative at
+\eqn{x = g^{-1}(y)}. The score, the observed Hessian and the EXPECTED
+Hessian are therefore the parent's, exactly, with no Monte Carlo anywhere.
+The response derivatives are not: those pick the Jacobian up and come from
+the base class.
+
+Build one with \code{\link[=transformation]{transformation()}}, which checks that the parent is
+continuous and that the transformer is valid on its support. This page
+documents the raw S7 constructor, which checks neither.
+}
+
+\section{Notation}{
+
+\eqn{g} is the transformation, \eqn{J} the Jacobian of its inverse,
+\eqn{f_X} the parent's density, \eqn{f_Y} the transformed one and
+\eqn{\ell} a log-density.
+}
+
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.TransformedDistrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.TransformedDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.TransformedDistrib]{distrib_gradient()}},
@@ -60,9 +93,33 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.TransformedDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.TransformedDistrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+The third and fourth derivatives come from the shared wrapper machinery in
+\code{wrapper_derivatives.R}; everything else is inherited from
+\code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+S7::S7_inherits(d, continuous_distrib)
+
+# The parameters are the parent's, and the support is the image of its own.
+d@params
+d@bounds
+d@distrib_name
+
+# The exponential of a gaussian is the lognormal, whose second parameter is
+# the variance rather than the standard deviation.
+y <- c(0.5, 1, 3)
+all.equal(distrib_pdf(d, y, theta),
+          distrib_pdf(lognormal1_distrib(), y,
+                      list(mu = 0.5, sigma2 = 0.8^2)))
+
+# The interpretation says which scale a parameter lives on.
+d@params_interpretation
+}
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=transformation]{transformation()}} to build one, \code{\link[=transformer]{transformer()}} for the map,
+\code{\link[=folded]{folded()}} for a map that is NOT bijective and so cannot be a transformer,
+and \code{\link[=fixed]{fixed()}} for the wrapper that removes parameters.
 }

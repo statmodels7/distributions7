@@ -4,18 +4,38 @@
 \alias{distrib_rng.TransformedDistrib}
 \title{Transformed Random Number Generator}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of length \code{n}, on the transformed scale.
 }
 \description{
-Draws from the parent distribution and applies \eqn{g}.
+Draws \code{n} values from the parent and applies \eqn{g} to them. That is the
+DEFINITION of \eqn{Y = g(X)}, not an approximation of it, so the draws are
+exact whatever route the parent's own generator takes and consume exactly
+what the parent consumes from R's stream.
+}
+\examples{
+d <- transformation(gaussian1_distrib(), exp_transform())
+theta <- list(mu = 0.5, sigma = 0.8)
+
+set.seed(1)
+distrib_rng(d, 5, theta)
+
+# It is the parent's draw mapped forward, from the same seed.
+set.seed(1)
+exp(distrib_rng(gaussian1_distrib(), 5, theta))
+
+# And a large sample reproduces the transformed distribution function.
+set.seed(2)
+big <- distrib_rng(d, 20000, theta)
+c(sampled = mean(big < 2), exact = distrib_cdf(d, 2, theta))
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=distrib_pdf.TransformedDistrib]{distrib_pdf.TransformedDistrib()}} for the density these are drawn
+from, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
