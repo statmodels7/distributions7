@@ -7,26 +7,34 @@
 fixed_full_theta(distrib, theta)
 }
 \arguments{
-\item{distrib}{A fixed-parameter wrapper object.}
+\item{distrib}{A \code{FixedContinuousDistrib}, \code{FixedDiscreteDistrib} or
+\code{FixedMultivariateDistrib} object.}
 
-\item{theta}{A named list or vector of the free parameters.}
+\item{theta}{A named list of the FREE parameters, already aligned. A
+fully-fixed wrapper takes \code{list()}.}
 }
 \value{
-A named list covering every parameter of the parent.
+A named list of the parent's parameters, complete and in the
+parent's order.
 }
 \description{
 Combines the wrapper's free \code{theta} with its fixed values into the full
-parameter list of the parent, in the parent's order.
+parameter list the PARENT expects, in the parent's own order. Every method
+of every \verb{Fixed*} class begins with this call and then delegates, so it is
+the single point at which the two parameter sets are reconciled.
 }
-\details{
-\code{theta} is aligned against the wrapper first, so the function is safe
-to call both from generic-dispatched methods, whose \code{theta} is already
-aligned, and from delegating methods such as \code{mean()}, whose
-\code{theta} arrives as the caller wrote it. Free values may be vectors --
-the wrapper is as vectorized in \code{theta} as its parent -- while the
-fixed values are scalars by construction.
+\examples{
+d <- fixed(gaussian1_distrib(), mu = 0)
+str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+
+# Which is exactly what the parent is then called at.
+all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
+          distrib_pdf(gaussian1_distrib(), c(-1, 1),
+                      distributions7:::fixed_full_theta(d, list(sigma = 2))))
+
 }
 \seealso{
-\code{\link[=fixed]{fixed()}}
+\code{\link[=fixed]{fixed()}} for the wrapper and \link{FixedContinuousDistrib} for what
+the methods do with the result.
 }
 \keyword{internal}

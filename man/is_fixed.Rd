@@ -2,21 +2,36 @@
 % Please edit documentation in R/fixed.R
 \name{is_fixed}
 \alias{is_fixed}
-\title{Is This a Fixed-Parameter Wrapper?}
+\title{Is This a Fixed-Parameter Wrapper}
 \usage{
 is_fixed(distrib)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{A \code{distrib} object.}
 }
 \value{
-A single logical.
+\code{TRUE} for a \code{FixedContinuousDistrib}, a \code{FixedDiscreteDistrib} or a
+\code{FixedMultivariateDistrib}, \code{FALSE} otherwise.
 }
 \description{
-\code{TRUE} for a distribution produced by \code{\link[=fixed]{fixed()}}, in any of
-its three forms.
+Returns \code{TRUE} for a distribution produced by \code{\link[=fixed]{fixed()}}, in any of its three
+forms, which is how \code{fixed()} of a \code{fixed()} COLLAPSES into one wrapper. The
+two describe the same law either way, and nesting would leave the inner
+object's free set to be reconstructed at every call.
+}
+\examples{
+c(plain = distributions7:::is_fixed(gaussian1_distrib()),
+  fixed = distributions7:::is_fixed(fixed(gaussian1_distrib(), mu = 0)),
+  multivariate = distributions7:::is_fixed(
+    fixed(mvgaussian_distrib(2), mu1 = 0)))
+
+# Which is why two calls collapse into one wrapper holding both values.
+d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)
+c(class = class(d)[1], held = paste(names(d@fixed_params), collapse = ", "))
+
 }
 \seealso{
-\code{\link[=fixed]{fixed()}}
+\code{\link[=fixed]{fixed()}}, which consults this, and \link{FixedContinuousDistrib} for
+the class.
 }
 \keyword{internal}

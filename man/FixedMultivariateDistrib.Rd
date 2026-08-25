@@ -20,53 +20,93 @@ FixedMultivariateDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
-
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
-
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
-
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
 \item{n_dim}{The number of coordinates, carried from the parent: fixing a
 parameter removes it from the parameter set and leaves the dimension of
 the response alone.}
 
 \item{parent_distrib}{The wrapped \code{multivariate_distrib} object.}
 
-\item{fixed_params}{A named list of the fixed parameter values.}
+\item{fixed_params}{A named list of the fixed values, one single finite
+number each, strictly inside the corresponding parameter's open domain.}
+
+\item{...}{The properties of the parent \code{distrib} class, listed under Value.}
 }
 \value{
-An object of class \code{FixedMultivariateDistrib}.
+An S7 object of class \code{FixedMultivariateDistrib}, inheriting from
+\code{multivariate_distrib} and from \code{distrib}. It carries \code{parent_distrib} and
+\code{fixed_params} beside the parent's properties, \code{n_dim} included.
 }
 \description{
-A subclass of \code{multivariate_distrib} representing a multivariate
-distribution in which some parameters of the wrapped distribution are held
-at known values. Constructed by \code{\link[=fixed]{fixed()}}.
-}
-\details{
-Identical in behavior to \code{\link[=FixedContinuousDistrib]{FixedContinuousDistrib()}}: every method
-splices the fixed values into \code{theta} and delegates to the parent, and
-the derivative methods keep only the components among the free parameters.
-The multivariate branch sits beside the continuous and discrete ones rather
-than under either, so the generics a multivariate family rejects by design
--- the distribution function, the quantile -- are inherited unregistered and
-go on rejecting.
+The S7 class of a MULTIVARIATE distribution in which some parameters of the
+wrapped distribution are held at known values. It behaves exactly as
+\link{FixedContinuousDistrib} does and adds the multivariate contract:
+\code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}}, \code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=mv_support]{mv_support()}},
+\code{\link[=mv_reference_draw]{mv_reference_draw()}} and \code{\link[=mv_derived]{mv_derived()}} all delegate to the parent at the
+spliced \code{theta}, and \code{\link[=mv_derived]{mv_derived()}} reports the parent's quantities with the
+Jacobian columns of the fixed parameters removed.
 
-The motivating case is a centered prior: holding the mean components of a
-multivariate family at zero leaves the matrix parameter alone, which is what
-a random effect is distributed by.
+The motivating case is a CENTERED PRIOR: holding the mean components of a
+multivariate family at zero leaves the matrix parameter alone, and a matrix
+parameter alone is what a random effect is distributed by.
+}
+\section{How every method works}{
+The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
+ORDER. Every method splices the fixed values back into \code{theta} at their
+positions and delegates to the parent, so the parent's closed forms are used
+wherever they exist, and a derivative method then keeps only the components
+in which every index is a free parameter. No method of this class computes
+anything of its own, and none is faster or more accurate than the parent's.
+}
+
+\section{Why the components can be subset by name}{
+The free set preserves the parent's ORDER, so a combination of free
+parameters produces the same name string under the parent's enumeration as
+under the wrapper's. Subsetting by name therefore cannot pair a component
+with the wrong indices. That is the mistake re-parsing a name by splitting
+on the underscore commits, for a parameter whose own name contains one.
+}
+
+\section{The methods carry no documentation pages}{
+The continuous and discrete branches register theirs inside a loop over the
+two classes, so there is no top-level assignment for roxygen to attach a
+block to. The multivariate branch registers its own at the top level and is
+left undocumented to match, every one of them being the same delegation.
+Read the parent's page for what a method computes and this page for what the
+wrapper does to it.
+}
+
+\section{What the refusals do}{
+The multivariate branch sits BESIDE the continuous and discrete ones rather
+than under either, so the generics a multivariate family rejects by design,
+the distribution function and the quantile, are inherited unregistered and
+go on rejecting through this wrapper.
+}
+
+\examples{
+# A centered two-dimensional gaussian: the matrix alone, which is what a
+# random effect is distributed by.
+d <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+d@params
+d
+
+theta <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+
+# The law is the parent's at the spliced theta.
+y <- rbind(c(0, 0), c(1, -1))
+all.equal(distrib_pdf(d, y, theta, log = TRUE),
+          distrib_pdf(mvgaussian_distrib(2), y,
+                      c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
+
+# The multivariate contract survives the wrapper.
+mv_sigma(d, theta)
+names(mv_derived(d, theta)$value)
+mv_marginal(d, theta, 1)$distrib@n_dim
+
+# And so do the refusals the base class registers.
+try(distrib_cdf(d, y, theta))
 }
 \seealso{
-\code{\link[=fixed]{fixed()}}
+\code{\link[=fixed]{fixed()}} to build one, \link{FixedContinuousDistrib} and
+\link{FixedDiscreteDistrib} for the two siblings, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for a
+parent, and \code{\link[=mv_summary]{mv_summary()}} for the quantities a fit of one reports.
 }

@@ -7,67 +7,111 @@
 fixed(distrib, ...)
 }
 \arguments{
-\item{distrib}{The distribution whose parameters are to be fixed.}
+\item{distrib}{The distribution whose parameters are to be fixed, inheriting
+from \code{continuous_distrib}, \code{discrete_distrib} or \code{multivariate_distrib}.}
 
 \item{...}{The fixed values, named after the parameters they fix, as in
-\code{fixed(gaussian1_distrib(), mu = 0)}.}
+\code{fixed(gaussian1_distrib(), mu = 0)}. Each must be a single finite number
+strictly inside its parameter's domain, and each name must be a parameter
+of \code{distrib}. A name that is not, a value outside the domain, a value that
+is not a single number, and an empty \code{...} are each rejected with an error
+saying which condition failed.}
 }
 \value{
-An object of class \code{FixedContinuousDistrib} or
-\code{FixedDiscreteDistrib}, matching the parent.
+An S7 object of class \link{FixedContinuousDistrib},
+\link{FixedDiscreteDistrib} or \link{FixedMultivariateDistrib}, matching the
+parent's branch. Its \code{params} are the parent's less the fixed names in the
+parent's order, \code{n_params} falls by as many, \code{fixed_params} holds the
+values, and \code{distrib_name} is the parent's with the held values in
+brackets.
 }
 \description{
-Returns the distribution obtained by holding some parameters of
-\code{distrib} at known values, leaving only the others to be supplied and
-estimated.
+Returns the distribution obtained by holding some parameters of \code{distrib} at
+known values, leaving the others to be supplied and estimated. It is the
+only wrapper in this package that REMOVES parameters, and it derives
+nothing: the density is the parent's at the reassembled vector and the
+derivatives are the parent's components among the free indices.
 }
-\details{
+\section{The construction}{
 Splitting the parent's parameters into a fixed part \eqn{\theta_C = c} and a
-free part \eqn{\theta_F}, the density is the parent's at the reassembled
-vector and the derivatives are its components among the free indices,
-
+free part \eqn{\theta_F},
 \deqn{f_{\mathrm{fix}}(y; \theta_F) = f(y; \theta_F, c),
-  \qquad l^{(i_1 \cdots i_k)}_{\mathrm{fix}} = l^{(i_1 \cdots i_k)},
+  \qquad \ell^{(i_1 \cdots i_k)}_{\mathrm{fix}} = \ell^{(i_1 \cdots i_k)},
   \quad i_1, \dots, i_k \in F.}
+\code{theta} carries only the free parameters, every generic answers as the
+parent does at the full vector, and a derivative is the parent's restricted
+to the free indices: a subvector of the score, a submatrix of the Hessian,
+sub-arrays at orders three and four. Nothing is recomputed, no normalizing
+constant changes, and \code{\link[=fit_distrib]{fit_distrib()}} estimates the free parameters with
+standard errors and intervals for them alone.
+}
 
-The result is the same law with a smaller parameter set: \code{theta}
-carries only the free parameters, every generic answers as the parent does
-at the full vector, and the derivative components are the parent's
-restricted to the free indices -- a subvector of the score, a submatrix of
-the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
-no normalizing constant changes, so the parent's closed forms are used
-throughout, and \code{\link[=fit_distrib]{fit_distrib()}} estimates the free parameters
-with standard errors and intervals for them alone.
-
-Fixed values are single numbers, strictly inside the open domain of their
-parameter. Fixing a parameter of a distribution that is already a
+\section{What is accepted}{
+Fixed values are single finite numbers, strictly inside the OPEN domain of
+their parameter. Fixing a parameter of a distribution that is already a
 fixed-parameter wrapper collapses the two into one wrapper around the
-original parent. Fixing every parameter is allowed and gives a fully known
-distribution with an empty parameter set.
+original parent. Fixing a WRAPPER's own parameter is allowed and useful:
+\code{fixed(zero_inflated(d), zi = 0.3)} is a zero-inflated model with a known
+inflation rate. Fixing every parameter is allowed too and gives a fully
+known distribution with an empty parameter set. Calling with no named value
+is an error: the result would be the parent unchanged, and returning it
+silently would hide a missing argument.
+}
+
+\section{What it is for}{
+A prior. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge penalty with its
+scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the lasso, and
+\code{fixed(mvgaussian_distrib(p), mu1 = 0, ...)} is what a random effect is
+distributed by. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
+half-normal.
 
 The per-parameter smoothness declaration travels with the free parameters,
-so fixing the location of a Laplace distribution leaves a distribution
-whose remaining parameter is smooth.
+so fixing the location of a Laplace leaves a distribution whose remaining
+parameter is smooth.
 }
+
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{\theta_C = c} the fixed parameters,
+\eqn{\theta_F} the free ones, \eqn{F} their index set and
+\eqn{\ell^{(i_1\cdots i_k)}} a derivative of the log-density in the
+parameters named.
+}
+
 \examples{
-# a gaussian with known mean: only sigma remains
+# A gaussian with a known mean: only sigma remains.
 d <- fixed(gaussian1_distrib(), mu = 0)
 d@params
-
 theta <- list(sigma = 2)
 distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
 
-# the score is the corresponding component of the parent's
-full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
+# The score is the corresponding component of the parent's, unchanged.
+full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1),
+                         list(mu = 0, sigma = 2))
 all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 
-# fixing everything gives a fully known distribution
-d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
-distrib_pdf(d0, 0, list())
+# The lasso prior: a Laplace in its rate, centered at zero.
+lasso <- fixed(laplace2_distrib(), mu = 0)
+lasso@params
+b <- c(-1, 0.5, 2)
+all.equal(-distrib_pdf(lasso, b, list(lambda = 2), log = TRUE),
+          2 * abs(b) - log(2 / 2))
+
+# A wrapper's own parameter can be held.
+fixed(zero_inflated(poisson_distrib()), zi = 0.3)@params
+
+# Two calls collapse into one wrapper, and fixing everything is legal.
+fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
+
+# Four refusals, each naming the condition that failed.
+try(fixed(gaussian1_distrib(), nope = 1))
+try(fixed(gaussian1_distrib(), sigma = -1))
+try(fixed(gaussian1_distrib(), mu = c(0, 1)))
+try(fixed(gaussian1_distrib()))
 
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=truncated]{truncated()}},
-\code{\link[=transformation]{transformation()}}
+\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=truncated]{truncated()}}, \code{\link[=transformation]{transformation()}} and
+\code{\link[=folded]{folded()}} for the other wrappers, and \link{FixedContinuousDistrib} for what
+the methods do.
 }

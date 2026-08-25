@@ -19,44 +19,77 @@ FixedContinuousDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
-
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
-
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
-
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
 \item{parent_distrib}{The wrapped \code{continuous_distrib} object.}
 
-\item{fixed_params}{A named list of the fixed parameter values.}
+\item{fixed_params}{A named list of the fixed values, one single finite
+number each, strictly inside the corresponding parameter's open domain.}
+
+\item{...}{The properties of the parent \code{distrib} class, listed under Value.}
 }
 \value{
-An object of class \code{FixedContinuousDistrib}.
+An S7 object of class \code{FixedContinuousDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. It carries \code{parent_distrib} and
+\code{fixed_params} beside the parent's properties. For an object built by
+\code{\link[=fixed]{fixed()}}, \code{params} is the parent's less the fixed names, \code{n_params} falls
+by as many, \code{bounds} is the parent's unchanged, and \code{distrib_name} is the
+parent's with the held values in brackets.
 }
 \description{
-A subclass of \code{continuous_distrib} representing a continuous
-distribution in which some parameters of the wrapped distribution are held
-at known values. Constructed by \code{\link[=fixed]{fixed()}}.
+The S7 class of a CONTINUOUS distribution in which some parameters of the
+wrapped distribution are held at known values. It is the only wrapper in
+this package that REMOVES parameters: the law is the parent's, evaluated at
+a \code{theta} short by however many were fixed. Build one with \code{\link[=fixed]{fixed()}}, which
+picks this class or one of its two siblings from the parent.
 }
-\details{
-The free parameters are the parent's minus the fixed ones, in the parent's
-order. Every method splices the fixed values back into \code{theta} at their
+\section{How every method works}{
+The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
+ORDER. Every method splices the fixed values back into \code{theta} at their
 positions and delegates to the parent, so the parent's closed forms are used
-whenever they exist; a derivative method then keeps only the components in
-which every index is a free parameter. No method of this class computes
-anything of its own.
+wherever they exist, and a derivative method then keeps only the components
+in which every index is a free parameter. No method of this class computes
+anything of its own, and none is faster or more accurate than the parent's.
+}
+
+\section{Why the components can be subset by name}{
+The free set preserves the parent's ORDER, so a combination of free
+parameters produces the same name string under the parent's enumeration as
+under the wrapper's. Subsetting by name therefore cannot pair a component
+with the wrong indices. That is the mistake re-parsing a name by splitting
+on the underscore commits, for a parameter whose own name contains one.
+}
+
+\section{The methods carry no documentation pages}{
+The continuous and discrete branches register theirs inside a loop over the
+two classes, so there is no top-level assignment for roxygen to attach a
+block to. The multivariate branch registers its own at the top level and is
+left undocumented to match, every one of them being the same delegation.
+Read the parent's page for what a method computes and this page for what the
+wrapper does to it.
+}
+
+\examples{
+# A gaussian centered at zero: one free parameter instead of two.
+d <- fixed(gaussian1_distrib(), mu = 0)
+d@params
+d@fixed_params
+d@distrib_name
+
+# The law is the parent's at the spliced theta.
+all.equal(distrib_pdf(d, c(-1, 0, 1), list(sigma = 2)),
+          dnorm(c(-1, 0, 1), 0, 2))
+
+# A derivative keeps only the components among the free parameters.
+set.seed(1)
+y <- rnorm(20, 0, 2)
+names(distrib_gradient(d, y, list(sigma = 2)))
+names(distrib_deriv3(d, y, list(sigma = 2)))
+
+# Fixing everything is legal and gives a fully known law.
+d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
+c(n_params = d0@n_params, density = distrib_pdf(d0, 0, list()))
 }
 \seealso{
-\code{\link[=fixed]{fixed()}}
+\code{\link[=fixed]{fixed()}} to build one, \link{FixedDiscreteDistrib} and
+\link{FixedMultivariateDistrib} for the two siblings, and \code{\link[=folded]{folded()}}, whose
+half-normal is a fixed folded gaussian.
 }

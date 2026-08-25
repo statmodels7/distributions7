@@ -5,23 +5,75 @@ NULL
 #' @name FixedContinuousDistrib
 #'
 #' @description
-#' A subclass of `continuous_distrib` representing a continuous
-#' distribution in which some parameters of the wrapped distribution are held
-#' at known values. Constructed by [fixed()].
+#' The S7 class of a CONTINUOUS distribution in which some parameters of the
+#' wrapped distribution are held at known values. It is the only wrapper in
+#' this package that REMOVES parameters: the law is the parent's, evaluated at
+#' a `theta` short by however many were fixed. Build one with [fixed()], which
+#' picks this class or one of its two siblings from the parent.
 #'
 #' @details
-#' The free parameters are the parent's minus the fixed ones, in the parent's
-#' order. Every method splices the fixed values back into `theta` at their
-#' positions and delegates to the parent, so the parent's closed forms are used
-#' whenever they exist; a derivative method then keeps only the components in
-#' which every index is a free parameter. No method of this class computes
-#' anything of its own.
+#' # How every method works
 #'
-#' @inheritParams distrib
+#' The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
+#' ORDER. Every method splices the fixed values back into `theta` at their
+#' positions and delegates to the parent, so the parent's closed forms are used
+#' wherever they exist, and a derivative method then keeps only the components
+#' in which every index is a free parameter. No method of this class computes
+#' anything of its own, and none is faster or more accurate than the parent's.
+#'
+#' # Why the components can be subset by name
+#'
+#' The free set preserves the parent's ORDER, so a combination of free
+#' parameters produces the same name string under the parent's enumeration as
+#' under the wrapper's. Subsetting by name therefore cannot pair a component
+#' with the wrong indices. That is the mistake re-parsing a name by splitting
+#' on the underscore commits, for a parameter whose own name contains one.
+#'
+#' # The methods carry no documentation pages
+#'
+#' The continuous and discrete branches register theirs inside a loop over the
+#' two classes, so there is no top-level assignment for roxygen to attach a
+#' block to. The multivariate branch registers its own at the top level and is
+#' left undocumented to match, every one of them being the same delegation.
+#' Read the parent's page for what a method computes and this page for what the
+#' wrapper does to it.
+#'
 #' @param parent_distrib The wrapped `continuous_distrib` object.
-#' @param fixed_params A named list of the fixed parameter values.
-#' @return An object of class `FixedContinuousDistrib`.
-#' @seealso [fixed()]
+#' @param fixed_params A named list of the fixed values, one single finite
+#'   number each, strictly inside the corresponding parameter's open domain.
+#' @param ... The properties of the parent `distrib` class, listed under Value.
+#'
+#' @return An S7 object of class `FixedContinuousDistrib`, inheriting from
+#'   `continuous_distrib` and from `distrib`. It carries `parent_distrib` and
+#'   `fixed_params` beside the parent's properties. For an object built by
+#'   [fixed()], `params` is the parent's less the fixed names, `n_params` falls
+#'   by as many, `bounds` is the parent's unchanged, and `distrib_name` is the
+#'   parent's with the held values in brackets.
+#'
+#' @seealso [fixed()] to build one, [FixedDiscreteDistrib] and
+#'   [FixedMultivariateDistrib] for the two siblings, and [folded()], whose
+#'   half-normal is a fixed folded gaussian.
+#'
+#' @examples
+#' # A gaussian centered at zero: one free parameter instead of two.
+#' d <- fixed(gaussian1_distrib(), mu = 0)
+#' d@params
+#' d@fixed_params
+#' d@distrib_name
+#'
+#' # The law is the parent's at the spliced theta.
+#' all.equal(distrib_pdf(d, c(-1, 0, 1), list(sigma = 2)),
+#'           dnorm(c(-1, 0, 1), 0, 2))
+#'
+#' # A derivative keeps only the components among the free parameters.
+#' set.seed(1)
+#' y <- rnorm(20, 0, 2)
+#' names(distrib_gradient(d, y, list(sigma = 2)))
+#' names(distrib_deriv3(d, y, list(sigma = 2)))
+#'
+#' # Fixing everything is legal and gives a fully known law.
+#' d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
+#' c(n_params = d0@n_params, density = distrib_pdf(d0, 0, list()))
 FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
   parent = continuous_distrib,
   properties = list(
@@ -34,20 +86,65 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @name FixedDiscreteDistrib
 #'
 #' @description
-#' A subclass of `discrete_distrib` representing a discrete distribution
-#' in which some parameters of the wrapped distribution are held at known
-#' values. Constructed by [fixed()].
+#' The S7 class of a DISCRETE distribution in which some parameters of the
+#' wrapped distribution are held at known values. It behaves exactly as
+#' [FixedContinuousDistrib] does; the split into three classes exists so that
+#' the wrapper inherits the right base class, and with it the right defaults
+#' for anything the parent does not register. Build one with [fixed()], which
+#' picks the class from the parent.
 #'
 #' @details
-#' Identical in behavior to [FixedContinuousDistrib()]: every method
-#' splices the fixed values into `theta` and delegates to the parent, and
-#' the derivative methods keep only the components among the free parameters.
+#' # How every method works
 #'
-#' @inheritParams distrib
+#' The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
+#' ORDER. Every method splices the fixed values back into `theta` at their
+#' positions and delegates to the parent, so the parent's closed forms are used
+#' wherever they exist, and a derivative method then keeps only the components
+#' in which every index is a free parameter. No method of this class computes
+#' anything of its own, and none is faster or more accurate than the parent's.
+#'
+#' # Why the components can be subset by name
+#'
+#' The free set preserves the parent's ORDER, so a combination of free
+#' parameters produces the same name string under the parent's enumeration as
+#' under the wrapper's. Subsetting by name therefore cannot pair a component
+#' with the wrong indices. That is the mistake re-parsing a name by splitting
+#' on the underscore commits, for a parameter whose own name contains one.
+#'
+#' # The methods carry no documentation pages
+#'
+#' The continuous and discrete branches register theirs inside a loop over the
+#' two classes, so there is no top-level assignment for roxygen to attach a
+#' block to. The multivariate branch registers its own at the top level and is
+#' left undocumented to match, every one of them being the same delegation.
+#' Read the parent's page for what a method computes and this page for what the
+#' wrapper does to it.
+#'
 #' @param parent_distrib The wrapped `discrete_distrib` object.
-#' @param fixed_params A named list of the fixed parameter values.
-#' @return An object of class `FixedDiscreteDistrib`.
-#' @seealso [fixed()]
+#' @param fixed_params A named list of the fixed values, one single finite
+#'   number each, strictly inside the corresponding parameter's open domain.
+#' @param ... The properties of the parent `distrib` class, listed under Value.
+#'
+#' @return An S7 object of class `FixedDiscreteDistrib`, inheriting from
+#'   `discrete_distrib` and from `distrib`. It carries `parent_distrib` and
+#'   `fixed_params` beside the parent's properties.
+#'
+#' @seealso [fixed()] to build one, [FixedContinuousDistrib] and
+#'   [FixedMultivariateDistrib] for the two siblings, and [zero_inflated()],
+#'   one of whose own parameters can usefully be held.
+#'
+#' @examples
+#' # A Poisson with its mean known: no free parameter at all.
+#' d <- fixed(poisson_distrib(), mu = 3)
+#' c(n_params = d@n_params, class = class(d)[1])
+#' all.equal(distrib_pdf(d, 0:3, list()), dpois(0:3, 3))
+#'
+#' # A wrapper's OWN parameter can be held, which is what makes a
+#' # zero-inflated model with a known inflation rate.
+#' zi <- fixed(zero_inflated(poisson_distrib()), zi = 0.3)
+#' zi@params
+#' all.equal(distrib_pdf(zi, 0:3, list(mu = 3)),
+#'           0.3 * (0:3 == 0) + 0.7 * dpois(0:3, 3))
 FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -60,31 +157,90 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' @name FixedMultivariateDistrib
 #'
 #' @description
-#' A subclass of `multivariate_distrib` representing a multivariate
-#' distribution in which some parameters of the wrapped distribution are held
-#' at known values. Constructed by [fixed()].
+#' The S7 class of a MULTIVARIATE distribution in which some parameters of the
+#' wrapped distribution are held at known values. It behaves exactly as
+#' [FixedContinuousDistrib] does and adds the multivariate contract:
+#' [mv_location()], [mv_sigma()], [mv_marginal()], [mv_support()],
+#' [mv_reference_draw()] and [mv_derived()] all delegate to the parent at the
+#' spliced `theta`, and [mv_derived()] reports the parent's quantities with the
+#' Jacobian columns of the fixed parameters removed.
+#'
+#' The motivating case is a CENTERED PRIOR: holding the mean components of a
+#' multivariate family at zero leaves the matrix parameter alone, and a matrix
+#' parameter alone is what a random effect is distributed by.
 #'
 #' @details
-#' Identical in behavior to [FixedContinuousDistrib()]: every method
-#' splices the fixed values into `theta` and delegates to the parent, and
-#' the derivative methods keep only the components among the free parameters.
-#' The multivariate branch sits beside the continuous and discrete ones rather
-#' than under either, so the generics a multivariate family rejects by design
-#' -- the distribution function, the quantile -- are inherited unregistered and
-#' go on rejecting.
+#' # How every method works
 #'
-#' The motivating case is a centered prior: holding the mean components of a
-#' multivariate family at zero leaves the matrix parameter alone, which is what
-#' a random effect is distributed by.
+#' The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
+#' ORDER. Every method splices the fixed values back into `theta` at their
+#' positions and delegates to the parent, so the parent's closed forms are used
+#' wherever they exist, and a derivative method then keeps only the components
+#' in which every index is a free parameter. No method of this class computes
+#' anything of its own, and none is faster or more accurate than the parent's.
 #'
-#' @inheritParams distrib
+#' # Why the components can be subset by name
+#'
+#' The free set preserves the parent's ORDER, so a combination of free
+#' parameters produces the same name string under the parent's enumeration as
+#' under the wrapper's. Subsetting by name therefore cannot pair a component
+#' with the wrong indices. That is the mistake re-parsing a name by splitting
+#' on the underscore commits, for a parameter whose own name contains one.
+#'
+#' # The methods carry no documentation pages
+#'
+#' The continuous and discrete branches register theirs inside a loop over the
+#' two classes, so there is no top-level assignment for roxygen to attach a
+#' block to. The multivariate branch registers its own at the top level and is
+#' left undocumented to match, every one of them being the same delegation.
+#' Read the parent's page for what a method computes and this page for what the
+#' wrapper does to it.
+#'
+#' # What the refusals do
+#'
+#' The multivariate branch sits BESIDE the continuous and discrete ones rather
+#' than under either, so the generics a multivariate family rejects by design,
+#' the distribution function and the quantile, are inherited unregistered and
+#' go on rejecting through this wrapper.
+#'
 #' @param parent_distrib The wrapped `multivariate_distrib` object.
-#' @param fixed_params A named list of the fixed parameter values.
+#' @param fixed_params A named list of the fixed values, one single finite
+#'   number each, strictly inside the corresponding parameter's open domain.
 #' @param n_dim The number of coordinates, carried from the parent: fixing a
 #'   parameter removes it from the parameter set and leaves the dimension of
 #'   the response alone.
-#' @return An object of class `FixedMultivariateDistrib`.
-#' @seealso [fixed()]
+#' @param ... The properties of the parent `distrib` class, listed under Value.
+#'
+#' @return An S7 object of class `FixedMultivariateDistrib`, inheriting from
+#'   `multivariate_distrib` and from `distrib`. It carries `parent_distrib` and
+#'   `fixed_params` beside the parent's properties, `n_dim` included.
+#'
+#' @seealso [fixed()] to build one, [FixedContinuousDistrib] and
+#'   [FixedDiscreteDistrib] for the two siblings, [mvgaussian_distrib()] for a
+#'   parent, and [mv_summary()] for the quantities a fit of one reports.
+#'
+#' @examples
+#' # A centered two-dimensional gaussian: the matrix alone, which is what a
+#' # random effect is distributed by.
+#' d <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+#' d@params
+#' d
+#'
+#' theta <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+#'
+#' # The law is the parent's at the spliced theta.
+#' y <- rbind(c(0, 0), c(1, -1))
+#' all.equal(distrib_pdf(d, y, theta, log = TRUE),
+#'           distrib_pdf(mvgaussian_distrib(2), y,
+#'                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
+#'
+#' # The multivariate contract survives the wrapper.
+#' mv_sigma(d, theta)
+#' names(mv_derived(d, theta)$value)
+#' mv_marginal(d, theta, 1)$distrib@n_dim
+#'
+#' # And so do the refusals the base class registers.
+#' try(distrib_cdf(d, y, theta))
 FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
   parent = multivariate_distrib,
   properties = list(
@@ -93,17 +249,32 @@ FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
   )
 )
 
-#' Is This a Fixed-Parameter Wrapper?
+#' @title Is This a Fixed-Parameter Wrapper
 #'
 #' @description
-#' `TRUE` for a distribution produced by [fixed()], in any of
-#' its three forms.
+#' Returns `TRUE` for a distribution produced by [fixed()], in any of its three
+#' forms, which is how `fixed()` of a `fixed()` COLLAPSES into one wrapper. The
+#' two describe the same law either way, and nesting would leave the inner
+#' object's free set to be reconstructed at every call.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
+#' @param distrib A `distrib` object.
 #'
-#' @return A single logical.
+#' @return `TRUE` for a `FixedContinuousDistrib`, a `FixedDiscreteDistrib` or a
+#'   `FixedMultivariateDistrib`, `FALSE` otherwise.
 #'
-#' @seealso [fixed()]
+#' @seealso [fixed()], which consults this, and [FixedContinuousDistrib] for
+#'   the class.
+#'
+#' @examples
+#' c(plain = distributions7:::is_fixed(gaussian1_distrib()),
+#'   fixed = distributions7:::is_fixed(fixed(gaussian1_distrib(), mu = 0)),
+#'   multivariate = distributions7:::is_fixed(
+#'     fixed(mvgaussian_distrib(2), mu1 = 0)))
+#'
+#' # Which is why two calls collapse into one wrapper holding both values.
+#' d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)
+#' c(class = class(d)[1], held = paste(names(d@fixed_params), collapse = ", "))
+#'
 #' @keywords internal
 is_fixed <- function(distrib) {
   S7::S7_inherits(distrib, FixedContinuousDistrib) ||
@@ -111,26 +282,34 @@ is_fixed <- function(distrib) {
     S7::S7_inherits(distrib, FixedMultivariateDistrib)
 }
 
-#' Splice the Fixed Values Back Into a Full Parameter List
+#' @title Splice the Fixed Values Back Into a Full Parameter List
 #'
 #' @description
 #' Combines the wrapper's free `theta` with its fixed values into the full
-#' parameter list of the parent, in the parent's order.
+#' parameter list the PARENT expects, in the parent's own order. Every method
+#' of every `Fixed*` class begins with this call and then delegates, so it is
+#' the single point at which the two parameter sets are reconciled.
 #'
-#' @details
-#' `theta` is aligned against the wrapper first, so the function is safe
-#' to call both from generic-dispatched methods, whose `theta` is already
-#' aligned, and from delegating methods such as `mean()`, whose
-#' `theta` arrives as the caller wrote it. Free values may be vectors --
-#' the wrapper is as vectorized in `theta` as its parent -- while the
-#' fixed values are scalars by construction.
+#' @param distrib A `FixedContinuousDistrib`, `FixedDiscreteDistrib` or
+#'   `FixedMultivariateDistrib` object.
+#' @param theta A named list of the FREE parameters, already aligned. A
+#'   fully-fixed wrapper takes `list()`.
 #'
-#' @param distrib A fixed-parameter wrapper object.
-#' @param theta A named list or vector of the free parameters.
+#' @return A named list of the parent's parameters, complete and in the
+#'   parent's order.
 #'
-#' @return A named list covering every parameter of the parent.
+#' @seealso [fixed()] for the wrapper and [FixedContinuousDistrib] for what
+#'   the methods do with the result.
 #'
-#' @seealso [fixed()]
+#' @examples
+#' d <- fixed(gaussian1_distrib(), mu = 0)
+#' str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+#'
+#' # Which is exactly what the parent is then called at.
+#' all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
+#'           distrib_pdf(gaussian1_distrib(), c(-1, 1),
+#'                       distributions7:::fixed_full_theta(d, list(sigma = 2))))
+#'
 #' @keywords internal
 fixed_full_theta <- function(distrib, theta) {
   theta <- align_theta(distrib, theta)
@@ -550,67 +729,110 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
   invisible(x)
 }
 
-#' Fix Parameters of a Distribution at Known Values
+#' @title Fix Parameters of a Distribution at Known Values
 #'
 #' @description
-#' Returns the distribution obtained by holding some parameters of
-#' `distrib` at known values, leaving only the others to be supplied and
-#' estimated.
+#' Returns the distribution obtained by holding some parameters of `distrib` at
+#' known values, leaving the others to be supplied and estimated. It is the
+#' only wrapper in this package that REMOVES parameters, and it derives
+#' nothing: the density is the parent's at the reassembled vector and the
+#' derivatives are the parent's components among the free indices.
 #'
 #' @details
+#' # The construction
+#'
 #' Splitting the parent's parameters into a fixed part \eqn{\theta_C = c} and a
-#' free part \eqn{\theta_F}, the density is the parent's at the reassembled
-#' vector and the derivatives are its components among the free indices,
-#'
+#' free part \eqn{\theta_F},
 #' \deqn{f_{\mathrm{fix}}(y; \theta_F) = f(y; \theta_F, c),
-#'   \qquad l^{(i_1 \cdots i_k)}_{\mathrm{fix}} = l^{(i_1 \cdots i_k)},
+#'   \qquad \ell^{(i_1 \cdots i_k)}_{\mathrm{fix}} = \ell^{(i_1 \cdots i_k)},
 #'   \quad i_1, \dots, i_k \in F.}
+#' `theta` carries only the free parameters, every generic answers as the
+#' parent does at the full vector, and a derivative is the parent's restricted
+#' to the free indices: a subvector of the score, a submatrix of the Hessian,
+#' sub-arrays at orders three and four. Nothing is recomputed, no normalizing
+#' constant changes, and [fit_distrib()] estimates the free parameters with
+#' standard errors and intervals for them alone.
 #'
-#' The result is the same law with a smaller parameter set: `theta`
-#' carries only the free parameters, every generic answers as the parent does
-#' at the full vector, and the derivative components are the parent's
-#' restricted to the free indices -- a subvector of the score, a submatrix of
-#' the Hessian, sub-arrays at orders three and four. Nothing is recomputed and
-#' no normalizing constant changes, so the parent's closed forms are used
-#' throughout, and [fit_distrib()] estimates the free parameters
-#' with standard errors and intervals for them alone.
+#' # What is accepted
 #'
-#' Fixed values are single numbers, strictly inside the open domain of their
-#' parameter. Fixing a parameter of a distribution that is already a
+#' Fixed values are single finite numbers, strictly inside the OPEN domain of
+#' their parameter. Fixing a parameter of a distribution that is already a
 #' fixed-parameter wrapper collapses the two into one wrapper around the
-#' original parent. Fixing every parameter is allowed and gives a fully known
-#' distribution with an empty parameter set.
+#' original parent. Fixing a WRAPPER's own parameter is allowed and useful:
+#' `fixed(zero_inflated(d), zi = 0.3)` is a zero-inflated model with a known
+#' inflation rate. Fixing every parameter is allowed too and gives a fully
+#' known distribution with an empty parameter set. Calling with no named value
+#' is an error: the result would be the parent unchanged, and returning it
+#' silently would hide a missing argument.
+#'
+#' # What it is for
+#'
+#' A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with its
+#' scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
+#' `fixed(mvgaussian_distrib(p), mu1 = 0, ...)` is what a random effect is
+#' distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
+#' half-normal.
 #'
 #' The per-parameter smoothness declaration travels with the free parameters,
-#' so fixing the location of a Laplace distribution leaves a distribution
-#' whose remaining parameter is smooth.
+#' so fixing the location of a Laplace leaves a distribution whose remaining
+#' parameter is smooth.
 #'
-#' @param distrib The distribution whose parameters are to be fixed.
+#' @section Notation:
+#' \eqn{f} is the parent's density, \eqn{\theta_C = c} the fixed parameters,
+#' \eqn{\theta_F} the free ones, \eqn{F} their index set and
+#' \eqn{\ell^{(i_1\cdots i_k)}} a derivative of the log-density in the
+#' parameters named.
+#'
+#' @param distrib The distribution whose parameters are to be fixed, inheriting
+#'   from `continuous_distrib`, `discrete_distrib` or `multivariate_distrib`.
 #' @param ... The fixed values, named after the parameters they fix, as in
-#'   `fixed(gaussian1_distrib(), mu = 0)`.
+#'   `fixed(gaussian1_distrib(), mu = 0)`. Each must be a single finite number
+#'   strictly inside its parameter's domain, and each name must be a parameter
+#'   of `distrib`. A name that is not, a value outside the domain, a value that
+#'   is not a single number, and an empty `...` are each rejected with an error
+#'   saying which condition failed.
 #'
-#' @return An object of class `FixedContinuousDistrib` or
-#'   `FixedDiscreteDistrib`, matching the parent.
+#' @return An S7 object of class [FixedContinuousDistrib],
+#'   [FixedDiscreteDistrib] or [FixedMultivariateDistrib], matching the
+#'   parent's branch. Its `params` are the parent's less the fixed names in the
+#'   parent's order, `n_params` falls by as many, `fixed_params` holds the
+#'   values, and `distrib_name` is the parent's with the held values in
+#'   brackets.
 #'
-#' @seealso [zero_inflated()], [truncated()],
-#'   [transformation()]
+#' @seealso [zero_inflated()], [truncated()], [transformation()] and
+#'   [folded()] for the other wrappers, and [FixedContinuousDistrib] for what
+#'   the methods do.
 #'
 #' @examples
-#' # a gaussian with known mean: only sigma remains
+#' # A gaussian with a known mean: only sigma remains.
 #' d <- fixed(gaussian1_distrib(), mu = 0)
 #' d@params
-#'
 #' theta <- list(sigma = 2)
 #' distrib_pdf(d, c(-1, 0, 1), theta)
-#' distrib_gradient(d, c(-1, 0, 1), theta)
 #'
-#' # the score is the corresponding component of the parent's
-#' full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 2))
+#' # The score is the corresponding component of the parent's, unchanged.
+#' full <- distrib_gradient(gaussian1_distrib(), c(-1, 0, 1),
+#'                          list(mu = 0, sigma = 2))
 #' all.equal(distrib_gradient(d, c(-1, 0, 1), theta)$sigma, full$sigma)
 #'
-#' # fixing everything gives a fully known distribution
-#' d0 <- fixed(gaussian1_distrib(), mu = 0, sigma = 1)
-#' distrib_pdf(d0, 0, list())
+#' # The lasso prior: a Laplace in its rate, centered at zero.
+#' lasso <- fixed(laplace2_distrib(), mu = 0)
+#' lasso@params
+#' b <- c(-1, 0.5, 2)
+#' all.equal(-distrib_pdf(lasso, b, list(lambda = 2), log = TRUE),
+#'           2 * abs(b) - log(2 / 2))
+#'
+#' # A wrapper's own parameter can be held.
+#' fixed(zero_inflated(poisson_distrib()), zi = 0.3)@params
+#'
+#' # Two calls collapse into one wrapper, and fixing everything is legal.
+#' fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)@fixed_params
+#'
+#' # Four refusals, each naming the condition that failed.
+#' try(fixed(gaussian1_distrib(), nope = 1))
+#' try(fixed(gaussian1_distrib(), sigma = -1))
+#' try(fixed(gaussian1_distrib(), mu = c(0, 1)))
+#' try(fixed(gaussian1_distrib()))
 #'
 #' @export
 fixed <- function(distrib, ...) {
