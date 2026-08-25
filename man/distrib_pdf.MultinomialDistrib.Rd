@@ -4,21 +4,59 @@
 \alias{distrib_pdf.MultinomialDistrib}
 \title{Multinomial Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{y}{A matrix with one row per observation, each summing to the size.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row a vector of non-negative integers summing to the object's \code{size}.
+A single observation may be given as a plain vector and is read as one
+row. A row off the support gives a mass of 0, or \code{-Inf} with
+\code{log = TRUE}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1. A parameter may not vary by observation here, the
+probability vector being one point of the simplex for the whole sample.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, one entry per row of \code{y}.
+A numeric vector of probabilities in \eqn{[0, 1]} of length
+\code{nrow(y)}, one per observation.
 }
 \description{
-\deqn{P(Y = y) = \dfrac{n!}{\prod_j y_j!}\prod_j p_j^{y_j}}
-for a row of non-negative integers summing to \eqn{n}.
+Computes the multinomial mass
+\deqn{P(Y = y) = \dfrac{n!}{\prod_{j=1}^{p} y_j!}\prod_{j=1}^{p} p_j^{y_j},}
+one value per row of \code{y}, on the weak compositions of \eqn{n} into \eqn{p}
+parts. A row with a negative entry, a non-integer entry, or a sum other than
+\eqn{n} is off the support and returns 0.
+
+The factorials are formed through \code{\link[base:Special]{base::lgamma()}} and the product through a
+matrix multiplication by \eqn{\log p}, so the whole calculation runs on the
+log scale and a mass far below the smallest representable double still has a
+finite logarithm.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+
+# The mass over the whole support sums to one, exactly.
+supp <- mv_support(d, th)
+c(points = nrow(supp), mass = sum(distrib_pdf(d, supp, th)))
+
+# It is stats::dmultinom at the implied probabilities.
+pr <- mv_location(d, th) / 5
+all.equal(distrib_pdf(d, supp, th),
+          apply(supp, 1, function(r) dmultinom(r, prob = pr)))
+
+# A row that does not sum to the size, or is not integral, is off the
+# support.
+distrib_pdf(d, rbind(c(1, 1, 1), c(-1, 3, 3), c(1.5, 1.5, 2)), th)
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points the mass sits on,
+\code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the derivatives of the
+log-mass, \code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal.MultinomialDistrib()}} for a coordinate's binomial
+marginal, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

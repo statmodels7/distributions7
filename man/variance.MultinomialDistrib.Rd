@@ -4,20 +4,27 @@
 \alias{variance.MultinomialDistrib}
 \title{Variance of a Multinomial}
 \arguments{
-\item{x}{A \code{MultinomialDistrib} object.}
+\item{x}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}. The
+argument is named \code{x} for consistency with \code{\link[base:mean]{base::mean()}}, whose signature
+the moment generics follow.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A symmetric \eqn{p \times p} matrix.
+A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 }
 \description{
-The covariance matrix \code{\link[=mv_sigma]{mv_sigma()}} carries, singular
-because the counts sum to the size.
+Returns the covariance matrix of the counts by delegating to
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. It is singular, the counts summing to the
+trial count, so a caller wanting something to invert should take the
+marginals or work on the simplex's free vector.
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=mean.MultinomialDistrib]{mean.MultinomialDistrib()}} for the mean vector,
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}, which this calls, and \code{\link[=variance]{variance()}} for
+the generic.
 }
 \keyword{internal}

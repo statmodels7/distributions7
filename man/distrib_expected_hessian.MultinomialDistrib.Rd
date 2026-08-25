@@ -2,32 +2,94 @@
 % Please edit documentation in R/multinomial_distrib.R
 \name{distrib_expected_hessian.MultinomialDistrib}
 \alias{distrib_expected_hessian.MultinomialDistrib}
-\title{Multinomial Analytical Expected Hessian}
+\title{Multinomial Expected Hessian}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix of observations. Only its row count is read
+through \code{\link[=n_obs]{n_obs()}}, the expectation not depending on the data; the values
+are ignored.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of numeric vectors, one per distinct entry of the
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
+\code{n_obs(distrib, y)} and constant along it.
 }
 \description{
-Closed form. \eqn{\mathbb{E}[y_j] = n p_j}, so the first term becomes
-\eqn{n\sum_j B_{j,kl}}, which vanishes because the probabilities sum to a
-constant, and
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature, simulation or summation over the support:
 \deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}]
-      = -n\sum_j \dfrac{A_{jk}A_{jl}}{p_j}}
+      = -n\sum_{j=1}^{p} \dfrac{A_{jk}A_{jl}}{p_j},}
+with \eqn{A = \partial p/\partial\eta}. \code{approx} and \code{nsim} are ignored:
+every strategy returns the same matrix.
+}
+\section{Why the second-derivative term vanishes}{
+Under the model \eqn{\mathbb{E}[y_j] = n p_j}, so the term of the observed
+Hessian carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}. The probabilities
+sum to one at every free vector, so every derivative of that sum is zero and
+the whole term drops out, leaving the display above. The same argument, one
+order lower, gives the score mean zero.
+}
+
+\section{The information is the covariance of the first p-1 counts}{
+On the default chart, \code{\link[parameters7:simplex]{parameters7::simplex()}}'s additive log-ratio
+coordinates, the Jacobian is \eqn{A_{jk} = p_j(\delta_{jk} - p_k)}, so
+\deqn{\sum_j \dfrac{A_{jk}A_{jl}}{p_j}
+  = \sum_j p_j(\delta_{jk}-p_k)(\delta_{jl}-p_l)
+  = \delta_{kl}p_k - p_k p_l,}
+and the expected information \eqn{-\mathbb{E}[\ell^{(\eta_k\eta_l)}]} is
+exactly \eqn{\operatorname{Cov}(Y_k, Y_l)}, the leading
+\eqn{(p-1)\times(p-1)} block of \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}}. Measured,
+the two agree to \code{2e-16} at every dimension and trial count tried. The
+identity belongs to that chart; a different simplex parametrization has a
+different Jacobian and no such coincidence.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{p} the probability
+vector, \eqn{n} the trial count, \eqn{\eta} the free vector of the simplex
+chart and \eqn{A = \partial p/\partial\eta} its Jacobian.
+}
+
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+eh <- distrib_expected_hessian(d, matrix(0, 1, 3), th)
+vapply(eh, function(v) v[1], numeric(1))
+
+# The exact sum over the support gives the same three numbers.
+supp <- mv_support(d, th)
+w <- distrib_pdf(d, supp, th)
+vapply(distrib_hessian(d, supp, th), function(v) sum(w * v), numeric(1))
+
+# On the default chart the information is the covariance of the first
+# p - 1 counts.
+S <- mv_sigma(d, th)
+rbind(information = -vapply(eh, function(v) v[1], numeric(1)),
+      covariance = c(S[1, 1], S[2, 2], S[1, 2]))
+
+# The strategy argument is inert, the expectation being exact.
+identical(eh, distrib_expected_hessian(d, matrix(0, 1, 3), th,
+                                       approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}} for the quantity this is the
+expectation of, \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}} for the covariance it
+coincides with, \code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the exact sum it can
+be checked against, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

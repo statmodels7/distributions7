@@ -2,25 +2,70 @@
 % Please edit documentation in R/multinomial_distrib.R
 \name{distrib_hessian.MultinomialDistrib}
 \alias{distrib_hessian.MultinomialDistrib}
-\title{Multinomial Analytical Observed Hessian}
+\title{Multinomial Observed Hessian}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row on the support. A single observation may be given as a plain
+vector.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second-derivative components.
+A named list of numeric vectors, one per distinct entry of the
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
+\code{nrow(y)}. For \eqn{p} categories there are \eqn{p(p-1)/2} of them.
 }
 \description{
-\deqn{\ell^{(\eta_k\eta_l)} = \sum_j\left(\dfrac{y_j}{p_j}B_{j,kl}
-      - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right)}
+Computes the distinct second derivatives of the multinomial log-mass with
+respect to the simplex's free values, one value per observation, in closed
+form. With \eqn{A = \partial p/\partial\eta} and
+\eqn{B_{\cdot,kl} = \partial^2 p/\partial\eta_k\partial\eta_l},
+\deqn{\ell^{(\eta_k\eta_l)} = \sum_{j=1}^{p}\left(\dfrac{y_j}{p_j}B_{j,kl}
+      - \dfrac{y_j}{p_j^2}A_{jk}A_{jl}\right).}
+Both terms carry the data, so the observed matrix differs from its
+expectation at every observation.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{p} the probability
+vector, \eqn{\eta} the free vector of the simplex chart, \eqn{A} its
+Jacobian and \eqn{B} its second-derivative arrays.
+}
+
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+h <- distrib_hessian(d, Y, th)
+names(h)
+
+# numDeriv on the summed log-mass reproduces the summed matrix.
+fn <- function(v)
+  sum(distrib_pdf(d, Y, as.list(stats::setNames(v, d@params)), log = TRUE))
+H <- numDeriv::hessian(fn, unlist(th))
+rbind(numeric = c(H[1, 1], H[2, 2], H[1, 2]),
+      closed = vapply(h, sum, numeric(1)))
+
+# The mass-weighted sum over the support is the expected Hessian, exactly.
+supp <- mv_support(d, th)
+w <- distrib_pdf(d, supp, th)
+rbind(summed = vapply(distrib_hessian(d, supp, th),
+                      function(v) sum(w * v), numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, Y, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian.MultinomialDistrib()}} for the expectation of
+this quantity, \code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3.MultinomialDistrib()}} for the order above,
+and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

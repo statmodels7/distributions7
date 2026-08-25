@@ -4,19 +4,44 @@
 \alias{distrib_rng.MultinomialDistrib}
 \title{Multinomial Random Generation}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws. Note that the
+number of \strong{trials} is the object's \code{size} property, not this argument.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 }
 \value{
-A matrix with \code{n} rows.
+A numeric matrix with \code{n} rows and \eqn{p} columns, each row a
+vector of non-negative integers summing to the object's \code{size}.
 }
 \description{
-\code{\link[stats:Multinom]{stats::rmultinom()}}, transposed so that one row is
-one observation.
+Draws \code{n} independent multinomial counts by calling \code{\link[stats:Multinom]{stats::rmultinom()}} and
+transposing, so that one \strong{row} of the result is one observation. R returns
+one column per draw; the package's convention throughout the multivariate
+families is one row per observation, and the transpose is the whole of the
+difference. The draws depend on \code{.Random.seed} in the usual way.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+
+# One row per observation, each summing to the trial count.
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+Y
+rowSums(Y)
+
+# The sample recovers the mean vector and the coordinate variances.
+set.seed(4)
+Z <- distrib_rng(d, 2e4, th)
+rbind(sample = c(colMeans(Z), diag(var(Z))),
+      theoretical = c(mv_location(d, th), diag(mv_sigma(d, th))))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf.MultinomialDistrib()}} for the mass,
+\code{\link[=mv_support.MultinomialDistrib]{mv_support.MultinomialDistrib()}} for the points it can land on,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the probabilities back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

@@ -4,19 +4,49 @@
 \alias{mv_support.MultinomialDistrib}
 \title{The Support Points of a Multinomial}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}},
+read for its \code{size} and \code{n_dim}.}
 
-\item{theta}{Ignored; the support does not depend on the parameters.}
+\item{theta}{Ignored. The support is a property of \eqn{n} and \eqn{p}
+alone, so any value, \code{NULL} included, gives the same answer.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A matrix with \code{choose(n + p - 1, p - 1)} rows.
+A numeric matrix with \eqn{\binom{n+p-1}{p-1}} rows and \eqn{p}
+columns. The count grows quickly in both arguments: 21 rows at
+\eqn{n = 5, p = 3}, and 1001 at \eqn{n = 10, p = 5}.
 }
 \description{
-Every vector of non-negative integers summing to the size, enumerated as a
-matrix with one row per point.
+Enumerates the whole support: every vector of \eqn{p} non-negative integers
+summing to the trial count \eqn{n}, one row per point. These are the weak
+compositions of \eqn{n} into \eqn{p} parts, supplied by
+\code{\link[numericals7:compositions]{numericals7::compositions()}}.
+
+Having the support in hand is what turns every expectation into an \strong{exact
+sum}. \code{\link[=check_distrib]{check_distrib()}} uses it to test that the mass adds to one and that
+the closed-form information matches the summed observed Hessian, both to
+machine precision; an importance-sampling check could only ever compare
+against Monte Carlo error, and a normalization wrong by a thousandth would
+pass it.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+supp <- mv_support(d, NULL)
+dim(supp)
+head(supp)
+
+# Every row sums to the trial count, and the count of rows is the number of
+# weak compositions.
+c(all_sum_to_5 = all(rowSums(supp) == 5),
+  rows = nrow(supp), formula = choose(5 + 3 - 1, 3 - 1))
+
+# The mass over it adds to one exactly, which no sampling check could say.
+sum(distrib_pdf(d, supp, list(probs_alr1 = 0.3, probs_alr2 = -0.2))) - 1
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[numericals7:compositions]{numericals7::compositions()}} for the enumeration,
+\code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf.MultinomialDistrib()}} for the mass on these points,
+\code{\link[=check_distrib]{check_distrib()}}, which consumes this, and \code{\link[=mv_support]{mv_support()}} for the
+generic.
 }

@@ -2,26 +2,70 @@
 % Please edit documentation in R/multinomial_distrib.R
 \name{distrib_gradient.MultinomialDistrib}
 \alias{distrib_gradient.MultinomialDistrib}
-\title{Multinomial Analytical Gradient}
+\title{Multinomial Score}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row on the support. A single observation may be given as a plain
+vector.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one component per parameter.
+A named list with one numeric vector per free value, in the order
+\code{distrib@params} gives, each of length \code{nrow(y)}.
 }
 \description{
+Computes the first derivatives of the multinomial log-mass with respect to
+the simplex's free values, one value per observation, in closed form. With
+\eqn{A = \partial p/\partial\eta} the chart's own Jacobian,
 \deqn{\dfrac{\partial\ell}{\partial\eta_k}
-      = \sum_j \dfrac{y_j}{p_j}A_{jk}, \qquad
-      A = \dfrac{\partial p}{\partial\eta}}
+      = \sum_{j=1}^{p} \dfrac{y_j}{p_j}A_{jk}.}
+The factorial term of the mass carries no parameter, so it contributes
+nothing, and the data enter only through the counts themselves.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries. Every parameter rides the identity here, its free value
+being unconstrained already, so the two scales coincide.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{p} the probability
+vector, \eqn{n} the trial count, \eqn{\eta} the free vector of the simplex
+chart and \eqn{A = \partial p/\partial\eta} its Jacobian.
+}
+
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+g <- distrib_gradient(d, Y, th)
+names(g)
+
+# It is the derivative of the log-mass, so numDeriv on the summed log-mass
+# reproduces the summed score.
+fn <- function(v)
+  sum(distrib_pdf(d, Y, as.list(stats::setNames(v, d@params)), log = TRUE))
+rbind(numeric = numDeriv::grad(fn, unlist(th)),
+      closed = vapply(g, sum, numeric(1)))
+
+# The score has mean zero over the support: the first Bartlett identity,
+# here an exact sum.
+supp <- mv_support(d, th)
+w <- distrib_pdf(d, supp, th)
+vapply(distrib_gradient(d, supp, th), function(v) sum(w * v), numeric(1))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian.MultinomialDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian.MultinomialDistrib()}} for their expectation,
+\code{\link[=mn_parts]{mn_parts()}} for the shared pieces, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the
+generic.
 }

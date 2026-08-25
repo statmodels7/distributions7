@@ -4,16 +4,33 @@
 \alias{mv_location.MultinomialDistrib}
 \title{Multinomial Mean Vector}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 }
 \value{
-A numeric vector summing to the size.
+A numeric vector of length \eqn{p}, strictly positive and summing to
+the object's \code{size}.
 }
 \description{
-\eqn{n p}, the size times the probability vector.
+Returns \eqn{\mathbb{E}[Y] = n p}, the trial count times the probability
+vector, so the result sums to \eqn{n} and not to one. Divide by the object's
+\code{size} to recover the probabilities themselves.
+\code{\link[=mean.MultinomialDistrib]{mean.MultinomialDistrib()}} delegates here.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+m <- mv_location(d, th)
+m
+sum(m)
+
+# Dividing by the trial count gives the probabilities, which sum to one.
+m / d@size
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}} for the covariance,
+\code{\link[=mean.MultinomialDistrib]{mean.MultinomialDistrib()}}, which calls this, and \code{\link[=mv_location]{mv_location()}} for the
+generic.
 }

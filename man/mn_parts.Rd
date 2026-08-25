@@ -7,19 +7,33 @@
 mn_parts(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link[=MultinomialDistrib]{MultinomialDistrib()}} object.}
+\item{distrib}{A \code{\link[=MultinomialDistrib]{MultinomialDistrib()}} object, read for its \code{param}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale, the
+simplex's free values in its own order.}
 }
 \value{
-A list with \code{prob}, \code{A}, \code{B}, \code{idx} and
-\code{k}.
+A named list with \code{prob}, the probability vector of length \eqn{p}
+summing to one; \code{A}, the \eqn{p \times (p-1)} matrix of first derivatives
+in the free values; \code{B}, the list of second-derivative vectors keyed by
+unordered tuple; \code{idx}, those tuples; and \code{k}, the number of free values.
 }
 \description{
-The probability vector and the simplex's first two derivatives, computed
-once per call.
+Evaluates the probability vector and the simplex's first two derivative
+arrays once, so that a mass function or a derivative method computes them a
+single time and shares them.
+}
+\details{
+The probabilities sum to one at every free vector, so differentiating that
+identity shows that the columns of \eqn{A = \partial p/\partial\eta} sum to
+zero and so does every second-derivative vector \eqn{B_{\cdot,kl}}. The
+second of those makes the expected information closed form: under
+expectation the term carrying \eqn{B} becomes \eqn{n\sum_j B_{j,kl}}, which
+is zero.
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient.MultinomialDistrib()}} for the first consumer,
+\code{\link[=dir_parts]{dir_parts()}} for the Dirichlet's counterpart, and
+\code{\link[=multinomial_distrib]{multinomial_distrib()}} for the family.
 }
 \keyword{internal}

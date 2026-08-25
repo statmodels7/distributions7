@@ -2,7 +2,7 @@
 % Please edit documentation in R/multinomial_distrib.R
 \name{MultinomialDistrib}
 \alias{MultinomialDistrib}
-\title{S7 Class for the Multinomial Distribution}
+\title{Multinomial Distribution Class}
 \usage{
 MultinomialDistrib(
   distrib_name = character(0),
@@ -40,21 +40,44 @@ MultinomialDistrib(
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
-\item{size}{The number of trials, a constant of the distribution.}
+\item{size}{The number of trials \eqn{n}, a single positive integer stored
+as a numeric. It belongs to the object, so an object cannot be reused
+across data sets whose trial counts differ.}
 
-\item{param}{The \pkg{parameters7} simplex carrying the probabilities.}
+\item{param}{The \code{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} carrying the
+probabilities. Its \code{n_free} is \eqn{p-1}, one fewer than the number of
+categories.}
 }
 \value{
-An object of class \code{MultinomialDistrib}.
+An S7 object of class \code{MultinomialDistrib}, inheriting from
+\code{multivariate_distrib} and from \code{distrib}. Beyond \code{size} and \code{param} its
+properties are the parent's. For an object built by
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}, \code{params} is the simplex's free names prefixed by
+\code{probs_}, \code{n_params} is \eqn{p-1}, \code{bounds} is \code{c(0, size)}, and every
+parameter carries an identity link, its free value being unconstrained
+already. There is \strong{no dispersion parameter}: the probabilities are all
+there is.
 }
 \description{
-A subclass of \code{multivariate_distrib} representing the
-multinomial distribution, the first multivariate family here whose
-support is a set of points rather than a region.
+The S7 class of the multinomial family on \eqn{p} categories and \eqn{n}
+trials, parametrized by a probability vector carried on a \code{parameters7}
+simplex. It inherits from \code{multivariate_distrib}, and it is the first
+multivariate family here whose support is a \strong{finite set of points} rather
+than a region: every vector of non-negative integers summing to \eqn{n}.
+The nine methods listed below are registered on it in this file and two more
+in \code{mv_higher.R}.
+
+The class carries two properties beyond the parent's: \code{size}, the number of
+trials, a constant of the distribution and not a parameter; and \code{param}, the
+simplex the probabilities lie on, whose free names become the family's own
+parameter names prefixed by \code{probs_}. Build one with
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}, which validates all three and fills the properties
+in. This page documents the raw S7 constructor, which validates none of
+that.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.MultinomialDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.MultinomialDistrib]{distrib_hessian()}},
@@ -63,11 +86,33 @@ Methods implemented for this class:
 \code{\link[=mv_location.MultinomialDistrib]{mv_location()}},
 \code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal()}},
 \code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma()}},
-\code{\link[=mv_support.MultinomialDistrib]{mv_support()}}
+\code{\link[=mv_support.MultinomialDistrib]{mv_support()}},
+\code{\link[=mean.MultinomialDistrib]{mean()}} and
+\code{\link[=variance.MultinomialDistrib]{variance()}}.
 
-Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.
+Two more are registered in \code{mv_higher.R}:
+\code{\link[=distrib_deriv3.MultinomialDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.MultinomialDistrib]{distrib_deriv4()}}.
+
+Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, which refuses
+the distribution function, the quantile and the response derivatives.
 }
 
+\examples{
+d <- multinomial_distrib(3, size = 5)
+S7::S7_inherits(d, multivariate_distrib)
+
+# Three categories and five trials, so two free probabilities.
+c(categories = d@n_dim, trials = d@size, parameters = d@n_params)
+d@params
+
+# The support is finite and enumerable, which is what the class is for.
+nrow(mv_support(d, NULL))
+}
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}} to build one;
+\code{\link[=binomial_distrib]{binomial_distrib()}}, which is a coordinate's marginal and the
+two-category case; \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} for the continuous family on the
+same simplex, which is conjugate to this one;
+\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart.
 }

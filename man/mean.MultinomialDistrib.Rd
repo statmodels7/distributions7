@@ -4,19 +4,25 @@
 \alias{mean.MultinomialDistrib}
 \title{Mean of a Multinomial}
 \arguments{
-\item{x}{A \code{MultinomialDistrib} object.}
+\item{x}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}. The
+argument is named \code{x} because the generic is \code{\link[base:mean]{base::mean()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector summing to the size.
+A numeric vector of length \eqn{p} summing to the object's \code{size}.
 }
 \description{
-The vector \eqn{np}, which \code{\link[=mv_location]{mv_location()}} returns.
+Returns the mean count vector \eqn{\mathbb{E}[Y] = np} by delegating to
+\code{\link[=mv_location.MultinomialDistrib]{mv_location.MultinomialDistrib()}}. The result sums to the trial count, not
+to one.
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=variance.MultinomialDistrib]{variance.MultinomialDistrib()}} for the covariance,
+\code{\link[=mv_location.MultinomialDistrib]{mv_location.MultinomialDistrib()}}, which this calls, and
+\code{\link[=mean.distrib]{mean.distrib()}} for the generic's default.
 }
 \keyword{internal}

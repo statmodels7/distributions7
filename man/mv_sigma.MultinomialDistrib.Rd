@@ -4,17 +4,45 @@
 \alias{mv_sigma.MultinomialDistrib}
 \title{Multinomial Covariance Matrix}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 }
 \value{
-A symmetric matrix.
+A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 }
 \description{
-\deqn{\operatorname{Cov}(Y_i, Y_j) = n(\delta_{ij}p_i - p_i p_j)}
-singular by construction, the coordinates summing to the size.
+Returns the covariance matrix of the counts,
+\deqn{\operatorname{Cov}(Y_i, Y_j) = n(\delta_{ij}p_i - p_i p_j),}
+so the coordinate variances are \eqn{np_j(1-p_j)}, the binomial ones, and
+every covariance is negative: the counts share a fixed total, so one
+category can only grow at the others' expense.
+
+The matrix is \strong{singular by construction}, the coordinates summing to
+\eqn{n}, so the vector of ones is in its null space and the rank is
+\eqn{p-1}. Its leading \eqn{(p-1)\times(p-1)} block is the expected
+information on the default chart; see
+\code{\link[=distrib_expected_hessian.MultinomialDistrib]{distrib_expected_hessian.MultinomialDistrib()}}.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+S <- mv_sigma(d, th)
+round(S, 6)
+
+# Singular by construction: rank p - 1, with the ones vector in the null
+# space.
+c(rank = qr(S)$rank, dim = ncol(S))
+round(S \%*\% rep(1, 3), 12)
+
+# The diagonal is the binomial variance of each category.
+pr <- mv_location(d, th) / 5
+rbind(diagonal = diag(S), binomial = 5 * pr * (1 - pr))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=mv_location.MultinomialDistrib]{mv_location.MultinomialDistrib()}} for the mean,
+\code{\link[=variance.MultinomialDistrib]{variance.MultinomialDistrib()}}, which calls this,
+\code{\link[=mv_marginal.MultinomialDistrib]{mv_marginal.MultinomialDistrib()}} for a coordinate's binomial law, and
+\code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }

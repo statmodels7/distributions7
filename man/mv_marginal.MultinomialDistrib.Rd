@@ -4,21 +4,48 @@
 \alias{mv_marginal.MultinomialDistrib}
 \title{Multinomial Marginal}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the simplex's free values on the parameter
+scale, each of length 1.}
 
-\item{which}{The coordinate wanted.}
+\item{which}{A single integer in \eqn{1, \dots, p}, the category wanted. A
+vector of length other than 1 signals an error explaining why.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list with the marginal \code{distrib} and its \code{theta}.
+A named list with \code{distrib}, a \code{\link[=binomial_distrib]{binomial_distrib()}} object at the
+same \code{size}, and \code{theta}, a list holding the marginal's \code{mu}.
 }
 \description{
-A single coordinate is \eqn{\mathrm{Binomial}(n, p_j)}, the other outcomes
-collapsing into a single failure.
+Returns the law of one coordinate, which is
+\eqn{\mathrm{Binomial}(n, p_j)}: the other categories collapse into a single
+failure, and the trial count is unchanged. The returned object carries the
+same \code{size} as the multinomial and its \code{mu} is \eqn{p_j}.
+
+Several coordinates at once are refused. A sub-vector is again multinomial,
+but only after the remaining outcomes are collapsed into a category of their
+own, and returning that object under this name would mislead. The error
+says so.
+}
+\examples{
+d <- multinomial_distrib(3, size = 5)
+th <- list(probs_alr1 = 0.3, probs_alr2 = -0.2)
+m <- mv_marginal(d, th, which = 2)
+m$distrib
+m$theta
+
+# The marginal's mean and variance are the second coordinate's.
+rbind(marginal = c(mean(m$distrib, m$theta), variance(m$distrib, m$theta)),
+      joint = c(mv_location(d, th)[2], mv_sigma(d, th)[2, 2]))
+
+# Every marginal carries the same trial count.
+vapply(1:3, function(j) mv_marginal(d, th, which = j)$distrib@size,
+       numeric(1))
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=binomial_distrib]{binomial_distrib()}} for the family returned,
+\code{\link[=mv_sigma.MultinomialDistrib]{mv_sigma.MultinomialDistrib()}} for the coordinate variances, and
+\code{\link[=mv_marginal]{mv_marginal()}} for the generic.
 }
