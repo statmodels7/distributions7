@@ -4,18 +4,44 @@
 \alias{distrib_rng.Lognormal1Distrib}
 \title{Lognormal Random Number Generator}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting.
+\code{sigma2} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-Generates random numbers from the Lognormal distribution.
+Draws \code{n} independent lognormal variates by calling \code{\link[stats:Lognormal]{stats::rlnorm()}} at
+\code{meanlog = mu} and \code{sdlog = sqrt(sigma2)}, so the draws come from R's own
+generator and depend on \code{.Random.seed} in the usual way. The
+ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- lognormal1_distrib()
+
+# Same generator as stats::rlnorm at this parametrization.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0.5, sigma2 = 0.36))
+set.seed(2)
+identical(a, rlnorm(3, 0.5, sqrt(0.36)))
+
+# The parameters are moments of the LOGARITHM, so that is where the sample
+# recovers them.
+set.seed(6)
+z <- distrib_rng(d, 2e4, list(mu = 0.5, sigma2 = 0.36))
+c(mu = mean(log(z)), sigma2 = var(log(z)))
+
+# On the original scale the sample mean is exp(mu + sigma2/2).
+c(sample = mean(z), theory = exp(0.5 + 0.36 / 2))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_quantile.Lognormal1Distrib]{distrib_quantile.Lognormal1Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

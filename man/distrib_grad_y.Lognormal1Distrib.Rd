@@ -2,23 +2,59 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_grad_y.Lognormal1Distrib}
 \alias{distrib_grad_y.Lognormal1Distrib}
-\title{Lognormal Response Derivatives}
+\title{Lognormal First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. The value
+diverges as \code{y} approaches zero.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-Closed-form derivatives of the Lognormal log-density with respect to the
-response. With \eqn{r = \log y - \mu}:
-\eqn{\partial \ell / \partial y = -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right)} and
-\eqn{\partial^2 \ell / \partial y^2 = \dfrac{1}{y^2}\left(1 + \dfrac{r-1}{\sigma^2}\right)}.
+Computes the first derivative of the lognormal log-density with respect to
+the response, in closed form. With \eqn{r = \log y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial y} =
+      -\dfrac{1}{y}\left(1 + \dfrac{r}{\sigma^2}\right).}
+This is where the family parts company with the Gaussian: the Jacobian
+\eqn{1/y} of the log transformation carries no parameter and so leaves every
+derivative in \eqn{\mu} and \eqn{\sigma^2} alone, but it is a function of
+the response and does enter here.
+
+The derivative vanishes at \eqn{r = -\sigma^2}, that is at
+\eqn{y = e^{\mu - \sigma^2}}, which is the mode of the density and lies
+below both the median \eqn{e^{\mu}} and the mean
+\eqn{e^{\mu + \sigma^2/2}}.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+
+# Written out.
+r <- log(y) - 0.5
+all.equal(distrib_grad_y(d, y, th), -(1 + r / 0.36) / y)
+
+# Zero at the mode exp(mu - sigma2), which lies below the median exp(mu).
+mode <- exp(0.5 - 0.36)
+c(mode = mode, median = exp(0.5), at_mode = distrib_grad_y(d, mode, th))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-7
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_hess_y.Lognormal1Distrib]{distrib_hess_y.Lognormal1Distrib()}} for the second derivative in
+the response, \code{\link[=distrib_gradient.Lognormal1Distrib]{distrib_gradient.Lognormal1Distrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

@@ -2,22 +2,82 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_deriv4.Lognormal1Distrib}
 \alias{distrib_deriv4.Lognormal1Distrib}
-\title{Lognormal Analytical Fourth-Order Derivatives}
+\title{Lognormal Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. With
+\code{expected = TRUE} only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_sigma2}, \code{mu_mu_sigma2_sigma2}, \code{mu_sigma2_sigma2_sigma2} and
+\code{sigma2_sigma2_sigma2_sigma2}, each of length
+\code{max(length(y), length(mu), length(sigma2))}.
 }
 \description{
-Closed-form fourth-order derivatives of the Lognormal log-density (observed, or expected when \code{expected = TRUE}).
+Computes the five distinct fourth derivatives of the lognormal log-density
+with respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. With
+\eqn{r = \log y - \mu},
+\deqn{\ell^{(\mu\mu\mu\mu)} = \ell^{(\mu\mu\mu\sigma^2)} = 0, \qquad
+      \ell^{(\mu\mu\sigma^2\sigma^2)} = -\dfrac{2}{\sigma^6}, \qquad
+      \ell^{(\mu\sigma^2\sigma^2\sigma^2)} = -\dfrac{6r}{\sigma^8}, \qquad
+      \ell^{(\sigma^{2\cdot 4})} = \dfrac{3}{\sigma^8}
+        - \dfrac{12 r^2}{\sigma^{10}}.}
+As at the lower orders these are the Gaussian's read at \eqn{\log y}.
+
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}, which leaves
+\eqn{-9/\sigma^8} in the last component and zero in the two odd ones. Both
+routes are closed form, so \code{approx} and \code{nsim} are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijkl)}} is the fourth derivative of the log-density in
+parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}. Parenthesized
+superscripts name derivatives.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+d4 <- distrib_deriv4(d, y, th)
+names(d4)
+
+# Quadratic in mu, so the two components with three or more mu are zero.
+c(d4$mu_mu_mu_mu[1], d4$mu_mu_mu_sigma2[1])
+
+# The mixed second-second component is constant at -2/sigma2^3.
+all.equal(d4$mu_mu_sigma2_sigma2, rep(-2 / 0.36^3, 3))
+
+# Expected values: -9/sigma2^4 in the pure variance component.
+lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
+-9 / 0.36^4
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_deriv3.Lognormal1Distrib]{distrib_deriv3.Lognormal1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.Gaussian2Distrib]{distrib_deriv4.Gaussian2Distrib()}}, which returns the same numbers at
+\eqn{\log y}, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

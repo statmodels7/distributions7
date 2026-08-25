@@ -2,7 +2,7 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{Lognormal1Distrib}
 \alias{Lognormal1Distrib}
-\title{S7 Class for Lognormal Distribution}
+\title{Lognormal Distribution Class}
 \usage{
 Lognormal1Distrib(
   distrib_name = character(0),
@@ -36,14 +36,31 @@ Lognormal1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Lognormal1Distrib}.
+An S7 object of class \code{Lognormal1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} they hold \code{"lognormal1"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "sigma2")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Lognormal distribution.
+The S7 class of the lognormal family on \eqn{(0, \infty)}: the law of a
+variable whose logarithm is Gaussian with mean \eqn{\mu} and variance
+\eqn{\sigma^2 > 0}. Both parameters live \strong{on the log scale}, so neither is
+the mean or the variance of \eqn{Y} itself. It inherits from
+\code{continuous_distrib}, so it answers every generic of the \code{distrib}
+contract; the eleven methods listed below are registered on it directly and
+everything else comes from the parent.
+
+Build one with \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.Lognormal1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Lognormal1Distrib]{distrib_deriv4()}},
@@ -59,6 +76,26 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- lognormal1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_bounds
+d@bounds
+
+# mu is the mean of log(Y), so exp(mu) is the MEDIAN of Y and the mean sits
+# above it.
+th <- list(mu = 0.5, sigma2 = 0.36)
+c(exp_mu = exp(0.5), median = distrib_quantile(d, 0.5, th),
+  mean = mean(d, th))
+}
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}} to build one;
+\code{\link[=lognormal2_distrib]{lognormal2_distrib()}} for the same law parametrized by the mean and the
+variance of \eqn{Y}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}, which this becomes at
+\eqn{\log y}; \code{\link[=distrib_pdf.Lognormal1Distrib]{distrib_pdf.Lognormal1Distrib()}} and
+\code{\link[=distrib_gradient.Lognormal1Distrib]{distrib_gradient.Lognormal1Distrib()}} for the closed forms this class
+supplies.
 }

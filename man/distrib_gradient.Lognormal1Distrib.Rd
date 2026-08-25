@@ -2,21 +2,83 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_gradient.Lognormal1Distrib}
 \alias{distrib_gradient.Lognormal1Distrib}
-\title{Lognormal Analytical Gradient}
+\title{Lognormal Score}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, each of
+length \code{max(length(y), length(mu), length(sigma2))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Lognormal log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
+Computes the first derivatives of the lognormal log-density with respect to
+\eqn{\mu} and \eqn{\sigma^2}, one value per observation, in closed form.
+With \eqn{r = \log y - \mu},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma^2} =
+        \dfrac{r^2 - \sigma^2}{2\sigma^4}.}
+
+\strong{These are exactly the Gaussian's, read at \eqn{\log y}.} The lognormal
+log-density is the Gaussian's at \eqn{\log y} minus \eqn{\log y}, and that
+last term carries no parameter, so it disappears from every derivative in
+\eqn{\mu} and \eqn{\sigma^2}. The same holds at all four orders and for the
+expected values; what differs from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} is only the
+derivatives in the response, where the Jacobian does enter.
+
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma^2 > 0} the variance \strong{of \eqn{\log Y}}, not of \eqn{Y}.
+\eqn{r = \log y - \mu} is the residual on the log scale.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out on the log scale.
+r <- log(y) - 0.5
+all.equal(g$mu, r / 0.36)
+all.equal(g$sigma2, (r^2 - 0.36) / (2 * 0.36^2))
+
+# Identical to the Gaussian's score at log y, component for component.
+all.equal(g, distrib_gradient(gaussian2_distrib(), log(y), th))
+
+# The summed score vanishes at the closed-form estimates, which are the
+# sample moments of the logarithm.
+set.seed(6)
+z <- distrib_rng(d, 2000, th)
+mle <- list(mu = mean(log(z)),
+            sigma2 = mean((log(z) - mean(log(z)))^2))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_hessian.Lognormal1Distrib]{distrib_hessian.Lognormal1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Lognormal1Distrib]{distrib_expected_hessian.Lognormal1Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.Gaussian2Distrib]{distrib_gradient.Gaussian2Distrib()}}, which returns the same numbers at
+\eqn{\log y}, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

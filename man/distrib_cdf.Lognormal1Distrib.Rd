@@ -4,25 +4,59 @@
 \alias{distrib_cdf.Lognormal1Distrib}
 \title{Lognormal Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma2))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Lognormal distribution
-(with \eqn{\sigma = \sqrt{\sigma^2}} on the log scale):
-\deqn{F(q; \mu, \sigma^2) = \Phi\left(\dfrac{\log q - \mu}{\sqrt{\sigma^2}}\right), \quad q > 0}
-where \eqn{\Phi} is the standard normal CDF.
+Computes the lognormal distribution function
+\deqn{F(q; \mu, \sigma^2) = \Phi\left(\dfrac{\log q - \mu}{\sigma}\right),
+      \qquad \sigma = \sqrt{\sigma^2},}
+with \eqn{\Phi} the standard normal distribution function, by calling
+\code{\link[stats:Lognormal]{stats::plnorm()}}. The log transformation is monotone, so this is the
+Gaussian distribution function evaluated at \eqn{\log q} and nothing else.
+Both tails are available exactly, and \code{log.p = TRUE} returns a logarithm
+that stays finite where the probability itself underflows.
+}
+\examples{
+d <- lognormal1_distrib()
+th <- list(mu = 0.5, sigma2 = 0.36)
+
+# The method is stats::plnorm at meanlog = mu, sdlog = sqrt(sigma2).
+all.equal(distrib_cdf(d, c(0.5, 1.6, 4), th),
+          plnorm(c(0.5, 1.6, 4), 0.5, sqrt(0.36)))
+
+# A monotone transformation, so it is the normal cdf at log q.
+all.equal(distrib_cdf(d, c(0.5, 1.6, 4), th),
+          pnorm(log(c(0.5, 1.6, 4)), 0.5, sqrt(0.36)))
+
+# Half the mass lies below exp(mu), which is the median.
+distrib_cdf(d, exp(0.5), th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 1e12, th, lower.tail = FALSE)
+distrib_cdf(d, 1e12, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_quantile.Lognormal1Distrib]{distrib_quantile.Lognormal1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Lognormal1Distrib]{distrib_pdf.Lognormal1Distrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}
+for the derivatives of this function in the parameters, which are the
+Gaussian's at \eqn{\log q} and so closed form, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

@@ -4,24 +4,55 @@
 \alias{distrib_quantile.Lognormal1Distrib}
 \title{Lognormal Quantile Function}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; \code{p = 0} gives 0 and \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities, which is how a quantile deep in a tail is
+requested without the probability underflowing. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles in \eqn{[0, \infty]}, of length
+\code{max(length(p), length(mu), length(sigma2))}.
 }
 \description{
-Computes the quantile function (inverse CDF) for the Lognormal distribution:
-\deqn{Q(p; \mu, \sigma^2) = \exp\left(\mu + \sqrt{\sigma^2}\,\Phi^{-1}(p)\right)}
-where \eqn{\Phi^{-1}} is the standard normal quantile function.
+Computes the lognormal quantile function
+\deqn{Q(p; \mu, \sigma^2) = \exp\left\{\mu + \sigma\,\Phi^{-1}(p)\right\},
+      \qquad \sigma = \sqrt{\sigma^2},}
+by calling \code{\link[stats:Lognormal]{stats::qlnorm()}}. It is closed form, the log transformation
+being monotone, so the round trip through
+\code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf.Lognormal1Distrib()}} returns \code{p} exactly. The median is
+\eqn{e^{\mu}}, which sits \strong{below} the mean \eqn{e^{\mu + \sigma^2/2}}.
+}
+\examples{
+d <- lognormal1_distrib()
+th <- list(mu = 0.5, sigma2 = 0.36)
+
+# A central 95 percent interval, multiplicatively symmetric about exp(mu).
+q <- distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+q
+c(q[2] / q[1], q[3] / q[2])
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# The median is exp(mu) and the mean is larger.
+c(median = distrib_quantile(d, 0.5, th), exp_mu = exp(0.5),
+  mean = mean(d, th))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_cdf.Lognormal1Distrib]{distrib_cdf.Lognormal1Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.Lognormal1Distrib]{distrib_rng.Lognormal1Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

@@ -2,21 +2,77 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_hessian.Lognormal1Distrib}
 \alias{distrib_hessian.Lognormal1Distrib}
-\title{Lognormal Analytical Observed Hessian}
+\title{Lognormal Observed Hessian}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma2_sigma2} and
+\code{mu_sigma2}, in that order, each of length
+\code{max(length(y), length(mu), length(sigma2))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Lognormal log-density
-with respect to the parameters \eqn{\mu} and \eqn{\sigma^2}.
+Computes the three distinct second derivatives of the lognormal log-density
+with respect to \eqn{\mu} and \eqn{\sigma^2}, one value per observation, in
+closed form. With \eqn{r = \log y - \mu},
+\deqn{\ell^{(\mu\mu)} = -\dfrac{1}{\sigma^2}, \qquad
+      \ell^{(\mu\sigma^2)} = -\dfrac{r}{\sigma^4}, \qquad
+      \ell^{(\sigma^2\sigma^2)} = \dfrac{1}{2\sigma^4}
+        - \dfrac{r^2}{\sigma^6}.}
+These are the Gaussian's at \eqn{\log y}, the Jacobian of the log
+transformation carrying no parameter. Only the curvature in \eqn{\mu} is
+free of the data; the other two vary with the residual on the log scale, and
+their expectations are
+\code{\link[=distrib_expected_hessian.Lognormal1Distrib]{distrib_expected_hessian.Lognormal1Distrib()}}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{\sigma^2} is the variance of \eqn{\log Y}.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+h <- distrib_hessian(d, y, th)
+
+# The curvature in mu is constant at -1/sigma2; the other two are not.
+h$mu_mu
+r <- log(y) - 0.5
+all.equal(h$mu_sigma2, -r / 0.36^2)
+all.equal(h$sigma2_sigma2, 1 / (2 * 0.36^2) - r^2 / 0.36^3)
+
+# Identical to the Gaussian's at log y.
+all.equal(h, distrib_hessian(gaussian2_distrib(), log(y), th))
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 0.5, sigma2 = 0.36 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.5, sigma2 = 0.36 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_sigma2, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_gradient.Lognormal1Distrib]{distrib_gradient.Lognormal1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Lognormal1Distrib]{distrib_expected_hessian.Lognormal1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Lognormal1Distrib]{distrib_deriv3.Lognormal1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

@@ -2,74 +2,143 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{lognormal1_distrib}
 \alias{lognormal1_distrib}
-\title{Lognormal Distribution Object (Log-Scale Parameterization)}
+\title{Lognormal Distribution, Log-Scale Parametrization}
 \usage{
 lognormal1_distrib(link_mu = identity_link(), link_sigma2 = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, \eqn{\mu} being
+a mean on the log scale and so already free.}
 
-\item{link_sigma2}{A link function object for the variance parameter \eqn{\sigma^2}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma2}{A \code{link} object from \code{linkfunctions7} for the variance
+\eqn{\sigma^2} of the logarithm. Defaults to
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps \eqn{(0, \infty)} onto the line.}
 }
 \value{
-An S7 object of class \code{Lognormal1Distrib} (inheriting from \code{continuous_distrib}) representing the Lognormal distribution.
+An S7 object of class \code{Lognormal1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"lognormal1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "sigma2")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Lognormal distribution parameterized by the mean (\eqn{\mu}) and the variance (\eqn{\sigma^2}) of the log-transformed variable.
+Builds the distribution object for the lognormal family on
+\eqn{(0, \infty)}: the law of a variable whose logarithm is Gaussian with
+mean \eqn{\mu} and variance \eqn{\sigma^2 > 0}. Both parameters are moments
+\strong{of the logarithm}, so neither is the mean or the variance of \eqn{Y}. The
+returned object carries closed-form derivatives of the log-density to fourth
+order, in the parameters and in the response, and closed-form moments, so
+every generic of the toolkit answers without a numerical fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the identity for
+\eqn{\mu}, which ranges over the whole line, and the logarithm for
+\eqn{\sigma^2}, which keeps it positive at every predictor.
 }
-\details{
-The Lognormal distribution describes a variable whose logarithm is Gaussian with
-mean \eqn{\mu} and variance \eqn{\sigma^2} (both on the log scale). Write
-\eqn{r = \log y - \mu}.
+\section{The parametrization}{
+The density on \eqn{y \in (0, \infty)} is
+\deqn{f(y; \mu, \sigma^2) = \dfrac{1}{y\sqrt{2\pi\sigma^2}}
+      \exp\left\{-\dfrac{(\log y - \mu)^2}{2\sigma^2}\right\},}
+the distribution function \eqn{F(q) = \Phi\{(\log q - \mu)/\sigma\}} and the
+quantile function \eqn{Q(p) = \exp\{\mu + \sigma\Phi^{-1}(p)\}}, both closed
+form because the log transformation is monotone.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma^2) = \dfrac{1}{y\sqrt{2\pi\sigma^2}} \exp\left\{-\dfrac{(\log y - \mu)^2}{2\sigma^2}\right\}, \quad y > 0}
+On the original scale the mean is \eqn{e^{\mu + \sigma^2/2}}, the variance
+\eqn{(e^{\sigma^2}-1)e^{2\mu+\sigma^2}}, the skewness
+\eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}} and the excess kurtosis
+\eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}. Three quantities are
+worth keeping apart: the mode is \eqn{e^{\mu-\sigma^2}}, the median
+\eqn{e^{\mu}} and the mean \eqn{e^{\mu+\sigma^2/2}}, in that order.
 
-\strong{Cumulative distribution function} (\eqn{\Phi} the standard normal CDF):
-\deqn{F(q; \mu, \sigma^2) = \Phi\left(\dfrac{\log q - \mu}{\sqrt{\sigma^2}}\right)}
+\code{\link[=lognormal2_distrib]{lognormal2_distrib()}} carries the same law parametrized by the mean and the
+variance of \eqn{Y} itself.
+}
 
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma^2) = \exp\left(\mu + \sqrt{\sigma^2}\,\Phi^{-1}(p)\right)}
-
-\strong{Score:}
+\section{Every derivative in the parameters is the Gaussian's}{
+The log-density is the Gaussian's evaluated at \eqn{\log y}, minus
+\eqn{\log y}. That last term is the Jacobian of the transformation and
+carries no parameter, so it disappears from every derivative in \eqn{\mu}
+and \eqn{\sigma^2}. Writing \eqn{r = \log y - \mu}, the score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{r}{\sigma^2}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma^2} = \dfrac{r^2 - \sigma^2}{2\sigma^4}}
+      \dfrac{\partial \ell}{\partial \sigma^2} =
+        \dfrac{r^2 - \sigma^2}{2\sigma^4},}
+and the expected Hessian is
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2}, \quad
+      \mathbb{E}\left[\ell^{(\sigma^2\sigma^2)}\right] =
+        -\dfrac{1}{2\sigma^4}, \quad
+      \mathbb{E}\left[\ell^{(\mu\sigma^2)}\right] = 0.}
+Every one of these agrees with \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} at \eqn{\log y},
+component for component and at all four orders, observed and expected. The
+two parameters are orthogonal and the information does not move with the
+mean of \eqn{Y}.
 
-\strong{Observed Hessian:}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{1}{\sigma^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial (\sigma^2)^2} = \dfrac{1}{2\sigma^4} - \dfrac{r^2}{\sigma^6}, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2} = -\dfrac{r}{\sigma^4}}
-
-\strong{Expected Hessian:}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{1}{\sigma^2}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial (\sigma^2)^2}\right] = -\dfrac{1}{2\sigma^4}, \quad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma^2}\right] = 0}
-
-\strong{Moments:} mean \eqn{e^{\mu + \sigma^2/2}}, variance
-\eqn{(e^{\sigma^2}-1)e^{2\mu+\sigma^2}}, skewness \eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}},
-excess kurtosis \eqn{e^{4\sigma^2}+2e^{3\sigma^2}+3e^{2\sigma^2}-6}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma^2 \in (0, +\infty)}
+The derivatives \strong{in the response} are where the two families differ, the
+Jacobian being a function of \eqn{y}. They are still closed form; see
+\code{\link[=distrib_grad_y.Lognormal1Distrib]{distrib_grad_y.Lognormal1Distrib()}} and
+\code{\link[=distrib_hess_y.Lognormal1Distrib]{distrib_hess_y.Lognormal1Distrib()}}, and note that the log-density is
+convex in the response above \eqn{e^{\mu+1-\sigma^2}}.
 }
 
-Analytical third- and fourth-order derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}) and response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}) are also available.
+\section{Estimation}{
+Both maximum likelihood estimates are closed form and are the sample moments
+of the logarithm:
+\deqn{\hat\mu = \dfrac{1}{n}\sum_i \log y_i, \qquad
+      \hat\sigma^2 = \dfrac{1}{n}\sum_i (\log y_i - \hat\mu)^2,}
+the second with divisor \eqn{n}. \code{\link[=fit_distrib]{fit_distrib()}} reaches them on the link
+scale, and the example below checks both against the sample.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean and
+\eqn{\sigma^2 > 0} the variance \strong{of \eqn{\log Y}}. \eqn{\Phi} is the
+standard normal distribution function and \eqn{r = \log y - \mu} the
+residual on the log scale. \eqn{\eta} is a parameter on the unconstrained
+scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- lognormal1_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma2 = 1)
-distrib_pdf(d, c(0.5, 1, 2), theta)
-distrib_gradient(d, c(0.5, 1, 2), theta)
+# The density is stats::dlnorm at meanlog = mu, sdlog = sqrt(sigma2).
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+all.equal(distrib_pdf(d, y, th), dlnorm(y, 0.5, sqrt(0.36)))
+
+# Mode, median and mean, in that order.
+c(mode = exp(0.5 - 0.36), median = exp(0.5), mean = mean(d, th))
+
+# Moments on the original scale, all exponential in sigma2.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# Every derivative in the parameters is the Gaussian's at log y.
+all.equal(distrib_gradient(d, y, th),
+          distrib_gradient(gaussian2_distrib(), log(y), th))
+
+# Fitting recovers the closed-form estimates, the sample moments of the
+# logarithm with divisor n.
+set.seed(6)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted = coef(fit),
+      closed = c(mu = mean(log(z)),
+                 sigma2 = mean((log(z) - mean(log(z)))^2)))
 
 }
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 14.
+Wiley, New York.
+}
 \seealso{
-\code{\link[=lognormal2_distrib]{lognormal2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=lognormal2_distrib]{lognormal2_distrib()}} for the same law in the mean and the variance of
+\eqn{Y}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the law of its logarithm;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} and \code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for other positive families
+with a multiplicative variance function; \code{\link[=transformation]{transformation()}} for the general
+wrapper this family is a named instance of; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the
+same battery this one passes; \link{Lognormal1Distrib} for the class.
 }

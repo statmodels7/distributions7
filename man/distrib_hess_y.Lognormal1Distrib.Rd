@@ -2,20 +2,49 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_hess_y.Lognormal1Distrib}
 \alias{distrib_hess_y.Lognormal1Distrib}
-\title{Lognormal Response Second Derivative}
+\title{Lognormal Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. The value
+diverges as \code{y} approaches zero.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma2))}, one value per observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = (1 + (\log y - \mu - 1)/\sigma^2)/y^2}.
+Computes the second derivative of the lognormal log-density with respect to
+the response, in closed form. With \eqn{r = \log y - \mu},
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} =
+      \dfrac{1}{y^2}\left(1 + \dfrac{r - 1}{\sigma^2}\right).}
+The sign changes at \eqn{r = 1 - \sigma^2}, that is at
+\eqn{y = e^{\mu + 1 - \sigma^2}}: the log-density is \strong{concave} in the
+response below that point and \strong{convex} above it, so a lognormal
+log-likelihood is not a concave function of an observation over the whole
+support.
+}
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+
+r <- log(y) - 0.5
+all.equal(distrib_hess_y(d, y, th), (1 + (r - 1) / 0.36) / y^2)
+
+# Concave below exp(mu + 1 - sigma2) and convex above it.
+cut <- exp(0.5 + 1 - 0.36)
+c(cut = cut,
+  below = distrib_hess_y(d, cut / 2, th),
+  at = distrib_hess_y(d, cut, th),
+  above = distrib_hess_y(d, 2 * cut, th))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_grad_y.Lognormal1Distrib]{distrib_grad_y.Lognormal1Distrib()}} for the first derivative in
+the response, \code{\link[=distrib_hessian.Lognormal1Distrib]{distrib_hessian.Lognormal1Distrib()}} for the curvature in
+the parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

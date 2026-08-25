@@ -2,22 +2,88 @@
 % Please edit documentation in R/lognormal1_distrib.R
 \name{distrib_deriv3.Lognormal1Distrib}
 \alias{distrib_deriv3.Lognormal1Distrib}
-\title{Lognormal Analytical Third-Order Derivatives}
+\title{Lognormal Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. With
+\code{expected = TRUE} only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma2} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma2},
+\code{mu_sigma2_sigma2} and \code{sigma2_sigma2_sigma2}, each of length
+\code{max(length(y), length(mu), length(sigma2))}. The names enumerate the
+distinct multi-indices of order three in two parameters.
 }
 \description{
-Closed-form third-order derivatives of the Lognormal log-density (observed, or expected when \code{expected = TRUE}).
+Computes the four distinct third derivatives of the lognormal log-density
+with respect to \eqn{\mu} and \eqn{\sigma^2}, in closed form. With
+\eqn{r = \log y - \mu},
+\deqn{\ell^{(\mu\mu\mu)} = 0, \qquad
+      \ell^{(\mu\mu\sigma^2)} = \dfrac{1}{\sigma^4}, \qquad
+      \ell^{(\mu\sigma^2\sigma^2)} = \dfrac{2r}{\sigma^6}, \qquad
+      \ell^{(\sigma^2\sigma^2\sigma^2)} = \dfrac{3r^2}{\sigma^8}
+        - \dfrac{1}{\sigma^6}.}
+The log-density is quadratic in \eqn{\mu}, so the third derivative there is
+zero. As at the lower orders these are the Gaussian's read at \eqn{\log y}.
+
+With \code{expected = TRUE} the expectations are returned, obtained by replacing
+\eqn{r} with 0 and \eqn{r^2} with \eqn{\sigma^2}: the component odd in
+\eqn{r} vanishes and the pure variance one becomes \eqn{2/\sigma^6}. Both
+routes are closed form, so no quadrature is run and \code{approx} and \code{nsim} are
+ignored.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. Parenthesized superscripts name derivatives.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.5, 1.6, 4)
+th <- list(mu = 0.5, sigma2 = 0.36)
+d3 <- distrib_deriv3(d, y, th)
+
+# Quadratic in mu, so the third derivative there is 0.
+d3$mu_mu_mu
+
+# The other three, written out on the log scale.
+r <- log(y) - 0.5
+all.equal(d3$mu_mu_sigma2, rep(1 / 0.36^2, 3))
+all.equal(d3$mu_sigma2_sigma2, 2 * r / 0.36^3)
+
+# Expected values: the component odd in r vanishes.
+lapply(distrib_deriv3(d, y, th, expected = TRUE), unique)
+2 / 0.36^3
+
+# Identical to the Gaussian's at log y.
+all.equal(d3, distrib_deriv3(gaussian2_distrib(), log(y), th))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_hessian.Lognormal1Distrib]{distrib_hessian.Lognormal1Distrib()}} for the order below and
+\code{\link[=distrib_deriv4.Lognormal1Distrib]{distrib_deriv4.Lognormal1Distrib()}} for the order above;
+\code{\link[=distrib_deriv3.Gaussian2Distrib]{distrib_deriv3.Gaussian2Distrib()}}, which returns the same numbers at
+\eqn{\log y}; \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
