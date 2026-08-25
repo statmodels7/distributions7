@@ -2,23 +2,32 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_hessian.SkewNormal1Distrib}
 \alias{distrib_hessian.SkewNormal1Distrib}
-\title{Skew Normal Analytical Observed Hessian}
+\title{Skew Normal Observed Hessian}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}. \code{sigma} must be
+strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation to the link scale is applied in the generic's body, so this
+method always returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of six numeric vectors, in the order \code{mu_mu},
+\code{sigma_sigma}, \code{alpha_alpha}, \code{mu_sigma}, \code{mu_alpha}, \code{sigma_alpha}, each
+of the length of the recycled inputs. The names are the diagonal first,
+then the off-diagonal pairs, which is \code{\link[=hess_names]{hess_names()}}'s ordering.
 }
 \description{
-Closed-form second derivatives, with \eqn{R' = -R(t + R)}:
+Computes the six second derivatives of the log-density in closed form. In
+the notation of \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}}, with
+\eqn{R' = -R(t+R)},
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{\alpha^2 R' - 1}{\sigma^2},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
@@ -33,7 +42,60 @@ Closed-form second derivatives, with \eqn{R' = -R(t + R)}:
         = -\dfrac{z R + \alpha z^2 R'}{\sigma},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \alpha^2} = z^2 R'.}
+
+This is the \strong{observed} curvature at the data. The family has no elementary
+expected information, so \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} falls to the base
+class and approximates it; see there for the strategies and their cost.
+}
+\section{Singularity at symmetry}{
+At \eqn{\alpha = 0} the expected information of this parametrization has rank
+2, not 3. The reason is in the score: the shape and location components are
+exactly proportional there, so no data can separate them. Measured on the
+approximated information at \eqn{\mu = 0}, \eqn{\sigma = 1}, its eigenvalues
+are 2, 1.637 and \eqn{-5.6\times10^{-17}}, and the smallest one grows like
+\eqn{\alpha^4} as the shape moves off zero: \eqn{4.4\times10^{-10}} at
+\eqn{\alpha = 0.01} and \eqn{1.9\times10^{-3}} at \eqn{\alpha = 0.5}.
+
+The singularity belongs to the family as parametrized, not to the
+implementation. Azzalini's centered parametrization removes it, and lives in
+the separate object \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.
+}
+
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{t = \alpha z}, \eqn{R(t) = \phi(t)/\Phi(t)}
+and \eqn{R' = -R(t+R)}.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+h <- distrib_hessian(d, y, th)
+
+# The shape component written out.
+all.equal(h$alpha_alpha, y^2 * numericals7::mills_ratio(3 * y)$dr)
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$mu_alpha,
+      numeric = (distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu -
+                 distrib_gradient(d, y, list(mu = 0, sigma = 1, alpha = 3 - eps))$mu) /
+                (2 * eps))
+
+# The information loses rank at symmetry, and recovers it as alpha^4.
+rank_gap <- function(a) {
+  e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, alpha = a))
+  M <- matrix(c(e$mu_mu, e$mu_sigma, e$mu_alpha,
+                e$mu_sigma, e$sigma_sigma, e$sigma_alpha,
+                e$mu_alpha, e$sigma_alpha, e$alpha_alpha), 3, 3)
+  min(abs(eigen(-M, only.values = TRUE)$values))
+}
+vapply(c(0, 0.01, 0.5), rank_gap, 0)
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}} for the score,
+\code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}} for the next order,
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the approximated expectation, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

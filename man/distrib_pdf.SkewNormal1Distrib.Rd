@@ -2,23 +2,70 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_pdf.SkewNormal1Distrib}
 \alias{distrib_pdf.SkewNormal1Distrib}
-\title{Skew Normal Probability Density Function}
+\title{Skew Normal Density}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, anywhere on the real line.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}; a component of length 1
+is recycled. \code{sigma} must be strictly positive, and \code{mu} and \code{alpha} may
+take any finite value.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma), length(alpha))}, one value per
+observation.
 }
 \description{
-Computes the probability density function, with \eqn{z = (y-\mu)/\sigma}:
-\deqn{f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\,\phi(z)\,\Phi(\alpha z)}
+Computes the skew normal density, with \eqn{z = (y-\mu)/\sigma}:
+\deqn{f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\,\phi(z)\,\Phi(\alpha z).}
+The Gaussian density is multiplied by \eqn{2\Phi(\alpha z)}, which exceeds
+one where \eqn{\alpha z > 0} and falls below it where \eqn{\alpha z < 0}, so
+a positive \eqn{\alpha} moves mass to the right. At \eqn{\alpha = 0} the
+factor is one everywhere and the density is \eqn{\phi(z)/\sigma}.
+
+The two logarithms are taken separately and added, \code{dnorm(log = TRUE)}
+beside \code{pnorm(log.p = TRUE)}, so the light tail of the skewed side returns a
+large negative number where forming \eqn{\Phi(\alpha z)} first and then
+taking its logarithm would return \code{-Inf}.
+}
+\section{Notation}{
+
+\eqn{\phi} and \eqn{\Phi} are the standard Gaussian density and distribution
+function, \eqn{\mu} the location, \eqn{\sigma > 0} the scale and \eqn{\alpha}
+the shape. \eqn{\mu} is not the mean unless \eqn{\alpha = 0}.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-2, -0.5, 0.5, 2)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+
+# The formula written out.
+all.equal(distrib_pdf(d, y, th),
+          2 * dnorm(y) * pnorm(3 * y))
+
+# It integrates to one.
+integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
+
+# At shape zero the tilting factor is one and the family is the Gaussian.
+all.equal(distrib_pdf(d, y, list(mu = 0, sigma = 1, alpha = 0)), dnorm(y))
+
+# The light tail stays a number on the log scale where the density itself
+# has underflowed to zero.
+rbind(density = distrib_pdf(d, -40, th),
+      log_density = distrib_pdf(d, -40, th, log = TRUE))
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}} for Owen's T identity,
+\code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}} for the score,
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the family, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the
+generic.
 }

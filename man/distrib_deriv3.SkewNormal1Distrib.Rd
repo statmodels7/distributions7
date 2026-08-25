@@ -2,32 +2,89 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_deriv3.SkewNormal1Distrib}
 \alias{distrib_deriv3.SkewNormal1Distrib}
-\title{Skew Normal Analytical Third-Order Derivatives}
+\title{Skew Normal Third Derivatives}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} its values
+are ignored and only its length matters, the result being one expectation
+repeated.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated
-numerically.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned from the compiled kernel. When \code{TRUE} the
+expectation is approximated by the strategy in \code{approx}.}
 
-\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv3]{distrib_deriv3()}}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body, so this method always
+returns the parameter scale.}
 
-\item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, the
+strategy for the expectation. Read only when \code{expected = TRUE}; the first
+is the default and quadratures the observed kernel against the density.}
+
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Ignored by every other strategy. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of ten numeric vectors, one per distinct third-order
+component, named as \code{\link[=deriv_names]{deriv_names()}} names them: \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_mu_alpha}, \code{mu_sigma_sigma}, \code{mu_sigma_alpha}, \code{mu_alpha_alpha},
+\code{sigma_sigma_sigma}, \code{sigma_sigma_alpha}, \code{sigma_alpha_alpha} and
+\code{alpha_alpha_alpha}.
 }
 \description{
-Closed-form third-order derivatives of the skew normal log-density. With
-\eqn{t = \alpha z} and \eqn{R} the inverse Mills ratio, the derivatives of
-\eqn{\log \Phi(t)} follow from \eqn{R' = -R(t+R)} and stay polynomials in
-\eqn{t} and \eqn{R}, so every component is elementary. The expected
-derivatives have no closed form (the same integrals as the expected
-information) and come from \code{expected_derivative()}.
+Computes the ten third derivatives of the log-density in closed form, in a
+compiled kernel. The family's whole derivative surface stays elementary for
+one reason: with \eqn{t = \alpha z} and \eqn{R(t) = \phi(t)/\Phi(t)} the
+inverse Mills ratio, \eqn{R' = -R(t+R)} closes the recursion, so every
+derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and \eqn{R} and
+no new special function appears at any order.
+
+With \code{expected = TRUE} the value is an expectation instead, and there it is
+\strong{numerical}: the integrals are the ones that block the expected
+information, so the call routes to \code{expected_derivative()} and \code{approx} and
+\code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{t = \alpha z}, \eqn{R} the inverse Mills
+ratio and \eqn{\ell} the log-density of one observation.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# Against a central difference of the analytic Hessian.
+eps <- 1e-4
+rbind(analytic = d3$mu_mu_alpha,
+      numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu -
+                 distrib_hessian(d, y, list(mu = 0, sigma = 1, alpha = 3 - eps))$mu_mu) /
+                (2 * eps))
+
+# At shape zero the third derivative in the location is the Gaussian's,
+# which is exactly zero.
+distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 0))$mu_mu_mu
+
+# The expectation is numerical here, and the strategy is read.
+set.seed(4)
+c(integrate = distrib_deriv3(d, 0, th, expected = TRUE)$alpha_alpha_alpha,
+  mc = distrib_deriv3(d, 0, th, expected = TRUE, approx = "mc",
+                      nsim = 2000)$alpha_alpha_alpha)
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.SkewNormal1Distrib]{distrib_deriv4.SkewNormal1Distrib()}} for the order above,
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

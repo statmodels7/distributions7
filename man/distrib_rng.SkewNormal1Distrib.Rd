@@ -2,23 +2,60 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_rng.SkewNormal1Distrib}
 \alias{distrib_rng.SkewNormal1Distrib}
-\title{Skew Normal Random Number Generator}
+\title{Skew Normal Random Generation}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of length \code{n}; a component of length 1 is
+recycled, so a parameter varying by observation draws one value per
+observation from its own member of the family.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates draws exactly, from the stochastic representation
-\eqn{Z = \delta|U_0| + \sqrt{1-\delta^2}\,U_1} with \eqn{U_0, U_1}
-independent standard normal and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}.
-No inversion or rejection is involved.
+Draws from the skew normal exactly, using Azzalini's stochastic
+representation: with \eqn{U_0} and \eqn{U_1} independent standard Gaussians
+and \eqn{\delta = \alpha/\sqrt{1+\alpha^2}},
+\deqn{Z = \delta\,|U_0| + \sqrt{1-\delta^2}\;U_1}
+is standard skew normal with shape \eqn{\alpha}, and \eqn{Y = \mu + \sigma Z}.
+No inversion and no rejection is involved. The cost is two \code{rnorm} calls
+whatever the shape is, and the draws follow the density exactly.
+
+The representation also reads off why the family cannot be very skewed: the
+half-normal component enters with weight \eqn{\delta}, which saturates at one
+as \eqn{\alpha \to \infty}, so the most skewed member is the half-normal
+itself.
+}
+\section{Notation}{
+
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}} is the correlation between \eqn{Z}
+and the half-normal component; \eqn{\mu} is the location and \eqn{\sigma} the
+scale.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+th <- list(mu = 0, sigma = 1, alpha = 3)
+
+set.seed(1)
+x <- distrib_rng(d, 2e5, th)
+
+# Three moments against their closed forms.
+rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
+      theory = c(mean(d, th), variance(d, th), skewness(d, th)))
+
+# The representation, written out at the same seed.
+delta <- 3 / sqrt(1 + 9)
+set.seed(1)
+z <- delta * abs(rnorm(2e5)) + sqrt(1 - delta^2) * rnorm(2e5)
+all.equal(x, z)
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density the draws follow,
+\code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}} and \code{\link[=variance.SkewNormal1Distrib]{variance.SkewNormal1Distrib()}} for the
+moments they should reproduce, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

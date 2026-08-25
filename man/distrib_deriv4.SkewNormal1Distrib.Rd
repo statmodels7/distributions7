@@ -2,29 +2,75 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_deriv4.SkewNormal1Distrib}
 \alias{distrib_deriv4.SkewNormal1Distrib}
-\title{Skew Normal Analytical Fourth-Order Derivatives}
+\title{Skew Normal Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length matters.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated
-numerically.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned from the compiled kernel.}
 
-\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv4]{distrib_deriv4()}}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of fifteen numeric vectors, one per distinct
+fourth-order component, named as \code{\link[=deriv_names]{deriv_names()}} names them, from
+\code{mu_mu_mu_mu} to \code{alpha_alpha_alpha_alpha}.
 }
 \description{
-Closed-form fourth-order derivatives of the skew normal log-density, in the
-notation of \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}. The expected
-derivatives are approximated numerically, as at third order.
+Computes the fifteen fourth derivatives of the log-density in closed form,
+in a compiled kernel, in the notation of
+\code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}}. The recursion
+\eqn{R' = -R(t+R)} keeps every one of them a polynomial in \eqn{t} and the
+inverse Mills ratio, so the fourth order needs nothing the third did not.
+
+With \code{expected = TRUE} the value is a numerical expectation, for the reason
+it is at third order: the integrals are the ones that block the expected
+information.
+}
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{t = \alpha z} and \eqn{R} the inverse Mills
+ratio.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+d4 <- distrib_deriv4(d, y, th)
+length(d4)
+
+# Against a central difference of the third order.
+eps <- 1e-4
+rbind(analytic = d4$mu_mu_alpha_alpha,
+      numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 + eps))$mu_mu_alpha -
+                 distrib_deriv3(d, y, list(mu = 0, sigma = 1, alpha = 3 - eps))$mu_mu_alpha) /
+                (2 * eps))
+
+# The count is bit for bit independent of the thread count.
+identical(distrib_deriv4(d, y, th, threads = 1L),
+          distrib_deriv4(d, y, th, threads = 2L))
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3.SkewNormal1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the
+family.
 }

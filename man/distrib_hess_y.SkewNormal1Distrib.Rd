@@ -2,20 +2,59 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_hess_y.SkewNormal1Distrib}
 \alias{distrib_hess_y.SkewNormal1Distrib}
-\title{Skew Normal Response Second Derivative}
+\title{Skew Normal Second Response Derivative}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs, negative
+throughout.
 }
 \description{
-Closed form: \eqn{\partial^2 \ell / \partial y^2 = (\alpha^2 R' - 1)/\sigma^2}.
+Computes \eqn{\partial^2\ell/\partial y^2}, the curvature of the log-density
+in the response. With \eqn{R' = -R(t+R)} at \eqn{t = \alpha z},
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2}
+      = \dfrac{\alpha^2 R' - 1}{\sigma^2},}
+which is the same expression as \eqn{\partial^2\ell/\partial\mu^2}: two
+signs cancel where one did not at first order, so the response curvature
+equals the location curvature instead of being its negative.
+
+Since \eqn{R'} is negative for every \eqn{t}, the value is strictly negative
+at every observation and every shape. The skew normal log-density is
+concave in the response, as the Gaussian's is.
+}
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{t = \alpha z}, \eqn{R} the inverse Mills
+ratio and \eqn{R' = -R(t+R)} its derivative.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+
+# It equals the curvature in the location, without a sign change.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Against a central difference of the response derivative.
+eps <- 1e-5
+rbind(analytic = distrib_hess_y(d, y, th),
+      numeric = (distrib_grad_y(d, y + eps, th) -
+                 distrib_grad_y(d, y - eps, th)) / (2 * eps))
+
+# Concave in the response at every shape, and bounded above by
+# -1/sigma^2, which is the Gaussian's own curvature.
+vapply(c(-20, -1, 0, 1, 20), function(a)
+  max(distrib_hess_y(d, seq(-6, 6, by = 0.5), list(mu = 0, sigma = 1, alpha = a))), 0)
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} for the first derivative,
+\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the parameter curvature it
+shares an expression with, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

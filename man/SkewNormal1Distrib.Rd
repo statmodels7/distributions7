@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{SkewNormal1Distrib}
 \alias{SkewNormal1Distrib}
-\title{S7 Class for the Skew Normal Distribution}
+\title{Skew Normal Distribution Class}
 \usage{
 SkewNormal1Distrib(
   distrib_name = character(0),
@@ -36,35 +36,86 @@ SkewNormal1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{SkewNormal1Distrib}.
+An S7 object of class \code{SkewNormal1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} they hold \code{"skew normal1"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma", "alpha")}, the
+interpretations \code{c(mu = "location", sigma = "scale", alpha = "shape")},
+\code{3}, and the domains \eqn{(-\infty,\infty)}, \eqn{(0,\infty)} and
+\eqn{(-\infty,\infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing Azzalini's
-skew normal distribution: a gaussian with a shape parameter controlling the
-asymmetry.
+The S7 class of Azzalini's skew normal family, a Gaussian carrying a shape
+parameter that tilts it. With \eqn{z = (y-\mu)/\sigma} the density is
+\eqn{f(y) = 2\phi(z)\Phi(\alpha z)/\sigma}, so the factor \eqn{2\Phi(\alpha z)}
+is above one on the side where \eqn{\alpha z > 0} and below one on the other.
+At \eqn{\alpha = 0} that factor is identically one and the family is the
+Gaussian.
+
+The class inherits from \code{continuous_distrib}. Its parametrization is
+\eqn{(\mu, \sigma, \alpha)} with \eqn{\mu} a location and not the mean, since
+\eqn{E[Y] = \mu + \sigma\delta\sqrt{2/\pi}} with
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}}.
+
+Build one with \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, which supplies the three link
+functions and fills the properties in. This page documents the raw S7
+constructor, which takes the parent's properties and validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered in this file:
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng()}},
 \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian()}},
 \code{\link[=distrib_deriv3.SkewNormal1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.SkewNormal1Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, including
-the quantile function, which is obtained by root finding on the distribution
-function, and the expected information, which has no closed form here.
+Registered elsewhere in the package, all closed form: the four moments
+\code{\link[=mean.SkewNormal1Distrib]{mean()}}, \code{\link[=variance.SkewNormal1Distrib]{variance()}},
+\code{\link[=skewness.SkewNormal1Distrib]{skewness()}} and
+\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis()}} in \code{moments.R}; the mixed
+response-parameter derivative \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
+\code{cross_derivatives_families.R}; the four orders of the distribution
+function's parameter derivatives, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}
+through \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}, in
+\code{cdf_skewnormal_higher.R}; and the second-order response derivatives
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_grad_y_hess]{distrib_hess_y_hess()}} in \code{theta2_families.R}.
+
+The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on the
+distribution function. So does the \strong{expected information}: this family has
+none in elementary form, so \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it by
+the strategy named in its \code{approx} argument.
 }
 
+\examples{
+d <- skewnormal1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_interpretation
+d@params_bounds
+
+# The scale rides a log link; the location and the shape are unconstrained.
+vapply(d@link_params, function(l) l@link_name, character(1))
+
+# mu is a location and not the mean.
+th <- list(mu = 0, sigma = 1, alpha = 3)
+c(mu = th$mu, mean = mean(d, th))
+}
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} to build one;
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the same law in Azzalini's centered
+parametrization, whose information is not singular at symmetry;
+\code{\link[=skewt_distrib]{skewt_distrib()}}, which adds degrees of freedom and reaches a skewness
+this family cannot;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the case \eqn{\alpha = 0}.
 }

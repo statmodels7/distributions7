@@ -4,19 +4,53 @@
 \alias{distrib_grad_y.SkewNormal1Distrib}
 \title{Skew Normal Response Derivative}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs, one value per
+observation.
 }
 \description{
-Closed form: \eqn{\partial \ell / \partial y = (\alpha R - z)/\sigma}, which
-is minus the derivative in \eqn{\mu}, as it must be for a location family.
+Computes \eqn{\partial\ell/\partial y}, the derivative of the log-density in
+the response. With \eqn{z = (y-\mu)/\sigma} and \eqn{R} the inverse Mills
+ratio at \eqn{t = \alpha z},
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\alpha R - z}{\sigma}.}
+This is minus the derivative in \eqn{\mu}, exactly, because the response and
+the location enter the density only through their difference. The identity
+holds for every location family, so this method is one sign away from
+\code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}}.
+
+The quantity is what a censored likelihood and a quantile residual need, and
+it is the first ingredient of \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{z = (y-\mu)/\sigma}
+and \eqn{R(t) = \phi(t)/\Phi(t)} the inverse Mills ratio.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+
+# It is minus the score in the location, exactly.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Against a central difference of the log-density.
+eps <- 1e-6
+rbind(analytic = distrib_grad_y(d, y, th),
+      numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
+                 distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y.SkewNormal1Distrib()}} for the second derivative,
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the mixed one,
+\code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}} for the parameter derivatives, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

@@ -2,31 +2,69 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_cdf.SkewNormal1Distrib}
 \alias{distrib_cdf.SkewNormal1Distrib}
-\title{Skew Normal Cumulative Distribution Function}
+\title{Skew Normal Distribution Function}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, anywhere on the real line.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{q}. \code{sigma} must be
+strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}, formed as the
+complement.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}. The logarithm is taken after
+the clamp, so a quantile far into the light tail returns \code{-Inf}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms with \code{log.p = TRUE}, of length
+\code{max(length(q), length(mu), length(sigma), length(alpha))}.
 }
 \description{
-Computes the distribution function through Owen's T function:
-\deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha),
-      \qquad z = (q - \mu)/\sigma.}
+Computes the skew normal distribution function through Owen's T function,
+with \eqn{z = (q-\mu)/\sigma}:
+\deqn{F(q; \mu, \sigma, \alpha) = \Phi(z) - 2\,T(z, \alpha).}
+The identity is Azzalini's. Each evaluation costs one bounded
+one-dimensional quadrature, through \code{\link[numericals7:owen_t]{numericals7::owen_t()}}, where the base
+class would integrate the density over a semi-infinite range; the bounded
+integrand is both cheaper and more accurate. A thousand quantiles cost about
+20 milliseconds.
+
+The result is clamped to \eqn{[0, 1]} before the tail and the logarithm are
+applied, so rounding in the quadrature cannot return a probability outside
+the unit interval.
 }
-\details{
-The identity is Azzalini's. Evaluating it costs one bounded one-dimensional
-quadrature per observation, which is cheaper and more accurate than the base
-class's route of integrating the density over a semi-infinite range.
+\section{Notation}{
+
+\eqn{\Phi} is the standard Gaussian distribution function and
+\eqn{T(h, a) = (2\pi)^{-1}\int_0^a e^{-h^2(1+x^2)/2}(1+x^2)^{-1}dx} is
+Owen's T. \eqn{\alpha} is the shape.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+q <- c(-2, -0.5, 0.5, 2)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+
+# Owen's identity against a direct quadrature of the density.
+rbind(owen = distrib_cdf(d, q, th),
+      quadrature = vapply(q, function(u)
+        integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
+
+# At shape zero, T(z, 0) = 0 and the identity is the Gaussian's.
+all.equal(distrib_cdf(d, q, list(mu = 0, sigma = 1, alpha = 0)), pnorm(q))
+
+# The two tails sum to one.
+distrib_cdf(d, q, th) + distrib_cdf(d, q, th, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[numericals7:owen_t]{numericals7::owen_t()}} for the quadrature,
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the density it integrates,
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for its parameter derivatives, and \code{\link[=distrib_cdf]{distrib_cdf()}}
+for the generic.
 }

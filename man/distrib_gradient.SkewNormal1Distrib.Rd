@@ -2,31 +2,81 @@
 % Please edit documentation in R/skewnormal1_distrib.R
 \name{distrib_gradient.SkewNormal1Distrib}
 \alias{distrib_gradient.SkewNormal1Distrib}
-\title{Skew Normal Analytical Gradient}
+\title{Skew Normal Score}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}. \code{sigma} must be
+strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. On the link
+scale the derivatives are taken with respect to the unconstrained
+coordinates \eqn{\eta} of the three link functions. The transformation is
+applied in the generic's body, so this method always returns the parameter
+scale and the argument is here to match the generic's signature.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{alpha},
+each of the length of the recycled inputs.
 }
 \description{
-Closed-form first derivatives, with \eqn{z = (y-\mu)/\sigma},
-\eqn{t = \alpha z} and \eqn{R = \phi(t)/\Phi(t)}:
+Computes the three first derivatives of the log-density in closed form. With
+\eqn{z = (y-\mu)/\sigma}, \eqn{t = \alpha z} and
+\eqn{R(t) = \phi(t)/\Phi(t)} the inverse Mills ratio,
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{z - \alpha R}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \sigma}
         = \dfrac{z^2 - 1 - \alpha z R}{\sigma},
       \qquad
       \dfrac{\partial \ell}{\partial \alpha} = z R.}
+Every derivative of \eqn{\log\Phi(t)} is a polynomial in \eqn{t} and
+\eqn{R}, because \eqn{R' = -R(t+R)} closes the recursion, so the whole
+derivative surface of this family stays elementary.
+
+The ratio comes from \code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}}, which forms it on the log
+scale. Below about \eqn{t = -38} both \eqn{\phi(t)} and \eqn{\Phi(t)}
+underflow while their ratio is finite and close to \eqn{-t}: measured at
+\eqn{t = -400} the ratio is 400.0025 where \code{dnorm(t)/pnorm(t)} is \code{NaN}.
+
+At \eqn{\alpha = 0} the shape score is \eqn{z\sqrt{2/\pi}} and the location
+score is \eqn{z/\sigma}, so the two are exactly proportional. The expected
+information is singular at symmetry for that reason.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\phi} and \eqn{\Phi}
+the standard Gaussian density and distribution function, and
+\eqn{R(t) = \phi(t)/\Phi(t)} the inverse Mills ratio.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3)
+g <- distrib_gradient(d, y, th)
+
+# The shape component written out.
+all.equal(g$alpha, y * numericals7::mills_ratio(3 * y)$r)
+
+# The score sums to nearly zero at the maximum likelihood estimate.
+set.seed(3)
+x <- distrib_rng(d, 4000, th)
+fit <- fit_distrib(d, x)
+vapply(distrib_gradient(d, x, as.list(coef(fit))), sum, 0) / 4000
+
+# At symmetry the shape score is a fixed multiple of the location score,
+# which is where this parametrization loses rank.
+g0 <- distrib_gradient(d, y, list(mu = 0, sigma = 1.4, alpha = 0))
+c(ratio = unique(round(g0$alpha / g0$mu, 12)), sigma_root_2_pi = 1.4 * sqrt(2 / pi))
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=distrib_hessian.SkewNormal1Distrib]{distrib_hessian.SkewNormal1Distrib()}} for the second derivatives,
+\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} for the derivative in the response,
+\code{\link[numericals7:mills_ratio]{numericals7::mills_ratio()}} for the ratio, and \code{\link[=distrib_gradient]{distrib_gradient()}} for
+the generic.
 }
