@@ -9,23 +9,61 @@ fd_steps_y(y, bounds, h_rel)
 \arguments{
 \item{y}{A numeric vector of observations.}
 
-\item{bounds}{A length-2 numeric vector, the distribution's support.}
+\item{bounds}{A numeric vector of length two, the distribution's support.
+An infinite endpoint imposes no clamp on that side.}
 
-\item{h_rel}{The relative step size.}
+\item{h_rel}{The relative step size, a single positive number. The callers
+pass \eqn{\varepsilon^{1/3}} at first order and \eqn{\varepsilon^{1/4}} at
+second.}
 }
 \value{
-A numeric vector of steps, the same length as \code{y}.
+A numeric vector of steps, as long as \code{y}, every entry positive.
 }
 \description{
-The step for a central difference in the response: scaled by \eqn{|y|} and
-shrunk so that \eqn{y \pm h} stays strictly inside the distribution's support.
+Returns the step for a central difference in the RESPONSE: \code{h_rel} scaled by
+\eqn{\max(1, |y|)}, then shrunk so that \eqn{y \pm h} stays strictly inside
+the distribution's support. It is the response counterpart of \code{\link[=fd_steps]{fd_steps()}},
+and both numerical response derivatives take their step from it.
 }
 \details{
-The response counterpart of \code{\link[=fd_steps]{fd_steps()}}, and clamped for the same
-reason: a Gamma observation close to zero would otherwise be differentiated
-using a point outside the support, where the density is not defined.
+The scaling by \eqn{\max(1, |y|)} makes the step relative where the response
+is large and absolute where it is small, so a value near zero is not
+differenced with a step below the resolution of a double.
+
+The clamp is what the support requires. A gamma observation at
+\eqn{y = 10^{-3}} differenced with the default step of
+\eqn{6 \times 10^{-6}} needs no help, but one at \eqn{y = 10^{-8}} would be
+evaluated at a negative point, where the density is not defined and
+\code{distrib_pdf()} returns \code{-Inf}. The factor 0.49 leaves the step under half
+the distance to the bound, so both evaluation points stay inside with room
+to spare: at \eqn{y = 10^{-8}} the step becomes \eqn{4.9\times 10^{-9}} and
+the left point \eqn{5.1\times 10^{-9}}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{h} the finite-difference step and \eqn{\varepsilon} the machine
+epsilon, \code{.Machine$double.eps}.
+}
+
+\examples{
+# On the whole line the step is h_rel times max(1, |y|).
+h_rel <- .Machine$double.eps^(1 / 3)
+distributions7:::fd_steps_y(c(-100, 0, 0.5, 100), c(-Inf, Inf), h_rel)
+h_rel * pmax(1, abs(c(-100, 0, 0.5, 100)))
+
+# Near a bound the step is cut to 0.49 of the distance to it, so the left
+# evaluation point stays inside the support.
+y <- c(1e-8, 1e-3, 1)
+h <- distributions7:::fd_steps_y(y, c(0, Inf), h_rel)
+rbind(step = h, left_point = y - h)
+
+# The two steps the callers use differ by a factor of twenty.
+c(first_order = .Machine$double.eps^(1 / 3),
+  second_order = .Machine$double.eps^(1 / 4))
 }
 \seealso{
-\code{\link[=fd_steps]{fd_steps()}}, \code{\link[=numerical_grad_y]{numerical_grad_y()}}
+\code{\link[=fd_steps]{fd_steps()}} for the parameter counterpart, and
+\code{\link[=numerical_grad_y]{numerical_grad_y()}} and \code{\link[=numerical_hess_y]{numerical_hess_y()}}, its two callers.
 }
 \keyword{internal}

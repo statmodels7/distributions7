@@ -7,27 +7,74 @@
 numerical_grad_y(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"continuous_distrib"}.}
+\item{distrib}{An object inheriting from \code{continuous_distrib}. A discrete
+family has no derivative in the response and registers no method.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{h_rel}{Numeric. Relative finite-difference step. Defaults to
-\code{.Machine$double.eps^(1/3)}.}
+\item{h_rel}{The relative step, defaulting to \code{.Machine$double.eps^(1/3)},
+the exponent that minimizes the total error of a central first difference.}
 }
 \value{
-A numeric vector of the same length as \code{y}.
+A numeric vector as long as \code{y}.
 }
 \description{
-Computes \eqn{\partial \ell / \partial y} by central finite differences of
-\code{distrib_pdf(..., log = TRUE)}. Powers the default \code{\link[=distrib_grad_y]{distrib_grad_y()}}
-method for continuous distributions without a closed form.
+Computes \eqn{\partial \ell / \partial y} by the two-point central
+difference
+\deqn{\frac{\partial\ell}{\partial y} \approx
+  \frac{\ell(y+h) - \ell(y-h)}{2h},}
+evaluated on \code{distrib_pdf(..., log = TRUE)}. It is what the default
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} method runs for a continuous family with no closed form.
 }
+\section{The step and the accuracy it buys}{
+The stencil's truncation error is \eqn{O(h^2)} and its rounding error
+\eqn{O(\varepsilon/h)}, so the total is smallest at
+\eqn{h \sim \varepsilon^{1/3}}, which is the default. Measured against the
+gamma's own closed form at \code{h_rel} from \eqn{10^{-1}} to \eqn{10^{-8}}, the
+error is 8.2e-02, 8.0e-04, 8.0e-06, 8.0e-08, 8.0e-10, 1.4e-10, 8.2e-10 and
+2.0e-08: it divides by a hundred per decade while the truncation dominates,
+turns near the default and rises again as the rounding takes over. A step
+ten times shorter than the default is therefore worse, not better.
+
+The step itself comes from \code{\link[=fd_steps_y]{fd_steps_y()}}, which scales it by
+\eqn{\max(1, |y|)} and shrinks it near a finite bound.
+}
+
+\section{The cost}{
+Two evaluations of the log-density, both vectorized over \code{y}, so one call
+costs two \code{distrib_pdf()} calls whatever the sample size. A family with a
+closed form pays neither.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{h} the finite-difference step and \eqn{\varepsilon} the machine
+epsilon, \code{.Machine$double.eps}.
+}
+
 \examples{
-numerical_grad_y(gaussian1_distrib(), c(-1, 0, 1), list(mu = 0, sigma = 1))
+d <- gamma2_distrib()
+y <- c(0.5, 1, 2)
+theta <- list(mu = 2, sigma2 = 1)
+
+numerical_grad_y(d, y, theta)
+
+# Against the gamma's own closed form: the difference is good to about
+# 3e-10, not to machine precision.
+distrib_grad_y(d, y, theta)
+max(abs(numerical_grad_y(d, y, theta) - distrib_grad_y(d, y, theta)))
+
+# Too short a step is worse than too long. The error falls as h^2 and then
+# rises as eps / h, and the default sits at the turn.
+err <- function(p) max(abs(numerical_grad_y(d, y, theta, h_rel = 10^(-p)) -
+                           distrib_grad_y(d, y, theta)))
+setNames(vapply(1:8, err, numeric(1)), paste0("1e-", 1:8))
 
 }
 \seealso{
-\code{\link[=numerical_hess_y]{numerical_hess_y()}}, \code{\link[=distrib_grad_y]{distrib_grad_y()}}
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic, \code{\link[=numerical_hess_y]{numerical_hess_y()}} for the
+second order, and \code{\link[=fd_steps_y]{fd_steps_y()}} for the step rule.
 }

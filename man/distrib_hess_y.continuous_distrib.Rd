@@ -4,16 +4,74 @@
 \alias{distrib_hess_y.continuous_distrib}
 \title{Default Response Hessian for Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object.}
+\item{distrib}{A \code{continuous_distrib} object with no closed form of its own.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-Fallback: \eqn{\partial^2 \ell / \partial y^2} via finite differences (see \code{\link[=numerical_hess_y]{numerical_hess_y()}}).
+Computes \eqn{\partial^2 \ell / \partial y^2} by the three-point central
+stencil \eqn{\{\ell(y+h) - 2\ell(y) + \ell(y-h)\}/h^2} on
+\code{distrib_pdf(..., log = TRUE)}, through \code{\link[=numerical_hess_y]{numerical_hess_y()}}. It is one
+stencil on the log-density and never a difference of
+\code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}}, which would be two layers of rounding
+on the same variable.
+}
+\details{
+The step is \eqn{h = \varepsilon^{1/4}\max(1, |y|)}, shrunk near a finite
+bound by \code{\link[=fd_steps_y]{fd_steps_y()}}. The longer exponent is what the second difference
+needs: its rounding error is \eqn{O(\varepsilon/h^2)} where the first
+order's is \eqn{O(\varepsilon/h)}, so the optimum sits at a step twenty
+times longer and the accuracy reached is coarser, measured at about
+\eqn{4\times 10^{-7}} against the gamma's closed form where the first order
+reaches \eqn{3\times 10^{-10}}. The cost is three vectorized
+\code{distrib_pdf()} calls.
+
+As at first order, every family the package ships writes its own, and a
+DISCRETE family registers no default.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{h} the finite-difference step and \eqn{\varepsilon} the machine
+epsilon, \code{.Machine$double.eps}.
+}
+
+\examples{
+# A family that supplies a density and nothing else, which is what the
+# fallback exists for: every family the package ships writes its own
+# response derivatives.
+Toy <- S7::new_class("Toy", parent = continuous_distrib)
+S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
+  z <- (y - theta$mu) / theta$sigma
+  v <- -log(2 * theta$sigma) - abs(z) - 0.1 * z^2
+  if (isTRUE(list(...)$log)) v else exp(v)
+}
+d <- Toy(distrib_name = "toy", dimension = "univariate",
+         bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+         params_interpretation = c("location", "scale"), n_params = 2L,
+         params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+         link_params = list(mu = linkfunctions7::identity_link(),
+                            sigma = linkfunctions7::log_link()))
+y <- c(-1, 0.4, 1)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_hess_y(d, y, theta)
+
+# Against a Richardson-extrapolated second derivative of the log-density.
+f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
+vapply(y, function(v) numDeriv::hessian(f, v)[1, 1], numeric(1))
+
+# A discrete family has no method at all.
+try(distrib_hess_y(poisson_distrib(), 1:3, list(mu = 2)))
+}
+\seealso{
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic, \code{\link[=numerical_hess_y]{numerical_hess_y()}}, which
+does the work, and \code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} for the first
+order.
 }
 \keyword{internal}

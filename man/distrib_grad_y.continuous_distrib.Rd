@@ -4,16 +4,75 @@
 \alias{distrib_grad_y.continuous_distrib}
 \title{Default Response Gradient for Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object.}
+\item{distrib}{A \code{continuous_distrib} object with no closed form of its own.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-Fallback: \eqn{\partial \ell / \partial y} via finite differences (see \code{\link[=numerical_grad_y]{numerical_grad_y()}}).
+Computes \eqn{\partial \ell / \partial y} by the two-point central
+difference \eqn{\{\ell(y+h) - \ell(y-h)\}/(2h)} on
+\code{distrib_pdf(..., log = TRUE)}, through \code{\link[=numerical_grad_y]{numerical_grad_y()}}. Registering
+the fallback on \code{continuous_distrib} gives a response gradient to a family
+that supplies a density and nothing else.
+}
+\details{
+The step is \eqn{h = \varepsilon^{1/3}\max(1, |y|)}, shrunk near a finite
+bound by \code{\link[=fd_steps_y]{fd_steps_y()}} so that both evaluation points stay inside the
+support. The stencil's truncation error is \eqn{O(h^2)} and its rounding
+error \eqn{O(\varepsilon/h)}, so that exponent minimizes their sum;
+measured against the gamma's closed form it delivers about
+\eqn{3\times 10^{-10}}. The cost is two vectorized \code{distrib_pdf()} calls.
+
+EVERY family the package ships writes its own response gradient, so this
+method answers for user-defined families alone. A DISCRETE family has no
+derivative in the response, so no default is registered there and the call
+raises with the class named.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{h} the finite-difference step and \eqn{\varepsilon} the machine
+epsilon, \code{.Machine$double.eps}.
+}
+
+\examples{
+# A family that supplies a density and nothing else, which is what the
+# fallback exists for: every family the package ships writes its own
+# response derivatives.
+Toy <- S7::new_class("Toy", parent = continuous_distrib)
+S7::method(distrib_pdf, Toy) <- function(distrib, y, theta, ...) {
+  z <- (y - theta$mu) / theta$sigma
+  v <- -log(2 * theta$sigma) - abs(z) - 0.1 * z^2
+  if (isTRUE(list(...)$log)) v else exp(v)
+}
+d <- Toy(distrib_name = "toy", dimension = "univariate",
+         bounds = c(-Inf, Inf), params = c("mu", "sigma"),
+         params_interpretation = c("location", "scale"), n_params = 2L,
+         params_bounds = list(mu = c(-Inf, Inf), sigma = c(0, Inf)),
+         link_params = list(mu = linkfunctions7::identity_link(),
+                            sigma = linkfunctions7::log_link()))
+y <- c(-1, 0.4, 1)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+attr(S7::method(distrib_grad_y, Toy), "signature")[[1]]
+distrib_grad_y(d, y, theta)
+
+# Against a Richardson-extrapolated derivative of the same log-density,
+# which shares no arithmetic with the stencil.
+f <- function(v) distrib_pdf(d, v, theta, log = TRUE)
+vapply(y, function(v) numDeriv::grad(f, v), numeric(1))
+
+# A discrete family has no method at all.
+try(distrib_grad_y(poisson_distrib(), 1:3, list(mu = 2)))
+}
+\seealso{
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic, \code{\link[=numerical_grad_y]{numerical_grad_y()}}, which
+does the work, and \code{\link[=distrib_hess_y.continuous_distrib]{distrib_hess_y.continuous_distrib()}} for the second
+order.
 }
 \keyword{internal}
