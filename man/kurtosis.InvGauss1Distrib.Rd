@@ -2,18 +2,44 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.InvGauss1Distrib}
 \alias{kurtosis.InvGauss1Distrib}
-\title{Kurtosis of the Inverse Gaussian Distribution}
+\title{Excess Kurtosis of the Inverse Gaussian Distribution}
 \arguments{
-\item{x}{An \code{InvGauss1Distrib}.}
+\item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: excess \eqn{15\phi\mu}.
+Closed form: \eqn{\gamma_2 = 15\phi\mu}, the excess over the Gaussian. Like
+the skewness it depends on the two parameters through their product alone,
+and it is exactly \eqn{5\gamma_1^2/3}, so the family occupies one curve of
+the skewness-kurtosis plane, as the gamma does with its own constant.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
+}
+
+\examples{
+d <- invgauss1_distrib()
+
+# Fifteen times the product.
+all.equal(kurtosis(d, list(mu = 2, phi = 0.5)), 15)
+
+# The family lies on the curve kurtosis = (5/3) skewness^2.
+th <- list(mu = 2, phi = 0.5)
+all.equal(kurtosis(d, th), (5 / 3) * skewness(d, th)^2)
+
+}
+\seealso{
+\code{\link[=skewness.InvGauss1Distrib]{skewness.InvGauss1Distrib()}}, to which this is tied;
+\code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}}, whose constant is \eqn{3/2};
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.
 }
 \keyword{internal}

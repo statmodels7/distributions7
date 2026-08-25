@@ -4,16 +4,36 @@
 \alias{variance.ExponentialDistrib}
 \title{Variance of the Exponential Distribution}
 \arguments{
-\item{x}{An \code{ExponentialDistrib}.}
+\item{x}{An \code{ExponentialDistrib}, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the mean, positive), a
+numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu^2}; the coefficient of variation is one.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu^2}. The standard deviation
+equals the mean, so the coefficient of variation is exactly one at every
+parameter value. That single number is what identifies an exponential among
+the gammas: a sample whose relative spread is far from one is not one.
+}
+\examples{
+d <- exponential_distrib()
+
+# The square of the mean, so the coefficient of variation is one.
+variance(d, list(mu = 3))
+std_dev(d, list(mu = 3)) / mean(d, list(mu = 3))
+
+# The same law as a Weibull of shape 1.
+all.equal(variance(d, list(mu = 3)),
+          variance(weibull1_distrib(), list(mu = 3, sigma = 1)))
+
+}
+\seealso{
+\code{\link[=mean.ExponentialDistrib]{mean.ExponentialDistrib()}}; \code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, where the
+two moments are free of each other; \code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

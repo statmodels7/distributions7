@@ -4,17 +4,41 @@
 \alias{mean.StudentT1Distrib}
 \title{Mean of the Student t Distribution}
 \arguments{
-\item{x}{A \code{StudentT1Distrib}.}
+\item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
+scale, positive) and \code{nu} (the degrees of freedom, positive), each a
+numeric vector of length 1 or \code{n}. Settings with \eqn{\nu \le 1} give
+\code{NaN} in their own positions and do not affect the others.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length equal to the longest of the
+three components, \code{NaN} wherever \eqn{\nu \le 1}.
 }
 \description{
-Closed form: \eqn{\mu} for \eqn{\nu > 1}, and \code{NaN} below,
-where the first moment does not exist.
+Closed form: \eqn{E[Y] = \mu} for \eqn{\nu > 1}, and \code{NaN} at or below one,
+where the first moment does not exist. At \eqn{\nu = 1} the family is the
+Cauchy, whose divergence is the reason for the threshold; above it the
+density is symmetric about \eqn{\mu} and the location is the mean.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale and \eqn{\nu > 0} the
+degrees of freedom.
+}
+
+\examples{
+d <- student_t1_distrib()
+
+# The location is the mean above one degree of freedom, and NaN at or below.
+mean(d, list(mu = 3, sigma = 1, nu = c(0.5, 1, 2)))
+
+}
+\seealso{
+\code{\link[=variance.StudentT1Distrib]{variance.StudentT1Distrib()}}, whose threshold is 2;
+\code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}}, the \eqn{\nu = 1} case;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }
 \keyword{internal}

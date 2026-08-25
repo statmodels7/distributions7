@@ -4,16 +4,31 @@
 \alias{skewness.ExponentialDistrib}
 \title{Skewness of the Exponential Distribution}
 \arguments{
-\item{x}{An \code{ExponentialDistrib}.}
+\item{x}{An \code{ExponentialDistrib}, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}. The value is not read, only its length.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 2s, the length of \code{theta$mu}.
 }
 \description{
-Closed form: 2, free of the parameter.
+Constant: \eqn{\gamma_1 = 2}. The family is a scale family with no shape
+parameter, so a standardized moment is a number: every exponential has the
+same asymmetry, whatever its mean.
+}
+\examples{
+d <- exponential_distrib()
+
+# Two, whatever the mean.
+skewness(d, list(mu = c(0.1, 3, 100)))
+
+}
+\seealso{
+\code{\link[=kurtosis.ExponentialDistrib]{kurtosis.ExponentialDistrib()}}, the other constant;
+\code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}}, which is this at shape 1;
+\code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

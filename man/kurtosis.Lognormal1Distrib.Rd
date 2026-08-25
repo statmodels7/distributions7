@@ -2,20 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Lognormal1Distrib}
 \alias{kurtosis.Lognormal1Distrib}
-\title{Kurtosis of the Lognormal Distribution}
+\title{Excess Kurtosis of the Lognormal Distribution}
 \arguments{
-\item{x}{A \code{Lognormal1Distrib}.}
+\item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}. Only \code{sigma2} enters
+the value; the leading exponential overflows to \code{Inf} past
+\eqn{\sigma^2 \approx 177}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form: excess
-\eqn{e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6}, free of
-\eqn{\mu}.
+Closed form:
+\deqn{\gamma_2 = e^{4\sigma^2} + 2e^{3\sigma^2} + 3e^{2\sigma^2} - 6,}
+free of \eqn{\mu}. The leading term grows like \eqn{e^{4\sigma^2}}, so the
+tail weight explodes with the spread of the logarithm: at
+\eqn{\sigma^2 = 1} it is 110.9, and the numerical route would need a
+quadrature far into the tail to see it at all.
+}
+\section{Notation}{
+
+\eqn{\sigma^2 > 0} is the variance of \eqn{\log Y}.
+}
+
+\examples{
+d <- lognormal1_distrib()
+
+# The published form, written out.
+all.equal(kurtosis(d, list(mu = 0, sigma2 = 1)),
+          exp(4) + 2 * exp(3) + 3 * exp(2) - 6)
+
+# It climbs steeply with the spread of the logarithm.
+round(kurtosis(d, list(mu = 0, sigma2 = c(0.1, 0.5, 1))), 3)
+
+}
+\seealso{
+\code{\link[=skewness.Lognormal1Distrib]{skewness.Lognormal1Distrib()}}, \code{\link[=variance.Lognormal1Distrib]{variance.Lognormal1Distrib()}},
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }
 \keyword{internal}

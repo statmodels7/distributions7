@@ -4,16 +4,33 @@
 \alias{skewness.Gaussian1Distrib}
 \title{Skewness of the Gaussian Distribution}
 \arguments{
-\item{x}{A \code{Gaussian1Distrib}.}
+\item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths, and the list is still aligned and validated.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: zero, the density being symmetric.
+Exactly zero at every parameter value. The density is symmetric about
+\eqn{\mu}, so every odd central moment vanishes. The constant is recycled to
+the length the parameters imply, and no quadrature is run: the numerical
+default returns a small non-zero number here, and an exact zero is available.
+}
+\examples{
+d <- gaussian1_distrib()
+
+# Zero at every location and scale, with one value per setting.
+skewness(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Gaussian1Distrib]{kurtosis.Gaussian1Distrib()}}, zero by the excess convention;
+\code{\link[=skewness]{skewness()}} for the generic; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.
 }
 \keyword{internal}

@@ -4,17 +4,38 @@
 \alias{variance.Gamma2Distrib}
 \title{Variance of the Gamma Distribution}
 \arguments{
-\item{x}{A \code{Gamma2Distrib}.}
+\item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{sigma2} (the variance, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\sigma^2}, a parameter of this
-parametrization.
+Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
+second parameter of this parametrization, so the method reads it off. The
+shape it implies is \eqn{a = \mu^2/\sigma^2}, and the higher moments are
+functions of it.
+}
+\examples{
+d <- gamma2_distrib()
+
+# The second parameter is the variance.
+variance(d, list(mu = 2, sigma2 = c(0.25, 1, 4)))
+
+# A chi-squared with mu degrees of freedom is this family at sigma2 = 2 mu.
+all.equal(variance(chisq_distrib(), list(mu = 5)),
+          variance(d, list(mu = 5, sigma2 = 10)))
+
+}
+\seealso{
+\code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}}, the other parameter;
+\code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}} and \code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}}, which are
+functions of the implied shape; \code{\link[=gamma2_distrib]{gamma2_distrib()}}.
 }
 \keyword{internal}

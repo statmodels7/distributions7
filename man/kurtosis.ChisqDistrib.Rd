@@ -2,18 +2,38 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.ChisqDistrib}
 \alias{kurtosis.ChisqDistrib}
-\title{Kurtosis of the Chi-Squared Distribution}
+\title{Excess Kurtosis of the Chi-Squared Distribution}
 \arguments{
-\item{x}{A \code{ChisqDistrib}.}
+\item{x}{A \code{ChisqDistrib}, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, the length of \code{theta$mu},
+positive throughout.
 }
 \description{
-Closed form: excess \eqn{12/\mu}.
+Closed form: \eqn{\gamma_2 = 12/\mu}, the excess over the Gaussian. It is
+positive at every degrees of freedom and decays like \eqn{\mu^{-1}}, twice
+as fast as the skewness, so a chi-squared looks Gaussian in its tails before
+it looks symmetric.
+}
+\examples{
+d <- chisq_distrib()
+
+# Twelve over the degrees of freedom.
+all.equal(kurtosis(d, list(mu = 5)), 12 / 5)
+
+# It falls twice as fast as the skewness.
+rbind(skewness = skewness(d, list(mu = c(1, 10, 1000))),
+      kurtosis = kurtosis(d, list(mu = c(1, 10, 1000))))
+
+}
+\seealso{
+\code{\link[=skewness.ChisqDistrib]{skewness.ChisqDistrib()}}; \code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}} for the
+containing family; \code{\link[=chisq_distrib]{chisq_distrib()}}.
 }
 \keyword{internal}

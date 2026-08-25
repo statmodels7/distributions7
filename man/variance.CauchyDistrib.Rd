@@ -4,16 +4,54 @@
 \alias{variance.CauchyDistrib}
 \title{The Cauchy Distribution Has No Variance}
 \arguments{
-\item{x}{A \code{CauchyDistrib}.}
+\item{x}{A \code{CauchyDistrib}, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths, and the list is still aligned and validated.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{NaN}.
+A numeric vector of \code{NaN}, of length
+\code{max(length(theta$mu), length(theta$sigma))}. \code{\link[=std_dev]{std_dev()}} gives \code{NaN} too,
+being the square root of this.
 }
 \description{
-\code{NaN}; see \code{\link[=mean.CauchyDistrib]{mean()}}.
+Returns \code{NaN}. The variance is the second central moment, and it needs a
+first moment to centre on; the Cauchy has neither. Its density decays like
+\eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges for every
+\eqn{p \ge 1}, and the failure at \eqn{p = 2} is the worse of the two.
+\code{NaN} is returned directly, so that no quadrature is attempted.
+}
+\details{
+The spread a Cauchy does have is its half-interquartile range, exactly
+\eqn{\sigma}, available from \code{\link[=distrib_quantile]{distrib_quantile()}}. Note that \eqn{\sigma} is
+a legitimate scale parameter: it sets the width of the density in the
+ordinary way, and only its identification with a standard deviation fails.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location and \eqn{\sigma > 0} the scale, in the
+parametrization \code{\link[=cauchy_distrib]{cauchy_distrib()}} uses.
+}
+
+\examples{
+d <- cauchy_distrib()
+
+# NaN at every parameter value, and so is the standard deviation.
+c(variance(d, list(mu = 0, sigma = 2)), std_dev(d, list(mu = 0, sigma = 2)))
+
+# The half-interquartile range is sigma, and it is exact.
+q <- distrib_quantile(d, c(0.25, 0.75), list(mu = 3, sigma = 2))
+diff(q) / 2
+
+}
+\seealso{
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for the full argument;
+\code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} and \code{\link[=kurtosis.CauchyDistrib]{kurtosis.CauchyDistrib()}}, \code{NaN} for the same
+reason; \code{\link[=distrib_quantile]{distrib_quantile()}} for the quartiles;
+\code{\link[=variance.StudentT1Distrib]{variance.StudentT1Distrib()}}, which is this family at
+\eqn{\nu = 1} and reports \code{NaN} there too.
 }
 \keyword{internal}

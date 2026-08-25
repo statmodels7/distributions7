@@ -4,17 +4,41 @@
 \alias{mean.Lognormal1Distrib}
 \title{Mean of the Lognormal Distribution}
 \arguments{
-\item{x}{A \code{Lognormal1Distrib}.}
+\item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean of the logarithm,
+any real value) and \code{sigma2} (its variance, positive), each a numeric
+vector of length 1 or \code{n}. The mean overflows to \code{Inf} for large \code{sigma2},
+the exponential of half of it being taken.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\exp(\mu + \sigma^2/2)}. The parameters
-describe \eqn{\log Y}, so \eqn{\mu} is not the mean.
+Closed form: \eqn{E[Y] = \exp(\mu + \sigma^2/2)}. The parameters describe
+\eqn{\log Y} and not \eqn{Y}, so \eqn{\mu} is the mean of the logarithm and
+\eqn{\exp(\mu)} is the median of \eqn{Y}; the mean is larger than the
+median by the factor \eqn{\exp(\sigma^2/2)}, which grows with the spread.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean of \eqn{\log Y} and \eqn{\sigma^2 > 0} its variance.
+}
+
+\examples{
+d <- lognormal1_distrib()
+
+# exp(mu + sigma2 / 2), which exceeds the median exp(mu).
+all.equal(mean(d, list(mu = 0, sigma2 = 1)), exp(0.5))
+distrib_quantile(d, 0.5, list(mu = 0, sigma2 = 1))
+
+}
+\seealso{
+\code{\link[=variance.Lognormal1Distrib]{variance.Lognormal1Distrib()}}, \code{\link[=skewness.Lognormal1Distrib]{skewness.Lognormal1Distrib()}};
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the median, which is \eqn{\exp(\mu)};
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }
 \keyword{internal}

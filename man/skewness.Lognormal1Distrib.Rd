@@ -4,17 +4,44 @@
 \alias{skewness.Lognormal1Distrib}
 \title{Skewness of the Lognormal Distribution}
 \arguments{
-\item{x}{A \code{Lognormal1Distrib}.}
+\item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}. Only \code{sigma2} enters
+the value, and the exponentials overflow to \code{Inf} for large \code{sigma2}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
 Closed form:
-\eqn{(e^{\sigma^2}+2)\sqrt{e^{\sigma^2}-1}}, free of \eqn{\mu}.
+\eqn{\gamma_1 = (e^{\sigma^2} + 2)\sqrt{e^{\sigma^2} - 1}}, free of
+\eqn{\mu}. It is positive at every parameter value and grows without bound
+with the spread of the logarithm: at \eqn{\sigma^2 = 1} it is already 6.18,
+where a gamma of the same mean would need a shape near 0.1 to match it.
+}
+\section{Notation}{
+
+\eqn{\sigma^2 > 0} is the variance of \eqn{\log Y}. The location of the
+logarithm does not enter a standardized moment.
+}
+
+\examples{
+d <- lognormal1_distrib()
+
+# The published form, written out.
+all.equal(skewness(d, list(mu = 0, sigma2 = 1)),
+          (exp(1) + 2) * sqrt(exp(1) - 1))
+
+# The location of the logarithm does not enter it.
+skewness(d, list(mu = c(-2, 0, 5), sigma2 = 0.25))
+
+}
+\seealso{
+\code{\link[=kurtosis.Lognormal1Distrib]{kurtosis.Lognormal1Distrib()}}, which grows faster still;
+\code{\link[=variance.Lognormal1Distrib]{variance.Lognormal1Distrib()}}; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }
 \keyword{internal}

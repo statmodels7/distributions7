@@ -4,16 +4,34 @@
 \alias{mean.Gaussian1Distrib}
 \title{Mean of the Gaussian Distribution}
 \arguments{
-\item{x}{A \code{Gaussian1Distrib}.}
+\item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, any real value)
+and \code{sigma} (the standard deviation, positive), each a numeric vector of
+length 1 or \code{n}. Aligned and validated by name, so a missing or
+out-of-bounds component throws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}.
+Closed form: \eqn{E[Y] = \mu}. The first parameter of this parametrization
+is the mean itself, so the method reads it off and recycles it to the length
+the two parameters imply.
+}
+\examples{
+d <- gaussian1_distrib()
+
+# The first parameter is the mean, and the scale does not move it.
+mean(d, list(mu = c(-1, 0, 4), sigma = 3))
+
+}
+\seealso{
+\code{\link[=variance.Gaussian1Distrib]{variance.Gaussian1Distrib()}}, \code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}} and
+\code{\link[=kurtosis.Gaussian1Distrib]{kurtosis.Gaussian1Distrib()}}, which are the family's other three moments;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the family.
 }
 \keyword{internal}

@@ -4,16 +4,52 @@
 \alias{kurtosis.CauchyDistrib}
 \title{The Cauchy Distribution Has No Kurtosis}
 \arguments{
-\item{x}{A \code{CauchyDistrib}.}
+\item{x}{A \code{CauchyDistrib}, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths, and the list is still aligned and validated.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of \code{NaN}.
+A numeric vector of \code{NaN}, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-\code{NaN}; see \code{\link[=mean.CauchyDistrib]{mean()}}.
+Returns \code{NaN}. The excess kurtosis is the fourth standardized central
+moment less three, so it needs the first four moments of \eqn{Y}, and the
+Cauchy has none of them: its density decays like \eqn{y^{-2}}, and
+\eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges already at \eqn{p = 1}. \code{NaN} is
+returned directly, so that no quadrature is attempted.
+}
+\details{
+The reading a large positive excess kurtosis usually carries, that the tails
+are heavy, is right here and cannot be quantified on this scale: the family
+is heavy-tailed enough that the measure of tail weight is itself undefined.
+A Student t with \eqn{\nu > 4} is the nearest family that reports a number,
+and \eqn{6/(\nu-4)} grows without bound as \eqn{\nu} falls towards 4.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location and \eqn{\sigma > 0} the scale, in the
+parametrization \code{\link[=cauchy_distrib]{cauchy_distrib()}} uses.
+}
+
+\examples{
+d <- cauchy_distrib()
+
+# NaN at every parameter value.
+kurtosis(d, list(mu = 0, sigma = c(1, 2)))
+
+# The Student t is the family that does report a number, above nu = 4.
+kurtosis(student_t1_distrib(), list(mu = 0, sigma = 1, nu = c(1, 5, 10)))
+
+}
+\seealso{
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}} for the full argument;
+\code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} and \code{\link[=variance.CauchyDistrib]{variance.CauchyDistrib()}}, \code{NaN} for the same
+reason; \code{\link[=kurtosis.StudentT1Distrib]{kurtosis.StudentT1Distrib()}}, which reports a number above four
+degrees of freedom.
 }
 \keyword{internal}

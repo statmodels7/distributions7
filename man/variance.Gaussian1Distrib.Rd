@@ -4,16 +4,35 @@
 \alias{variance.Gaussian1Distrib}
 \title{Variance of the Gaussian Distribution}
 \arguments{
-\item{x}{A \code{Gaussian1Distrib}.}
+\item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean) and \code{sigma} (the
+standard deviation, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}.
+Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. This parametrization
+carries the standard deviation, so the variance is its square and
+\code{\link[=std_dev.distrib]{std_dev.distrib()}} returns the parameter back unchanged.
+}
+\examples{
+d <- gaussian1_distrib()
+
+# The square of the second parameter.
+variance(d, list(mu = 0, sigma = c(1, 2, 4)))
+
+# The standard deviation is the parameter itself.
+all.equal(std_dev(d, list(mu = 0, sigma = 3)), 3)
+
+}
+\seealso{
+\code{\link[=mean.Gaussian1Distrib]{mean.Gaussian1Distrib()}}; \code{\link[=variance.Gaussian2Distrib]{variance.Gaussian2Distrib()}} and
+\code{\link[=variance.Gaussian3Distrib]{variance.Gaussian3Distrib()}}, the same law written by its variance and by
+its precision; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.
 }
 \keyword{internal}

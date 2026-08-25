@@ -4,16 +4,39 @@
 \alias{skewness.InvGauss1Distrib}
 \title{Skewness of the Inverse Gaussian Distribution}
 \arguments{
-\item{x}{An \code{InvGauss1Distrib}.}
+\item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{3\sqrt{\phi\mu}}.
+Closed form: \eqn{\gamma_1 = 3\sqrt{\phi\mu}}. It is positive at every
+parameter value and depends on the two parameters only through their
+product, so the whole family is one curve indexed by \eqn{\phi\mu}.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
+}
+
+\examples{
+d <- invgauss1_distrib()
+
+# Three times the square root of the product.
+all.equal(skewness(d, list(mu = 2, phi = 0.5)), 3 * sqrt(1))
+
+# Only the product matters.
+skewness(d, list(mu = c(1, 2, 4), phi = c(4, 2, 1)))
+
+}
+\seealso{
+\code{\link[=kurtosis.InvGauss1Distrib]{kurtosis.InvGauss1Distrib()}}, which is \eqn{5/3} times the square
+of this; \code{\link[=variance.InvGauss1Distrib]{variance.InvGauss1Distrib()}}; \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.
 }
 \keyword{internal}

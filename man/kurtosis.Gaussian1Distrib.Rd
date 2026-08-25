@@ -2,18 +2,36 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Gaussian1Distrib}
 \alias{kurtosis.Gaussian1Distrib}
-\title{Kurtosis of the Gaussian Distribution}
+\title{Excess Kurtosis of the Gaussian Distribution}
 \arguments{
-\item{x}{A \code{Gaussian1Distrib}.}
+\item{x}{A \code{Gaussian1Distrib}, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: zero excess, which is what the scale is set by.
+Exactly zero at every parameter value. The raw fourth standardized moment of
+a Gaussian is 3, and \code{\link[=kurtosis]{kurtosis()}} reports the excess over that number, so
+this family sits at the origin of the scale by construction. Every other
+family's excess kurtosis is read as a comparison with it.
+}
+\examples{
+d <- gaussian1_distrib()
+
+# Zero for every Gaussian, which is what the excess convention means.
+kurtosis(d, list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
+
+}
+\seealso{
+\code{\link[=kurtosis]{kurtosis()}} for the convention; \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}}, which
+is 3, and \code{\link[=kurtosis.LogisticDistrib]{kurtosis.LogisticDistrib()}}, which is 6/5;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.
 }
 \keyword{internal}

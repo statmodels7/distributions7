@@ -4,17 +4,45 @@
 \alias{variance.Lognormal1Distrib}
 \title{Variance of the Lognormal Distribution}
 \arguments{
-\item{x}{A \code{Lognormal1Distrib}.}
+\item{x}{A \code{Lognormal1Distrib}, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}. The variance grows
+like \eqn{e^{2\sigma^2}} and overflows to \code{Inf} well before \code{sigma2}
+reaches 400.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
 Closed form:
-\eqn{(e^{\sigma^2}-1)\,e^{2\mu+\sigma^2}}.
+\deqn{\operatorname{Var}(Y) = (e^{\sigma^2} - 1)\, e^{2\mu + \sigma^2}.}
+The two factors separate the two effects: \eqn{e^{2\mu+\sigma^2}} is the
+square of the mean and sets the scale, and \eqn{e^{\sigma^2} - 1} is the
+squared coefficient of variation and depends on the spread of the logarithm
+alone.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean of \eqn{\log Y} and \eqn{\sigma^2 > 0} its variance.
+}
+
+\examples{
+d <- lognormal1_distrib()
+
+# (exp(sigma2) - 1) exp(2 mu + sigma2).
+all.equal(variance(d, list(mu = 0, sigma2 = 1)), (exp(1) - 1) * exp(1))
+
+# The coefficient of variation depends on sigma2 alone.
+th <- list(mu = c(-2, 0, 5), sigma2 = 0.25)
+std_dev(d, th) / mean(d, th)
+
+}
+\seealso{
+\code{\link[=mean.Lognormal1Distrib]{mean.Lognormal1Distrib()}}, \code{\link[=skewness.Lognormal1Distrib]{skewness.Lognormal1Distrib()}},
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }
 \keyword{internal}

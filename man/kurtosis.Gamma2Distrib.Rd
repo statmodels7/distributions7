@@ -2,18 +2,44 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Gamma2Distrib}
 \alias{kurtosis.Gamma2Distrib}
-\title{Kurtosis of the Gamma Distribution}
+\title{Excess Kurtosis of the Gamma Distribution}
 \arguments{
-\item{x}{A \code{Gamma2Distrib}.}
+\item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form: excess \eqn{6/a = 6\sigma^2/\mu^2}.
+Closed form: \eqn{\gamma_2 = 6/a = 6\sigma^2/\mu^2} with shape
+\eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value and is
+exactly \eqn{3\gamma_1^2/2}, so the family occupies one curve of the
+skewness-kurtosis plane and cannot be tuned along the two axes separately.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{\sigma^2 > 0} the variance and
+\eqn{a = \mu^2/\sigma^2} the shape.
+}
+
+\examples{
+d <- gamma2_distrib()
+
+# The family lies on the curve kurtosis = 1.5 skewness^2.
+th <- list(mu = 2, sigma2 = 1)
+all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
+
+# Six over the implied shape.
+kurtosis(d, list(mu = 2, sigma2 = c(4, 1, 0.25)))
+
+}
+\seealso{
+\code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}}, to which this is tied;
+\code{\link[=kurtosis.ExponentialDistrib]{kurtosis.ExponentialDistrib()}}, the shape-1 case; \code{\link[=gamma2_distrib]{gamma2_distrib()}}.
 }
 \keyword{internal}

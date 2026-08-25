@@ -4,16 +4,30 @@
 \alias{mean.LogisticDistrib}
 \title{Mean of the Logistic Distribution}
 \arguments{
-\item{x}{A \code{LogisticDistrib}.}
+\item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
+(the scale, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}.
+Closed form: \eqn{E[Y] = \mu}. The density is symmetric about \eqn{\mu}, so
+the location is the mean, the median and the mode at once.
+}
+\examples{
+d <- logistic_distrib()
+
+# The location is the mean, and the scale does not move it.
+mean(d, list(mu = c(-1, 0, 4), sigma = 2))
+
+}
+\seealso{
+\code{\link[=variance.LogisticDistrib]{variance.LogisticDistrib()}}, where the scale does enter;
+\code{\link[=kurtosis.LogisticDistrib]{kurtosis.LogisticDistrib()}}; \code{\link[=logistic_distrib]{logistic_distrib()}}.
 }
 \keyword{internal}

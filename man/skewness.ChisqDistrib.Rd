@@ -4,16 +4,34 @@
 \alias{skewness.ChisqDistrib}
 \title{Skewness of the Chi-Squared Distribution}
 \arguments{
-\item{x}{A \code{ChisqDistrib}.}
+\item{x}{A \code{ChisqDistrib}, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{theta$mu}, positive throughout.
 }
 \description{
-Closed form: \eqn{\sqrt{8/\mu}}.
+Closed form: \eqn{\gamma_1 = \sqrt{8/\mu}}. It is positive at every degrees
+of freedom, the support being the positive half-line, and it decays like
+\eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
+Gaussian as its degrees of freedom grow.
+}
+\examples{
+d <- chisq_distrib()
+
+# Square root of eight over the degrees of freedom.
+all.equal(skewness(d, list(mu = 5)), sqrt(8 / 5))
+
+# It vanishes as the degrees of freedom grow.
+skewness(d, list(mu = c(1, 10, 1000)))
+
+}
+\seealso{
+\code{\link[=kurtosis.ChisqDistrib]{kurtosis.ChisqDistrib()}}, which decays twice as fast;
+\code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}} for the containing family; \code{\link[=chisq_distrib]{chisq_distrib()}}.
 }
 \keyword{internal}

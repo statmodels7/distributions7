@@ -2,18 +2,41 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.LogisticDistrib}
 \alias{kurtosis.LogisticDistrib}
-\title{Kurtosis of the Logistic Distribution}
+\title{Excess Kurtosis of the Logistic Distribution}
 \arguments{
-\item{x}{A \code{LogisticDistrib}.}
+\item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 1.2s, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: excess \eqn{6/5}, free of the parameters.
+Constant: \eqn{\gamma_2 = 6/5 = 1.2}, the excess over the Gaussian. The
+family is location-scale with no shape parameter, so a standardized moment
+is a number: every logistic has the same tail weight, a little heavier than
+a Gaussian's and well short of a Laplace's 3.
+}
+\examples{
+d <- logistic_distrib()
+
+# 6 / 5 for every logistic.
+kurtosis(d, list(mu = c(0, 5), sigma = c(1, 3)))
+
+# Between the Gaussian's 0 and the Laplace's 3.
+c(gaussian = kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1)),
+  logistic = kurtosis(d, list(mu = 0, sigma = 1)),
+  laplace  = kurtosis(laplace_distrib(), list(mu = 0, sigma = 1)))
+
+}
+\seealso{
+\code{\link[=skewness.LogisticDistrib]{skewness.LogisticDistrib()}}, the other constant;
+\code{\link[=kurtosis.Gaussian1Distrib]{kurtosis.Gaussian1Distrib()}} and \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}}, the two
+families it sits between; \code{\link[=logistic_distrib]{logistic_distrib()}}.
 }
 \keyword{internal}

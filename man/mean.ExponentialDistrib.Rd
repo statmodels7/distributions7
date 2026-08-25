@@ -4,16 +4,30 @@
 \alias{mean.ExponentialDistrib}
 \title{Mean of the Exponential Distribution}
 \arguments{
-\item{x}{An \code{ExponentialDistrib}.}
+\item{x}{An \code{ExponentialDistrib}, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the mean, positive), a
+numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}, the parameter itself.
+Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
+the mean, so this method reads it off. The rate is its reciprocal.
+}
+\examples{
+d <- exponential_distrib()
+
+# The one parameter is the mean.
+mean(d, list(mu = c(1, 2, 3)))
+
+}
+\seealso{
+\code{\link[=variance.ExponentialDistrib]{variance.ExponentialDistrib()}}, which is the square of this;
+\code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} and \code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}}, the two families that
+contain this one; \code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

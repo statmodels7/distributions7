@@ -4,17 +4,43 @@
 \alias{variance.InvGauss1Distrib}
 \title{Variance of the Inverse Gaussian Distribution}
 \arguments{
-\item{x}{An \code{InvGauss1Distrib}.}
+\item{x}{An \code{InvGauss1Distrib}, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{phi} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{\phi\mu^3}, the dispersion multiplying the
-cube of the mean.
+Closed form: \eqn{\operatorname{Var}(Y) = \phi\mu^3}. The cube is what
+distinguishes this family from the gamma, whose variance function is
+\eqn{\mu^2}: the inverse Gaussian's spread grows faster with the mean, so it
+is the heavier-tailed of the two standard positive-response families.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion.
+}
+
+\examples{
+d <- invgauss1_distrib()
+
+# The dispersion times the cube of the mean.
+all.equal(variance(d, list(mu = 2, phi = 0.5)), 0.5 * 2^3)
+
+# The variance function is cubic, so it climbs faster than a gamma's.
+variance(d, list(mu = c(1, 2, 4), phi = 0.5))
+
+}
+\seealso{
+\code{\link[=mean.InvGauss1Distrib]{mean.InvGauss1Distrib()}}, \code{\link[=skewness.InvGauss1Distrib]{skewness.InvGauss1Distrib()}};
+\code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, whose variance function is the square;
+\code{\link[=variance.InvGauss2Distrib]{variance.InvGauss2Distrib()}} for the other parametrization;
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.
 }
 \keyword{internal}

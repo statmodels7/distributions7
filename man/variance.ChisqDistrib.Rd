@@ -4,16 +4,35 @@
 \alias{variance.ChisqDistrib}
 \title{Variance of the Chi-Squared Distribution}
 \arguments{
-\item{x}{A \code{ChisqDistrib}.}
+\item{x}{A \code{ChisqDistrib}, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{2\mu}.
+Closed form: \eqn{\operatorname{Var}(Y) = 2\mu}. The variance is tied to the
+mean, so the family has one parameter where a gamma has two: it is exactly
+the gamma at \eqn{\sigma^2 = 2\mu}, and a sample whose variance is far from
+twice its mean is not chi-squared at any degrees of freedom.
+}
+\examples{
+d <- chisq_distrib()
+
+# Twice the mean.
+all.equal(variance(d, list(mu = 5)), 10)
+
+# The gamma at sigma2 = 2 mu is the same law.
+all.equal(variance(d, list(mu = 5)),
+          variance(gamma2_distrib(), list(mu = 5, sigma2 = 10)))
+
+}
+\seealso{
+\code{\link[=mean.ChisqDistrib]{mean.ChisqDistrib()}}; \code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, where the two
+moments are free of each other; \code{\link[=chisq_distrib]{chisq_distrib()}}.
 }
 \keyword{internal}

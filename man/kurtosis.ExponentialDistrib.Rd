@@ -2,18 +2,36 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.ExponentialDistrib}
 \alias{kurtosis.ExponentialDistrib}
-\title{Kurtosis of the Exponential Distribution}
+\title{Excess Kurtosis of the Exponential Distribution}
 \arguments{
-\item{x}{An \code{ExponentialDistrib}.}
+\item{x}{An \code{ExponentialDistrib}, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}. The value is not read, only its length.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 6s, the length of \code{theta$mu}.
 }
 \description{
-Closed form: excess 6, free of the parameter.
+Constant: \eqn{\gamma_2 = 6}, the excess over the Gaussian. Like the
+skewness it is fixed for the whole family, there being no shape parameter
+for a standardized moment to depend on.
+}
+\examples{
+d <- exponential_distrib()
+
+# Six, whatever the mean, and the two containing families agree.
+c(exponential = kurtosis(d, list(mu = 3)),
+  gamma       = kurtosis(gamma2_distrib(), list(mu = 3, sigma2 = 9)),
+  weibull     = kurtosis(weibull1_distrib(), list(mu = 3, sigma = 1)))
+
+}
+\seealso{
+\code{\link[=skewness.ExponentialDistrib]{skewness.ExponentialDistrib()}}, the other constant;
+\code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}}, which is this at shape 1;
+\code{\link[=kurtosis.Weibull1Distrib]{kurtosis.Weibull1Distrib()}}, which is this at shape 1 too;
+\code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

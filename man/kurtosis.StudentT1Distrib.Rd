@@ -2,19 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.StudentT1Distrib}
 \alias{kurtosis.StudentT1Distrib}
-\title{Kurtosis of the Student t Distribution}
+\title{Excess Kurtosis of the Student t Distribution}
 \arguments{
-\item{x}{A \code{StudentT1Distrib}.}
+\item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
+(positive), each a numeric vector of length 1 or \code{n}. Only \code{nu} enters the
+value.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length equal to the longest
+of the three components, \code{Inf} where \eqn{2 < \nu \le 4} and \code{NaN} where
+\eqn{\nu \le 2}.
 }
 \description{
-Closed form: excess \eqn{6/(\nu-4)} for \eqn{\nu > 4}, infinite for
-\eqn{2 < \nu \le 4}, and \code{NaN} at or below two.
+Closed form: \eqn{\gamma_2 = 6/(\nu-4)} for \eqn{\nu > 4}, \code{Inf} for
+\eqn{2 < \nu \le 4}, and \code{NaN} at or below two. The value is the toolkit's
+standard example of tail weight running with a shape parameter: it is 6 at
+\eqn{\nu = 5}, 1 at \eqn{\nu = 10} and tends to the Gaussian's zero as the
+degrees of freedom grow.
+}
+\section{Notation}{
+
+\eqn{\nu > 0} is the degrees of freedom. Neither the location nor the scale
+enters a standardized moment.
+}
+
+\examples{
+d <- student_t1_distrib()
+
+# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+kurtosis(d, list(mu = 0, sigma = 1, nu = c(2, 3, 4, 5)))
+
+# 6 / (nu - 4), tending to the Gaussian's zero.
+kurtosis(d, list(mu = 0, sigma = 1, nu = c(10, 100, 1e4)))
+
+}
+\seealso{
+\code{\link[=skewness.StudentT1Distrib]{skewness.StudentT1Distrib()}}, whose threshold is 3;
+\code{\link[=kurtosis.CauchyDistrib]{kurtosis.CauchyDistrib()}}, the \eqn{\nu = 1} case;
+\code{\link[=kurtosis.SkewTDistrib]{kurtosis.SkewTDistrib()}}; \code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }
 \keyword{internal}

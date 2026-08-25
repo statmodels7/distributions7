@@ -4,17 +4,50 @@
 \alias{variance.StudentT1Distrib}
 \title{Variance of the Student t Distribution}
 \arguments{
-\item{x}{A \code{StudentT1Distrib}.}
+\item{x}{A \code{StudentT1Distrib}, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length equal to the longest of the
+three components, \code{Inf} where \eqn{1 < \nu \le 2} and \code{NaN} where
+\eqn{\nu \le 1}.
 }
 \description{
-Closed form: \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, infinite for
-\eqn{1 < \nu \le 2}, and \code{NaN} at or below one.
+Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2\nu/(\nu-2)} for
+\eqn{\nu > 2}, \code{Inf} for \eqn{1 < \nu \le 2}, and \code{NaN} at or below one. The
+three answers are three different statements: a finite value, a second
+moment that diverges to infinity while the first exists, and a second moment
+that is undefined because the first is.
+}
+\details{
+The factor \eqn{\nu/(\nu-2)} exceeds one at every finite \eqn{\nu} and falls
+onto it as the degrees of freedom grow, so the scale is a lower bound on the
+standard deviation and is attained only in the Gaussian limit. It is 3 at
+\eqn{\nu = 3} and 1.25 at \eqn{\nu = 10}, so the inflation is large only
+close to the threshold.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale and \eqn{\nu > 0} the degrees of freedom.
+}
+
+\examples{
+d <- student_t1_distrib()
+
+# NaN, infinite and finite, in that order, as nu crosses its two thresholds.
+variance(d, list(mu = 0, sigma = 1, nu = c(1, 1.5, 2, 3)))
+
+# The scale is a lower bound, approached as the degrees of freedom grow.
+variance(d, list(mu = 0, sigma = 2, nu = c(3, 10, 1e4)))
+
+}
+\seealso{
+\code{\link[=kurtosis.StudentT1Distrib]{kurtosis.StudentT1Distrib()}}, whose threshold is 4;
+\code{\link[=variance.CauchyDistrib]{variance.CauchyDistrib()}}, the \eqn{\nu = 1} case;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }
 \keyword{internal}

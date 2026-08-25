@@ -4,17 +4,31 @@
 \alias{mean.ChisqDistrib}
 \title{Mean of the Chi-Squared Distribution}
 \arguments{
-\item{x}{A \code{ChisqDistrib}.}
+\item{x}{A \code{ChisqDistrib}, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the mean and the degrees
+of freedom, positive), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu}, which for this family is also the
-degrees of freedom.
+Closed form: \eqn{E[Y] = \mu}. The family carries one parameter, which is
+both the mean and the degrees of freedom, the two coinciding for this law.
+It is not restricted to whole numbers here, so the family is the gamma with
+variance tied to twice the mean.
+}
+\examples{
+d <- chisq_distrib()
+
+# The one parameter is the mean and the degrees of freedom at once.
+mean(d, list(mu = c(1, 5, 20)))
+
+}
+\seealso{
+\code{\link[=variance.ChisqDistrib]{variance.ChisqDistrib()}}, which is twice this;
+\code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}} for the containing family; \code{\link[=chisq_distrib]{chisq_distrib()}}.
 }
 \keyword{internal}

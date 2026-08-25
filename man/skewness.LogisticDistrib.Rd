@@ -4,16 +4,32 @@
 \alias{skewness.LogisticDistrib}
 \title{Skewness of the Logistic Distribution}
 \arguments{
-\item{x}{A \code{LogisticDistrib}.}
+\item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: zero, the density being symmetric.
+Exactly zero at every parameter value. The density is symmetric about
+\eqn{\mu}, so every odd central moment vanishes. The constant is recycled to
+the length the parameters imply.
+}
+\examples{
+d <- logistic_distrib()
+
+# Zero at every location and scale, with one value per setting.
+skewness(d, list(mu = c(0, 5), sigma = c(1, 2)))
+
+}
+\seealso{
+\code{\link[=kurtosis.LogisticDistrib]{kurtosis.LogisticDistrib()}}, which is 6/5;
+\code{\link[=mean.LogisticDistrib]{mean.LogisticDistrib()}}; \code{\link[=logistic_distrib]{logistic_distrib()}}.
 }
 \keyword{internal}

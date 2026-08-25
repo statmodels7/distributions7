@@ -4,16 +4,36 @@
 \alias{variance.LogisticDistrib}
 \title{Variance of the Logistic Distribution}
 \arguments{
-\item{x}{A \code{LogisticDistrib}.}
+\item{x}{A \code{LogisticDistrib}, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
+(the scale, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}.
+Closed form: \eqn{\operatorname{Var}(Y) = \pi^2\sigma^2/3}. The scale is not
+the standard deviation: it is smaller by \eqn{\pi/\sqrt3 \approx 1.8138}. A
+logistic scale and a Gaussian one are therefore not comparable as they
+stand, which matters whenever a logistic is used as a heavier-tailed
+substitute for a Gaussian.
+}
+\examples{
+d <- logistic_distrib()
+
+# pi^2 sigma^2 / 3.
+all.equal(variance(d, list(mu = 0, sigma = 2)), pi^2 * 4 / 3)
+
+# The standard deviation is pi / sqrt(3) times the scale.
+std_dev(d, list(mu = 0, sigma = 1))
+
+}
+\seealso{
+\code{\link[=mean.LogisticDistrib]{mean.LogisticDistrib()}}, \code{\link[=kurtosis.LogisticDistrib]{kurtosis.LogisticDistrib()}},
+\code{\link[=logistic_distrib]{logistic_distrib()}}.
 }
 \keyword{internal}

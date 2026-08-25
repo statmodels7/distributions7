@@ -4,17 +4,33 @@
 \alias{mean.Gamma2Distrib}
 \title{Mean of the Gamma Distribution}
 \arguments{
-\item{x}{A \code{Gamma2Distrib}.}
+\item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{sigma2} (the variance, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{E[Y] = \mu}, a parameter of this
-parametrization.
+Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and the
+variance as its two parameters, so both of the first two moments are reads,
+and the shape and rate are recovered from them where they are needed.
+}
+\examples{
+d <- gamma2_distrib()
+
+# The first parameter is the mean.
+mean(d, list(mu = c(1, 2, 3), sigma2 = 1))
+
+}
+\seealso{
+\code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, the other parameter;
+\code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}}; \code{\link[=mean.Gamma1Distrib]{mean.Gamma1Distrib()}} for the mean-dispersion
+parametrization; \code{\link[=gamma2_distrib]{gamma2_distrib()}}.
 }
 \keyword{internal}

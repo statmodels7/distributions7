@@ -4,17 +4,43 @@
 \alias{skewness.Gamma2Distrib}
 \title{Skewness of the Gamma Distribution}
 \arguments{
-\item{x}{A \code{Gamma2Distrib}.}
+\item{x}{A \code{Gamma2Distrib}, from \code{\link[=gamma2_distrib]{gamma2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$sigma2))}, positive throughout.
 }
 \description{
-Closed form: \eqn{2/\sqrt{a}} with shape
-\eqn{a = \mu^2/\sigma^2}, hence \eqn{2\sigma/\mu}.
+Closed form: \eqn{\gamma_1 = 2/\sqrt a = 2\sigma/\mu} with shape
+\eqn{a = \mu^2/\sigma^2}. It is positive at every parameter value, the
+support being the positive half-line, and it is exactly twice the
+coefficient of variation, so a gamma's asymmetry and its relative spread
+carry the same information.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{\sigma^2 > 0} the variance and
+\eqn{a = \mu^2/\sigma^2} the shape.
+}
+
+\examples{
+d <- gamma2_distrib()
+
+# Twice the coefficient of variation.
+all.equal(skewness(d, list(mu = 2, sigma2 = 1)), 2 * sqrt(1) / 2)
+
+# It flattens as the implied shape grows.
+skewness(d, list(mu = 2, sigma2 = c(4, 1, 0.25)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}}, which is \eqn{3/2} times the square of
+this; \code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}; \code{\link[=skewness.ExponentialDistrib]{skewness.ExponentialDistrib()}}, the
+shape-1 case; \code{\link[=gamma2_distrib]{gamma2_distrib()}}.
 }
 \keyword{internal}
