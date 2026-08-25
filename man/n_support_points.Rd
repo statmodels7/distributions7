@@ -7,16 +7,29 @@
 n_support_points(distrib)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{A \code{distrib} object, whose \code{bounds} are read.}
 }
 \value{
-A single number.
+A single number: the count of integer points between the bounds
+inclusive, or \code{Inf}.
 }
 \description{
-How many points the distribution's support contains, \code{Inf} when it is
-unbounded.
+Returns how many points the distribution's support contains, read off its
+\code{bounds}, and \code{Inf} when the support is unbounded above. It is what
+\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}} counts against the parameters a zero
+wrapper would spend.
+}
+\examples{
+# A count family has an unbounded support.
+distributions7:::n_support_points(poisson_distrib())
+
+# A binomial has size + 1 points, and a Bernoulli has two.
+c(binomial5 = distributions7:::n_support_points(binomial_distrib(size = 5)),
+  bernoulli = distributions7:::n_support_points(bernoulli_distrib()))
+
 }
 \seealso{
-\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}}
+\code{\link[=check_support_is_rich_enough]{check_support_is_rich_enough()}}, the consumer, and
+\code{\link[=zero_inflated]{zero_inflated()}} for the counting rule.
 }
 \keyword{internal}

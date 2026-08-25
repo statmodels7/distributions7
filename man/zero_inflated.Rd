@@ -2,91 +2,127 @@
 % Please edit documentation in R/zero_inflated.R
 \name{zero_inflated}
 \alias{zero_inflated}
-\title{Zero-Inflated Distribution Object (Discrete)}
+\title{Zero-Inflated Distribution Object}
 \usage{
 zero_inflated(distrib, link_zi = logit_link())
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{discrete_distrib} whose support
-includes 0, e.g. \code{\link[=poisson_distrib]{poisson_distrib()}} or \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
+includes 0, such as \code{\link[=poisson_distrib]{poisson_distrib()}} or \code{\link[=negbin2_distrib]{negbin2_distrib()}}. A
+continuous distribution, an already-wrapped one, and a support of fewer
+than \code{n_params + 2} points are each rejected with an error saying which
+condition failed.}
 
-\item{link_zi}{A link function object for the zero-inflation probability \eqn{\zeta}.
-Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}.}
+\item{link_zi}{The link carrying \eqn{\zeta} to the unconstrained scale, a
+\code{linkfunctions7::link} object. Defaults to
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, which keeps it strictly inside
+\eqn{(0, 1)} at every point of the free scale.}
 }
 \value{
-An S7 object of class \code{ZeroInflatedDistrib} (inheriting from \code{discrete_distrib}).
+An S7 object of class \link{ZeroInflatedDistrib}, inheriting from
+\code{discrete_distrib}. Its \code{params} are the parent's followed by \code{zi};
+\code{n_params} is the parent's plus one; \code{params_bounds$zi} is
+\eqn{(0, 1)}; \code{link_params$zi} is \code{link_zi} and the rest are the parent's;
+\code{params_interpretation} gains \code{"prob. of structural zero"}; and
+\code{distrib_name} is \code{"zero-inflated "} followed by the parent's.
 }
 \description{
-Creates a zero-inflated version of an existing \strong{discrete} distribution: a
-mixture that keeps the parent intact and adds a second source of zeros, with
-probability \eqn{\zeta} (parameter \code{zi}).
-
-Zero-inflation is the right wrapper when the data contain \emph{more} zeros than
-the parent can produce, and a zero can plausibly have come either from the count
-process or from a separate mechanism that switches it off. If instead the zeros
-come from one identifiable mechanism and the positive values from another, the
-appropriate model is the hurdle, \code{\link[=zero_adjusted]{zero_adjusted()}}.
+Wraps a DISCRETE distribution into a mixture that keeps the parent intact
+and adds a second source of zeros, with probability \eqn{\zeta} carried by
+the new parameter \code{zi}:
+\deqn{P(Y = y; \theta, \zeta) = \begin{cases}
+  \zeta + (1 - \zeta)f(0; \theta) & y = 0 \\
+  (1 - \zeta)f(y; \theta) & y > 0. \end{cases}}
+It is the wrapper to reach for when the data carry MORE zeros than the
+parent can produce and a zero may plausibly have come either from the count
+process or from a mechanism that switches it off.
 }
-\details{
-\deqn{
-P(Y=y; \theta, \zeta) =
-\begin{cases}
-\zeta + (1 - \zeta)f(0; \theta) & y = 0 \\
-(1 - \zeta)f(y; \theta) & y > 0
-\end{cases}
+\section{Zero-inflation against zero-adjustment}{
+The two wrappers differ in what they do to the mass the parent already
+places at zero. Zero-inflation ADDS to it, so
+\eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can produce more
+zeros than the parent and never fewer, and the observed zeros are a mixture
+of structural and sampling ones that no single observation can be assigned
+to. Zero-adjustment REPLACES it: the parent is truncated away from zero and
+the mass there becomes a free parameter, which may sit above or below
+\eqn{f(0)}.
+
+A hurdle model therefore also handles UNDER-dispersed zeros, and its
+likelihood factorizes into a binary part and a positive-count part that can
+be read separately. Zero-inflation keeps the parent's interpretation, so
+\eqn{\theta} still describes the count process the non-structural
+observations come from, while the hurdle re-interprets \eqn{\theta} as the
+parameters of a truncated law.
 }
 
-\strong{Zero-inflation versus zero-adjustment.} The two wrappers differ in what
-they do to the mass the parent already places at zero. Zero-inflation
-\emph{adds} to it, so \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can
-only ever produce more zeros than the parent, never fewer, and the observed zeros
-are a mixture of structural and sampling ones that no single observation can be
-assigned to. Zero-adjustment (\code{\link[=zero_adjusted]{zero_adjusted()}}) \emph{replaces} it: the
-parent is truncated away from zero and the mass at zero becomes a free parameter,
-which can be above or below \eqn{f(0)}. A hurdle model therefore also handles
-\emph{under}-dispersed zeros, and its likelihood factorizes into a binary part and
-a positive-count part that can be read separately. Zero-inflation keeps the
-parent's interpretation --- \eqn{\theta} still describes the count process the
-non-structural observations come from --- while the hurdle re-interprets
-\eqn{\theta} as the parameters of a truncated law.
-
-\strong{What the parent must be.} Zero-inflation adds mass to a zero that already
-carries some, so it requires a discrete distribution with \eqn{0} in its support.
-A continuous distribution has \eqn{P(Y = 0) = 0} and nothing to inflate; putting a
-point mass at zero next to a density is zero-\emph{adjustment}, and
-\code{\link[=zero_adjusted]{zero_adjusted()}} handles it. Constructing the object also fails when the
-result would not be identified:
+\section{What the parent must be}{
+Zero-inflation adds mass to a zero that already carries some, so it needs a
+discrete distribution with 0 in its support. A continuous one has
+\eqn{P(Y = 0) = 0} and nothing to inflate; placing a point mass at zero
+beside a density is zero-ADJUSTMENT, and \code{\link[=zero_adjusted]{zero_adjusted()}} handles it. The
+constructor also fails where the result would not be identified:
 \itemize{
-\item the parent already models a probability of zero (a wrapper cannot be
-stacked on another wrapper: only the total mass at zero would be identified);
-\item the support is too small for one more parameter --- a distribution on
-\eqn{k} points has \eqn{k-1} free probabilities, so at least
-\code{n_params + 2} support points are needed. This rules out the Bernoulli
-and \code{binomial_distrib(size = 1)}, where \code{mu} and \code{zi} between
-them describe a single free cell.
+\item the parent already models a probability of zero, since only the total mass
+at zero would then be identified;
+\item the support is too small for one more parameter. A distribution on \eqn{k}
+points has \eqn{k-1} free probabilities, so at least \code{n_params + 2} support
+points are needed. This rules out the Bernoulli and
+\code{binomial_distrib(size = 1)}, where \code{mu} and \code{zi} between them describe a
+single free cell.
 }
 
-A large support is necessary but not sufficient: with \eqn{\mu} large enough that
-\eqn{f(0)} underflows, or \eqn{\zeta} close to 0, the ridge reappears in the data
-rather than in the model. \code{\link[=fit_distrib]{fit_distrib()}} reports the standard errors
-that reveal it.
-
-The resulting object supports the full \code{distrib} API: pdf, cdf, quantile, rng,
-analytical gradient, observed and expected Hessian (all derived from the parent's),
-plus numerical moments via \code{\link[=moment]{moment()}}.
+A large support is NECESSARY without being sufficient. With \eqn{\mu} large
+enough that \eqn{f(0)} underflows, or \eqn{\zeta} close to zero, the ridge
+reappears in the data instead of in the model, and \code{\link[=fit_distrib]{fit_distrib()}} reports
+the standard errors that reveal it.
 }
+
+\section{What the result supports}{
+The whole \code{distrib} contract: the mass function, the distribution function,
+the quantile function, the generator, the analytic score, the observed and
+the expected Hessian, and the third and fourth derivatives from the shared
+wrapper machinery. The moments come from \code{\link[=moment]{moment()}} numerically.
+}
+
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\theta} its parameters,
+\eqn{\zeta} the probability of a structural zero and \eqn{k} the number of
+support points.
+}
+
 \examples{
 zip <- zero_inflated(poisson_distrib())
-distrib_pdf(zip, 0:5, list(mu = 3, zi = 0.2))
+theta <- list(mu = 3, zi = 0.2)
+zip@params
 
-# More mass at zero than the Poisson alone can put there
-distrib_pdf(zip, 0, list(mu = 3, zi = 0.2)) > dpois(0, 3)
+distrib_pdf(zip, 0:5, theta)
 
-# A Bernoulli has no room for a second parameter
+# More mass at zero than the Poisson alone can put there, and the rest of
+# the mass function shrunk by 1 - zi.
+c(inflated = distrib_pdf(zip, 0, theta), poisson = dpois(0, 3))
+all.equal(distrib_pdf(zip, 1:5, theta), 0.8 * dpois(1:5, 3))
+
+# It is still a distribution: the mass sums to one.
+sum(distrib_pdf(zip, 0:200, theta))
+
+# A fit recovers both parameters, the extra zeros identifying zi.
+set.seed(1)
+y <- distrib_rng(zip, 2000, theta)
+round(coef(fit_distrib(zip, y)), 3)
+
+# A Bernoulli has no room for a second parameter, and a wrapper cannot be
+# stacked on another.
 try(zero_inflated(bernoulli_distrib()))
+try(zero_inflated(zero_adjusted(poisson_distrib())))
+
+# Nor can a continuous parent be inflated: there is no mass at zero to add
+# to, and the message names the wrapper that does apply.
+try(zero_inflated(gaussian1_distrib()))
 
 }
 \seealso{
 \code{\link[=zero_adjusted]{zero_adjusted()}} for the hurdle counterpart,
-\code{\link[=check_distrib]{check_distrib()}} to validate the result.
+\link{ZeroInflatedDistrib} for the class, \code{\link[=truncated]{truncated()}}, which the hurdle uses
+internally, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
 }

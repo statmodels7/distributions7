@@ -2,23 +2,76 @@
 % Please edit documentation in R/zero_inflated.R
 \name{distrib_gradient.ZeroInflatedDistrib}
 \alias{distrib_gradient.ZeroInflatedDistrib}
-\title{Zero-Inflated Analytical Gradient}
+\title{Zero-Inflated Score}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. \code{zi} rides a logit by default, so the two differ.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list with one numeric vector per parameter, in
+\code{distrib@params} order.
 }
 \description{
-Score function of the zero-inflated model. For the parent's parameters the score is
-the parent's score weighted by \eqn{w = (1-\zeta)f(0)/L_0} at \eqn{y=0} (and 1 otherwise),
-where \eqn{L_0 = \zeta + (1-\zeta)f(0)}. For \eqn{\zeta}:
-\deqn{\dfrac{\partial \ell}{\partial \zeta} = \mathbb{I}(y=0)\dfrac{1-f(0)}{L_0} - \mathbb{I}(y>0)\dfrac{1}{1-\zeta}}
+Computes the first derivatives of the zero-inflated log-mass in closed form.
+For the parent's parameters the score is the parent's own, weighted by the
+posterior probability that an observed zero came from the parent,
+\deqn{\frac{\partial \ell}{\partial \theta_i} = w\, s_i(y), \qquad
+  w = \begin{cases} \dfrac{(1-\zeta)f(0)}{L_0} & y = 0 \\ 1 & y > 0,
+  \end{cases}}
+and for the inflation parameter
+\deqn{\frac{\partial \ell}{\partial \zeta}
+  = \mathbb{I}(y = 0)\frac{1 - f(0)}{L_0}
+  - \mathbb{I}(y > 0)\frac{1}{1 - \zeta}.}
+}
+\details{
+A positive observation carries no information about \eqn{\zeta} beyond the
+\eqn{(1-\zeta)} factor, which is why its \eqn{\zeta} component is the same
+number at every such point. A zero carries all of it, and its weight
+\eqn{w} is what shares the credit between the two mechanisms.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score, \eqn{H} its observed
+Hessian and \eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+set.seed(2)
+y <- distrib_rng(d, 200, theta)
+
+g <- distrib_gradient(d, y, theta)
+vapply(g, sum, numeric(1))
+
+# Against a numerical derivative of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+
+# Every positive observation gives the same zi component, -1 / (1 - zi).
+c(unique(round(g$zi[y > 0], 12)), theory = -1 / 0.75)
+
+# And the parent's component is zero at a zero only in the limit: it is
+# the parent's score there, weighted down by w.
+c(weighted = g$mu[y == 0][1], unweighted = distrib_gradient(
+    poisson_distrib(), 0, list(mu = 3))$mu)
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_hessian.ZeroInflatedDistrib]{distrib_hessian.ZeroInflatedDistrib()}} for the second order,
+\code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian.ZeroInflatedDistrib()}} for the information, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

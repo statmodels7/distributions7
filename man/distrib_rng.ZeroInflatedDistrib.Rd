@@ -4,19 +4,46 @@
 \alias{distrib_rng.ZeroInflatedDistrib}
 \title{Zero-Inflated Random Number Generator}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of length \code{n}.
 }
 \description{
-Draws from the wrapped distribution, then replaces a Bernoulli(\eqn{\zeta}) fraction
-of the draws with structural zeros.
+Draws \code{n} values from the parent, then replaces a Bernoulli(\eqn{\zeta})
+fraction of them with structural zeros. It consumes the parent's draws
+followed by \code{n} uniforms, so the stream is reproducible under
+\code{\link[base:Random]{base::set.seed()}} but is not the parent's stream with a filter: the
+uniforms come after.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+
+set.seed(1)
+distrib_rng(d, 10, theta)
+
+# A large sample reproduces the inflated mass at zero, which is well above
+# the parent's.
+set.seed(1)
+big <- distrib_rng(d, 20000, theta)
+c(sampled = mean(big == 0), exact = distrib_pdf(d, 0, theta),
+  parent = dpois(0, 3))
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf.ZeroInflatedDistrib()}} for the mass function these
+are drawn from, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

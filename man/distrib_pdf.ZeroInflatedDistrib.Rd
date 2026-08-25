@@ -4,21 +4,60 @@
 \alias{distrib_pdf.ZeroInflatedDistrib}
 \title{Zero-Inflated Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A point off the parent's support
+returns whatever the parent returns there, scaled by \eqn{1-\zeta}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi},
+each a numeric vector of length 1 or of the length of \code{y}. \code{zi} must lie
+strictly inside \eqn{(0, 1)}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned. The
+logarithm is taken of the mixture, not inside the parent, so it underflows
+where the mixture does. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{P(Y=y) = \zeta\,\mathbb{I}(y=0) + (1-\zeta) f(y; \theta)}
-where \eqn{f} is the PMF of the wrapped distribution.
+Computes the zero-inflated mass function
+\deqn{P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1-\zeta)\, f(y; \theta),}
+with \eqn{f} the parent's mass function. Inflation can only ADD zeros: the
+mass at zero is \eqn{\zeta + (1-\zeta)f(0)}, which exceeds \eqn{f(0)} for
+every \eqn{\zeta > 0}, and no single observed zero can be attributed to one
+mechanism or the other.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+
+distrib_pdf(d, 0:5, theta)
+
+# Which is the mixture written out.
+y <- 0:5
+all.equal(distrib_pdf(d, y, theta), 0.25 * (y == 0) + 0.75 * dpois(y, 3))
+
+# The mass at zero exceeds the parent's, inflation adding to it.
+c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
+
+# And the whole mass function still sums to one.
+sum(distrib_pdf(d, 0:200, theta))
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf.ZeroInflatedDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient.ZeroInflatedDistrib()}} for the score,
+\code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf.ZeroAdjustedDiscreteDistrib()}} for the wrapper that replaces
+the mass at zero, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

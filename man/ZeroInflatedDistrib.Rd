@@ -18,37 +18,35 @@ ZeroInflatedDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
-
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
-
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
-
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
 \item{parent_distrib}{The wrapped \code{discrete_distrib} object.}
+
+\item{...}{The properties of the parent \code{distrib} class, listed under Value.}
 }
 \value{
-An object of class \code{ZeroInflatedDistrib}.
+An S7 object of class \code{ZeroInflatedDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. It carries \code{parent_distrib} beside
+the parent's \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params} and
+\code{params_smooth}. For an object built by \code{\link[=zero_inflated]{zero_inflated()}} the parameters
+are the parent's followed by \code{zi}, whose bound is \eqn{(0, 1)} and whose
+interpretation is \code{"prob. of structural zero"}.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the zero-inflated version of a
-wrapped discrete distribution: a mixture of a point mass at zero (with probability
-\eqn{\zeta}) and the original count distribution.
+The S7 class of the zero-inflated version of a discrete distribution, with
+mass function
+\deqn{P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1 - \zeta)\, f(y; \theta).}
+It inherits from \code{discrete_distrib} and carries the parent's parameters
+followed by \code{zi}, which is the probability \eqn{\zeta} of a structural zero
+and rides a link of its own.
+
+Build one with \code{\link[=zero_inflated]{zero_inflated()}}, which checks that the parent is discrete,
+is not already a zero wrapper, and has enough support points for the extra
+parameter to be identified. This page documents the raw S7 constructor,
+which checks none of that.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient()}},
@@ -57,9 +55,28 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.ZeroInflatedDistrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+The third and fourth derivatives come from the shared wrapper machinery in
+\code{wrapper_derivatives.R}; everything else is inherited from
+\code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+S7::S7_inherits(d, discrete_distrib)
+
+# The parent's parameters, then zi last with its own link and bound.
+d@params
+d@params_bounds$zi
+vapply(d@link_params, function(l) l@link_name, character(1))
+d@params_interpretation
+
+# Inflation can only ADD zeros: the mass at zero exceeds the parent's.
+c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
+}
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=zero_inflated]{zero_inflated()}} to build one, \link{ZeroAdjustedDiscreteDistrib} for
+the wrapper that REPLACES the mass at zero where this one adds to it, and
+\code{\link[=zero_adjusted]{zero_adjusted()}}, the constructor to reach for with a continuous
+parent.
 }

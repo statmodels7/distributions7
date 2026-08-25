@@ -2,22 +2,84 @@
 % Please edit documentation in R/zero_inflated.R
 \name{distrib_hessian.ZeroInflatedDistrib}
 \alias{distrib_hessian.ZeroInflatedDistrib}
-\title{Zero-Inflated Analytical Observed Hessian}
+\title{Zero-Inflated Observed Hessian}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors, one per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Observed Hessian of the zero-inflated model, combining the parent's observed Hessian
-with rank-one corrections at \eqn{y=0} (see the old package documentation for the full
-derivation).
+Computes the second derivatives of the zero-inflated log-mass in closed
+form. At a POSITIVE observation the parent block is the parent's own
+Hessian, the mixed block is zero and the \eqn{\zeta} block is
+\eqn{-1/(1-\zeta)^2}. At a ZERO every block picks up the mixture's
+correction:
+\deqn{\ell^{(\theta_i\theta_j)} = w\,H_{ij}(0) + w(1-w)\,s_i(0)s_j(0),
+  \qquad
+  \ell^{(\theta_i\zeta)} = -\frac{f(0)\,s_i(0)}{L_0^2},
+  \qquad
+  \ell^{(\zeta\zeta)} = -\frac{(1 - f(0))^2}{L_0^2},}
+with \eqn{w = (1-\zeta)f(0)/L_0} the posterior weight of the parent
+component.
+}
+\details{
+The parent block is the ordinary two-component mixture curvature: the
+weighted Hessian plus the variance of the score across the two components,
+\eqn{w(1-w)} being that variance's weight when one component's score is
+zero.
+
+The mixed block collapses. Written out it is
+\eqn{-f'(0)/L_0 - (1-\zeta)f'(0)(1 - f(0))/L_0^2}, and the bracket is
+exactly one, so the whole thing is \eqn{-f'(0)/L_0^2}.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score, \eqn{H} its observed
+Hessian and \eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+set.seed(2)
+y <- distrib_rng(d, 200, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# At a positive observation the mixed block is exactly zero and the zi
+# block is a constant; at a zero neither is.
+rbind(positive = c(mu_zi = H$mu_zi[y > 0][1], zi_zi = H$zi_zi[y > 0][1]),
+      at_zero = c(mu_zi = H$mu_zi[y == 0][1], zi_zi = H$zi_zi[y == 0][1]))
+-1 / 0.75^2
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient.ZeroInflatedDistrib()}} for the first order,
+\code{\link[=distrib_expected_hessian.ZeroInflatedDistrib]{distrib_expected_hessian.ZeroInflatedDistrib()}} for the expectation, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

@@ -2,26 +2,41 @@
 % Please edit documentation in R/zero_inflated.R
 \name{split_mix_theta}
 \alias{split_mix_theta}
-\title{Split a Wrapper's Parameters From Its Parent's}
+\title{Split a Wrapper's Parameter From Its Parent's}
 \usage{
 split_mix_theta(distrib, theta)
 }
 \arguments{
-\item{distrib}{A zero-inflated or zero-adjusted distribution object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} or a zero-adjusted object, whose
+\code{parent_distrib} supplies the names of the first block.}
 
-\item{theta}{A named list of parameters, already aligned.}
+\item{theta}{A named list of parameters, already aligned, the parent's
+followed by the wrapper's.}
 }
 \value{
-A list with \code{orig}, the parent's parameters, and \code{mix},
-the wrapper's own.
+A named list with \code{orig}, the parent's parameters as a named list,
+and \code{mix}, the wrapper's parameter as a numeric vector.
 }
 \description{
-Separates the full \code{theta} into the parent distribution's parameters and
-the single mixture parameter the wrapper adds.
+Separates a full \code{theta} into the parent distribution's parameters and the
+single mixing parameter the wrapper adds. Both zero wrappers append their
+parameter LAST, so the split is positional and needs no name matching, which
+keeps it correct for a parent whose own parameter happens to be called \code{zi}
+or \code{pi}.
 }
-\details{
-Both zero wrappers append their parameter last, so the split is positional and
-does not depend on what that parameter is called -- \code{zi} for inflation,
-\code{pi} for adjustment.
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+p <- distributions7:::split_mix_theta(
+  d, distributions7:::align_theta(d, theta))
+str(p)
+
+# The first block is exactly what the parent expects.
+all.equal(distrib_pdf(d@parent_distrib, 0:3, p$orig), dpois(0:3, 3))
+
+}
+\seealso{
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}}, whose methods all begin
+with this.
 }
 \keyword{internal}

@@ -7,30 +7,51 @@
 check_support_is_rich_enough(distrib, fun)
 }
 \arguments{
-\item{distrib}{The parent distribution being wrapped.}
+\item{distrib}{The candidate parent, a \code{distrib} object.}
 
-\item{fun}{The calling constructor's name, used in the message.}
+\item{fun}{The name of the calling constructor, a single string, quoted in
+the message.}
 }
 \value{
-Invisibly \code{NULL}; raises an error when the support is too small.
+\code{NULL}, invisibly, when the support is large enough. Otherwise it
+signals an error giving the point count, the parameter count and the
+count required.
 }
 \description{
-Enforces the counting rule that makes a zero wrapper identifiable.
+Signals an error when the parent's support has too few points for the zero
+wrapper's extra parameter to be identified. A discrete distribution on
+\eqn{k} points has \eqn{k - 1} free probabilities, and a wrapper spends
+\code{n_params + 1} of them, so \eqn{k \ge n_{params} + 2} is necessary. The rule
+is the SAME for both wrappers.
 }
 \details{
-A discrete distribution on \eqn{k} points has \eqn{k-1} free probabilities,
-and either wrapper spends \code{n_params + 1} of them, so \eqn{k \ge}
-\code{n_params + 2} is necessary. The bound is the same for inflation and for
-adjustment.
+What it rules out is exactly the Bernoulli and \code{binomial_distrib(size = 1)}.
+Zero-adjusting a Bernoulli leaves the truncated part on the single point
+\eqn{\{1\}} and \code{mu} disappears: the mass function is literally the same at
+\code{mu = 0.2} and at \code{mu = 0.9}. None of this is visible at run time, the mass
+summing to one and \code{\link[=check_distrib]{check_distrib()}} passing, so the constructor is the only
+place it can be caught.
 
-What it rules out is exactly the Bernoulli, and
-\code{binomial_distrib(size = 1)} with it. Zero-inflating a Bernoulli gives
-two parameters for the one free cell of \eqn{\{0, 1\}}; zero-adjusting it
-leaves the truncated part concentrated on \eqn{\{1\}} with no free parameter
-at all, so \eqn{\mu} disappears from the likelihood and the pmf is literally
-the same for \eqn{\mu = 0.2} and \eqn{\mu = 0.9}.
+A large support is NECESSARY without being sufficient. With a mean large
+enough that the parent puts almost no mass at zero, the extra parameter is
+weakly identified whatever the support size, which is a question about the
+data and one this check cannot ask.
+}
+\examples{
+# A count family has room.
+distributions7:::check_support_is_rich_enough(poisson_distrib(),
+                                              "zero_inflated()")
+
+# A Bernoulli does not, and neither does a one-trial binomial.
+try(zero_inflated(bernoulli_distrib()))
+try(zero_inflated(binomial_distrib(size = 1)))
+
+# Five trials is enough: six points against two parameters.
+zero_inflated(binomial_distrib(size = 5))@params
+
 }
 \seealso{
-\code{\link[=n_support_points]{n_support_points()}}, \code{\link[=check_not_stacked]{check_not_stacked()}}
+\code{\link[=n_support_points]{n_support_points()}} for the count, and \code{\link[=zero_inflated]{zero_inflated()}} and
+\code{\link[=zero_adjusted]{zero_adjusted()}}, the two callers.
 }
 \keyword{internal}

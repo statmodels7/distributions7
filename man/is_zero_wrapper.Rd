@@ -2,21 +2,33 @@
 % Please edit documentation in R/zero_inflated.R
 \name{is_zero_wrapper}
 \alias{is_zero_wrapper}
-\title{Does This Distribution Already Model a Probability of Zero?}
+\title{Does This Distribution Already Model a Probability of Zero}
 \usage{
 is_zero_wrapper(distrib)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{A \code{distrib} object.}
 }
 \value{
-A single logical.
+\code{TRUE} for a zero-inflated or a zero-adjusted object of either kind,
+\code{FALSE} otherwise.
 }
 \description{
-\code{TRUE} for a distribution produced by \code{\link[=zero_inflated]{zero_inflated()}} or
-\code{\link[=zero_adjusted]{zero_adjusted()}}, in either of its two forms.
+Answers whether the object is already one of the two zero wrappers, which is
+how each of them refuses to be applied on top of the other. Stacking them
+leaves only their combination identified, so the check is what turns a model
+with a flat direction into an error at construction.
+}
+\examples{
+c(plain = distributions7:::is_zero_wrapper(poisson_distrib()),
+  inflated = distributions7:::is_zero_wrapper(
+    zero_inflated(poisson_distrib())),
+  adjusted = distributions7:::is_zero_wrapper(
+    zero_adjusted(poisson_distrib())))
+
 }
 \seealso{
-\code{\link[=check_not_stacked]{check_not_stacked()}}
+\code{\link[=check_not_stacked]{check_not_stacked()}}, which reports the refusal, and
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for what stacking would cost.
 }
 \keyword{internal}

@@ -5,16 +5,36 @@ NULL
 #' @name ZeroInflatedDistrib
 #'
 #' @description
-#' A subclass of `discrete_distrib` representing the zero-inflated version of a
-#' wrapped discrete distribution: a mixture of a point mass at zero (with probability
-#' \eqn{\zeta}) and the original count distribution.
-#' @inheritParams distrib
+#' The S7 class of the zero-inflated version of a discrete distribution, with
+#' mass function
+#' \deqn{P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1 - \zeta)\, f(y; \theta).}
+#' It inherits from `discrete_distrib` and carries the parent's parameters
+#' followed by `zi`, which is the probability \eqn{\zeta} of a structural zero
+#' and rides a link of its own.
+#'
+#' Build one with [zero_inflated()], which checks that the parent is discrete,
+#' is not already a zero wrapper, and has enough support points for the extra
+#' parameter to be identified. This page documents the raw S7 constructor,
+#' which checks none of that.
+#'
 #' @param parent_distrib The wrapped `discrete_distrib` object.
-#' @return An object of class `ZeroInflatedDistrib`.
-#' @seealso [zero_inflated()]
+#' @param ... The properties of the parent `distrib` class, listed under Value.
+#'
+#' @return An S7 object of class `ZeroInflatedDistrib`, inheriting from
+#'   `discrete_distrib` and from `distrib`. It carries `parent_distrib` beside
+#'   the parent's `distrib_name`, `dimension`, `bounds`, `params`,
+#'   `params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+#'   `params_smooth`. For an object built by [zero_inflated()] the parameters
+#'   are the parent's followed by `zi`, whose bound is \eqn{(0, 1)} and whose
+#'   interpretation is `"prob. of structural zero"`.
+#'
+#' @seealso [zero_inflated()] to build one, [ZeroAdjustedDiscreteDistrib] for
+#'   the wrapper that REPLACES the mass at zero where this one adds to it, and
+#'   [zero_adjusted()], the constructor to reach for with a continuous
+#'   parent.
 #'
 #' @section Methods:
-#' Methods implemented for this class:
+#' Registered on this class:
 #'   [`distrib_cdf()`][distrib_cdf.ZeroInflatedDistrib],
 #'   [`distrib_expected_hessian()`][distrib_expected_hessian.ZeroInflatedDistrib],
 #'   [`distrib_gradient()`][distrib_gradient.ZeroInflatedDistrib],
@@ -23,7 +43,23 @@ NULL
 #'   [`distrib_quantile()`][distrib_quantile.ZeroInflatedDistrib],
 #'   [`distrib_rng()`][distrib_rng.ZeroInflatedDistrib]
 #'
-#' Everything else is inherited from [discrete_distrib()].
+#' The third and fourth derivatives come from the shared wrapper machinery in
+#' `wrapper_derivatives.R`; everything else is inherited from
+#' [discrete_distrib()].
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#' S7::S7_inherits(d, discrete_distrib)
+#'
+#' # The parent's parameters, then zi last with its own link and bound.
+#' d@params
+#' d@params_bounds$zi
+#' vapply(d@link_params, function(l) l@link_name, character(1))
+#' d@params_interpretation
+#'
+#' # Inflation can only ADD zeros: the mass at zero exceeds the parent's.
+#' c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
 ZeroInflatedDistrib <- S7::new_class("ZeroInflatedDistrib",
   parent = discrete_distrib,
   properties = list(
@@ -31,22 +67,35 @@ ZeroInflatedDistrib <- S7::new_class("ZeroInflatedDistrib",
   )
 )
 
-#' Split a Wrapper's Parameters From Its Parent's
+#' @title Split a Wrapper's Parameter From Its Parent's
 #'
 #' @description
-#' Separates the full `theta` into the parent distribution's parameters and
-#' the single mixture parameter the wrapper adds.
+#' Separates a full `theta` into the parent distribution's parameters and the
+#' single mixing parameter the wrapper adds. Both zero wrappers append their
+#' parameter LAST, so the split is positional and needs no name matching, which
+#' keeps it correct for a parent whose own parameter happens to be called `zi`
+#' or `pi`.
 #'
-#' @details
-#' Both zero wrappers append their parameter last, so the split is positional and
-#' does not depend on what that parameter is called -- `zi` for inflation,
-#' `pi` for adjustment.
+#' @param distrib A `ZeroInflatedDistrib` or a zero-adjusted object, whose
+#'   `parent_distrib` supplies the names of the first block.
+#' @param theta A named list of parameters, already aligned, the parent's
+#'   followed by the wrapper's.
 #'
-#' @param distrib A zero-inflated or zero-adjusted distribution object.
-#' @param theta A named list of parameters, already aligned.
+#' @return A named list with `orig`, the parent's parameters as a named list,
+#'   and `mix`, the wrapper's parameter as a numeric vector.
 #'
-#' @return A list with `orig`, the parent's parameters, and `mix`,
-#'   the wrapper's own.
+#' @seealso [zero_inflated()] and [zero_adjusted()], whose methods all begin
+#'   with this.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#' p <- distributions7:::split_mix_theta(
+#'   d, distributions7:::align_theta(d, theta))
+#' str(p)
+#'
+#' # The first block is exactly what the parent expects.
+#' all.equal(distrib_pdf(d@parent_distrib, 0:3, p$orig), dpois(0:3, 3))
 #'
 #' @keywords internal
 split_mix_theta <- function(distrib, theta) {
@@ -64,34 +113,59 @@ split_mix_theta <- function(distrib, theta) {
 # the only place where they can be caught, so they are caught there.
 # ---------------------------------------------------------------------------
 
-#' Number of Points in a Discrete Support
+#' @title Number of Points in a Discrete Support
 #'
 #' @description
-#' How many points the distribution's support contains, `Inf` when it is
-#' unbounded.
+#' Returns how many points the distribution's support contains, read off its
+#' `bounds`, and `Inf` when the support is unbounded above. It is what
+#' [check_support_is_rich_enough()] counts against the parameters a zero
+#' wrapper would spend.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
+#' @param distrib A `distrib` object, whose `bounds` are read.
 #'
-#' @return A single number.
+#' @return A single number: the count of integer points between the bounds
+#'   inclusive, or `Inf`.
 #'
-#' @seealso [check_support_is_rich_enough()]
+#' @seealso [check_support_is_rich_enough()], the consumer, and
+#'   [zero_inflated()] for the counting rule.
+#'
+#' @examples
+#' # A count family has an unbounded support.
+#' distributions7:::n_support_points(poisson_distrib())
+#'
+#' # A binomial has size + 1 points, and a Bernoulli has two.
+#' c(binomial5 = distributions7:::n_support_points(binomial_distrib(size = 5)),
+#'   bernoulli = distributions7:::n_support_points(bernoulli_distrib()))
+#'
 #' @keywords internal
 n_support_points <- function(distrib) {
   b <- distrib@bounds
   if (!all(is.finite(b))) Inf else b[2] - b[1] + 1
 }
 
-#' Does This Distribution Already Model a Probability of Zero?
+#' @title Does This Distribution Already Model a Probability of Zero
 #'
 #' @description
-#' `TRUE` for a distribution produced by [zero_inflated()] or
-#' [zero_adjusted()], in either of its two forms.
+#' Answers whether the object is already one of the two zero wrappers, which is
+#' how each of them refuses to be applied on top of the other. Stacking them
+#' leaves only their combination identified, so the check is what turns a model
+#' with a flat direction into an error at construction.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
+#' @param distrib A `distrib` object.
 #'
-#' @return A single logical.
+#' @return `TRUE` for a zero-inflated or a zero-adjusted object of either kind,
+#'   `FALSE` otherwise.
 #'
-#' @seealso [check_not_stacked()]
+#' @seealso [check_not_stacked()], which reports the refusal, and
+#'   [zero_inflated()] and [zero_adjusted()] for what stacking would cost.
+#'
+#' @examples
+#' c(plain = distributions7:::is_zero_wrapper(poisson_distrib()),
+#'   inflated = distributions7:::is_zero_wrapper(
+#'     zero_inflated(poisson_distrib())),
+#'   adjusted = distributions7:::is_zero_wrapper(
+#'     zero_adjusted(poisson_distrib())))
+#'
 #' @keywords internal
 is_zero_wrapper <- function(distrib) {
   S7::S7_inherits(distrib, ZeroInflatedDistrib) ||
@@ -99,32 +173,45 @@ is_zero_wrapper <- function(distrib) {
     S7::S7_inherits(distrib, ZeroAdjustedContinuousDistrib)
 }
 
-#' Reject the Composition of Two Zero Wrappers
+#' @title Reject the Composition of Two Zero Wrappers
 #'
 #' @description
-#' Rejects an attempt to wrap a distribution that already models the probability
-#' of a zero, and rejects a parameter name the parent has already used.
+#' Signals an error when the parent already models the probability of a zero,
+#' which is how both wrappers refuse to stack. The models this rejects are
+#' well defined and inestimable, so the constructor is the only place the
+#' problem can be caught: nothing at run time reports it.
 #'
 #' @details
-#' Two zero parameters cannot both be identified. Zero-truncating a distribution
-#' that already has one removes it from the likelihood entirely -- the factor
-#' cancels between the numerator and the truncation constant, leaving its score
-#' identically zero -- and mixing a further point mass in only ever shifts the
-#' total mass at zero, which one parameter already describes.
+#' Two zero parameters cannot both be identified. Zero-adjusting a
+#' zero-inflated parent truncates the zero away, which cancels the
+#' \eqn{(1-\zeta)} factor between the numerator and the normalizing constant,
+#' so \eqn{\zeta} leaves the likelihood entirely and its score is IDENTICALLY
+#' zero. The other order keeps only the combination \eqn{\zeta + (1-\zeta)\pi}.
+#' Either way an optimizer wanders along a flat ridge, the mass function sums
+#' to one throughout, and [check_distrib()] passes.
 #'
-#' The distributions this rejects are well-defined but not estimable, and
-#' nothing detects that at run time: the pmf sums to one,
-#' [check_distrib()] passes, and a fit converges to an arbitrary
-#' point of a flat ridge. The constructor is therefore the only place the
-#' condition can be enforced.
+#' @param distrib The candidate parent, a `distrib` object.
+#' @param fun The name of the calling constructor, a single string, quoted in
+#'   the message.
+#' @param param The name of the parameter it would add, a single string. Not
+#'   currently placed in the message; it is carried for the caller's own
+#'   record.
 #'
-#' @param distrib The parent distribution being wrapped.
-#' @param fun The calling constructor's name, used in the message.
-#' @param param The name of the parameter the wrapper wants to add.
+#' @return `NULL`, invisibly, when the parent is not a zero wrapper. Otherwise
+#'   it signals an error naming the parent.
 #'
-#' @return Invisibly `NULL`; raises an error if either condition fails.
+#' @seealso [is_zero_wrapper()] for the test, and [zero_inflated()] and
+#'   [zero_adjusted()], the two callers.
 #'
-#' @seealso [zero_inflated()], [zero_adjusted()]
+#' @examples
+#' # A plain parent passes silently.
+#' distributions7:::check_not_stacked(poisson_distrib(),
+#'                                    "zero_inflated()", "zi")
+#'
+#' # A wrapped one does not, and the two orders are refused alike.
+#' try(zero_inflated(zero_adjusted(poisson_distrib())))
+#' try(zero_adjusted(zero_inflated(poisson_distrib())))
+#'
 #' @keywords internal
 check_not_stacked <- function(distrib, fun, param) {
   if (is_zero_wrapper(distrib)) {
@@ -146,30 +233,51 @@ check_not_stacked <- function(distrib, fun, param) {
   invisible(NULL)
 }
 
-#' Reject a Model With More Parameters Than the Support Can Distinguish
+#' @title Reject a Model With More Parameters Than the Support Can Distinguish
 #'
 #' @description
-#' Enforces the counting rule that makes a zero wrapper identifiable.
+#' Signals an error when the parent's support has too few points for the zero
+#' wrapper's extra parameter to be identified. A discrete distribution on
+#' \eqn{k} points has \eqn{k - 1} free probabilities, and a wrapper spends
+#' `n_params + 1` of them, so \eqn{k \ge n_{params} + 2} is necessary. The rule
+#' is the SAME for both wrappers.
 #'
 #' @details
-#' A discrete distribution on \eqn{k} points has \eqn{k-1} free probabilities,
-#' and either wrapper spends `n_params + 1` of them, so \eqn{k \ge}
-#' `n_params + 2` is necessary. The bound is the same for inflation and for
-#' adjustment.
+#' What it rules out is exactly the Bernoulli and `binomial_distrib(size = 1)`.
+#' Zero-adjusting a Bernoulli leaves the truncated part on the single point
+#' \eqn{\{1\}} and `mu` disappears: the mass function is literally the same at
+#' `mu = 0.2` and at `mu = 0.9`. None of this is visible at run time, the mass
+#' summing to one and [check_distrib()] passing, so the constructor is the only
+#' place it can be caught.
 #'
-#' What it rules out is exactly the Bernoulli, and
-#' `binomial_distrib(size = 1)` with it. Zero-inflating a Bernoulli gives
-#' two parameters for the one free cell of \eqn{\{0, 1\}}; zero-adjusting it
-#' leaves the truncated part concentrated on \eqn{\{1\}} with no free parameter
-#' at all, so \eqn{\mu} disappears from the likelihood and the pmf is literally
-#' the same for \eqn{\mu = 0.2} and \eqn{\mu = 0.9}.
+#' A large support is NECESSARY without being sufficient. With a mean large
+#' enough that the parent puts almost no mass at zero, the extra parameter is
+#' weakly identified whatever the support size, which is a question about the
+#' data and one this check cannot ask.
 #'
-#' @param distrib The parent distribution being wrapped.
-#' @param fun The calling constructor's name, used in the message.
+#' @param distrib The candidate parent, a `distrib` object.
+#' @param fun The name of the calling constructor, a single string, quoted in
+#'   the message.
 #'
-#' @return Invisibly `NULL`; raises an error when the support is too small.
+#' @return `NULL`, invisibly, when the support is large enough. Otherwise it
+#'   signals an error giving the point count, the parameter count and the
+#'   count required.
 #'
-#' @seealso [n_support_points()], [check_not_stacked()]
+#' @seealso [n_support_points()] for the count, and [zero_inflated()] and
+#'   [zero_adjusted()], the two callers.
+#'
+#' @examples
+#' # A count family has room.
+#' distributions7:::check_support_is_rich_enough(poisson_distrib(),
+#'                                               "zero_inflated()")
+#'
+#' # A Bernoulli does not, and neither does a one-trial binomial.
+#' try(zero_inflated(bernoulli_distrib()))
+#' try(zero_inflated(binomial_distrib(size = 1)))
+#'
+#' # Five trials is enough: six points against two parameters.
+#' zero_inflated(binomial_distrib(size = 5))@params
+#'
 #' @keywords internal
 check_support_is_rich_enough <- function(distrib, fun) {
   k <- n_support_points(distrib)
@@ -195,15 +303,55 @@ check_support_is_rich_enough <- function(distrib, fun) {
 
 #' @title Zero-Inflated Probability Mass Function
 #' @name distrib_pdf.ZeroInflatedDistrib
+#'
 #' @description
-#' \deqn{P(Y=y) = \zeta\,\mathbb{I}(y=0) + (1-\zeta) f(y; \theta)}
-#' where \eqn{f} is the PMF of the wrapped distribution.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @param log Logical; if `TRUE`, returns the log-probability.
-#' @return A numeric vector of density values.
-#' @seealso [zero_inflated()]
+#' Computes the zero-inflated mass function
+#' \deqn{P(Y = y) = \zeta\,\mathbb{I}(y = 0) + (1-\zeta)\, f(y; \theta),}
+#' with \eqn{f} the parent's mass function. Inflation can only ADD zeros: the
+#' mass at zero is \eqn{\zeta + (1-\zeta)f(0)}, which exceeds \eqn{f(0)} for
+#' every \eqn{\zeta > 0}, and no single observed zero can be attributed to one
+#' mechanism or the other.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param y A numeric vector of observations. A point off the parent's support
+#'   returns whatever the parent returns there, scaled by \eqn{1-\zeta}.
+#' @param theta A named list with the parent's parameters followed by `zi`,
+#'   each a numeric vector of length 1 or of the length of `y`. `zi` must lie
+#'   strictly inside \eqn{(0, 1)}.
+#' @param log Logical of length 1. When `TRUE` the log-mass is returned. The
+#'   logarithm is taken of the mixture, not inside the parent, so it underflows
+#'   where the mixture does. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of the recycled length of `y` and `theta`.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+#' log-mass of one observation.
+#'
+#' @seealso [distrib_cdf.ZeroInflatedDistrib()] for the distribution function,
+#'   [distrib_gradient.ZeroInflatedDistrib()] for the score,
+#'   [distrib_pdf.ZeroAdjustedDiscreteDistrib()] for the wrapper that replaces
+#'   the mass at zero, and [distrib_pdf()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#'
+#' distrib_pdf(d, 0:5, theta)
+#'
+#' # Which is the mixture written out.
+#' y <- 0:5
+#' all.equal(distrib_pdf(d, y, theta), 0.25 * (y == 0) + 0.75 * dpois(y, 3))
+#'
+#' # The mass at zero exceeds the parent's, inflation adding to it.
+#' c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
+#'
+#' # And the whole mass function still sums to one.
+#' sum(distrib_pdf(d, 0:200, theta))
 S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
@@ -216,15 +364,52 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 
 #' @title Zero-Inflated Cumulative Distribution Function
 #' @name distrib_cdf.ZeroInflatedDistrib
+#'
 #' @description
+#' Computes
 #' \deqn{F_{ZI}(q) = (1-\zeta) F(q; \theta) + \zeta\,\mathbb{I}(q \ge 0)}
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param q A numeric vector of quantiles.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le q)}.
-#' @param log.p Logical; if `TRUE`, probabilities are returned as logs.
-#' @return A numeric vector of cumulative probabilities.
-#' @seealso [zero_inflated()]
+#' from the parent's own distribution function, exactly and with no summation.
+#' The result is clamped to \eqn{[0, 1]} against rounding.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param q A numeric vector of quantiles. Values below zero give `0`.
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param lower.tail Logical of length 1. When `TRUE`, the default,
+#'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)},
+#'   formed as \eqn{1 - F} and so subject to that subtraction's cancellation
+#'   far into the upper tail.
+#' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
+#'   Defaults to `FALSE`.
+#'
+#' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+#' log-mass of one observation.
+#'
+#' @seealso [distrib_pdf.ZeroInflatedDistrib()] for the mass function,
+#'   [distrib_quantile.ZeroInflatedDistrib()], which inverts this, and
+#'   [distrib_cdf()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#'
+#' q <- c(0, 2, 5)
+#' distrib_cdf(d, q, theta)
+#'
+#' # Which is the parent's, shrunk and shifted.
+#' all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
+#'
+#' # It agrees with the mass function summed, as it must on a lattice.
+#' c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
+#'
+#' # Both tails and the logarithm.
+#' distrib_cdf(d, 2, theta, lower.tail = FALSE)
+#' distrib_cdf(d, 2, theta, log.p = TRUE)
 S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
@@ -238,16 +423,57 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 
 #' @title Zero-Inflated Quantile Function
 #' @name distrib_quantile.ZeroInflatedDistrib
+#'
 #' @description
-#' Inverts the mixture CDF: the quantile is 0 for \eqn{p \le \zeta + (1-\zeta)F(0;\theta)},
-#' otherwise \eqn{Q\left(\dfrac{p-\zeta}{1-\zeta}; \theta\right)}.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param p A numeric vector of probabilities.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @param lower.tail Logical; if `TRUE` (default), probabilities are \eqn{P(Y \le p)}.
-#' @param log.p Logical; if `TRUE`, probabilities are given as logs.
-#' @return A numeric vector of quantiles.
-#' @seealso [zero_inflated()]
+#' Inverts the mixture distribution function. The quantile is `0` for
+#' \eqn{p \le \zeta + (1-\zeta)F(0; \theta)}, which is the whole of the
+#' inflated mass at zero, and otherwise the parent's quantile at the rescaled
+#' probability \eqn{(p - \zeta)/(1 - \zeta)}.
+#'
+#' @details
+#' The result is a LATTICE quantile and overshoots, as any discrete quantile
+#' does: `distrib_cdf(d, distrib_quantile(d, p, theta), theta)` returns the
+#' smallest attainable probability at or above `p`, not `p` itself. The
+#' inflated atom makes the first step larger than the parent's, so a
+#' probability below \eqn{L_0} maps to zero however small it is.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param p A numeric vector of probabilities, clamped to \eqn{[0, 1]} after
+#'   the `log.p` and `lower.tail` transformations are applied.
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param lower.tail Logical of length 1. When `TRUE`, the default, `p` is
+#'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
+#' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
+#'   Defaults to `FALSE`.
+#'
+#' @return A numeric vector of quantiles, of the recycled length of `p` and
+#'   `theta`.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+#' log-mass of one observation.
+#'
+#' @seealso [distrib_cdf.ZeroInflatedDistrib()], which this inverts, and
+#'   [distrib_quantile()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#'
+#' distrib_quantile(d, c(0.1, 0.3, 0.9), theta)
+#'
+#' # Everything below the inflated mass at zero maps to zero.
+#' c(mass_at_zero = distrib_pdf(d, 0, theta),
+#'   q_below = distrib_quantile(d, 0.2, theta))
+#'
+#' # The round trip overshoots, as on any lattice: asked for 0.3, the
+#' # attainable probability at the returned point is higher.
+#' p <- c(0.1, 0.3, 0.9)
+#' rbind(asked = p,
+#'       reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))
 S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -280,14 +506,43 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
 
 #' @title Zero-Inflated Random Number Generator
 #' @name distrib_rng.ZeroInflatedDistrib
+#'
 #' @description
-#' Draws from the wrapped distribution, then replaces a Bernoulli(\eqn{\zeta}) fraction
-#' of the draws with structural zeros.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param n Number of observations to generate.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @return A numeric vector of random draws.
-#' @seealso [zero_inflated()]
+#' Draws `n` values from the parent, then replaces a Bernoulli(\eqn{\zeta})
+#' fraction of them with structural zeros. It consumes the parent's draws
+#' followed by `n` uniforms, so the stream is reproducible under
+#' [base::set.seed()] but is not the parent's stream with a filter: the
+#' uniforms come after.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param n The number of draws, a single non-negative whole number.
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#'
+#' @return A numeric vector of length `n`.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+#' log-mass of one observation.
+#'
+#' @seealso [distrib_pdf.ZeroInflatedDistrib()] for the mass function these
+#'   are drawn from, and [distrib_rng()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#'
+#' set.seed(1)
+#' distrib_rng(d, 10, theta)
+#'
+#' # A large sample reproduces the inflated mass at zero, which is well above
+#' # the parent's.
+#' set.seed(1)
+#' big <- distrib_rng(d, 20000, theta)
+#' c(sampled = mean(big == 0), exact = distrib_pdf(d, 0, theta),
+#'   parent = dpois(0, 3))
 S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta) {
   pars <- split_mix_theta(distrib, theta)
   y <- distrib_rng(distrib@parent_distrib, n, pars$orig)
@@ -295,18 +550,71 @@ S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta) {
   y
 }
 
-#' @title Zero-Inflated Analytical Gradient
+#' @title Zero-Inflated Score
 #' @name distrib_gradient.ZeroInflatedDistrib
+#'
 #' @description
-#' Score function of the zero-inflated model. For the parent's parameters the score is
-#' the parent's score weighted by \eqn{w = (1-\zeta)f(0)/L_0} at \eqn{y=0} (and 1 otherwise),
-#' where \eqn{L_0 = \zeta + (1-\zeta)f(0)}. For \eqn{\zeta}:
-#' \deqn{\dfrac{\partial \ell}{\partial \zeta} = \mathbb{I}(y=0)\dfrac{1-f(0)}{L_0} - \mathbb{I}(y>0)\dfrac{1}{1-\zeta}}
-#' @param distrib A `ZeroInflatedDistrib` object.
+#' Computes the first derivatives of the zero-inflated log-mass in closed form.
+#' For the parent's parameters the score is the parent's own, weighted by the
+#' posterior probability that an observed zero came from the parent,
+#' \deqn{\frac{\partial \ell}{\partial \theta_i} = w\, s_i(y), \qquad
+#'   w = \begin{cases} \dfrac{(1-\zeta)f(0)}{L_0} & y = 0 \\ 1 & y > 0,
+#'   \end{cases}}
+#' and for the inflation parameter
+#' \deqn{\frac{\partial \ell}{\partial \zeta}
+#'   = \mathbb{I}(y = 0)\frac{1 - f(0)}{L_0}
+#'   - \mathbb{I}(y > 0)\frac{1}{1 - \zeta}.}
+#'
+#' @details
+#' A positive observation carries no information about \eqn{\zeta} beyond the
+#' \eqn{(1-\zeta)} factor, which is why its \eqn{\zeta} component is the same
+#' number at every such point. A zero carries all of it, and its weight
+#' \eqn{w} is what shares the credit between the two mechanisms.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @return A list containing the vectors of first derivatives.
-#' @seealso [zero_inflated()]
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch. `zi` rides a logit by default, so the two differ.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list with one numeric vector per parameter, in
+#'   `distrib@params` order.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score, \eqn{H} its observed
+#' Hessian and \eqn{\ell} the log-mass of one observation.
+#'
+#' @seealso [distrib_hessian.ZeroInflatedDistrib()] for the second order,
+#'   [distrib_expected_hessian.ZeroInflatedDistrib()] for the information, and
+#'   [distrib_gradient()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#' set.seed(2)
+#' y <- distrib_rng(d, 200, theta)
+#'
+#' g <- distrib_gradient(d, y, theta)
+#' vapply(g, sum, numeric(1))
+#'
+#' # Against a numerical derivative of the log-likelihood.
+#' ll <- function(v) {
+#'   t2 <- as.list(v); names(t2) <- d@params
+#'   sum(distrib_pdf(d, y, t2, log = TRUE))
+#' }
+#' max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+#'
+#' # Every positive observation gives the same zi component, -1 / (1 - zi).
+#' c(unique(round(g$zi[y > 0], 12)), theory = -1 / 0.75)
+#'
+#' # And the parent's component is zero at a zero only in the limit: it is
+#' # the parent's score there, weighted down by w.
+#' c(weighted = g$mu[y == 0][1], unweighted = distrib_gradient(
+#'     poisson_distrib(), 0, list(mu = 3))$mu)
 S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -323,17 +631,79 @@ S7::method(distrib_gradient, ZeroInflatedDistrib) <- function(distrib, y, theta,
   res
 }
 
-#' @title Zero-Inflated Analytical Observed Hessian
+#' @title Zero-Inflated Observed Hessian
 #' @name distrib_hessian.ZeroInflatedDistrib
+#'
 #' @description
-#' Observed Hessian of the zero-inflated model, combining the parent's observed Hessian
-#' with rank-one corrections at \eqn{y=0} (see the old package documentation for the full
-#' derivation).
-#' @param distrib A `ZeroInflatedDistrib` object.
+#' Computes the second derivatives of the zero-inflated log-mass in closed
+#' form. At a POSITIVE observation the parent block is the parent's own
+#' Hessian, the mixed block is zero and the \eqn{\zeta} block is
+#' \eqn{-1/(1-\zeta)^2}. At a ZERO every block picks up the mixture's
+#' correction:
+#' \deqn{\ell^{(\theta_i\theta_j)} = w\,H_{ij}(0) + w(1-w)\,s_i(0)s_j(0),
+#'   \qquad
+#'   \ell^{(\theta_i\zeta)} = -\frac{f(0)\,s_i(0)}{L_0^2},
+#'   \qquad
+#'   \ell^{(\zeta\zeta)} = -\frac{(1 - f(0))^2}{L_0^2},}
+#' with \eqn{w = (1-\zeta)f(0)/L_0} the posterior weight of the parent
+#' component.
+#'
+#' @details
+#' The parent block is the ordinary two-component mixture curvature: the
+#' weighted Hessian plus the variance of the score across the two components,
+#' \eqn{w(1-w)} being that variance's weight when one component's score is
+#' zero.
+#'
+#' The mixed block collapses. Written out it is
+#' \eqn{-f'(0)/L_0 - (1-\zeta)f'(0)(1 - f(0))/L_0^2}, and the bracket is
+#' exactly one, so the whole thing is \eqn{-f'(0)/L_0^2}.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @return A list containing the vectors of second derivatives.
-#' @seealso [zero_inflated()]
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of numeric vectors, one per unordered pair of
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score, \eqn{H} its observed
+#' Hessian and \eqn{\ell} the log-mass of one observation.
+#'
+#' @seealso [distrib_gradient.ZeroInflatedDistrib()] for the first order,
+#'   [distrib_expected_hessian.ZeroInflatedDistrib()] for the expectation, and
+#'   [distrib_hessian()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#' set.seed(2)
+#' y <- distrib_rng(d, 200, theta)
+#'
+#' H <- distrib_hessian(d, y, theta)
+#' vapply(H, sum, numeric(1))
+#'
+#' # Against a numerical Hessian of the log-likelihood.
+#' ll <- function(v) {
+#'   t2 <- as.list(v); names(t2) <- d@params
+#'   sum(distrib_pdf(d, y, t2, log = TRUE))
+#' }
+#' Hn <- numDeriv::hessian(ll, unlist(theta))
+#' ref <- vapply(distributions7:::hess_pairs(d@params),
+#'               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+#'               numeric(1))
+#' max(abs(vapply(H, sum, numeric(1)) - ref))
+#'
+#' # At a positive observation the mixed block is exactly zero and the zi
+#' # block is a constant; at a zero neither is.
+#' rbind(positive = c(mu_zi = H$mu_zi[y > 0][1], zi_zi = H$zi_zi[y > 0][1]),
+#'       at_zero = c(mu_zi = H$mu_zi[y == 0][1], zi_zi = H$zi_zi[y == 0][1]))
+#' -1 / 0.75^2
 S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -374,17 +744,68 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
   expand_params(res[hess_names(distrib@params)], n)
 }
 
-#' @title Zero-Inflated Analytical Expected Hessian
+#' @title Zero-Inflated Expected Information
 #' @name distrib_expected_hessian.ZeroInflatedDistrib
+#'
 #' @description
-#' Expected Hessian (negative Fisher information) of the zero-inflated model, derived by
-#' decomposing the expectation over \eqn{y=0} and \eqn{y>0} and using the parent's
-#' expected Hessian.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @return A list containing the vectors of expected second derivatives.
-#' @seealso [zero_inflated()]
+#' Computes the expectation of the observed Hessian in closed form, by
+#' splitting the expectation over the two events \eqn{y = 0} and \eqn{y > 0}.
+#' The zero contributes with probability \eqn{L_0} and carries the mixture's
+#' corrections; the positive part contributes with probability \eqn{1 - L_0}
+#' and carries the parent's own expected Hessian, less what the zero would have
+#' contributed to it. No component depends on the data, so every returned
+#' vector is constant and `y` is read for its length alone.
+#'
+#' @details
+#' This is EXACT. `approx` and `nsim` are accepted so that the signature
+#' matches the generic's, and neither is read. The route
+#' works because the parent's expected Hessian is an expectation over its whole
+#' support, from which the single point at zero can be subtracted in closed
+#' form.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param y A numeric vector of observations. Only its length is used.
+#' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch.
+#' @param approx Ignored: the expectation is exact. Present so that the
+#'   signature matches the generic's.
+#' @param nsim Ignored, for the same reason.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of numeric vectors of length `length(y)`, keyed as
+#'   [`hess_names(distrib@params)`][hess_names], each vector constant.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+#' structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+#' zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+#' zero came from the parent, \eqn{s} the parent's score, \eqn{H} its observed
+#' Hessian and \eqn{\ell} the log-mass of one observation.
+#'
+#' @seealso [distrib_hessian.ZeroInflatedDistrib()] for the observed matrix,
+#'   [fit_distrib()], whose Fisher scoring inverts this, and
+#'   [distrib_expected_hessian()] for the generic.
+#'
+#' @examples
+#' d <- zero_inflated(poisson_distrib())
+#' theta <- list(mu = 3, zi = 0.25)
+#' set.seed(2)
+#' y <- distrib_rng(d, 200, theta)
+#'
+#' EH <- distrib_expected_hessian(d, y, theta)
+#' vapply(EH, function(z) z[1], numeric(1))
+#'
+#' # Closed form, so two calls agree to the bit and nothing is sampled.
+#' identical(EH, distrib_expected_hessian(d, y, theta))
+#'
+#' # It is what summing the observed Hessian against the mass function gives,
+#' # over the support taken far enough out.
+#' sup <- 0:400
+#' m <- distrib_pdf(d, sup, theta)
+#' Hs <- distrib_hessian(d, sup, theta)
+#' rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
+#'       closed = vapply(EH, function(z) z[1], numeric(1)))
 S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
@@ -428,85 +849,121 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 
 # --- CONSTRUCTOR WRAPPER ---
 
-#' Zero-Inflated Distribution Object (Discrete)
+#' @title Zero-Inflated Distribution Object
 #'
 #' @description
-#' Creates a zero-inflated version of an existing **discrete** distribution: a
-#' mixture that keeps the parent intact and adds a second source of zeros, with
-#' probability \eqn{\zeta} (parameter `zi`).
-#'
-#' Zero-inflation is the right wrapper when the data contain *more* zeros than
-#' the parent can produce, and a zero can plausibly have come either from the count
-#' process or from a separate mechanism that switches it off. If instead the zeros
-#' come from one identifiable mechanism and the positive values from another, the
-#' appropriate model is the hurdle, [zero_adjusted()].
-#'
-#' @param distrib An object inheriting from `discrete_distrib` whose support
-#'   includes 0, e.g. [poisson_distrib()] or [negbin2_distrib()].
-#' @param link_zi A link function object for the zero-inflation probability \eqn{\zeta}.
-#'   Defaults to [linkfunctions7::logit_link()].
+#' Wraps a DISCRETE distribution into a mixture that keeps the parent intact
+#' and adds a second source of zeros, with probability \eqn{\zeta} carried by
+#' the new parameter `zi`:
+#' \deqn{P(Y = y; \theta, \zeta) = \begin{cases}
+#'   \zeta + (1 - \zeta)f(0; \theta) & y = 0 \\
+#'   (1 - \zeta)f(y; \theta) & y > 0. \end{cases}}
+#' It is the wrapper to reach for when the data carry MORE zeros than the
+#' parent can produce and a zero may plausibly have come either from the count
+#' process or from a mechanism that switches it off.
 #'
 #' @details
-#' \deqn{
-#' P(Y=y; \theta, \zeta) =
-#' \begin{cases}
-#' \zeta + (1 - \zeta)f(0; \theta) & y = 0 \\
-#' (1 - \zeta)f(y; \theta) & y > 0
-#' \end{cases}
-#' }
+#' # Zero-inflation against zero-adjustment
 #'
-#' **Zero-inflation versus zero-adjustment.** The two wrappers differ in what
-#' they do to the mass the parent already places at zero. Zero-inflation
-#' *adds* to it, so \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can
-#' only ever produce more zeros than the parent, never fewer, and the observed zeros
-#' are a mixture of structural and sampling ones that no single observation can be
-#' assigned to. Zero-adjustment ([zero_adjusted()]) *replaces* it: the
-#' parent is truncated away from zero and the mass at zero becomes a free parameter,
-#' which can be above or below \eqn{f(0)}. A hurdle model therefore also handles
-#' *under*-dispersed zeros, and its likelihood factorizes into a binary part and
-#' a positive-count part that can be read separately. Zero-inflation keeps the
-#' parent's interpretation --- \eqn{\theta} still describes the count process the
-#' non-structural observations come from --- while the hurdle re-interprets
-#' \eqn{\theta} as the parameters of a truncated law.
+#' The two wrappers differ in what they do to the mass the parent already
+#' places at zero. Zero-inflation ADDS to it, so
+#' \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0) > f(0)}: the model can produce more
+#' zeros than the parent and never fewer, and the observed zeros are a mixture
+#' of structural and sampling ones that no single observation can be assigned
+#' to. Zero-adjustment REPLACES it: the parent is truncated away from zero and
+#' the mass there becomes a free parameter, which may sit above or below
+#' \eqn{f(0)}.
 #'
-#' **What the parent must be.** Zero-inflation adds mass to a zero that already
-#' carries some, so it requires a discrete distribution with \eqn{0} in its support.
-#' A continuous distribution has \eqn{P(Y = 0) = 0} and nothing to inflate; putting a
-#' point mass at zero next to a density is zero-*adjustment*, and
-#' [zero_adjusted()] handles it. Constructing the object also fails when the
-#' result would not be identified:
+#' A hurdle model therefore also handles UNDER-dispersed zeros, and its
+#' likelihood factorizes into a binary part and a positive-count part that can
+#' be read separately. Zero-inflation keeps the parent's interpretation, so
+#' \eqn{\theta} still describes the count process the non-structural
+#' observations come from, while the hurdle re-interprets \eqn{\theta} as the
+#' parameters of a truncated law.
 #'
-#' - the parent already models a probability of zero (a wrapper cannot be
-#'   stacked on another wrapper: only the total mass at zero would be identified);
-#' - the support is too small for one more parameter --- a distribution on
-#'   \eqn{k} points has \eqn{k-1} free probabilities, so at least
-#'   `n_params + 2` support points are needed. This rules out the Bernoulli
-#'   and `binomial_distrib(size = 1)`, where `mu` and `zi` between
-#'   them describe a single free cell.
+#' # What the parent must be
 #'
-#' A large support is necessary but not sufficient: with \eqn{\mu} large enough that
-#' \eqn{f(0)} underflows, or \eqn{\zeta} close to 0, the ridge reappears in the data
-#' rather than in the model. [fit_distrib()] reports the standard errors
-#' that reveal it.
+#' Zero-inflation adds mass to a zero that already carries some, so it needs a
+#' discrete distribution with 0 in its support. A continuous one has
+#' \eqn{P(Y = 0) = 0} and nothing to inflate; placing a point mass at zero
+#' beside a density is zero-ADJUSTMENT, and [zero_adjusted()] handles it. The
+#' constructor also fails where the result would not be identified:
 #'
-#' The resulting object supports the full `distrib` API: pdf, cdf, quantile, rng,
-#' analytical gradient, observed and expected Hessian (all derived from the parent's),
-#' plus numerical moments via [moment()].
+#' - the parent already models a probability of zero, since only the total mass
+#'   at zero would then be identified;
+#' - the support is too small for one more parameter. A distribution on \eqn{k}
+#'   points has \eqn{k-1} free probabilities, so at least `n_params + 2` support
+#'   points are needed. This rules out the Bernoulli and
+#'   `binomial_distrib(size = 1)`, where `mu` and `zi` between them describe a
+#'   single free cell.
 #'
-#' @return An S7 object of class `ZeroInflatedDistrib` (inheriting from `discrete_distrib`).
+#' A large support is NECESSARY without being sufficient. With \eqn{\mu} large
+#' enough that \eqn{f(0)} underflows, or \eqn{\zeta} close to zero, the ridge
+#' reappears in the data instead of in the model, and [fit_distrib()] reports
+#' the standard errors that reveal it.
+#'
+#' # What the result supports
+#'
+#' The whole `distrib` contract: the mass function, the distribution function,
+#' the quantile function, the generator, the analytic score, the observed and
+#' the expected Hessian, and the third and fourth derivatives from the shared
+#' wrapper machinery. The moments come from [moment()] numerically.
+#'
+#' @section Notation:
+#' \eqn{f} is the parent's mass function, \eqn{\theta} its parameters,
+#' \eqn{\zeta} the probability of a structural zero and \eqn{k} the number of
+#' support points.
+#'
+#' @param distrib An object inheriting from `discrete_distrib` whose support
+#'   includes 0, such as [poisson_distrib()] or [negbin2_distrib()]. A
+#'   continuous distribution, an already-wrapped one, and a support of fewer
+#'   than `n_params + 2` points are each rejected with an error saying which
+#'   condition failed.
+#' @param link_zi The link carrying \eqn{\zeta} to the unconstrained scale, a
+#'   `linkfunctions7::link` object. Defaults to
+#'   [linkfunctions7::logit_link()], which keeps it strictly inside
+#'   \eqn{(0, 1)} at every point of the free scale.
+#'
+#' @return An S7 object of class [ZeroInflatedDistrib], inheriting from
+#'   `discrete_distrib`. Its `params` are the parent's followed by `zi`;
+#'   `n_params` is the parent's plus one; `params_bounds$zi` is
+#'   \eqn{(0, 1)}; `link_params$zi` is `link_zi` and the rest are the parent's;
+#'   `params_interpretation` gains `"prob. of structural zero"`; and
+#'   `distrib_name` is `"zero-inflated "` followed by the parent's.
+#'
+#' @seealso [zero_adjusted()] for the hurdle counterpart,
+#'   [ZeroInflatedDistrib] for the class, [truncated()], which the hurdle uses
+#'   internally, and [check_distrib()] to validate the result.
 #'
 #' @examples
 #' zip <- zero_inflated(poisson_distrib())
-#' distrib_pdf(zip, 0:5, list(mu = 3, zi = 0.2))
+#' theta <- list(mu = 3, zi = 0.2)
+#' zip@params
 #'
-#' # More mass at zero than the Poisson alone can put there
-#' distrib_pdf(zip, 0, list(mu = 3, zi = 0.2)) > dpois(0, 3)
+#' distrib_pdf(zip, 0:5, theta)
 #'
-#' # A Bernoulli has no room for a second parameter
+#' # More mass at zero than the Poisson alone can put there, and the rest of
+#' # the mass function shrunk by 1 - zi.
+#' c(inflated = distrib_pdf(zip, 0, theta), poisson = dpois(0, 3))
+#' all.equal(distrib_pdf(zip, 1:5, theta), 0.8 * dpois(1:5, 3))
+#'
+#' # It is still a distribution: the mass sums to one.
+#' sum(distrib_pdf(zip, 0:200, theta))
+#'
+#' # A fit recovers both parameters, the extra zeros identifying zi.
+#' set.seed(1)
+#' y <- distrib_rng(zip, 2000, theta)
+#' round(coef(fit_distrib(zip, y)), 3)
+#'
+#' # A Bernoulli has no room for a second parameter, and a wrapper cannot be
+#' # stacked on another.
 #' try(zero_inflated(bernoulli_distrib()))
+#' try(zero_inflated(zero_adjusted(poisson_distrib())))
 #'
-#' @seealso [zero_adjusted()] for the hurdle counterpart,
-#'   [check_distrib()] to validate the result.
+#' # Nor can a continuous parent be inflated: there is no mass at zero to add
+#' # to, and the message names the wrapper that does apply.
+#' try(zero_inflated(gaussian1_distrib()))
+#'
 #' @importFrom linkfunctions7 logit_link
 #' @export
 zero_inflated <- function(distrib, link_zi = logit_link()) {

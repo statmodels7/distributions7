@@ -7,33 +7,46 @@
 check_not_stacked(distrib, fun, param)
 }
 \arguments{
-\item{distrib}{The parent distribution being wrapped.}
+\item{distrib}{The candidate parent, a \code{distrib} object.}
 
-\item{fun}{The calling constructor's name, used in the message.}
+\item{fun}{The name of the calling constructor, a single string, quoted in
+the message.}
 
-\item{param}{The name of the parameter the wrapper wants to add.}
+\item{param}{The name of the parameter it would add, a single string. Not
+currently placed in the message; it is carried for the caller's own
+record.}
 }
 \value{
-Invisibly \code{NULL}; raises an error if either condition fails.
+\code{NULL}, invisibly, when the parent is not a zero wrapper. Otherwise
+it signals an error naming the parent.
 }
 \description{
-Rejects an attempt to wrap a distribution that already models the probability
-of a zero, and rejects a parameter name the parent has already used.
+Signals an error when the parent already models the probability of a zero,
+which is how both wrappers refuse to stack. The models this rejects are
+well defined and inestimable, so the constructor is the only place the
+problem can be caught: nothing at run time reports it.
 }
 \details{
-Two zero parameters cannot both be identified. Zero-truncating a distribution
-that already has one removes it from the likelihood entirely -- the factor
-cancels between the numerator and the truncation constant, leaving its score
-identically zero -- and mixing a further point mass in only ever shifts the
-total mass at zero, which one parameter already describes.
+Two zero parameters cannot both be identified. Zero-adjusting a
+zero-inflated parent truncates the zero away, which cancels the
+\eqn{(1-\zeta)} factor between the numerator and the normalizing constant,
+so \eqn{\zeta} leaves the likelihood entirely and its score is IDENTICALLY
+zero. The other order keeps only the combination \eqn{\zeta + (1-\zeta)\pi}.
+Either way an optimizer wanders along a flat ridge, the mass function sums
+to one throughout, and \code{\link[=check_distrib]{check_distrib()}} passes.
+}
+\examples{
+# A plain parent passes silently.
+distributions7:::check_not_stacked(poisson_distrib(),
+                                   "zero_inflated()", "zi")
 
-The distributions this rejects are well-defined but not estimable, and
-nothing detects that at run time: the pmf sums to one,
-\code{\link[=check_distrib]{check_distrib()}} passes, and a fit converges to an arbitrary
-point of a flat ridge. The constructor is therefore the only place the
-condition can be enforced.
+# A wrapped one does not, and the two orders are refused alike.
+try(zero_inflated(zero_adjusted(poisson_distrib())))
+try(zero_adjusted(zero_inflated(poisson_distrib())))
+
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=is_zero_wrapper]{is_zero_wrapper()}} for the test, and \code{\link[=zero_inflated]{zero_inflated()}} and
+\code{\link[=zero_adjusted]{zero_adjusted()}}, the two callers.
 }
 \keyword{internal}

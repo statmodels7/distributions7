@@ -4,22 +4,57 @@
 \alias{distrib_cdf.ZeroInflatedDistrib}
 \title{Zero-Inflated Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values below zero give \code{0}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+formed as \eqn{1 - F} and so subject to that subtraction's cancellation
+far into the upper tail.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
+Computes
 \deqn{F_{ZI}(q) = (1-\zeta) F(q; \theta) + \zeta\,\mathbb{I}(q \ge 0)}
+from the parent's own distribution function, exactly and with no summation.
+The result is clamped to \eqn{[0, 1]} against rounding.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+
+q <- c(0, 2, 5)
+distrib_cdf(d, q, theta)
+
+# Which is the parent's, shrunk and shifted.
+all.equal(distrib_cdf(d, q, theta), 0.75 * ppois(q, 3) + 0.25)
+
+# It agrees with the mass function summed, as it must on a lattice.
+c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
+
+# Both tails and the logarithm.
+distrib_cdf(d, 2, theta, lower.tail = FALSE)
+distrib_cdf(d, 2, theta, log.p = TRUE)
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf.ZeroInflatedDistrib()}} for the mass function,
+\code{\link[=distrib_quantile.ZeroInflatedDistrib]{distrib_quantile.ZeroInflatedDistrib()}}, which inverts this, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

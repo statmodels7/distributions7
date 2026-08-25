@@ -4,23 +4,62 @@
 \alias{distrib_quantile.ZeroInflatedDistrib}
 \title{Zero-Inflated Quantile Function}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]} after
+the \code{log.p} and \code{lower.tail} transformations are applied.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the recycled length of \code{p} and
+\code{theta}.
 }
 \description{
-Inverts the mixture CDF: the quantile is 0 for \eqn{p \le \zeta + (1-\zeta)F(0;\theta)},
-otherwise \eqn{Q\left(\dfrac{p-\zeta}{1-\zeta}; \theta\right)}.
+Inverts the mixture distribution function. The quantile is \code{0} for
+\eqn{p \le \zeta + (1-\zeta)F(0; \theta)}, which is the whole of the
+inflated mass at zero, and otherwise the parent's quantile at the rescaled
+probability \eqn{(p - \zeta)/(1 - \zeta)}.
+}
+\details{
+The result is a LATTICE quantile and overshoots, as any discrete quantile
+does: \code{distrib_cdf(d, distrib_quantile(d, p, theta), theta)} returns the
+smallest attainable probability at or above \code{p}, not \code{p} itself. The
+inflated atom makes the first step larger than the parent's, so a
+probability below \eqn{L_0} maps to zero however small it is.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
+structural zero, \eqn{L_0 = \zeta + (1-\zeta)f(0)} the inflated mass at
+zero, \eqn{w = (1-\zeta)f(0)/L_0} the posterior probability that an observed
+zero came from the parent, \eqn{s} the parent's score and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+
+distrib_quantile(d, c(0.1, 0.3, 0.9), theta)
+
+# Everything below the inflated mass at zero maps to zero.
+c(mass_at_zero = distrib_pdf(d, 0, theta),
+  q_below = distrib_quantile(d, 0.2, theta))
+
+# The round trip overshoots, as on any lattice: asked for 0.3, the
+# attainable probability at the returned point is higher.
+p <- c(0.1, 0.3, 0.9)
+rbind(asked = p,
+      reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=distrib_cdf.ZeroInflatedDistrib]{distrib_cdf.ZeroInflatedDistrib()}}, which this inverts, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }
