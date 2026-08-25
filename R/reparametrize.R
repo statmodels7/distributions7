@@ -22,11 +22,14 @@ NULL
 #' exactness of the parameter derivatives comes from.
 #'
 #' @param distrib_name The name of the family, a single string.
+#' @param dimension `"univariate"` or `"multivariate"`. Always the first for a
+#'   reparametrization, [reparametrize()] refusing a multivariate parent.
 #' @param params A character vector naming the new parameters.
 #' @param params_bounds A named list of length-two numeric vectors, the open
 #'   interval each new parameter lives in.
-#' @param params_links A named list of \pkg{linkfunctions7} links, one per new
-#'   parameter.
+#' @param link_params A named list of \pkg{linkfunctions7} links, one per new
+#'   parameter. Note the name: it is `link_params` on the object and `links` in
+#'   [reparametrize()]'s signature.
 #' @param params_interpretation A named character vector describing each new
 #'   parameter.
 #' @param params_smooth A named logical vector saying which parameters the

@@ -38,6 +38,9 @@ ReparamDiscreteDistrib(
 \arguments{
 \item{distrib_name}{The name of the family, a single string.}
 
+\item{dimension}{\code{"univariate"} or \code{"multivariate"}. Always the first for a
+reparametrization, \code{\link[=reparametrize]{reparametrize()}} refusing a multivariate parent.}
+
 \item{bounds}{A length-two numeric vector, the support.}
 
 \item{params}{A character vector naming the new parameters.}
@@ -50,6 +53,10 @@ parameter.}
 \item{params_bounds}{A named list of length-two numeric vectors, the open
 interval each new parameter lives in.}
 
+\item{link_params}{A named list of \pkg{linkfunctions7} links, one per new
+parameter. Note the name: it is \code{link_params} on the object and \code{links} in
+\code{\link[=reparametrize]{reparametrize()}}'s signature.}
+
 \item{params_smooth}{A named logical vector saying which parameters the
 log-density is differentiable in.}
 
@@ -60,9 +67,6 @@ function of one named list returning another.}
 
 \item{reparam_derivs}{The function returning the map's keyed partial tables,
 as \code{\link[=reparam_tables]{reparam_tables()}} consumes them.}
-
-\item{params_links}{A named list of \pkg{linkfunctions7} links, one per new
-parameter.}
 }
 \value{
 An object of class \code{ReparamContinuousDistrib} or
