@@ -2,7 +2,7 @@
 % Please edit documentation in R/pig2_distrib.R
 \name{Pig2Distrib}
 \alias{Pig2Distrib}
-\title{S7 Class for the Poisson-Inverse Gaussian in Its Orthogonal Parametrization}
+\title{Poisson-Inverse Gaussian Distribution Class, Orthogonal Parametrization}
 \usage{
 Pig2Distrib(
   distrib_name = character(0),
@@ -36,27 +36,63 @@ Pig2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Pig2Distrib}.
+An S7 object of class \code{Pig2Distrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. For an object built by
+\code{\link[=pig2_distrib]{pig2_distrib()}} the properties hold
+\code{"poisson-inverse gaussian (orthogonal)"}, \code{"univariate"}, \code{c(0, Inf)},
+\code{c("mu", "alpha")}, the interpretations
+\code{c(mu = "mean", alpha = "bessel argument")}, \code{2}, and two domains
+\eqn{(0, \infty)}.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the
-Poisson-inverse Gaussian distribution in the parametrization whose two
-parameters are orthogonal, gamlss's \code{PIG2}.
+The S7 class of the Poisson-inverse Gaussian in the parametrization whose
+two parameters are orthogonal, gamlss's \code{PIG2}. It is the same law as
+\link{Pig1Distrib}; the mean stays \eqn{\mu} and the dispersion is replaced by
+\eqn{\alpha}, the argument the mass function's Bessel function is evaluated
+at.
+
+Orthogonal means the expected information is diagonal. Measured at
+\eqn{\mu = 3}, its mixed entry summed over the support is
+\eqn{-8.8\times10^{-15}} here against 7.39 in the mean-dispersion
+parametrization.
+
+Build one with \code{\link[=pig2_distrib]{pig2_distrib()}}, which supplies the two link functions. This
+page documents the raw S7 constructor, which validates none of the
+relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered in this file, the middle five reading one compiled kernel:
 \code{\link[=distrib_pdf.Pig2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian()}},
 \code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Pig2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng()}}.
 
-Everything else, the distribution function and the quantile included, is
-inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Registered elsewhere: the four moments in \code{moments.R} and the data-based
+starting value in \code{starting_values.R}. The distribution function and the
+quantile come from \code{\link[=discrete_distrib]{discrete_distrib()}}, both exact sums over the support.
 }
 
+\examples{
+d <- pig2_distrib()
+S7::S7_inherits(d, discrete_distrib)
+
+d@params
+d@params_interpretation
+
+# The same law as pig1, at the dispersion alpha implies.
+al <- 3.010399
+d1 <- pig1_distrib()
+rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = al)),
+      pig1 = distrib_pdf(d1, 0:5,
+                         list(mu = 3,
+                              sigma = distributions7:::pig2_sigma(3, al))))
+}
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=pig2_distrib]{pig2_distrib()}} to build one;
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the mean-dispersion parametrization;
+\code{\link[=pig2_sigma]{pig2_sigma()}} for the map between them;
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel all five derivative methods read.
 }

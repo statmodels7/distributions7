@@ -7,21 +7,43 @@
 pig2_sigma(mu, alpha)
 }
 \arguments{
-\item{mu}{The mean, a positive numeric vector.}
+\item{mu}{A numeric vector of means, strictly positive. Nothing is
+validated.}
 
-\item{alpha}{The orthogonal parameter, a positive numeric vector.}
+\item{alpha}{A numeric vector of Bessel arguments, strictly positive.}
 }
 \value{
-A numeric vector of dispersions.
+A numeric vector of dispersions, of the length of the recycled
+inputs, strictly positive.
 }
 \description{
-Converts the orthogonal parametrization's \eqn{\alpha} into the
-dispersion \eqn{\sigma} of \code{\link[=pig1_distrib]{pig1_distrib()}}:
-\eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2}, the positive
-root of \eqn{\alpha^2\sigma^2 - 2\mu\sigma - 1 = 0}, with no
-cancellation anywhere in the domain.
+Converts the orthogonal parametrization's \eqn{\alpha} into the dispersion
+\eqn{\sigma} of \code{\link[=pig1_distrib]{pig1_distrib()}}:
+\deqn{\sigma = \dfrac{\mu + \sqrt{\mu^2 + \alpha^2}}{\alpha^2},}
+the positive root of \eqn{\alpha^2\sigma^2 - 2\mu\sigma - 1 = 0}.
+}
+\details{
+The relation is the inverse of \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
+Written this way there is no cancellation anywhere in the domain: both
+\eqn{\mu} and \eqn{\sqrt{\mu^2 + \alpha^2}} are positive, so the numerator
+is a sum of positive terms. The other root of the quadratic is negative and
+is discarded.
+
+Only \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} calls this. The derivative methods do not:
+the compiled kernel takes \eqn{\alpha} as a variable of its own, so the map
+is never differentiated.
+}
+\examples{
+# The map, and the round trip back through alpha = sqrt(1 + 2 sigma mu)/sigma.
+sg <- distributions7:::pig2_sigma(3, 3.010399)
+c(sigma = sg, alpha_back = sqrt(1 + 2 * sg * 3) / sg)
+
+# A large alpha is a small dispersion: the family tends to the Poisson.
+distributions7:::pig2_sigma(3, c(1, 3, 30, 300))
+
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=pig2_distrib]{pig2_distrib()}} for the parametrization, \code{\link[=pig1_distrib]{pig1_distrib()}} for the
+one it maps onto, and \code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} for its only caller.
 }
 \keyword{internal}

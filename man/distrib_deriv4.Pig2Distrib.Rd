@@ -2,30 +2,64 @@
 % Please edit documentation in R/pig2_distrib.R
 \name{distrib_deriv4.Pig2Distrib}
 \alias{distrib_deriv4.Pig2Distrib}
-\title{Orthogonal Poisson-Inverse Gaussian Analytical Fourth Derivatives}
+\title{Orthogonal Poisson-Inverse Gaussian Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{Pig2Distrib} object.}
+\item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} its values are
+the support points the expectation is summed over.}
 
-\item{theta}{A list containing \code{mu} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
+vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical; the expected version goes through the generic's
-strategies.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned from the compiled kernel.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx, nsim}{Passed on when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+only when \code{expected = TRUE}.}
 
-\item{...}{Unused.}
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of five numeric vectors: \code{mu_mu_mu_mu},
+\code{mu_mu_mu_alpha}, \code{mu_mu_alpha_alpha}, \code{mu_alpha_alpha_alpha} and
+\code{alpha_alpha_alpha_alpha}.
 }
 \description{
-The exact fourth derivatives in \eqn{(\mu, \alpha)}, from
-the compiled fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact fourth derivatives of the log-mass in
+\eqn{(\mu, \alpha)}, read off the last five columns of the compiled kernel
+of \code{\link[=pig_hd_block]{pig_hd_block()}}. The kernel is a fourth-order one throughout, so this is
+the order it was written for.
+
+With \code{expected = TRUE} the value is an expectation and is not closed form,
+as at third order.
+}
+\examples{
+d <- pig2_distrib()
+y <- 0:6
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+th <- list(mu = 3, alpha = al)
+d4 <- distrib_deriv4(d, y, th)
+names(d4)
+
+# Against a central difference of the third order.
+eps <- 1e-5
+rbind(analytic = d4$mu_mu_mu_alpha,
+      numeric = (distrib_deriv3(d, y,
+                   list(mu = 3, alpha = al + eps))$mu_mu_mu -
+                 distrib_deriv3(d, y,
+                   list(mu = 3, alpha = al - eps))$mu_mu_mu) / (2 * eps))
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3.Pig2Distrib()}} for the order below,
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

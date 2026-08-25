@@ -4,20 +4,43 @@
 \alias{distrib_rng.Pig2Distrib}
 \title{Orthogonal Poisson-Inverse Gaussian Random Generation}
 \arguments{
-\item{distrib}{A \code{Pig2Distrib} object.}
+\item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
+vector of length 1 or of length \code{n}; a component of length 1 is recycled,
+so a parameter varying by observation draws one value per observation from
+its own member of the family.}
 }
 \value{
-A numeric vector of length \code{n}.
+An integer-valued numeric vector of \code{n} draws.
 }
 \description{
-The exact mixture sampler of
-\code{\link[=distrib_rng.Pig1Distrib]{pig1()}}, at the dispersion
-\code{\link[=pig2_sigma]{pig2_sigma()}} implies.
+Draws from the mixture representation of \code{\link[=distrib_rng.Pig1Distrib]{distrib_rng.Pig1Distrib()}}, at the
+dispersion \code{\link[=pig2_sigma]{pig2_sigma()}} implies: \eqn{\lambda} from the inverse Gaussian
+with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, then \eqn{Y \mid \lambda}
+from the Poisson. This is the one method of the family that composes the
+map; the derivative methods take \eqn{\alpha} directly.
+}
+\examples{
+d <- pig2_distrib()
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+th <- list(mu = 3, alpha = al)
+
+set.seed(64)
+x <- distrib_rng(d, 2e5, th)
+
+# Two moments against their closed forms.
+rbind(sample = c(mean(x), var(x)),
+      theory = c(mean(d, th), variance(d, th)))
+
+# The empirical mass against the exact one, over the head of the support.
+rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
+      exact = distrib_pdf(d, 0:6, th))
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=distrib_rng.Pig1Distrib]{distrib_rng.Pig1Distrib()}} for the same sampler in mean and
+dispersion, \code{\link[=pig2_sigma]{pig2_sigma()}} for the map it composes, and \code{\link[=distrib_rng]{distrib_rng()}}
+for the generic.
 }

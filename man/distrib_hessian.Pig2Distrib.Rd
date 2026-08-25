@@ -2,25 +2,61 @@
 % Please edit documentation in R/pig2_distrib.R
 \name{distrib_hessian.Pig2Distrib}
 \alias{distrib_hessian.Pig2Distrib}
-\title{Orthogonal Poisson-Inverse Gaussian Analytical Observed Hessian}
+\title{Orthogonal Poisson-Inverse Gaussian Observed Hessian}
 \arguments{
-\item{distrib}{A \code{Pig2Distrib} object.}
+\item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
 
-\item{theta}{A list containing \code{mu} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{alpha_alpha}, \code{mu_alpha}.
 }
 \description{
-The exact second derivatives in \eqn{(\mu, \alpha)}, from
-the compiled fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact second derivatives of the log-mass in
+\eqn{(\mu, \alpha)}, read off columns \code{d20}, \code{d02} and \code{d11} of the compiled
+fourth-order kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}.
+
+The \strong{observed} mixed entry is not zero at any single observation; what
+vanishes is its expectation. Measured at \eqn{\mu = 3},
+\eqn{\alpha = 3.0104}, the expectation summed over the support is
+\eqn{-8.8\times10^{-15}} while the individual entries are of order one.
+}
+\examples{
+d <- pig2_distrib()
+y <- 0:6
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+th <- list(mu = 3, alpha = al)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$mu_alpha,
+      numeric = (distrib_gradient(d, y, list(mu = 3, alpha = al + eps))$mu -
+                 distrib_gradient(d, y, list(mu = 3, alpha = al - eps))$mu) /
+                (2 * eps))
+
+# The mixed entry is not zero observation by observation; its expectation
+# is.
+c(observed = h$mu_alpha[1],
+  expected = sum(distrib_expected_hessian(d, 0:200, th,
+                                          approx = "bartlett")$mu_alpha))
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=distrib_gradient.Pig2Distrib]{distrib_gradient.Pig2Distrib()}} for the order below,
+\code{\link[=distrib_deriv3.Pig2Distrib]{distrib_deriv3.Pig2Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+the kernel, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

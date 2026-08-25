@@ -4,23 +4,64 @@
 \alias{distrib_pdf.Pig2Distrib}
 \title{Orthogonal Poisson-Inverse Gaussian Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{Pig2Distrib} object.}
+\item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A negative, non-integer or non-finite
+value is off the support and gives a probability of 0, or \code{-Inf} with
+\code{log = TRUE}.}
 
-\item{theta}{A list containing \code{mu} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-probability is
+returned. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities, of the length of the recycled
+inputs.
 }
 \description{
-The same law as \code{\link[=distrib_pdf.Pig1Distrib]{pig1's()}} at
-\eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2}: the parameter
-\eqn{\alpha} of this parametrization is exactly the argument
-\eqn{\sqrt{1 + 2\sigma\mu}/\sigma} the Bessel function is evaluated at.
+Computes the same mass as \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}}, at the dispersion
+\eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2} that \eqn{\alpha}
+implies. The parameter \eqn{\alpha} of this parametrization \strong{is} the
+argument \eqn{\sqrt{1 + 2\sigma\mu}/\sigma} at which the Bessel function is
+evaluated, so in this coordinate the mass function's own argument is a
+parameter.
+
+The compiled kernel takes \eqn{\alpha} directly, so \code{\link[=pig2_sigma]{pig2_sigma()}} is not
+called here and no map is composed.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\alpha} the Bessel argument, and \eqn{\sigma}
+the dispersion of \code{\link[=pig1_distrib]{pig1_distrib()}}, which \eqn{\alpha} determines.
+}
+
+\examples{
+d <- pig2_distrib()
+d1 <- pig1_distrib()
+y <- 0:6
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+
+# The same law, reached through the map.
+all.equal(distrib_pdf(d, y, list(mu = 3, alpha = al)),
+          distrib_pdf(d1, y, list(mu = 3, sigma = 0.8)))
+
+# The mass sums to one.
+sum(distrib_pdf(d, 0:300, list(mu = 3, alpha = al)))
+
+# A large alpha is a small dispersion: the mass tends to the Poisson's.
+rbind(pig2 = distrib_pdf(d, y, list(mu = 3, alpha = 1e4)),
+      poisson = dpois(y, 3))
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}} for the same mass in mean and
+dispersion, \code{\link[=pig2_sigma]{pig2_sigma()}} for the map, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the
+generic.
 }

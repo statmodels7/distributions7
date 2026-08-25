@@ -2,38 +2,70 @@
 % Please edit documentation in R/pig2_distrib.R
 \name{pig2_distrib}
 \alias{pig2_distrib}
-\title{Poisson-Inverse Gaussian Distribution in Its Orthogonal Parametrization}
+\title{Poisson-Inverse Gaussian Distribution Object, Orthogonal Parametrization}
 \usage{
 pig2_distrib(link_mu = log_link(), link_alpha = log_link())
 }
 \arguments{
-\item{link_mu}{The link for \eqn{\mu}; defaults to \code{log_link()}.}
+\item{link_mu}{A \code{linkfunctions7} link object for the mean \eqn{\mu}, which
+must be strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_alpha}{The link for \eqn{\alpha}; defaults to \code{log_link()}.}
+\item{link_alpha}{A link object for \eqn{\alpha}, also strictly positive.
+Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
-A \code{Pig2Distrib} object.
+An S7 object of class \link{Pig2Distrib}, inheriting from
+\code{discrete_distrib}. Its \code{params} are \code{c("mu", "alpha")}, its \code{bounds}
+\code{c(0, Inf)}, and its \code{link_params} the two links given here.
 }
 \description{
-Creates a Poisson-inverse Gaussian distribution in the parametrization
-whose parameters are orthogonal -- the expected information is diagonal
--- which is gamlss's \code{PIG2}. The mean stays \eqn{\mu}; the second
-parameter \eqn{\alpha} is exactly the argument the Bessel function of the
-mass function is evaluated at, related to the dispersion of
-\code{\link[=pig1_distrib]{pig1_distrib()}} by \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}
-(gamlss states the inverse of the same map,
-\eqn{\alpha = 1/(\sqrt{\mu^2 + \sigma_2^2} - \mu)} with its own
-\eqn{\sigma_2}, which coincides with this \eqn{\alpha}).
+Builds a Poisson-inverse Gaussian distribution in the parametrization whose
+two parameters are orthogonal, which is gamlss's \code{PIG2}. The mean stays
+\eqn{\mu}; the second parameter \eqn{\alpha} is exactly the argument at
+which the mass function's Bessel function is evaluated, related to the
+dispersion of \code{\link[=pig1_distrib]{pig1_distrib()}} by
+\eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
+
+Orthogonal means the expected information is diagonal. Measured at
+\eqn{\mu = 3}, its mixed entry summed over the support is
+\eqn{-8.8\times10^{-15}} here against 7.39 in the mean-dispersion
+parametrization.
 }
-\details{
-Orthogonality makes the maximum likelihood estimates of \eqn{\mu} and
-\eqn{\alpha} asymptotically independent, so Fisher scoring steps in one
-parameter do not disturb the other; the cost is that \eqn{\alpha} has no
-moment reading of its own. Derivatives to fourth order are exact,
-computed by the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}} with
-\eqn{\alpha} a seed variable of the jet, so the Bessel argument needs no
-chain rule at all.
+\section{What orthogonality buys, and what it costs}{
+The maximum likelihood estimates of \eqn{\mu} and \eqn{\alpha} are
+asymptotically independent, so a Fisher scoring step in one parameter does
+not disturb the other and the two can be modelled with separate linear
+predictors without their estimates fighting. The cost is that \eqn{\alpha}
+has no moment reading of its own: a reader who wants to interpret the
+overdispersion directly wants \code{\link[=pig1_distrib]{pig1_distrib()}}'s \eqn{\sigma}, which enters
+the variance as \eqn{\mu + \sigma\mu^2}.
+
+The two are one law and the map between them is closed both ways:
+\eqn{\sigma = (\mu + \sqrt{\mu^2 + \alpha^2})/\alpha^2} through
+\code{\link[=pig2_sigma]{pig2_sigma()}}, and \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma} back. gamlss
+states the first as \eqn{\alpha = 1/(\sqrt{\mu^2+\sigma_2^2} - \mu)} in its
+own \eqn{\sigma_2}, which coincides with this \eqn{\alpha}.
 }
+
+\section{How the derivatives are computed}{
+By the same compiled kernel as \code{\link[=pig1_distrib]{pig1_distrib()}}, with \eqn{\alpha} as a
+variable of its own, so the Bessel argument needs no chain rule at all.
+Every partial to fourth order is exact and comes out of one pass; see
+\code{\link[=pig_hd_block]{pig_hd_block()}}. The expected information has no closed form and goes
+through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
+}
+
+\section{Parameter domains}{
+\itemize{
+\item \eqn{\mu \in (0, \infty)}
+\item \eqn{\alpha \in (0, \infty)}
+}
+
+A large \eqn{\alpha} is a small dispersion, and the family tends to the
+Poisson: measured at \eqn{\alpha = 10^4} the mass agrees with \code{dpois} over
+the head of the support.
+}
+
 \section{The distribution}{
 
 \deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \sigma = \frac{1}{\sqrt{\mu^{2}+\alpha^{2}} - \mu}}
@@ -44,9 +76,31 @@ on \eqn{y \in \{0, 1, \dots\}}.
 
 \examples{
 d <- pig2_distrib()
-theta <- list(mu = 3, alpha = 1.2)
-distrib_pdf(d, 0:5, theta)
-mean(d, theta)
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+th <- list(mu = 3, alpha = al)
+
+distrib_pdf(d, 0:5, th)
+c(mean = mean(d, th), variance = variance(d, th))
+
+# The same law as pig1 at the dispersion alpha implies.
+all.equal(distrib_pdf(d, 0:5, th),
+          distrib_pdf(pig1_distrib(), 0:5, list(mu = 3, sigma = 0.8)))
+
+# The property the parametrization exists for.
+c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
+                                      approx = "bartlett")$mu_alpha),
+  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
+                                      list(mu = 3, sigma = 0.8),
+                                      approx = "bartlett")$mu_sigma))
+
+# A large alpha is a small dispersion, and the family tends to the Poisson.
+rbind(pig2 = distrib_pdf(d, 0:5, list(mu = 3, alpha = 1e4)),
+      poisson = dpois(0:5, 3))
+
+# A fit recovers both parameters.
+set.seed(65)
+x <- distrib_rng(d, 4000, th)
+coef(fit_distrib(d, x))
 
 }
 \references{
@@ -58,5 +112,7 @@ modelling: bias due to misspecification of dispersion in Poisson-inverse
 Gaussian regression. \emph{Biometrical Journal} 61(2), 333--342.
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the mean-dispersion parametrization,
+\code{\link[=pig2_sigma]{pig2_sigma()}} for the map, \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other
+overdispersed count family, and \link{Pig2Distrib} for the class.
 }

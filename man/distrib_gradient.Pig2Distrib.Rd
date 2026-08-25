@@ -2,25 +2,65 @@
 % Please edit documentation in R/pig2_distrib.R
 \name{distrib_gradient.Pig2Distrib}
 \alias{distrib_gradient.Pig2Distrib}
-\title{Orthogonal Poisson-Inverse Gaussian Analytical Gradient}
+\title{Orthogonal Poisson-Inverse Gaussian Score}
 \arguments{
-\item{distrib}{A \code{Pig2Distrib} object.}
+\item{distrib}{A \code{Pig2Distrib} object, from \code{\link[=pig2_distrib]{pig2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
 
-\item{theta}{A list containing \code{mu} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} and \code{alpha}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation to the link scale is applied in the generic's body, so this
+method always returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} and \code{alpha} components.
+A named list of two numeric vectors, \code{mu} and \code{alpha}, each of the
+length of the recycled inputs.
 }
 \description{
-The exact score in \eqn{(\mu, \alpha)}, from the compiled
-fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact first derivatives of the log-mass in \eqn{(\mu, \alpha)},
+read off columns \code{d10} and \code{d01} of the compiled fourth-order kernel of
+\code{\link[=pig_hd_block]{pig_hd_block()}}. The kernel takes \eqn{\alpha} as a variable of its own, so
+these are derivatives in the orthogonal coordinates directly and no chain
+rule through \code{\link[=pig2_sigma]{pig2_sigma()}} is composed.
+
+The property that gives this parametrization its name lives one order up:
+the \strong{expected} value of \eqn{\partial^2\ell/\partial\mu\partial\alpha} is
+zero, so the two scores are uncorrelated and their maximum likelihood
+estimates asymptotically independent.
+}
+\examples{
+d <- pig2_distrib()
+y <- 0:6
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+th <- list(mu = 3, alpha = al)
+g <- distrib_gradient(d, y, th)
+
+# Against numerical differentiation of the log-likelihood.
+f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], alpha = p[2]),
+                                 log = TRUE))
+rbind(analytic = vapply(g, sum, 0),
+      numeric = numDeriv::grad(f, c(3, al)))
+
+# The two scores are uncorrelated under the model, which is what
+# orthogonality means and what pig1 does not have.
+c(pig2 = sum(distrib_expected_hessian(d, 0:200, th,
+                                      approx = "bartlett")$mu_alpha),
+  pig1 = sum(distrib_expected_hessian(pig1_distrib(), 0:200,
+                                      list(mu = 3, sigma = 0.8),
+                                      approx = "bartlett")$mu_sigma))
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=distrib_hessian.Pig2Distrib]{distrib_hessian.Pig2Distrib()}} for the second derivatives,
+\code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the same quantity in mean and
+dispersion, \code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \code{\link[=distrib_gradient]{distrib_gradient()}} for
+the generic.
 }
