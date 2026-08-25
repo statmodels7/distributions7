@@ -10,13 +10,20 @@ nb1_prob(theta)
 \item{theta}{The dispersion, a positive numeric vector.}
 }
 \value{
-A numeric vector in \eqn{(0, 1)}.
+A numeric vector in \eqn{(0, 1)}, of the length of \code{theta}, falling
+towards 0 as the dispersion grows and to 1 as it goes to zero.
 }
 \description{
-\eqn{1/(1+\theta)}, the value that makes the variance-to-mean ratio
-\eqn{1+\theta} at every mean.
+Returns \eqn{1/(1+\theta)}, the success probability the base R negative
+binomial functions take as \code{prob}. It is the value that makes the
+variance-to-mean ratio \eqn{1+\theta} at every mean, so the dispersion
+relative to a Poisson does not change with the level of the counts.
+
+Nothing is validated; a \code{theta} at or below \eqn{-1} gives a value outside
+\eqn{(0, 1)} and the caller sees the failure at the base R function.
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}, \code{\link[=nb1_size]{nb1_size()}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family, \code{\link[=nb1_size]{nb1_size()}} for the size that
+goes with it, and \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass they feed.
 }
 \keyword{internal}

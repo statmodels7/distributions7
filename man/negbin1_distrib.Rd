@@ -2,89 +2,165 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{negbin1_distrib}
 \alias{negbin1_distrib}
-\title{NB1 Negative Binomial Distribution Object}
+\title{Negative Binomial Distribution, NB1}
 \usage{
 negbin1_distrib(link_mu = log_link(), link_theta = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted mean positive.}
 
-\item{link_theta}{A link function object for \eqn{\theta}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_theta}{A \code{link} object from \code{linkfunctions7} for the dispersion
+\eqn{\theta}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{NegBin1Distrib}.
+An S7 object of class \code{NegBin1Distrib}, inheriting from
+\code{discrete_distrib}, with \code{distrib_name} \code{"negbin1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "theta")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the negative binomial whose variance is
-\strong{linear} in the mean, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}.
+Builds the distribution object for the negative binomial family on the
+non-negative integers whose variance is \strong{linear} in the mean: with a mean
+\eqn{\mu > 0} and a dispersion \eqn{\theta > 0},
+\eqn{\operatorname{Var}(Y) = \mu(1+\theta)}. The returned object carries
+closed-form derivatives of the log-mass to fourth order and closed-form
+moments.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
 }
-\details{
+\section{Two negative binomials, and they are two families}{
 Two negative binomials are in common use and they are \strong{different
 families}, not two parametrizations of one. Here the variance is
 \eqn{\mu(1+\theta)}, growing in proportion to the mean, so the dispersion
-relative to a Poisson is the same at every mean;
-\code{\link[=negbin2_distrib]{negbin2_distrib()}} has \eqn{\mu + \mu^2/\theta}, growing
-quadratically. Fitting one is not fitting the other, and a likelihood ratio
-between them is not a test of nested models.
+relative to a Poisson is the same at every mean; \code{\link[=negbin2_distrib]{negbin2_distrib()}} has
+\eqn{\mu + \mu^2/\theta}, growing quadratically. Fitting one is not fitting
+the other, and a likelihood ratio between them is not a test of nested
+models.
 
 The difference is visible in where the mean sits. The size is
 \eqn{r = \mu/\theta} and the success probability \eqn{1/(1+\theta)}, so
-\eqn{\mu} appears \strong{inside} the gamma functions, while in the
-quadratic form it stays outside them and \eqn{\theta} is the size.
+\eqn{\mu} appears \strong{inside} the gamma functions of the mass; in the
+quadratic form the size is \eqn{\theta} and the mean stays outside them.
+}
 
-\strong{Probability mass function:} the negative binomial mass at size
-\eqn{\mu/\theta} and probability \eqn{1/(1+\theta)}.
+\section{The parametrization}{
+The mass on \eqn{y = 0, 1, 2, \ldots} is
+\deqn{P(Y = y) = \dfrac{\Gamma(y + \mu/\theta)}{\Gamma(\mu/\theta)\,y!}
+      \left(\dfrac{1}{1+\theta}\right)^{\mu/\theta}
+      \left(\dfrac{\theta}{1+\theta}\right)^{y},}
+the distribution function is the partial sum and the quantile function its
+generalized inverse. The mean is \eqn{\mu} and the variance
+\eqn{\mu(1+\theta)}. Two settings are worth recognizing: at \eqn{\mu =
+\theta} the size is 1 and the law is the geometric, and as \eqn{\theta} goes
+to zero it tends to the Poisson, where the quadratic form needs
+\eqn{\theta \to \infty} instead.
+}
 
-\strong{Score.} Writing
-\eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)},
+\section{Derivatives}{
+Everything follows from the chain rule through the size. With
+\eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} and \eqn{\psi} the digamma
+function, the score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
       \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
-      - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}}
-and the Hessian is the same chain rule at second order.
+        - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta},}
+and the Hessian is the same chain rule at second order. In the expected
+information every term carrying \eqn{P} drops out, its expectation vanishing
+by the first Bartlett identity, and only \eqn{\mathbb{E}[\psi'(Y+r)]}
+remains, which is summed against the exact mass out to a far-tail quantile.
 
-\strong{Expected information.} Every term carrying \eqn{P} drops out, its
-expectation vanishing by the first Bartlett identity, and only
-\eqn{\mathbb{E}[\psi'(Y+r)]} remains. That has no closed form and is summed
-against the exact mass to a far-tail quantile.
+\strong{The mean and the dispersion are not orthogonal here.} The mixed entry of
+the expected information is small but non-zero at every setting measured,
+where \code{\link[=negbin2_distrib]{negbin2_distrib()}} has exactly zero there.
+}
 
-\strong{Parameter domains:}
+\section{What happens as theta goes to zero}{
+The family tends to the Poisson, so every derivative in \eqn{\theta} tends
+to a finite limit while the pieces it is assembled from run away: the size
+\eqn{r = \mu/\theta} grows without bound and the chain rule divides by
+powers of \eqn{\theta}. The score's digamma difference is computed in a form
+that performs its own cancellation symbolically, and the value converges
+onto \eqn{\{(y-\mu)^2 - y\}/(2\mu)}, holding to about five significant
+figures at \eqn{\theta = 10^{-8}}. Two quantities are \strong{not} rewritten, and
+both pages say so:
 \itemize{
-\item \eqn{\mu \in (0, +\infty)}
-\item \eqn{\theta \in (0, +\infty)}
+\item the expected information in \eqn{\theta}, which turns positive from about
+\eqn{\theta = 10^{-6}} and leaves the matrix indefinite
+(\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}});
+\item the third and fourth derivatives in \eqn{\theta}, whose own cancellation
+in the powers of \eqn{r} is untouched
+(\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}}, \code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}).
 }
 
-As \eqn{\theta \to 0} the family approaches the Poisson, as the quadratic
-form does when \eqn{\theta \to \infty}.
+A fit reaches that regime routinely: on 2,000 Poisson counts with mean 4 the
+dispersion is estimated at about \eqn{1.7\times 10^{-8}} and the run reports
+convergence.
 }
-\section{The distribution}{
 
-\deqn{P(Y=y) = \frac{\Gamma(y + \mu/\theta)}{\Gamma(\mu/\theta)\,y!}\left(\frac{1}{1+\theta}\right)^{\mu/\theta}\left(\frac{\theta}{1+\theta}\right)^{y}}
-on \eqn{y \in \{0, 1, \dots\}}.
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form. The method of moments supplies the starting values
+\eqn{\hat\mu = \bar y} and \eqn{\hat\theta = s^2/\bar y - 1}, with \eqn{s^2}
+the sample variance.
+}
 
-\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \mu(1+\theta)}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu > 0} the mean and
+\eqn{\theta > 0} the dispersion. \eqn{r = \mu/\theta} is the size, \eqn{\psi}
+the digamma function and \eqn{\psi'} the trigamma. \eqn{\eta} is a parameter
+on the unconstrained scale of its link, with \eqn{\theta_j = g^{-1}(\eta_j)}.
 }
 
 \examples{
 d <- negbin1_distrib()
-d@params
+d
 
-theta <- list(mu = 4, theta = 4)
-distrib_pdf(d, 0:6, theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+# The two negative binomials are different families: at the same (mu, theta)
+# this one has variance mu(1 + theta) = 20 and the other mu + mu^2/theta = 8.
+th <- list(mu = 4, theta = 4)
+c(nb1 = variance(d, th), nb2 = variance(negbin2_distrib(), th))
 
-# the two negative binomials are different families: at the same (mu, theta)
-# this one has variance mu(1+theta) = 20 and the other mu + mu^2/theta = 8
-variance(negbin2_distrib(), list(mu = 4, theta = 4))
+# The variance-to-mean ratio is 1 + theta at every mean.
+vapply(c(1, 10, 100),
+       function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
+
+# At mu = theta the size is 1 and the law is the geometric.
+all.equal(distrib_pdf(d, 0:4, th), dgeom(0:4, prob = 1 / 5))
+
+# As theta goes to zero it is the Poisson.
+rbind(nb1 = distrib_pdf(d, 0:4, list(mu = 3, theta = 1e-6)),
+      poisson = dpois(0:4, 3))
+
+# Fitting recovers the parameters; the moment estimates start it off.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+rbind(fitted  = coef(fit),
+      moments = c(mu = mean(z), theta = var(z) / mean(z) - 1))
+
+# On an equidispersed sample the dispersion runs to its boundary, which is
+# the regime the expected information page warns about.
+set.seed(4)
+coef(fit_distrib(d, rpois(2000, 4)))
 
 }
 \references{
 Cameron, A. C. and Trivedi, P. K. (1986). Econometric models based
 on count data: comparisons and applications of some estimators and
-tests. \emph{Journal of Applied Econometrics} 1, 29-53.
+tests. \emph{Journal of Applied Econometrics} \strong{1}, 29-53.
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}} for the quadratic variance,
-\code{\link[=poisson_distrib]{poisson_distrib()}}, \code{\link[=geometric_distrib]{geometric_distrib()}}
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} for the quadratic-variance family; \code{\link[=poisson_distrib]{poisson_distrib()}}
+for the limit as \eqn{\theta} goes to zero and \code{\link[=geometric_distrib]{geometric_distrib()}} for the
+case \eqn{\mu = \theta}; \code{\link[=pig1_distrib]{pig1_distrib()}} for a Poisson mixed over an
+inverse Gaussian; \code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for counts with
+excess zeros; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}}
+to validate a family of your own against the same battery this one passes;
+\link{NegBin1Distrib} for the class.
 }

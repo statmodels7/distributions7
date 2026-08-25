@@ -4,21 +4,59 @@
 \alias{distrib_pdf.NegBin1Distrib}
 \title{NB1 Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A negative value gives a mass of 0.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities, of length
+\code{max(length(y), length(mu), length(theta))}, one value per observation.
 }
 \description{
-The negative binomial mass at size \eqn{\mu/\theta} and success probability
-\eqn{1/(1+\theta)}, which is what makes the variance \eqn{\mu(1+\theta)}.
+Computes the negative binomial mass at size \eqn{r = \mu/\theta} and success
+probability \eqn{1/(1+\theta)},
+\deqn{P(Y = y; \mu, \theta) = \dfrac{\Gamma(y+r)}{\Gamma(r)\,y!}
+      \left(\dfrac{1}{1+\theta}\right)^{r}
+      \left(\dfrac{\theta}{1+\theta}\right)^{y}, \qquad
+      y = 0, 1, 2, \ldots,}
+which is the pairing that makes the variance \eqn{\mu(1+\theta)}. The
+log-mass is formed in a compiled kernel and exponentiated when \code{log} is
+\code{FALSE}, so \code{log = TRUE} is the accurate route far into the tail.
+
+The mean sits \strong{inside} the gamma functions here, through the size. In
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} the size is \eqn{\theta} and the mean stays outside
+them, which is the concrete difference between the two families.
+}
+\examples{
+d <- negbin1_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 4)
+
+# The mass is stats::dnbinom at size mu/theta and prob 1/(1 + theta).
+all.equal(distrib_pdf(d, y, th), dnbinom(y, size = 1, prob = 1 / 5))
+
+# At mu = theta the size is 1 and the family is the geometric.
+all.equal(distrib_pdf(d, 0:4, th), dgeom(0:4, prob = 1 / 5))
+
+# As theta goes to zero the mass tends to the Poisson's.
+rbind(nb1 = distrib_pdf(d, 0:4, list(mu = 3, theta = 1e-6)),
+      poisson = dpois(0:4, 3))
+
+# The mass sums to one over the support.
+sum(distrib_pdf(d, 0:600, th))
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} for the derivatives of the log-mass,
+\code{\link[=nb1_size]{nb1_size()}} and \code{\link[=nb1_prob]{nb1_prob()}} for the pairing this uses, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

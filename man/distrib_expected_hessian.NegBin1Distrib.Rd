@@ -2,35 +2,98 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{distrib_expected_hessian.NegBin1Distrib}
 \alias{distrib_expected_hessian.NegBin1Distrib}
-\title{NB1 Analytical Expected Hessian}
+\title{NB1 Expected Hessian}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. Only its length is used.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored.}
+\item{approx}{Ignored. The surviving expectation is a truncated exact sum.
+Accepted so that the signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_theta} and
+\code{theta_theta}, in that order, each of length
+\code{max(length(y), length(mu), length(theta))} and constant within itself
+when the parameters are.
 }
 \description{
-Every term carrying \eqn{P} drops out, its expectation vanishing by the
-first Bartlett identity, and what remains needs only
-\eqn{\mathbb{E}[\psi'(Y+r)]}. That has no closed form and is summed against
-the exact mass to a far-tail quantile, as the NB2 kernel does; \code{approx}
-is therefore ignored.
+Returns the expectation of the observed Hessian under the model. Every term
+carrying \eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} drops out, its
+expectation vanishing by the first Bartlett identity, and what remains needs
+only \eqn{\mathbb{E}[\psi'(Y+r)]}. That has no closed form: it is summed
+against the exact mass out to a far-tail quantile, so this is a truncated
+exact sum and not a quadrature or a simulation. \code{approx} and \code{nsim} are
+ignored, and \code{y} is read only for its length.
+
+\strong{The mixed entry does not vanish}, so the mean and the dispersion are not
+orthogonal in this family. Measured at four settings it is 0.0172, 0.0364,
+0.0108 and 0.0157; in \code{\link[=negbin2_distrib]{negbin2_distrib()}} the same entry is exactly zero.
+That is a difference between the two negative binomials rather than a
+difference of parametrization.
+}
+\section{A caveat at small theta}{
+The dispersion entry inherits the cancellation of
+\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} and \strong{is not rewritten to remove it}.
+The chain rule through \eqn{r = \mu/\theta} divides by \eqn{\theta^2} and
+\eqn{\theta^4}, so what is left of the digits runs out early. Measured at
+\eqn{\mu = 4}: the entry reads \eqn{-0.489} at \eqn{\theta = 10^{-2}} and
+\eqn{-0.500} at \eqn{10^{-4}}, then \eqn{+2.1\times 10^{2}} at \eqn{10^{-6}}
+and \eqn{+2.9\times 10^{8}} at \eqn{10^{-8}}. The sign is impossible for an
+expected second derivative, and the matrix is indefinite there, its
+determinant turning negative. A Fisher scoring step taken in that regime is
+not reliable, and a nearly equidispersed sample drives a fit into it.
+}
+
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The first
+Bartlett identity is \eqn{\mathbb{E}[\partial\ell/\partial\theta] = 0}.
+}
+
+\examples{
+d <- negbin1_distrib()
+th <- list(mu = 4, theta = 4)
+e <- distrib_expected_hessian(d, c(0, 2, 6), th)
+lapply(e, unique)
+
+# Negative definite at a moderate dispersion.
+M <- matrix(c(e$mu_mu[1], e$mu_theta[1], e$mu_theta[1], e$theta_theta[1]), 2)
+eigen(M, only.values = TRUE)$values
+
+# The mixed entry is not zero, so the mean and the dispersion are not
+# orthogonal here; in the quadratic-variance family it is exactly zero.
+c(nb1 = e$mu_theta[1],
+  nb2 = distrib_expected_hessian(negbin2_distrib(), 0, th)$mu_theta)
+
+# The dispersion entry loses its digits as theta goes to zero, and turns
+# positive, which an expected second derivative cannot be.
+vapply(c(1e-2, 1e-4, 1e-6, 1e-8),
+       function(t) distrib_expected_hessian(d, 0,
+                     list(mu = 4, theta = t))$theta_theta,
+       numeric(1))
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian.NegBin1Distrib()}} for the observed quantity this
+is the expectation of, \code{\link[=distrib_expected_hessian.NegBin2Distrib]{distrib_expected_hessian.NegBin2Distrib()}} for the
+quadratic-variance family, whose mixed entry is exactly zero,
+\code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

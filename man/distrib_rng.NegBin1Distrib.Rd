@@ -2,20 +2,44 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{distrib_rng.NegBin1Distrib}
 \alias{distrib_rng.NegBin1Distrib}
-\title{NB1 Random Generation}
+\title{NB1 Random Number Generator}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one count per parameter setting. Both must
+be strictly positive.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of \code{n} non-negative integers.
 }
 \description{
-\code{\link[stats:NegBinomial]{stats::rnbinom()}} at the same size and probability.
+Draws \code{n} independent counts by calling \code{\link[stats:NegBinomial]{stats::rnbinom()}} at size
+\eqn{r = \mu/\theta} and success probability \eqn{1/(1+\theta)}, so the
+draws come from R's own generator and depend on \code{.Random.seed} in the usual
+way. The cumulative-table fallback the base class supplies for a discrete
+family is bypassed.
+}
+\examples{
+d <- negbin1_distrib()
+
+# Same generator as stats::rnbinom at size mu/theta and prob 1/(1 + theta).
+set.seed(2)
+a <- distrib_rng(d, 5, list(mu = 4, theta = 4))
+set.seed(2)
+identical(a, rnbinom(5, size = 1, prob = 1 / 5))
+
+# The sample moments recover the parameters: the mean directly, and the
+# dispersion as var/mean - 1.
+set.seed(5)
+z <- distrib_rng(d, 2e4, list(mu = 4, theta = 4))
+c(mu = mean(z), theta = var(z) / mean(z) - 1)
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile.NegBin1Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

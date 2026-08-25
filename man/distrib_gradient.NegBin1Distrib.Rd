@@ -2,31 +2,100 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{distrib_gradient.NegBin1Distrib}
 \alias{distrib_gradient.NegBin1Distrib}
-\title{NB1 Analytical Gradient}
+\title{NB1 Score}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} and \code{theta} components.
+A named list of two numeric vectors, \code{mu} and \code{theta}, each of
+length \code{max(length(y), length(mu), length(theta))}.
 }
 \description{
-The chain rule through \eqn{r = \mu/\theta}. With
-\eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)},
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}}
-and the derivative in \eqn{\theta} adds the terms in which \eqn{\theta}
-appears outside \eqn{r}.
+Computes the first derivatives of the NB1 log-mass with respect to
+\eqn{\mu} and \eqn{\theta}, one value per observation, in closed form. Both
+come from the chain rule through the size \eqn{r = \mu/\theta}. Writing
+\eqn{P = \psi(y+r) - \psi(r) - \log(1+\theta)} with \eqn{\psi} the digamma
+function,
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{P}{\theta}, \qquad
+      \dfrac{\partial \ell}{\partial \theta} = -\dfrac{\mu}{\theta^2}P
+        - \dfrac{r}{1+\theta} + \dfrac{y}{\theta} - \dfrac{y}{1+\theta}.}
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+}
+\section{The dispersion at small theta}{
+As \eqn{\theta} goes to zero the family tends to the Poisson, so the
+dispersion component tends to a finite limit while its individual terms run
+away: \eqn{r = \mu/\theta} grows without bound and the chain rule divides by
+\eqn{\theta^2}. The kernel computes the digamma difference in a form that
+performs the cancellation symbolically, and the value converges onto
+\deqn{\lim_{\theta \to 0} \dfrac{\partial \ell}{\partial \theta}
+      = \dfrac{(y-\mu)^2 - y}{2\mu},}
+which the example below checks at three settings. What survives is about
+five significant figures at \eqn{\theta = 10^{-8}} and no more, the powers
+of \eqn{r} in the assembly carrying a cancellation of their own that is not
+removed.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu > 0} the mean and
+\eqn{\theta > 0} the dispersion, with
+\eqn{\operatorname{Var}(Y) = \mu(1+\theta)}. \eqn{r = \mu/\theta} is the
+size and \eqn{\psi} the digamma function.
+}
+
+\examples{
+d <- negbin1_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 4)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+r <- 4 / 4
+P <- digamma(y + r) - digamma(r) - log(1 + 4)
+all.equal(g$mu, P / 4)
+all.equal(g$theta, -(4 / 4^2) * P - r / (1 + 4) + y / 4 - y / (1 + 4))
+
+# As theta goes to zero the dispersion component converges onto
+# {(y - mu)^2 - y}/(2 mu).
+lim <- function(y, mu) ((y - mu)^2 - y) / (2 * mu)
+cmp <- function(y, mu) {
+  c(vapply(c(1e-4, 1e-6, 1e-8),
+           function(t) distrib_gradient(d, y, list(mu = mu, theta = t))$theta,
+           numeric(1)),
+    limit = lim(y, mu))
+}
+rbind(`y=3,mu=4` = cmp(3, 4), `y=0,mu=3` = cmp(0, 3), `y=7,mu=2` = cmp(7, 2))
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(5)
+z <- distrib_rng(d, 2000, th)
+fit <- fit_distrib(d, z)
+vapply(distrib_gradient(d, z, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian.NegBin1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}} for their expectation and for
+what it does at small \eqn{\theta}, \code{\link[=distrib_gradient.NegBin2Distrib]{distrib_gradient.NegBin2Distrib()}}
+for the quadratic-variance family, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the
+generic.
 }

@@ -9,23 +9,26 @@ nb1_size(mu, theta)
 \arguments{
 \item{mu}{The mean, a positive numeric vector.}
 
-\item{theta}{The dispersion, a positive numeric vector.}
+\item{theta}{The dispersion, a positive numeric vector. The two are used
+elementwise, so vectors of different lengths recycle in the usual way.}
 }
 \value{
-A numeric vector.
+A numeric vector of sizes, of the length the division produces.
 }
 \description{
-The number of successes \eqn{r = \mu/\theta} that the base R negative
-binomial functions take.
-}
-\details{
-Requiring the variance to be \eqn{\mu(1+\theta)} fixes the success
-probability at \eqn{1/(1+\theta)}, and the mean then determines the size.
-It is this that puts \eqn{\mu} inside the gamma functions and makes the
-family different from the quadratic form rather than a reparametrization of
-it.
+Returns \eqn{r = \mu/\theta}, the number of successes the base R negative
+binomial functions take as \code{size}. Requiring the variance to be
+\eqn{\mu(1+\theta)} fixes the success probability at \eqn{1/(1+\theta)}, and
+the mean then determines the size. It is this that puts \eqn{\mu} inside the
+gamma functions of the mass and makes NB1 a different family from the
+quadratic-variance one.
+
+Nothing is validated; a non-positive \code{theta} gives an infinite or negative
+size and the caller sees the failure at the base R function.
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}, \code{\link[=nb1_prob]{nb1_prob()}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family, \code{\link[=nb1_prob]{nb1_prob()}} for the success
+probability that goes with it, and \code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the
+mass they feed.
 }
 \keyword{internal}

@@ -4,23 +4,56 @@
 \alias{distrib_cdf.NegBin1Distrib}
 \title{NB1 Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer value is floored, and
+a value below zero gives a lower-tail probability of 0.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(theta))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-\code{\link[stats:NegBinomial]{stats::pnbinom()}} at size \eqn{\mu/\theta} and
-probability \eqn{1/(1+\theta)}.
+Computes the negative binomial distribution function, the partial sum of the
+mass, by calling \code{\link[stats:NegBinomial]{stats::pnbinom()}} at size \eqn{r = \mu/\theta} and success
+probability \eqn{1/(1+\theta)}. That function evaluates it through the
+incomplete beta function, so nothing is summed. The result is a step
+function, constant between consecutive integers. Both tails are available
+exactly, and \code{log.p = TRUE} returns a logarithm that stays finite where the
+probability itself underflows.
+}
+\examples{
+d <- negbin1_distrib()
+th <- list(mu = 4, theta = 4)
+
+# The method is stats::pnbinom at size mu/theta and prob 1/(1 + theta).
+all.equal(distrib_cdf(d, c(0, 2, 6), th),
+          pnbinom(c(0, 2, 6), size = 1, prob = 1 / 5))
+
+# A step function: it does not move between two consecutive integers.
+distrib_cdf(d, c(2, 2.5, 2.999), th)
+
+# It is the partial sum of the mass.
+all.equal(distrib_cdf(d, 6, th), sum(distrib_pdf(d, 0:6, th)))
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 2000, th, lower.tail = FALSE)
+distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile.NegBin1Distrib()}} for the generalized inverse,
+\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} for the mass, \code{\link[=nb1_size]{nb1_size()}} and
+\code{\link[=nb1_prob]{nb1_prob()}} for the pairing this uses, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

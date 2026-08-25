@@ -4,22 +4,56 @@
 \alias{distrib_quantile.NegBin1Distrib}
 \title{NB1 Quantile Function}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN} with
+a warning; \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of non-negative integers, of length
+\code{max(length(p), length(mu), length(theta))}.
 }
 \description{
-\code{\link[stats:NegBinomial]{stats::qnbinom()}} at the same size and probability.
+Computes the generalized inverse of the distribution function,
+\deqn{Q(p; \mu, \theta) =
+      \min\left\{y \in \mathbb{N}_0 : F(y; \mu, \theta) \ge p\right\},}
+by calling \code{\link[stats:NegBinomial]{stats::qnbinom()}} at size \eqn{r = \mu/\theta} and success
+probability \eqn{1/(1+\theta)}. The support is a lattice, so the round trip
+through \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}} does \strong{not} return \code{p}: it returns
+the mass up to the smallest integer whose cumulative probability reaches
+\code{p}, which overshoots.
+}
+\examples{
+d <- negbin1_distrib()
+th <- list(mu = 4, theta = 4)
+
+# A nominal central 95 percent interval on the counts.
+p <- c(0.025, 0.5, 0.975)
+q <- distrib_quantile(d, p, th)
+q
+
+# On a lattice the round trip overshoots: the cumulative probability at the
+# returned integer is at or above the one asked for, not equal to it.
+rbind(asked = p, reached = distrib_cdf(d, q, th))
+
+# The overdispersion shows in the width: the same mean under a Poisson
+# reaches far less far.
+c(nb1 = distrib_quantile(d, 0.975, th),
+  poisson = distrib_quantile(poisson_distrib(), 0.975, list(mu = 4)))
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf.NegBin1Distrib()}}, which this inverts;
+\code{\link[=distrib_rng.NegBin1Distrib]{distrib_rng.NegBin1Distrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

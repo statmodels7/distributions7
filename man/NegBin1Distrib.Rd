@@ -2,7 +2,7 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{NegBin1Distrib}
 \alias{NegBin1Distrib}
-\title{S7 Class for the NB1 Negative Binomial}
+\title{Negative Binomial Distribution Class, NB1}
 \usage{
 NegBin1Distrib(
   distrib_name = character(0),
@@ -36,15 +36,32 @@ NegBin1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{NegBin1Distrib}.
+An S7 object of class \code{NegBin1Distrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=negbin1_distrib]{negbin1_distrib()}} they hold \code{"negbin1"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "theta")}, the interpretations
+\code{c(mu = "mean", theta = "dispersion")}, \code{2}, the domain
+\eqn{(0, \infty)} for both parameters, and the two links.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the
-negative binomial whose variance is \strong{linear} in the mean.
+The S7 class of the negative binomial family on the non-negative integers
+whose variance is \strong{linear} in the mean: with a mean \eqn{\mu > 0} and a
+dispersion \eqn{\theta > 0}, \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, so
+the variance-to-mean ratio is \eqn{1+\theta} at every mean. It inherits from
+\code{discrete_distrib}, so it answers every generic of the \code{distrib} contract;
+the seven methods listed below are registered on it in this file and
+everything else comes from the parent.
+
+Build one with \code{\link[=negbin1_distrib]{negbin1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_cdf.NegBin1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient()}},
@@ -53,9 +70,33 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.NegBin1Distrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.NegBin1Distrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+The third and fourth orders,
+\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4()}}, are registered
+elsewhere in the package, on top of \code{\link[=negbin1_components]{negbin1_components()}}. A discrete
+family has no derivatives in the response. Everything else is inherited from
+\code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\examples{
+d <- negbin1_distrib()
+S7::S7_inherits(d, discrete_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# The variance-to-mean ratio is 1 + theta at every mean, which is what
+# separates this family from the quadratic one.
+vapply(c(1, 10, 100),
+       function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
+}
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} to build one;
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} for the quadratic-variance family, which is a
+different family and not a reparametrization of this one;
+\code{\link[=poisson_distrib]{poisson_distrib()}} for the limit as \eqn{\theta} goes to zero;
+\code{\link[=distrib_pdf.NegBin1Distrib]{distrib_pdf.NegBin1Distrib()}} and \code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} for
+the closed forms this class supplies.
 }

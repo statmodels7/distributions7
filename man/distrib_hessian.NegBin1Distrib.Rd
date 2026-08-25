@@ -2,29 +2,80 @@
 % Please edit documentation in R/negbin1_distrib.R
 \name{distrib_hessian.NegBin1Distrib}
 \alias{distrib_hessian.NegBin1Distrib}
-\title{NB1 Analytical Observed Hessian}
+\title{NB1 Observed Hessian}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_theta} and
+\code{theta_theta}, in that order, each of length
+\code{max(length(y), length(mu), length(theta))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-The two-variable chain rule through \eqn{r = \mu/\theta}, whose second
-derivative in \eqn{r} is \eqn{\psi'(y+r) - \psi'(r)} and whose mixed term is
-\eqn{-1/(1+\theta)}.
+Computes the three distinct second derivatives of the NB1 log-mass with
+respect to \eqn{\mu} and \eqn{\theta}, one value per observation, in closed
+form. They are the two-variable chain rule through the size
+\eqn{r = \mu/\theta} applied once more: the second derivative of the
+log-mass in \eqn{r} is \eqn{\psi'(y+r) - \psi'(r)}, with \eqn{\psi'} the
+trigamma function, and the term in which \eqn{\theta} appears outside
+\eqn{r} contributes \eqn{-1/(1+\theta)} to the mixed entry.
+
+Because \eqn{\partial r/\partial\mu = 1/\theta} and
+\eqn{\partial r/\partial\theta = -r/\theta}, every component divides by a
+power of \eqn{\theta}, and the components in \eqn{\theta} lose their digits
+at small \eqn{\theta} for the reason given on
+\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-mass in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{r = \mu/\theta} is the size, \eqn{\psi} the digamma function and
+\eqn{\psi'} the trigamma.
+}
+
+\examples{
+d <- negbin1_distrib()
+y <- c(0, 2, 6)
+th <- list(mu = 4, theta = 4)
+h <- distrib_hessian(d, y, th)
+h
+
+# The curvature in mu is exactly zero at y = 0, the size being 1 there, so
+# the observed information is singular at that count.
+h$mu_mu
+
+# It is the second derivative of the log-mass, so a central difference of
+# the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 4 + eps, theta = 4))$mu
+dn <- distrib_gradient(d, y, list(mu = 4 - eps, theta = 4))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
+
+# And the mixed entry against a difference of the other component.
+up <- distrib_gradient(d, y, list(mu = 4, theta = 4 + eps))$mu
+dn <- distrib_gradient(d, y, list(mu = 4, theta = 4 - eps))$mu
+all.equal((up - dn) / (2 * eps), h$mu_theta, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_gradient.NegBin1Distrib]{distrib_gradient.NegBin1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.NegBin1Distrib]{distrib_expected_hessian.NegBin1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }
