@@ -2,16 +2,47 @@
 % Please edit documentation in R/methods.R
 \name{generate_random_theta.distrib}
 \alias{generate_random_theta.distrib}
-\title{Generate Random Parameters for \code{distrib} Objects}
+\title{Random Parameters Inside a Family's Own Domain}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}, read for \code{params} and
+\code{params_bounds}.}
 
-\item{...}{Additional arguments (currently unused).}
+\item{...}{Unused.}
 }
 \value{
-A named list of randomly generated parameters.
+A named list with one numeric value per parameter, named and
+ordered as \code{distrib@params}, every value strictly inside its own bounds.
 }
 \description{
-Generates a named list of sensible random parameters based on the mathematical domain (\code{params_bounds}) of the given distribution.
+Draws one parameter value per entry of \code{distrib@params}, each inside that
+parameter's own interval in \code{params_bounds} and strictly away from its
+ends. A bounded interval is sampled across its width, a half-line is
+sampled from a positive draw offset from the finite end, and an unbounded
+parameter is sampled around zero.
+
+The draws ignore the response entirely, so they are a fallback and never an
+estimate: being of order one whatever the data, they suit a shape or a
+probability and are the wrong order for a location or a scale on a response
+of any size. \code{\link[=distrib_start]{distrib_start()}} uses them for the starting values
+after the first, and \code{\link[=check_distrib]{check_distrib()}} uses them to probe a family at a
+parameter nobody chose.
+}
+\examples{
+set.seed(1)
+unlist(generate_random_theta(gaussian1_distrib()))
+
+# Every draw is admissible by construction: a scale is positive, a
+# probability is inside (0, 1).
+set.seed(2)
+d <- beta1_distrib()
+th <- generate_random_theta(d)
+rbind(draw = unlist(th), lower = vapply(d@params_bounds, `[`, numeric(1), 1),
+      upper = vapply(d@params_bounds, `[`, numeric(1), 2))
+
+}
+\seealso{
+\code{\link[=distrib_start]{distrib_start()}}, which draws these for the starts after the
+first; \code{\link[=start_from_moments]{start_from_moments()}} for the data-based one;
+\code{\link[=check_distrib]{check_distrib()}}, which probes a family at a random parameter.
 }
 \keyword{internal}

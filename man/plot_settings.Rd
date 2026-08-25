@@ -2,34 +2,42 @@
 % Please edit documentation in R/methods.R
 \name{plot_settings}
 \alias{plot_settings}
-\title{The Parameter Settings a Plot Draws}
+\title{One Parameter Setting Per Curve}
 \usage{
 plot_settings(x, theta)
 }
 \arguments{
-\item{x}{A distribution object.}
+\item{x}{A distribution object, read for \code{params}.}
 
-\item{theta}{A named list or numeric vector of parameters.}
+\item{theta}{A named list, or a named numeric vector, holding one entry per
+parameter. A missing parameter signals an error naming what was expected;
+so does a component of length zero.}
 }
 \value{
-A list with \code{settings} (one scalar \code{theta} per curve),
-\code{k} and \code{varying} (the names of the parameters that differ
-between settings).
+A list with three components: \code{settings}, a list of \eqn{k} named
+parameter lists each holding scalars; \code{k}, the number of curves; and
+\code{varying}, a character vector naming the parameters that differ between
+settings, which may be empty.
 }
 \description{
-Splits a \code{theta} whose components may be vectors into one setting per
-curve, and reports which parameters vary across them.
+Turns the \code{theta} a plot method was given into the list of scalar settings
+it draws, one per curve. A component of length \eqn{k > 1} asks for \eqn{k}
+curves, so \code{list(mu = 0, sigma = c(1, 2, 4))} becomes three settings sharing
+a mean and differing in scale.
 }
 \details{
-A component of length \eqn{k > 1} asks for \eqn{k} curves and a component of
-length one is held across all of them, so
-\code{list(mu = 0, sigma = c(1, 2, 4))} is three settings sharing a mean.
-Every component must therefore have length one or the same \eqn{k}; anything
-else is rejected rather than recycled, since a length that divides \eqn{k}
-is far more likely to be a mistake than a request.
+Every component must have length 1 or the same \eqn{k}. A length that merely
+\strong{divides} \eqn{k} signals an error: R would recycle it without a word, and
+a partial setting is far likelier to be a mistake than a request.
 
-This meaning is available because a plot has no data to recycle against. The
-derivative and density generics read a vector component as one value per
-observation, which is a different question asked of the same object.
+The meaning is available only because a plot has no data to recycle a
+parameter against. \code{\link[=distrib_pdf]{distrib_pdf()}} and every derivative generic read a
+vector component as one value per observation, which is why each setting is
+handed to them as scalars.
+}
+\seealso{
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, the
+callers; \code{\link[=plot_labels]{plot_labels()}}, which turns \code{varying} into a legend;
+\code{\link[=plot_keys]{plot_keys()}} for the colors and symbols.
 }
 \keyword{internal}

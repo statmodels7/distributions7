@@ -2,22 +2,36 @@
 % Please edit documentation in R/methods.R
 \name{plot_labels}
 \alias{plot_labels}
-\title{Labels for a Plot of Several Settings}
+\title{The Legend Entries and the Title of a Distribution Plot}
 \usage{
 plot_labels(x, ps)
 }
 \arguments{
-\item{x}{A distribution object.}
+\item{x}{A distribution object, read for \code{distrib_name} and \code{params}.}
 
-\item{ps}{The value of \code{\link[=plot_settings]{plot_settings()}}.}
+\item{ps}{The value of \code{\link[=plot_settings]{plot_settings()}}, read for \code{settings} and
+\code{varying}.}
 }
 \value{
-A list with \code{legend} (character, length \code{ps$k}, or
-\code{NULL} when nothing varies) and \code{main}.
+A list with two components: \code{legend}, a character vector of length
+\code{ps$k} or \code{NULL} when nothing varies, and \code{main}, a character string of
+length 1 carrying a newline between the family's name and the fixed
+values.
 }
 \description{
-The legend entries and the title of a plot drawing several settings: the
-parameters that vary go in the legend, one entry per curve, and those held
-fixed go in the title, where they are stated once.
+Splits a set of plot settings into what varies and what does not: the
+varying parameters become one legend entry per curve, and the fixed ones are
+stated once in the title beside the family's name. A reader then sees which
+parameter the panel is about without counting curves, and reads the held
+values without a second key.
+
+Where nothing varies there is one curve and no legend, and the title carries
+every parameter. Where nothing is fixed the title is the family's name
+alone. Values are rounded to three decimals.
+}
+\seealso{
+\code{\link[=plot_settings]{plot_settings()}}, which supplies \code{ps};
+\code{\link[=plot_legend_side]{plot_legend_side()}} for where the legend goes;
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, the callers.
 }
 \keyword{internal}

@@ -7,21 +7,27 @@
 plot_legend_side(y, dens)
 }
 \arguments{
-\item{y}{The evaluation points.}
+\item{y}{The evaluation points, a numeric vector.}
 
-\item{dens}{A list of densities, one per setting.}
+\item{dens}{A list of densities, one per setting, each the length of \code{y}.
+Non-finite and negative entries are treated as zero.}
 }
 \value{
-\code{"topright"} or \code{"topleft"}.
+\code{"topright"} or \code{"topleft"}, a character string of length 1.
+\code{"topright"} where no setting has any positive mass.
 }
 \description{
-The corner of the panel a legend goes in: the one the curves leave emptier.
+Returns the corner of the panel a legend goes in: the one the curves leave
+emptier. A right-skewed family puts its mass on the left, so a key fixed at
+the top right never meets it, while a left-skewed one is covered by exactly
+that choice.
+
+The side is read off the drawing. The density's center of mass across all
+the settings is compared with the middle of the horizontal range, and the
+key goes to the other side.
 }
-\details{
-A right-skewed family puts its mass on the left, so a key fixed at the top
-right never meets it, while a left-skewed one is covered by exactly that
-choice. The side is therefore read off the drawing: the density's center of
-mass is compared with the middle of the horizontal range, and the key goes
-to the other side.
+\seealso{
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, the
+callers; \code{\link[=plot_labels]{plot_labels()}} for what goes in the key.
 }
 \keyword{internal}

@@ -4,28 +4,56 @@
 \alias{plot.discrete_distrib}
 \title{Plot Method for Discrete Distributions}
 \arguments{
-\item{x}{An object of class \code{"discrete_distrib"}.}
+\item{x}{An object inheriting from \code{discrete_distrib}.}
 
-\item{theta}{A named list or vector of parameters matching \code{x@params}.
-A component of length \eqn{k > 1} draws \eqn{k} sets of stems.}
+\item{theta}{A named list or numeric vector holding one entry per parameter
+of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
+every component must have length 1 or that same \eqn{k}. Missing, a random
+parameter is drawn by \code{\link[=generate_random_theta]{generate_random_theta()}}.}
 
-\item{xlim}{Optional numeric vector of length 2 indicating the x-axis range.}
+\item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
+the range from the quantiles over every setting.}
 
-\item{legend}{Whether to draw the key when several settings are plotted.}
+\item{legend}{Logical of length 1: draw the key when several settings are
+plotted. Defaults to \code{TRUE}.}
 
-\item{...}{Additional arguments passed to the base \code{\link[=plot]{plot()}} function.
-\code{col} and \code{lty} given here win and are recycled over the settings.}
+\item{...}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for instance \code{main}, \code{xlab} or
+\code{ylim}. A \code{col} or \code{pch} given here wins over the palette and is recycled
+over the settings; an \code{lty} is accepted and has no effect on the stems.}
 }
 \value{
-The distribution, invisibly.
+\code{x}, invisibly. Called for the plot it draws.
 }
 \description{
-Visualizes the Probability Mass Function (PMF) of a discrete distribution object.
+Draws the probability mass of a discrete family as stems over the integers
+in range, one set per parameter setting. A component of \code{theta} given as a
+vector asks for one setting per element, exactly as in
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}.
 }
-\details{
-A parameter given as a vector asks for one setting per element, exactly as
-in \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}}. Several settings are drawn as
-several sets of stems, shifted sideways so that one does not stand in front
-of another, and separated by color and line type together.
+\section{The two keys, and why they are not the continuous ones}{
+Settings are separated by \strong{color and symbol together}, the symbol sitting
+at the top of each stem where the point already is. The line type is not
+used here: dashing a stem is what it would do, and a dashed stem reads as a
+broken one, so at a support of any size the panel fills with fragments that
+cross each other.
+
+Several settings are also shifted sideways by a fraction of the spacing, so
+that equal masses at one support point stay countable instead of standing
+one in front of another.
+}
+
+\examples{
+# Three rates, whose masses are countable at every support point because
+# the settings are offset sideways.
+plot(poisson_distrib(), list(mu = c(1, 4, 10)))
+
+# Overdispersion at a fixed mean: the mass spreads as theta falls.
+plot(negbin2_distrib(), list(mu = 5, theta = c(0.5, 2, 50)))
+
+}
+\seealso{
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} for a density;
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare a fit with data;
+\code{\link[=plot_settings]{plot_settings()}}, \code{\link[=plot_keys]{plot_keys()}} and \code{\link[=plot_labels]{plot_labels()}} for the pieces.
 }
 \keyword{internal}

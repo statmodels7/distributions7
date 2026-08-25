@@ -2,31 +2,32 @@
 % Please edit documentation in R/methods.R
 \name{plot_keys}
 \alias{plot_keys}
-\title{Colors, Line Types and Symbols for Overlaid Settings}
+\title{Colors, Line Types and Symbols for a Set of Curves}
 \usage{
 plot_keys(k, dots = list())
 }
 \arguments{
-\item{k}{The number of settings.}
+\item{k}{How many settings are drawn, a single positive integer.}
 
-\item{dots}{The caller's \code{...}; a \code{col}, \code{lty} or \code{pch}
-given there wins and is recycled over the settings.}
+\item{dots}{The caller's \code{...}, as a list. A \code{col}, \code{lty} or \code{pch} given
+there wins and is recycled over the settings; anything else is ignored.}
 }
 \value{
-A list with \code{col}, \code{lty} and \code{pch}, each of length
-\code{k}.
+A list with components \code{col}, \code{lty} and \code{pch}, each of length \code{k}.
 }
 \description{
-The visual keys distinguishing several settings on one panel: a color, a
-line type and a plotting symbol per setting, all cycled, so the settings are
-told apart in color and in a printed copy that has none.
+Returns the three visual keys a plot method distinguishes its settings by,
+each recycled to length \eqn{k}. A single curve is black, solid and a filled
+circle. Several take a qualitative palette, the six base line types and six
+distinguishable symbols, so that a printed copy with no color is still
+readable.
+
+A continuous family draws with the color and the line type; a discrete one
+draws with the color and the \strong{symbol}, because dashing a stem is what a
+line type does there and a dashed stem reads as a broken one.
 }
-\details{
-A continuous family is separated by color and line type, a discrete one by
-color and symbol. Dashing a stem is what a line type would do there, and a
-dashed stem reads as a broken one: at a support of any size the panel fills
-with fragments that cross each other. The symbol carries the same
-information without drawing anything extra, the point at the top of the stem
-being already there.
+\seealso{
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} and \code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}}, which
+read different pairs of these; \code{\link[=plot_settings]{plot_settings()}} for \code{k}.
 }
 \keyword{internal}

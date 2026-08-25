@@ -3,10 +3,33 @@ NULL
 
 #' @title Print Method for `distrib` Objects
 #' @name print.distrib
-#' @description Custom S7 print method for objects inheriting from `distrib`.
-#' @param x An object inheriting from class `"distrib"`.
-#' @param ... Additional arguments (currently unused).
-#' @return The object `x` invisibly.
+#'
+#' @description
+#' Writes what a distribution object is: its name and dimension, the support,
+#' and one row per parameter giving the parameter's name, what it means, the
+#' interval it lives in and the link that carries it to the unconstrained
+#' scale. A wrapper prints its parent's line first, so
+#' `truncated(gamma2_distrib(), upper = 5)` shows both the truncation and the
+#' family under it.
+#'
+#' What it does **not** show is a value: a `distrib` carries a parametrization,
+#' not an estimate. For estimates see [print.distrib_fit()].
+#'
+#' @param x An object inheriting from `distrib`.
+#' @param ... Unused, accepted for compatibility with [base::print()].
+#'
+#' @return `x`, invisibly. Called for the output it writes.
+#'
+#' @examples
+#' gaussian1_distrib()
+#' poisson_distrib()
+#'
+#' # The link is part of the object, so changing it changes what prints.
+#' poisson_distrib(link_mu = linkfunctions7::sqrt_link())
+#'
+#' @seealso [print.distrib_fit()] for a fitted object;
+#'   [check_distrib()] to validate one;
+#'   [plot.continuous_distrib()] to draw one.
 #' @keywords internal
 S7::method(print, distrib) <- function(x, ...) {
   # Format the distribution name (Capitalize first letters)
@@ -62,15 +85,45 @@ S7::method(print, distrib) <- function(x, ...) {
   invisible(x)
 }
 
-#' Generate Random Parameters for `distrib` Objects
-#'
+#' @title Random Parameters Inside a Family's Own Domain
 #' @name generate_random_theta.distrib
+#'
 #' @description
-#' Generates a named list of sensible random parameters based on the mathematical domain (`params_bounds`) of the given distribution.
-#' 
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param ... Additional arguments (currently unused).
-#' @return A named list of randomly generated parameters.
+#' Draws one parameter value per entry of `distrib@params`, each inside that
+#' parameter's own interval in `params_bounds` and strictly away from its
+#' ends. A bounded interval is sampled across its width, a half-line is
+#' sampled from a positive draw offset from the finite end, and an unbounded
+#' parameter is sampled around zero.
+#'
+#' The draws ignore the response entirely, so they are a fallback and never an
+#' estimate: being of order one whatever the data, they suit a shape or a
+#' probability and are the wrong order for a location or a scale on a response
+#' of any size. [distrib_start()] uses them for the starting values
+#' after the first, and [check_distrib()] uses them to probe a family at a
+#' parameter nobody chose.
+#'
+#' @param distrib An object inheriting from `distrib`, read for `params` and
+#'   `params_bounds`.
+#' @param ... Unused.
+#'
+#' @return A named list with one numeric value per parameter, named and
+#'   ordered as `distrib@params`, every value strictly inside its own bounds.
+#'
+#' @examples
+#' set.seed(1)
+#' unlist(generate_random_theta(gaussian1_distrib()))
+#'
+#' # Every draw is admissible by construction: a scale is positive, a
+#' # probability is inside (0, 1).
+#' set.seed(2)
+#' d <- beta1_distrib()
+#' th <- generate_random_theta(d)
+#' rbind(draw = unlist(th), lower = vapply(d@params_bounds, `[`, numeric(1), 1),
+#'       upper = vapply(d@params_bounds, `[`, numeric(1), 2))
+#'
+#' @seealso [distrib_start()], which draws these for the starts after the
+#'   first; [start_from_moments()] for the data-based one;
+#'   [check_distrib()], which probes a family at a random parameter.
 #' @keywords internal
 S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
   theta <- list()
@@ -93,31 +146,37 @@ S7::method(generate_random_theta, distrib) <- function(distrib, ...) {
   theta
 }
 
-#' The Parameter Settings a Plot Draws
+#' @title One Parameter Setting Per Curve
 #'
 #' @description
-#' Splits a `theta` whose components may be vectors into one setting per
-#' curve, and reports which parameters vary across them.
+#' Turns the `theta` a plot method was given into the list of scalar settings
+#' it draws, one per curve. A component of length \eqn{k > 1} asks for \eqn{k}
+#' curves, so `list(mu = 0, sigma = c(1, 2, 4))` becomes three settings sharing
+#' a mean and differing in scale.
 #'
 #' @details
-#' A component of length \eqn{k > 1} asks for \eqn{k} curves and a component of
-#' length one is held across all of them, so
-#' `list(mu = 0, sigma = c(1, 2, 4))` is three settings sharing a mean.
-#' Every component must therefore have length one or the same \eqn{k}; anything
-#' else is rejected rather than recycled, since a length that divides \eqn{k}
-#' is far more likely to be a mistake than a request.
+#' Every component must have length 1 or the same \eqn{k}. A length that merely
+#' **divides** \eqn{k} signals an error: R would recycle it without a word, and
+#' a partial setting is far likelier to be a mistake than a request.
 #'
-#' This meaning is available because a plot has no data to recycle against. The
-#' derivative and density generics read a vector component as one value per
-#' observation, which is a different question asked of the same object.
+#' The meaning is available only because a plot has no data to recycle a
+#' parameter against. [distrib_pdf()] and every derivative generic read a
+#' vector component as one value per observation, which is why each setting is
+#' handed to them as scalars.
 #'
-#' @param x A distribution object.
-#' @param theta A named list or numeric vector of parameters.
+#' @param x A distribution object, read for `params`.
+#' @param theta A named list, or a named numeric vector, holding one entry per
+#'   parameter. A missing parameter signals an error naming what was expected;
+#'   so does a component of length zero.
 #'
-#' @return A list with `settings` (one scalar `theta` per curve),
-#'   `k` and `varying` (the names of the parameters that differ
-#'   between settings).
+#' @return A list with three components: `settings`, a list of \eqn{k} named
+#'   parameter lists each holding scalars; `k`, the number of curves; and
+#'   `varying`, a character vector naming the parameters that differ between
+#'   settings, which may be empty.
 #'
+#' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], the
+#'   callers; [plot_labels()], which turns `varying` into a legend;
+#'   [plot_keys()] for the colors and symbols.
 #' @keywords internal
 plot_settings <- function(x, theta) {
   if (is.numeric(theta) && !is.list(theta)) theta <- as.list(theta)
@@ -146,28 +205,27 @@ plot_settings <- function(x, theta) {
        varying = if (k > 1L) x@params[lens == k] else character(0))
 }
 
-#' Colors, Line Types and Symbols for Overlaid Settings
+#' @title Colors, Line Types and Symbols for a Set of Curves
 #'
 #' @description
-#' The visual keys distinguishing several settings on one panel: a color, a
-#' line type and a plotting symbol per setting, all cycled, so the settings are
-#' told apart in color and in a printed copy that has none.
+#' Returns the three visual keys a plot method distinguishes its settings by,
+#' each recycled to length \eqn{k}. A single curve is black, solid and a filled
+#' circle. Several take a qualitative palette, the six base line types and six
+#' distinguishable symbols, so that a printed copy with no color is still
+#' readable.
 #'
-#' @details
-#' A continuous family is separated by color and line type, a discrete one by
-#' color and symbol. Dashing a stem is what a line type would do there, and a
-#' dashed stem reads as a broken one: at a support of any size the panel fills
-#' with fragments that cross each other. The symbol carries the same
-#' information without drawing anything extra, the point at the top of the stem
-#' being already there.
+#' A continuous family draws with the color and the line type; a discrete one
+#' draws with the color and the **symbol**, because dashing a stem is what a
+#' line type does there and a dashed stem reads as a broken one.
 #'
-#' @param k The number of settings.
-#' @param dots The caller's `...`; a `col`, `lty` or `pch`
-#'   given there wins and is recycled over the settings.
+#' @param k How many settings are drawn, a single positive integer.
+#' @param dots The caller's `...`, as a list. A `col`, `lty` or `pch` given
+#'   there wins and is recycled over the settings; anything else is ignored.
 #'
-#' @return A list with `col`, `lty` and `pch`, each of length
-#'   `k`.
+#' @return A list with components `col`, `lty` and `pch`, each of length `k`.
 #'
+#' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], which
+#'   read different pairs of these; [plot_settings()] for `k`.
 #' @keywords internal
 plot_keys <- function(k, dots = list()) {
   col <- if (!is.null(dots$col)) rep_len(dots$col, k)
@@ -182,23 +240,27 @@ plot_keys <- function(k, dots = list()) {
   list(col = col, lty = lty, pch = pch)
 }
 
-#' Where to Put the Key
+#' @title Where to Put the Key
 #'
 #' @description
-#' The corner of the panel a legend goes in: the one the curves leave emptier.
+#' Returns the corner of the panel a legend goes in: the one the curves leave
+#' emptier. A right-skewed family puts its mass on the left, so a key fixed at
+#' the top right never meets it, while a left-skewed one is covered by exactly
+#' that choice.
 #'
-#' @details
-#' A right-skewed family puts its mass on the left, so a key fixed at the top
-#' right never meets it, while a left-skewed one is covered by exactly that
-#' choice. The side is therefore read off the drawing: the density's center of
-#' mass is compared with the middle of the horizontal range, and the key goes
-#' to the other side.
+#' The side is read off the drawing. The density's center of mass across all
+#' the settings is compared with the middle of the horizontal range, and the
+#' key goes to the other side.
 #'
-#' @param y The evaluation points.
-#' @param dens A list of densities, one per setting.
+#' @param y The evaluation points, a numeric vector.
+#' @param dens A list of densities, one per setting, each the length of `y`.
+#'   Non-finite and negative entries are treated as zero.
 #'
-#' @return `"topright"` or `"topleft"`.
+#' @return `"topright"` or `"topleft"`, a character string of length 1.
+#'   `"topright"` where no setting has any positive mass.
 #'
+#' @seealso [plot.continuous_distrib()] and [plot.discrete_distrib()], the
+#'   callers; [plot_labels()] for what goes in the key.
 #' @keywords internal
 plot_legend_side <- function(y, dens) {
   w <- do.call(pmax, c(dens, list(na.rm = TRUE)))
@@ -208,19 +270,31 @@ plot_legend_side <- function(y, dens) {
   if (centre < mean(range(y))) "topright" else "topleft"
 }
 
-#' Labels for a Plot of Several Settings
+#' @title The Legend Entries and the Title of a Distribution Plot
 #'
 #' @description
-#' The legend entries and the title of a plot drawing several settings: the
-#' parameters that vary go in the legend, one entry per curve, and those held
-#' fixed go in the title, where they are stated once.
+#' Splits a set of plot settings into what varies and what does not: the
+#' varying parameters become one legend entry per curve, and the fixed ones are
+#' stated once in the title beside the family's name. A reader then sees which
+#' parameter the panel is about without counting curves, and reads the held
+#' values without a second key.
 #'
-#' @param x A distribution object.
-#' @param ps The value of [plot_settings()].
+#' Where nothing varies there is one curve and no legend, and the title carries
+#' every parameter. Where nothing is fixed the title is the family's name
+#' alone. Values are rounded to three decimals.
 #'
-#' @return A list with `legend` (character, length `ps$k`, or
-#'   `NULL` when nothing varies) and `main`.
+#' @param x A distribution object, read for `distrib_name` and `params`.
+#' @param ps The value of [plot_settings()], read for `settings` and
+#'   `varying`.
 #'
+#' @return A list with two components: `legend`, a character vector of length
+#'   `ps$k` or `NULL` when nothing varies, and `main`, a character string of
+#'   length 1 carrying a newline between the family's name and the fixed
+#'   values.
+#'
+#' @seealso [plot_settings()], which supplies `ps`;
+#'   [plot_legend_side()] for where the legend goes;
+#'   [plot.continuous_distrib()] and [plot.discrete_distrib()], the callers.
 #' @keywords internal
 plot_labels <- function(x, ps) {
   fmt <- function(v) format(round(v, 3), trim = TRUE)
@@ -246,34 +320,60 @@ plot_labels <- function(x, ps) {
   list(legend = legend, main = main)
 }
 
-#' Plot Method for Continuous Distributions
+#' @title Plot Method for Continuous Distributions
 #'
 #' @name plot.continuous_distrib
+#'
 #' @description
-#' Visualizes the Probability Density Function (PDF) of a continuous distribution object.
+#' Draws the density of a continuous family over a grid of 1000 points, one
+#' curve per parameter setting. A component of `theta` given as a vector asks
+#' for one curve per element, so `plot(d, list(mu = 0, sigma = c(1, 2, 4)))`
+#' draws three densities that share a mean and differ in scale.
 #'
 #' @details
-#' A parameter given as a vector asks for one curve per element, so
-#' `plot(d, list(mu = 0, sigma = c(1, 2, 4)))` draws three densities that
-#' share a mean and differ in scale. The curves are separated by color and by
-#' line type together, and the parameters that vary are named in a legend while
-#' those held fixed are stated in the title. See [plot_settings()]
-#' for the rule on lengths.
+#' # The two keys
+#' Curves are separated by **color and line type together**, so that a printed
+#' copy with no color is still readable. The parameters that vary are named in
+#' a legend and those held fixed are stated once in the title, so a reader sees
+#' what the panel is about without counting curves. The legend goes in
+#' whichever top corner the mass leaves emptier. See
+#' [plot_settings()] for the rule on lengths and [plot_keys()] for the palette.
 #'
-#' The horizontal range covers every setting: it runs from the smallest
-#' 0.5\% quantile to the largest 99.5\% quantile over them, widened by a tenth
-#' and clamped to the support.
+#' # The horizontal range
+#' It covers every setting, not the first: from the smallest 0.5% quantile to
+#' the largest 99.5% quantile over them, widened by a tenth and clamped to the
+#' support. Give `xlim` to override it, which is worth doing for a heavy-tailed
+#' family, whose 99.5% quantile can sit orders of magnitude past anything worth
+#' drawing.
 #'
-#' @param x An object of class `"continuous_distrib"`.
-#' @param theta A named list or vector of parameters matching `x@params`.
-#'   A component of length \eqn{k > 1} draws \eqn{k} curves.
-#' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
-#' @param legend Whether to draw the key when several settings are plotted.
-#' @param ... Additional arguments passed to the base [plot()] function.
-#'   `col` and `lty` given here win and are recycled over the curves.
+#' @param x An object inheriting from `continuous_distrib`.
+#' @param theta A named list or numeric vector holding one entry per parameter
+#'   of `x`. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
+#'   component must have length 1 or that same \eqn{k}. Missing, a random
+#'   parameter is drawn by [generate_random_theta()].
+#' @param xlim A numeric vector of length 2, or `NULL` (the default) to compute
+#'   the range from the quantiles as above.
+#' @param legend Logical of length 1: draw the key when several settings are
+#'   plotted. Defaults to `TRUE`. Nothing is drawn when only one is.
+#' @param ... Passed to [graphics::plot()], for instance `main`, `xlab` or
+#'   `ylim`. A `col` or `lty` given here wins over the palette and is recycled
+#'   over the curves.
+#'
+#' @return `x`, invisibly. Called for the plot it draws.
+#'
+#' @examples
+#' # One curve per value of the scale, at a shared mean.
+#' plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
+#'
+#' # A heavy-tailed family wants its own window: the 99.5% quantile of a
+#' # Cauchy is two orders of magnitude past the interesting part.
+#' plot(cauchy_distrib(), list(mu = 0, sigma = 1), xlim = c(-6, 6))
+#'
+#' @seealso [plot.discrete_distrib()] for a lattice family;
+#'   [plot.distrib_fit()] to compare a fit with data;
+#'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
 #' @importFrom graphics plot
 #' @keywords internal
-#' @return The distribution, invisibly.
 S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
                                                  legend = TRUE, ...) {
   if (missing(theta)) {
@@ -334,28 +434,56 @@ S7::method(plot, continuous_distrib) <- function(x, theta, xlim = NULL,
   invisible(x)
 }
 
-#' Plot Method for Discrete Distributions
+#' @title Plot Method for Discrete Distributions
 #'
 #' @name plot.discrete_distrib
+#'
 #' @description
-#' Visualizes the Probability Mass Function (PMF) of a discrete distribution object.
+#' Draws the probability mass of a discrete family as stems over the integers
+#' in range, one set per parameter setting. A component of `theta` given as a
+#' vector asks for one setting per element, exactly as in
+#' [plot.continuous_distrib()].
 #'
 #' @details
-#' A parameter given as a vector asks for one setting per element, exactly as
-#' in [plot.continuous_distrib()]. Several settings are drawn as
-#' several sets of stems, shifted sideways so that one does not stand in front
-#' of another, and separated by color and line type together.
+#' # The two keys, and why they are not the continuous ones
+#' Settings are separated by **color and symbol together**, the symbol sitting
+#' at the top of each stem where the point already is. The line type is not
+#' used here: dashing a stem is what it would do, and a dashed stem reads as a
+#' broken one, so at a support of any size the panel fills with fragments that
+#' cross each other.
 #'
-#' @param x An object of class `"discrete_distrib"`.
-#' @param theta A named list or vector of parameters matching `x@params`.
-#'   A component of length \eqn{k > 1} draws \eqn{k} sets of stems.
-#' @param xlim Optional numeric vector of length 2 indicating the x-axis range.
-#' @param legend Whether to draw the key when several settings are plotted.
-#' @param ... Additional arguments passed to the base [plot()] function.
-#'   `col` and `lty` given here win and are recycled over the settings.
+#' Several settings are also shifted sideways by a fraction of the spacing, so
+#' that equal masses at one support point stay countable instead of standing
+#' one in front of another.
+#'
+#' @param x An object inheriting from `discrete_distrib`.
+#' @param theta A named list or numeric vector holding one entry per parameter
+#'   of `x`. A component of length \eqn{k > 1} draws \eqn{k} sets of stems, and
+#'   every component must have length 1 or that same \eqn{k}. Missing, a random
+#'   parameter is drawn by [generate_random_theta()].
+#' @param xlim A numeric vector of length 2, or `NULL` (the default) to compute
+#'   the range from the quantiles over every setting.
+#' @param legend Logical of length 1: draw the key when several settings are
+#'   plotted. Defaults to `TRUE`.
+#' @param ... Passed to [graphics::plot()], for instance `main`, `xlab` or
+#'   `ylim`. A `col` or `pch` given here wins over the palette and is recycled
+#'   over the settings; an `lty` is accepted and has no effect on the stems.
+#'
+#' @return `x`, invisibly. Called for the plot it draws.
+#'
+#' @examples
+#' # Three rates, whose masses are countable at every support point because
+#' # the settings are offset sideways.
+#' plot(poisson_distrib(), list(mu = c(1, 4, 10)))
+#'
+#' # Overdispersion at a fixed mean: the mass spreads as theta falls.
+#' plot(negbin2_distrib(), list(mu = 5, theta = c(0.5, 2, 50)))
+#'
+#' @seealso [plot.continuous_distrib()] for a density;
+#'   [plot.distrib_fit()] to compare a fit with data;
+#'   [plot_settings()], [plot_keys()] and [plot_labels()] for the pieces.
 #' @importFrom graphics plot segments points
 #' @keywords internal
-#' @return The distribution, invisibly.
 S7::method(plot, discrete_distrib) <- function(x, theta, xlim = NULL,
                                                legend = TRUE, ...) {
   if (missing(theta)) {

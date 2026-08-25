@@ -4,14 +4,35 @@
 \alias{print.distrib}
 \title{Print Method for \code{distrib} Objects}
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}.}
+\item{x}{An object inheriting from \code{distrib}.}
 
-\item{...}{Additional arguments (currently unused).}
+\item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
-The object \code{x} invisibly.
+\code{x}, invisibly. Called for the output it writes.
 }
 \description{
-Custom S7 print method for objects inheriting from \code{distrib}.
+Writes what a distribution object is: its name and dimension, the support,
+and one row per parameter giving the parameter's name, what it means, the
+interval it lives in and the link that carries it to the unconstrained
+scale. A wrapper prints its parent's line first, so
+\code{truncated(gamma2_distrib(), upper = 5)} shows both the truncation and the
+family under it.
+
+What it does \strong{not} show is a value: a \code{distrib} carries a parametrization,
+not an estimate. For estimates see \code{\link[=print.distrib_fit]{print.distrib_fit()}}.
+}
+\examples{
+gaussian1_distrib()
+poisson_distrib()
+
+# The link is part of the object, so changing it changes what prints.
+poisson_distrib(link_mu = linkfunctions7::sqrt_link())
+
+}
+\seealso{
+\code{\link[=print.distrib_fit]{print.distrib_fit()}} for a fitted object;
+\code{\link[=check_distrib]{check_distrib()}} to validate one;
+\code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} to draw one.
 }
 \keyword{internal}

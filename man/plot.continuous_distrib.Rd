@@ -4,34 +4,61 @@
 \alias{plot.continuous_distrib}
 \title{Plot Method for Continuous Distributions}
 \arguments{
-\item{x}{An object of class \code{"continuous_distrib"}.}
+\item{x}{An object inheriting from \code{continuous_distrib}.}
 
-\item{theta}{A named list or vector of parameters matching \code{x@params}.
-A component of length \eqn{k > 1} draws \eqn{k} curves.}
+\item{theta}{A named list or numeric vector holding one entry per parameter
+of \code{x}. A component of length \eqn{k > 1} draws \eqn{k} curves, and every
+component must have length 1 or that same \eqn{k}. Missing, a random
+parameter is drawn by \code{\link[=generate_random_theta]{generate_random_theta()}}.}
 
-\item{xlim}{Optional numeric vector of length 2 indicating the x-axis range.}
+\item{xlim}{A numeric vector of length 2, or \code{NULL} (the default) to compute
+the range from the quantiles as above.}
 
-\item{legend}{Whether to draw the key when several settings are plotted.}
+\item{legend}{Logical of length 1: draw the key when several settings are
+plotted. Defaults to \code{TRUE}. Nothing is drawn when only one is.}
 
-\item{...}{Additional arguments passed to the base \code{\link[=plot]{plot()}} function.
-\code{col} and \code{lty} given here win and are recycled over the curves.}
+\item{...}{Passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for instance \code{main}, \code{xlab} or
+\code{ylim}. A \code{col} or \code{lty} given here wins over the palette and is recycled
+over the curves.}
 }
 \value{
-The distribution, invisibly.
+\code{x}, invisibly. Called for the plot it draws.
 }
 \description{
-Visualizes the Probability Density Function (PDF) of a continuous distribution object.
+Draws the density of a continuous family over a grid of 1000 points, one
+curve per parameter setting. A component of \code{theta} given as a vector asks
+for one curve per element, so \code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))}
+draws three densities that share a mean and differ in scale.
 }
-\details{
-A parameter given as a vector asks for one curve per element, so
-\code{plot(d, list(mu = 0, sigma = c(1, 2, 4)))} draws three densities that
-share a mean and differ in scale. The curves are separated by color and by
-line type together, and the parameters that vary are named in a legend while
-those held fixed are stated in the title. See \code{\link[=plot_settings]{plot_settings()}}
-for the rule on lengths.
+\section{The two keys}{
+Curves are separated by \strong{color and line type together}, so that a printed
+copy with no color is still readable. The parameters that vary are named in
+a legend and those held fixed are stated once in the title, so a reader sees
+what the panel is about without counting curves. The legend goes in
+whichever top corner the mass leaves emptier. See
+\code{\link[=plot_settings]{plot_settings()}} for the rule on lengths and \code{\link[=plot_keys]{plot_keys()}} for the palette.
+}
 
-The horizontal range covers every setting: it runs from the smallest
-0.5\\% quantile to the largest 99.5\\% quantile over them, widened by a tenth
-and clamped to the support.
+\section{The horizontal range}{
+It covers every setting, not the first: from the smallest 0.5\% quantile to
+the largest 99.5\% quantile over them, widened by a tenth and clamped to the
+support. Give \code{xlim} to override it, which is worth doing for a heavy-tailed
+family, whose 99.5\% quantile can sit orders of magnitude past anything worth
+drawing.
+}
+
+\examples{
+# One curve per value of the scale, at a shared mean.
+plot(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
+
+# A heavy-tailed family wants its own window: the 99.5\% quantile of a
+# Cauchy is two orders of magnitude past the interesting part.
+plot(cauchy_distrib(), list(mu = 0, sigma = 1), xlim = c(-6, 6))
+
+}
+\seealso{
+\code{\link[=plot.discrete_distrib]{plot.discrete_distrib()}} for a lattice family;
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare a fit with data;
+\code{\link[=plot_settings]{plot_settings()}}, \code{\link[=plot_keys]{plot_keys()}} and \code{\link[=plot_labels]{plot_labels()}} for the pieces.
 }
 \keyword{internal}
