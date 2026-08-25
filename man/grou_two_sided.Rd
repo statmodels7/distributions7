@@ -35,7 +35,7 @@ like \eqn{1 - (1-u)^q} on the right, and has a closed-form derivative.
 
 The density of \eqn{U} therefore carries the exponents \eqn{p\alpha - 1} and
 \eqn{q\beta - 1} at the two ends and is bounded as soon as \eqn{p\alpha > 1}
-and \eqn{q\beta > 1} -- indeed it vanishes there, turning the original
+and \eqn{q\beta > 1}. It vanishes there, in fact, turning the original
 U-shaped density into a single-peaked one, which is exactly what the sampler
 wants. Both exponents come from the same probe that detected the divergence,
 so nothing has to be searched for.

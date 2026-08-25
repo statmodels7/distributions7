@@ -21,8 +21,8 @@ density stays bounded there.
 }
 \details{
 A density that diverges at an edge is the one case the ratio-of-uniforms
-sampler cannot handle directly, so it has to be detected -- and then removed
-by a change of variable, which needs the exponent.
+sampler cannot handle directly, so it has to be detected and then removed by
+a change of variable, which needs the exponent.
 
 Detecting and measuring are the same operation. Walking
 towards the edge in decades lifts the log-density by

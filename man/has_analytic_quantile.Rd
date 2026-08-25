@@ -24,8 +24,8 @@ a call to \code{uniroot} per draw.
 The test uses the documented S7 trick. S7 records the class a method was
 registered on in the method's \code{signature} attribute, so an inherited
 fallback is recognized by that class being \code{continuous_distrib} itself.
-Note that \code{identical()} does not work for this -- S7 wraps the method
-object, so comparing against the fallback fails even when it is the fallback.
+Note that \code{identical()} does not work for this. S7 wraps the method object,
+so comparing against the fallback fails even when it is the fallback.
 }
 \seealso{
 \code{\link[=rng_grou]{rng_grou()}}

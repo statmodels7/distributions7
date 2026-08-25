@@ -37,8 +37,8 @@ method registered on a family's own class may still be a CHAIN onto a parent
 that approximates, and then the owner says "written out" about arithmetic
 that is a quadrature. Measured at 100 observations, where thirty-four
 families answer in a median of 0.183 ms:
-\code{skewnormal2_distrib()} costs 5220 ms -- more than the
-\code{skewnormal1_distrib()} it chains onto, which costs 2230 -- and
+\code{skewnormal2_distrib()} costs 5220 ms, more than the
+\code{skewnormal1_distrib()} it chains onto, which costs 2230, and
 \code{pseudohuber_distrib()} costs 10980 ms. Both were reported as exact.
 The consequences were real rather than cosmetic: \code{\link[=fit_distrib]{fit_distrib()}}
 rejected a legitimate \code{fisher_scoring(approx = )} on those two with a

@@ -70,9 +70,9 @@ then \eqn{X = |Y-a|^{1/\lambda}} has density proportional to
 \eqn{x^{\lambda\alpha-1}} there, which is bounded as soon as
 \eqn{\lambda\alpha > 1}. Sampling \eqn{X} and mapping back is exact: no
 quadrature and no inversion are involved. The exponent \eqn{\alpha} is read off
-the same probe that detects the divergence -- walking towards the edge in
-decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step -- and
-\eqn{\lambda} is chosen from it. A Gamma of shape \eqn{0.4}, for instance, is
+the same probe that detects the divergence: walking towards the edge in
+decades lifts the log-density by \eqn{(1-\alpha)\log 10} per step, and
+\eqn{\lambda} follows from that slope. A Gamma of shape \eqn{0.4}, for instance, is
 sampled through \eqn{X = Y^{1/4}}.
 
 A density diverging at \emph{both} edges, such as a Beta with both shapes below
@@ -90,7 +90,7 @@ the density evaluated there returns infinity. The distance from the edge is
 still exact on the \eqn{u} scale, so the power law is used there instead,
 calibrated once where the density can be evaluated. This keeps the mass rather
 than rejecting it. It cannot place it any more finely than the arithmetic
-allows -- for a Beta(0.9, 0.1) some 2.5\\% of the distribution lies within one
+allows. For a Beta(0.9, 0.1) some 2.5\\% of the distribution lies within one
 unit in the last place of 1, and those draws come back equal to 1 exactly, which
 is also what \code{\link[stats:Beta]{stats::rbeta()}} does.
 }

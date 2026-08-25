@@ -4,22 +4,43 @@
 \alias{distrib_cdf.discrete_distrib}
 \title{Default Numerical CDF for Discrete Distributions}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"discrete_distrib"}.}
+\item{distrib}{An object inheriting from \code{discrete_distrib} that registers
+no method of its own.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles; a non-integer is floored, as a
+distribution function on a lattice requires.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each of length 1 or \code{length(q)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. \code{TRUE}, the default, returns
+\eqn{P(Y \le q)}; \code{FALSE} returns the complement.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical of length 1. \code{TRUE} returns the logarithm, taken after
+the summation.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of cumulative probabilities, the length of the
+recycled \code{q} and \code{theta}.
 }
 \description{
-Fallback method: discrete distributions that do not implement an analytical CDF
-get one by summing the pmf from the (finite) lower bound of the support up to
-\eqn{\lfloor q \rfloor}.
+The fallback for a discrete family that implements no analytical
+distribution function: it sums the mass from the finite lower bound of the
+support up to \eqn{\lfloor q \rfloor}. The sum is \strong{exact}, not
+approximate, so on a Poisson defined by its mass alone it agrees with
+\code{\link[stats:Poisson]{stats::ppois()}} to \eqn{10^{-16}} absolute, which is the rounding of the
+addition itself.
+}
+\details{
+The cumulative table is built once per distinct parameter setting by
+\code{\link[=disc_cum_table]{disc_cum_table()}} and every quantile sharing that setting is read from it,
+so a vector of quantiles costs one table between them. A support unbounded
+above is extended until the remaining mass falls below what the request
+needs.
+}
+\seealso{
+\code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table;
+\code{\link[=distrib_quantile.discrete_distrib]{distrib_quantile.discrete_distrib()}}, which inverts it;
+\code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}, where the same question needs a
+quadrature; \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }
 \keyword{internal}

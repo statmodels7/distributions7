@@ -9,10 +9,26 @@
 \item{...}{Unused.}
 }
 \value{
-A single logical.
+A single logical: \code{TRUE} where the family's expected information is
+a closed-form expression, \code{FALSE} where it is a quadrature or a simulation.
 }
 \description{
-The default: the base classes approximate, everything else is
-taken to have written its expected information out.
+The default: a method owned by one of the base classes is one of the
+package's approximations, and anything else is taken to have written its
+expected information out. It answers \code{FALSE} for a family that registers
+nothing and \code{TRUE} for one that registers its own method.
+
+The reading is right for 34 of the 40 univariate families and wrong for two,
+which declare a method of their own for themselves. The pseudo-Huber's
+method calls \code{\link[=expected_derivative]{expected_derivative()}} and patches the two components that
+vanish by symmetry, and \code{skewnormal2}'s chains onto \code{skewnormal1}, whose
+expected information is the base class's quadrature. Both therefore
+\strong{override this generic} in place of relying on the owner test, which is
+why the test is a generic at all.
+}
+\seealso{
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the predicate consumers call;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what the approximations are;
+\code{\link[=fisher_scoring]{fisher_scoring()}}, which rejects an \code{approx} where this is \code{TRUE}.
 }
 \keyword{internal}

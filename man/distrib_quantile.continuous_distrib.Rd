@@ -4,23 +4,51 @@
 \alias{distrib_quantile.continuous_distrib}
 \title{Default Numerical Quantile Function for Continuous Distributions}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"continuous_distrib"}.}
+\item{distrib}{An object inheriting from \code{continuous_distrib} that registers
+no method of its own.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms under \code{log.p}. The bounds of the support are returned at 0 and
+1.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each of length 1 or \code{length(p)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. \code{TRUE}, the default, treats \code{p} as
+\eqn{P(Y \le q)}; \code{FALSE} treats it as the upper tail and inverts
+\eqn{1 - p}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm and
+exponentiates it first, so a probability that has underflowed is not
+recovered.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, the length of the recycled \code{p} and
+\code{theta}.
 }
 \description{
-Fallback method: continuous distributions that do not implement an analytical
-quantile function get one by root-finding on \code{\link[=distrib_cdf]{distrib_cdf()}} (which may
-itself be the numerical fallback). Brackets start from an approximate mode and
-expand geometrically, with the step scaled by the density height at the mode.
+The fallback for a continuous family that implements no analytical quantile
+function: it inverts \code{\link[=distrib_cdf]{distrib_cdf()}} by root-finding, which on a family
+with no analytical distribution function either means inverting the
+quadrature of \code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}. Measured on a Gamma
+defined by its density alone, it agrees with \code{\link[stats:GammaDist]{stats::qgamma()}} to between
+\eqn{4.1\times10^{-11}} and \eqn{4.5\times10^{-10}} relative, and the round
+trip \eqn{F(F^{-1}(p)) - p} closes to \eqn{10^{-11}}.
+}
+\details{
+The bracket starts at an approximate mode from \code{\link[=find_pdf_anchor]{find_pdf_anchor()}} and
+expands geometrically, with the step scaled by the density height there so
+that a sharply peaked family and a diffuse one take a comparable number of
+expansions. The mode and its scale are computed once per distinct parameter
+setting and reused across the probabilities that share it.
+
+Two layers of numerical work stack here, which is why the accuracy is four
+orders coarser than the distribution function's: the root-finder can only be
+as accurate as the function it inverts.
+}
+\seealso{
+\code{\link[=distrib_cdf.continuous_distrib]{distrib_cdf.continuous_distrib()}}, the function it inverts;
+\code{\link[=find_pdf_anchor]{find_pdf_anchor()}} for the bracket's starting point;
+\code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, which asks whether this method is what a caller
+would reach; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }
 \keyword{internal}

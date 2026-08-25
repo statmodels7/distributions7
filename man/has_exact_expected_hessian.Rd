@@ -33,9 +33,9 @@ matter of taste. The base class of this package is itself named
 \code{distrib}, so an argument of that name SHADOWS it, and the comparison
 against the base class then compared the owning class with the distribution
 object instead. The consequence was silent and exactly backwards: every
-family whose expected information comes from the base class -- which is the
-whole set this predicate exists to identify -- was reported as having a
-closed form.
+family whose expected information comes from the base class, which is the
+whole set this predicate exists to identify, was reported as having a closed
+form.
 }
 \seealso{
 \code{\link[=has_analytic_quantile]{has_analytic_quantile()}}, \code{\link[=is_class]{is_class()}}

@@ -4,22 +4,41 @@
 \alias{distrib_quantile.discrete_distrib}
 \title{Default Numerical Quantile Function for Discrete Distributions}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"discrete_distrib"}.}
+\item{distrib}{An object inheriting from \code{discrete_distrib} that registers
+no method of its own.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms under \code{log.p}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each of length 1 or \code{length(p)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. \code{TRUE}, the default, treats \code{p} as
+\eqn{P(Y \le q)}; \code{FALSE} treats it as the upper tail.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm and
+exponentiates it first.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of support points, the length of the recycled \code{p}
+and \code{theta}.
 }
 \description{
-Fallback method: discrete distributions that do not implement an analytical
-quantile function get one by inverting the cumulative pmf table: the quantile is
-the smallest support point \eqn{k} with \eqn{F(k) \ge p}.
+The fallback for a discrete family that implements no analytical quantile
+function: the smallest support point \eqn{k} with \eqn{F(k) \ge p}, read off
+the cumulative table \code{\link[=disc_cum_table]{disc_cum_table()}} builds. It is \strong{exact}. The
+distribution function of a lattice variable is a step function, so
+inverting it is a lookup and there is nothing to solve; on a Poisson defined
+by its mass alone it returns \code{\link[stats:Poisson]{stats::qpois()}}'s answer at every probability.
+
+Note the consequence a reader coming from the continuous case needs: the
+round trip does not close. Asking for 0.025, 0.5 and 0.975 returns points
+whose cumulative probabilities are larger, because no support point sits
+exactly at those values.
+}
+\seealso{
+\code{\link[=disc_cum_table]{disc_cum_table()}}, which builds the table;
+\code{\link[=distrib_cdf.discrete_distrib]{distrib_cdf.discrete_distrib()}}, the function it inverts;
+\code{\link[=distrib_rng.discrete_distrib]{distrib_rng.discrete_distrib()}}, which reads the same table;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }
 \keyword{internal}
