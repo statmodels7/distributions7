@@ -2,34 +2,86 @@
 % Please edit documentation in R/mv_higher.R
 \name{distrib_deriv3.MultinomialDistrib}
 \alias{distrib_deriv3.MultinomialDistrib}
-\alias{distrib_deriv4.MultinomialDistrib}
-\title{Multinomial Analytical Third and Fourth Derivatives}
+\title{Multinomial Third Derivatives}
 \arguments{
-\item{distrib}{A \code{MultinomialDistrib} object.}
+\item{distrib}{A \code{MultinomialDistrib} object, from \code{\link[=multinomial_distrib]{multinomial_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and one column per
+category, each row a vector of counts summing to \code{distrib@size}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number:
+\code{probs_alr1}, ..., \code{probs_alr(p-1)}.}
 
-\item{expected}{Whether to return expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
+by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{Ignored: sampling is the only multivariate route to an
+expectation. Present so that the signature matches the generic's.}
 
-\item{nsim}{The Monte Carlo sample size.}
+\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
+\code{10000}. Ignored otherwise.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
+A named list of numeric vectors of length \eqn{n}, keyed and ordered
+as \code{deriv_names(distrib@params, 3)}. At \eqn{p = 3} there are four
+components, the simplex spending \eqn{p - 1} free values. With
+\code{expected = TRUE} every vector is constant.
 }
 \description{
-Closed form. The log-mass is \eqn{\sum_j y_j \log p_j} up to a constant, so
-each term depends on one coordinate of the simplex and the chain rule is one
-univariate partition sum per coordinate, with
-\eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}}.
+Computes every third derivative of the log-mass in the parameters, in closed
+form. Up to a constant in the counts the log-mass is
+\eqn{\sum_j y_j \log p_j}, so each term depends on ONE coordinate of the
+simplex and the chain rule collapses to a univariate partition sum per
+coordinate, with
+\deqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}.}
+The combinatorial factor carries no parameter, so it drops out of every
+derivative and the counts enter only as weights.
+}
+\details{
+The support is finite, so the expectation of any component is an exact sum
+over \code{mv_support(distrib, theta)} and needs no sampling. \code{expected = TRUE}
+nonetheless routes to \code{\link[=mv_expected_higher]{mv_expected_higher()}}, which draws; a caller who
+wants the exact expectation forms the sum against
+\code{\link[=distrib_pdf.MultinomialDistrib]{distrib_pdf.MultinomialDistrib()}} directly.
+}
+\section{Notation}{
+
+\eqn{p_j} is the probability of category \eqn{j}, \eqn{y_j} its count,
+\eqn{\eta} the simplex's free vector and \eqn{\ell} the log-mass of one
+observation.
+}
+
+\examples{
+d <- multinomial_distrib(3, size = 10)
+theta <- list(probs_alr1 = 0.4, probs_alr2 = -0.3)
+set.seed(2)
+y <- distrib_rng(d, 5, theta)
+
+d3 <- distrib_deriv3(d, y, theta)
+vapply(d3, sum, numeric(1))
+
+# Against one stencil on the analytic Hessian, component by component.
+h <- 1e-4
+tp <- theta; tp$probs_alr2 <- tp$probs_alr2 + h
+tm <- theta; tm$probs_alr2 <- tm$probs_alr2 - h
+c(exact = sum(d3[["probs_alr1_probs_alr1_probs_alr2"]]),
+  stencil = (sum(distrib_hessian(d, y, tp)[["probs_alr1_probs_alr1"]]) -
+             sum(distrib_hessian(d, y, tm)[["probs_alr1_probs_alr1"]])) /
+            (2 * h))
+
+# The support is finite, so the mass over it sums to one exactly and an
+# expectation can be taken as a sum rather than a sample.
+sup <- mv_support(d, theta)
+c(states = nrow(sup), mass = sum(distrib_pdf(d, sup, theta)))
+
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}
+\code{\link[=distrib_deriv4.MultinomialDistrib]{distrib_deriv4.MultinomialDistrib()}} for the next order,
+\code{\link[=multinomial_higher]{multinomial_higher()}} for the shared engine, \code{\link[=mv_support]{mv_support()}} for the exact
+route to an expectation, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

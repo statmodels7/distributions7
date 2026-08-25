@@ -2,29 +2,62 @@
 % Please edit documentation in R/mv_higher.R
 \name{mv_expected_higher}
 \alias{mv_expected_higher}
-\title{Expected Higher Derivatives of a Multivariate Family by Sampling}
+\title{Expected Higher Derivatives of a Simplex-Valued Family by Sampling}
 \usage{
 mv_expected_higher(distrib, y, theta, order, nsim)
 }
 \arguments{
-\item{distrib}{A multivariate distribution object.}
+\item{distrib}{A \code{DirichletDistrib} or \code{MultinomialDistrib} object.}
 
 \item{y}{The observed response, read only for its number of rows.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, \code{3L} or \code{4L}.}
 
-\item{nsim}{The Monte Carlo sample size.}
+\item{nsim}{The Monte Carlo sample size, a single positive whole number.}
 }
 \value{
-A named list of numeric vectors, each constant across observations.
+A named list of numeric vectors of length \code{n_obs(distrib, y)}, each
+constant across observations, keyed as \code{deriv_names(distrib@params, order)}.
 }
 \description{
-Averages the closed-form observed derivatives over a sample from the family,
-which is the route the multivariate branch takes throughout: a quadrature
-over the simplex has no counterpart to the one-dimensional split at
-quantiles, and the Bartlett route would need the score's own higher
-derivatives.
+Averages the closed-form observed third or fourth derivatives over a sample
+drawn from the family. This is the route the multivariate branch takes
+throughout: a quadrature over the simplex has no counterpart to the
+one-dimensional split at quantiles, and the Bartlett route would need the
+score's own higher derivatives. The result therefore carries Monte Carlo
+error of order \code{nsim^(-1/2)}, and a caller who needs it reproducible sets a
+seed first.
+}
+\details{
+Only the two simplex-valued families reach here. The branch is taken on
+whether \code{distrib} inherits \code{DirichletDistrib}, everything else being routed
+to \code{\link[=multinomial_higher]{multinomial_higher()}}, so this function must not be called for any third
+family.
+}
+\examples{
+d <- dirichlet_distrib(3)
+theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+set.seed(1)
+y <- distrib_rng(d, 5, theta)
+
+set.seed(5)
+e3 <- distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)
+
+# One value per observation, and every vector constant.
+lengths(e3)[1:3]
+all(vapply(e3, function(z) diff(range(z)) == 0, TRUE))
+
+# Two seeds give two answers, this being a sample rather than an integral.
+set.seed(6)
+c(first = e3[[1]][1],
+  second = distributions7:::mv_expected_higher(d, y, theta, 3L, 3000)[[1]][1])
+
+}
+\seealso{
+\code{\link[=dirichlet_higher]{dirichlet_higher()}} and \code{\link[=multinomial_higher]{multinomial_higher()}} for the observed
+derivatives it averages, and \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}} for the
+method that calls it.
 }
 \keyword{internal}

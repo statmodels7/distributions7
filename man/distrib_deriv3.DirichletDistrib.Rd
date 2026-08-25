@@ -2,37 +2,93 @@
 % Please edit documentation in R/mv_higher.R
 \name{distrib_deriv3.DirichletDistrib}
 \alias{distrib_deriv3.DirichletDistrib}
-\alias{distrib_deriv4.DirichletDistrib}
-\title{Dirichlet Analytical Third and Fourth Derivatives}
+\title{Dirichlet Third Derivatives}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and one column per
+coordinate, each row a point of the open simplex. A row with a zero
+coordinate is outside the support and gives a non-finite component through
+\eqn{\log y_j}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number:
+\code{mean_alr1}, ..., \code{mean_alr(p-1)} and \code{phi}.}
 
-\item{expected}{Whether to return expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation is returned,
+by SAMPLING through \code{\link[=mv_expected_higher]{mv_expected_higher()}}. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{Ignored: sampling is the only multivariate route to an
+expectation. Present so that the signature matches the generic's.}
 
-\item{nsim}{The Monte Carlo sample size.}
+\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
+\code{10000}. Ignored otherwise.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
+A named list of numeric vectors of length \eqn{n}, keyed and ordered
+as \code{deriv_names(distrib@params, 3)}. At \eqn{p = 3} there are ten
+components. With \code{expected = TRUE} every vector is constant.
 }
 \description{
-Closed form. The log-density is
-\eqn{\log\Gamma(\phi) - \sum_j \log\Gamma(\alpha_j) +
-\sum_j(\alpha_j - 1)\log y_j} with \eqn{\alpha = \phi\mu(\eta)}, so every
-term depends on one coordinate of the simplex and the chain rule is one
-univariate partition sum per coordinate. The concentration also enters
-directly, through \eqn{\log\Gamma(\phi)}, which contributes only to the
-component all of whose indices name it.
+Computes every third derivative of the log-density in the parameters, in
+closed form. The log-density is
+\deqn{\ell = \log\Gamma(\phi) - \sum_j \log\Gamma(\alpha_j)
+  + \sum_j(\alpha_j - 1)\log y_j, \qquad \alpha = \phi\,\mu(\eta),}
+so every term depends on ONE coordinate of the simplex and the chain rule
+collapses to a univariate partition sum per coordinate, run by
+\code{\link[=chain_univariate]{chain_univariate()}} over the arrays \code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} supplies. The
+concentration also enters directly, through \eqn{\log\Gamma(\phi)}, which
+contributes only to the component all of whose indices name it.
+}
+\details{
+The shape vector is bilinear in \eqn{\phi} and \eqn{\mu}, so a component
+naming \eqn{\phi} twice or more gets nothing from the map, and only the
+direct \eqn{\log\Gamma(\phi)} term survives there. That is what keeps the
+order-3 and order-4 assemblies as cheap as the order-2 one.
+
+With \code{expected = TRUE} the expectation is taken by sampling and carries
+Monte Carlo error of order \code{nsim^(-1/2)}.
+}
+\section{Notation}{
+
+\eqn{\alpha} is the shape vector, \eqn{\phi} the concentration, \eqn{\mu}
+the mean on the simplex, \eqn{\eta} its free vector, \eqn{\Gamma} the gamma
+function and \eqn{\ell} the log-density of one observation.
+}
+
+\examples{
+d <- dirichlet_distrib(3)
+theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+set.seed(1)
+y <- distrib_rng(d, 5, theta)
+
+d3 <- distrib_deriv3(d, y, theta)
+names(d3)
+
+# Against one stencil on the analytic Hessian, which shares no algebra with
+# the partition sum.
+h <- 1e-4
+tp <- theta; tp$phi <- tp$phi + h
+tm <- theta; tm$phi <- tm$phi - h
+c(exact = sum(d3[["mean_alr1_mean_alr1_phi"]]),
+  stencil = (sum(distrib_hessian(d, y, tp)[["mean_alr1_mean_alr1"]]) -
+             sum(distrib_hessian(d, y, tm)[["mean_alr1_mean_alr1"]])) / (2 * h))
+
+# The pure-phi component gets nothing from the map beyond the shapes
+# themselves: it is psi''(phi) minus the mu_j^3-weighted psi''(phi mu_j),
+# and so is the same at every observation.
+mu <- as.numeric(parameters7::param_value(d@param, c(0.3, -0.2)))
+c(component = d3[["phi_phi_phi"]][1],
+  direct = psigamma(8, 2) - sum(mu^3 * psigamma(8 * mu, 2)))
+
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_deriv4.DirichletDistrib]{distrib_deriv4.DirichletDistrib()}} for the next order,
+\code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} for the second,
+\code{\link[=dirichlet_higher]{dirichlet_higher()}} for the shared engine, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the
+generic.
 }

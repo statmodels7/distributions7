@@ -2,27 +2,61 @@
 % Please edit documentation in R/mv_higher.R
 \name{dirichlet_map_tensors}
 \alias{dirichlet_map_tensors}
-\title{Derivative Tensors of a Dirichlet's Shape Vector}
+\title{Derivative Arrays of a Dirichlet's Shape Vector}
 \usage{
 dirichlet_map_tensors(s, eta, phi, order)
 }
 \arguments{
-\item{s}{A \pkg{parameters7} \code{simplex} parameter.}
+\item{s}{A \code{parameters7::simplex()} parametrization of the mean.}
 
-\item{eta}{The mean's free vector.}
+\item{eta}{The mean's free vector, a numeric vector of length \code{s@n_free}.}
 
-\item{phi}{The concentration.}
+\item{phi}{The concentration, a single positive number.}
 
-\item{order}{The highest order required, 1 to 4.}
+\item{order}{The highest order required, a single whole number from 1 to 4.}
 }
 \value{
-A named list of numeric vectors over the coordinates, keyed by
-sorted tuple over the composite index set, \eqn{\phi} last.
+A named list of numeric vectors over the coordinates, keyed by sorted
+tuple over the composite index set with \eqn{\phi} LAST, so at
+\code{s@n_free = 2} the concentration is index 3 and the key \code{"3,3"} holds a
+vector of zeros.
 }
 \description{
-\eqn{\alpha = \phi\,\mu(\eta)} is bilinear in the concentration and the
-mean, so \eqn{\partial^{S}\alpha} is \eqn{\phi\,\partial^{S}\mu} when
-\eqn{S} names no \eqn{\phi}, is \eqn{\partial^{S'}\mu} when it names one,
-and is zero when it names two or more.
+Collects \eqn{\partial^{S}\alpha} for every multiset \eqn{S} over the
+Dirichlet's composite index set, the simplex's free values followed by the
+concentration. The shape vector \eqn{\alpha = \phi\,\mu(\eta)} is BILINEAR
+in the concentration and the mean, so the whole array follows from
+\code{\link[=simplex_map_tensors]{simplex_map_tensors()}} by three cases: \eqn{\phi\,\partial^{S}\mu} when
+\eqn{S} names no \eqn{\phi}, \eqn{\partial^{S'}\mu} when it names one, and
+exactly zero when it names two or more.
+}
+\section{Notation}{
+
+\eqn{\alpha} is the Dirichlet's shape vector, \eqn{\phi} its concentration,
+\eqn{\mu} the mean on the simplex, \eqn{\eta} the mean's free vector, and
+\eqn{S'} the multiset \eqn{S} with its one \eqn{\phi} index removed.
+}
+
+\examples{
+s <- parameters7::simplex(3)
+eta <- c(0.3, -0.2)
+dt <- distributions7:::dirichlet_map_tensors(s, eta, 8, 2)
+names(dt)
+
+# The key naming phi alone is the mean itself: alpha is phi times mu.
+dt[["3"]]
+as.numeric(parameters7::param_value(s, eta))
+
+# Naming phi twice gives exactly zero, alpha being linear in it.
+dt[["3,3"]]
+
+# And a key naming no phi is phi times the mean's own derivative.
+all.equal(dt[["1"]], 8 * as.numeric(parameters7::param_d1(s, eta)[[1]]))
+
+}
+\seealso{
+\code{\link[=simplex_map_tensors]{simplex_map_tensors()}} for the arrays it lifts,
+\code{\link[=tuple_indices_upto]{tuple_indices_upto()}} for the enumeration over the composite index set,
+and \code{\link[=dirichlet_higher]{dirichlet_higher()}} for the consumer.
 }
 \keyword{internal}

@@ -2,24 +2,57 @@
 % Please edit documentation in R/mv_higher.R
 \name{simplex_map_tensors}
 \alias{simplex_map_tensors}
-\title{Derivative Tensors of a Simplex-Valued Map}
+\title{Derivative Arrays of a Simplex-Valued Map}
 \usage{
 simplex_map_tensors(s, eta, order)
 }
 \arguments{
-\item{s}{A \pkg{parameters7} \code{simplex} parameter.}
+\item{s}{A \code{parameters7::simplex()} parametrization.}
 
-\item{eta}{The free vector.}
+\item{eta}{The free vector, a numeric vector of length \code{s@n_free}.}
 
-\item{order}{The highest order required, 1 to 4.}
+\item{order}{The highest order required, a single whole number from 1 to 4.
+Above 4 the \code{switch} returns \code{NULL} and the call fails.}
 }
 \value{
-A named list of numeric vectors, keyed as \code{"1"}, \code{"1,2"}
-and so on.
+A named list of numeric vectors, each as long as the simplex has
+coordinates, keyed \code{"1"}, \code{"2"}, \code{"1,1"}, \code{"1,2"} and so on, with the
+indices sorted and comma-separated. Its length is the number of index
+multisets of width 1 to \code{order}.
 }
 \description{
 Collects \eqn{\partial^{S}\mu_j} for every multiset \eqn{S} of free indices
 up to the requested order, keyed by the sorted tuple, as a list of numeric
-vectors over the coordinates \eqn{j}.
+vectors over the coordinates \eqn{j}. The arrays come from
+\pkg{parameters7}, whose contract carries orders three and four for a
+\code{simplex}, so nothing is derived here; what the function adds is the keying,
+which lets the chain rule in \code{\link[=chain_univariate]{chain_univariate()}} look a block up by its
+index multiset.
+}
+\section{Notation}{
+
+\eqn{\mu} is the point of the simplex the parametrization produces,
+\eqn{\eta} its free vector, and \eqn{S} a multiset of free-value indices.
+}
+
+\examples{
+s <- parameters7::simplex(3)
+eta <- c(0.3, -0.2)
+mt <- distributions7:::simplex_map_tensors(s, eta, 2)
+names(mt)
+
+# The first-order entry is the parametrization's own first derivative.
+mt[["1"]]
+as.numeric(parameters7::param_d1(s, eta)[[1]])
+
+# Every derivative of a point on the simplex sums to zero, the value
+# summing to one at every eta.
+vapply(mt, sum, numeric(1))
+
+}
+\seealso{
+\code{\link[=chain_univariate]{chain_univariate()}}, which consumes these,
+\code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} for the version that carries a concentration as
+well, and \code{\link[parameters7:simplex]{parameters7::simplex()}} for the parametrization.
 }
 \keyword{internal}

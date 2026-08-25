@@ -7,17 +7,39 @@
 tuple_indices_upto(d, order)
 }
 \arguments{
-\item{d}{The number of variables.}
+\item{d}{The number of variables, a single positive whole number.}
 
-\item{order}{The tuple width, 1 to 4.}
+\item{order}{The tuple width, a single whole number from 1 to 4.}
 }
 \value{
-A list of integer vectors.
+A list of integer vectors, each of length \code{order}, sorted within
+itself. Its length is \code{choose(d + order - 1, order)}.
 }
 \description{
-The same enumeration \code{parameters7::param_tuple_indices()} uses, taken
-over a count rather than over a parameter, so that a composite index set
-formed by appending a coordinate can be enumerated without building an
-object for it.
+Enumerates the index multisets of exactly \code{order} indices drawn from
+\code{1:d}, in the order \code{parameters7::param_tuple_indices()} uses. It takes a
+COUNT rather than a parametrization, so a composite index set formed by
+appending a coordinate can be enumerated without building an object of that
+shape. The Dirichlet's set is the one that needs this: its simplex free
+values followed by its concentration. The work is done by
+\code{numericals7::tuple_indices()}, the toolkit's one copy of the enumeration.
+}
+\examples{
+# Two indices over three variables: the three repeats then the three pairs.
+distributions7:::tuple_indices_upto(3, 2)
+
+# The count is choose(d + order - 1, order).
+c(got = length(distributions7:::tuple_indices_upto(4, 3)),
+  expected = choose(4 + 3 - 1, 3))
+
+# Every tuple is sorted, which is what makes a comma-joined key canonical.
+all(vapply(distributions7:::tuple_indices_upto(3, 3),
+           function(t) !is.unsorted(t), TRUE))
+
+}
+\seealso{
+\code{\link[numericals7:tuple_indices]{numericals7::tuple_indices()}} for the enumeration itself,
+\code{\link[=dirichlet_map_tensors]{dirichlet_map_tensors()}} for the consumer, and \code{\link[=deriv_names]{deriv_names()}} for the
+same enumeration rendered as component names.
 }
 \keyword{internal}
