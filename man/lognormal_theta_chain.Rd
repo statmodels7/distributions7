@@ -7,23 +7,76 @@
 lognormal_theta_chain(y, theta, order, second)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, strictly positive.}
 
-\item{theta}{A named list containing \code{mu} and \code{sigma2}.}
+\item{theta}{A named list containing \code{mu} and \code{sigma2}, read by the gaussian
+unchanged.}
 
-\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
+\item{order}{\code{1} for the derivative of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2} for that of
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
 
-\item{second}{Whether the second-order theta components are wanted.}
+\item{second}{\code{FALSE} for one derivative in \eqn{\theta}, keyed by
+parameter, and \code{TRUE} for two, keyed by parameter pair.}
 }
 \value{
-A named list, keyed by parameter or by parameter pair.
+A named list of numeric vectors, keyed by parameter when \code{second} is
+\code{FALSE} and by parameter pair when it is \code{TRUE}.
 }
 \description{
-The gaussian's components at \eqn{t = \log y}, carried by the Jacobian of
-the transformation.
+Computes the gaussian's components at \eqn{t = \log y}, carried by the
+Jacobian of the transformation. It serves all three of the lognormal's mixed
+methods, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, with \code{order} selecting the response derivative and
+\code{second} the order in \eqn{\theta}.
+}
+\section{Why theta passes through untouched}{
+With \eqn{t = \log y} the log-density is the gaussian's in \eqn{t} plus the
+log-Jacobian, \eqn{\ell(y) = \ell_N(t;\mu,\sigma^2) - \log y}. The
+transformation carries NO parameter, so \eqn{t} does not move with
+\eqn{\theta} and every \eqn{\theta}-derivative is the gaussian's own at
+\eqn{t}. The parent is \code{gaussian2}, which carries the same
+\eqn{(\mu, \sigma^2)} the lognormal does, so \code{theta} needs no map at all.
+}
+
+\section{What the Jacobian does carry}{
+Writing \eqn{g} for the gaussian's log-density in \eqn{t},
+\deqn{\ell^{(y)} = \frac{g' - 1}{y}, \qquad
+  \ell^{(yy)} = \frac{g'' - g' + 1}{y^2},}
+and differentiating in \eqn{\theta} kills the constants, leaving
+\deqn{\frac{\partial\ell^{(y)}}{\partial\theta} = \frac{1}{y}
+    \frac{\partial g'}{\partial\theta}, \qquad
+  \frac{\partial\ell^{(yy)}}{\partial\theta} = \frac{1}{y^2}\left(
+    \frac{\partial g''}{\partial\theta} -
+    \frac{\partial g'}{\partial\theta}\right),}
+with the same two lines at second order in \eqn{\theta}.
+}
+
+\section{Notation}{
+
+\eqn{t = \log y}, \eqn{g} is the gaussian's log-density in \eqn{t}, and a
+prime denotes a derivative in \eqn{t}.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.4, 1.1, 2.3)
+theta <- list(mu = 0.2, sigma2 = 0.6)
+
+distributions7:::lognormal_theta_chain(y, theta, 2L, FALSE)
+
+# Which is what the family's distrib_cross2_y reports.
+distrib_cross2_y(d, y, theta)
+
+# And it is the gaussian's own component at t = log y, over y^2.
+g2 <- gaussian2_distrib()
+t <- log(y)
+first <- distrib_cross_y(g2, t, theta)
+hi <- distrib_cross2_y(g2, t, theta)
+(hi$mu - first$mu) / y^2
 }
 \seealso{
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}
+\code{\link[=distrib_cross2_y.Lognormal1Distrib]{distrib_cross2_y.Lognormal1Distrib()}}, the three methods it
+serves, and \code{\link[=mapped_theta2]{mapped_theta2()}}, the route a family whose transformation
+DOES carry a parameter takes instead.
 }
 \keyword{internal}

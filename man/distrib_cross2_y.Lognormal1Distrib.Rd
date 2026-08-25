@@ -8,20 +8,54 @@
 \arguments{
 \item{distrib}{A \code{Lognormal1Distrib} object.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, strictly positive.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma2}.}
+\item{theta}{A named list containing \code{mu} and \code{sigma2}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, keyed by parameter or by parameter pair.
+A named list of numeric vectors, keyed by parameter for
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} and by parameter pair for \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}.
 }
 \description{
-The gaussian's own components at \eqn{t = \log y}: the transformation
-carries no parameter, so \eqn{t} does not move with \eqn{\theta} and only
-the Jacobian of the response derivatives enters.
+Reads the gaussian's own components at \eqn{t = \log y} and divides by a
+power of \eqn{y}. The transformation carries no parameter, so \eqn{t} does
+not move with \eqn{\theta} and only the Jacobian of the RESPONSE derivatives
+enters; the parent is \code{gaussian2}, which carries the same
+\eqn{(\mu, \sigma^2)}, so \code{theta} passes through unchanged. All three mixed
+methods take this route, through \code{\link[=lognormal_theta_chain]{lognormal_theta_chain()}}.
+}
+\section{Notation}{
+
+\eqn{t = \log y}, and \eqn{\ell^{(y)}} and \eqn{\ell^{(yy)}} are the first
+and second derivatives of the log-density in the response.
+}
+
+\examples{
+d <- lognormal1_distrib()
+y <- c(0.4, 1.1, 2.3)
+theta <- list(mu = 0.2, sigma2 = 0.6)
+
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::grad(f, c(0.2, 0.6))
+
+# The second order in theta, and its numerical Hessian.
+g3 <- distrib_grad_y_hess(d, y, theta)
+vapply(g3, function(z) z[1], numeric(1))
+h <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(h, c(0.2, 0.6))
+}
+\seealso{
+\code{\link[=lognormal_theta_chain]{lognormal_theta_chain()}}, which does the work,
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic, and \code{\link[=transformation]{transformation()}}, the general
+wrapper for a change of variable.
 }
 \keyword{internal}

@@ -2,21 +2,58 @@
 % Please edit documentation in R/theta2_more.R
 \name{scale_only_cross2_method}
 \alias{scale_only_cross2_method}
+\alias{distrib_cross2_y.ExponentialDistrib}
+\alias{distrib_cross2_y.Weibull1Distrib}
+\alias{distrib_cross2_y.GPDDistrib}
 \title{The Scale Component of the Response Curvature's Derivative}
 \usage{
 scale_only_cross2_method(at = 1L)
 }
 \arguments{
-\item{at}{The index of the scale parameter.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
 }
 \value{
-A method body.
+A method body with \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}'s signature, returning a
+named list with one numeric vector per parameter.
 }
 \description{
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for a family with no location: the same
-identity as \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} with \eqn{z = y/\sigma}.
+Builds the \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method body for a family with a scale and no
+location. The scale's component is the identity
+\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} uses, read at \eqn{z = y/\sigma}:
+\eqn{-(zB' + 2B)/\sigma^3} with \eqn{B = \sigma^2\ell^{(yy)}} and
+\eqn{B' = \sigma^3\ell^{(yyy)}}. Any shape component is differenced through
+\code{\link[=numerical_cross2_y]{numerical_cross2_y()}}.
+}
+\details{
+A one-parameter family returns the closed component alone. Registered on the
+exponential, the Weibull and the generalized Pareto.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{\sigma} the scale and \eqn{z} the standardized response, \eqn{y/\sigma}
+where there is no location and \eqn{(y-\mu)/\sigma} where there is.
+}
+
+\examples{
+y <- c(0.4, 1.1, 2.3)
+
+# The generalized Pareto: a scale and a shape.
+d <- gpd_distrib()
+theta <- list(sigma = 1.5, xi = 0.3)
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(sigma = v[1], xi = v[2]))
+numDeriv::grad(f, c(1.5, 0.3))
+
+# The exponential has one parameter, so nothing is differenced.
+distrib_cross2_y(exponential_distrib(), y, list(mu = 1.5))
 }
 \seealso{
-\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}}
+\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}}, the location-scale form,
+\code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}} for the next order in \eqn{\theta}, and
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic.
 }
 \keyword{internal}

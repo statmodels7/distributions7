@@ -7,32 +7,70 @@
 scale_only_theta2(distrib, y, theta, order = 1L, at = 1L)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, with a scale and
+no location.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
+\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2} for that of
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}. Default \code{1}.}
 
-\item{at}{The index of the scale parameter.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}: the scale's own pair alone, not a
+list.
 }
 \description{
-\eqn{\partial^2\ell^{(y)}/\partial\sigma^2} and
+Computes \eqn{\partial^2\ell^{(y)}/\partial\sigma^2} or
 \eqn{\partial^2\ell^{(yy)}/\partial\sigma^2} for a family whose response
-enters only through \eqn{z = y/\sigma}.
+enters only through \eqn{z = y/\sigma}. It is \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}'s
+scale component, and the same formula: the derivation never used the
+location, only that \eqn{\sigma} is a scale.
 }
 \details{
-The derivation of the scale components of
-\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} never used the location, only that
-\eqn{\sigma} is a scale, so the formulas hold unchanged with \eqn{z =
-y/\sigma}. Any other parameter is a shape and is not covered.
+With \eqn{A = \sigma\ell^{(y)}} and \eqn{B = \sigma^2\ell^{(yy)}},
+\deqn{\frac{\partial^2\ell^{(y)}}{\partial\sigma^2}
+  = \frac{z^2A'' + 4zA' + 2A}{\sigma^3}, \qquad
+  \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
+  = \frac{z^2B'' + 6zB' + 6B}{\sigma^4},}
+and the primed quantities are the family's own third and fourth response
+derivatives times a power of \eqn{\sigma}, so nothing is differentiated
+here. Any parameter beyond the scale is a SHAPE and is not covered;
+\code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}} differences those.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{\sigma} the scale and \eqn{z} the standardized response, \eqn{y/\sigma}
+where there is no location and \eqn{(y-\mu)/\sigma} where there is.
+}
+
+\examples{
+# The exponential has a scale and nothing else.
+d <- exponential_distrib()
+y <- c(0.4, 1.1, 2.3)
+theta <- list(mu = 1.5)
+
+distributions7:::scale_only_theta2(d, y, theta, 1L, 1L)
+
+# The identity written out.
+s <- 1.5
+z <- y / s
+A <- s * distrib_grad_y(d, y, theta)
+A1 <- s^2 * distrib_hess_y(d, y, theta)
+A2 <- s^3 * distrib_deriv3_y(d, y, theta)
+(z^2 * A2 + 4 * z * A1 + 2 * A) / s^3
+
+# And what the family's own method reports.
+distrib_grad_y_hess(d, y, theta)$mu_mu
 }
 \seealso{
-\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}, the location-scale form,
+\code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}}, which splices it into the fallback, and
+\code{\link[=scale_only_cross2_method]{scale_only_cross2_method()}} for the first order in \eqn{\theta}.
 }
 \keyword{internal}

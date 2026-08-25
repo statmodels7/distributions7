@@ -2,21 +2,69 @@
 % Please edit documentation in R/theta2_more.R
 \name{scale_only_theta2_methods}
 \alias{scale_only_theta2_methods}
+\alias{distrib_grad_y_hess.ExponentialDistrib}
+\alias{distrib_hess_y_hess.ExponentialDistrib}
+\alias{distrib_grad_y_hess.Weibull1Distrib}
+\alias{distrib_hess_y_hess.Weibull1Distrib}
+\alias{distrib_grad_y_hess.GPDDistrib}
+\alias{distrib_hess_y_hess.GPDDistrib}
 \title{The Mixed Grid of a Family With No Location}
 \usage{
 scale_only_theta2_methods(at = 1L)
 }
 \arguments{
-\item{at}{The index of the scale parameter.}
+\item{at}{The index of the scale parameter in \code{distrib@params}. Default \code{1}.}
 }
 \value{
-A list of two method bodies, named \code{grad2} and \code{hess2}.
+A list of two method bodies, named \code{grad2} and \code{hess2}, each with
+the generics' signature.
 }
 \description{
-The scale's own pair in closed form and every pair touching a shape by one
-central difference of the analytic first-order component.
+Builds the \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies
+for a family with a scale and no location: the scale's own pair comes from
+\code{\link[=scale_only_theta2]{scale_only_theta2()}} in closed form, and every pair touching a shape
+parameter from one central difference of the analytic first-order component
+through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}}.
+}
+\details{
+A one-parameter family returns the closed component alone and never
+differences anything. Registered on the exponential, which is that case, and
+on the Weibull and the generalized Pareto, whose second parameter is a
+shape.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{\sigma} the scale and \eqn{z} the standardized response, \eqn{y/\sigma}
+where there is no location and \eqn{(y-\mu)/\sigma} where there is.
+}
+
+\examples{
+y <- c(0.4, 1.1, 2.3)
+
+# One parameter: the closed component alone, nothing differenced.
+d <- exponential_distrib()
+distrib_grad_y_hess(d, y, list(mu = 1.5))
+
+# Two: the scale pair closed, the two touching the shape differenced.
+dw <- weibull1_distrib()
+theta <- list(mu = 1.5, sigma = 1.3)
+g <- distrib_grad_y_hess(dw, y, theta)
+names(g)
+vapply(g, function(z) z[1], numeric(1))
+
+# Against a numerical Hessian of the response gradient.
+f <- function(v) distrib_grad_y(dw, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::hessian(f, c(1.5, 1.3))
+
+# The scale pair is exactly the closed component.
+identical(g$mu_mu,
+          distributions7:::scale_only_theta2(dw, y, theta, 1L, 1L))
 }
 \seealso{
-\code{\link[=scale_only_theta2]{scale_only_theta2()}}
+\code{\link[=scale_only_theta2]{scale_only_theta2()}} for the closed component,
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} for the differenced ones, and \code{\link[=partial_theta2]{partial_theta2()}},
+the location-scale counterpart.
 }
 \keyword{internal}

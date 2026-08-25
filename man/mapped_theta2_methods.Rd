@@ -2,28 +2,79 @@
 % Please edit documentation in R/theta2_more.R
 \name{mapped_theta2_methods}
 \alias{mapped_theta2_methods}
+\alias{distrib_cross2_y.Gaussian2Distrib}
+\alias{distrib_grad_y_hess.Gaussian2Distrib}
+\alias{distrib_hess_y_hess.Gaussian2Distrib}
+\alias{distrib_cross2_y.Gaussian3Distrib}
+\alias{distrib_grad_y_hess.Gaussian3Distrib}
+\alias{distrib_hess_y_hess.Gaussian3Distrib}
+\alias{distrib_cross2_y.Laplace2Distrib}
+\alias{distrib_grad_y_hess.Laplace2Distrib}
+\alias{distrib_hess_y_hess.Laplace2Distrib}
+\alias{distrib_cross2_y.InvGauss2Distrib}
+\alias{distrib_grad_y_hess.InvGauss2Distrib}
+\alias{distrib_hess_y_hess.InvGauss2Distrib}
 \title{The Mixed Grid of a Family Written Out Against a Tabulated Map}
 \usage{
 mapped_theta2_methods(parent, th_par, tables)
 }
 \arguments{
-\item{parent}{The parent distribution.}
+\item{parent}{The parent distribution, built once and closed over.}
 
-\item{th_par}{A function of the new parameters returning the parent's.}
+\item{th_par}{A function of the new parameters returning the parent's, as a
+named list.}
 
 \item{tables}{A function of the new parameters returning the map's keyed
-partial tables.}
+partial tables, one of the \verb{md_*} functions of \code{reparam_maps.R}.}
 }
 \value{
-A list of three method bodies, named \code{cross2}, \code{grad2}
-and \code{hess2}.
+A list of three method bodies, named \code{cross2}, \code{grad2} and \code{hess2},
+each with the generics' signature.
 }
 \description{
-\code{distrib_cross2_y}, \code{distrib_grad_y_hess} and
-\code{distrib_hess_y_hess} for a family that carries its own class and
-kernels while its map onto a parent is tabulated.
+Builds the \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies for a family that carries its own
+class and kernels while its map onto a parent is tabulated. Each body is the
+chain rule of \code{\link[=mapped_cross2_y]{mapped_cross2_y()}} or \code{\link[=mapped_theta2]{mapped_theta2()}} with the parent, the
+map and the partial tables closed over, so no new algebra is involved.
+}
+\details{
+The families it serves have their own classes and their own compiled
+kernels, so they are NOT \code{ReparamContinuousDistrib} and do not inherit its
+methods; what they share with it is the map, which \code{reparam_maps.R} already
+tabulates. Registered on \code{gaussian2}, \code{gaussian3}, \code{laplace2} and
+\code{invgauss2}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{\sigma} the scale and \eqn{z} the standardized response, \eqn{y/\sigma}
+where there is no location and \eqn{(y-\mu)/\sigma} where there is.
+}
+
+\examples{
+# gaussian2 carries (mu, sigma2) against a parent in (mu, sigma).
+d <- gaussian2_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma2 = 1.44)
+
+g3 <- distrib_grad_y_hess(d, y, theta)
+vapply(g3, function(z) z[1], numeric(1))
+
+# Against a numerical Hessian of the response gradient in the family's own
+# parameters, which shares none of the map's arithmetic.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(f, c(0.3, 1.44))
+
+# laplace2 carries the rate, so its map is 1 / lambda.
+dl <- laplace2_distrib()
+vapply(distrib_cross2_y(dl, c(-0.7, 1.1, 1.4), list(mu = 0.3, lambda = 0.8)),
+       function(z) z[1], numeric(1))
 }
 \seealso{
-\code{\link[=mapped_theta2]{mapped_theta2()}}, \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}
+\code{\link[=mapped_theta2]{mapped_theta2()}} and \code{\link[=mapped_cross2_y]{mapped_cross2_y()}}, which do the work,
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} for the tables, and \code{\link[=scale_only_theta2_methods]{scale_only_theta2_methods()}}
+for the other shape this file covers.
 }
 \keyword{internal}
