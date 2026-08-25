@@ -4,18 +4,45 @@
 \alias{distrib_rng.TruncatedDiscreteDistrib}
 \title{Truncated Random Number Generator (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{Number of observations to generate, a single positive integer.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters. A component varying by
+observation must have length \code{n}.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} random draws, every one a support point in
+\eqn{[L, U]}.
 }
 \description{
-Inverse transform sampling on the parent, exact for a discrete cdf.
+Draws by inverse transform on the parent, exact for a discrete distribution
+function: \eqn{Y = Q\{F(L^-) + V Z\}} with \eqn{V} uniform on \eqn{(0, 1)}.
+Every draw is a support point inside \eqn{[L, U]}, in one pass and with no
+rejection.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+set.seed(4)
+y <- distrib_rng(ztp, 5000, theta)
+c(zeros = sum(y == 0), min = min(y))
+
+# The sample mean tracks the zero-truncated mean, mu / (1 - exp(-mu)).
+c(sampled = mean(y), theory = 2 / (1 - exp(-2)))
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_rng]{trunc_rng()}} for the shared body,
+\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile.TruncatedDiscreteDistrib()}}, which does the work, and
+\code{\link[=distrib_rng.TruncatedContinuousDistrib]{distrib_rng.TruncatedContinuousDistrib()}} for the continuous branch.
 }

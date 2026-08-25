@@ -4,22 +4,51 @@
 \alias{distrib_quantile.TruncatedContinuousDistrib}
 \title{Truncated Quantile Function (Continuous)}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]}.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE}, \code{p} is read as an
+upper-tail probability.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE}, \code{p} is given on the log
+scale.}
 }
 \value{
 A numeric vector of quantiles.
 }
 \description{
-\deqn{Q_T(p) = Q\!\left(F(L^-;\theta) + p\,Z(\theta)\right)}
+Evaluates \eqn{Q_T(p) = Q\{F(L^-;\theta) + p\,Z(\theta)\}}, inverting
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} through the PARENT's quantile
+function. No root-finding of its own is needed, and every returned value
+lies inside \eqn{[L, U]} by construction.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_quantile(tn, c(0.1, 0.5, 0.9), theta)
+
+# It inverts the distribution function exactly.
+p <- c(0.1, 0.5, 0.9)
+max(abs(distrib_cdf(tn, distrib_quantile(tn, p, theta), theta) - p))
+
+# The extreme quantiles are the endpoints themselves.
+distrib_quantile(tn, c(0, 1), theta)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_quantile]{trunc_quantile()}} for the shared body,
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} for the inverse, and
+\code{\link[=distrib_rng.TruncatedContinuousDistrib]{distrib_rng.TruncatedContinuousDistrib()}}, which draws through it.
 }

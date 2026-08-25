@@ -4,22 +4,52 @@
 \alias{distrib_cdf.TruncatedContinuousDistrib}
 \title{Truncated Cumulative Distribution Function (Continuous)}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE} the upper tail
+\eqn{1 - F_T(q)} is returned.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE} the probability is
+returned on the log scale.}
 }
 \value{
 A numeric vector of cumulative probabilities.
 }
 \description{
-\deqn{F_T(q) = \dfrac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
+Evaluates \eqn{F_T(q) = \{F(q;\theta) - F(L^-;\theta)\}/Z(\theta)}, clamped
+to \eqn{[0, 1]}. The clamp makes the endpoints exact, returning \code{0} at and
+below \eqn{L} and \code{1} at and above \eqn{U}, where the unclamped ratio would
+give a small negative number or one plus a rounding.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+# Exactly 0 and 1 at the endpoints.
+distrib_cdf(tn, c(-1, 0.3, 2), theta)
+
+# Against the ratio written out.
+Fl <- pnorm(-1, 0.3, 1.2); Z <- pnorm(2, 0.3, 1.2) - Fl
+(pnorm(0.3, 0.3, 1.2) - Fl) / Z
+
+# The two tails sum to one.
+distrib_cdf(tn, 0.3, theta) + distrib_cdf(tn, 0.3, theta, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_cdf]{trunc_cdf()}} for the shared body,
+\code{\link[=distrib_quantile.TruncatedContinuousDistrib]{distrib_quantile.TruncatedContinuousDistrib()}} for the inverse, and
+\code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf.TruncatedDiscreteDistrib()}} for the discrete branch.
 }

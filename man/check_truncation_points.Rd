@@ -7,28 +7,64 @@
 check_truncation_points(distrib, lower, upper, is_disc)
 }
 \arguments{
-\item{distrib}{The parent distribution.}
+\item{distrib}{The parent distribution, before wrapping. Its \code{bounds} and
+\code{distrib_name} are read.}
 
-\item{lower}{The lower endpoint, or \code{NULL}.}
+\item{lower}{The lower endpoint, or \code{NULL} for none.}
 
-\item{upper}{The upper endpoint, or \code{NULL}.}
+\item{upper}{The upper endpoint, or \code{NULL} for none.}
+
+\item{is_disc}{A single logical saying whether the parent is discrete, which
+the caller has already determined. It governs the whole-number check
+alone.}
 }
 \value{
-Invisibly \code{NULL}; raises an error on a bad interval.
+Invisibly \code{NULL}. Every failure raises, with the endpoint and the
+parent's support named.
 }
 \description{
-Checks that the interval is well formed and that truncating this parent there
-leaves an identifiable model.
+Checks that the interval is well formed and that truncating this parent
+there leaves a model worth fitting. \code{\link[=truncated]{truncated()}} calls it before building
+anything, so every rejection names the endpoint and the support it was
+compared against.
 }
 \details{
-One case is rejected outright: truncating zero away from a zero wrapper. The
-\eqn{(1-\zeta)} factor then cancels between the numerator and \eqn{Z}, so
-\eqn{\zeta} leaves the likelihood entirely and its score is identically zero
--- the same defect as stacking the two zero wrappers, arriving by a different
-route. Truncating a zero wrapper anywhere else is fine, and the atom is
-carried through.
+Four conditions are tested, in order: each endpoint is a single
+non-missing number; a finite endpoint on a discrete parent is a whole
+number, a fractional one being ambiguous between the support points either
+side; \code{lower} is strictly below \code{upper}; and neither endpoint sits outside
+the parent's support, where truncation would either remove nothing, so that
+the result is the parent itself, or remove everything.
+
+Two further conditions are left to \code{\link[=truncated]{truncated()}}, which has the resolved
+endpoints: truncating zero away from a zero wrapper, which cancels
+that wrapper's parameter out of the likelihood, and a discrete interval
+leaving too few support points to identify the parameters.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+# A point at or below the support removes nothing: the gamma lives on
+# (0, Inf), so truncating below zero would return the gamma itself.
+try(distributions7:::check_truncation_points(
+  gamma2_distrib(), lower = -2, upper = NULL, is_disc = FALSE))
+
+# A fractional endpoint on a discrete parent is ambiguous.
+try(distributions7:::check_truncation_points(
+  poisson_distrib(), lower = 1.5, upper = NULL, is_disc = TRUE))
+
+# A well-formed interval returns nothing and raises nothing.
+distributions7:::check_truncation_points(
+  gaussian1_distrib(), lower = -1, upper = 2, is_disc = FALSE)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, its one caller.
 }
 \keyword{internal}

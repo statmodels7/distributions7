@@ -4,20 +4,72 @@
 \alias{distrib_expected_hessian.TruncatedContinuousDistrib}
 \title{Truncated Analytical Expected Hessian (Continuous)}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{approx}{Ignored. Present so that the signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of numeric vectors of length \code{length(y)}, one component
+per unordered pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}\right]
-  = -\operatorname{Cov}_T(s_i, s_j)}
-the covariance of the parent's score under the truncated distribution.
+Computes
+\deqn{\mathbb{E}\left[\frac{\partial^2 \ell_T}
+  {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),}
+the covariance of the PARENT's score under the truncated law. This is the
+second Bartlett identity for the truncated model: the parent's expected
+Hessian cancels exactly against the term it contributes to the second
+derivative of \eqn{\log Z}.
+}
+\details{
+One quadrature per component is needed even where the parent has exact cdf
+derivatives, since those give
+\eqn{\mathbb{E}_T[H_{ij}] + \mathbb{E}_T[s_i s_j]} and the covariance needs
+the second term on its own. No component depends on the data, so every
+returned vector is constant.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+EH <- distrib_expected_hessian(tn, 1, theta)
+unlist(EH)
+
+# Minus the covariance of the parent's score under the truncated law.
+m <- distributions7:::trunc_score_mean(tn, theta)
+ES <- distributions7:::trunc_score_prod_mean(tn, theta)
+c(mu_mu = -(ES$mu_mu - m$mu^2),
+  sigma_sigma = -(ES$sigma_sigma - m$sigma^2),
+  mu_sigma = -(ES$mu_sigma - m$mu * m$sigma))
+
+# And what averaging the observed Hessian gives.
+set.seed(1)
+ys <- distrib_rng(tn, 200000, theta)
+round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} for the shared body,
+\code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}} for the moment it rests on, and
+\code{\link[=distrib_hessian.TruncatedContinuousDistrib]{distrib_hessian.TruncatedContinuousDistrib()}} for the observed matrix.
 }

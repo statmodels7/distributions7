@@ -4,18 +4,58 @@
 \alias{distrib_hessian.TruncatedDiscreteDistrib}
 \title{Truncated Analytical Observed Hessian (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors of length \code{length(y)}, one component
+per unordered pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j} = H_{ij}(y) - M_{ij} + m_i m_j}
+Computes
+\deqn{\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
+  = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
+  M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],}
+the subtracted part being the second derivative of \eqn{\log Z}. For a
+discrete parent \eqn{M_{ij}} comes from the parent's cdf derivatives, which
+are exact finite sums, with the mass at the retained lower endpoint added
+back.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+y <- 1:4
+H <- distrib_hessian(ztp, y, theta)
+H$mu_mu
+
+# Against a numerical Hessian of the truncated log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- ztp@params
+  sum(distrib_pdf(ztp, y, t2, log = TRUE))
+}
+abs(sum(H$mu_mu) - numDeriv::hessian(ll, unlist(theta))[1, 1])
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_hessian]{trunc_hessian()}} for the shared body, \code{\link[=trunc_M]{trunc_M()}}
+for \eqn{M_{ij}}, and
+\code{\link[=distrib_expected_hessian.TruncatedDiscreteDistrib]{distrib_expected_hessian.TruncatedDiscreteDistrib()}} for the expectation.
 }

@@ -4,18 +4,42 @@
 \alias{distrib_hess_y.TruncatedContinuousDistrib}
 \title{Truncated Continuous Response Hessian}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A point outside \eqn{[L, U]}
+gives \code{NaN}.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-As \code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y()}}, at second order.
+Returns \eqn{\partial^2\ell_T/\partial y^2}, which inside \eqn{[L, U]} is
+the PARENT's and is \code{NaN} outside, for the reason
+\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} gives: the log-density is
+\eqn{-\infty} there and has no derivative.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_hess_y(tn, c(-2, 0, 1, 3), theta)
+
+# For a gaussian it is -1 / sigma^2 wherever it exists.
+c(truncated = distrib_hess_y(tn, 1, theta), parent = -1 / 1.2^2)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_y_deriv]{trunc_y_deriv()}} for the shared body,
+\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} for the first order, and
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

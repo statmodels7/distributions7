@@ -7,22 +7,58 @@
 trunc_y_deriv(distrib, y, theta, fun)
 }
 \arguments{
-\item{distrib}{A truncated distribution object.}
+\item{distrib}{A truncated distribution object, of either class.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of the parent's parameters.}
 
-\item{fun}{The parent's response-derivative function.}
+\item{fun}{The parent's response-derivative function, such as
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} or \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}, \code{NaN} outside \eqn{[L, U]} and the
+parent's derivative inside.
 }
 \description{
-Evaluates a response derivative of the parent inside the interval.
+Evaluates a response derivative of the PARENT at the observations inside
+\eqn{[L, U]} and returns \code{NaN} outside. The normalizing constant does not
+depend on \eqn{y}, so inside the interval the parent's derivative is exact
+and needs no correction; outside, the log-density is \eqn{-\infty} and no
+derivative exists.
 }
 \details{
-The normalizing constant does not depend on \eqn{y}, so inside the support the
-parent's derivative is exact and nothing needs correcting.
+The \code{NaN} is the point of the function. The finite-difference default
+inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the boundary and return
+a NUMBER for a point outside the support, which nothing downstream would
+question.
+
+A parameter varying by observation is subset to the retained observations
+before the parent is called, so the parent sees a \code{theta} matching the \code{y}
+it is given.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distributions7:::trunc_y_deriv(tn, c(-2, 0, 3), theta, distrib_grad_y)
+distrib_grad_y(gaussian1_distrib(), 0, theta)
+
+# The second order takes the same route.
+distributions7:::trunc_y_deriv(tn, c(0, 3), theta, distrib_hess_y)
+}
+\seealso{
+\code{\link[=distrib_grad_y.TruncatedContinuousDistrib]{distrib_grad_y.TruncatedContinuousDistrib()}} and
+\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y.TruncatedContinuousDistrib()}}, the two methods it serves,
+and \code{\link[=trunc_inside]{trunc_inside()}} for the test it applies.
 }
 \keyword{internal}

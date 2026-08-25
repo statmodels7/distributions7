@@ -4,21 +4,57 @@
 \alias{distrib_pdf.TruncatedContinuousDistrib}
 \title{Truncated Probability Density Function}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A point outside \eqn{[L, U]}
+gives \code{0}, or \code{-Inf} on the log scale.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters. Truncation adds none.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical, default \code{FALSE}. When \code{TRUE} the log-density is
+returned.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of density values, of the length \code{y} and \code{theta}
+recycle to.
 }
 \description{
-\deqn{f_T(y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (L \le y \le U), \qquad 0 \text{ otherwise}}
-with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta)}.
+Evaluates
+\deqn{f_T(y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U), \qquad
+  f_T(y) = 0 \ \text{ otherwise},}
+with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta)} the retained mass. The
+division is carried out on the log scale, so a point far in a tail keeps its
+precision instead of underflowing before the division.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_pdf(tn, c(-2, 0, 1, 3), theta)
+
+# The parent's density lifted by the reciprocal of the retained mass.
+Z <- pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)
+c(dnorm(0, 0.3, 1.2), dnorm(1, 0.3, 1.2)) / Z
+
+# It integrates to one over the interval; the parent's does not.
+integrate(function(y) distrib_pdf(tn, y, theta), -1, 2)$value
+
+# Outside the interval the log-density is -Inf, not a small number.
+distrib_pdf(tn, c(-2, 3), theta, log = TRUE)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the constructor, \code{\link[=trunc_pdf]{trunc_pdf()}} for the shared
+body, \code{\link[=distrib_pdf.TruncatedDiscreteDistrib]{distrib_pdf.TruncatedDiscreteDistrib()}} for the discrete branch,
+and \code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}}.
 }

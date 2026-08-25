@@ -4,20 +4,42 @@
 \alias{distrib_grad_y.TruncatedContinuousDistrib}
 \title{Truncated Continuous Response Gradient}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A point outside \eqn{[L, U]}
+gives \code{NaN}.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-\eqn{Z} does not depend on \eqn{y}, so inside \eqn{[L, U]} the response
-derivative is the parent's. Outside, the log-density is \eqn{-\infty} and no
-derivative exists, so \code{NaN} is returned.
+Returns \eqn{\partial\ell_T/\partial y}, which inside \eqn{[L, U]} is the
+PARENT's, \eqn{Z} not depending on \eqn{y}. Outside the interval the
+log-density is \eqn{-\infty} and no derivative exists, so \code{NaN} is returned
+where a finite difference would invent a number.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+distrib_grad_y(tn, c(-2, 0, 1, 3), theta)
+
+# Inside the interval it is the parent's own.
+distrib_grad_y(gaussian1_distrib(), c(0, 1), theta)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_y_deriv]{trunc_y_deriv()}} for the shared body,
+\code{\link[=distrib_hess_y.TruncatedContinuousDistrib]{distrib_hess_y.TruncatedContinuousDistrib()}} for the second order, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

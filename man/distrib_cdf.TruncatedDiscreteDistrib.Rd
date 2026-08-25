@@ -4,22 +4,48 @@
 \alias{distrib_cdf.TruncatedDiscreteDistrib}
 \title{Truncated Cumulative Distribution Function (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, not necessarily support points.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE} the upper tail
+\eqn{1 - F_T(q)} is returned.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE} the probability is
+returned on the log scale.}
 }
 \value{
 A numeric vector of cumulative probabilities.
 }
 \description{
-\deqn{F_T(q) = \dfrac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)}} clamped to \eqn{[0,1]}.
+Evaluates \eqn{F_T(q) = \{F(q;\theta) - F(L^-;\theta)\}/Z(\theta)}, clamped
+to \eqn{[0, 1]}. The lower tail subtracted is \eqn{F(L) - f(L)}, the mass at
+\eqn{L} being retained, so the truncated distribution function is already
+positive at \eqn{L} itself.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+# Zero below the interval, and already positive at the lower endpoint.
+distrib_cdf(ztp, 0:4, theta)
+
+# The cumulative sums of the truncated mass function.
+cumsum(distrib_pdf(ztp, 1:4, theta))
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_cdf]{trunc_cdf()}} for the shared body,
+\code{\link[=distrib_quantile.TruncatedDiscreteDistrib]{distrib_quantile.TruncatedDiscreteDistrib()}} for the inverse, and
+\code{\link[=distrib_cdf.TruncatedContinuousDistrib]{distrib_cdf.TruncatedContinuousDistrib()}} for the continuous branch.
 }

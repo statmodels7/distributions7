@@ -4,22 +4,49 @@
 \alias{distrib_quantile.TruncatedDiscreteDistrib}
 \title{Truncated Quantile Function (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]}.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical, default \code{TRUE}. When \code{FALSE}, \code{p} is read as an
+upper-tail probability.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical, default \code{FALSE}. When \code{TRUE}, \code{p} is given on the log
+scale.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, every one a support point in
+\eqn{[L, U]}.
 }
 \description{
-\deqn{Q_T(p) = Q\!\left(F(L^-;\theta) + p\,Z(\theta)\right)}
+Evaluates \eqn{Q_T(p) = Q\{F(L^-;\theta) + p\,Z(\theta)\}} through the
+PARENT's quantile function. The generalized inverse of a discrete
+distribution function satisfies the same relation as a continuous one, so
+the discrete case needs no separate treatment and returns a support point of
+the truncated law.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+distrib_quantile(ztp, c(0.1, 0.5, 0.9), theta)
+
+# Never below the lower endpoint, whatever probability is asked for.
+distrib_quantile(ztp, c(0, 1e-12, 0.5), theta)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_quantile]{trunc_quantile()}} for the shared body,
+\code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf.TruncatedDiscreteDistrib()}} for the inverse, and
+\code{\link[=distrib_rng.TruncatedDiscreteDistrib]{distrib_rng.TruncatedDiscreteDistrib()}}, which draws through it.
 }

@@ -4,22 +4,60 @@
 \alias{expectation.TruncatedContinuousDistrib}
 \title{Expectation for Truncated Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{f}{A function \code{f(y, theta, ...)}.}
+\item{f}{A function \code{f(y, theta, ...)}, vectorized in \code{y} as the inherited
+method requires.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{...}{Additional arguments passed to \code{f}.}
+\item{...}{Passed to \code{f} and to the inherited integration.}
 }
 \value{
-A numeric scalar, the expectation of \code{f} under the distribution.
+A single number, the expectation of \code{f} under the truncated law.
 }
 \description{
-The inherited continuous method integrates the density over
-\eqn{[L, U]}, which is correct unless the parent carries point masses ---
-as it does when it is a \code{\link[=zero_adjusted]{zero_adjusted()}} continuous distribution.
-Those masses are added explicitly, exactly as in
-\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{the untruncated case()}}.
+Computes \eqn{\mathbb{E}[f(Y)]} by integrating the density over
+\eqn{[L, U]} and then adding each surviving atom's contribution. The
+integral alone is what the inherited continuous method gives, and it is
+correct unless the parent carries point masses, as \code{\link[=zero_adjusted]{zero_adjusted()}} of a
+continuous distribution does.
 }
-\keyword{internal}
+\details{
+The atoms come from \code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}}, already
+rescaled by \eqn{1/Z}, so each contributes \code{p * f(y, theta, ...)}. With no
+atoms the loop is empty and the result is exactly the inherited method's.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+# A mixed parent: the mass at zero is part of the answer.
+tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+th <- list(mu = 2, sigma2 = 1, za = 0.3)
+
+# The total mass is one only because the atom is counted.
+expectation(tz, function(y, theta) rep(1, length(y)), th)
+
+# Which is what mean() and variance() are built on.
+c(mean = mean(tz, th), variance = variance(tz, th))
+
+# With no atoms it agrees with plain integration over the interval.
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+fy <- function(y) y * distrib_pdf(tn, y, theta)
+c(method = expectation(tn, function(y, theta) y, theta),
+  integral = integrate(fy, -1, 2)$value)
+}
+\seealso{
+\code{\link[=expectation]{expectation()}} for the generic,
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}} for the masses it adds, and
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}}, which splits the same way
+before truncation.
+}

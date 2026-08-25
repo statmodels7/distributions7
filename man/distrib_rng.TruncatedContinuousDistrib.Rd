@@ -4,20 +4,48 @@
 \alias{distrib_rng.TruncatedContinuousDistrib}
 \title{Truncated Random Number Generator (Continuous)}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{Number of observations to generate, a single positive integer.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters. A component varying by
+observation must have length \code{n}.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} random draws, every one inside
+\eqn{[L, U]}.
 }
 \description{
-Inverse transform sampling on the parent: \eqn{Y = Q(F(L^-) + V Z)} with
-\eqn{V \sim \mathrm{Unif}(0,1)}. Exact, and unlike rejection sampling it always
-terminates in one pass however small \eqn{Z} is.
+Draws by inverse transform on the parent,
+\eqn{Y = Q\{F(L^-) + V Z\}} with \eqn{V} uniform on \eqn{(0, 1)}. The draw
+is exact and terminates in one pass however small \eqn{Z} is, where
+rejection sampling from the parent would need \eqn{1/Z} draws on average.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+set.seed(1)
+y <- distrib_rng(tn, 5000, theta)
+c(inside = all(y >= -1 & y <= 2), sampled = mean(y),
+  truncated = mean(tn, theta), parent = 0.3)
+
+# An interval carrying little mass costs no more than any other.
+far <- truncated(gaussian1_distrib(), lower = 4, upper = 5)
+set.seed(2)
+range(distrib_rng(far, 1000, theta))
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_rng]{trunc_rng()}} for the shared body,
+\code{\link[=distrib_quantile.TruncatedContinuousDistrib]{distrib_quantile.TruncatedContinuousDistrib()}}, which does the work, and
+\code{\link[=distrib_rng.TruncatedDiscreteDistrib]{distrib_rng.TruncatedDiscreteDistrib()}} for the discrete branch.
 }

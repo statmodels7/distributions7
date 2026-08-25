@@ -4,18 +4,60 @@
 \alias{distrib_gradient.TruncatedDiscreteDistrib}
 \title{Truncated Analytical Gradient (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters. Truncation adds none,
+so the returned list has exactly the parent's components.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of numeric vectors, one component per parameter, in
+\code{distrib@params} order.
 }
 \description{
-\deqn{\dfrac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad m_i = \mathbb{E}_T[s_i]}
+Computes
+\deqn{\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
+  m_i = \mathbb{E}_T[s_i],}
+the parent's score recentered at its mean over the retained support points.
+For a discrete parent \eqn{m_i} is an exact finite sum, not a quadrature,
+the parent's cdf derivatives being exact sums themselves.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+y <- 1:4
+g <- distrib_gradient(ztp, y, theta)
+g$mu
+
+# The parent's score, shifted by one number.
+distrib_gradient(poisson_distrib(), y, theta)$mu
+distributions7:::trunc_score_mean(ztp, theta)$mu
+
+# Against a numerical derivative of the truncated log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- ztp@params
+  sum(distrib_pdf(ztp, y, t2, log = TRUE))
+}
+abs(sum(g$mu) - numDeriv::grad(ll, unlist(theta)))
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_gradient]{trunc_gradient()}} for the shared body,
+\code{\link[=trunc_score_mean]{trunc_score_mean()}} for \eqn{m_i}, and
+\code{\link[=distrib_hessian.TruncatedDiscreteDistrib]{distrib_hessian.TruncatedDiscreteDistrib()}} for the second order.
 }

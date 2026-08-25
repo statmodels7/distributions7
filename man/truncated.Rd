@@ -8,97 +8,143 @@ truncated(distrib, lower = NULL, upper = NULL)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{discrete_distrib} or
-\code{continuous_distrib}.}
+\code{continuous_distrib}, including one that is already truncated.}
 
-\item{lower, upper}{The truncation points. Each may be \code{NULL} (no
-truncation on that side), and at least one must be supplied. For a discrete
-parent both must be whole numbers.}
+\item{lower, upper}{The truncation points \eqn{L} and \eqn{U}, each a single
+number or \code{NULL} for no truncation on that side. At least one must be
+supplied, and for a discrete parent a finite one must be a whole number.
+Both are included in the resulting support.}
 }
 \value{
-An S7 object of class \code{TruncatedDiscreteDistrib} or
-\code{TruncatedContinuousDistrib}.
+An S7 object of class \link{TruncatedDiscreteDistrib} or
+\link{TruncatedContinuousDistrib}, matching the parent's branch. Its \code{params},
+\code{params_bounds} and \code{link_params} are the parent's unchanged; its \code{bounds}
+are \eqn{[L, U]}, and \code{distrib_name} is \code{"truncated "} followed by the
+parent's name and the interval.
 }
 \description{
 Restricts an existing distribution to \eqn{[L, U]} and renormalizes it, so
-that all the probability mass the parent placed outside the interval is
-redistributed inside it. Either endpoint may be omitted, giving one-sided
-truncation; at least one must be given.
+that the probability the parent placed outside the interval is redistributed
+inside it. Either endpoint may be omitted, giving one-sided truncation, and
+at least one must be given. Discrete and continuous parents are both
+accepted.
 
-Works on discrete and continuous parents alike. \strong{Both endpoints are
-included}, which for a discrete parent is the difference between
-\code{truncated(poisson_distrib(), lower = 1)} --- the zero-truncated Poisson,
-supported on \eqn{\{1, 2, \dots\}} --- and truncating above 1.
+BOTH ENDPOINTS ARE INCLUDED, which for a discrete parent is the difference
+between \code{truncated(poisson_distrib(), lower = 1)}, the zero-truncated
+Poisson on \eqn{\{1, 2, \dots\}}, and truncating above one.
 }
-\details{
+\section{The three functions}{
 Write \eqn{Z(\theta) = P(L \le Y \le U)} for the retained mass. Then
-\deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)}\ \ (L \le y \le U),
-\qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)},
-\qquad Q_T(p) = Q\!\left(F(L^-;\theta) + pZ(\theta)\right),}
-with \eqn{F(L^-) = F(L)} for a continuous parent and
-\eqn{F(L) - f(L)} for a discrete one, since the lower endpoint is kept.
+\deqn{f_T(y;\theta) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U),
+  \qquad F_T(q) = \frac{F(q;\theta) - F(L^-;\theta)}{Z(\theta)},
+  \qquad Q_T(p) = Q\{F(L^-;\theta) + pZ(\theta)\},}
+with \eqn{F(L^-) = F(L)} for a continuous parent and \eqn{F(L) - f(L)} for a
+discrete one, the lower endpoint being kept. The quantile function inverts
+\eqn{F_T} through the parent's own, so drawing from the truncated law is an
+exact one-pass inverse transform however small \eqn{Z} is.
+}
 
-\strong{Truncation adds no parameter.} The endpoints are known constants, like
-a binomial's \code{size}, so the truncated distribution has exactly the
-parent's parameters, domains and links. What it does add is a
-\eqn{\theta}-dependent normalizing constant, and that constant contributes to
-every derivative of the log-likelihood \eqn{\ell_T = \ell - \log Z}. Writing
-\deqn{m_i = \mathbb{E}_T[s_i], \qquad M_{ij} = \mathbb{E}_T[H_{ij} + s_is_j],}
-where the expectations are taken under the \emph{truncated} distribution,
+\section{Truncation adds no parameter}{
+The endpoints are known constants, like a binomial's \code{size}, so the result
+carries exactly the parent's parameters, domains and links. What it adds is
+the \eqn{\theta}-dependent normalizing constant, which contributes to every
+derivative of \eqn{\ell_T = \ell - \log Z}. Writing
+\deqn{m_i = \mathbb{E}_T[s_i], \qquad
+  M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],}
+with both expectations taken under the TRUNCATED law,
 \deqn{\frac{\partial \ell_T}{\partial\theta_i} = s_i(y) - m_i, \qquad
-\frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j} = H_{ij}(y) - M_{ij} + m_im_j,}
-\deqn{\mathbb{E}\left[\frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j}\right]
-= -\operatorname{Cov}_T(s_i, s_j).}
-The score is simply the parent's score \emph{recentered} at its truncated mean,
-and the information is the covariance of that score --- which is the second
-Bartlett identity for the truncated model, and is used as a consistency check
-rather than derived separately.
+  \frac{\partial^{2}\ell_T}{\partial\theta_i\partial\theta_j}
+    = H_{ij}(y) - M_{ij} + m_i m_j,}
+\deqn{\mathbb{E}\left[\frac{\partial^{2}\ell_T}
+  {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j).}
+The score is the parent's recentered at its truncated mean, and the
+information is the covariance of that score, which is the second Bartlett
+identity for the truncated model and is used here as a consistency check on
+the two expressions above.
+}
 
-\strong{What this costs.} \eqn{m_i} and \eqn{M_{ij}} have no closed form for a
-general parent, and are obtained by quadrature (continuous) or summation
-(discrete) through \code{\link[=expectation]{expectation()}}. Derivatives of a truncated
-distribution are therefore substantially more expensive than the parent's, and
-third and fourth derivatives fall back to finite differences of the analytical
-Hessian.
+\section{What this costs}{
+\eqn{m_i} and \eqn{M_{ij}} have no closed form for a general parent, and are
+obtained by quadrature or summation through \code{\link[=expectation]{expectation()}}. Where the
+parent has exact cdf derivatives they come instead from two calls on it,
+measured at 1.4 ms against 4.9 ms for a truncated gaussian's Hessian; see
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for why that route is gated on accuracy. Third and
+fourth derivatives fall back to finite differences of the analytical
+Hessian in either case.
+}
 
-\strong{What the constructor rejects.}
+\section{What the constructor rejects}{
 \itemize{
-\item Both endpoints \code{NULL}: nothing to do, and silently returning the
-parent would hide the mistake.
+\item Both endpoints \code{NULL}. There is nothing to do, and returning the parent
+silently would hide the missing argument.
 \item \code{lower >= upper}.
-\item A truncation point that removes no mass, such as
-\code{truncated(gamma2_distrib(), lower = -2)}: the Gamma is supported on
-\eqn{(0,\infty)}, so the result would be the Gamma itself.
-\item A non-integer endpoint for a discrete parent, which is ambiguous.
-\item A discrete truncation leaving too few support points to identify the
+\item An endpoint removing no mass, such as
+\code{truncated(gamma2_distrib(), lower = -2)}: the gamma lives on
+\eqn{(0,\infty)}, so the result would be the gamma itself.
+\item A fractional endpoint on a discrete parent, which is ambiguous between the
+support points either side of it.
+\item A discrete interval leaving too few support points to identify the
 parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
-\code{n_params + 1} points are needed.
-\item A parent that models a probability of zero ---
-\code{\link[=zero_inflated]{zero_inflated()}} or \code{\link[=zero_adjusted]{zero_adjusted()}} --- when the
-truncation removes \eqn{0} from the support. Truncating zero away cancels
-that parameter out of the likelihood entirely, leaving an identically zero
+\code{n_params + 1} points are required.
+\item A parent modelling a probability of zero, from \code{\link[=zero_inflated]{zero_inflated()}} or
+\code{\link[=zero_adjusted]{zero_adjusted()}}, when the interval removes \eqn{0}. Truncating zero away
+cancels that parameter out of the likelihood, leaving an identically zero
 score. Truncating elsewhere, as in
-\code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is fine and the
-point mass is carried through \code{\link[=distrib_atoms]{distrib_atoms()}}.
+\code{truncated(zero_adjusted(gamma2_distrib()), upper = 5)}, is legitimate and
+the point mass is carried through
+\code{\link[=distrib_atoms.TruncatedContinuousDistrib]{distrib_atoms.TruncatedContinuousDistrib()}}.
 }
 
-Truncating an already truncated distribution is allowed and is collapsed into a
-single object over the intersection of the two intervals, rather than nested.
+Truncating an already truncated distribution is allowed and is COLLAPSED
+into one object over the intersection of the two intervals. Nesting would be
+correct and would pay the quadrature cost twice.
 }
+
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f},
+\eqn{F} and \eqn{Q} are the parent's density, distribution and quantile
+functions; \eqn{s_i} and \eqn{H_{ij}} are the parent's score and observed
+Hessian; \eqn{\ell_T} is the truncated log-likelihood; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
 \examples{
-# The zero-truncated Poisson
+# The zero-truncated Poisson: the lower endpoint is kept.
 ztp <- truncated(poisson_distrib(), lower = 1)
 distrib_pdf(ztp, 0:4, list(mu = 2))
 dpois(1:4, 2) / (1 - dpois(0, 2))
+c(fitted_mean = mean(ztp, list(mu = 2)), theory = 2 / (1 - exp(-2)))
 
-# A Gaussian restricted to an interval
+# A gaussian restricted to an interval. Truncation adds no parameter.
 tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
-mean(tn, list(mu = 0, sigma = 1))
+theta <- list(mu = 0.3, sigma = 1.2)
+identical(tn@params, gaussian1_distrib()@params)
+c(mean = mean(tn, theta), variance = variance(tn, theta))
 
-# A truncation point that removes nothing is rejected
+# The score is the parent's, recentered so that it has mean zero.
+set.seed(1)
+y <- distrib_rng(tn, 20000, theta)
+round(vapply(distrib_gradient(tn, y, theta), mean, numeric(1)), 3)
+
+# Nesting collapses to the intersection rather than paying twice.
+t2 <- truncated(truncated(gaussian1_distrib(), lower = -1), upper = 2)
+c(lower = t2@lower, upper = t2@upper)
+
+# A zero wrapper may be truncated elsewhere, and its atom is carried through.
+tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+distrib_atoms(tz, list(mu = 2, sigma2 = 1, za = 0.3))
+
+# Three refusals, each naming the condition that failed.
 try(truncated(gamma2_distrib(), lower = -2))
+try(truncated(poisson_distrib(), lower = 1.5))
+try(truncated(zero_inflated(poisson_distrib()), lower = 1))
 
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}, \code{\link[=zero_adjusted]{zero_adjusted()}},
-\code{\link[=transformation]{transformation()}}, \code{\link[=check_distrib]{check_distrib()}}
+\code{\link[=zero_inflated]{zero_inflated()}} and \code{\link[=zero_adjusted]{zero_adjusted()}} for the wrappers that DO
+add a parameter, \code{\link[=transformation]{transformation()}} for a change of variable,
+\link{TruncatedContinuousDistrib} and \link{TruncatedDiscreteDistrib} for the two
+classes, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
 }

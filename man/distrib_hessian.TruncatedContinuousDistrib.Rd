@@ -4,19 +4,65 @@
 \alias{distrib_hessian.TruncatedContinuousDistrib}
 \title{Truncated Analytical Observed Hessian (Continuous)}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors of length \code{length(y)}, one component
+per unordered pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j} = H_{ij}(y) - M_{ij} + m_i m_j}
-with \eqn{M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j]}.
+Computes
+\deqn{\frac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}
+  = H_{ij}(y) - M_{ij} + m_i m_j, \qquad
+  M_{ij} = \mathbb{E}_T[H_{ij} + s_i s_j],}
+the subtracted part being the second derivative of \eqn{\log Z}. Only
+\eqn{H_{ij}(y)} varies with the data; the correction is one number per
+component, recycled to the length of \code{y}.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+y <- c(-0.5, 0, 1)
+H <- distrib_hessian(tn, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the truncated log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- tn@params
+  sum(distrib_pdf(tn, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(tn@params),
+              function(q) Hn[match(q[1], tn@params), match(q[2], tn@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# The correction is constant across observations.
+round(unlist(H) - unlist(distrib_hessian(gaussian1_distrib(), y, theta)), 8)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_hessian]{trunc_hessian()}} for the shared body, \code{\link[=trunc_M]{trunc_M()}}
+for \eqn{M_{ij}}, and
+\code{\link[=distrib_expected_hessian.TruncatedContinuousDistrib]{distrib_expected_hessian.TruncatedContinuousDistrib()}} for the
+expectation.
 }

@@ -4,18 +4,51 @@
 \alias{distrib_atoms.TruncatedContinuousDistrib}
 \title{Atoms of a Truncated Continuous Distribution}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A list with components \code{y} and \code{p}.
+A named list with \code{y}, the surviving atom locations, and \code{p}, their
+probabilities under the truncated law. Both are length zero for a parent
+with no atoms.
 }
 \description{
-Truncation preserves the parent's atoms that survive it, rescaled by
-\eqn{1/Z}. This matters only when the parent is itself mixed, as
-\code{\link[=zero_adjusted]{zero_adjusted()}} of a continuous distribution is.
+Reports the parent's point masses that survive truncation, rescaled by
+\eqn{1/Z}. An ordinary continuous parent has none and the result is empty;
+this matters when the parent is itself MIXED, as \code{\link[=zero_adjusted]{zero_adjusted()}} of a
+continuous distribution is.
+}
+\details{
+A mass outside \eqn{[L, U]} is dropped, along with the rest of the density
+there, and one inside is rescaled by the same factor the density is. Two
+consumers read the result: \code{\link[=expectation.TruncatedContinuousDistrib]{expectation.TruncatedContinuousDistrib()}} adds
+the masses to its integral, and \code{\link[=check_distrib]{check_distrib()}} adjusts the checks that a
+point mass invalidates.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+# An ordinary continuous parent has no atoms.
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+lengths(distrib_atoms(tn, theta))
+
+# A zero-adjusted parent does, and truncation rescales it by 1/Z.
+tz <- truncated(zero_adjusted(gamma2_distrib()), upper = 5)
+th <- list(mu = 2, sigma2 = 1, za = 0.3)
+distrib_atoms(tz, th)
+0.3 / distributions7:::trunc_constants(tz, th)$Z
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the generic, \code{\link[=truncated]{truncated()}}, and
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for the parent that
+declares one.
 }

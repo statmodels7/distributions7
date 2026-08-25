@@ -4,22 +4,53 @@
 \alias{distrib_pdf.TruncatedDiscreteDistrib}
 \title{Truncated Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A point outside \eqn{[L, U]}
+gives \code{0}, or \code{-Inf} on the log scale.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the parent's parameters. Truncation adds none.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical, default \code{FALSE}. When \code{TRUE} the log-probability is
+returned.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of probabilities, of the length \code{y} and \code{theta}
+recycle to.
 }
 \description{
-\deqn{P_T(Y = y) = \dfrac{f(y;\theta)}{Z(\theta)}\ \ \ (L \le y \le U), \qquad 0 \text{ otherwise}}
-with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta) + f(L;\theta)}, the mass
-at the lower endpoint being added back because the endpoint is included.
+Evaluates
+\deqn{P_T(Y = y) = \frac{f(y;\theta)}{Z(\theta)} \quad (L \le y \le U),
+  \qquad 0 \ \text{ otherwise},}
+with \eqn{Z(\theta) = F(U;\theta) - F(L;\theta) + f(L;\theta)}. The mass at
+the lower endpoint is added back because that endpoint is INCLUDED in the
+truncated support, so \code{truncated(poisson_distrib(), lower = 1)} is the
+zero-truncated Poisson and keeps the mass at one.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+# Zero is gone; one is not.
+distrib_pdf(ztp, 0:4, theta)
+dpois(1:4, 2) / (1 - dpois(0, 2))
+
+# The retained mass sums to one over the truncated support.
+sum(distrib_pdf(ztp, 1:400, theta))
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the constructor, \code{\link[=trunc_pdf]{trunc_pdf()}} for the shared
+body, \code{\link[=distrib_pdf.TruncatedContinuousDistrib]{distrib_pdf.TruncatedContinuousDistrib()}} for the continuous
+branch, and \code{\link[=distrib_cdf.TruncatedDiscreteDistrib]{distrib_cdf.TruncatedDiscreteDistrib()}}.
 }

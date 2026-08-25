@@ -4,19 +4,63 @@
 \alias{distrib_expected_hessian.TruncatedDiscreteDistrib}
 \title{Truncated Analytical Expected Hessian (Discrete)}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, applied by the
+generic before dispatch.}
+
+\item{approx}{Ignored. Present so that the signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of numeric vectors of length \code{length(y)}, one component
+per unordered pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell_T}{\partial\theta_i\partial\theta_j}\right]
-  = -\operatorname{Cov}_T(s_i, s_j)}
+Computes
+\deqn{\mathbb{E}\left[\frac{\partial^2 \ell_T}
+  {\partial\theta_i\partial\theta_j}\right] = -\mathrm{Cov}_T(s_i, s_j),}
+the covariance of the PARENT's score over the retained support points. It is
+the second Bartlett identity for the truncated model, and for a discrete
+parent the expectations behind it are exact sums over that support.
+}
+\section{Notation}{
+
+\eqn{L} and \eqn{U} are the truncation endpoints, both included in the
+support; \eqn{Z(\theta) = P(L \le Y \le U)} is the retained mass; \eqn{f}
+and \eqn{F} are the parent's density and distribution function; \eqn{s_i}
+and \eqn{H_{ij}} are the parent's score and observed Hessian; and
+\eqn{\mathbb{E}_T} is expectation under the truncated law.
+}
+
+\examples{
+ztp <- truncated(poisson_distrib(), lower = 1)
+theta <- list(mu = 2)
+
+EH <- distrib_expected_hessian(ztp, 1, theta)
+EH$mu_mu
+
+# Minus the variance of the parent's score over the retained support.
+m <- distributions7:::trunc_score_mean(ztp, theta)$mu
+ES <- distributions7:::trunc_score_prod_mean(ztp, theta)$mu_mu
+-(ES - m^2)
+
+# And what averaging the observed Hessian gives.
+set.seed(9)
+ys <- distrib_rng(ztp, 200000, theta)
+c(sampled = mean(distrib_hessian(ztp, ys, theta)$mu_mu),
+  closed = EH$mu_mu)
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}}, \code{\link[=trunc_expected_hessian]{trunc_expected_hessian()}} for the shared body,
+\code{\link[=trunc_score_prod_mean]{trunc_score_prod_mean()}} for the moment it rests on, and
+\code{\link[=distrib_hessian.TruncatedDiscreteDistrib]{distrib_hessian.TruncatedDiscreteDistrib()}} for the observed matrix.
 }
