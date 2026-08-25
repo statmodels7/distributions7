@@ -554,7 +554,7 @@ S7::method(mv_sigma, MvGaussianDistrib) <- function(distrib, theta) {
 #'
 #' @return A named list with `r` and `w`, each an \eqn{n \times p} numeric
 #'   matrix. Row \eqn{i} of `w` is \eqn{\Sigma^{-1}(y_i - \mu)}, the
-#'   right-multiplication `r %*% sigma_inv` giving the same rows because
+#'   right-multiplication of `r` by `sigma_inv` giving the same rows because
 #'   \eqn{\Sigma^{-1}} is symmetric.
 #'
 #' @section Notation:

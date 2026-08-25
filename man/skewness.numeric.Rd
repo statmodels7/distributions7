@@ -4,14 +4,43 @@
 \alias{skewness.numeric}
 \title{Sample Skewness}
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector. A constant vector gives \code{NaN}, the standardizing
+denominator being zero.}
 
-\item{...}{Unused.}
+\item{na.rm}{Should missing values be dropped before the moments are taken?
+A single logical, \code{FALSE} by default, which propagates \code{NA}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A single number.
 }
 \description{
-The sample skewness of a numeric vector, computed from the sample's central moments.
+The sample skewness of a numeric vector, \eqn{m_3 / m_2^{3/2}} with
+\eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
+\eqn{n}, so this is the population denominator and the estimator is biased
+towards zero in small samples. \code{\link[=variance.numeric]{variance.numeric()}} uses \eqn{n - 1}
+instead, each following the commonest convention for its own quantity.
+}
+\examples{
+set.seed(1)
+y <- rgamma(500, shape = 2)
+
+# The n denominator, written out.
+m <- mean(y)
+all.equal(skewness(y),
+          mean((y - m)^3) / mean((y - m)^2)^1.5)
+
+# It estimates the population value 2 / sqrt(shape).
+c(sample = skewness(y), theory = 2 / sqrt(2))
+
+# Missing values propagate unless dropped.
+c(skewness(c(y, NA)), skewness(c(y, NA), na.rm = TRUE))
+
+}
+\seealso{
+\code{\link[=skewness]{skewness()}} for the generic and the distribution version,
+\code{\link[=kurtosis.numeric]{kurtosis.numeric()}} for the fourth order, \code{\link[=variance.numeric]{variance.numeric()}}, whose
+denominator is \eqn{n - 1}.
 }
 \keyword{internal}

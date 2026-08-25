@@ -7,28 +7,68 @@
 skewness(x, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
+\item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
-\item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
+\item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
+single logical, \code{FALSE} by default.}
 }
 \value{
-A numeric vector.
+A numeric vector for a \code{distrib}, one value per parameter setting; a
+single number for a numeric vector. \code{NaN} for a family with no moments,
+\code{Inf} where the third moment diverges.
 }
 \description{
-Computes the skewness (third standardized moment):
+Computes the skewness, the third standardized central moment
 
-\deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right].}
+\deqn{\gamma_1 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{3}\right],}
 
-For \code{distrib} objects it is
-evaluated numerically via \code{\link[=moment]{moment()}}; for numeric vectors the sample
-skewness (population denominator) is returned.
+for a distribution object, or the sample skewness for a numeric vector. It
+is zero for a symmetric law, positive for a right tail and negative for a
+left one. 43 of the 45 shipped families register a closed form; the two von
+Mises reach a quadrature through \code{\link[=moment]{moment()}}.
 }
+\section{What the sign and the size mean}{
+\eqn{\gamma_1} is invariant to location and to positive scaling, so it is a
+property of the shape alone: every Gaussian has \eqn{\gamma_1 = 0} and every
+exponential has \eqn{\gamma_1 = 2}, whatever their parameters. A family with
+a shape parameter moves along the axis with it, and that is why the quantity
+is worth reporting: a Poisson at mean \eqn{\mu} has
+\eqn{\gamma_1 = \mu^{-1/2}}, so its asymmetry vanishes as the counts grow.
+}
+
+\section{When it fails to exist}{
+The third moment is needed, so a family with heavy tails may have no
+skewness even where it has a mean. A Student t has one only above three
+degrees of freedom and returns \code{Inf} at or below them; a Cauchy has none at
+any parameter value and returns \code{NaN}.
+}
+
+\section{What the sample method returns}{
+On a numeric vector the third and second central moments both divide by
+\eqn{n}, so the value is \eqn{m_3 / m_2^{3/2}} with
+\eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. This is the population
+denominator, and it differs from the \eqn{n - 1} convention \code{\link[=variance]{variance()}}
+uses on a vector.
+}
+
 \examples{
-skewness(gaussian1_distrib(), list(mu = 0, sigma = 1))
-skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1))
+# Zero for a symmetric family, at every parameter value.
+skewness(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
+
+# A shape parameter moves it: a Poisson is mu^(-1/2).
+all.equal(skewness(poisson_distrib(), list(mu = 4)), 0.5)
+
+# A gamma is 2 / sqrt(shape), so it flattens as the shape grows.
+skewness(gamma2_distrib(), list(mu = 2, sigma2 = c(4, 1, 0.25)))
+
+# The sample version uses the n denominator.
+set.seed(1)
+y <- rgamma(200, shape = 2)
+c(sample = skewness(y), theory = 2 / sqrt(2))
 
 }
 \seealso{
-\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=kurtosis]{kurtosis()}}
+\code{\link[=kurtosis]{kurtosis()}} for the fourth standardized moment, \code{\link[=variance]{variance()}} and
+\code{\link[=std_dev]{std_dev()}} for the second, \code{\link[=moment]{moment()}} for the numerical route.
 }

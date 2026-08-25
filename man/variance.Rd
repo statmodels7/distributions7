@@ -7,31 +7,61 @@
 variance(x, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
+\item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
-\item{...}{For \code{distrib} objects: \code{theta} (a named list of parameters) and
-further arguments passed to \code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
+\item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
+single logical, \code{FALSE} by default.}
 }
 \value{
-A numeric vector.
+A numeric vector for a \code{distrib}, one value per parameter setting; a
+single number for a numeric vector. \code{NaN} for a family with no moments,
+\code{Inf} for one whose variance diverges.
 }
 \description{
-Computes the variance. For \code{distrib} objects the second central moment is
-evaluated numerically (analytical methods may override this for specific
-distributions); for numeric vectors the sample variance \code{\link[stats:cor]{stats::var()}} is returned.
+Computes \eqn{\operatorname{Var}(Y) = E[(Y - E[Y])^2]} for a distribution
+object, or the sample variance for a numeric vector. Dispatch is on the
+first argument: a \code{distrib} uses the family's closed form where one is
+registered and a quadrature or series otherwise, and a numeric vector is
+passed to \code{\link[stats:cor]{stats::var()}}. Where the variance does not exist the value is
+\code{NaN} or \code{Inf}, never a truncated quadrature.
 }
-\details{
+\section{The two routes}{
 \deqn{\operatorname{Var}(Y) = \mathbb{E}\left[(Y - \mathbb{E}[Y])^{2}\right].}
 
-A family with a closed form registers its own method; otherwise the
-expectation is the quadrature or the exact sum of
-\code{\link[=expectation]{expectation()}}.
+43 of the 45 shipped families register a closed form, so the second central
+moment is a formula in the parameters and costs about 24 microseconds; the
+two von Mises families fall through to \code{\link[=moment]{moment()}}, which is a quadrature and
+costs about 12 ms. The two routes agree to the rounding of the quadrature,
+3e-15 relative on a Gaussian.
 }
+
+\section{What the sample method returns}{
+On a numeric vector the value is \code{\link[stats:cor]{stats::var()}}, which divides by
+\eqn{n - 1}. That is the unbiased estimator, and it differs from the
+convention \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} use for their sample versions,
+which divide by \eqn{n}. The difference is deliberate: both follow the
+commonest convention for the quantity in question.
+}
+
 \examples{
-variance(gaussian1_distrib(), list(mu = 0, sigma = 2))
+# A closed form, one value per setting.
+variance(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
+
+# A Poisson is equidispersed: the variance is the mean.
 variance(poisson_distrib(), list(mu = 3))
+
+# A Student t has a variance only above two degrees of freedom.
+variance(student_t1_distrib(), list(mu = 0, sigma = 1, nu = c(3, 10)))
+
+# On a numeric vector this is stats::var, with the n - 1 denominator.
+set.seed(1)
+y <- rnorm(50)
+all.equal(variance(y), var(y))
 
 }
 \seealso{
-\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
+\code{\link[=std_dev]{std_dev()}} for its square root, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} for
+the standardized third and fourth moments, \code{\link[=moment]{moment()}} for the numerical
+route, \code{\link[=expectation]{expectation()}} for the quadrature and the series.
 }

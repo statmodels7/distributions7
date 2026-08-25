@@ -7,29 +7,67 @@
 kurtosis(x, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
+\item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
-\item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
+\item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
+single logical, \code{FALSE} by default.}
 }
 \value{
-A numeric vector.
+A numeric vector for a \code{distrib}, one value per parameter setting; a
+single number for a numeric vector. \code{NaN} for a family with no moments,
+\code{Inf} where the fourth moment diverges.
 }
 \description{
-Computes the excess kurtosis, the fourth standardized moment less the
-three a Gaussian has:
+Computes the excess kurtosis, the fourth standardized central moment less
+the three a Gaussian has:
 
 \deqn{\gamma_2 = \mathbb{E}\!\left[\left(\frac{Y - \mathbb{E}[Y]}{\operatorname{sd}(Y)}\right)^{4}\right] - 3.}
 
-For
-\code{distrib} objects it is evaluated numerically via \code{\link[=moment]{moment()}}; for
-numeric vectors the sample excess kurtosis (population denominator) is returned.
+The subtraction puts the Gaussian at zero, so the sign reads as a comparison
+with it: positive for heavier tails and a sharper peak, negative for lighter
+ones. 42 of the 45 shipped families register a closed form; the elastic net
+and the two von Mises reach a quadrature through \code{\link[=moment]{moment()}}.
 }
+\section{Why the three is subtracted}{
+The raw fourth standardized moment is 3 for every Gaussian, whatever its
+mean and scale, so it carries no information about the Gaussian itself.
+Subtracting it makes the quantity a signed distance from normality and puts
+the two commonest reference laws at recognizable values: 0 for the Gaussian,
+3 for the Laplace, \eqn{6/(\nu-4)} for a Student t.
+}
+
+\section{When it fails to exist}{
+The fourth moment is needed, so the threshold is higher than for
+\code{\link[=skewness]{skewness()}}: a Student t has an excess kurtosis only above four degrees of
+freedom and returns \code{Inf} at or below them, and a Cauchy returns \code{NaN} at
+every parameter value.
+}
+
+\section{What the sample method returns}{
+On a numeric vector the fourth and second central moments both divide by
+\eqn{n}, giving \eqn{m_4 / m_2^{2} - 3}. This is the population denominator,
+the same convention \code{\link[=skewness]{skewness()}} uses. \code{\link[=variance]{variance()}} divides by \eqn{n - 1}
+instead.
+}
+
 \examples{
-kurtosis(gaussian1_distrib(), list(mu = 0, sigma = 1))
-kurtosis(gamma2_distrib(), list(mu = 2, sigma2 = 1))
+# Zero for every Gaussian, by construction.
+kurtosis(gaussian1_distrib(), list(mu = c(-2, 0, 5), sigma = c(1, 2, 3)))
+
+# Three for the Laplace, which is the textbook heavy-tailed comparison.
+all.equal(kurtosis(laplace_distrib(), list(mu = 0, sigma = 2)), 3)
+
+# A Student t is 6 / (nu - 4), and infinite at or below four.
+kurtosis(student_t1_distrib(), list(mu = 0, sigma = 1, nu = c(3, 5, 10)))
+
+# The sample version uses the n denominator.
+set.seed(1)
+y <- rt(500, df = 10)
+c(sample = kurtosis(y), theory = 6 / (10 - 4))
 
 }
 \seealso{
-\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}}
+\code{\link[=skewness]{skewness()}} for the third standardized moment, \code{\link[=variance]{variance()}} and
+\code{\link[=std_dev]{std_dev()}} for the second, \code{\link[=moment]{moment()}} for the numerical route.
 }

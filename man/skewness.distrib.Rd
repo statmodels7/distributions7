@@ -6,14 +6,37 @@
 \arguments{
 \item{x}{A \code{distrib} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale. Components
+may be vectors, giving one skewness per setting.}
 
-\item{...}{Passed to \code{\link[=moment]{moment()}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}} and from there to \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length equal to the longest component of
+\code{theta}.
 }
 \description{
-Computes the standardized third central moment through \code{\link[=moment]{moment()}}.
+Evaluates the third standardized central moment numerically. Three calls of
+\code{\link[=moment]{moment()}} are made: the mean at \code{p = 1}, then the second and third central
+moments about it, and the value is \eqn{m_3 / m_2^{3/2}}. Passing the mean
+forward keeps the count at three quadratures. This is the fallback for a
+family with no closed form, which among the shipped families means the two
+von Mises.
+}
+\examples{
+# The von Mises reaches this method, and is symmetric about mu.
+round(skewness(vonmises1_distrib(), list(mu = 0, kappa = 2)), 10)
+
+# The same three moments, assembled by hand, on a family that has a formula.
+d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
+m <- moment(d, th, p = 1)
+m2 <- moment(d, th, p = 2, central = TRUE, mu = m)
+m3 <- moment(d, th, p = 3, central = TRUE, mu = m)
+all.equal(m3 / m2^1.5, skewness(d, th))
+
+}
+\seealso{
+\code{\link[=skewness]{skewness()}} for the generic and the sample version,
+\code{\link[=moment]{moment()}} for the quadrature, \code{\link[=kurtosis.distrib]{kurtosis.distrib()}} for the fourth order.
 }
 \keyword{internal}

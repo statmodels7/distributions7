@@ -4,16 +4,34 @@
 \alias{std_dev.numeric}
 \title{Sample Standard Deviation}
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector. A vector of length 1 gives \code{NA}, as
+\code{\link[stats:sd]{stats::sd()}} does.}
 
-\item{na.rm}{Remove missing values first?}
+\item{na.rm}{Should missing values be dropped before the standard deviation
+is taken? A single logical, \code{FALSE} by default, which propagates \code{NA}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A single number.
+A single number, \code{NA} if \code{x} has fewer than two non-missing values.
 }
 \description{
-The sample standard deviation of a numeric vector, delegated to \code{\link[stats:sd]{stats::sd()}}.
+The sample standard deviation of a numeric vector, delegated to
+\code{\link[stats:sd]{stats::sd()}} and so the root of the \eqn{n - 1} variance. The method exists
+so that \code{\link[=std_dev]{std_dev()}} reads the same on data as on a distribution object.
+}
+\examples{
+set.seed(1)
+y <- rnorm(50)
+all.equal(std_dev(y), sd(y))
+all.equal(std_dev(y), sqrt(variance(y)))
+
+# Missing values propagate unless dropped.
+c(std_dev(c(y, NA)), std_dev(c(y, NA), na.rm = TRUE))
+
+}
+\seealso{
+\code{\link[=std_dev]{std_dev()}} for the generic, \code{\link[=variance.numeric]{variance.numeric()}} for the square,
+\code{\link[=skewness.numeric]{skewness.numeric()}} and \code{\link[=kurtosis.numeric]{kurtosis.numeric()}}.
 }
 \keyword{internal}

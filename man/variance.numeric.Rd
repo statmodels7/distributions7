@@ -4,16 +4,38 @@
 \alias{variance.numeric}
 \title{Sample Variance}
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector. A vector of length 1 gives \code{NA}, as
+\code{\link[stats:cor]{stats::var()}} does, there being no degree of freedom left.}
 
-\item{na.rm}{Remove missing values first?}
+\item{na.rm}{Should missing values be dropped before the variance is taken?
+A single logical, \code{FALSE} by default, which propagates \code{NA}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A single number.
+A single number, \code{NA} if \code{x} has fewer than two non-missing values.
 }
 \description{
-The sample variance of a numeric vector, delegated to \code{\link[stats:cor]{stats::var()}}.
+The sample variance of a numeric vector, delegated to \code{\link[stats:cor]{stats::var()}} and so
+divided by \eqn{n - 1}. The method exists so that \code{\link[=variance]{variance()}} reads the same
+on data as on a distribution object; nothing is computed here that
+\code{\link[stats:cor]{stats::var()}} does not compute.
+}
+\examples{
+set.seed(1)
+y <- rnorm(50)
+all.equal(variance(y), var(y))
+
+# The n - 1 denominator, not n.
+all.equal(variance(y), sum((y - mean(y))^2) / (length(y) - 1))
+
+# Missing values propagate unless dropped.
+c(variance(c(y, NA)), variance(c(y, NA), na.rm = TRUE))
+
+}
+\seealso{
+\code{\link[=variance]{variance()}} for the generic, \code{\link[=std_dev.numeric]{std_dev.numeric()}} for the square
+root, \code{\link[=skewness.numeric]{skewness.numeric()}} and \code{\link[=kurtosis.numeric]{kurtosis.numeric()}}, which use the
+\eqn{n} denominator instead.
 }
 \keyword{internal}

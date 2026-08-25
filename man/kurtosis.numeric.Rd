@@ -2,16 +2,45 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.numeric}
 \alias{kurtosis.numeric}
-\title{Sample Kurtosis}
+\title{Sample Excess Kurtosis}
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector. A constant vector gives \code{NaN}, the standardizing
+denominator being zero.}
 
-\item{...}{Unused.}
+\item{na.rm}{Should missing values be dropped before the moments are taken?
+A single logical, \code{FALSE} by default, which propagates \code{NA}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A single number.
 }
 \description{
-The sample excess kurtosis of a numeric vector, computed from the sample's central moments.
+The sample excess kurtosis of a numeric vector, \eqn{m_4 / m_2^{2} - 3} with
+\eqn{m_k = n^{-1}\sum_i (y_i - \bar y)^k}. Both central moments divide by
+\eqn{n}, so this is the population denominator, the convention
+\code{\link[=skewness.numeric]{skewness.numeric()}} also uses. The estimator is biased downwards in small
+samples, and heavy tails make it slow to settle: it depends on the fourth
+moment, so a handful of extreme points dominate it.
+}
+\examples{
+set.seed(1)
+y <- rt(1000, df = 10)
+
+# The n denominator, written out.
+m <- mean(y)
+all.equal(kurtosis(y), mean((y - m)^4) / mean((y - m)^2)^2 - 3)
+
+# It estimates 6 / (nu - 4), and needs a lot of data to get there.
+c(sample = kurtosis(y), theory = 6 / (10 - 4))
+
+# Missing values propagate unless dropped.
+c(kurtosis(c(y, NA)), kurtosis(c(y, NA), na.rm = TRUE))
+
+}
+\seealso{
+\code{\link[=kurtosis]{kurtosis()}} for the generic and the distribution version,
+\code{\link[=skewness.numeric]{skewness.numeric()}} for the third order, \code{\link[=variance.numeric]{variance.numeric()}}, whose
+denominator is \eqn{n - 1}.
 }
 \keyword{internal}

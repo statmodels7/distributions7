@@ -6,14 +6,34 @@
 \arguments{
 \item{x}{A \code{distrib} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale. Components
+may be vectors, giving one variance per setting.}
 
-\item{...}{Passed to \code{\link[=moment]{moment()}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}} and from there to \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length equal to the longest
+component of \code{theta}.
 }
 \description{
-Computes the second central moment through \code{\link[=moment]{moment()}}, the mean being evaluated first and passed as the center.
+Evaluates the second central moment numerically: one call of \code{\link[=moment]{moment()}} at
+\code{p = 1} gives the mean, and a second at \code{p = 2} takes the central moment
+about it. Passing the mean forward keeps the second pass to a single
+quadrature. This is the fallback for a family with no closed form, which
+among the shipped families means the two von Mises.
+}
+\examples{
+# The von Mises reaches this method; on (-pi, pi] its variance is finite.
+variance(vonmises1_distrib(), list(mu = 0, kappa = 2))
+
+# Two passes of moment() give the same answer as the closed form elsewhere.
+d <- gaussian1_distrib()
+m <- moment(d, list(mu = 2, sigma = 3), p = 1)
+all.equal(moment(d, list(mu = 2, sigma = 3), p = 2, central = TRUE, mu = m), 9)
+
+}
+\seealso{
+\code{\link[=variance]{variance()}} for the generic and the sample version,
+\code{\link[=moment]{moment()}} for the quadrature, \code{\link[=std_dev.distrib]{std_dev.distrib()}} for its square root.
 }
 \keyword{internal}

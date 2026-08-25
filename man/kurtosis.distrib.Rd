@@ -2,18 +2,42 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.distrib}
 \alias{kurtosis.distrib}
-\title{Kurtosis of a Distribution}
+\title{Excess Kurtosis of a Distribution}
 \arguments{
 \item{x}{A \code{distrib} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale. Components
+may be vectors, giving one excess kurtosis per setting.}
 
-\item{...}{Passed to \code{\link[=moment]{moment()}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}} and from there to \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length equal to the longest component of
+\code{theta}.
 }
 \description{
-Computes the excess kurtosis, the standardized fourth central moment minus three through \code{\link[=moment]{moment()}}.
+Evaluates the excess kurtosis numerically. Three calls of \code{\link[=moment]{moment()}} are
+made: the mean at \code{p = 1}, then the second and fourth central moments about
+it, and the value is \eqn{m_4 / m_2^{2} - 3}. Passing the mean forward keeps
+the count at three quadratures. This is the fallback for a family with no
+closed form, which among the shipped families means the elastic net and the
+two von Mises.
+}
+\examples{
+# The elastic net reaches this method; its excess kurtosis lies between the
+# Gaussian's 0 and the Laplace's 3.
+round(kurtosis(enet_distrib(), list(mu = 0, lambda = 1, alpha = 0.5)), 4)
+
+# The same three moments, assembled by hand, on a family with a formula.
+d <- gamma2_distrib(); th <- list(mu = 2, sigma2 = 1)
+m <- moment(d, th, p = 1)
+m2 <- moment(d, th, p = 2, central = TRUE, mu = m)
+m4 <- moment(d, th, p = 4, central = TRUE, mu = m)
+all.equal(m4 / m2^2 - 3, kurtosis(d, th))
+
+}
+\seealso{
+\code{\link[=kurtosis]{kurtosis()}} for the generic and the sample version,
+\code{\link[=moment]{moment()}} for the quadrature, \code{\link[=skewness.distrib]{skewness.distrib()}} for the third order.
 }
 \keyword{internal}

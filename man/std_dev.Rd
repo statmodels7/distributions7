@@ -7,25 +7,50 @@
 std_dev(x, ...)
 }
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}, or a numeric vector.}
+\item{x}{An object inheriting from \code{distrib}, or a numeric vector.}
 
-\item{...}{For \code{distrib} objects: \code{theta} and further arguments passed to
-\code{\link[=moment]{moment()}}. For numeric vectors: \code{na.rm}.}
+\item{...}{For a \code{distrib}: \code{theta}, a named list of parameters, followed by
+any further arguments for \code{\link[=moment]{moment()}}. For a numeric vector: \code{na.rm}, a
+single logical, \code{FALSE} by default.}
 }
 \value{
-A numeric vector.
+A numeric vector for a \code{distrib}, one value per parameter setting; a
+single number for a numeric vector.
 }
 \description{
-Computes the standard deviation as the square root of \code{\link[=variance]{variance()}}.
+Computes \eqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}} for a
+distribution object, or the sample standard deviation for a numeric vector.
+No family registers a closed form of its own, so a \code{distrib} always reaches
+the square root of \code{\link[=variance]{variance()}}, which is where a family's formula is
+consulted. A numeric vector is passed to \code{\link[stats:sd]{stats::sd()}}.
 }
 \details{
 \deqn{\operatorname{sd}(Y) = \sqrt{\operatorname{Var}(Y)}.}
-For numeric vectors the sample standard deviation \code{\link[stats:sd]{stats::sd()}} is returned.
+
+The square root is taken after the variance, so accuracy and cost are the
+variance's: a closed form for 43 of the 45 shipped families, a quadrature
+for the two von Mises. A family whose variance is \code{NaN} or \code{Inf} gives the
+same here, and a negative variance cannot arise, so the root is always real.
+
+On a numeric vector the value is \code{\link[stats:sd]{stats::sd()}}, the root of the \eqn{n - 1}
+variance.
 }
 \examples{
-std_dev(gaussian1_distrib(), list(mu = 0, sigma = 2))
+# The scale of a Gaussian is its standard deviation, exactly.
+std_dev(gaussian1_distrib(), list(mu = 0, sigma = c(1, 2, 4)))
+
+# The square root of the variance, on any family.
+d <- gamma2_distrib()
+all.equal(std_dev(d, list(mu = 2, sigma2 = 1)),
+          sqrt(variance(d, list(mu = 2, sigma2 = 1))))
+
+# On a numeric vector this is stats::sd.
+set.seed(1)
+y <- rnorm(50)
+all.equal(std_dev(y), sd(y))
 
 }
 \seealso{
-\code{\link[=expectation]{expectation()}}, \code{\link[=moment]{moment()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}}, \code{\link[=kurtosis]{kurtosis()}}
+\code{\link[=variance]{variance()}}, of which this is the square root; \code{\link[=skewness]{skewness()}} and
+\code{\link[=kurtosis]{kurtosis()}}, which standardize by it; \code{\link[=moment]{moment()}} for the numerical route.
 }

@@ -6,14 +6,33 @@
 \arguments{
 \item{x}{A \code{distrib} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale. Components
+may be vectors, giving one standard deviation per setting.}
 
-\item{...}{Passed to \code{\link[=moment]{moment()}}.}
+\item{...}{Passed to \code{\link[=variance]{variance()}} and from there to \code{\link[=moment]{moment()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector of standard deviations, of length equal to the
+longest component of \code{theta}. \code{NaN} where the variance is \code{NaN}, \code{Inf}
+where it is \code{Inf}.
 }
 \description{
-The square root of \code{\link[=variance]{variance()}}.
+The square root of \code{\link[=variance]{variance()}}, evaluated at the same parameters. This is
+the only route to a distribution's standard deviation: no shipped family
+registers a method of its own, so whatever a family does for its variance,
+closed form or quadrature, is what happens here and the root is taken after.
+}
+\examples{
+d <- weibull1_distrib()
+th <- list(mu = 2, sigma = 3)
+all.equal(std_dev(d, th), sqrt(variance(d, th)))
+
+# A Student t below two degrees of freedom has an infinite variance.
+std_dev(student_t1_distrib(), list(mu = 0, sigma = 1, nu = c(1.5, 5)))
+
+}
+\seealso{
+\code{\link[=std_dev]{std_dev()}} for the generic and the sample version,
+\code{\link[=variance.distrib]{variance.distrib()}} for the quantity under the root.
 }
 \keyword{internal}

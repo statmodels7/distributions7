@@ -4,18 +4,39 @@
 \alias{mean.distrib}
 \title{Mean of a Distribution Object}
 \arguments{
-\item{x}{An object inheriting from class \code{"distrib"}.}
+\item{x}{An object inheriting from \code{distrib}.}
 
-\item{theta}{A named list of parameters. Vectors are supported.}
+\item{theta}{A named list of parameters on the parameter scale, one
+component per parameter of \code{x}. Components may be vectors, in which case
+one mean is returned per setting.}
 
-\item{...}{Additional arguments passed to \code{\link[=moment]{moment()}}.}
+\item{...}{Passed to \code{\link[=moment]{moment()}} and from there to \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A numeric vector of means.
+A numeric vector of means, of length equal to the longest component
+of \code{theta}. \code{NaN} or \code{Inf} where the integral does not converge, with no
+warning: a family whose mean does not exist registers its own method
+instead of relying on this one.
 }
 \description{
-Computes the expected value \eqn{E[Y]} of a distribution object numerically via
-\code{\link[=moment]{moment()}}. Distribution classes with a closed-form mean may override
-this method with an analytical version.
+Evaluates \eqn{E[Y]} by quadrature over the support of a continuous family
+or by summing the series of a discrete one, through one call of \code{\link[=moment]{moment()}}
+at \code{p = 1}. This is the fallback that runs when the family has registered no
+closed form. Of the 45 shipped families only the two von Mises reach it; the
+rest carry a formula, which is a hundredfold cheaper and exact.
+}
+\examples{
+# The von Mises is one of the two families with no closed-form mean, so this
+# method is what answers for it. On (-pi, pi] with mu = 0 the mean is 0.
+round(mean(vonmises1_distrib(), list(mu = 0, kappa = 2)), 12)
+
+# A family with a closed form never reaches here; the numbers agree anyway.
+all.equal(moment(gaussian1_distrib(), list(mu = 2, sigma = 3), p = 1), 2)
+
+}
+\seealso{
+\code{\link[=moment]{moment()}} for the quadrature, \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} for a family
+that overrides this method because its mean does not exist,
+\code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} for the higher moments.
 }
 \keyword{internal}
