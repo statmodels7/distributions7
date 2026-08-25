@@ -2,24 +2,51 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_grad_cdf.LogisticDistrib}
 \alias{distrib_grad_cdf.LogisticDistrib}
-\title{Logistic Log-CDF Derivatives}
+\title{Logistic Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{LogisticDistrib} object.}
+\item{distrib}{A \code{LogisticDistrib} object, from \code{\link[=logistic_distrib]{logistic_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure.
+Closed form, from the location-scale structure:
+\eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. For this family the density is
+\eqn{F(1-F)/\sigma}, so the log-scale gradient is elementary in \eqn{F}
+alone and no special evaluation is needed anywhere on the line.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
+function.
+}
+
+\examples{
+d <- logistic_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+# The mean component on the log scale is -f/F, which here is -(1-F)/sigma.
+Fq <- distrib_cdf(d, q, th)
+all.equal(distrib_grad_cdf(d, q, th)$mu, -(1 - Fq) / 1.2)
 }
 \seealso{
-\code{\link[=logistic_distrib]{logistic_distrib()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.LogisticDistrib]{distrib_hess_cdf.LogisticDistrib()}} for the second order;
+\code{\link[=logistic_distrib]{logistic_distrib()}}.
 }

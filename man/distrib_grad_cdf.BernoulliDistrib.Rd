@@ -4,23 +4,49 @@
 \alias{distrib_grad_cdf.BernoulliDistrib}
 \title{Bernoulli Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{BernoulliDistrib} object.}
+\item{distrib}{A \code{BernoulliDistrib} object, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Non-integer values are floored;
+values below zero give a derivative of zero.}
 
-\item{theta}{A list containing \code{mu}.}
+\item{theta}{A named list with one component, \code{mu} (the success
+probability, strictly between 0 and 1), a numeric vector of length 1 or
+\code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default. At \eqn{k = 1} the lower-tail probability is 1 and the
+log-scale derivative is 0; the upper-tail probability is 0 there, and the
+log-scale derivative is \code{NaN}.}
 }
 \value{
-A named list with one element.
+A named list with one numeric vector, \code{mu}, the length of \code{q}
+recycled against \code{theta}.
 }
 \description{
-Closed form, the binomial identity at \eqn{n = 1}: the derivative is
-\eqn{-1} at \eqn{k = 0} and zero at \eqn{k = 1}.
+Closed form, the binomial identity at \eqn{n = 1}. The distribution function
+takes two values, \eqn{F(0) = 1 - p} and \eqn{F(1) = 1}, so the derivative
+is \eqn{-1} at \eqn{k = 0} and exactly zero at \eqn{k = 1}, the upper value
+being 1 whatever \eqn{p} is.
+}
+\section{Notation}{
+
+\eqn{p \in (0,1)} is the success probability and
+\eqn{k = \lfloor q \rfloor}.
+}
+
+\examples{
+d <- bernoulli_distrib()
+
+# -1 at zero, and exactly 0 at one.
+distrib_grad_cdf(d, c(0, 1), list(mu = 0.3), log = FALSE)$mu
+
+# On the log scale at k = 0 that is -1 / (1 - p).
+all.equal(distrib_grad_cdf(d, 0, list(mu = 0.3))$mu, -1 / 0.7)
 }
 \seealso{
-\code{\link[=bernoulli_distrib]{bernoulli_distrib()}}
+\code{\link[=distrib_grad_cdf.BinomialDistrib]{distrib_grad_cdf.BinomialDistrib()}}, of which this is the
+\eqn{n = 1} case; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.
 }

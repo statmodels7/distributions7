@@ -4,23 +4,53 @@
 \alias{distrib_grad_cdf.PoissonDistrib}
 \title{Poisson Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{PoissonDistrib} object.}
+\item{distrib}{A \code{PoissonDistrib} object, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Non-integer values are floored, as
+they are by the distribution function; values below zero give a derivative
+of zero.}
 
-\item{theta}{A list containing \code{mu}.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list with one element.
+A named list with one numeric vector, \code{mu}, the length of \code{q}
+recycled against \code{theta}.
 }
 \description{
-Closed form: the sum defining \eqn{F} telescopes, leaving
-\eqn{\partial F(k)/\partial\mu = -f(k)}.
+Closed form, and exact: the sum defining \eqn{F} telescopes, so
+\deqn{\frac{\partial}{\partial\mu}\sum_{j \le k} \frac{e^{-\mu}\mu^j}{j!}
+      = \sum_{j \le k} \{f(j-1) - f(j)\} = -f(k).}
+The sensitivity of the distribution function to the mean is minus the mass
+at the last point retained, so one density evaluation replaces the whole
+sum.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{f} the mass function, \eqn{F} the
+distribution function and \eqn{k = \lfloor q \rfloor}.
+}
+
+\examples{
+d <- poisson_distrib()
+q <- c(0, 2, 5)
+
+# Minus the mass at the last point retained.
+all.equal(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu,
+          -distrib_pdf(d, q, list(mu = 3)))
+
+# On the log scale, and on the upper tail.
+distrib_grad_cdf(d, q, list(mu = 3))$mu
+distrib_grad_cdf(d, q, list(mu = 3), lower.tail = FALSE)$mu
 }
 \seealso{
-\code{\link[=poisson_distrib]{poisson_distrib()}}
+\code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}}, the general sum this
+replaces; \code{\link[=distrib_grad_cdf.NegBin2Distrib]{distrib_grad_cdf.NegBin2Distrib()}}, whose mean component tends
+to this one; \code{\link[=poisson_distrib]{poisson_distrib()}}.
 }

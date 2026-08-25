@@ -7,20 +7,34 @@
 loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, the location first and the scale
+second.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list of Hessian component vectors.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}. The gradient is not returned
+alongside.
 }
 \description{
-The \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body shared by the location-scale families.
+The \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body the location-scale families share:
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at both orders, put on the requested tail and scale
+by \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. Both orders are needed even when only the Hessian was
+asked for, the log-scale correction reading the first derivatives.
+}
+\seealso{
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for the formulas;
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the first order;
+\code{\link[=distrib_hess_cdf.Gaussian1Distrib]{distrib_hess_cdf.Gaussian1Distrib()}} for one of the four registrations.
 }
 \keyword{internal}

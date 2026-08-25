@@ -6,18 +6,36 @@
 \arguments{
 \item{distrib}{A \code{discrete_distrib} object.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values below the support give zero.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
+length of \code{q} recycled against \code{theta}. The gradient is not returned
+alongside.
 }
 \description{
-Exact, by the same finite sum as the gradient.
+Exact, by the same finite sum as the gradient: at second order the summand
+is \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the Bartlett lemma's expansion
+of \eqn{\partial^2 f/f}. The first-order part comes from
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a family's own simplification is used where it has
+one.
+}
+\examples{
+# A negative binomial: two parameters, so three Hessian components.
+d <- negbin2_distrib()
+distrib_hess_cdf(d, c(2, 5), list(mu = 3, theta = 2))
+
+}
+\seealso{
+\code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}} for the first order;
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} for the sum; \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

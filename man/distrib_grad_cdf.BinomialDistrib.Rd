@@ -4,22 +4,48 @@
 \alias{distrib_grad_cdf.BinomialDistrib}
 \title{Binomial Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{BinomialDistrib} object.}
+\item{distrib}{A \code{BinomialDistrib} object, from \code{\link[=binomial_distrib]{binomial_distrib()}},
+carrying the trial count in its \code{size} property.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Non-integer values are floored;
+values below zero give a derivative of zero.}
 
-\item{theta}{A list containing \code{mu}.}
+\item{theta}{A named list with one component, \code{mu} (the success
+probability, strictly between 0 and 1), a numeric vector of length 1 or
+\code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list with one element.
+A named list with one numeric vector, \code{mu}, the length of \code{q}
+recycled against \code{theta}.
 }
 \description{
-Closed form: \eqn{\partial F(k)/\partial\mu = -n\,\mathrm{dbinom}(k; n-1, \mu)}.
+Closed form, and exact: the companion identity to the Poisson's,
+\deqn{\frac{\partial}{\partial p} P(X \le k) = -n\,\mathrm{dbinom}(k, n-1, p).}
+The whole sum collapses to one binomial mass at one fewer trial, so nothing
+is summed and nothing is differenced.
+}
+\section{Notation}{
+
+\eqn{p \in (0,1)} is the success probability, \eqn{n} the number of trials
+held on the object, and \eqn{k = \lfloor q \rfloor}.
+}
+
+\examples{
+d <- binomial_distrib(size = 10)
+q <- c(2, 5, 8)
+
+# Minus n times a binomial mass at one fewer trial.
+all.equal(distrib_grad_cdf(d, q, list(mu = 0.3), log = FALSE)$mu,
+          -10 * dbinom(q, 9, 0.3))
 }
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}
+\code{\link[=distrib_grad_cdf.BernoulliDistrib]{distrib_grad_cdf.BernoulliDistrib()}}, this identity at
+\eqn{n = 1}; \code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}}, the general sum;
+\code{\link[=binomial_distrib]{binomial_distrib()}}.
 }

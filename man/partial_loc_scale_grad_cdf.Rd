@@ -7,31 +7,59 @@
 partial_loc_scale_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale, and which has at least one more.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, the location first and the scale
+second.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list of gradient component vectors.
+A named list of numeric vectors, one per parameter, in the parameter
+order.
 }
 \description{
-For a family that is location-scale in \eqn{(\mu, \sigma)} but carries a
-further shape parameter: the two location-scale directions in closed form, the
-shape direction by finite differences.
+The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body for a family that is location-scale in
+\eqn{(\mu, \sigma)} and carries a further shape parameter: the two
+location-scale directions in closed form, \eqn{-f} and \eqn{-z f}, and the
+shape directions from \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}. The Student t and the
+pseudo-Huber are the two families that register it.
 }
-\details{
-The Student t and the pseudo-Huber are the two. Their shape direction is a
-derivative of a hypergeometric-type integral with no elementary form, so it is
-differenced; the other two are exact.
+\section{Why the shape is differenced}{
+In both families the shape direction is the derivative of a
+hypergeometric-type integral with respect to its parameter, and has no
+elementary form. Only those components are passed to the numerical route,
+through its \code{which} argument, so the differencing costs cdf evaluations for
+the shape alone.
+}
 
-For the pseudo-Huber this is an \strong{accuracy} gain rather than merely a
-speed one. Its cdf is itself a quadrature, so differencing it is good to only
-about \code{1e-6}, whereas \eqn{\partial F/\partial \mu = -f} is exact.
+\section{What the split is worth}{
+It is a speed gain, and the size of it depends on how dear the family's cdf
+is. On a pseudo-Huber, whose distribution function is itself a quadrature,
+a gradient at 500 quantiles costs 0.08 s here against 0.18 s when every
+component is differenced. On accuracy the two agree closely: measured over
+shapes from 0.1 to 100 and quantiles out to eight scales, the differenced
+mean component is within \eqn{2\times10^{-11}} to \eqn{3\times10^{-8}}
+relative of the closed one.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
+}
+
+\seealso{
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}}, the body for a family with no shape;
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for the shape components;
+\code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf.StudentT1Distrib()}} and
+\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf.PseudoHuberDistrib()}}, the two registrations.
 }
 \keyword{internal}

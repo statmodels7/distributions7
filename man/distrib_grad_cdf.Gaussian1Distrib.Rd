@@ -2,26 +2,62 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_grad_cdf.Gaussian1Distrib}
 \alias{distrib_grad_cdf.Gaussian1Distrib}
-\title{Gaussian Log-CDF Derivatives}
+\title{Gaussian Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default; \code{FALSE} flips the sign of every component.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default. Far into a tail the probability underflows to zero and
+the result is \code{-Inf} or \code{NaN}.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form, from the location-scale structure:
-\eqn{\partial F/\partial\mu = -f(y)} and
-\eqn{\partial F/\partial\sigma = -z f(y)} with \eqn{z = (y-\mu)/\sigma}.
+\eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself, shared with the logistic, the
+Cauchy and the Laplace, so nothing here is particular to the Gaussian beyond
+its density.
+}
+\details{
+A censored Gaussian likelihood is cheap for this reason: a right-censored
+observation contributes \eqn{\log S(q)}, whose score in \eqn{\mu} is
+\eqn{f(q)/S(q)}, the inverse Mills ratio, and the whole of it comes from the
+density the family already computes.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\sigma > 0} the standard deviation,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
+function.
+}
+
+\examples{
+d <- gaussian1_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+# On the natural scale the mean component is minus the density.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
+# On the log scale it is -f/F, and the upper tail flips to +f/S.
+distrib_grad_cdf(d, q, th)$mu
+distrib_grad_cdf(d, q, th, lower.tail = FALSE)$mu
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.Gaussian1Distrib]{distrib_hess_cdf.Gaussian1Distrib()}} for the second order;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.
 }

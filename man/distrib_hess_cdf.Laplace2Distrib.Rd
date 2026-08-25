@@ -2,30 +2,59 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_hess_cdf.Laplace2Distrib}
 \alias{distrib_hess_cdf.Laplace2Distrib}
-\title{Laplace Log-CDF Second Derivatives in Location and Rate}
+\title{Laplace Log-CDF Hessian in Location and Rate}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. At \eqn{q = \mu} exactly, \code{sign(0)}
+is 0 and the components are the average of their two one-sided limits.}
 
-\item{theta}{A list containing \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, exact away from \eqn{q = \mu}: with \eqn{s = \mathrm{sign}(q-\mu)}
-and \eqn{a = \lvert q-\mu \rvert},
-\eqn{\partial^{2} F/\partial\mu^{2} = -\lambda s f},
-\eqn{\partial^{2} F/\partial\mu\,\partial\lambda = -(1/\lambda - a) f} and
-\eqn{\partial^{2} F/\partial\lambda^{2} = -s a^{2} f/\lambda}. At the kink the
-second derivative in \eqn{\mu} does not exist, and the value returned is the
-one-sided limit the sign convention picks out.
+Closed form. Writing \eqn{r = q - \mu} and \eqn{a = |r|},
+\deqn{\frac{\partial^2 F}{\partial\mu^2} = -\lambda\,\mathrm{sign}(r)\,f,
+      \qquad
+      \frac{\partial^2 F}{\partial\lambda^2}
+        = -\frac{\mathrm{sign}(r)\,a^2 f}{\lambda},
+      \qquad
+      \frac{\partial^2 F}{\partial\mu\,\partial\lambda}
+        = -\left(\frac{1}{\lambda} - a\right) f.}
+The sign function is what carries the kink: all three jump at
+\eqn{q = \mu}, as they do in the scale parametrization.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\lambda > 0} the rate, \eqn{r = q - \mu},
+\eqn{a = |r|}, \eqn{f} the density and \eqn{F} the distribution function.
+}
+
+\examples{
+d <- laplace2_distrib()
+th <- list(mu = 0.3, lambda = 1 / 1.2)
+
+# All three components jump across q = mu.
+distrib_hess_cdf(d, 0.3 + c(-1e-6, 1e-6), th, log = FALSE)
+
+# Away from the kink they agree with a central difference of the cdf.
+q <- c(-1, 2)
+exact <- distrib_hess_cdf(d, q, th, log = FALSE)
+fd <- numerical_cdf_deriv(d, q, th, order = 2)
+max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_grad_cdf.Laplace2Distrib]{distrib_grad_cdf.Laplace2Distrib()}} for the first order;
+\code{\link[=distrib_hess_cdf.LaplaceDistrib]{distrib_hess_cdf.LaplaceDistrib()}} for the scale parametrization;
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }

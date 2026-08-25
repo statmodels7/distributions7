@@ -7,34 +7,56 @@
 loc_scale_cdf_deriv(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale. Nothing checks that; a family that
+is not location-scale and registers this body gets wrong numbers.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, location first and scale second.}
+\item{theta}{A named list of parameters, the location first and the scale
+second. Any further parameters are read by \code{\link[=distrib_pdf]{distrib_pdf()}} and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} but get no component here.}
 
 \item{order}{The derivative order, 1 or 2.}
 }
 \value{
-A named list of derivative component vectors of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale: two components at order 1, and the three of
+\code{\link[=hess_names]{hess_names()}} at order 2.
 }
 \description{
-Closed-form derivatives of \eqn{F} for a family that is location-scale in its
-first two parameters.
+Closed-form derivatives of \eqn{F} for a family that is location-scale in
+its first two parameters. Writing \eqn{F(q) = G(z)} with
+\eqn{z = (q-\mu)/\sigma} and differentiating the composition puts everything
+in terms of the density and its response derivative, both of which every
+distribution already supplies, so a family has only to declare that it is
+location-scale.
 }
 \details{
-With \eqn{z = (q - \mu)/\sigma} and \eqn{\ell_y = \partial \log f/\partial y},
-\deqn{\partial F/\partial \mu = -f, \qquad \partial F/\partial \sigma = -z f}
-\deqn{\partial^2 F/\partial \mu^2 = f \ell_y, \qquad
-      \partial^2 F/\partial \mu \partial \sigma = f (z \ell_y + 1/\sigma), \qquad
-      \partial^2 F/\partial \sigma^2 = f (z^2 \ell_y + 2z/\sigma).}
+With \eqn{\ell_y = \partial \log f/\partial y},
+\deqn{\frac{\partial F}{\partial \mu} = -f, \qquad
+      \frac{\partial F}{\partial \sigma} = -z f,}
+\deqn{\frac{\partial^2 F}{\partial \mu^2} = f\,\ell_y, \qquad
+      \frac{\partial^2 F}{\partial \mu \partial \sigma}
+        = f\left(z\,\ell_y + \frac{1}{\sigma}\right), \qquad
+      \frac{\partial^2 F}{\partial \sigma^2}
+        = f\left(z^2 \ell_y + \frac{2z}{\sigma}\right).}
 
-A family therefore only has to declare that it is location-scale; nothing is
-needed beyond its density and its response derivative, both of which every
-distribution already provides. This covers the censored-regression workhorses
--- Gaussian, logistic, Cauchy, Laplace.
+This covers the censored-regression workhorses: the Gaussian, the logistic,
+the Cauchy and the Laplace all register these bodies unchanged, and the
+Student t and the pseudo-Huber use them for their first two components and
+difference the shape.
 }
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
+\eqn{\ell_y = \partial\log f/\partial y} its response derivative.
+}
+
 \seealso{
-\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}}, \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} and \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}, the two bodies
+families register; \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}, the variant for a
+family with a shape parameter as well; \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

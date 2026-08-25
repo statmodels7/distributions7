@@ -7,34 +7,63 @@
 cdf_tail_scale(distrib, Fq, dF1, dF2 = NULL, lower.tail, log)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
+read, to name and pair the components.}
 
-\item{Fq}{The cdf evaluated at the quantile.}
+\item{Fq}{The distribution function at the quantile, a numeric vector.}
 
-\item{dF1}{A named list of first derivatives of \eqn{F}.}
+\item{dF1}{A named list of first derivatives of \eqn{F}, one component per
+parameter, in the parameter order.}
 
-\item{dF2}{An optional named list of second derivatives of \eqn{F}.}
+\item{dF2}{A named list of second derivatives of \eqn{F}, keyed as
+\code{\link[=hess_names]{hess_names()}}, or \code{NULL} (the default) when only the gradient is wanted.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical. \code{TRUE} leaves
+the signs alone and \code{FALSE} flips every one of them.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical.
+\code{TRUE} divides by the probability, which returns \code{-Inf} or \code{NaN} in a tail
+where that probability has underflowed to zero.}
 }
 \value{
-A named list of derivative component vectors.
+A named list of numeric vectors: one per parameter when \code{dF2} is
+\code{NULL}, otherwise one per \code{\link[=hess_names]{hess_names()}} component. The gradient is not
+returned alongside the Hessian.
 }
 \description{
-Converts derivatives of \eqn{F} into derivatives of whichever tail was asked
-for, on the natural or the log scale.
+Converts derivatives of the distribution function \eqn{F} into derivatives
+of whichever tail was asked for, on the natural or the logarithmic scale.
+Every route to a cdf derivative in this package produces derivatives of
+\eqn{F} itself, so the \code{lower.tail} and \code{log} arguments are handled once,
+here, and no method has to implement four cases.
 }
-\details{
-Every route to a cdf derivative in this file produces derivatives of \eqn{F}
-itself; the \code{lower.tail} and \code{log} arguments are handled once, here,
-rather than in each of them. Switching tail flips the sign, since
-\eqn{S = 1 - F}, and switching to the log scale divides by the probability,
-which for a second derivative brings in the familiar
-\eqn{d^2 \log P = d^2 P / P - (dP/P)(dP/P)}.
+\section{The two conversions}{
+Switching to the upper tail flips the sign, \eqn{S = 1 - F} giving
+\eqn{\partial^I S = -\partial^I F} at every order. Switching to the log
+scale divides by the probability, which at second order brings in the
+familiar correction
+\deqn{\partial^2 \log P = \frac{\partial^2 P}{P}
+      - \frac{\partial P}{P}\,\frac{\partial P}{P}.}
+The two commute, and both are applied to whatever was handed in.
 }
+
+\section{What the caller must supply}{
+\code{dF1} is always read, at second order as well: the correction above needs
+the first derivatives of the same tail. A caller asking for a Hessian
+therefore passes both lists, and passes them as derivatives of \eqn{F} on
+the natural scale, whichever tail the result is wanted on.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{S = 1 - F} the survival
+function, \eqn{P} whichever of the two was asked for, and \eqn{\partial^I}
+a derivative with respect to a multi-index of parameters.
+}
+
 \seealso{
-\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, the generics whose
+methods all end here; \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} and \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}
+for two of the routes that feed it.
 }
 \keyword{internal}

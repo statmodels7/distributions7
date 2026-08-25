@@ -2,27 +2,61 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_hess_cdf.LaplaceDistrib}
 \alias{distrib_hess_cdf.LaplaceDistrib}
-\title{Laplace Log-CDF Second Derivatives}
+\title{Laplace Log-CDF Hessian}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, exact away from \eqn{y = \mu}. At the kink the second derivative
-of \eqn{F} in \eqn{\mu} genuinely does not exist --- it jumps between
-\eqn{\pm 1/(2\sigma^{2})} --- so the value returned there is the one-sided limit
-the sign convention picks out, and is reported rather than smoothed.
+Closed form, from the same location-scale structure, through
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}}. The response derivative it reads is
+\eqn{\ell_y = -\mathrm{sign}(z)/\sigma}, which jumps at \eqn{q = \mu}, so
+the second derivatives of \eqn{F} jump there too. That is a property of the
+law and not a defect: the Laplace is the toolkit's non-regular family, and
+its location has no second derivative at the kink.
+}
+\details{
+Away from \eqn{q = \mu} the three components are the ordinary
+location-scale ones. At \eqn{q = \mu} exactly, \code{sign(0)} is 0 and the
+returned \code{mu_mu} is the average of the two one-sided limits, which is the
+value the sign convention gives and is reported as it stands.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
+\eqn{\ell_y = \partial\log f/\partial y}.
+}
+
+\examples{
+d <- laplace_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+
+# The second derivative in the location jumps across q = mu.
+distrib_hess_cdf(d, 0.3 + c(-1e-6, 1e-6), th, log = FALSE)$mu_mu
+
+# Away from the kink it agrees with a central difference of the cdf.
+q <- c(-1, 2)
+exact <- distrib_hess_cdf(d, q, th, log = FALSE)
+fd <- numerical_cdf_deriv(d, q, th, order = 2)
+max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=distrib_grad_cdf.LaplaceDistrib]{distrib_grad_cdf.LaplaceDistrib()}}, which is continuous at the kink;
+\code{\link[=laplace_distrib]{laplace_distrib()}}.
 }

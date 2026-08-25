@@ -8,16 +8,44 @@
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
+length of \code{q} recycled against \code{theta}. The gradient is not returned
+alongside.
 }
 \description{
-Fallback: finite differences of the distribution function.
+The fallback for a continuous family that registers no closed second
+derivative: \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} at order 2, with the first-order part
+taken from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, so a closed gradient the family does
+register is used here too. The step is
+\eqn{\varepsilon^{1/4}} relative, about \eqn{1.2\times10^{-4}}, and the
+accuracy measured against a family's own closed form is
+\eqn{1.7\times10^{-7}} relative.
+}
+\details{
+A diagonal component is the three-point second difference and an
+off-diagonal one the four-point mixed stencil, which differences two
+different variables and is therefore a single stencil. The log-scale
+correction \eqn{\partial^2 P/P - (\partial P/P)^2} is applied afterwards by
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, which is why the gradient is fetched even when only the
+Hessian was asked for.
+}
+\examples{
+# A gamma reaches this method at both orders.
+d <- gamma2_distrib()
+distrib_hess_cdf(d, c(1, 2), list(mu = 2, sigma2 = 1))
+
+}
+\seealso{
+\code{\link[=distrib_grad_cdf.continuous_distrib]{distrib_grad_cdf.continuous_distrib()}} for the first order;
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for the stencils; \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

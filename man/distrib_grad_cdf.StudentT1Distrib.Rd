@@ -4,23 +4,56 @@
 \alias{distrib_grad_cdf.StudentT1Distrib}
 \title{Student t Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and scale, \eqn{-f(y)} and \eqn{-z f(y)}; the
-degrees of freedom are differenced, having no elementary form.
+Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
+with \eqn{z = (q-\mu)/\sigma}; the degrees of freedom are differenced. The
+method is \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} itself, shared with the
+pseudo-Huber.
+}
+\details{
+The derivative of a Student t distribution function with respect to its
+degrees of freedom has no elementary form, which is the same obstruction the
+skew t meets in its own \eqn{\nu} components. One central difference of the
+analytic cdf covers it, and only that component pays for the evaluations.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
+degrees of freedom, \eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
+}
+
+\examples{
+d <- student_t1_distrib()
+th <- list(mu = 0.3, sigma = 1.2, nu = 6)
+q <- c(-1, 0.5, 2)
+
+# The location component is exact, the density itself.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
+# The degrees of freedom are differenced; the component is small and negative
+# in the lower tail, heavier tails putting more mass below a low quantile.
+distrib_grad_cdf(d, q, th, log = FALSE)$nu
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.StudentT1Distrib]{distrib_hess_cdf.StudentT1Distrib()}} for the second order;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }

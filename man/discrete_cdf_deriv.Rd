@@ -7,34 +7,56 @@
 discrete_cdf_deriv(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"discrete_distrib"}.}
+\item{distrib}{An object inheriting from \code{discrete_distrib}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Each is handled separately, the
+support being walked from the lower bound up to it, so the cost grows with
+the largest quantile asked for.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
-\item{order}{The derivative order, 1 or 2.}
+\item{order}{The derivative order, 1 or 2. At order 1 the components are the
+parameters and at order 2 they are \code{\link[=hess_names]{hess_names()}}.}
 }
 \value{
-A named list of derivative component vectors of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale. \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} puts them on the requested tail.
 }
 \description{
-Evaluates \eqn{d^I F(q)} for a discrete distribution as the finite sum
-\eqn{\sum_{y \le q} f(y) \, (d^I f / f)(y)}.
+Evaluates \eqn{\partial^I F(q)} for a discrete family as the finite sum
+\deqn{\partial^I F(q) = \sum_{y \le q} f(y)\,
+      \frac{\partial^I f}{f}(y).}
+Nothing is differenced and nothing is integrated: the sum is exact.
 }
-\details{
-This is the governing identity
-\eqn{d^I F(q) / F(q) = \mathbb{E}[d^I f / f \mid Y \le q]}
-written out. For a discrete family the conditional expectation is a finite sum
-whenever the support has a finite lower bound -- which the discrete class
-requires -- so the identity is exact rather than an approximation, and it is
-used directly.
+\section{Where the identity comes from}{
+The region of integration does not depend on \eqn{\theta}, so derivative and
+integral exchange and
+\deqn{\frac{\partial^I F(q)}{F(q)}
+      = \mathbb{E}\!\left[\frac{\partial^I f}{f} \;\middle|\; Y \le q\right],}
+a partial expectation of exactly the quantity the Bartlett lemma expands: the
+score at first order, and \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}} at second.
+For a discrete family that conditional expectation is a finite sum whenever
+the support has a finite lower bound, which the discrete class requires, so
+the identity is used as it stands.
+}
 
-Note for anyone writing a test: checking this against the partial-expectation
-sum proves nothing, because it is the same sum computed twice. A discrete
-implementation has to be checked against finite differences of the cdf.
+\section{A trap for whoever writes a test}{
+Checking this against the partial-expectation sum proves nothing: it is the
+same sum computed twice. A discrete implementation has to be checked against
+finite differences of the cdf, and a continuous one against the partial
+expectation, so that the two sides of the comparison share no arithmetic.
 }
+
+\section{Notation}{
+
+\eqn{f} is the mass function, \eqn{F} the distribution function,
+\eqn{\ell = \log f} and \eqn{\partial^I} a derivative with respect to a
+multi-index of parameters.
+}
+
 \seealso{
-\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}
+\code{\link[=distrib_grad_cdf.discrete_distrib]{distrib_grad_cdf.discrete_distrib()}}, its caller;
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}, the continuous route;
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

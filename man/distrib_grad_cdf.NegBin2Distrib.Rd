@@ -4,25 +4,59 @@
 \alias{distrib_grad_cdf.NegBin2Distrib}
 \title{Negative Binomial Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{NegBin2Distrib} object.}
+\item{distrib}{A \code{NegBin2Distrib} object, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Non-integer values are floored;
+values below zero give a derivative of zero in both components.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{theta}
+(positive), each a numeric vector of length 1 or \code{n}. The cost of the
+dispersion component grows with the largest quantile, the sum running the
+support up to it.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{theta}, each the
+length of \code{q} recycled against the parameters.
 }
 \description{
-Closed form in \eqn{\mu}, \eqn{\partial F(k)/\partial\mu = -f(k)(k+\theta)/(\theta+\mu)},
-which reduces to the Poisson identity as \eqn{\theta\to\infty}. The \eqn{\theta}
-direction is a derivative of the incomplete beta in its parameter, has no
-elementary form, and keeps the exact summation.
+Closed form in the mean and an exact sum in the dispersion. The mean
+component collapses like the Poisson's,
+\deqn{\frac{\partial F(k)}{\partial\mu}
+      = -f(k)\,\frac{k + \theta}{\theta + \mu},}
+which tends to the Poisson's \eqn{-f(k)} as \eqn{\theta} grows. The
+dispersion component is a derivative of the incomplete beta function with
+respect to its parameter, which has no elementary form, so it keeps the
+exact summation of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{\theta > 0} the dispersion, \eqn{f} the mass
+function, \eqn{F} the distribution function and \eqn{k = \lfloor q \rfloor}.
+}
+
+\examples{
+d <- negbin2_distrib()
+q <- c(2, 5)
+th <- list(mu = 3, theta = 2)
+
+# The mean component, written out.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th) * (q + 2) / (2 + 3))
+
+# It tends to the Poisson's -f(k) as the dispersion grows.
+rbind(negbin = distrib_grad_cdf(d, q, list(mu = 3, theta = 1e8),
+                                log = FALSE)$mu,
+      poisson = distrib_grad_cdf(poisson_distrib(), q, list(mu = 3),
+                                 log = FALSE)$mu)
 }
 \seealso{
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} for the summation the dispersion uses;
+\code{\link[=distrib_grad_cdf.PoissonDistrib]{distrib_grad_cdf.PoissonDistrib()}} for the limit;
+\code{\link[=negbin2_distrib]{negbin2_distrib()}}.
 }

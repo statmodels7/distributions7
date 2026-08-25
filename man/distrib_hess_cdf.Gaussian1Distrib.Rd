@@ -2,24 +2,59 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_hess_cdf.Gaussian1Distrib}
 \alias{distrib_hess_cdf.Gaussian1Distrib}
-\title{Gaussian Log-CDF Second Derivatives}
+\title{Gaussian Log-CDF Hessian}
 \arguments{
-\item{distrib}{A \code{Gaussian1Distrib} object.}
+\item{distrib}{A \code{Gaussian1Distrib} object, from \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}},
+\code{mu_mu}, \code{sigma_sigma} and \code{mu_sigma}, each the length of \code{q} recycled
+against \code{theta}. The gradient is not returned alongside.
 }
 \description{
-Closed form, from the same location-scale structure.
+Closed form, from the same location-scale structure. With
+\eqn{\ell_y = \partial\log f/\partial y}, which for a Gaussian is
+\eqn{-z/\sigma},
+\deqn{\frac{\partial^2 F}{\partial\mu^2} = f\,\ell_y, \qquad
+      \frac{\partial^2 F}{\partial\mu\,\partial\sigma}
+        = f\left(z\ell_y + \frac{1}{\sigma}\right), \qquad
+      \frac{\partial^2 F}{\partial\sigma^2}
+        = f\left(z^2\ell_y + \frac{2z}{\sigma}\right).}
+The method is \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} itself, shared with the logistic, the
+Cauchy and the Laplace.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\sigma > 0} the standard deviation,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
+\eqn{\ell_y = \partial\log f/\partial y} its response derivative.
+}
+
+\examples{
+d <- gaussian1_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+distrib_hess_cdf(d, q, th)
+
+# Against a central difference of the cdf, which shares no arithmetic.
+exact <- distrib_hess_cdf(d, q, th, log = FALSE)
+fd <- numerical_cdf_deriv(d, q, th, order = 2)
+max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}} for the first order;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}.
 }

@@ -7,22 +7,34 @@
 loc_scale_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, the location first and the scale
+second.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list of gradient component vectors.
+A named list of two numeric vectors, one per parameter, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body shared by the location-scale families:
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested tail and
-scale.
+The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} body the location-scale families share:
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} at order 1, put on the requested tail and scale by
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}. The Gaussian, the logistic, the Cauchy and the Laplace
+register this function itself, so their four pages document one piece of
+arithmetic.
+}
+\seealso{
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for the formulas;
+\code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} for the second order;
+\code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}} for one of the four registrations.
 }
 \keyword{internal}

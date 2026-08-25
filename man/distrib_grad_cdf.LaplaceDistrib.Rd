@@ -2,26 +2,55 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_grad_cdf.LaplaceDistrib}
 \alias{distrib_grad_cdf.LaplaceDistrib}
-\title{Laplace Log-CDF Derivatives}
+\title{Laplace Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{LaplaceDistrib} object.}
+\item{distrib}{A \code{LaplaceDistrib} object, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure. Note that the second
-derivatives inherit the kink at \eqn{y = \mu}, where \eqn{\partial\ell/\partial y}
-does not exist; \code{\link[=param_smoothness]{param_smoothness()}} records this.
+Closed form, from the location-scale structure:
+\eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself. Both are continuous everywhere,
+including at \eqn{q = \mu}: the density has a kink there but no jump, and
+the first derivatives of \eqn{F} read the density itself.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
+function. The variance is \eqn{2\sigma^2}, so the scale is not a standard
+deviation.
+}
+
+\examples{
+d <- laplace_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
+# Continuous through the kink at q = mu.
+distrib_grad_cdf(d, 0.3 + c(-1e-8, 0, 1e-8), th, log = FALSE)$mu
 }
 \seealso{
-\code{\link[=laplace_distrib]{laplace_distrib()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.LaplaceDistrib]{distrib_hess_cdf.LaplaceDistrib()}}, where the kink does show;
+\code{\link[=distrib_grad_cdf.Laplace2Distrib]{distrib_grad_cdf.Laplace2Distrib()}} for the rate parametrization;
+\code{\link[=laplace_distrib]{laplace_distrib()}}.
 }

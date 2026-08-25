@@ -4,25 +4,65 @@
 \alias{distrib_grad_cdf.Lognormal1Distrib}
 \title{Lognormal Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, positive. At or below zero the
+distribution function is zero and its derivatives are too.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form. On the log scale the lognormal is a location-scale family, so
-\eqn{\partial F/\partial\mu = -y f(y)} and
-\eqn{\partial F/\partial\sigma^{2} = -y f(y) z/(2\sigma)} with
-\eqn{z = (\log y - \mu)/\sigma}.
+\eqn{F(q) = \Phi(z)} with \eqn{z = (\log q - \mu)/\sigma}, and the two
+derivatives are
+\deqn{\frac{\partial F}{\partial\mu} = -q\,f(q), \qquad
+      \frac{\partial F}{\partial\sigma^2} = -\frac{q\,f(q)\,z}{2\sigma}.}
+}
+\details{
+The factor \eqn{q} is the Jacobian of the change of variable: the standard
+normal density at \eqn{z} is \eqn{\varphi(z) = q\sigma f(q)}, so the
+location-scale formulas are rewritten in the density of \eqn{Y} itself and
+nothing on the log scale has to be evaluated. The extra \eqn{1/(2\sigma)} in
+the second component is the chain rule onto the variance, this
+parametrization carrying \eqn{\sigma^2} rather than \eqn{\sigma}.
+
+Only the gradient is registered; the second derivatives fall to
+\code{\link[=distrib_hess_cdf.continuous_distrib]{distrib_hess_cdf.continuous_distrib()}}, which differences the cdf and
+reuses this closed gradient for its first-order part.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean of \eqn{\log Y}, \eqn{\sigma^2 > 0} its variance,
+\eqn{z = (\log q - \mu)/\sigma}, \eqn{f} the density of \eqn{Y} and
+\eqn{\varphi} the standard normal density.
+}
+
+\examples{
+d <- lognormal1_distrib()
+th <- list(mu = 0, sigma2 = 1)
+q <- c(0.5, 1, 3)
+
+# The mean component is -q f(q), the Jacobian factor included.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -q * distrib_pdf(d, q, th))
+
+# Against a central difference of the cdf, which shares no arithmetic.
+fd <- numerical_cdf_deriv(d, q, th, order = 1)
+max(abs(distrib_grad_cdf(d, q, th, log = FALSE)$sigma2 / fd$sigma2 - 1))
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_hess_cdf.continuous_distrib]{distrib_hess_cdf.continuous_distrib()}}, the second order;
+\code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}}, the family on the log scale;
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }

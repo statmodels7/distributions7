@@ -2,27 +2,48 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_grad_cdf.Laplace2Distrib}
 \alias{distrib_grad_cdf.Laplace2Distrib}
-\title{Laplace Log-CDF Derivatives in Location and Rate}
+\title{Laplace Log-CDF Gradient in Location and Rate}
 \arguments{
-\item{distrib}{A \code{Laplace2Distrib} object.}
+\item{distrib}{A \code{Laplace2Distrib} object, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} and \code{lambda} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{lambda}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form: \eqn{\partial F/\partial\mu = -f(q)} and
-\eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. The second
-derivatives inherit the kink at \eqn{q = \mu} exactly as those of
-\code{\link[=laplace_distrib]{laplace_distrib()}} do.
+\eqn{\partial F/\partial\lambda = (q-\mu)\,f(q)/\lambda}. This is the same
+law as \code{\link[=laplace_distrib]{laplace_distrib()}} written by its rate \eqn{\lambda = 1/\sigma}, and
+the chain rule turns the scale component into the one above.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\lambda > 0} the rate, \eqn{f} the density
+and \eqn{F} the distribution function. The variance is \eqn{2/\lambda^2}.
+}
+
+\examples{
+d <- laplace2_distrib()
+th <- list(mu = 0.3, lambda = 1 / 1.2)
+q <- c(-1, 0.5, 2)
+
+g <- distrib_grad_cdf(d, q, th, log = FALSE)
+all.equal(g$mu, -distrib_pdf(d, q, th))
+all.equal(g$lambda, (q - 0.3) * distrib_pdf(d, q, th) / (1 / 1.2))
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=distrib_hess_cdf.Laplace2Distrib]{distrib_hess_cdf.Laplace2Distrib()}}, where the kink shows;
+\code{\link[=distrib_grad_cdf.LaplaceDistrib]{distrib_grad_cdf.LaplaceDistrib()}} for the scale parametrization;
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }

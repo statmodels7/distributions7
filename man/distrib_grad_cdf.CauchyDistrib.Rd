@@ -2,24 +2,62 @@
 % Please edit documentation in R/cdf_derivatives.R
 \name{distrib_grad_cdf.CauchyDistrib}
 \alias{distrib_grad_cdf.CauchyDistrib}
-\title{Cauchy Log-CDF Derivatives}
+\title{Cauchy Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{CauchyDistrib} object.}
+\item{distrib}{A \code{CauchyDistrib} object, from \code{\link[=cauchy_distrib]{cauchy_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default. The Cauchy's tails are heavy, so the probability
+underflows far later here than for a Gaussian.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, from the location-scale structure.
+Closed form, from the location-scale structure:
+\eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself.
+}
+\details{
+No moment of the Cauchy exists, and none is needed here: the distribution
+function is elementary, \eqn{F(q) = 1/2 + \arctan(z)/\pi}, and the identity
+\eqn{\partial F/\partial\mu = -f} holds for every location-scale family
+whether or not its moments converge. The quantities this page returns are
+therefore exact where \code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} and its siblings return \code{NaN}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
+function. Neither \eqn{\mu} nor \eqn{\sigma} is a moment: they are the
+median and the half-interquartile range.
+}
+
+\examples{
+d <- cauchy_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+# Exact, even though no moment of this family exists.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
+# The heavy tail keeps the log-scale gradient finite far out.
+distrib_grad_cdf(d, -1000, th)$mu
 }
 \seealso{
-\code{\link[=cauchy_distrib]{cauchy_distrib()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.CauchyDistrib]{distrib_hess_cdf.CauchyDistrib()}} for the second order;
+\code{\link[=mean.CauchyDistrib]{mean.CauchyDistrib()}} for the moments, which do not exist;
+\code{\link[=cauchy_distrib]{cauchy_distrib()}}.
 }
