@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{phi}, each a numeric vector of
+length \code{length(y)}.
 }
 \description{
 Closed form. The shapes are \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi},
 and \eqn{\ell^{(y)} = (a-1)/y - (b-1)/(1-y)}, so the components are
 \eqn{\phi/y + \phi/(1-y)} and \eqn{\mu/y - (1-\mu)/(1-y)}.
+}
+\seealso{
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Beta2Distrib]{distrib_cross_y.Beta2Distrib()}} for the shape chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

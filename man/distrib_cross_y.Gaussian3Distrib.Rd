@@ -15,10 +15,16 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{tau}, each a numeric vector of
+length \code{length(y)}.
 }
 \description{
 Closed form: \eqn{\ell^{(y)} = -\tau(y-\mu)} gives \eqn{\tau} and
 \eqn{-(y-\mu)}.
+}
+\seealso{
+\code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}} for the scale chart;
+\code{\link[=distrib_cross_y.Gaussian2Distrib]{distrib_cross_y.Gaussian2Distrib()}} for the variance chart;
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}} for the family.
 }
 \keyword{internal}

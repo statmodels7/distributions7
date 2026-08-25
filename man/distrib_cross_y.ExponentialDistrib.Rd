@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector.
+A named list with the single component \code{mu}, a numeric vector of length
+\code{length(y)} holding \eqn{1/\mu^2} at every observation.
 }
 \description{
 Closed form: the mean is a pure scale, so the identity
 \eqn{-z\ell^{(yy)} - \ell^{(y)}/\mu} applies with \eqn{z = y/\mu} and
 returns \eqn{1/\mu^2}.
+}
+\seealso{
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the identity, whose scale half applies
+here with no location; \code{\link[=exponential_distrib]{exponential_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Weibull1Distrib]{distrib_cross_y.Weibull1Distrib()}}, which adds a shape to it.
 }
 \keyword{internal}

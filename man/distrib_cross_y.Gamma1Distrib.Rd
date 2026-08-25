@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma2}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
 Closed form. The shape is \eqn{1/\phi} and the rate \eqn{1/(\phi\mu)}, so
 the mean component is \eqn{1/(\phi\mu^2)} and the dispersion one
 \eqn{1/(\phi^2\mu) - 1/(\phi^2 y)}.
+}
+\seealso{
+\code{\link[=gamma1_distrib]{gamma1_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Gamma2Distrib]{distrib_cross_y.Gamma2Distrib()}} for the dispersion chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

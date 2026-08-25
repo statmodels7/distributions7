@@ -13,24 +13,41 @@ partial_loc_scale_cross_y(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} with at least three
+parameters, a location and a scale first.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this body always returns
+the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused. Not forwarded to \code{\link[=numerical_cross_y]{numerical_cross_y()}}, so a step given
+here does not reach the difference.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}, each of length \code{length(y)}. The first two components are
+exact and the rest carry one stencil's error.
 }
 \description{
-The location and scale components in closed form and the remaining shape
-components by one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}}.
+The \code{\link[=distrib_cross_y]{distrib_cross_y()}} body for a family whose first two parameters are a
+location and a scale and whose remaining ones are shapes: the first two
+components come from \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} in closed form, and the rest
+from one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} through
+\code{\link[=numerical_cross_y]{numerical_cross_y()}}, which is asked for those parameters alone.
+
+Registered on the skew \eqn{t}, whose \code{alpha} and \code{nu} components are
+differenced because its density carries \eqn{T_{\nu+1}}, a Student \eqn{t}
+distribution function whose derivative in the degrees of freedom has no
+elementary form. Measured against Richardson on the analytic response
+gradient, the worst of its four components is \eqn{9.2\times10^{-10}}
+relative, which is one stencil's accuracy.
 }
 \seealso{
-\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}}
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the exact half;
+\code{\link[=numerical_cross_y]{numerical_cross_y()}} for the differenced half;
+\code{\link[=loc_scale_cross_y]{loc_scale_cross_y()}} where every parameter is covered exactly.
 }
 \keyword{internal}

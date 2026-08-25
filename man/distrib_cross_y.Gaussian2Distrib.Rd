@@ -15,10 +15,16 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma2}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
 Closed form: \eqn{\ell^{(y)} = -(y-\mu)/\sigma^2} gives \eqn{1/\sigma^2}
 and \eqn{(y-\mu)/\sigma^4}.
+}
+\seealso{
+\code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}} for the scale chart;
+\code{\link[=distrib_cross_y.Gaussian3Distrib]{distrib_cross_y.Gaussian3Distrib()}} for the precision chart;
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}} for the family.
 }
 \keyword{internal}

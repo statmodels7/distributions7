@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{kappa}, each a numeric vector of
+length \code{length(y)}.
 }
 \description{
 Closed form. With \eqn{\ell^{(y)} = -\kappa\sin(y-\mu)}, the location
 component is \eqn{\kappa\cos(y-\mu)} and the concentration one
 \eqn{-\sin(y-\mu)}.
+}
+\seealso{
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the family;
+\code{\link[=distrib_cross_y.VonMises2Distrib]{distrib_cross_y.VonMises2Distrib()}} for the resultant-length
+chart; \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

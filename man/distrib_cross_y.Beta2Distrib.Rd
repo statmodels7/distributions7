@@ -15,10 +15,16 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{alpha} and \code{beta}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
 Closed form: \eqn{\ell^{(y)} = (\alpha-1)/y - (\beta-1)/(1-y)} gives
 \eqn{1/y} and \eqn{-1/(1-y)}.
+}
+\seealso{
+\code{\link[=beta2_distrib]{beta2_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Beta1Distrib]{distrib_cross_y.Beta1Distrib()}} for the mean chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

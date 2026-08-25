@@ -15,10 +15,16 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector.
+A named list with the single component \code{mu}, a numeric vector of length
+\code{length(y)}.
 }
 \description{
 Closed form: the degrees of freedom are the mean, and
 \eqn{\ell^{(y)} = (\mu/2 - 1)/y - 1/2} gives \eqn{1/(2y)}.
+}
+\seealso{
+\code{\link[=chisq_distrib]{chisq_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Gamma1Distrib]{distrib_cross_y.Gamma1Distrib()}}, which contains it;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

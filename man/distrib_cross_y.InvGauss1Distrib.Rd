@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma2}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
 Closed form. With
 \eqn{\ell^{(y)} = -3/(2y) - 1/(2\phi\mu^2) + 1/(2\phi y^2)}, the components
 are \eqn{1/(\phi\mu^3)} and \eqn{1/(2\phi^2\mu^2) - 1/(2\phi^2 y^2)}.
+}
+\seealso{
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}} for the family;
+\code{\link[=distrib_cross_y.InvGauss2Distrib]{distrib_cross_y.InvGauss2Distrib()}} for the shape chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

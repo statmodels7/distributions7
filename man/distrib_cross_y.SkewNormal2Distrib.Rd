@@ -15,10 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter of the centered
+parametrization, keyed by \code{distrib@params}, each of length
+\code{length(y)}.
 }
 \description{
 The direct parametrization's mixed block carried by the first-order chain
 rule on the centered-to-direct map.
+}
+\seealso{
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the family;
+\code{\link[=distrib_cross_y.SkewNormal1Distrib]{distrib_cross_y.SkewNormal1Distrib()}} for the direct chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

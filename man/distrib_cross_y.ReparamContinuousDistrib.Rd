@@ -15,9 +15,16 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter of the \strong{new}
+parametrization, keyed by \code{distrib@params}, each of length
+\code{length(y)}.
 }
 \description{
 The parent's mixed block carried by the first-order chain rule on the map.
+}
+\seealso{
+\code{\link[=reparametrize]{reparametrize()}} for the wrapper;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic;
+\code{\link[=distrib_gradient]{distrib_gradient()}}, where the chain rule is the same shape.
 }
 \keyword{internal}

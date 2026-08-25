@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma2}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
 Closed form: \eqn{\ell^{(y)} = (\mu^2/\sigma^2 - 1)/y - \mu/\sigma^2} gives
 \eqn{2\mu/(\sigma^2 y) - 1/\sigma^2} and
 \eqn{-\mu^2/(\sigma^4 y) + \mu/\sigma^4}.
+}
+\seealso{
+\code{\link[=gamma2_distrib]{gamma2_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Gamma1Distrib]{distrib_cross_y.Gamma1Distrib()}} for the variance chart;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

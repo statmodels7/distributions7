@@ -15,12 +15,20 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu}, \code{sigma} and \code{nu}, each a numeric
+vector of length \code{length(y)}. All three are exact; measured against
+Richardson on the analytic response gradient the worst is
+\eqn{1.3\times10^{-11}} relative.
 }
 \description{
 Closed form throughout. The location and scale components come from the
 location-scale identity; the response enters the shape only through
 \eqn{D = \sqrt{\nu + r^2/\sigma^2}}, so the shape component is
 \eqn{r/(2\sigma^2 D^3)} with \eqn{r = y - \mu}.
+}
+\seealso{
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} for the first two components;
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for the family;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

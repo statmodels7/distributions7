@@ -15,11 +15,17 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma}, each a numeric vector of
+length \code{length(y)}.
 }
 \description{
 Closed form. On the log scale the family is location-scale, and
 \eqn{\ell^{(y)} = -1/y - (\log y - \mu)/(\sigma^2 y)} gives
 \eqn{1/(\sigma^2 y)} and \eqn{(\log y - \mu)/(\sigma^4 y)}.
+}
+\seealso{
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the family;
+\code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}}, the law on the log scale;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

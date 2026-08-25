@@ -15,7 +15,8 @@
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with components \code{mu} and \code{sigma}, each a numeric vector of
+length \code{length(y)}.
 }
 \description{
 Closed form at both parameters. The scale follows the pure-scale identity
@@ -23,5 +24,10 @@ and reduces to \eqn{\sigma^2 w/(\mu y)} with \eqn{w = (y/\mu)^\sigma}; the
 shape comes from differentiating
 \eqn{\ell^{(y)} = ((\sigma-1) - \sigma w)/y}, giving
 \eqn{(1 - w - \sigma w L)/y} with \eqn{L = \log(y/\mu)}.
+}
+\seealso{
+\code{\link[=distrib_cross_y.ExponentialDistrib]{distrib_cross_y.ExponentialDistrib()}}, the case \eqn{\sigma = 1};
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} for the family;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}
