@@ -2,23 +2,32 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_hessian.Weibull1Distrib}
 \alias{distrib_hessian.Weibull1Distrib}
-\title{Weibull Analytical Observed Hessian}
+\title{Weibull Observed Hessian}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{max(length(y), length(mu), length(sigma))}.
+The three name the distinct entries of a symmetric \eqn{2 \times 2} matrix
+per observation.
 }
 \description{
-Closed-form second derivatives of the Weibull log-density:
+Computes the three distinct second derivatives of the Weibull log-density
+with respect to the scale \eqn{\mu} and the shape \eqn{\sigma}, one value
+per observation, in closed form. With \eqn{z = y/\mu} and
+\eqn{u = z^{\sigma}},
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
         = \dfrac{\sigma}{\mu^2}\left\{1 - (1 + \sigma) u\right\},
       \qquad
@@ -26,7 +35,36 @@ Closed-form second derivatives of the Weibull log-density:
         = -\dfrac{1}{\sigma^2} - u (\log z)^2,}
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
         = \dfrac{1}{\mu}\left(u - 1 + \sigma u \log z\right).}
+All three carry the data through \eqn{u}, so none is free of \eqn{y} and the
+observed matrix differs from its expectation at every observation.
+}
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+h <- distrib_hessian(d, y, th)
+
+# The three closed forms, written out.
+u <- (y / 2)^1.5; lz <- log(y / 2)
+all.equal(h$mu_mu, 1.5 * (1 - 2.5 * u) / 4)
+all.equal(h$sigma_sigma, -1 / 1.5^2 - u * lz^2)
+all.equal(h$mu_sigma, (u - 1 + 1.5 * u * lz) / 2)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 2 + eps, sigma = 1.5))$mu
+dn <- distrib_gradient(d, y, list(mu = 2 - eps, sigma = 1.5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
+
+# The curvature in mu is positive wherever u < 1/(1 + sigma), that is
+# below the 33rd percentile at this shape, so the observed information is
+# not positive definite at every observation while its expectation is.
+h$mu_mu
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3.Weibull1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

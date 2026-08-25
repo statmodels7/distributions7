@@ -2,105 +2,178 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{weibull1_distrib}
 \alias{weibull1_distrib}
-\title{Weibull Distribution Object}
+\title{Weibull Distribution, Scale and Shape}
 \usage{
 weibull1_distrib(link_mu = log_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the scale \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 
-\item{link_sigma}{A link function object for the shape \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the shape
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{\link[=Weibull1Distrib]{Weibull1Distrib()}} (inheriting from
-\code{continuous_distrib}).
+An S7 object of class \code{Weibull1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"weibull1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the domain \eqn{(0, \infty)} for both, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Weibull distribution, parametrized by
-a scale \eqn{\mu} and a shape \eqn{\sigma}, both positive.
-}
-\details{
-\strong{Parametrization.} \eqn{\mu} is the \strong{scale} and not the mean.
-The mean is \eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a
-mean parametrization would make every derivative a derivative of the gamma
-function and its inverse. The scale-shape form keeps the whole family
-elementary, and \code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} reports the mean.
-This is the parametrization of \code{WEI} in \pkg{gamlss}.
+Builds the distribution object for the Weibull family parametrized by a
+scale \eqn{\mu > 0} and a shape \eqn{\sigma > 0}, with density
+\eqn{f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on
+\eqn{y > 0}. The returned object carries closed-form derivatives of the
+log-density to fourth order, observed and expected, in the parameters and in
+the response, and closed-form moments, so every generic of the toolkit
+answers without a numerical fallback.
 
-\strong{Probability density function:}
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. Both default to the logarithm,
+both parameters being positive.
+}
+\section{The parametrization}{
+The density on \eqn{y \in (0, \infty)} is
 \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
-  \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y > 0}
+  \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\},}
+the distribution function \eqn{F(q) = 1 - \exp\{-(q/\mu)^{\sigma}\}} and the
+quantile function \eqn{Q(p) = \mu\{-\log(1-p)\}^{1/\sigma}}. This is \code{WEI} in
+\pkg{gamlss}.
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}}
+\strong{\eqn{\mu} is the scale and not the mean.} The mean is
+\eqn{\mu\,\Gamma(1 + 1/\sigma)}, which involves the shape, so a mean
+parametrization would make every derivative a derivative of the gamma
+function and of its inverse. The scale-shape form keeps the whole family
+elementary; \code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}} reports the mean, and
+\code{\link[=weibull3_distrib]{weibull3_distrib()}} is the parametrization by a quantile for a reader who
+wants a location that is one.
+}
 
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu\left\{-\log(1-p)\right\}^{1/\sigma}}
-
-\strong{Score}, with \eqn{u = (y/\mu)^{\sigma}} and \eqn{z = y/\mu}:
+\section{Derivatives}{
+Write \eqn{z = y/\mu} and \eqn{u = z^{\sigma}}. The score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\sigma}{\mu}(u - 1),
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
-        + (1 - u)\log z}
-
-\strong{Observed Hessian:}
+        + (1 - u)\log z,}
+the observed Hessian
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2}
         = \dfrac{\sigma}{\mu^2}\left\{1 - (1 + \sigma) u\right\}, \quad
       \dfrac{\partial^2 \ell}{\partial \sigma^2}
         = -\dfrac{1}{\sigma^2} - u (\log z)^2, \quad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
-        = \dfrac{u - 1 + \sigma u \log z}{\mu}}
+        = \dfrac{u - 1 + \sigma u \log z}{\mu},}
+and its expectation
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
+        = -\dfrac{\sigma^2}{\mu^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right]
+        = -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}, \quad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu\,\partial \sigma}\right]
+        = \dfrac{1 - \gamma}{\mu},}
+with \eqn{\gamma} the Euler-Mascheroni constant. The mixed entry is not
+zero, so the scale and the shape are asymptotically correlated, unlike the
+mean and the standard deviation of a Gaussian.
 
-\strong{Expected Hessian:} see
-\code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}}. The substitution
-\eqn{u \sim \mathrm{Exp}(1)} turns every expectation into a derivative of
-\eqn{\Gamma} at 2.
-
-\strong{Moments.} With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is
-\eqn{\mu g_1} and the variance \eqn{\mu^2 (g_2 - g_1^2)}; the skewness and
-the excess kurtosis follow from \eqn{g_3} and \eqn{g_4} and do not depend on
-\eqn{\mu}.
-
-\strong{Special cases.} \eqn{\sigma = 1} is the exponential distribution with
-mean \eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh distribution. The hazard is
-increasing for \eqn{\sigma > 1} and decreasing for \eqn{\sigma < 1}, which is
-what the family is used for.
-
-\strong{Higher orders.} Third and fourth derivatives are closed form,
-observed and expected: with \eqn{u = (y/\mu)^{\sigma}} and
-\eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
-\eqn{Lu}, and every expectation is a derivative of \eqn{\Gamma} at 2.
-
-\strong{Parameter Domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+Third and fourth orders are closed form as well, observed and expected, in
+\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3.Weibull1Distrib()}} and \code{\link[=distrib_deriv4.Weibull1Distrib]{distrib_deriv4.Weibull1Distrib()}},
+as are the derivatives in the response,
+\code{\link[=distrib_grad_y.Weibull1Distrib]{distrib_grad_y.Weibull1Distrib()}} and \code{\link[=distrib_hess_y.Weibull1Distrib]{distrib_hess_y.Weibull1Distrib()}},
+and the mixed derivative \code{\link[=distrib_cross_y.Weibull1Distrib]{distrib_cross_y.Weibull1Distrib()}}.
 }
+
+\section{Why every expectation is elementary}{
+Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
+the parameters are. Every expectation any order needs is therefore a moment
+of \eqn{u} against a power of \eqn{\log u}, and each of those is a
+derivative of \eqn{\Gamma} at 2: \eqn{\mathbb{E}[u] = 1},
+\eqn{\mathbb{E}[u\log u] = 1 - \gamma},
+\eqn{\mathbb{E}[u(\log u)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The Gumbel
+family shares the substitution, \eqn{\exp(-\text{Gumbel})} being Weibull, so
+\code{\link[=gumbel_distrib]{gumbel_distrib()}} rests on the same three moments.
 }
+
+\section{Moments and shape}{
+With \eqn{g_k = \Gamma(1 + k/\sigma)}, the mean is \eqn{\mu g_1} and the
+variance \eqn{\mu^2(g_2 - g_1^2)}; the skewness and the excess kurtosis
+follow from \eqn{g_3} and \eqn{g_4} and do not depend on \eqn{\mu}, the
+scale being a multiplier. The hazard \eqn{f/(1-F)} is
+\eqn{(\sigma/\mu)(y/\mu)^{\sigma-1}}, increasing for \eqn{\sigma > 1} and
+decreasing for \eqn{\sigma < 1}. That monotone hazard is why the family is
+used in survival work.
+
+Two shapes are named families: \eqn{\sigma = 1} is the exponential with mean
+\eqn{\mu}, and \eqn{\sigma = 2} the Rayleigh. Both are exact, not limiting,
+and the example checks the first.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form: the shape solves
+\eqn{1/\hat\sigma + \overline{\log y} = \sum y_i^{\hat\sigma}\log y_i /
+\sum y_i^{\hat\sigma}} by iteration, and the scale follows from it as
+\eqn{\hat\mu = (n^{-1}\sum y_i^{\hat\sigma})^{1/\hat\sigma}}. The example
+checks that the fit satisfies the second of these.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the scale,
+\eqn{\sigma > 0} the shape and \eqn{\gamma} the Euler-Mascheroni constant.
+\eqn{\eta} is a parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- weibull1_distrib()
-d@params
+d
 
-theta <- list(mu = 2, sigma = 1.5)
-distrib_pdf(d, c(0.5, 1, 2), theta)
-distrib_gradient(d, c(0.5, 1, 2), theta)
+# The density is stats::dweibull with the arguments in this order.
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+all.equal(distrib_pdf(d, y, th), dweibull(y, shape = 1.5, scale = 2))
 
-# the scale is not the mean
-c(scale = theta$mu, mean = mean(d, theta))
+# The scale is not the mean: the mean carries a gamma function of the shape.
+c(scale = th$mu, mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
 
-# shape 1 is the exponential distribution
-max(abs(distrib_pdf(d, c(0.5, 1, 2), list(mu = 2, sigma = 1)) -
-        stats::dexp(c(0.5, 1, 2), rate = 1 / 2)))
+# Shape one is exactly the exponential with mean mu.
+all.equal(distrib_pdf(d, y, list(mu = 2, sigma = 1)), dexp(y, rate = 1 / 2))
+
+# The hazard increases with y above shape one and decreases below it.
+haz <- function(s) {
+  th <- list(mu = 2, sigma = s)
+  distrib_pdf(d, c(0.5, 1, 2, 4), th) /
+    distrib_cdf(d, c(0.5, 1, 2, 4), th, lower.tail = FALSE)
+}
+rbind(shape_0.5 = haz(0.5), shape_2.5 = haz(2.5))
+
+# Fitting recovers the parameters, and the scale satisfies the profile
+# identity given the fitted shape.
+set.seed(9)
+z <- distrib_rng(d, 2000, list(mu = 2, sigma = 1.5))
+fit <- fit_distrib(d, z)
+cf <- coef(fit)
+c(cf, profile_mu = mean(z^cf[["sigma"]])^(1 / cf[["sigma"]]))
 
 }
 \references{
 Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
-\emph{Continuous Univariate Distributions, Volume 1}, 2nd edition, chapter 21.
-Wiley.
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 21.
+Wiley, New York.
+
+Rigby, R. A. and Stasinopoulos, D. M. (2005).
+Generalized additive models for location, scale and shape.
+\emph{Journal of the Royal Statistical Society, Series C}, \strong{54}(3), 507-554.
 }
 \seealso{
-\code{\link[=weibull3_distrib]{weibull3_distrib()}}, \code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=weibull3_distrib]{weibull3_distrib()}} for the same law parametrized by a quantile;
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}, which is this family after a negative logarithm;
+\code{\link[=exponential_distrib]{exponential_distrib()}} and \code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the special case and
+the generalization; \code{\link[=gpd_distrib]{gpd_distrib()}} for another extreme-value family;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{Weibull1Distrib} for the class.
 }

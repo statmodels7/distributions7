@@ -4,25 +4,53 @@
 \alias{distrib_cdf.Weibull1Distrib}
 \title{Weibull Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Below the support the probability is
+0 in the lower tail and 1 in the upper.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Weibull distribution:
+Computes the Weibull distribution function
 \deqn{F(q; \mu, \sigma) = 1 - \exp\left\{-(q/\mu)^{\sigma}\right\}}
-The survival function is exact on the log scale, which is what a censored
-observation in the far tail needs.
+by calling \code{\link[stats:Weibull]{stats::pweibull()}}. The survival function is elementary,
+\eqn{1 - F(q) = \exp\{-(q/\mu)^{\sigma}\}}, so \code{lower.tail = FALSE} with
+\code{log.p = TRUE} returns \eqn{-(q/\mu)^{\sigma}} exactly and never forms the
+difference. That combination is what a right-censored observation far out in
+the tail contributes to a log-likelihood.
+}
+\examples{
+d <- weibull1_distrib()
+th <- list(mu = 2, sigma = 1.5)
+
+# The method is stats::pweibull at this parametrization.
+all.equal(distrib_cdf(d, c(0.5, 1.2, 3.0), th),
+          pweibull(c(0.5, 1.2, 3.0), shape = 1.5, scale = 2))
+
+# The log survival function is the exponent itself, with no cancellation.
+all.equal(distrib_cdf(d, 40, th, lower.tail = FALSE, log.p = TRUE),
+          -(40 / 2)^1.5)
+
+# There the survival probability itself has underflowed to zero.
+distrib_cdf(d, 40, th, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_quantile.Weibull1Distrib]{distrib_quantile.Weibull1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf.Weibull1Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}} for the derivatives of this function
+in the parameters, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

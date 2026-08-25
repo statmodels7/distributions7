@@ -4,19 +4,41 @@
 \alias{distrib_rng.Weibull1Distrib}
 \title{Weibull Random Number Generator}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting. Both
+must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} positive draws.
 }
 \description{
-Generates random numbers by inverse transform, which is exact here because
-the quantile function is elementary.
+Draws \code{n} independent Weibull variates by calling \code{\link[stats:Weibull]{stats::rweibull()}}, which
+inverts the distribution function at a uniform draw. The inversion is exact
+because the quantile function is elementary, so the generalized
+ratio-of-uniforms fallback the base class supplies is bypassed. The draws
+depend on \code{.Random.seed} in the usual way.
+}
+\examples{
+d <- weibull1_distrib()
+
+# Same generator as stats::rweibull, so the same seed gives the same draws.
+set.seed(3)
+a <- distrib_rng(d, 3, list(mu = 2, sigma = 1.5))
+set.seed(3)
+identical(a, rweibull(3, shape = 1.5, scale = 2))
+
+# The sample mean recovers mu * gamma(1 + 1/sigma), not mu itself.
+set.seed(11)
+z <- distrib_rng(d, 2e4, list(mu = 2, sigma = 1.5))
+c(sample = mean(z), theoretical = 2 * gamma(1 + 1 / 1.5), scale = 2)
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_quantile.Weibull1Distrib]{distrib_quantile.Weibull1Distrib()}} for the function inverted,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

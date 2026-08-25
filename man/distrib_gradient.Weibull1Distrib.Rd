@@ -2,29 +2,73 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_gradient.Weibull1Distrib}
 \alias{distrib_gradient.Weibull1Distrib}
-\title{Weibull Analytical Gradient}
+\title{Weibull Score}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form first derivatives of the Weibull log-density, written in
-\eqn{u = (y/\mu)^{\sigma}} and \eqn{\log z = \log(y/\mu)}:
+Computes the first derivatives of the Weibull log-density with respect to
+the scale \eqn{\mu} and the shape \eqn{\sigma}, one value per observation,
+in closed form. Writing \eqn{z = y/\mu} and \eqn{u = z^{\sigma}},
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{\sigma}{\mu}(u - 1),
       \qquad
       \dfrac{\partial \ell}{\partial \sigma} = \dfrac{1}{\sigma}
-        + (1 - u)\log z}
+        + (1 - u)\log z.}
+Both components are polynomials in \eqn{u} and \eqn{u \log z}, so every
+higher order is elementary as well.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning, giving \eqn{\partial \ell / \partial \eta_j
+= h_j'(\eta_j)\, \partial \ell / \partial \theta_j}. This method always
+returns the parameter scale; the transformation happens in the generic.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the scale
+and \eqn{\sigma > 0} the shape. \eqn{\eta_j} is the coordinate of parameter
+\eqn{j} on the unconstrained scale of its link, and \eqn{h_j' = \partial
+\theta_j / \partial \eta_j} the chain-rule factor onto it.
+}
+
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+u <- (y / 2)^1.5
+all.equal(g$mu, 1.5 * (u - 1) / 2)
+all.equal(g$sigma, 1 / 1.5 + (1 - u) * log(y / 2))
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(5)
+z <- distrib_rng(d, 500, th)
+mle <- coef(fit_distrib(d, z))
+vapply(distrib_gradient(d, z, as.list(mle)), sum, numeric(1))
+
+# On the link scale both components are multiplied by h' = theta, both
+# parameters riding a log by default.
+distrib_gradient(d, y, th, scale = "link")$mu / g$mu
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} for their expectation,
+\code{\link[=distrib_grad_y.Weibull1Distrib]{distrib_grad_y.Weibull1Distrib()}} for the derivative in the response,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

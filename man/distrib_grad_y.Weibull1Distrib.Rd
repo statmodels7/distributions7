@@ -2,20 +2,56 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_grad_y.Weibull1Distrib}
 \alias{distrib_grad_y.Weibull1Distrib}
-\title{Weibull Response Derivative}
+\title{Weibull First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations. At or below zero the
+result is not defined and propagates as \code{NaN} or \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed form: \eqn{\partial \ell / \partial y = (\sigma - 1 - \sigma u)/y}.
+Computes \eqn{\partial \ell / \partial y}, the derivative of the Weibull
+log-density with respect to the response and not to a parameter, in closed
+form. With \eqn{u = (y/\mu)^{\sigma}},
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\sigma - 1 - \sigma u}{y}.}
+At \eqn{\sigma > 1} it vanishes at the mode
+\eqn{y = \mu\{(\sigma-1)/\sigma\}^{1/\sigma}}; at \eqn{\sigma \le 1} the
+density is decreasing on the whole support and the derivative is negative
+everywhere. This quantity is what a quantile residual's delta-method
+standard error and a change of variable in the response both need.
+}
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+
+# The closed form, written out.
+u <- (y / 2)^1.5
+all.equal(distrib_grad_y(d, y, th), (1.5 - 1 - 1.5 * u) / y)
+
+# It is the derivative of the log-density, so a central difference of the
+# log-density in y reproduces it.
+eps <- 1e-6
+all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
+           distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
+          distrib_grad_y(d, y, th), tolerance = 1e-6)
+
+# It vanishes at the mode, which exists because the shape exceeds one.
+mode <- 2 * ((1.5 - 1) / 1.5)^(1 / 1.5)
+c(mode = mode, deriv = distrib_grad_y(d, mode, th))
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_hess_y.Weibull1Distrib]{distrib_hess_y.Weibull1Distrib()}} for the second derivative in the
+response, \code{\link[=distrib_cross_y.Weibull1Distrib]{distrib_cross_y.Weibull1Distrib()}} for the mixed derivative in
+the response and the parameters,
+\code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the derivatives in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

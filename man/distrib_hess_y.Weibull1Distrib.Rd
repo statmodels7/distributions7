@@ -2,21 +2,54 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_hess_y.Weibull1Distrib}
 \alias{distrib_hess_y.Weibull1Distrib}
-\title{Weibull Response Second Derivative}
+\title{Weibull Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations. At or below zero the
+result is not defined and propagates as \code{NaN} or \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed form:
-\eqn{\partial^2 \ell / \partial y^2 = -(\sigma - 1)(1 + \sigma u)/y^2}.
+Computes \eqn{\partial^2 \ell / \partial y^2}, the second derivative of the
+Weibull log-density with respect to the response, in closed form. With
+\eqn{u = (y/\mu)^{\sigma}},
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2}
+  = -\dfrac{(\sigma - 1)(1 + \sigma u)}{y^2}.}
+The sign is the shape's: at \eqn{\sigma > 1} the log-density is concave on
+the whole support, at \eqn{\sigma < 1} convex, and at \eqn{\sigma = 1}, the
+exponential case, exactly zero, the log-density being linear in \eqn{y}
+there.
+}
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+
+# The closed form, written out.
+u <- (y / 2)^1.5
+all.equal(distrib_hess_y(d, y, th), -(1.5 - 1) * (1 + 1.5 * u) / y^2)
+
+# A central difference of the first derivative reproduces it.
+eps <- 1e-5
+all.equal((distrib_grad_y(d, y + eps, th) -
+           distrib_grad_y(d, y - eps, th)) / (2 * eps),
+          distrib_hess_y(d, y, th), tolerance = 1e-6)
+
+# At shape one the log-density is linear in y, so the curvature is exactly
+# zero; at a smaller shape it turns positive.
+rbind(shape_1.0 = distrib_hess_y(d, y, list(mu = 2, sigma = 1)),
+      shape_0.6 = distrib_hess_y(d, y, list(mu = 2, sigma = 0.6)))
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_grad_y.Weibull1Distrib]{distrib_grad_y.Weibull1Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the second derivatives
+in the parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

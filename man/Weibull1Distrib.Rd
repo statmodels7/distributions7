@@ -2,7 +2,7 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{Weibull1Distrib}
 \alias{Weibull1Distrib}
-\title{S7 Class for the Weibull Distribution}
+\title{Weibull Distribution Class, Scale and Shape}
 \usage{
 Weibull1Distrib(
   distrib_name = character(0),
@@ -36,34 +36,71 @@ Weibull1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Weibull1Distrib}.
+An S7 object of class \code{Weibull1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=weibull1_distrib]{weibull1_distrib()}} they hold \code{"weibull1"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "scale", sigma = "shape")}, \code{2}, the domain \eqn{(0, \infty)} for
+both parameters, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Weibull
-distribution, parametrized by a scale and a shape.
+The S7 class of the Weibull family parametrized by a scale \eqn{\mu > 0} and
+a shape \eqn{\sigma > 0}, with density
+\eqn{f(y) = (\sigma/\mu)(y/\mu)^{\sigma-1}\exp\{-(y/\mu)^{\sigma}\}} on the
+positive half line. It inherits from \code{continuous_distrib}, so it answers
+every generic of the \code{distrib} contract; the methods listed below are
+registered on it directly and everything else comes from the parent.
+
+Build one with \code{\link[=weibull1_distrib]{weibull1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_cdf.Weibull1Distrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.Weibull1Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_grad_y.Weibull1Distrib]{distrib_grad_y()}},
 \code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.Weibull1Distrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.Weibull1Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.Weibull1Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.Weibull1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.Weibull1Distrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_rng.Weibull1Distrib]{distrib_rng()}}.
+
+Four more are registered on the class from other files:
+\code{\link[=distrib_cross_y.Weibull1Distrib]{distrib_cross_y()}} in
+\code{cross_derivatives_families.R},
+\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf()}} in
+\code{cdf_survival_higher.R}, and the four moments
+\code{\link[=mean.Weibull1Distrib]{mean()}}, \code{\link[=variance.Weibull1Distrib]{variance()}},
+\code{\link[=skewness.Weibull1Distrib]{skewness()}} and
+\code{\link[=kurtosis.Weibull1Distrib]{kurtosis()}} in \code{moments.R}.
 
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- weibull1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+d@bounds
+
+# Both parameters are positive, so both ride a log by default.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} to build one;
+\code{\link[=weibull3_distrib]{weibull3_distrib()}} for the same law parametrized by a quantile;
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}, which is this family on a negative log scale;
+\code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf.Weibull1Distrib()}} and
+\code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the closed forms it supplies.
 }

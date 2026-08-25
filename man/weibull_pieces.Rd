@@ -7,24 +7,33 @@
 weibull_pieces(y, mu, sigma)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, each positive. A non-positive
+value gives \code{NaN} for \code{lz} and propagates.}
 
-\item{mu}{The scale parameter.}
+\item{mu}{The scale parameter, a numeric vector of length 1 or of the length
+of \code{y}, strictly positive.}
 
-\item{sigma}{The shape parameter.}
+\item{sigma}{The shape parameter, a numeric vector of length 1 or of the
+length of \code{y}, strictly positive.}
 }
 \value{
-A list with \code{z}, \code{lz} and \code{u}.
+A named list of three numeric vectors: \code{z}, the ratio \eqn{y/\mu};
+\code{lz}, its logarithm; and \code{u}, the power \eqn{z^{\sigma}}. Each has the
+recycled length of the inputs.
 }
 \description{
 Returns the standardized variable \eqn{z = y/\mu}, its logarithm and the
-quantity \eqn{u = z^{\sigma}}, which every derivative of the Weibull
-log-density is a polynomial in.
+quantity \eqn{u = z^{\sigma}}. Every derivative of the Weibull log-density,
+in the parameters and in the response, is a polynomial in \eqn{u} and
+\eqn{u \log z}, so the three are computed once and shared.
 }
 \details{
-\eqn{u} is the substitution that makes the family tractable: under the model
+\eqn{u} is the substitution that makes the family tractable. Under the model
 \eqn{u \sim \mathrm{Exp}(1)} whatever the parameters are, so an expectation
 of any polynomial in \eqn{u} and \eqn{\log u} is a derivative of the gamma
-function at 2, which is what \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} uses.
+function at 2, and \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} rests on
+that. The logarithm is formed before the power so that \eqn{u} is computed
+as \eqn{\exp(\sigma \log z)}, which stays representable for a large shape at
+a moderate \eqn{z}.
 }
 \keyword{internal}

@@ -4,23 +4,48 @@
 \alias{distrib_quantile.Weibull1Distrib}
 \title{Weibull Quantile Function}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN} with
+a warning from \code{\link[stats:Weibull]{stats::qweibull()}}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is read as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles in \eqn{[0, \infty]}, of length
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
-Computes the quantile function for the Weibull distribution:
+Computes the Weibull quantile function
 \deqn{Q(p; \mu, \sigma) = \mu \left\{-\log(1 - p)\right\}^{1/\sigma}}
+by calling \code{\link[stats:Weibull]{stats::qweibull()}}. The distribution function is strictly
+increasing on \eqn{(0, \infty)}, so the inverse is exact and unique; the
+root-finding fallback the base class supplies is bypassed. \code{Q(0)} is 0 and
+\code{Q(1)} is \code{Inf}.
+}
+\examples{
+d <- weibull1_distrib()
+th <- list(mu = 2, sigma = 1.5)
+
+# The quartiles, and the round trip back through the distribution function.
+q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+q
+all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
+
+# The median is mu times (log 2)^(1/sigma), whatever the shape.
+all.equal(distrib_quantile(d, 0.5, th), 2 * log(2)^(1 / 1.5))
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_cdf.Weibull1Distrib]{distrib_cdf.Weibull1Distrib()}} for the function inverted here,
+\code{\link[=distrib_rng.Weibull1Distrib]{distrib_rng.Weibull1Distrib()}} for draws, and \code{\link[=distrib_quantile]{distrib_quantile()}} for
+the generic.
 }

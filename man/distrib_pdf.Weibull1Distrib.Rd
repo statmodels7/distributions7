@@ -4,23 +4,57 @@
 \alias{distrib_pdf.Weibull1Distrib}
 \title{Weibull Probability Density Function}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A value at or below zero is
+outside the support and gives a density of 0.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive; a zero or negative value gives
+\code{NaN} with a warning from \code{\link[stats:Weibull]{stats::dweibull()}}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Weibull distribution:
+Computes the Weibull density
 \deqn{f(y; \mu, \sigma) = \dfrac{\sigma}{\mu}
   \left(\dfrac{y}{\mu}\right)^{\sigma - 1}
-  \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}}
+  \exp\left\{-\left(\dfrac{y}{\mu}\right)^{\sigma}\right\}, \qquad y > 0,}
+by calling \code{\link[stats:Weibull]{stats::dweibull()}} at \code{shape = sigma} and \code{scale = mu}, so the
+accuracy and the underflow behavior are R's own. Outside the support the
+density is 0. With \code{log = TRUE} the logarithm is formed inside \code{dweibull()}
+and stays finite far into the upper tail, where the density itself
+underflows.
+}
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+
+# The method is stats::dweibull with the shape and the scale swapped into
+# this parametrization's order.
+all.equal(distrib_pdf(d, y, list(mu = 2, sigma = 1.5)),
+          dweibull(y, shape = 1.5, scale = 2))
+
+# Shape 1 is the exponential with mean mu, and shape 2 the Rayleigh.
+all.equal(distrib_pdf(d, y, list(mu = 2, sigma = 1)), dexp(y, rate = 1 / 2))
+
+# Below the support the density is zero; in the far upper tail it
+# underflows and its logarithm does not.
+distrib_pdf(d, c(-1, 0), list(mu = 2, sigma = 1.5))
+distrib_pdf(d, 60, list(mu = 2, sigma = 1.5))
+distrib_pdf(d, 60, list(mu = 2, sigma = 1.5), log = TRUE)
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_cdf.Weibull1Distrib]{distrib_cdf.Weibull1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic and
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} for the family.
 }

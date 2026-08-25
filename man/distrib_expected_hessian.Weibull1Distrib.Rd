@@ -2,40 +2,94 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_expected_hessian.Weibull1Distrib}
 \alias{distrib_expected_hessian.Weibull1Distrib}
-\title{Weibull Analytical Expected Hessian}
+\title{Weibull Expected Hessian}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is read, the
+expectation not depending on the data; the values are ignored.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is exact.}
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, each of length \code{length(y)} and each constant along it.
 }
 \description{
-Closed form. Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard
-exponential whatever the parameters are, so every expectation needed is a
-derivative of \eqn{\Gamma} at 2: \eqn{E[u] = 1}, \eqn{E[u\log u] = 1 - \gamma}
-and \eqn{E[u(\log u)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. Hence
-\deqn{E\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
         = -\dfrac{\sigma^2}{\mu^2},
       \qquad
-      E\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right]
-        = -\dfrac{1}{\sigma^2}\left\{(1-\gamma)^2 + \dfrac{\pi^2}{6}\right\},}
-\deqn{E\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right]
+        = -\dfrac{1}{\sigma^2}\left\{(1-\gamma)^2 + \dfrac{\pi^2}{6}\right\},
+      \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
         = \dfrac{1 - \gamma}{\mu},}
-with \eqn{\gamma} the Euler-Mascheroni constant. Because the closed form
-exists, the \code{approx} argument is ignored.
+with \eqn{\gamma \approx 0.5772} the Euler-Mascheroni constant. The mixed
+entry does not vanish, so the scale and the shape are not orthogonal and
+their estimates are asymptotically correlated.
+
+Because a closed form exists, \code{approx} and \code{nsim} are ignored: every
+strategy returns the same three numbers.
+}
+\section{Why the expectations are gamma derivatives}{
+Under the model \eqn{u = (Y/\mu)^{\sigma}} is standard exponential whatever
+the parameters are, so every expectation the Hessian needs is a moment of
+\eqn{u} against a power of \eqn{\log u}, and each of those is a derivative
+of \eqn{\Gamma} at 2:
+\deqn{\mathbb{E}[u] = 1, \qquad
+      \mathbb{E}[u \log u] = 1 - \gamma, \qquad
+      \mathbb{E}[u (\log u)^2] = (1-\gamma)^2 + \dfrac{\pi^2}{6} - 1.}
+Substituting \eqn{\log z = (\log u)/\sigma} into the three observed
+components gives the display above. The Gumbel family shares the
+substitution, since \eqn{\exp(-\text{Gumbel})} is Weibull, so
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}} rests on the same three moments.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu > 0} the scale,
+\eqn{\sigma > 0} the shape and \eqn{\gamma} the Euler-Mascheroni constant,
+\code{-digamma(1)}.
+}
+
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+eh <- distrib_expected_hessian(d, y, th)
+vapply(eh, function(z) z[1], numeric(1))
+
+# The closed forms, written out.
+eg <- -digamma(1)
+c(mu_mu = -1.5^2 / 4,
+  sigma_sigma = -((1 - eg)^2 + pi^2 / 6) / 1.5^2,
+  mu_sigma = (1 - eg) / 2)
+
+# Averaging the observed Hessian over draws reaches the same three numbers.
+set.seed(4)
+z <- distrib_rng(d, 2e5, th)
+vapply(distrib_hessian(d, z, th), mean, numeric(1))
+
+# The strategy argument is inert, the expectation being exact.
+identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the quantity this is the
+expectation of, \code{\link[=distrib_gradient.Weibull1Distrib]{distrib_gradient.Weibull1Distrib()}} for the score, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -2,25 +2,81 @@
 % Please edit documentation in R/weibull1_distrib.R
 \name{distrib_deriv3.Weibull1Distrib}
 \alias{distrib_deriv3.Weibull1Distrib}
-\title{Weibull Analytical Third-Order Derivatives}
+\title{Weibull Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations. With \code{expected = TRUE}
+only its length is read.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored here, both branches being exact. Accepted so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}. The four name the distinct
+entries of a symmetric third-order array over two parameters.
 }
 \description{
-Closed-form third-order derivatives of the Weibull log-density (observed, or
-expected when \code{expected = TRUE}). With \eqn{u = (y/\mu)^{\sigma}} and
-\eqn{L = \log(y/\mu)}, every derivative is a polynomial in \eqn{u} and
-\eqn{L u}; the expected values use \eqn{E[u L^k] = \Gamma^{(k)}(2)/\sigma^k}.
+Computes the four distinct third derivatives of the Weibull log-density in
+\eqn{\mu} and \eqn{\sigma}, in closed form, observed at the data or expected
+under the model. With \eqn{z = y/\mu}, \eqn{u = z^{\sigma}} and
+\eqn{L = \log z}, each component is a polynomial in \eqn{u}, \eqn{uL},
+\eqn{uL^2} and \eqn{uL^3} with coefficients rational in \eqn{\mu} and
+\eqn{\sigma}; the pure-\eqn{\mu} component, for instance, is
+\deqn{\dfrac{\partial^3 \ell}{\partial \mu^3}
+  = \dfrac{\sigma}{\mu^3}\left\{-2 + (1+\sigma)(2+\sigma) u\right\}.}
+The expected values replace each \eqn{\mathbb{E}[u L^k]} by
+\eqn{\Gamma^{(k)}(2)/\sigma^k}, so \code{expected = TRUE} is exact here and needs
+no quadrature. The arithmetic runs in a compiled kernel decomposed over the
+elements of the output, so the result does not depend on the thread count.
+}
+\examples{
+d <- weibull1_distrib()
+y <- c(0.5, 1.2, 3.0)
+th <- list(mu = 2, sigma = 1.5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# The pure-mu component, written out.
+u <- (y / 2)^1.5
+all.equal(d3$mu_mu_mu, 1.5 * (-2 + 2.5 * 3.5 * u) / 8)
+
+# A central difference of the Hessian reproduces the mixed component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 2 + eps, sigma = 1.5))$mu_sigma
+dn <- distrib_hessian(d, y, list(mu = 2 - eps, sigma = 1.5))$mu_sigma
+all.equal((up - dn) / (2 * eps), d3$mu_mu_sigma, tolerance = 1e-6)
+
+# The expected branch is exact, and averaging the observed one over draws
+# reaches it.
+set.seed(6)
+z <- distrib_rng(d, 2e5, th)
+rbind(expected = vapply(distrib_deriv3(d, y, th, expected = TRUE),
+                        function(v) v[1], numeric(1)),
+      averaged = vapply(distrib_deriv3(d, z, th), mean, numeric(1)))
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=distrib_hessian.Weibull1Distrib]{distrib_hessian.Weibull1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.Weibull1Distrib]{distrib_deriv4.Weibull1Distrib()}} for the order above, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
