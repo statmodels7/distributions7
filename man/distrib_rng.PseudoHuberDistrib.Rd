@@ -29,9 +29,17 @@ not. The draws depend on \code{.Random.seed} in the usual way.
 d <- pseudohuber_distrib()
 th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 
-# The sample moments recover the location and the Bessel-ratio variance.
+# The draws are the quantile function at uniform variates, which is the
+# whole mechanism and the whole cost.
 set.seed(6)
-z <- distrib_rng(d, 2000, th)
+a <- distrib_rng(d, 5, th)
+set.seed(6)
+identical(a, distrib_quantile(d, runif(5), th))
+
+# A sample of a few hundred is comfortable, and its moments sit where the
+# sampling error of that size puts them.
+set.seed(6)
+z <- distrib_rng(d, 300, th)
 rbind(sample = c(mean(z), var(z)),
       theoretical = c(mean(d, th), variance(d, th)))
 }

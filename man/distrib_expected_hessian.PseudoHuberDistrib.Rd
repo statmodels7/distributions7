@@ -61,9 +61,11 @@ vapply(eh, function(v) v[1], numeric(1))
 c(eh$mu_sigma[1], eh$mu_nu[1])
 
 # Unlike the families that write their information out, this one reads
-# `approx`: a Monte Carlo strategy gives a different, noisier answer.
+# `approx`: a Monte Carlo strategy gives a different, noisier answer. It is
+# also the dear one, drawing from a generator that root-finds, so `nsim` is
+# kept small here.
 set.seed(1)
-vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000),
+vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
        function(v) v[1], numeric(1))
 }
 \seealso{

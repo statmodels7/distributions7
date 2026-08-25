@@ -165,11 +165,11 @@ rbind(residual = rr,
 # The expected information is a quadrature here, and the family says so.
 distributions7:::expected_hessian_exact(d)
 
-# Fitting recovers the location and the scale; the shape is the hardest of
-# the three to pin down from a moderate sample.
-set.seed(5)
-z <- distrib_rng(d, 600, list(mu = 1, sigma = 2, nu = 2))
-coef(fit_distrib(d, z))
+# The quantile inverts the distribution function, and the generator
+# inverts it at uniform variates, so a draw costs a root-find over a
+# quadrature. That is what makes fitting this family dear.
+q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+rbind(quantile = q, back = distrib_cdf(d, q, th))
 
 }
 \references{

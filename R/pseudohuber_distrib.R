@@ -360,9 +360,17 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' d <- pseudohuber_distrib()
 #' th <- list(mu = 0.4, sigma = 1.2, nu = 2)
 #'
-#' # The sample moments recover the location and the Bessel-ratio variance.
+#' # The draws are the quantile function at uniform variates, which is the
+#' # whole mechanism and the whole cost.
 #' set.seed(6)
-#' z <- distrib_rng(d, 2000, th)
+#' a <- distrib_rng(d, 5, th)
+#' set.seed(6)
+#' identical(a, distrib_quantile(d, runif(5), th))
+#'
+#' # A sample of a few hundred is comfortable, and its moments sit where the
+#' # sampling error of that size puts them.
+#' set.seed(6)
+#' z <- distrib_rng(d, 300, th)
 #' rbind(sample = c(mean(z), var(z)),
 #'       theoretical = c(mean(d, th), variance(d, th)))
 S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta) {
@@ -581,9 +589,11 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' c(eh$mu_sigma[1], eh$mu_nu[1])
 #'
 #' # Unlike the families that write their information out, this one reads
-#' # `approx`: a Monte Carlo strategy gives a different, noisier answer.
+#' # `approx`: a Monte Carlo strategy gives a different, noisier answer. It is
+#' # also the dear one, drawing from a generator that root-finds, so `nsim` is
+#' # kept small here.
 #' set.seed(1)
-#' vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 2000),
+#' vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
 #'        function(v) v[1], numeric(1))
 S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
   n <- length(y)
@@ -1041,11 +1051,11 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' # The expected information is a quadrature here, and the family says so.
 #' distributions7:::expected_hessian_exact(d)
 #'
-#' # Fitting recovers the location and the scale; the shape is the hardest of
-#' # the three to pin down from a moderate sample.
-#' set.seed(5)
-#' z <- distrib_rng(d, 600, list(mu = 1, sigma = 2, nu = 2))
-#' coef(fit_distrib(d, z))
+#' # The quantile inverts the distribution function, and the generator
+#' # inverts it at uniform variates, so a draw costs a root-find over a
+#' # quadrature. That is what makes fitting this family dear.
+#' q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+#' rbind(quantile = q, back = distrib_cdf(d, q, th))
 #'
 #' @seealso
 #' [laplace_distrib()] and [gaussian1_distrib()] for the two limits;
