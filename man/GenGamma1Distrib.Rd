@@ -2,7 +2,7 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{GenGamma1Distrib}
 \alias{GenGamma1Distrib}
-\title{S7 Class for the Generalized Gamma Distribution}
+\title{Generalized Gamma Distribution Class}
 \usage{
 GenGamma1Distrib(
   distrib_name = character(0),
@@ -36,26 +36,75 @@ GenGamma1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{GenGamma1Distrib}.
+An S7 object of class \code{GenGamma1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. For an object built by
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}} the properties hold \code{"gengamma1"}, \code{"univariate"},
+\code{c(0, Inf)}, \code{c("a", "d", "p")}, the interpretations
+\code{c(a = "scale", d = "shape", p = "power")}, \code{3}, and three domains
+\eqn{(0, \infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the
-generalized gamma distribution in Stacy's three-parameter form.
+The S7 class of the generalized gamma in Stacy's three-parameter form: a
+scale \eqn{a > 0} and two shapes \eqn{d > 0} and \eqn{p > 0}, with density
+\eqn{f(y) = p\,y^{d-1}e^{-(y/a)^p}/\{a^d\Gamma(d/p)\}} on \eqn{y > 0}.
+
+It is the flexible family for a positive response, and it nests four others
+exactly: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
+exponential at \eqn{d = p = 1} and the half-normal at
+\eqn{a = \sqrt2, d = 1, p = 2}. Choosing between them becomes something to
+estimate.
+
+Build one with \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, which supplies the three link
+functions. This page documents the raw S7 constructor, which validates none
+of the relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered in this file, the last three compiled:
+\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng()}},
 \code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Registered elsewhere: the third and fourth orders in \code{gengamma1_higher.R};
+the response derivatives in \code{cross_derivatives_families.R}; the mixed one in
+\code{cross_derivatives_simple.R}; and the four moments in \code{moments.R}.
 }
 
+\section{The one representation everything rests on}{
+
+\eqn{u = (Y/a)^p} is Gamma with shape \eqn{k = d/p} and unit rate, exactly.
+The distribution function is that Gamma's, the quantile function inverts it,
+the generator raises a Gamma draw to the power \eqn{1/p}, and every
+expectation the information needs is a moment of \eqn{u}. It is the same
+device the Weibull and the Gumbel use, where the corresponding variable is
+standard exponential.
+}
+
+\examples{
+d <- gengamma1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_interpretation
+
+# All three parameters are positive, so all three ride a log link.
+vapply(d@link_params, function(l) l@link_name, character(1))
+
+# Three of the four exact special cases, at one point each.
+y <- c(0.5, 1.5, 4)
+rbind(gamma = distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
+              dgamma(y, shape = 3, scale = 2),
+      weibull = distrib_pdf(d, y, list(a = 2, d = 1.5, p = 1.5)) -
+                dweibull(y, shape = 1.5, scale = 2),
+      half_normal = distrib_pdf(d, y, list(a = sqrt(2), d = 1, p = 2)) -
+                    2 * dnorm(y))
+}
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}} to build one;
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}} and \code{\link[=exponential_distrib]{exponential_distrib()}} for
+the families it nests; \code{\link[=lognormal1_distrib]{lognormal1_distrib()}} for the limit it approaches.
 }

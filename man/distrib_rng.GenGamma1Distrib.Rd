@@ -4,19 +4,41 @@
 \alias{distrib_rng.GenGamma1Distrib}
 \title{Generalized Gamma Random Generation}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of length \code{n}; a component of length 1 is recycled,
+so a parameter varying by observation draws one value per observation from
+its own member of the family.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-A Gamma draw raised to the power \eqn{1/p} and scaled, which is the
-representation the family is defined by rather than an approximation of it.
+Draws by the family's own defining representation: a Gamma variate with
+shape \eqn{d/p} and unit rate, raised to the power \eqn{1/p} and multiplied
+by \eqn{a}. It is exact and costs one \code{rgamma} call, so neither inversion
+nor the base class's ratio-of-uniforms fallback is involved.
+}
+\examples{
+d <- gengamma1_distrib()
+th <- list(a = 2, d = 3, p = 1.5)
+
+set.seed(51)
+x <- distrib_rng(d, 2e5, th)
+
+# Two moments against their closed forms.
+rbind(sample = c(mean(x), var(x)),
+      theory = c(mean(d, th), variance(d, th)))
+
+# The representation, written out at the same seed.
+set.seed(51)
+all.equal(x, 2 * rgamma(2e5, shape = 3 / 1.5)^(1 / 1.5))
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf.GenGamma1Distrib()}} for the density the draws follow,
+\code{\link[=mean.GenGamma1Distrib]{mean.GenGamma1Distrib()}} for the moments they reproduce, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

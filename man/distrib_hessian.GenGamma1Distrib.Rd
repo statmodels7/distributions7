@@ -2,26 +2,65 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_hessian.GenGamma1Distrib}
 \alias{distrib_hessian.GenGamma1Distrib}
-\title{Generalized Gamma Analytical Observed Hessian}
+\title{Generalized Gamma Observed Hessian}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, strictly positive.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{y}. All three must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list of second-derivative components.
+A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{a_a}, \code{d_d}, \code{p_p}, \code{a_d}, \code{a_p}, \code{d_p}.
 }
 \description{
-The second derivatives of the same expressions. The mixed
-\eqn{a}--\eqn{d} component is \eqn{-1/a}, free of the data, the scale and
-the first shape entering the log-density through \eqn{-d\log a} alone.
+Computes the six second derivatives of the log-density in closed form, in a
+compiled kernel, by differentiating the expressions of
+\code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}} again.
+
+One component is worth naming: the mixed \eqn{a}-\eqn{d} entry is
+\eqn{-1/a}, free of the data. The scale and the first shape meet in the
+log-density only through the term \eqn{-d\log a}, which is bilinear, so
+its second derivative carries no observation.
+}
+\section{Notation}{
+
+\eqn{w = (y/a)^p}, \eqn{L = \log(y/a)}, \eqn{k = d/p}, and \eqn{\psi},
+\eqn{\psi'} are the digamma and trigamma functions.
+}
+
+\examples{
+d <- gengamma1_distrib()
+y <- c(0.5, 1.5, 4)
+th <- list(a = 2, d = 3, p = 1.5)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# The scale-shape entry is -1/a at every observation.
+h$a_d
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$d_p,
+      numeric = (distrib_gradient(d, y, list(a = 2, d = 3,
+                                             p = 1.5 + eps))$d -
+                 distrib_gradient(d, y, list(a = 2, d = 3,
+                                             p = 1.5 - eps))$d) / (2 * eps))
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}} for the order below,
+\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} for the order above,
+\code{\link[=distrib_expected_hessian.GenGamma1Distrib]{distrib_expected_hessian.GenGamma1Distrib()}} for its expectation, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

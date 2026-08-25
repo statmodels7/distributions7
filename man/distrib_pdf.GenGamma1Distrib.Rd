@@ -4,21 +4,73 @@
 \alias{distrib_pdf.GenGamma1Distrib}
 \title{Generalized Gamma Density}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. A non-positive value gives a
+density of 0.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{y}. All three must be strictly
+positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of the length of the recycled inputs.
 }
 \description{
-\deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\, y^{d-1} e^{-(y/a)^{p}},
-      \qquad y > 0}
+Computes the generalized gamma density in Stacy's form,
+\deqn{f(y; a, d, p) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\, y^{d-1}
+      e^{-(y/a)^{p}}, \qquad y > 0,}
+and 0 at or below zero. The compiled kernel works on the log scale
+throughout, so a large \eqn{d} does not form \eqn{a^d} or \eqn{y^{d-1}}
+separately.
+
+The three parameters do three separate things: \eqn{a} sets the scale,
+\eqn{d} the behaviour near the origin (the density vanishes there for
+\eqn{d > 1} and diverges for \eqn{d < 1}), and \eqn{p} the weight of the
+upper tail.
+}
+\section{Notation}{
+
+\eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes, and
+\eqn{\Gamma} the gamma function. \eqn{a} is not the mean, which is
+\eqn{a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}.
+}
+
+\examples{
+d <- gengamma1_distrib()
+y <- c(0.5, 1.5, 4)
+th <- list(a = 2, d = 3, p = 1.5)
+
+# The formula written out.
+all.equal(distrib_pdf(d, y, th),
+          1.5 / (2^3 * gamma(3 / 1.5)) * y^(3 - 1) * exp(-(y / 2)^1.5))
+
+# It integrates to one.
+integrate(function(v) distrib_pdf(d, v, th), 0, Inf)$value
+
+# The four exact special cases.
+c(gamma = max(abs(distrib_pdf(d, y, list(a = 2, d = 3, p = 1)) -
+                  dgamma(y, shape = 3, scale = 2))),
+  weibull = max(abs(distrib_pdf(d, y, list(a = 2, d = 1.5, p = 1.5)) -
+                    dweibull(y, shape = 1.5, scale = 2))),
+  exponential = max(abs(distrib_pdf(d, y, list(a = 2, d = 1, p = 1)) -
+                        dexp(y, rate = 1 / 2))),
+  half_normal = max(abs(distrib_pdf(d, y, list(a = sqrt(2), d = 1, p = 2)) -
+                        2 * dnorm(y))))
+
+# d decides what happens at the origin.
+distrib_pdf(d, 1e-8, list(a = 2, d = c(0.5, 1, 2), p = 1.5))
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf.GenGamma1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.GenGamma1Distrib]{distrib_gradient.GenGamma1Distrib()}} for the score, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+for the generic.
 }

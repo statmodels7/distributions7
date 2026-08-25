@@ -4,24 +4,63 @@
 \alias{distrib_cdf.GenGamma1Distrib}
 \title{Generalized Gamma Distribution Function}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A negative value is clamped to zero
+before the transformation, so the value there is 0.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{q}. All three must be strictly
+positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value
+is \eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}, computed by
+\code{pgamma} rather than as one minus the other.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms with \code{log.p = TRUE}, of the length of the recycled inputs.
 }
 \description{
-\eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularized lower incomplete gamma
-function, since \eqn{(Y/a)^{p}} is Gamma with shape \eqn{d/p} and unit
-rate.
+Computes \eqn{F(q) = P(d/p,\, (q/a)^{p})}, the regularized lower incomplete
+gamma function. The identity is exact:
+\eqn{u = (Y/a)^p} is Gamma with shape \eqn{d/p} and unit rate, so the
+distribution function is that Gamma's evaluated at \eqn{(q/a)^p} and the
+whole computation is one \code{pgamma} call.
+
+\code{lower.tail} and \code{log.p} are passed straight to \code{pgamma}, so the survival
+function and the log-probability keep the accuracy R's own routine gives
+them in the far tail.
+}
+\section{Notation}{
+
+\eqn{a} is the scale, \eqn{d} and \eqn{p} the shapes, and
+\eqn{P(s, x) = \gamma(s,x)/\Gamma(s)} the regularized lower incomplete gamma
+function, which is \code{pgamma(x, shape = s)} in R.
+}
+
+\examples{
+d <- gengamma1_distrib()
+q <- c(0.5, 1.5, 4)
+th <- list(a = 2, d = 3, p = 1.5)
+
+# The identity written out.
+all.equal(distrib_cdf(d, q, th), pgamma((q / 2)^1.5, shape = 3 / 1.5))
+
+# Against a direct quadrature of the density.
+rbind(gamma_identity = distrib_cdf(d, q, th),
+      quadrature = vapply(q, function(u)
+        integrate(function(v) distrib_pdf(d, v, th), 0, u)$value, 0))
+
+# The upper tail keeps its digits where one minus the lower one would not.
+c(upper = distrib_cdf(d, 20, th, lower.tail = FALSE),
+  one_minus_lower = 1 - distrib_cdf(d, 20, th))
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_quantile.GenGamma1Distrib]{distrib_quantile.GenGamma1Distrib()}}, which inverts this,
+\code{\link[=distrib_pdf.GenGamma1Distrib]{distrib_pdf.GenGamma1Distrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}} for
+the generic.
 }

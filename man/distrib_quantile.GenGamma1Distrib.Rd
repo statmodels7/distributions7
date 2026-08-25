@@ -4,23 +4,53 @@
 \alias{distrib_quantile.GenGamma1Distrib}
 \title{Generalized Gamma Quantile Function}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms when \code{log.p = TRUE}. Note that the family's third parameter is
+also called \code{p}; here the argument is the probability, and the parameter
+is read from \code{theta}.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of the probabilities. All three must
+be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is the survival probability, passed
+through to \code{qgamma}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the length of the recycled
+inputs, strictly positive for a probability in \eqn{(0, 1)}.
 }
 \description{
-\eqn{Q(u) = a\,\{Q_{\Gamma}(u; d/p)\}^{1/p}}, inverting the same
-representation the distribution function uses.
+Computes \eqn{Q(u) = a\,\{Q_\Gamma(u;\, d/p)\}^{1/p}}, inverting the same
+representation the distribution function uses: \eqn{(Y/a)^p} is Gamma with
+shape \eqn{d/p}, so its quantile raised to the power \eqn{1/p} and scaled by
+\eqn{a} is the generalized gamma's. The whole computation is one \code{qgamma}
+call, and nothing is inverted by root finding.
+}
+\examples{
+d <- gengamma1_distrib()
+th <- list(a = 2, d = 3, p = 1.5)
+
+# The round trip through the distribution function.
+y <- c(0.5, 1.5, 4)
+all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
+
+# The identity written out.
+u <- c(0.1, 0.5, 0.9)
+all.equal(distrib_quantile(d, u, th),
+          2 * qgamma(u, shape = 3 / 1.5)^(1 / 1.5))
+
+# The median sits below the mean, the family being right-skewed here.
+c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_cdf.GenGamma1Distrib]{distrib_cdf.GenGamma1Distrib()}}, which it inverts,
+\code{\link[=distrib_rng.GenGamma1Distrib]{distrib_rng.GenGamma1Distrib()}} for draws, and \code{\link[=distrib_quantile]{distrib_quantile()}} for
+the generic.
 }

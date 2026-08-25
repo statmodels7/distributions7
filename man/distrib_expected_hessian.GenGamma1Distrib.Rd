@@ -2,32 +2,87 @@
 % Please edit documentation in R/gengamma1_distrib.R
 \name{distrib_expected_hessian.GenGamma1Distrib}
 \alias{distrib_expected_hessian.GenGamma1Distrib}
-\title{Generalized Gamma Analytical Expected Hessian}
+\title{Generalized Gamma Expected Information}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector. Its values do not enter the result, which is an
+expectation; only its length does, through recycling.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{y}. All three must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored: the expectation is closed form. Accepted so that the
+signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{a_a}, \code{d_d}, \code{p_p}, \code{a_d}, \code{a_p}, \code{d_p}. Every entry is negative
+definite as a matrix and free of the data.
 }
 \description{
-Closed form. Every expectation the observed Hessian needs is a moment of
-\eqn{u = (Y/a)^{p}}, which is Gamma with shape \eqn{k = d/p} and unit rate:
-\eqn{\mathbb{E}[u] = k}, \eqn{\mathbb{E}[u\log u] = k\psi(k+1)} and
-\eqn{\mathbb{E}[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}}, so
-\code{approx} is ignored.
+Returns the expected second derivatives in closed form. Every expectation
+the observed Hessian needs is a moment of \eqn{u = (Y/a)^{p}}, which is
+Gamma with shape \eqn{k = d/p} and unit rate:
+\deqn{E[u] = k, \qquad E[u\log u] = k\,\psi(k+1), \qquad
+      E[u(\log u)^{2}] = k\{\psi(k+1)^{2} + \psi'(k+1)\}.}
+So \code{approx} and \code{nsim} are ignored and \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers
+\code{TRUE}. It is the same device the Weibull and the Gumbel use, where the
+corresponding variable is standard exponential and the expectations are
+derivatives of \eqn{\Gamma} at 2.
+}
+\section{Identification}{
+
+The three parameters are weakly identified together. \eqn{d} and \eqn{p}
+enter the density largely through their ratio \eqn{k = d/p}, and the
+information reflects that: measured at \eqn{a = 2, d = 3, p = 1.5} its
+eigenvalues are 4.72, 0.138 and 0.00321, a condition number of 1470, and the
+flat direction is \eqn{(0.79, -0.52, 0.33)} in \eqn{(a, d, p)}. A fit of all
+three wants several hundred observations; holding one with \code{\link[=fixed]{fixed()}} is
+often the better model.
+}
+
+\section{Notation}{
+
+\eqn{k = d/p}, \eqn{\psi} and \eqn{\psi'} the digamma and trigamma
+functions, and \eqn{u = (Y/a)^p} the Gamma-distributed transformation the
+family is built on.
+}
+
+\examples{
+d <- gengamma1_distrib()
+th <- list(a = 2, d = 3, p = 1.5)
+e <- distrib_expected_hessian(d, 0, th)
+names(e)
+
+# The scale-shape entry is the observed one, -1/a, the term being bilinear.
+c(expected = e$a_d, observed = -1 / 2)
+
+# The strategy argument is ignored, the expectation being closed form.
+identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
+distributions7:::expected_hessian_exact(d)
+
+# The information is ill conditioned: d and p act largely through d/p.
+nm <- c("a", "d", "p")
+M <- matrix(c(e$a_a, e$a_d, e$a_p, e$a_d, e$d_d, e$d_p,
+              e$a_p, e$d_p, e$p_p), 3, 3, dimnames = list(nm, nm))
+ev <- eigen(-M)
+c(eigenvalues = ev$values, condition = max(ev$values) / min(ev$values))
+round(ev$vectors[, 3], 3)   # the flat direction
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian.GenGamma1Distrib()}} for the observed curvature,
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} for the predicate, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
