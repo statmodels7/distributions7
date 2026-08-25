@@ -2,27 +2,82 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{distrib_gradient.BetaBinom2Distrib}
 \alias{distrib_gradient.BetaBinom2Distrib}
-\title{Beta-Binomial Analytical Gradient in Its Shapes}
+\title{Beta-Binomial Score in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{alpha} and \code{beta}, each of
+length \code{max(length(y), length(alpha), length(beta))}.
 }
 \description{
+Computes the first derivatives of the beta-binomial log-mass with respect to
+the two shapes, one value per observation, in closed form:
 \deqn{\dfrac{\partial\ell}{\partial\alpha}
-        = \psi(y+\alpha) - \psi(n+\alpha+\beta)
-          - \psi(\alpha) + \psi(\alpha+\beta)}
-and the same with \eqn{n-y} and \eqn{\beta}.
+        = \psi(y+\alpha) - \psi(\alpha)
+          - \psi(n+\alpha+\beta) + \psi(\alpha+\beta),}
+and the same with \eqn{n-y} and \eqn{\beta} in place of \eqn{y} and
+\eqn{\alpha}. The two share the term in \eqn{\alpha+\beta}, which is the
+only part a mixed second derivative keeps.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale; the transformation happens in the generic.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\alpha, \beta > 0} the
+two beta shapes, \eqn{n} the trial count and \eqn{\psi} the digamma
+function, \code{digamma()} in R.
+}
+
+\section{Large concentration}{
+
+Each digamma difference cancels to leading order as the shapes grow at a
+fixed ratio, and this method writes it out directly. Measured at
+\eqn{n = 10}, \eqn{y = 3} and a mean proportion of 0.4, the relative error
+against the limiting \eqn{-5/(2S)} with \eqn{S = \alpha+\beta} is
+\eqn{6\times10^{-8}} at \eqn{S = 10^8}, \eqn{4\times10^{-4}} at
+\eqn{10^{12}} and 1.8 at \eqn{10^{15}}. Where a concentration of that size
+is reachable, use \code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}}, whose compiled
+kernel forms the same difference as a sum of reciprocals and holds nine
+figures there.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+g <- distrib_gradient(d, 0:10, th)
+
+# The alpha component, written out.
+ds <- digamma(5) - digamma(15)
+all.equal(g$alpha, digamma(0:10 + 2) - digamma(2) + ds)
+
+# It is the derivative of the log-mass, so a central difference reproduces
+# it.
+eps <- 1e-6
+all.equal((distrib_pdf(d, 0:10, list(alpha = 2 + eps, beta = 3), log = TRUE) -
+           distrib_pdf(d, 0:10, list(alpha = 2 - eps, beta = 3), log = TRUE)) /
+            (2 * eps), g$alpha, tolerance = 1e-6)
+
+# The score has mean zero over the support: the first Bartlett identity.
+w <- distrib_pdf(d, 0:10, th)
+vapply(g, function(v) sum(w * v), numeric(1))
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian.BetaBinom2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.BetaBinom2Distrib]{distrib_expected_hessian.BetaBinom2Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}} for the same quantity in the mean
+and dispersion, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

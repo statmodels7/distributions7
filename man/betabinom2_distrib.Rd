@@ -2,49 +2,150 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{betabinom2_distrib}
 \alias{betabinom2_distrib}
-\title{Beta-Binomial Distribution in Its Shapes}
+\title{Beta-Binomial Distribution, Two Shapes}
 \usage{
 betabinom2_distrib(size, link_alpha = log_link(), link_beta = log_link())
 }
 \arguments{
-\item{size}{The number of trials, a constant of the distribution.}
+\item{size}{The number of trials \eqn{n}, a single positive integer. It is a
+constant of the distribution and not a parameter, as for
+\code{\link[=binomial_distrib]{binomial_distrib()}}, so an object cannot be reused across data sets whose
+group sizes differ. Anything else signals an error naming the argument.}
 
-\item{link_alpha}{Link function for \eqn{\alpha}. Defaults to the log.}
+\item{link_alpha}{A \code{link} object from \code{linkfunctions7} for the shape
+\eqn{\alpha}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 
-\item{link_beta}{Link function for \eqn{\beta}. Defaults to the log.}
+\item{link_beta}{A \code{link} object from \code{linkfunctions7} for the shape
+\eqn{\beta}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}}.
+An S7 object of class \code{BetaBinom2Distrib}, inheriting from
+\code{discrete_distrib}, with \code{size} the trial count, \code{distrib_name}
+\code{"betabinom2 [size=n]"}, \code{dimension} \code{"univariate"}, \code{bounds}
+\code{c(0, size)}, \code{params} \code{c("alpha", "beta")}, \code{n_params} \code{2},
+\code{params_bounds} the domain \eqn{(0, \infty)} for both, and \code{link_params}
+the two links given here.
 }
 \description{
-Creates a beta-binomial distribution object in its canonical
-parametrization, the two beta shapes.
+Builds the distribution object for the beta-binomial family in its canonical
+parametrization, the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0},
+on the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
+closed-form derivatives of the log-mass to fourth order and expectations
+that are exact finite sums over the support, so every generic of the toolkit
+answers without a quadrature.
+
+This is the same law as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which is written in a mean
+proportion and a dispersion. Use this one when the shapes themselves are the
+quantities of interest, and that one when a regression on the mean is.
 }
-\details{
-The same law as \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which carries a mean
-proportion and a dispersion: \eqn{\alpha = \mu/\sigma} and
-\eqn{\beta = (1-\mu)/\sigma}.
-
-Every derivative is a sum of polygamma functions, since the log-mass is a
-sum of log-gamma terms and differentiating it \eqn{k} times replaces each
-by \eqn{\psi^{(k-1)}}. The expectations are \strong{exact finite sums} over
-\eqn{\{0, \dots, n\}} rather than quadratures.
+\section{The parametrization}{
+The mass on \eqn{y \in \{0, \dots, n\}} is
+\deqn{P(Y=y) = \binom{n}{y}\frac{B(y+\alpha,\; n-y+\beta)}{B(\alpha, \beta)},}
+with \eqn{B} the beta function, and the family is the binomial with its
+success probability drawn from \eqn{\mathrm{Beta}(\alpha, \beta)}. Writing
+\eqn{S = \alpha + \beta} for the concentration, the moments are
+\deqn{\mathbb{E}[Y] = \frac{n\alpha}{S}, \qquad
+      \operatorname{Var}(Y) = \frac{n\alpha\beta\,(S+n)}{S^{2}(S+1)}.}
+The correspondence with \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} is \eqn{\mu = \alpha/S} and
+\eqn{\sigma = 1/S}, so a large concentration is a small dispersion and the
+binomial limit.
 }
-\section{The distribution}{
 
-\deqn{P(Y=y) = \binom{n}{y}\frac{B(y+\alpha,\; n-y+\beta)}{B(\alpha, \beta)}}
-on \eqn{y \in \{0, \dots, n\}}.
+\section{Derivatives}{
+The log-mass is a sum of log-gamma terms, so a derivative of order \eqn{k}
+replaces each by \eqn{\psi^{(k-1)}} and all four orders come from one
+routine, \code{\link[=betabinom2_derivs]{betabinom2_derivs()}}. A component naming both shapes keeps only
+the terms in \eqn{S} and is therefore free of the data at every order.
 
-\deqn{\mathbb{E}[Y] = \frac{n\alpha}{\alpha+\beta}, \qquad \operatorname{Var}(Y) = \frac{n\alpha\beta\,(\alpha+\beta+n)}{(\alpha+\beta)^{2}(\alpha+\beta+1)}}
+Every expectation is an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}:
+the support is bounded, so there is nothing to integrate over.
+}
+
+\section{The cancellation at a large concentration}{
+The two beta functions of the mass are each of magnitude \eqn{S\log S} while
+their difference is of order one, so writing the mass as that difference
+loses one digit per factor of ten in \eqn{S}. \code{\link[=betabinom_log_mass]{betabinom_log_mass()}}
+switches to a sum of logarithms past a measured threshold and stays exact:
+at \eqn{n = 10}, \eqn{y = 3} and \eqn{\alpha/S = 0.4}, the log-mass agrees
+with the binomial one to twelve figures at \eqn{S = 10^{14}}, where the
+direct route is wrong in the third decimal.
+
+\strong{The derivatives are not rewritten that way here}, and cede earlier than
+the mass. Measured at the same setting, the relative error of the
+\eqn{\alpha} score against its limit is \eqn{6\times10^{-8}} at
+\eqn{S = 10^8}, \eqn{4\times10^{-4}} at \eqn{10^{12}} and 1.8 at
+\eqn{10^{15}}. \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}'s compiled kernel forms the same
+differences as sums of reciprocals and holds nine figures at
+\eqn{S = 10^{15}}, so that is the parametrization to use where such a
+concentration is reachable.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+shape is closed form, and the two are strongly correlated at a large
+concentration, the data then determining their ratio far better than their
+size.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\alpha, \beta > 0} the
+two beta shapes, \eqn{S = \alpha+\beta} the concentration, \eqn{n} the trial
+count, \eqn{B} the beta function and \eqn{\psi^{(k)}} the polygamma
+functions. \eqn{\eta} is a parameter on the unconstrained scale of its link,
+with \eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- betabinom2_distrib(size = 10)
-theta <- list(alpha = 2, beta = 3)
-distrib_pdf(d, 0:10, theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+d
+
+# The mass over the support sums to one.
+th <- list(alpha = 2, beta = 3)
+sum(distrib_pdf(d, 0:10, th))
+
+# The closed-form moments, and the same numbers from the shapes.
+c(mean = mean(d, th), var = variance(d, th),
+  closed_mean = 10 * 2 / 5, closed_var = 10 * 2 * 3 * 15 / (25 * 6))
+
+# The same law as betabinom1 at mu = alpha / S and sigma = 1 / S.
+all.equal(distrib_pdf(d, 0:10, th),
+          distrib_pdf(betabinom1_distrib(size = 10), 0:10,
+                      list(mu = 0.4, sigma = 0.2)))
+
+# At a large concentration the mass is still exact against the binomial
+# limit, where forming it from two beta functions is not.
+S <- 1e14
+c(shipped = distrib_pdf(d, 3, list(alpha = 0.4 * S, beta = 0.6 * S),
+                        log = TRUE),
+  two_betas = lchoose(10, 3) +
+    (lbeta(3 + 0.4 * S, 7 + 0.6 * S) - lbeta(0.4 * S, 0.6 * S)),
+  binomial = dbinom(3, 10, 0.4, log = TRUE))
+
+# Fitting recovers both shapes.
+set.seed(5)
+z <- distrib_rng(d, 4000, th)
+coef(fit_distrib(d, z))
 
 }
+\references{
+Skellam, J. G. (1948). A probability distribution derived from the binomial
+distribution by regarding the probability of success as variable between the
+sets of trials. \emph{Journal of the Royal Statistical Society, Series B},
+\strong{10}(2), 257-261.
+
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Section 6.9.
+Wiley, Hoboken.
+}
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the same law in a mean proportion and a
+dispersion, which is the one to model a mean with;
+\code{\link[=binomial_distrib]{binomial_distrib()}} for the limit at a large concentration and
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the mixing law;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the shapes; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{BetaBinom2Distrib} for the class.
 }

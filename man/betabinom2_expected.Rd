@@ -7,22 +7,32 @@
 betabinom2_expected(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}} object.}
+\item{distrib}{A \code{\link[=BetaBinom2Distrib]{BetaBinom2Distrib()}} object, read for its \code{size} and
+\code{params}.}
 
-\item{y}{A numeric vector, used only for its length.}
+\item{y}{A numeric vector, used only for its length: the result is one
+constant per component, repeated to that length.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1, strictly positive.}
 
-\item{order}{The derivative order.}
+\item{order}{The derivative order, an integer from 2 to 4.}
 }
 \value{
-A named list of component vectors.
+A named list of component vectors, each of length \code{length(y)} and
+constant along it. At order 2 the names and their order are
+\code{\link[=hess_names]{hess_names()}}'s; above it they are \code{\link[=deriv_names]{deriv_names()}}'s.
 }
 \description{
-Averages a derivative over the support \eqn{\{0, \dots, n\}} weighted by the
-mass function, which is exact because the support is finite.
+Averages every component of a derivative of the given order over the support
+\eqn{\{0, \dots, n\}}, weighted by the mass function. The support being
+finite, the average is the expectation exactly, with no quadrature error and
+no sampling error.
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=distrib_expected_hessian.BetaBinom2Distrib]{distrib_expected_hessian.BetaBinom2Distrib()}},
+\code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} and
+\code{\link[=distrib_deriv4.BetaBinom2Distrib]{distrib_deriv4.BetaBinom2Distrib()}}, which call this;
+\code{\link[=betabinom2_derivs]{betabinom2_derivs()}} for the components being averaged.
 }
 \keyword{internal}

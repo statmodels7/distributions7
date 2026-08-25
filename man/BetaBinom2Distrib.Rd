@@ -2,7 +2,7 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{BetaBinom2Distrib}
 \alias{BetaBinom2Distrib}
-\title{S7 Class for the Beta-Binomial in Its Shapes}
+\title{Beta-Binomial Distribution Class, Two Shapes}
 \usage{
 BetaBinom2Distrib(
   distrib_name = character(0),
@@ -36,29 +36,72 @@ BetaBinom2Distrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{size}{The number of trials, a constant of the distribution.}
+\item{size}{The number of trials \eqn{n}, a single positive integer. It
+belongs to the object, so an object cannot be reused across data sets
+whose group sizes differ.}
 }
 \value{
-An object of class \code{BetaBinom2Distrib}.
+An S7 object of class \code{BetaBinom2Distrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Beyond \code{size} its properties are
+the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params} and
+\code{params_smooth}. For an object built by \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} they hold
+\code{"betabinom2 [size=n]"}, \code{"univariate"}, \code{c(0, size)},
+\code{c("alpha", "beta")}, the interpretations
+\code{c(alpha = "shape", beta = "shape")}, \code{2}, the domain
+\eqn{(0, \infty)} for both, and the two links.
 }
 \description{
-A subclass of \code{discrete_distrib} for the beta-binomial in
-its canonical parametrization, the two beta shapes.
+The S7 class of the beta-binomial family in its canonical parametrization,
+the two beta shapes \eqn{\alpha > 0} and \eqn{\beta > 0}, on the finite
+support \eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}, so it
+answers every generic of the \code{distrib} contract; the seven methods listed
+below are registered on it directly and everything else comes from the
+parent.
+
+The class carries an extra property beyond the parent's, \code{size}: the number
+of trials \eqn{n}, a constant of the distribution and not a parameter, as
+for \code{\link[=BinomialDistrib]{BinomialDistrib()}}. Build one with \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, which
+validates \code{size}, supplies the two link functions and fills the properties
+in. This page documents the raw S7 constructor, which validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.BetaBinom2Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.BetaBinom2Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.BetaBinom2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.BetaBinom2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.BetaBinom2Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.BetaBinom2Distrib]{distrib_rng()}}.
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+The four moments \code{\link[=mean.BetaBinom2Distrib]{mean()}},
+\code{\link[=variance.BetaBinom2Distrib]{variance()}},
+\code{\link[=skewness.BetaBinom2Distrib]{skewness()}} and
+\code{\link[=kurtosis.BetaBinom2Distrib]{kurtosis()}} are registered in \code{moments.R}.
+
+The distribution and quantile functions come from
+\code{\link[=discrete_distrib]{discrete_distrib()}} rather than from this class, and on a finite support
+the parent's cumulative sum of the mass is exact.
 }
 
+\examples{
+d <- betabinom2_distrib(size = 10)
+S7::S7_inherits(d, discrete_distrib)
+
+# The trial count is a property of the object, not an entry of theta.
+d@size
+d@bounds
+
+# Both shapes are positive, so both ride a log by default.
+d@params
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}} to build one;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the same law in a mean proportion and a
+dispersion; \code{\link[=beta1_distrib]{beta1_distrib()}} for the mixing law;
+\code{\link[=distrib_pdf.BetaBinom2Distrib]{distrib_pdf.BetaBinom2Distrib()}} for the mass function.
 }

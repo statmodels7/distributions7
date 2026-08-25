@@ -2,30 +2,62 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{distrib_expected_hessian.BetaBinom2Distrib}
 \alias{distrib_expected_hessian.BetaBinom2Distrib}
-\title{Beta-Binomial Analytical Expected Hessian in Its Shapes}
+\title{Beta-Binomial Expected Hessian in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts. Only its length is read, the
+expectation not depending on the data; the values are ignored.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1. Both must be strictly positive. One weighted sum is
+built for the whole call, so a parameter varying by observation is not
+supported here.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is an exact sum.}
+\item{approx}{Ignored here, the expectation being an exact sum. Accepted so
+that the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
+and \code{alpha_beta}, each of length \code{length(y)} and each constant along it.
 }
 \description{
-An \strong{exact finite sum} over the support, the family being discrete on
-\eqn{\{0, \dots, n\}}: the expectation is a weighted sum of at most
-\eqn{n+1} terms rather than a quadrature or a sample.
+Returns the expectation of the observed Hessian under the model,
+\eqn{\sum_{k=0}^{n} P(Y=k)\,\partial^2\ell/\partial\theta_i\partial\theta_j}
+evaluated at \eqn{y = k}. The family being discrete on
+\eqn{\{0, \dots, n\}}, that is an \strong{exact finite sum} of at most \eqn{n+1}
+terms, so the answer is the expectation to machine precision. \code{approx} and
+\code{nsim} are therefore ignored: every strategy returns the same three
+numbers.
+
+The mixed entry does not vanish, so the two shapes are not orthogonal and
+their estimates are asymptotically correlated.
+}
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+eh <- distrib_expected_hessian(d, 0:10, th)
+vapply(eh, function(v) v[1], numeric(1))
+
+# It is the mass-weighted sum of the observed Hessian over the support,
+# written out here by hand and agreeing exactly.
+w <- distrib_pdf(d, 0:10, th)
+vapply(distrib_hessian(d, 0:10, th), function(v) sum(w * v), numeric(1))
+
+# The strategy argument is inert, the expectation being an exact sum.
+identical(eh, distrib_expected_hessian(d, 0:10, th, approx = "mc",
+                                       nsim = 50))
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=betabinom2_expected]{betabinom2_expected()}} for the summation,
+\code{\link[=distrib_hessian.BetaBinom2Distrib]{distrib_hessian.BetaBinom2Distrib()}} for the quantity this is the
+expectation of, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

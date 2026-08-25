@@ -2,29 +2,37 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{betabinom2_derivs}
 \alias{betabinom2_derivs}
-\title{Every Component of a Beta-Binomial Derivative}
+\title{Every Component of a Beta-Binomial Derivative in the Shapes}
 \usage{
 betabinom2_derivs(y, a, b, n, order, params)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{a, b}{The two shapes.}
+\item{a, b}{The two shapes, each a numeric vector of length 1 or of the
+length of \code{y}, strictly positive.}
 
-\item{n}{The size.}
+\item{n}{The size, a single positive integer.}
 
-\item{order}{The derivative order.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 
-\item{params}{The parameter names.}
+\item{params}{The parameter names, \code{c("alpha", "beta")} for this family,
+used to build the component names and the multi-indices in the same
+order.}
 }
 \value{
-A named list of component vectors.
+A named list of component vectors, one per distinct multi-index of
+the given order: two at order 1, three at order 2, four at order 3 and
+five at order 4. Each has the recycled length of the inputs.
 }
 \description{
-Assembles the components of a derivative of the given order, named as
+Assembles the full set of derivative components of a given order by calling
+\code{\link[=betabinom2_component]{betabinom2_component()}} once per distinct multi-index, and names them as
 \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=betabinom2_component]{betabinom2_component()}} for one component,
+\code{\link[=deriv_names]{deriv_names()}} and \code{\link[=deriv_indices]{deriv_indices()}} for the enumeration, and
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the family.
 }
 \keyword{internal}

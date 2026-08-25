@@ -4,18 +4,42 @@
 \alias{distrib_rng.BetaBinom2Distrib}
 \title{Beta-Binomial Random Generation in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws. Note that the
+number of \strong{trials} is the object's \code{size} property, not this argument.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled.
+Both must be strictly positive.}
 }
 \value{
-A numeric vector of counts.
+A numeric vector of \code{n} counts in \eqn{\{0, \dots, size\}}.
 }
 \description{
-A beta draw for the probability, then a binomial draw.
+Draws \code{n} independent beta-binomial counts by the two-stage hierarchy the
+family is defined by: a success probability from
+\eqn{\mathrm{Beta}(\alpha, \beta)}, then a count from
+\eqn{\mathrm{Binomial}(n_{\mathrm{trials}}, p)} at that probability, one
+fresh probability per draw. The draws depend on \code{.Random.seed} in the usual
+way and consume two of R's streams per variate.
+}
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+
+# The sample moments recover the closed forms.
+set.seed(2)
+z <- distrib_rng(d, 2e5, th)
+rbind(sample = c(mean = mean(z), var = var(z)),
+      theoretical = c(mean(d, th), variance(d, th)))
+
+# The counts are bounded by the trial count, which is the object's size and
+# not the argument n.
+range(z)
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng.BetaBinom1Distrib()}} for the same draw in the mean and
+dispersion, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the shapes back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

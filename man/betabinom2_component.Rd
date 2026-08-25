@@ -2,40 +2,49 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{betabinom2_component}
 \alias{betabinom2_component}
-\title{Higher Derivatives of the Beta-Binomial in Its Shapes}
+\title{One Component of a Beta-Binomial Derivative in the Shapes}
 \usage{
 betabinom2_component(y, a, b, n, k, i, j)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{a, b}{The two shapes.}
+\item{a, b}{The two shapes, each a numeric vector of length 1 or of the
+length of \code{y}, strictly positive.}
 
-\item{n}{The size.}
+\item{n}{The size, a single positive integer.}
 
-\item{k}{The polygamma order, \code{order - 1}.}
+\item{k}{The polygamma order, one less than the derivative order: 0 for the
+score, 1 for the Hessian, and so on.}
 
 \item{i}{The number of \eqn{a} indices in the component.}
 
-\item{j}{The number of \eqn{b} indices.}
+\item{j}{The number of \eqn{b} indices. \code{i + j} is the derivative order.}
 }
 \value{
-A numeric vector.
+A numeric vector of the recycled length of the inputs. When both
+\code{i} and \code{j} are positive the value is constant along it, a mixed
+component not depending on \code{y}.
 }
 \description{
-The log-mass function is a sum of log-gamma terms, so its derivative of
-order \eqn{k} is the same sum with \eqn{\psi^{(k-1)}} in place of
-\eqn{\log\Gamma}. All four orders follow from one routine.
+Returns the derivative component of a given order and multi-index for the
+beta-binomial log-mass in its two shapes. The log-mass is a sum of log-gamma
+terms, so its derivative of order \eqn{k+1} is the same sum with
+\eqn{\psi^{(k)}} in place of \eqn{\log\Gamma}. All four orders come from
+this one routine.
 }
 \details{
 With \eqn{a} and \eqn{b} the shapes and \eqn{n} the size, the log-mass is
-\eqn{\log\Gamma(y+a) + \log\Gamma(n-y+b) - \log\Gamma(n+a+b)
-     - \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)} up to a constant.
-A derivative in \eqn{a} alone differentiates the first, third, fourth and
-sixth terms; one in \eqn{b} alone the second, third, fifth and sixth; a
-mixed one only the two terms carrying \eqn{a+b}.
+\deqn{\log\Gamma(y+a) + \log\Gamma(n-y+b) - \log\Gamma(n+a+b)
+      - \log\Gamma(a) - \log\Gamma(b) + \log\Gamma(a+b)}
+up to a term free of the parameters. A derivative in \eqn{a} alone
+differentiates the first, third, fourth and sixth terms; one in \eqn{b}
+alone the second, third, fifth and sixth; a \strong{mixed} one only the two
+terms carrying \eqn{a+b}, which is why a mixed component of any order is
+\eqn{-\psi^{(k)}(n+a+b) + \psi^{(k)}(a+b)} and free of the data.
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=betabinom2_derivs]{betabinom2_derivs()}}, which calls this for every multi-index of
+an order, and \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the family.
 }
 \keyword{internal}

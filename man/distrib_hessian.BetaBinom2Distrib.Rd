@@ -2,24 +2,67 @@
 % Please edit documentation in R/betabinom2_distrib.R
 \name{distrib_hessian.BetaBinom2Distrib}
 \alias{distrib_hessian.BetaBinom2Distrib}
-\title{Beta-Binomial Analytical Observed Hessian in Its Shapes}
+\title{Beta-Binomial Observed Hessian in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{alpha_alpha}, \code{beta_beta}
+and \code{alpha_beta}, each of length
+\code{max(length(y), length(alpha), length(beta))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-The same sums with the trigamma function.
+Computes the three distinct second derivatives of the beta-binomial log-mass
+with respect to the two shapes, one value per observation, in closed form.
+They are the score's digamma differences with the trigamma function in its
+place:
+\deqn{\dfrac{\partial^2\ell}{\partial\alpha^2}
+        = \psi_1(y+\alpha) - \psi_1(\alpha)
+          - \psi_1(n+S) + \psi_1(S), \qquad S = \alpha+\beta,}
+and the same with \eqn{n-y} and \eqn{\beta}. The \strong{mixed} component keeps
+only the shared term,
+\eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the log-mass
+separately otherwise, so it does not depend on the data at all and equals
+its own expectation at every observation.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\alpha, \beta > 0} the
+two beta shapes, \eqn{n} the trial count and \eqn{\psi_1} the trigamma
+function, \code{trigamma()} in R.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+h <- distrib_hessian(d, 0:10, th)
+names(h)
+
+# The mixed component is free of the data: one number, repeated.
+unique(h$alpha_beta)
+-trigamma(10 + 5) + trigamma(5)
+
+# A central difference of the score reproduces the pure-alpha component.
+eps <- 1e-5
+up <- distrib_gradient(d, 0:10, list(alpha = 2 + eps, beta = 3))$alpha
+dn <- distrib_gradient(d, 0:10, list(alpha = 2 - eps, beta = 3))$alpha
+all.equal((up - dn) / (2 * eps), h$alpha_alpha, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=distrib_gradient.BetaBinom2Distrib]{distrib_gradient.BetaBinom2Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.BetaBinom2Distrib]{distrib_expected_hessian.BetaBinom2Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

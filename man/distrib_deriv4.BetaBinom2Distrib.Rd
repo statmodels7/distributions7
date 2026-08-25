@@ -4,29 +4,65 @@
 \alias{distrib_deriv4.BetaBinom2Distrib}
 \title{Beta-Binomial Fourth-Order Derivatives in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
+\code{expected = TRUE} only its length is read.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the exact expectation under
+the model is returned in place of the value at the data. Defaults to
+\code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored.}
+\item{approx}{Ignored here, both branches being exact. Accepted so that the
+signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of five numeric vectors, \code{alpha_alpha_alpha_alpha},
+\code{alpha_alpha_alpha_beta}, \code{alpha_alpha_beta_beta},
+\code{alpha_beta_beta_beta} and \code{beta_beta_beta_beta}, each of length
+\code{max(length(y), length(alpha), length(beta))}.
 }
 \description{
-Closed form, with the expectation an exact sum over the
-support.
+Computes the five distinct fourth derivatives of the beta-binomial log-mass
+in the two shapes, in closed form, by the construction
+\code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} describes carried one order further:
+the same sum of terms with \eqn{\psi_3}, the third polygamma, in place of
+\eqn{\log\Gamma}.
+
+With \code{expected = TRUE} the expectation is an \strong{exact finite sum} over the
+support, so \code{approx} and \code{nsim} are ignored on both branches.
+}
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+d4 <- distrib_deriv4(d, 0:10, th)
+names(d4)
+
+# A central difference of the third order reproduces a mixed component.
+eps <- 1e-5
+up <- distrib_deriv3(d, 0:10, list(alpha = 2, beta = 3 + eps))$alpha_alpha_beta
+dn <- distrib_deriv3(d, 0:10, list(alpha = 2, beta = 3 - eps))$alpha_alpha_beta
+all.equal((up - dn) / (2 * eps), d4$alpha_alpha_beta_beta, tolerance = 1e-5)
+
+# The expected branch is the mass-weighted sum, exactly.
+w <- distrib_pdf(d, 0:10, th)
+rbind(expected = vapply(distrib_deriv4(d, 0, th, expected = TRUE),
+                        function(v) v[1], numeric(1)),
+      summed = vapply(d4, function(v) sum(w * v), numeric(1)))
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=distrib_deriv3.BetaBinom2Distrib]{distrib_deriv3.BetaBinom2Distrib()}} for the order below,
+\code{\link[=betabinom2_derivs]{betabinom2_derivs()}} for the assembly, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the
+generic.
 }

@@ -4,20 +4,58 @@
 \alias{distrib_pdf.BetaBinom2Distrib}
 \title{Beta-Binomial Mass Function in Its Shapes}
 \arguments{
-\item{distrib}{A \code{BetaBinom2Distrib} object.}
+\item{distrib}{A \code{BetaBinom2Distrib} object, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts. A value outside \eqn{\{0, \dots, n\}}
+or not an integer gives a mass of 0, or \code{-Inf} with \code{log = TRUE}.}
 
-\item{theta}{A list with \code{alpha} and \code{beta}.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. Both must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{length(y)}, one value per observation.
 }
 \description{
-\deqn{P(Y = y) = \binom{n}{y}\dfrac{B(y+\alpha, n-y+\beta)}{B(\alpha,\beta)}}
+Computes the beta-binomial mass in the two shapes,
+\deqn{P(Y = y) = \binom{n}{y}\dfrac{B(y+\alpha,\; n-y+\beta)}{B(\alpha,\beta)},}
+with \eqn{B} the beta function and \eqn{n} the object's \code{size}. The support
+is tested first, so a count outside \eqn{\{0, \dots, n\}} or not an integer
+returns a mass of 0 rather than reaching \code{\link[base:Special]{base::lchoose()}}, which would warn
+on a non-integer argument.
+
+The evaluation route is chosen by the concentration; see
+\code{\link[=betabinom_log_mass]{betabinom_log_mass()}}, which this calls.
+}
+\examples{
+d <- betabinom2_distrib(size = 10)
+th <- list(alpha = 2, beta = 3)
+
+# The mass over the whole support sums to one.
+m <- distrib_pdf(d, 0:10, th)
+round(m, 4)
+sum(m)
+
+# It is the beta-binomial mass written out.
+all.equal(m, choose(10, 0:10) * beta(0:10 + 2, 10 - 0:10 + 3) / beta(2, 3))
+
+# Off the support, and at a non-integer count, the mass is zero.
+distrib_pdf(d, c(-1, 2.5, 11), th)
+
+# The same law as betabinom1 at mu = alpha / (alpha + beta) and
+# sigma = 1 / (alpha + beta).
+all.equal(m, distrib_pdf(betabinom1_distrib(size = 10), 0:10,
+                         list(mu = 0.4, sigma = 0.2)))
 }
 \seealso{
-\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}
+\code{\link[=betabinom_log_mass]{betabinom_log_mass()}} for the two evaluation routes,
+\code{\link[=distrib_gradient.BetaBinom2Distrib]{distrib_gradient.BetaBinom2Distrib()}} for the derivatives of the
+log-mass, \code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf.BetaBinom1Distrib()}} for the same quantity in the
+mean and dispersion, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }
