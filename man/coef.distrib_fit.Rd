@@ -2,17 +2,44 @@
 % Please edit documentation in R/fit_distrib.R
 \name{coef.distrib_fit}
 \alias{coef.distrib_fit}
-\title{Extract Estimates from a Maximum-Likelihood Fit}
+\title{Estimates From a Maximum-Likelihood Fit}
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{scale}{Either \code{"parameter"} (default) or \code{"link"}.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[stats:coef]{stats::coef()}}.}
 }
 \value{
-A named numeric vector of estimates.
+A named numeric vector of length \code{length(object@distrib@params)},
+named and ordered as \code{object@distrib@params}.
 }
 \description{
-Extract Estimates from a Maximum-Likelihood Fit
+Returns the maximum likelihood estimates, on either of the two scales the
+fit carries. The default is the parameter scale, \eqn{\hat\theta}, which is
+what the family is interpreted in; \code{scale = "link"} gives
+\eqn{\hat\eta = g(\hat\theta)}, the point the optimizer actually reached.
+
+Neither is recomputed. Both were stored at the optimum, and each is the
+image of the other under the family's links, so \code{coef(fit, "link")} is
+\code{g(coef(fit))} component by component.
+}
+\examples{
+set.seed(1)
+d <- gaussian1_distrib()
+fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+
+coef(fit)
+coef(fit, scale = "link")
+
+# The scale carries a log link and the location the identity, so the link
+# scale is the logarithm of one estimate and the other unchanged.
+all.equal(coef(fit, "link")[["sigma"]], log(coef(fit)[["sigma"]]))
+all.equal(coef(fit, "link")[["mu"]], coef(fit)[["mu"]])
+
+}
+\seealso{
+\code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}} and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, which take the
+same \code{scale}; \code{\link[=fit_distrib]{fit_distrib()}} for the fit itself.
 }

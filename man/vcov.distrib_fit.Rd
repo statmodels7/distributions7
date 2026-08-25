@@ -6,13 +6,51 @@
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{scale}{Either \code{"parameter"} (default) or \code{"link"}.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[stats:vcov]{stats::vcov()}}.}
 }
 \value{
-A variance-covariance matrix.
+A symmetric numeric matrix of dimension
+\code{length(object@distrib@params)}, with both dimnames set to the parameter
+names. Its diagonal is the square of \code{object@se} on the parameter scale
+and of \code{object@se_eta} on the link scale.
 }
 \description{
-Variance-Covariance Matrix of a Maximum-Likelihood Fit
+Returns the estimated variance matrix of the estimates, on either scale.
+The one the fit computes is on the link scale: the inverse of the
+information at \eqn{\hat\eta}, the expected information where the fit used
+it or the family writes it out, and the observed Hessian otherwise. The
+parameter-scale matrix is its image under the delta method,
+\deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
+      \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
+the Jacobian being diagonal because each parameter carries its own scalar
+link.
+
+Every entry is \code{NA} when the information could not be evaluated or inverted
+at the optimum. The estimates stand in that case and only the uncertainty
+is missing.
+}
+\examples{
+set.seed(1)
+d <- gaussian1_distrib()
+fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+
+vcov(fit)
+sqrt(diag(vcov(fit)))          # the standard errors the fit reports
+all.equal(sqrt(diag(vcov(fit))), fit@se)
+
+# The parameter-scale matrix is the link-scale one under the delta method.
+J <- diag(c(1, coef(fit)[["sigma"]]))   # d theta / d eta: identity, then exp
+all.equal(unname(vcov(fit)), J \%*\% vcov(fit, "link") \%*\% J)
+
+# The location and the scale of a Gaussian are orthogonal, so the
+# off-diagonal entry is zero rather than merely small.
+vcov(fit)[["mu", "sigma"]]
+
+}
+\seealso{
+\code{\link[=coef.distrib_fit]{coef.distrib_fit()}} and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, which take the
+same \code{scale}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the information itself.
 }

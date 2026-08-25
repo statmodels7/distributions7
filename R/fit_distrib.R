@@ -908,13 +908,55 @@ fit_format_elapsed <- function(sec) {
   sprintf("%d min %02d s", as.integer(sec %/% 60), as.integer(round(sec %% 60)))
 }
 
-#' Print Method for Maximum-Likelihood Fits
+#' @title Print Method for Maximum-Likelihood Fits
 #'
 #' @name print.distrib_fit
+#'
+#' @description
+#' Shows a fit in four blocks: the family and the sample size with the
+#' log-likelihood and the two information criteria; what the optimizer did;
+#' the estimates on the parameter scale; and the same on the link scale, so
+#' that the interval the fit actually built is visible beside its image.
+#'
+#' The optimizer line names the method that produced the estimates, which is
+#' not always the one asked for, and the convergence line names the **stopping
+#' rule** that ended the run. Without that rule `converged` says nothing: it
+#' records that some test was met. A run that did not converge also prints
+#' the score per
+#' observation at the point it stopped at, which is the one number that says
+#' whether the point is usable.
+#'
+#' For a multivariate fit the coordinates of the covariance structure are
+#' replaced by the quantities the model is written in --- the location, the
+#' standard deviations and the correlations that [mv_summary()] derives ---
+#' because nobody reads a log-Cholesky coordinate. Any parameter the structure
+#' does not account for, such as the degrees of freedom of a \eqn{t}, is
+#' printed after them.
+#'
 #' @param x A [distrib_fit()] object.
-#' @param digits Number of significant digits. Defaults to 4.
-#' @param ... Unused.
-#' @return `x`, invisibly.
+#' @param digits Number of significant digits for every table and for the
+#'   header figures. Defaults to 4. Passed to [base::round()] for the tables,
+#'   so it is a number of decimal places there.
+#' @param ... Unused, accepted for compatibility with [base::print()].
+#'
+#' @return `x`, invisibly. Called for the output it writes.
+#'
+#' @examples
+#' set.seed(1)
+#' d <- gaussian1_distrib()
+#' y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
+#' print(fit_distrib(d, y))
+#'
+#' # The link-scale block is where the interval is built. On a Gamma written
+#' # in the mean and the dispersion both parameters carry a log link, so both
+#' # lower limits are positive by construction.
+#' g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
+#' print(g, digits = 3)
+#'
+#' @seealso [fit_distrib()] for the object;
+#'   [confint.distrib_fit()] to recompute the intervals at another level;
+#'   [plot.distrib_fit()] to compare the fit with the data;
+#'   [mv_summary()] for the multivariate table.
 S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   lo <- paste0(format((1 - x@level) / 2 * 100, trim = TRUE), "%")
   hi <- paste0(format((1 + x@level) / 2 * 100, trim = TRUE), "%")
@@ -1037,50 +1079,157 @@ S7::method(print, distrib_fit) <- function(x, digits = 4, ...) {
   invisible(x)
 }
 
-#' Extract Estimates from a Maximum-Likelihood Fit
+#' @title Estimates From a Maximum-Likelihood Fit
 #'
 #' @name coef.distrib_fit
+#'
+#' @description
+#' Returns the maximum likelihood estimates, on either of the two scales the
+#' fit carries. The default is the parameter scale, \eqn{\hat\theta}, which is
+#' what the family is interpreted in; `scale = "link"` gives
+#' \eqn{\hat\eta = g(\hat\theta)}, the point the optimizer actually reached.
+#'
+#' Neither is recomputed. Both were stored at the optimum, and each is the
+#' image of the other under the family's links, so `coef(fit, "link")` is
+#' `g(coef(fit))` component by component.
+#'
 #' @param object A [distrib_fit()] object.
-#' @param scale Either `"parameter"` (default) or `"link"`.
-#' @param ... Unused.
-#' @return A named numeric vector of estimates.
+#' @param scale Either `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()]; anything else signals an error.
+#' @param ... Unused, accepted for compatibility with [stats::coef()].
+#'
+#' @return A named numeric vector of length `length(object@distrib@params)`,
+#'   named and ordered as `object@distrib@params`.
+#'
+#' @examples
+#' set.seed(1)
+#' d <- gaussian1_distrib()
+#' fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+#'
+#' coef(fit)
+#' coef(fit, scale = "link")
+#'
+#' # The scale carries a log link and the location the identity, so the link
+#' # scale is the logarithm of one estimate and the other unchanged.
+#' all.equal(coef(fit, "link")[["sigma"]], log(coef(fit)[["sigma"]]))
+#' all.equal(coef(fit, "link")[["mu"]], coef(fit)[["mu"]])
+#'
+#' @seealso [vcov.distrib_fit()] and [confint.distrib_fit()], which take the
+#'   same `scale`; [fit_distrib()] for the fit itself.
 #' @importFrom stats coef
 S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link"), ...) {
   scale <- match.arg(scale)
   if (scale == "link") object@eta else object@coefficients
 }
 
-#' Variance-Covariance Matrix of a Maximum-Likelihood Fit
+#' @title Variance-Covariance Matrix of a Maximum-Likelihood Fit
 #'
 #' @name vcov.distrib_fit
+#'
+#' @description
+#' Returns the estimated variance matrix of the estimates, on either scale.
+#' The one the fit computes is on the link scale: the inverse of the
+#' information at \eqn{\hat\eta}, the expected information where the fit used
+#' it or the family writes it out, and the observed Hessian otherwise. The
+#' parameter-scale matrix is its image under the delta method,
+#' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
+#'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
+#' the Jacobian being diagonal because each parameter carries its own scalar
+#' link.
+#'
+#' Every entry is `NA` when the information could not be evaluated or inverted
+#' at the optimum. The estimates stand in that case and only the uncertainty
+#' is missing.
+#'
 #' @param object A [distrib_fit()] object.
-#' @param scale Either `"parameter"` (default) or `"link"`.
-#' @param ... Unused.
-#' @return A variance-covariance matrix.
+#' @param scale Either `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()]; anything else signals an error.
+#' @param ... Unused, accepted for compatibility with [stats::vcov()].
+#'
+#' @return A symmetric numeric matrix of dimension
+#'   `length(object@distrib@params)`, with both dimnames set to the parameter
+#'   names. Its diagonal is the square of `object@se` on the parameter scale
+#'   and of `object@se_eta` on the link scale.
+#'
+#' @examples
+#' set.seed(1)
+#' d <- gaussian1_distrib()
+#' fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+#'
+#' vcov(fit)
+#' sqrt(diag(vcov(fit)))          # the standard errors the fit reports
+#' all.equal(sqrt(diag(vcov(fit))), fit@se)
+#'
+#' # The parameter-scale matrix is the link-scale one under the delta method.
+#' J <- diag(c(1, coef(fit)[["sigma"]]))   # d theta / d eta: identity, then exp
+#' all.equal(unname(vcov(fit)), J %*% vcov(fit, "link") %*% J)
+#'
+#' # The location and the scale of a Gaussian are orthogonal, so the
+#' # off-diagonal entry is zero rather than merely small.
+#' vcov(fit)[["mu", "sigma"]]
+#'
+#' @seealso [coef.distrib_fit()] and [confint.distrib_fit()], which take the
+#'   same `scale`; [distrib_expected_hessian()] for the information itself.
 #' @importFrom stats vcov
 S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"), ...) {
   scale <- match.arg(scale)
   if (scale == "link") object@vcov_eta else object@vcov
 }
 
-#' Confidence Intervals for a Maximum-Likelihood Fit
+#' @title Confidence Intervals for a Maximum-Likelihood Fit
 #'
 #' @name confint.distrib_fit
+#'
 #' @description
-#' Returns Wald intervals. They are built symmetrically on the link scale, where
-#' the parameters are unconstrained, and mapped through \eqn{g^{-1}} when the
-#' parameter scale is requested, so that a limit can never leave the parameter's
-#' domain. The two ends are sorted after mapping, because a link need not be
-#' increasing.
+#' Returns Wald intervals for the estimated parameters. They are built
+#' symmetrically on the link scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,
+#' \mathrm{se}(\hat\eta)}, and mapped through \eqn{g^{-1}} when the parameter
+#' scale is asked for, so a limit cannot leave the parameter's domain: a scale
+#' has a positive lower limit and a probability stays inside \eqn{(0,1)}. The
+#' two ends are sorted after mapping, because a link need not be increasing.
+#'
+#' Any level is available from the stored estimate and standard error without
+#' refitting, so a fit computed at 95% answers at 99% for the cost of one
+#' quantile.
 #'
 #' @param object A [distrib_fit()] object.
-#' @param parm Parameters to report, given by name or position. Defaults to all.
-#' @param level Confidence level. Defaults to the level the fit was computed at,
-#'   and any other value is obtained from the stored estimates and standard
-#'   errors without refitting.
-#' @param scale Either `"parameter"` (default) or `"link"`.
-#' @param ... Unused.
-#' @return A two-column matrix of confidence limits, one row per parameter.
+#' @param parm Which parameters to report, by name or by position. Missing, the
+#'   default, reports all of them. A name that is not a parameter of this fit,
+#'   or a position outside the range, signals an error naming the argument.
+#' @param level Confidence level, a single number in \eqn{(0, 1)}. Defaults to
+#'   the level the fit was computed at, `object@level`.
+#' @param scale Either `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()]; anything else signals an error. It is the fourth
+#'   argument, so name it: `confint(fit, "sigma", "link")` passes `"link"`
+#'   as `level` and fails inside the quantile.
+#' @param ... Unused, accepted for compatibility with [stats::confint()].
+#'
+#' @return A numeric matrix with one row per requested parameter and two
+#'   columns, named for the two tail probabilities as percentages
+#'   (`"2.5%"` and `"97.5%"` at the default level). Row names are the
+#'   parameter names. Both entries are `NA` where the standard error is.
+#'
+#' @examples
+#' set.seed(1)
+#' d <- gaussian1_distrib()
+#' fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+#'
+#' confint(fit)
+#' confint(fit, level = 0.99)     # no refit: wider, from the same estimates
+#' confint(fit, "sigma")
+#'
+#' # The interval is built on the link scale and mapped back, so the lower
+#' # limit of a scale is exp() of a real number and cannot be negative.
+#' confint(fit, "sigma", scale = "link")
+#' lo_eta <- confint(fit, "sigma", scale = "link")[1]
+#' all.equal(confint(fit, "sigma")[1], exp(lo_eta), check.attributes = FALSE)
+#'
+#' # A probability near the boundary: 47 successes in 50 trials.
+#' fb <- fit_distrib(bernoulli_distrib(), rep(0:1, c(3, 47)))
+#' confint(fb)                    # inside (0, 1) by construction
+#'
+#' @seealso [coef.distrib_fit()] and [vcov.distrib_fit()], which take the same
+#'   `scale`; [fit_distrib()], whose `level` sets the default here.
 #' @importFrom stats confint qnorm
 S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
                                              scale = c("parameter", "link"), ...) {
@@ -1116,12 +1265,47 @@ S7::method(confint, distrib_fit) <- function(object, parm, level = object@level,
   out
 }
 
-#' Log-Likelihood of a Maximum-Likelihood Fit
+#' @title Log-Likelihood of a Maximum-Likelihood Fit
 #'
 #' @name logLik.distrib_fit
+#'
+#' @description
+#' Returns the maximized log-likelihood as a `logLik` object, so that
+#' [stats::AIC()], [stats::BIC()] and anything else in \pkg{stats} that reads
+#' one can be applied to a fit. The value is summed over observations and is
+#' **not** divided by \eqn{n}, whatever scaling the optimizer worked with.
+#'
+#' The `df` attribute is the number of estimated parameters, which for these
+#' fits is every parameter of the family: a fit estimates all of them, so
+#' nothing is held. The `nobs` attribute is `object@n`, the row count for a
+#' multivariate response and the length otherwise.
+#'
 #' @param object A [distrib_fit()] object.
-#' @param ... Unused.
-#' @return An object of class `logLik`.
+#' @param ... Unused, accepted for compatibility with [stats::logLik()].
+#'
+#' @return An object of class `logLik`: a single number carrying the attributes
+#'   `df` (the parameter count) and `nobs` (the observation count).
+#'
+#' @examples
+#' set.seed(1)
+#' d <- gaussian1_distrib()
+#' y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
+#' fit <- fit_distrib(d, y)
+#'
+#' logLik(fit)
+#' c(df = attr(logLik(fit), "df"), nobs = attr(logLik(fit), "nobs"))
+#'
+#' # The criteria the fit reports are the ones stats builds from this.
+#' all.equal(AIC(logLik(fit)), fit@aic)
+#' all.equal(BIC(logLik(fit)), fit@bic)
+#'
+#' # Comparing two families on the same data. The Student t spends one more
+#' # parameter, so AIC decides whether the tails are worth it.
+#' ft <- fit_distrib(student_t1_distrib(), y)
+#' c(gaussian = AIC(logLik(fit)), student_t = AIC(logLik(ft)))
+#'
+#' @seealso [fit_distrib()] for the fit; [stats::AIC()] and [stats::BIC()],
+#'   which read this.
 #' @importFrom stats logLik
 S7::method(logLik, distrib_fit) <- function(object, ...) {
   structure(object@loglik,
@@ -1130,28 +1314,35 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
             class = "logLik")
 }
 
-#' Simulate from a Fitted Distribution
+#' @title Simulate From a Fitted Distribution
 #'
 #' @name simulate.distrib_fit
 #'
 #' @description
 #' Draws new samples from the fitted distribution, evaluated at the maximum
-#' likelihood estimates. Each replicate has the same length as the data the model
-#' was fitted to, which makes the result directly comparable with the observations
-#' and suitable for a parametric bootstrap or a posterior-predictive style check.
+#' likelihood estimates and ignoring their uncertainty. Each replicate has the
+#' same length as the data the fit was computed from, so a replicate is
+#' directly comparable with the observations: this is the draw a parametric
+#' bootstrap and a posterior-predictive style check both need.
+#'
+#' The draws come from [distrib_rng()], so a family with no closed-form
+#' generator is sampled by the package's own fallback and the cost is that
+#' fallback's.
 #'
 #' @param object A [distrib_fit()] object.
-#' @param nsim Number of replicates to draw. Defaults to 1.
-#' @param seed Optional seed. If supplied it is used to initialize the generator,
-#'   and the state of `.Random.seed` in effect before the call is restored
-#'   afterwards, so that simulating does not disturb the calling stream. The seed
-#'   actually used is attached to the result as the `"seed"` attribute.
-#' @param ... Unused.
+#' @param nsim Number of replicates to draw, a single positive integer.
+#'   Defaults to 1.
+#' @param seed Optional seed. When supplied it initializes the generator, and
+#'   the `.Random.seed` in effect before the call is restored afterwards, so
+#'   simulating does not disturb the caller's stream. When `NULL`, the default,
+#'   the caller's stream is used and advanced. Either way the seed actually in
+#'   force is attached to the result as its `"seed"` attribute, so a run can
+#'   be reproduced after the fact.
+#' @param ... Unused, accepted for compatibility with [stats::simulate()].
 #'
-#' @return A data frame with `nsim` columns named `sim_1`, ...,
-#'   `sim_nsim`, each holding one replicate of `object@n` draws.
-#'
-#' @seealso [fit_distrib()], [plot.distrib_fit()]
+#' @return A data frame of `object@n` rows and `nsim` columns named `sim_1` to
+#'   `sim_nsim`, each column one replicate. The `"seed"` attribute carries the
+#'   generator state described above.
 #'
 #' @examples
 #' set.seed(1)
@@ -1161,9 +1352,16 @@ S7::method(logLik, distrib_fit) <- function(object, ...) {
 #' sims <- simulate(fit, 20, seed = 42)
 #' dim(sims)
 #'
-#' # a parametric bootstrap of any statistic
+#' # A parametric bootstrap of any statistic, here the median.
 #' quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
 #'
+#' # The seed argument leaves the caller's stream where it found it.
+#' set.seed(7); before <- runif(1)
+#' set.seed(7); invisible(simulate(fit, 2, seed = 42)); after <- runif(1)
+#' all.equal(before, after)
+#'
+#' @seealso [fit_distrib()] for the fit; [distrib_rng()] for the generator;
+#'   [plot.distrib_fit()] to compare the fit with the data it came from.
 #' @importFrom stats simulate
 S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...) {
   nsim <- as.integer(nsim)
@@ -1192,43 +1390,39 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
   structure(as.data.frame(out), seed = used)
 }
 
-#' Plot a Fitted Distribution against the Data
+#' @title Plot a Fitted Distribution Against the Data
 #'
 #' @name plot.distrib_fit
 #'
 #' @description
-#' Compares the fitted distribution with the sample it was estimated from. For a
-#' continuous distribution the observations are summarized by a kernel density
-#' estimate, with the fitted density drawn on top and a rug of the data
-#' underneath. For a discrete one the observed relative frequencies are drawn as
-#' bars with the fitted probability mass overlaid, since a kernel density would
-#' misrepresent a discrete sample.
+#' Compares the fitted distribution with the sample it was estimated from,
+#' choosing the comparison from the family's support. A continuous family is
+#' drawn as the fitted density over a kernel estimate of the data, with a rug
+#' of the observations underneath. A discrete one is drawn as the observed
+#' relative frequencies in bars with the fitted mass overlaid, a kernel
+#' estimate being a misrepresentation of a lattice sample.
+#'
+#' A multivariate fit is drawn as a panel matrix: the fitted marginal density
+#' and a kernel estimate of the data on the diagonal, the fitted contours over
+#' the observations below it, the fitted correlation above.
 #'
 #' @param x A [distrib_fit()] object.
-#' @param n_grid Number of points at which the fitted density is evaluated
-#'   (continuous distributions only). Defaults to 512.
-#' @param rug Logical; draw a rug of the observations. Defaults to `TRUE`
-#'   when there are at most 2000 of them.
-#' @param legend Logical; add a legend. Defaults to `TRUE`.
+#' @param n_grid Number of points at which the fitted density is evaluated, a
+#'   single positive integer. Defaults to 512. Read for a continuous family
+#'   only; a discrete one is evaluated on its support.
+#' @param rug Logical of length 1: draw a rug of the observations. Defaults to
+#'   `TRUE` when there are at most 2000 of them, above which the rug becomes a
+#'   solid band and says nothing.
+#' @param legend Logical of length 1: add a legend. Defaults to `TRUE`.
 #' @param col_fit,col_data Colors of the fitted curve and of the empirical
-#'   summary.
-#' @param mv_which For a multivariate fit, which coordinates to show. Defaults
-#'   to all of them, and at most three are drawn: above that the panel matrix
-#'   stops being readable.
-#' @param ... Further arguments passed to [graphics::plot()], for
-#'   instance `main`, `xlab` or `xlim`.
+#'   summary, in any form [grDevices::col2rgb()] accepts.
+#' @param mv_which For a multivariate fit, which coordinates to show, by index.
+#'   Defaults to all of them, of which at most three are drawn: above that the
+#'   panel matrix stops being readable. Ignored for a univariate fit.
+#' @param ... Further arguments passed to [graphics::plot()], such as `main`,
+#'   `xlab` or `xlim`.
 #'
-#' @details
-#' A univariate fit is drawn as the fitted density over a histogram or, for a
-#' discrete family, over the observed proportions. A multivariate one is drawn
-#' as a panel matrix: the fitted marginal density and a kernel estimate of the
-#' data on the diagonal, the fitted contours over the observations below it,
-#' and the fitted correlation above.
-#'
-#' @return `x`, invisibly.
-#'
-#' @seealso [fit_distrib()], [simulate.distrib_fit()],
-#'   [plot.multivariate_distrib()]
+#' @return `x`, invisibly. Called for the plot it draws.
 #'
 #' @examples
 #' set.seed(1)
@@ -1236,6 +1430,13 @@ S7::method(simulate, distrib_fit) <- function(object, nsim = 1, seed = NULL, ...
 #' fit <- fit_distrib(gamma2_distrib(), y)
 #' plot(fit)
 #'
+#' # A count family is compared on its support, not through a kernel estimate.
+#' fp <- fit_distrib(poisson_distrib(), rpois(300, 4))
+#' plot(fp, main = "Poisson fit")
+#'
+#' @seealso [fit_distrib()] for the fit; [simulate.distrib_fit()] for draws
+#'   from it; [plot.multivariate_distrib()], the same panel matrix drawn from
+#'   a distribution with no data beside it.
 #' @importFrom graphics lines legend rug barplot points
 S7::method(plot, distrib_fit) <- function(x, n_grid = 512, rug = NULL,
                                           legend = TRUE,

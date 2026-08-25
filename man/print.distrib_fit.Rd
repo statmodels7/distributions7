@@ -6,13 +6,52 @@
 \arguments{
 \item{x}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{digits}{Number of significant digits. Defaults to 4.}
+\item{digits}{Number of significant digits for every table and for the
+header figures. Defaults to 4. Passed to \code{\link[base:Round]{base::round()}} for the tables,
+so it is a number of decimal places there.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[base:print]{base::print()}}.}
 }
 \value{
-\code{x}, invisibly.
+\code{x}, invisibly. Called for the output it writes.
 }
 \description{
-Print Method for Maximum-Likelihood Fits
+Shows a fit in four blocks: the family and the sample size with the
+log-likelihood and the two information criteria; what the optimizer did;
+the estimates on the parameter scale; and the same on the link scale, so
+that the interval the fit actually built is visible beside its image.
+
+The optimizer line names the method that produced the estimates, which is
+not always the one asked for, and the convergence line names the \strong{stopping
+rule} that ended the run. Without that rule \code{converged} says nothing: it
+records that some test was met. A run that did not converge also prints
+the score per
+observation at the point it stopped at, which is the one number that says
+whether the point is usable.
+
+For a multivariate fit the coordinates of the covariance structure are
+replaced by the quantities the model is written in --- the location, the
+standard deviations and the correlations that \code{\link[=mv_summary]{mv_summary()}} derives ---
+because nobody reads a log-Cholesky coordinate. Any parameter the structure
+does not account for, such as the degrees of freedom of a \eqn{t}, is
+printed after them.
+}
+\examples{
+set.seed(1)
+d <- gaussian1_distrib()
+y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
+print(fit_distrib(d, y))
+
+# The link-scale block is where the interval is built. On a Gamma written
+# in the mean and the dispersion both parameters carry a log link, so both
+# lower limits are positive by construction.
+g <- fit_distrib(gamma2_distrib(), rgamma(300, shape = 4, rate = 2))
+print(g, digits = 3)
+
+}
+\seealso{
+\code{\link[=fit_distrib]{fit_distrib()}} for the object;
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} to recompute the intervals at another level;
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare the fit with the data;
+\code{\link[=mv_summary]{mv_summary()}} for the multivariate table.
 }

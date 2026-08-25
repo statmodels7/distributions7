@@ -6,11 +6,43 @@
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[stats:logLik]{stats::logLik()}}.}
 }
 \value{
-An object of class \code{logLik}.
+An object of class \code{logLik}: a single number carrying the attributes
+\code{df} (the parameter count) and \code{nobs} (the observation count).
 }
 \description{
-Log-Likelihood of a Maximum-Likelihood Fit
+Returns the maximized log-likelihood as a \code{logLik} object, so that
+\code{\link[stats:AIC]{stats::AIC()}}, \code{\link[stats:AIC]{stats::BIC()}} and anything else in \pkg{stats} that reads
+one can be applied to a fit. The value is summed over observations and is
+\strong{not} divided by \eqn{n}, whatever scaling the optimizer worked with.
+
+The \code{df} attribute is the number of estimated parameters, which for these
+fits is every parameter of the family: a fit estimates all of them, so
+nothing is held. The \code{nobs} attribute is \code{object@n}, the row count for a
+multivariate response and the length otherwise.
+}
+\examples{
+set.seed(1)
+d <- gaussian1_distrib()
+y <- distrib_rng(d, 400, list(mu = 1, sigma = 2))
+fit <- fit_distrib(d, y)
+
+logLik(fit)
+c(df = attr(logLik(fit), "df"), nobs = attr(logLik(fit), "nobs"))
+
+# The criteria the fit reports are the ones stats builds from this.
+all.equal(AIC(logLik(fit)), fit@aic)
+all.equal(BIC(logLik(fit)), fit@bic)
+
+# Comparing two families on the same data. The Student t spends one more
+# parameter, so AIC decides whether the tails are worth it.
+ft <- fit_distrib(student_t1_distrib(), y)
+c(gaussian = AIC(logLik(fit)), student_t = AIC(logLik(ft)))
+
+}
+\seealso{
+\code{\link[=fit_distrib]{fit_distrib()}} for the fit; \code{\link[stats:AIC]{stats::AIC()}} and \code{\link[stats:AIC]{stats::BIC()}},
+which read this.
 }

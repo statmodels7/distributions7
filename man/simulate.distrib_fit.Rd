@@ -2,28 +2,37 @@
 % Please edit documentation in R/fit_distrib.R
 \name{simulate.distrib_fit}
 \alias{simulate.distrib_fit}
-\title{Simulate from a Fitted Distribution}
+\title{Simulate From a Fitted Distribution}
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{nsim}{Number of replicates to draw. Defaults to 1.}
+\item{nsim}{Number of replicates to draw, a single positive integer.
+Defaults to 1.}
 
-\item{seed}{Optional seed. If supplied it is used to initialize the generator,
-and the state of \code{.Random.seed} in effect before the call is restored
-afterwards, so that simulating does not disturb the calling stream. The seed
-actually used is attached to the result as the \code{"seed"} attribute.}
+\item{seed}{Optional seed. When supplied it initializes the generator, and
+the \code{.Random.seed} in effect before the call is restored afterwards, so
+simulating does not disturb the caller's stream. When \code{NULL}, the default,
+the caller's stream is used and advanced. Either way the seed actually in
+force is attached to the result as its \code{"seed"} attribute, so a run can
+be reproduced after the fact.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[stats:simulate]{stats::simulate()}}.}
 }
 \value{
-A data frame with \code{nsim} columns named \code{sim_1}, ...,
-\code{sim_nsim}, each holding one replicate of \code{object@n} draws.
+A data frame of \code{object@n} rows and \code{nsim} columns named \code{sim_1} to
+\code{sim_nsim}, each column one replicate. The \code{"seed"} attribute carries the
+generator state described above.
 }
 \description{
 Draws new samples from the fitted distribution, evaluated at the maximum
-likelihood estimates. Each replicate has the same length as the data the model
-was fitted to, which makes the result directly comparable with the observations
-and suitable for a parametric bootstrap or a posterior-predictive style check.
+likelihood estimates and ignoring their uncertainty. Each replicate has the
+same length as the data the fit was computed from, so a replicate is
+directly comparable with the observations: this is the draw a parametric
+bootstrap and a posterior-predictive style check both need.
+
+The draws come from \code{\link[=distrib_rng]{distrib_rng()}}, so a family with no closed-form
+generator is sampled by the package's own fallback and the cost is that
+fallback's.
 }
 \examples{
 set.seed(1)
@@ -33,10 +42,16 @@ fit <- fit_distrib(gaussian1_distrib(), y)
 sims <- simulate(fit, 20, seed = 42)
 dim(sims)
 
-# a parametric bootstrap of any statistic
+# A parametric bootstrap of any statistic, here the median.
 quantile(vapply(sims, median, numeric(1)), c(0.025, 0.975))
+
+# The seed argument leaves the caller's stream where it found it.
+set.seed(7); before <- runif(1)
+set.seed(7); invisible(simulate(fit, 2, seed = 42)); after <- runif(1)
+all.equal(before, after)
 
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}
+\code{\link[=fit_distrib]{fit_distrib()}} for the fit; \code{\link[=distrib_rng]{distrib_rng()}} for the generator;
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}} to compare the fit with the data it came from.
 }

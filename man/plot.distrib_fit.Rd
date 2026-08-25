@@ -2,45 +2,44 @@
 % Please edit documentation in R/fit_distrib.R
 \name{plot.distrib_fit}
 \alias{plot.distrib_fit}
-\title{Plot a Fitted Distribution against the Data}
+\title{Plot a Fitted Distribution Against the Data}
 \arguments{
 \item{x}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{n_grid}{Number of points at which the fitted density is evaluated
-(continuous distributions only). Defaults to 512.}
+\item{n_grid}{Number of points at which the fitted density is evaluated, a
+single positive integer. Defaults to 512. Read for a continuous family
+only; a discrete one is evaluated on its support.}
 
-\item{rug}{Logical; draw a rug of the observations. Defaults to \code{TRUE}
-when there are at most 2000 of them.}
+\item{rug}{Logical of length 1: draw a rug of the observations. Defaults to
+\code{TRUE} when there are at most 2000 of them, above which the rug becomes a
+solid band and says nothing.}
 
-\item{legend}{Logical; add a legend. Defaults to \code{TRUE}.}
+\item{legend}{Logical of length 1: add a legend. Defaults to \code{TRUE}.}
 
 \item{col_fit, col_data}{Colors of the fitted curve and of the empirical
-summary.}
+summary, in any form \code{\link[grDevices:col2rgb]{grDevices::col2rgb()}} accepts.}
 
-\item{mv_which}{For a multivariate fit, which coordinates to show. Defaults
-to all of them, and at most three are drawn: above that the panel matrix
-stops being readable.}
+\item{mv_which}{For a multivariate fit, which coordinates to show, by index.
+Defaults to all of them, of which at most three are drawn: above that the
+panel matrix stops being readable. Ignored for a univariate fit.}
 
-\item{...}{Further arguments passed to \code{\link[graphics:plot.default]{graphics::plot()}}, for
-instance \code{main}, \code{xlab} or \code{xlim}.}
+\item{...}{Further arguments passed to \code{\link[graphics:plot.default]{graphics::plot()}}, such as \code{main},
+\code{xlab} or \code{xlim}.}
 }
 \value{
-\code{x}, invisibly.
+\code{x}, invisibly. Called for the plot it draws.
 }
 \description{
-Compares the fitted distribution with the sample it was estimated from. For a
-continuous distribution the observations are summarized by a kernel density
-estimate, with the fitted density drawn on top and a rug of the data
-underneath. For a discrete one the observed relative frequencies are drawn as
-bars with the fitted probability mass overlaid, since a kernel density would
-misrepresent a discrete sample.
-}
-\details{
-A univariate fit is drawn as the fitted density over a histogram or, for a
-discrete family, over the observed proportions. A multivariate one is drawn
-as a panel matrix: the fitted marginal density and a kernel estimate of the
-data on the diagonal, the fitted contours over the observations below it,
-and the fitted correlation above.
+Compares the fitted distribution with the sample it was estimated from,
+choosing the comparison from the family's support. A continuous family is
+drawn as the fitted density over a kernel estimate of the data, with a rug
+of the observations underneath. A discrete one is drawn as the observed
+relative frequencies in bars with the fitted mass overlaid, a kernel
+estimate being a misrepresentation of a lattice sample.
+
+A multivariate fit is drawn as a panel matrix: the fitted marginal density
+and a kernel estimate of the data on the diagonal, the fitted contours over
+the observations below it, the fitted correlation above.
 }
 \examples{
 set.seed(1)
@@ -48,8 +47,13 @@ y <- rgamma(300, shape = 4, rate = 2)
 fit <- fit_distrib(gamma2_distrib(), y)
 plot(fit)
 
+# A count family is compared on its support, not through a kernel estimate.
+fp <- fit_distrib(poisson_distrib(), rpois(300, 4))
+plot(fp, main = "Poisson fit")
+
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}},
-\code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}
+\code{\link[=fit_distrib]{fit_distrib()}} for the fit; \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}} for draws
+from it; \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}, the same panel matrix drawn from
+a distribution with no data beside it.
 }

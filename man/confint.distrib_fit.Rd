@@ -6,23 +6,59 @@
 \arguments{
 \item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} object.}
 
-\item{parm}{Parameters to report, given by name or position. Defaults to all.}
+\item{parm}{Which parameters to report, by name or by position. Missing, the
+default, reports all of them. A name that is not a parameter of this fit,
+or a position outside the range, signals an error naming the argument.}
 
-\item{level}{Confidence level. Defaults to the level the fit was computed at,
-and any other value is obtained from the stored estimates and standard
-errors without refitting.}
+\item{level}{Confidence level, a single number in \eqn{(0, 1)}. Defaults to
+the level the fit was computed at, \code{object@level}.}
 
-\item{scale}{Either \code{"parameter"} (default) or \code{"link"}.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error. It is the fourth
+argument, so name it: \code{confint(fit, "sigma", "link")} passes \code{"link"}
+as \code{level} and fails inside the quantile.}
 
-\item{...}{Unused.}
+\item{...}{Unused, accepted for compatibility with \code{\link[stats:confint]{stats::confint()}}.}
 }
 \value{
-A two-column matrix of confidence limits, one row per parameter.
+A numeric matrix with one row per requested parameter and two
+columns, named for the two tail probabilities as percentages
+(\code{"2.5\%"} and \code{"97.5\%"} at the default level). Row names are the
+parameter names. Both entries are \code{NA} where the standard error is.
 }
 \description{
-Returns Wald intervals. They are built symmetrically on the link scale, where
-the parameters are unconstrained, and mapped through \eqn{g^{-1}} when the
-parameter scale is requested, so that a limit can never leave the parameter's
-domain. The two ends are sorted after mapping, because a link need not be
-increasing.
+Returns Wald intervals for the estimated parameters. They are built
+symmetrically on the link scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,
+\mathrm{se}(\hat\eta)}, and mapped through \eqn{g^{-1}} when the parameter
+scale is asked for, so a limit cannot leave the parameter's domain: a scale
+has a positive lower limit and a probability stays inside \eqn{(0,1)}. The
+two ends are sorted after mapping, because a link need not be increasing.
+
+Any level is available from the stored estimate and standard error without
+refitting, so a fit computed at 95\% answers at 99\% for the cost of one
+quantile.
+}
+\examples{
+set.seed(1)
+d <- gaussian1_distrib()
+fit <- fit_distrib(d, distrib_rng(d, 400, list(mu = 1, sigma = 2)))
+
+confint(fit)
+confint(fit, level = 0.99)     # no refit: wider, from the same estimates
+confint(fit, "sigma")
+
+# The interval is built on the link scale and mapped back, so the lower
+# limit of a scale is exp() of a real number and cannot be negative.
+confint(fit, "sigma", scale = "link")
+lo_eta <- confint(fit, "sigma", scale = "link")[1]
+all.equal(confint(fit, "sigma")[1], exp(lo_eta), check.attributes = FALSE)
+
+# A probability near the boundary: 47 successes in 50 trials.
+fb <- fit_distrib(bernoulli_distrib(), rep(0:1, c(3, 47)))
+confint(fb)                    # inside (0, 1) by construction
+
+}
+\seealso{
+\code{\link[=coef.distrib_fit]{coef.distrib_fit()}} and \code{\link[=vcov.distrib_fit]{vcov.distrib_fit()}}, which take the same
+\code{scale}; \code{\link[=fit_distrib]{fit_distrib()}}, whose \code{level} sets the default here.
 }
