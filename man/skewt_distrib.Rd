@@ -12,125 +12,160 @@ skewt_distrib(
 )
 }
 \arguments{
-\item{link_mu}{A link function object for the location \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{linkfunctions7} link object for the location \eqn{\mu},
+which is unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
-\item{link_sigma}{A link function object for the scale \eqn{\sigma}. Defaults
-to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_sigma}{A link object for the scale \eqn{\sigma}, which must be
+strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_alpha}{A link function object for the shape \eqn{\alpha}, which is
+\item{link_alpha}{A link object for the shape \eqn{\alpha}, which is
 unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
-\item{link_nu}{A link function object for the degrees of freedom \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
+\item{link_nu}{A link object for the degrees of freedom \eqn{\nu}, which
+must be strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
-An S7 object of class \code{\link[=SkewTDistrib]{SkewTDistrib()}} (inheriting from
-\code{continuous_distrib}).
+An S7 object of class \link{SkewTDistrib}, inheriting from
+\code{continuous_distrib}. Its \code{params} are
+\code{c("mu", "sigma", "alpha", "nu")}, its \code{bounds} \code{c(-Inf, Inf)}, and its
+\code{link_params} the four links given here.
 }
 \description{
-Creates a distribution object for Azzalini's skew \eqn{t} distribution, with
-location \eqn{\mu}, scale \eqn{\sigma}, shape \eqn{\alpha} and degrees of
-freedom \eqn{\nu}. It contains the Student \eqn{t} (\eqn{\alpha = 0}), the
-skew normal (\eqn{\nu \to \infty}) and the gaussian (both).
+Builds a skew \eqn{t} distribution object with location \eqn{\mu}, scale
+\eqn{\sigma}, shape \eqn{\alpha} and degrees of freedom \eqn{\nu}. It is
+the four-parameter family a location-scale-shape framework wants: the
+scale, the asymmetry and the tail weight are three separate parameters,
+each of which can carry its own linear predictor.
+
+Three families sit inside it. \eqn{\alpha = 0} is
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}, large \eqn{\nu} approaches
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, and both together give the Gaussian.
 }
-\details{
-This is the four-parameter family a location-scale-shape framework wants: the
-scale, the skewness and the tail weight are three separate parameters, each
-of which can be given its own linear predictor. The skew normal of
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} can reach a skewness of at most \eqn{0.995}
-and an excess kurtosis of at most \eqn{0.87}; adding \eqn{\nu} removes both
-bounds.
+\section{Why the fourth parameter}{
+The skew normal of \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} reaches a skewness of at most
+0.99527 and an excess kurtosis of at most 0.86918, both approached only as
+\eqn{|\alpha| \to \infty}. Adding \eqn{\nu} removes both ceilings: measured
+at \eqn{\alpha = 50}, the skewness is 1.190 at \eqn{\nu = 30}, 2.050 at
+\eqn{\nu = 6} and 3.998 at \eqn{\nu = 4}.
+}
 
-\strong{Probability density function}, with \eqn{z = (y-\mu)/\sigma} and
-\eqn{w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}}:
-\deqn{f(y; \mu, \sigma, \alpha, \nu)
-  = \dfrac{2}{\sigma}\,t_\nu(z)\,T_{\nu+1}(w)}
+\section{What is closed form and what is not}{
+Every derivative in \eqn{(\mu, \sigma, \alpha)} is closed form. Everything
+involving \eqn{\nu} is not, because the density contains \eqn{T_{\nu+1}} and
+the derivative of a Student \eqn{t} distribution function with respect to
+its degrees of freedom has no elementary expression. It is the same
+obstruction that stops the gamma and beta distribution functions from having
+closed-form shape derivatives.
 
-\strong{What is closed form and what is not.} The score and the observed
-Hessian are closed form in \eqn{(\mu, \sigma, \alpha)}. Everything involving
-\eqn{\nu} is not, because the density contains \eqn{T_{\nu+1}}, whose
-derivative with respect to its degrees of freedom has no elementary
-expression --- the same obstruction that stops the gamma and beta
-distribution functions from having closed-form shape derivatives. Those
-components come from a single finite-difference stencil applied to an
-analytic quantity, never from a difference of a difference:
+Those components come from a single stencil applied to an analytic quantity,
+never from a difference of a difference:
 
 \tabular{lll}{
-\strong{component} \tab \strong{route} \tab \strong{error, summed over n}
+\strong{component} \tab \strong{route} \tab \strong{agreement with an independent route}
 \cr
-\eqn{\mu, \sigma, \alpha} (score) \tab closed form \tab machine precision
+\eqn{\mu, \sigma, \alpha} (score) \tab closed form \tab \eqn{10^{-12}}
 \cr
-\eqn{\nu} (score) \tab five-point stencil on \eqn{\ell} \tab
-\eqn{10^{-11}} to \eqn{10^{-9}} \cr
-\eqn{(\mu,\sigma,\alpha)} block (Hessian) \tab closed form \tab machine
-precision \cr
-\eqn{\nu} with another parameter \tab five-point stencil on the analytic
-score \tab about \eqn{10^{-8}} \cr
-\eqn{\nu} twice \tab five-point stencil on \eqn{\ell} \tab about
-\eqn{10^{-6}}
+\eqn{\nu} (score) \tab \code{\link[=fd5_first]{fd5_first()}} on \eqn{\ell} \tab \eqn{5\times10^{-11}}
+\cr
+\eqn{(\mu,\sigma,\alpha)} block (Hessian) \tab closed form \tab
+\eqn{10^{-12}} \cr
+\eqn{\nu} with another parameter \tab \code{\link[=fd5_first]{fd5_first()}} on the analytic score
+\tab to the printed digit \cr
+\eqn{\nu} twice \tab \code{\link[=fd5_second]{fd5_second()}} on \eqn{\ell} \tab \eqn{2\times10^{-9}}
+\cr
+\eqn{\nu} three times \tab \code{\link[=fd5_third]{fd5_third()}} on \eqn{\ell} \tab
+\eqn{10^{-4}} \cr
+\eqn{\nu} four times \tab \code{\link[=fd5_fourth]{fd5_fourth()}} on \eqn{\ell} \tab about one
+figure
+}
 }
 
-\strong{The tolerance a fit can ask for.} The score in \eqn{\nu} cannot be
-computed more accurately than the table above, so a stopping rule on the
-gradient cannot be satisfied below that level however good the optimizer is.
-\code{\link[=fit_distrib]{fit_distrib()}} tests the score \strong{per observation}, and its
-default of \eqn{10^{-10}} leaves room: on samples of 500 to 4000 the summed
-score reaches \eqn{10^{-10}} to \eqn{3 \times 10^{-9}}, which is
-\eqn{10^{-13}} per observation, and the fit converges in four or five
-iterations. A rule expressed on the summed gradient at that tolerance would
-not be attainable, which is why the tolerance is not expressed that way.
+\section{The tolerance a fit can ask for}{
+The score in \eqn{\nu} cannot be computed more accurately than that table,
+so no stopping rule on the gradient can be satisfied below it however good
+the optimizer is. \code{\link[=fit_distrib]{fit_distrib()}} takes its rule from the method it is
+given, and \code{crit_grad()}'s default tolerance of \eqn{10^{-6}} is tested on
+the score \strong{per observation}, which leaves room: measured on samples of
+500 to 4000, the run converges with a summed score between
+\eqn{1.5\times10^{-7}} and \eqn{2.4\times10^{-5}}, i.e. between
+\eqn{3\times10^{-10}} and \eqn{9\times10^{-9}} per observation.
+}
 
-\strong{Distribution function.} There is no elementary form, so the base
-class integrates the density and inverts the result by root finding.
+\section{Fitting}{
+The expected information has no closed form, so it is approximated by the
+strategy named in \code{approx}, at one quadrature per component.
+\code{method = optimizers7::newton()} is much the cheaper route: the observed
+Hessian is the closed form above and needs no integration.
 
-\strong{Expected information} has no closed form either and is approximated
-by the strategy named in \code{approx}, the default being the score
-variance. That approximation costs one quadrature per component, so
-\code{method = "newton"} is much the cheaper way to fit this family: the
-observed Hessian is the closed form above and needs no integration.
+The distribution function and the quantile function likewise have no
+elementary form; the base class integrates the density and inverts the
+result by root finding.
+}
 
-\strong{Moments} exist only up to order \eqn{\nu}: the mean requires
-\eqn{\nu > 1}, the variance \eqn{\nu > 2}, the skewness \eqn{\nu > 3} and the
-kurtosis \eqn{\nu > 4}, and each returns \code{NaN} below its threshold. The
-density is perfectly well defined there, which is why the moments and the
+\section{Moments}{
+They exist only up to order \eqn{\nu}: the mean requires \eqn{\nu > 1}, the
+variance \eqn{\nu > 2}, the skewness \eqn{\nu > 3} and the excess kurtosis
+\eqn{\nu > 4}, and each returns \code{NaN} below its threshold. The density is
+well defined at every positive \eqn{\nu}, which is why the moments and the
 parameters are kept apart.
+}
 
-\strong{Special cases.} \eqn{\alpha = 0} is \code{\link[=student_t1_distrib]{student_t1_distrib()}};
-large \eqn{\nu} approaches \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}. The information
-is singular in \eqn{\alpha} at \eqn{\alpha = 0} for the same reason as in the
-skew normal.
+\section{Identification near symmetry}{
+The skew normal's expected information loses a rank at \eqn{\alpha = 0},
+because its shape score is a fixed multiple of its location score there.
+\strong{The skew \eqn{t} does not inherit that at finite \eqn{\nu.}} The tilting
+argument carries \eqn{c = \sqrt{(\nu+1)/(\nu+z^2)}}, which depends on the
+observation, so the two scores are not proportional: measured at
+\eqn{\alpha = 0}, \eqn{\nu = 6}, their ratio spreads over 0.76 across
+observations, where the skew normal's is constant to the last digit. The
+spread falls as \eqn{O(1/\nu)}, so the singularity is inherited only in the
+limit: 0.068 at \eqn{\nu = 100}, \eqn{7\times10^{-4}} at \eqn{10^4}.
 
-\strong{Parameter Domains:}
+What is weakly identified here is \eqn{\nu} itself. The smallest eigenvalue
+of the information belongs to that direction and falls with \eqn{\nu}:
+measured at \eqn{\alpha = 0}, it is \eqn{3.6\times10^{-3}} at \eqn{\nu = 4},
+\eqn{8.4\times10^{-4}} at 6 and \eqn{1.7\times10^{-6}} at 30. A nearly
+Gaussian tail carries little information about how heavy it is.
+}
+
+\section{Parameter domains}{
 \itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
-\item \eqn{\alpha \in (-\infty, +\infty)}
-\item \eqn{\nu \in (0, +\infty)}
+\item \eqn{\mu \in (-\infty, \infty)}
+\item \eqn{\sigma \in (0, \infty)}
+\item \eqn{\alpha \in (-\infty, \infty)}
+\item \eqn{\nu \in (0, \infty)}
 }
 }
+
 \examples{
 d <- skewt_distrib()
 d@params
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 5)
 
-theta <- list(mu = 0, sigma = 1, alpha = 3, nu = 5)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+distrib_pdf(d, c(-1, 0, 1), th)
 
-# shape zero is the Student t
-max(abs(distrib_pdf(d, c(-1, 0, 1), list(mu = 0, sigma = 1, alpha = 0, nu = 5)) -
-        stats::dt(c(-1, 0, 1), df = 5)))
+# Shape zero is the Student t.
+all.equal(distrib_pdf(d, c(-1, 0, 1),
+                      list(mu = 0, sigma = 1, alpha = 0, nu = 5)),
+          dt(c(-1, 0, 1), df = 5))
 
-# the family reaches skewness the skew normal cannot
-c(skew_t = skewness(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5)),
-  skew_normal_bound = 0.9953)
+# It passes both of the skew normal's ceilings.
+rbind(skew_t = c(skewness(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5)),
+                 kurtosis(d, list(mu = 0, sigma = 1, alpha = 8, nu = 5))),
+      skew_normal_bound = c(0.99527, 0.86918))
 
-# The observed Hessian is the cheap route here: this family has no
-# closed-form expected information, so Fisher scoring would approximate it
-# by quadrature at every step.
+# Moments exist only up to order nu.
+t(vapply(c(1.5, 2.5, 3.5, 4.5), function(v) {
+  p <- list(mu = 0, sigma = 1, alpha = 3, nu = v)
+  c(nu = v, mean = mean(d, p), var = variance(d, p),
+    skew = skewness(d, p), kurt = kurtosis(d, p))
+}, numeric(5)))
+
+# The observed Hessian is the cheap route: this family has no closed-form
+# expected information, so Fisher scoring would quadrature it at every step.
 set.seed(1)
-y <- distrib_rng(d, 200, theta)
-coef(fit_distrib(d, y, method = optimizers7::newton(), start = theta))
+x <- distrib_rng(d, 200, th)
+coef(fit_distrib(d, x, method = optimizers7::newton(), start = th))
 
 }
 \references{
@@ -139,5 +174,8 @@ perturbation of symmetry with emphasis on a multivariate skew t distribution.
 \emph{Journal of the Royal Statistical Society, Series B} 65, 367-389.
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the \eqn{\nu \to \infty} limit,
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the \eqn{\alpha = 0} case,
+\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions the derivatives are built from,
+and \link{SkewTDistrib} for the class and its method list.
 }

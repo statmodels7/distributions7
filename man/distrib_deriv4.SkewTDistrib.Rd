@@ -2,34 +2,88 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_deriv4.SkewTDistrib}
 \alias{distrib_deriv4.SkewTDistrib}
-\title{Skew t Fourth-Order Derivatives}
+\title{Skew t Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length matters.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated
-numerically.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned.}
 
-\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv4]{distrib_deriv4()}}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of thirty-five numeric vectors, one per distinct
+fourth-order component, from \code{mu_mu_mu_mu} to \code{nu_nu_nu_nu}.
 }
 \description{
-Fourth-order derivatives assembled with the discipline of
-\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}: the generic construction serves
-every component whose Hessian entry is closed form, and the ones it would
-nest are replaced by one stencil each -- \eqn{(i, \nu, \nu, \nu)} by a
-third-difference of the closed-form score component \eqn{i}, and
-\eqn{(\nu, \nu, \nu, \nu)} by a fourth-difference of the log-density. The
-pure-\eqn{\nu} component is the least accurate quantity the family reports,
-at roughly four significant digits.
+Computes the thirty-five fourth derivatives of the log-density, with the
+discipline of \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}: the generic construction
+serves every component whose Hessian entry is closed form, and the ones it
+would nest are replaced by one stencil each. \eqn{(i, \nu, \nu, \nu)}
+becomes a third difference of the closed-form score component \eqn{i}, and
+\eqn{(\nu, \nu, \nu, \nu)} a fourth difference of the log-density. Twenty of
+the thirty-five involve \eqn{\nu}.
+}
+\section{The step for the pure-nu component}{
+A fourth difference amplifies rounding by \eqn{h^{-4}}, so
+\code{\link[=fd5_fourth]{fd5_fourth()}} is called at \strong{ten times} \code{\link[=skewt_nu_step]{skewt_nu_step()}}'s step rather
+than at it. The choice is measured: at the family's base step the
+per-observation noise is near \eqn{10^{-2}} relative, and at ten times that
+it is negligible while the \eqn{O(h^2)} truncation, about
+\eqn{6\times10^{-4}}, is what remains.
+
+\code{nu_nu_nu_nu} is the least accurate quantity this family reports, and it is
+also the smallest: measured on four observations at \eqn{\nu = 6} it is
+\eqn{-4.5\times10^{-6}} while \code{sigma_sigma_sigma_sigma} is 127. A
+\strong{relative} comparison on a component that small is not informative, which
+is why the package's battery scales its order-4 check by the size of the
+whole array and reports \eqn{3.5\times10^{-4}} here.
+}
+
+\section{Cost}{
+This is the dearest method in the family: the twenty \eqn{\nu} components
+each cost four or five evaluations of an analytic quantity over the whole
+vector. Measured at \eqn{n = 20{,}000} it takes about sixteen seconds,
+against sixty milliseconds for the score.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+d4 <- distrib_deriv4(d, y, th)
+c(components = length(d4), involving_nu = sum(grepl("nu", names(d4))))
+
+# The components span five orders of magnitude, so a relative comparison
+# on the smallest of them says nothing about the largest.
+s <- sort(vapply(d4, function(v) sum(abs(v)), 0), decreasing = TRUE)
+s[c(1, 2, length(s) - 1, length(s))]
+
+# A closed-form-block component against a difference of the third order.
+eps <- 1e-5
+rbind(analytic = d4$mu_mu_alpha_alpha,
+      numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1,
+                                           alpha = 3 + eps, nu = 6))$mu_mu_alpha -
+                 distrib_deriv3(d, y, list(mu = 0, sigma = 1,
+                                           alpha = 3 - eps, nu = 6))$mu_mu_alpha) /
+                (2 * eps))
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order below,
+\code{\link[=fd5_fourth]{fd5_fourth()}} for the stencil and its \eqn{h^{-4}} behaviour, and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

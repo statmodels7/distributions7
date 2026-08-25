@@ -4,19 +4,50 @@
 \alias{distrib_grad_y.SkewTDistrib}
 \title{Skew t Response Derivative}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu},
+each a numeric vector of length 1 or of the length of \code{y}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs.
 }
 \description{
-Closed form: \eqn{\partial \ell / \partial y = D/\sigma}, which is minus the
-derivative in \eqn{\mu}, as it must be for a location family.
+Computes \eqn{\partial\ell/\partial y = D/\sigma}, with \eqn{D = A + QB} in
+the notation of \code{\link[=skewt_pieces]{skewt_pieces()}}. It is minus the derivative in \eqn{\mu},
+exactly, because the response and the location enter the density only
+through their difference; the identity holds for every location family.
+
+It is closed form at every parameter value, \eqn{\nu} included: nothing here
+differentiates the degrees of freedom.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{A}, \eqn{B},
+\eqn{Q} are as \code{\link[=skewt_pieces]{skewt_pieces()}} defines them.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+
+# It is minus the score in the location, exactly.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Against a central difference of the log-density.
+eps <- 1e-6
+rbind(analytic = distrib_grad_y(d, y, th),
+      numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
+                 distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
+
+# The score redescends in the heavy tail, as a Student t's does.
+distrib_grad_y(d, c(2, 8, 32, 128), th)
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y.SkewTDistrib()}} for the second derivative,
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} for the parameter derivatives, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

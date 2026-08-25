@@ -2,30 +2,36 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_hessian.SkewTDistrib}
 \alias{distrib_hessian.SkewTDistrib}
-\title{Skew t Analytical Observed Hessian}
+\title{Skew t Observed Hessian}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu},
+each a numeric vector of length 1 or of the length of \code{y}. \code{sigma} and
+\code{nu} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body, so this method always
+returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of ten numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{sigma_sigma}, \code{alpha_alpha}, \code{nu_nu}, then \code{mu_sigma},
+\code{mu_alpha}, \code{mu_nu}, \code{sigma_alpha}, \code{sigma_nu}, \code{alpha_nu}.
 }
 \description{
-Second derivatives of the log-density. The block in
+Computes the ten second derivatives of the log-density. The block in
 \eqn{(\mu, \sigma, \alpha)} is closed form; every component involving
-\eqn{\nu} comes from one finite-difference stencil applied to the
-log-density, for the reason given in
-\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}.
+\eqn{\nu} comes from one stencil applied to an analytic quantity, for the
+reason \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} gives.
 }
-\details{
-With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'},
+\section{The closed-form block}{
+With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'} in the notation of
+\code{\link[=skewt_pieces]{skewt_pieces()}},
 \deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{D'}{\sigma^2},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
@@ -40,11 +46,50 @@ With \eqn{D = A + QB} and \eqn{D' = A' + Q'B^2 + QB'},
       \qquad
       \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \alpha}
         = -\dfrac{z(Q' B z c + Q E)}{\sigma}.}
-The stencils used for \eqn{\nu} are the three-point one in \eqn{\nu} alone
-and the four-point mixed one otherwise; the mixed stencil differences two
-\emph{different} variables, so it is a single stencil rather than a
-difference of a difference.
+}
+
+\section{The four components in the degrees of freedom}{
+\eqn{\partial^2\ell/\partial\nu^2} is one five-point second difference of
+the log-density, \code{\link[=fd5_second]{fd5_second()}}. The three mixed ones step the
+\strong{closed-form score} in \eqn{\nu} with \code{\link[=fd5_first]{fd5_first()}}, so only one
+difference is taken and it is taken of an analytic quantity. Stepping the
+log-density in both variables instead would be a difference of a difference
+in \eqn{\nu}, which this family never does.
+
+Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3},
+\eqn{\nu = 6}, the summed \code{nu_nu} agrees with \code{numDeriv::hessian} on the
+log-likelihood to \eqn{2\times10^{-9}} relative and \code{mu_nu} to the printed
+digit.
+}
+
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{c = \sqrt{(\nu+1)/(\nu+z^2)}}, and
+\eqn{A}, \eqn{B}, \eqn{E}, \eqn{Q} are as \code{\link[=skewt_pieces]{skewt_pieces()}} defines them.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# Against numerical differentiation of the log-likelihood: one component
+# of the closed-form block, and two involving nu.
+f <- function(v) sum(distrib_pdf(d, y, list(mu = v[1], sigma = v[2],
+                                            alpha = v[3], nu = v[4]),
+                                 log = TRUE))
+H <- numDeriv::hessian(f, c(0, 1, 3, 6))
+rbind(analytic = c(sum(h$mu_mu), sum(h$mu_nu), sum(h$nu_nu)),
+      numeric = c(H[1, 1], H[1, 4], H[4, 4]))
+
+# The curvature in the location turns positive far out, as a Student t's
+# does and a Gaussian's does not.
+range(distrib_hess_y(d, seq(-20, 20, by = 0.5), th))
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} for the order below,
+\code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order above,
+\code{\link[=fd5_second]{fd5_second()}} for the stencil, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

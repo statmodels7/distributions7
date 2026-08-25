@@ -2,37 +2,92 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_deriv3.SkewTDistrib}
 \alias{distrib_deriv3.SkewTDistrib}
-\title{Skew t Third-Order Derivatives}
+\title{Skew t Third Derivatives}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length matters.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated
-numerically.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned.}
 
-\item{approx}{Strategy for the expectation; see \code{\link[=distrib_deriv3]{distrib_deriv3()}}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{nsim}{Monte Carlo sample size when \code{approx = "mc"}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+only when \code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of twenty numeric vectors, one per distinct third-order
+component, from \code{mu_mu_mu} to \code{nu_nu_nu} as \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \description{
-Third-order derivatives assembled so that no finite difference is ever
-applied to another finite difference. Components whose Hessian entry is
-closed form -- both indices in \eqn{(\mu, \sigma, \alpha)}, or one index
-equal to \eqn{\nu} with the stencil taken along a different variable --
-come from the generic construction, one stencil on an analytic quantity.
+Computes the twenty third derivatives of the log-density, assembled so that
+no stencil is ever applied to another stencil's output. Ten of the twenty
+involve \eqn{\nu}.
+}
+\section{How the twenty are obtained}{
+A component whose Hessian entry is closed form goes through the generic
+construction of \code{\link[=numerical_deriv3]{numerical_deriv3()}}, which is one stencil on an analytic
+quantity. That covers both indices in \eqn{(\mu, \sigma, \alpha)}, and also
+one index equal to \eqn{\nu} where the stencil runs along a different
+variable.
+
 The components the generic construction would nest are replaced:
-\eqn{(i, \nu, \nu)} is one five-point second-difference of the closed-form
-score component \eqn{i}, and \eqn{(\nu, \nu, \nu)} is one five-point
-third-difference of the log-density itself. The derivative of a Student t
-distribution function in its degrees of freedom has no elementary form, so
-this is the same obstruction, and the same remedy, as the Hessian's.
+\eqn{(i, \nu, \nu)} for \eqn{i} in \eqn{(\mu, \sigma, \alpha)} is one
+five-point second difference of the \strong{closed-form} score component
+\eqn{i}, through \code{\link[=fd5_second]{fd5_second()}}; and \eqn{(\nu, \nu, \nu)} is one
+five-point third difference of the log-density itself, through
+\code{\link[=fd5_third]{fd5_third()}}.
+}
+
+\section{Accuracy}{
+The pure-\eqn{\nu} component is the loosest at this order. Measured at
+\eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3}, \eqn{\nu = 6} on four
+observations, \code{nu_nu_nu} is \eqn{-0.0061280} against \eqn{-0.0061270} from
+an independent single stencil on the log-density at \eqn{h = 0.05}, so
+about four significant digits. The package's own thirteen-check battery
+reports order 3 against finite differences at \eqn{2\times10^{-6}} for this
+family.
+
+With \code{expected = TRUE} the whole order is an expectation and comes from
+\code{expected_derivative()}; the family has no closed-form expected
+information, so \code{approx} and \code{nsim} are read.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+d3 <- distrib_deriv3(d, y, th)
+c(components = length(d3), involving_nu = sum(grepl("nu", names(d3))))
+
+# A closed-form-block component against a difference of the Hessian.
+eps <- 1e-5
+rbind(analytic = d3$mu_mu_alpha,
+      numeric = (distrib_hessian(d, y, list(mu = 0, sigma = 1,
+                                            alpha = 3 + eps, nu = 6))$mu_mu -
+                 distrib_hessian(d, y, list(mu = 0, sigma = 1,
+                                            alpha = 3 - eps, nu = 6))$mu_mu) /
+                (2 * eps))
+
+# The pure-nu component against an independent single stencil on the
+# log-density, which shares no arithmetic with the route above.
+ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, sigma = 1,
+                                             alpha = 3, nu = v), log = TRUE))
+c(ours = sum(d3$nu_nu_nu),
+  stencil = numericals7::fd_derivative(ld, 6, 3L, h = 0.05))
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the order below,
+\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4.SkewTDistrib()}} for the order above,
+\code{\link[=fd5_third]{fd5_third()}} for the stencil, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

@@ -26,11 +26,14 @@ level of the rounding error and the two are balanced. A smaller step is
 dominated by rounding, which the stencil amplifies by \eqn{18/(12h)}, and a
 larger one by truncation, which grows as \eqn{h^4}.
 
-The choice shows up in the stopping rule of a fit. On a sample of a
-few thousand the summed score in \eqn{\nu} reaches about \eqn{10^{-11}} at
-this step, so \code{tol = 1e-8} is the honest ask for this family; a
-three-point stencil would leave it near \eqn{10^{-8}} and a run would spend
-its whole budget reporting failure at the maximum.
+The choice shows up in the stopping rule of a fit. \code{\link[=fit_distrib]{fit_distrib()}} takes
+its rule from the method it is given, and \code{optimizers7::crit_grad()} tests
+the score \strong{per observation} at a default tolerance of \eqn{10^{-6}}.
+Measured on samples of 500 to 4000 the run converges at between
+\eqn{3\times10^{-10}} and \eqn{9\times10^{-9}} per observation, so this
+step leaves two orders of room. A three-point stencil would not: its bias
+does not cancel over the sum, and a run would spend its whole budget
+reporting failure at the maximum.
 }
 \examples{
 distributions7:::skewt_nu_step(c(2, 6, 30, 1e-5))

@@ -44,9 +44,9 @@ Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, \eqn{\alpha = 3},
 \code{numDeriv::grad} on the log-likelihood to \eqn{6\times10^{-12}} in
 \eqn{\mu}, \eqn{2\times10^{-11}} in \eqn{\sigma},
 \eqn{3\times10^{-12}} in \eqn{\alpha} and \eqn{5\times10^{-11}} in
-\eqn{\nu}. The \eqn{\nu} component is therefore the loosest of the four, and
-\code{tol = 1e-8} rather than the package default is the honest ask when fitting
-this family; see \code{\link[=skewt_nu_step]{skewt_nu_step()}}.
+\eqn{\nu}. The \eqn{\nu} component is therefore the loosest of the four,
+and it is what sets the accuracy a fit of this family can stop at; see
+\code{\link[=skewt_nu_step]{skewt_nu_step()}}.
 }
 
 \section{Notation}{

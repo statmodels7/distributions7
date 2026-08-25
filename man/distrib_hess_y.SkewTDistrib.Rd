@@ -2,20 +2,59 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_hess_y.SkewTDistrib}
 \alias{distrib_hess_y.SkewTDistrib}
-\title{Skew t Response Second Derivative}
+\title{Skew t Second Response Derivative}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu},
+each a numeric vector of length 1 or of the length of \code{y}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs. It is not of
+one sign.
 }
 \description{
-Closed form: \eqn{\partial^2 \ell / \partial y^2 = D'/\sigma^2}.
+Computes \eqn{\partial^2\ell/\partial y^2 = D'/\sigma^2}, with
+\eqn{D' = A' + Q'B^2 + QB'} in the notation of \code{\link[=skewt_pieces]{skewt_pieces()}}. It is the
+same expression as \eqn{\partial^2\ell/\partial\mu^2}: two signs cancel
+where one did not at first order.
+
+Unlike the skew normal's, the value \strong{changes sign}. The Student
+\eqn{t}'s curvature is positive wherever \eqn{|z| > \sqrt{\nu}}, so the
+log-density is convex in the far tail. That convexity makes the family's
+score redescend, and its estimates resistant to an outlier.
+}
+\section{Notation}{
+
+\eqn{z = (y-\mu)/\sigma}, \eqn{\nu} the degrees of freedom, and \eqn{A'},
+\eqn{B}, \eqn{B'}, \eqn{Q}, \eqn{Q'} are as \code{\link[=skewt_pieces]{skewt_pieces()}} defines them.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+
+# It equals the curvature in the location, without a sign change.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Against a central difference of the response derivative.
+eps <- 1e-5
+rbind(analytic = distrib_hess_y(d, y, th),
+      numeric = (distrib_grad_y(d, y + eps, th) -
+                 distrib_grad_y(d, y - eps, th)) / (2 * eps))
+
+# Convex in the far tail, where the skew normal is concave everywhere.
+sn <- skewnormal1_distrib()
+far <- c(-20, -8, 8, 20)
+rbind(skew_t = distrib_hess_y(d, far, th),
+      skew_normal = distrib_hess_y(sn, far, list(mu = 0, sigma = 1, alpha = 3)))
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y.SkewTDistrib()}} for the first derivative,
+\code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}} for the parameter curvature it shares an
+expression with, \code{\link[=distrib_hess_y.SkewNormal1Distrib]{distrib_hess_y.SkewNormal1Distrib()}} for the case that
+does not change sign, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
