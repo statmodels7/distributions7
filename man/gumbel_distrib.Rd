@@ -2,104 +2,163 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{gumbel_distrib}
 \alias{gumbel_distrib}
-\title{Gumbel Distribution Object}
+\title{Gumbel Distribution}
 \usage{
 gumbel_distrib(link_mu = identity_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for the location \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale \eqn{\sigma}. Defaults
-to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{\link[=GumbelDistrib]{GumbelDistrib()}} (inheriting from
-\code{continuous_distrib}).
+An S7 object of class \code{GumbelDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"gumbel"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params} \code{c("mu", "sigma")},
+\code{n_params} \code{2}, \code{params_bounds} the list of \eqn{(-\infty, \infty)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the Gumbel (type I extreme value)
-distribution, in the form for \strong{maxima}, with location \eqn{\mu} and
-scale \eqn{\sigma}.
+Builds the distribution object for the Gumbel (type I extreme value) family
+in the form for \strong{maxima}: a location-scale family on the whole real line
+with location \eqn{\mu} and scale \eqn{\sigma > 0}. The returned object
+carries closed-form derivatives of the log-density to fourth order, in the
+parameters and in the response, observed and expected, and closed-form
+moments, so every generic of the toolkit answers without a numerical
+fallback.
+
+The two arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on. The defaults are the identity for
+the location, which ranges over the whole line, and the logarithm for the
+scale, which keeps it positive at every predictor.
 }
-\details{
-The Gumbel distribution is the limit law of the maximum of a sample from a
-light-tailed distribution, which is what it is used for. It is a location-scale
-family on the whole real line, skewed to the right with a fixed shape:
-unlike the gaussian, its skewness and kurtosis are constants and cannot be
-fitted.
+\section{The parametrization}{
+With \eqn{z = (y-\mu)/\sigma} the density on the whole real line is
+\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sigma}
+      \exp\left\{-z - e^{-z}\right\},}
+the distribution function \eqn{F(q) = \exp\{-e^{-z}\}} and the quantile
+function \eqn{Q(p) = \mu - \sigma\log(-\log p)}, both closed form. The mean
+is \eqn{\mu + \gamma\sigma} with \eqn{\gamma} the Euler-Mascheroni
+constant, the variance \eqn{\pi^2\sigma^2/6}, the skewness
+\eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395} and the excess kurtosis
+\eqn{12/5}. The last two are constants: \strong{this family has a fixed shape and
+only its location and spread can be fitted.} The mode is \eqn{\mu}, the
+median \eqn{\mu - \sigma\log\log 2}, and the mean is above both.
 
-\strong{Probability density function}, with \eqn{z = (y-\mu)/\sigma}:
-\deqn{f(y; \mu, \sigma) = \dfrac{1}{\sigma}\exp\left\{-z - e^{-z}\right\}}
+The law is the limit of the maximum of a sample from a light-tailed
+distribution, once centered and scaled, and that is what it is fitted to. It
+is max-stable: raising its distribution function to the \eqn{n}th power
+gives the same law with the location shifted by \eqn{\sigma\log n}.
+}
 
-\strong{Cumulative distribution function:}
-\deqn{F(q; \mu, \sigma) = \exp\left\{-e^{-z}\right\}}
-
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma) = \mu - \sigma\log(-\log p)}
-
-\strong{Score}, with \eqn{w = e^{-z}}:
+\section{Everything rests on w being standard exponential}{
+Write \eqn{w = e^{-z}}. Under the model \eqn{w} is standard exponential
+whatever \eqn{\mu} and \eqn{\sigma} are, and the whole family is written in
+it. The score is
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1 - w}{\sigma},
       \qquad
-      \dfrac{\partial \ell}{\partial \sigma}
-        = \dfrac{z(1 - w) - 1}{\sigma}}
+      \dfrac{\partial \ell}{\partial \sigma} =
+        \dfrac{z(1 - w) - 1}{\sigma},}
+the observed Hessian is
+\deqn{\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \quad
+      \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \quad
+      \ell^{(\sigma\sigma)} = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2},}
+and every expectation the family needs is a derivative of \eqn{\Gamma} at 2:
+\eqn{\mathbb{E}[w] = 1}, \eqn{\mathbb{E}[w\log w] = 1-\gamma},
+\eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}. The expected
+Hessian follows in one line, and so do the third and fourth orders, through
+\eqn{\mathbb{E}[z^k w] = (-1)^k\Gamma^{(k)}(2)}.
 
-\strong{Observed Hessian:}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{w}{\sigma^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
-        = -\dfrac{1 - w + zw}{\sigma^2}, \quad
-      \dfrac{\partial^2 \ell}{\partial \sigma^2}
-        = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}}
-
-\strong{Expected Hessian:} see
-\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}}. Note that
-\eqn{E[\partial^2 \ell / \partial \mu \, \partial \sigma}] does not vanish:
-the location and the scale are \strong{not} orthogonal here, unlike in a
-symmetric location-scale family, because the density is skewed.
-
-\strong{Moments:} mean \eqn{\mu + \gamma\sigma}, variance
-\eqn{\pi^2\sigma^2/6}, skewness \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395}
-and excess kurtosis \eqn{12/5}, the last two free of both parameters.
-
-\strong{Relation to the Weibull.} If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is
-Weibull, so \code{\link[=weibull1_distrib]{weibull1_distrib()}} is this family on the log scale and
-reversed; the two share the expectations that produce their information
-matrices.
-
-\strong{Minima.} The distribution of minima is the reflection: fit this
-family to \eqn{-Y}, or use \code{\link[=transformation]{transformation()}} with
-\code{\link[=affine_transform]{affine_transform(scale = -1)}}.
-
-\strong{Higher orders.} Third and fourth derivatives are closed form,
-observed and expected: with \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
-every derivative is a polynomial in \eqn{z} and \eqn{z^j w}, and every
-expectation is a derivative of \eqn{\Gamma} at 2.
-
-\strong{Parameter Domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
+\strong{The location and the scale are not orthogonal.} The mixed entry of the
+expected information is \eqn{(1-\gamma)/\sigma^2}, which is about
+\eqn{0.4228/\sigma^2} and never zero. In a symmetric location-scale family
+such as the Gaussian it vanishes; here the density is skewed and it does
+not, so the two estimates are asymptotically correlated.
 }
+
+\section{Relatives}{
+If \eqn{Y} is Gumbel then \eqn{e^{-Y}} is Weibull, so
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} is this family on the log scale and reversed, and the
+two share the expectations that produce their information matrices. For
+\strong{minima} the law is the reflection: fit this family to \eqn{-Y}, or use
+\code{\link[=transformation]{transformation()}} with
+\code{\link[=affine_transform]{affine_transform(scale = -1)}}. \code{\link[=gpd_distrib]{gpd_distrib()}} is the
+other limit law of extremes, for exceedances over a threshold in place of
+block maxima.
 }
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form. The fixed shape supplies the method of moments
+starting values: the scale is \eqn{s\sqrt{6}/\pi} and the location
+\eqn{\bar y - \gamma s\sqrt{6}/\pi}, with \eqn{s} the sample standard
+deviation. The example below shows them landing beside the estimates.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale. \eqn{z = (y-\mu)/\sigma} is the standardized
+value and \eqn{w = e^{-z}}, standard exponential under the model.
+\eqn{\gamma} is the Euler-Mascheroni constant, \eqn{-\psi(1) \approx
+0.5772}. \eqn{\eta} is a parameter on the unconstrained scale of its link,
+with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- gumbel_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density, written out.
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+all.equal(distrib_pdf(d, y, th), exp(-y - exp(-y)))
 
-# the mean is shifted by Euler's constant, and the shape is fixed
-c(mean = mean(d, theta), skewness = skewness(d, theta))
+# The mean is shifted by Euler's constant and the shape is fixed: the
+# skewness and kurtosis are the same at any parameter setting.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(skewness(d, list(mu = 5, sigma = 3)), kurtosis(d, list(mu = 5, sigma = 3)))
 
-# exp(-Y) is Weibull: the two families are one on the log scale
-stats::sd(exp(-distrib_rng(d, 1000, theta))) > 0
+# Max-stable: the cdf to the nth power is the same law shifted by
+# sigma log n.
+all.equal(distrib_cdf(d, y, th)^10,
+          distrib_cdf(d, y, list(mu = log(10), sigma = 1)))
+
+# exp(-Y) is Weibull with scale exp(-mu) and shape 1/sigma; the densities
+# agree once the Jacobian is applied.
+set.seed(3)
+yy <- distrib_rng(d, 5, list(mu = 0, sigma = 1 / 2))
+all.equal(distrib_pdf(d, yy, list(mu = 0, sigma = 1 / 2)),
+          distrib_pdf(weibull1_distrib(), exp(-yy),
+                      list(mu = 1, sigma = 2)) * exp(-yy))
+
+# The location and the scale are not orthogonal: the mixed entry of the
+# expected information is (1 - gamma)/sigma^2.
+c(mixed = distrib_expected_hessian(d, 0, th)$mu_sigma,
+  one_minus_gamma = 1 + digamma(1))
+
+# Fitting recovers the parameters; the moment estimates start it off.
+set.seed(8)
+s <- distrib_rng(d, 2000, list(mu = 3, sigma = 2))
+sc <- sd(s) * sqrt(6) / pi
+rbind(fitted  = coef(fit_distrib(d, s)),
+      moments = c(mu = mean(s) + digamma(1) * sc, sigma = sc))
 
 }
 \references{
 Coles, S. (2001). \emph{An Introduction to Statistical Modeling of Extreme
-Values}, chapter 3. Springer.
+Values}, Chapter 3. Springer, London.
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}, \code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=weibull1_distrib]{weibull1_distrib()}} for the family this becomes under \eqn{e^{-Y}};
+\code{\link[=gpd_distrib]{gpd_distrib()}} for exceedances over a threshold; \code{\link[=transformation]{transformation()}} for
+the reflection that gives minima; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the symmetric
+location-scale family whose parameters are orthogonal; \code{\link[=fit_distrib]{fit_distrib()}} to
+estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own
+against the same battery this one passes; \link{GumbelDistrib} for the class.
 }

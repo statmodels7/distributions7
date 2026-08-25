@@ -4,28 +4,61 @@
 \alias{distrib_cdf.GumbelDistrib}
 \title{Gumbel Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{q}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma))}. With \code{log.p = TRUE} the
+values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the Gumbel distribution:
-\deqn{F(q; \mu, \sigma) = \exp\left\{-e^{-z}\right\}, \qquad
-      z = (q - \mu)/\sigma}
+Computes the Gumbel distribution function, with \eqn{z = (q - \mu)/\sigma},
+\deqn{F(q; \mu, \sigma) = \exp\left\{-e^{-z}\right\}.}
+This is the defining property of the family: a maximum of \eqn{n}
+independent light-tailed variables has, after centering and scaling, a
+distribution function that is the \eqn{n}th power of one distribution
+function, and \eqn{\exp\{-e^{-z}\}} is the fixed point of that operation.
 }
 \details{
-The lower tail is exact on the log scale, since \eqn{\log F = -e^{-z}}, and
-the upper tail uses \code{expm1}, so neither loses precision in its own tail.
+Both tails are computed on the scale that keeps them accurate. The lower
+tail is exact on the log scale, \eqn{\log F = -e^{-z}}, and the upper tail
+goes through \code{\link[base:Log]{base::expm1()}}, so neither loses precision where it is small.
+}
+\examples{
+d <- gumbel_distrib()
+th <- list(mu = 0, sigma = 1)
+q <- c(-1, 0, 1)
+
+# The closed form, written out.
+all.equal(distrib_cdf(d, q, th), exp(-exp(-q)))
+
+# The two tails sum to one.
+distrib_cdf(d, 1, th) + distrib_cdf(d, 1, th, lower.tail = FALSE)
+
+# Max-stability: the cdf raised to the nth power is the same law shifted
+# by sigma log n.
+n <- 10
+all.equal(distrib_cdf(d, q, th)^n,
+          distrib_cdf(d, q, list(mu = log(n), sigma = 1)))
+
+# Deep in the lower tail the probability underflows and its log does not.
+distrib_cdf(d, -700, th)
+distrib_cdf(d, -700, th, log.p = TRUE)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile.GumbelDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf.GumbelDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the
+generic.
 }

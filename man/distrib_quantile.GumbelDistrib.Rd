@@ -4,23 +4,54 @@
 \alias{distrib_quantile.GumbelDistrib}
 \title{Gumbel Quantile Function}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN};
+the endpoints give \code{-Inf} and \code{Inf}.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{p}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of length
+\code{max(length(p), length(mu), length(sigma))}.
 }
 \description{
-Computes the quantile function for the Gumbel distribution:
-\deqn{Q(p; \mu, \sigma) = \mu - \sigma \log(-\log p)}
+Computes the Gumbel quantile function in closed form,
+\deqn{Q(p; \mu, \sigma) = \mu - \sigma \log(-\log p).}
+The distribution function is strictly increasing on the whole line, so this
+is its exact inverse and the round trip through
+\code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf.GumbelDistrib()}} returns \code{p}. The median is
+\eqn{\mu - \sigma\log\log 2}, about \eqn{\mu + 0.3665\sigma}, and lies
+between the mode \eqn{\mu} and the mean \eqn{\mu + \gamma\sigma}.
+}
+\examples{
+d <- gumbel_distrib()
+th <- list(mu = 0, sigma = 1)
+
+# The closed form, written out.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_quantile(d, p, th), -log(-log(p)))
+
+# Exact inverse: the round trip returns the probabilities it was given.
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# Mode, median and mean, in that order.
+c(mode = 0, median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
+
+# A return level: the value exceeded once in 100 periods.
+distrib_quantile(d, 1 - 1 / 100, th)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf.GumbelDistrib()}}, which this inverts;
+\code{\link[=distrib_rng.GumbelDistrib]{distrib_rng.GumbelDistrib()}}, which uses the same inverse-transform
+identity; \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

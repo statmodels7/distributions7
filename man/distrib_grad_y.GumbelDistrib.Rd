@@ -2,21 +2,53 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_grad_y.GumbelDistrib}
 \alias{distrib_grad_y.GumbelDistrib}
-\title{Gumbel Response Derivative}
+\title{Gumbel First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Closed form: \eqn{\partial \ell / \partial y = (w - 1)/\sigma}, which is
-minus the derivative in \eqn{\mu}, as it must be for a location family.
+Computes the first derivative of the Gumbel log-density with respect to the
+response, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{w - 1}{\sigma},
+      \qquad w = e^{-(y-\mu)/\sigma}.}
+The Gumbel is a location family in \eqn{\mu}, so the response enters the
+log-density only through \eqn{y - \mu} and this derivative is the negative
+of the score in \eqn{\mu}. It vanishes at \eqn{y = \mu}, which is the mode.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+
+all.equal(distrib_grad_y(d, y, th), (exp(-y) - 1) / 1)
+
+# A location family: the derivative in the response is minus the score in
+# the location.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Zero at the mode, which is mu itself.
+distrib_grad_y(d, 0, th)
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y.GumbelDistrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for the score in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

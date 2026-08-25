@@ -2,24 +2,78 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_deriv4.GumbelDistrib}
 \alias{distrib_deriv4.GumbelDistrib}
-\title{Gumbel Analytical Fourth-Order Derivatives}
+\title{Gumbel Fourth-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the expected fourth derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectations under the
+model are returned in place of the observed values. Defaults to \code{FALSE}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored, a closed form being available for both the observed
+and the expected values.}
+
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of five numeric vectors, \code{mu_mu_mu_mu},
+\code{mu_mu_mu_sigma}, \code{mu_mu_sigma_sigma}, \code{mu_sigma_sigma_sigma} and
+\code{sigma_sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form fourth-order derivatives of the Gumbel log-density (observed,
-or expected when \code{expected = TRUE}), in the notation of
-\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}}.
+Computes the five distinct fourth derivatives of the Gumbel log-density with
+respect to \eqn{\mu} and \eqn{\sigma}, in closed form, in the notation of
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}}: with \eqn{z = (y-\mu)/\sigma} and
+\eqn{w = e^{-z}}, every component is a polynomial in \eqn{z} and in
+\eqn{z^j w} divided by a power of \eqn{\sigma}.
+
+With \code{expected = TRUE} the expectations are returned, also closed form,
+resting on the same fact: \eqn{w} is standard exponential under the model,
+so \eqn{\mathbb{E}[z^k w] = (-1)^k \Gamma^{(k)}(2)}. \code{approx} and \code{nsim} are
+ignored either way.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijkl)}} is the fourth derivative of the log-density in
+parameters \eqn{i}, \eqn{j}, \eqn{k} and \eqn{l}.
+\eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}}.
+}
+
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+d4 <- distrib_deriv4(d, y, th)
+names(d4)
+
+# The expected values are constants at a fixed parameter setting.
+lapply(distrib_deriv4(d, y, th, expected = TRUE), unique)
+
+# A central difference of the third order reproduces it.
+eps <- 1e-6
+up <- distrib_deriv3(d, y, list(mu = 0 + eps, sigma = 1))$mu_mu_mu
+dn <- distrib_deriv3(d, y, list(mu = 0 - eps, sigma = 1))$mu_mu_mu
+all.equal((up - dn) / (2 * eps), d4$mu_mu_mu_mu, tolerance = 1e-4)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}} for the order below,
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic, and
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}} for the second-order
+expectation these extend.
 }

@@ -2,20 +2,47 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_hess_y.GumbelDistrib}
 \alias{distrib_hess_y.GumbelDistrib}
-\title{Gumbel Response Second Derivative}
+\title{Gumbel Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation,
+all strictly negative.
 }
 \description{
-Closed form: \eqn{\partial^2 \ell / \partial y^2 = -w/\sigma^2}.
+Computes the second derivative of the Gumbel log-density with respect to the
+response, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{w}{\sigma^2},
+      \qquad w = e^{-(y-\mu)/\sigma}.}
+It is negative at every observation, \eqn{w} being positive, so the
+log-density is concave in the response over the whole line. Being a location
+family, the Gumbel has the same curvature in the response as in its
+location, and this equals the \code{mu_mu} component of
+\code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}}.
+}
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+
+distrib_hess_y(d, y, th)
+
+# A location family: the same curvature as in the location.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# Negative everywhere, so the log-density is concave in the response.
+all(distrib_hess_y(d, c(-20, 0, 20), th) < 0)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_grad_y.GumbelDistrib]{distrib_grad_y.GumbelDistrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}} for the curvature in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

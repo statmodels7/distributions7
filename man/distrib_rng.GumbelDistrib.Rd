@@ -4,20 +4,43 @@
 \alias{distrib_rng.GumbelDistrib}
 \title{Gumbel Random Number Generator}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}. A component of length 1 is recycled,
+so a vector of length \code{n} draws one variate per parameter setting.
+\code{sigma} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws on the whole real line.
 }
 \description{
-Generates random numbers as \eqn{\mu - \sigma \log E} with \eqn{E} standard
-exponential, which is inverse transform written without a logarithm of a
-uniform.
+Draws \code{n} independent Gumbel variates as \eqn{\mu - \sigma\log E} with
+\eqn{E} standard exponential, using \code{\link[stats:Exponential]{stats::rexp()}}. That is the
+inverse-transform identity written without a logarithm of a uniform, which
+keeps the left tail accurate: a uniform near zero has few significant digits
+left after one logarithm and none after two.
+}
+\examples{
+d <- gumbel_distrib()
+
+# The identity the method uses: mu - sigma log(E), E standard exponential.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 0, sigma = 1))
+set.seed(2)
+identical(a, 0 - 1 * log(rexp(3)))
+
+# The sample moments recover the parameters through the fixed shape: the
+# scale is sd sqrt(6)/pi and the location the mean less gamma times it.
+set.seed(8)
+z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
+s <- sd(z) * sqrt(6) / pi
+c(mu = mean(z) + digamma(1) * s, sigma = s)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile.GumbelDistrib()}} for the inverse it rests on,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

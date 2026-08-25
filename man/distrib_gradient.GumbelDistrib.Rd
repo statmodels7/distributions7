@@ -2,29 +2,78 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_gradient.GumbelDistrib}
 \alias{distrib_gradient.GumbelDistrib}
-\title{Gumbel Analytical Gradient}
+\title{Gumbel Score}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-Closed-form first derivatives of the Gumbel log-density, written in
-\eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}}:
+Computes the first derivatives of the Gumbel log-density with respect to
+\eqn{\mu} and \eqn{\sigma}, one value per observation, in closed form. With
+\eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{1 - w}{\sigma},
       \qquad
-      \dfrac{\partial \ell}{\partial \sigma}
-        = \dfrac{z(1 - w) - 1}{\sigma}}
+      \dfrac{\partial \ell}{\partial \sigma} =
+        \dfrac{z(1 - w) - 1}{\sigma}.}
+
+The whole family is written in \eqn{w}, and under the model \eqn{w} is
+\strong{standard exponential} whatever the parameters. That is what makes every
+expectation this family needs a derivative of \eqn{\Gamma} at 2, and it is
+also why the score is bounded above in \eqn{\mu} and unbounded below: a
+value far to the left makes \eqn{w} enormous.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location and
+\eqn{\sigma > 0} the scale. \eqn{z = (y-\mu)/\sigma} is the standardized
+value and \eqn{w = e^{-z}}, which is standard exponential under the model.
+}
+
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+z <- (y - 0) / 1
+w <- exp(-z)
+all.equal(g$mu, (1 - w) / 1)
+all.equal(g$sigma, (z * (1 - w) - 1) / 1)
+
+# The location component vanishes at y = mu, where w = 1.
+distrib_gradient(d, 0, th)$mu
+
+# It is bounded above by 1/sigma and unbounded below.
+distrib_gradient(d, c(-3, 10), th)$mu
+
+# Summed over a fitted sample the score is at the optimizer's tolerance.
+set.seed(8)
+s <- distrib_rng(d, 2000, list(mu = 3, sigma = 2))
+fit <- fit_distrib(d, s)
+vapply(distrib_gradient(d, s, as.list(coef(fit))), sum, numeric(1))
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}} for their expectation,
+\code{\link[=distrib_grad_y.GumbelDistrib]{distrib_grad_y.GumbelDistrib()}} for the derivative in the response, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

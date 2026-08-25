@@ -2,7 +2,7 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{GumbelDistrib}
 \alias{GumbelDistrib}
-\title{S7 Class for the Gumbel Distribution}
+\title{Gumbel Distribution Class}
 \usage{
 GumbelDistrib(
   distrib_name = character(0),
@@ -36,34 +36,67 @@ GumbelDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{GumbelDistrib}.
+An S7 object of class \code{GumbelDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=gumbel_distrib]{gumbel_distrib()}} they hold \code{"gumbel"}, \code{"univariate"},
+\code{c(-Inf, Inf)}, \code{c("mu", "sigma")}, \code{2}, the domains
+\eqn{(-\infty, \infty)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the Gumbel
-(type I extreme value, maximum) distribution.
+The S7 class of the Gumbel (type I extreme value) family in the form for
+\strong{maxima}, a location-scale family on the whole real line with location
+\eqn{\mu} and scale \eqn{\sigma > 0} and density
+\eqn{\sigma^{-1}\exp\{-z - e^{-z}\}} at \eqn{z = (y-\mu)/\sigma}. Its shape
+is fixed: the skewness and the excess kurtosis are constants and cannot be
+fitted. It inherits from \code{continuous_distrib}, so it answers every generic
+of the \code{distrib} contract; the eleven methods listed below are registered on
+it directly and everything else comes from the parent.
+
+Build one with \code{\link[=gumbel_distrib]{gumbel_distrib()}}, which supplies the two link functions and
+fills the properties in. This page documents the raw S7 constructor, which
+takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_grad_y.GumbelDistrib]{distrib_grad_y()}},
 \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.GumbelDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian()}},
-\code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.GumbelDistrib]{distrib_deriv4()}},
 \code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.GumbelDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_rng.GumbelDistrib]{distrib_rng()}}
 
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- gumbel_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_bounds
+d@bounds
+
+# The shape is fixed: skewness and excess kurtosis do not move with the
+# parameters.
+rbind(a = c(skew = skewness(d, list(mu = 0, sigma = 1)),
+            kurt = kurtosis(d, list(mu = 0, sigma = 1))),
+      b = c(skewness(d, list(mu = 5, sigma = 3)),
+            kurtosis(d, list(mu = 5, sigma = 3))))
+}
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=gumbel_distrib]{gumbel_distrib()}} to build one;
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}, which is this family under \eqn{e^{-Y}};
+\code{\link[=gpd_distrib]{gpd_distrib()}} for the other limit law of extremes;
+\code{\link[=distrib_pdf.GumbelDistrib]{distrib_pdf.GumbelDistrib()}} and \code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for
+the closed forms this class supplies.
 }

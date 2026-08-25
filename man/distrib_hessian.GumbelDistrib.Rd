@@ -2,30 +2,75 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_hessian.GumbelDistrib}
 \alias{distrib_hessian.GumbelDistrib}
-\title{Gumbel Analytical Observed Hessian}
+\title{Gumbel Observed Hessian}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, in that order, each of length
+\code{max(length(y), length(mu), length(sigma))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-Closed-form second derivatives of the Gumbel log-density:
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{w}{\sigma^2},
-      \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}
-        = -\dfrac{1 - w + z w}{\sigma^2},}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2}
-        = \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.}
+Computes the three distinct second derivatives of the Gumbel log-density
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form. With \eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}},
+\deqn{\ell^{(\mu\mu)} = -\dfrac{w}{\sigma^2}, \qquad
+      \ell^{(\mu\sigma)} = -\dfrac{1 - w + zw}{\sigma^2}, \qquad
+      \ell^{(\sigma\sigma)} =
+        \dfrac{1 - 2z + 2zw - z^2 w}{\sigma^2}.}
+The curvature in the location is negative at every observation, \eqn{w}
+being positive, so the log-likelihood is concave in \eqn{\mu} at any data
+set. The curvature in the scale is not: it is positive wherever
+\eqn{1 - 2z + 2zw - z^2w > 0}, which includes \eqn{y = \mu}.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{z = (y-\mu)/\sigma} and \eqn{w = e^{-z}}.
+}
+
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+h <- distrib_hessian(d, y, th)
+h
+
+# The three closed forms, written out.
+z <- (y - 0) / 1
+w <- exp(-z)
+all.equal(h$mu_mu, -w)
+all.equal(h$mu_sigma, -(1 - w + z * w))
+all.equal(h$sigma_sigma, 1 - 2 * z + 2 * z * w - z^2 * w)
+
+# Concave in mu everywhere, and positive in sigma at y = mu.
+c(all_negative_in_mu = all(h$mu_mu < 0),
+  sigma_at_mu = distrib_hessian(d, 0, th)$sigma_sigma)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-6
+up <- distrib_gradient(d, y, list(mu = 0 + eps, sigma = 1))$mu
+dn <- distrib_gradient(d, y, list(mu = 0 - eps, sigma = 1))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-5)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.GumbelDistrib]{distrib_expected_hessian.GumbelDistrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.GumbelDistrib]{distrib_deriv3.GumbelDistrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

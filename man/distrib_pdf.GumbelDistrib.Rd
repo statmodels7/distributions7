@@ -4,23 +4,58 @@
 \alias{distrib_pdf.GumbelDistrib}
 \title{Gumbel Probability Density Function}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{sigma} must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
-Computes the probability density function for the Gumbel distribution, with
-\eqn{z = (y - \mu)/\sigma}:
+Computes the Gumbel density, with \eqn{z = (y - \mu)/\sigma},
 \deqn{f(y; \mu, \sigma) = \dfrac{1}{\sigma}
-  \exp\left\{-z - e^{-z}\right\}}
+      \exp\left\{-z - e^{-z}\right\},}
+written out rather than delegated, base R carrying no Gumbel. The two tails
+are of very different weight: the density falls like \eqn{e^{-z}} to the
+right and like \eqn{e^{-e^{-z}}} to the left, so the left one is doubly
+exponential and dies far faster.
+
+With \code{log = TRUE} the exponent is returned directly and stays finite where
+the density itself underflows.
+}
+\examples{
+d <- gumbel_distrib()
+y <- c(-1, 0, 1)
+th <- list(mu = 0, sigma = 1)
+
+# The closed form, written out.
+z <- (y - 0) / 1
+all.equal(distrib_pdf(d, y, th), exp(-z - exp(-z)))
+
+# The mode is at mu, where the density peaks at 1/(sigma e).
+c(at_mode = distrib_pdf(d, 0, th), one_over_e = 1 / exp(1))
+
+# The two tails are of very different weight.
+distrib_pdf(d, c(-5, 5), th)
+
+# Far to the left the density underflows and its logarithm does not.
+distrib_pdf(d, -6, th)
+distrib_pdf(d, -6, th, log = TRUE)
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_cdf.GumbelDistrib]{distrib_cdf.GumbelDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.GumbelDistrib]{distrib_gradient.GumbelDistrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf.Weibull1Distrib]{distrib_pdf.Weibull1Distrib()}} for the family this becomes
+under \eqn{e^{-Y}}, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

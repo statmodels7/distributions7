@@ -2,41 +2,96 @@
 % Please edit documentation in R/gumbel_distrib.R
 \name{distrib_expected_hessian.GumbelDistrib}
 \alias{distrib_expected_hessian.GumbelDistrib}
-\title{Gumbel Analytical Expected Hessian}
+\title{Gumbel Expected Hessian}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} is not read. \code{sigma}
+must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is exact.}
+\item{approx}{Ignored, a closed form being available. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}, in that order, each of length \code{length(y)} and constant within
+itself when the parameters are.
 }
 \description{
-Closed form. Under the model \eqn{w = e^{-Z}} is standard exponential, so
-every expectation needed is a derivative of \eqn{\Gamma} at 2:
-\eqn{E[w] = 1}, \eqn{E[w \log w] = 1 - \gamma} and
-\eqn{E[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}, together with
-\eqn{E[Z] = \gamma}. Hence
-\deqn{E\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
-        = -\dfrac{1}{\sigma^2},
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. With \eqn{\gamma} the
+Euler-Mascheroni constant,
+\deqn{\mathbb{E}\left[\ell^{(\mu\mu)}\right] = -\dfrac{1}{\sigma^2},
       \qquad
-      E\left[\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma}\right]
-        = \dfrac{1 - \gamma}{\sigma^2},}
-\deqn{E\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right]
-        = -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2},}
-with \eqn{\gamma} the Euler-Mascheroni constant. Because the closed form
-exists, the \code{approx} argument is ignored.
+      \mathbb{E}\left[\ell^{(\mu\sigma)}\right] =
+        \dfrac{1 - \gamma}{\sigma^2}, \qquad
+      \mathbb{E}\left[\ell^{(\sigma\sigma)}\right] =
+        -\dfrac{(1-\gamma)^2 + \pi^2/6}{\sigma^2}.}
+
+They are closed form for one reason, and it is the same reason the Weibull's
+are: under the model \eqn{w = e^{-Z}} is standard exponential whatever the
+parameters, so every expectation the family needs is a derivative of
+\eqn{\Gamma} at 2. Here that is \eqn{\mathbb{E}[w] = 1},
+\eqn{\mathbb{E}[w\log w] = 1 - \gamma} and
+\eqn{\mathbb{E}[w(\log w)^2] = (1-\gamma)^2 + \pi^2/6 - 1}, with
+\eqn{\mathbb{E}[Z] = \gamma}.
+
+\strong{The mixed entry does not vanish.} The location and the scale are not
+orthogonal here, where in a symmetric location-scale family such as the
+Gaussian they are, and the reason is that this density is skewed. Their
+maximum likelihood estimates are asymptotically correlated.
+
+Because the values do not depend on the data, \code{approx} and \code{nsim} are
+ignored. \code{y} is read only for its length.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\theta\,\partial\theta^\top]}, the
+expectation of the \strong{observed information} under the model. The Gumbel is a
+regular family, so the second Bartlett identity holds and this equals the
+variance of the score. \eqn{\gamma} is the Euler-Mascheroni constant,
+\eqn{-\psi(1) \approx 0.5772}.
+}
+
+\examples{
+d <- gumbel_distrib()
+th <- list(mu = 0, sigma = 1)
+e <- distrib_expected_hessian(d, c(-1, 0, 1), th)
+lapply(e, unique)
+
+# Written out with the Euler-Mascheroni constant.
+g <- -digamma(1)
+c(-1, -((1 - g)^2 + pi^2 / 6), 1 - g)
+
+# The mixed entry is not zero, so the location and the scale are correlated.
+e$mu_sigma[1]
+
+# Negative definite all the same.
+M <- matrix(c(e$mu_mu[1], e$mu_sigma[1], e$mu_sigma[1], e$sigma_sigma[1]), 2)
+eigen(M, only.values = TRUE)$values
+
+# The observed Hessian averages onto them over a large sample.
+set.seed(11)
+z <- distrib_rng(d, 2e5, th)
+rbind(observed = vapply(distrib_hessian(d, z, th), mean, numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, z, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=distrib_hessian.GumbelDistrib]{distrib_hessian.GumbelDistrib()}} for the observed quantity this is
+the expectation of, \code{\link[=distrib_expected_hessian.Weibull1Distrib]{distrib_expected_hessian.Weibull1Distrib()}} for the
+family that shares these expectations, \code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts
+it at each step, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
