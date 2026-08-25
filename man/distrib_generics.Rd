@@ -8,6 +8,78 @@ Nothing. This page is the index of the generics documented on their
 own pages; the value returned is theirs.
 }
 \description{
-A collection of S7 generic functions for mathematical and statistical
-operations on probability distributions.
+The S7 generics every \code{distrib} object answers, grouped by what they
+compute. This page is the index; each generic is documented on its own page,
+and each family's method for it on a third.
+
+\strong{Only \code{\link[=distrib_pdf]{distrib_pdf()}} is compulsory.} Everything else has a fallback: the
+distribution function by quadrature or by summation, the quantile by
+root-finding or by a table lookup, random draws by the ratio-of-uniforms
+method, and every derivative by finite differences. A family defined by its
+density alone therefore arrives complete, and a family that writes a
+quantity out overrides the fallback by ordinary S7 dispatch.
+}
+\section{The surface}{
+\describe{
+\item{probability}{\code{\link[=distrib_pdf]{distrib_pdf()}}, \code{\link[=distrib_cdf]{distrib_cdf()}},
+\code{\link[=distrib_quantile]{distrib_quantile()}}, \code{\link[=distrib_rng]{distrib_rng()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}.}
+\item{derivatives in the parameters}{\code{\link[=distrib_gradient]{distrib_gradient()}},
+\code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, and \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}.}
+\item{derivatives in the response}{\code{\link[=distrib_grad_y]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}}, \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}.
+Refused for a discrete family: a lattice has nothing to differentiate
+along.}
+\item{mixed}{\code{\link[=distrib_cross_y]{distrib_cross_y()}}, \code{\link[=distrib_cross2_y]{distrib_cross2_y()}},
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}, \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}.}
+\item{of the distribution function}{\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}}, \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}},
+which is what a censored likelihood needs.}
+\item{moments}{\code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}},
+\code{\link[=kurtosis]{kurtosis()}}, \code{\link[=moment]{moment()}}, \code{\link[=expectation]{expectation()}}.}
+\item{fitting}{\code{\link[=distrib_start]{distrib_start()}}, and \code{\link[=fit_distrib]{fit_distrib()}}, which is a function
+rather than a generic.}
+\item{multivariate}{\code{\link[=mv_location]{mv_location()}}, \code{\link[=mv_sigma]{mv_sigma()}}, \code{\link[=mv_marginal]{mv_marginal()}},
+\code{\link[=mv_support]{mv_support()}}, \code{\link[=mv_reference_draw]{mv_reference_draw()}}, \code{\link[=mv_derived]{mv_derived()}}.}
+}
+}
+
+\section{Two arguments every derivative generic takes}{
+\code{theta} is normalized before dispatch by \code{align_theta()}, which reorders it
+by name, strips stray names off the values and validates against
+\code{params_bounds} treated as \strong{open} intervals. \code{scale} is applied by the
+generic \strong{after} dispatch, so a method always returns the parameter scale
+and never reads it; see \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
+}
+
+\examples{
+# A family arrives complete from its density alone. Everything below the
+# first line is a fallback the package supplies.
+d <- gaussian1_distrib()
+th <- list(mu = 0, sigma = 1)
+
+distrib_pdf(d, 0, th)
+distrib_cdf(d, 0, th)
+distrib_quantile(d, 0.975, th)
+distrib_gradient(d, c(-1, 1), th)
+
+# theta is reordered by name before dispatch, so the order it is written in
+# does not matter.
+identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
+          distrib_pdf(d, 1, list(sigma = 2, mu = 0)))
+
+# The bounds are OPEN, so a scale of exactly zero is rejected rather than
+# returning an infinite density.
+try(distrib_pdf(d, 1, list(mu = 0, sigma = 0)))
+
+# A discrete family refuses the response derivatives by design.
+try(distrib_grad_y(poisson_distrib(), 2, list(mu = 3)))
+
+}
+\seealso{
+\code{\link[=distrib]{distrib()}} for the base class and its properties;
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}} for the \code{scale} argument;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the \code{approx} argument;
+\code{\link[=check_distrib]{check_distrib()}}, which exercises the whole surface;
+the \code{defining-a-distribution} vignette.
 }

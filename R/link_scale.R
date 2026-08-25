@@ -9,7 +9,7 @@ NULL
 #' The derivative generics of the package ([distrib_gradient()],
 #' [distrib_hessian()], [distrib_expected_hessian()],
 #' [distrib_deriv3()], [distrib_deriv4()]) accept a
-#' `scale` argument selecting the parameterization the derivatives are taken
+#' `scale` argument selecting the parametrization the derivatives are taken
 #' with respect to:
 #'
 #' - `scale = "parameter"` (default): derivatives with respect to the
@@ -49,8 +49,40 @@ NULL
 #' @return Nothing. This page documents the `scale` argument shared by the
 #'   derivative generics named above; the value returned is theirs.
 #'
+#' @examples
+#' d <- gaussian1_distrib()
+#' y <- c(-1, 0, 2)
+#' th <- list(mu = 0, sigma = 2)
+#'
+#' # The scale carries a log link, so h' = sigma and the first-order case is
+#' # one multiplication.
+#' rbind(parameter = distrib_gradient(d, y, th)$sigma,
+#'       link = distrib_gradient(d, y, th, scale = "link")$sigma)
+#'
+#' # At second order the term in h'' appears, so the link-scale component is
+#' # NOT the parameter-scale one times h' squared.
+#' g <- distrib_gradient(d, y, th)$sigma
+#' h <- distrib_hessian(d, y, th)$sigma_sigma
+#' all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
+#'           h * 2^2 + g * 2)
+#'
+#' # For the EXPECTED Hessian the first-order term vanishes, the score having
+#' # mean zero, so the information transforms by congruence.
+#' e <- distrib_expected_hessian(d, y, th)$sigma_sigma
+#' all.equal(distrib_expected_hessian(d, y, th, scale = "link")$sigma_sigma,
+#'           e * 2^2)
+#'
+#' # A parameter on the identity link is unchanged at every order.
+#' all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
+#'           distrib_deriv4(d, y, th, scale = "link")$mu_mu_mu_mu)
+#'
 #' @seealso [distrib_gradient()], [distrib_hessian()],
-#'   [distrib_deriv3()], [distrib_deriv4()]
+#'   [distrib_expected_hessian()], [distrib_deriv3()] and [distrib_deriv4()],
+#'   the five generics that take `scale`;
+#'   [bell_partial()] for the polynomials this assembles;
+#'   [linkfunctions7::linkinvderiv()], which supplies the four inverse-link
+#'   derivatives;
+#'   [fit_distrib()], which optimizes on this scale for the reason given above.
 NULL
 
 # Derivatives on the link (real) scale.

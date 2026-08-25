@@ -1,10 +1,82 @@
 #' @title Distribution Generics
-#' @description A collection of S7 generic functions for mathematical and statistical
-#' operations on probability distributions.
-#' @import S7
 #' @name distrib_generics
+#'
+#' @description
+#' The S7 generics every `distrib` object answers, grouped by what they
+#' compute. This page is the index; each generic is documented on its own page,
+#' and each family's method for it on a third.
+#'
+#' **Only [distrib_pdf()] is compulsory.** Everything else has a fallback: the
+#' distribution function by quadrature or by summation, the quantile by
+#' root-finding or by a table lookup, random draws by the ratio-of-uniforms
+#' method, and every derivative by finite differences. A family defined by its
+#' density alone therefore arrives complete, and a family that writes a
+#' quantity out overrides the fallback by ordinary S7 dispatch.
+#'
+#' @details
+#' # The surface
+#' \describe{
+#'   \item{probability}{[distrib_pdf()], [distrib_cdf()],
+#'     [distrib_quantile()], [distrib_rng()], [distrib_atoms()].}
+#'   \item{derivatives in the parameters}{[distrib_gradient()],
+#'     [distrib_hessian()], [distrib_expected_hessian()], [distrib_deriv3()],
+#'     [distrib_deriv4()], and [distrib_dexpected_hessian()].}
+#'   \item{derivatives in the response}{[distrib_grad_y()],
+#'     [distrib_hess_y()], [distrib_deriv3_y()], [distrib_deriv4_y()].
+#'     Refused for a discrete family: a lattice has nothing to differentiate
+#'     along.}
+#'   \item{mixed}{[distrib_cross_y()], [distrib_cross2_y()],
+#'     [distrib_grad_y_hess()], [distrib_hess_y_hess()].}
+#'   \item{of the distribution function}{[distrib_grad_cdf()],
+#'     [distrib_hess_cdf()], [distrib_deriv3_cdf()], [distrib_deriv4_cdf()],
+#'     which is what a censored likelihood needs.}
+#'   \item{moments}{[mean()], [variance()], [std_dev()], [skewness()],
+#'     [kurtosis()], [moment()], [expectation()].}
+#'   \item{fitting}{[distrib_start()], and [fit_distrib()], which is a function
+#'     rather than a generic.}
+#'   \item{multivariate}{[mv_location()], [mv_sigma()], [mv_marginal()],
+#'     [mv_support()], [mv_reference_draw()], [mv_derived()].}
+#' }
+#'
+#' # Two arguments every derivative generic takes
+#' `theta` is normalized before dispatch by `align_theta()`, which reorders it
+#' by name, strips stray names off the values and validates against
+#' `params_bounds` treated as **open** intervals. `scale` is applied by the
+#' generic **after** dispatch, so a method always returns the parameter scale
+#' and never reads it; see [link_scale_derivatives()].
+#'
 #' @return Nothing. This page is the index of the generics documented on their
 #'   own pages; the value returned is theirs.
+#'
+#' @examples
+#' # A family arrives complete from its density alone. Everything below the
+#' # first line is a fallback the package supplies.
+#' d <- gaussian1_distrib()
+#' th <- list(mu = 0, sigma = 1)
+#'
+#' distrib_pdf(d, 0, th)
+#' distrib_cdf(d, 0, th)
+#' distrib_quantile(d, 0.975, th)
+#' distrib_gradient(d, c(-1, 1), th)
+#'
+#' # theta is reordered by name before dispatch, so the order it is written in
+#' # does not matter.
+#' identical(distrib_pdf(d, 1, list(mu = 0, sigma = 2)),
+#'           distrib_pdf(d, 1, list(sigma = 2, mu = 0)))
+#'
+#' # The bounds are OPEN, so a scale of exactly zero is rejected rather than
+#' # returning an infinite density.
+#' try(distrib_pdf(d, 1, list(mu = 0, sigma = 0)))
+#'
+#' # A discrete family refuses the response derivatives by design.
+#' try(distrib_grad_y(poisson_distrib(), 2, list(mu = 3)))
+#'
+#' @seealso [distrib()] for the base class and its properties;
+#'   [link_scale_derivatives()] for the `scale` argument;
+#'   [expected_derivative_methods()] for the `approx` argument;
+#'   [check_distrib()], which exercises the whole surface;
+#'   the `defining-a-distribution` vignette.
+#' @import S7
 NULL
 
 # All generics normalize `theta` before dispatch (see align_theta() in
