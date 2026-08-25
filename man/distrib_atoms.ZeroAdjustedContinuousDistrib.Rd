@@ -4,17 +4,52 @@
 \alias{distrib_atoms.ZeroAdjustedContinuousDistrib}
 \title{Atoms of a Zero-Adjusted Continuous Distribution}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.
+Only \code{za} is read, and only its first element.}
 }
 \value{
-A list with \code{y = 0} and \code{p = za}.
+A named list with \code{y}, the numeric vector \code{0}, and \code{p}, the
+probability at it.
 }
 \description{
-The single point mass at zero, with probability \eqn{\pi}. This is what makes the
-object a mixed distribution: its density integrates to \eqn{1 - \pi}, not to 1.
+Declares the single point mass at zero, with probability \eqn{\pi}. This
+declaration is what marks the object a MIXED distribution: its density
+integrates to \eqn{1 - \pi}, so a consumer that does not know about the atom
+will find the missing \eqn{\pi} and call it an error.
+}
+\details{
+Three things read it. \code{\link[=check_distrib]{check_distrib()}} adjusts four of its thirteen checks,
+since the density integrates to \eqn{1-\pi}, the quantile round trip cannot
+close inside the jump, and a central difference in \eqn{y} across the atom
+has no derivative to converge to. \code{\link[=expectation]{expectation()}} splits its integral at the
+atom. And \code{\link[=folded]{folded()}} REFUSES a parent that declares one, zero being its own
+preimage under the absolute value while every other point has two.
+
+The question is asked of the OBJECT, so the returned probability moves with
+\code{theta}.
+}
+\section{Notation}{
+
+\eqn{\pi} is the probability of the atom at zero.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+distrib_atoms(d, theta)
+
+# A plain continuous parent declares none.
+distrib_atoms(gaussian1_distrib(), theta[c("mu", "sigma")])
+
+# The declaration is what folded() refuses on.
+try(folded(d))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the generic, \code{\link[=check_distrib]{check_distrib()}} and
+\code{\link[=expectation.ZeroAdjustedContinuousDistrib]{expectation.ZeroAdjustedContinuousDistrib()}} for the two consumers, and
+\code{\link[=folded]{folded()}}, which rejects a parent that declares one.
 }

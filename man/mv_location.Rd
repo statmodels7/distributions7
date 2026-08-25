@@ -32,7 +32,7 @@ them.
 
 The location is the center of symmetry of the density. It is the MEAN as
 well for a gaussian, and for a Student t only above one degree of freedom;
-\code{\link[=mean]{mean()}} is the generic that answers about the moment.
+\code{\link[base:mean]{base::mean()}} is the generic that answers about the moment.
 }
 \section{Notation}{
 
@@ -57,6 +57,6 @@ try(mv_location(dirichlet_distrib(3),
 }
 \seealso{
 \code{\link[=mv_sigma]{mv_sigma()}} for the matrix, \code{\link[=mv_leading_location]{mv_leading_location()}} for the
-implementation the elliptical families use, \code{\link[=mean]{mean()}} for the moment, and
-\code{\link[=mv_location.multivariate_distrib]{mv_location.multivariate_distrib()}} for the refusal.
+implementation the elliptical families use, \code{\link[base:mean]{base::mean()}} for the moment,
+and \code{\link[=mv_location.multivariate_distrib]{mv_location.multivariate_distrib()}} for the refusal.
 }

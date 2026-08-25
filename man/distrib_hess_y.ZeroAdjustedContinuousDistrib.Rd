@@ -4,19 +4,40 @@
 \alias{distrib_hess_y.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Response Hessian}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Exactly zero gives \code{NaN}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-\eqn{\partial^2 \ell / \partial y^2} equals the parent's for \eqn{y \neq 0} and is
-\code{NaN} at the atom.
+Returns \eqn{\partial^2\ell/\partial y^2}, which equals the PARENT's for
+\eqn{y \ne 0} and is \code{NaN} at the atom, for the reason
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} gives: the log-density
+jumps there and no derivative exists.
+}
+\section{Notation}{
+
+\eqn{\pi} is the probability of the atom at zero and \eqn{\ell} the
+log-density of one observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+distrib_hess_y(d, c(-1, 0, 2), theta)
+
+# Away from the atom it is the parent's, which for a gaussian is
+# -1 / sigma^2 everywhere.
+c(mixed = distrib_hess_y(d, 2, theta), parent = -1 / 2^2)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} for the first
+order, \code{\link[=za_y_deriv]{za_y_deriv()}} for the shared body, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the
+generic.
 }

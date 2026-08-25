@@ -2,22 +2,73 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_hessian.ZeroAdjustedDiscreteDistrib}
 \alias{distrib_hessian.ZeroAdjustedDiscreteDistrib}
-\title{Zero-Adjusted Discrete Analytical Observed Hessian}
+\title{Zero-Adjusted Discrete Observed Hessian}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors, one per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}. Every
+mixed key holds a vector of exact zeros.
 }
 \description{
-Observed Hessian of the hurdle model. The mixed blocks are identically zero;
-the truncation adds the correction
-\eqn{H_{corr} = \dfrac{(1-f(0))f''(0) + f'(0)^2}{(1-f(0))^2}} for \eqn{y > 0}.
+Computes the second derivatives of the hurdle log-mass in closed form. The
+MIXED BLOCKS ARE IDENTICALLY ZERO, at every observation and every parameter
+value, because the likelihood factorizes into a binary part in \eqn{\pi} and
+a positive-count part in \eqn{\theta}. The parent block is zero at a zero
+and, at a positive observation, the parent's own Hessian plus the truncation
+correction
+\deqn{H_{\mathrm{corr}} =
+  \frac{\{1 - f(0)\}\,f''(0) + f'(0)^2}{\{1 - f(0)\}^2},}
+the second derivative of \eqn{-\log\{1 - f(0)\}}. The hurdle block is
+\eqn{-1/\pi^2} at a zero and \eqn{-1/(1-\pi)^2} elsewhere.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero,
+\eqn{s} the parent's score, \eqn{H} its observed Hessian and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+set.seed(2)
+y <- distrib_rng(d, 300, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# The mixed block is exactly zero at every observation, where the
+# zero-inflated wrapper's is not.
+all(H$mu_za == 0)
+zi <- zero_inflated(poisson_distrib())
+unique(distrib_hessian(zi, 0:2, list(mu = 3, zi = 0.4))$mu_zi != 0)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient.ZeroAdjustedDiscreteDistrib()}} for the first
+order, \code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian.ZeroAdjustedDiscreteDistrib()}} for the
+expectation, \code{\link[=distrib_hessian.ZeroInflatedDistrib]{distrib_hessian.ZeroInflatedDistrib()}}, whose mixed block is
+NOT zero, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

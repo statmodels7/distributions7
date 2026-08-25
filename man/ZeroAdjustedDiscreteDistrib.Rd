@@ -39,16 +39,36 @@ ZeroAdjustedDiscreteDistrib(
 \item{parent_distrib}{The wrapped \code{discrete_distrib} object.}
 }
 \value{
-An object of class \code{ZeroAdjustedDiscreteDistrib}.
+An S7 object of class \code{ZeroAdjustedDiscreteDistrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. It carries \code{parent_distrib} beside
+the parent's properties. For an object built by \code{\link[=zero_adjusted]{zero_adjusted()}} the
+parameters are the parent's followed by \code{za}, whose bound is
+\eqn{(0, 1)} and whose interpretation is \code{"prob. of zero"}.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the zero-adjusted (hurdle) version
-of a wrapped discrete distribution: the probability mass at zero is \emph{replaced} by
-\eqn{\pi} (parameter \code{za}), and positive values follow the zero-truncated parent.
+The S7 class of the hurdle version of a discrete distribution, with mass
+function
+\deqn{P(Y = y) = \begin{cases} \pi & y = 0 \\
+  (1-\pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y > 0. \end{cases}}
+The mass at zero is REPLACED by the free parameter \eqn{\pi}, carried by
+\code{za}, and the parent is truncated away from zero. Unlike
+\link{ZeroInflatedDistrib}, the model can produce FEWER zeros than the parent as
+well as more.
+}
+\details{
+The likelihood factorizes into a binary part in \eqn{\pi} and a
+positive-count part in \eqn{\theta}. Every mixed block of the Hessian is
+exactly zero for that reason, and the two halves can be read separately. It
+also re-interprets \eqn{\theta}: they are now the parameters of a TRUNCATED
+law, not of the count process the observations come from.
+
+Build one with \code{\link[=zero_adjusted]{zero_adjusted()}}, which checks that the parent is not
+already a zero wrapper and has enough support points. This page documents
+the raw S7 constructor, which checks neither.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient()}},
@@ -57,9 +77,37 @@ Methods implemented for this class:
 \code{\link[=distrib_quantile.ZeroAdjustedDiscreteDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+The third and fourth derivatives come from the shared wrapper machinery in
+\code{wrapper_derivatives.R}; everything else is inherited from
+\code{\link[=discrete_distrib]{discrete_distrib()}}.
 }
 
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero
+and \eqn{\ell} the log-mass of one observation. The positive part is the
+parent truncated away from zero, with mass
+\eqn{f(y)/\{1 - f(0)\}} at \eqn{y > 0}.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+S7::S7_inherits(d, discrete_distrib)
+d@params
+
+# The mass at zero IS the parameter, and can be set below the parent's,
+# which zero-inflation cannot do.
+c(adjusted = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
+distrib_pdf(d, 0, list(mu = 3, za = 0.01))
+
+# The positive part is the parent renormalized away from zero.
+all.equal(distrib_pdf(d, 1:4, theta),
+          0.6 * dpois(1:4, 3) / (1 - dpois(0, 3)))
+}
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} to build one, \link{ZeroInflatedDistrib} for the
+wrapper that ADDS to the mass at zero, and
+\link{ZeroAdjustedContinuousDistrib} for the continuous branch, which produces
+a mixed distribution: a density with an atom on it.
 }

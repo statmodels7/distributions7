@@ -4,18 +4,46 @@
 \alias{distrib_rng.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Random Number Generator}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of length \code{n}, in which the value \code{0} appears with
+probability \eqn{\pi} and is exact.
 }
 \description{
-Draws zeros with probability \eqn{\pi} and otherwise samples from the parent distribution.
+Draws zeros with probability \eqn{\pi} and otherwise samples from the parent
+unchanged. No truncation is involved, unlike the discrete branch: a
+continuous parent produces an exact zero with probability zero, so a draw
+from it never collides with the atom.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+set.seed(3)
+distrib_rng(d, 8, theta)
+
+# A large sample reproduces the atom, and the non-zero draws reproduce the
+# parent.
+set.seed(3)
+big <- distrib_rng(d, 20000, theta)
+c(sampled_atom = mean(big == 0), parameter = 0.3)
+round(c(mean = mean(big[big != 0]), sd = sd(big[big != 0])), 2)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf.ZeroAdjustedContinuousDistrib()}} for the law these
+are drawn from, \code{\link[=distrib_rng.ZeroAdjustedDiscreteDistrib]{distrib_rng.ZeroAdjustedDiscreteDistrib()}}, which does
+truncate, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

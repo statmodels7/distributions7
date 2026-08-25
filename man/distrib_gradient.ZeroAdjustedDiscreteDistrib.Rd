@@ -2,23 +2,71 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_gradient.ZeroAdjustedDiscreteDistrib}
 \alias{distrib_gradient.ZeroAdjustedDiscreteDistrib}
-\title{Zero-Adjusted Discrete Analytical Gradient}
+\title{Zero-Adjusted Discrete Score}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. \code{za} rides a logit by default.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list with one numeric vector per parameter, in
+\code{distrib@params} order.
 }
 \description{
-The hurdle likelihood separates: for the parent's parameters the score at \eqn{y>0} is
-the parent's score plus the truncation correction \eqn{\dfrac{f(0)}{1-f(0)} S(0)}
-(and 0 at \eqn{y=0}); for \eqn{\pi}:
-\deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y>0)\dfrac{1}{1-\pi}}
+Computes the first derivatives of the hurdle log-mass in closed form. The
+likelihood SEPARATES, so each parameter is informed by one half of the data
+only. For the parent's parameters the score is zero at a zero and the
+truncated score at a positive observation,
+\deqn{\frac{\partial \ell}{\partial \theta_i}
+  = \mathbb{I}(y > 0)\left\{s_i(y) + \frac{f(0)}{1 - f(0)}\,s_i(0)\right\},}
+the second term being the derivative of the normalizing constant
+\eqn{-\log\{1 - f(0)\}}. For the hurdle parameter,
+\deqn{\frac{\partial \ell}{\partial \pi}
+  = \frac{\mathbb{I}(y = 0)}{\pi} - \frac{\mathbb{I}(y > 0)}{1 - \pi},}
+which is the Bernoulli score of the indicator that the observation is zero.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero,
+\eqn{s} the parent's score, \eqn{H} its observed Hessian and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+set.seed(2)
+y <- distrib_rng(d, 300, theta)
+
+g <- distrib_gradient(d, y, theta)
+vapply(g, sum, numeric(1))
+
+# Against a numerical derivative of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+
+# A zero tells the parent's parameters nothing at all, the two halves of
+# the likelihood being separate.
+unique(g$mu[y == 0])
+
+# And the za component is the Bernoulli score of the zero indicator, so it
+# takes exactly two values.
+unique(round(g$za, 10))
+c(1 / 0.4, -1 / 0.6)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_hessian.ZeroAdjustedDiscreteDistrib]{distrib_hessian.ZeroAdjustedDiscreteDistrib()}} for the second
+order, \code{\link[=distrib_gradient.ZeroInflatedDistrib]{distrib_gradient.ZeroInflatedDistrib()}}, where the two halves do
+NOT separate, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

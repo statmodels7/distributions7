@@ -4,20 +4,62 @@
 \alias{distrib_pdf.ZeroAdjustedDiscreteDistrib}
 \title{Zero-Adjusted Discrete Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za},
+each a numeric vector of length 1 or of the length of \code{y}. \code{za} must lie
+strictly inside \eqn{(0, 1)}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned, which
+is the quantity actually computed. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{P(Y=0) = \pi, \qquad P(Y=y) = (1-\pi)\dfrac{f(y;\theta)}{1-f(0;\theta)} \ \ (y>0)}
+Computes the hurdle mass function
+\deqn{P(Y = 0) = \pi, \qquad
+  P(Y = y) = (1-\pi)\frac{f(y;\theta)}{1 - f(0;\theta)} \quad (y > 0).}
+The mass at zero is the parameter itself, so it may sit ABOVE or BELOW the
+parent's \eqn{f(0)}; the positive part is the parent renormalized away from
+zero. Everything is computed on the log scale and exponentiated at the end,
+with the normalizing constant taken through \code{\link[base:Log]{base::log1p()}} so that a parent
+with almost no mass at zero does not lose digits to \code{log(1 - f0)}.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{F} its distribution function,
+\eqn{\pi} the probability of a zero, \eqn{s} the parent's score and
+\eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+
+distrib_pdf(d, 0:5, theta)
+
+# The mass at zero is the parameter, and the rest is the parent
+# renormalized away from it.
+c(at_zero = distrib_pdf(d, 0, theta), parameter = 0.4)
+all.equal(distrib_pdf(d, 1:5, theta),
+          0.6 * dpois(1:5, 3) / (1 - dpois(0, 3)))
+
+# It can produce FEWER zeros than the parent, which inflation cannot.
+c(hurdle = distrib_pdf(d, 0, list(mu = 3, za = 0.01)),
+  parent = dpois(0, 3))
+
+# And it is a distribution: the mass sums to one.
+sum(distrib_pdf(d, 0:200, theta))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf.ZeroAdjustedDiscreteDistrib()}} for the distribution
+function, \code{\link[=distrib_pdf.ZeroInflatedDistrib]{distrib_pdf.ZeroInflatedDistrib()}} for the wrapper that adds
+to the mass at zero where this one replaces it, and \code{\link[=distrib_pdf]{distrib_pdf()}} for
+the generic.
 }

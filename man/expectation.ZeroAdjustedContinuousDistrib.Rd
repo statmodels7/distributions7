@@ -4,20 +4,61 @@
 \alias{expectation.ZeroAdjustedContinuousDistrib}
 \title{Expectation for Zero-Adjusted Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{f}{A function \code{f(y, theta, ...)} (receives the full theta, including \code{za}).}
+\item{f}{A function \code{f(y, theta, ...)}, receiving the full \code{theta} including
+\code{za}. It must be vectorized in \code{y}, as the parent's own \code{\link[=expectation]{expectation()}}
+requires.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{...}{Additional arguments passed to \code{f}.}
+\item{...}{Passed to \code{f} and to the parent's \code{\link[=expectation]{expectation()}}.}
 }
 \value{
-A numeric scalar, the expectation of \code{f} under the distribution.
+A single number, the expectation of \code{f} under the mixed law.
 }
 \description{
-The zero-adjusted continuous distribution has a point mass at 0 that plain numerical
-integration would miss. The expectation decomposes exactly as
-\deqn{E[f(Y)] = \pi f(0) + (1-\pi) E_W[f(W)]}
+Computes \eqn{\mathbb{E}[f(Y)]} by splitting the expectation at the atom,
+\deqn{\mathbb{E}[f(Y)] = \pi\, f(0) + (1-\pi)\, \mathbb{E}_W[f(W)],}
+with the second term the PARENT's own expectation. Plain numerical
+integration over the mixed density would miss the point mass entirely and
+return \eqn{(1-\pi)\mathbb{E}_W[f]}, silently.
 }
-\keyword{internal}
+\details{
+\code{f} receives the FULL \code{theta}, \code{za} included, even though the integral runs
+over the parent. The method re-attaches the atom probability inside a
+wrapper, so a caller's \code{f} sees the same parameter list at the atom and away
+from it.
+}
+\section{Notation}{
+
+\eqn{\pi} is the probability of the atom at zero, \eqn{W} the parent's
+variable and \eqn{Y} the zero-adjusted one.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+# The first two moments, against the split written out.
+c(computed = expectation(d, function(y, theta) y, theta),
+  theory = 0.7 * 1)
+c(computed = expectation(d, function(y, theta) y^2, theta),
+  theory = 0.7 * (1^2 + 2^2))
+
+# mean() and variance() are built on the same split.
+c(mean = mean(d, theta), variance = variance(d, theta))
+c(theory_var = 0.7 * 5 - (0.7 * 1)^2)
+
+# The parent's own expectation misses the atom, and is the wrong answer for
+# the mixed law by exactly the factor 1 - pi.
+expectation(gaussian1_distrib(), function(y, theta) y,
+            theta[c("mu", "sigma")])
+}
+\seealso{
+\code{\link[=expectation]{expectation()}} for the generic,
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for the declaration this
+rests on, and \code{\link[base:mean]{base::mean()}} and \code{\link[=variance]{variance()}}, the two moments built on
+it.
+}

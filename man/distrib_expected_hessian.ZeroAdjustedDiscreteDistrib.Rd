@@ -2,22 +2,73 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_expected_hessian.ZeroAdjustedDiscreteDistrib}
 \alias{distrib_expected_hessian.ZeroAdjustedDiscreteDistrib}
-\title{Zero-Adjusted Discrete Analytical Expected Hessian}
+\title{Zero-Adjusted Discrete Expected Information}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{approx}{Ignored: the expectation is exact. Present so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of numeric vectors of length \code{length(y)}, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-Expected Hessian of the hurdle model:
-\eqn{E[H_{\pi\pi}] = -\dfrac{1}{\pi(1-\pi)}}, mixed blocks are 0, and
-\eqn{E[H_{\theta\theta}] = (1-\pi)\left(\dfrac{E[H] - f(0)H(0)}{1-f(0)} + H_{corr}\right)}.
+Computes the expectation of the observed Hessian in closed form. The hurdle
+block is the Bernoulli information \eqn{-1/\{\pi(1-\pi)\}}, the mixed blocks
+are exactly zero, and the parent block is \eqn{(1-\pi)} times the truncated
+parent's own expected Hessian: a positive observation arrives with
+probability \eqn{1-\pi} and carries the whole of what \eqn{\theta} is
+estimated from. No component depends on the data, so every returned vector
+is constant.
+}
+\details{
+The block diagonal is why a hurdle model is cheap to fit: the two halves can
+be estimated independently, and the information matrix inverts blockwise.
+\code{approx} and \code{nsim} are accepted so that the signature matches the generic's
+and neither is read; the expectation here is exact.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero,
+\eqn{s} the parent's score, \eqn{H} its observed Hessian and \eqn{\ell} the
+log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+set.seed(2)
+y <- distrib_rng(d, 300, theta)
+
+EH <- distrib_expected_hessian(d, y, theta)
+vapply(EH, function(z) z[1], numeric(1))
+
+# The hurdle block is the Bernoulli information, and the mixed one is zero.
+c(reported = EH$za_za[1], bernoulli = -1 / (0.4 * 0.6),
+  mixed = EH$mu_za[1])
+
+# It is what summing the observed Hessian against the mass function gives.
+sup <- 0:400
+m <- distrib_pdf(d, sup, theta)
+Hs <- distrib_hessian(d, sup, theta)
+rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
+      closed = vapply(EH, function(z) z[1], numeric(1)))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_hessian.ZeroAdjustedDiscreteDistrib]{distrib_hessian.ZeroAdjustedDiscreteDistrib()}} for the observed
+matrix, \code{\link[=fit_distrib]{fit_distrib()}}, whose Fisher scoring inverts this, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

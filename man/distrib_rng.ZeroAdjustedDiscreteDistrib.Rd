@@ -4,19 +4,46 @@
 \alias{distrib_rng.ZeroAdjustedDiscreteDistrib}
 \title{Zero-Adjusted Discrete Random Number Generator}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of length \code{n}, every value a non-negative support
+point of the parent.
 }
 \description{
-Draws zeros with probability \eqn{\pi} and otherwise samples from the zero-truncated
-parent via inverse transform sampling.
+Draws zeros with probability \eqn{\pi} and otherwise samples from the
+ZERO-TRUNCATED parent, so no draw from the positive part is ever zero. The
+truncated draw is taken by inverting the parent's distribution function at a
+uniform rescaled onto \eqn{(f(0), 1)}, which needs no rejection loop and so
+terminates in bounded time however small the positive mass is.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{F} its distribution function,
+\eqn{\pi} the probability of a zero, \eqn{s} the parent's score and
+\eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+
+set.seed(1)
+distrib_rng(d, 10, theta)
+
+# A large sample reproduces the mass at zero, and no positive draw is zero.
+set.seed(1)
+big <- distrib_rng(d, 20000, theta)
+c(sampled_zero = mean(big == 0), parameter = 0.4,
+  smallest_positive = min(big[big > 0]))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf.ZeroAdjustedDiscreteDistrib()}} for the mass function
+these are drawn from, \code{\link[=truncated]{truncated()}} for the truncation the positive part
+uses, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

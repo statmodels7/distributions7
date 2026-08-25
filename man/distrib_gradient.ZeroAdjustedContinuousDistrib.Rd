@@ -2,22 +2,72 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_gradient.ZeroAdjustedContinuousDistrib}
 \alias{distrib_gradient.ZeroAdjustedContinuousDistrib}
-\title{Zero-Adjusted Continuous Analytical Gradient}
+\title{Zero-Adjusted Continuous Score}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list with one numeric vector per parameter, in
+\code{distrib@params} order.
 }
 \description{
-The likelihood separates completely: for the parent's parameters the score is the
-parent's score at \eqn{y \neq 0} and 0 at \eqn{y=0}; for \eqn{\pi}:
-\deqn{\dfrac{\partial \ell}{\partial \pi} = \mathbb{I}(y=0)\dfrac{1}{\pi} - \mathbb{I}(y \neq 0)\dfrac{1}{1-\pi}}
+Computes the first derivatives of the mixed log-density in closed form. The
+likelihood separates COMPLETELY here, with no truncation term to correct
+for: the parent's parameters take the parent's own score at a non-zero
+observation and zero at the atom, and
+\deqn{\frac{\partial \ell}{\partial \pi}
+  = \frac{\mathbb{I}(y = 0)}{\pi} - \frac{\mathbb{I}(y \ne 0)}{1 - \pi},}
+the Bernoulli score of the indicator that the observation is zero.
+}
+\details{
+Compare the discrete branch, whose parent block carries the truncation
+correction \eqn{f(0)s(0)/\{1 - f(0)\}}. There is none here because a
+continuous parent places no mass at zero, so nothing is removed from it.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+set.seed(4)
+y <- distrib_rng(d, 300, theta)
+
+g <- distrib_gradient(d, y, theta)
+vapply(g, sum, numeric(1))
+
+# Against a numerical derivative of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+
+# Away from the atom it is the parent's own score, with no correction.
+nz <- which(y != 0)[1]
+c(mixed = g$mu[nz],
+  parent = distrib_gradient(gaussian1_distrib(), y[nz],
+                            theta[c("mu", "sigma")])$mu)
+
+# And an observation at the atom says nothing about the parent.
+unique(g$mu[y == 0])
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian.ZeroAdjustedContinuousDistrib()}} for the second
+order, \code{\link[=distrib_gradient.ZeroAdjustedDiscreteDistrib]{distrib_gradient.ZeroAdjustedDiscreteDistrib()}}, which carries the
+truncation term, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

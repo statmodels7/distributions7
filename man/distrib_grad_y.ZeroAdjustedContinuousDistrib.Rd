@@ -4,20 +4,40 @@
 \alias{distrib_grad_y.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Response Gradient}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Exactly zero gives \code{NaN}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 }
 \value{
-A numeric vector.
+A numeric vector as long as \code{y}.
 }
 \description{
-\eqn{\partial \ell / \partial y} equals the parent's for \eqn{y \neq 0}, since the
-factor \eqn{1-\pi} does not depend on \eqn{y}. At \eqn{y = 0} the log-density jumps
-to the atom and no derivative exists, so \code{NaN} is returned.
+Returns \eqn{\partial\ell/\partial y}, which equals the PARENT's for
+\eqn{y \ne 0}, the factor \eqn{1-\pi} not depending on \eqn{y}. At the atom
+the log-density jumps and no derivative exists, so \code{NaN} is returned. That
+is deliberate: the numerical fallback would straddle the jump and hand back
+a number nothing downstream would question.
+}
+\section{Notation}{
+
+\eqn{\pi} is the probability of the atom at zero and \eqn{\ell} the
+log-density of one observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+distrib_grad_y(d, c(-1, 0, 2), theta)
+
+# Away from the atom it is the parent's own.
+distrib_grad_y(gaussian1_distrib(), c(-1, 2), theta[c("mu", "sigma")])
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}} for the second
+order, \code{\link[=za_y_deriv]{za_y_deriv()}} for the shared body, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the
+generic.
 }

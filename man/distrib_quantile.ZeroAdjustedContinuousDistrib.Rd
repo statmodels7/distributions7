@@ -4,24 +4,61 @@
 \alias{distrib_quantile.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Quantile Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]} after
+the \code{log.p} and \code{lower.tail} transformations are applied.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the recycled length of \code{p} and
+\code{theta}.
 }
 \description{
-Inverts the mixed CDF, handling the jump of size \eqn{\pi} at 0: quantiles falling in
-the jump are 0; on either side the parent's quantile function is used on the rescaled
-probability.
+Inverts the mixed distribution function across the jump of size \eqn{\pi} at
+zero. A probability falling INSIDE the jump, between
+\eqn{(1-\pi)F_W(0)} and \eqn{(1-\pi)F_W(0) + \pi}, returns exactly \code{0};
+below it the parent's quantile at \eqn{p/(1-\pi)}, and above it the parent's
+at \eqn{(p - \pi)/(1-\pi)}.
+}
+\details{
+A whole interval of probabilities therefore maps to the same point, which is
+what inverting a distribution function with a jump means and is not a
+failure of the inversion. The interval has width \eqn{\pi}.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+distrib_quantile(d, c(0.1, 0.3, 0.5, 0.9), theta)
+
+# An interval of probabilities of width pi maps to zero, which is what
+# inverting across a jump means.
+lo <- distrib_cdf(d, -1e-9, theta)
+c(just_below = distrib_quantile(d, lo - 1e-6, theta),
+  inside = distrib_quantile(d, lo + 0.15, theta),
+  just_above = distrib_quantile(d, lo + 0.3 + 1e-6, theta))
+
+# Away from the jump the round trip closes.
+p <- c(0.05, 0.95)
+max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf.ZeroAdjustedContinuousDistrib()}}, which this inverts,
+and \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

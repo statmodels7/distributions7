@@ -977,7 +977,7 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #'
 #' The location is the center of symmetry of the density. It is the MEAN as
 #' well for a gaussian, and for a Student t only above one degree of freedom;
-#' [mean()] is the generic that answers about the moment.
+#' [base::mean()] is the generic that answers about the moment.
 #'
 #' @param distrib An object inheriting from [multivariate_distrib()].
 #' @param theta A named list or vector of parameters, each component a single
@@ -990,8 +990,8 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #' \eqn{\mu} is the location and \eqn{p} the dimension of one observation.
 #'
 #' @seealso [mv_sigma()] for the matrix, [mv_leading_location()] for the
-#'   implementation the elliptical families use, [mean()] for the moment, and
-#'   [mv_location.multivariate_distrib()] for the refusal.
+#'   implementation the elliptical families use, [base::mean()] for the moment,
+#'   and [mv_location.multivariate_distrib()] for the refusal.
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)

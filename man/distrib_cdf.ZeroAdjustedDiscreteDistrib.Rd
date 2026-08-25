@@ -4,22 +4,56 @@
 \alias{distrib_cdf.ZeroAdjustedDiscreteDistrib}
 \title{Zero-Adjusted Discrete Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values below zero give \code{0}.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+formed as \eqn{1 - F}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
-\deqn{F_{ZA}(q) = \pi + (1-\pi)\dfrac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)} \quad (q \ge 0)}
+Computes the hurdle distribution function
+\deqn{F_{ZA}(q) = \pi + (1-\pi)\frac{F(q;\theta) - f(0;\theta)}{1 - f(0;\theta)}
+  \quad (q \ge 0),}
+the parent's own distribution function shifted and rescaled by the
+truncation. It is \code{0} below zero and is clamped to \eqn{[0, 1]} against
+rounding.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{F} its distribution function,
+\eqn{\pi} the probability of a zero, \eqn{s} the parent's score and
+\eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+
+distrib_cdf(d, c(0, 2, 5), theta)
+
+# At zero it is the parameter itself, the whole mass there.
+c(cdf_at_zero = distrib_cdf(d, 0, theta), parameter = 0.4)
+
+# It agrees with the mass function summed, as it must on a lattice.
+c(cdf = distrib_cdf(d, 5, theta), summed = sum(distrib_pdf(d, 0:5, theta)))
+
+# Both tails and the logarithm.
+distrib_cdf(d, 2, theta, lower.tail = FALSE)
+distrib_cdf(d, 2, theta, log.p = TRUE)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_pdf.ZeroAdjustedDiscreteDistrib]{distrib_pdf.ZeroAdjustedDiscreteDistrib()}} for the mass function,
+\code{\link[=distrib_quantile.ZeroAdjustedDiscreteDistrib]{distrib_quantile.ZeroAdjustedDiscreteDistrib()}}, which inverts this, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

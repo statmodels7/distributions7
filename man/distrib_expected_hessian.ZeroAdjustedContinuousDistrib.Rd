@@ -2,21 +2,70 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_expected_hessian.ZeroAdjustedContinuousDistrib}
 \alias{distrib_expected_hessian.ZeroAdjustedContinuousDistrib}
-\title{Zero-Adjusted Continuous Analytical Expected Hessian}
+\title{Zero-Adjusted Continuous Expected Information}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, passed to the parent, which uses
+its length.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{approx}{Ignored for the hurdle and mixed blocks. It is also not
+forwarded to the parent, which takes its own default. Present so that the
+signature matches the generic's.}
+
+\item{nsim}{Ignored, for the same reason.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of numeric vectors of length \code{length(y)}, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Expected Hessian: \eqn{E[H_{\pi\pi}] = -\dfrac{1}{\pi(1-\pi)}}, mixed blocks are 0,
-and \eqn{E[H_{\theta\theta}] = (1-\pi) E[H_W]}.
+Computes the expectation of the observed Hessian in closed form:
+\deqn{\mathbb{E}[H_{\pi\pi}] = -\frac{1}{\pi(1-\pi)}, \qquad
+  \mathbb{E}[H_{\theta\pi}] = 0, \qquad
+  \mathbb{E}[H_{\theta\theta}] = (1-\pi)\,\mathbb{E}[H_W].}
+The hurdle block is the Bernoulli information, the mixed blocks are exactly
+zero, and the parent block is the parent's own expectation weighted by the
+probability \eqn{1-\pi} that an observation reaches it.
+}
+\details{
+\code{approx} and \code{nsim} are accepted so that the signature matches the generic's
+and neither is read here. They are also NOT forwarded to the parent, so a
+parent whose own expected Hessian is approximate takes its own defaults.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+set.seed(4)
+y <- distrib_rng(d, 300, theta)
+
+EH <- distrib_expected_hessian(d, y, theta)
+vapply(EH, function(z) z[1], numeric(1))
+
+# The hurdle block is the Bernoulli information and the mixed ones vanish.
+c(reported = EH$za_za[1], bernoulli = -1 / (0.3 * 0.7),
+  mixed = EH$mu_za[1])
+
+# The parent block is the parent's own, weighted by 1 - pi.
+c(reported = EH$mu_mu[1], weighted_parent = 0.7 * (-1 / 2^2))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian.ZeroAdjustedContinuousDistrib()}} for the observed
+matrix, \code{\link[=distrib_expected_hessian.ZeroAdjustedDiscreteDistrib]{distrib_expected_hessian.ZeroAdjustedDiscreteDistrib()}} for the
+discrete branch, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

@@ -11,29 +11,49 @@ za_y_deriv(distrib, y, theta, fun)
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters, including the atom probability.}
+\item{theta}{A named list of parameters, the parent's followed by the atom
+probability.}
 
-\item{fun}{The parent's response-derivative function, e.g.
-\code{\link[=distrib_grad_y]{distrib_grad_y()}}.}
+\item{fun}{The parent's response-derivative function, such as
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} or \code{\link[=distrib_hess_y]{distrib_hess_y()}}. It is called on the parent with
+the non-zero observations and the parent's parameters, subset to those
+observations where a parameter varies.}
 }
 \value{
-A numeric vector as long as \code{y}, \code{NaN} wherever
-\code{y == 0}.
+A numeric vector as long as \code{y}, \code{NaN} wherever \code{y == 0} and the
+parent's derivative elsewhere.
 }
 \description{
-Evaluates a response derivative of the parent away from the atom, and returns
-\code{NaN} at it.
+Evaluates a response derivative of the PARENT away from the atom and returns
+\code{NaN} at it. Away from zero the \eqn{1-\pi} factor is a constant in \eqn{y},
+so the parent's own derivative is exact and needs no correction; at zero the
+log-density jumps, \eqn{\log\pi} on one side and
+\eqn{\log\{(1-\pi)f(y)\}} on the other, and no derivative exists.
 }
 \details{
-The log-density jumps at zero -- \eqn{\log \pi} on one side,
-\eqn{\log((1-\pi) f(y))} on the other -- so no derivative in \eqn{y} exists
-there. The finite-difference default inherited from
-\code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the jump and return a
-number for it, which is worse than an error. Away from zero the \eqn{1-\pi}
-factor is constant in \eqn{y}, so the parent's own derivative is exact and
-nothing needs correcting.
+The \code{NaN} is the point of the function. The finite-difference default
+inherited from \code{\link[=continuous_distrib]{continuous_distrib()}} would straddle the jump and return a
+NUMBER for it, which is worse than an error: nothing downstream would notice.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{\pi} the probability of the atom and
+\eqn{\ell} the log-density of one observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+# NaN at the atom, the parent's derivative elsewhere.
+distributions7:::za_y_deriv(d, c(-1, 0, 2), theta, distrib_grad_y)
+distrib_grad_y(gaussian1_distrib(), c(-1, 2), theta[c("mu", "sigma")])
+
+# The second order takes the same route.
+distributions7:::za_y_deriv(d, c(0, 2), theta, distrib_hess_y)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y.ZeroAdjustedContinuousDistrib()}} and
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y.ZeroAdjustedContinuousDistrib()}}, the two methods it
+serves.
 }
-\keyword{internal}

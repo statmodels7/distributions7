@@ -4,21 +4,65 @@
 \alias{distrib_pdf.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Probability Density Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Exactly zero gives \eqn{\pi}; any
+other value gives \eqn{(1-\pi)} times the parent's density there,
+including a point outside the parent's support, where the parent's density
+is zero.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za},
+each a numeric vector of length 1 or of the length of \code{y}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the logarithm is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \ \ (y \neq 0)}
-(mixed density: point mass at 0 plus scaled continuous density).
+Computes the mixed density
+\deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \ne 0).}
+No truncation is needed: a continuous parent has \eqn{P(W = 0) = 0}, so
+there is no mass to remove before placing the atom and the density is simply
+scaled by \eqn{1-\pi}.
+}
+\details{
+The value at zero is a PROBABILITY and the values elsewhere are DENSITIES,
+so the returned vector mixes two kinds of number. That is what a mixed
+distribution is, and it is why the object declares
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}}: without that declaration a
+consumer would integrate the returned function and find \eqn{1-\pi}.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+# A probability at zero, densities elsewhere.
+c(at_zero = distrib_pdf(d, 0, theta),
+  at_two = distrib_pdf(d, 2, theta),
+  scaled_parent = 0.7 * dnorm(2, 1, 2))
+
+# The density part integrates to 1 - pi, the atom carrying the rest.
+integrate(function(z) ifelse(z == 0, 0, distrib_pdf(d, z, theta)),
+          -Inf, Inf)$value
+
+# Which is why the object declares its atom.
+distrib_atoms(d, theta)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for the
+declaration that makes this a mixed distribution,
+\code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf.ZeroAdjustedContinuousDistrib()}} for the distribution
+function, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -4,23 +4,59 @@
 \alias{distrib_quantile.ZeroAdjustedDiscreteDistrib}
 \title{Zero-Adjusted Discrete Quantile Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities, clamped to \eqn{[0, 1]} after
+the \code{log.p} and \code{lower.tail} transformations are applied.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are given as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the recycled length of \code{p} and
+\code{theta}. Every value is either \code{0} or a positive support point of the
+parent.
 }
 \description{
-Inverts the hurdle CDF: 0 for \eqn{p \le \pi}, otherwise the parent quantile at
-\eqn{u(1-f(0)) + f(0)} with \eqn{u = (p-\pi)/(1-\pi)}.
+Inverts the hurdle distribution function. The quantile is \code{0} for
+\eqn{p \le \pi}, the whole mass at zero, and otherwise the PARENT's quantile
+at \eqn{u\{1 - f(0)\} + f(0)} with \eqn{u = (p - \pi)/(1 - \pi)}: the
+probability is rescaled out of the hurdle and back onto the parent's own
+scale before the parent is asked.
+}
+\details{
+The result is a LATTICE quantile and overshoots, as any discrete quantile
+does. Every probability at or below \eqn{\pi} maps to zero, so the first
+step is as large as the mass at zero.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's mass function, \eqn{F} its distribution function,
+\eqn{\pi} the probability of a zero, \eqn{s} the parent's score and
+\eqn{\ell} the log-mass of one observation.
+}
+
+\examples{
+d <- zero_adjusted(poisson_distrib())
+theta <- list(mu = 3, za = 0.4)
+
+distrib_quantile(d, c(0.2, 0.5, 0.95), theta)
+
+# Everything at or below the mass at zero maps to zero.
+distrib_quantile(d, c(0.1, 0.4), theta)
+
+# The round trip overshoots, as on any lattice.
+p <- c(0.5, 0.95)
+rbind(asked = p,
+      reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_cdf.ZeroAdjustedDiscreteDistrib]{distrib_cdf.ZeroAdjustedDiscreteDistrib()}}, which this inverts,
+and \code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

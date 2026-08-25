@@ -39,19 +39,40 @@ ZeroAdjustedContinuousDistrib(
 \item{parent_distrib}{The wrapped \code{continuous_distrib} object.}
 }
 \value{
-An object of class \code{ZeroAdjustedContinuousDistrib}.
+An S7 object of class \code{ZeroAdjustedContinuousDistrib}, inheriting
+from \code{continuous_distrib} and from \code{distrib}. It carries \code{parent_distrib}
+beside the parent's properties, with \code{za} added last.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the zero-adjusted version of a
-wrapped continuous distribution: a point mass at zero with probability \eqn{\pi}
-(parameter \code{za}) mixed with the original continuous distribution.
+The S7 class of a continuous distribution with a point mass at zero:
+\deqn{P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \; (y \ne 0).}
+The result is a MIXED distribution, a density plus an atom, and it declares
+that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}. That declaration is how
+\code{\link[=check_distrib]{check_distrib()}} and \code{\link[=expectation]{expectation()}} learn to treat it as one.
+}
+\details{
+No truncation is needed here. A continuous parent has \eqn{P(Y = 0) = 0}, so
+there is no mass to remove before placing the atom, and the density is
+simply scaled by \eqn{1-\pi}. That is the whole difference from
+\link{ZeroAdjustedDiscreteDistrib}, whose parent must be truncated away from the
+point it already occupies.
+
+The likelihood factorizes completely: the mixed blocks of the Hessian are
+exactly zero, \eqn{\pi} is estimated by the proportion of zeros and
+\eqn{\theta} by the parent's own fit to the non-zero observations.
+
+Build one with \code{\link[=zero_adjusted]{zero_adjusted()}}. This page documents the raw S7
+constructor, which validates nothing.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms()}},
 \code{\link[=distrib_cdf.ZeroAdjustedContinuousDistrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.ZeroAdjustedContinuousDistrib]{distrib_grad_y()}},
 \code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.ZeroAdjustedContinuousDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.ZeroAdjustedContinuousDistrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile()}},
@@ -61,6 +82,30 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{\pi} the probability of a zero and
+\eqn{\ell} the log-density of one observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+d@params
+
+# It is a MIXED distribution: an atom at zero and a density elsewhere.
+distrib_atoms(d, theta)
+c(at_zero = distrib_pdf(d, 0, theta),
+  elsewhere = distrib_pdf(d, 2, theta),
+  scaled_parent = 0.7 * dnorm(2, 1, 2))
+
+# The density part integrates to 1 - pi, the atom carrying the rest.
+integrate(function(z) ifelse(z == 0, 0, distrib_pdf(d, z, theta)),
+          -Inf, Inf)$value
+}
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} to build one, \link{ZeroAdjustedDiscreteDistrib} for
+the discrete branch, \code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} for
+the atom it declares, and \code{\link[=folded]{folded()}}, which REJECTS a parent of this class
+for exactly that atom.
 }

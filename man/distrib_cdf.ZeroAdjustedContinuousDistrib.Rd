@@ -4,22 +4,51 @@
 \alias{distrib_cdf.ZeroAdjustedContinuousDistrib}
 \title{Zero-Adjusted Continuous Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. The function is right continuous at
+zero, so \code{q = 0} includes the atom.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logs.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
-\deqn{F_Y(q) = (1-\pi)F_W(q;\theta) + \pi\,\mathbb{I}(q \ge 0)}
+Computes \eqn{F_Y(q) = (1-\pi)F_W(q;\theta) + \pi\,\mathbb{I}(q \ge 0)}, the
+parent's own distribution function scaled by \eqn{1-\pi} with a JUMP of size
+\eqn{\pi} added at zero. That jump is the whole of what makes the law mixed,
+and its height is exactly the probability
+\code{\link[=distrib_atoms.ZeroAdjustedContinuousDistrib]{distrib_atoms.ZeroAdjustedContinuousDistrib()}} reports.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+
+distrib_cdf(d, c(-1, 0, 2), theta)
+
+# The jump at zero is the atom's probability.
+distrib_cdf(d, 0, theta) - distrib_cdf(d, -1e-9, theta)
+
+# Away from the atom it is the parent's, scaled and shifted.
+all.equal(distrib_cdf(d, 2, theta), 0.7 * pnorm(2, 1, 2) + 0.3)
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_pdf.ZeroAdjustedContinuousDistrib]{distrib_pdf.ZeroAdjustedContinuousDistrib()}} for the density,
+\code{\link[=distrib_quantile.ZeroAdjustedContinuousDistrib]{distrib_quantile.ZeroAdjustedContinuousDistrib()}}, which inverts this
+across the jump, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

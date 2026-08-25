@@ -2,22 +2,65 @@
 % Please edit documentation in R/zero_adjusted.R
 \name{distrib_hessian.ZeroAdjustedContinuousDistrib}
 \alias{distrib_hessian.ZeroAdjustedContinuousDistrib}
-\title{Zero-Adjusted Continuous Analytical Observed Hessian}
+\title{Zero-Adjusted Continuous Observed Hessian}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of numeric vectors, one per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}. Every
+key pairing a parent parameter with \code{za} holds a vector of exact zeros.
 }
 \description{
-Observed Hessian of the zero-adjusted continuous model: the mixed blocks are 0, the
-\eqn{\pi\pi} block is \eqn{-1/\pi^2} at \eqn{y=0} and \eqn{-1/(1-\pi)^2} otherwise,
-and the \eqn{\theta\theta} block is the parent's Hessian at \eqn{y \neq 0} (0 at \eqn{y=0}).
+Computes the second derivatives of the mixed log-density in closed form. The
+MIXED BLOCKS ARE EXACTLY ZERO, the likelihood factorizing into a binary part
+and a continuous part. The parent block is the parent's own observed Hessian
+at a non-zero observation and zero at the atom, with no truncation
+correction; the hurdle block is \eqn{-1/\pi^2} at the atom and
+\eqn{-1/(1-\pi)^2} elsewhere.
+}
+\section{Notation}{
+
+\eqn{f_W} is the parent's density, \eqn{\pi} the probability of the atom at
+zero, \eqn{f_Y} the mixed density and \eqn{\ell} the log-density of one
+observation.
+}
+
+\examples{
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+set.seed(4)
+y <- distrib_rng(d, 300, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# Every mixed block is exactly zero.
+c(mu_za = all(H$mu_za == 0), sigma_za = all(H$sigma_za == 0))
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=distrib_gradient.ZeroAdjustedContinuousDistrib]{distrib_gradient.ZeroAdjustedContinuousDistrib()}} for the first
+order, \code{\link[=distrib_expected_hessian.ZeroAdjustedContinuousDistrib]{distrib_expected_hessian.ZeroAdjustedContinuousDistrib()}} for the
+expectation, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

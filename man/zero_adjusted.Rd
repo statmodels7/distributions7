@@ -7,104 +7,136 @@
 zero_adjusted(distrib, link_za = logit_link())
 }
 \arguments{
-\item{distrib}{An object inheriting from \code{discrete_distrib} (with 0 in its
-support) or from \code{continuous_distrib}.}
+\item{distrib}{An object inheriting from \code{discrete_distrib} with 0 in its
+support, or from \code{continuous_distrib}. An already-wrapped parent and a
+discrete support of fewer than \code{n_params + 2} points are rejected with an
+error saying which condition failed.}
 
-\item{link_za}{A link function object for the zero probability \eqn{\pi}.
-Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}.}
+\item{link_za}{The link carrying \eqn{\pi} to the unconstrained scale, a
+\code{linkfunctions7::link} object. Defaults to
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, which keeps it strictly inside
+\eqn{(0, 1)} at every point of the free scale.}
 }
 \value{
-An S7 object of class \code{ZeroAdjustedDiscreteDistrib} or
-\code{ZeroAdjustedContinuousDistrib}.
+An S7 object of class \link{ZeroAdjustedDiscreteDistrib} or
+\link{ZeroAdjustedContinuousDistrib}, matching the parent's branch. Its
+\code{params} are the parent's followed by \code{za}, whose bound is \eqn{(0, 1)}
+and whose interpretation is \code{"prob. of zero"}; \code{distrib_name} is
+\code{"zero-adjusted "} followed by the parent's.
 }
 \description{
-Creates a zero-adjusted version of an existing distribution: the probability of a
-zero becomes a parameter of its own, \eqn{\pi} (parameter \code{za}), and everything
-else is left to the parent. What that means depends on the parent's type, and the
-constructor dispatches on it:
+Makes the probability of a zero a parameter of its own, \eqn{\pi}, carried
+by \code{za}, and leaves everything else to the parent. What that means depends
+on the parent's type, and the constructor dispatches on it:
 \itemize{
-\item \strong{Discrete} (support including 0): a \strong{hurdle} model. The mass the
-parent puts at zero is removed, the parent is renormalized over the positive
-values, and \eqn{\pi} takes its place.
-\item \strong{Continuous}: a \strong{mixed} distribution. Nothing has to be removed,
-since \eqn{P(Y = 0) = 0} already; a point mass \eqn{\pi} is placed at zero and the
-density is scaled by \eqn{1-\pi}.
+\item a DISCRETE parent with 0 in its support gives a HURDLE model. The mass the
+parent puts at zero is removed, the parent is renormalized over the
+positive values, and \eqn{\pi} takes its place.
+\item a CONTINUOUS parent gives a MIXED distribution. Nothing has to be removed,
+\eqn{P(Y = 0)} being zero already; a point mass \eqn{\pi} is placed at zero
+and the density is scaled by \eqn{1-\pi}.
 }
 
-Zero-adjustment is the right wrapper when zeros come from their own mechanism ---
-no claim filed, no purchase made, no rainfall --- and the parent describes only what
-happens once that mechanism has been passed. When the zeros instead come partly from
-the parent itself and partly from a separate one, so that no single zero can be
-attributed, use \code{\link[=zero_inflated]{zero_inflated()}}.
+It is the wrapper to reach for when zeros come from their own mechanism, no
+claim filed or no rainfall, and the parent describes only what happens once
+that mechanism has been passed. Where the zeros come partly from the parent
+and partly from a separate source, so that no single zero can be attributed,
+\code{\link[=zero_inflated]{zero_inflated()}} is the model.
 }
-\details{
-\strong{Discrete parent (hurdle).}
-\deqn{
-P(Y=y; \theta, \pi) =
-\begin{cases}
-\pi & y = 0 \\
-(1 - \pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y > 0
-\end{cases}
+\section{A discrete parent: the hurdle}{
+\deqn{P(Y = y; \theta, \pi) = \begin{cases} \pi & y = 0 \\
+  (1 - \pi)\dfrac{f(y; \theta)}{1 - f(0; \theta)} & y > 0. \end{cases}}
+The division by \eqn{1 - f(0;\theta)} is the TRUNCATION, and it is what
+separates this from zero-inflation: it makes \eqn{\theta} the parameters of
+a law on the positive integers instead of the original count process. The
+log-likelihood separates into a Bernoulli part in \eqn{\pi} and a truncated
+part in \eqn{\theta}, so every mixed block of the information is exactly
+zero and the two halves could be fitted separately.
 }
-The division by \eqn{1 - f(0;\theta)} is the truncation: it is what distinguishes this
-from zero-inflation, and what makes \eqn{\theta} the parameters of a law on the
-positive integers rather than of the original count process. The log-likelihood
-separates into a Bernoulli part in \eqn{\pi} and a truncated part in \eqn{\theta}, so
-the mixed blocks of the information matrix are exactly zero and the two halves could
-in principle be fitted separately.
 
-\strong{Continuous parent (mixed).}
-\deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \neq 0)}
-Here \eqn{f_Y} is a density with respect to Lebesgue measure plus a point mass at
-zero, so it integrates to \eqn{1 - \pi}: the remainder is the atom, which
-\code{\link[=distrib_atoms]{distrib_atoms()}} reports and \code{\link[=check_distrib]{check_distrib()}} accounts for. The
-classical members of this family --- zero-adjusted gamma, inverse Gaussian or
-lognormal for semicontinuous data, zero-adjusted beta for proportions --- all have a
-parent supported on \eqn{(0, \infty)} or \eqn{(0,1)}, where zero sits on the boundary.
-A parent supported on the whole line is accepted too and gives a "spike at zero"
-model, but note that \eqn{y = 0} then no longer identifies its own mechanism: the
-atom sits where the density is positive.
+\section{A continuous parent: the mixed law}{
+\deqn{f_Y(0) = \pi, \qquad f_Y(y) = (1-\pi) f_W(y;\theta) \quad (y \ne 0).}
+Here \eqn{f_Y} is a density against Lebesgue measure plus a point mass, so
+it integrates to \eqn{1 - \pi}; the remainder is the atom, which
+\code{\link[=distrib_atoms]{distrib_atoms()}} reports and \code{\link[=check_distrib]{check_distrib()}} accounts for. The classical
+members have a parent on \eqn{(0, \infty)} or \eqn{(0, 1)}, where zero sits
+on the boundary: the zero-adjusted gamma, inverse gaussian or lognormal for
+semicontinuous data, and the zero-adjusted beta for proportions.
+}
 
-\strong{Choosing between the two wrappers.} Zero-inflation can only add zeros, since
-\eqn{P(Y=0) = \zeta + (1-\zeta)f(0) > f(0)}; the hurdle replaces \eqn{f(0)} outright
-and so also covers the case of \emph{fewer} zeros than the parent implies. Where both
-apply they are not nested, and they differ in interpretation more than in fit:
-zero-inflation keeps \eqn{\theta} as the parameters of the original count process,
-while the hurdle re-reads them as those of a truncated one. Prefer the hurdle when a
-zero is observable evidence of a distinct decision, and zero-inflation when the two
-kinds of zero are genuinely indistinguishable.
+\section{Choosing between the two wrappers}{
+Zero-inflation can only ADD zeros, \eqn{P(Y = 0) = \zeta + (1-\zeta)f(0)}
+exceeding \eqn{f(0)}; the hurdle replaces \eqn{f(0)} outright and so also
+covers FEWER zeros than the parent implies. Where both apply they are not
+nested, and they differ in interpretation more than in fit: zero-inflation
+keeps \eqn{\theta} as the parameters of the original count process, the
+hurdle re-reads them as those of a truncated one. Prefer the hurdle when a
+zero is observable evidence of a distinct decision, and zero-inflation when
+the two kinds of zero are genuinely indistinguishable.
+}
 
-\strong{What the parent must be.} A discrete parent must have 0 in its support: with
-\eqn{f(0) = 0} there is no mass to remove. Construction also fails when the result
-would not be identified:
+\section{What the parent must be}{
+A discrete parent must have 0 in its support: with \eqn{f(0) = 0} there is
+no mass to remove. Construction also fails where the result would not be
+identified:
 \itemize{
-\item the parent already models a probability of zero --- zero-truncating a
-zero-inflated or zero-adjusted distribution cancels its zero parameter out of the
+\item the parent already models a probability of zero. Zero-truncating a
+zero-inflated or zero-adjusted parent cancels its zero parameter out of the
 likelihood entirely, leaving an identically zero score;
-\item the support is too small to carry one more parameter: a distribution on
+\item the support is too small to carry one more parameter. A distribution on
 \eqn{k} points has \eqn{k-1} free probabilities, so at least \code{n_params + 2}
-support points are needed. Zero-adjusting a Bernoulli leaves the truncated part
-concentrated on \eqn{\{1\}}, and \code{mu} vanishes from the likelihood.
+support points are needed. Zero-adjusting a Bernoulli leaves the truncated
+part concentrated on \eqn{\{1\}} and \code{mu} vanishes from the likelihood.
 }
 
-A continuous parent whose support does not reach zero (say \eqn{(2, 5)}) is accepted
-with a warning: the atom is then disconnected from the rest of the distribution,
-which is legitimate but rarely intended.
+A continuous parent supported on the whole line is accepted and gives a
+spike-at-zero model, but \eqn{y = 0} then no longer identifies its own
+mechanism: the atom sits where the density is positive. A continuous parent
+whose support does not reach zero at all, say \eqn{(2, 5)}, is accepted with
+a WARNING, the atom then being disconnected from the rest of the law, which
+is legitimate and rarely intended.
 }
+
+\section{Notation}{
+
+\eqn{f} is a discrete parent's mass function, \eqn{f_W} a continuous one's
+density, \eqn{\pi} the probability of a zero, \eqn{\zeta} the inflation
+probability of the other wrapper, and \eqn{k} the number of support points.
+}
+
 \examples{
-# Hurdle Poisson: the mass at zero is exactly za, not dpois(0, mu)
+# Hurdle Poisson: the mass at zero is exactly za, not dpois(0, mu).
 zap <- zero_adjusted(poisson_distrib())
-distrib_pdf(zap, 0:5, list(mu = 3, za = 0.3))
+theta <- list(mu = 3, za = 0.3)
+distrib_pdf(zap, 0:5, theta)
+c(at_zero = distrib_pdf(zap, 0, theta), parent = dpois(0, 3))
 
-# Semicontinuous data: a spike at zero and a gamma above it
-zagamma <- zero_adjusted(gamma2_distrib())
-distrib_atoms(zagamma, list(mu = 2, sigma2 = 1, za = 0.3))
+# And it can be BELOW the parent's, which zero-inflation cannot reach.
+c(hurdle = distrib_pdf(zap, 0, list(mu = 3, za = 0.01)),
+  parent = dpois(0, 3))
 
-# The truncated part of a zero-adjusted Bernoulli has no free parameter
+# The likelihood separates, so every mixed block of the Hessian is zero.
+set.seed(2)
+y <- distrib_rng(zap, 300, theta)
+all(distrib_hessian(zap, y, theta)$mu_za == 0)
+
+# Semicontinuous data: a spike at zero and a gamma above it.
+zag <- zero_adjusted(gamma2_distrib())
+distrib_atoms(zag, list(mu = 2, sigma2 = 1, za = 0.3))
+
+# A fit recovers both halves, each from its own part of the data.
+set.seed(5)
+yg <- distrib_rng(zag, 2000, list(mu = 2, sigma2 = 1, za = 0.3))
+round(coef(fit_distrib(zag, yg)), 3)
+
+# Two refusals, each naming the condition that failed.
 try(zero_adjusted(bernoulli_distrib()))
+try(zero_adjusted(zero_inflated(poisson_distrib())))
 
 }
 \seealso{
 \code{\link[=zero_inflated]{zero_inflated()}} for the mixture counterpart,
-\code{\link[=distrib_atoms]{distrib_atoms()}}, \code{\link[=check_distrib]{check_distrib()}}.
+\link{ZeroAdjustedDiscreteDistrib} and \link{ZeroAdjustedContinuousDistrib} for the
+two classes, \code{\link[=distrib_atoms]{distrib_atoms()}} for the atom the continuous branch
+declares, and \code{\link[=check_distrib]{check_distrib()}} to validate the result.
 }
