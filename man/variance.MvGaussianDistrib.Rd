@@ -4,18 +4,48 @@
 \alias{variance.MvGaussianDistrib}
 \title{Variance of a Multivariate Gaussian}
 \arguments{
-\item{x}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.
+The \eqn{p} mean components are ignored.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A \eqn{p \times p} numeric matrix.
+A \eqn{p \times p} symmetric positive definite numeric matrix, with
+both dimnames \code{v1}, ..., \code{vp}.
 }
 \description{
-The covariance matrix, which the matrix parameter carries. The return is a matrix
-rather than the numeric vector a univariate distribution gives, since that
-is what the second moment of a vector is.
+Returns \eqn{\operatorname{Var}(Y) = \Sigma}, the covariance matrix the
+matrix parametrization carries, inverted first where that parametrization
+carries the precision. For this family the scale matrix of the density is
+the covariance of the law, so the value agrees with
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}}; the two part company in the heavy-tailed
+sibling, where the scale matrix exists at every \eqn{\nu} and the covariance
+does not.
+
+The return is a matrix, not the numeric vector a univariate family gives,
+the second central moment of a vector being a matrix.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+
+variance(d, theta)
+
+# The scale matrix and the covariance are one matrix for this family.
+identical(variance(d, theta), mv_sigma(d, theta))
+
+# Which a large sample covariance approaches.
+set.seed(2)
+round(var(distrib_rng(d, 20000, theta)), 3)
+
+}
+\seealso{
+\code{\link[=mean.MvGaussianDistrib]{mean.MvGaussianDistrib()}} for the first moment,
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the same matrix read as the density's
+scale, \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the family where the two
+differ, and \code{\link[=variance]{variance()}} for the generic.
 }
 \keyword{internal}

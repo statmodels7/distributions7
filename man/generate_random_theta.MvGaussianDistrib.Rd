@@ -4,18 +4,44 @@
 \alias{generate_random_theta.MvGaussianDistrib}
 \title{Random Parameters for a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of scalars.
+A named list of \code{distrib@n_params} single numbers, named and ordered
+as \code{distrib@params}.
 }
 \description{
-A random mean near the origin and a structure drawn near the identity. The
-default of the base class would draw every free value from the same wide
-range, which for a log-Cholesky diagonal spans four orders of magnitude in
-the resulting variances and gives a starting covariance no fit recovers
-from.
+Draws a parameter vector for testing: each mean uniform on \eqn{(-1, 1)} and
+each free value of the matrix parametrization uniform on
+\eqn{(-0.4, 0.4)}, which puts the matrix near the identity. The base class
+would draw every free value from one wide range; on a log-Cholesky diagonal
+that spans four orders of magnitude in the resulting variances, and a
+covariance drawn that way is a starting point no fit recovers from. The
+narrow band keeps \code{\link[=check_distrib]{check_distrib()}} reproducible on this family.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+
+set.seed(11)
+unlist(generate_random_theta(d))
+
+# The matrix components stay inside (-0.4, 0.4) and the means inside
+# (-1, 1), so the covariance drawn is never far from the identity.
+set.seed(12)
+many <- replicate(500, unlist(generate_random_theta(d)))
+round(apply(many, 1, range), 2)
+
+# Every draw gives a positive definite covariance, the parametrization
+# having no boundary to reach.
+set.seed(13)
+all(replicate(50, min(eigen(mv_sigma(d, generate_random_theta(d)),
+                            only.values = TRUE)$values) > 0))
+
+}
+\seealso{
+\code{\link[=check_distrib]{check_distrib()}}, which draws parameters this way, and
+\code{\link[=generate_random_theta]{generate_random_theta()}} for the generic.
 }
 \keyword{internal}

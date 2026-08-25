@@ -4,30 +4,93 @@
 \alias{distrib_deriv3.MvGaussianDistrib}
 \title{Multivariate Gaussian Third Derivatives}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. With
+\code{expected = TRUE} only its row count is used.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{expected}{Logical; the expectation is approximated by sampling, as
-for the Hessian.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
+component is returned, by sampling. Defaults to \code{FALSE}.}
 
-\item{approx}{Strategy label; sampling is the only multivariate route.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. Every link of this family is the identity, so the
+two coincide.}
 
-\item{nsim}{Monte Carlo sample size.}
+\item{approx}{Ignored: sampling is the only multivariate route to an
+expectation here. Present so that the signature matches the generic's.}
+
+\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
+\code{10000}. Ignored otherwise.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of numeric vectors of length \eqn{n}, keyed and ordered
+as \code{deriv_names(distrib@params, 3)}. With \code{expected = TRUE} every vector
+is constant.
 }
 \description{
-Closed form, built on the matrix parameter's own third derivatives from
-\pkg{parameters7}. A component with three mean indices vanishes, the
-quadratic form being quadratic; one mean index gives
-\eqn{(P_{klm} r)_i}; two give \eqn{-P_{kl}[i, j]}; none gives
-\eqn{\mp\tfrac{1}{2}\,\partial^3 \log|M| - \tfrac{1}{2} r^\top P_{klm} r}.
-The precision's derivative tensors \eqn{P_t} come directly from the
-structure under a precision parametrization, and by the Leibniz recursion
-on \eqn{P_k = -P A_k P} under a covariance one.
+Computes every third derivative of the log-density in the parameters, in
+closed form, on the matrix parametrization's own \code{param_d3()}. Writing
+\eqn{r = y - \mu} and \eqn{P_t} for the precision's derivative array over
+the matrix indices of the tuple: three mean indices give exactly zero, the
+quadratic form being quadratic in \eqn{\mu}; two give \eqn{-P_t[i, j]}; one
+gives \eqn{(r P_t)_i}; none gives
+\eqn{\pm\tfrac{1}{2}\,\partial^3\log\lvert M\rvert - \tfrac{1}{2} r^\top P_t r}.
+The arrays \eqn{P_t} come from the parametrization directly under a
+precision parametrization, and from the expansion of the derivative of an
+inverse under a covariance one.
+}
+\details{
+With \code{expected = TRUE} the expectation is taken by SAMPLING: \code{nsim} draws
+are made from the family and the observed components averaged over them.
+There is no exact route here and no quadrature, so \code{approx} is not read and
+the result carries Monte Carlo error of order \code{nsim^(-1/2)}. Set a seed
+before calling if the result must be reproducible. A component that does not
+depend on the response is returned exactly, whatever \code{nsim} is, because
+averaging a constant returns it.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
+\eqn{\eta} its free vector, \eqn{r = y - \mu} the centered response and
+\eqn{P_t} the precision's derivative array over the multiset \eqn{t}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+d3 <- distrib_deriv3(d, y, theta)
+length(d3)
+
+# Any component naming three means is exactly zero.
+d3[["mu1_mu1_mu2"]]
+
+# Against one stencil on the analytic Hessian.
+h <- 1e-4
+tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
+tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
+c(exact = sum(d3[["mu1_mu2_sigma_L2.1"]]),
+  stencil = (sum(distrib_hessian(d, y, tp)[["mu1_mu2"]]) -
+             sum(distrib_hessian(d, y, tm)[["mu1_mu2"]])) / (2 * h))
+
+# The expected version samples, so a component that carries the response
+# moves with the seed while one that does not is exact.
+set.seed(9)
+e3 <- distrib_deriv3(d, y, theta, expected = TRUE, nsim = 4000)
+c(sampled = e3[["mu1_mu1_sigma_L2.1"]][1],
+  observed = mean(d3[["mu1_mu1_sigma_L2.1"]]))
+
+}
+\seealso{
+\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4.MvGaussianDistrib()}} for the next order,
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the second, \code{\link[=mvg_higher]{mvg_higher()}} for
+the shared engine, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
 \keyword{internal}

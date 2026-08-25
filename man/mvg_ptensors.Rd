@@ -2,33 +2,91 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mvg_ptensors}
 \alias{mvg_ptensors}
-\title{Precision Derivative Tensors of a Multivariate Gaussian}
+\title{Precision Derivative Arrays of a Multivariate Gaussian}
 \usage{
 mvg_ptensors(pc, order, inverted = FALSE)
 }
 \arguments{
-\item{pc}{The pieces, as returned by \code{\link[=mvg_pieces]{mvg_pieces()}} or
-\code{mvt_pieces()}: a list carrying \code{s}, \code{eta} and
+\item{pc}{The pieces, as returned by \code{\link[=mvg_pieces]{mvg_pieces()}} or \code{mvt_pieces()}: any
+list carrying \code{s} (the parametrization), \code{eta} (its free vector) and
 \code{sigma_inv}.}
 
-\item{order}{The highest order wanted.}
+\item{order}{The highest order wanted, a single whole number from 1 to 4.
+Every array up to that order is enumerated.}
 
-\item{inverted}{Whether the free values parametrize the precision, in which
-case the tensors are the parameter's own.}
+\item{inverted}{Logical of length 1. \code{TRUE} when the free values parametrize
+the precision, in which case the arrays are read off the parametrization
+directly and no expansion runs. Defaults to \code{FALSE}.}
 }
 \value{
-A list with the accessor \code{get}, the log-determinant sign and
-the pieces.
+A named list with \code{get}, a function of one integer vector returning
+the \eqn{p \times p} array for that multiset; \code{sign_ld}, the coefficient
+the log-determinant term carries in a derivative of the log-density
+(\eqn{-1/2} for a covariance, \eqn{+1/2} for a precision); and \code{pc}, the
+pieces as supplied.
 }
 \description{
-The precision's derivative tensors in the matrix parameter's free values, orders 1
-to 4, keyed by index tuple. For a precision parametrization they are the
-parameter's own derivatives; for a covariance they follow from repeated
-differentiation of the inverse, so no expanded formula is transcribed and
-no term can be dropped.
-It takes the pieces rather than the distribution, because the multivariate
-Student t needs the same tensors of its scale matrix and there must be one
-copy of the expansion: its first draft double counted the mixed terms, which
-only a comparison against a stencil caught.
+Supplies the derivative arrays of the PRECISION \eqn{P = \Sigma^{-1}} in the
+matrix parametrization's free values, to orders 1 through 4, as an accessor
+keyed by an index multiset. Under a precision parametrization these are the
+parametrization's own \code{param_d1()} to \code{param_d4()}; under a covariance one
+they follow from repeated differentiation of the inverse,
+\deqn{P_t = \sum_{(B_1,\dots,B_q)} (-1)^q\, P A_{B_1} P \cdots A_{B_q} P,}
+summed over the ordered partitions of the multiset \eqn{t} into nonempty
+blocks, with \eqn{A_B} the derivative of \eqn{\Sigma} in the free values
+\eqn{B}. Nothing is transcribed from an expanded formula, so no term can go
+missing at order 3 or 4.
+}
+\details{
+The accessor memoizes, so an array asked for twice within one call is
+computed once. It answers for the EMPTY multiset with \eqn{P} itself: the
+gaussian never asks for that, but the multivariate Student t does, a
+partition block of pure mean indices carrying no matrix index at all.
+
+The function takes the pieces, so that the multivariate Student t can hand
+it the same arrays of its scale matrix and the toolkit carries one copy of
+this expansion. That copy's first draft double counted the mixed terms, and
+only a comparison against a finite-difference stencil caught it.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the covariance, \eqn{P = \Sigma^{-1}} the precision,
+\eqn{\eta} the free vector of the matrix parametrization, \eqn{A_t} its
+derivative array for the multiset \eqn{t}, and \eqn{P_t} the corresponding
+derivative of the precision.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+pc <- distributions7:::mvg_pieces(d, theta, derivs2 = TRUE)
+pt <- distributions7:::mvg_ptensors(pc, 2L)
+
+P <- pc$sigma_inv
+A1 <- pc$a[[1]]
+
+# The empty multiset is the precision itself.
+all.equal(pt$get(integer(0)), P)
+
+# At order one the expansion is the derivative of an inverse.
+all.equal(pt$get(1L), -P \%*\% A1 \%*\% P)
+
+# At order two it is the three-term expansion, written out here.
+A3 <- pc$a[[3]]
+A13 <- distributions7:::mvg_a2(pc, 1L, 3L)
+all.equal(pt$get(c(1L, 3L)),
+          P \%*\% A1 \%*\% P \%*\% A3 \%*\% P + P \%*\% A3 \%*\% P \%*\% A1 \%*\% P -
+            P \%*\% A13 \%*\% P)
+
+# A precision parametrization needs no expansion and flips the sign the
+# log-determinant term carries.
+c(covariance = pt$sign_ld,
+  precision = distributions7:::mvg_ptensors(pc, 2L, inverted = TRUE)$sign_ld)
+
+}
+\seealso{
+\code{\link[=mv_ordered_partitions]{mv_ordered_partitions()}} for the enumeration it sums over,
+\code{\link[=mvg_higher]{mvg_higher()}} for the consumer, and \code{\link[=mvg_pieces]{mvg_pieces()}} for the argument.
 }
 \keyword{internal}

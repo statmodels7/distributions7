@@ -2,47 +2,77 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{distrib_cross2_y.MvGaussianDistrib}
 \alias{distrib_cross2_y.MvGaussianDistrib}
-\alias{distrib_hess_y_hess.MvGaussianDistrib}
-\alias{distrib_grad_y_hess.MvGaussianDistrib}
-\title{Multivariate Gaussian Higher Mixed Response Derivatives}
+\title{Multivariate Gaussian Third Derivative in Two Responses and One Parameter}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Not read: no
+component of this derivative depends on the response.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two coincide here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, keyed by parameter for \code{distrib_cross2_y} and by
-parameter pair for the other two.
+A named list of \eqn{p \times p} numeric matrices, one per
+parameter, in \code{distrib@params} order. The \eqn{p} mean components are the
+zero matrix.
 }
 \description{
-The three derivatives a marginal criterion reads when this family is a
-prior. Writing \eqn{B_k = \Sigma^{-1}A_k\Sigma^{-1}} with
-\eqn{A_k = \partial\Sigma/\partial\eta_k},
+Computes \eqn{\partial^3\ell/\partial y\,\partial y^\top \partial\theta_k},
+one \eqn{p \times p} matrix per parameter. The response Hessian is
+\eqn{-\Sigma^{-1}}, which does not involve the mean, so every mean component
+is exactly the zero matrix; the matrix components are
 \deqn{\frac{\partial^3\ell}{\partial y\,\partial y^\top\partial\eta_k}
-    = B_k, \qquad
-  \frac{\partial^4\ell}{\partial y\,\partial y^\top
-    \partial\eta_k\partial\eta_l}
-    = \Sigma^{-1}A_{kl}\Sigma^{-1}
-      - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
-        + A_k\Sigma^{-1}A_l\right)\!\Sigma^{-1},}
-\deqn{\frac{\partial^3\ell}{\partial y\,\partial\mu_j\partial\eta_k}
-    = -B_k e_j, \qquad
-  \frac{\partial^3\ell}{\partial y\,\partial\eta_k\partial\eta_l}
-    = \Sigma^{-1}A_{kl}w
-      - \Sigma^{-1}\!\left(A_l\Sigma^{-1}A_k
-        + A_k\Sigma^{-1}A_l\right)\!w.}
+  = B_k = \Sigma^{-1}A_k\Sigma^{-1},}
+with \eqn{A_k = \partial\Sigma/\partial\eta_k}. No component depends on the
+observation, so one matrix is returned per parameter and \code{y} is not read at
+all.
 }
 \details{
-The response Hessian is \eqn{-\Sigma^{-1}}, which does not depend on the
-observation and does not depend on the mean at all, so every component of
-the first two involving a mean is exactly zero and the rest are one matrix
-rather than one per row. Only the third carries the observation, through
-\eqn{w}.
+This is one of the three derivatives a marginal criterion reads when the
+family stands as a prior over a coefficient block, the other two being
+\code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} and
+\code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess.MvGaussianDistrib()}}. Every link of this family is the
+identity, so \code{scale = "link"} and \code{scale = "parameter"} give the same
+numbers.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the covariance, \eqn{\eta} the free vector of the matrix
+parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k} and \eqn{\ell}
+the log-density of one observation.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+y <- matrix(0, 4, 2)
+
+c2 <- distrib_cross2_y(d, y, theta)
+names(c2)
+
+# Every mean component is the zero matrix, the response Hessian carrying
+# no mean at all.
+c2$mu1
+
+# A matrix component against a difference of the response Hessian.
+h <- 1e-5
+tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
+tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
+max(abs(c2$sigma_L2.1 -
+        (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
+
+}
+\seealso{
+\code{\link[=distrib_hess_y_hess.MvGaussianDistrib]{distrib_hess_y_hess.MvGaussianDistrib()}} and
+\code{\link[=distrib_grad_y_hess.MvGaussianDistrib]{distrib_grad_y_hess.MvGaussianDistrib()}} for the two fourth- and
+third-order siblings, \code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y.MvGaussianDistrib()}}, whose
+derivative in the parameters this is, and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the
+generic.
 }
 \keyword{internal}

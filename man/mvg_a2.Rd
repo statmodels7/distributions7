@@ -7,16 +7,47 @@
 mvg_a2(pc, k, l)
 }
 \arguments{
-\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}} with \code{derivs2}.}
+\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}} called with \code{derivs2 = TRUE}, whose
+\code{a2} component holds the second derivative arrays and whose \code{s} component
+supplies the free names.}
 
-\item{k, l}{Positions among the structure's free values.}
+\item{k, l}{Positions among the matrix parametrization's free values, each a
+single whole number between 1 and \code{s@n_free}. Their order does not matter.}
 }
 \value{
-A \eqn{p \times p} numeric matrix.
+A \eqn{p \times p} symmetric numeric matrix,
+\eqn{\partial^2\Sigma/\partial\eta_k\partial\eta_l}.
 }
 \description{
-\code{param_d2} keyed by the pair of free values rather than by the string
-the structure names it with, the key being CONSTRUCTED from the sorted
-pair and never parsed out of a name.
+Reads the component of \code{parameters7::param_d2()} belonging to the pair of
+free values \eqn{(k, l)}. The key is constructed from the sorted pair of
+free names, never parsed out of a stored key, so a free value whose own
+label contains the separator cannot split into the wrong number of pieces.
+The result is symmetric in its two positions.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+pc <- distributions7:::mvg_pieces(d, theta, derivs2 = TRUE)
+
+distributions7:::mvg_a2(pc, 1L, 3L)
+
+# Symmetric in the two positions.
+identical(distributions7:::mvg_a2(pc, 1L, 3L),
+          distributions7:::mvg_a2(pc, 3L, 1L))
+
+# And it is the mixed second derivative, against a difference of the first.
+h <- 1e-5
+eta <- c(0.1, -0.2, 0.4)
+s <- d@param
+num <- (parameters7::param_d1(s, eta + c(0, 0, h))[[1]] -
+        parameters7::param_d1(s, eta - c(0, 0, h))[[1]]) / (2 * h)
+max(abs(distributions7:::mvg_a2(pc, 1L, 3L) - num))
+
+}
+\seealso{
+\code{\link[=mvg_pieces]{mvg_pieces()}} for the argument and \code{\link[=param_pair_lookup]{param_pair_lookup()}} for the
+other route to the same enumeration.
 }
 \keyword{internal}

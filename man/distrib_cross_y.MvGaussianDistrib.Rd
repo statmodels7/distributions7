@@ -4,38 +4,78 @@
 \alias{distrib_cross_y.MvGaussianDistrib}
 \title{Multivariate Gaussian Mixed Response-Parameter Derivatives}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two coincide here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one \eqn{n \times p} matrix per parameter.
+A named list of \eqn{n \times p} numeric matrices, one per
+parameter, in \code{distrib@params} order.
 }
 \description{
-\eqn{\partial^2 \ell / \partial y \partial \theta_k}, one \eqn{n \times p}
-matrix per parameter. With \eqn{w = \Sigma^{-1}(y - \mu)} the response
-gradient is \eqn{-w}, so differentiating it in the mean and in the free
-values of the matrix parameter gives
-\deqn{\frac{\partial^2 \ell}{\partial y \partial \mu_j} = \Sigma^{-1}e_j,
+Computes \eqn{\partial^2\ell/\partial y\, \partial\theta_k}, one
+\eqn{n \times p} matrix per parameter. With \eqn{w = \Sigma^{-1}(y - \mu)}
+the response gradient is \eqn{-w}, and differentiating it in the mean and in
+the free values of the matrix parametrization gives
+\deqn{\frac{\partial^2 \ell}{\partial y \,\partial \mu_j} = \Sigma^{-1}e_j,
   \qquad
-  \frac{\partial^2 \ell}{\partial y \partial \eta_k} = \Sigma^{-1}A_k w,}
-with \eqn{A_k = \partial\Sigma/\partial\eta_k}. The mean block is the same
-at every observation, the matrix block is not.
+  \frac{\partial^2 \ell}{\partial y \,\partial \eta_k} = \Sigma^{-1}A_k w,}
+with \eqn{A_k = \partial\Sigma/\partial\eta_k}. The mean block is column
+\eqn{j} of \eqn{\Sigma^{-1}} at every observation; the matrix block carries
+the observation through \eqn{w}.
 }
 \details{
-The shape is the one a consumer needs: a penalty whose prior is this family
-reads the block of \eqn{\partial^2\rho/\partial\beta\,\partial\theta_k} for
-one hyperparameter at a time, and the coefficients of one group are the row
-of \eqn{y} the density is read at.
+The shape is the one a consumer needs. A penalty whose prior is this family
+reads the block \eqn{\partial^2\rho/\partial\beta\,\partial\theta_k} for one
+hyperparameter at a time, and the coefficients of one group are the row of
+\eqn{y} the density is read at.
 
-The link scale is the parameter scale here: the mean components carry the
-identity link and so do the matrix parameter's free values, which are
-unconstrained by construction.
+Every link of this family is the identity, so \code{scale = "link"} and
+\code{scale = "parameter"} give the same numbers.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
+vector of the matrix parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k},
+\eqn{e_j} the \eqn{j}-th standard basis vector and \eqn{\ell} the
+log-density of one observation.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+cy <- distrib_cross_y(d, y, theta)
+names(cy)
+dim(cy$sigma_L2.1)
+
+# The mean block is a row of the inverse covariance, the same at every
+# observation.
+cy$mu1
+solve(mv_sigma(d, theta))[1, ]
+
+# The matrix block against a difference of the response gradient.
+h <- 1e-5
+tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
+tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
+max(abs(cy$sigma_L2.1 -
+        (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
+
+}
+\seealso{
+\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y.MvGaussianDistrib()}}, whose derivative in the
+parameters this is, \code{\link[=distrib_cross2_y.MvGaussianDistrib]{distrib_cross2_y.MvGaussianDistrib()}} for the next
+order, and \code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

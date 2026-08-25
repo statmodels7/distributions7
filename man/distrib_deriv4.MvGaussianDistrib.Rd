@@ -4,23 +4,81 @@
 \alias{distrib_deriv4.MvGaussianDistrib}
 \title{Multivariate Gaussian Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. With
+\code{expected = TRUE} only its row count is used.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{expected}{Logical; the expectation is approximated by sampling.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation of each
+component is returned, by sampling. Defaults to \code{FALSE}.}
 
-\item{approx}{Strategy label; sampling is the only multivariate route.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. Every link of this family is the identity, so the
+two coincide.}
 
-\item{nsim}{Monte Carlo sample size.}
+\item{approx}{Ignored: sampling is the only multivariate route to an
+expectation here. Present so that the signature matches the generic's.}
+
+\item{nsim}{The number of draws used when \code{expected = TRUE}. Defaults to
+\code{10000}. Ignored otherwise.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of numeric vectors of length \eqn{n}, keyed and ordered
+as \code{deriv_names(distrib@params, 4)}. With \code{expected = TRUE} every vector
+is constant.
 }
 \description{
-Closed form; the same algebra as
-\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} one order up.
+Computes every fourth derivative of the log-density in the parameters, in
+closed form, by the same algebra as
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} one order up: the tuple is split into
+mean indices and matrix indices, three or more mean indices give exactly
+zero, and the rest are read off the precision's derivative array \eqn{P_t}
+and the fourth derivative of the log-determinant. The arrays come from
+\code{parameters7::param_d4()} under a precision parametrization and from the
+expansion of the derivative of an inverse under a covariance one.
+}
+\details{
+With \code{expected = TRUE} the expectation is taken by sampling \code{nsim} draws
+from the family and averaging the observed components, exactly as at order
+three. \code{approx} is not read, and the result carries Monte Carlo error of
+order \code{nsim^(-1/2)}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
+\eqn{\eta} its free vector, \eqn{r = y - \mu} the centered response and
+\eqn{P_t} the precision's derivative array over the multiset \eqn{t}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+d4 <- distrib_deriv4(d, y, theta)
+length(d4)
+
+# Four mean indices vanish, as three already did.
+d4[["mu1_mu1_mu2_mu2"]]
+
+# Against one stencil on the analytic third order.
+h <- 1e-4
+tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
+tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
+c(exact = sum(d4[["mu1_mu2_sigma_L2.1_sigma_L2.1"]]),
+  stencil = (sum(distrib_deriv3(d, y, tp)[["mu1_mu2_sigma_L2.1"]]) -
+             sum(distrib_deriv3(d, y, tm)[["mu1_mu2_sigma_L2.1"]])) / (2 * h))
+
+}
+\seealso{
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} for the order below,
+\code{\link[=mvg_higher]{mvg_higher()}} for the shared engine, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the
+generic.
 }
 \keyword{internal}

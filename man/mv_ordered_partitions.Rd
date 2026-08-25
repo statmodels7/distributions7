@@ -7,15 +7,55 @@
 mv_ordered_partitions(pos)
 }
 \arguments{
-\item{pos}{An integer vector of positions.}
+\item{pos}{An integer vector of positions, of length 1 to 4 in practice.
+Its values are carried through unchanged, so it may hold any labels the
+caller indexes with.}
 }
 \value{
-A list of lists of integer vectors.
+A list of ordered partitions. Each is a list of integer vectors, the
+blocks in the order the product takes them, and the blocks of one
+partition together hold every element of \code{pos} exactly once.
 }
 \description{
-All ordered partitions of a set of positions into nonempty blocks: the set
-partitions, each in every ordering of its blocks. This is how the
-derivative of an inverse distributes its differentiations,
-\eqn{P_t = \sum (-1)^q P A_{B_1} P \cdots A_{B_q} P}.
+Enumerates all ordered partitions of a set of positions into nonempty
+blocks: every set partition, in every ordering of its blocks. This is how
+the derivative of an inverse distributes its differentiations,
+\deqn{P_t = \sum (-1)^q\, P A_{B_1} P \cdots A_{B_q} P,}
+the blocks appearing in a product where order matters even though the
+partition itself is unordered. The count is the ordered Bell number: 1, 3,
+13, 75 at sizes 1 to 4.
+}
+\details{
+The set partitions are built by inserting the last element into each block
+of each partition of the rest, and into a block of its own; the orderings by
+inserting the last index at each position of each permutation of the rest.
+Both recursions are written out here, the sizes involved being at most 4.
+\code{numericals7::set_partitions()} supplies the unordered enumeration the rest
+of the toolkit uses, and would still leave the block orderings to do.
+}
+\section{Notation}{
+
+\eqn{P} is a precision matrix, \eqn{A_B} the derivative of its inverse in
+the free values \eqn{B}, and \eqn{q} the number of blocks of a partition.
+}
+
+\examples{
+# Two positions give three ordered partitions: one block, then the two
+# orderings of two singleton blocks.
+distributions7:::mv_ordered_partitions(1:2)
+
+# The counts are the ordered Bell numbers.
+vapply(1:4, function(n)
+  length(distributions7:::mv_ordered_partitions(seq_len(n))), integer(1))
+
+# Every partition covers the positions exactly once.
+all(vapply(distributions7:::mv_ordered_partitions(1:3),
+           function(p) identical(sort(unlist(p)), 1:3), TRUE))
+
+}
+\seealso{
+\code{\link[=mvg_ptensors]{mvg_ptensors()}}, the only consumer, and
+\code{\link[numericals7:set_partitions]{numericals7::set_partitions()}} for the unordered enumeration the toolkit
+uses elsewhere.
 }
 \keyword{internal}

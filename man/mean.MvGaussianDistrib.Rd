@@ -4,16 +4,38 @@
 \alias{mean.MvGaussianDistrib}
 \title{Mean of a Multivariate Gaussian}
 \arguments{
-\item{x}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.
+Only the \eqn{p} mean components are read.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of length \eqn{p}.
+A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp}.
 }
 \description{
-The mean vector, which is a parameter of the family.
+Returns \eqn{\mathbb{E}[Y] = \mu}, the mean vector. For this family the
+expectation is a parameter and needs no integration: the density is
+symmetric about \eqn{\mu} and every coordinate has finite moments of every
+order, so the first moment exists at every parameter value the constructor
+admits.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+
+mean(d, theta)
+
+# Which is what a large sample average approaches.
+set.seed(2)
+round(colMeans(distrib_rng(d, 20000, theta)), 3)
+
+}
+\seealso{
+\code{\link[=variance.MvGaussianDistrib]{variance.MvGaussianDistrib()}} for the second moment,
+\code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}}, which returns the same vector as the
+density's center, and \code{\link[base:mean]{base::mean()}} for the generic.
 }
 \keyword{internal}

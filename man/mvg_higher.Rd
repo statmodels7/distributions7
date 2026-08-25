@@ -7,21 +7,86 @@
 mvg_higher(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{order}{3 or 4.}
+\item{order}{Either \code{3L} or \code{4L}. No other value is accepted: the
+log-determinant derivative is chosen by \code{switch(order - 2L, ...)}, which
+returns \code{NULL} outside that range and fails at the call.}
 }
 \value{
-A named list of derivative component vectors.
+A named list of numeric vectors of length \eqn{n}, one per
+derivative component, keyed and ordered as
+\code{deriv_names(distrib@params, order)}. There are 35 components at order 3
+and 70 at order 4 for a two-dimensional gaussian on an unstructured
+covariance.
 }
 \description{
-Shared engine for the third and fourth derivatives: enumerates the
-parameter tuples the way \code{\link[=deriv_names]{deriv_names()}} does, splits each into
-mean and structure indices, and reads the surviving cases off the
-gaussian's algebra.
+Computes every third- or fourth-order derivative of the log-density in the
+parameters. It enumerates the parameter tuples the way \code{\link[=deriv_names]{deriv_names()}} does,
+splits each into mean indices and matrix indices, and reads the surviving
+cases off the gaussian's algebra. Writing \eqn{r = y - \mu} and \eqn{P_t}
+for the precision's derivative array over the matrix indices \eqn{t}, a
+tuple with
+\itemize{
+\item three or more mean indices is exactly zero, the quadratic form being
+quadratic in \eqn{\mu};
+\item two mean indices \eqn{(i, j)} gives \eqn{-P_t[i, j]};
+\item one mean index \eqn{i} gives \eqn{(r P_t)_i}, one value per observation;
+\item no mean index gives
+\eqn{\pm\tfrac{1}{2}\,\partial^{\lvert t\rvert}\log\lvert M\rvert
+  - \tfrac{1}{2}\, r^\top P_t\, r}, the sign following which side the
+parametrization carries.
+}
+}
+\details{
+The log-determinant derivatives come from \code{parameters7::param_d3logdet()}
+and \code{param_d4logdet()}, and the precision arrays from \code{\link[=mvg_ptensors]{mvg_ptensors()}}, so
+nothing here is a transcription of an expanded formula. The only case that
+costs anything is the pure-matrix one, and even that is a quadratic form per
+observation once the array is in hand.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{M} the matrix the parametrization carries,
+\eqn{P = \Sigma^{-1}} the precision, \eqn{\eta} the free vector,
+\eqn{r = y - \mu} the centered response and \eqn{P_t} the precision's
+derivative array over the multiset of free values \eqn{t}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+d3 <- distributions7:::mvg_higher(d, y, theta, 3L)
+length(d3)
+length(distributions7:::mvg_higher(d, y, theta, 4L))
+
+# Three mean indices vanish exactly.
+vapply(d3[grep("^mu[0-9]+_mu[0-9]+_mu[0-9]+$", names(d3))],
+       function(z) max(abs(z)), numeric(1))
+
+# Against one stencil on the analytic Hessian, which shares no algebra
+# with the expansion.
+h <- 1e-4
+tp <- theta; tp$sigma_L2.1 <- tp$sigma_L2.1 + h
+tm <- theta; tm$sigma_L2.1 <- tm$sigma_L2.1 - h
+c(exact = sum(d3[["sigma_log_L1_sigma_log_L1_sigma_L2.1"]]),
+  stencil = (sum(distrib_hessian(d, y, tp)[["sigma_log_L1_sigma_log_L1"]]) -
+             sum(distrib_hessian(d, y, tm)[["sigma_log_L1_sigma_log_L1"]])) /
+            (2 * h))
+
+}
+\seealso{
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3.MvGaussianDistrib()}} and
+\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4.MvGaussianDistrib()}}, the two methods it serves, and
+\code{\link[=mvg_ptensors]{mvg_ptensors()}} for the arrays it reads.
 }
 \keyword{internal}
