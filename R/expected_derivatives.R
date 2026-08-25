@@ -35,8 +35,8 @@ NULL
 #'     parameter, where \eqn{\mathbb{E}[H]} degenerates but the score variance
 #'     still gives the information (see [laplace_distrib()]).
 #'     Deterministic. At higher orders it needs several integrals, so it is
-#'     usually slower than `"integrate"`, but it never requires the
-#'     top-order derivative itself -- useful when only the lower orders are
+#'     usually slower than `"integrate"`. It never requires the top-order
+#'     derivative itself, which is useful where only the lower orders are
 #'     available in closed form.}
 #'
 #'   \item{`"integrate"`}{Integrates the observed derivative of that order
@@ -67,29 +67,74 @@ NULL
 #' direct integration of the available derivative is usually cheaper and more
 #' accurate.
 #'
-#' @return Nothing. This page documents the `approx` argument shared by
-#'   the three generics named above; the value returned is theirs.
+#' **What the kink costs, measured.** On a Laplace carrying a density, a score
+#' and a Hessian but no expected method, at \eqn{\sigma = 1} over 200
+#' observations: `"bartlett"` returns \eqn{-200}, which is \eqn{-n/\sigma^2}
+#' and agrees with the shipped family's closed form to the digit, while
+#' `"integrate"` and `"mc"` both return **exactly 0**. Neither is wrong about
+#' what it computes. The observed \eqn{\ell_{\mu\mu}} really is zero almost
+#' everywhere, so its expectation is zero; what fails is the identification of
+#' that expectation with \eqn{-\mathcal{I}(\theta)}, which is the second
+#' Bartlett identity. Only the score-based route survives, and the information
+#' of a non-regular family is *defined* as the variance of the score.
 #'
-#' @seealso [distrib_expected_hessian()], [distrib_deriv3()],
-#'   [distrib_deriv4()]
+#' @return Nothing. This page documents the `approx` argument shared by the
+#'   three generics named above; the value returned is theirs.
+#'
+#' @examples
+#' # A family with no closed-form expected information reads 'approx'. The two
+#' # deterministic strategies agree; Monte Carlo is the same quantity with
+#' # sampling error on it.
+#' sn <- skewnormal1_distrib()
+#' th <- list(mu = 0, sigma = 1, alpha = 3)
+#' set.seed(2)
+#' y <- distrib_rng(sn, 40, th)
+#'
+#' vapply(c("bartlett", "integrate"), function(a) {
+#'   sum(distrib_expected_hessian(sn, y, th, approx = a)$alpha_alpha)
+#' }, numeric(1))
+#'
+#' set.seed(3)
+#' sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
+#'
+#' # A family that writes its expected information out ignores the argument,
+#' # and fit_distrib() rejects one given there rather than dropping it.
+#' g <- gaussian1_distrib()
+#' identical(distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1)),
+#'           distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1),
+#'                                    approx = "mc"))
+#'
+#' @seealso [distrib_expected_hessian()], [distrib_deriv3()] and
+#'   [distrib_deriv4()], the three generics that take `approx`;
+#'   [fisher_scoring()], where it is set for a fit;
+#'   [expected_by_bartlett()], [expected_by_integrate()] and
+#'   [expected_by_mc()] for the three implementations.
 NULL
 
-#' Observed Derivatives of a Given Order
+#' @title Observed Derivatives of a Given Order
 #'
 #' @description
-#' Routes to [distrib_gradient()], [distrib_hessian()],
-#' [distrib_deriv3()] or [distrib_deriv4()] according to
-#' `order`, so that code working at an order fixed only at run time does not
-#' have to branch.
+#' Routes to [distrib_gradient()], [distrib_hessian()], [distrib_deriv3()] or
+#' [distrib_deriv4()] according to `order`, so that code working at an order
+#' fixed only at run time does not have to branch. Every strategy in
+#' [expected_derivative_methods()] reads it, `"integrate"` and `"mc"` for the
+#' quantity they average and `"bartlett"` for the lower orders its identity
+#' multiplies together.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
+#' @param distrib An object inheriting from `distrib`.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
-#' @param order The derivative order, 1 to 4.
+#' @param theta A named list of parameters, aligned to `distrib@params`.
+#' @param order The derivative order, a single integer from 1 to 4. Anything
+#'   else signals an error.
 #'
-#' @return A named list of derivative component vectors, keyed as
-#'   [hess_names()] at order 2 and [deriv_names()] above it.
+#' @return A named list of derivative component vectors, each of length
+#'   `length(y)`. The keys are `distrib@params` at order 1, [hess_names()] at
+#'   order 2 (diagonal first) and [deriv_names()] above it (lexicographic), so
+#'   a caller pairing two orders must match by name.
 #'
+#' @seealso [expected_derivative_methods()], which reads it;
+#'   [deriv_names()] and [hess_names()] for the two keyings;
+#'   [expected_derivative()], the router above it.
 #' @keywords internal
 observed_deriv <- function(distrib, y, theta, order) {
   switch(as.character(order),
@@ -101,33 +146,44 @@ observed_deriv <- function(distrib, y, theta, order) {
   )
 }
 
-#' Expected Derivatives by Numerical Integration
+#' @title Expected Derivatives by Numerical Integration
 #'
 #' @description
-#' Integrates each observed derivative component directly against the density,
-#' component by component, through [expectation()].
+#' Integrates each observed derivative component directly against the density
+#' through [expectation()], component by component. It is deterministic and is
+#' normally the most accurate route where the observed derivative is available
+#' in closed form.
 #'
 #' @details
-#' This estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a regular
-#' model that is the quantity wanted; for a non-regular one it is not the
-#' information, and [expected_by_bartlett()] is the route that stays
-#' valid (see [laplace_distrib()]).
+#' What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
+#' regular model that is the quantity wanted. For a non-regular one it is not
+#' the information, and the difference is total rather than small: on a Laplace
+#' with no closed-form expected method, at \eqn{\sigma = 1} over 200
+#' observations, this returns **exactly 0** for the location component while
+#' [expected_by_bartlett()] returns \eqn{-200 = -n/\sigma^2}, which is the
+#' information. The observed \eqn{\ell_{\mu\mu}} is zero almost everywhere, so
+#' its integral against the density is zero and the point mass at the kink is
+#' invisible to it.
 #'
-#' Quadrature is unreliable when the observed derivative is itself a finite
-#' difference, since it then integrates numerical noise, so the error is caught
-#' and re-raised naming the component and pointing at the alternatives rather
-#' than surfacing as an opaque failure from the integrator.
+#' Quadrature is also unreliable where the observed derivative is itself a
+#' finite difference, since it then integrates numerical noise. That error is
+#' caught and re-raised naming the component and pointing at the alternatives,
+#' so it reaches the caller as a statement about the route rather than as an
+#' opaque failure from the integrator.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y A numeric vector of observations; only its length is used, to recycle
-#'   the result.
-#' @param theta A named list of parameters.
-#' @param order The derivative order, 2 to 4.
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations. Only its length is used, to
+#'   recycle the result: an expectation does not depend on the sample.
+#' @param theta A named list of parameters, aligned to `distrib@params`.
+#' @param order The derivative order, a single integer from 2 to 4.
 #'
-#' @return A named list of expected derivative component vectors, each of length
-#'   `length(y)`.
+#' @return A named list of expected derivative component vectors, each of
+#'   length `length(y)`, keyed as [observed_deriv()] keys that order.
 #'
-#' @seealso [expected_derivative_methods()]
+#' @seealso [expected_derivative_methods()] for the three strategies;
+#'   [expected_by_bartlett()], the route that survives a kink;
+#'   [expected_by_mc()] where quadrature struggles;
+#'   [expectation()], which does the integration.
 #' @keywords internal
 expected_by_integrate <- function(distrib, y, theta, order) {
   n <- length(y)

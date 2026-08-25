@@ -4,20 +4,47 @@
 \alias{distrib_deriv4.distrib}
 \title{Default Fourth-Order Derivatives for \code{distrib} Objects}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} that registers no method
+of its own.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{expected}{Logical; if \code{TRUE}, returns expected derivatives.}
+\item{expected}{Logical of length 1. \code{FALSE}, the default, differences the
+Hessian twice; \code{TRUE} takes the expectation of the observed derivatives.}
+
+\item{scale}{Handled by the generic after dispatch; this method always
+returns the parameter scale.}
+
+\item{approx}{Which strategy takes the expectation, read only when
+\code{expected} is \code{TRUE}: \code{"integrate"} (the default at this order),
+\code{"bartlett"}, \code{"opg"} or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
+
+\item{nsim}{Monte Carlo sample size, a single positive number, read only
+under \code{approx = "mc"}. Defaults to 10000.}
+
+\item{...}{Unused.}
 }
 \value{
-A named list of fourth-derivative component vectors.
+A named list of fourth-derivative component vectors, each of length
+\code{length(y)}, keyed lexicographically as
+\code{\link[=deriv_names]{deriv_names(distrib@params, 4)}} gives them.
 }
 \description{
-Fallback method: observed fourth derivatives via \code{\link[=numerical_deriv4]{numerical_deriv4()}}
-(second differences of the Hessian); expected fourth derivatives via the
-\code{\link[=expectation]{expectation()}} of the observed ones.
+The fallback for a family that registers no fourth-order method. Observed
+derivatives come from \code{\link[=numerical_deriv4]{numerical_deriv4()}}, a \strong{second} difference of
+\code{\link[=distrib_hessian]{distrib_hessian()}} rather than a difference of the third order, so the
+package's rule against nesting one difference inside another holds here;
+expected ones from \code{\link[=expected_derivative]{expected_derivative()}} at the strategy \code{approx} names.
+
+As at the order below, no family shipped in this package reaches it. Being a
+second difference it is the least accurate route the package offers, and its
+step is chosen accordingly.
+}
+\seealso{
+\code{\link[=numerical_deriv4]{numerical_deriv4()}}, which does the differencing;
+\code{\link[=distrib_deriv3.distrib]{distrib_deriv3.distrib()}} for the order below;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{approx} selects.
 }
 \keyword{internal}

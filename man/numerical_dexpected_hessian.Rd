@@ -26,7 +26,8 @@ numerical_dexpected_hessian(
 \item{approx, nsim}{Passed to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.}
 
 \item{h_rel}{The relative step, a cube root of machine epsilon by default,
-which is what a central difference balances.}
+the value at which a central difference balances truncation against
+rounding.}
 }
 \value{
 A named list keyed as \code{\link[=dexpected_names]{dexpected_names()}}.

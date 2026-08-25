@@ -4,8 +4,8 @@
 \alias{expected_derivative_methods}
 \title{Strategies for Expected Derivatives}
 \value{
-Nothing. This page documents the \code{approx} argument shared by
-the three generics named above; the value returned is theirs.
+Nothing. This page documents the \code{approx} argument shared by the
+three generics named above; the value returned is theirs.
 }
 \description{
 When a distribution does not supply a closed-form expected derivative, the
@@ -37,8 +37,8 @@ that stays valid when the log-likelihood is not differentiable in a
 parameter, where \eqn{\mathbb{E}[H]} degenerates but the score variance
 still gives the information (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
 Deterministic. At higher orders it needs several integrals, so it is
-usually slower than \code{"integrate"}, but it never requires the
-top-order derivative itself -- useful when only the lower orders are
+usually slower than \code{"integrate"}. It never requires the top-order
+derivative itself, which is useful where only the lower orders are
 available in closed form.}
 
 \item{\code{"integrate"}}{Integrates the observed derivative of that order
@@ -68,8 +68,46 @@ derivatives) and the most broadly valid. \code{distrib_deriv3} and
 \code{distrib_deriv4} default to \code{"integrate"}, since at those orders
 direct integration of the available derivative is usually cheaper and more
 accurate.
+
+\strong{What the kink costs, measured.} On a Laplace carrying a density, a score
+and a Hessian but no expected method, at \eqn{\sigma = 1} over 200
+observations: \code{"bartlett"} returns \eqn{-200}, which is \eqn{-n/\sigma^2}
+and agrees with the shipped family's closed form to the digit, while
+\code{"integrate"} and \code{"mc"} both return \strong{exactly 0}. Neither is wrong about
+what it computes. The observed \eqn{\ell_{\mu\mu}} really is zero almost
+everywhere, so its expectation is zero; what fails is the identification of
+that expectation with \eqn{-\mathcal{I}(\theta)}, which is the second
+Bartlett identity. Only the score-based route survives, and the information
+of a non-regular family is \emph{defined} as the variance of the score.
+}
+\examples{
+# A family with no closed-form expected information reads 'approx'. The two
+# deterministic strategies agree; Monte Carlo is the same quantity with
+# sampling error on it.
+sn <- skewnormal1_distrib()
+th <- list(mu = 0, sigma = 1, alpha = 3)
+set.seed(2)
+y <- distrib_rng(sn, 40, th)
+
+vapply(c("bartlett", "integrate"), function(a) {
+  sum(distrib_expected_hessian(sn, y, th, approx = a)$alpha_alpha)
+}, numeric(1))
+
+set.seed(3)
+sum(distrib_expected_hessian(sn, y, th, approx = "mc", nsim = 500)$alpha_alpha)
+
+# A family that writes its expected information out ignores the argument,
+# and fit_distrib() rejects one given there rather than dropping it.
+g <- gaussian1_distrib()
+identical(distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1)),
+          distrib_expected_hessian(g, c(-1, 0, 1), list(mu = 0, sigma = 1),
+                                   approx = "mc"))
+
 }
 \seealso{
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, the three generics that take \code{approx};
+\code{\link[=fisher_scoring]{fisher_scoring()}}, where it is set for a fit;
+\code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, \code{\link[=expected_by_integrate]{expected_by_integrate()}} and
+\code{\link[=expected_by_mc]{expected_by_mc()}} for the three implementations.
 }

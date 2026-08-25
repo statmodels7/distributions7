@@ -4,20 +4,49 @@
 \alias{distrib_deriv3.distrib}
 \title{Default Third-Order Derivatives for \code{distrib} Objects}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} that registers no method
+of its own.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{expected}{Logical; if \code{TRUE}, returns expected derivatives.}
+\item{expected}{Logical of length 1. \code{FALSE}, the default, differences the
+Hessian; \code{TRUE} takes the expectation of the observed derivatives through
+\code{\link[=expected_derivative]{expected_derivative()}}.}
+
+\item{scale}{Handled by the generic after dispatch; this method always
+returns the parameter scale.}
+
+\item{approx}{Which strategy takes the expectation, read only when
+\code{expected} is \code{TRUE}: \code{"integrate"} (the default at this order),
+\code{"bartlett"}, \code{"opg"} or \code{"mc"}. See \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.}
+
+\item{nsim}{Monte Carlo sample size, a single positive number, read only
+under \code{approx = "mc"}. Defaults to 10000.}
+
+\item{...}{Unused.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of third-derivative component vectors, each of length
+\code{length(y)}, keyed lexicographically as
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} gives them.
 }
 \description{
-Fallback method: observed third derivatives via \code{\link[=numerical_deriv3]{numerical_deriv3()}}
-(finite differences of the Hessian); expected third derivatives via the
-\code{\link[=expectation]{expectation()}} of the observed ones.
+The fallback for a family that registers no third-order method. Observed
+derivatives come from \code{\link[=numerical_deriv3]{numerical_deriv3()}}, one central difference of
+\code{\link[=distrib_hessian]{distrib_hessian()}} along each parameter; expected ones from
+\code{\link[=expected_derivative]{expected_derivative()}} at the strategy \code{approx} names.
+
+\strong{No family shipped in this package reaches this method for its observed
+derivatives.} All 46 write the third order out, 24 of them in compiled
+kernels. It exists for a family defined outside the package, which gets four
+orders from a density alone, and it is the reference the analytical kernels
+are validated against.
+}
+\seealso{
+\code{\link[=numerical_deriv3]{numerical_deriv3()}}, which does the differencing;
+\code{\link[=distrib_deriv4.distrib]{distrib_deriv4.distrib()}} for the order above;
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for what \code{approx} selects.
 }
 \keyword{internal}

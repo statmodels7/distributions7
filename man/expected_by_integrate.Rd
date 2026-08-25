@@ -7,35 +7,46 @@
 expected_by_integrate(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
-\item{y}{A numeric vector of observations; only its length is used, to recycle
-the result.}
+\item{y}{A numeric vector of observations. Only its length is used, to
+recycle the result: an expectation does not depend on the sample.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
-\item{order}{The derivative order, 2 to 4.}
+\item{order}{The derivative order, a single integer from 2 to 4.}
 }
 \value{
-A named list of expected derivative component vectors, each of length
-\code{length(y)}.
+A named list of expected derivative component vectors, each of
+length \code{length(y)}, keyed as \code{\link[=observed_deriv]{observed_deriv()}} keys that order.
 }
 \description{
-Integrates each observed derivative component directly against the density,
-component by component, through \code{\link[=expectation]{expectation()}}.
+Integrates each observed derivative component directly against the density
+through \code{\link[=expectation]{expectation()}}, component by component. It is deterministic and is
+normally the most accurate route where the observed derivative is available
+in closed form.
 }
 \details{
-This estimates \eqn{\mathbb{E}[\partial^k \ell]} literally. For a regular
-model that is the quantity wanted; for a non-regular one it is not the
-information, and \code{\link[=expected_by_bartlett]{expected_by_bartlett()}} is the route that stays
-valid (see \code{\link[=laplace_distrib]{laplace_distrib()}}).
+What this estimates is \eqn{\mathbb{E}[\partial^k \ell]} literally. For a
+regular model that is the quantity wanted. For a non-regular one it is not
+the information, and the difference is total rather than small: on a Laplace
+with no closed-form expected method, at \eqn{\sigma = 1} over 200
+observations, this returns \strong{exactly 0} for the location component while
+\code{\link[=expected_by_bartlett]{expected_by_bartlett()}} returns \eqn{-200 = -n/\sigma^2}, which is the
+information. The observed \eqn{\ell_{\mu\mu}} is zero almost everywhere, so
+its integral against the density is zero and the point mass at the kink is
+invisible to it.
 
-Quadrature is unreliable when the observed derivative is itself a finite
-difference, since it then integrates numerical noise, so the error is caught
-and re-raised naming the component and pointing at the alternatives rather
-than surfacing as an opaque failure from the integrator.
+Quadrature is also unreliable where the observed derivative is itself a
+finite difference, since it then integrates numerical noise. That error is
+caught and re-raised naming the component and pointing at the alternatives,
+so it reaches the caller as a statement about the route rather than as an
+opaque failure from the integrator.
 }
 \seealso{
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} for the three strategies;
+\code{\link[=expected_by_bartlett]{expected_by_bartlett()}}, the route that survives a kink;
+\code{\link[=expected_by_mc]{expected_by_mc()}} where quadrature struggles;
+\code{\link[=expectation]{expectation()}}, which does the integration.
 }
 \keyword{internal}

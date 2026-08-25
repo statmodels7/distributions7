@@ -196,7 +196,8 @@ dexpected_key <- function(params, a, b, k) {
 #' @param scale Either `"parameter"` or `"link"`.
 #' @param approx,nsim Passed to [distrib_expected_hessian()].
 #' @param h_rel The relative step, a cube root of machine epsilon by default,
-#'   which is what a central difference balances.
+#'   the value at which a central difference balances truncation against
+#'   rounding.
 #'
 #' @return A named list keyed as [dexpected_names()].
 #'

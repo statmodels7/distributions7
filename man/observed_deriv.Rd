@@ -7,22 +7,32 @@
 observed_deriv(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned to \code{distrib@params}.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, a single integer from 1 to 4. Anything
+else signals an error.}
 }
 \value{
-A named list of derivative component vectors, keyed as
-\code{\link[=hess_names]{hess_names()}} at order 2 and \code{\link[=deriv_names]{deriv_names()}} above it.
+A named list of derivative component vectors, each of length
+\code{length(y)}. The keys are \code{distrib@params} at order 1, \code{\link[=hess_names]{hess_names()}} at
+order 2 (diagonal first) and \code{\link[=deriv_names]{deriv_names()}} above it (lexicographic), so
+a caller pairing two orders must match by name.
 }
 \description{
-Routes to \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}},
-\code{\link[=distrib_deriv3]{distrib_deriv3()}} or \code{\link[=distrib_deriv4]{distrib_deriv4()}} according to
-\code{order}, so that code working at an order fixed only at run time does not
-have to branch.
+Routes to \code{\link[=distrib_gradient]{distrib_gradient()}}, \code{\link[=distrib_hessian]{distrib_hessian()}}, \code{\link[=distrib_deriv3]{distrib_deriv3()}} or
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} according to \code{order}, so that code working at an order
+fixed only at run time does not have to branch. Every strategy in
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}} reads it, \code{"integrate"} and \code{"mc"} for the
+quantity they average and \code{"bartlett"} for the lower orders its identity
+multiplies together.
+}
+\seealso{
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, which reads it;
+\code{\link[=deriv_names]{deriv_names()}} and \code{\link[=hess_names]{hess_names()}} for the two keyings;
+\code{\link[=expected_derivative]{expected_derivative()}}, the router above it.
 }
 \keyword{internal}

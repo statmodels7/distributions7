@@ -141,15 +141,42 @@ numerical_deriv4 <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 
 #' @title Default Third-Order Derivatives for `distrib` Objects
 #' @name distrib_deriv3.distrib
+#'
 #' @description
-#' Fallback method: observed third derivatives via [numerical_deriv3()]
-#' (finite differences of the Hessian); expected third derivatives via the
-#' [expectation()] of the observed ones.
-#' @param distrib An object inheriting from class `"distrib"`.
+#' The fallback for a family that registers no third-order method. Observed
+#' derivatives come from [numerical_deriv3()], one central difference of
+#' [distrib_hessian()] along each parameter; expected ones from
+#' [expected_derivative()] at the strategy `approx` names.
+#'
+#' **No family shipped in this package reaches this method for its observed
+#' derivatives.** All 46 write the third order out, 24 of them in compiled
+#' kernels. It exists for a family defined outside the package, which gets four
+#' orders from a density alone, and it is the reference the analytical kernels
+#' are validated against.
+#'
+#' @param distrib An object inheriting from `distrib` that registers no method
+#'   of its own.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
-#' @param expected Logical; if `TRUE`, returns expected derivatives.
-#' @return A named list of third-derivative component vectors.
+#' @param theta A named list of parameters, aligned by the generic.
+#' @param expected Logical of length 1. `FALSE`, the default, differences the
+#'   Hessian; `TRUE` takes the expectation of the observed derivatives through
+#'   [expected_derivative()].
+#' @param scale Handled by the generic after dispatch; this method always
+#'   returns the parameter scale.
+#' @param approx Which strategy takes the expectation, read only when
+#'   `expected` is `TRUE`: `"integrate"` (the default at this order),
+#'   `"bartlett"`, `"opg"` or `"mc"`. See [expected_derivative_methods()].
+#' @param nsim Monte Carlo sample size, a single positive number, read only
+#'   under `approx = "mc"`. Defaults to 10000.
+#' @param ... Unused.
+#'
+#' @return A named list of third-derivative component vectors, each of length
+#'   `length(y)`, keyed lexicographically as
+#'   [`deriv_names(distrib@params, 3)`][deriv_names] gives them.
+#'
+#' @seealso [numerical_deriv3()], which does the differencing;
+#'   [distrib_deriv4.distrib()] for the order above;
+#'   [expected_derivative_methods()] for what `approx` selects.
 #' @keywords internal
 S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) {
@@ -162,15 +189,40 @@ S7::method(distrib_deriv3, distrib) <- function(distrib, y, theta, expected = FA
 
 #' @title Default Fourth-Order Derivatives for `distrib` Objects
 #' @name distrib_deriv4.distrib
+#'
 #' @description
-#' Fallback method: observed fourth derivatives via [numerical_deriv4()]
-#' (second differences of the Hessian); expected fourth derivatives via the
-#' [expectation()] of the observed ones.
-#' @param distrib An object inheriting from class `"distrib"`.
+#' The fallback for a family that registers no fourth-order method. Observed
+#' derivatives come from [numerical_deriv4()], a **second** difference of
+#' [distrib_hessian()] rather than a difference of the third order, so the
+#' package's rule against nesting one difference inside another holds here;
+#' expected ones from [expected_derivative()] at the strategy `approx` names.
+#'
+#' As at the order below, no family shipped in this package reaches it. Being a
+#' second difference it is the least accurate route the package offers, and its
+#' step is chosen accordingly.
+#'
+#' @param distrib An object inheriting from `distrib` that registers no method
+#'   of its own.
 #' @param y A numeric vector of observations.
-#' @param theta A named list of parameters.
-#' @param expected Logical; if `TRUE`, returns expected derivatives.
-#' @return A named list of fourth-derivative component vectors.
+#' @param theta A named list of parameters, aligned by the generic.
+#' @param expected Logical of length 1. `FALSE`, the default, differences the
+#'   Hessian twice; `TRUE` takes the expectation of the observed derivatives.
+#' @param scale Handled by the generic after dispatch; this method always
+#'   returns the parameter scale.
+#' @param approx Which strategy takes the expectation, read only when
+#'   `expected` is `TRUE`: `"integrate"` (the default at this order),
+#'   `"bartlett"`, `"opg"` or `"mc"`. See [expected_derivative_methods()].
+#' @param nsim Monte Carlo sample size, a single positive number, read only
+#'   under `approx = "mc"`. Defaults to 10000.
+#' @param ... Unused.
+#'
+#' @return A named list of fourth-derivative component vectors, each of length
+#'   `length(y)`, keyed lexicographically as
+#'   [`deriv_names(distrib@params, 4)`][deriv_names] gives them.
+#'
+#' @seealso [numerical_deriv4()], which does the differencing;
+#'   [distrib_deriv3.distrib()] for the order below;
+#'   [expected_derivative_methods()] for what `approx` selects.
 #' @keywords internal
 S7::method(distrib_deriv4, distrib) <- function(distrib, y, theta, expected = FALSE, scale = c("parameter", "link"), approx = c("integrate", "bartlett", "mc", "opg"), nsim = 10000, ...) {
   if (expected) {
