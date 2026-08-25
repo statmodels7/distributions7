@@ -9,20 +9,66 @@ negbin1_components(y, theta, order)
 \arguments{
 \item{y}{A numeric vector of counts.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}, both strictly positive.
+Shorter components are recycled. Note that \code{theta} names both the list and
+its second component, the dispersion.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 }
 \value{
-A named list of component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names()}}.
+A named list of component vectors, one per distinct multi-index of
+the given order and keyed as \code{\link[=deriv_names]{deriv_names()}} keys them: two at order 1,
+three at order 2, four at order 3 and five at order 4. Each has the
+recycled length of the inputs.
 }
 \description{
-The components of \eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at
-any order from one to four, from the sparse form of the log-likelihood in
-the size \eqn{r = \mu/\theta}.
+Returns the components of
+\eqn{\partial^{a+b}\ell/\partial\mu^a\partial\theta^b} at any order from one
+to four, from the sparse form the NB1 log-likelihood takes in the size
+\eqn{r = \mu/\theta}.
 }
+\section{The sparse form, and the one composite piece}{
+Writing \eqn{r = \mu/\theta} the log-likelihood is
+\deqn{\ell = G(r) + r B(\theta) + C(\theta), \qquad
+      G(r) = \log\Gamma(y+r) - \log\Gamma(r),}
+with \eqn{B = -\log(1+\theta)} and
+\eqn{C = y\log\theta - y\log(1+\theta)}. The term \eqn{rB(\theta)} is
+\eqn{\mu B(\theta)/\theta}, linear in \eqn{\mu}, so it contributes to
+components carrying at most one \eqn{\mu}; \eqn{C} carries none. The only
+composite piece is \eqn{G(\mu/\theta)}.
+}
+
+\section{The recursion that closes on itself}{
+Its mixed derivatives take the form
+\deqn{\frac{\partial^{a+b}}{\partial\mu^a\partial\theta^b}G(\mu/\theta)
+  = \theta^{-(a+b)}\sum_j c_j\, r^j\, G^{(a+j)}(r),}
+and one further \eqn{\theta}-derivative sends
+\deqn{c_j r^j G^{(a+j)} \;\longrightarrow\;
+      -(a+b+j)\,c_j r^j G^{(a+j)} - c_j r^{j+1} G^{(a+j+1)},}
+because \eqn{\mathrm{d}r/\mathrm{d}\theta = -r/\theta} contributes to both
+the power of \eqn{r} and the order of \eqn{G}. The coefficients are
+integers, and the recursion is \strong{run rather than solved}, so every order is
+exact with nothing transcribed beyond this one step.
+}
+
+\section{The cancellation the polygamma differences carry}{
+Each \eqn{G^{(m)}(r)} is a polygamma differenced at the shift \eqn{y}, which
+is a count. As \eqn{\theta \to 0} the family tends to the Poisson,
+\eqn{r = \mu/\theta} runs away, and the two terms of the difference agree to
+leading order while the consumers above divide by \eqn{\theta^{a+b}}. The
+differences therefore go through \code{\link[=psi_shift_diff]{psi_shift_diff()}}, which forms them as an
+exact sum of reciprocals rather than as a subtraction. What that does not
+repair is the cancellation among the powers of \eqn{r} in the recursion
+itself: at orders three and four those terms are of size
+\eqn{8\times10^6} at \eqn{\theta = 5\times10^{-4}} and sum to a value of
+order one, so neither this form nor the one it replaced is reliable there.
+}
+
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_deriv3.NegBin1Distrib]{distrib_deriv3.NegBin1Distrib()}} and
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}}, which call this;
+\code{\link[=psi_shift_diff]{psi_shift_diff()}} for the polygamma differences; and
+\code{\link[=negbin1_distrib]{negbin1_distrib()}} for the family.
 }
 \keyword{internal}

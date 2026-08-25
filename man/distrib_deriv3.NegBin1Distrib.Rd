@@ -2,37 +2,91 @@
 % Please edit documentation in R/negbin1_higher.R
 \name{distrib_deriv3.NegBin1Distrib}
 \alias{distrib_deriv3.NegBin1Distrib}
-\alias{distrib_deriv4.NegBin1Distrib}
-\title{NB1 Third and Fourth Derivatives}
+\title{NB1 Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{NegBin1Distrib} object.}
+\item{distrib}{A \code{NegBin1Distrib} object, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} only its length
+is read.}
 
-\item{theta}{A list containing \code{mu} and \code{theta}.}
+\item{theta}{A named list with components \code{mu} and \code{theta}, each a numeric
+vector of length 1 or of the length of \code{y}, both strictly positive. A
+component of length 1 is recycled.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo draws when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_theta},
+\code{mu_theta_theta} and \code{theta_theta_theta}, each of length
+\code{max(length(y), lengths(theta))}.
 }
 \description{
-Closed form at both orders, from \code{\link[=negbin1_components]{negbin1_components()}}. In the
-size \eqn{r = \mu/\theta} the log-likelihood is
-\eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite piece is
-\eqn{G(\mu/\theta)} and its mixed derivatives follow a recursion in the
-powers of \eqn{r} and the order of \eqn{G}.
+Computes the four distinct third derivatives of the NB1 log-likelihood in
+the mean \eqn{\mu} and the dispersion \eqn{\theta}, \strong{in closed form},
+through \code{\link[=negbin1_components]{negbin1_components()}}. In the size \eqn{r = \mu/\theta} the
+log-likelihood is \eqn{G(r) + rB(\theta) + C(\theta)}, so the only composite
+piece is \eqn{G(\mu/\theta)}, and its mixed derivatives follow a recursion
+in the powers of \eqn{r} and the order of \eqn{G} that is run rather than
+solved.
+
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
+expected third derivatives have no closed form. That is the one place on
+this page where \code{approx} and \code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-likelihood of one observation, \eqn{\mu > 0} the mean,
+\eqn{\theta > 0} the dispersion, \eqn{r = \mu/\theta} the negative binomial
+size and \eqn{G(r) = \log\Gamma(y+r) - \log\Gamma(r)}.
+}
+
+\section{The Poisson boundary}{
+
+As \eqn{\theta \to 0} the family tends to the Poisson and the recursion's
+terms in the powers of \eqn{r} grow while their sum stays of order one. The
+polygamma differences go through \code{\link[=psi_shift_diff]{psi_shift_diff()}} and are exact, but the
+cancellation among those powers is not repaired: at
+\eqn{\theta = 5\times10^{-4}} the terms reach \eqn{8\times10^{6}}, and this
+order is not reliable below about \eqn{\theta = 0.05}. The score itself,
+which does not carry the recursion, reaches the Poisson limit to five
+figures.
+}
+
+\examples{
+d <- negbin1_distrib()
+y <- c(0, 3, 7)
+th <- list(mu = 4, theta = 1.2)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-mean component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 4 + eps, theta = 1.2))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 4 - eps, theta = 1.2))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
+
+# And a mixed component, which is where the recursion does its work.
+up <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 + eps))$mu_theta
+dn <- distrib_hessian(d, y, list(mu = 4, theta = 1.2 - eps))$mu_theta
+all.equal((up - dn) / (2 * eps), d3$mu_theta_theta, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=negbin1_distrib]{negbin1_distrib()}}
+\code{\link[=distrib_hessian.NegBin1Distrib]{distrib_hessian.NegBin1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.NegBin1Distrib]{distrib_deriv4.NegBin1Distrib()}} for the order above,
+\code{\link[=negbin1_components]{negbin1_components()}} for the recursion,
+\code{\link[=distrib_deriv3.NegBin2Distrib]{distrib_deriv3.NegBin2Distrib()}} for the other negative binomial, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }
