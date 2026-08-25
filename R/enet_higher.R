@@ -227,7 +227,7 @@ NULL
 #' [distrib_deriv4.EnetDistrib()] return.
 #'
 #' @details
-#' The licence for orders three and four is that the **same assembly** run at
+#' The license for orders three and four is that the **same assembly** run at
 #' orders one and two reproduces the hand-written score and observed Hessian:
 #' measured, exactly 0 at order one and \eqn{1.1\times10^{-16}} at order two.
 #' Against an independent route, one product stencil on the analytic
@@ -285,7 +285,7 @@ NULL
 #' `mu_mu_alpha` are not constant across observations even though their
 #' preimages are.
 #'
-#' The licence for this order is that the same assembly at orders one and two
+#' The license for this order is that the same assembly at orders one and two
 #' reproduces the hand-written score and Hessian, measured at exactly 0 and
 #' \eqn{1.1\times10^{-16}}.
 #'

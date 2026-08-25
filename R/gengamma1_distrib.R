@@ -88,7 +88,7 @@ GenGamma1Distrib <- S7::new_class("GenGamma1Distrib", parent = continuous_distri
 #' separately.
 #'
 #' The three parameters do three separate things: \eqn{a} sets the scale,
-#' \eqn{d} the behaviour near the origin (the density vanishes there for
+#' \eqn{d} the behavior near the origin (the density vanishes there for
 #' \eqn{d > 1} and diverges for \eqn{d < 1}), and \eqn{p} the weight of the
 #' upper tail.
 #'
@@ -525,7 +525,7 @@ S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, t
 #' \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}},
 #'       \qquad y > 0.}
 #' The three parameters do three separate things: \eqn{a} sets the scale,
-#' \eqn{d} the behaviour at the origin, and \eqn{p} the weight of the upper
+#' \eqn{d} the behavior at the origin, and \eqn{p} the weight of the upper
 #' tail.
 #'
 #' # What it nests

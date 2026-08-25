@@ -35,7 +35,7 @@ the Weibull and the exponential something to estimate.
 \deqn{f(y) = \dfrac{p}{a^{d}\,\Gamma(d/p)}\,y^{d-1}e^{-(y/a)^{p}},
       \qquad y > 0.}
 The three parameters do three separate things: \eqn{a} sets the scale,
-\eqn{d} the behaviour at the origin, and \eqn{p} the weight of the upper
+\eqn{d} the behavior at the origin, and \eqn{p} the weight of the upper
 tail.
 }
 

@@ -40,7 +40,7 @@ the normalizing constant contributes, apart from
 \code{mu_mu_alpha} are not constant across observations even though their
 preimages are.
 
-The licence for this order is that the same assembly at orders one and two
+The license for this order is that the same assembly at orders one and two
 reproduces the hand-written score and Hessian, measured at exactly 0 and
 \eqn{1.1\times10^{-16}}.
 

@@ -302,9 +302,9 @@ S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta) {
 #'         \dfrac{z(1 - w) - 1}{\sigma}.}
 #'
 #' The whole family is written in \eqn{w}, and under the model \eqn{w} is
-#' **standard exponential** whatever the parameters. That is what makes every
-#' expectation this family needs a derivative of \eqn{\Gamma} at 2, and it is
-#' also why the score is bounded above in \eqn{\mu} and unbounded below: a
+#' **standard exponential** whatever the parameters. Every expectation this
+#' family needs is therefore a derivative of \eqn{\Gamma} at 2, and the same
+#' fact bounds the score above in \eqn{\mu} and leaves it unbounded below: a
 #' value far to the left makes \eqn{w} enormous.
 #'
 #' With `scale = "link"` the generic applies the chain rule for the links the

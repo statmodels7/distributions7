@@ -889,7 +889,7 @@ S7::method(distrib_deriv3, SkewTDistrib) <- function(distrib, y, theta, expected
 #'   fourth-order component, from `mu_mu_mu_mu` to `nu_nu_nu_nu`.
 #'
 #' @seealso [distrib_deriv3.SkewTDistrib()] for the order below,
-#'   [fd5_fourth()] for the stencil and its \eqn{h^{-4}} behaviour, and
+#'   [fd5_fourth()] for the stencil and its \eqn{h^{-4}} behavior, and
 #'   [distrib_deriv4()] for the generic.
 #'
 #' @examples

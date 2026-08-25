@@ -84,6 +84,6 @@ rbind(analytic = d4$mu_mu_alpha_alpha,
 }
 \seealso{
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}} for the order below,
-\code{\link[=fd5_fourth]{fd5_fourth()}} for the stencil and its \eqn{h^{-4}} behaviour, and
+\code{\link[=fd5_fourth]{fd5_fourth()}} for the stencil and its \eqn{h^{-4}} behavior, and
 \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

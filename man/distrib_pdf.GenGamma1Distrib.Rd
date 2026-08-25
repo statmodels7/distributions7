@@ -33,7 +33,7 @@ throughout, so a large \eqn{d} does not form \eqn{a^d} or \eqn{y^{d-1}}
 separately.
 
 The three parameters do three separate things: \eqn{a} sets the scale,
-\eqn{d} the behaviour near the origin (the density vanishes there for
+\eqn{d} the behavior near the origin (the density vanishes there for
 \eqn{d > 1} and diverges for \eqn{d < 1}), and \eqn{p} the weight of the
 upper tail.
 }

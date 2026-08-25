@@ -27,7 +27,7 @@ It is what \code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()
 \code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4.EnetDistrib()}} return.
 }
 \details{
-The licence for orders three and four is that the \strong{same assembly} run at
+The license for orders three and four is that the \strong{same assembly} run at
 orders one and two reproduces the hand-written score and observed Hessian:
 measured, exactly 0 at order one and \eqn{1.1\times10^{-16}} at order two.
 Against an independent route, one product stencil on the analytic
