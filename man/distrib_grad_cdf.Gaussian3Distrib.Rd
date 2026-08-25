@@ -2,27 +2,51 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.Gaussian3Distrib}
 \alias{distrib_grad_cdf.Gaussian3Distrib}
-\alias{distrib_hess_cdf.Gaussian3Distrib}
-\title{Gaussian Log-CDF Derivatives in Mean and Precision}
+\title{Gaussian Log-CDF Gradient in Mean and Precision}
 \arguments{
-\item{distrib}{A \code{Gaussian3Distrib} object.}
+\item{distrib}{A \code{Gaussian3Distrib} object, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{tau}.}
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
+numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{tau}, each the length
+of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form, by the chain rule on the scale parametrization's derivatives
-through \eqn{\sigma = \tau^{-1/2}}.
+through \eqn{\sigma = \tau^{-1/2}}. The mean component is unchanged,
+\eqn{-f(q)}; the precision component is the scale one times
+\eqn{-\tfrac12\tau^{-3/2}}, so it carries the opposite sign, a larger
+precision being a tighter distribution.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\tau > 0} the precision, \eqn{f} the density and
+\eqn{F} the distribution function.
+}
+
+\examples{
+q <- c(-1, 0.5, 2)
+g3 <- distrib_grad_cdf(gaussian3_distrib(), q,
+                       list(mu = 0.3, tau = 1 / 1.44), log = FALSE)
+g1 <- distrib_grad_cdf(gaussian1_distrib(), q,
+                       list(mu = 0.3, sigma = 1.2), log = FALSE)
+
+# The precision component is the scale one times -0.5 tau^(-3/2).
+all.equal(g3$tau, g1$sigma * (-0.5) * (1 / 1.44)^(-1.5))
+
 }
 \seealso{
-\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}
+\code{\link[=distrib_hess_cdf.Gaussian3Distrib]{distrib_hess_cdf.Gaussian3Distrib()}} for the second order;
+\code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}}, the parent; \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.
 }
 \keyword{internal}

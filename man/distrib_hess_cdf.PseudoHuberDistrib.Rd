@@ -4,24 +4,50 @@
 \alias{distrib_hess_cdf.PseudoHuberDistrib}
 \title{Pseudo-Huber Log-CDF Hessian}
 \arguments{
-\item{distrib}{A \code{PseudoHuberDistrib} object.}
+\item{distrib}{A \code{PseudoHuberDistrib} object, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and scale block; the shape is differenced.
-Differencing the cdf itself would be poor here, it being a quadrature.
+Closed form in the location-scale block; the three components touching the
+shape are differenced. The method is \code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} itself,
+shared with the Student t and the skew t.
+}
+\details{
+The saving is larger here than for the Student t, this family's distribution
+function being a quadrature: the closed block reads the density and its
+response derivative, where differencing it would run the quadrature four
+times per component.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
+shape, \eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
+}
+
+\examples{
+d <- pseudohuber_distrib()
+th <- list(mu = 0.3, sigma = 1.2, nu = 4)
+
+distrib_hess_cdf(d, c(-1, 2), th)$mu_mu
+
 }
 \seealso{
-\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}
+\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=distrib_grad_cdf.PseudoHuberDistrib]{distrib_grad_cdf.PseudoHuberDistrib()}} for the first order;
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.
 }
 \keyword{internal}

@@ -11,31 +11,57 @@ chain_cdf_deriv(parent, q, th_par, maps, new_params, order)
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{The parent's parameters, evaluated at the new ones.}
 
-\item{maps}{The map's keyed partial tables.}
+\item{maps}{The map's keyed partial tables, in the form
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} produces: a missing key is an exact zero, so a map
+with many vanishing partials costs nothing for them.}
 
-\item{new_params}{The new parameter names.}
+\item{new_params}{A character vector naming the new parameters, which names
+and orders the result.}
 
 \item{order}{The derivative order, 1 or 2.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale: one per new parameter at order 1, and one per
+\code{\link[=hess_names]{hess_names()}} component at order 2.
 }
 \description{
-Carries the derivatives of the parent's distribution function onto a new
-parametrization, given the map's partial derivatives.
+Carries the derivatives of a parent's distribution function onto a new
+parametrization, given the map's partial derivatives. A family written as a
+map of another therefore needs no cdf derivatives of its own: the parent's
+closed forms and the map's partials, which the family already declares for
+its likelihood derivatives, are between them enough.
 }
-\details{
-The map derivatives arrive in the keyed form
-\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} produces, so a missing key is an exact
-zero, and the result is exact whenever the parent's own cdf derivatives
-are. It is the caller's business to check that they are: applied to a
-parent whose derivatives are themselves differenced, the chain adds an
-exact transformation to an approximate quantity and buys nothing over
-differencing the new cdf directly.
+\section{The identity}{
+The region of integration is independent of the parameters in both
+parametrizations, so the ordinary chain rule applies to the composition
+\eqn{F(q; h(\psi))}:
+\deqn{\frac{\partial F}{\partial\psi_a} = \sum_k F_k\,h^k_a, \qquad
+      \frac{\partial^2 F}{\partial\psi_a \partial\psi_b}
+        = \sum_{k,l} F_{kl}\,h^k_a h^l_b + \sum_k F_k\,h^k_{ab}.}
 }
+
+\section{When it is worth taking}{
+The result is exact whenever the parent's own cdf derivatives are, and no
+better than they are otherwise: applied to a parent that differences its own
+cdf, the chain adds an exact transformation to an approximate quantity and
+buys nothing over differencing the new cdf directly. Checking that is the
+caller's business, and \code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} is where it is done.
+}
+
+\section{Notation}{
+
+\eqn{F} is the parent's distribution function, \eqn{\psi} the new
+parameters, \eqn{h} the map from them to the parent's, \eqn{F_k} and
+\eqn{F_{kl}} the parent's cdf derivatives and \eqn{h^k_a}, \eqn{h^k_{ab}}
+the map's partials.
+}
+
 \seealso{
-\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, \code{\link[=chain_derivatives]{chain_derivatives()}}
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}, the caller that gates it;
+\code{\link[=chain_derivatives]{chain_derivatives()}}, the same construction for likelihood derivatives;
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}.
 }
 \keyword{internal}

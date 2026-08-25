@@ -4,24 +4,48 @@
 \alias{distrib_hess_cdf.StudentT1Distrib}
 \title{Student t Log-CDF Hessian}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and \code{nu}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of six numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and scale block; the components involving the
-degrees of freedom are differenced, having no elementary form.
+Closed form in the location-scale block, \code{mu_mu}, \code{sigma_sigma} and
+\code{mu_sigma}; the three components touching the degrees of freedom are
+differenced, that derivative having no elementary form. The method is
+\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} itself, shared with the pseudo-Huber and the
+skew t.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\nu > 0} the
+degrees of freedom, \eqn{z = (q-\mu)/\sigma} and \eqn{f} the density.
+}
+
+\examples{
+d <- student_t1_distrib()
+th <- list(mu = 0.3, sigma = 1.2, nu = 6)
+q <- c(-1, 0.5, 2)
+
+# Six components: three closed, three differenced.
+names(distrib_hess_cdf(d, q, th))
+
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the shared body;
+\code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf.StudentT1Distrib()}} for the first order;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}}.
 }
 \keyword{internal}

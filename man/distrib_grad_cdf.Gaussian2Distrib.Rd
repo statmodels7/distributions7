@@ -2,27 +2,54 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.Gaussian2Distrib}
 \alias{distrib_grad_cdf.Gaussian2Distrib}
-\alias{distrib_hess_cdf.Gaussian2Distrib}
-\title{Gaussian Log-CDF Derivatives in Mean and Variance}
+\title{Gaussian Log-CDF Gradient in Mean and Variance}
 \arguments{
-\item{distrib}{A \code{Gaussian2Distrib} object.}
+\item{distrib}{A \code{Gaussian2Distrib} object, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma2}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form, by the chain rule on the scale parametrization's derivatives
-through \eqn{\sigma = \sqrt{\sigma^2}}.
+through \eqn{\sigma = \sqrt{\sigma^2}}. The mean component is unchanged,
+\eqn{-f(q)}, and the variance component is the scale one divided by
+\eqn{2\sigma}, which is the map's only non-zero partial.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\sigma^2 > 0} the variance, \eqn{f} the density
+and \eqn{F} the distribution function.
+}
+
+\examples{
+q <- c(-1, 0.5, 2)
+g2 <- distrib_grad_cdf(gaussian2_distrib(), q,
+                       list(mu = 0.3, sigma2 = 1.44), log = FALSE)
+g1 <- distrib_grad_cdf(gaussian1_distrib(), q,
+                       list(mu = 0.3, sigma = 1.2), log = FALSE)
+
+# The mean component is unchanged by the map.
+all.equal(g2$mu, g1$mu)
+
+# The variance component is the scale one over 2 sigma.
+all.equal(g2$sigma2, g1$sigma / (2 * 1.2))
+
 }
 \seealso{
-\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}
+\code{\link[=distrib_hess_cdf.Gaussian2Distrib]{distrib_hess_cdf.Gaussian2Distrib()}} for the second order;
+\code{\link[=distrib_grad_cdf.Gaussian1Distrib]{distrib_grad_cdf.Gaussian1Distrib()}}, the parent;
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
 }
 \keyword{internal}

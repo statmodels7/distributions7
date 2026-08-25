@@ -2,28 +2,57 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.SkewTDistrib}
 \alias{distrib_grad_cdf.SkewTDistrib}
-\alias{distrib_hess_cdf.SkewTDistrib}
-\title{Skew t Log-CDF Derivatives}
+\title{Skew t Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and
-\code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive), \code{alpha}
+(any sign) and \code{nu} (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of four numeric vectors, \code{mu}, \code{sigma}, \code{alpha} and
+\code{nu}, each the length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form in the location and scale; the shape and the degrees of freedom
-are differenced.
+Closed form in the location and the scale, \eqn{-f(q)} and \eqn{-z f(q)}
+with \eqn{z = (q-\mu)/\sigma}; the shape and the degrees of freedom are
+differenced. The method is \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} itself, shared
+with the Student t and the pseudo-Huber.
+}
+\details{
+Two of the four components are closed. The shape and the degrees of freedom
+enter the distribution function through a Student t distribution function at
+\eqn{\nu+1} degrees of freedom, whose derivatives in either have no
+elementary form, so both are differenced.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
+shape, \eqn{\nu > 0} the degrees of freedom, \eqn{z = (q-\mu)/\sigma} and
+\eqn{f} the density.
+}
+
+\examples{
+d <- skewt_distrib()
+th <- list(mu = 0.3, sigma = 1.2, alpha = 2, nu = 6)
+q <- c(-1, 0.5, 2)
+
+# The location component is exact, the density itself.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.SkewTDistrib]{distrib_hess_cdf.SkewTDistrib()}} for the second order;
+\code{\link[=skewt_distrib]{skewt_distrib()}}.
 }
 \keyword{internal}

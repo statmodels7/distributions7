@@ -2,27 +2,61 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.InvGauss2Distrib}
 \alias{distrib_grad_cdf.InvGauss2Distrib}
-\title{Inverse Gaussian Log-CDF Gradient in Mean and Shape}
+\title{Inverse Gaussian Log-CDF Gradient in Mean and Rate}
 \arguments{
-\item{distrib}{An \code{InvGauss2Distrib} object.}
+\item{distrib}{An \code{InvGauss2Distrib} object, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, positive.}
 
-\item{theta}{A list containing \code{mu} and \code{lambda}.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{lambda}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-Closed form, by the chain rule on the dispersion parametrization's
-gradient through \eqn{\phi = 1/\lambda}. The second order stays on the
-fallback, the parent having no closed form there.
+Closed form, by the chain rule on the dispersion parametrization's gradient
+through \eqn{\phi = 1/\lambda}. The mean component is unchanged; the rate
+component is the dispersion one times \eqn{-1/\lambda^2}.
+}
+\details{
+The inverse Gaussian is unusual among positive families in having an
+elementary distribution function,
+\eqn{F(y) = \Phi(a) + e^{2/(\phi\mu)}\,\Phi(b)}, so the parent's derivatives
+are closed and the chain carries them.
+
+The second and higher orders are registered elsewhere, by
+\code{register_mapped_cdf_k()} in \code{cdf_mapped_higher.R}, at orders 2 to 4. That
+file's registration supersedes anything this one would give: the Hessian was
+left on the fallback while the parent differenced its own second order, and
+moved onto the chain when the parent stopped.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{\lambda > 0} the rate, \eqn{\phi = 1/\lambda}
+the dispersion and \eqn{\Phi} the standard normal distribution function.
+}
+
+\examples{
+d <- invgauss2_distrib()
+q <- c(0.5, 2, 5)
+th <- list(mu = 2, lambda = 8)
+
+# Against a central difference of the cdf, which shares no arithmetic.
+fd <- numerical_cdf_deriv(d, q, th, order = 1)
+max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
+
 }
 \seealso{
-\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the generic;
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} and \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}};
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.
 }
 \keyword{internal}

@@ -2,27 +2,56 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.GumbelDistrib}
 \alias{distrib_grad_cdf.GumbelDistrib}
-\alias{distrib_hess_cdf.GumbelDistrib}
-\title{Gumbel Log-CDF Derivatives}
+\title{Gumbel Log-CDF Gradient}
 \arguments{
-\item{distrib}{A \code{GumbelDistrib} object.}
+\item{distrib}{A \code{GumbelDistrib} object, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma} (positive), each
+a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form from the location-scale structure, as for the Gaussian:
-\eqn{\partial F/\partial\mu = -f} and \eqn{\partial F/\partial\sigma = -zf}.
+\eqn{\partial F/\partial\mu = -f(q)} and
+\eqn{\partial F/\partial\sigma = -z f(q)} with \eqn{z = (q-\mu)/\sigma}. The
+method is \code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} itself.
+}
+\details{
+The family's distribution function is \eqn{F(q) = \exp(-e^{-z})}, so nothing
+here needs a quadrature or a series, which is why a Gumbel is usable for
+censored extreme-value data: the score of a right-censored observation is
+\eqn{f(q)/S(q)} and comes from the density alone.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and \eqn{F} the distribution
+function. The mean is \eqn{\mu + \gamma\sigma} and not \eqn{\mu}.
+}
+
+\examples{
+d <- gumbel_distrib()
+th <- list(mu = 0.3, sigma = 1.2)
+q <- c(-1, 0.5, 2)
+
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} for the shared body;
+\code{\link[=distrib_hess_cdf.GumbelDistrib]{distrib_hess_cdf.GumbelDistrib()}} for the second order;
+\code{\link[=gumbel_distrib]{gumbel_distrib()}}.
 }
 \keyword{internal}

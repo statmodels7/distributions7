@@ -2,28 +2,52 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{distrib_grad_cdf.ReparamContinuousDistrib}
 \alias{distrib_grad_cdf.ReparamContinuousDistrib}
-\alias{distrib_hess_cdf.ReparamContinuousDistrib}
 \title{Log-CDF Gradient of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A \code{ReparamContinuousDistrib}, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list, one vector per parameter.
+A named list of numeric vectors, one per new parameter, each the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-The chain rule on the parent's cdf derivatives, which is exact whenever the
-parent's are; when the parent differences its own cdf, so does this, the
-chain having nothing closed to carry.
+The chain rule on the parent's cdf derivatives, through
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}. It is exact whenever the parent's are; where the
+parent differences its own cdf, so does this, the chain having nothing
+closed to carry.
+}
+\details{
+The map's partials come from the object itself, \code{reparam_tables()} reading
+the keyed tables the reparametrization was built with, so a family created
+by \code{\link[=reparametrize]{reparametrize()}} gets closed cdf derivatives for free as soon as its
+parent has them.
+}
+\examples{
+# A Gaussian reparametrized in the variance. Its parent has closed cdf
+# derivatives, so the chain is exact.
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+distrib_grad_cdf(d, c(-1, 0.5, 2), list(mu = 0.3, sigma2 = 1.44))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_hess_cdf.ReparamContinuousDistrib]{distrib_hess_cdf.ReparamContinuousDistrib()}} for the second order;
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} for the identity; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

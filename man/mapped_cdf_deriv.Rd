@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdf_derivatives_families.R
 \name{mapped_cdf_deriv}
 \alias{mapped_cdf_deriv}
-\title{CDF Derivatives Through a Map, With the Fallback as a Guard}
+\title{CDF Derivatives of a Family Written as a Map of Another}
 \usage{
 mapped_cdf_deriv(
   distrib,
@@ -17,11 +17,11 @@ mapped_cdf_deriv(
 )
 }
 \arguments{
-\item{distrib}{The distribution in the new parametrization.}
+\item{distrib}{The mapped family, whose cdf and parameter names are read.}
 
-\item{parent}{The parent distribution.}
+\item{parent}{The distribution it maps onto.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{The parent's parameters, evaluated at the new ones.}
 
 \item{maps}{The map's keyed partial tables.}
 
@@ -31,20 +31,34 @@ mapped_cdf_deriv(
 
 \item{order}{The derivative order, 1 or 2.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical.}
 }
 \value{
-A named list of derivative component vectors.
+A named list of numeric vectors on the requested tail and scale: one
+per new parameter at order 1, and one per \code{\link[=hess_names]{hess_names()}} component at
+order 2.
 }
 \description{
-The body shared by the families that obtain their cdf derivatives from a
-parent's: the chain rule of \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} when the parent
-has a closed form at that order, and the finite-difference fallback
-otherwise.
+The \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body every mapped family
+shares. It asks whether the parent's cdf derivatives are exact at every
+order up to the one wanted, takes \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} if they are, and falls
+back to \code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} on the new family's own cdf if they are not.
 }
+\section{The gate, and why it is a gate}{
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} is asked of the parent at order 1 and, for a
+Hessian, at order 2 as well. The chain is exact only if what it carries is
+exact; taken over a differenced parent it would add rounding to rounding and
+cost more than differencing the child's cdf once. The gate is also what
+keeps a family's page honest as the parent improves: when the inverse
+Gaussian gained a closed second order, its second parametrization stopped
+differencing without any edit here.
+}
+
 \seealso{
-\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} for the exact route;
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for the fallback;
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for the gate.
 }
 \keyword{internal}

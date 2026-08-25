@@ -7,25 +7,51 @@
 partial_loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale, and which has at least one more.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, the location first and the scale
+second.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list of Hessian component vectors.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, in that
+enumeration's order.
 }
 \description{
-The second-order companion of \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}: the
-three components in the location and scale in closed form, the components
-involving a shape parameter by finite differences.
+The second-order companion of \code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}}, and the
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} body the Student t, the pseudo-Huber and the skew t
+share. The three components in the location and the scale come from
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}'s formulas, and every component touching a shape
+parameter is differenced.
 }
+\details{
+The gradient is assembled here as well, on the same split, because the
+log-scale conversion in \code{\link[=cdf_tail_scale]{cdf_tail_scale()}} reads it. Both differencing calls
+pass a \code{which} argument, so no component that has a closed form costs a cdf
+evaluation.
+
+For a family with \eqn{p} parameters of which two are the location and the
+scale, the closed block is 3 components of the \eqn{p(p+1)/2}: 3 of 6 for
+the Student t and the pseudo-Huber, 3 of 10 for the skew t.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density and
+\eqn{\ell_y = \partial\log f/\partial y}.
+}
+
 \seealso{
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}
+\code{\link[=partial_loc_scale_grad_cdf]{partial_loc_scale_grad_cdf()}} for the first order;
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for the closed formulas;
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for the differenced components.
 }
 \keyword{internal}

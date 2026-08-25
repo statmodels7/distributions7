@@ -4,28 +4,68 @@
 \alias{distrib_hess_cdf.Lognormal1Distrib}
 \title{Lognormal Log-CDF Hessian}
 \arguments{
-\item{distrib}{A \code{Lognormal1Distrib} object.}
+\item{distrib}{A \code{Lognormal1Distrib} object, from \code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. At or below zero every component is
+zero, the distribution function being flat there.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma2}.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names()}}.
+A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each
+the length of \code{q} recycled against \code{theta}.
 }
 \description{
 Closed form. On the log scale the family is location-scale, so with
 \eqn{z = (\log q - \mu)/\sigma} and \eqn{\varphi} the standard normal
-density, \eqn{\partial^2 F/\partial\mu^2 = -z\varphi/\sigma^2},
-\eqn{\partial^2 F/\partial\mu\partial\sigma^2 = \varphi(1-z^2)/(2\sigma^3)}
-and
-\eqn{\partial^2 F/\partial(\sigma^2)^2 = \varphi z(3-z^2)/(4\sigma^4)}.
+density,
+\deqn{\frac{\partial^2 F}{\partial\mu^2} = -\frac{z\varphi}{\sigma^2},
+      \qquad
+      \frac{\partial^2 F}{\partial\mu\,\partial\sigma^2}
+        = \frac{\varphi(1-z^2)}{2\sigma^3},
+      \qquad
+      \frac{\partial^2 F}{\partial(\sigma^2)^2}
+        = \frac{\varphi z(3-z^2)}{4\sigma^4}.}
+}
+\details{
+The formulas are written in \eqn{\varphi(z)}, so the Jacobian factor \eqn{q}
+of the gradient does not appear: at second order it would have to be
+differentiated too, and expressing everything on the log scale avoids that.
+
+The three components vanish at the points where their polynomial in \eqn{z}
+does, so \code{mu_mu} is exactly zero at the median \eqn{q = e^{\mu}}. A relative
+comparison against a numerical derivative is meaningless there and an
+absolute one is what to use.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean of \eqn{\log Y}, \eqn{\sigma^2 > 0} its variance,
+\eqn{z = (\log q - \mu)/\sigma}, \eqn{\varphi} the standard normal density
+and \eqn{F} the distribution function of \eqn{Y}.
+}
+
+\examples{
+d <- lognormal1_distrib()
+th <- list(mu = 0, sigma2 = 1)
+q <- c(0.5, 1, 3)
+
+# Against a central difference of the cdf, on an absolute scale: mu_mu is
+# exactly zero at the median q = exp(mu) = 1.
+exact <- distrib_hess_cdf(d, q, th, log = FALSE)
+fd <- numerical_cdf_deriv(d, q, th, order = 2)
+max(abs(unlist(exact[names(fd)]) - unlist(fd)))
+
 }
 \seealso{
-\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}
+\code{\link[=distrib_grad_cdf.Lognormal1Distrib]{distrib_grad_cdf.Lognormal1Distrib()}} for the first order;
+\code{\link[=distrib_hess_cdf.Gaussian1Distrib]{distrib_hess_cdf.Gaussian1Distrib()}}, the family on the log scale;
+\code{\link[=lognormal1_distrib]{lognormal1_distrib()}}.
 }
 \keyword{internal}
