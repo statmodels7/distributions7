@@ -55,8 +55,8 @@ registered on it directly.
 The concentration of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is recovered as
 \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
 a strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}
-whose inverse has no closed form. That is why this is a family of its own
-and not a \code{\link[=reparametrize]{reparametrize()}} of the other.
+whose inverse has no closed form. That is why the family is written out
+here instead of through \code{\link[=reparametrize]{reparametrize()}}.
 
 Build one with \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}, which supplies the two link functions
 and fills the properties in. This page documents the raw S7 constructor,

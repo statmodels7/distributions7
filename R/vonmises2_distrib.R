@@ -21,8 +21,8 @@ NULL
 #' The concentration of [vonmises1_distrib()] is recovered as
 #' \eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
 #' a strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}
-#' whose inverse has no closed form. That is why this is a family of its own
-#' and not a [reparametrize()] of the other.
+#' whose inverse has no closed form. That is why the family is written out
+#' here instead of through [reparametrize()].
 #'
 #' Build one with [vonmises2_distrib()], which supplies the two link functions
 #' and fills the properties in. This page documents the raw S7 constructor,
@@ -437,7 +437,7 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' \eqn{[-\pi, \pi)}, obtained numerically by delegating to
 #' [mean.distrib()] at the implied concentration.
 #'
-#' It is **not** a circular quantity and not what either parameter describes.
+#' It is **not** a circular quantity, and neither parameter describes it.
 #' \eqn{\mu} is the mean *direction* and \eqn{\rho} the mean resultant length;
 #' \eqn{\mathbb{E}[Y]} differs from \eqn{\mu} whenever \eqn{\mu \ne 0}, because
 #' the interval is cut at \eqn{\pm\pi} and the density is not symmetric about

@@ -100,7 +100,7 @@ d@params_interpretation
 
 # This is the one family here whose expected information is not written
 # out, and the predicate says so.
-expected_hessian_exact(d)
+distributions7:::expected_hessian_exact(d)
 }
 \seealso{
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} to build one;

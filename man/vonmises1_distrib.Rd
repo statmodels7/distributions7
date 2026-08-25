@@ -74,8 +74,8 @@ and two or more \eqn{\kappa} is exactly zero.
 \section{The moments a generic returns are not the circular ones}{
 \code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the
 ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-numerically. They are \strong{not} the circular quantities and not what \eqn{\mu}
-and \eqn{\kappa} describe. \eqn{\mu} is the mean \emph{direction}, and
+numerically. They are \strong{not} the circular quantities that \eqn{\mu} and
+\eqn{\kappa} describe. \eqn{\mu} is the mean \emph{direction}, and
 \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the interval
 is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the density is
 not symmetric about \eqn{\mu} on it: at \eqn{\mu = 1.2} and \eqn{\kappa = 2}

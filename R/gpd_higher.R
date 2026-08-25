@@ -318,20 +318,19 @@ S7::method(distrib_deriv3, GPDDistrib) <- function(distrib, y, theta,
 #'
 #' # The two routes agree wherever both are accurate: forcing the cut either
 #' # way at xi * z = 0.05, 0.15 and 0.30.
+#' gc <- distributions7:::gpd_components
 #' gap <- function(xz) {
 #'   xi <- xz / (2 / 1.5)
-#'   a <- gpd_components(2, list(sigma = 1.5, xi = xi), 4L, cut = 1e-9)
-#'   b <- gpd_components(2, list(sigma = 1.5, xi = xi), 4L, cut = 10)
+#'   a <- gc(2, list(sigma = 1.5, xi = xi), 4L, cut = 1e-9)
+#'   b <- gc(2, list(sigma = 1.5, xi = xi), 4L, cut = 10)
 #'   max(abs(unlist(a) - unlist(b)) / pmax(abs(unlist(a)), 1e-10))
 #' }
 #' vapply(c(0.05, 0.15, 0.30), gap, numeric(1))
 #'
 #' # And below the cut the Leibniz form loses the answer entirely, which is
-#' # what the series branch exists for.
-#' leib <- function(x)
-#'   gpd_components(2, list(sigma = 1.5, xi = x), 4L, cut = 1e-12)$xi_xi_xi_xi
-#' ser <- function(x)
-#'   gpd_components(2, list(sigma = 1.5, xi = x), 4L, cut = 10)$xi_xi_xi_xi
+#' # the reason the series branch exists.
+#' leib <- function(x) gc(2, list(sigma = 1.5, xi = x), 4L, cut = 1e-12)$xi_xi_xi_xi
+#' ser <- function(x) gc(2, list(sigma = 1.5, xi = x), 4L, cut = 10)$xi_xi_xi_xi
 #' rbind(xi = c(1e-2, 1e-4, 1e-6),
 #'       leibniz = vapply(c(1e-2, 1e-4, 1e-6), leib, numeric(1)),
 #'       series = vapply(c(1e-2, 1e-4, 1e-6), ser, numeric(1)))

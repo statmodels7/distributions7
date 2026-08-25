@@ -81,8 +81,8 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #' \eqn{[-\pi, \pi)} the density is 0: the support is the declared interval,
 #' and an angle is not wrapped into it.
 #'
-#' The normalizing constant goes through [numericals7::log_bessel_i()] and not
-#' through [base::besselI()]. R's exponentially scaled `besselI` **underflows
+#' The normalizing constant goes through [numericals7::log_bessel_i()].
+#' R's exponentially scaled `besselI` **underflows
 #' to an exact zero** between \eqn{\kappa = 10^5} and \eqn{10^6}, where the
 #' logarithm then returns `-Inf`; `log_bessel_i` stays finite wherever the
 #' logarithm itself is representable. Measured at \eqn{\kappa = 10^6} it
@@ -603,8 +603,8 @@ S7::method(distrib_hess_y, VonMises1Distrib) <- function(distrib, y, theta, ...)
 #'
 #' [mean.distrib()], [variance()], [skewness()] and [kurtosis()] are the
 #' ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-#' numerically. They are **not** the circular quantities and not what \eqn{\mu}
-#' and \eqn{\kappa} describe. \eqn{\mu} is the mean *direction*, and
+#' numerically. They are **not** the circular quantities that \eqn{\mu} and
+#' \eqn{\kappa} describe. \eqn{\mu} is the mean *direction*, and
 #' \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the interval
 #' is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the density is
 #' not symmetric about \eqn{\mu} on it: at \eqn{\mu = 1.2} and \eqn{\kappa = 2}

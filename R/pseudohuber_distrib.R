@@ -73,7 +73,7 @@ NULL
 #'
 #' # This is the one family here whose expected information is not written
 #' # out, and the predicate says so.
-#' expected_hessian_exact(d)
+#' distributions7:::expected_hessian_exact(d)
 PseudoHuberDistrib <- S7::new_class("PseudoHuberDistrib", parent = continuous_distrib)
 
 # --- S7 METHODS IMPLEMENTATION ---
@@ -1039,7 +1039,7 @@ S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #'       gaussian = rr / 1.2^2)
 #'
 #' # The expected information is a quadrature here, and the family says so.
-#' expected_hessian_exact(d)
+#' distributions7:::expected_hessian_exact(d)
 #'
 #' # Fitting recovers the location and the scale; the shape is the hardest of
 #' # the three to pin down from a moderate sample.

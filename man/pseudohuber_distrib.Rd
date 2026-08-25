@@ -163,7 +163,7 @@ rbind(residual = rr,
       gaussian = rr / 1.2^2)
 
 # The expected information is a quadrature here, and the family says so.
-expected_hessian_exact(d)
+distributions7:::expected_hessian_exact(d)
 
 # Fitting recovers the location and the scale; the shape is the hardest of
 # the three to pin down from a moderate sample.

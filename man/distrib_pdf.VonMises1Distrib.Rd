@@ -36,8 +36,8 @@ with \eqn{I_0} the modified Bessel function of the first kind. Outside
 \eqn{[-\pi, \pi)} the density is 0: the support is the declared interval,
 and an angle is not wrapped into it.
 
-The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} and not
-through \code{\link[base:Bessel]{base::besselI()}}. R's exponentially scaled \code{besselI} \strong{underflows
+The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}.
+R's exponentially scaled \code{besselI} \strong{underflows
 to an exact zero} between \eqn{\kappa = 10^5} and \eqn{10^6}, where the
 logarithm then returns \code{-Inf}; \code{log_bessel_i} stays finite wherever the
 logarithm itself is representable. Measured at \eqn{\kappa = 10^6} it
