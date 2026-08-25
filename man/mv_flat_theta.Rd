@@ -2,25 +2,48 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_flat_theta}
 \alias{mv_flat_theta}
-\title{Require Scalar Parameters}
+\title{Require Scalar Parameters, and Flatten Them}
 \usage{
 mv_flat_theta(distrib, theta)
 }
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned by
+\code{\link[=align_theta]{align_theta()}}. Every component must have length 1.}
 }
 \value{
-A numeric vector of the parameter values, in declaration order.
+A named numeric vector of length \code{distrib@n_params}, named and
+ordered as \code{distrib@params}.
 }
 \description{
-Rejects a \code{theta} whose components are not single numbers.
+Rejects a \code{theta} whose components are not single numbers, and returns the
+rest as one named numeric vector in \code{distrib@params} order. The families
+here take ONE parameter value for the whole sample: a parametrization
+describes one matrix, not one per row, and a parameter that varies by
+observation belongs to a model, which is the layer above this one.
 }
 \details{
-The multivariate families of this package take one parameter value for the
-whole sample. Vectorized parameters are what a regression supplies, and a
-distribution that accepted them would be doing the model layer's work with
-none of its bookkeeping.
+A univariate family reads a \code{theta} component of length \eqn{n} as one value
+per observation, so without this check a caller who wrote that here would
+get silent recycling against the \eqn{p} columns instead of an error. The
+message names the offending parameter.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+distributions7:::mv_flat_theta(d, distributions7:::align_theta(d, theta))
+
+# A component longer than one is rejected by name, where a univariate
+# family would read it as one value per observation.
+bad <- theta
+bad$mu1 <- c(0, 1)
+try(distributions7:::mv_flat_theta(d, bad))
+
+}
+\seealso{
+\code{\link[=align_theta]{align_theta()}}, which normalizes the names first, and
+\code{\link[=multivariate_distrib]{multivariate_distrib()}} for the convention.
 }
 \keyword{internal}

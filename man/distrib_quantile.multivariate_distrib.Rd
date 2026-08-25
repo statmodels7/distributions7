@@ -6,18 +6,42 @@
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities. Not examined: the error is
+raised before it is read.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-Rejected. A quantile is defined by inverting a distribution function on the
-line; in several dimensions the ordering that would define it does not
-exist.
+Signals an error. A quantile is defined by inverting a distribution function
+along an ORDERING, and \eqn{\mathbb{R}^p} has none for \eqn{p > 1}. The
+obstruction is deeper than the one that stops
+\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}}: there a number exists and is hard to
+compute, here there is no number to compute. Several quantities go by the
+name in the literature, and they disagree.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+
+try(distrib_quantile(d, 0.5, theta))
+
+# A gaussian's marginal is a one-dimensional MvGaussianDistrib and refuses
+# too; a Dirichlet's is a univariate beta and answers.
+b <- mv_marginal(dirichlet_distrib(3),
+                 list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
+distrib_quantile(b$distrib, c(0.025, 0.5, 0.975), b$theta)
+
+}
+\seealso{
+\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}} for the related refusal,
+\code{\link[=mv_marginal]{mv_marginal()}}, which for some families returns a univariate
+distribution that does answer, and \code{\link[=distrib_quantile]{distrib_quantile()}} for the
+generic.
 }
 \keyword{internal}

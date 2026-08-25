@@ -2,50 +2,80 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_expected_hessian.multivariate_distrib}
 \alias{distrib_expected_hessian.multivariate_distrib}
-\title{Expected Information of a Multivariate Distribution}
+\title{Expected Information of a Multivariate Distribution, by Sampling}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no closed form of its
+own.}
 
-\item{y}{An \eqn{n \times p} matrix of observations; only its row count is
-used, the expectation being over the distribution rather than the data.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations; only its row
+count is used, the expectation being over the law.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{approx}{One of \code{"bartlett"} (equivalently \code{"opg"}) or
-\code{"mc"}; \code{"integrate"} is rejected.}
+\item{approx}{One of \code{"bartlett"} (the default, equivalently \code{"opg"}) or
+\code{"mc"}. \code{"integrate"} is not available here and falls through to sampling.}
 
-\item{nsim}{Monte Carlo sample size.}
+\item{nsim}{The Monte Carlo sample size. Defaults to \code{10000}. The error
+falls as its square root, so ten times the accuracy costs a hundred times
+the draws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
+A named list of numeric vectors of length \eqn{n}, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-Fallback for a multivariate family with no closed form: the expectation is
-taken over draws from the distribution itself.
+The fallback for a multivariate family with no closed form: the expectation
+of the observed Hessian, taken over a sample drawn from the family. All four
+shipped families register their own closed forms, so this runs only for a
+family written elsewhere.
 }
-\details{
-The one-dimensional routes do not survive the move to \eqn{p} dimensions.
-\code{"integrate"} builds its quadrature over an interval and is rejected
-here; \code{"bartlett"} in the univariate package reaches
-\code{\link[=expectation]{expectation()}}, which is that same quadrature. What does
-generalize is sampling, so both remaining routes draw from the family's own
-generator and differ in what they average:
+\section{Why the one-dimensional routes do not survive}{
+\code{\link[=continuous_distrib]{continuous_distrib()}}'s \code{"integrate"} splits a one-dimensional integral at
+quantiles, and there are no quantiles here; \code{"bartlett"} would need the
+score's own higher derivatives assembled over a \eqn{p}-dimensional
+partition sum. What is left is sampling, and both admissible values of
+\code{approx} route to it.
+}
 
-\code{"mc"} averages the observed Hessian, \eqn{\mathbb{E}[\ell^{(ij)}]}
-directly. \code{"bartlett"} and \code{"opg"} average the outer product of
-the score and negate it, which is the second Bartlett identity
-\eqn{\mathcal{I} = \mathbb{E}[s s^\top]}; it needs no second derivative at
-all, and is the only route that survives a family whose observed Hessian is
-degenerate.
+\section{The result is a sample, not an integral}{
+It carries Monte Carlo error of order \code{nsim^(-1/2)}, and two calls under
+different seeds give two answers. Set a seed before calling if the result
+must be reproducible, and expect a fit that inverts this matrix to move with
+it. \code{"bartlett"} averages the outer product of the score and \code{"mc"} averages
+the observed Hessian; the two agree in expectation by the second Bartlett
+identity, and differ by sampling error at any finite \code{nsim}.
+}
 
-Both are Monte Carlo, so both carry an error of order
-\eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
-scoring with a noisy information. That is a deliberate choice a caller
-makes, which is why \code{\link[=fit_distrib]{fit_distrib()}} rejects the argument for a
-family that has an exact expression.
+\examples{
+# Every shipped family overrides, so reach the fallback directly.
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+base <- S7::method(distrib_expected_hessian, multivariate_distrib)
+
+set.seed(1)
+sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
+                approx = "mc", nsim = 4000)
+exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
+round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
+            closed = vapply(exact, function(z) z[1], numeric(1))), 3)
+
+# Two seeds give two answers, this being a sample.
+set.seed(2)
+again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
+              approx = "mc", nsim = 4000)
+c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
+
+}
+\seealso{
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian.MvGaussianDistrib()}} and
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the closed forms,
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which says which route a family takes, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
 \keyword{internal}

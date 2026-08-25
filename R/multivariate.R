@@ -1,47 +1,79 @@
 #' @include distrib.R generics.R utility_functions.R cross_derivatives.R moments.R
 NULL
 
-#' S7 Class for Multivariate Distributions
+#' @title S7 Class for Multivariate Distributions
 #'
 #' @description
-#' A subclass of `distrib` for distributions whose observations are
-#' vectors. The response is an \eqn{n \times p} matrix, one row per
-#' observation, and `n_dim` records \eqn{p}.
+#' The subclass of `distrib` for distributions whose observations are vectors.
+#' The response is an \eqn{n \times p} matrix, one row per observation, and
+#' `n_dim` records \eqn{p}. It is a SIBLING of [continuous_distrib()] and
+#' [discrete_distrib()], not a subclass of either, so it inherits none of their
+#' one-dimensional defaults; the distribution function, the quantile function
+#' and the response derivatives are refused on this class instead of being
+#' approximated.
 #'
 #' @details
-#' The parameters of a multivariate distribution are still **scalars** as
-#' far as the rest of the package is concerned. A mean vector contributes
-#' \eqn{p} of them and a covariance matrix contributes the free values of the
-#' \pkg{parameters7} structure that parametrizes it, so `theta` remains
-#' the named list of numbers every generic already understands, and the
-#' derivative bookkeeping -- [deriv_names()], the Hessian keys, the
-#' link scale, [fit_distrib()] -- needs no special case. The
-#' constraint on the matrix lives inside the matrix parameter rather than in a link,
-#' which is why the links of a multivariate distribution are all the identity:
-#' the free values are already unconstrained.
+#' # The parameters are still scalars
 #'
-#' This class is a sibling of [continuous_distrib()] rather than a
-#' subclass of it, and deliberately. The defaults registered there are
-#' one-dimensional -- a cdf by quadrature over an interval, a quantile by root
-#' finding, a generator by ratio-of-uniforms on a scalar density -- and none of
-#' them means anything in \eqn{p} dimensions. Inheriting them would offer
+#' As far as the rest of the package is concerned, a multivariate
+#' distribution's parameters are SCALARS. A mean vector contributes \eqn{p} of
+#' them and a covariance matrix contributes the free values of the
+#' \pkg{parameters7} parametrization that carries it, so `theta` remains the
+#' named list of numbers every generic already understands, and the derivative
+#' bookkeeping needs no special case: [deriv_names()], the Hessian keys, the
+#' link scale and [fit_distrib()] all work unchanged.
+#'
+#' The constraint on the matrix lives inside the parametrization, not in a
+#' link, so every link of a multivariate distribution is the identity: the free
+#' values are already unconstrained.
+#'
+#' # Why it is a sibling of the one-dimensional classes
+#'
+#' The defaults registered on [continuous_distrib()] are one-dimensional: a
+#' distribution function by quadrature over an interval, a quantile by root
+#' finding, a generator by ratio-of-uniforms on a scalar density. None of them
+#' means anything in \eqn{p} dimensions, and inheriting them would offer
 #' answers that do not exist.
 #'
-#' Parameters that vary from observation to observation are not supported here.
-#' A distribution whose parameters depend on covariates is a model, which is
-#' the layer above this one.
+#' # No parameter varies by observation
 #'
-#' @inheritParams distrib
-#' @param n_dim The dimension \eqn{p} of an observation.
+#' A parametrization describes one matrix for the whole sample, and
+#' [mv_flat_theta()] rejects a `theta` component longer than one. A
+#' distribution whose parameters depend on covariates is a model, which is the
+#' layer above this one.
 #'
-#' @return An object of class `multivariate_distrib`.
+#' @param n_dim The dimension \eqn{p} of one observation. A single positive
+#'   integer; the validator rejects anything else, and also rejects a
+#'   `dimension` property other than `"multivariate"`.
+#' @param ... The properties of the parent `distrib` class, listed under Value.
 #'
-#' @seealso [mvgaussian_distrib()], [n_obs()]
+#' @return An S7 object of class `multivariate_distrib`, inheriting from
+#'   `distrib`. Beyond the parent's `distrib_name`, `dimension`, `bounds`,
+#'   `params`, `params_interpretation`, `n_params`, `params_bounds`,
+#'   `link_params` and `params_smooth`, it carries `n_dim`.
+#'
+#' @seealso [mvgaussian_distrib()] and [mvstudent_t_distrib()] for the
+#'   elliptical families, [dirichlet_distrib()] and [multinomial_distrib()] for
+#'   the simplex-valued ones, [n_obs()] for the observation count, and
+#'   [mv_summary()] for the quantities a fit reports.
 #'
 #' @examples
 #' d <- mvgaussian_distrib(2)
 #' S7::S7_inherits(d, multivariate_distrib)
 #' c(n_dim = d@n_dim, n_params = d@n_params)
+#'
+#' # It is a sibling of continuous_distrib, not a subclass, so none of the
+#' # one-dimensional defaults is inherited.
+#' S7::S7_inherits(d, continuous_distrib)
+#'
+#' # Every link is the identity: the constraint lives in the matrix
+#' # parametrization, which needs no link to express it.
+#' vapply(d@link_params, function(l) l@link_name, character(1))
+#'
+#' # And the four shipped families all sit here.
+#' vapply(list(mvgaussian_distrib(2), mvstudent_t_distrib(2),
+#'             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
+#'        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)
 #'
 #' @export
 multivariate_distrib <- S7::new_class("multivariate_distrib",
@@ -59,28 +91,42 @@ multivariate_distrib <- S7::new_class("multivariate_distrib",
 )
 
 
-#' How Many Observations a Response Holds
+#' @title How Many Observations a Response Holds
 #'
 #' @description
-#' The number of observations in `y`: its length for a univariate
-#' distribution, and the number of rows for a multivariate one.
+#' Returns the number of observations in `y`: its length for a univariate
+#' distribution, and its number of ROWS for a multivariate one. Every place in
+#' the package that would otherwise write `length(y)` goes through this,
+#' because for a matrix response `length(y)` counts entries, and a recycling
+#' check built on it would ask for parameters of length \eqn{np}.
 #'
 #' @details
-#' Every place that used to write `length(y)` goes through this instead,
-#' because for a matrix response `length(y)` counts entries rather than
-#' observations, and the recycling checks built on it would ask for parameters
-#' of length \eqn{np}.
+#' A wrong length here is quiet. The multivariate gaussian's expected
+#' information once built a zero vector with `length(y)` to stand for a
+#' parameter that does not vary; that vector came out \eqn{np} long, recycled
+#' against the \eqn{p}-long components, and inflated every diagonal entry of
+#' the information by a factor of \eqn{p}, so every standard error of a
+#' multivariate fit was \eqn{\sqrt{p}} too small. Nothing failed. Anywhere a
+#' matrix response meets code written for a vector, `length()` is a defect and
+#' this is the question to ask.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y The response.
+#' @param distrib An object inheriting from `distrib`. Only its class is used,
+#'   to decide which reading of `y` applies.
+#' @param y The response: a numeric vector for a univariate distribution, or an
+#'   \eqn{n \times p} numeric matrix for a multivariate one.
 #'
 #' @return A single integer.
 #'
-#' @seealso [multivariate_distrib()]
+#' @seealso [multivariate_distrib()] and [as_mv_matrix()], which puts a
+#'   response in the shape this counts.
 #'
 #' @examples
-#' n_obs(gaussian1_distrib(), c(1, 2, 3))
-#' n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
+#' # A univariate response is counted by length.
+#' n_obs(gaussian1_distrib(), c(1.2, -0.4, 0.8))
+#'
+#' # A multivariate one by rows, where length() would give the entry count.
+#' y <- matrix(0, 5, 2)
+#' c(n_obs = n_obs(mvgaussian_distrib(2), y), length = length(y))
 #'
 #' @export
 n_obs <- function(distrib, y) {
@@ -94,23 +140,38 @@ n_obs <- function(distrib, y) {
 }
 
 
-#' Coerce a Multivariate Response to a Matrix
+#' @title Coerce a Multivariate Response to a Matrix
 #'
 #' @description
-#' Puts `y` in the \eqn{n \times p} form every multivariate method expects,
-#' and rejects a response of the wrong width.
+#' Puts `y` in the \eqn{n \times p} form every multivariate method expects. A
+#' matrix of the right width is returned unchanged; a plain vector of length
+#' \eqn{p} is read as a SINGLE observation and returned as a one-row matrix,
+#' the reading a caller asking for a density at one point wants. Anything else
+#' is an error naming the length it was given and the dimension it should have
+#' had.
 #'
-#' @details
-#' A plain vector of the right length is read as a single observation, which is
-#' what makes `distrib_pdf(d, c(0, 0), theta)` mean what a reader expects
-#' for a two-dimensional distribution. Anything else must already be a matrix
-#' with one column per coordinate: guessing at the orientation of an
-#' \eqn{n \times p} matrix would silently transpose a square sample.
-#'
-#' @param distrib A [multivariate_distrib()] object.
-#' @param y The response.
+#' @param distrib A [multivariate_distrib()] object, from which `n_dim` is
+#'   read.
+#' @param y A numeric matrix with `distrib@n_dim` columns, or a numeric vector
+#'   of length `distrib@n_dim`. A vector of any other length is an error, as is
+#'   a matrix of the wrong width.
 #'
 #' @return A numeric matrix with `distrib@n_dim` columns.
+#'
+#' @seealso [n_obs()] for the row count and [multivariate_distrib()] for the
+#'   response convention.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#'
+#' # A vector of length p is one observation.
+#' dim(distributions7:::as_mv_matrix(d, c(1, -1)))
+#'
+#' # A matrix of the right width is returned as it stands.
+#' dim(distributions7:::as_mv_matrix(d, matrix(0, 4, 2)))
+#'
+#' # Any other length is an error naming both numbers.
+#' try(distributions7:::as_mv_matrix(d, c(1, 2, 3)))
 #'
 #' @keywords internal
 as_mv_matrix <- function(distrib, y) {
@@ -138,21 +199,42 @@ as_mv_matrix <- function(distrib, y) {
 }
 
 
-#' Require Scalar Parameters
+#' @title Require Scalar Parameters, and Flatten Them
 #'
 #' @description
-#' Rejects a `theta` whose components are not single numbers.
+#' Rejects a `theta` whose components are not single numbers, and returns the
+#' rest as one named numeric vector in `distrib@params` order. The families
+#' here take ONE parameter value for the whole sample: a parametrization
+#' describes one matrix, not one per row, and a parameter that varies by
+#' observation belongs to a model, which is the layer above this one.
 #'
 #' @details
-#' The multivariate families of this package take one parameter value for the
-#' whole sample. Vectorized parameters are what a regression supplies, and a
-#' distribution that accepted them would be doing the model layer's work with
-#' none of its bookkeeping.
+#' A univariate family reads a `theta` component of length \eqn{n} as one value
+#' per observation, so without this check a caller who wrote that here would
+#' get silent recycling against the \eqn{p} columns instead of an error. The
+#' message names the offending parameter.
 #'
 #' @param distrib A [multivariate_distrib()] object.
-#' @param theta A named list of parameters.
+#' @param theta A named list of parameters, already aligned by
+#'   [align_theta()]. Every component must have length 1.
 #'
-#' @return A numeric vector of the parameter values, in declaration order.
+#' @return A named numeric vector of length `distrib@n_params`, named and
+#'   ordered as `distrib@params`.
+#'
+#' @seealso [align_theta()], which normalizes the names first, and
+#'   [multivariate_distrib()] for the convention.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'               sigma_L2.1 = 0.5)
+#' distributions7:::mv_flat_theta(d, distributions7:::align_theta(d, theta))
+#'
+#' # A component longer than one is rejected by name, where a univariate
+#' # family would read it as one value per observation.
+#' bad <- theta
+#' bad$mu1 <- c(0, 1)
+#' try(distributions7:::mv_flat_theta(d, bad))
 #'
 #' @keywords internal
 mv_flat_theta <- function(distrib, theta) {
@@ -170,18 +252,44 @@ mv_flat_theta <- function(distrib, theta) {
 }
 
 
-#' Reject a Quantity That Has No Multivariate Counterpart
+#' @title Reject a Quantity That Has No Multivariate Counterpart
 #'
 #' @description
-#' Raises the error a multivariate distribution gives for the one-dimensional
-#' quantities: the distribution function, the quantile function and the
-#' expectation by quadrature.
+#' Raises the error a multivariate distribution gives for a one-dimensional
+#' quantity, in one wording: the name of the quantity, the family it was asked
+#' of, and a sentence saying what is missing. Every refusal on this class goes
+#' through it, so the eight of them read alike and none of them silently
+#' returns a number of the wrong shape.
 #'
-#' @param distrib A [multivariate_distrib()] object.
-#' @param what The name of the quantity.
-#' @param why One sentence saying what is missing.
+#' @param distrib A [multivariate_distrib()] object, whose `distrib_name` is
+#'   quoted in the message.
+#' @param what The name of the quantity, a single string WITHOUT parentheses:
+#'   `"distrib_cdf"`, `"skewness"`. The `()` is appended here, so passing them
+#'   gives `distrib_cdf()()`.
+#' @param why One sentence saying what is missing, a single string with no
+#'   leading capital. It is placed after a colon and carries its own final
+#'   period.
 #'
-#' @return Never returns; raises an error.
+#' @return Never returns: it always signals an error, with `call. = FALSE` so
+#'   the message is not prefixed by the internal call.
+#'
+#' @seealso [distrib_cdf.multivariate_distrib()],
+#'   [distrib_quantile.multivariate_distrib()],
+#'   [skewness.multivariate_distrib()] and
+#'   [kurtosis.multivariate_distrib()] for the refusals it produces.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#'
+#' # The wording every refusal on this class shares. The name carries no
+#' # parentheses; they are appended here.
+#' try(distributions7:::mv_refuse(d, "some_quantity",
+#'                                "there is no such thing in p dimensions."))
+#'
+#' # Which is what a caller sees from the generics themselves.
+#' try(distrib_cdf(d, rbind(c(0, 0)),
+#'                 list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+#'                      sigma_log_L2 = 0, sigma_L2.1 = 0)))
 #'
 #' @keywords internal
 mv_refuse <- function(distrib, what, why) {
@@ -193,16 +301,52 @@ mv_refuse <- function(distrib, what, why) {
 
 #' @title No Distribution Function in Several Dimensions
 #' @name distrib_cdf.multivariate_distrib
+#'
 #' @description
-#' Rejected. The distribution function of a multivariate law is an integral over
-#' an orthant, which has no closed form for the gaussian and no
-#' one-dimensional fallback to stand in for it, and the quadrature registered
-#' on [continuous_distrib()] integrates over an interval.
+#' Signals an error. The distribution function of a multivariate law is
+#' \eqn{P(Y_1 \le q_1, \ldots, Y_p \le q_p)}, an integral over an orthant.
+#' There is no closed form for it in general, and the one-dimensional fallback
+#' has no counterpart: [continuous_distrib()]'s default integrates the density
+#' over an interval of the line, and an orthant is not one. A numerical orthant
+#' probability is a separate piece of work with its own accuracy question, and
+#' this package does not attempt it.
+#'
+#' @details
+#' The refusal is on the class, so it covers a family written elsewhere as
+#' well as the four that ship. A family that CAN answer registers its own
+#' method and the refusal never runs.
+#'
 #' @param distrib A [multivariate_distrib()] object.
-#' @param q A numeric matrix of quantiles.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return Never returns; raises an error.
+#' @param q A numeric matrix of quantiles, one row per point. Not examined: the
+#'   error is raised before it is read.
+#' @param theta A named list of parameters. Not examined.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return Never returns: it always signals an error naming the family.
+#'
+#' @seealso [distrib_quantile.multivariate_distrib()], refused for a related
+#'   reason, [mv_marginal()], which for some families returns a univariate
+#'   distribution that does answer, and [distrib_cdf()] for the generic.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'               sigma_L2.1 = 0.5)
+#'
+#' try(distrib_cdf(d, rbind(c(0, 0)), theta))
+#'
+#' # A gaussian's marginal is a ONE-DIMENSIONAL MvGaussianDistrib, so it
+#' # inherits the same refusal.
+#' m <- mv_marginal(d, theta, 1)
+#' class(m$distrib)[1]
+#' try(distrib_cdf(m$distrib, 0, m$theta))
+#'
+#' # A Dirichlet's marginal is a genuine univariate beta, and answers.
+#' b <- mv_marginal(dirichlet_distrib(3),
+#'                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
+#' class(b$distrib)[1]
+#' distrib_cdf(b$distrib, 0.4, b$theta)
+#'
 #' @keywords internal
 S7::method(distrib_cdf, multivariate_distrib) <- function(distrib, q, theta, ...) {
   mv_refuse(
@@ -213,15 +357,41 @@ S7::method(distrib_cdf, multivariate_distrib) <- function(distrib, q, theta, ...
 
 #' @title No Quantile Function in Several Dimensions
 #' @name distrib_quantile.multivariate_distrib
+#'
 #' @description
-#' Rejected. A quantile is defined by inverting a distribution function on the
-#' line; in several dimensions the ordering that would define it does not
-#' exist.
+#' Signals an error. A quantile is defined by inverting a distribution function
+#' along an ORDERING, and \eqn{\mathbb{R}^p} has none for \eqn{p > 1}. The
+#' obstruction is deeper than the one that stops
+#' [distrib_cdf.multivariate_distrib()]: there a number exists and is hard to
+#' compute, here there is no number to compute. Several quantities go by the
+#' name in the literature, and they disagree.
+#'
 #' @param distrib A [multivariate_distrib()] object.
-#' @param p A numeric vector of probabilities.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return Never returns; raises an error.
+#' @param p A numeric vector of probabilities. Not examined: the error is
+#'   raised before it is read.
+#' @param theta A named list of parameters. Not examined.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return Never returns: it always signals an error naming the family.
+#'
+#' @seealso [distrib_cdf.multivariate_distrib()] for the related refusal,
+#'   [mv_marginal()], which for some families returns a univariate
+#'   distribution that does answer, and [distrib_quantile()] for the
+#'   generic.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'               sigma_L2.1 = 0.5)
+#'
+#' try(distrib_quantile(d, 0.5, theta))
+#'
+#' # A gaussian's marginal is a one-dimensional MvGaussianDistrib and refuses
+#' # too; a Dirichlet's is a univariate beta and answers.
+#' b <- mv_marginal(dirichlet_distrib(3),
+#'                  list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
+#' distrib_quantile(b$distrib, c(0.025, 0.5, 0.975), b$theta)
+#'
 #' @keywords internal
 S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta, ...) {
   mv_refuse(
@@ -230,19 +400,49 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
   )
 }
 
-#' @title Response Derivatives of a Multivariate Distribution
+#' @title No Numerical Response Gradient in Several Dimensions
 #' @name distrib_grad_y.multivariate_distrib
+#'
 #' @description
-#' Rejected on the base class rather than served numerically: the univariate
-#' fallbacks difference along a line, and the derivative of a multivariate
-#' log-density in its response is a vector (a matrix at second order) whose
-#' shape the base class cannot guess. A family that has the closed form
-#' registers it, as the gaussian and the Student t do.
-#' @param distrib A [multivariate_distrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return No return value; called for its error.
+#' Signals an error. The univariate numerical fallback differences the
+#' log-density along a LINE, which in \eqn{p} dimensions gives a directional
+#' derivative: the number it produces is of the wrong SHAPE, not merely
+#' inaccurate. The refusal is a design decision. A family that can supply
+#' \eqn{\partial\ell/\partial y} registers its own method, and the two
+#' elliptical families do.
+#'
+#' @details
+#' [check_distrib()] consults [has_mv_grad_y()] and skips the
+#' response-derivative checks where no method is registered, so not
+#' registering one costs nothing but the checks it would have earned.
+#'
+#' @param distrib A [multivariate_distrib()] object with no method of its own.
+#' @param y An \eqn{n \times p} numeric matrix of observations. Not examined.
+#' @param theta A named list of parameters. Not examined.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return Never returns: it always signals an error naming the family. A
+#'   family that registers a method returns an \eqn{n \times p} matrix.
+#'
+#' @seealso [distrib_grad_y.MvGaussianDistrib()] and
+#'   [distrib_grad_y.MvStudentTDistrib()] for the two families that answer,
+#'   [distrib_hess_y.multivariate_distrib()] for the second-order refusal, and
+#'   [distrib_grad_y()] for the generic.
+#'
+#' @examples
+#' # The Dirichlet registers no response gradient, so the class refuses.
+#' d <- dirichlet_distrib(3)
+#' theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+#' set.seed(1)
+#' y <- distrib_rng(d, 3, theta)
+#' try(distrib_grad_y(d, y, theta))
+#'
+#' # The gaussian registers one and answers with an n by p matrix.
+#' g <- mvgaussian_distrib(2)
+#' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'            sigma_L2.1 = 0.5)
+#' dim(distrib_grad_y(g, rbind(c(1, -1), c(0, 0)), th))
+#'
 #' @keywords internal
 S7::method(distrib_grad_y, multivariate_distrib) <- function(distrib, y, theta, ...) {
   mv_refuse(
@@ -251,8 +451,48 @@ S7::method(distrib_grad_y, multivariate_distrib) <- function(distrib, y, theta, 
   )
 }
 
-#' @rdname distrib_grad_y.multivariate_distrib
+#' @title No Numerical Response Hessian in Several Dimensions
 #' @name distrib_hess_y.multivariate_distrib
+#'
+#' @description
+#' Signals an error, for the reason
+#' [distrib_grad_y.multivariate_distrib()] gives: the univariate numerical
+#' fallback differences along a line and would produce a scalar where a
+#' \eqn{p \times p} matrix is wanted. A family that can supply
+#' \eqn{\partial^2\ell/\partial y\,\partial y^\top} registers its own method.
+#'
+#' @details
+#' The two families that answer return DIFFERENT shapes, and a consumer has to
+#' allow for both: the gaussian's Hessian does not depend on the observation
+#' and comes back as one \eqn{p \times p} matrix, while the Student t's does
+#' and comes back as a \eqn{p \times p \times n} array.
+#'
+#' @param distrib A [multivariate_distrib()] object with no method of its own.
+#' @param y An \eqn{n \times p} numeric matrix of observations. Not examined.
+#' @param theta A named list of parameters. Not examined.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return Never returns: it always signals an error naming the family.
+#'
+#' @seealso [distrib_hess_y.MvGaussianDistrib()] and
+#'   [distrib_hess_y.MvStudentTDistrib()] for the two families that answer and
+#'   for the shape difference, and [distrib_hess_y()] for the generic.
+#'
+#' @examples
+#' d <- dirichlet_distrib(3)
+#' theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+#' set.seed(1)
+#' y <- distrib_rng(d, 3, theta)
+#' try(distrib_hess_y(d, y, theta))
+#'
+#' # The two families that answer return different shapes.
+#' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'            sigma_L2.1 = 0.5)
+#' yy <- rbind(c(1, -1), c(0, 0))
+#' dim(distrib_hess_y(mvgaussian_distrib(2), yy, th))
+#' dim(distrib_hess_y(mvstudent_t_distrib(2), yy, c(th, list(nu = 6))))
+#'
+#' @keywords internal
 S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, ...) {
   mv_refuse(
     distrib, "distrib_hess_y",
@@ -260,8 +500,46 @@ S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, 
   )
 }
 
-#' @rdname distrib_grad_y.multivariate_distrib
+#' @title No Numerical Mixed Response Derivative in Several Dimensions
 #' @name distrib_cross_y.multivariate_distrib
+#'
+#' @description
+#' Signals an error. Unlike the two refusals beside it, the obstruction here is
+#' not that a line differences wrongly: it is that no consumer has fixed the
+#' shape. The univariate generic returns one number per observation per
+#' parameter; the multivariate quantity is one \eqn{n \times p} matrix per
+#' parameter, and a family that supplies it registers a method returning that,
+#' as the gaussian and the Student t do.
+#'
+#' @param distrib A [multivariate_distrib()] object with no method of its own.
+#' @param y An \eqn{n \times p} numeric matrix of observations. Not examined.
+#' @param theta A named list of parameters. Not examined.
+#' @param scale One of `"parameter"` or `"link"`, handled by the generic before
+#'   dispatch. Not examined.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return Never returns: it always signals an error naming the family and the
+#'   shape a method should produce.
+#'
+#' @seealso [distrib_cross_y.MvGaussianDistrib()] and
+#'   [distrib_cross_y.MvStudentTDistrib()] for the two families that answer,
+#'   and [distrib_cross_y()] for the generic.
+#'
+#' @examples
+#' d <- dirichlet_distrib(3)
+#' theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+#' set.seed(1)
+#' y <- distrib_rng(d, 3, theta)
+#' try(distrib_cross_y(d, y, theta))
+#'
+#' # The shape a method returns: one n by p matrix per parameter.
+#' g <- mvgaussian_distrib(2)
+#' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'            sigma_L2.1 = 0.5)
+#' cy <- distrib_cross_y(g, rbind(c(1, -1), c(0, 0)), th)
+#' c(entries = length(cy), rows = nrow(cy[[1]]), cols = ncol(cy[[1]]))
+#'
+#' @keywords internal
 S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), ...) {
   mv_refuse(
     distrib, "distrib_cross_y",
@@ -270,45 +548,75 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 }
 
 
-#' @title Expected Information of a Multivariate Distribution
+#' @title Expected Information of a Multivariate Distribution, by Sampling
 #' @name distrib_expected_hessian.multivariate_distrib
 #'
 #' @description
-#' Fallback for a multivariate family with no closed form: the expectation is
-#' taken over draws from the distribution itself.
+#' The fallback for a multivariate family with no closed form: the expectation
+#' of the observed Hessian, taken over a sample drawn from the family. All four
+#' shipped families register their own closed forms, so this runs only for a
+#' family written elsewhere.
 #'
 #' @details
-#' The one-dimensional routes do not survive the move to \eqn{p} dimensions.
-#' `"integrate"` builds its quadrature over an interval and is rejected
-#' here; `"bartlett"` in the univariate package reaches
-#' [expectation()], which is that same quadrature. What does
-#' generalize is sampling, so both remaining routes draw from the family's own
-#' generator and differ in what they average:
+#' # Why the one-dimensional routes do not survive
 #'
-#' `"mc"` averages the observed Hessian, \eqn{\mathbb{E}[\ell^{(ij)}]}
-#' directly. `"bartlett"` and `"opg"` average the outer product of
-#' the score and negate it, which is the second Bartlett identity
-#' \eqn{\mathcal{I} = \mathbb{E}[s s^\top]}; it needs no second derivative at
-#' all, and is the only route that survives a family whose observed Hessian is
-#' degenerate.
+#' [continuous_distrib()]'s `"integrate"` splits a one-dimensional integral at
+#' quantiles, and there are no quantiles here; `"bartlett"` would need the
+#' score's own higher derivatives assembled over a \eqn{p}-dimensional
+#' partition sum. What is left is sampling, and both admissible values of
+#' `approx` route to it.
 #'
-#' Both are Monte Carlo, so both carry an error of order
-#' \eqn{1/\sqrt{\texttt{nsim}}}, and a fit that uses one is doing Fisher
-#' scoring with a noisy information. That is a deliberate choice a caller
-#' makes, which is why [fit_distrib()] rejects the argument for a
-#' family that has an exact expression.
+#' # The result is a sample, not an integral
 #'
-#' @param distrib A [multivariate_distrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations; only its row count is
-#'   used, the expectation being over the distribution rather than the data.
-#' @param theta A named list of parameters.
-#' @param scale Handled by the generic before dispatch.
-#' @param approx One of `"bartlett"` (equivalently `"opg"`) or
-#'   `"mc"`; `"integrate"` is rejected.
-#' @param nsim Monte Carlo sample size.
-#' @param ... Unused.
+#' It carries Monte Carlo error of order `nsim^(-1/2)`, and two calls under
+#' different seeds give two answers. Set a seed before calling if the result
+#' must be reproducible, and expect a fit that inverts this matrix to move with
+#' it. `"bartlett"` averages the outer product of the score and `"mc"` averages
+#' the observed Hessian; the two agree in expectation by the second Bartlett
+#' identity, and differ by sampling error at any finite `nsim`.
 #'
-#' @return A named list keyed as [`hess_names(distrib@params)`][hess_names].
+#' @param distrib A [multivariate_distrib()] object with no closed form of its
+#'   own.
+#' @param y An \eqn{n \times p} numeric matrix of observations; only its row
+#'   count is used, the expectation being over the law.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch.
+#' @param approx One of `"bartlett"` (the default, equivalently `"opg"`) or
+#'   `"mc"`. `"integrate"` is not available here and falls through to sampling.
+#' @param nsim The Monte Carlo sample size. Defaults to `10000`. The error
+#'   falls as its square root, so ten times the accuracy costs a hundred times
+#'   the draws.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of numeric vectors of length \eqn{n}, keyed as
+#'   [`hess_names(distrib@params)`][hess_names], each vector constant.
+#'
+#' @seealso [distrib_expected_hessian.MvGaussianDistrib()] and
+#'   [distrib_expected_hessian.MvStudentTDistrib()] for the closed forms,
+#'   [expected_hessian_exact()], which says which route a family takes, and
+#'   [distrib_expected_hessian()] for the generic.
+#'
+#' @examples
+#' # Every shipped family overrides, so reach the fallback directly.
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+#'               sigma_L2.1 = 0.5)
+#' base <- S7::method(distrib_expected_hessian, multivariate_distrib)
+#'
+#' set.seed(1)
+#' sampled <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
+#'                 approx = "mc", nsim = 4000)
+#' exact <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
+#' round(rbind(sampled = vapply(sampled, function(z) z[1], numeric(1)),
+#'             closed = vapply(exact, function(z) z[1], numeric(1))), 3)
+#'
+#' # Two seeds give two answers, this being a sample.
+#' set.seed(2)
+#' again <- base(d, matrix(0, 3, 2), distributions7:::align_theta(d, theta),
+#'               approx = "mc", nsim = 4000)
+#' c(first = sampled$mu1_mu1[1], second = again$mu1_mu1[1])
+#'
 #' @keywords internal
 S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
@@ -341,26 +649,37 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
   stats::setNames(lapply(vals, function(v) rep(v, n)), nm)
 }
 
-#' Prefix a Structure's Free Names with the Matrix They Describe
+#' @title Prefix a Parametrization's Free Names with the Matrix They Describe
 #'
 #' @description
-#' Returns the matrix parameter's free names with `"sigma_"` or `"omega_"`
-#' in front, according to which side of the model the matrix parameter parametrizes.
+#' Returns the matrix parametrization's free names with `"sigma_"` or
+#' `"omega_"` in front, so that a printed parameter table says which matrix the
+#' coordinate belongs to. A free value's name says how the matrix is BUILT, not
+#' which matrix it is, so the same parametrization on the two sides of a model
+#' would otherwise give two genuinely different models the same parameter
+#' names.
 #'
 #' @details
-#' The name of a free value says how the matrix is built, not which matrix it
-#' is, so a covariance structure and a precision structure of the same family
-#' produce identical names. They are different models --- the inverse of a
-#' compound-symmetry matrix is compound symmetry while the inverse of an AR(1)
-#' is not AR(1) --- and a printed table that does not distinguish them leaves
-#' the reader to guess. The prefix is applied by the distribution rather than
-#' by the matrix parameter, because the matrix parameter does not know which side it has been
-#' handed to.
+#' The prefix is applied by the DISTRIBUTION. The parametrization does not
+#' know which side of a model it has been handed to, so it cannot apply one.
 #'
-#' @param free_names The matrix parameter's free names.
-#' @param inverted Whether the matrix parameter parametrizes the precision.
+#' @param free_names The parametrization's own free names, a character vector.
+#' @param inverted Logical of length 1. `TRUE` for a precision, giving
+#'   `"omega_"`; `FALSE`, the default, for a covariance or a scale matrix,
+#'   giving `"sigma_"`.
 #'
-#' @return A character vector.
+#' @return A character vector as long as `free_names`.
+#'
+#' @seealso [mvgaussian_distrib()], whose two forms this distinguishes, and
+#'   [parameters7::log_cholesky()] for a source of free names.
+#'
+#' @examples
+#' distributions7:::mv_prefixed_names(c("log_L1", "log_L2", "L2.1"))
+#' distributions7:::mv_prefixed_names(c("log_L1", "L2.1"), inverted = TRUE)
+#'
+#' # Which is what separates the two parametrizations of one law.
+#' mvgaussian_distrib(2)@params
+#' mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
 #'
 #' @keywords internal
 mv_prefixed_names <- function(free_names, inverted = FALSE) {

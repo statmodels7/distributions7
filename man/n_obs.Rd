@@ -7,28 +7,42 @@
 n_obs(distrib, y)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}. Only its class is used,
+to decide which reading of \code{y} applies.}
 
-\item{y}{The response.}
+\item{y}{The response: a numeric vector for a univariate distribution, or an
+\eqn{n \times p} numeric matrix for a multivariate one.}
 }
 \value{
 A single integer.
 }
 \description{
-The number of observations in \code{y}: its length for a univariate
-distribution, and the number of rows for a multivariate one.
+Returns the number of observations in \code{y}: its length for a univariate
+distribution, and its number of ROWS for a multivariate one. Every place in
+the package that would otherwise write \code{length(y)} goes through this,
+because for a matrix response \code{length(y)} counts entries, and a recycling
+check built on it would ask for parameters of length \eqn{np}.
 }
 \details{
-Every place that used to write \code{length(y)} goes through this instead,
-because for a matrix response \code{length(y)} counts entries rather than
-observations, and the recycling checks built on it would ask for parameters
-of length \eqn{np}.
+A wrong length here is quiet. The multivariate gaussian's expected
+information once built a zero vector with \code{length(y)} to stand for a
+parameter that does not vary; that vector came out \eqn{np} long, recycled
+against the \eqn{p}-long components, and inflated every diagonal entry of
+the information by a factor of \eqn{p}, so every standard error of a
+multivariate fit was \eqn{\sqrt{p}} too small. Nothing failed. Anywhere a
+matrix response meets code written for a vector, \code{length()} is a defect and
+this is the question to ask.
 }
 \examples{
-n_obs(gaussian1_distrib(), c(1, 2, 3))
-n_obs(mvgaussian_distrib(2), matrix(0, 5, 2))
+# A univariate response is counted by length.
+n_obs(gaussian1_distrib(), c(1.2, -0.4, 0.8))
+
+# A multivariate one by rows, where length() would give the entry count.
+y <- matrix(0, 5, 2)
+c(n_obs = n_obs(mvgaussian_distrib(2), y), length = length(y))
 
 }
 \seealso{
-\code{\link[=multivariate_distrib]{multivariate_distrib()}}
+\code{\link[=multivariate_distrib]{multivariate_distrib()}} and \code{\link[=as_mv_matrix]{as_mv_matrix()}}, which puts a
+response in the shape this counts.
 }

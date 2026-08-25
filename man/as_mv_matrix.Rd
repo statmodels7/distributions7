@@ -7,22 +7,39 @@
 as_mv_matrix(distrib, y)
 }
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object, from which \code{n_dim} is
+read.}
 
-\item{y}{The response.}
+\item{y}{A numeric matrix with \code{distrib@n_dim} columns, or a numeric vector
+of length \code{distrib@n_dim}. A vector of any other length is an error, as is
+a matrix of the wrong width.}
 }
 \value{
 A numeric matrix with \code{distrib@n_dim} columns.
 }
 \description{
-Puts \code{y} in the \eqn{n \times p} form every multivariate method expects,
-and rejects a response of the wrong width.
+Puts \code{y} in the \eqn{n \times p} form every multivariate method expects. A
+matrix of the right width is returned unchanged; a plain vector of length
+\eqn{p} is read as a SINGLE observation and returned as a one-row matrix,
+the reading a caller asking for a density at one point wants. Anything else
+is an error naming the length it was given and the dimension it should have
+had.
 }
-\details{
-A plain vector of the right length is read as a single observation, which is
-what makes \code{distrib_pdf(d, c(0, 0), theta)} mean what a reader expects
-for a two-dimensional distribution. Anything else must already be a matrix
-with one column per coordinate: guessing at the orientation of an
-\eqn{n \times p} matrix would silently transpose a square sample.
+\examples{
+d <- mvgaussian_distrib(2)
+
+# A vector of length p is one observation.
+dim(distributions7:::as_mv_matrix(d, c(1, -1)))
+
+# A matrix of the right width is returned as it stands.
+dim(distributions7:::as_mv_matrix(d, matrix(0, 4, 2)))
+
+# Any other length is an error naming both numbers.
+try(distributions7:::as_mv_matrix(d, c(1, 2, 3)))
+
+}
+\seealso{
+\code{\link[=n_obs]{n_obs()}} for the row count and \code{\link[=multivariate_distrib]{multivariate_distrib()}} for the
+response convention.
 }
 \keyword{internal}

@@ -7,18 +7,46 @@
 mv_refuse(distrib, what, why)
 }
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object, whose \code{distrib_name} is
+quoted in the message.}
 
-\item{what}{The name of the quantity.}
+\item{what}{The name of the quantity, a single string WITHOUT parentheses:
+\code{"distrib_cdf"}, \code{"skewness"}. The \verb{()} is appended here, so passing them
+gives \code{distrib_cdf()()}.}
 
-\item{why}{One sentence saying what is missing.}
+\item{why}{One sentence saying what is missing, a single string with no
+leading capital. It is placed after a colon and carries its own final
+period.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error, with \code{call. = FALSE} so
+the message is not prefixed by the internal call.
 }
 \description{
-Raises the error a multivariate distribution gives for the one-dimensional
-quantities: the distribution function, the quantile function and the
-expectation by quadrature.
+Raises the error a multivariate distribution gives for a one-dimensional
+quantity, in one wording: the name of the quantity, the family it was asked
+of, and a sentence saying what is missing. Every refusal on this class goes
+through it, so the eight of them read alike and none of them silently
+returns a number of the wrong shape.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+
+# The wording every refusal on this class shares. The name carries no
+# parentheses; they are appended here.
+try(distributions7:::mv_refuse(d, "some_quantity",
+                               "there is no such thing in p dimensions."))
+
+# Which is what a caller sees from the generics themselves.
+try(distrib_cdf(d, rbind(c(0, 0)),
+                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+                     sigma_log_L2 = 0, sigma_L2.1 = 0)))
+
+}
+\seealso{
+\code{\link[=distrib_cdf.multivariate_distrib]{distrib_cdf.multivariate_distrib()}},
+\code{\link[=distrib_quantile.multivariate_distrib]{distrib_quantile.multivariate_distrib()}},
+\code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} and
+\code{\link[=kurtosis.multivariate_distrib]{kurtosis.multivariate_distrib()}} for the refusals it produces.
 }
 \keyword{internal}

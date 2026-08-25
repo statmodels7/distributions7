@@ -2,26 +2,52 @@
 % Please edit documentation in R/multivariate.R
 \name{distrib_grad_y.multivariate_distrib}
 \alias{distrib_grad_y.multivariate_distrib}
-\alias{distrib_hess_y.multivariate_distrib}
-\alias{distrib_cross_y.multivariate_distrib}
-\title{Response Derivatives of a Multivariate Distribution}
+\title{No Numerical Response Gradient in Several Dimensions}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Not examined.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-No return value; called for its error.
+Never returns: it always signals an error naming the family. A
+family that registers a method returns an \eqn{n \times p} matrix.
 }
 \description{
-Rejected on the base class rather than served numerically: the univariate
-fallbacks difference along a line, and the derivative of a multivariate
-log-density in its response is a vector (a matrix at second order) whose
-shape the base class cannot guess. A family that has the closed form
-registers it, as the gaussian and the Student t do.
+Signals an error. The univariate numerical fallback differences the
+log-density along a LINE, which in \eqn{p} dimensions gives a directional
+derivative: the number it produces is of the wrong SHAPE, not merely
+inaccurate. The refusal is a design decision. A family that can supply
+\eqn{\partial\ell/\partial y} registers its own method, and the two
+elliptical families do.
+}
+\details{
+\code{\link[=check_distrib]{check_distrib()}} consults \code{\link[=has_mv_grad_y]{has_mv_grad_y()}} and skips the
+response-derivative checks where no method is registered, so not
+registering one costs nothing but the checks it would have earned.
+}
+\examples{
+# The Dirichlet registers no response gradient, so the class refuses.
+d <- dirichlet_distrib(3)
+theta <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+set.seed(1)
+y <- distrib_rng(d, 3, theta)
+try(distrib_grad_y(d, y, theta))
+
+# The gaussian registers one and answers with an n by p matrix.
+g <- mvgaussian_distrib(2)
+th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+           sigma_L2.1 = 0.5)
+dim(distrib_grad_y(g, rbind(c(1, -1), c(0, 0)), th))
+
+}
+\seealso{
+\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y.MvGaussianDistrib()}} and
+\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y.MvStudentTDistrib()}} for the two families that answer,
+\code{\link[=distrib_hess_y.multivariate_distrib]{distrib_hess_y.multivariate_distrib()}} for the second-order refusal, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }
 \keyword{internal}
