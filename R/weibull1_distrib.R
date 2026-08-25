@@ -683,8 +683,8 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @name distrib_grad_y.Weibull1Distrib
 #' @description
 #' Computes \eqn{\partial \ell / \partial y}, the derivative of the Weibull
-#' log-density with respect to the response and not to a parameter, in closed
-#' form. With \eqn{u = (y/\mu)^{\sigma}},
+#' log-density with respect to the response, in closed form. With
+#' \eqn{u = (y/\mu)^{\sigma}},
 #' \deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\sigma - 1 - \sigma u}{y}.}
 #' At \eqn{\sigma > 1} it vanishes at the mode
 #' \eqn{y = \mu\{(\sigma-1)/\sigma\}^{1/\sigma}}; at \eqn{\sigma \le 1} the

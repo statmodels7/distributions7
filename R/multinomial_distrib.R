@@ -14,7 +14,7 @@ NULL
 #' in `mv_higher.R`.
 #'
 #' The class carries two properties beyond the parent's: `size`, the number of
-#' trials, a constant of the distribution and not a parameter; and `param`, the
+#' trials, fixed at construction; and `param`, the
 #' simplex the probabilities lie on, whose free names become the family's own
 #' parameter names prefixed by `probs_`. Build one with
 #' [multinomial_distrib()], which validates all three and fills the properties

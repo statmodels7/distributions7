@@ -167,7 +167,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' \eqn{F(q) = 1 - F(2\mu - q)}, and only the lower tail is ever integrated,
 #' where the integrand decays away from a finite endpoint. And every quantile
 #' is one **row** of a single batched quadrature through [quad_rows()], so a
-#' vector of `q` costs one call and not one call apiece.
+#' vector of `q` is integrated in a single call.
 #'
 #' A row that fails to reach the requested accuracy signals an error naming the
 #' positions, instead of returning a plausible number.

@@ -60,8 +60,8 @@ below are registered on it in this file, two more in \code{betabinom1_higher.R},
 and everything else comes from the parent.
 
 The class carries an extra property beyond the parent's, \code{size}: the number
-of trials \eqn{n}, a constant of the distribution and not a parameter, as
-for \code{\link[=BinomialDistrib]{BinomialDistrib()}}. Build one with \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which
+of trials \eqn{n}, fixed at construction as it is for
+\code{\link[=BinomialDistrib]{BinomialDistrib()}}. Build one with \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which
 validates \code{size}, supplies the two link functions and fills the properties
 in. This page documents the raw S7 constructor, which validates none of the
 relationships between them.

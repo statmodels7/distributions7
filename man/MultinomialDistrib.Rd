@@ -68,7 +68,7 @@ The nine methods listed below are registered on it in this file and two more
 in \code{mv_higher.R}.
 
 The class carries two properties beyond the parent's: \code{size}, the number of
-trials, a constant of the distribution and not a parameter; and \code{param}, the
+trials, fixed at construction; and \code{param}, the
 simplex the probabilities lie on, whose free names become the family's own
 parameter names prefixed by \code{probs_}. Build one with
 \code{\link[=multinomial_distrib]{multinomial_distrib()}}, which validates all three and fills the properties

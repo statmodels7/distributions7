@@ -38,7 +38,7 @@ Two devices keep the quadrature honest. The law is symmetric about
 \eqn{F(q) = 1 - F(2\mu - q)}, and only the lower tail is ever integrated,
 where the integrand decays away from a finite endpoint. And every quantile
 is one \strong{row} of a single batched quadrature through \code{\link[=quad_rows]{quad_rows()}}, so a
-vector of \code{q} costs one call and not one call apiece.
+vector of \code{q} is integrated in a single call.
 
 A row that fails to reach the requested accuracy signals an error naming the
 positions, instead of returning a plausible number.

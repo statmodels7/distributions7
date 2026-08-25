@@ -13,8 +13,8 @@ NULL
 #' and everything else comes from the parent.
 #'
 #' The class carries an extra property beyond the parent's, `size`: the number
-#' of trials \eqn{n}, a constant of the distribution and not a parameter, as
-#' for [BinomialDistrib()]. Build one with [betabinom1_distrib()], which
+#' of trials \eqn{n}, fixed at construction as it is for
+#' [BinomialDistrib()]. Build one with [betabinom1_distrib()], which
 #' validates `size`, supplies the two link functions and fills the properties
 #' in. This page documents the raw S7 constructor, which validates none of the
 #' relationships between them.
