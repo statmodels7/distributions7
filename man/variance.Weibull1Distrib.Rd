@@ -4,17 +4,44 @@
 \alias{variance.Weibull1Distrib}
 \title{Variance of the Weibull Distribution}
 \arguments{
-\item{x}{A \code{\link[=Weibull1Distrib]{Weibull1Distrib()}}.}
+\item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the scale, positive) and
+\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
+The variance diverges as the shape falls below \eqn{1/2}, the second
+moment failing to exist there.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\mu^2\left(g_2 - g_1^2\right)} with
+Closed form: \eqn{\operatorname{Var}(Y) = \mu^2 (g_2 - g_1^2)} with
+\eqn{g_k = \Gamma(1 + k/\sigma)}. The scale enters as a square and the shape
+through the two gamma factors, so the coefficient of variation
+\eqn{\sqrt{g_2 - g_1^2}/g_1} is a function of the shape alone.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the scale, \eqn{\sigma > 0} the shape and
 \eqn{g_k = \Gamma(1 + k/\sigma)}.
+}
+
+\examples{
+d <- weibull1_distrib()
+
+# The two gamma factors, written out.
+g1 <- gamma(1 + 1 / 3); g2 <- gamma(1 + 2 / 3)
+all.equal(variance(d, list(mu = 2, sigma = 3)), 4 * (g2 - g1^2))
+
+# At shape 1 the variance is the square of the scale, as for an exponential.
+variance(d, list(mu = 2, sigma = 1))
+
+}
+\seealso{
+\code{\link[=mean.Weibull1Distrib]{mean.Weibull1Distrib()}}, \code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}},
+\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

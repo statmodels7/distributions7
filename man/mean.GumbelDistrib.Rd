@@ -4,17 +4,42 @@
 \alias{mean.GumbelDistrib}
 \title{Mean of the Gumbel Distribution}
 \arguments{
-\item{x}{A \code{\link[=GumbelDistrib]{GumbelDistrib()}}.}
+\item{x}{A \code{GumbelDistrib}, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
+(the scale, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\mu + \gamma\sigma}, with \eqn{\gamma} the
+Closed form: \eqn{E[Y] = \mu + \gamma\sigma}, with
+\eqn{\gamma \approx 0.5772157} the Euler-Mascheroni constant. The location
+is therefore not the mean: the distribution of a maximum is shifted to the
+right of its location by a fixed multiple of the scale. The constant is
+obtained as \code{-digamma(1)}, which is exact to the last bit.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale and \eqn{\gamma} the
 Euler-Mascheroni constant.
+}
+
+\examples{
+d <- gumbel_distrib()
+
+# The location plus the Euler-Mascheroni constant times the scale.
+all.equal(mean(d, list(mu = 0, sigma = 1)), -digamma(1))
+
+# The gap between location and mean grows with the scale.
+mean(d, list(mu = 0, sigma = c(1, 2, 5)))
+
+}
+\seealso{
+\code{\link[=variance.GumbelDistrib]{variance.GumbelDistrib()}}; \code{\link[=skewness.GumbelDistrib]{skewness.GumbelDistrib()}} and
+\code{\link[=kurtosis.GumbelDistrib]{kurtosis.GumbelDistrib()}}, which are constants; \code{\link[=gumbel_distrib]{gumbel_distrib()}}.
 }
 \keyword{internal}

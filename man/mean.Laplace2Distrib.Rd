@@ -4,16 +4,32 @@
 \alias{mean.Laplace2Distrib}
 \title{Mean of the Laplace Distribution in Location and Rate}
 \arguments{
-\item{x}{A \code{Laplace2Distrib}.}
+\item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{lambda}
+(the rate, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This is the
+same family as \code{\link[=laplace_distrib]{laplace_distrib()}} written by its rate
+\eqn{\lambda = 1/\sigma}, and the mean does not see the difference: it is
+the location in either parametrization.
+}
+\examples{
+d <- laplace2_distrib()
+
+# The location is the mean, and the rate does not move it.
+mean(d, list(mu = c(-1, 0, 4), lambda = 2))
+
+}
+\seealso{
+\code{\link[=variance.Laplace2Distrib]{variance.Laplace2Distrib()}}, where the parametrization does show;
+\code{\link[=mean.LaplaceDistrib]{mean.LaplaceDistrib()}} for the scale form; \code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }
 \keyword{internal}

@@ -2,20 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Weibull1Distrib}
 \alias{kurtosis.Weibull1Distrib}
-\title{Kurtosis of the Weibull Distribution}
+\title{Excess Kurtosis of the Weibull Distribution}
 \arguments{
-\item{x}{A \code{\link[=Weibull1Distrib]{Weibull1Distrib()}}.}
+\item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the scale, positive) and
+\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
+The fourth moment requires a shape above \eqn{1/4}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, as long as \code{sigma}. The scale
+does not enter the value and does not lengthen it, so a setting that varies
+\code{mu} alone comes back of length 1.
 }
 \description{
-Closed form, excess:
-\eqn{(g_4 - 4g_1g_3 + 6g_1^2g_2 - 3g_1^4)/(g_2 - g_1^2)^2 - 3}, free of
-the scale.
+Closed form:
+\deqn{\gamma_2 = \frac{g_4 - 4 g_1 g_3 + 6 g_1^2 g_2 - 3 g_1^4}
+                      {(g_2 - g_1^2)^2} - 3,
+      \qquad g_k = \Gamma(1 + k/\sigma).}
+The scale cancels, so the value depends on the shape alone. It is 6 at shape
+1, where the family is exponential, dips below zero over a band of moderate
+shapes, and climbs again as the shape grows.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the shape and \eqn{g_k = \Gamma(1 + k/\sigma)}.
+}
+
+\examples{
+d <- weibull1_distrib()
+
+# At shape 1 the family is exponential, whose excess kurtosis is 6.
+all.equal(kurtosis(d, list(mu = 1, sigma = 1)), 6)
+
+# It goes negative over a band of moderate shapes.
+round(kurtosis(d, list(mu = 1, sigma = c(1, 2, 3.6, 10))), 4)
+
+}
+\seealso{
+\code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}}, \code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}},
+\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

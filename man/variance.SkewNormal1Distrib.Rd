@@ -4,16 +4,42 @@
 \alias{variance.SkewNormal1Distrib}
 \title{Variance of the Skew Normal Distribution}
 \arguments{
-\item{x}{A \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}}.}
+\item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
+scale, positive) and \code{alpha} (the shape, any sign), each a numeric vector
+of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, as long as the longer of \code{sigma} and
+\code{alpha}. The location does not enter the value and does not lengthen it, so
+a setting that varies \code{mu} alone comes back of length 1.
 }
 \description{
-Closed form: \eqn{\sigma^2\left(1 - b^2\delta^2\right)}.
+Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
+bracket is at most 1 and at least \eqn{1 - 2/\pi \approx 0.3634}, so
+skewing the family narrows it: the scale is an upper bound on the standard
+deviation and is attained only at shape zero.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale and \eqn{\alpha} the shape, in Azzalini's
+direct parametrization.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+
+# The variance falls from sigma^2 towards sigma^2 (1 - 2/pi) as the shape grows.
+round(variance(d, list(mu = 0, sigma = 1, alpha = c(0, 1, 3, 1e6))), 6)
+1 - 2 / pi
+
+}
+\seealso{
+\code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}}, \code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}},
+\code{\link[=skewnormal_delta]{skewnormal_delta()}}, \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \keyword{internal}

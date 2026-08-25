@@ -2,18 +2,36 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.LaplaceDistrib}
 \alias{kurtosis.LaplaceDistrib}
-\title{Kurtosis of the Laplace Distribution}
+\title{Excess Kurtosis of the Laplace Distribution}
 \arguments{
-\item{x}{A \code{LaplaceDistrib}.}
+\item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or \code{n}. The values are not read, only their lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 3s, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{3} (excess).
+Exactly 3 at every parameter value, the excess over the Gaussian's own
+fourth standardized moment. A standardized moment is free of location and
+scale, and the Laplace has no shape parameter, so the whole family sits at
+one point of the kurtosis axis. That point is the reference the toolkit's
+heavier-tailed families are read against.
+}
+\examples{
+d <- laplace_distrib()
+
+# Three, whatever the location and the scale.
+kurtosis(d, list(mu = c(0, 5), sigma = c(1, 5)))
+
+}
+\seealso{
+\code{\link[=skewness.LaplaceDistrib]{skewness.LaplaceDistrib()}}, \code{\link[=variance.LaplaceDistrib]{variance.LaplaceDistrib()}},
+\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis.PseudoHuberDistrib()}}, which approaches this value as its shape
+goes to zero; \code{\link[=laplace_distrib]{laplace_distrib()}}.
 }
 \keyword{internal}

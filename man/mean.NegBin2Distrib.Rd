@@ -4,16 +4,35 @@
 \alias{mean.NegBin2Distrib}
 \title{Mean of the Negative Binomial Distribution}
 \arguments{
-\item{x}{A \code{NegBin2Distrib}.}
+\item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}. Aligned and validated by name, so a missing or out-of-bounds
+component throws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. This
+parametrization carries the mean as its first parameter, so the method reads
+it off and recycles it to the length the two parameters imply. Nothing is
+integrated and nothing is summed.
+}
+\examples{
+d <- negbin2_distrib()
+
+# The mean is the first parameter, and the dispersion does not move it.
+mean(d, list(mu = c(1, 2, 3), theta = 2))
+
+}
+\seealso{
+\code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}}, which exceeds this by
+\eqn{\mu^2/\theta}; \code{\link[=skewness.NegBin2Distrib]{skewness.NegBin2Distrib()}} and
+\code{\link[=kurtosis.NegBin2Distrib]{kurtosis.NegBin2Distrib()}}; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the family.
 }
 \keyword{internal}

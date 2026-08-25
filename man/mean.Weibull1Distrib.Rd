@@ -4,17 +4,48 @@
 \alias{mean.Weibull1Distrib}
 \title{Mean of the Weibull Distribution}
 \arguments{
-\item{x}{A \code{\link[=Weibull1Distrib]{Weibull1Distrib()}}.}
+\item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the scale, positive) and
+\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
+The mean diverges as the shape approaches zero.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{\mu\,\Gamma(1 + 1/\sigma)}. The scale
-\eqn{\mu} is not the mean, which is what this method reports.
+Closed form: \eqn{E[Y] = \mu\,\Gamma(1 + 1/\sigma)}. The first parameter of
+this parametrization is the \strong{scale}, following \code{gamlss}'s \code{WEI}, so it is
+not the mean; the gamma factor is what separates the two, and it is 1 only
+at shape 1, where the family is exponential.
+}
+\details{
+A mean parametrization was available and was not taken: it would make every
+derivative of the family a derivative of the gamma function and of its
+inverse. The cost of the choice is paid here, in one gamma evaluation per
+setting.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the scale and \eqn{\sigma > 0} the shape, in the
+parametrization \code{\link[=weibull1_distrib]{weibull1_distrib()}} uses.
+}
+
+\examples{
+d <- weibull1_distrib()
+
+# The scale times Gamma(1 + 1 / shape).
+all.equal(mean(d, list(mu = 2, sigma = 3)), 2 * gamma(1 + 1 / 3))
+
+# At shape 1 the family is exponential and the scale is the mean.
+mean(d, list(mu = 2, sigma = 1))
+
+}
+\seealso{
+\code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}}, \code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}},
+\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}} for the shared factors, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

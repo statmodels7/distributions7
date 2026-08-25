@@ -2,18 +2,41 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.NegBin2Distrib}
 \alias{kurtosis.NegBin2Distrib}
-\title{Kurtosis of the Negative Binomial Distribution}
+\title{Excess Kurtosis of the Negative Binomial Distribution}
 \arguments{
-\item{x}{A \code{NegBin2Distrib}.}
+\item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{6/\theta + \theta/(\mu(\theta+\mu))}.
+Closed form, replacing the numerical default:
+\eqn{6/\theta + \theta/\{\mu(\theta+\mu)\}}, the excess over the Gaussian's
+three. Both terms are positive, so the family is always leptokurtic, and the
+second is what survives in the Poisson limit, where the expression tends to
+\eqn{1/\mu}.
+}
+\examples{
+d <- negbin2_distrib()
+
+# The published form, written out.
+mu <- 4; th <- 2
+all.equal(kurtosis(d, list(mu = mu, theta = th)),
+          6 / th + th / (mu * (th + mu)))
+
+# The Poisson limit is 1 / mu = 0.25.
+kurtosis(d, list(mu = 4, theta = c(1, 100, 1e8)))
+
+}
+\seealso{
+\code{\link[=skewness.NegBin2Distrib]{skewness.NegBin2Distrib()}}, \code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}},
+\code{\link[=kurtosis.PoissonDistrib]{kurtosis.PoissonDistrib()}} for the limit.
 }
 \keyword{internal}

@@ -4,16 +4,59 @@
 \alias{variance.PseudoHuberDistrib}
 \title{Variance of the Pseudo-Huber Distribution}
 \arguments{
-\item{x}{A \code{PseudoHuberDistrib}.}
+\item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
+scale, positive) and \code{nu} (the shape, positive), each a numeric vector of
+length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, as long as the longest of \code{sigma}
+and \code{nu}. The location does not enter the value and does not lengthen it,
+so a setting that varies \code{mu} alone comes back of length 1.
 }
 \description{
-Closed form, replacing the numerical default: a closed form in exponentially scaled Bessel functions.
+Closed form, replacing the numerical default:
+\deqn{\operatorname{Var}(Y) = \sigma^2 \sqrt{\nu}\,
+      \frac{K_2(\sqrt{\nu})}{K_1(\sqrt{\nu})},}
+with \eqn{K_r} the modified Bessel function of the second kind. The scale
+parameter is therefore not the standard deviation: the shape multiplies it,
+and the factor grows roughly like \eqn{\sqrt{\nu}} at large \eqn{\nu}.
+}
+\details{
+The two Bessel functions are evaluated exponentially scaled, through
+\code{besselK(sqrt(nu), r, expon.scaled = TRUE)}. Both carry the same factor
+\eqn{e^{\sqrt{\nu}}}, which cancels in the ratio, so the quotient is exact
+where the unscaled functions would have overflowed; the terms are degree
+homogeneous, and the scaling has been checked to \eqn{\nu = 2000}.
+
+The quantity is also used inside the package: the bracket
+\code{\link[=distrib_quantile]{distrib_quantile()}} searches over for this family is built from it, so an
+error here would surface as a failed root search several frames away.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale, \eqn{\nu > 0} the shape, and \eqn{K_r} the
+modified Bessel function of the second kind of order \eqn{r}.
+}
+
+\examples{
+d <- pseudohuber_distrib()
+
+# The Bessel ratio, written out against the method.
+nu <- 4
+all.equal(variance(d, list(mu = 0, sigma = 1, nu = nu)),
+          sqrt(nu) * besselK(sqrt(nu), 2, expon.scaled = TRUE) /
+                     besselK(sqrt(nu), 1, expon.scaled = TRUE))
+
+# sigma is not the standard deviation: the shape scales it.
+variance(d, list(mu = 0, sigma = 1, nu = c(1, 4, 100)))
+
+}
+\seealso{
+\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis.PseudoHuberDistrib()}}, which is a ratio of the same
+Bessel functions; \code{\link[=mean.PseudoHuberDistrib]{mean.PseudoHuberDistrib()}}; \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.
 }
 \keyword{internal}

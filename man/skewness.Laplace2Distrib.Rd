@@ -4,16 +4,32 @@
 \alias{skewness.Laplace2Distrib}
 \title{Skewness of the Laplace Distribution in Location and Rate}
 \arguments{
-\item{x}{A \code{Laplace2Distrib}.}
+\item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or \code{n}. The values are not read, only their lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form, replacing the numerical default: zero, by symmetry.
+Exactly zero at every parameter value, the density being symmetric about
+\eqn{\mu}. A standardized moment is free of the parametrization as well as
+of the location and the scale, so this agrees with
+\code{\link[=skewness.LaplaceDistrib]{skewness.LaplaceDistrib()}} identically.
+}
+\examples{
+d <- laplace2_distrib()
+
+# Zero at every location and rate, with one value per setting.
+skewness(d, list(mu = c(0, 5), lambda = c(1, 2)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Laplace2Distrib]{kurtosis.Laplace2Distrib()}}, \code{\link[=skewness.LaplaceDistrib]{skewness.LaplaceDistrib()}},
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }
 \keyword{internal}

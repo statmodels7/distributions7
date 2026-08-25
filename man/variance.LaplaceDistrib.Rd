@@ -4,16 +4,37 @@
 \alias{variance.LaplaceDistrib}
 \title{Variance of the Laplace Distribution}
 \arguments{
-\item{x}{A \code{LaplaceDistrib}.}
+\item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
+(the scale, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, as long as \code{sigma}. The location does
+not enter the value and does not lengthen it, so a setting that varies \code{mu}
+alone comes back of length 1.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{Var(Y) = 2\sigma^2}.
+Closed form, replacing the numerical default:
+\eqn{\operatorname{Var}(Y) = 2\sigma^2}. The scale is not the standard
+deviation here: it is smaller by \eqn{\sqrt2}, which is worth knowing before
+a Laplace scale is compared with a Gaussian one.
+}
+\examples{
+d <- laplace_distrib()
+
+# Twice the square of the scale.
+all.equal(variance(d, list(mu = 0, sigma = 2)), 8)
+
+# The standard deviation is sqrt(2) times the scale.
+std_dev(d, list(mu = 0, sigma = 1)) / 1
+
+}
+\seealso{
+\code{\link[=mean.LaplaceDistrib]{mean.LaplaceDistrib()}}, \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}},
+\code{\link[=variance.Laplace2Distrib]{variance.Laplace2Distrib()}} for the rate parametrization,
+\code{\link[=laplace_distrib]{laplace_distrib()}}.
 }
 \keyword{internal}

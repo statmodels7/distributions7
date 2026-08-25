@@ -2,18 +2,35 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Laplace2Distrib}
 \alias{kurtosis.Laplace2Distrib}
-\title{Kurtosis of the Laplace Distribution in Location and Rate}
+\title{Excess Kurtosis of the Laplace Distribution in Location and Rate}
 \arguments{
-\item{x}{A \code{Laplace2Distrib}.}
+\item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
+vector of length 1 or \code{n}. The values are not read, only their lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 3s, of length
+\code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{3} (excess).
+Exactly 3 at every parameter value, the excess over the Gaussian. A
+standardized moment does not see a change of parametrization, so this is the
+same number \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}} returns and it moves with neither
+the location nor the rate.
+}
+\examples{
+d <- laplace2_distrib()
+
+# Three, in either parametrization.
+c(kurtosis(d, list(mu = 0, lambda = 2)),
+  kurtosis(laplace_distrib(), list(mu = 0, sigma = 0.5)))
+
+}
+\seealso{
+\code{\link[=skewness.Laplace2Distrib]{skewness.Laplace2Distrib()}}, \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}},
+\code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }
 \keyword{internal}

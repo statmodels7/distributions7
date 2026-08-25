@@ -2,20 +2,50 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.SkewNormal1Distrib}
 \alias{kurtosis.SkewNormal1Distrib}
-\title{Kurtosis of the Skew Normal Distribution}
+\title{Excess Kurtosis of the Skew Normal Distribution}
 \arguments{
-\item{x}{A \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}}.}
+\item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
+\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}. Only \code{alpha}
+enters the value.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, as long as \code{alpha}, always in
+\eqn{[0, 0.8692)}. Neither the location nor the scale enters the value or
+lengthens it, so a setting that varies either alone comes back of length 1.
 }
 \description{
-Closed form, excess:
-\eqn{2(\pi - 3)(b\delta)^4/(1 - b^2\delta^2)^2}. It is non-negative and
-bounded above by about \eqn{0.8692}.
+Closed form:
+\deqn{\gamma_2 = 2(\pi - 3)\,
+      \frac{(b\delta)^4}{(1 - b^2\delta^2)^{2}},}
+with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. The
+fourth power makes it even in the shape and non-negative, so a skew normal
+is never lighter-tailed than a Gaussian, and \eqn{\delta}'s bound caps it at
+about 0.8692. A sample needing more excess kurtosis than that is outside the
+family whatever the shape.
+}
+\section{Notation}{
+
+\eqn{\alpha} is the shape, \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
+\eqn{b = \sqrt{2/\pi}}.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+
+# Even in the shape, and zero only at zero.
+kurtosis(d, list(mu = 0, sigma = 1, alpha = c(-3, 0, 3)))
+
+# The reachable range stops short of 0.8692.
+kurtosis(d, list(mu = 0, sigma = 1, alpha = 1e6))
+
+}
+\seealso{
+\code{\link[=skewness.SkewNormal1Distrib]{skewness.SkewNormal1Distrib()}}, bounded for the same reason;
+\code{\link[=kurtosis.SkewTDistrib]{kurtosis.SkewTDistrib()}}, which is not bounded;
+\code{\link[=skewnormal_delta]{skewnormal_delta()}}, \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \keyword{internal}

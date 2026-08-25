@@ -7,22 +7,42 @@
 skewt_moment_pieces(alpha, nu)
 }
 \arguments{
-\item{alpha}{The shape parameter.}
+\item{alpha}{The shape parameter, a numeric vector of any sign.}
 
-\item{nu}{The degrees of freedom.}
+\item{nu}{The degrees of freedom, a positive numeric vector. Values at or
+below 1 give \code{NaN} in \code{bnu} and \code{mz}; values at or below 2 give \code{NaN} in
+\code{vz} as well.}
 }
 \value{
-A list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}.
+A named list with \code{delta}, \code{bnu}, \code{mz} and \code{vz}, each a numeric
+vector recycled to the longer of \code{alpha} and \code{nu}.
 }
 \description{
-Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
+Returns the four pieces the family's four moment methods share:
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}}, the constant
 \eqn{b_\nu = \sqrt{\nu/\pi}\,\Gamma\{(\nu-1)/2\}/\Gamma(\nu/2)}, the mean
-\eqn{\mu_z = \delta b_\nu} and the variance \eqn{\sigma_z^2} of the
-standardized variable.
+\eqn{\mu_z = \delta b_\nu} of the standardized variable and its variance
+\eqn{\sigma_z^2 = \nu/(\nu-2) - \mu_z^2}.
 }
 \details{
-\eqn{b_\nu} is finite only for \eqn{\nu > 1} and \eqn{\sigma_z^2} only for
-\eqn{\nu > 2}; each is \code{NaN} otherwise, and the moments that use it
-inherit that.
+The gamma ratio in \eqn{b_\nu} is formed as
+\code{exp(lgamma((nu - 1) / 2) - lgamma(nu / 2))}, so it stays finite at degrees
+of freedom where the two gamma functions themselves would overflow.
+
+Existence is enforced here, once for all four callers: \eqn{b_\nu} is \code{NaN}
+at \eqn{\nu \le 1} and \eqn{\sigma_z^2} is \code{NaN} at \eqn{\nu \le 2}, so a
+moment built from either inherits the \code{NaN} and no method has to test the
+threshold twice.
+}
+\examples{
+# Below two degrees of freedom the variance piece is NaN.
+distributions7:::skewt_moment_pieces(alpha = 2, nu = c(0.5, 1.5, 5))$vz
+
+}
+\seealso{
+\code{\link[=mean.SkewTDistrib]{mean.SkewTDistrib()}}, \code{\link[=variance.SkewTDistrib]{variance.SkewTDistrib()}},
+\code{\link[=skewness.SkewTDistrib]{skewness.SkewTDistrib()}} and \code{\link[=kurtosis.SkewTDistrib]{kurtosis.SkewTDistrib()}} for the four
+consumers; \code{\link[=skewnormal_delta]{skewnormal_delta()}} for the same shape factor in the
+Gaussian-tailed family.
 }
 \keyword{internal}

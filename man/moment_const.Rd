@@ -7,17 +7,33 @@
 moment_const(theta, k, value)
 }
 \arguments{
-\item{theta}{An aligned named list of parameters.}
+\item{theta}{An aligned named list of parameters, as \code{\link[=align_theta]{align_theta()}} returns.}
 
-\item{k}{The number of parameters to read the length from.}
+\item{k}{How many of its components to read the length from. A single whole
+number, usually the number of parameters the family carries.}
 
-\item{value}{The constant.}
+\item{value}{The constant to recycle. A numeric vector of length 1, which is
+\code{NaN} for a moment that does not exist and a number for one that is fixed
+by the family.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{max(lengths(theta[seq_len(k)]))}, every
+element \code{value}.
 }
 \description{
-Returns \code{value} repeated to the length the parameters imply, which is
-what a moment that does not depend on them still has to be.
+Returns \code{value} repeated to the length the parameters imply. A moment that
+does not depend on the parameters still has to come back one value per
+setting, so that every moment method returns the same shape whatever the
+family; this helper is what enforces that for the constants.
+}
+\examples{
+# One value per parameter setting, even though the value is fixed.
+skewness(gumbel_distrib(), list(mu = c(0, 1, 2), sigma = 1))
+
+}
+\seealso{
+\code{\link[=skewness.CauchyDistrib]{skewness.CauchyDistrib()}}, which uses it for a moment that does
+not exist, and \code{\link[=kurtosis.GumbelDistrib]{kurtosis.GumbelDistrib()}}, which uses it for one that is
+constant.
 }
 \keyword{internal}

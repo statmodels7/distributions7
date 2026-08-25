@@ -4,16 +4,33 @@
 \alias{mean.PseudoHuberDistrib}
 \title{Mean of the Pseudo-Huber Distribution}
 \arguments{
-\item{x}{A \code{PseudoHuberDistrib}.}
+\item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location), \code{sigma} (the
+scale, positive) and \code{nu} (the shape, positive), each a numeric vector of
+length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length equal to the longest of the
+three components.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}, by symmetry.
+Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
+is symmetric about \eqn{\mu} at every scale and shape, so the location
+parameter is the mean, the median and the mode at once.
+}
+\examples{
+d <- pseudohuber_distrib()
+
+# The location is the mean, whatever the scale and the shape.
+mean(d, list(mu = c(-1, 0, 3), sigma = 2, nu = 4))
+
+}
+\seealso{
+\code{\link[=variance.PseudoHuberDistrib]{variance.PseudoHuberDistrib()}}, which does depend on the shape;
+\code{\link[=skewness.PseudoHuberDistrib]{skewness.PseudoHuberDistrib()}}, zero by the same symmetry;
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} for the family.
 }
 \keyword{internal}

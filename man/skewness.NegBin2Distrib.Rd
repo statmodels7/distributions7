@@ -4,16 +4,39 @@
 \alias{skewness.NegBin2Distrib}
 \title{Skewness of the Negative Binomial Distribution}
 \arguments{
-\item{x}{A \code{NegBin2Distrib}.}
+\item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}.
+Closed form, replacing the numerical default:
+\eqn{(\theta + 2\mu)/\sqrt{\mu\theta(\theta+\mu)}}. It is positive at every
+parameter value, a count distribution having a right tail and a floor at
+zero, and it decreases towards the Poisson value \eqn{\mu^{-1/2}} as
+\eqn{\theta} grows.
+}
+\examples{
+d <- negbin2_distrib()
+
+# The published form, written out.
+mu <- 4; th <- 2
+all.equal(skewness(d, list(mu = mu, theta = th)),
+          (th + 2 * mu) / sqrt(mu * th * (th + mu)))
+
+# It falls onto the Poisson's mu^(-1/2) = 0.5 as the dispersion grows.
+skewness(d, list(mu = 4, theta = c(1, 100, 1e8)))
+
+}
+\seealso{
+\code{\link[=kurtosis.NegBin2Distrib]{kurtosis.NegBin2Distrib()}}, \code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}},
+\code{\link[=skewness.PoissonDistrib]{skewness.PoissonDistrib()}} for the limit.
 }
 \keyword{internal}

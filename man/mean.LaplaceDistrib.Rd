@@ -4,16 +4,34 @@
 \alias{mean.LaplaceDistrib}
 \title{Mean of the Laplace Distribution}
 \arguments{
-\item{x}{A \code{LaplaceDistrib}.}
+\item{x}{A \code{LaplaceDistrib}, from \code{\link[=laplace_distrib]{laplace_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{sigma}
+(the scale, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{E[Y] = \mu}.
+Closed form, replacing the numerical default: \eqn{E[Y] = \mu}. The density
+is symmetric about \eqn{\mu}, so the location is the mean and the median at
+once. The value is recycled to the length the two parameters imply, and no
+quadrature is run: the kink at \eqn{y = \mu} makes the numerical route
+needlessly awkward for a quantity available in one read.
+}
+\examples{
+d <- laplace_distrib()
+
+# The location is the mean, and the scale does not move it.
+mean(d, list(mu = c(-1, 0, 4), sigma = 3))
+
+}
+\seealso{
+\code{\link[=variance.LaplaceDistrib]{variance.LaplaceDistrib()}}, \code{\link[=kurtosis.LaplaceDistrib]{kurtosis.LaplaceDistrib()}},
+\code{\link[=mean.Laplace2Distrib]{mean.Laplace2Distrib()}} for the same family written by its rate,
+\code{\link[=laplace_distrib]{laplace_distrib()}}.
 }
 \keyword{internal}

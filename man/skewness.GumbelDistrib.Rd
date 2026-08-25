@@ -4,17 +4,48 @@
 \alias{skewness.GumbelDistrib}
 \title{Skewness of the Gumbel Distribution}
 \arguments{
-\item{x}{A \code{\link[=GumbelDistrib]{GumbelDistrib()}}.}
+\item{x}{A \code{GumbelDistrib}, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or \code{n}. The values are not read, only their lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, every element \eqn{12\sqrt6\,\zeta(3)/\pi^3}, of
+length \code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{12\sqrt{6}\,\zeta(3)/\pi^3 \approx 1.1395},
-the same for every location and scale.
+Constant: \eqn{\gamma_1 = 12\sqrt6\,\zeta(3)/\pi^3 \approx 1.1395}, with
+\eqn{\zeta(3)} Apery's constant. The Gumbel is location-scale with no shape
+parameter, so its standardized moments are numbers and not functions: every
+Gumbel has this same right skew, whatever its location and scale.
+}
+\details{
+\eqn{\zeta(3) = 1.2020569031595942854} is written out in the body. Base R
+has no function that returns it, and one number does not justify a
+dependency.
+}
+\section{Notation}{
+
+\eqn{\zeta} is the Riemann zeta function; \eqn{\mu} and \eqn{\sigma > 0} are
+the location and the scale, neither of which enters the value.
+}
+
+\examples{
+d <- gumbel_distrib()
+
+# One number for the whole family.
+skewness(d, list(mu = c(0, 5, -3), sigma = c(1, 7, 0.2)))
+
+# Against the published constant.
+all.equal(skewness(d, list(mu = 0, sigma = 1)),
+          12 * sqrt(6) * 1.2020569031595942854 / pi^3)
+
+}
+\seealso{
+\code{\link[=kurtosis.GumbelDistrib]{kurtosis.GumbelDistrib()}}, the other constant;
+\code{\link[=mean.GumbelDistrib]{mean.GumbelDistrib()}} and \code{\link[=variance.GumbelDistrib]{variance.GumbelDistrib()}}, which do move with
+the parameters; \code{\link[=gumbel_distrib]{gumbel_distrib()}}.
 }
 \keyword{internal}

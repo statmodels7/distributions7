@@ -7,14 +7,34 @@
 skewnormal_delta(alpha)
 }
 \arguments{
-\item{alpha}{The shape parameter.}
+\item{alpha}{The shape parameter, a numeric vector of any sign. Zero gives
+\eqn{\delta = 0} and the symmetric Gaussian case; the magnitude saturates
+at one as the shape grows.}
 }
 \value{
-A list with \code{delta} and \code{bd}.
+A named list with \code{delta} and \code{bd}, each a numeric vector the length
+of \code{alpha}.
 }
 \description{
 Returns \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and the product
-\eqn{b\delta} with \eqn{b = \sqrt{2/\pi}}, from which every moment of a skew
-normal follows.
+\eqn{b\delta} with \eqn{b = \sqrt{2/\pi}}. Every moment of a skew normal is
+a function of \eqn{b\delta}, so the four moment methods of the family share
+this helper and assemble different combinations of one number.
+}
+\details{
+\eqn{\delta} is bounded: it runs over \eqn{(-1, 1)} as \eqn{\alpha} runs
+over the whole line, and it saturates quickly, reaching 0.995 at
+\eqn{\alpha = 10}. That bound is what caps the skewness and the kurtosis the
+family can reach, and is why the skew t exists.
+}
+\examples{
+# delta saturates at one as the shape grows.
+distributions7:::skewnormal_delta(c(0, 1, 10, 1e6))$delta
+
+}
+\seealso{
+\code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}}, \code{\link[=variance.SkewNormal1Distrib]{variance.SkewNormal1Distrib()}},
+\code{\link[=skewness.SkewNormal1Distrib]{skewness.SkewNormal1Distrib()}} and \code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}} for
+the four consumers.
 }
 \keyword{internal}

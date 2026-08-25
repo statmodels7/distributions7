@@ -4,16 +4,39 @@
 \alias{variance.Laplace2Distrib}
 \title{Variance of the Laplace Distribution in Location and Rate}
 \arguments{
-\item{x}{A \code{Laplace2Distrib}.}
+\item{x}{A \code{Laplace2Distrib}, from \code{\link[=laplace2_distrib]{laplace2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the location) and \code{lambda}
+(the rate, positive), each a numeric vector of length 1 or \code{n}. The
+variance diverges as the rate approaches zero.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, as long as \code{lambda}. The location does
+not enter the value and does not lengthen it, so a setting that varies \code{mu}
+alone comes back of length 1.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{Var(Y) = 2/\lambda^2}.
+Closed form, replacing the numerical default:
+\eqn{\operatorname{Var}(Y) = 2/\lambda^2}. With \eqn{\lambda = 1/\sigma}
+this is the \eqn{2\sigma^2} of \code{\link[=variance.LaplaceDistrib]{variance.LaplaceDistrib()}}, so the two
+parametrizations agree on the law and differ only in which number is
+reported. A larger rate is a tighter distribution.
+}
+\examples{
+d <- laplace2_distrib()
+
+# Two over the square of the rate.
+all.equal(variance(d, list(mu = 0, lambda = 0.5)), 8)
+
+# The two parametrizations agree when lambda = 1 / sigma.
+all.equal(variance(d, list(mu = 0, lambda = 1 / 3)),
+          variance(laplace_distrib(), list(mu = 0, sigma = 3)))
+
+}
+\seealso{
+\code{\link[=variance.LaplaceDistrib]{variance.LaplaceDistrib()}}, the same quantity in the scale
+parametrization; \code{\link[=mean.Laplace2Distrib]{mean.Laplace2Distrib()}}; \code{\link[=laplace2_distrib]{laplace2_distrib()}}.
 }
 \keyword{internal}

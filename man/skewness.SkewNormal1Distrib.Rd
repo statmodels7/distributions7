@@ -4,18 +4,50 @@
 \alias{skewness.SkewNormal1Distrib}
 \title{Skewness of the Skew Normal Distribution}
 \arguments{
-\item{x}{A \code{\link[=SkewNormal1Distrib]{SkewNormal1Distrib()}}.}
+\item{x}{A \code{SkewNormal1Distrib}, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
+\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}. Only \code{alpha}
+enters the value.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, as long as \code{alpha}, always inside
+\eqn{(-0.9953, 0.9953)}. Neither the location nor the scale enters the
+value or lengthens it, so a setting that varies either alone comes back of
+length 1.
 }
 \description{
 Closed form:
-\eqn{\tfrac{4-\pi}{2}(b\delta)^3/(1 - b^2\delta^2)^{3/2}}. Its range is
-\eqn{(-0.9953, 0.9953)}, whatever the shape.
+\deqn{\gamma_1 = \frac{4-\pi}{2}\,
+      \frac{(b\delta)^3}{(1 - b^2\delta^2)^{3/2}},}
+with \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and \eqn{b = \sqrt{2/\pi}}. It
+takes the sign of the shape and vanishes at zero. Because \eqn{\delta} is
+bounded by 1, the skewness the family can reach is bounded too, by about
+0.9953 in absolute value: a sample skewed more than that cannot be fitted by
+a skew normal at any shape, and the skew t is the family to reach for.
+}
+\section{Notation}{
+
+\eqn{\alpha} is the shape, \eqn{\delta = \alpha/\sqrt{1+\alpha^2}} and
+\eqn{b = \sqrt{2/\pi}}. Neither the location nor the scale enters a
+standardized moment.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+
+# Zero at shape zero, and it takes the sign of the shape.
+skewness(d, list(mu = 0, sigma = 1, alpha = c(-3, 0, 3)))
+
+# The reachable range stops short of one.
+skewness(d, list(mu = 0, sigma = 1, alpha = 1e6))
+
+}
+\seealso{
+\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}}, bounded for the same reason;
+\code{\link[=skewness.SkewTDistrib]{skewness.SkewTDistrib()}}, which is not bounded;
+\code{\link[=skewnormal_delta]{skewnormal_delta()}}, \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \keyword{internal}

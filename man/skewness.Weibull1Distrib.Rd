@@ -4,17 +4,49 @@
 \alias{skewness.Weibull1Distrib}
 \title{Skewness of the Weibull Distribution}
 \arguments{
-\item{x}{A \code{\link[=Weibull1Distrib]{Weibull1Distrib()}}.}
+\item{x}{A \code{Weibull1Distrib}, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the scale, positive) and
+\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.
+The third moment requires a shape above \eqn{1/3}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, as long as \code{sigma}. The scale does not enter the
+value and does not lengthen it, so a setting that varies \code{mu} alone comes
+back of length 1.
 }
 \description{
 Closed form:
-\eqn{(g_3 - 3g_1g_2 + 2g_1^3)/(g_2 - g_1^2)^{3/2}}, free of the scale.
+\deqn{\gamma_1 = \frac{g_3 - 3 g_1 g_2 + 2 g_1^3}{(g_2 - g_1^2)^{3/2}},
+      \qquad g_k = \Gamma(1 + k/\sigma).}
+The scale cancels, so the value is a function of the shape alone. It falls
+through zero at a shape near 3.60235, so a Weibull is right-skewed below
+that and left-skewed above it, which is one of the reasons the family covers
+more shapes than a gamma.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the shape and \eqn{g_k = \Gamma(1 + k/\sigma)}.
+}
+
+\examples{
+d <- weibull1_distrib()
+
+# At shape 1 the family is exponential, whose skewness is 2.
+all.equal(skewness(d, list(mu = 1, sigma = 1)), 2)
+
+# The scale does not enter a standardized moment.
+skewness(d, list(mu = c(0.1, 1, 100), sigma = 2))
+
+# The sign changes at a shape of about 3.60235.
+round(skewness(d, list(mu = 1, sigma = c(2, 3.60235, 10))), 6)
+
+}
+\seealso{
+\code{\link[=kurtosis.Weibull1Distrib]{kurtosis.Weibull1Distrib()}}, also free of the scale;
+\code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}}, which is not;
+\code{\link[=weibull_gamma_factors]{weibull_gamma_factors()}}, \code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

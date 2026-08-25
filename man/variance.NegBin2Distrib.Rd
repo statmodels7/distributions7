@@ -4,16 +4,39 @@
 \alias{variance.NegBin2Distrib}
 \title{Variance of the Negative Binomial Distribution}
 \arguments{
-\item{x}{A \code{NegBin2Distrib}.}
+\item{x}{A \code{NegBin2Distrib}, from \code{\link[=negbin2_distrib]{negbin2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}. Small \code{theta} means heavy overdispersion; the variance diverges as it
+approaches zero.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form, replacing the numerical default: \eqn{Var(Y) = \mu + \mu^2/\theta}.
+Closed form, replacing the numerical default:
+\eqn{\operatorname{Var}(Y) = \mu + \mu^2/\theta}. The quadratic term is the
+overdispersion, so the variance exceeds the mean at every finite \eqn{\theta}
+and falls back onto it as \eqn{\theta} grows, which is the Poisson limit of
+the family.
+}
+\examples{
+d <- negbin2_distrib()
+
+# Mean 4, dispersion 2: the variance is 4 + 16/2.
+all.equal(variance(d, list(mu = 4, theta = 2)), 12)
+
+# The overdispersion vanishes as theta grows, leaving the Poisson variance.
+variance(d, list(mu = 4, theta = c(1, 10, 1e4)))
+
+}
+\seealso{
+\code{\link[=mean.NegBin2Distrib]{mean.NegBin2Distrib()}}, \code{\link[=skewness.NegBin2Distrib]{skewness.NegBin2Distrib()}},
+\code{\link[=kurtosis.NegBin2Distrib]{kurtosis.NegBin2Distrib()}}; \code{\link[=variance.PoissonDistrib]{variance.PoissonDistrib()}} for the
+equidispersed limit.
 }
 \keyword{internal}

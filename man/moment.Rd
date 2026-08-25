@@ -114,7 +114,7 @@ all.equal(moment(poisson_distrib(), list(mu = 3), p = 2, central = TRUE), 3)
 }
 \seealso{
 \code{\link[=expectation]{expectation()}} for the quadrature and the series this rests on;
-\code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} for the
-four standard moments, each of which prefers a family's closed form when
-one is registered.
+\code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}}
+for the four standard moments, each of which prefers a family's closed
+form when one is registered.
 }

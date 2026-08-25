@@ -2,19 +2,33 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GumbelDistrib}
 \alias{kurtosis.GumbelDistrib}
-\title{Kurtosis of the Gumbel Distribution}
+\title{Excess Kurtosis of the Gumbel Distribution}
 \arguments{
-\item{x}{A \code{\link[=GumbelDistrib]{GumbelDistrib()}}.}
+\item{x}{A \code{GumbelDistrib}, from \code{\link[=gumbel_distrib]{gumbel_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or \code{n}. The values are not read, only their lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of 2.4s, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, excess: \eqn{12/5}, the same for every location
-and scale.
+Constant: \eqn{\gamma_2 = 12/5 = 2.4}, the excess over the Gaussian. Like
+the skewness it is fixed for the whole family, there being no shape parameter
+for a standardized moment to depend on.
+}
+\examples{
+d <- gumbel_distrib()
+
+# 12 / 5 for every Gumbel.
+kurtosis(d, list(mu = c(0, 5), sigma = c(1, 7)))
+
+}
+\seealso{
+\code{\link[=skewness.GumbelDistrib]{skewness.GumbelDistrib()}}, the other constant;
+\code{\link[=variance.GumbelDistrib]{variance.GumbelDistrib()}}; \code{\link[=gumbel_distrib]{gumbel_distrib()}}.
 }
 \keyword{internal}

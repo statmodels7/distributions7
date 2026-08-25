@@ -4,16 +4,33 @@
 \alias{skewness.PseudoHuberDistrib}
 \title{Skewness of the Pseudo-Huber Distribution}
 \arguments{
-\item{x}{A \code{PseudoHuberDistrib}.}
+\item{x}{A \code{PseudoHuberDistrib}, from \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths, but the list is still aligned and validated.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length equal to the longest of the
+three components.
 }
 \description{
-Closed form, replacing the numerical default: zero, by symmetry.
+Exactly zero at every parameter value. The density is symmetric about
+\eqn{\mu}, so every odd central moment vanishes and the third standardized
+one with it. The constant is returned directly, recycled to the length the
+parameters imply, so no quadrature is run.
+}
+\examples{
+d <- pseudohuber_distrib()
+
+# Zero at every shape, by symmetry, with one value per setting.
+skewness(d, list(mu = 0, sigma = 1, nu = c(1, 2, 3)))
+
+}
+\seealso{
+\code{\link[=kurtosis.PseudoHuberDistrib]{kurtosis.PseudoHuberDistrib()}}, which is not constant;
+\code{\link[=mean.PseudoHuberDistrib]{mean.PseudoHuberDistrib()}}; \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}}.
 }
 \keyword{internal}

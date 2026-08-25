@@ -7,15 +7,32 @@
 weibull_gamma_factors(sigma, k = 4L)
 }
 \arguments{
-\item{sigma}{The shape parameter.}
+\item{sigma}{The shape parameter, a positive numeric vector. Each factor
+diverges as the shape approaches zero, the corresponding moment not
+existing there.}
 
-\item{k}{How many factors to return.}
+\item{k}{How many factors to return. A single whole number, 4 by default,
+the number the excess kurtosis needs; the variance needs 2 and the skewness
+3, and each caller asks for only what it uses.}
 }
 \value{
-A list of numeric vectors, \code{g1} to \code{gk}.
+A named list of \code{k} numeric vectors, \code{g1} to \code{gk}, each the length
+of \code{sigma}.
 }
 \description{
-Returns \eqn{g_k = \Gamma(1 + k/\sigma)} for \eqn{k = 1, \ldots, 4}, from
-which every moment of a Weibull follows as \eqn{E[Y^k] = \mu^k g_k}.
+Returns \eqn{g_k = \Gamma(1 + k/\sigma)} for \eqn{k = 1, \ldots, K}. Every
+raw moment of a Weibull is one of these times a power of the scale,
+\eqn{E[Y^k] = \mu^k g_k}, so the four moment methods of the family share
+this one helper and differ only in which combination of the factors they
+assemble.
+}
+\examples{
+# At shape 1 the family is exponential and g_k is k factorial.
+distributions7:::weibull_gamma_factors(1, 4)
+
+}
+\seealso{
+\code{\link[=variance.Weibull1Distrib]{variance.Weibull1Distrib()}}, \code{\link[=skewness.Weibull1Distrib]{skewness.Weibull1Distrib()}} and
+\code{\link[=kurtosis.Weibull1Distrib]{kurtosis.Weibull1Distrib()}} for the three consumers.
 }
 \keyword{internal}
