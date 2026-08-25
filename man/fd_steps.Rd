@@ -25,8 +25,8 @@ strictly inside the parameter's mathematical domain.
 }
 \details{
 The domain clamp is what allows a finite-difference fallback to be offered at
-all. Parameter domains here are \strong{open} -- a scale parameter is positive,
-not non-negative -- so a step chosen from the magnitude alone will step a small
+all. Parameter domains here are \strong{open}: a scale parameter is positive, not
+non-negative. A step chosen from the magnitude alone therefore takes a small
 \eqn{\sigma} straight through zero, and the log-density comes back \code{NaN}
 for reasons that look like a bug in the density. Clamping to 49\\% of the
 distance to each finite boundary keeps both evaluation points inside.

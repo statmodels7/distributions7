@@ -7,25 +7,34 @@
 log_deriv(idx, ratio)
 }
 \arguments{
-\item{idx}{A character vector of parameter names, with repetition.}
+\item{idx}{A character vector of parameter names, with repetition, naming
+the multi-index \eqn{I}. Its length is the order.}
 
-\item{ratio}{A function returning \eqn{d^B L / L} for a block.}
+\item{ratio}{A function of one block, returning \eqn{d^B L / L} for that
+block as a numeric vector. Called once per block of every partition.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of whatever \code{ratio} returns:
+\eqn{d^I \log L} at each observation.
 }
 \description{
-Computes \eqn{d^I \log L} as
-\eqn{\sum_\pi (-1)^{|\pi|-1}(|\pi|-1)! \prod_{B \in \pi} (d^B L / L)}.
+Computes \eqn{d^I \log L} from the ratios \eqn{d^B L / L}, as
+\deqn{d^I \log L = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
+      \prod_{B \in \pi} \frac{d^B L}{L},}
+the moment-to-cumulant relation. Only the \strong{ratios} are needed, never
+\eqn{L}'s own derivatives and never \eqn{L} itself, so a wrapper can
+differentiate a normalizing constant it can only evaluate up to scale.
 }
 \details{
-The moment-to-cumulant relation. What makes it the right tool here is that
-only the \strong{ratios} \eqn{d^B L / L} are needed, never \eqn{L}'s own
-derivatives -- and the ratios are exactly what each wrapper can supply
-cheaply, a truncated expectation for truncation and an affine expression for
-the zero wrappers.
+It is the inverse of \code{\link[=bell_f_ratio]{bell_f_ratio()}}: that sum carries derivatives of a
+logarithm to derivatives of the function, this one carries them back. At
+order 1 it returns \eqn{d_i L / L} and at order 2
+\eqn{d_{ij}L/L - (d_i L/L)(d_j L/L)}, the familiar relation for the second
+derivative of a logarithm.
 }
 \seealso{
-\code{\link[=bell_f_ratio]{bell_f_ratio()}}, the companion identity.
+\code{\link[=bell_f_ratio]{bell_f_ratio()}}, the companion identity;
+\code{\link[=index_partitions]{index_partitions()}}, which supplies the partitions;
+\code{\link[=truncated]{truncated()}} and \code{\link[=zero_inflated]{zero_inflated()}}, the wrappers that consume it.
 }
 \keyword{internal}
