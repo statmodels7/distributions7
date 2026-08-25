@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{SkewTDistrib}
 \alias{SkewTDistrib}
-\title{S7 Class for the Skew t Distribution}
+\title{Skew t Distribution Class}
 \usage{
 SkewTDistrib(
   distrib_name = character(0),
@@ -36,34 +36,85 @@ SkewTDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{SkewTDistrib}.
+An S7 object of class \code{SkewTDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. For an object built by
+\code{\link[=skewt_distrib]{skewt_distrib()}} the properties hold \code{"skew t"}, \code{"univariate"},
+\code{c(-Inf, Inf)}, \code{c("mu", "sigma", "alpha", "nu")}, the interpretations
+\code{c(mu = "location", sigma = "scale", alpha = "shape", nu = "degrees of freedom")}, \code{4}, and the domains \eqn{(-\infty,\infty)},
+\eqn{(0,\infty)}, \eqn{(-\infty,\infty)} and \eqn{(0,\infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing Azzalini's
-skew \eqn{t} distribution: a Student \eqn{t} with a shape parameter
-controlling the asymmetry, so that the tail weight and the skewness are
-modeled separately.
+The S7 class of Azzalini's skew \eqn{t}: a Student \eqn{t} carrying a shape
+parameter that tilts it, so that the tail weight and the asymmetry are
+modeled by two parameters instead of one. With \eqn{z = (y-\mu)/\sigma} and
+\eqn{w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}} the density is
+\eqn{2 t_\nu(z)T_{\nu+1}(w)/\sigma}.
+
+It contains three families as limits. At \eqn{\alpha = 0} it is the Student
+\eqn{t}; as \eqn{\nu \to \infty} it is the skew normal, approached at
+\eqn{O(1/\nu)}; and with both it is the Gaussian. Its reason to exist is the
+skewness: the skew normal cannot pass 0.9953, and this family reaches 2.05
+at \eqn{\nu = 6} and 4.00 at \eqn{\nu = 4}.
+
+Build one with \code{\link[=skewt_distrib]{skewt_distrib()}}, which supplies the four link functions.
+This page documents the raw S7 constructor, which validates none of the
+relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
-\code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y()}},
+Registered in this file:
+\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf()}},
+\code{\link[=distrib_rng.SkewTDistrib]{distrib_rng()}},
 \code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}},
 \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian()}},
 \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.SkewTDistrib]{distrib_rng()}},
-\code{\link[=kurtosis]{kurtosis()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_grad_y.SkewTDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.SkewTDistrib]{distrib_hess_y()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, including
-the distribution function and the quantile function.
+Registered elsewhere: all four moments in \code{moments.R}
+(\code{\link[=mean.SkewTDistrib]{mean()}}, \code{\link[=variance.SkewTDistrib]{variance()}},
+\code{\link[=skewness.SkewTDistrib]{skewness()}},
+\code{\link[=kurtosis.SkewTDistrib]{kurtosis()}}); the mixed response-parameter
+derivative \code{\link[=distrib_cross_y]{distrib_cross_y()}} in
+\code{cross_derivatives_families.R}; and
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} in \code{cdf_derivatives_families.R}.
+
+The \strong{distribution function} and the \strong{quantile function} come from
+\code{\link[=continuous_distrib]{continuous_distrib()}}, by quadrature and by root finding on it. So does the
+\strong{expected information}: this family has none in elementary form, so
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} approximates it, and
+\code{method = "newton"} is much the cheaper way to fit it.
 }
 
+\section{What is closed form and what is not}{
+
+Every derivative in \eqn{\mu}, \eqn{\sigma} and \eqn{\alpha} is closed form.
+Every derivative involving \eqn{\nu} is not, and the obstruction is
+mathematical: the density carries \eqn{T_{\nu+1}}, and the derivative of a
+Student \eqn{t} distribution function in its degrees of freedom has no
+elementary expression. Those components come from \strong{one} stencil applied to
+an analytic quantity, never from a difference of a difference.
+}
+
+\examples{
+d <- skewt_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_interpretation
+
+# Two parameters for two departures from the Gaussian, which is why the
+# family exists.
+vapply(d@link_params, function(l) l@link_name, character(1))
+
+# It passes the skew normal's ceiling of 0.9953.
+vapply(c(4, 6, 20, 1e6),
+       function(v) skewness(d, list(mu = 0, sigma = 1, alpha = 50, nu = v)), 0)
+}
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=skewt_distrib]{skewt_distrib()}} to build one;
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the \eqn{\nu \to \infty} limit;
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the \eqn{\alpha = 0} case;
+\code{\link[=skewt_pieces]{skewt_pieces()}} for the scalar functions the derivatives are built from.
 }

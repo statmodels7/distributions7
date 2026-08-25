@@ -7,17 +7,35 @@
 fd5_second(f, x, h)
 }
 \arguments{
-\item{f}{A function of one scalar, returning a numeric vector.}
+\item{f}{A function of one scalar, returning a numeric vector. It is called
+five times, at \eqn{x}, \eqn{x \pm h} and \eqn{x \pm 2h}.}
 
-\item{x}{The point to differentiate at.}
+\item{x}{A single number, the point to differentiate at.}
 
-\item{h}{The step.}
+\item{h}{A single positive number, the step.}
 }
 \value{
 A numeric vector, of whatever length \code{f} returns.
 }
 \description{
-Returns \eqn{(-f(x-2h) + 16f(x-h) - 30f(x) + 16f(x+h) - f(x+2h))/(12h^2)},
-the fourth-order central stencil for the second derivative.
+Returns \eqn{\{-f(x-2h) + 16f(x-h) - 30f(x) + 16f(x+h) - f(x+2h)\}/(12h^2)},
+the central stencil on five nodes for the second derivative, with truncation
+error \eqn{O(h^4)}. Like \code{\link[=fd5_first]{fd5_first()}} it comes from
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} at \code{accuracy = 4}.
+
+Rounding is amplified by \eqn{h^{-2}} here, one power more than in the first
+derivative, so the attainable accuracy at the same step is one or two digits
+lower.
+}
+\examples{
+f <- function(x) exp(x) * sin(x)
+c(stencil = distributions7:::fd5_second(f, 0.7, 1e-3),
+  truth = 2 * exp(0.7) * cos(0.7))
+
+}
+\seealso{
+\code{\link[=fd5_first]{fd5_first()}} for the order below, \code{\link[=fd5_third]{fd5_third()}} for the order
+above, and \code{\link[=distrib_hessian.SkewTDistrib]{distrib_hessian.SkewTDistrib()}}, which uses this for the
+\eqn{\nu} components.
 }
 \keyword{internal}

@@ -7,20 +7,41 @@
 fd5_fourth(f, x, h)
 }
 \arguments{
-\item{f}{A function of one scalar, returning a numeric vector.}
+\item{f}{A function of one scalar, returning a numeric vector. It is called
+five times, at \eqn{x}, \eqn{x \pm h} and \eqn{x \pm 2h}.}
 
-\item{x}{The point to differentiate at.}
+\item{x}{A single number, the point to differentiate at.}
 
-\item{h}{The step.}
+\item{h}{A single positive number, the step. A step too small is worse than
+one too large here, the rounding growing four times faster than the
+truncation falls.}
 }
 \value{
-A numeric vector.
+A numeric vector, of whatever length \code{f} returns.
 }
 \description{
-Returns \eqn{(f(x-2h) - 4f(x-h) + 6f(x) - 4f(x+h) + f(x+2h))/h^4}, the
-second-order central stencil for the fourth derivative. Rounding is
-amplified by \eqn{h^{-4}}, so with the family's relative step this is
-accurate to roughly four significant digits, which the pages that rely on
-it state.
+Returns \eqn{\{f(x-2h) - 4f(x-h) + 6f(x) - 4f(x+h) + f(x+2h)\}/h^4}, the
+central stencil on five nodes for the fourth derivative, accurate to
+\eqn{O(h^2)}.
+
+Rounding is amplified by \eqn{h^{-4}}, which sets what this can deliver:
+measured on \eqn{e^x\sin x} at \eqn{x = 0.7} with \eqn{h = 10^{-2}} it
+returns \eqn{-5.18939} against a true \eqn{-5.18918}, four significant
+digits. On a component whose value is itself small the surviving digits are
+fewer, and \code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4.SkewTDistrib()}} says so where a reader meets one.
+}
+\examples{
+f <- function(x) exp(x) * sin(x)
+truth <- -4 * exp(0.7) * sin(0.7)
+c(stencil = distributions7:::fd5_fourth(f, 0.7, 1e-2), truth = truth)
+
+# Too small a step is worse than too large: rounding grows as h^-4.
+vapply(c(1e-1, 1e-2, 1e-3, 1e-4),
+       function(h) abs(distributions7:::fd5_fourth(f, 0.7, h) - truth), 0)
+
+}
+\seealso{
+\code{\link[=fd5_third]{fd5_third()}} for the order below and
+\code{\link[=distrib_deriv4.SkewTDistrib]{distrib_deriv4.SkewTDistrib()}} for the method that uses this.
 }
 \keyword{internal}

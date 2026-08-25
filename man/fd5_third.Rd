@@ -7,18 +7,34 @@
 fd5_third(f, x, h)
 }
 \arguments{
-\item{f}{A function of one scalar, returning a numeric vector.}
+\item{f}{A function of one scalar, returning a numeric vector. It is called
+four times, at \eqn{x \pm h} and \eqn{x \pm 2h}.}
 
-\item{x}{The point to differentiate at.}
+\item{x}{A single number, the point to differentiate at.}
 
-\item{h}{The step.}
+\item{h}{A single positive number, the step.}
 }
 \value{
-A numeric vector.
+A numeric vector, of whatever length \code{f} returns.
 }
 \description{
-Returns \eqn{(-f(x-2h)/2 + f(x-h) - f(x+h) + f(x+2h)/2)/h^3}, the
-second-order central stencil for the third derivative. One stencil applied
-to an analytic quantity, never a difference of differences.
+Returns \eqn{\{-f(x-2h)/2 + f(x-h) - f(x+h) + f(x+2h)/2\}/h^3}, the central
+stencil on five nodes for the third derivative. Five nodes is the smallest
+number that carries a third derivative at all, so the accuracy here is
+\eqn{O(h^2)} where the first two orders get \eqn{O(h^4)} from the same
+offsets.
+
+One stencil applied to an analytic quantity, never a difference of
+differences.
+}
+\examples{
+f <- function(x) exp(x) * sin(x)
+c(stencil = distributions7:::fd5_third(f, 0.7, 1e-2),
+  truth = 2 * exp(0.7) * (cos(0.7) - sin(0.7)))
+
+}
+\seealso{
+\code{\link[=fd5_second]{fd5_second()}} for the order below, \code{\link[=fd5_fourth]{fd5_fourth()}} for the order
+above, and \code{\link[=distrib_deriv3.SkewTDistrib]{distrib_deriv3.SkewTDistrib()}}, which uses this.
 }
 \keyword{internal}

@@ -7,22 +7,41 @@
 skewt_nu_step(nu)
 }
 \arguments{
-\item{nu}{The degrees of freedom.}
+\item{nu}{A numeric vector of degrees of freedom.}
 }
 \value{
-A numeric vector.
+A numeric vector of steps, of the length of \code{nu}.
 }
 \description{
 Returns the finite-difference step used for the derivatives in \eqn{\nu},
-relative to \eqn{\nu} itself and floored so that it stays meaningful for a
-small number of degrees of freedom.
+\code{pmax(1e-3 * abs(nu), 1e-6)}: relative to \eqn{\nu} itself, so that the same
+number of significant digits is differenced at every scale, and floored so
+that it stays a number for a degrees of freedom near zero.
 }
 \details{
 The relative step \eqn{10^{-3}} is measured rather than assumed. Swept over
 \eqn{\nu} from 2 to 30 and sample sizes from 500 to 4000, it is where the
-truncation error of the five-point stencil of \code{\link[=fd5_first]{fd5_first()}} has
-fallen to the level of the rounding error and the two are balanced; a
-smaller step is dominated by rounding, which the stencil amplifies by
-\eqn{18/(12h)}, and a larger one by truncation, which grows as \eqn{h^4}.
+truncation error of \code{\link[=fd5_first]{fd5_first()}}'s five-point stencil has fallen to the
+level of the rounding error and the two are balanced. A smaller step is
+dominated by rounding, which the stencil amplifies by \eqn{18/(12h)}, and a
+larger one by truncation, which grows as \eqn{h^4}.
+
+The choice shows up in the stopping rule of a fit. On a sample of a
+few thousand the summed score in \eqn{\nu} reaches about \eqn{10^{-11}} at
+this step, so \code{tol = 1e-8} is the honest ask for this family; a
+three-point stencil would leave it near \eqn{10^{-8}} and a run would spend
+its whole budget reporting failure at the maximum.
+}
+\examples{
+distributions7:::skewt_nu_step(c(2, 6, 30, 1e-5))
+
+# Relative above the floor, absolute below it.
+nu <- c(1e-4, 1e-3, 1e-2, 1, 100)
+rbind(nu = nu, step = distributions7:::skewt_nu_step(nu))
+
+}
+\seealso{
+\code{\link[=fd5_first]{fd5_first()}} and its siblings, which consume the step, and
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, the first method that needs it.
 }
 \keyword{internal}

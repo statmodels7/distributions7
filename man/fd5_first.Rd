@@ -7,29 +7,49 @@
 fd5_first(f, x, h)
 }
 \arguments{
-\item{f}{A function of one scalar, returning a numeric vector.}
+\item{f}{A function of one scalar, returning a numeric vector. It is called
+four times, at \eqn{x \pm h} and \eqn{x \pm 2h}.}
 
-\item{x}{The point to differentiate at.}
+\item{x}{A single number, the point to differentiate at.}
 
-\item{h}{The step.}
+\item{h}{A single positive number, the step. For this family it comes from
+\code{\link[=skewt_nu_step]{skewt_nu_step()}}.}
 }
 \value{
 A numeric vector, of whatever length \code{f} returns.
 }
 \description{
-Returns \eqn{(f(x-2h) - 8f(x-h) + 8f(x+h) - f(x+2h))/(12h)}, the
-fourth-order central stencil.
+Returns \eqn{\{f(x-2h) - 8f(x-h) + 8f(x+h) - f(x+2h)\}/(12h)}, the central
+stencil on five nodes that is exact on polynomials up to degree four, so its
+truncation error is \eqn{O(h^4)}. The weights come from
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} at \code{accuracy = 4}, which builds them from the
+Vandermonde system on the offsets \eqn{-2, -1, 0, 1, 2}.
 }
 \details{
 The three-point stencil is not accurate enough for the derivative in
 \eqn{\nu} of a fitted likelihood. Its truncation error is \eqn{O(h^2)} per
 observation and does \strong{not} cancel when the observations are summed,
-because it is a bias rather than noise: on a sample of a few thousand it
-leaves the summed score at about \eqn{10^{-8}}, an order of magnitude worse
-than the five-point stencil, which is \eqn{O(h^4)} and reaches the level of
-rounding at the cost of two more evaluations.
+because it is a bias: on a sample of a few thousand it leaves
+the summed score at about \eqn{10^{-8}}, an order of magnitude worse than
+the five-point stencil, which reaches the level of rounding at the cost of
+two more evaluations of \code{f}.
 
-This is one stencil applied to an analytic quantity, not a difference of a
-difference.
+This is one stencil applied to an analytic quantity. Nothing in this family
+differences a differenced value.
+}
+\examples{
+f <- function(x) exp(x) * sin(x)
+truth <- exp(0.7) * (sin(0.7) + cos(0.7))
+c(stencil = distributions7:::fd5_first(f, 0.7, 1e-3), truth = truth)
+
+# The error falls as h^4 until rounding takes over.
+vapply(c(0.1, 0.05, 0.025),
+       function(h) abs(distributions7:::fd5_first(f, 0.7, h) - truth), 0)
+
+}
+\seealso{
+\code{\link[=fd5_second]{fd5_second()}}, \code{\link[=fd5_third]{fd5_third()}} and \code{\link[=fd5_fourth]{fd5_fourth()}} for the other
+orders, \code{\link[=skewt_nu_step]{skewt_nu_step()}} for the step, and
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} for the stencil library.
 }
 \keyword{internal}

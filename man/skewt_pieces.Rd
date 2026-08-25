@@ -9,29 +9,73 @@ skewt_pieces(y, mu, sigma, alpha, nu)
 \arguments{
 \item{y}{A numeric vector of observations.}
 
-\item{mu, sigma, alpha, nu}{The parameters.}
+\item{mu, sigma, alpha, nu}{The four parameters, numeric vectors of length 1 or
+of the length of \code{y}. Nothing is validated: \code{sigma} and \code{nu} must be
+strictly positive.}
 }
 \value{
-A list with \code{z}, \code{w}, \code{c}, \code{a}, \code{da},
-\code{e}, \code{b}, \code{db}, \code{q} and \code{dq}.
+A named list of ten numeric vectors, each of the length of the
+recycled inputs: \code{z} the standardized variable, \code{w} the tilting argument,
+\code{c} the factor relating them, \code{a} and \code{da} for \eqn{A} and \eqn{A'}, \code{e}
+for \eqn{E}, \code{b} and \code{db} for \eqn{B} and \eqn{B'}, and \code{q} and \code{dq} for
+\eqn{Q} and \eqn{Q'}.
 }
 \description{
-Assembles the standardized variable and the argument of the tilting
-distribution function, together with the six scalar functions every
-derivative of the log-density is a combination of.
+Assembles the standardized variable, the argument of the tilting
+distribution function and the six scalar functions every closed-form
+derivative of the log-density is a combination of. Every method in this
+family calls it once and then writes its own formula in terms of the result.
 }
 \details{
-With \eqn{z = (y-\mu)/\sigma}, \eqn{m = \nu + 1} and
-\eqn{c = \sqrt{m/(\nu + z^2)}}, the tilting argument is \eqn{w = \alpha z c}.
-The functions returned are
-\deqn{A = \dfrac{\partial}{\partial z}\log t_\nu(z) = -\dfrac{m z}{\nu + z^2},
+With \eqn{z = (y-\mu)/\sigma}, \eqn{m = \nu + 1}, \eqn{s = \nu + z^2} and
+\eqn{c = \sqrt{m/s}}, the tilting argument is \eqn{w = \alpha z c}. The
+functions returned are
+\deqn{A = \dfrac{\partial}{\partial z}\log t_\nu(z) = -\dfrac{m z}{s},
       \qquad
-      A' = -\dfrac{m(\nu - z^2)}{(\nu + z^2)^2},}
-\deqn{E = \dfrac{\nu\sqrt{m}}{(\nu + z^2)^{3/2}}, \qquad
+      A' = -\dfrac{m(\nu - z^2)}{s^2},}
+\deqn{E = \dfrac{\nu\sqrt{m}}{s^{3/2}}, \qquad
       B = \dfrac{\partial w}{\partial z} = \alpha E, \qquad
-      B' = -\dfrac{3\alpha\nu\sqrt{m}\,z}{(\nu + z^2)^{5/2}},}
+      B' = -\dfrac{3\alpha\nu\sqrt{m}\,z}{s^{5/2}},}
 and \eqn{Q = t_m(w)/T_m(w)} with
-\eqn{Q' = Q\left\{-\dfrac{(m+1)w}{m + w^2} - Q\right\}}, the last from
-differentiating the quotient.
+\eqn{Q' = Q\{-(m+1)w/(m + w^2) - Q\}}, the last from differentiating the
+quotient.
+
+\eqn{Q} is formed as \code{exp(dt(log = TRUE) - pt(log.p = TRUE))} because both
+factors underflow together in the far left tail while the ratio stays
+finite. It matters as the degrees of freedom grow and the \eqn{t} tail
+approaches the Gaussian's: measured at \eqn{w = -60} with
+\eqn{m = 2000}, the log route returns 21.4345 and \code{dt(w, m)/pt(w, m)}
+returns \code{NaN}.
+
+Nothing here involves \eqn{\nu} by differentiation; the components in
+\eqn{\nu} are obtained separately, by a stencil.
+}
+\section{Notation}{
+
+\eqn{t_\nu} and \eqn{T_\nu} are the standard Student \eqn{t} density and
+distribution function on \eqn{\nu} degrees of freedom, \eqn{\mu} the
+location, \eqn{\sigma} the scale, \eqn{\alpha} the shape and \eqn{\nu} the
+degrees of freedom.
+}
+
+\examples{
+p <- distributions7:::skewt_pieces(c(-1.5, 0.4, 2.1), 0, 1, 3, 6)
+names(p)
+
+# The score in the location is -(A + QB)/sigma.
+d <- skewt_distrib()
+all.equal(-(p$a + p$q * p$b) / 1,
+          distrib_gradient(d, c(-1.5, 0.4, 2.1),
+                           list(mu = 0, sigma = 1, alpha = 3, nu = 6))$mu)
+
+# Q survives a tail where the direct quotient does not.
+c(log_route = exp(dt(-60, df = 2000, log = TRUE) -
+                  pt(-60, df = 2000, log.p = TRUE)),
+  direct = dt(-60, df = 2000) / pt(-60, df = 2000))
+
+}
+\seealso{
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}}, which writes the score in these
+terms, and \code{\link[=skewt_distrib]{skewt_distrib()}} for the family.
 }
 \keyword{internal}

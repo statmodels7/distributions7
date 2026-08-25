@@ -2,27 +2,71 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_pdf.SkewTDistrib}
 \alias{distrib_pdf.SkewTDistrib}
-\title{Skew t Probability Density Function}
+\title{Skew t Density}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, anywhere on the real line.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu},
+each a numeric vector of length 1 or of the length of \code{y}. \code{sigma} and
+\code{nu} must be strictly positive; \code{mu} and \code{alpha} may take any finite
+value.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of the length of the recycled inputs.
 }
 \description{
-Computes the probability density function, with \eqn{z = (y-\mu)/\sigma} and
-\eqn{w = \alpha z \sqrt{(\nu+1)/(\nu+z^2)}}:
+Computes the skew \eqn{t} density, with \eqn{z = (y-\mu)/\sigma} and
+\eqn{w = \alpha z\sqrt{(\nu+1)/(\nu+z^2)}}:
 \deqn{f(y; \mu, \sigma, \alpha, \nu) = \dfrac{2}{\sigma}\,
-  t_\nu(z)\,T_{\nu+1}(w)}
-with \eqn{t_\nu} the standard Student \eqn{t} density and \eqn{T_{\nu+1}} the
-Student \eqn{t} distribution function on one more degree of freedom.
+      t_\nu(z)\,T_{\nu+1}(w),}
+with \eqn{t_\nu} the standard Student \eqn{t} density and \eqn{T_{\nu+1}}
+its distribution function on \strong{one more} degree of freedom. The extra
+degree of freedom is deliberate: without it the tilted density would not
+integrate to one.
+
+The two logarithms are taken separately and added, \code{dt(log = TRUE)} beside
+\code{pt(log.p = TRUE)}, so the light tail of the skewed side returns a large
+negative number instead of \code{-Inf}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
+shape and \eqn{\nu > 0} the degrees of freedom. Neither \eqn{\mu} nor
+\eqn{\sigma} is a moment.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, sigma = 1, alpha = 3, nu = 6)
+
+# The formula written out.
+w <- 3 * y * sqrt(7 / (6 + y^2))
+all.equal(distrib_pdf(d, y, th), 2 * dt(y, 6) * pt(w, 7))
+
+# It integrates to one.
+integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value
+
+# Shape zero is the Student t.
+all.equal(distrib_pdf(d, y, list(mu = 0, sigma = 1, alpha = 0, nu = 6)),
+          dt(y, 6))
+
+# Large degrees of freedom give the skew normal, at O(1/nu).
+sn <- skewnormal1_distrib()
+vapply(c(1e2, 1e4, 1e6), function(v)
+  max(abs(distrib_pdf(d, y, list(mu = 0, sigma = 1, alpha = 3, nu = v)) -
+          distrib_pdf(sn, y, list(mu = 0, sigma = 1, alpha = 3)))), 0)
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_gradient.SkewTDistrib]{distrib_gradient.SkewTDistrib()}} for the score,
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the \eqn{\nu \to \infty} limit,
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the \eqn{\alpha = 0} case, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+for the generic.
 }

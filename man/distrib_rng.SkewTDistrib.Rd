@@ -2,23 +2,59 @@
 % Please edit documentation in R/skewt_distrib.R
 \name{distrib_rng.SkewTDistrib}
 \alias{distrib_rng.SkewTDistrib}
-\title{Skew t Random Number Generator}
+\title{Skew t Random Generation}
 \arguments{
-\item{distrib}{A \code{SkewTDistrib} object.}
+\item{distrib}{A \code{SkewTDistrib} object, from \code{\link[=skewt_distrib]{skewt_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma}, \code{alpha} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma}, \code{alpha} and \code{nu},
+each a numeric vector of length 1 or of length \code{n}; a component of length
+1 is recycled.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates draws exactly, from the scale mixture
-\eqn{Y = \mu + \sigma Z/\sqrt{V/\nu}} with \eqn{Z} standard skew normal of
-shape \eqn{\alpha} and \eqn{V \sim \chi^2_\nu} independent of it. No
-inversion or rejection is involved.
+Draws from the skew \eqn{t} exactly, from its scale-mixture representation:
+with \eqn{Z} standard skew normal of shape \eqn{\alpha} and
+\eqn{V \sim \chi^2_\nu} independent of it,
+\deqn{Y = \mu + \sigma\,\dfrac{Z}{\sqrt{V/\nu}}.}
+\eqn{Z} itself is drawn from \code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}}'s
+representation, so the whole draw is three \code{rnorm}/\code{rchisq} calls and no
+inversion or rejection.
+
+The representation reads off both limits. As \eqn{\nu \to \infty} the mixing
+factor tends to one and \eqn{Y} is skew normal; at \eqn{\alpha = 0} the
+numerator is Gaussian and \eqn{Y} is Student \eqn{t}.
+}
+\section{Notation}{
+
+\eqn{\nu} is the degrees of freedom of the mixing chi-squared and
+\eqn{\delta = \alpha/\sqrt{1+\alpha^2}} the weight of the half-normal
+component of \eqn{Z}.
+}
+
+\examples{
+d <- skewt_distrib()
+th <- list(mu = 1, sigma = 2, alpha = 3, nu = 8)
+
+set.seed(21)
+x <- distrib_rng(d, 1e5, th)
+
+# Two moments against their closed forms. Both exist here; at nu <= 2 the
+# variance does not.
+rbind(sample = c(mean(x), var(x)),
+      theory = c(mean(d, th), variance(d, th)))
+
+# The mixture, written out at the same seed.
+set.seed(21)
+delta <- 3 / sqrt(1 + 9)
+z <- delta * abs(rnorm(1e5)) + sqrt(1 - delta^2) * rnorm(1e5)
+all.equal(x, 1 + 2 * z / sqrt(rchisq(1e5, df = 8) / 8))
 }
 \seealso{
-\code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=distrib_pdf.SkewTDistrib]{distrib_pdf.SkewTDistrib()}} for the density the draws follow,
+\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}} for the inner representation, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
