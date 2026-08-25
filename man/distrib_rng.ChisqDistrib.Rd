@@ -2,20 +2,43 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_rng.ChisqDistrib}
 \alias{distrib_rng.ChisqDistrib}
-\title{Chi-Squared Random Generation}
+\title{Chi-Squared Random Number Generator}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of length \code{n}. A component of length 1 is recycled, so a
+vector of length \code{n} draws one variate per parameter setting. It must be
+strictly positive and need not be a whole number.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of \code{n} strictly positive draws.
 }
 \description{
-Draws through \code{\link[stats:Chisquare]{stats::rchisq()}}.
+Draws \code{n} independent chi-squared variates by calling \code{\link[stats:Chisquare]{stats::rchisq()}} at
+\code{df = mu}, so the draws come from R's own generator and depend on
+\code{.Random.seed} in the usual way. The ratio-of-uniforms fallback the base
+class supplies is bypassed.
+}
+\examples{
+d <- chisq_distrib()
+
+# Same generator as stats::rchisq at df = mu.
+set.seed(2)
+a <- distrib_rng(d, 3, list(mu = 4))
+set.seed(2)
+identical(a, rchisq(3, df = 4))
+
+# The sample mean recovers the degrees of freedom, and the variance is
+# about twice it, the two being tied.
+set.seed(7)
+z <- distrib_rng(d, 2e4, list(mu = 4))
+c(mean = mean(z), var = var(z))
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_quantile.ChisqDistrib]{distrib_quantile.ChisqDistrib()}} for the inverse-transform route,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameter back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

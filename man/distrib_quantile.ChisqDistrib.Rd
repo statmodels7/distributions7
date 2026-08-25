@@ -4,22 +4,53 @@
 \alias{distrib_quantile.ChisqDistrib}
 \title{Chi-Squared Quantile Function}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN}
+with a warning; \code{p = 0} gives 0 and \code{p = 1} gives \code{Inf}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{p}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
+logarithms of probabilities. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles in \eqn{[0, \infty]}, of length
+\code{max(length(p), length(mu))}.
 }
 \description{
-The inverse of \code{\link[stats:Chisquare]{stats::pchisq()}}.
+Computes the chi-squared quantile function, the inverse of the regularized
+incomplete gamma function in its argument, by calling \code{\link[stats:Chisquare]{stats::qchisq()}} at
+\code{df = mu}. There is no elementary closed form; \code{qchisq()} inverts the
+distribution function numerically. The distribution function is strictly
+increasing on \eqn{(0, \infty)}, so the round trip through
+\code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf.ChisqDistrib()}} returns \code{p}.
+}
+\examples{
+d <- chisq_distrib()
+th <- list(mu = 4)
+
+# The critical values a test reads, here at four degrees of freedom.
+distrib_quantile(d, c(0.9, 0.95, 0.99), th)
+
+# A central 95 percent interval, asymmetric about the mean of 4.
+distrib_quantile(d, c(0.025, 0.5, 0.975), th)
+
+# Exact inverse: the round trip returns the probabilities it was given.
+p <- c(0.025, 0.5, 0.975)
+all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
+
+# The median falls below the mean, the family being right skewed.
+c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf.ChisqDistrib()}}, which this inverts;
+\code{\link[=distrib_rng.ChisqDistrib]{distrib_rng.ChisqDistrib()}}, which does not use it;
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

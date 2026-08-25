@@ -2,25 +2,57 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_cdf.ChisqDistrib}
 \alias{distrib_cdf.ChisqDistrib}
-\title{Chi-Squared Distribution Function}
+\title{Chi-Squared Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A value at or below zero gives a
+lower-tail probability of 0.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{q}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu))}. With \code{log.p = TRUE} the values are
+logarithms and are non-positive.
 }
 \description{
-The regularized lower incomplete gamma function
-\eqn{P(\mu/2, q/2)}.
+Computes the chi-squared distribution function, the regularized incomplete
+gamma function at shape \eqn{\mu/2} and argument \eqn{q/2}, by calling
+\code{\link[stats:Chisquare]{stats::pchisq()}} at \code{df = mu}. Both tails are available exactly:
+\code{lower.tail = FALSE} evaluates \eqn{1 - F} without forming the difference,
+and \code{log.p = TRUE} returns a logarithm that stays finite where the
+probability itself underflows to zero.
+}
+\examples{
+d <- chisq_distrib()
+th <- list(mu = 4)
+
+# The method is stats::pchisq at df = mu.
+all.equal(distrib_cdf(d, c(1, 4, 9), th), pchisq(c(1, 4, 9), df = 4))
+
+# The two tails sum to one.
+distrib_cdf(d, 9, th) + distrib_cdf(d, 9, th, lower.tail = FALSE)
+
+# Right skewed, so less than half the mass lies below the mean.
+distrib_cdf(d, 4, th)
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 2000, th, lower.tail = FALSE)
+distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_quantile.ChisqDistrib]{distrib_quantile.ChisqDistrib()}} for the inverse,
+\code{\link[=distrib_pdf.ChisqDistrib]{distrib_pdf.ChisqDistrib()}} for the density, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} for the
+derivatives of this function in the parameter, which the chi-squared takes
+by finite difference because the derivative of an incomplete gamma in its
+shape is hypergeometric, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

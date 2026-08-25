@@ -2,26 +2,77 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_hessian.ChisqDistrib}
 \alias{distrib_hessian.ChisqDistrib}
-\title{Chi-Squared Analytical Observed Hessian}
+\title{Chi-Squared Observed Hessian}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list with one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))} and constant within itself when the parameter
+is.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4}}
-which does not involve the response, so it coincides with the expected
-information.
+Computes the second derivative of the chi-squared log-density with respect
+to \eqn{\mu}, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4},}
+with \eqn{\psi'} the trigamma function. \strong{It does not involve the
+response.} The family is a one-parameter exponential family in
+\eqn{\log y}, so the data reach the log-density only through a term linear
+in \eqn{\mu} and the second derivative kills it. The value is constant
+within a parameter setting, is recycled to the length of \code{y}, and equals
+\code{\link[=distrib_expected_hessian.ChisqDistrib]{distrib_expected_hessian.ChisqDistrib()}} exactly.
+
+The coincidence is on the \strong{parameter} scale. On the link scale the two
+differ, the second-order chain rule adding a term
+\eqn{h''(\eta)\,\partial\ell/\partial\mu} that the expected version drops
+and a sample does not; the example below measures it.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ij)}} is the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}; parenthesized superscripts name derivatives.
+\eqn{\psi'} is the trigamma function and \eqn{h(\eta)} the inverse link.
+}
+
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+
+# A constant across the observations, written out with the trigamma.
+distrib_hessian(d, y, th)
+-trigamma(2) / 4
+
+# Free of the response, so it equals its own expectation to the bit.
+identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
+
+# On the link scale they differ by h''(eta) times the score, which is what
+# makes Fisher scoring and Newton's method take different steps.
+obs <- distrib_hessian(d, y, th, scale = "link")$mu_mu
+exp_ <- distrib_expected_hessian(d, y, th, scale = "link")$mu_mu
+rbind(observed = obs, expected = exp_,
+      difference = obs - exp_,
+      h2_times_score = 4 * distrib_gradient(d, y, th)$mu)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_gradient.ChisqDistrib]{distrib_gradient.ChisqDistrib()}} for the score, which is the one
+quantity here that reads the data;
+\code{\link[=distrib_expected_hessian.ChisqDistrib]{distrib_expected_hessian.ChisqDistrib()}}, which returns the same number
+on the parameter scale; \code{\link[=distrib_deriv3.ChisqDistrib]{distrib_deriv3.ChisqDistrib()}} for the order
+above; and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

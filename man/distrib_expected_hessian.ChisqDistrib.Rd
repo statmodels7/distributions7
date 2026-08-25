@@ -2,33 +2,84 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_expected_hessian.ChisqDistrib}
 \alias{distrib_expected_hessian.ChisqDistrib}
-\title{Chi-Squared Analytical Expected Hessian}
+\title{Chi-Squared Expected Hessian}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, the expectation being exact. Accepted so that the
+signature matches the generic's, where it selects between the Bartlett,
+quadrature, Monte Carlo and outer-product routes.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu} component.
+A named list with one numeric vector, \code{mu_mu}, of length
+\code{max(length(y), length(mu))} and constant within itself when the parameter
+is.
 }
 \description{
+Returns the same number as \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}},
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right]
-      = -\dfrac{\psi'(\mu/2)}{4}}
-identical to the observed Hessian on the parameter scale, which the second
-derivative not depending on the response makes exact rather than
-approximate. The two differ on the link scale, where the chain rule adds a
-term proportional to the score; see \code{\link[=chisq_distrib]{chisq_distrib()}}.
+      = -\dfrac{\psi'(\mu/2)}{4},}
+the observed second derivative being free of the response and so equal to
+its own expectation. Nothing is averaged, integrated or simulated, so
+\code{approx} and \code{nsim} are ignored and \code{y} is read only for its length. The
+value is negative at every \eqn{\mu}, the trigamma function being positive,
+so the information is positive throughout.
+
+The identity holds on the \strong{parameter} scale. On the link scale the
+second-order chain rule adds \eqn{h''(\eta)\,\partial\ell/\partial\mu} to
+the observed Hessian; the expected version drops that term because the score
+has mean zero, and a finite sample does not. Fisher scoring and Newton's
+method therefore take different steps here and agree at the optimum, where
+the summed score vanishes.
+}
+\section{Notation}{
+
+The \strong{expected information} is
+\eqn{\mathbb{E}[-\partial^2\ell/\partial\mu^2]}, the expectation of the
+\strong{observed information} under the model. The chi-squared is a regular
+family, so the second Bartlett identity holds and this equals the variance
+of the score. \eqn{\psi'} is the trigamma function.
+}
+
+\examples{
+d <- chisq_distrib()
+th <- list(mu = 4)
+
+# A constant, and identical to the observed Hessian.
+unique(distrib_expected_hessian(d, c(1, 4, 9), th)$mu_mu)
+identical(distrib_expected_hessian(d, c(1, 4, 9), th),
+          distrib_hessian(d, c(1, 4, 9), th))
+
+# Negative at every mu, the trigamma function being positive.
+vapply(c(0.5, 4, 40),
+       function(m) distrib_expected_hessian(d, 0, list(mu = m))$mu_mu,
+       numeric(1))
+
+# The two fitting methods differ on the link scale and land together.
+set.seed(7)
+z <- distrib_rng(d, 2000, th)
+c(newton = coef(fit_distrib(d, z, method = "newton")),
+  fisher = coef(fit_distrib(d, z, method = "fisher")))
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}}, which returns the same number;
+\code{\link[=fisher_scoring]{fisher_scoring()}}, which inverts it at each step; and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

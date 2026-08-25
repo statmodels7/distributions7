@@ -2,76 +2,130 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{chisq_distrib}
 \alias{chisq_distrib}
-\title{Chi-Squared Distribution Object}
+\title{Chi-Squared Distribution}
 \usage{
 chisq_distrib(link_mu = log_link())
 }
 \arguments{
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{ChisqDistrib}.
+An S7 object of class \code{ChisqDistrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"chisq"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(0, Inf)}, \code{params} \code{"mu"}, \code{n_params} \code{1},
+\code{params_bounds} the domain \eqn{(0, \infty)}, and \code{link_params} the link
+given here.
 }
 \description{
-Creates a distribution object for the chi-squared distribution, parametrized
-by its mean \eqn{\mu}, which is the degrees of freedom.
+Builds the distribution object for the chi-squared family on
+\eqn{(0, \infty)}, parametrized by its mean \eqn{\mu > 0}, which is the
+degrees of freedom. The returned object carries closed-form derivatives of
+the log-density to fourth order, in the parameter and in the response, and
+closed-form moments, so every generic of the toolkit answers without a
+numerical fallback.
+
+The one argument chooses the link that carries the parameter to the
+unconstrained scale an optimizer works on, and defaults to the logarithm.
 }
-\details{
-The degrees of freedom are treated as a continuous positive parameter, which
-is what makes the family estimable; the mean is \eqn{\mu} and the variance
-\eqn{2\mu}.
+\section{The parametrization}{
+The degrees of freedom are treated as a continuous positive parameter, so
+the one-parameter family is estimable. The density on
+\eqn{y \in (0, \infty)} is
+\deqn{f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\,\Gamma(\mu/2)},}
+the mean is \eqn{\mu}, the variance \eqn{2\mu}, the skewness
+\eqn{2\sqrt{2/\mu}} and the excess kurtosis \eqn{12/\mu}. The spread is
+tied to the mean, so the family has no free scale.
 
-\strong{Density:}
-\deqn{f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\Gamma(\mu/2)}}
+The law is a gamma with shape \eqn{\mu/2} and scale 2, and it is \strong{not} a
+gamma with a parameter held: this package writes the gamma in
+\eqn{(\mu, \sigma^2)}, and a scale of 2 is the relation
+\eqn{\sigma^2 = 2\mu} between two parameters rather than a value one of them
+can be fixed at. At \eqn{\mu = 2} it is the exponential with mean 2.
+}
 
-\strong{Score and information:}
+\section{The response leaves after the first derivative}{
+The family is a one-parameter exponential family in \eqn{\log y}, so
 \deqn{\dfrac{\partial \ell}{\partial \mu}
         = \dfrac{\log y - \log 2 - \psi(\mu/2)}{2}, \qquad
-      \dfrac{\partial^2 \ell}{\partial \mu^2} = -\dfrac{\psi'(\mu/2)}{4}}
-
-The family is a one-parameter exponential family in \eqn{\log y}, so from
-the second order on the derivatives do not involve the response at all,
-\deqn{\ell^{(k)} = -\dfrac{\psi^{(k-2)}(\mu/2)}{2^{k}}, \qquad k \ge 2.}
-On the parameter scale the observed information is therefore exactly the
-expected information, and the same holds at third and fourth order: there is
-nothing to average. \eqn{\mathbb{E}[\log y] = \psi(\mu/2) + \log 2} is what
-makes the score have mean zero.
+      \ell^{(k)} = -\dfrac{\psi^{(k-2)}(\mu/2)}{2^{k}}, \quad k \ge 2,}
+with \eqn{\psi} the digamma function. From the second order on nothing
+involves the response at all. Two things follow. On the parameter scale the
+observed information is exactly the expected information, and the same holds
+at third and fourth order, so asking any of those methods for
+\code{expected = TRUE} returns the same numbers. And
+\eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2} is what gives the score mean
+zero.
 
 That coincidence does not carry to the scale a fit optimizes on. The
-second-order chain rule of \code{\link[=distrib_hessian]{distrib_hessian()}} adds a term
-\eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian, and the
-expected version drops it because the score has mean zero, while a sample
-does not. Fisher scoring and Newton's method therefore take different steps
-here, and agree at the optimum, where the summed score vanishes.
+second-order chain rule adds a term
+\eqn{h''(\eta)\,\partial\ell/\partial\mu} to the link-scale Hessian; the
+expected version drops it because the score has mean zero, and a finite
+sample does not. Fisher scoring and Newton's method therefore take different
+steps here and agree at the optimum, where the summed score vanishes. The
+example on \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}} measures that difference.
 
-\strong{Moments:} mean \eqn{\mu}, variance \eqn{2\mu}, skewness
-\eqn{2\sqrt{2/\mu}}, excess kurtosis \eqn{12/\mu}.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, +\infty)}
+The derivatives of the \emph{distribution} function in the parameter have no
+elementary form, the derivative of an incomplete gamma in its shape being
+hypergeometric, and are taken by finite difference on the analytic cdf.
 }
 
-The family is a Gamma with shape \eqn{\mu/2} and scale 2, but it is
-\strong{not} a Gamma with a fixed parameter: this package writes the Gamma
-in \eqn{(\mu, \sigma^2)}, and a scale of 2 is the relation
-\eqn{\sigma^2 = 2\mu} between two parameters rather than a value one of them
-can be held at.
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. The estimate
+solves \eqn{\psi(\hat\mu/2) = \overline{\log y} - \log 2} and has no closed
+form; the sample mean is the method of moments starting value and lands
+beside it.
 }
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
+which is also the degrees of freedom. \eqn{\psi} is the digamma function and
+\eqn{\psi^{(m)}} its \eqn{m}th derivative. \eqn{\eta} is the parameter on
+the unconstrained scale of its link, with \eqn{\mu = h(\eta)}.
+}
+
 \examples{
 d <- chisq_distrib()
-d@params
+d
 
-theta <- list(mu = 4)
-distrib_pdf(d, c(1, 4, 9), theta)
-distrib_gradient(d, c(1, 4, 9), theta)
+# The density is stats::dchisq at df = mu.
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+all.equal(distrib_pdf(d, y, th), dchisq(y, df = 4))
 
-# the observed and expected information coincide exactly
-distrib_hessian(d, c(1, 4, 9), theta)
-distrib_expected_hessian(d, c(1, 4, 9), theta)
+# Moments: the variance is 2 mu, so the spread is not free.
+c(mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+c(2 * sqrt(2 / 4), 12 / 4)
+
+# It is the gamma at sigma2 = 2 mu, and the exponential at mu = 2.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(gamma2_distrib(), y, list(mu = 4, sigma2 = 8)))
+all.equal(distrib_pdf(d, y, list(mu = 2)),
+          distrib_pdf(exponential_distrib(), y, list(mu = 2)))
+
+# From the second order on nothing involves the response, so the observed
+# and expected information coincide on the parameter scale.
+identical(distrib_hessian(d, y, th), distrib_expected_hessian(d, y, th))
+
+# Fitting recovers the degrees of freedom; the sample mean starts it off.
+set.seed(7)
+z <- distrib_rng(d, 2000, th)
+rbind(fitted = coef(fit_distrib(d, z)), moment = c(mu = mean(z)))
 
 }
+\references{
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1994).
+\emph{Continuous Univariate Distributions}, Volume 1, 2nd edition, Chapter 18.
+Wiley, New York.
+}
 \seealso{
-\code{\link[=gamma2_distrib]{gamma2_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=gamma2_distrib]{gamma2_distrib()}} for the two-parameter family this sits inside at
+\eqn{\sigma^2 = 2\mu}, and \code{\link[=gamma1_distrib]{gamma1_distrib()}} for its dispersion form;
+\code{\link[=exponential_distrib]{exponential_distrib()}} for the case \eqn{\mu = 2};
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for a wider family still; \code{\link[=fit_distrib]{fit_distrib()}} to estimate
+the parameter; \code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against
+the same battery this one passes; \link{ChisqDistrib} for the class.
 }

@@ -2,22 +2,59 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_grad_y.ChisqDistrib}
 \alias{distrib_grad_y.ChisqDistrib}
-\title{Chi-Squared Response Gradient}
+\title{Chi-Squared First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
+value is infinite unless \eqn{\mu} is exactly 2.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{max(length(y), length(mu))}, one value
+per observation.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\mu/2 - 1}{y} - \dfrac{1}{2}}
+Computes the first derivative of the chi-squared log-density with respect to
+the response, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial y} = \dfrac{\mu/2 - 1}{y}
+      - \dfrac{1}{2}.}
+It changes sign at \eqn{y = \mu - 2}, which is the mode of the density for
+\eqn{\mu > 2}. At \eqn{\mu = 2} the first term drops out and the derivative
+is the constant \eqn{-1/2} of an exponential with mean 2; below \eqn{\mu =
+2} the density has no interior mode and the derivative is negative
+throughout.
+
+Quantile residuals and the mixed derivatives of \code{\link[=distrib_cross_y]{distrib_cross_y()}} read it.
+}
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+
+# Written out.
+all.equal(distrib_grad_y(d, y, th), (4 / 2 - 1) / y - 0.5)
+
+# Zero at the mode mu - 2, positive below it and negative above.
+c(mode = 4 - 2, at_mode = distrib_grad_y(d, 2, th))
+distrib_grad_y(d, c(1, 9), th)
+
+# At mu = 2 the family is exponential and the derivative is constant.
+distrib_grad_y(d, y, list(mu = 2))
+
+# It is the derivative of the log-density, so a central difference in y
+# reproduces it.
+eps <- 1e-6
+(distrib_pdf(d, y + eps, th, log = TRUE) -
+  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_hess_y.ChisqDistrib]{distrib_hess_y.ChisqDistrib()}} for the second derivative in the
+response, \code{\link[=distrib_gradient.ChisqDistrib]{distrib_gradient.ChisqDistrib()}} for the derivative in the
+parameter, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

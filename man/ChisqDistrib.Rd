@@ -2,7 +2,7 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{ChisqDistrib}
 \alias{ChisqDistrib}
-\title{S7 Class for the Chi-Squared Distribution}
+\title{Chi-Squared Distribution Class}
 \usage{
 ChisqDistrib(
   distrib_name = character(0),
@@ -36,15 +36,31 @@ ChisqDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{ChisqDistrib}.
+An S7 object of class \code{ChisqDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=chisq_distrib]{chisq_distrib()}} they hold \code{"chisq"}, \code{"univariate"},
+\code{c(0, Inf)}, \code{"mu"}, the interpretation \code{c(mu = "mean")}, \code{1}, the domain
+\eqn{(0, \infty)}, and the one link.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the
-chi-squared distribution, whose degrees of freedom are its mean.
+The S7 class of the chi-squared family on \eqn{(0, \infty)}, parametrized by
+its mean \eqn{\mu > 0}, which is the degrees of freedom. They are treated as
+a continuous positive parameter, so the one-parameter family is estimable;
+the variance is then \eqn{2\mu}. It
+inherits from \code{continuous_distrib}, so it answers every generic of the
+\code{distrib} contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+Build one with \code{\link[=chisq_distrib]{chisq_distrib()}}, which supplies the link function and fills
+the properties in. This page documents the raw S7 constructor, which takes
+the parent's properties and validates none of the relationships between
+them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.ChisqDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.ChisqDistrib]{distrib_deriv4()}},
@@ -60,6 +76,23 @@ Methods implemented for this class:
 Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
 }
 
+\examples{
+d <- chisq_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# One parameter, and it is the mean.
+d@params
+d@n_params
+d@params_interpretation
+
+# The variance is tied to it at 2 mu, so the family has no free spread.
+vapply(c(1, 4, 20), function(m) variance(d, list(mu = m)), numeric(1))
+}
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=chisq_distrib]{chisq_distrib()}} to build one;
+\code{\link[=gamma2_distrib]{gamma2_distrib()}}, which contains this family at
+\eqn{\sigma^2 = 2\mu}; \code{\link[=exponential_distrib]{exponential_distrib()}} for the case
+\eqn{\mu = 2}; \code{\link[=distrib_pdf.ChisqDistrib]{distrib_pdf.ChisqDistrib()}} and
+\code{\link[=distrib_gradient.ChisqDistrib]{distrib_gradient.ChisqDistrib()}} for the closed forms this class
+supplies.
 }

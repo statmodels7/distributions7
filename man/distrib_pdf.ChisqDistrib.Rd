@@ -2,23 +2,63 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_pdf.ChisqDistrib}
 \alias{distrib_pdf.ChisqDistrib}
-\title{Chi-Squared Density}
+\title{Chi-Squared Probability Density Function}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. The support is
+\eqn{(0, \infty)}; a value at or below zero gives 0, \code{Inf} or a finite
+value according to \eqn{\mu}.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive and need not be a whole number.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu))}, one value per observation.
 }
 \description{
-\deqn{f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\Gamma(\mu/2)},
-      \qquad y > 0}
+Computes the chi-squared density
+\deqn{f(y; \mu) = \dfrac{y^{\mu/2 - 1} e^{-y/2}}{2^{\mu/2}\,\Gamma(\mu/2)},
+      \qquad y > 0,}
+by calling \code{\link[stats:Chisquare]{stats::dchisq()}} at \code{df = mu}. With \code{log = TRUE} the logarithm
+is formed inside \code{dchisq()} and stays finite where the density itself
+underflows.
+
+The density is unbounded at the origin for \eqn{\mu < 2}, flat there at
+\eqn{\mu = 2}, where the family is the exponential with mean 2, and vanishes
+at the origin for \eqn{\mu > 2}.
+}
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+
+# The method is stats::dchisq at df = mu.
+all.equal(distrib_pdf(d, y, th), dchisq(y, df = 4))
+
+# It is the gamma with sigma2 = 2 mu, and the exponential at mu = 2.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(gamma2_distrib(), y, list(mu = 4, sigma2 = 8)))
+all.equal(distrib_pdf(d, y, list(mu = 2)),
+          distrib_pdf(exponential_distrib(), y, list(mu = 2)))
+
+# The degrees of freedom need not be a whole number.
+distrib_pdf(d, y, list(mu = 3.7))
+
+# Far out in the tail the density underflows and its logarithm does not.
+distrib_pdf(d, 2000, th)
+distrib_pdf(d, 2000, th, log = TRUE)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_cdf.ChisqDistrib]{distrib_cdf.ChisqDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.ChisqDistrib]{distrib_gradient.ChisqDistrib()}} for the derivative of the log-density,
+\code{\link[=distrib_pdf.Gamma2Distrib]{distrib_pdf.Gamma2Distrib()}} for the family this sits inside, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

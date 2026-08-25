@@ -2,26 +2,81 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_gradient.ChisqDistrib}
 \alias{distrib_gradient.ChisqDistrib}
-\title{Chi-Squared Analytical Gradient}
+\title{Chi-Squared Score}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. A value at
+zero makes the logarithm infinite and the score non-finite.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} component.
+A named list with one numeric vector, \code{mu}, of length
+\code{max(length(y), length(mu))}.
 }
 \description{
+Computes the derivative of the chi-squared log-density with respect to
+\eqn{\mu}, one value per observation, in closed form:
 \deqn{\dfrac{\partial \ell}{\partial \mu} =
-      \dfrac{\log y - \log 2 - \psi(\mu/2)}{2}}
-the only order that involves the response.
+      \dfrac{\log y - \log 2 - \psi(\mu/2)}{2},}
+with \eqn{\psi} the digamma function. The family is a one-parameter
+exponential family in \eqn{\log y}, so this is the sufficient statistic
+minus its expectation, and \strong{it is the only order that involves the
+response at all}: every derivative from the second up is a polygamma
+function of \eqn{\mu/2} and nothing else.
+
+The score has mean zero because
+\eqn{\mathbb{E}[\log Y] = \psi(\mu/2) + \log 2}.
+
+With \code{scale = "link"} the generic applies the chain rule for the link the
+family carries before returning. This method always returns the parameter
+scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation and \eqn{\mu > 0} the mean,
+which is also the degrees of freedom. \eqn{\psi} is the digamma function,
+\eqn{\psi = (\log\Gamma)'}.
+}
+
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+g <- distrib_gradient(d, y, th)
+
+# The closed form, written out with the digamma function.
+all.equal(g$mu, (log(y) - log(2) - digamma(2)) / 2)
+
+# It is a sufficient statistic minus its expectation, so the sample mean of
+# log y matches psi(mu/2) + log 2.
+set.seed(9)
+z <- distrib_rng(d, 2e5, th)
+c(sample = mean(log(z)), theory = digamma(2) + log(2))
+
+# The score vanishes where log y equals that expectation.
+distrib_gradient(d, exp(digamma(2) + log(2)), th)$mu
+
+# Summed over a fitted sample it is at the optimizer's tolerance.
+set.seed(7)
+zz <- distrib_rng(d, 2000, th)
+sum(distrib_gradient(d, zz, as.list(coef(fit_distrib(d, zz))))$mu)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}} for the second derivative,
+\code{\link[=distrib_expected_hessian.ChisqDistrib]{distrib_expected_hessian.ChisqDistrib()}}, which returns the same number,
+\code{\link[=distrib_grad_y.ChisqDistrib]{distrib_grad_y.ChisqDistrib()}} for the derivative in the response, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

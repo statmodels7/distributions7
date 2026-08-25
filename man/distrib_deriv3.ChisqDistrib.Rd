@@ -2,31 +2,79 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_deriv3.ChisqDistrib}
 \alias{distrib_deriv3.ChisqDistrib}
-\title{Chi-Squared Analytical Third-Order Derivative}
+\title{Chi-Squared Third-Order Derivative}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{expected}{Logical; the two coincide, so it changes nothing.}
+\item{expected}{Logical of length 1, and without effect here, the observed
+and expected third derivatives being the same number. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored, a closed form being available.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu_mu_mu} component.
+A named list with one numeric vector, \code{mu_mu_mu}, of length
+\code{max(length(y), length(mu))} and constant within itself when the parameter
+is.
 }
 \description{
-\deqn{\ell^{(\mu\mu\mu)} = -\dfrac{\psi''(\mu/2)}{8}}
-observed and expected alike.
+Computes the single third derivative of the chi-squared log-density with
+respect to \eqn{\mu}, in closed form:
+\deqn{\ell^{(\mu\mu\mu)} = -\dfrac{\psi''(\mu/2)}{8},}
+with \eqn{\psi''} the second derivative of the digamma function. It is one
+case of the general pattern
+\eqn{\ell^{(k)} = -\psi^{(k-2)}(\mu/2)/2^{k}} for \eqn{k \ge 2}, which holds
+because the family is a one-parameter exponential family in \eqn{\log y} and
+the response leaves the derivatives after the first order.
+
+The value is free of the response, so \code{expected} selects nothing: the same
+kernel runs either way and the two results are identical to the bit.
+\code{approx} and \code{nsim} are ignored for the same reason.
+}
+\section{Notation}{
+
+\eqn{\ell^{(ijk)}} is the third derivative of the log-density in parameters
+\eqn{i}, \eqn{j} and \eqn{k}. \eqn{\psi} is the digamma function and
+\eqn{\psi^{(m)}} its \eqn{m}th derivative.
+}
+
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+
+# A constant, written out with the second derivative of the digamma.
+unique(distrib_deriv3(d, y, th)$mu_mu_mu)
+-psigamma(2, deriv = 2) / 8
+
+# Free of the response, so asking for the expectation changes nothing.
+identical(distrib_deriv3(d, y, th), distrib_deriv3(d, y, th, expected = TRUE))
+
+# A central difference of the Hessian reproduces it.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 4 + eps))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 4 - eps))$mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv3(d, y, th)$mu_mu_mu,
+          tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}} for the order below and
+\code{\link[=distrib_deriv4.ChisqDistrib]{distrib_deriv4.ChisqDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

@@ -2,22 +2,49 @@
 % Please edit documentation in R/chisq_distrib.R
 \name{distrib_hess_y.ChisqDistrib}
 \alias{distrib_hess_y.ChisqDistrib}
-\title{Chi-Squared Response Hessian}
+\title{Chi-Squared Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{ChisqDistrib} object.}
+\item{distrib}{A \code{ChisqDistrib} object, from \code{\link[=chisq_distrib]{chisq_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of strictly positive observations. At \code{y = 0} the
+value is infinite unless \eqn{\mu} is exactly 2.}
 
-\item{theta}{A list containing the parameter \code{mu}.}
+\item{theta}{A named list with one component \code{mu}, a numeric vector of
+length 1 or of the length of \code{y}, recycled if of length 1. It must be
+strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length \code{max(length(y), length(mu))}, one value
+per observation.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\mu/2 - 1}{y^2}}
+Computes the second derivative of the chi-squared log-density with respect
+to the response, in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\dfrac{\mu/2 - 1}{y^2}.}
+The exponential term drops out, the log-density being linear in \eqn{y}
+apart from the \eqn{(\mu/2 - 1)\log y} term. The sign follows \eqn{\mu}: the
+log-density is concave in the response for \eqn{\mu > 2}, exactly flat at
+\eqn{\mu = 2}, where the family is the exponential with mean 2, and convex
+for \eqn{\mu < 2}.
+}
+\examples{
+d <- chisq_distrib()
+y <- c(1, 4, 9)
+th <- list(mu = 4)
+
+all.equal(distrib_hess_y(d, y, th), -(4 / 2 - 1) / y^2)
+
+# Concave above mu = 2, flat at it, convex below.
+vapply(c(4, 2, 1), function(m) distrib_hess_y(d, 4, list(mu = m)),
+       numeric(1))
+
+# Negative everywhere at four degrees of freedom.
+all(distrib_hess_y(d, y, th) < 0)
 }
 \seealso{
-\code{\link[=chisq_distrib]{chisq_distrib()}}
+\code{\link[=distrib_grad_y.ChisqDistrib]{distrib_grad_y.ChisqDistrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.ChisqDistrib]{distrib_hessian.ChisqDistrib()}} for the curvature in the
+parameter, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
