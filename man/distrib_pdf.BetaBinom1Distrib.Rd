@@ -4,22 +4,64 @@
 \alias{distrib_pdf.BetaBinom1Distrib}
 \title{Beta-Binomial Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A value outside
+\eqn{\{0, \dots, n\}} or not an integer gives a mass of 0, or \code{-Inf} with
+\code{log = TRUE}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-mass is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(y), length(mu), length(sigma))}, one value per observation.
 }
 \description{
+Computes the beta-binomial mass
 \deqn{P(Y = y) = \binom{n}{y}
       \dfrac{B(y + \alpha,\; n - y + \beta)}{B(\alpha, \beta)}, \qquad
-      \alpha = \dfrac{\mu}{\sigma}, \quad \beta = \dfrac{1-\mu}{\sigma}}
+      \alpha = \dfrac{\mu}{\sigma}, \quad \beta = \dfrac{1-\mu}{\sigma},}
+with \eqn{B} the beta function and \eqn{n} the object's \code{size}. Off the
+support \eqn{\{0, \dots, n\}} the mass is 0, and a non-integer \code{y} is off
+the support too.
+
+The two beta functions are of magnitude \eqn{(\alpha+\beta)\log(\alpha+\beta)}
+while their difference is of order one, so writing the mass as that
+difference loses every digit at a small \eqn{\sigma}. The compiled kernel
+switches to a sum of logarithms instead, the shifts being integers, and
+stays exact to the binomial limit.
+}
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+
+# The mass over the whole support sums to one.
+m <- distrib_pdf(d, 0:10, th)
+round(m, 4)
+sum(m)
+
+# It is the beta-binomial mass at the two implied shapes.
+a <- 0.3 / 0.5; b <- 0.7 / 0.5
+all.equal(m, choose(10, 0:10) * beta(0:10 + a, 10 - 0:10 + b) / beta(a, b))
+
+# Off the support, and at a non-integer count, the mass is zero.
+distrib_pdf(d, c(-1, 2.5, 11), th)
+
+# As the dispersion goes to zero the family becomes the binomial, and the
+# mass stays accurate there where the two beta functions would cancel.
+max(abs(distrib_pdf(d, 0:10, list(mu = 0.3, sigma = 1e-6)) -
+        dbinom(0:10, 10, 0.3)))
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} for the cumulative sum,
+\code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}} for the derivatives of the
+log-mass, \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic and \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for
+the family.
 }

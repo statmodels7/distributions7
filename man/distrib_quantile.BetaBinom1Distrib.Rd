@@ -4,24 +4,51 @@
 \alias{distrib_quantile.BetaBinom1Distrib}
 \title{Beta-Binomial Quantile Function}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. \code{NA} is returned for \code{NA}; a value at or
+below 0 gives 0 and one at or above 1 gives \code{n}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly
+positive. One cumulative table is built for the whole call, so a parameter
+varying by observation is not supported here.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is read as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of counts in \eqn{\{0, \dots, n\}}, of length
+\code{length(p)}.
 }
 \description{
-The generalized inverse
-\eqn{Q(p) = \min\{y : F(y) \ge p\}}, obtained from the exact cumulative
-sum.
+Computes the generalized inverse \eqn{Q(p) = \min\{y : F(y) \ge p\}} by
+walking the exact cumulative sum over the support. The result is an integer
+count, the distribution function being a step function, so \code{Q(F(y))} returns
+\code{y} while \code{F(Q(p))} is at least \code{p} and generally exceeds it. A tolerance of
+\code{1e-12} is allowed on the comparison so that a \code{p} obtained from
+\code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} maps back to the count it came from.
+}
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+
+# The deciles, which are counts.
+distrib_quantile(d, c(0.1, 0.5, 0.9), th)
+
+# The round trip from a count through F and back is the identity.
+all.equal(distrib_quantile(d, distrib_cdf(d, 0:10, th), th), as.numeric(0:10))
+
+# The other direction only reaches at least p, F being a step function.
+rbind(p = c(0.2, 0.45, 0.8),
+      F_at_Q = distrib_cdf(d, distrib_quantile(d, c(0.2, 0.45, 0.8), th), th))
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf.BetaBinom1Distrib()}} for the function inverted here,
+\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng.BetaBinom1Distrib()}} for draws, and \code{\link[=distrib_quantile]{distrib_quantile()}} for
+the generic.
 }

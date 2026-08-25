@@ -7,24 +7,47 @@
 betabinom1_components(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{\link[=BetaBinom1Distrib]{BetaBinom1Distrib()}} object.}
+\item{distrib}{A \code{\link[=BetaBinom1Distrib]{BetaBinom1Distrib()}} object, read for its \code{size} and
+\code{params}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} must lie in
+\eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 }
 \value{
-A named list of component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names()}}.
+A named list of component vectors, one per distinct multi-index of
+the given order and keyed as \code{\link[=deriv_names]{deriv_names()}} keys them, so four
+components at order 3 and five at order 4. Each has the recycled length of
+the inputs.
 }
 \description{
-The components of any order from one to four, obtained by carrying the
-shape parametrization's derivatives through the map
-\eqn{(a, b) = (\mu/\sigma, (1-\mu)/\sigma)}.
+Returns the components of a derivative of order one to four of the
+beta-binomial log-mass with respect to \eqn{\mu} and \eqn{\sigma}, by
+carrying the shape parametrization's own derivatives through the map
+\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}.
+}
+\details{
+The shape parametrization \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} carries closed derivatives
+at every order, each a difference of polygammas, and this parametrization is
+that one composed with a map. \code{\link[=chain_derivatives]{chain_derivatives()}} runs the Faa di Bruno
+partition sum over the map, with the map's own partials supplied by
+\code{\link[=md_betabinom1]{md_betabinom1()}} as a keyed table; a key absent from the table is an exact
+zero. Both shapes are linear in \eqn{\mu} at fixed \eqn{\sigma}, so every
+partial carrying two or more \eqn{\mu} vanishes and the sum is short.
+
+The construction is the one \code{\link[=reparametrize]{reparametrize()}} runs, used here by a family
+whose first two orders are written out by hand in a compiled kernel. A
+fresh \code{BetaBinom2Distrib} object is built on each call, which costs one S7
+construction per evaluation.
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, \code{\link[=chain_derivatives]{chain_derivatives()}}
+\code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}} and
+\code{\link[=distrib_deriv4.BetaBinom1Distrib]{distrib_deriv4.BetaBinom1Distrib()}}, which call this;
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the partition sum;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} for the family.
 }
 \keyword{internal}

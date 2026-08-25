@@ -2,30 +2,76 @@
 % Please edit documentation in R/betabinom1_distrib.R
 \name{distrib_hessian.BetaBinom1Distrib}
 \alias{distrib_hessian.BetaBinom1Distrib}
-\title{Beta-Binomial Analytical Observed Hessian}
+\title{Beta-Binomial Observed Hessian}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_sigma} and
+\code{sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}. The three name the distinct
+entries of a symmetric \eqn{2 \times 2} matrix per observation.
 }
 \description{
-The two-variable chain rule from the shapes, whose second derivatives are
-differences of trigammas; the mixed shape component carries only the
-\eqn{S = \alpha + \beta} part, the two shapes entering the mass function
-separately otherwise.
+Computes the three distinct second derivatives of the beta-binomial log-mass
+with respect to \eqn{\mu} and \eqn{\sigma}, one value per observation, in
+closed form. In the shapes each second derivative is a difference of
+trigammas,
+\deqn{\dfrac{\partial^2 \ell}{\partial \alpha^2}
+      = \psi_1(y+\alpha) - \psi_1(\alpha) - \psi_1(n+S) + \psi_1(S), \qquad
+      S = \alpha + \beta,}
+and the \strong{mixed} shape component carries only the \eqn{S} part,
+\eqn{-\psi_1(n+S) + \psi_1(S)}, the two shapes entering the mass separately
+otherwise. The reported components follow by the two-variable chain rule of
+\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, whose own second
+derivatives contribute the rest.
+
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
+proportion, \eqn{\sigma > 0} the dispersion, \eqn{n} the trial count and
+\eqn{\psi_1} the trigamma function, \code{trigamma()} in R.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+h <- distrib_hessian(d, 0:10, th)
+names(h)
+
+# A central difference of the score reproduces the pure-mu component.
+eps <- 1e-5
+up <- distrib_gradient(d, 0:10, list(mu = 0.3 + eps, sigma = 0.5))$mu
+dn <- distrib_gradient(d, 0:10, list(mu = 0.3 - eps, sigma = 0.5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
+
+# The mass-weighted sum over the support is the expected Hessian.
+w <- distrib_pdf(d, 0:10, th)
+rbind(summed = vapply(h, function(v) sum(w * v), numeric(1)),
+      expected = vapply(distrib_expected_hessian(d, 0:10, th),
+                        function(v) v[1], numeric(1)))
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient.BetaBinom1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.BetaBinom1Distrib]{distrib_expected_hessian.BetaBinom1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

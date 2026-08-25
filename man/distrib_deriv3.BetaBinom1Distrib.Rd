@@ -2,38 +2,83 @@
 % Please edit documentation in R/betabinom1_higher.R
 \name{distrib_deriv3.BetaBinom1Distrib}
 \alias{distrib_deriv3.BetaBinom1Distrib}
-\alias{distrib_deriv4.BetaBinom1Distrib}
-\title{Beta-Binomial Third and Fourth Derivatives in Mean and Dispersion}
+\title{Beta-Binomial Third-Order Derivatives in Mean and Dispersion}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{y}{A numeric vector of counts.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}. With
+\code{expected = TRUE} only its length is read.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
+\code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo draws when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}, each of length
+\code{max(length(y), length(mu), length(sigma))}. The four name the distinct
+entries of a symmetric third-order array over two parameters.
 }
 \description{
-Closed form at both orders. The shape parametrization carries closed
-derivatives at every order, and this one is that one at
-\eqn{a = \mu/\sigma} and \eqn{b = (1-\mu)/\sigma}, so the partition sum of
-\code{\link[=chain_derivatives]{chain_derivatives()}} over the map delivers them. Every partial
-of the map with two or more \eqn{\mu} vanishes, both shapes being linear in
-\eqn{\mu} at fixed \eqn{\sigma}.
+Computes the four distinct third derivatives of the beta-binomial log-mass
+in \eqn{\mu} and \eqn{\sigma}, \strong{in closed form}. The shape parametrization
+carries closed derivatives at every order, each a difference of polygammas,
+and this parametrization is that one at \eqn{\alpha = \mu/\sigma} and
+\eqn{\beta = (1-\mu)/\sigma}, so the Faa di Bruno partition sum of
+\code{\link[=chain_derivatives]{chain_derivatives()}} over the map delivers them. Both shapes are linear in
+\eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map carrying two or
+more \eqn{\mu} vanishes and the sum is short.
+
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead.
+That is the one place on this page where \code{approx} and \code{nsim} are read; on
+the observed branch both are ignored.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
+proportion, \eqn{\sigma > 0} the dispersion and \eqn{n} the trial count.
+\eqn{\alpha} and \eqn{\beta} are the two beta shapes the family is written
+in internally.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+d3 <- distrib_deriv3(d, 0:10, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-mu component,
+# which is what says the partition sum over the map is right.
+eps <- 1e-5
+up <- distrib_hessian(d, 0:10, list(mu = 0.3 + eps, sigma = 0.5))$mu_mu
+dn <- distrib_hessian(d, 0:10, list(mu = 0.3 - eps, sigma = 0.5))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
+
+# The expected branch is a numerical expectation of the observed one, and
+# the mass-weighted sum over the support reaches it.
+w <- distrib_pdf(d, 0:10, th)
+rbind(expected = vapply(distrib_deriv3(d, 0, th, expected = TRUE),
+                        function(v) v[1], numeric(1)),
+      summed = vapply(d3, function(v) sum(w * v), numeric(1)))
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.BetaBinom1Distrib]{distrib_deriv4.BetaBinom1Distrib()}} for the order above,
+\code{\link[=betabinom1_components]{betabinom1_components()}} for the assembly, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the
+generic.
 }

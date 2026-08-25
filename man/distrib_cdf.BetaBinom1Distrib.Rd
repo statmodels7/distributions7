@@ -4,23 +4,54 @@
 \alias{distrib_cdf.BetaBinom1Distrib}
 \title{Beta-Binomial Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. A non-integer value is floored, so
+\code{F(2.7)} is \code{F(2)}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly
+positive. A parameter varying by observation is not supported here: one
+cumulative table is built for the whole call.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)},
+formed as \eqn{1 - F}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{length(q)}. With \code{log.p = TRUE} the values are logarithms and are
+non-positive.
 }
 \description{
-The cumulative sum of the mass function over the finite
-support, which is exact rather than approximated.
+Computes \eqn{F(q) = P(Y \le q) = \sum_{k \le \lfloor q \rfloor} P(Y = k)}
+as the cumulative sum of the mass over the whole support
+\eqn{\{0, \dots, n\}}. The support being finite, that sum is exact rather
+than an approximation, and it costs \eqn{n+1} evaluations of the mass
+whatever the length of \code{q}. Below the support the probability is 0 and at or
+above \eqn{n} it is 1.
+}
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+
+# The cumulative sum of the mass, exactly.
+all.equal(distrib_cdf(d, 0:10, th), cumsum(distrib_pdf(d, 0:10, th)))
+
+# Below the support it is zero and at the top of it one.
+distrib_cdf(d, c(-1, 0, 3, 10, 11), th)
+
+# A non-integer quantile is floored.
+c(distrib_cdf(d, 2.7, th), distrib_cdf(d, 2, th))
+
+# The two tails sum to one.
+distrib_cdf(d, 4, th) + distrib_cdf(d, 4, th, lower.tail = FALSE)
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_quantile.BetaBinom1Distrib]{distrib_quantile.BetaBinom1Distrib()}} for the generalized
+inverse, \code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf.BetaBinom1Distrib()}} for the mass, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

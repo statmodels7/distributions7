@@ -2,33 +2,82 @@
 % Please edit documentation in R/betabinom1_distrib.R
 \name{distrib_gradient.BetaBinom1Distrib}
 \alias{distrib_gradient.BetaBinom1Distrib}
-\title{Beta-Binomial Analytical Gradient}
+\title{Beta-Binomial Score}
 \arguments{
-\item{distrib}{A \code{BetaBinom1Distrib} object.}
+\item{distrib}{A \code{BetaBinom1Distrib} object, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts in \eqn{\{0, \dots, n\}}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A named list with the \code{mu} and \code{sigma} components.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of
+length \code{max(length(y), length(mu), length(sigma))}.
 }
 \description{
-The chain rule from the shapes, where every derivative is a difference of
-digammas:
+Computes the first derivatives of the beta-binomial log-mass with respect to
+the mean proportion \eqn{\mu} and the dispersion \eqn{\sigma}, one value per
+observation, in closed form. The parameters enter only through the two beta
+shapes, where each derivative is a difference of digammas:
 \deqn{\dfrac{\partial \ell}{\partial \alpha}
-      = \psi(y+\alpha) - \psi(\alpha) - \psi(n+S) + \psi(S), \quad S =
-      \alpha + \beta}
-and likewise in \eqn{\beta}, with \eqn{\alpha = \mu/\sigma} and
-\eqn{\beta = (1-\mu)/\sigma}.
+      = \psi(y+\alpha) - \psi(\alpha) - \psi(n+S) + \psi(S), \qquad
+      S = \alpha + \beta,}
+and likewise in \eqn{\beta} with \eqn{n - y} in place of \eqn{y}. The
+reported components follow by the chain rule of
+\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}.
+
+Each digamma difference cancels to leading order as the shapes grow, so the
+compiled kernel forms it as a sum of reciprocals, the shifts being integers.
+The location component then holds its accuracy to a concentration of
+\eqn{10^{15}}, where the direct difference has lost every digit.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale. The arithmetic runs in a compiled kernel decomposed over the elements
+of the output, so the result does not depend on the thread count.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
+proportion, \eqn{\sigma > 0} the dispersion, \eqn{n} the trial count and
+\eqn{\psi} the digamma function, \code{digamma()} in R.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+th <- list(mu = 0.3, sigma = 0.5)
+g <- distrib_gradient(d, 0:10, th)
+
+# It is the derivative of the log-mass, so a central difference of it
+# reproduces the mu component.
+eps <- 1e-6
+all.equal((distrib_pdf(d, 0:10, list(mu = 0.3 + eps, sigma = 0.5), log = TRUE) -
+           distrib_pdf(d, 0:10, list(mu = 0.3 - eps, sigma = 0.5), log = TRUE)) /
+            (2 * eps), g$mu, tolerance = 1e-6)
+
+# The score has mean zero over the support: the first Bartlett identity.
+w <- distrib_pdf(d, 0:10, th)
+vapply(g, function(v) sum(w * v), numeric(1))
+
+# At a tiny dispersion the family is a binomial, and the mu score is the
+# binomial one, y/mu - (n-y)/(1-mu), evaluated here at y = 3.
+c(kernel = distrib_gradient(d, 3, list(mu = 0.4, sigma = 1e-12))$mu,
+  binomial = 3 / 0.4 - 7 / 0.6)
 }
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian.BetaBinom1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.BetaBinom1Distrib]{distrib_expected_hessian.BetaBinom1Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.BetaBinom2Distrib]{distrib_gradient.BetaBinom2Distrib()}} for the same quantity in the
+shapes, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

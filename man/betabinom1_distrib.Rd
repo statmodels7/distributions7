@@ -2,79 +2,167 @@
 % Please edit documentation in R/betabinom1_distrib.R
 \name{betabinom1_distrib}
 \alias{betabinom1_distrib}
-\title{Beta-Binomial Distribution Object}
+\title{Beta-Binomial Distribution, Mean Proportion and Dispersion}
 \usage{
 betabinom1_distrib(size, link_mu = logit_link(), link_sigma = log_link())
 }
 \arguments{
-\item{size}{The number of trials \eqn{n}. A constant of the distribution
-rather than a parameter, as for \code{\link[=binomial_distrib]{binomial_distrib()}}.}
+\item{size}{The number of trials \eqn{n}, a single positive integer. It is a
+constant of the distribution and not a parameter, as for
+\code{\link[=binomial_distrib]{binomial_distrib()}}, so an object cannot be reused across data sets whose
+group sizes differ. Anything else signals an error naming the argument.}
 
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the mean being a proportion.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean proportion
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, which maps
+\eqn{(0, 1)} onto the line.}
 
-\item{link_sigma}{A link function object for \eqn{\sigma}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the dispersion
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 }
 \value{
-An S7 object of class \code{BetaBinom1Distrib}.
+An S7 object of class \code{BetaBinom1Distrib}, inheriting from
+\code{discrete_distrib}, with \code{size} the trial count, \code{distrib_name}
+\code{"beta-binomial [size=n]"}, \code{dimension} \code{"univariate"}, \code{bounds}
+\code{c(0, size)}, \code{params} \code{c("mu", "sigma")}, \code{n_params} \code{2},
+\code{params_bounds} the domains \eqn{(0, 1)} and \eqn{(0, \infty)}, and
+\code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the beta-binomial distribution,
-parametrized by the mean proportion \eqn{\mu} and a dispersion parameter
-\eqn{\sigma}.
+Builds the distribution object for the beta-binomial family parametrized by
+a mean proportion \eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on
+the finite support \eqn{\{0, 1, \dots, n\}}. The returned object carries
+closed-form derivatives of the log-mass to fourth order and expectations
+that are exact finite sums over the support, so every generic of the toolkit
+answers without a quadrature.
+
+The family is the binomial with its success probability drawn from a beta,
+which makes it the standard model for a proportion whose trials are not
+independent. It is overdispersed relative to a binomial at every
+\eqn{\sigma > 0} and approaches one as \eqn{\sigma \to 0}.
 }
-\details{
-The family is the binomial with its success probability drawn from a Beta,
-which is what makes it the natural model for a proportion whose trials are
-not independent. Writing \eqn{\alpha = \mu/\sigma} and
-\eqn{\beta = (1-\mu)/\sigma}, the mean is \eqn{n\mu} and
+\section{The parametrization}{
+Write \eqn{\alpha = \mu/\sigma} and \eqn{\beta = (1-\mu)/\sigma} for the two
+beta shapes. The mass on \eqn{y \in \{0, \dots, n\}} is
+\deqn{P(Y = y) = \binom{n}{y}
+      \dfrac{B(y+\alpha,\; n-y+\beta)}{B(\alpha, \beta)},}
+with \eqn{B} the beta function. \code{\link[=betabinom2_distrib]{betabinom2_distrib()}} is the same law
+written in \eqn{(\alpha, \beta)} directly; the two agree mass for mass at
+\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}.
+
+The family is \strong{not} reachable from anything else in the package. It is
+neither a binomial with a parameter held fixed nor a wrapper over one, the
+mixing being over the success probability and not over the outcome.
+}
+
+\section{Overdispersion}{
+The mean is \eqn{n\mu} and the variance
 \deqn{\operatorname{Var}(Y) = n\mu(1-\mu)
       \left(1 + (n-1)\dfrac{\sigma}{1+\sigma}\right),}
-so the family is overdispersed relative to the binomial at every
-\eqn{\sigma > 0} and approaches it as \eqn{\sigma \to 0}. The
-intraclass correlation is \eqn{\sigma/(1+\sigma)}.
+so the inflation over a binomial of the same mean is
+\eqn{1 + (n-1)\sigma/(1+\sigma)}, always above 1 and rising with both the
+trial count and the dispersion. The factor \eqn{\sigma/(1+\sigma)} is the
+\strong{intraclass correlation} between two trials of the same group. At
+\eqn{n = 10} and \eqn{\sigma = 0.5} that correlation is \eqn{1/3} and the
+variance is four times a binomial's, 8.4 against 2.1.
 
-\strong{Probability mass function:}
-\deqn{P(Y = y) = \binom{n}{y}
-      \dfrac{B(y+\alpha,\; n-y+\beta)}{B(\alpha, \beta)}}
-
-\strong{Score and information.} The parameters enter only through the two
-shapes, where every derivative is a difference of polygammas, so the score
-is that difference carried through the chain rule of
-\eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}. The expected
-information is an \strong{exact sum} over the finite support rather than a
-quadrature, which is what a bounded count buys.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (0, 1)}
-\item \eqn{\sigma \in (0, +\infty)}
+As \eqn{\sigma \to 0} the mass converges to the binomial's at rate
+\eqn{O(\sigma)}, and the compiled kernel stays accurate all the way there;
+see the cancellation note below.
 }
 
-The family is \strong{not} reachable from anything already in the package:
-it is neither a binomial with a parameter held fixed nor a wrapper over
-one, the mixing being over the success probability rather than over the
-outcome.
+\section{Derivatives}{
+The parameters enter only through the two shapes, where every derivative of
+order \eqn{k} is a difference of \eqn{\psi^{(k-1)}}:
+\deqn{\dfrac{\partial \ell}{\partial \alpha}
+      = \psi(y+\alpha) - \psi(\alpha) - \psi(n+S) + \psi(S), \qquad
+      S = \alpha + \beta,}
+and likewise in \eqn{\beta}. The reported components follow by the chain
+rule of \eqn{(\alpha, \beta) = (\mu/\sigma, (1-\mu)/\sigma)}, which is
+linear in \eqn{\mu} at fixed \eqn{\sigma}, so every partial of the map
+carrying two or more \eqn{\mu} is exactly zero and the third and fourth
+orders are a short partition sum. Orders three and four are therefore
+\strong{closed form} as well, in \code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3.BetaBinom1Distrib()}}, and not
+the numerical fallback.
 
-Third and fourth derivatives come from the numerical fallback. On a finite
-support that fallback differences an exact mass function, so its accuracy
-is the usual \code{1e-8} rather than the poorer figure a quadrature would
-give.
+Every expectation is an \strong{exact finite sum} over \eqn{\{0, \dots, n\}}:
+the support is bounded, so there is nothing to integrate over.
 }
+
+\section{The cancellation at a small dispersion}{
+The two beta functions of the mass are of magnitude
+\eqn{(\alpha+\beta)\log(\alpha+\beta)} while their difference is of order
+one, so writing the mass as that difference loses one digit per factor of
+ten in the concentration \eqn{1/\sigma}. At \eqn{\sigma = 10^{-14}} the
+direct route is wrong in the third decimal of the log-mass. The kernel
+switches to a sum of logarithms instead, the shifts being integers, and the
+same rewrite runs through the score: measured at \eqn{n = 10},
+\eqn{\mu = 0.4}, \eqn{y = 3}, the mean component holds the binomial value
+\eqn{-25/6} to nine figures at a concentration of \eqn{10^{15}}.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale. Neither
+estimate is closed form. A sample with no extra-binomial variation drives
+\eqn{\hat\sigma} towards zero, which is the correct answer and the boundary
+of the parameter space.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu \in (0,1)} the mean
+proportion, \eqn{\sigma > 0} the dispersion, \eqn{n} the trial count,
+\eqn{B} the beta function and \eqn{\psi} the digamma function. \eqn{\eta} is
+a parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- betabinom1_distrib(size = 10)
-d@params
+d
 
-theta <- list(mu = 0.3, sigma = 0.5)
-distrib_pdf(d, 0:10, theta)
-c(mean = mean(d, theta), variance = variance(d, theta))
+# The mass over the support sums to one.
+th <- list(mu = 0.3, sigma = 0.5)
+sum(distrib_pdf(d, 0:10, th))
 
-# overdispersed relative to the binomial with the same mean
-variance(binomial_distrib(size = 10), list(mu = 0.3))
+# Four times the variance of a binomial with the same mean: the intraclass
+# correlation is sigma / (1 + sigma) = 1/3, and 1 + 9/3 = 4.
+c(mean = mean(d, th), var = variance(d, th),
+  binomial_var = variance(binomial_distrib(size = 10), list(mu = 0.3)),
+  icc = 0.5 / 1.5)
+
+# The dispersion going to zero is the binomial, at rate O(sigma).
+vapply(c(1e-2, 1e-4, 1e-6), function(s)
+  max(abs(distrib_pdf(d, 0:10, list(mu = 0.3, sigma = s)) -
+          dbinom(0:10, 10, 0.3))), numeric(1))
+
+# The same law as betabinom2 at the implied shapes.
+all.equal(distrib_pdf(d, 0:10, list(mu = 0.4, sigma = 0.2)),
+          distrib_pdf(betabinom2_distrib(size = 10), 0:10,
+                      list(alpha = 2, beta = 3)))
+
+# Fitting recovers both parameters.
+set.seed(3)
+z <- distrib_rng(d, 2000, list(mu = 0.35, sigma = 0.4))
+coef(fit_distrib(d, z))
 
 }
+\references{
+Skellam, J. G. (1948). A probability distribution derived from the binomial
+distribution by regarding the probability of success as variable between the
+sets of trials. \emph{Journal of the Royal Statistical Society, Series B},
+\strong{10}(2), 257-261.
+
+Johnson, N. L., Kemp, A. W. and Kotz, S. (2005).
+\emph{Univariate Discrete Distributions}, 3rd edition, Section 6.9.
+Wiley, Hoboken.
+}
 \seealso{
-\code{\link[=binomial_distrib]{binomial_distrib()}}, \code{\link[=beta1_distrib]{beta1_distrib()}},
-\code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the same law in its two beta shapes;
+\code{\link[=binomial_distrib]{binomial_distrib()}} for the limit at \eqn{\sigma \to 0} and
+\code{\link[=beta1_distrib]{beta1_distrib()}} for the mixing law; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the
+unbounded-count analogue, a Poisson mixed over a gamma;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{BetaBinom1Distrib} for the class.
 }

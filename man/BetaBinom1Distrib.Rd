@@ -2,7 +2,7 @@
 % Please edit documentation in R/betabinom1_distrib.R
 \name{BetaBinom1Distrib}
 \alias{BetaBinom1Distrib}
-\title{S7 Class for the Beta-Binomial Distribution}
+\title{Beta-Binomial Distribution Class, Mean Proportion and Dispersion}
 \usage{
 BetaBinom1Distrib(
   distrib_name = character(0),
@@ -36,33 +36,77 @@ BetaBinom1Distrib(
 
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 
-\item{size}{The number of trials \eqn{n}, a constant of the distribution
-rather than a parameter, as for \code{\link[=BinomialDistrib]{BinomialDistrib()}}.}
+\item{size}{The number of trials \eqn{n}, a single positive integer stored
+as a numeric. It belongs to the object, so an object cannot be reused
+across data sets whose group sizes differ.}
 }
 \value{
-An object of class \code{BetaBinom1Distrib}.
+An S7 object of class \code{BetaBinom1Distrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. Beyond \code{size} its properties are
+the parent's: \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params} and
+\code{params_smooth}. For an object built by \code{\link[=betabinom1_distrib]{betabinom1_distrib()}} they hold
+\code{"beta-binomial [size=n]"}, \code{"univariate"}, \code{c(0, size)},
+\code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "mean proportion", sigma = "dispersion")}, \code{2}, the domains
+\eqn{(0, 1)} and \eqn{(0, \infty)}, and the two links.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the
-beta-binomial distribution, written in its mean proportion and a
-dispersion parameter.
+The S7 class of the beta-binomial family parametrized by a mean proportion
+\eqn{\mu \in (0, 1)} and a dispersion \eqn{\sigma > 0}, on the finite
+support \eqn{\{0, 1, \dots, n\}}. It inherits from \code{discrete_distrib}, so it
+answers every generic of the \code{distrib} contract; the seven methods listed
+below are registered on it in this file, two more in \code{betabinom1_higher.R},
+and everything else comes from the parent.
+
+The class carries an extra property beyond the parent's, \code{size}: the number
+of trials \eqn{n}, a constant of the distribution and not a parameter, as
+for \code{\link[=BinomialDistrib]{BinomialDistrib()}}. Build one with \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, which
+validates \code{size}, supplies the two link functions and fills the properties
+in. This page documents the raw S7 constructor, which validates none of the
+relationships between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_cdf.BetaBinom1Distrib]{distrib_cdf()}},
 \code{\link[=distrib_expected_hessian.BetaBinom1Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.BetaBinom1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.BetaBinom1Distrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_quantile.BetaBinom1Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.BetaBinom1Distrib]{distrib_rng()}}.
 
-Everything else is inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}; third and
-fourth derivatives come from the numerical fallback, which for a family on
-a finite support is differencing an exact mass function.
+Six more are registered on the class from other files: the closed-form
+\code{\link[=distrib_deriv3.BetaBinom1Distrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.BetaBinom1Distrib]{distrib_deriv4()}} in
+\code{betabinom1_higher.R}, and the four moments
+\code{\link[=mean.BetaBinom1Distrib]{mean()}}, \code{\link[=variance.BetaBinom1Distrib]{variance()}},
+\code{\link[=skewness.BetaBinom1Distrib]{skewness()}} and
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis()}} in \code{moments.R}.
+
+The response derivatives are refused, as for every discrete family: a mass
+function has no derivative in its argument.
 }
 
+\examples{
+d <- betabinom1_distrib(size = 10)
+S7::S7_inherits(d, discrete_distrib)
+
+# The trial count is a property of the object, not an entry of theta.
+d@size
+d@bounds
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+d@params_interpretation
+
+# The mean proportion rides a logit and the dispersion a log.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} to build one;
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}} for the same law in its two beta shapes;
+\code{\link[=binomial_distrib]{binomial_distrib()}} for the limit at \eqn{\sigma \to 0};
+\code{\link[=distrib_pdf.BetaBinom1Distrib]{distrib_pdf.BetaBinom1Distrib()}} for the mass function.
 }
