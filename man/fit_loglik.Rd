@@ -7,20 +7,30 @@
 fit_loglik(distrib, y, theta)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, or the response matrix of a
+multivariate family.}
 
-\item{theta}{A named list of parameters on the natural scale.}
+\item{theta}{A named list of parameters on the parameter scale, aligned to
+\code{distrib@params}.}
 }
 \value{
-A single number.
+A single number. It is \code{-Inf} when any observation has zero density,
+and \code{NaN} when the density itself is not computable at \code{theta}.
 }
 \description{
-The sum of the log-density over the observations, the objective the fit
-maximizes.
+Sums the log-density over the observations, \eqn{\sum_i \log f(y_i;
+\theta)}, and returns the one number the fit maximizes. Every observation is
+read at the same \eqn{\theta}, which is the i.i.d. assumption the fitting
+layer makes.
+
+The value is \strong{not} divided by \eqn{n}. \code{\link[=fit_distrib]{fit_distrib()}} scales it when it
+hands the objective to an optimizer, and recomputes it unscaled here for the
+\code{loglik}, \code{aic} and \code{bic} a fit reports.
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}
+\code{\link[=distrib_pdf]{distrib_pdf()}}, which supplies the terms;
+\code{\link[=logLik.distrib_fit]{logLik.distrib_fit()}} for the value a fit carries.
 }
 \keyword{internal}

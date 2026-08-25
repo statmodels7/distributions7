@@ -2,28 +2,37 @@
 % Please edit documentation in R/fit_distrib.R
 \name{fit_eta_from_theta}
 \alias{fit_eta_from_theta}
-\title{Map Parameters to the Link Scale}
+\title{Parameters Carried to the Link Scale}
 \usage{
 fit_eta_from_theta(distrib, theta)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}, supplying \code{params} and
+\code{link_params}.}
 
-\item{theta}{A named list of parameters on the natural scale.}
+\item{theta}{A named list of parameters on the parameter scale, in any
+order; the components are read by position in \code{distrib@params}, so it must
+already have been through \code{\link[=align_theta]{align_theta()}}. A value outside the parameter's
+domain reaches the link, which returns \code{NaN} or a non-finite value there.}
 }
 \value{
-A numeric vector of length \code{length(distrib@params)}.
+An unnamed numeric vector of length \code{length(distrib@params)}, one
+linear predictor per parameter, in the order \code{distrib@params} gives.
 }
 \description{
-Applies each parameter's link, \eqn{\eta_i = g_i(\theta_i)}.
-}
-\details{
-Optimization is carried out on \eqn{\eta}, which is unconstrained, so this is
-how a starting value expressed in natural parameters enters the optimizer.
-Only the first element of each parameter is taken: a fit estimates one
-\eqn{\theta} for the whole sample.
+Applies each parameter's own link, \eqn{\eta_i = g_i(\theta_i)}, and returns
+the resulting vector of linear predictors. This is how a starting value
+expressed in natural parameters enters the optimizer, which works on
+\eqn{\eta} because it is unconstrained.
+
+Only the first element of each component of \code{theta} is read. A fit estimates
+one \eqn{\theta} for the whole sample, so a component of length \eqn{n} is a
+vector the caller built for a density evaluation, not \eqn{n} separate
+parameters: \code{list(mu = c(1, 99, 99), sigma = 2)} gives the same \eqn{\eta} as
+\code{list(mu = 1, sigma = 2)}.
 }
 \seealso{
-\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the inverse.
+\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the inverse; \code{\link[=fit_dtheta_deta]{fit_dtheta_deta()}} for the
+Jacobian between the two scales; \code{\link[=fit_distrib]{fit_distrib()}}, the caller.
 }
 \keyword{internal}

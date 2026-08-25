@@ -3,23 +3,32 @@ NULL
 
 # --- internal helpers ------------------------------------------------------
 
-#' Map Parameters to the Link Scale
+#' @title Parameters Carried to the Link Scale
 #'
 #' @description
-#' Applies each parameter's link, \eqn{\eta_i = g_i(\theta_i)}.
+#' Applies each parameter's own link, \eqn{\eta_i = g_i(\theta_i)}, and returns
+#' the resulting vector of linear predictors. This is how a starting value
+#' expressed in natural parameters enters the optimizer, which works on
+#' \eqn{\eta} because it is unconstrained.
 #'
-#' @details
-#' Optimization is carried out on \eqn{\eta}, which is unconstrained, so this is
-#' how a starting value expressed in natural parameters enters the optimizer.
-#' Only the first element of each parameter is taken: a fit estimates one
-#' \eqn{\theta} for the whole sample.
+#' Only the first element of each component of `theta` is read. A fit estimates
+#' one \eqn{\theta} for the whole sample, so a component of length \eqn{n} is a
+#' vector the caller built for a density evaluation, not \eqn{n} separate
+#' parameters: `list(mu = c(1, 99, 99), sigma = 2)` gives the same \eqn{\eta} as
+#' `list(mu = 1, sigma = 2)`.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param theta A named list of parameters on the natural scale.
+#' @param distrib An object inheriting from `distrib`, supplying `params` and
+#'   `link_params`.
+#' @param theta A named list of parameters on the parameter scale, in any
+#'   order; the components are read by position in `distrib@params`, so it must
+#'   already have been through [align_theta()]. A value outside the parameter's
+#'   domain reaches the link, which returns `NaN` or a non-finite value there.
 #'
-#' @return A numeric vector of length `length(distrib@params)`.
+#' @return An unnamed numeric vector of length `length(distrib@params)`, one
+#'   linear predictor per parameter, in the order `distrib@params` gives.
 #'
-#' @seealso [fit_theta_from_eta()], the inverse.
+#' @seealso [fit_theta_from_eta()], the inverse; [fit_dtheta_deta()] for the
+#'   Jacobian between the two scales; [fit_distrib()], the caller.
 #' @keywords internal
 fit_eta_from_theta <- function(distrib, theta) {
   params <- distrib@params
@@ -28,24 +37,34 @@ fit_eta_from_theta <- function(distrib, theta) {
   }, numeric(1))
 }
 
-#' Map the Link Scale Back to Parameters
+#' @title The Link Scale Carried Back to Parameters
 #'
 #' @description
-#' Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)}.
+#' Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)},
+#' and returns the parameters as the named list every generic in the package
+#' expects. It is the inverse of [fit_eta_from_theta()].
 #'
-#' @details
-#' The inverse of [fit_eta_from_theta()]. Because every link maps onto
-#' its parameter's domain by construction, a \eqn{\theta} obtained this way is
-#' admissible whatever the optimizer proposed -- which is the reason for working
-#' on the link scale at all, and the reason a confidence interval built there and
-#' mapped back cannot run outside the domain.
+#' Every link maps onto the **open** interior of its parameter's domain, and
+#' `linkfunctions7` clamps the result strictly inside when the arithmetic
+#' saturates, so a \eqn{\theta} obtained this way is admissible whatever the
+#' optimizer proposed. On a Gaussian scale carried by the logarithm,
+#' \eqn{\eta = -800} gives \eqn{\sigma = 1.9\times 10^{-77}} and
+#' \eqn{\eta = 800} gives \eqn{1.8\times 10^{308}}: both extreme, both still
+#' inside \eqn{(0, \infty)}, so the density can be evaluated and the point
+#' rejected on its likelihood. This is also why a confidence interval built on
+#' the link scale and mapped back cannot run outside the domain.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param eta A numeric vector of linear predictors, one per parameter.
+#' @param distrib An object inheriting from `distrib`, supplying `params` and
+#'   `link_params`.
+#' @param eta A numeric vector of linear predictors, one per parameter, in the
+#'   order `distrib@params` gives. A non-finite entry propagates to the
+#'   parameter it names.
 #'
-#' @return A named list of parameters on the natural scale.
+#' @return A named list of length `length(distrib@params)`, each component a
+#'   number on the parameter scale, named and ordered as `distrib@params`.
 #'
-#' @seealso [fit_eta_from_theta()]
+#' @seealso [fit_eta_from_theta()], the inverse; [fit_dtheta_deta()] for the
+#'   first derivative of the same map; [linkfunctions7::linkinv()].
 #' @keywords internal
 fit_theta_from_eta <- function(distrib, eta) {
   params <- distrib@params
@@ -56,23 +75,34 @@ fit_theta_from_eta <- function(distrib, eta) {
   out
 }
 
-#' Jacobian of the Inverse Link at the Estimate
+#' @title Jacobian of the Inverse Link at the Estimate
 #'
 #' @description
-#' The first derivative \eqn{h_i'(\eta_i)} of each parameter's inverse link, one
-#' entry per parameter.
+#' Returns \eqn{h_i'(\eta_i) = dg_i^{-1}/d\eta_i}, one entry per parameter,
+#' evaluated at the supplied linear predictors. Because each parameter carries
+#' its own scalar link the Jacobian of \eqn{\theta} in \eqn{\eta} is diagonal,
+#' and this is its diagonal.
 #'
-#' @details
-#' This is the diagonal Jacobian the delta method needs to carry a standard error
-#' from the link scale, where it is computed, to the parameter scale, where it is
-#' reported.
+#' It is what the delta method needs to carry a variance matrix from the link
+#' scale, where the fit computes it, to the parameter scale, where it is
+#' reported: \eqn{\widehat{\mathrm{Var}}(\hat\theta) = J V J} with
+#' \eqn{J = \mathrm{diag}(h')}. On a Gaussian at \eqn{\eta = (1.5, \log 2.5)},
+#' with the identity on \eqn{\mu} and the logarithm on \eqn{\sigma}, it returns
+#' `c(1, 2.5)`.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param eta A numeric vector of linear predictors, one per parameter.
+#' @param distrib An object inheriting from `distrib`, supplying `params` and
+#'   `link_params`.
+#' @param eta A numeric vector of linear predictors, one per parameter, in the
+#'   order `distrib@params` gives. Only the first element of each link's answer
+#'   is kept, so an `eta` longer than the parameter count is silently truncated
+#'   by the same rule [fit_eta_from_theta()] applies.
 #'
-#' @return A numeric vector of length `length(distrib@params)`.
+#' @return An unnamed numeric vector of length `length(distrib@params)`, in the
+#'   order `distrib@params` gives.
 #'
-#' @seealso [fit_distrib()]
+#' @seealso [fit_theta_from_eta()], the map this differentiates;
+#'   [fit_distrib()], which uses it for the standard errors and nothing else;
+#'   [linkfunctions7::dlinkinv()].
 #' @keywords internal
 fit_dtheta_deta <- function(distrib, eta) {
   params <- distrib@params
@@ -81,50 +111,77 @@ fit_dtheta_deta <- function(distrib, eta) {
   }, numeric(1))
 }
 
-#' Summed Score on the Link Scale
+#' @title Summed Score on the Link Scale
 #'
 #' @description
-#' The gradient of the total log-likelihood with respect to \eqn{\eta}, summed
-#' over observations.
+#' Returns \eqn{\partial \ell / \partial \eta} for the whole sample: the
+#' package's per-observation gradient on the link scale, summed over
+#' observations, as a plain numeric vector in parameter order. At the maximum
+#' likelihood estimate every entry is zero to rounding, and a Gaussian fitted
+#' to 200 draws answers about \eqn{10^{-15}} there against 204 and 752 one
+#' unit away.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters on the natural scale.
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations, or the response matrix of a
+#'   multivariate family.
+#' @param theta A named list of parameters on the parameter scale, aligned to
+#'   `distrib@params`.
+#' @param threads How many threads the family's compiled kernels may use, as an
+#'   integer count. Defaults to `1L`, which takes the sequential path. The sum
+#'   does not depend on the count.
 #'
-#' @return A numeric vector of length `length(distrib@params)`.
+#' @return An unnamed numeric vector of length `length(distrib@params)`, in the
+#'   order `distrib@params` gives.
 #'
-#' @seealso [fit_hess_matrix()]
+#' @seealso [fit_hess_matrix()] for the second-order counterpart;
+#'   [distrib_gradient()], which supplies the per-observation components;
+#'   [fit_distrib()], the caller.
 #' @keywords internal
 fit_score <- function(distrib, y, theta, threads = 1L) {
   g <- distrib_gradient(distrib, y, theta, scale = "link", threads = threads)
   vapply(g, function(v) sum(v), numeric(1))
 }
 
-#' Summed Hessian on the Link Scale, as a Matrix
+#' @title Summed Hessian on the Link Scale, as a Matrix
 #'
 #' @description
-#' Assembles the package's named list of Hessian components into the symmetric
-#' \eqn{p \times p} matrix an optimizer wants, summed over observations.
+#' Assembles the package's named list of second-derivative components into the
+#' symmetric \eqn{p \times p} matrix an optimizer wants, summed over
+#' observations and on the link scale. Components are stored one per unordered
+#' index pair, so this fills both triangles from the one value.
 #'
-#' @details
-#' Derivative components are stored one per unique index pair, since the Hessian
-#' is symmetric; this fills both triangles. Passing `expected = TRUE` gives
-#' the expected Hessian, which is what makes Fisher scoring possible -- and what
-#' allows a fit on a non-regular family such as the Laplace, where the observed
-#' Hessian is degenerate but the information is not.
+#' With `expected = TRUE` it assembles the expected Hessian instead, which is
+#' what turns Newton's method into Fisher scoring and what makes a fit possible
+#' on a family whose observed curvature is unusable. On a Laplace at
+#' \eqn{\sigma = 1} with 400 draws the observed matrix is
+#' \eqn{\bigl(\begin{smallmatrix} 0 & 2\\ 2 & -392\end{smallmatrix}\bigr)}:
+#' \eqn{\partial^2\ell/\partial\mu^2} is zero almost everywhere, so the
+#' determinant is \eqn{-(\sum_i \mathrm{sign}(y_i - \mu))^2/\sigma^2}, which is
+#' negative unless the signs balance exactly, and the matrix is **indefinite**.
+#' The expected information at the same point is \eqn{-400 I}.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters on the natural scale.
-#' @param expected Logical; whether to use the expected Hessian.
-#' @param approx How the expectation is approximated when the distribution has
-#'   no closed form for it. Ignored when it has one, and when `expected`
-#'   is `FALSE`.
-#' @param nsim Monte Carlo sample size, used when `approx = "mc"`.
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations, or the response matrix of a
+#'   multivariate family.
+#' @param theta A named list of parameters on the parameter scale, aligned to
+#'   `distrib@params`.
+#' @param expected Logical of length 1, with no default. `TRUE` assembles the
+#'   expected Hessian and `FALSE` the observed one.
+#' @param approx How the expectation is approximated for a family with no
+#'   closed form for it: `"bartlett"` (the default), `"integrate"` or `"mc"`.
+#'   Read only when `expected` is `TRUE` and the family has no exact
+#'   expression; ignored otherwise.
+#' @param nsim Monte Carlo sample size, a single positive integer, read only
+#'   when `approx = "mc"` is in force. Defaults to 10000.
+#' @param threads How many threads the family's compiled kernels may use, as an
+#'   integer count. Defaults to `1L`. The matrix does not depend on the count.
 #'
-#' @return A symmetric numeric matrix with dimnames taken from the parameters.
+#' @return A symmetric numeric matrix of dimension
+#'   `length(distrib@params)`, with both dimnames set to `distrib@params`.
 #'
-#' @seealso [fit_score()], [fit_distrib()]
+#' @seealso [fit_score()] for the first-order counterpart;
+#'   [distrib_hessian()] and [distrib_expected_hessian()], which supply the
+#'   components; [fisher_scoring()], where `approx` and `nsim` are set.
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
                             approx = "bartlett", nsim = 10000, threads = 1L) {
@@ -148,19 +205,29 @@ fit_hess_matrix <- function(distrib, y, theta, expected,
   M
 }
 
-#' Total Log-Likelihood
+#' @title Total Log-Likelihood
 #'
 #' @description
-#' The sum of the log-density over the observations, the objective the fit
-#' maximizes.
+#' Sums the log-density over the observations, \eqn{\sum_i \log f(y_i;
+#' \theta)}, and returns the one number the fit maximizes. Every observation is
+#' read at the same \eqn{\theta}, which is the i.i.d. assumption the fitting
+#' layer makes.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y A numeric vector of observations.
-#' @param theta A named list of parameters on the natural scale.
+#' The value is **not** divided by \eqn{n}. [fit_distrib()] scales it when it
+#' hands the objective to an optimizer, and recomputes it unscaled here for the
+#' `loglik`, `aic` and `bic` a fit reports.
 #'
-#' @return A single number.
+#' @param distrib An object inheriting from `distrib`.
+#' @param y A numeric vector of observations, or the response matrix of a
+#'   multivariate family.
+#' @param theta A named list of parameters on the parameter scale, aligned to
+#'   `distrib@params`.
 #'
-#' @seealso [fit_distrib()]
+#' @return A single number. It is `-Inf` when any observation has zero density,
+#'   and `NaN` when the density itself is not computable at `theta`.
+#'
+#' @seealso [distrib_pdf()], which supplies the terms;
+#'   [logLik.distrib_fit()] for the value a fit carries.
 #' @keywords internal
 fit_loglik <- function(distrib, y, theta) {
   sum(distrib_pdf(distrib, y, theta, log = TRUE))
@@ -168,54 +235,116 @@ fit_loglik <- function(distrib, y, theta) {
 
 #' @title S7 Class for Maximum-Likelihood Fits
 #' @name distrib_fit_class
+#'
 #' @description
-#' Object returned by [fit_distrib()], holding the estimates on both the
-#' parameter and the link scale together with their uncertainty.
-#' @param distrib The fitted `distrib` object.
+#' The class of the object [fit_distrib()] returns. It holds the estimates on
+#' both the parameter scale and the link scale, their standard errors and
+#' confidence limits, the maximized log-likelihood with the two information
+#' criteria built on it, and a record of what the optimizer did.
+#'
+#' Both scales are kept because the fit is computed on one and read on the
+#' other. The variance matrix is the inverse information at
+#' \eqn{\hat\eta}; `vcov` is its image under the delta method and `ci` is
+#' `ci_eta` mapped through \eqn{g^{-1}}, so a limit on the parameter scale
+#' respects the parameter's domain by construction.
+#'
+#' This page documents the raw S7 constructor. It validates nothing and is not
+#' the way to build a fit; call [fit_distrib()].
+#'
+#' @param distrib The fitted `distrib` object, carrying the parametrization and
+#'   the links the estimates are expressed in.
 #' @param y The observations the fit was computed from, kept so that the fitted
-#'   distribution can be compared with the data (see [plot.distrib_fit()]).
-#' @param n Number of observations.
-#' @param coefficients Named estimates on the parameter scale.
-#' @param se Standard errors on the parameter scale (delta method).
-#' @param ci Matrix of confidence limits on the parameter scale.
-#' @param eta Estimates on the link scale.
-#' @param se_eta Standard errors on the link scale.
-#' @param ci_eta Matrix of confidence limits on the link scale.
-#' @param vcov Variance-covariance matrix on the parameter scale.
-#' @param vcov_eta Variance-covariance matrix on the link scale.
-#' @param loglik Maximized log-likelihood.
-#' @param aic,bic Information criteria.
-#' @param iterations Number of iterations used.
-#' @param converged Logical convergence flag.
-#' @param method Optimization method actually used.
-#' @param criterion Which stopping rule ended the run, as optimizers7 reports it.
-#' @param note Any remark the optimizer attached to the run.
-#' @param counts How many times the objective and its gradient were evaluated.
-#' @param score The max-norm of the score **per observation** at the
-#'   reported optimum, which is the quantity the stopping rule tested.
+#'   distribution can be compared with the data by [plot.distrib_fit()] and
+#'   resampled by [simulate.distrib_fit()].
+#' @param n The number of observations: the row count for a multivariate
+#'   response and the length otherwise. `bic` and the printed header both
+#'   read it.
+#' @param coefficients Named numeric estimates on the parameter scale, one per
+#'   parameter, in the order `distrib@params` gives.
+#' @param se Named standard errors on the parameter scale, from the delta
+#'   method. `NaN` where the corresponding variance came back negative or
+#'   missing.
+#' @param ci A two-column numeric matrix of confidence limits on the parameter
+#'   scale, one row per parameter, columns `lower` and `upper`.
+#' @param eta Named estimates on the link scale, \eqn{\hat\eta = g(\hat\theta)}.
+#' @param se_eta Named standard errors on the link scale, the square roots of
+#'   the diagonal of `vcov_eta`. These are the ones the fit computes; `se` is
+#'   derived from them.
+#' @param ci_eta A two-column numeric matrix of confidence limits on the link
+#'   scale, symmetric about `eta`.
+#' @param vcov The variance-covariance matrix on the parameter scale, with both
+#'   dimnames set to the parameter names.
+#' @param bic,aic Information criteria built on the unscaled log-likelihood,
+#'   \eqn{-2\ell + 2p} and \eqn{-2\ell + p\log n} with \eqn{p} the number of
+#'   estimated parameters.
+#' @param vcov_eta The variance-covariance matrix on the link scale, the
+#'   inverse of the information at \eqn{\hat\eta}. Every entry is `NA` when the
+#'   information could not be evaluated or inverted there; the estimates stand
+#'   in that case and only the uncertainty is missing.
+#' @param loglik The maximized log-likelihood, summed over observations and
+#'   **not** divided by \eqn{n}.
+#' @param iterations How many iterations the run that was kept took.
+#' @param converged Logical of length 1: whether a stopping rule confirmed
+#'   convergence. A run that exhausted its iteration budget is not converged
+#'   whatever point it reached.
+#' @param method The optimization method actually used, which is not always the
+#'   one asked for: `"Fisher scoring"` and `"Newton-Raphson"` fall back to
+#'   `"BFGS"` when they fail, and this records which one produced the estimates.
+#' @param criterion Which stopping rule ended the run, in the words
+#'   \pkg{optimizers7} reports it, such as
+#'   `"gradient (max-norm) < 1e-06"`. Empty when none fired.
+#' @param note Any remark the optimizer attached to the run, such as
+#'   `"the line search found no acceptable step"`. Empty when there is none.
+#' @param counts A named list of evaluation counts with components `f`, `g` and
+#'   `h`: how many times the objective, its gradient and its Hessian were
+#'   evaluated in the run that was kept.
+#' @param score The max-norm of the score **per observation** at the reported
+#'   optimum. This is the quantity the stopping rule tested, so it says how
+#'   close to stationary a run ended and is the one number a non-converged fit
+#'   is worth reading for.
 #' @param elapsed Seconds spent optimizing, summed over every starting value
-#'   and every fallback attempted.
-#' @param level Confidence level.
+#'   and every fallback attempted, not just the run that was kept.
+#' @param level The confidence level `ci` and `ci_eta` were built at.
+#'
 #' @section Methods:
-#' Methods implemented for this class:
+#' Registered on this class:
 #'   [`coef()`][coef.distrib_fit],
+#'   [`confint()`][confint.distrib_fit],
 #'   [`logLik()`][logLik.distrib_fit],
 #'   [`plot()`][plot.distrib_fit],
 #'   [`print()`][print.distrib_fit],
 #'   [`simulate()`][simulate.distrib_fit],
 #'   [`vcov()`][vcov.distrib_fit]
 #'
-#' @return An object of class `distrib_fit`.
+#' `coef()`, `vcov()` and `confint()` each take a `scale` argument and report
+#' either scale from the stored components.
+#'
+#' @return An S7 object of class `distrib_fit`, with the properties above.
 #'
 #' @examples
 #' set.seed(1)
-#' y <- distrib_rng(gaussian1_distrib(), 200, list(mu = 1, sigma = 2))
-#' fit <- fit_distrib(gaussian1_distrib(), y)
+#' d <- gaussian1_distrib()
+#' y <- distrib_rng(d, 200, list(mu = 1, sigma = 2))
+#' fit <- fit_distrib(d, y)
 #' S7::S7_inherits(fit, distrib_fit)
-#' coef(fit)
-#' logLik(fit)
 #'
-#' @seealso [fit_distrib()]
+#' # The two scales are stored together, and eta is the link of the estimate.
+#' rbind(parameter = coef(fit), link = coef(fit, scale = "link"))
+#' all.equal(fit@eta[["sigma"]], log(fit@coefficients[["sigma"]]))
+#'
+#' # The parameter-scale interval is the link-scale one mapped through g^-1,
+#' # so the lower limit of a scale stays positive whatever the sample.
+#' fit@ci
+#' all.equal(fit@ci[["sigma", "lower"]], exp(fit@ci_eta[["sigma", "lower"]]))
+#'
+#' # What the optimizer did. 'score' is the max-norm of the score per
+#' # observation at the point reported, which is what the rule tested.
+#' c(iterations = fit@iterations, converged = fit@converged, score = fit@score)
+#' fit@criterion
+#'
+#' @seealso [fit_distrib()], which builds one;
+#'   [print.distrib_fit()] for the printed layout;
+#'   [confint.distrib_fit()] to recompute an interval at another level.
 #' @export
 distrib_fit <- S7::new_class("distrib_fit",
   properties = list(
@@ -245,99 +374,153 @@ distrib_fit <- S7::new_class("distrib_fit",
   )
 )
 
-#' Maximum-Likelihood Estimation
+#' @title Maximum-Likelihood Estimation for a Distribution
 #'
 #' @description
-#' Fits a distribution to an i.i.d. sample by maximum likelihood. The optimization
-#' is carried out on the **link (real) scale**, where the parameters are
-#' unconstrained, using the analytical score and information supplied by the
-#' distribution (`scale = "link"`). Estimates are then mapped back to the
-#' parameter scale and reported with standard errors and confidence intervals.
+#' Fits a `distrib` object to an i.i.d. sample by maximum likelihood and
+#' returns a [distrib_fit()] carrying the estimates, their standard errors and
+#' confidence limits on both scales. The optimization runs on the **link
+#' scale**, where the parameters are unconstrained, driven by the analytical
+#' score and information the family supplies at `scale = "link"`; the estimates
+#' are then mapped back and reported on the parameter scale.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y A numeric vector of observations.
+#' On a Gaussian the answer is the closed-form estimate to the printed digit:
+#' \eqn{\hat\mu = \bar y}, \eqn{\hat\sigma^2 = \frac{1}{n}\sum (y_i - \bar
+#' y)^2}, with \eqn{\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}} and
+#' \eqn{\mathrm{se}(\hat\sigma) = \hat\sigma/\sqrt{2n}}.
+#'
+#' @param distrib An object inheriting from `distrib`: a univariate family, a
+#'   multivariate one, or any wrapper of either.
+#' @param y A numeric vector of observations, or an \eqn{n \times p} matrix for
+#'   a multivariate family. Every observation is read at the same \eqn{\theta}.
 #' @param start Optional named list of starting values **on the parameter
-#'   scale**. If `NULL` (default) they come from
-#'   [distrib_start()], which lets a family compute them from the
-#'   data; families that do not say otherwise fall back to random draws, with
-#'   restarts.
-#' @param method How to optimize. One argument, taking one of three things:
+#'   scale**. `NULL`, the default, asks [distrib_start()], which lets a family
+#'   compute a start from the data; a family that says nothing falls back to
+#'   draws from the parameter domains and the restarts below. A value that is
+#'   neither `NULL` nor a list signals an error naming the argument, because
+#'   `start` sits before `method` in the signature and an optimizer passed
+#'   positionally lands here.
+#' @param method How to optimize. One argument taking one of three things:
 #'
-#'   - [fisher_scoring()], the default --- Newton's method
-#'     with the **expected** information in place of the Hessian, the
-#'     object carrying how that information is to be obtained when the family
-#'     has no closed form for it;
-#'   - an optimizer object from \pkg{optimizers7}, used as given and
-#'     receiving the analytical gradient and the **observed** Hessian,
-#'     so that `method = lbfgs(criterion = crit_grad(1e-12))` selects
-#'     both the algorithm and the stopping rule;
-#'   - one of the strings `"fisher"`, `"newton"` or
-#'     `"bfgs"`, kept as short names for the three ready-made
-#'     strategies. The first two fall back to BFGS if they fail to converge;
-#'     an optimizer the caller chose is never silently replaced.
+#'   - [fisher_scoring()], the default: Newton's method with the **expected**
+#'     information in place of the observed Hessian, the object carrying how
+#'     that information is to be obtained when the family has no closed form
+#'     for it. Passing an `approx` where the family does have one signals an
+#'     error rather than ignoring it;
+#'   - an optimizer object from \pkg{optimizers7}, used as given and receiving
+#'     the analytical gradient and the **observed** Hessian, so that
+#'     `method = lbfgs(criterion = crit_grad(1e-12))` selects the algorithm and
+#'     the stopping rule together. A stopping rule the optimizer cannot
+#'     evaluate is rejected here, where the message can name it;
+#'   - one of the strings `"fisher"`, `"newton"` or `"bfgs"`, short names for
+#'     the three ready-made strategies. The first two fall back to BFGS if they
+#'     fail to converge; an optimizer the caller chose is never replaced.
 #'
-#'   The iteration limit and the stopping rule belong to the method and are
-#'   set there: on an optimizer object through its own `maxit` and
-#'   `criterion`, on [fisher_scoring()] through the same two
-#'   arguments, and otherwise left at the defaults of
-#'   [optimizers7::crit_grad()] and of the optimizer. The objective
-#'   handed to the optimizer is the *mean* negative log-likelihood, so a
-#'   tolerance on its gradient is a tolerance on the score **per
-#'   observation** whatever the sample size, and
-#'   [optimizers7::crit_grad()] documents why its default sits where
-#'   it does.
-#' @param level Confidence level for the intervals. Defaults to 0.95.
-#' @param n_start How many starting values to ask [distrib_start()]
-#'   for when `start` is `NULL`. Defaults to 5. A family that returns
-#'   its own estimate returns one and ignores this.
+#'   The iteration limit and the stopping rule belong to the method and are set
+#'   there, on an optimizer through its own `maxit` and `criterion` and on
+#'   [fisher_scoring()] through the same two arguments. Where the caller sets
+#'   neither, the rule is [optimizers7::crit_grad()] at its own tolerance.
+#' @param level Confidence level for `ci` and `ci_eta`, a single number in
+#'   \eqn{(0, 1)}. Defaults to 0.95. Any other level is available afterwards
+#'   from [confint.distrib_fit()] without refitting.
+#' @param n_start How many starting values to ask [distrib_start()] for when
+#'   `start` is `NULL`. Defaults to 5. A family that returns its own estimate
+#'   returns one and ignores this. Ignored entirely when `start` is given.
 #' @param threads How many threads the fit may use, as
-#'   [numericals7::n_threads()] constructs it. The default,
-#'   `n_threads(1)`, is sequential and takes exactly the sequential
-#'   code path. The count reaches the family's compiled per-observation
-#'   kernels as an argument; the result does not depend on it, bit for bit,
-#'   because every parallel region decomposes its work over the elements of
-#'   its output and never splits a reduction.
+#'   [numericals7::n_threads()] constructs it. The default, `n_threads(1)`, is
+#'   sequential and takes the sequential code path. The count reaches the
+#'   family's compiled per-observation kernels as an argument; the result does
+#'   not depend on it, bit for bit, because every parallel region decomposes
+#'   its work over the elements of its output and never splits a reduction.
 #'
-#' @return An object of class [distrib_fit()]; see its documentation for
-#'   the available components. `coef()`, `vcov()` and `logLik()`
-#'   methods are provided.
+#' @return An S7 object of class [distrib_fit()]. Its `coefficients`, `se` and
+#'   `ci` are on the parameter scale and its `eta`, `se_eta` and `ci_eta` on
+#'   the link scale; `loglik`, `aic` and `bic` are computed from the unscaled
+#'   log-likelihood at the estimate, and `converged`, `score`, `iterations`,
+#'   `method`, `criterion` and `counts` record what the optimizer did. See that
+#'   page for every component.
+#'
+#'   Signals an error when no starting value produced a usable run, and a
+#'   separate one when every run of a discrete family reached a positive
+#'   log-likelihood, which is impossible for a product of probabilities and
+#'   says the mass function has broken down at the parameters reached.
 #'
 #' @details
-#' **Why the link scale.** Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
-#' the constrained \eqn{\theta} removes the need for box constraints: a variance
-#' can never become negative, a probability never leaves \eqn{(0,1)}. The score and
-#' information on that scale are obtained exactly (not numerically) through the
-#' chain rule described in [link_scale_derivatives()].
+#' # Why the link scale
+#' Optimizing \eqn{\eta \in \mathbb{R}^p} in place of the constrained
+#' \eqn{\theta} removes the need for box constraints: a scale cannot become
+#' negative and a probability cannot leave \eqn{(0,1)}, because every link maps
+#' onto the interior of its parameter's domain. The score and the information
+#' on that scale are exact, not numerical, through the chain rule of
+#' [link_scale_derivatives()].
 #'
-#' **Standard errors.** The variance-covariance matrix on the link scale is
-#' the inverse of the information at the optimum. It is mapped to the parameter
-#' scale by the delta method,
-#' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J, \qquad
-#'       J = \mathrm{diag}\!\left(\frac{d g^{-1}}{d\eta}\Big|_{\hat\eta}\right)}
+#' # The objective is the mean, not the sum
+#' What the optimizer receives is \eqn{-\ell(\eta)/n}, with the gradient and
+#' the Hessian divided by \eqn{n} with it. Scaling by a positive constant moves
+#' neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
+#' when both are divided by \eqn{n}. What it changes is the meaning of a
+#' threshold: a tolerance on the gradient of this objective is a tolerance on
+#' the score **per observation** whatever the sample size, so the same rule
+#' means the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. `loglik`, the
+#' information and every standard error are recomputed unscaled at the optimum.
 #'
-#' **Confidence intervals.** Intervals are built symmetrically on the link
-#' scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,\mathrm{se}(\hat\eta)}, and then mapped
-#' through \eqn{g^{-1}}. This guarantees that the reported limits always respect the
-#' parameter's domain (a variance interval cannot contain negative values), which a
-#' symmetric interval on the parameter scale would not.
+#' # Standard errors and intervals
+#' The variance matrix on the link scale is the inverse information at
+#' \eqn{\hat\eta}. The expected information is used when the fit itself used it
+#' or when the family writes it out; otherwise the observed Hessian, which
+#' every family has. The delta method carries it to the parameter scale,
+#' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
+#'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
+#' Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
+#' z_{1-\alpha/2}\,\mathrm{se}(\hat\eta)}, and mapped through \eqn{g^{-1}},
+#' sorting the pair in case the link decreases. The limits therefore respect
+#' the parameter's domain, which a symmetric interval on the parameter scale
+#' would not.
+#'
+#' # Restarts, the fallback and the tie-break
+#' Each starting value is tried in turn and the search stops at the first run
+#' that converges. Fisher scoring and Newton's method fall back to BFGS from
+#' the same starting value when they fail; an optimizer the caller named does
+#' not. Among the runs that finish, a converged one beats a non-converged one
+#' and the objective breaks ties, so the fit reports the best run and not the
+#' last. A run of a discrete family whose log-likelihood came back positive is
+#' discarded before any comparison.
 #'
 #' @examples
-#' \dontrun{
 #' set.seed(1)
 #' d <- gaussian1_distrib()
 #' y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 #' fit <- fit_distrib(d, y)
 #' fit
-#' coef(fit)
-#' vcov(fit)
 #'
-#' # a bounded parameter: the interval never leaves (0, 1)
+#' # The Gaussian MLE is closed form, and the fit reaches it.
+#' all.equal(coef(fit)[["mu"]], mean(y))
+#' all.equal(coef(fit)[["sigma"]], sqrt(mean((y - mean(y))^2)))
+#'
+#' # So are the standard errors: sigma/sqrt(n) and sigma/sqrt(2n).
+#' s <- coef(fit)[["sigma"]]
+#' all.equal(unname(fit@se), c(s / sqrt(500), s / sqrt(2 * 500)))
+#'
+#' # A bounded parameter: the interval is built on the link scale and mapped
+#' # back, so it cannot contain a probability outside (0, 1).
 #' b <- bernoulli_distrib()
-#' fit_distrib(b, rbinom(50, 1, 0.9))
-#' }
+#' fb <- fit_distrib(b, rbinom(50, 1, 0.9))
+#' rbind(link = confint(fb, scale = "link"), parameter = confint(fb))
 #'
-#' @seealso [link_scale_derivatives()], [check_distrib()],
-#'   [optimizers7::minimize()]
+#' # A non-regular family. The Laplace's observed curvature in the location is
+#' # zero almost everywhere, so Newton's method has nothing to invert; Fisher
+#' # scoring uses the information instead and reaches the closed-form estimates.
+#' yl <- distrib_rng(laplace_distrib(), 400, list(mu = 0, sigma = 1))
+#' fl <- fit_distrib(laplace_distrib(), yl)
+#' c(fitted = coef(fl)[["mu"]], median = median(yl))
+#' c(fitted = coef(fl)[["sigma"]], mad = mean(abs(yl - median(yl))))
+#'
+#' @seealso [distrib_fit()] for the object returned;
+#'   [fisher_scoring()] for the default method;
+#'   [distrib_start()] for where the starting values come from;
+#'   [link_scale_derivatives()] for the chain rule the score uses;
+#'   [check_distrib()] to validate a family before fitting it;
+#'   [optimizers7::minimize()], which runs the search.
 #' @importFrom stats qnorm setNames
 #' @export
 fit_distrib <- function(distrib, y, start = NULL,
@@ -698,18 +881,25 @@ fit_distrib <- function(distrib, y, start = NULL,
   )
 }
 
-#' Render a Duration With a Unit Matched to Its Size
+#' @title A Duration Rendered With a Unit Matched to Its Size
 #'
 #' @description
-#' Formats a time in seconds using milliseconds below a second, seconds below a
-#' minute, and minutes and seconds above, so that the figure a fit prints stays
-#' readable whatever the sample size.
+#' Formats a time in seconds for the line [print.distrib_fit()] shows,
+#' choosing the unit from the size: milliseconds below a second, seconds below
+#' a minute, and minutes with seconds above. A fit of a few hundred
+#' observations then reads `40 ms` where one of ten million reads
+#' `2 min 07 s`, and neither prints a figure the reader has to count zeros in.
 #'
-#' @param sec A single non-negative number of seconds.
+#' @param sec A single non-negative number of seconds. `NA`, a non-finite
+#'   value and a zero-length vector all give `NA_character_`; the value is not
+#'   otherwise validated, and a negative number is formatted as it stands.
 #'
-#' @return A character string.
+#' @return A character string of length 1: `"0.4 ms"`, `"40 ms"`, `"1.5 s"`,
+#'   `"59.4 s"`, `"1 min 01 s"`. Seconds are rounded to one decimal below a
+#'   minute and to the nearest second above it.
 #'
-#' @seealso [print.distrib_fit()]
+#' @seealso [print.distrib_fit()], the only caller; [fit_distrib()], which
+#'   accumulates the figure over every starting value and every fallback.
 #' @keywords internal
 fit_format_elapsed <- function(sec) {
   if (!length(sec) || !is.finite(sec)) return(NA_character_)

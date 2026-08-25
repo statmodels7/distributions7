@@ -32,80 +32,139 @@ distrib_fit(
 )
 }
 \arguments{
-\item{distrib}{The fitted \code{distrib} object.}
+\item{distrib}{The fitted \code{distrib} object, carrying the parametrization and
+the links the estimates are expressed in.}
 
 \item{y}{The observations the fit was computed from, kept so that the fitted
-distribution can be compared with the data (see \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}).}
+distribution can be compared with the data by \code{\link[=plot.distrib_fit]{plot.distrib_fit()}} and
+resampled by \code{\link[=simulate.distrib_fit]{simulate.distrib_fit()}}.}
 
-\item{n}{Number of observations.}
+\item{n}{The number of observations: the row count for a multivariate
+response and the length otherwise. \code{bic} and the printed header both
+read it.}
 
-\item{coefficients}{Named estimates on the parameter scale.}
+\item{coefficients}{Named numeric estimates on the parameter scale, one per
+parameter, in the order \code{distrib@params} gives.}
 
-\item{se}{Standard errors on the parameter scale (delta method).}
+\item{se}{Named standard errors on the parameter scale, from the delta
+method. \code{NaN} where the corresponding variance came back negative or
+missing.}
 
-\item{ci}{Matrix of confidence limits on the parameter scale.}
+\item{ci}{A two-column numeric matrix of confidence limits on the parameter
+scale, one row per parameter, columns \code{lower} and \code{upper}.}
 
-\item{eta}{Estimates on the link scale.}
+\item{eta}{Named estimates on the link scale, \eqn{\hat\eta = g(\hat\theta)}.}
 
-\item{se_eta}{Standard errors on the link scale.}
+\item{se_eta}{Named standard errors on the link scale, the square roots of
+the diagonal of \code{vcov_eta}. These are the ones the fit computes; \code{se} is
+derived from them.}
 
-\item{ci_eta}{Matrix of confidence limits on the link scale.}
+\item{ci_eta}{A two-column numeric matrix of confidence limits on the link
+scale, symmetric about \code{eta}.}
 
-\item{vcov}{Variance-covariance matrix on the parameter scale.}
+\item{vcov}{The variance-covariance matrix on the parameter scale, with both
+dimnames set to the parameter names.}
 
-\item{vcov_eta}{Variance-covariance matrix on the link scale.}
+\item{vcov_eta}{The variance-covariance matrix on the link scale, the
+inverse of the information at \eqn{\hat\eta}. Every entry is \code{NA} when the
+information could not be evaluated or inverted there; the estimates stand
+in that case and only the uncertainty is missing.}
 
-\item{loglik}{Maximized log-likelihood.}
+\item{loglik}{The maximized log-likelihood, summed over observations and
+\strong{not} divided by \eqn{n}.}
 
-\item{aic, bic}{Information criteria.}
+\item{bic, aic}{Information criteria built on the unscaled log-likelihood,
+\eqn{-2\ell + 2p} and \eqn{-2\ell + p\log n} with \eqn{p} the number of
+estimated parameters.}
 
-\item{iterations}{Number of iterations used.}
+\item{iterations}{How many iterations the run that was kept took.}
 
-\item{converged}{Logical convergence flag.}
+\item{converged}{Logical of length 1: whether a stopping rule confirmed
+convergence. A run that exhausted its iteration budget is not converged
+whatever point it reached.}
 
-\item{method}{Optimization method actually used.}
+\item{method}{The optimization method actually used, which is not always the
+one asked for: \code{"Fisher scoring"} and \code{"Newton-Raphson"} fall back to
+\code{"BFGS"} when they fail, and this records which one produced the estimates.}
 
-\item{criterion}{Which stopping rule ended the run, as optimizers7 reports it.}
+\item{criterion}{Which stopping rule ended the run, in the words
+\pkg{optimizers7} reports it, such as
+\code{"gradient (max-norm) < 1e-06"}. Empty when none fired.}
 
-\item{note}{Any remark the optimizer attached to the run.}
+\item{note}{Any remark the optimizer attached to the run, such as
+\code{"the line search found no acceptable step"}. Empty when there is none.}
 
-\item{counts}{How many times the objective and its gradient were evaluated.}
+\item{counts}{A named list of evaluation counts with components \code{f}, \code{g} and
+\code{h}: how many times the objective, its gradient and its Hessian were
+evaluated in the run that was kept.}
 
-\item{score}{The max-norm of the score \strong{per observation} at the
-reported optimum, which is the quantity the stopping rule tested.}
+\item{score}{The max-norm of the score \strong{per observation} at the reported
+optimum. This is the quantity the stopping rule tested, so it says how
+close to stationary a run ended and is the one number a non-converged fit
+is worth reading for.}
 
 \item{elapsed}{Seconds spent optimizing, summed over every starting value
-and every fallback attempted.}
+and every fallback attempted, not just the run that was kept.}
 
-\item{level}{Confidence level.}
+\item{level}{The confidence level \code{ci} and \code{ci_eta} were built at.}
 }
 \value{
-An object of class \code{distrib_fit}.
+An S7 object of class \code{distrib_fit}, with the properties above.
 }
 \description{
-Object returned by \code{\link[=fit_distrib]{fit_distrib()}}, holding the estimates on both the
-parameter and the link scale together with their uncertainty.
+The class of the object \code{\link[=fit_distrib]{fit_distrib()}} returns. It holds the estimates on
+both the parameter scale and the link scale, their standard errors and
+confidence limits, the maximized log-likelihood with the two information
+criteria built on it, and a record of what the optimizer did.
+
+Both scales are kept because the fit is computed on one and read on the
+other. The variance matrix is the inverse information at
+\eqn{\hat\eta}; \code{vcov} is its image under the delta method and \code{ci} is
+\code{ci_eta} mapped through \eqn{g^{-1}}, so a limit on the parameter scale
+respects the parameter's domain by construction.
+
+This page documents the raw S7 constructor. It validates nothing and is not
+the way to build a fit; call \code{\link[=fit_distrib]{fit_distrib()}}.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=coef.distrib_fit]{coef()}},
+\code{\link[=confint.distrib_fit]{confint()}},
 \code{\link[=logLik.distrib_fit]{logLik()}},
 \code{\link[=plot.distrib_fit]{plot()}},
 \code{\link[=print.distrib_fit]{print()}},
 \code{\link[=simulate.distrib_fit]{simulate()}},
 \code{\link[=vcov.distrib_fit]{vcov()}}
+
+\code{coef()}, \code{vcov()} and \code{confint()} each take a \code{scale} argument and report
+either scale from the stored components.
 }
 
 \examples{
 set.seed(1)
-y <- distrib_rng(gaussian1_distrib(), 200, list(mu = 1, sigma = 2))
-fit <- fit_distrib(gaussian1_distrib(), y)
+d <- gaussian1_distrib()
+y <- distrib_rng(d, 200, list(mu = 1, sigma = 2))
+fit <- fit_distrib(d, y)
 S7::S7_inherits(fit, distrib_fit)
-coef(fit)
-logLik(fit)
+
+# The two scales are stored together, and eta is the link of the estimate.
+rbind(parameter = coef(fit), link = coef(fit, scale = "link"))
+all.equal(fit@eta[["sigma"]], log(fit@coefficients[["sigma"]]))
+
+# The parameter-scale interval is the link-scale one mapped through g^-1,
+# so the lower limit of a scale stays positive whatever the sample.
+fit@ci
+all.equal(fit@ci[["sigma", "lower"]], exp(fit@ci_eta[["sigma", "lower"]]))
+
+# What the optimizer did. 'score' is the max-norm of the score per
+# observation at the point reported, which is what the rule tested.
+c(iterations = fit@iterations, converged = fit@converged, score = fit@score)
+fit@criterion
 
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}
+\code{\link[=fit_distrib]{fit_distrib()}}, which builds one;
+\code{\link[=print.distrib_fit]{print.distrib_fit()}} for the printed layout;
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} to recompute an interval at another level.
 }

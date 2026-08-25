@@ -15,35 +15,51 @@ fit_hess_matrix(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, or the response matrix of a
+multivariate family.}
 
-\item{theta}{A named list of parameters on the natural scale.}
+\item{theta}{A named list of parameters on the parameter scale, aligned to
+\code{distrib@params}.}
 
-\item{expected}{Logical; whether to use the expected Hessian.}
+\item{expected}{Logical of length 1, with no default. \code{TRUE} assembles the
+expected Hessian and \code{FALSE} the observed one.}
 
-\item{approx}{How the expectation is approximated when the distribution has
-no closed form for it. Ignored when it has one, and when \code{expected}
-is \code{FALSE}.}
+\item{approx}{How the expectation is approximated for a family with no
+closed form for it: \code{"bartlett"} (the default), \code{"integrate"} or \code{"mc"}.
+Read only when \code{expected} is \code{TRUE} and the family has no exact
+expression; ignored otherwise.}
 
-\item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
+\item{nsim}{Monte Carlo sample size, a single positive integer, read only
+when \code{approx = "mc"} is in force. Defaults to 10000.}
+
+\item{threads}{How many threads the family's compiled kernels may use, as an
+integer count. Defaults to \code{1L}. The matrix does not depend on the count.}
 }
 \value{
-A symmetric numeric matrix with dimnames taken from the parameters.
+A symmetric numeric matrix of dimension
+\code{length(distrib@params)}, with both dimnames set to \code{distrib@params}.
 }
 \description{
-Assembles the package's named list of Hessian components into the symmetric
-\eqn{p \times p} matrix an optimizer wants, summed over observations.
-}
-\details{
-Derivative components are stored one per unique index pair, since the Hessian
-is symmetric; this fills both triangles. Passing \code{expected = TRUE} gives
-the expected Hessian, which is what makes Fisher scoring possible -- and what
-allows a fit on a non-regular family such as the Laplace, where the observed
-Hessian is degenerate but the information is not.
+Assembles the package's named list of second-derivative components into the
+symmetric \eqn{p \times p} matrix an optimizer wants, summed over
+observations and on the link scale. Components are stored one per unordered
+index pair, so this fills both triangles from the one value.
+
+With \code{expected = TRUE} it assembles the expected Hessian instead, which is
+what turns Newton's method into Fisher scoring and what makes a fit possible
+on a family whose observed curvature is unusable. On a Laplace at
+\eqn{\sigma = 1} with 400 draws the observed matrix is
+\eqn{\bigl(\begin{smallmatrix} 0 & 2\\ 2 & -392\end{smallmatrix}\bigr)}:
+\eqn{\partial^2\ell/\partial\mu^2} is zero almost everywhere, so the
+determinant is \eqn{-(\sum_i \mathrm{sign}(y_i - \mu))^2/\sigma^2}, which is
+negative unless the signs balance exactly, and the matrix is \strong{indefinite}.
+The expected information at the same point is \eqn{-400 I}.
 }
 \seealso{
-\code{\link[=fit_score]{fit_score()}}, \code{\link[=fit_distrib]{fit_distrib()}}
+\code{\link[=fit_score]{fit_score()}} for the first-order counterpart;
+\code{\link[=distrib_hessian]{distrib_hessian()}} and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}, which supply the
+components; \code{\link[=fisher_scoring]{fisher_scoring()}}, where \code{approx} and \code{nsim} are set.
 }
 \keyword{internal}

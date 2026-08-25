@@ -2,22 +2,29 @@
 % Please edit documentation in R/fit_distrib.R
 \name{fit_format_elapsed}
 \alias{fit_format_elapsed}
-\title{Render a Duration With a Unit Matched to Its Size}
+\title{A Duration Rendered With a Unit Matched to Its Size}
 \usage{
 fit_format_elapsed(sec)
 }
 \arguments{
-\item{sec}{A single non-negative number of seconds.}
+\item{sec}{A single non-negative number of seconds. \code{NA}, a non-finite
+value and a zero-length vector all give \code{NA_character_}; the value is not
+otherwise validated, and a negative number is formatted as it stands.}
 }
 \value{
-A character string.
+A character string of length 1: \code{"0.4 ms"}, \code{"40 ms"}, \code{"1.5 s"},
+\code{"59.4 s"}, \code{"1 min 01 s"}. Seconds are rounded to one decimal below a
+minute and to the nearest second above it.
 }
 \description{
-Formats a time in seconds using milliseconds below a second, seconds below a
-minute, and minutes and seconds above, so that the figure a fit prints stays
-readable whatever the sample size.
+Formats a time in seconds for the line \code{\link[=print.distrib_fit]{print.distrib_fit()}} shows,
+choosing the unit from the size: milliseconds below a second, seconds below
+a minute, and minutes with seconds above. A fit of a few hundred
+observations then reads \verb{40 ms} where one of ten million reads
+\verb{2 min 07 s}, and neither prints a figure the reader has to count zeros in.
 }
 \seealso{
-\code{\link[=print.distrib_fit]{print.distrib_fit()}}
+\code{\link[=print.distrib_fit]{print.distrib_fit()}}, the only caller; \code{\link[=fit_distrib]{fit_distrib()}}, which
+accumulates the figure over every starting value and every fallback.
 }
 \keyword{internal}

@@ -7,23 +7,34 @@
 fit_dtheta_deta(distrib, eta)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}, supplying \code{params} and
+\code{link_params}.}
 
-\item{eta}{A numeric vector of linear predictors, one per parameter.}
+\item{eta}{A numeric vector of linear predictors, one per parameter, in the
+order \code{distrib@params} gives. Only the first element of each link's answer
+is kept, so an \code{eta} longer than the parameter count is silently truncated
+by the same rule \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}} applies.}
 }
 \value{
-A numeric vector of length \code{length(distrib@params)}.
+An unnamed numeric vector of length \code{length(distrib@params)}, in the
+order \code{distrib@params} gives.
 }
 \description{
-The first derivative \eqn{h_i'(\eta_i)} of each parameter's inverse link, one
-entry per parameter.
-}
-\details{
-This is the diagonal Jacobian the delta method needs to carry a standard error
-from the link scale, where it is computed, to the parameter scale, where it is
-reported.
+Returns \eqn{h_i'(\eta_i) = dg_i^{-1}/d\eta_i}, one entry per parameter,
+evaluated at the supplied linear predictors. Because each parameter carries
+its own scalar link the Jacobian of \eqn{\theta} in \eqn{\eta} is diagonal,
+and this is its diagonal.
+
+It is what the delta method needs to carry a variance matrix from the link
+scale, where the fit computes it, to the parameter scale, where it is
+reported: \eqn{\widehat{\mathrm{Var}}(\hat\theta) = J V J} with
+\eqn{J = \mathrm{diag}(h')}. On a Gaussian at \eqn{\eta = (1.5, \log 2.5)},
+with the identity on \eqn{\mu} and the logarithm on \eqn{\sigma}, it returns
+\code{c(1, 2.5)}.
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}
+\code{\link[=fit_theta_from_eta]{fit_theta_from_eta()}}, the map this differentiates;
+\code{\link[=fit_distrib]{fit_distrib()}}, which uses it for the standard errors and nothing else;
+\code{\link[linkfunctions7:dlinkinv]{linkfunctions7::dlinkinv()}}.
 }
 \keyword{internal}

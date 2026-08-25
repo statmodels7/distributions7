@@ -2,29 +2,39 @@
 % Please edit documentation in R/fit_distrib.R
 \name{fit_theta_from_eta}
 \alias{fit_theta_from_eta}
-\title{Map the Link Scale Back to Parameters}
+\title{The Link Scale Carried Back to Parameters}
 \usage{
 fit_theta_from_eta(distrib, eta)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}, supplying \code{params} and
+\code{link_params}.}
 
-\item{eta}{A numeric vector of linear predictors, one per parameter.}
+\item{eta}{A numeric vector of linear predictors, one per parameter, in the
+order \code{distrib@params} gives. A non-finite entry propagates to the
+parameter it names.}
 }
 \value{
-A named list of parameters on the natural scale.
+A named list of length \code{length(distrib@params)}, each component a
+number on the parameter scale, named and ordered as \code{distrib@params}.
 }
 \description{
-Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)}.
-}
-\details{
-The inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}. Because every link maps onto
-its parameter's domain by construction, a \eqn{\theta} obtained this way is
-admissible whatever the optimizer proposed -- which is the reason for working
-on the link scale at all, and the reason a confidence interval built there and
-mapped back cannot run outside the domain.
+Applies each parameter's inverse link, \eqn{\theta_i = g_i^{-1}(\eta_i)},
+and returns the parameters as the named list every generic in the package
+expects. It is the inverse of \code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}.
+
+Every link maps onto the \strong{open} interior of its parameter's domain, and
+\code{linkfunctions7} clamps the result strictly inside when the arithmetic
+saturates, so a \eqn{\theta} obtained this way is admissible whatever the
+optimizer proposed. On a Gaussian scale carried by the logarithm,
+\eqn{\eta = -800} gives \eqn{\sigma = 1.9\times 10^{-77}} and
+\eqn{\eta = 800} gives \eqn{1.8\times 10^{308}}: both extreme, both still
+inside \eqn{(0, \infty)}, so the density can be evaluated and the point
+rejected on its likelihood. This is also why a confidence interval built on
+the link scale and mapped back cannot run outside the domain.
 }
 \seealso{
-\code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}
+\code{\link[=fit_eta_from_theta]{fit_eta_from_theta()}}, the inverse; \code{\link[=fit_dtheta_deta]{fit_dtheta_deta()}} for the
+first derivative of the same map; \code{\link[linkfunctions7:linkinv]{linkfunctions7::linkinv()}}.
 }
 \keyword{internal}

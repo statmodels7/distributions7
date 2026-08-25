@@ -2,7 +2,7 @@
 % Please edit documentation in R/fit_distrib.R
 \name{fit_distrib}
 \alias{fit_distrib}
-\title{Maximum-Likelihood Estimation}
+\title{Maximum-Likelihood Estimation for a Distribution}
 \usage{
 fit_distrib(
   distrib,
@@ -15,105 +15,162 @@ fit_distrib(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}: a univariate family, a
+multivariate one, or any wrapper of either.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, or an \eqn{n \times p} matrix for
+a multivariate family. Every observation is read at the same \eqn{\theta}.}
 
 \item{start}{Optional named list of starting values \strong{on the parameter
-scale}. If \code{NULL} (default) they come from
-\code{\link[=distrib_start]{distrib_start()}}, which lets a family compute them from the
-data; families that do not say otherwise fall back to random draws, with
-restarts.}
+scale}. \code{NULL}, the default, asks \code{\link[=distrib_start]{distrib_start()}}, which lets a family
+compute a start from the data; a family that says nothing falls back to
+draws from the parameter domains and the restarts below. A value that is
+neither \code{NULL} nor a list signals an error naming the argument, because
+\code{start} sits before \code{method} in the signature and an optimizer passed
+positionally lands here.}
 
-\item{method}{How to optimize. One argument, taking one of three things:
+\item{method}{How to optimize. One argument taking one of three things:
 \itemize{
-\item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default --- Newton's method
-with the \strong{expected} information in place of the Hessian, the
-object carrying how that information is to be obtained when the family
-has no closed form for it;
-\item an optimizer object from \pkg{optimizers7}, used as given and
-receiving the analytical gradient and the \strong{observed} Hessian,
-so that \code{method = lbfgs(criterion = crit_grad(1e-12))} selects
-both the algorithm and the stopping rule;
-\item one of the strings \code{"fisher"}, \code{"newton"} or
-\code{"bfgs"}, kept as short names for the three ready-made
-strategies. The first two fall back to BFGS if they fail to converge;
-an optimizer the caller chose is never silently replaced.
+\item \code{\link[=fisher_scoring]{fisher_scoring()}}, the default: Newton's method with the \strong{expected}
+information in place of the observed Hessian, the object carrying how
+that information is to be obtained when the family has no closed form
+for it. Passing an \code{approx} where the family does have one signals an
+error rather than ignoring it;
+\item an optimizer object from \pkg{optimizers7}, used as given and receiving
+the analytical gradient and the \strong{observed} Hessian, so that
+\code{method = lbfgs(criterion = crit_grad(1e-12))} selects the algorithm and
+the stopping rule together. A stopping rule the optimizer cannot
+evaluate is rejected here, where the message can name it;
+\item one of the strings \code{"fisher"}, \code{"newton"} or \code{"bfgs"}, short names for
+the three ready-made strategies. The first two fall back to BFGS if they
+fail to converge; an optimizer the caller chose is never replaced.
 }
 
-The iteration limit and the stopping rule belong to the method and are
-set there: on an optimizer object through its own \code{maxit} and
-\code{criterion}, on \code{\link[=fisher_scoring]{fisher_scoring()}} through the same two
-arguments, and otherwise left at the defaults of
-\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} and of the optimizer. The objective
-handed to the optimizer is the \emph{mean} negative log-likelihood, so a
-tolerance on its gradient is a tolerance on the score \strong{per
-observation} whatever the sample size, and
-\code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} documents why its default sits where
-it does.}
+The iteration limit and the stopping rule belong to the method and are set
+there, on an optimizer through its own \code{maxit} and \code{criterion} and on
+\code{\link[=fisher_scoring]{fisher_scoring()}} through the same two arguments. Where the caller sets
+neither, the rule is \code{\link[optimizers7:crit_grad]{optimizers7::crit_grad()}} at its own tolerance.}
 
-\item{level}{Confidence level for the intervals. Defaults to 0.95.}
+\item{level}{Confidence level for \code{ci} and \code{ci_eta}, a single number in
+\eqn{(0, 1)}. Defaults to 0.95. Any other level is available afterwards
+from \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} without refitting.}
 
-\item{n_start}{How many starting values to ask \code{\link[=distrib_start]{distrib_start()}}
-for when \code{start} is \code{NULL}. Defaults to 5. A family that returns
-its own estimate returns one and ignores this.}
+\item{n_start}{How many starting values to ask \code{\link[=distrib_start]{distrib_start()}} for when
+\code{start} is \code{NULL}. Defaults to 5. A family that returns its own estimate
+returns one and ignores this. Ignored entirely when \code{start} is given.}
 
 \item{threads}{How many threads the fit may use, as
-\code{\link[numericals7:n_threads]{numericals7::n_threads()}} constructs it. The default,
-\code{n_threads(1)}, is sequential and takes exactly the sequential
-code path. The count reaches the family's compiled per-observation
-kernels as an argument; the result does not depend on it, bit for bit,
-because every parallel region decomposes its work over the elements of
-its output and never splits a reduction.}
+\code{\link[numericals7:n_threads]{numericals7::n_threads()}} constructs it. The default, \code{n_threads(1)}, is
+sequential and takes the sequential code path. The count reaches the
+family's compiled per-observation kernels as an argument; the result does
+not depend on it, bit for bit, because every parallel region decomposes
+its work over the elements of its output and never splits a reduction.}
 }
 \value{
-An object of class \code{\link[=distrib_fit]{distrib_fit()}}; see its documentation for
-the available components. \code{coef()}, \code{vcov()} and \code{logLik()}
-methods are provided.
+An S7 object of class \code{\link[=distrib_fit]{distrib_fit()}}. Its \code{coefficients}, \code{se} and
+\code{ci} are on the parameter scale and its \code{eta}, \code{se_eta} and \code{ci_eta} on
+the link scale; \code{loglik}, \code{aic} and \code{bic} are computed from the unscaled
+log-likelihood at the estimate, and \code{converged}, \code{score}, \code{iterations},
+\code{method}, \code{criterion} and \code{counts} record what the optimizer did. See that
+page for every component.
+
+Signals an error when no starting value produced a usable run, and a
+separate one when every run of a discrete family reached a positive
+log-likelihood, which is impossible for a product of probabilities and
+says the mass function has broken down at the parameters reached.
 }
 \description{
-Fits a distribution to an i.i.d. sample by maximum likelihood. The optimization
-is carried out on the \strong{link (real) scale}, where the parameters are
-unconstrained, using the analytical score and information supplied by the
-distribution (\code{scale = "link"}). Estimates are then mapped back to the
-parameter scale and reported with standard errors and confidence intervals.
-}
-\details{
-\strong{Why the link scale.} Optimizing \eqn{\eta \in \mathbb{R}^p} rather than
-the constrained \eqn{\theta} removes the need for box constraints: a variance
-can never become negative, a probability never leaves \eqn{(0,1)}. The score and
-information on that scale are obtained exactly (not numerically) through the
-chain rule described in \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
+Fits a \code{distrib} object to an i.i.d. sample by maximum likelihood and
+returns a \code{\link[=distrib_fit]{distrib_fit()}} carrying the estimates, their standard errors and
+confidence limits on both scales. The optimization runs on the \strong{link
+scale}, where the parameters are unconstrained, driven by the analytical
+score and information the family supplies at \code{scale = "link"}; the estimates
+are then mapped back and reported on the parameter scale.
 
-\strong{Standard errors.} The variance-covariance matrix on the link scale is
-the inverse of the information at the optimum. It is mapped to the parameter
-scale by the delta method,
-\deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J, \qquad
-      J = \mathrm{diag}\!\left(\frac{d g^{-1}}{d\eta}\Big|_{\hat\eta}\right)}
-
-\strong{Confidence intervals.} Intervals are built symmetrically on the link
-scale, \eqn{\hat\eta \pm z_{1-\alpha/2}\,\mathrm{se}(\hat\eta)}, and then mapped
-through \eqn{g^{-1}}. This guarantees that the reported limits always respect the
-parameter's domain (a variance interval cannot contain negative values), which a
-symmetric interval on the parameter scale would not.
+On a Gaussian the answer is the closed-form estimate to the printed digit:
+\eqn{\hat\mu = \bar y}, \eqn{\hat\sigma^2 = \frac{1}{n}\sum (y_i - \bar
+y)^2}, with \eqn{\mathrm{se}(\hat\mu) = \hat\sigma/\sqrt{n}} and
+\eqn{\mathrm{se}(\hat\sigma) = \hat\sigma/\sqrt{2n}}.
 }
+\section{Why the link scale}{
+Optimizing \eqn{\eta \in \mathbb{R}^p} in place of the constrained
+\eqn{\theta} removes the need for box constraints: a scale cannot become
+negative and a probability cannot leave \eqn{(0,1)}, because every link maps
+onto the interior of its parameter's domain. The score and the information
+on that scale are exact, not numerical, through the chain rule of
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.
+}
+
+\section{The objective is the mean, not the sum}{
+What the optimizer receives is \eqn{-\ell(\eta)/n}, with the gradient and
+the Hessian divided by \eqn{n} with it. Scaling by a positive constant moves
+neither the maximum nor any Newton step, since \eqn{H^{-1}g} is unchanged
+when both are divided by \eqn{n}. What it changes is the meaning of a
+threshold: a tolerance on the gradient of this objective is a tolerance on
+the score \strong{per observation} whatever the sample size, so the same rule
+means the same thing at \eqn{n = 10} and at \eqn{n = 10^7}. \code{loglik}, the
+information and every standard error are recomputed unscaled at the optimum.
+}
+
+\section{Standard errors and intervals}{
+The variance matrix on the link scale is the inverse information at
+\eqn{\hat\eta}. The expected information is used when the fit itself used it
+or when the family writes it out; otherwise the observed Hessian, which
+every family has. The delta method carries it to the parameter scale,
+\deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
+      \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right).}
+Intervals are built symmetrically on the link scale, \eqn{\hat\eta \pm
+z_{1-\alpha/2}\,\mathrm{se}(\hat\eta)}, and mapped through \eqn{g^{-1}},
+sorting the pair in case the link decreases. The limits therefore respect
+the parameter's domain, which a symmetric interval on the parameter scale
+would not.
+}
+
+\section{Restarts, the fallback and the tie-break}{
+Each starting value is tried in turn and the search stops at the first run
+that converges. Fisher scoring and Newton's method fall back to BFGS from
+the same starting value when they fail; an optimizer the caller named does
+not. Among the runs that finish, a converged one beats a non-converged one
+and the objective breaks ties, so the fit reports the best run and not the
+last. A run of a discrete family whose log-likelihood came back positive is
+discarded before any comparison.
+}
+
 \examples{
-\dontrun{
 set.seed(1)
 d <- gaussian1_distrib()
 y <- distrib_rng(d, 500, list(mu = 2, sigma = 3))
 fit <- fit_distrib(d, y)
 fit
-coef(fit)
-vcov(fit)
 
-# a bounded parameter: the interval never leaves (0, 1)
+# The Gaussian MLE is closed form, and the fit reaches it.
+all.equal(coef(fit)[["mu"]], mean(y))
+all.equal(coef(fit)[["sigma"]], sqrt(mean((y - mean(y))^2)))
+
+# So are the standard errors: sigma/sqrt(n) and sigma/sqrt(2n).
+s <- coef(fit)[["sigma"]]
+all.equal(unname(fit@se), c(s / sqrt(500), s / sqrt(2 * 500)))
+
+# A bounded parameter: the interval is built on the link scale and mapped
+# back, so it cannot contain a probability outside (0, 1).
 b <- bernoulli_distrib()
-fit_distrib(b, rbinom(50, 1, 0.9))
-}
+fb <- fit_distrib(b, rbinom(50, 1, 0.9))
+rbind(link = confint(fb, scale = "link"), parameter = confint(fb))
+
+# A non-regular family. The Laplace's observed curvature in the location is
+# zero almost everywhere, so Newton's method has nothing to invert; Fisher
+# scoring uses the information instead and reaches the closed-form estimates.
+yl <- distrib_rng(laplace_distrib(), 400, list(mu = 0, sigma = 1))
+fl <- fit_distrib(laplace_distrib(), yl)
+c(fitted = coef(fl)[["mu"]], median = median(yl))
+c(fitted = coef(fl)[["sigma"]], mad = mean(abs(yl - median(yl))))
 
 }
 \seealso{
-\code{\link[=link_scale_derivatives]{link_scale_derivatives()}}, \code{\link[=check_distrib]{check_distrib()}},
-\code{\link[optimizers7:minimize]{optimizers7::minimize()}}
+\code{\link[=distrib_fit]{distrib_fit()}} for the object returned;
+\code{\link[=fisher_scoring]{fisher_scoring()}} for the default method;
+\code{\link[=distrib_start]{distrib_start()}} for where the starting values come from;
+\code{\link[=link_scale_derivatives]{link_scale_derivatives()}} for the chain rule the score uses;
+\code{\link[=check_distrib]{check_distrib()}} to validate a family before fitting it;
+\code{\link[optimizers7:minimize]{optimizers7::minimize()}}, which runs the search.
 }
