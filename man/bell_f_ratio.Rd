@@ -38,7 +38,7 @@ At order 1 it returns \eqn{\ell^{(i)}} and at order 2
 \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the ordinary relation between the
 second derivative of a density and of its logarithm. Those two cases
 reproduce the hand-written closed forms exactly, and that agreement is the
-licence for the orders that have nothing to compare against.
+license for the orders that have nothing to compare against.
 }
 \seealso{
 \code{\link[=log_deriv]{log_deriv()}}, the companion identity for a logarithm;

@@ -64,7 +64,7 @@ canon_key <- function(block, params) {
 #' \eqn{\ell^{(ij)} + \ell^{(i)}\ell^{(j)}}, the ordinary relation between the
 #' second derivative of a density and of its logarithm. Those two cases
 #' reproduce the hand-written closed forms exactly, and that agreement is the
-#' licence for the orders that have nothing to compare against.
+#' license for the orders that have nothing to compare against.
 #'
 #' @param idx A character vector of parameter names, with repetition, naming
 #'   the multi-index \eqn{I}: `c("mu", "mu", "sigma")` is
