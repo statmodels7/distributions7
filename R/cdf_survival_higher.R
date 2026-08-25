@@ -32,7 +32,7 @@ NULL
 #' # Two things the arithmetic needs
 #'
 #' The survival function is evaluated as `exp(Lval)` and not as `1 - F`, which
-#' keeps the far tail from cancelling. And below the support \eqn{F} is
+#' keeps the far tail from canceling. And below the support \eqn{F} is
 #' identically zero and so is every derivative, while \eqn{L} is still finite
 #' there and would otherwise give a survival above one; the `inside` mask is
 #' what suppresses that.

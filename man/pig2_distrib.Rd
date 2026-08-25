@@ -34,7 +34,7 @@ parametrization.
 \section{What orthogonality buys, and what it costs}{
 The maximum likelihood estimates of \eqn{\mu} and \eqn{\alpha} are
 asymptotically independent, so a Fisher scoring step in one parameter does
-not disturb the other and the two can be modelled with separate linear
+not disturb the other and the two can be modeled with separate linear
 predictors without their estimates fighting. The cost is that \eqn{\alpha}
 has no moment reading of its own: a reader who wants to interpret the
 overdispersion directly wants \code{\link[=pig1_distrib]{pig1_distrib()}}'s \eqn{\sigma}, which enters

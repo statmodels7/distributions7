@@ -1017,7 +1017,7 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #' \deqn{\gamma_2 = 3\,\frac{K_3(\sqrt{\nu})\,K_1(\sqrt{\nu})}
 #'                          {K_2(\sqrt{\nu})^2} - 3,}
 #' with \eqn{K_r} the modified Bessel function of the second kind. It depends
-#' on the shape alone, the location and the scale cancelling in a standardized
+#' on the shape alone, the location and the scale canceling in a standardized
 #' moment, and it interpolates between the two limits the family is built to
 #' span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0, the Gaussian's, as
 #' \eqn{\nu} grows.
@@ -2460,7 +2460,7 @@ S7::method(mean, CauchyDistrib) <- function(x, theta, ...) {
 #'
 #' @description
 #' Returns `NaN`. The variance is the second central moment, and it needs a
-#' first moment to centre on; the Cauchy has neither. Its density decays like
+#' first moment to center on; the Cauchy has neither. Its density decays like
 #' \eqn{y^{-2}}, so \eqn{\int |y|^p f(y)\,\mathrm{d}y} diverges for every
 #' \eqn{p \ge 1}, and the failure at \eqn{p = 2} is the worse of the two.
 #' `NaN` is returned directly, so that no quadrature is attempted.

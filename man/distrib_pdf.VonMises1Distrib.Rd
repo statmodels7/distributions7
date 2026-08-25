@@ -22,7 +22,7 @@ Defaults to \code{FALSE}.}
 \item{threads}{A single positive integer, how many threads
 \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} may use. It is carried down because this is
 where the family spends its time: profiled at 80.8 per cent of a fit whose
-concentration is modelled, so that \code{kappa} is a vector. Defaults to \code{1L}.}
+concentration is modeled, so that \code{kappa} is a vector. Defaults to \code{1L}.}
 }
 \value{
 A numeric vector of densities, of length

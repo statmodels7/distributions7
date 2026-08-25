@@ -28,7 +28,7 @@ negative binomial at the same variance}.
 \section{The mass function, and how it is computed}{
 The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
 half-integer order is a finite sum. What the kernel evaluates is that sum,
-on the log scale, after the prefactors have cancelled; no Bessel routine is
+on the log scale, after the prefactors have canceled; no Bessel routine is
 called. The log-likelihood and its fourteen partial derivatives to fourth
 order come out of one pass, all exact, so the fourth order costs what the
 score does. See \code{\link[=pig_hd_block]{pig_hd_block()}} for the expression and for the jet twin the

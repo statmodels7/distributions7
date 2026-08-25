@@ -22,7 +22,7 @@ Closed form, replacing the numerical default:
 \deqn{\gamma_2 = 3\,\frac{K_3(\sqrt{\nu})\,K_1(\sqrt{\nu})}
                          {K_2(\sqrt{\nu})^2} - 3,}
 with \eqn{K_r} the modified Bessel function of the second kind. It depends
-on the shape alone, the location and the scale cancelling in a standardized
+on the shape alone, the location and the scale canceling in a standardized
 moment, and it interpolates between the two limits the family is built to
 span: about 3, the Laplace's, as \eqn{\nu \to 0}, and 0, the Gaussian's, as
 \eqn{\nu} grows.

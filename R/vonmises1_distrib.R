@@ -101,7 +101,7 @@ VonMises1Distrib <- S7::new_class("VonMises1Distrib", parent = continuous_distri
 #' @param threads A single positive integer, how many threads
 #'   [numericals7::log_bessel_i()] may use. It is carried down because this is
 #'   where the family spends its time: profiled at 80.8 per cent of a fit whose
-#'   concentration is modelled, so that `kappa` is a vector. Defaults to `1L`.
+#'   concentration is modeled, so that `kappa` is a vector. Defaults to `1L`.
 #'
 #' @return A numeric vector of densities, of length
 #'   `max(length(y), length(mu), length(kappa))`, one value per observation.
