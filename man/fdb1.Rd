@@ -13,10 +13,16 @@ inner value.}
 \item{u}{A list of the inner derivatives \code{u1} to \code{u4}.}
 }
 \value{
-A list with the four derivatives of the composition.
+A named list with components \code{h1} to \code{h4}, the four derivatives
+of the composition, each the length of the vectors passed in.
 }
 \description{
 The derivatives of \eqn{h(u(x))} for scalar chains, Faa di Bruno written
 out: \eqn{(h \circ u)'' = h''u_1^2 + h'u_2} and so on to order four.
+}
+\seealso{
+\code{\link[=fdb2]{fdb2()}} for a bivariate inner function;
+\code{\link[=reparametrize]{reparametrize()}}, which consumes these through \code{map_derivs};
+\code{\link[=chain_assemble]{chain_assemble()}} for the general partition sum this writes out.
 }
 \keyword{internal}

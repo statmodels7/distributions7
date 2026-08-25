@@ -23,8 +23,8 @@ Several places here ask "did this method come from the base class, or did the
 subclass register its own?", and answer it with the documented S7 trick of
 reading \code{attr(m, "signature")[[1]]}. The comparison that follows must not
 be \code{identical()}: on S7 class objects that is object identity, so it
-returns \code{FALSE} for a class re-created from the same definition — which
-is what happens whenever the package's code is re-evaluated rather than
+returns \code{FALSE} for a class re-created from the same definition. That
+happens whenever the package's code is re-evaluated in place of being
 loaded, as it is under coverage instrumentation.
 
 The failure is silent and can be severe. In \pkg{linkfunctions7} the same

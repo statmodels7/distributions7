@@ -27,7 +27,7 @@ NULL
 #'    deliberately not the distribution itself, which would make the ratio
 #'    identically one and the check vacuous;
 #' 3. **the score has mean zero**, the first Bartlett identity, under
-#'    the distribution's own generator -- so it is also a check that the
+#'    the distribution's own generator, so it is also a check that the
 #'    generator and the density describe the same law;
 #' 4. **gradient and Hessian** against finite differences of the
 #'    summed log-density;

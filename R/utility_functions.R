@@ -310,8 +310,8 @@ hess_names <- function(params) {
 #' subclass register its own?", and answer it with the documented S7 trick of
 #' reading `attr(m, "signature")[[1]]`. The comparison that follows must not
 #' be `identical()`: on S7 class objects that is object identity, so it
-#' returns `FALSE` for a class re-created from the same definition — which
-#' is what happens whenever the package's code is re-evaluated rather than
+#' returns `FALSE` for a class re-created from the same definition. That
+#' happens whenever the package's code is re-evaluated in place of being
 #' loaded, as it is under coverage instrumentation.
 #'
 #' The failure is silent and can be severe. In \pkg{linkfunctions7} the same

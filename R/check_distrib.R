@@ -34,7 +34,8 @@ new_check <- function(name, ok, stat, detail = NA_character_) {
 #' @details
 #' A distribution under validation is by assumption possibly broken, so a check
 #' that throws is itself a result. Without this, the first component to raise
-#' would end the run and hide every check after it -- the least useful moment to
+#' would end the run and hide every check after it, which is the least useful
+#' moment to
 #' stop being informative.
 #'
 #' @param name The check's name, used for the row built on failure.
@@ -460,8 +461,8 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' against a reference that is itself reliable.
 #'
 #' @details
-#' A log-likelihood with a kink -- the Laplace's location is the example the
-#' package ships -- has no derivative exactly at the kink, and a central
+#' A log-likelihood with a kink has no derivative exactly at the kink, the
+#' Laplace's location being the example the package ships, and a central
 #' difference straddling it returns a number that is simply wrong. An observation
 #' landing within a step of that point therefore makes the *reference*
 #' invalid, not the analytical value being tested, and comparing against it
@@ -471,7 +472,7 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' Rather than hard-code where a kink is, the reference is recomputed with the
 #' step halved: where the two disagree, finite differencing has not converged and
 #' that observation is dropped. For a smooth log-likelihood nothing is ever
-#' dropped, so the check keeps its full strength -- a gradient made 5\% wrong is
+#' dropped, so the check keeps its full strength: a gradient made 5\% wrong is
 #' still caught.
 #'
 #' Two details are load-bearing. The two estimates are compared **relative
@@ -484,7 +485,7 @@ print_check_table <- function(distrib, out, theta, n, nsim) {
 #' Note the placement. This is defined *after* `check_distrib()`, not
 #' before it: a roxygen block attaches to whatever object follows it, so a helper
 #' slipped in between silently steals the documentation of the function it
-#' belongs to -- which had already happened once here, leaving the package with a
+#' belongs to. That had already happened once here, leaving the package with a
 #' `fd_is_reliable.Rd` and no `check_distrib.Rd`.
 #'
 #' @param fd_at A function of one argument, the relative step, returning the

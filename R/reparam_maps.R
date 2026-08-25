@@ -17,7 +17,12 @@ NULL
 #' @param h A list of the outer derivatives `h1` to `h4` at the
 #'   inner value.
 #' @param u A list of the inner derivatives `u1` to `u4`.
-#' @return A list with the four derivatives of the composition.
+#' @return A named list with components `h1` to `h4`, the four derivatives
+#'   of the composition, each the length of the vectors passed in.
+#'
+#' @seealso [fdb2()] for a bivariate inner function;
+#'   [reparametrize()], which consumes these through `map_derivs`;
+#'   [chain_assemble()] for the general partition sum this writes out.
 #' @keywords internal
 fdb1 <- function(h, u) {
   list(
@@ -43,7 +48,12 @@ fdb1 <- function(h, u) {
 #'   inner value.
 #' @param u The named list of inner partials.
 #' @return A named list of the fourteen partials of the composition, keyed
-#'   like the input.
+#'   exactly as `u` is: `x`, `z`, `xx`, `xz`, `zz`, `xxx`, `xxz`, `xzz`,
+#'   `zzz`, `xxxx`, `xxxz`, `xxzz`, `xzzz`, `zzzz`.
+#'
+#' @seealso [fdb1()] for a univariate inner function;
+#'   [reparametrize()], which consumes these through `map_derivs`;
+#'   [chain_assemble()] for the general partition sum this writes out.
 #' @keywords internal
 fdb2 <- function(h, u) {
   g <- function(k) if (is.null(u[[k]])) 0 else u[[k]]

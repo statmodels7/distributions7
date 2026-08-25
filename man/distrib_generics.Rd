@@ -34,7 +34,7 @@ along.}
 \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}, \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}.}
 \item{of the distribution function}{\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}},
 \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}}, \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}},
-which is what a censored likelihood needs.}
+which a censored likelihood needs.}
 \item{moments}{\code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}}, \code{\link[=std_dev]{std_dev()}}, \code{\link[=skewness]{skewness()}},
 \code{\link[=kurtosis]{kurtosis()}}, \code{\link[=moment]{moment()}}, \code{\link[=expectation]{expectation()}}.}
 \item{fitting}{\code{\link[=distrib_start]{distrib_start()}}, and \code{\link[=fit_distrib]{fit_distrib()}}, which is a function

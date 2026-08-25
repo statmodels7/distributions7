@@ -22,7 +22,8 @@ than letting it abort the report.
 \details{
 A distribution under validation is by assumption possibly broken, so a check
 that throws is itself a result. Without this, the first component to raise
-would end the run and hide every check after it -- the least useful moment to
+would end the run and hide every check after it, which is the least useful
+moment to
 stop being informative.
 }
 \seealso{

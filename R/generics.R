@@ -29,7 +29,7 @@
 #'     [distrib_grad_y_hess()], [distrib_hess_y_hess()].}
 #'   \item{of the distribution function}{[distrib_grad_cdf()],
 #'     [distrib_hess_cdf()], [distrib_deriv3_cdf()], [distrib_deriv4_cdf()],
-#'     which is what a censored likelihood needs.}
+#'     which a censored likelihood needs.}
 #'   \item{moments}{[mean()], [variance()], [std_dev()], [skewness()],
 #'     [kurtosis()], [moment()], [expectation()].}
 #'   \item{fitting}{[distrib_start()], and [fit_distrib()], which is a function
@@ -587,7 +587,7 @@ distrib_hess_y <- S7::new_generic("distrib_hess_y", "distrib", function(distrib,
 #'   \eqn{\log F(q)}, otherwise of \eqn{\log(1 - F(q))}.
 #' @param log Logical; if `TRUE` (default), derivatives of the *log*
 #'   tail probability. With `FALSE` the derivatives of the probability
-#'   itself are returned, which is what interval censoring and the truncation
+#'   itself are returned, which interval censoring and the truncation
 #'   constant are built from.
 #' @param ... Additional arguments passed to the specific method.
 #'

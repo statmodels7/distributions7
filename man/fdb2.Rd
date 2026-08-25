@@ -14,7 +14,8 @@ inner value.}
 }
 \value{
 A named list of the fourteen partials of the composition, keyed
-like the input.
+exactly as \code{u} is: \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx}, \code{xxz}, \code{xzz},
+\code{zzz}, \code{xxxx}, \code{xxxz}, \code{xxzz}, \code{xzzz}, \code{zzzz}.
 }
 \description{
 The fourteen partials of \eqn{h(u(x, z))} for a scalar outer \eqn{h} and
@@ -23,5 +24,10 @@ component. The inner partials arrive as a named list with entries
 \code{x}, \code{z}, \code{xx}, \code{xz}, \code{zz}, \code{xxx},
 \code{xxz}, \code{xzz}, \code{zzz}, \code{xxxx}, \code{xxxz},
 \code{xxzz}, \code{xzzz}, \code{zzzz}; missing entries count as zero.
+}
+\seealso{
+\code{\link[=fdb1]{fdb1()}} for a univariate inner function;
+\code{\link[=reparametrize]{reparametrize()}}, which consumes these through \code{map_derivs};
+\code{\link[=chain_assemble]{chain_assemble()}} for the general partition sum this writes out.
 }
 \keyword{internal}
