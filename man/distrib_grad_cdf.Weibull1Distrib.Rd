@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_survival_higher.R
 \name{distrib_grad_cdf.Weibull1Distrib}
 \alias{distrib_grad_cdf.Weibull1Distrib}
+\alias{distrib_hess_cdf.Weibull1Distrib}
+\alias{distrib_deriv3_cdf.Weibull1Distrib}
+\alias{distrib_deriv4_cdf.Weibull1Distrib}
 \title{Weibull Log-CDF Derivatives}
 \arguments{
 \item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}

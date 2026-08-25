@@ -2,6 +2,12 @@
 % Please edit documentation in R/cdf_mapped_higher.R
 \name{partial_loc_scale_deriv_cdf_k}
 \alias{partial_loc_scale_deriv_cdf_k}
+\alias{distrib_deriv3_cdf.StudentT1Distrib}
+\alias{distrib_deriv3_cdf.PseudoHuberDistrib}
+\alias{distrib_deriv3_cdf.SkewTDistrib}
+\alias{distrib_deriv4_cdf.StudentT1Distrib}
+\alias{distrib_deriv4_cdf.PseudoHuberDistrib}
+\alias{distrib_deriv4_cdf.SkewTDistrib}
 \title{Higher Log-CDF Derivatives When Only Some Parameters Are Location-Scale}
 \usage{
 partial_loc_scale_deriv_cdf_k(order)

@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{distrib_grad_cdf.InvGauss1Distrib}
 \alias{distrib_grad_cdf.InvGauss1Distrib}
+\alias{distrib_hess_cdf.InvGauss1Distrib}
+\alias{distrib_deriv3_cdf.InvGauss1Distrib}
+\alias{distrib_deriv4_cdf.InvGauss1Distrib}
 \title{Inverse Gaussian Log-CDF Derivatives}
 \arguments{
 \item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}

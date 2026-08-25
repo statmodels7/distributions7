@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{distrib_grad_cdf.EnetDistrib}
 \alias{distrib_grad_cdf.EnetDistrib}
+\alias{distrib_hess_cdf.EnetDistrib}
+\alias{distrib_deriv3_cdf.EnetDistrib}
+\alias{distrib_deriv4_cdf.EnetDistrib}
 \title{Elastic Net Log-CDF Derivatives}
 \arguments{
 \item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}

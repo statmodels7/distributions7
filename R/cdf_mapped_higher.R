@@ -160,6 +160,22 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
 #' @seealso [mapped_cdf_deriv_k()], the body it registers;
 #'   [distrib_deriv3_cdf()] for the generics.
 #'
+#' @aliases distrib_deriv3_cdf.Gaussian2Distrib
+#'   distrib_deriv3_cdf.Gaussian3Distrib
+#'   distrib_deriv3_cdf.InvGauss2Distrib
+#'   distrib_deriv3_cdf.Laplace2Distrib
+#'   distrib_deriv3_cdf.Lognormal1Distrib
+#'   distrib_deriv3_cdf.SkewNormal2Distrib
+#'   distrib_deriv4_cdf.Gaussian2Distrib
+#'   distrib_deriv4_cdf.Gaussian3Distrib
+#'   distrib_deriv4_cdf.InvGauss2Distrib
+#'   distrib_deriv4_cdf.Laplace2Distrib
+#'   distrib_deriv4_cdf.Lognormal1Distrib
+#'   distrib_deriv4_cdf.SkewNormal2Distrib
+#'   distrib_hess_cdf.InvGauss2Distrib
+#'   distrib_hess_cdf.SkewNormal2Distrib
+#'   distrib_grad_cdf.SkewNormal2Distrib
+#'
 #' @keywords internal
 register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
                                   q_fn = identity, orders = 3:4) {
@@ -320,6 +336,13 @@ S7::method(distrib_deriv4_cdf, GumbelDistrib) <- loc_scale_deriv_cdf_k(4L)
 #' @seealso [loc_scale_cdf_deriv_k()] for the closed components;
 #'   [numerical_cdf_deriv_k()] for the rest;
 #'   [partial_loc_scale_hess_cdf()] for the second order.
+#'
+#' @aliases distrib_deriv3_cdf.StudentT1Distrib
+#'   distrib_deriv3_cdf.PseudoHuberDistrib
+#'   distrib_deriv3_cdf.SkewTDistrib
+#'   distrib_deriv4_cdf.StudentT1Distrib
+#'   distrib_deriv4_cdf.PseudoHuberDistrib
+#'   distrib_deriv4_cdf.SkewTDistrib
 #'
 #' @keywords internal
 partial_loc_scale_deriv_cdf_k <- function(order) {

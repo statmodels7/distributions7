@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_survival_higher.R
 \name{distrib_grad_cdf.GPDDistrib}
 \alias{distrib_grad_cdf.GPDDistrib}
+\alias{distrib_hess_cdf.GPDDistrib}
+\alias{distrib_deriv3_cdf.GPDDistrib}
+\alias{distrib_deriv4_cdf.GPDDistrib}
 \title{Generalized Pareto Log-CDF Derivatives}
 \arguments{
 \item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}

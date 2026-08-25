@@ -530,6 +530,13 @@ loc_scale_cdf_deriv_k <- function(distrib, q, theta, order) {
 #'   [distrib_deriv3_cdf()] for the generic;
 #'   [loc_scale_grad_cdf()] and [loc_scale_hess_cdf()] for the orders below.
 #'
+#' @aliases distrib_deriv3_cdf.Gaussian1Distrib
+#'   distrib_deriv3_cdf.LogisticDistrib distrib_deriv3_cdf.CauchyDistrib
+#'   distrib_deriv3_cdf.LaplaceDistrib distrib_deriv3_cdf.GumbelDistrib
+#'   distrib_deriv4_cdf.Gaussian1Distrib
+#'   distrib_deriv4_cdf.LogisticDistrib distrib_deriv4_cdf.CauchyDistrib
+#'   distrib_deriv4_cdf.LaplaceDistrib distrib_deriv4_cdf.GumbelDistrib
+#'
 #' @keywords internal
 loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {

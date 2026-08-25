@@ -2,6 +2,16 @@
 % Please edit documentation in R/cdf_higher.R
 \name{loc_scale_deriv_cdf_k}
 \alias{loc_scale_deriv_cdf_k}
+\alias{distrib_deriv3_cdf.Gaussian1Distrib}
+\alias{distrib_deriv3_cdf.LogisticDistrib}
+\alias{distrib_deriv3_cdf.CauchyDistrib}
+\alias{distrib_deriv3_cdf.LaplaceDistrib}
+\alias{distrib_deriv3_cdf.GumbelDistrib}
+\alias{distrib_deriv4_cdf.Gaussian1Distrib}
+\alias{distrib_deriv4_cdf.LogisticDistrib}
+\alias{distrib_deriv4_cdf.CauchyDistrib}
+\alias{distrib_deriv4_cdf.LaplaceDistrib}
+\alias{distrib_deriv4_cdf.GumbelDistrib}
 \title{Location-Scale Third and Fourth Log-CDF Derivatives}
 \usage{
 loc_scale_deriv_cdf_k(order)

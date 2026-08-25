@@ -146,6 +146,9 @@ register_surv_cdf <- function(cls, pieces) {
 
 #' @title Exponential Log-CDF Derivatives
 #' @name distrib_grad_cdf.ExponentialDistrib
+#' @aliases distrib_hess_cdf.ExponentialDistrib
+#'   distrib_deriv3_cdf.ExponentialDistrib
+#'   distrib_deriv4_cdf.ExponentialDistrib
 #'
 #' @description
 #' Closed form at every order from one to four, from the survival function
@@ -206,6 +209,9 @@ register_surv_cdf(ExponentialDistrib, function(distrib, q, theta) {
 
 #' @title Weibull Log-CDF Derivatives
 #' @name distrib_grad_cdf.Weibull1Distrib
+#' @aliases distrib_hess_cdf.Weibull1Distrib
+#'   distrib_deriv3_cdf.Weibull1Distrib
+#'   distrib_deriv4_cdf.Weibull1Distrib
 #'
 #' @description
 #' Closed form at every order from one to four, from the survival function
@@ -483,6 +489,8 @@ gpd_surv_pieces <- function(distrib, q, theta) {
 
 #' @title Generalized Pareto Log-CDF Derivatives
 #' @name distrib_grad_cdf.GPDDistrib
+#' @aliases distrib_hess_cdf.GPDDistrib distrib_deriv3_cdf.GPDDistrib
+#'   distrib_deriv4_cdf.GPDDistrib
 #'
 #' @description
 #' Closed form at every order from one to four, from the survival function

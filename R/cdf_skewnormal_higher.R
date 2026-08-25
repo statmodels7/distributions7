@@ -237,6 +237,9 @@ sn_cdf_deriv_k <- function(distrib, q, theta, order) {
 
 #' @title Skew Normal Log-CDF Derivatives
 #' @name distrib_grad_cdf.SkewNormal1Distrib
+#' @aliases distrib_hess_cdf.SkewNormal1Distrib
+#'   distrib_deriv3_cdf.SkewNormal1Distrib
+#'   distrib_deriv4_cdf.SkewNormal1Distrib
 #'
 #' @description
 #' Closed form at every order from one to four, in the shape as well as in the

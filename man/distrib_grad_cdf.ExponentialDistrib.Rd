@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_survival_higher.R
 \name{distrib_grad_cdf.ExponentialDistrib}
 \alias{distrib_grad_cdf.ExponentialDistrib}
+\alias{distrib_hess_cdf.ExponentialDistrib}
+\alias{distrib_deriv3_cdf.ExponentialDistrib}
+\alias{distrib_deriv4_cdf.ExponentialDistrib}
 \title{Exponential Log-CDF Derivatives}
 \arguments{
 \item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}

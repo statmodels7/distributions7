@@ -2,6 +2,9 @@
 % Please edit documentation in R/cdf_skewnormal_higher.R
 \name{distrib_grad_cdf.SkewNormal1Distrib}
 \alias{distrib_grad_cdf.SkewNormal1Distrib}
+\alias{distrib_hess_cdf.SkewNormal1Distrib}
+\alias{distrib_deriv3_cdf.SkewNormal1Distrib}
+\alias{distrib_deriv4_cdf.SkewNormal1Distrib}
 \title{Skew Normal Log-CDF Derivatives}
 \arguments{
 \item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}

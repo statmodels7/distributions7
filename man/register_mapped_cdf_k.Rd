@@ -2,6 +2,21 @@
 % Please edit documentation in R/cdf_mapped_higher.R
 \name{register_mapped_cdf_k}
 \alias{register_mapped_cdf_k}
+\alias{distrib_deriv3_cdf.Gaussian2Distrib}
+\alias{distrib_deriv3_cdf.Gaussian3Distrib}
+\alias{distrib_deriv3_cdf.InvGauss2Distrib}
+\alias{distrib_deriv3_cdf.Laplace2Distrib}
+\alias{distrib_deriv3_cdf.Lognormal1Distrib}
+\alias{distrib_deriv3_cdf.SkewNormal2Distrib}
+\alias{distrib_deriv4_cdf.Gaussian2Distrib}
+\alias{distrib_deriv4_cdf.Gaussian3Distrib}
+\alias{distrib_deriv4_cdf.InvGauss2Distrib}
+\alias{distrib_deriv4_cdf.Laplace2Distrib}
+\alias{distrib_deriv4_cdf.Lognormal1Distrib}
+\alias{distrib_deriv4_cdf.SkewNormal2Distrib}
+\alias{distrib_hess_cdf.InvGauss2Distrib}
+\alias{distrib_hess_cdf.SkewNormal2Distrib}
+\alias{distrib_grad_cdf.SkewNormal2Distrib}
 \title{Register the Higher CDF Orders on a Mapped Family}
 \usage{
 register_mapped_cdf_k(

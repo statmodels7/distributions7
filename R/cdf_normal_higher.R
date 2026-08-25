@@ -228,6 +228,9 @@ separable_deriv <- function(nm, uderiv, vderiv) {
 
 #' @title Inverse Gaussian Log-CDF Derivatives
 #' @name distrib_grad_cdf.InvGauss1Distrib
+#' @aliases distrib_hess_cdf.InvGauss1Distrib
+#'   distrib_deriv3_cdf.InvGauss1Distrib
+#'   distrib_deriv4_cdf.InvGauss1Distrib
 #'
 #' @description
 #' Closed form at every order from one to four. Unusually for a positive
@@ -368,6 +371,8 @@ dpow_affine <- function(u, p, k, inner) {
 
 #' @title Elastic Net Log-CDF Derivatives
 #' @name distrib_grad_cdf.EnetDistrib
+#' @aliases distrib_hess_cdf.EnetDistrib distrib_deriv3_cdf.EnetDistrib
+#'   distrib_deriv4_cdf.EnetDistrib
 #'
 #' @description
 #' Closed form at every order from one to four. Each half of the distribution
