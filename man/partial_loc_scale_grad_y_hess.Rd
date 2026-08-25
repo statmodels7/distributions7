@@ -2,8 +2,16 @@
 % Please edit documentation in R/theta2_families.R
 \name{partial_loc_scale_grad_y_hess}
 \alias{partial_loc_scale_grad_y_hess}
+\alias{distrib_grad_y_hess.StudentT1Distrib}
+\alias{distrib_grad_y_hess.PseudoHuberDistrib}
+\alias{distrib_grad_y_hess.SkewNormal1Distrib}
+\alias{distrib_grad_y_hess.SkewTDistrib}
+\alias{distrib_hess_y_hess.StudentT1Distrib}
+\alias{distrib_hess_y_hess.PseudoHuberDistrib}
+\alias{distrib_hess_y_hess.SkewNormal1Distrib}
+\alias{distrib_hess_y_hess.SkewTDistrib}
 \alias{partial_loc_scale_hess_y_hess}
-\title{Second-Order Mixed Derivatives When Only Two Parameters Are Location-Scale}
+\title{Second-Order Mixed Derivatives With a Shape Parameter}
 \usage{
 partial_loc_scale_grad_y_hess(
   distrib,
@@ -22,24 +30,68 @@ partial_loc_scale_hess_y_hess(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale in that order and whose remaining
+parameters are shapes.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list with one numeric vector per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The location and scale pairs in closed form and every pair touching a shape
-parameter by one central difference of the analytic first-order component.
+The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies for a
+family carrying shape parameters beyond its location and scale. The three
+pairs in \eqn{(\mu, \sigma)} come from \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} in closed
+form, and every pair touching a shape parameter from one central difference
+of the analytic first-order component. Both delegate to \code{\link[=partial_theta2]{partial_theta2()}},
+which does the splicing.
+}
+\details{
+Registered on the Student t, the pseudo-Huber, the skew normal and the skew
+t. Measured against a numerical Hessian of the response derivative, the
+closed pairs agree to about \eqn{10^{-11}} and the differenced ones to
+between \eqn{10^{-7}} and \eqn{10^{-6}}, which is one stencil's accuracy.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma = 1.2, nu = 6)
+
+g3 <- distrib_grad_y_hess(d, y, theta)
+names(g3)
+vapply(g3, function(z) z[1], numeric(1))
+
+# Against a numerical Hessian of the response gradient. The three pairs in
+# (mu, sigma) are closed and the three touching nu are differenced.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2],
+                                              nu = v[3]))
+numDeriv::hessian(f, c(0.3, 1.2, 6))
+
+# The closed three are exactly the location-scale block's.
+cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
+all(vapply(names(cl), function(k) identical(g3[[k]], cl[[k]]), logical(1)))
 }
 \seealso{
-\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
+\code{\link[=partial_theta2]{partial_theta2()}}, which splices the two halves,
+\code{\link[=loc_scale_grad_y_hess]{loc_scale_grad_y_hess()}} for a family with no shape parameter, and
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the generics.
 }
 \keyword{internal}

@@ -2,32 +2,66 @@
 % Please edit documentation in R/theta2_families.R
 \name{loc_scale_cross2_block}
 \alias{loc_scale_cross2_block}
-\title{The Location and Scale Components of the Response Curvature's Derivative}
+\title{The Location and Scale Parts of the Response Curvature's Derivative}
 \usage{
 loc_scale_cross2_block(distrib, y, theta)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale in that order.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters, location first and scale second.}
 }
 \value{
-A list of two component vectors, unnamed.
+A list of two numeric vectors, UNNAMED, in location-then-scale
+order. The callers name them.
 }
 \description{
-\eqn{\partial\ell^{(yy)}/\partial\mu = -B'/\sigma^3} and
+Computes \eqn{\partial\ell^{(yy)}/\partial\mu = -B'/\sigma^3} and
 \eqn{\partial\ell^{(yy)}/\partial\sigma = -(zB' + 2B)/\sigma^3}, with
 \eqn{B = \sigma^2\ell^{(yy)}} and \eqn{B' = \sigma^3\ell^{(yyy)}}, for a
-family whose response enters only through \eqn{z = (y-\mu)/\sigma}.
+family whose response enters only through \eqn{z = (y-\mu)/\sigma}. It is
+the arithmetic behind every location-scale method of \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}.
 }
 \details{
-The same identity as \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} one derivative
-further in the response, and it reads the family's own third response
-derivative rather than differencing its second.
+The same identity \code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} uses, one derivative further in
+the response: it reads the family's own \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} instead of
+differencing its \code{\link[=distrib_hess_y]{distrib_hess_y()}}. A shape parameter beyond the two is not
+covered, and \code{\link[=partial_loc_scale_cross2_y]{partial_loc_scale_cross2_y()}} differences those components
+instead.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+d <- logistic_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+blk <- distributions7:::loc_scale_cross2_block(d, y, theta)
+vapply(blk, function(z) z[1], numeric(1))
+
+# The identity written out.
+s <- 1.2
+z <- (y - 0.3) / s
+B <- s^2 * distrib_hess_y(d, y, theta)
+B1 <- s^3 * distrib_deriv3_y(d, y, theta)
+c(mu = (-B1 / s^3)[1], sigma = (-(z * B1 + 2 * B) / s^3)[1])
+
+# It is what the family's distrib_cross2_y method returns, named.
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
 }
 \seealso{
-\code{\link[=distrib_cross2_y]{distrib_cross2_y()}}
+\code{\link[=loc_scale_cross2_y]{loc_scale_cross2_y()}} and \code{\link[=partial_loc_scale_cross2_y]{partial_loc_scale_cross2_y()}}, the two
+method bodies built on it, \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} for the next order
+in \eqn{\theta}, and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic.
 }
 \keyword{internal}

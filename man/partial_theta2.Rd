@@ -7,19 +7,62 @@
 partial_theta2(distrib, y, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{order}{\code{1} or \code{2}.}
+\item{order}{\code{1} to splice into the derivative of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2}
+into that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}. It selects both the first-order reference
+differenced, \code{\link[=distrib_cross_y]{distrib_cross_y()}} or \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}, and the order of
+the closed block.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list with one numeric vector per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-Takes the differenced components and replaces the three that the
-location-scale identity gives in closed form.
+Differences every component through \code{\link[=numerical_theta2_y]{numerical_theta2_y()}} and then replaces
+the three that \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} gives in closed form. It is what
+\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} and \code{\link[=partial_loc_scale_hess_y_hess]{partial_loc_scale_hess_y_hess()}} both
+run, at order 1 and 2 respectively.
+}
+\details{
+Differencing every component and overwriting three of them costs three
+unnecessary differences, and is how the two halves are kept keyed the same
+way without a second enumeration: \code{\link[=numerical_theta2_y]{numerical_theta2_y()}} returns
+\code{\link[=hess_names]{hess_names()}}'s full set, and the closed block's three names index into it
+directly.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+d <- skewt_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma = 1.2, alpha = 0.7, nu = 6)
+
+out <- distributions7:::partial_theta2(d, y, theta, 1L)
+names(out)
+
+# The three location-scale pairs are spliced in unchanged.
+cl <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
+all(vapply(names(cl), function(k) identical(out[[k]], cl[[k]]), logical(1)))
+
+# And it is exactly what the family's method returns.
+identical(out, distrib_grad_y_hess(d, y, theta))
+}
+\seealso{
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} for the closed three,
+\code{\link[=numerical_theta2_y]{numerical_theta2_y()}} for the differenced rest, and
+\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}}, its caller.
 }
 \keyword{internal}

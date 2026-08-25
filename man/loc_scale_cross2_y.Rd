@@ -2,6 +2,13 @@
 % Please edit documentation in R/theta2_families.R
 \name{loc_scale_cross2_y}
 \alias{loc_scale_cross2_y}
+\alias{distrib_cross2_y.LogisticDistrib}
+\alias{distrib_cross2_y.CauchyDistrib}
+\alias{distrib_cross2_y.GumbelDistrib}
+\alias{distrib_cross2_y.LaplaceDistrib}
+\alias{distrib_cross2_y.PseudoHuberDistrib}
+\alias{distrib_cross2_y.SkewNormal1Distrib}
+\alias{distrib_cross2_y.SkewTDistrib}
 \alias{partial_loc_scale_cross2_y}
 \title{Second-Response Mixed Derivatives of a Location-Scale Family}
 \usage{
@@ -16,25 +23,70 @@ partial_loc_scale_cross2_y(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale in that order.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}.
 }
 \description{
-The \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} body shared by the families that are
-location-scale in both their parameters, and the partial form for those
-with a shape parameter beyond the two.
+The \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} method bodies shared by the families whose response
+enters only through \eqn{z = (y-\mu)/\sigma}. \code{loc_scale_cross2_y()} serves
+a family that is location-scale in BOTH its parameters, and
+\code{partial_loc_scale_cross2_y()} one carrying shape parameters beyond the two:
+the location and scale components come from \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} in
+closed form, and each shape component from one central difference of
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} through \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}.
+}
+\details{
+Registered on the logistic, Cauchy, Gumbel and Laplace for the first body,
+and on the pseudo-Huber, skew normal and skew t for the second. The
+gaussian and the Student t write their own out, and every remaining
+continuous family takes \code{\link[=distrib_cross2_y.continuous_distrib]{distrib_cross2_y.continuous_distrib()}}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+y <- c(-0.7, 0.3, 1.4)
+
+# Fully location-scale: both components closed.
+d <- cauchy_distrib()
+theta <- list(mu = 0.3, sigma = 1.2)
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::grad(f, c(0.3, 1.2))
+
+# With a shape parameter, the third component is differenced and the first
+# two are not.
+ds <- skewnormal1_distrib()
+ts <- list(mu = 0.3, sigma = 1.2, alpha = 0.7)
+vapply(distrib_cross2_y(ds, y, ts), function(z) z[1], numeric(1))
+g <- function(v) distrib_hess_y(ds, y[1], list(mu = v[1], sigma = v[2],
+                                               alpha = v[3]))
+numDeriv::grad(g, c(0.3, 1.2, 0.7))
 }
 \seealso{
-\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}}
+\code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} for the closed components,
+\code{\link[=numerical_cross2_y]{numerical_cross2_y()}} for the differenced ones, and \code{\link[=distrib_cross2_y]{distrib_cross2_y()}}
+for the generic.
 }
 \keyword{internal}

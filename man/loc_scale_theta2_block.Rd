@@ -7,34 +7,96 @@
 loc_scale_theta2_block(distrib, y, theta, order = 1L)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale in that order.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters, location first and scale second.}
 
-\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}},
-\code{2} for that of \code{\link[=distrib_hess_y]{distrib_hess_y()}}.}
+\item{order}{\code{1} for the block of \code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{2} for that of
+\code{\link[=distrib_hess_y]{distrib_hess_y()}}. Default \code{1}.}
 }
 \value{
-A named list of three components, keyed
-\code{mu_mu}, \code{sigma_sigma}, \code{mu_sigma} under the family's own
-parameter names.
+A named list of three numeric vectors, keyed \code{mu_mu},
+\code{sigma_sigma} and \code{mu_sigma} under the family's own parameter names.
 }
 \description{
-The three components in \eqn{(\mu, \sigma)} of
+Computes the three components in \eqn{(\mu, \sigma)} of
 \eqn{\partial^2\ell^{(y)}/\partial\theta^2} or of
 \eqn{\partial^2\ell^{(yy)}/\partial\theta^2}, for a family whose response
-enters only through \eqn{z = (y-\mu)/\sigma}.
+enters only through \eqn{z = (y-\mu)/\sigma}. It is the arithmetic behind
+every location-scale method of \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, and it derives nothing new.
 }
-\details{
-The quantities are the family's own response derivatives scaled by a power
-of \eqn{\sigma}: writing \eqn{A = \sigma\ell^{(y)}}, its derivatives in
-\eqn{z} are \eqn{\sigma^2\ell^{(yy)}} and \eqn{\sigma^3\ell^{(yyy)}}, and
-for \eqn{B = \sigma^2\ell^{(yy)}} they are \eqn{\sigma^3\ell^{(yyy)}} and
-\eqn{\sigma^4\ell^{(yyyy)}}. Nothing new is differentiated.
+\section{The identity}{
+With \eqn{A = \sigma\ell^{(y)}} and \eqn{B = \sigma^2\ell^{(yy)}} functions
+of \eqn{z} alone, and \eqn{\partial z/\partial\mu = -1/\sigma},
+\eqn{\partial z/\partial\sigma = -z/\sigma}, the chain rule gives
+\deqn{\frac{\partial^2\ell^{(y)}}{\partial\mu^2} = \frac{A''}{\sigma^3},
+  \qquad \frac{\partial^2\ell^{(y)}}{\partial\mu\,\partial\sigma}
+    = \frac{zA'' + 2A'}{\sigma^3}, \qquad
+  \frac{\partial^2\ell^{(y)}}{\partial\sigma^2}
+    = \frac{z^2A'' + 4zA' + 2A}{\sigma^3},}
+and at the next order in the response
+\deqn{\frac{\partial^2\ell^{(yy)}}{\partial\mu^2} = \frac{B''}{\sigma^4},
+  \qquad \frac{\partial^2\ell^{(yy)}}{\partial\mu\,\partial\sigma}
+    = \frac{zB'' + 3B'}{\sigma^4}, \qquad
+  \frac{\partial^2\ell^{(yy)}}{\partial\sigma^2}
+    = \frac{z^2B'' + 6zB' + 6B}{\sigma^4}.}
+}
+
+\section{Why nothing new is differentiated}{
+\eqn{A}, \eqn{A'}, \eqn{A''} and \eqn{B}, \eqn{B'}, \eqn{B''} are the
+family's OWN response derivatives times a power of \eqn{\sigma}:
+\eqn{A = \sigma\ell^{(y)}}, \eqn{A' = B = \sigma^2\ell^{(yy)}},
+\eqn{A'' = B' = \sigma^3\ell^{(yyy)}} and \eqn{B'' = \sigma^4\ell^{(yyyy)}}.
+A family that already carries \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}}
+therefore gets both orders in the parameters for free, which is the bargain
+\code{\link[=loc_scale_cross_block]{loc_scale_cross_block()}} already takes at first order.
+
+A shape parameter beyond the two is NOT covered and falls back; see
+\code{\link[=partial_theta2]{partial_theta2()}}, which splices these three components into the
+differenced ones.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+d <- logistic_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+blk <- distributions7:::loc_scale_theta2_block(d, y, theta, 1L)
+blk$mu_mu
+
+# The identity written out: A'' / sigma^3, with A'' the family's own third
+# response derivative scaled.
+s <- 1.2
+A2 <- s^3 * distrib_deriv3_y(d, y, theta)
+A2 / s^3
+
+# And the scale pair, which carries all three of A, A' and A''.
+z <- (y - 0.3) / s
+A <- s * distrib_grad_y(d, y, theta)
+A1 <- s^2 * distrib_hess_y(d, y, theta)
+c(reported = blk$sigma_sigma[1],
+  formula = ((z^2 * A2 + 4 * z * A1 + 2 * A) / s^3)[1])
+
+# Order 2 reads one derivative further and is the same shape.
+distributions7:::loc_scale_theta2_block(d, y, theta, 2L)$mu_mu
+(s^4 * distrib_deriv4_y(d, y, theta)) / s^4
 }
 \seealso{
-\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}}
+\code{\link[=loc_scale_grad_y_hess]{loc_scale_grad_y_hess()}} and \code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}},
+the two method bodies built on it, \code{\link[=loc_scale_cross2_block]{loc_scale_cross2_block()}} for the
+first order in \eqn{\theta}, and \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the generic.
 }
 \keyword{internal}

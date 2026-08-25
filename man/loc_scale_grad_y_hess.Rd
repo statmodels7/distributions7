@@ -2,9 +2,15 @@
 % Please edit documentation in R/theta2_families.R, R/theta2_mapped.R
 \name{loc_scale_grad_y_hess}
 \alias{loc_scale_grad_y_hess}
-\alias{loc_scale_hess_y_hess}
 \alias{distrib_grad_y_hess.LogisticDistrib}
+\alias{distrib_grad_y_hess.CauchyDistrib}
+\alias{distrib_grad_y_hess.GumbelDistrib}
 \alias{distrib_grad_y_hess.LaplaceDistrib}
+\alias{distrib_hess_y_hess.LogisticDistrib}
+\alias{distrib_hess_y_hess.CauchyDistrib}
+\alias{distrib_hess_y_hess.GumbelDistrib}
+\alias{distrib_hess_y_hess.LaplaceDistrib}
+\alias{loc_scale_hess_y_hess}
 \title{Second-Order Mixed Derivatives of a Location-Scale Family}
 \usage{
 loc_scale_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
@@ -12,25 +18,69 @@ loc_scale_grad_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 loc_scale_hess_y_hess(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from class \code{distrib}, whose first two
+parameters are a location and a scale in that order.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list of three numeric vectors, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and
-\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} bodies shared by the families that are
-location-scale in both their parameters.
+The \code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method bodies shared
+by the families that are location-scale in BOTH their parameters. Each one
+calls \code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}} at its own order and returns the three
+components in \code{\link[=hess_names]{hess_names()}}'s order, so neither derives anything of its
+own.
+}
+\details{
+Registered on the logistic, Cauchy, Gumbel and Laplace. A family carrying a
+shape parameter beyond the two takes
+\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} instead, where the pairs touching that
+shape are differenced.
+
+Both bodies read the family's own third and fourth response derivatives, so
+a family supplying \code{\link[=distrib_deriv3_y]{distrib_deriv3_y()}} and \code{\link[=distrib_deriv4_y]{distrib_deriv4_y()}} gets these
+in closed form with no further algebra.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} its first and second derivatives in the response,
+\eqn{z = (y-\mu)/\sigma} the standardized residual, and \eqn{A} and \eqn{B}
+the two standardized quantities \eqn{\sigma\ell^{(y)}} and
+\eqn{\sigma^2\ell^{(yy)}}, whose derivatives are taken in \eqn{z}.
+}
+
+\examples{
+d <- gumbel_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+g3 <- distrib_grad_y_hess(d, y, theta)
+vapply(g3, function(z) z[1], numeric(1))
+
+# Against a numerical Hessian of the response gradient.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::hessian(f, c(0.3, 1.2))
+
+# The fourth order takes the same body one order up.
+g4 <- distrib_hess_y_hess(d, y, theta)
+vapply(g4, function(z) z[1], numeric(1))
+h <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::hessian(h, c(0.3, 1.2))
 }
 \seealso{
-\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}
+\code{\link[=loc_scale_theta2_block]{loc_scale_theta2_block()}}, which does the work,
+\code{\link[=partial_loc_scale_grad_y_hess]{partial_loc_scale_grad_y_hess()}} for a family with a shape parameter, and
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the generics.
 }
 \keyword{internal}
