@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdf_mapped_higher.R
 \name{mapped_cdf_deriv_k}
 \alias{mapped_cdf_deriv_k}
-\title{Third and Fourth Log-CDF Derivatives of a Mapped Family}
+\title{Higher CDF Derivatives of a Family Written as a Map of Another}
 \usage{
 mapped_cdf_deriv_k(
   distrib,
@@ -18,44 +18,57 @@ mapped_cdf_deriv_k(
 )
 }
 \arguments{
-\item{distrib}{The mapped distribution.}
+\item{distrib}{The mapped family, whose cdf and parameter names are read.}
 
-\item{parent}{The distribution being mapped.}
+\item{parent}{The distribution it maps onto.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{The parent's parameters, evaluated at the new ones.}
 
 \item{maps}{The map's keyed partial tables.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, on the new family's own scale.}
 
 \item{theta}{A named list of the new parameters.}
 
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, 2 to 4.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical.}
 
-\item{q_par}{The point at which to evaluate the parent, when the two
-families are related by a monotone transformation of the response as well
-as by a map of the parameters. A lognormal is a gaussian at \eqn{\log q},
-and since the transformation carries no parameter the derivatives in
-\eqn{\theta} are the parent's with the point substituted.}
+\item{q_par}{The quantiles on the parent's scale. \code{q} by default, and
+\code{log(q)} for a lognormal.}
 }
 \value{
-A named list of derivative component vectors.
+A named list of numeric vectors of the requested order, on the
+requested tail and scale.
 }
 \description{
-The chain rule on the parent's when the parent's are exact at every order up
-to the one asked for, and the stencil otherwise.
+The body every mapped family registers at orders 3 and 4, and at 2 where its
+written-out route stops there. It asks whether the parent's cdf derivatives
+are exact at \strong{every} order up to the one wanted, takes
+\code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} if they are, and falls back to \code{\link[=cdf_tables]{cdf_tables()}} on the
+new family's own cdf if they are not.
 }
-\details{
-The gate is the one orders one and two use. A chain rule carrying a
-differenced quantity would report a closed form and deliver the parent's
-noise, and the truncation wrapper reads that distinction to choose its own
-route.
+\section{The gate}{
+The chain is exact only if everything it carries is exact, and the higher
+orders read the lower ones, so the test is over all of them. It is what
+stops a family from adding an exact transformation to a differenced parent
+and reporting the result as closed.
 }
+
+\section{A transformed response}{
+A family may be the parent's law at a transformed point as well as at a
+mapped parameter. A lognormal is a Gaussian at \eqn{\log q}, and since the
+transformation carries no parameter, the derivatives in \eqn{\theta} are the
+parent's with the point substituted. \code{q_par} is where that substitution is
+handed in.
+}
+
 \seealso{
-\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}}
+\code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} for the exact route;
+\code{\link[=cdf_tables]{cdf_tables()}} for the fallback;
+\code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for the gate;
+\code{\link[=mapped_cdf_deriv]{mapped_cdf_deriv()}} for orders 1 and 2.
 }
 \keyword{internal}

@@ -10,14 +10,36 @@ partial_loc_scale_deriv_cdf_k(order)
 \item{order}{The derivative order, 3 or 4.}
 }
 \value{
-A function suitable for registering as an S7 method.
+A function of \verb{(distrib, q, theta, lower.tail, log, ...)} suitable
+for registering as an S7 method on either generic, returning a named list
+of numeric vectors of that order.
 }
 \description{
-The higher-order companion of \code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}}: the
-components over the location and the scale from the location-scale
-construction, and the components naming a shape parameter from the stencil.
+Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body the Student
+t, the pseudo-Huber and the skew t register: the components over the
+location and the scale from \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, and every component
+naming a shape parameter from \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}.
 }
+\section{Why the stencil is taken over everything}{
+The stencil runs over every component and the closed ones then overwrite it,
+so the location and the scale are computed twice. That is deliberate: the
+whole cdf surface costs milliseconds at a thousand quantiles, and the
+alternative, widening the stencil's signature to take a subset at these
+orders, would touch a shared function for no measurable gain. The orders
+below do use \code{which}, where the same components are asked for far more
+often.
+}
+
+\section{Who is not here}{
+The skew normal was among these families and is not any more. Owen's T has
+elementary partial derivatives in both of its arguments, so its shape
+components close too and it has a route of its own in
+\code{cdf_skewnormal_higher.R}.
+}
+
 \seealso{
-\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} for the closed components;
+\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}} for the rest;
+\code{\link[=partial_loc_scale_hess_cdf]{partial_loc_scale_hess_cdf()}} for the second order.
 }
 \keyword{internal}

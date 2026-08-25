@@ -5,26 +5,59 @@
 \alias{distrib_deriv4_cdf.ReparamContinuousDistrib}
 \title{Third and Fourth Log-CDF Derivatives of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A \code{ReparamContinuousDistrib}, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+For \code{distrib_deriv3_cdf()}, a named list of third-derivative
+components keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}; for
+\code{distrib_deriv4_cdf()}, the fourth-order components. Each vector is the
+length of \code{q} recycled against \code{theta}.
 }
 \description{
-The chain rule on the parent's, exact whenever the parent's are and the
-stencil otherwise, as at the two orders below.
+The chain rule on the parent's cdf derivatives at orders 3 and 4, through
+\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}. It is exact whenever the parent's are exact at every
+order up to the one wanted, and falls to one product stencil on the
+reparametrized cdf otherwise.
+}
+\details{
+The map's partials come from the object itself, \code{reparam_tables()} reading
+the keyed tables the reparametrization was built with. A family created by
+\code{\link[=reparametrize]{reparametrize()}} over a parent with closed cdf derivatives therefore
+reaches the fourth order with no arithmetic of its own.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 0.3, sigma2 = 1.44)
+
+# It agrees with the family written out by hand, to the closed route's own
+# accuracy rather than to the stencil's.
+a <- distrib_deriv3_cdf(d, 1, th)
+b <- distrib_deriv3_cdf(gaussian2_distrib(), 1, th)
+max(abs(unlist(a) - unlist(b)))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_cdf_deriv_k]{chain_cdf_deriv_k()}} for the identity;
+\code{\link[=distrib_grad_cdf.ReparamContinuousDistrib]{distrib_grad_cdf.ReparamContinuousDistrib()}} for the first order;
+\code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

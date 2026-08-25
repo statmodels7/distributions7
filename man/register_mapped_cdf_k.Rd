@@ -2,7 +2,7 @@
 % Please edit documentation in R/cdf_mapped_higher.R
 \name{register_mapped_cdf_k}
 \alias{register_mapped_cdf_k}
-\title{Register the Two New Orders on a Mapped Family}
+\title{Register the Higher CDF Orders on a Mapped Family}
 \usage{
 register_mapped_cdf_k(
   cls,
@@ -14,25 +14,46 @@ register_mapped_cdf_k(
 )
 }
 \arguments{
-\item{cls}{The S7 class.}
+\item{cls}{The S7 class to register on.}
 
-\item{parent_fn}{A function of no arguments returning the parent.}
+\item{parent_fn}{A function of no arguments returning the parent
+distribution. A function rather than the object, so that the parent is
+built at call time; at load time the class it names may not exist yet.}
 
 \item{th_fn}{A function of \code{theta} returning the parent's parameters.}
 
-\item{md_fn}{The map's table function.}
+\item{md_fn}{A function of \code{theta} returning the map's keyed partial tables.}
 
-\item{q_fn}{The transformation of the response, when the parent is the same
-law on a transformed scale. The identity by default.}
+\item{q_fn}{The transformation of the response, for a parent that is the
+same law on a transformed scale. \code{\link[=identity]{identity()}} by default, and \code{log} for
+the lognormal.}
 
-\item{orders}{The orders to register, 3 and 4 by default. A family whose
-written-out route stops below the fourth order takes the rest here.}
+\item{orders}{An integer vector of the orders to register, \code{3:4} by default.
+A family whose written-out route stops below the fourth order takes the
+rest here.}
 }
 \value{
-Invisibly \code{NULL}; called for the registration.
+Invisibly \code{NULL}. Called for the registration.
 }
 \description{
-Turns the parent and the map into the two methods, so that a family states
-its map once instead of twice.
+Turns a parent and a map into the two or three S7 methods a mapped family
+needs, so that the family states its map once instead of once per order.
+Five families are registered through it: the two further Gaussian
+parametrizations, the second inverse Gaussian, the second Laplace and the
+lognormal.
+}
+\details{
+\code{orders} is how a family takes more than the top two. The second inverse
+Gaussian is registered at 2 to 4 because its written-out route in
+\code{cdf_derivatives_families.R} stops at the gradient; that was right while its
+parent differenced its own second order and stopped being right when the
+parent gained a closed one.
+
+\code{force(o)} inside the factory is what keeps the registrations from sharing
+one order.
+}
+\seealso{
+\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}, the body it registers;
+\code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} for the generics.
 }
 \keyword{internal}

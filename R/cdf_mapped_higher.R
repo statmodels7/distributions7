@@ -13,24 +13,42 @@ NULL
 #' The Chain Rule of Any Order on a Parent's CDF Derivatives
 #'
 #' @description
-#' Carries the parent's derivatives of \eqn{F} in its own parameters onto the
-#' new ones, for a map given as keyed partial tables.
+#' Carries a parent's derivatives of \eqn{F} in its own parameters onto the new
+#' ones, for a map given as keyed partial tables, at any order up to four. The
+#' general form of [chain_cdf_deriv()], which writes orders 1 and 2 out; above
+#' them the same sum comes from [chain_assemble()], the enumeration the
+#' reparametrized parameter derivatives already run on, so the package carries
+#' no second copy of the partition sum.
 #'
 #' @details
-#' The parent's tables are taken on the natural scale, `lower.tail = TRUE`
-#' and `log = FALSE`, because the chain rule applies to \eqn{F} itself; the
-#' tail and the logarithm are put on afterwards by [cdf_scale_k()].
+#' The parent's tables are fetched on the natural scale, with
+#' `lower.tail = TRUE` and `log = FALSE`, because the chain rule applies to
+#' \eqn{F} itself. The tail and the logarithm are put on afterwards by
+#' [cdf_scale_k()], so one Faa di Bruno pass serves both tails and both
+#' scales.
+#'
+#' @section Notation:
+#' \eqn{F} is the parent's distribution function, \eqn{\psi} the new
+#' parameters, \eqn{h} the map from them to the parent's, and \eqn{\partial^I}
+#' a derivative with respect to a multi-index.
 #'
 #' @param parent The distribution being mapped.
-#' @param q A numeric vector of quantiles.
-#' @param th_par The parent's parameters at the new ones.
-#' @param maps The map's keyed partial tables.
-#' @param new_params The new parameter names.
+#' @param q A numeric vector of quantiles, already on the parent's scale if the
+#'   map transforms the response.
+#' @param th_par The parent's parameters, evaluated at the new ones.
+#' @param maps The map's keyed partial tables. A missing key is an exact zero.
+#' @param new_params A character vector naming the new parameters, which names
+#'   and orders the result.
 #' @param order The derivative order, 1 to 4.
 #'
-#' @return A named list of derivative components of \eqn{F}.
+#' @return A named list of numeric vectors, derivatives of \eqn{F} itself on
+#'   the natural scale, keyed as
+#'   [`deriv_names(new_params, order)`][deriv_names].
 #'
-#' @seealso [chain_assemble()], [chain_cdf_deriv()]
+#' @seealso [chain_cdf_deriv()] for orders 1 and 2;
+#'   [chain_assemble()] for the partition sum;
+#'   [mapped_cdf_deriv_k()], the caller that gates it.
+#'
 #' @keywords internal
 chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
   D <- lapply(seq_len(order), function(k) {
@@ -44,36 +62,51 @@ chain_cdf_deriv_k <- function(parent, q, th_par, maps, new_params, order) {
   chain_assemble(D, parent@params, maps, new_params, order, length(q))
 }
 
-#' Third and Fourth Log-CDF Derivatives of a Mapped Family
+#' Higher CDF Derivatives of a Family Written as a Map of Another
 #'
 #' @description
-#' The chain rule on the parent's when the parent's are exact at every order up
-#' to the one asked for, and the stencil otherwise.
+#' The body every mapped family registers at orders 3 and 4, and at 2 where its
+#' written-out route stops there. It asks whether the parent's cdf derivatives
+#' are exact at **every** order up to the one wanted, takes
+#' [chain_cdf_deriv_k()] if they are, and falls back to [cdf_tables()] on the
+#' new family's own cdf if they are not.
 #'
 #' @details
-#' The gate is the one orders one and two use. A chain rule carrying a
-#' differenced quantity would report a closed form and deliver the parent's
-#' noise, and the truncation wrapper reads that distinction to choose its own
-#' route.
+#' # The gate
 #'
-#' @param distrib The mapped distribution.
-#' @param parent The distribution being mapped.
-#' @param th_par The parent's parameters at the new ones.
+#' The chain is exact only if everything it carries is exact, and the higher
+#' orders read the lower ones, so the test is over all of them. It is what
+#' stops a family from adding an exact transformation to a differenced parent
+#' and reporting the result as closed.
+#'
+#' # A transformed response
+#'
+#' A family may be the parent's law at a transformed point as well as at a
+#' mapped parameter. A lognormal is a Gaussian at \eqn{\log q}, and since the
+#' transformation carries no parameter, the derivatives in \eqn{\theta} are the
+#' parent's with the point substituted. `q_par` is where that substitution is
+#' handed in.
+#'
+#' @param distrib The mapped family, whose cdf and parameter names are read.
+#' @param parent The distribution it maps onto.
+#' @param th_par The parent's parameters, evaluated at the new ones.
 #' @param maps The map's keyed partial tables.
-#' @param q A numeric vector of quantiles.
+#' @param q A numeric vector of quantiles, on the new family's own scale.
 #' @param theta A named list of the new parameters.
-#' @param order The derivative order, 3 or 4.
-#' @param lower.tail Logical; whether the lower tail is wanted.
-#' @param log Logical; whether derivatives of the log probability are wanted.
-#' @param q_par The point at which to evaluate the parent, when the two
-#'   families are related by a monotone transformation of the response as well
-#'   as by a map of the parameters. A lognormal is a gaussian at \eqn{\log q},
-#'   and since the transformation carries no parameter the derivatives in
-#'   \eqn{\theta} are the parent's with the point substituted.
+#' @param order The derivative order, 2 to 4.
+#' @param lower.tail Is the lower tail wanted? A single logical.
+#' @param log Are derivatives of the log probability wanted? A single logical.
+#' @param q_par The quantiles on the parent's scale. `q` by default, and
+#'   `log(q)` for a lognormal.
 #'
-#' @return A named list of derivative component vectors.
+#' @return A named list of numeric vectors of the requested order, on the
+#'   requested tail and scale.
 #'
-#' @seealso [mapped_cdf_deriv()]
+#' @seealso [chain_cdf_deriv_k()] for the exact route;
+#'   [cdf_tables()] for the fallback;
+#'   [has_exact_cdf_deriv()] for the gate;
+#'   [mapped_cdf_deriv()] for orders 1 and 2.
+#'
 #' @keywords internal
 mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
                                lower.tail, log, q_par = q) {
@@ -90,22 +123,42 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
               lower.tail, log)
 }
 
-#' Register the Two New Orders on a Mapped Family
+#' Register the Higher CDF Orders on a Mapped Family
 #'
 #' @description
-#' Turns the parent and the map into the two methods, so that a family states
-#' its map once instead of twice.
+#' Turns a parent and a map into the two or three S7 methods a mapped family
+#' needs, so that the family states its map once instead of once per order.
+#' Five families are registered through it: the two further Gaussian
+#' parametrizations, the second inverse Gaussian, the second Laplace and the
+#' lognormal.
 #'
-#' @param cls The S7 class.
-#' @param parent_fn A function of no arguments returning the parent.
+#' @details
+#' `orders` is how a family takes more than the top two. The second inverse
+#' Gaussian is registered at 2 to 4 because its written-out route in
+#' `cdf_derivatives_families.R` stops at the gradient; that was right while its
+#' parent differenced its own second order and stopped being right when the
+#' parent gained a closed one.
+#'
+#' `force(o)` inside the factory is what keeps the registrations from sharing
+#' one order.
+#'
+#' @param cls The S7 class to register on.
+#' @param parent_fn A function of no arguments returning the parent
+#'   distribution. A function rather than the object, so that the parent is
+#'   built at call time; at load time the class it names may not exist yet.
 #' @param th_fn A function of `theta` returning the parent's parameters.
-#' @param md_fn The map's table function.
-#' @param q_fn The transformation of the response, when the parent is the same
-#'   law on a transformed scale. The identity by default.
-#' @param orders The orders to register, 3 and 4 by default. A family whose
-#'   written-out route stops below the fourth order takes the rest here.
+#' @param md_fn A function of `theta` returning the map's keyed partial tables.
+#' @param q_fn The transformation of the response, for a parent that is the
+#'   same law on a transformed scale. [identity()] by default, and `log` for
+#'   the lognormal.
+#' @param orders An integer vector of the orders to register, `3:4` by default.
+#'   A family whose written-out route stops below the fourth order takes the
+#'   rest here.
 #'
-#' @return Invisibly `NULL`; called for the registration.
+#' @return Invisibly `NULL`. Called for the registration.
+#'
+#' @seealso [mapped_cdf_deriv_k()], the body it registers;
+#'   [distrib_deriv3_cdf()] for the generics.
 #'
 #' @keywords internal
 register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
@@ -125,17 +178,54 @@ register_mapped_cdf_k <- function(cls, parent_fn, th_fn, md_fn,
 
 #' @title Third and Fourth Log-CDF Derivatives of a Reparametrized Distribution
 #' @name distrib_deriv3_cdf.ReparamContinuousDistrib
+#'
 #' @description
-#' The chain rule on the parent's, exact whenever the parent's are and the
-#' stencil otherwise, as at the two orders below.
-#' @param distrib A reparametrized distribution.
+#' The chain rule on the parent's cdf derivatives at orders 3 and 4, through
+#' [mapped_cdf_deriv_k()]. It is exact whenever the parent's are exact at every
+#' order up to the one wanted, and falls to one product stencil on the
+#' reparametrized cdf otherwise.
+#'
+#' @details
+#' The map's partials come from the object itself, `reparam_tables()` reading
+#' the keyed tables the reparametrization was built with. A family created by
+#' [reparametrize()] over a parent with closed cdf derivatives therefore
+#' reaches the fourth order with no arithmetic of its own.
+#'
+#' @param distrib A `ReparamContinuousDistrib`, from [reparametrize()].
 #' @param q A numeric vector of quantiles.
-#' @param theta A named list of the new parameters.
-#' @param lower.tail Logical; if `TRUE` (default), the lower tail.
-#' @param log Logical; if `TRUE` (default), derivatives of the log probability.
-#' @param ... Unused.
-#' @return A named list, one vector per component.
-#' @seealso [reparametrize()]
+#' @param theta A named list of the new parameters, on the new parameter scale.
+#' @param lower.tail Is the lower tail wanted? A single logical, `TRUE` by
+#'   default.
+#' @param log Are derivatives of the log probability wanted? A single logical,
+#'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return For `distrib_deriv3_cdf()`, a named list of third-derivative
+#'   components keyed as [`deriv_names(distrib@params, 3)`][deriv_names]; for
+#'   `distrib_deriv4_cdf()`, the fourth-order components. Each vector is the
+#'   length of `q` recycled against `theta`.
+#'
+#' @seealso [chain_cdf_deriv_k()] for the identity;
+#'   [distrib_grad_cdf.ReparamContinuousDistrib()] for the first order;
+#'   [reparametrize()].
+#'
+#' @examples
+#' d <- reparametrize(
+#'   gaussian1_distrib(),
+#'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+#'   params = c("mu", "sigma2"),
+#'   bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+#'   links = list(mu = linkfunctions7::identity_link(),
+#'                sigma2 = linkfunctions7::log_link())
+#' )
+#' th <- list(mu = 0.3, sigma2 = 1.44)
+#'
+#' # It agrees with the family written out by hand, to the closed route's own
+#' # accuracy rather than to the stencil's.
+#' a <- distrib_deriv3_cdf(d, 1, th)
+#' b <- distrib_deriv3_cdf(gaussian2_distrib(), 1, th)
+#' max(abs(unlist(a) - unlist(b)))
+#'
 #' @keywords internal
 S7::method(distrib_deriv3_cdf, ReparamContinuousDistrib) <-
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
@@ -198,15 +288,39 @@ S7::method(distrib_deriv4_cdf, GumbelDistrib) <- loc_scale_deriv_cdf_k(4L)
 #' Higher Log-CDF Derivatives When Only Some Parameters Are Location-Scale
 #'
 #' @description
-#' The higher-order companion of [partial_loc_scale_hess_cdf()]: the
-#' components over the location and the scale from the location-scale
-#' construction, and the components naming a shape parameter from the stencil.
+#' Builds the [distrib_deriv3_cdf()] or [distrib_deriv4_cdf()] body the Student
+#' t, the pseudo-Huber and the skew t register: the components over the
+#' location and the scale from [loc_scale_cdf_deriv_k()], and every component
+#' naming a shape parameter from [numerical_cdf_deriv_k()].
+#'
+#' @details
+#' # Why the stencil is taken over everything
+#'
+#' The stencil runs over every component and the closed ones then overwrite it,
+#' so the location and the scale are computed twice. That is deliberate: the
+#' whole cdf surface costs milliseconds at a thousand quantiles, and the
+#' alternative, widening the stencil's signature to take a subset at these
+#' orders, would touch a shared function for no measurable gain. The orders
+#' below do use `which`, where the same components are asked for far more
+#' often.
+#'
+#' # Who is not here
+#'
+#' The skew normal was among these families and is not any more. Owen's T has
+#' elementary partial derivatives in both of its arguments, so its shape
+#' components close too and it has a route of its own in
+#' `cdf_skewnormal_higher.R`.
 #'
 #' @param order The derivative order, 3 or 4.
 #'
-#' @return A function suitable for registering as an S7 method.
+#' @return A function of `(distrib, q, theta, lower.tail, log, ...)` suitable
+#'   for registering as an S7 method on either generic, returning a named list
+#'   of numeric vectors of that order.
 #'
-#' @seealso [loc_scale_cdf_deriv_k()]
+#' @seealso [loc_scale_cdf_deriv_k()] for the closed components;
+#'   [numerical_cdf_deriv_k()] for the rest;
+#'   [partial_loc_scale_hess_cdf()] for the second order.
+#'
 #' @keywords internal
 partial_loc_scale_deriv_cdf_k <- function(order) {
   function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {

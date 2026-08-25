@@ -9,29 +9,48 @@ chain_cdf_deriv_k(parent, q, th_par, maps, new_params, order)
 \arguments{
 \item{parent}{The distribution being mapped.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, already on the parent's scale if the
+map transforms the response.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{The parent's parameters, evaluated at the new ones.}
 
-\item{maps}{The map's keyed partial tables.}
+\item{maps}{The map's keyed partial tables. A missing key is an exact zero.}
 
-\item{new_params}{The new parameter names.}
+\item{new_params}{A character vector naming the new parameters, which names
+and orders the result.}
 
 \item{order}{The derivative order, 1 to 4.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(new_params, order)}}.
 }
 \description{
-Carries the parent's derivatives of \eqn{F} in its own parameters onto the
-new ones, for a map given as keyed partial tables.
+Carries a parent's derivatives of \eqn{F} in its own parameters onto the new
+ones, for a map given as keyed partial tables, at any order up to four. The
+general form of \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}, which writes orders 1 and 2 out; above
+them the same sum comes from \code{\link[=chain_assemble]{chain_assemble()}}, the enumeration the
+reparametrized parameter derivatives already run on, so the package carries
+no second copy of the partition sum.
 }
 \details{
-The parent's tables are taken on the natural scale, \code{lower.tail = TRUE}
-and \code{log = FALSE}, because the chain rule applies to \eqn{F} itself; the
-tail and the logarithm are put on afterwards by \code{\link[=cdf_scale_k]{cdf_scale_k()}}.
+The parent's tables are fetched on the natural scale, with
+\code{lower.tail = TRUE} and \code{log = FALSE}, because the chain rule applies to
+\eqn{F} itself. The tail and the logarithm are put on afterwards by
+\code{\link[=cdf_scale_k]{cdf_scale_k()}}, so one Faa di Bruno pass serves both tails and both
+scales.
 }
+\section{Notation}{
+
+\eqn{F} is the parent's distribution function, \eqn{\psi} the new
+parameters, \eqn{h} the map from them to the parent's, and \eqn{\partial^I}
+a derivative with respect to a multi-index.
+}
+
 \seealso{
-\code{\link[=chain_assemble]{chain_assemble()}}, \code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}} for orders 1 and 2;
+\code{\link[=chain_assemble]{chain_assemble()}} for the partition sum;
+\code{\link[=mapped_cdf_deriv_k]{mapped_cdf_deriv_k()}}, the caller that gates it.
 }
 \keyword{internal}
