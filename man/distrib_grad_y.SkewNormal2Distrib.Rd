@@ -2,23 +2,46 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_grad_y.SkewNormal2Distrib}
 \alias{distrib_grad_y.SkewNormal2Distrib}
-\title{Skew Normal Response Derivatives in the Centered Parametrization}
+\title{Skew Normal Response Derivative in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{...}{Passed on.}
+\item{...}{Passed to \code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs.
 }
 \description{
-The parent's, unchanged: the coordinates change, the response
-does not.
+Computes \eqn{\partial\ell/\partial y} by delegating to
+\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} at the implied direct parameters. The
+value is the parent's unchanged: a change of parameters does not touch a
+derivative in the response, the two variables being separate arguments of
+the same log-density.
+
+It is therefore defined at \eqn{\gamma_1 = 0}, where the parameter
+derivatives are not: nothing here differentiates the map.
+}
+\examples{
+d <- skewnormal2_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+
+# Against a central difference of the log-density in the response.
+eps <- 1e-6
+rbind(analytic = distrib_grad_y(d, y, th),
+      numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
+                 distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
+
+# Defined at zero skewness, where the parameter derivatives are not.
+all.equal(distrib_grad_y(d, y, list(mu = 0, sigma = 1, gamma1 = 0)), -y)
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_hess_y.SkewNormal2Distrib]{distrib_hess_y.SkewNormal2Distrib()}} for the second derivative,
+\code{\link[=distrib_grad_y.SkewNormal1Distrib]{distrib_grad_y.SkewNormal1Distrib()}} for the closed form it delegates to,
+and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

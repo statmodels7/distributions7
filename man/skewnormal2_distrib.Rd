@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{skewnormal2_distrib}
 \alias{skewnormal2_distrib}
-\title{Skew Normal Distribution in Its Centered Parametrization}
+\title{Skew Normal Distribution Object, Centered Parametrization}
 \usage{
 skewnormal2_distrib(
   link_mu = identity_link(),
@@ -11,72 +11,130 @@ skewnormal2_distrib(
 )
 }
 \arguments{
-\item{link_mu}{Link function for the mean. Defaults to the identity.}
+\item{link_mu}{A \code{linkfunctions7} link object for the mean, which is
+unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
-\item{link_sigma}{Link function for the standard deviation. Defaults to the
-log.}
+\item{link_sigma}{A link object for the standard deviation, which must be
+strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_gamma1}{Link function for the skewness. Defaults to a link
-bounded to the reachable interval.}
+\item{link_gamma1}{A link object for the skewness, which must lie strictly
+inside \eqn{(-0.9952717, 0.9952717)}. Defaults to
+\code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} over exactly that interval, so any real
+linear predictor maps to a skewness the family can reach.}
 }
 \value{
-An S7 object of class \code{\link[=SkewNormal2Distrib]{SkewNormal2Distrib()}}.
+An S7 object of class \link{SkewNormal2Distrib}, inheriting from
+\code{continuous_distrib}. Its \code{params} are \code{c("mu", "sigma", "gamma1")}, its
+\code{bounds} \code{c(-Inf, Inf)}, and its \code{link_params} the three links given here.
 }
 \description{
-Creates a skew normal distribution object parametrized by its mean, its
-standard deviation and its skewness.
-}
-\details{
-The direct parametrization of \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} carries a
-location, a scale and a shape, none of which is a moment. Here all three
-parameters are moments, and the family is Azzalini's centered
-parametrization.
+Builds a skew normal distribution object parametrized by its mean
+\eqn{\mu}, its standard deviation \eqn{\sigma} and its skewness
+\eqn{\gamma_1}. It is the same family as \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, named by
+three moments instead of by a location, a scale and a shape.
 
-\strong{Why this is not a reparametrize().} The map passes through
+The parametrization is Azzalini's, and the property it exists for is that
+its expected information stays non-singular at \eqn{\gamma_1 = 0}, where the
+direct parametrization's loses a rank. The price is that the map between the
+two runs through a cube root, so no parameter derivative exists at exactly
+zero skewness.
+}
+\section{This is a family, not a reparametrize()}{
+The map passes through
 \eqn{c = \mathrm{sign}(\gamma_1)(2|\gamma_1|/(4-\pi))^{1/3}}, and two things
-follow. It carries a sign, which a jet cannot take of itself, so the sign is
-read off the plain value before any jet is seeded. And
-\eqn{\partial\alpha/\partial\gamma_1} grows without bound as
-\eqn{\gamma_1 \to 0}: measured, 3.9 at \eqn{\gamma_1 = 0.5} and 258 at
-\eqn{10^{-4}}. The value of the parametrization is that the score
-does \strong{not} follow it, the divergent contributions canceling, so the
-variance of the score in \eqn{\gamma_1} is 0.158 at \eqn{\gamma_1 = 0.05}
-and 0.158 again at \eqn{0.01}.
-
-\strong{What that costs in arithmetic.} The cancellation is between terms of
-size proportional to the Jacobian, so the significant digits lost grow like
-the logarithm of it: negligible over the range a fit visits, and severe only
-within a few multiples of \eqn{10^{-8}} of exact symmetry. The
-\strong{expected information}, unlike the direct parametrization's, is
-non-singular at zero skewness, which is the property the parametrization
-exists for.
-
-\strong{The bound on the skewness.} A skew normal cannot reach
-\eqn{|\gamma_1| > 0.9952717}, whatever \eqn{\alpha} is, so the parameter is
-bounded there. That ceiling is the reason the skew \eqn{t} exists.
+follow from it. It carries a sign, so \code{\link[=sn2_theta]{sn2_theta()}} reads that off the plain
+value and hands it to \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} as an argument, leaving a body with no
+\code{abs()} in it to differentiate. And its derivatives are written out by hand
+in \code{\link[=md_skewnormal2]{md_skewnormal2()}}, as a keyed table of the map's partials, which
+\code{\link[=chain_derivatives]{chain_derivatives()}} consumes. The toolkit assembles higher-order
+derivatives from written-out tables throughout.
 }
+
+\section{What the map costs, and what it buys}{
+\eqn{\partial\alpha/\partial\gamma_1} grows without bound as
+\eqn{\gamma_1 \to 0}: measured, 3.9 at \eqn{\gamma_1 = 0.5}, 12.8 at 0.01
+and 258 at \eqn{10^{-4}}. The score does not follow it: the divergent
+contributions cancel, so the information in \eqn{\gamma_1} tends to
+\eqn{1/6} and the whole matrix stays positive definite at symmetry.
+
+The \strong{observed} curvature does diverge, at the rate the cube root sets:
+\eqn{\gamma_1^{-2/3}}, measured at 4.642 per decade against
+\eqn{10^{2/3} = 4.6416}. The parameter derivatives are therefore rejected at
+\eqn{\gamma_1 = 0} exactly, with a message naming the cause. The density,
+the distribution function, the quantile function, the generator and both
+response derivatives are fine there and equal the Gaussian's.
+
+The cancellation is between terms of size \eqn{\gamma_1^{-2/3}}, so it
+eventually runs out of digits. Measured, the expected information's
+\eqn{\gamma_1} component holds seven figures at \eqn{\gamma_1 = 10^{-8}},
+loses three by \eqn{10^{-10}} and is negative at \eqn{10^{-12}}. Those are
+values no fit visits, and a genuinely symmetric problem is better posed in
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
+}
+
+\section{The bound on the skewness}{
+A skew normal cannot reach \eqn{|\gamma_1| > 0.9952717} whatever its shape,
+so \code{gamma1} is bounded there and carries a bounded link by default. That
+ceiling is why \code{\link[=skewt_distrib]{skewt_distrib()}} exists.
+}
+
+\section{Parameter domains}{
+\itemize{
+\item \eqn{\mu \in (-\infty, \infty)}
+\item \eqn{\sigma \in (0, \infty)}
+\item \eqn{\gamma_1 \in (-0.9952717, 0.9952717)}
+}
+}
+
 \section{The distribution}{
 
 \deqn{f(y) = \frac{2}{\omega}\,\phi\!\left(\frac{y-\xi}{\omega}\right)\Phi\!\left(\alpha\,\frac{y-\xi}{\omega}\right), \qquad (\xi, \omega, \alpha) = \mathrm{DP}(\mu, \sigma, \gamma_1)}
-on \eqn{y \in \mathbb{R}}.
+on \eqn{y \in \mathbb{R}}, with \eqn{\mathrm{DP}} the map of
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}.
 
-\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2}}
+\deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \sigma^{2},
+      \qquad \gamma_1(Y) = \gamma_1.}
 }
 
 \examples{
 d <- skewnormal2_distrib()
-theta <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
 
-# all three parameters are moments, which is what centered means
-c(mean = mean(d, theta), sd = sqrt(variance(d, theta)),
-  skewness = skewness(d, theta))
+# All three parameters are moments, which is what "centered" names.
+c(mean = mean(d, th), sd = sqrt(variance(d, th)),
+  skewness = skewness(d, th))
+
+# The fourth moment is not free: it follows from the skewness.
+vapply(c(0.001, 0.5, 0.9),
+       function(g) kurtosis(d, list(mu = 0, sigma = 1, gamma1 = g)), 0)
+
+# The information stays invertible at symmetry, where the direct
+# parametrization's does not.
+smallest_eigenvalue <- function(dd, p) {
+  e <- distrib_expected_hessian(dd, 0, p)
+  M <- matrix(c(e[[1]], e[[4]], e[[5]],
+                e[[4]], e[[2]], e[[6]],
+                e[[5]], e[[6]], e[[3]]), 3, 3)   # hess_names() order
+  min(eigen(-M, only.values = TRUE)$values)
+}
+c(centered = smallest_eigenvalue(d, list(mu = 0, sigma = 1, gamma1 = 1e-6)),
+  direct = smallest_eigenvalue(skewnormal1_distrib(),
+                               list(mu = 0, sigma = 1, alpha = 0)))
+
+# A fit recovers all three moments.
+set.seed(11)
+x <- distrib_rng(d, 4000, list(mu = 3, sigma = 2, gamma1 = 0.6))
+coef(fit_distrib(d, x))
 
 }
 \references{
 Azzalini, A. and Capitanio, A. (2014). \emph{The Skew-Normal and Related
-Families}. Cambridge University Press. The centred parametrization is
+Families}. Cambridge University Press. The centered parametrization is
 section 3.1.4.
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=skewt_distrib]{skewt_distrib()}}
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the direct parametrization,
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map between them,
+\code{\link[=skewt_distrib]{skewt_distrib()}} for a family that reaches a larger skewness, and
+\link{SkewNormal2Distrib} for the class and its method list.
 }

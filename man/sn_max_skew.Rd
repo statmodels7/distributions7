@@ -10,17 +10,38 @@ sn_max_skew()
 A single number.
 }
 \description{
-The supremum of \eqn{|\gamma_1|} over the family, attained only in the limit
-\eqn{\alpha \to \pm\infty}: \eqn{(4-\pi)/2 \cdot (b/\sqrt{1-b^2})^3}, about
-0.9952717.
+Returns \eqn{\sup|\gamma_1|} over the skew normal family,
+\deqn{\dfrac{4-\pi}{2}\left(\dfrac{b}{\sqrt{1-b^2}}\right)^3
+      \approx 0.9952717,}
+with \eqn{b = \sqrt{2/\pi}}. The bound is attained only in the limit
+\eqn{\alpha \to \pm\infty}, where the family degenerates to a half-normal.
 }
 \details{
-A skewness beyond it belongs to no skew normal, which is why the constructor
-bounds the parameter there rather than letting the map return a
-\code{NaN} several frames down. It is also the reason the skew \eqn{t}
-exists.
+A skewness beyond it belongs to no skew normal, so
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} bounds \code{gamma1} there and gives it a
+\code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} over the open interval. Without the bound
+the centered-to-direct map would return a \code{NaN} several frames down, where
+the reason for it is no longer visible.
+
+The ceiling is approached slowly: measured, the skewness is 0.9556 at
+\eqn{\alpha = 10} and 0.99527 at \eqn{\alpha = 10^4}. Data skewer than this
+needs \code{\link[=skewt_distrib]{skewt_distrib()}}.
+}
+\examples{
+distributions7:::sn_max_skew()
+
+# The direct parametrization approaches it and does not pass it.
+d1 <- skewnormal1_distrib()
+vapply(c(10, 1e4, 1e8),
+       function(a) skewness(d1, list(mu = 0, sigma = 1, alpha = a)), 0)
+
+# It is where the centered parametrization's link is bounded.
+skewnormal2_distrib()@params_bounds$gamma1
+
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=sn_b]{sn_b()}} for the constant it is built from,
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the parameter it bounds, and
+\code{\link[=skewt_distrib]{skewt_distrib()}} for the family that goes further.
 }
 \keyword{internal}

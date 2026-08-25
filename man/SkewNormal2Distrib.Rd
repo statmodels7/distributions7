@@ -2,7 +2,7 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{SkewNormal2Distrib}
 \alias{SkewNormal2Distrib}
-\title{S7 Class for the Skew Normal in Its Centered Parametrization}
+\title{Skew Normal Distribution Class, Centered Parametrization}
 \usage{
 SkewNormal2Distrib(
   distrib_name = character(0),
@@ -36,28 +36,84 @@ SkewNormal2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{SkewNormal2Distrib}.
+An S7 object of class \code{SkewNormal2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. For an object built by
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} the properties hold \code{"skew normal2"},
+\code{"univariate"}, \code{c(-Inf, Inf)}, \code{c("mu", "sigma", "gamma1")}, the
+interpretations \code{c(mu = "mean", sigma = "standard deviation", gamma1 = "skewness")}, \code{3}, and the domains \eqn{(-\infty,\infty)},
+\eqn{(0,\infty)} and \eqn{(-0.9952717, 0.9952717)}.
 }
 \description{
-A subclass of \code{continuous_distrib} for the skew normal
-written in its mean, standard deviation and skewness.
+The S7 class of the skew normal written in its first three moments: the mean
+\eqn{\mu}, the standard deviation \eqn{\sigma} and the skewness
+\eqn{\gamma_1}. It is the same law as \link{SkewNormal1Distrib}, reached through
+the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, and the only thing that differs is which three
+numbers name a member of it.
+
+The parametrization is worth having for one property: its expected
+information is non-singular at \eqn{\gamma_1 = 0}, where the direct
+parametrization's loses a rank. Measured at \eqn{\mu = 0}, \eqn{\sigma = 1},
+the information's eigenvalues tend to 2, 1 and \eqn{1/6} as the skewness
+goes to zero.
+
+Build one with \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, which supplies the three link
+functions and bounds the skewness at \eqn{\pm 0.9952717}. This page
+documents the raw S7 constructor, which validates none of the relationships
+between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+The probability functions delegate to \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} at the implied
+direct parameters:
+\code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf()}},
-\code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4.SkewNormal2Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}},
+\code{\link[=distrib_grad_y.SkewNormal2Distrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.SkewNormal2Distrib]{distrib_hess_y()}}.
+
+The parameter derivatives carry the parent's through the map by the
+partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}:
 \code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.SkewNormal2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.SkewNormal2Distrib]{distrib_deriv4()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Three of the four moments are a parameter read back:
+\code{\link[=mean.SkewNormal2Distrib]{mean()}},
+\code{\link[=variance.SkewNormal2Distrib]{variance()}},
+\code{\link[=skewness.SkewNormal2Distrib]{skewness()}}. The fourth,
+\code{\link[=kurtosis.SkewNormal2Distrib]{kurtosis()}}, follows from the other three
+and is the parent's at the implied direct parameters.
 }
 
+\section{The point at zero skewness}{
+
+The parameter derivatives are \strong{rejected} at \eqn{\gamma_1 = 0} exactly.
+The map runs through a cube root, so \eqn{\partial\alpha/\partial\gamma_1}
+is unbounded there; the first derivatives of the log-density have a finite
+limit but the second ones grow like \eqn{\gamma_1^{-2/3}}, so the point is
+excluded with a message rather than approximated. The \strong{density} and the
+distribution function are fine there and equal the Gaussian's.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_interpretation
+
+# The skewness is bounded, which the direct parametrization's shape is not.
+d@params_bounds$gamma1
+
+# All three parameters are moments, which is what "centered" names.
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+c(mean = mean(d, th), sd = sqrt(variance(d, th)), skewness = skewness(d, th))
+}
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}, \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} to build one;
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} for the direct parametrization;
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map between them.
 }

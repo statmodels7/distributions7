@@ -4,16 +4,40 @@
 \alias{skewness.SkewNormal2Distrib}
 \title{Skewness of the Skew Normal in the Centered Parametrization}
 \arguments{
-\item{x}{A \code{SkewNormal2Distrib} object.}
+\item{x}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, in any
+order; it is aligned here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of skewnesses, of the length the recycled
+parameters imply.
 }
 \description{
-\eqn{\gamma_1}, the parameter itself.
+Returns \eqn{\gamma_1}, the third parameter, which in this parametrization
+is the standardized third central moment by construction. \code{\link[=moment_const]{moment_const()}}
+recycles the result to the length the three parameters imply.
+
+The value cannot leave \eqn{(-0.9952717, 0.9952717)}, the constructor having
+bounded the parameter at the supremum the family reaches; see
+\code{\link[=sn_max_skew]{sn_max_skew()}}.
+}
+\examples{
+d <- skewnormal2_distrib()
+skewness(d, list(mu = 3, sigma = 2, gamma1 = 0.6))
+
+# It agrees with a quadrature of the standardized third central moment.
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+c(parameter = skewness(d, th),
+  quadrature = integrate(function(v) v^3 * distrib_pdf(d, v, th),
+                         -Inf, Inf)$value)
+
+}
+\seealso{
+\code{\link[=sn_max_skew]{sn_max_skew()}} for the bound,
+\code{\link[=skewness.SkewNormal1Distrib]{skewness.SkewNormal1Distrib()}} for the same quantity computed from a
+shape, and \code{\link[=kurtosis.SkewNormal2Distrib]{kurtosis.SkewNormal2Distrib()}}, which is not free.
 }
 \keyword{internal}

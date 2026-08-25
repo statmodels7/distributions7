@@ -4,16 +4,36 @@
 \alias{variance.SkewNormal2Distrib}
 \title{Variance of the Skew Normal in the Centered Parametrization}
 \arguments{
-\item{x}{A \code{SkewNormal2Distrib} object.}
+\item{x}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, in any
+order; it is aligned here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of the length the recycled parameters
+imply.
 }
 \description{
-\eqn{\sigma^2}, the square of the parameter.
+Returns \eqn{\sigma^2}, the square of the second parameter, which in this
+parametrization is the variance by construction. \code{\link[=moment_const]{moment_const()}} recycles
+the result to the length the three parameters imply.
+}
+\examples{
+d <- skewnormal2_distrib()
+variance(d, list(mu = 3, sigma = 2, gamma1 = 0.6))
+
+# It agrees with a quadrature of the second central moment.
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+c(parameter = variance(d, th),
+  quadrature = integrate(function(v) v^2 * distrib_pdf(d, v, th),
+                         -Inf, Inf)$value)
+
+}
+\seealso{
+\code{\link[=mean.SkewNormal2Distrib]{mean.SkewNormal2Distrib()}} and \code{\link[=skewness.SkewNormal2Distrib]{skewness.SkewNormal2Distrib()}},
+and \code{\link[=variance.SkewNormal1Distrib]{variance.SkewNormal1Distrib()}}, where the scale is not the standard
+deviation.
 }
 \keyword{internal}

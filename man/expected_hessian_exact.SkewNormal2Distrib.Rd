@@ -6,24 +6,39 @@
 \arguments{
 \item{x}{A \code{SkewNormal2Distrib} object.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-\code{FALSE}.
+\code{FALSE}, a logical of length 1.
 }
 \description{
-The method above is the CHAIN onto \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, whose
-expected information is the base class's quadrature, so the registration
-says where the arithmetic is assembled and not that it is closed form.
+Returns \code{FALSE}, by asking \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} the same question. The
+registration of \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}} says where
+the arithmetic is assembled, not that it is closed form: it is a chain onto
+the parent, whose own expected information is the base class's quadrature.
 }
 \details{
-Measured at 100 observations it costs 5220 ms against the parent's 2230 --
-more than what it chains onto, the chain being paid on top -- where the
-families that do write it out answer in a median of 0.183 ms. Reported as
-exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
-\code{fisher_scoring(approx = )} here with a message that was untrue.
+Reading the owning class would answer \code{TRUE} here and be wrong, which is
+this predicate's whole reason for existing as a generic. The cost separates
+the two cases by four orders of magnitude: measured at 100 observations,
+this family costs 5220 milliseconds and the parent it chains onto 2230,
+where the families that do write their information out answer in a median of
+0.183 milliseconds.
+
+Reported as exact, it made \code{\link[=fit_distrib]{fit_distrib()}} reject a legitimate
+\code{fisher_scoring(approx = )} here with a message saying the family computes
+its expected information in closed form, which is untrue.
+}
+\examples{
+# Neither parametrization of the skew normal writes its information out.
+c(centered = expected_hessian_exact(skewnormal2_distrib()),
+  direct = expected_hessian_exact(skewnormal1_distrib()),
+  gaussian = expected_hessian_exact(gaussian1_distrib()))
+
 }
 \seealso{
-\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} for the generic and the rule it
+encodes, and \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}} for the
+method it describes.
 }
 \keyword{internal}

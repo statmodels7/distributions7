@@ -4,22 +4,71 @@
 \alias{distrib_hessian.SkewNormal2Distrib}
 \title{Skew Normal Observed Hessian in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
+skewness must not be exactly zero.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of six numeric vectors, in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{sigma_sigma}, \code{gamma1_gamma1}, \code{mu_sigma}, \code{mu_gamma1},
+\code{sigma_gamma1}.
 }
 \description{
-The second-order chain rule through the same map.
+Computes the six second derivatives of the log-density in the centered
+parameters, by the second-order chain rule through \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}:
+\deqn{\dfrac{\partial^2 \ell}{\partial \psi_i \partial \psi_j}
+      = \sum_{k,l} \dfrac{\partial^2 \ell}{\partial\theta_k\partial\theta_l}
+        \dfrac{\partial\theta_k}{\partial\psi_i}
+        \dfrac{\partial\theta_l}{\partial\psi_j}
+      + \sum_{k} \dfrac{\partial \ell}{\partial\theta_k}
+        \dfrac{\partial^2\theta_k}{\partial\psi_i\partial\psi_j}.}
+Both terms come from \code{\link[=chain_derivatives]{chain_derivatives()}}, with the map's partial
+derivatives supplied by \code{\link[=md_skewnormal2]{md_skewnormal2()}} as a written-out table.
+
+The \strong{observed} curvature in \eqn{\gamma_1} diverges as the skewness goes
+to zero, at the rate \eqn{\gamma_1^{-2/3}} the cube root sets. Measured at
+\eqn{y = 0.5}, \eqn{\mu = 0}, \eqn{\sigma = 1}, it is 0.29, 11.5, 253 and
+5451 at \eqn{\gamma_1 = 10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}}, a factor of
+4.642 per decade against \eqn{10^{2/3} = 4.6416}. The \strong{expected}
+curvature does not: see \code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}}.
+}
+\section{Errors}{
+
+Signals an error when any element of \code{gamma1} is exactly zero.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# Against numerical differentiation of the log-density.
+f <- function(p) sum(distrib_pdf(d, y, as.list(setNames(p, names(th))),
+                                 log = TRUE))
+H <- numDeriv::hessian(f, unlist(th))
+rbind(analytic = c(sum(h$mu_gamma1), sum(h$gamma1_gamma1)),
+      numeric = c(H[1, 3], H[3, 3]))
+
+# The observed curvature in the skewness diverges as gamma1^(-2/3). The
+# ratio over two decades converges to 10^(2/3) = 4.6416.
+cv <- vapply(10^-c(2, 4, 6, 8),
+             function(v) distrib_hessian(d, 0.5,
+                           list(mu = 0, sigma = 1, gamma1 = v))$gamma1_gamma1, 0)
+rbind(curvature = cv, per_decade = c(NA, (cv[-1] / cv[-4])^(1 / 2)))
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}} for the order below,
+\code{\link[=distrib_expected_hessian.SkewNormal2Distrib]{distrib_expected_hessian.SkewNormal2Distrib()}} for the expectation,
+\code{\link[=sn2_chain]{sn2_chain()}} for the partition sum, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
+generic.
 }

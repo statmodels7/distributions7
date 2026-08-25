@@ -2,30 +2,65 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_deriv4.SkewNormal2Distrib}
 \alias{distrib_deriv4.SkewNormal2Distrib}
-\title{Skew Normal Fourth-Order Derivatives in the Centered Parametrization}
+\title{Skew Normal Fourth Derivatives in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
+skewness must not be exactly zero.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx}{Passed to the parent.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+when \code{expected = TRUE}.}
 
-\item{nsim}{Passed to the parent.}
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of fifteen numeric vectors, one per distinct
+fourth-order component in the centered parameters.
 }
 \description{
-The partition sum at order four.
+Computes the fifteen fourth derivatives of the log-density in the centered
+parameters, by the fourth-order partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}} over
+the map of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}. The map's fourth partial derivatives are the
+last entries of \code{\link[=md_skewnormal2]{md_skewnormal2()}}'s table, so the order costs one more term
+of the same enumeration.
+
+With \code{expected = TRUE} the parent's expected derivatives are carried
+instead, and those are numerical.
+}
+\section{Errors}{
+
+Signals an error when any element of \code{gamma1} is exactly zero.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+length(distrib_deriv4(d, y, th))
+
+# Against a central difference of the third order.
+eps <- 1e-5
+rbind(analytic = distrib_deriv4(d, y, th)$mu_mu_gamma1_gamma1,
+      numeric = (distrib_deriv3(d, y, list(mu = 0, sigma = 1,
+                                           gamma1 = 0.5 + eps))$mu_mu_gamma1 -
+                 distrib_deriv3(d, y, list(mu = 0, sigma = 1,
+                                           gamma1 = 0.5 - eps))$mu_mu_gamma1) /
+                (2 * eps))
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_deriv3.SkewNormal2Distrib]{distrib_deriv3.SkewNormal2Distrib()}} for the order below,
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the partition sum, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for
+the generic.
 }

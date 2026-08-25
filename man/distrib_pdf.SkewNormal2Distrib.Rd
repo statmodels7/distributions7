@@ -4,20 +4,68 @@
 \alias{distrib_pdf.SkewNormal2Distrib}
 \title{Skew Normal Density in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, anywhere on the real line.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
+numeric vector of length 1 or of the length of \code{y}. \code{sigma} must be
+strictly positive and \code{gamma1} must lie in
+\eqn{(-0.9952717, 0.9952717)}; a skewness outside that range belongs to no
+skew normal and the map returns \code{NaN}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma), length(gamma1))}.
 }
 \description{
-The skew normal density at the implied direct parameters.
+Computes the skew normal density at the direct parameters that the centered
+triple implies. With
+\eqn{(\xi, \omega, \alpha) = \mathrm{DP}(\mu, \sigma, \gamma_1)} from
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} and \eqn{z = (y-\xi)/\omega},
+\deqn{f(y; \mu, \sigma, \gamma_1)
+      = \dfrac{2}{\omega}\,\phi(z)\,\Phi(\alpha z).}
+The density is the same function of \eqn{y} as
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}}'s; only the three numbers naming it
+differ.
+
+Unlike the derivatives, the density is defined at \eqn{\gamma_1 = 0} and
+equals the Gaussian's there: the map itself is continuous through zero, and
+only its derivative is not.
+}
+\section{Notation}{
+
+\eqn{\mu}, \eqn{\sigma} and \eqn{\gamma_1} are the mean, the standard
+deviation and the skewness; \eqn{\xi}, \eqn{\omega} and \eqn{\alpha} the
+location, scale and shape they imply; \eqn{\phi} and \eqn{\Phi} the standard
+Gaussian density and distribution function.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+d1 <- skewnormal1_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+
+# The same law, reached through the map.
+all.equal(distrib_pdf(d, y, th),
+          distrib_pdf(d1, y, distributions7:::sn2_theta(th)))
+
+# It integrates to one, and its first moment is the parameter mu.
+c(mass = integrate(function(v) distrib_pdf(d, v, th), -Inf, Inf)$value,
+  mean = integrate(function(v) v * distrib_pdf(d, v, th), -Inf, Inf)$value)
+
+# At zero skewness the density is the Gaussian's, where the derivatives
+# are not defined.
+all.equal(distrib_pdf(d, y, list(mu = 0, sigma = 1, gamma1 = 0)), dnorm(y))
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_pdf.SkewNormal1Distrib]{distrib_pdf.SkewNormal1Distrib()}} for the same density in the
+direct parametrization, \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map, and \code{\link[=distrib_pdf]{distrib_pdf()}}
+for the generic.
 }

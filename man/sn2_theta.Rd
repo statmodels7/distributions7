@@ -7,16 +7,31 @@
 sn2_theta(theta)
 }
 \arguments{
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}, in that order, each a
+numeric vector. It is read positionally, so it must already be aligned;
+the methods that call it have been through \code{\link[=align_theta]{align_theta()}}.}
 }
 \value{
-A named list of the direct parameters.
+A named list with \code{mu}, \code{sigma} and \code{alpha}: the location
+\eqn{\xi}, the scale \eqn{\omega} and the shape \eqn{\alpha}. The names
+are the parent's, so the result passes straight into
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}'s methods.
 }
 \description{
-Runs \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} on plain numbers, which every probability
-function needs before delegating to \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
+Takes the sign of the skewness off its plain value and runs
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}, returning the location, scale and shape that
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} takes. Every probability function of the centered
+family calls this and then delegates.
+}
+\examples{
+distributions7:::sn2_theta(list(mu = 0, sigma = 1, gamma1 = 0.5))
+
+# A negative skewness reflects the shape and moves the location the other way.
+distributions7:::sn2_theta(list(mu = 0, sigma = 1, gamma1 = -0.5))
+
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}} for the map itself and \code{\link[=sn2_chain]{sn2_chain()}} for the
+derivative route that uses the same map.
 }
 \keyword{internal}

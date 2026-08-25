@@ -4,16 +4,36 @@
 \alias{mean.SkewNormal2Distrib}
 \title{Mean of the Skew Normal in the Centered Parametrization}
 \arguments{
-\item{x}{A \code{SkewNormal2Distrib} object.}
+\item{x}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, in any
+order; it is aligned here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of the length the recycled parameters
+imply.
 }
 \description{
-\eqn{\mu}, the parameter itself: that is what centered means.
+Returns \eqn{\mu}, the first parameter, which in this parametrization is the
+mean by construction. The addition of \code{\link[=moment_const]{moment_const()}} recycles the value to
+the length the three parameters imply, so a \code{theta} whose components vary by
+observation gets one mean per observation.
+}
+\examples{
+d <- skewnormal2_distrib()
+mean(d, list(mu = 3, sigma = 2, gamma1 = 0.6))
+
+# One value per observation when a parameter varies.
+mean(d, list(mu = c(0, 3, 7), sigma = 2, gamma1 = 0.6))
+
+}
+\seealso{
+\code{\link[=variance.SkewNormal2Distrib]{variance.SkewNormal2Distrib()}} and
+\code{\link[=skewness.SkewNormal2Distrib]{skewness.SkewNormal2Distrib()}}, the other two parameters read back;
+\code{\link[=kurtosis.SkewNormal2Distrib]{kurtosis.SkewNormal2Distrib()}}, which is not a parameter; and
+\code{\link[=mean.SkewNormal1Distrib]{mean.SkewNormal1Distrib()}} for the same quantity in the direct
+parametrization, where it is not.
 }
 \keyword{internal}

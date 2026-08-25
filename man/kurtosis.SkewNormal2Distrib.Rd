@@ -4,17 +4,44 @@
 \alias{kurtosis.SkewNormal2Distrib}
 \title{Kurtosis of the Skew Normal in the Centered Parametrization}
 \arguments{
-\item{x}{A \code{SkewNormal2Distrib} object.}
+\item{x}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, in any
+order; it is aligned here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of the length the recycled
+parameters imply.
 }
 \description{
-The parent's, at the implied direct parameters: the centered parametrization
-fixes the first three moments and leaves the fourth to follow.
+Returns the excess kurtosis, computed from
+\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}} at the implied direct parameters. It is the
+one moment this parametrization does not name: fixing the first three uses
+up all three parameters, so the fourth follows from them.
+
+The consequence for use is that a skew normal cannot match an arbitrary
+first four moments. At \eqn{\gamma_1 = 0.5} the excess kurtosis is 0.347,
+and it is determined by the skewness alone.
+}
+\examples{
+d <- skewnormal2_distrib()
+
+# The kurtosis follows from the skewness and from nothing else: changing
+# the mean and the standard deviation leaves it alone.
+c(a = kurtosis(d, list(mu = 0, sigma = 1, gamma1 = 0.5)),
+  b = kurtosis(d, list(mu = 9, sigma = 4, gamma1 = 0.5)))
+
+# It rises with the skewness, and is zero at symmetry.
+vapply(c(0.001, 0.3, 0.6, 0.9),
+       function(g) kurtosis(d, list(mu = 0, sigma = 1, gamma1 = g)), 0)
+
+}
+\seealso{
+\code{\link[=skewness.SkewNormal2Distrib]{skewness.SkewNormal2Distrib()}}, which does name a parameter;
+\code{\link[=kurtosis.SkewNormal1Distrib]{kurtosis.SkewNormal1Distrib()}} for the closed form; and
+\code{\link[=skewt_distrib]{skewt_distrib()}}, whose degrees of freedom give the fourth moment a
+parameter of its own.
 }
 \keyword{internal}

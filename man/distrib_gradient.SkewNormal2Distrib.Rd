@@ -2,27 +2,77 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_gradient.SkewNormal2Distrib}
 \alias{distrib_gradient.SkewNormal2Distrib}
-\title{Skew Normal Gradient in the Centered Parametrization}
+\title{Skew Normal Score in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
+skewness must not be exactly zero; see the error below.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body, so this method always
+returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{gamma1},
+each of the length of the recycled inputs.
 }
 \description{
-The parent's score carried by the Jacobian of the centered-to-direct map. The
-components in \eqn{\gamma_1} stay of order one however small \eqn{\gamma_1}
-is, although the Jacobian itself grows without bound: the divergent parts
-cancel, which is what the centered parametrization is for.
+Computes the three first derivatives of the log-density in the centered
+parameters, by carrying \code{\link[=distrib_gradient.SkewNormal1Distrib]{distrib_gradient.SkewNormal1Distrib()}}'s through
+the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}:
+\deqn{\dfrac{\partial \ell}{\partial \psi_j}
+      = \sum_{k} \dfrac{\partial \ell}{\partial \theta_k}
+                 \dfrac{\partial \theta_k}{\partial \psi_j},
+      \qquad \psi = (\mu, \sigma, \gamma_1),\;
+             \theta = (\xi, \omega, \alpha).}
+
+The component in \eqn{\gamma_1} stays of order one however small
+\eqn{\gamma_1} is, although the Jacobian itself grows without bound.
+Measured at \eqn{y = 0.5}, \eqn{\mu = 0}, \eqn{\sigma = 1}, the score reads
+\eqn{-0.2152, -0.2257, -0.2284, -0.2290} at
+\eqn{\gamma_1 = 10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}} while
+\eqn{\partial\alpha/\partial\gamma_1} reads \eqn{5.1, 258} at the first two.
+The divergent parts cancel, and that cancellation is the reason the
+parametrization exists.
+}
+\section{Errors}{
+
+Signals an error when any element of \code{gamma1} is exactly zero: the map runs
+through a cube root and is not differentiable there. The density is defined
+at that point, and \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} carries the same family with
+ordinary derivatives at symmetry.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\psi} the centered
+parameters and \eqn{\theta} the direct ones.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+g <- distrib_gradient(d, y, th)
+
+# Against numerical differentiation of the log-density itself.
+f <- function(p) sum(distrib_pdf(d, y, as.list(setNames(p, names(th))),
+                                 log = TRUE))
+rbind(analytic = vapply(g, sum, 0),
+      numeric = numDeriv::grad(f, unlist(th)))
+
+# The score in the skewness stays bounded as the map's Jacobian diverges.
+vapply(10^-c(2, 4, 6, 8),
+       function(v) distrib_gradient(d, 0.5,
+                     list(mu = 0, sigma = 1, gamma1 = v))$gamma1, 0)
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=sn2_chain]{sn2_chain()}} for the partition sum this calls,
+\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian.SkewNormal2Distrib()}} for the next order, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

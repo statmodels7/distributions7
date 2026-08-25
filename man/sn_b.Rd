@@ -10,10 +10,23 @@ sn_b()
 A single number.
 }
 \description{
-\eqn{b = \sqrt{2/\pi}}, which is \eqn{\mathbb{E}[|Z|]} for a standard normal
-and appears in every quantity of the skew normal's first moment.
+Returns \eqn{b = \sqrt{2/\pi} \approx 0.7978846}, which is
+\eqn{E[|Z|]} for a standard Gaussian \eqn{Z}. It is the one constant the
+skew normal's first moment introduces, and it appears in every quantity of
+the centered parametrization: the mean is \eqn{\xi + \omega b\delta}, the
+variance \eqn{\omega^2(1-b^2\delta^2)}, and the largest reachable skewness
+is built from \eqn{b/\sqrt{1-b^2}}.
+}
+\examples{
+distributions7:::sn_b()
+
+# It is the mean of the absolute value of a standard Gaussian.
+set.seed(1)
+c(constant = distributions7:::sn_b(), sample = mean(abs(rnorm(1e6))))
+
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=sn_max_skew]{sn_max_skew()}}, which is written in terms of it, and
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the parametrization.
 }
 \keyword{internal}

@@ -4,24 +4,47 @@
 \alias{distrib_quantile.SkewNormal2Distrib}
 \title{Skew Normal Quantile Function in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms when \code{log.p = TRUE}.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
+numeric vector of length 1 or of the length of \code{p}.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is a log-probability.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
+Defaults to \code{FALSE}.}
 
-\item{...}{Passed on.}
+\item{...}{Passed to \code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile.continuous_distrib()}}, including the
+root finder's tolerance.}
 }
 \value{
-A numeric vector.
+A numeric vector of quantiles, of the length of the recycled inputs.
 }
 \description{
-The parent's quantile function at the implied parameters.
+Computes the quantiles of the skew normal at the direct parameters the
+centered triple implies. The skew normal has no closed-form quantile
+function, so the value comes from \code{\link[=continuous_distrib]{continuous_distrib()}}'s root finding on
+the distribution function, reached through
+\code{\link[=distrib_quantile.continuous_distrib]{distrib_quantile.continuous_distrib()}}.
+}
+\examples{
+d <- skewnormal2_distrib()
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+
+# The round trip through the distribution function.
+p <- c(0.05, 0.25, 0.5, 0.75, 0.95)
+q <- distrib_quantile(d, p, th)
+rbind(quantile = q, back = distrib_cdf(d, q, th))
+
+# A right-skewed density has its median below its mean.
+c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_cdf.SkewNormal2Distrib]{distrib_cdf.SkewNormal2Distrib()}}, which it inverts,
+\code{\link[=distrib_rng.SkewNormal2Distrib]{distrib_rng.SkewNormal2Distrib()}} for draws, and \code{\link[=distrib_quantile]{distrib_quantile()}} for
+the generic.
 }

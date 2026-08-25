@@ -4,24 +4,56 @@
 \alias{distrib_cdf.SkewNormal2Distrib}
 \title{Skew Normal Distribution Function in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
+numeric vector of length 1 or of the length of \code{q}.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 
-\item{...}{Passed on.}
+\item{...}{Passed to \code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}}.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms with \code{log.p = TRUE}.
 }
 \description{
-The skew normal distribution function, through Owen's T.
+Computes the skew normal distribution function at the direct parameters the
+centered triple implies, through Azzalini's Owen's T identity
+\eqn{F(q) = \Phi(z) - 2T(z, \alpha)} with \eqn{z = (q-\xi)/\omega}. The
+arithmetic is \code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}}'s; this method supplies the
+translated parameters.
+}
+\section{Notation}{
+
+\eqn{\gamma_1} is the skewness, \eqn{(\xi, \omega, \alpha)} the implied
+location, scale and shape, and \eqn{T} Owen's T function.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+q <- c(-2, -0.5, 0.5, 2)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+
+# Against a direct quadrature of the density.
+rbind(owen = distrib_cdf(d, q, th),
+      quadrature = vapply(q, function(u)
+        integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
+
+# At zero skewness it is the Gaussian's.
+all.equal(distrib_cdf(d, q, list(mu = 0, sigma = 1, gamma1 = 0)), pnorm(q))
+
+# A positive skewness puts more than half the mass below the mean.
+distrib_cdf(d, 0, th)
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_cdf.SkewNormal1Distrib]{distrib_cdf.SkewNormal1Distrib()}} for the identity,
+\code{\link[=distrib_quantile.SkewNormal2Distrib]{distrib_quantile.SkewNormal2Distrib()}} for its inverse, and
+\code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

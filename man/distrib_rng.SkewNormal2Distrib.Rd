@@ -4,18 +4,37 @@
 \alias{distrib_rng.SkewNormal2Distrib}
 \title{Skew Normal Random Generation in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
+numeric vector of length 1 or of length \code{n}.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} draws, whose first three sample moments
+estimate \code{mu}, \code{sigma^2} and \code{gamma1}.
 }
 \description{
-The parent's generator at the implied parameters.
+Draws from the skew normal at the direct parameters the centered triple
+implies, through \code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}}'s stochastic
+representation. The draws are exact and cost two \code{rnorm} calls, whatever the
+skewness is.
+}
+\examples{
+d <- skewnormal2_distrib()
+th <- list(mu = 3, sigma = 2, gamma1 = 0.6)
+
+set.seed(2)
+x <- distrib_rng(d, 2e5, th)
+
+# The three parameters are the three sample moments, which is the whole
+# point of this parametrization.
+rbind(sample = c(mean(x), sd(x), mean((x - mean(x))^3) / sd(x)^3),
+      parameter = c(th$mu, th$sigma, th$gamma1))
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_rng.SkewNormal1Distrib]{distrib_rng.SkewNormal1Distrib()}} for the representation,
+\code{\link[=mean.SkewNormal2Distrib]{mean.SkewNormal2Distrib()}} for the moments the draws reproduce, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

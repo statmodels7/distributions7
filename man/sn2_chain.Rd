@@ -7,36 +7,95 @@
 sn2_chain(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link[=SkewNormal2Distrib]{SkewNormal2Distrib()}} object.}
+\item{distrib}{A \link{SkewNormal2Distrib} object.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector of observations.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}. It is aligned here, so
+it may be given in any order and by name.}
 
-\item{order}{The derivative order.}
+\item{order}{A single integer, 1, 2, 3 or 4: the derivative order.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the parent's \strong{expected}
+derivatives are carried instead of the observed ones. Defaults to \code{FALSE}.}
 }
 \value{
-A named list of component vectors.
+A named list of numeric vectors, one per distinct component of the
+requested order, named in the centered parameters. At order 2 the caller
+subsets it by \code{\link[=hess_names]{hess_names()}} to fix the ordering.
 }
 \description{
-The parent's derivatives carried into the centered coordinates by the
-partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}.
+Carries \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}'s derivatives into the centered coordinates
+through the partition sum of \code{\link[=chain_derivatives]{chain_derivatives()}}, at any order from one to
+four, observed or expected. The parent supplies the derivatives in
+\eqn{(\xi, \omega, \alpha)} and \code{\link[=md_skewnormal2]{md_skewnormal2()}} supplies the map's
+partial derivatives; the partition sum assembles them.
 }
-\details{
+\section{The point that is excluded}{
 The map to the direct parametrization runs through
-\eqn{r = \sqrt[3]{2\gamma_1/(4-\pi)}}, whose derivative grows like
-\eqn{\gamma_1^{-2/3}}, so at zero skewness the map is not differentiable
-and the chain rule is asked for a quantity that does not exist. The first
-derivatives of the log-density survive the limit -- the map's factor
-cancels and they approach a finite value from both sides -- but the second
-ones diverge at that rate, which is a property of the CENTERED
-parametrization and not of the family. It is rejected here, where the map
-is used and the reason can be named, rather than left to reach a
-comparison against \code{NA} several frames further on.
+\eqn{c = \sqrt[3]{2\gamma_1/(4-\pi)}}, whose derivative grows like
+\eqn{\gamma_1^{-2/3}}. At zero skewness the map is not differentiable and
+the chain rule is asked for a quantity that does not exist.
+
+The first derivatives of the log-density survive the limit: the map's
+divergent factor cancels and they approach a finite value from both sides.
+The second ones do not. Measured at \eqn{y = 0.5}, \eqn{\mu = 0},
+\eqn{\sigma = 1}, the score in \eqn{\gamma_1} runs
+\eqn{-0.2152, -0.2257, -0.2284, -0.2290} at
+\eqn{\gamma_1 = 10^{-2}, 10^{-4}, 10^{-6}, 10^{-8}}, while
+\eqn{\partial^2\ell/\partial\gamma_1^2} runs
+\eqn{0.29, 11.5, 253, 5451} over the same values, a factor of 4.642 per
+decade against \eqn{10^{2/3} = 4.6416}.
+
+Zero skewness is therefore rejected here, where the map is used and the
+reason can be named, with a message that points at
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, whose derivatives at \eqn{\alpha = 0} are ordinary
+numbers.
+}
+
+\section{Where the cancellation runs out of digits}{
+The \strong{expected} information stays finite as \eqn{\gamma_1 \to 0} and tends
+to \eqn{1/6} in its own component, but it is computed as a difference of
+terms of size \eqn{\gamma_1^{-2/3}}. Measured, it holds to seven figures
+down to \eqn{\gamma_1 = 10^{-8}} (0.16666782 against \eqn{1/6}), loses
+three by \eqn{10^{-10}} and is \strong{negative at} \eqn{10^{-12}}, which no
+information can be. That is a limit of double-precision arithmetic on a
+parameter value no fit visits, and it is why the near-symmetric case is
+better handled by the direct parametrization.
+}
+
+\section{Errors}{
+
+Signals an error when any element of \code{gamma1} is exactly zero, naming the
+cube root as the cause and \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} as the alternative.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+y <- c(-1, 0.3, 1.7)
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+
+# Order one, against the method that wraps it.
+all.equal(distributions7:::sn2_chain(d, y, th, 1L),
+          distrib_gradient(d, y, th))
+
+# The score in the skewness stays of order one as the map's Jacobian
+# diverges; the curvature does not.
+t(vapply(10^-c(2, 4, 6, 8), function(g) {
+  p <- list(mu = 0, sigma = 1, gamma1 = g)
+  c(gamma1 = g,
+    score = distrib_gradient(d, 0.5, p)$gamma1,
+    curvature = distrib_hessian(d, 0.5, p)$gamma1_gamma1)
+}, numeric(3)))
+
+# Zero skewness is rejected rather than approximated.
+tryCatch(distrib_gradient(d, 0, list(mu = 0, sigma = 1, gamma1 = 0)),
+         error = function(e) "rejected, as documented")
+
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the partition sum,
+\code{\link[=md_skewnormal2]{md_skewnormal2()}} for the map's derivatives, and
+\code{\link[=distrib_gradient.SkewNormal2Distrib]{distrib_gradient.SkewNormal2Distrib()}} for the method that calls this.
 }
 \keyword{internal}

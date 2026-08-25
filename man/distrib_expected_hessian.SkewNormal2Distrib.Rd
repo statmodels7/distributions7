@@ -2,31 +2,91 @@
 % Please edit documentation in R/skewnormal2_distrib.R
 \name{distrib_expected_hessian.SkewNormal2Distrib}
 \alias{distrib_expected_hessian.SkewNormal2Distrib}
-\title{Skew Normal Expected Hessian in the Centered Parametrization}
+\title{Skew Normal Expected Information in the Centered Parametrization}
 \arguments{
-\item{distrib}{A \code{SkewNormal2Distrib} object.}
+\item{distrib}{A \code{SkewNormal2Distrib} object, from \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}.}
 
-\item{y}{The response.}
+\item{y}{A numeric vector. Its values do not enter the result, which is an
+expectation; only its length does, through recycling.}
 
-\item{theta}{A list with \code{mu}, \code{sigma} and \code{gamma1}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}. The
+skewness must not be exactly zero.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx}{Passed to the parent.}
+\item{approx}{One of \code{"bartlett"}, \code{"integrate"}, \code{"mc"} or \code{"opg"}, the
+strategy the parent uses for its own expectation. Defaults to
+\code{"bartlett"}, the variance of the score.}
 
-\item{nsim}{Passed to the parent.}
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of six numeric vectors, in \code{\link[=hess_names]{hess_names()}}'s order.
+Every entry is an expectation, so it does not depend on \code{y}.
 }
 \description{
-The parent's expected information carried by the same congruence. It is
-\strong{non-singular at zero skewness}, which the direct parametrization's
-is not: there the score for \eqn{\alpha} is proportional to the score for
-the location and the information loses a rank.
+Computes the expected second derivatives by carrying the parent's expected
+information through the same congruence the observed Hessian uses,
+\eqn{J^\top E[\ell''] J} with \eqn{J} the Jacobian of \code{\link[=sn_cp_to_dp]{sn_cp_to_dp()}}. The
+first-order term of the chain rule drops out under expectation, the score
+having mean zero.
+
+The matrix is \strong{non-singular at zero skewness}, which the direct
+parametrization's is not: there the score for \eqn{\alpha} is exactly
+proportional to the score for the location and the information loses a rank.
+Measured at \eqn{\mu = 0}, \eqn{\sigma = 1}, the eigenvalues here tend to
+2, 1 and \eqn{1/6} as \eqn{\gamma_1 \to 0}. Removing that singularity is
+what the centered parametrization is for.
+}
+\section{Cost, and where the digits run out}{
+The parent's own expected information is the base class's quadrature, so
+this method is a chain on top of a numerical quantity: measured at 100
+observations it costs about 5.2 seconds against the parent's 2.2, where a
+family that writes its information out answers in a median of 0.18
+milliseconds. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} therefore returns \code{FALSE} here, and
+\code{approx} is read.
+
+The congruence is a difference of terms of size \eqn{\gamma_1^{-2/3}}, so
+the limit is approached and then lost. Measured, the \eqn{\gamma_1}
+component is 0.16666782 against \eqn{1/6 = 0.16666667} at
+\eqn{\gamma_1 = 10^{-8}}, 0.1655 at \eqn{10^{-10}}, and \strong{negative} at
+\eqn{10^{-12}}. A fit does not visit those values, and a genuinely
+symmetric problem is better posed in \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
+}
+
+\section{Errors}{
+
+Signals an error when any element of \code{gamma1} is exactly zero.
+}
+
+\examples{
+d <- skewnormal2_distrib()
+th <- list(mu = 0, sigma = 1, gamma1 = 0.5)
+e <- distrib_expected_hessian(d, 0, th)
+names(e)
+
+# The information is positive definite, and stays so into symmetry, where
+# the direct parametrization loses a rank.
+info <- function(g) {
+  e <- distrib_expected_hessian(d, 0, list(mu = 0, sigma = 1, gamma1 = g))
+  M <- matrix(c(e$mu_mu, e$mu_sigma, e$mu_gamma1,
+                e$mu_sigma, e$sigma_sigma, e$sigma_gamma1,
+                e$mu_gamma1, e$sigma_gamma1, e$gamma1_gamma1), 3, 3)
+  eigen(-M, only.values = TRUE)$values
+}
+rbind(gamma1_0.5 = info(0.5), gamma1_1e_6 = info(1e-6))
+
+# Its own component tends to 1/6.
+c(limit = 1 / 6,
+  at_1e_6 = -distrib_expected_hessian(d, 0,
+              list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=distrib_hessian.SkewNormal2Distrib]{distrib_hessian.SkewNormal2Distrib()}} for the observed curvature,
+\code{\link[=expected_hessian_exact.SkewNormal2Distrib]{expected_hessian_exact.SkewNormal2Distrib()}} for why this counts as
+approximated, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

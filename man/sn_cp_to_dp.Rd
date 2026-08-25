@@ -7,18 +7,26 @@
 sn_cp_to_dp(mu, sigma, gamma1, s)
 }
 \arguments{
-\item{mu, sigma, gamma1}{The centered parameters, numbers or jets.}
+\item{mu, sigma, gamma1}{The centered parameters: the mean, the standard
+deviation and the skewness, each a numeric vector. \code{sigma} must be
+positive and \code{gamma1} must lie strictly inside
+\eqn{(-0.9952717, 0.9952717)}; nothing is validated here.}
 
-\item{s}{The sign of \eqn{\gamma_1}, taken from its plain value.}
+\item{s}{The sign of \code{gamma1}, \eqn{\pm 1}, taken by the caller from its
+plain value.}
 }
 \value{
-A named list with \code{mu}, \code{sigma} and \code{alpha}, the
-parent's parameters.
+A named list with \code{mu}, \code{sigma} and \code{alpha}, the direct parameters,
+each of the length of the recycled inputs. The names are the parent's, so
+the result can be passed to \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}'s methods as they
+stand; \code{mu} there is the location \eqn{\xi} and \code{sigma} the scale
+\eqn{\omega}.
 }
 \description{
-The map \eqn{(\mu, \sigma, \gamma_1) \mapsto (\xi, \omega, \alpha)} that
-takes the mean, the standard deviation and the skewness to the location, the
-scale and the shape.
+Maps \eqn{(\mu, \sigma, \gamma_1)}, the mean, the standard deviation and the
+skewness, to \eqn{(\xi, \omega, \alpha)}, the location, the scale and the
+shape that \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}} takes. Every probability function of the
+centered family calls it and then delegates to the direct one.
 }
 \details{
 With \eqn{b = \sqrt{2/\pi}},
@@ -30,12 +38,29 @@ With \eqn{b = \sqrt{2/\pi}},
 and then \eqn{\omega = \sigma/\sqrt{1-\mu_z^2}} and
 \eqn{\xi = \mu - \omega\mu_z}.
 
-The function is written once and used twice: on plain numbers for the
-density, and on jets for the derivatives. The sign is taken from the plain
-value before any jet is seeded, which is what a jet cannot do for itself and
-what makes this a family rather than a \code{\link[=reparametrize]{reparametrize()}}.
+The caller supplies the sign, so the body reads
+\eqn{s\,(2s\gamma_1/(4-\pi))^{1/3}} with no \code{abs()} in it. Away from zero
+the sign is locally constant, so the expression is exact and differentiable
+as written, and the derivative tables of \code{\link[=md_skewnormal2]{md_skewnormal2()}} differentiate it
+directly.
+}
+\examples{
+# The mean and the standard deviation are not the location and the scale.
+distributions7:::sn_cp_to_dp(0, 1, 0.5, 1)
+
+# At zero skewness the map is the identity on the first two, and the shape
+# is zero: the Gaussian sits at the same point in both parametrizations.
+distributions7:::sn_cp_to_dp(3, 2, 0, 1)
+
+# Round trip: the direct parameters reproduce the centered moments.
+dp <- distributions7:::sn_cp_to_dp(0, 1, 0.5, 1)
+d1 <- skewnormal1_distrib()
+c(mean = mean(d1, dp), sd = sqrt(variance(d1, dp)), skew = skewness(d1, dp))
+
 }
 \seealso{
-\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}}
+\code{\link[=sn2_theta]{sn2_theta()}}, which supplies the sign and calls this;
+\code{\link[=md_skewnormal2]{md_skewnormal2()}} for the derivative tables of the same map; and
+\code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} for the family.
 }
 \keyword{internal}
