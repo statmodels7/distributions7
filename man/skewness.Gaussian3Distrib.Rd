@@ -2,18 +2,34 @@
 % Please edit documentation in R/moments.R
 \name{skewness.Gaussian3Distrib}
 \alias{skewness.Gaussian3Distrib}
-\title{Skewness of the Gaussian in Mean and Precision}
+\title{Skewness of the Gaussian Distribution in Location and Precision}
 \arguments{
-\item{x}{A \code{Gaussian3Distrib}.}
+\item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: zero.
+Exactly zero at every parameter value, the density being symmetric about
+\eqn{\mu}. A standardized moment does not see a change of parametrization,
+so this is the same zero the other two Gaussian classes return.
+}
+\examples{
+d <- gaussian3_distrib()
+
+# Zero at every location and precision, with one value per setting.
+skewness(d, list(mu = c(-2, 0, 5), tau = c(1, 4, 9)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Gaussian3Distrib]{kurtosis.Gaussian3Distrib()}}, also zero;
+\code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}}; \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.
 }
 \keyword{internal}

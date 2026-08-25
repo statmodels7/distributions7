@@ -2,18 +2,50 @@
 % Please edit documentation in R/moments.R
 \name{variance.BetaBinom2Distrib}
 \alias{variance.BetaBinom2Distrib}
-\title{Variance of the Beta-Binomial in Its Shapes}
+\title{Variance of the Beta-Binomial Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{BetaBinom2Distrib}.}
+\item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}. Large shapes concentrate the
+mixing beta and take the family towards a binomial.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form, from the falling factorial moments.
+The second central moment, assembled from the falling factorial moments by
+\code{\link[=betabinom_central]{betabinom_central()}} at \eqn{\mu = \alpha/(\alpha+\beta)} and
+\eqn{\sigma = 1/(\alpha+\beta)}. It exceeds the binomial variance at the
+same mean, and the excess grows as the two shapes shrink. That excess is the
+family's reason for being.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta and
+\eqn{n} the number of trials.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+
+# The two parametrizations agree on the law.
+all.equal(variance(d, list(alpha = 2, beta = 3)),
+          variance(betabinom1_distrib(size = 10),
+                   list(mu = 0.4, sigma = 1 / 5)))
+
+# It exceeds the binomial variance at the same mean.
+c(betabinomial = variance(d, list(alpha = 2, beta = 3)),
+  binomial     = variance(binomial_distrib(size = 10), list(mu = 0.4)))
+
+}
+\seealso{
+\code{\link[=mean.BetaBinom2Distrib]{mean.BetaBinom2Distrib()}}, \code{\link[=skewness.BetaBinom2Distrib]{skewness.BetaBinom2Distrib()}};
+\code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

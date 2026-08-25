@@ -2,19 +2,45 @@
 % Please edit documentation in R/moments.R
 \name{variance.Beta2Distrib}
 \alias{variance.Beta2Distrib}
-\title{Variance of the Beta in Its Shapes}
+\title{Variance of the Beta Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{Beta2Distrib}.}
+\item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}. Both shapes below 1 puts the
+mass at the two endpoints.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
 Closed form:
-\eqn{\alpha\beta/\{(\alpha+\beta)^2(\alpha+\beta+1)\}}.
+\deqn{\operatorname{Var}(Y) = \frac{\alpha\beta}
+      {(\alpha+\beta)^2(\alpha+\beta+1)}.}
+Writing \eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta} this
+is the \eqn{\mu(1-\mu)/(\phi+1)} of \code{\link[=variance.Beta1Distrib]{variance.Beta1Distrib()}}, so the shapes
+and the mean-precision pair describe the same law.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
+}
+
+\examples{
+d <- beta2_distrib()
+
+# The published form, written out.
+all.equal(variance(d, list(alpha = 2, beta = 3)), 2 * 3 / (25 * 6))
+
+# Both shapes 1 is the uniform, of variance 1/12.
+all.equal(variance(d, list(alpha = 1, beta = 1)), 1 / 12)
+
+}
+\seealso{
+\code{\link[=mean.Beta2Distrib]{mean.Beta2Distrib()}}, \code{\link[=skewness.Beta2Distrib]{skewness.Beta2Distrib()}};
+\code{\link[=variance.Beta1Distrib]{variance.Beta1Distrib()}}; \code{\link[=beta2_distrib]{beta2_distrib()}}.
 }
 \keyword{internal}

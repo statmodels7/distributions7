@@ -2,18 +2,35 @@
 % Please edit documentation in R/moments.R
 \name{mean.Gaussian2Distrib}
 \alias{mean.Gaussian2Distrib}
-\title{Mean of the Gaussian in Mean and Variance}
+\title{Mean of the Gaussian Distribution in Location and Variance}
 \arguments{
-\item{x}{A \code{Gaussian2Distrib}.}
+\item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, any real value)
+and \code{sigma2} (the variance, positive), each a numeric vector of length 1
+or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\mu}.
+Closed form: \eqn{E[Y] = \mu}. This is the same law as
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} written by its variance, and the mean is the location
+in all three of the toolkit's Gaussian parametrizations.
+}
+\examples{
+d <- gaussian2_distrib()
+
+# The first parameter is the mean, and the variance does not move it.
+mean(d, list(mu = c(-1, 0, 4), sigma2 = 9))
+
+}
+\seealso{
+\code{\link[=variance.Gaussian2Distrib]{variance.Gaussian2Distrib()}}, where the parametrizations differ;
+\code{\link[=mean.Gaussian1Distrib]{mean.Gaussian1Distrib()}} and \code{\link[=mean.Gaussian3Distrib]{mean.Gaussian3Distrib()}};
+\code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
 }
 \keyword{internal}

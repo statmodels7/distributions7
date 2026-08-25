@@ -2,18 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{skewness.BetaBinom2Distrib}
 \alias{skewness.BetaBinom2Distrib}
-\title{Skewness of the Beta-Binomial in Its Shapes}
+\title{Skewness of the Beta-Binomial Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{BetaBinom2Distrib}.}
+\item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form, from the falling factorial moments.
+The standardized third central moment, \eqn{\gamma_1 = c_3/c_2^{3/2}} with
+the central moments \eqn{c_k} from \code{\link[=betabinom_central]{betabinom_central()}} at
+\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}. It is
+zero when the two shapes are equal, the mixing beta being symmetric there.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta,
+\eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th central moment.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+
+# Zero when the two shapes are equal.
+round(skewness(d, list(alpha = 3, beta = 3)), 12)
+
+# The two parametrizations agree on the law.
+all.equal(skewness(d, list(alpha = 2, beta = 3)),
+          skewness(betabinom1_distrib(size = 10),
+                   list(mu = 0.4, sigma = 1 / 5)))
+
+}
+\seealso{
+\code{\link[=kurtosis.BetaBinom2Distrib]{kurtosis.BetaBinom2Distrib()}}, from the same moments;
+\code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

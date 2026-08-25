@@ -2,18 +2,35 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Gaussian2Distrib}
 \alias{kurtosis.Gaussian2Distrib}
-\title{Kurtosis of the Gaussian in Mean and Variance}
+\title{Excess Kurtosis of the Gaussian Distribution in Location and Variance}
 \arguments{
-\item{x}{A \code{Gaussian2Distrib}.}
+\item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: zero excess.
+Exactly zero at every parameter value. \code{\link[=kurtosis]{kurtosis()}} reports the excess over
+the Gaussian's own fourth standardized moment of 3, so every Gaussian sits
+at the origin of the scale whichever of the three parametrizations it is
+written in.
+}
+\examples{
+d <- gaussian2_distrib()
+
+# Zero for every Gaussian, in every parametrization.
+kurtosis(d, list(mu = 0, sigma2 = c(1, 100)))
+
+}
+\seealso{
+\code{\link[=skewness.Gaussian2Distrib]{skewness.Gaussian2Distrib()}}, also zero;
+\code{\link[=kurtosis.Gaussian1Distrib]{kurtosis.Gaussian1Distrib()}}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
 }
 \keyword{internal}

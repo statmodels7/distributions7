@@ -2,18 +2,49 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.BetaBinom2Distrib}
 \alias{kurtosis.BetaBinom2Distrib}
-\title{Kurtosis of the Beta-Binomial in Its Shapes}
+\title{Excess Kurtosis of the Beta-Binomial Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{BetaBinom2Distrib}.}
+\item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form, from the falling factorial moments; excess.
+The standardized fourth central moment less three,
+\eqn{\gamma_2 = c_4/c_2^2 - 3}, with the central moments \eqn{c_k} from
+\code{\link[=betabinom_central]{betabinom_central()}} at \eqn{\mu = \alpha/(\alpha+\beta)} and
+\eqn{\sigma = 1/(\alpha+\beta)}. Its sign follows the balance of the two
+shapes: negative where they are comparable and the mass splits towards the
+two endpoints, positive where one dominates.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta,
+\eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th central moment.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+
+# Negative where the shapes are comparable, positive where one dominates.
+round(kurtosis(d, list(alpha = c(3, 0.5, 0.2), beta = 3)), 4)
+
+# The two parametrizations agree on the law.
+all.equal(kurtosis(d, list(alpha = 2, beta = 3)),
+          kurtosis(betabinom1_distrib(size = 10),
+                   list(mu = 0.4, sigma = 1 / 5)))
+
+}
+\seealso{
+\code{\link[=skewness.BetaBinom2Distrib]{skewness.BetaBinom2Distrib()}}, from the same moments;
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}}; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

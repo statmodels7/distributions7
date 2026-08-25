@@ -2,18 +2,46 @@
 % Please edit documentation in R/moments.R
 \name{skewness.Gamma1Distrib}
 \alias{skewness.Gamma1Distrib}
-\title{Skewness of the Gamma in Mean and Dispersion}
+\title{Skewness of the Gamma Distribution in Mean and Dispersion}
 \arguments{
-\item{x}{A \code{Gamma1Distrib}.}
+\item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}. Only \code{phi} enters
+the value, and the result is recycled to the length both imply.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: \eqn{2\sqrt{\phi}}, free of the mean.
+Closed form: \eqn{\gamma_1 = 2\sqrt\phi}. The mean cancels, so the asymmetry
+is carried by the dispersion alone: it is twice the coefficient of variation
+and vanishes as the dispersion goes to zero, where the family approaches a
+Gaussian.
+}
+\section{Notation}{
+
+\eqn{\phi > 0} is the dispersion. The mean does not enter a standardized
+moment.
+}
+
+\examples{
+d <- gamma1_distrib()
+
+# Twice the square root of the dispersion, whatever the mean.
+skewness(d, list(mu = c(1, 2, 3), phi = 0.25))
+
+# It agrees with the mean-variance parametrization on the same law.
+all.equal(skewness(d, list(mu = 2, phi = 0.25)),
+          skewness(gamma2_distrib(), list(mu = 2, sigma2 = 1)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Gamma1Distrib]{kurtosis.Gamma1Distrib()}}, which is \eqn{3/2} times the square of
+this; \code{\link[=skewness.Gamma2Distrib]{skewness.Gamma2Distrib()}}, the same quantity in the mean-variance
+parametrization; \code{\link[=gamma1_distrib]{gamma1_distrib()}}.
 }
 \keyword{internal}

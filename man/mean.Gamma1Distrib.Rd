@@ -2,18 +2,35 @@
 % Please edit documentation in R/moments.R
 \name{mean.Gamma1Distrib}
 \alias{mean.Gamma1Distrib}
-\title{Mean of the Gamma in Mean and Dispersion}
+\title{Mean of the Gamma Distribution in Mean and Dispersion}
 \arguments{
-\item{x}{A \code{Gamma1Distrib}.}
+\item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{phi} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{\mu}, the parameter itself.
+Closed form: \eqn{E[Y] = \mu}. This is the gamma written by its mean and a
+dispersion, the parametrization a generalized linear model uses, so the mean
+is the first parameter and the variance function is \eqn{\phi\mu^2}.
+}
+\examples{
+d <- gamma1_distrib()
+
+# The first parameter is the mean, and the dispersion does not move it.
+mean(d, list(mu = c(1, 2, 3), phi = 0.25))
+
+}
+\seealso{
+\code{\link[=variance.Gamma1Distrib]{variance.Gamma1Distrib()}}, which is \eqn{\phi\mu^2};
+\code{\link[=mean.Gamma2Distrib]{mean.Gamma2Distrib()}} for the mean-variance parametrization;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}.
 }
 \keyword{internal}

@@ -2,18 +2,45 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Gamma1Distrib}
 \alias{kurtosis.Gamma1Distrib}
-\title{Kurtosis of the Gamma in Mean and Dispersion}
+\title{Excess Kurtosis of the Gamma Distribution in Mean and Dispersion}
 \arguments{
-\item{x}{A \code{Gamma1Distrib}.}
+\item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}. Only \code{phi} enters
+the value.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$phi))}, positive throughout.
 }
 \description{
-Closed form: excess \eqn{6\phi}, free of the mean.
+Closed form: \eqn{\gamma_2 = 6\phi}, the excess over the Gaussian. It is
+linear in the dispersion and free of the mean, and it is exactly
+\eqn{3\gamma_1^2/2}, so a gamma occupies one curve of the
+skewness-kurtosis plane whichever parametrization it is written in.
+}
+\section{Notation}{
+
+\eqn{\phi > 0} is the dispersion. The mean does not enter a standardized
+moment.
+}
+
+\examples{
+d <- gamma1_distrib()
+
+# Six times the dispersion.
+all.equal(kurtosis(d, list(mu = 2, phi = 0.25)), 1.5)
+
+# The family lies on the curve kurtosis = 1.5 skewness^2.
+th <- list(mu = 2, phi = 0.25)
+all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
+
+}
+\seealso{
+\code{\link[=skewness.Gamma1Distrib]{skewness.Gamma1Distrib()}}, to which this is tied;
+\code{\link[=kurtosis.Gamma2Distrib]{kurtosis.Gamma2Distrib()}}; \code{\link[=gamma1_distrib]{gamma1_distrib()}}.
 }
 \keyword{internal}

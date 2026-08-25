@@ -2,18 +2,42 @@
 % Please edit documentation in R/moments.R
 \name{mean.BetaBinom2Distrib}
 \alias{mean.BetaBinom2Distrib}
-\title{Mean of the Beta-Binomial in Its Shapes}
+\title{Mean of the Beta-Binomial Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{BetaBinom2Distrib}.}
+\item{x}{A \code{BetaBinom2Distrib}, from \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form: \eqn{n\alpha/(\alpha+\beta)}.
+Closed form: \eqn{E[Y] = n\alpha/(\alpha+\beta)}, the trial count times the
+mean of the mixing beta. This is the classical two-shape parametrization;
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}} carries the same law with
+\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\sigma = 1/(\alpha+\beta)}.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the shapes of the mixing beta and
+\eqn{n} the number of trials, held on the object.
+}
+
+\examples{
+d <- betabinom2_distrib(size = 10)
+
+# Ten trials times the mixing beta's mean of 0.4.
+all.equal(mean(d, list(alpha = 2, beta = 3)), 4)
+
+}
+\seealso{
+\code{\link[=variance.BetaBinom2Distrib]{variance.BetaBinom2Distrib()}}, where the dispersion does enter;
+\code{\link[=mean.BetaBinom1Distrib]{mean.BetaBinom1Distrib()}} for the mean-dispersion parametrization;
+\code{\link[=betabinom_central]{betabinom_central()}}; \code{\link[=betabinom2_distrib]{betabinom2_distrib()}}.
 }
 \keyword{internal}

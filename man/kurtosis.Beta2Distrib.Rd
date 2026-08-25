@@ -2,18 +2,46 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Beta2Distrib}
 \alias{kurtosis.Beta2Distrib}
-\title{Kurtosis of the Beta in Its Shapes}
+\title{Excess Kurtosis of the Beta Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{Beta2Distrib}.}
+\item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
-Closed form; excess.
+Closed form:
+\deqn{\gamma_2 = \frac{6\{(\alpha-\beta)^2(\alpha+\beta+1)
+                         - \alpha\beta(\alpha+\beta+2)\}}
+                      {\alpha\beta(\alpha+\beta+2)(\alpha+\beta+3)}.}
+It is routinely negative, the support being bounded at both ends: at
+\eqn{\alpha = \beta = 1} the density is uniform and the value is
+\eqn{-6/5}, the smallest excess kurtosis any distribution attains.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
+}
+
+\examples{
+d <- beta2_distrib()
+
+# The uniform case sits at the lower bound of -6/5.
+all.equal(kurtosis(d, list(alpha = 1, beta = 1)), -1.2)
+
+# It agrees with the mean-precision parametrization on the same law.
+all.equal(kurtosis(d, list(alpha = 2, beta = 3)),
+          kurtosis(beta1_distrib(), list(mu = 0.4, phi = 5)))
+
+}
+\seealso{
+\code{\link[=skewness.Beta2Distrib]{skewness.Beta2Distrib()}}, written in the same two shapes;
+\code{\link[=kurtosis.Beta1Distrib]{kurtosis.Beta1Distrib()}}; \code{\link[=beta2_distrib]{beta2_distrib()}}.
 }
 \keyword{internal}

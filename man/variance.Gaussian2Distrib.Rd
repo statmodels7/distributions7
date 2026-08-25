@@ -2,18 +2,41 @@
 % Please edit documentation in R/moments.R
 \name{variance.Gaussian2Distrib}
 \alias{variance.Gaussian2Distrib}
-\title{Variance of the Gaussian in Mean and Variance}
+\title{Variance of the Gaussian Distribution in Location and Variance}
 \arguments{
-\item{x}{A \code{Gaussian2Distrib}.}
+\item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{sigma2}
+(the variance, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: \eqn{\sigma^2}, the parameter itself.
+Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2}. The variance is the
+second parameter here, so the method reads it off, where
+\code{\link[=variance.Gaussian1Distrib]{variance.Gaussian1Distrib()}} squares a standard deviation and
+\code{\link[=variance.Gaussian3Distrib]{variance.Gaussian3Distrib()}} inverts a precision. All three describe the
+same law.
+}
+\examples{
+d <- gaussian2_distrib()
+
+# The second parameter is the variance.
+variance(d, list(mu = 0, sigma2 = c(1, 4, 16)))
+
+# The three parametrizations agree on the law.
+c(gaussian2 = variance(d, list(mu = 0, sigma2 = 9)),
+  gaussian1 = variance(gaussian1_distrib(), list(mu = 0, sigma = 3)),
+  gaussian3 = variance(gaussian3_distrib(), list(mu = 0, tau = 1 / 9)))
+
+}
+\seealso{
+\code{\link[=mean.Gaussian2Distrib]{mean.Gaussian2Distrib()}}; \code{\link[=variance.Gaussian1Distrib]{variance.Gaussian1Distrib()}} and
+\code{\link[=variance.Gaussian3Distrib]{variance.Gaussian3Distrib()}}, the same quantity in the other two
+parametrizations; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
 }
 \keyword{internal}

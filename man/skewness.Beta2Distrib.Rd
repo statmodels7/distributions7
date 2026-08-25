@@ -2,20 +2,44 @@
 % Please edit documentation in R/moments.R
 \name{skewness.Beta2Distrib}
 \alias{skewness.Beta2Distrib}
-\title{Skewness of the Beta in Its Shapes}
+\title{Skewness of the Beta Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{Beta2Distrib}.}
+\item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$alpha), length(theta$beta))}.
 }
 \description{
 Closed form:
-\eqn{2(\beta-\alpha)\sqrt{\alpha+\beta+1}/
-       \{(\alpha+\beta+2)\sqrt{\alpha\beta}\}}.
+\deqn{\gamma_1 = \frac{2(\beta - \alpha)\sqrt{\alpha + \beta + 1}}
+                      {(\alpha + \beta + 2)\sqrt{\alpha\beta}}.}
+It takes the sign of \eqn{\beta - \alpha}, so a beta is right-skewed when
+the first shape is the smaller and exactly symmetric when the two are equal.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
+}
+
+\examples{
+d <- beta2_distrib()
+
+# Zero when the two shapes are equal.
+skewness(d, list(alpha = 3, beta = 3))
+
+# It agrees with the mean-precision parametrization on the same law.
+all.equal(skewness(d, list(alpha = 2, beta = 3)),
+          skewness(beta1_distrib(), list(mu = 0.4, phi = 5)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Beta2Distrib]{kurtosis.Beta2Distrib()}}, written in the same two shapes;
+\code{\link[=skewness.Beta1Distrib]{skewness.Beta1Distrib()}}; \code{\link[=beta2_distrib]{beta2_distrib()}}.
 }
 \keyword{internal}

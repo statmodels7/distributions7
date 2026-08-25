@@ -2,18 +2,34 @@
 % Please edit documentation in R/moments.R
 \name{skewness.Gaussian2Distrib}
 \alias{skewness.Gaussian2Distrib}
-\title{Skewness of the Gaussian in Mean and Variance}
+\title{Skewness of the Gaussian Distribution in Location and Variance}
 \arguments{
-\item{x}{A \code{Gaussian2Distrib}.}
+\item{x}{A \code{Gaussian2Distrib}, from \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{sigma2} (positive), each
+a numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$sigma2))}.
 }
 \description{
-Closed form: zero.
+Exactly zero at every parameter value, the density being symmetric about
+\eqn{\mu}. A standardized moment does not see a change of parametrization,
+so this is the same zero \code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}} returns.
+}
+\examples{
+d <- gaussian2_distrib()
+
+# Zero at every location and variance, with one value per setting.
+skewness(d, list(mu = c(-2, 0, 5), sigma2 = c(1, 4, 9)))
+
+}
+\seealso{
+\code{\link[=kurtosis.Gaussian2Distrib]{kurtosis.Gaussian2Distrib()}}, also zero;
+\code{\link[=skewness.Gaussian1Distrib]{skewness.Gaussian1Distrib()}}; \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
 }
 \keyword{internal}

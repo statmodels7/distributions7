@@ -2,18 +2,34 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Gaussian3Distrib}
 \alias{kurtosis.Gaussian3Distrib}
-\title{Kurtosis of the Gaussian in Mean and Precision}
+\title{Excess Kurtosis of the Gaussian Distribution in Location and Precision}
 \arguments{
-\item{x}{A \code{Gaussian3Distrib}.}
+\item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} and \code{tau} (positive), each a
+numeric vector of length 1 or \code{n}. The values are not read, only their
+lengths.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of zeros, of length
+\code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: zero excess.
+Exactly zero at every parameter value, the excess over the Gaussian's own
+fourth standardized moment being what \code{\link[=kurtosis]{kurtosis()}} reports. The
+parametrization does not enter a standardized moment.
+}
+\examples{
+d <- gaussian3_distrib()
+
+# Zero for every Gaussian, in every parametrization.
+kurtosis(d, list(mu = 0, tau = c(0.01, 100)))
+
+}
+\seealso{
+\code{\link[=skewness.Gaussian3Distrib]{skewness.Gaussian3Distrib()}}, also zero;
+\code{\link[=kurtosis.Gaussian1Distrib]{kurtosis.Gaussian1Distrib()}}; \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.
 }
 \keyword{internal}

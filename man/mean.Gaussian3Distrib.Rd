@@ -2,18 +2,36 @@
 % Please edit documentation in R/moments.R
 \name{mean.Gaussian3Distrib}
 \alias{mean.Gaussian3Distrib}
-\title{Mean of the Gaussian in Mean and Precision}
+\title{Mean of the Gaussian Distribution in Location and Precision}
 \arguments{
-\item{x}{A \code{Gaussian3Distrib}.}
+\item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, any real value)
+and \code{tau} (the precision, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: \eqn{\mu}.
+Closed form: \eqn{E[Y] = \mu}. This is the Gaussian written by its
+precision \eqn{\tau = 1/\sigma^2}, the parametrization a Bayesian prior or a
+penalized likelihood usually reaches for, and the mean is the location as it
+is in the other two.
+}
+\examples{
+d <- gaussian3_distrib()
+
+# The first parameter is the mean, and the precision does not move it.
+mean(d, list(mu = c(-1, 0, 4), tau = 2))
+
+}
+\seealso{
+\code{\link[=variance.Gaussian3Distrib]{variance.Gaussian3Distrib()}}, the reciprocal of the precision;
+\code{\link[=mean.Gaussian1Distrib]{mean.Gaussian1Distrib()}} and \code{\link[=mean.Gaussian2Distrib]{mean.Gaussian2Distrib()}};
+\code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.
 }
 \keyword{internal}

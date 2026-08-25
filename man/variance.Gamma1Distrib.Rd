@@ -2,19 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{variance.Gamma1Distrib}
 \alias{variance.Gamma1Distrib}
-\title{Variance of the Gamma in Mean and Dispersion}
+\title{Variance of the Gamma Distribution in Mean and Dispersion}
 \arguments{
-\item{x}{A \code{Gamma1Distrib}.}
+\item{x}{A \code{Gamma1Distrib}, from \code{\link[=gamma1_distrib]{gamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}. Small \code{phi} is a
+large shape, where the family approaches a Gaussian.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{\phi\mu^2}, which is what the
-parametrization is defined by.
+Closed form: \eqn{\operatorname{Var}(Y) = \phi\mu^2}. The quadratic variance
+function is why the gamma is the standard family for a positive response
+whose spread grows in proportion to its level: the coefficient of variation
+is \eqn{\sqrt\phi}, the same at every mean.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\phi > 0} the dispersion. The implied
+shape is \eqn{1/\phi}.
+}
+
+\examples{
+d <- gamma1_distrib()
+
+# The dispersion times the square of the mean.
+all.equal(variance(d, list(mu = 2, phi = 0.25)), 1)
+
+# The coefficient of variation is sqrt(phi) at every mean.
+th <- list(mu = c(1, 10, 100), phi = 0.25)
+std_dev(d, th) / mean(d, th)
+
+}
+\seealso{
+\code{\link[=mean.Gamma1Distrib]{mean.Gamma1Distrib()}}, \code{\link[=skewness.Gamma1Distrib]{skewness.Gamma1Distrib()}};
+\code{\link[=variance.Gamma2Distrib]{variance.Gamma2Distrib()}}, the same quantity as a parameter;
+\code{\link[=variance.InvGauss1Distrib]{variance.InvGauss1Distrib()}}, whose variance function is cubic;
+\code{\link[=gamma1_distrib]{gamma1_distrib()}}.
 }
 \keyword{internal}

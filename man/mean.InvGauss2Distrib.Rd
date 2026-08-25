@@ -2,18 +2,34 @@
 % Please edit documentation in R/moments.R
 \name{mean.InvGauss2Distrib}
 \alias{mean.InvGauss2Distrib}
-\title{Mean of the Inverse Gaussian in Mean and Shape}
+\title{Mean of the Inverse Gaussian Distribution in Mean and Rate}
 \arguments{
-\item{x}{An \code{InvGauss2Distrib}.}
+\item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{lambda} (the rate, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$lambda))}.
 }
 \description{
-Closed form: \eqn{\mu}.
+Closed form: \eqn{E[Y] = \mu}. This is the inverse Gaussian written by its
+mean and the rate \eqn{\lambda = 1/\phi}, the parametrization the classical
+literature uses, and the mean is the first parameter in either.
+}
+\examples{
+d <- invgauss2_distrib()
+
+# The first parameter is the mean, and the rate does not move it.
+mean(d, list(mu = c(1, 2, 3), lambda = 8))
+
+}
+\seealso{
+\code{\link[=variance.InvGauss2Distrib]{variance.InvGauss2Distrib()}}, where the rate does enter;
+\code{\link[=mean.InvGauss1Distrib]{mean.InvGauss1Distrib()}} for the dispersion parametrization;
+\code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.
 }
 \keyword{internal}

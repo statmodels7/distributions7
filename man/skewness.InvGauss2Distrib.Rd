@@ -2,18 +2,43 @@
 % Please edit documentation in R/moments.R
 \name{skewness.InvGauss2Distrib}
 \alias{skewness.InvGauss2Distrib}
-\title{Skewness of the Inverse Gaussian in Mean and Shape}
+\title{Skewness of the Inverse Gaussian Distribution in Mean and Rate}
 \arguments{
-\item{x}{An \code{InvGauss2Distrib}.}
+\item{x}{An \code{InvGauss2Distrib}, from \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{lambda}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$lambda))}, positive throughout.
 }
 \description{
-Closed form: \eqn{3\sqrt{\mu/\lambda}}.
+Closed form: \eqn{\gamma_1 = 3\sqrt{\mu/\lambda}}. It is positive at every
+parameter value and depends on the two only through their ratio, so the
+whole family is one curve indexed by \eqn{\mu/\lambda}. Small mean or large
+rate gives a nearly Gaussian shape.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\lambda > 0} the rate.
+}
+
+\examples{
+d <- invgauss2_distrib()
+
+# Three times the square root of the ratio.
+all.equal(skewness(d, list(mu = 2, lambda = 8)), 1.5)
+
+# It agrees with the dispersion parametrization on the same law.
+all.equal(skewness(d, list(mu = 2, lambda = 8)),
+          skewness(invgauss1_distrib(), list(mu = 2, phi = 1 / 8)))
+
+}
+\seealso{
+\code{\link[=kurtosis.InvGauss2Distrib]{kurtosis.InvGauss2Distrib()}}, which is \eqn{5/3} times the square
+of this; \code{\link[=skewness.InvGauss1Distrib]{skewness.InvGauss1Distrib()}}; \code{\link[=invgauss2_distrib]{invgauss2_distrib()}}.
 }
 \keyword{internal}

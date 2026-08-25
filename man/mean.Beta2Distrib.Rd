@@ -2,18 +2,40 @@
 % Please edit documentation in R/moments.R
 \name{mean.Beta2Distrib}
 \alias{mean.Beta2Distrib}
-\title{Mean of the Beta in Its Shapes}
+\title{Mean of the Beta Distribution in Two Shapes}
 \arguments{
-\item{x}{A \code{Beta2Distrib}.}
+\item{x}{A \code{Beta2Distrib}, from \code{\link[=beta2_distrib]{beta2_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{alpha} and \code{beta}, both positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$alpha), length(theta$beta))}, strictly inside
+\eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{\alpha/(\alpha+\beta)}.
+Closed form: \eqn{E[Y] = \alpha/(\alpha+\beta)}. This is the beta in its
+classical two-shape parametrization, so the mean is a ratio rather than a
+parameter; \code{\link[=beta1_distrib]{beta1_distrib()}} carries it directly, with
+\eqn{\mu = \alpha/(\alpha+\beta)} and \eqn{\phi = \alpha+\beta}.
+}
+\section{Notation}{
+
+\eqn{\alpha > 0} and \eqn{\beta > 0} are the two shapes.
+}
+
+\examples{
+d <- beta2_distrib()
+
+# The ratio of the first shape to their sum.
+all.equal(mean(d, list(alpha = 2, beta = 3)), 0.4)
+
+}
+\seealso{
+\code{\link[=variance.Beta2Distrib]{variance.Beta2Distrib()}}; \code{\link[=mean.Beta1Distrib]{mean.Beta1Distrib()}} for the
+mean-precision parametrization; \code{\link[=beta2_distrib]{beta2_distrib()}}.
 }
 \keyword{internal}

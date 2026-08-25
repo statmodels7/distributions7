@@ -2,18 +2,37 @@
 % Please edit documentation in R/moments.R
 \name{variance.Gaussian3Distrib}
 \alias{variance.Gaussian3Distrib}
-\title{Variance of the Gaussian in Mean and Precision}
+\title{Variance of the Gaussian Distribution in Location and Precision}
 \arguments{
-\item{x}{A \code{Gaussian3Distrib}.}
+\item{x}{A \code{Gaussian3Distrib}, from \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (any real value) and \code{tau}
+(the precision, positive), each a numeric vector of length 1 or \code{n}. The
+variance diverges as the precision approaches zero.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$tau))}.
 }
 \description{
-Closed form: \eqn{1/\tau}.
+Closed form: \eqn{\operatorname{Var}(Y) = 1/\tau}. Larger precision means a
+tighter distribution, and the name records that. The reciprocal is the whole
+of the difference between this parametrization and \code{\link[=gaussian2_distrib]{gaussian2_distrib()}}.
+}
+\examples{
+d <- gaussian3_distrib()
+
+# One over the precision.
+all.equal(variance(d, list(mu = 0, tau = 0.25)), 4)
+
+# The standard deviation is one over its square root.
+std_dev(d, list(mu = 0, tau = 4))
+
+}
+\seealso{
+\code{\link[=mean.Gaussian3Distrib]{mean.Gaussian3Distrib()}}; \code{\link[=variance.Gaussian2Distrib]{variance.Gaussian2Distrib()}}, the
+reciprocal; \code{\link[=gaussian3_distrib]{gaussian3_distrib()}}.
 }
 \keyword{internal}
