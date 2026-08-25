@@ -2,6 +2,34 @@
 % Please edit documentation in R/y_higher.R
 \name{loc_deriv_y_k}
 \alias{loc_deriv_y_k}
+\alias{distrib_deriv3_y.Gaussian1Distrib}
+\alias{distrib_deriv4_y.Gaussian1Distrib}
+\alias{distrib_deriv3_y.Gaussian2Distrib}
+\alias{distrib_deriv4_y.Gaussian2Distrib}
+\alias{distrib_deriv3_y.Gaussian3Distrib}
+\alias{distrib_deriv4_y.Gaussian3Distrib}
+\alias{distrib_deriv3_y.CauchyDistrib}
+\alias{distrib_deriv4_y.CauchyDistrib}
+\alias{distrib_deriv3_y.LogisticDistrib}
+\alias{distrib_deriv4_y.LogisticDistrib}
+\alias{distrib_deriv3_y.LaplaceDistrib}
+\alias{distrib_deriv4_y.LaplaceDistrib}
+\alias{distrib_deriv3_y.Laplace2Distrib}
+\alias{distrib_deriv4_y.Laplace2Distrib}
+\alias{distrib_deriv3_y.EnetDistrib}
+\alias{distrib_deriv4_y.EnetDistrib}
+\alias{distrib_deriv3_y.PseudoHuberDistrib}
+\alias{distrib_deriv4_y.PseudoHuberDistrib}
+\alias{distrib_deriv3_y.StudentT1Distrib}
+\alias{distrib_deriv4_y.StudentT1Distrib}
+\alias{distrib_deriv3_y.SkewNormal1Distrib}
+\alias{distrib_deriv4_y.SkewNormal1Distrib}
+\alias{distrib_deriv3_y.SkewNormal2Distrib}
+\alias{distrib_deriv4_y.SkewNormal2Distrib}
+\alias{distrib_deriv3_y.SkewTDistrib}
+\alias{distrib_deriv4_y.SkewTDistrib}
+\alias{distrib_deriv3_y.GumbelDistrib}
+\alias{distrib_deriv4_y.GumbelDistrib}
 \title{The Response Derivative of a Location Family}
 \usage{
 loc_deriv_y_k(order)
@@ -10,7 +38,9 @@ loc_deriv_y_k(order)
 \item{order}{The derivative order, 3 or 4.}
 }
 \value{
-A function suitable for registering as an S7 method.
+A function suitable for registering as an S7 method: it takes
+\verb{(distrib, y, theta, ...)} and returns a numeric vector of length
+\code{length(y)}.
 }
 \description{
 Builds the order-\code{k} response derivative of a family whose response
@@ -25,5 +55,19 @@ two orders below, where \eqn{\partial\ell/\partial y = -\partial\ell/
 \partial\mu} and \eqn{\partial^{2}\ell/\partial y^{2} =
 \partial^{2}\ell/\partial\mu^{2}}, and the tests check the new orders
 against exactly that.
+}
+\section{Registered on}{
+
+This body serves both third- and fourth-order response derivatives on all
+fourteen location families, so \code{?distrib_deriv3_y.Gaussian1Distrib} and its
+twenty-seven siblings open this page:
+\code{Gaussian1Distrib}, \code{Gaussian2Distrib}, \code{Gaussian3Distrib}, \code{CauchyDistrib}, \code{LogisticDistrib}, \code{LaplaceDistrib}, \code{Laplace2Distrib}, \code{EnetDistrib}, \code{PseudoHuberDistrib}, \code{StudentT1Distrib}, \code{SkewNormal1Distrib}, \code{SkewNormal2Distrib}, \code{SkewTDistrib}, \code{GumbelDistrib}.
+}
+
+\seealso{
+\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil a family
+outside this list falls back to; \code{\link[=register_dy_k]{register_dy_k()}}, the companion for
+families whose response is not a pure location; \code{\link[=distrib_deriv3]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4]{distrib_deriv4()}}, whose components this reads.
 }
 \keyword{internal}

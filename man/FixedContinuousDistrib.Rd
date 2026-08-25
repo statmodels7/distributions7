@@ -2,6 +2,28 @@
 % Please edit documentation in R/fixed.R
 \name{FixedContinuousDistrib}
 \alias{FixedContinuousDistrib}
+\alias{distrib_atoms.FixedContinuousDistrib}
+\alias{distrib_cdf.FixedContinuousDistrib}
+\alias{distrib_cross2_y.FixedContinuousDistrib}
+\alias{distrib_cross_y.FixedContinuousDistrib}
+\alias{distrib_deriv3.FixedContinuousDistrib}
+\alias{distrib_deriv4.FixedContinuousDistrib}
+\alias{distrib_expected_hessian.FixedContinuousDistrib}
+\alias{distrib_grad_cdf.FixedContinuousDistrib}
+\alias{distrib_grad_y.FixedContinuousDistrib}
+\alias{distrib_grad_y_hess.FixedContinuousDistrib}
+\alias{distrib_gradient.FixedContinuousDistrib}
+\alias{distrib_hess_cdf.FixedContinuousDistrib}
+\alias{distrib_hess_y.FixedContinuousDistrib}
+\alias{distrib_hess_y_hess.FixedContinuousDistrib}
+\alias{distrib_hessian.FixedContinuousDistrib}
+\alias{distrib_pdf.FixedContinuousDistrib}
+\alias{distrib_quantile.FixedContinuousDistrib}
+\alias{distrib_rng.FixedContinuousDistrib}
+\alias{kurtosis.FixedContinuousDistrib}
+\alias{skewness.FixedContinuousDistrib}
+\alias{std_dev.FixedContinuousDistrib}
+\alias{variance.FixedContinuousDistrib}
 \title{S7 Class for Distributions With Fixed Parameters (Continuous)}
 \usage{
 FixedContinuousDistrib(
@@ -57,6 +79,18 @@ this package that REMOVES parameters: the law is the parent's, evaluated at
 a \code{theta} short by however many were fixed. Build one with \code{\link[=fixed]{fixed()}}, which
 picks this class or one of its two siblings from the parent.
 }
+\section{Methods}{
+
+\code{fixed()} registers 22 methods on this class:
+\code{distrib_atoms()}, \code{distrib_cdf()}, \code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv4()}, \code{distrib_expected_hessian()}, \code{distrib_grad_cdf()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_cdf()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_quantile()}, \code{distrib_rng()}, \code{kurtosis()}, \code{skewness()}, \code{std_dev()}, \code{variance()}.
+
+Every one splices the held values back into \code{theta} and delegates to the
+parent. The derivative methods then subset the parent's answer by the names
+the free parameter set generates, which is safe because the free set
+preserves the parent's order: the same combination of free parameters
+produces the same component string under either enumeration.
+}
+
 \section{How every method works}{
 The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
 ORDER. Every method splices the fixed values back into \code{theta} at their

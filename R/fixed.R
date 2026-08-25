@@ -4,6 +4,39 @@ NULL
 #' @title S7 Class for Distributions With Fixed Parameters (Continuous)
 #' @name FixedContinuousDistrib
 #'
+#' @section Methods:
+#' `fixed()` registers 22 methods on this class:
+#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
+#'
+#' Every one splices the held values back into `theta` and delegates to the
+#' parent. The derivative methods then subset the parent's answer by the names
+#' the free parameter set generates, which is safe because the free set
+#' preserves the parent's order: the same combination of free parameters
+#' produces the same component string under either enumeration.
+#'
+#' @aliases distrib_atoms.FixedContinuousDistrib
+#' @aliases distrib_cdf.FixedContinuousDistrib
+#' @aliases distrib_cross2_y.FixedContinuousDistrib
+#' @aliases distrib_cross_y.FixedContinuousDistrib
+#' @aliases distrib_deriv3.FixedContinuousDistrib
+#' @aliases distrib_deriv4.FixedContinuousDistrib
+#' @aliases distrib_expected_hessian.FixedContinuousDistrib
+#' @aliases distrib_grad_cdf.FixedContinuousDistrib
+#' @aliases distrib_grad_y.FixedContinuousDistrib
+#' @aliases distrib_grad_y_hess.FixedContinuousDistrib
+#' @aliases distrib_gradient.FixedContinuousDistrib
+#' @aliases distrib_hess_cdf.FixedContinuousDistrib
+#' @aliases distrib_hess_y.FixedContinuousDistrib
+#' @aliases distrib_hess_y_hess.FixedContinuousDistrib
+#' @aliases distrib_hessian.FixedContinuousDistrib
+#' @aliases distrib_pdf.FixedContinuousDistrib
+#' @aliases distrib_quantile.FixedContinuousDistrib
+#' @aliases distrib_rng.FixedContinuousDistrib
+#' @aliases kurtosis.FixedContinuousDistrib
+#' @aliases skewness.FixedContinuousDistrib
+#' @aliases std_dev.FixedContinuousDistrib
+#' @aliases variance.FixedContinuousDistrib
+#'
 #' @description
 #' The S7 class of a CONTINUOUS distribution in which some parameters of the
 #' wrapped distribution are held at known values. It is the only wrapper in
@@ -85,6 +118,38 @@ FixedContinuousDistrib <- S7::new_class("FixedContinuousDistrib",
 #' @title S7 Class for Distributions With Fixed Parameters (Discrete)
 #' @name FixedDiscreteDistrib
 #'
+#' @section Methods:
+#' `fixed()` registers 22 methods on this class:
+#' `distrib_atoms()`, `distrib_cdf()`, `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_cdf()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_cdf()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_quantile()`, `distrib_rng()`, `kurtosis()`, `skewness()`, `std_dev()`, `variance()`.
+#'
+#' Every one splices the held values back into `theta` and delegates to the
+#' parent, exactly as on [FixedContinuousDistrib()]; the two classes share
+#' one registration loop. The response derivatives are inherited refusals
+#' from `discrete_distrib` and are not among them.
+#'
+#' @aliases distrib_atoms.FixedDiscreteDistrib
+#' @aliases distrib_cdf.FixedDiscreteDistrib
+#' @aliases distrib_cross2_y.FixedDiscreteDistrib
+#' @aliases distrib_cross_y.FixedDiscreteDistrib
+#' @aliases distrib_deriv3.FixedDiscreteDistrib
+#' @aliases distrib_deriv4.FixedDiscreteDistrib
+#' @aliases distrib_expected_hessian.FixedDiscreteDistrib
+#' @aliases distrib_grad_cdf.FixedDiscreteDistrib
+#' @aliases distrib_grad_y.FixedDiscreteDistrib
+#' @aliases distrib_grad_y_hess.FixedDiscreteDistrib
+#' @aliases distrib_gradient.FixedDiscreteDistrib
+#' @aliases distrib_hess_cdf.FixedDiscreteDistrib
+#' @aliases distrib_hess_y.FixedDiscreteDistrib
+#' @aliases distrib_hess_y_hess.FixedDiscreteDistrib
+#' @aliases distrib_hessian.FixedDiscreteDistrib
+#' @aliases distrib_pdf.FixedDiscreteDistrib
+#' @aliases distrib_quantile.FixedDiscreteDistrib
+#' @aliases distrib_rng.FixedDiscreteDistrib
+#' @aliases kurtosis.FixedDiscreteDistrib
+#' @aliases skewness.FixedDiscreteDistrib
+#' @aliases std_dev.FixedDiscreteDistrib
+#' @aliases variance.FixedDiscreteDistrib
+#'
 #' @description
 #' The S7 class of a DISCRETE distribution in which some parameters of the
 #' wrapped distribution are held at known values. It behaves exactly as
@@ -155,6 +220,38 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 
 #' @title S7 Class for Distributions With Fixed Parameters (Multivariate)
 #' @name FixedMultivariateDistrib
+#'
+#' @section Methods:
+#' `fixed()` registers 20 methods on this class:
+#' `distrib_cross2_y()`, `distrib_cross_y()`, `distrib_deriv3()`, `distrib_deriv4()`, `distrib_expected_hessian()`, `distrib_grad_y()`, `distrib_grad_y_hess()`, `distrib_gradient()`, `distrib_hess_y()`, `distrib_hess_y_hess()`, `distrib_hessian()`, `distrib_pdf()`, `distrib_rng()`, `mv_derived()`, `mv_location()`, `mv_marginal()`, `mv_reference_draw()`, `mv_sigma()`, `mv_support()`, `variance()`.
+#'
+#' Every one splices the held values back into `theta` and delegates to the
+#' parent. The set differs from the univariate classes': there is no
+#' distribution function, no quantile and no atom, and the `mv_*` accessors
+#' take their place. The generics a multivariate family rejects are not
+#' registered here at all, so the refusal is inherited from
+#' `multivariate_distrib` and keeps its own message.
+#'
+#' @aliases distrib_cross2_y.FixedMultivariateDistrib
+#' @aliases distrib_cross_y.FixedMultivariateDistrib
+#' @aliases distrib_deriv3.FixedMultivariateDistrib
+#' @aliases distrib_deriv4.FixedMultivariateDistrib
+#' @aliases distrib_expected_hessian.FixedMultivariateDistrib
+#' @aliases distrib_grad_y.FixedMultivariateDistrib
+#' @aliases distrib_grad_y_hess.FixedMultivariateDistrib
+#' @aliases distrib_gradient.FixedMultivariateDistrib
+#' @aliases distrib_hess_y.FixedMultivariateDistrib
+#' @aliases distrib_hess_y_hess.FixedMultivariateDistrib
+#' @aliases distrib_hessian.FixedMultivariateDistrib
+#' @aliases distrib_pdf.FixedMultivariateDistrib
+#' @aliases distrib_rng.FixedMultivariateDistrib
+#' @aliases mv_derived.FixedMultivariateDistrib
+#' @aliases mv_location.FixedMultivariateDistrib
+#' @aliases mv_marginal.FixedMultivariateDistrib
+#' @aliases mv_reference_draw.FixedMultivariateDistrib
+#' @aliases mv_sigma.FixedMultivariateDistrib
+#' @aliases mv_support.FixedMultivariateDistrib
+#' @aliases variance.FixedMultivariateDistrib
 #'
 #' @description
 #' The S7 class of a MULTIVARIATE distribution in which some parameters of the

@@ -2,6 +2,28 @@
 % Please edit documentation in R/fixed.R
 \name{FixedDiscreteDistrib}
 \alias{FixedDiscreteDistrib}
+\alias{distrib_atoms.FixedDiscreteDistrib}
+\alias{distrib_cdf.FixedDiscreteDistrib}
+\alias{distrib_cross2_y.FixedDiscreteDistrib}
+\alias{distrib_cross_y.FixedDiscreteDistrib}
+\alias{distrib_deriv3.FixedDiscreteDistrib}
+\alias{distrib_deriv4.FixedDiscreteDistrib}
+\alias{distrib_expected_hessian.FixedDiscreteDistrib}
+\alias{distrib_grad_cdf.FixedDiscreteDistrib}
+\alias{distrib_grad_y.FixedDiscreteDistrib}
+\alias{distrib_grad_y_hess.FixedDiscreteDistrib}
+\alias{distrib_gradient.FixedDiscreteDistrib}
+\alias{distrib_hess_cdf.FixedDiscreteDistrib}
+\alias{distrib_hess_y.FixedDiscreteDistrib}
+\alias{distrib_hess_y_hess.FixedDiscreteDistrib}
+\alias{distrib_hessian.FixedDiscreteDistrib}
+\alias{distrib_pdf.FixedDiscreteDistrib}
+\alias{distrib_quantile.FixedDiscreteDistrib}
+\alias{distrib_rng.FixedDiscreteDistrib}
+\alias{kurtosis.FixedDiscreteDistrib}
+\alias{skewness.FixedDiscreteDistrib}
+\alias{std_dev.FixedDiscreteDistrib}
+\alias{variance.FixedDiscreteDistrib}
 \title{S7 Class for Distributions With Fixed Parameters (Discrete)}
 \usage{
 FixedDiscreteDistrib(
@@ -55,6 +77,17 @@ the wrapper inherits the right base class, and with it the right defaults
 for anything the parent does not register. Build one with \code{\link[=fixed]{fixed()}}, which
 picks the class from the parent.
 }
+\section{Methods}{
+
+\code{fixed()} registers 22 methods on this class:
+\code{distrib_atoms()}, \code{distrib_cdf()}, \code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv4()}, \code{distrib_expected_hessian()}, \code{distrib_grad_cdf()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_cdf()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_quantile()}, \code{distrib_rng()}, \code{kurtosis()}, \code{skewness()}, \code{std_dev()}, \code{variance()}.
+
+Every one splices the held values back into \code{theta} and delegates to the
+parent, exactly as on \code{\link[=FixedContinuousDistrib]{FixedContinuousDistrib()}}; the two classes share
+one registration loop. The response derivatives are inherited refusals
+from \code{discrete_distrib} and are not among them.
+}
+
 \section{How every method works}{
 The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
 ORDER. Every method splices the fixed values back into \code{theta} at their

@@ -2,6 +2,34 @@
 % Please edit documentation in R/y_higher.R
 \name{register_dy_k}
 \alias{register_dy_k}
+\alias{distrib_deriv3_y.Gamma1Distrib}
+\alias{distrib_deriv4_y.Gamma1Distrib}
+\alias{distrib_deriv3_y.Gamma2Distrib}
+\alias{distrib_deriv4_y.Gamma2Distrib}
+\alias{distrib_deriv3_y.ChisqDistrib}
+\alias{distrib_deriv4_y.ChisqDistrib}
+\alias{distrib_deriv3_y.ExponentialDistrib}
+\alias{distrib_deriv4_y.ExponentialDistrib}
+\alias{distrib_deriv3_y.Beta1Distrib}
+\alias{distrib_deriv4_y.Beta1Distrib}
+\alias{distrib_deriv3_y.Beta2Distrib}
+\alias{distrib_deriv4_y.Beta2Distrib}
+\alias{distrib_deriv3_y.Weibull1Distrib}
+\alias{distrib_deriv4_y.Weibull1Distrib}
+\alias{distrib_deriv3_y.GenGamma1Distrib}
+\alias{distrib_deriv4_y.GenGamma1Distrib}
+\alias{distrib_deriv3_y.InvGauss1Distrib}
+\alias{distrib_deriv4_y.InvGauss1Distrib}
+\alias{distrib_deriv3_y.InvGauss2Distrib}
+\alias{distrib_deriv4_y.InvGauss2Distrib}
+\alias{distrib_deriv3_y.Lognormal1Distrib}
+\alias{distrib_deriv4_y.Lognormal1Distrib}
+\alias{distrib_deriv3_y.GPDDistrib}
+\alias{distrib_deriv4_y.GPDDistrib}
+\alias{distrib_deriv3_y.VonMises1Distrib}
+\alias{distrib_deriv4_y.VonMises1Distrib}
+\alias{distrib_deriv3_y.VonMises2Distrib}
+\alias{distrib_deriv4_y.VonMises2Distrib}
 \title{Register the Third and Fourth Response Derivatives of a Family}
 \usage{
 register_dy_k(cls, f)
@@ -12,10 +40,25 @@ register_dy_k(cls, f)
 \item{f}{The rule.}
 }
 \value{
-Invisibly \code{NULL}; called for the registration.
+Invisibly \code{NULL}. Called for the two registrations it makes.
 }
 \description{
 Turns a function of \verb{(distrib, y, theta, k)} into the two methods, so
 that a family writes its rule once instead of twice.
+}
+\section{Registered on}{
+
+This body serves both third- and fourth-order response derivatives on the
+fourteen families whose response is not a pure location, so
+\code{?distrib_deriv3_y.Gamma1Distrib} and its twenty-seven siblings open this
+page:
+\code{Gamma1Distrib}, \code{Gamma2Distrib}, \code{ChisqDistrib}, \code{ExponentialDistrib}, \code{Beta1Distrib}, \code{Beta2Distrib}, \code{Weibull1Distrib}, \code{GenGamma1Distrib}, \code{InvGauss1Distrib}, \code{InvGauss2Distrib}, \code{Lognormal1Distrib}, \code{GPDDistrib}, \code{VonMises1Distrib}, \code{VonMises2Distrib}.
+}
+
+\seealso{
+\code{\link[=loc_deriv_y_k]{loc_deriv_y_k()}}, the companion for the location families;
+\code{\link[=distrib_deriv3_y.continuous_distrib]{distrib_deriv3_y.continuous_distrib()}} for the stencil a family outside
+both lists falls back to; \code{\link[=dy_log]{dy_log()}} for the elementary terms each rule
+is built from.
 }
 \keyword{internal}

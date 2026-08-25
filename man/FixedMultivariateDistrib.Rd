@@ -2,6 +2,26 @@
 % Please edit documentation in R/fixed.R
 \name{FixedMultivariateDistrib}
 \alias{FixedMultivariateDistrib}
+\alias{distrib_cross2_y.FixedMultivariateDistrib}
+\alias{distrib_cross_y.FixedMultivariateDistrib}
+\alias{distrib_deriv3.FixedMultivariateDistrib}
+\alias{distrib_deriv4.FixedMultivariateDistrib}
+\alias{distrib_expected_hessian.FixedMultivariateDistrib}
+\alias{distrib_grad_y.FixedMultivariateDistrib}
+\alias{distrib_grad_y_hess.FixedMultivariateDistrib}
+\alias{distrib_gradient.FixedMultivariateDistrib}
+\alias{distrib_hess_y.FixedMultivariateDistrib}
+\alias{distrib_hess_y_hess.FixedMultivariateDistrib}
+\alias{distrib_hessian.FixedMultivariateDistrib}
+\alias{distrib_pdf.FixedMultivariateDistrib}
+\alias{distrib_rng.FixedMultivariateDistrib}
+\alias{mv_derived.FixedMultivariateDistrib}
+\alias{mv_location.FixedMultivariateDistrib}
+\alias{mv_marginal.FixedMultivariateDistrib}
+\alias{mv_reference_draw.FixedMultivariateDistrib}
+\alias{mv_sigma.FixedMultivariateDistrib}
+\alias{mv_support.FixedMultivariateDistrib}
+\alias{variance.FixedMultivariateDistrib}
 \title{S7 Class for Distributions With Fixed Parameters (Multivariate)}
 \usage{
 FixedMultivariateDistrib(
@@ -65,6 +85,19 @@ The motivating case is a CENTERED PRIOR: holding the mean components of a
 multivariate family at zero leaves the matrix parameter alone, and a matrix
 parameter alone is what a random effect is distributed by.
 }
+\section{Methods}{
+
+\code{fixed()} registers 20 methods on this class:
+\code{distrib_cross2_y()}, \code{distrib_cross_y()}, \code{distrib_deriv3()}, \code{distrib_deriv4()}, \code{distrib_expected_hessian()}, \code{distrib_grad_y()}, \code{distrib_grad_y_hess()}, \code{distrib_gradient()}, \code{distrib_hess_y()}, \code{distrib_hess_y_hess()}, \code{distrib_hessian()}, \code{distrib_pdf()}, \code{distrib_rng()}, \code{mv_derived()}, \code{mv_location()}, \code{mv_marginal()}, \code{mv_reference_draw()}, \code{mv_sigma()}, \code{mv_support()}, \code{variance()}.
+
+Every one splices the held values back into \code{theta} and delegates to the
+parent. The set differs from the univariate classes': there is no
+distribution function, no quantile and no atom, and the \verb{mv_*} accessors
+take their place. The generics a multivariate family rejects are not
+registered here at all, so the refusal is inherited from
+\code{multivariate_distrib} and keeps its own message.
+}
+
 \section{How every method works}{
 The free parameters are the parent's minus the fixed ones, IN THE PARENT'S
 ORDER. Every method splices the fixed values back into \code{theta} at their

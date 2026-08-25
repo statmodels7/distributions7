@@ -157,8 +157,35 @@ S7::method(distrib_deriv4_y, continuous_distrib) <- function(distrib, y, theta,
 #'
 #' @param order The derivative order, 3 or 4.
 #'
-#' @return A function suitable for registering as an S7 method.
+#' @return A function suitable for registering as an S7 method: it takes
+#'   `(distrib, y, theta, ...)` and returns a numeric vector of length
+#'   `length(y)`.
 #'
+#' @section Registered on:
+#' This body serves both third- and fourth-order response derivatives on all
+#' fourteen location families, so `?distrib_deriv3_y.Gaussian1Distrib` and its
+#' twenty-seven siblings open this page:
+#' `Gaussian1Distrib`, `Gaussian2Distrib`, `Gaussian3Distrib`, `CauchyDistrib`, `LogisticDistrib`, `LaplaceDistrib`, `Laplace2Distrib`, `EnetDistrib`, `PseudoHuberDistrib`, `StudentT1Distrib`, `SkewNormal1Distrib`, `SkewNormal2Distrib`, `SkewTDistrib`, `GumbelDistrib`.
+#'
+#' @seealso [distrib_deriv3_y.continuous_distrib()] for the stencil a family
+#'   outside this list falls back to; [register_dy_k()], the companion for
+#'   families whose response is not a pure location; [distrib_deriv3()] and
+#'   [distrib_deriv4()], whose components this reads.
+#'
+#' @aliases distrib_deriv3_y.Gaussian1Distrib distrib_deriv4_y.Gaussian1Distrib
+#' @aliases distrib_deriv3_y.Gaussian2Distrib distrib_deriv4_y.Gaussian2Distrib
+#' @aliases distrib_deriv3_y.Gaussian3Distrib distrib_deriv4_y.Gaussian3Distrib
+#' @aliases distrib_deriv3_y.CauchyDistrib distrib_deriv4_y.CauchyDistrib
+#' @aliases distrib_deriv3_y.LogisticDistrib distrib_deriv4_y.LogisticDistrib
+#' @aliases distrib_deriv3_y.LaplaceDistrib distrib_deriv4_y.LaplaceDistrib
+#' @aliases distrib_deriv3_y.Laplace2Distrib distrib_deriv4_y.Laplace2Distrib
+#' @aliases distrib_deriv3_y.EnetDistrib distrib_deriv4_y.EnetDistrib
+#' @aliases distrib_deriv3_y.PseudoHuberDistrib distrib_deriv4_y.PseudoHuberDistrib
+#' @aliases distrib_deriv3_y.StudentT1Distrib distrib_deriv4_y.StudentT1Distrib
+#' @aliases distrib_deriv3_y.SkewNormal1Distrib distrib_deriv4_y.SkewNormal1Distrib
+#' @aliases distrib_deriv3_y.SkewNormal2Distrib distrib_deriv4_y.SkewNormal2Distrib
+#' @aliases distrib_deriv3_y.SkewTDistrib distrib_deriv4_y.SkewTDistrib
+#' @aliases distrib_deriv3_y.GumbelDistrib distrib_deriv4_y.GumbelDistrib
 #' @keywords internal
 loc_deriv_y_k <- function(order) {
   key <- paste(rep("mu", order), collapse = "_")
@@ -266,8 +293,34 @@ dy_of_log <- function(gd, y, k) {
 #' @param cls The S7 class.
 #' @param f The rule.
 #'
-#' @return Invisibly `NULL`; called for the registration.
+#' @return Invisibly `NULL`. Called for the two registrations it makes.
 #'
+#' @section Registered on:
+#' This body serves both third- and fourth-order response derivatives on the
+#' fourteen families whose response is not a pure location, so
+#' `?distrib_deriv3_y.Gamma1Distrib` and its twenty-seven siblings open this
+#' page:
+#' `Gamma1Distrib`, `Gamma2Distrib`, `ChisqDistrib`, `ExponentialDistrib`, `Beta1Distrib`, `Beta2Distrib`, `Weibull1Distrib`, `GenGamma1Distrib`, `InvGauss1Distrib`, `InvGauss2Distrib`, `Lognormal1Distrib`, `GPDDistrib`, `VonMises1Distrib`, `VonMises2Distrib`.
+#'
+#' @seealso [loc_deriv_y_k()], the companion for the location families;
+#'   [distrib_deriv3_y.continuous_distrib()] for the stencil a family outside
+#'   both lists falls back to; [dy_log()] for the elementary terms each rule
+#'   is built from.
+#'
+#' @aliases distrib_deriv3_y.Gamma1Distrib distrib_deriv4_y.Gamma1Distrib
+#' @aliases distrib_deriv3_y.Gamma2Distrib distrib_deriv4_y.Gamma2Distrib
+#' @aliases distrib_deriv3_y.ChisqDistrib distrib_deriv4_y.ChisqDistrib
+#' @aliases distrib_deriv3_y.ExponentialDistrib distrib_deriv4_y.ExponentialDistrib
+#' @aliases distrib_deriv3_y.Beta1Distrib distrib_deriv4_y.Beta1Distrib
+#' @aliases distrib_deriv3_y.Beta2Distrib distrib_deriv4_y.Beta2Distrib
+#' @aliases distrib_deriv3_y.Weibull1Distrib distrib_deriv4_y.Weibull1Distrib
+#' @aliases distrib_deriv3_y.GenGamma1Distrib distrib_deriv4_y.GenGamma1Distrib
+#' @aliases distrib_deriv3_y.InvGauss1Distrib distrib_deriv4_y.InvGauss1Distrib
+#' @aliases distrib_deriv3_y.InvGauss2Distrib distrib_deriv4_y.InvGauss2Distrib
+#' @aliases distrib_deriv3_y.Lognormal1Distrib distrib_deriv4_y.Lognormal1Distrib
+#' @aliases distrib_deriv3_y.GPDDistrib distrib_deriv4_y.GPDDistrib
+#' @aliases distrib_deriv3_y.VonMises1Distrib distrib_deriv4_y.VonMises1Distrib
+#' @aliases distrib_deriv3_y.VonMises2Distrib distrib_deriv4_y.VonMises2Distrib
 #' @keywords internal
 register_dy_k <- function(cls, f) {
   S7::method(distrib_deriv3_y, cls) <- function(distrib, y, theta, ...) {
@@ -357,6 +410,33 @@ register_dy_k(VonMises2Distrib, function(distrib, y, theta, k) {
 
 # a reparametrization acts on the parameters and the derivative is taken in the
 # response, so the two do not interact and the parent's answer is the answer
+#' @title Higher Response Derivatives of a Reparametrized Distribution
+#' @name distrib_deriv3_y.ReparamContinuousDistrib
+#' @aliases distrib_deriv4_y.ReparamContinuousDistrib
+#'
+#' @description
+#' The parent's third and fourth response derivatives, read at the parent's
+#' parameters. A reparametrization acts on \eqn{\theta} and these derivatives
+#' are taken in \eqn{y}, so the two do not interact: no chain rule enters and
+#' the parent's answer is the answer, exactly.
+#'
+#' The same is true at the first and second orders, and for the mixed block
+#' [distrib_cross_y()] it is **not**: that one takes one derivative in each,
+#' so the map's first-order Jacobian does enter.
+#'
+#' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters of the **new** parametrization,
+#'   carried to the parent's by [reparam_theta()] before the call.
+#' @param ... Passed to the parent's method.
+#'
+#' @return A numeric vector of length `length(y)`: the parent's derivative of
+#'   that order at the mapped parameters.
+#'
+#' @seealso [reparametrize()] for the wrapper;
+#'   [distrib_cross_y.ReparamContinuousDistrib()], where the map does enter;
+#'   [distrib_deriv3_y()] for the generic.
+#' @keywords internal
 S7::method(distrib_deriv3_y, ReparamContinuousDistrib) <-
   function(distrib, y, theta, ...) {
     distrib_deriv3_y(distrib@parent_distrib, y, reparam_theta(distrib, theta), ...)
