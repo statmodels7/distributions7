@@ -7,50 +7,86 @@
 mv_summary(object, level = object@level)
 }
 \arguments{
-\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a multivariate distribution.}
+\item{object}{A \code{\link[=distrib_fit]{distrib_fit()}} of a MULTIVARIATE distribution. A univariate
+fit is rejected: there the parameters are already the interpretable
+quantities and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}} is the function to call.}
 
-\item{level}{The confidence level. Defaults to the fit's own.}
+\item{level}{The confidence level, a single number strictly inside
+\eqn{(0, 1)}. Defaults to the fit's own \code{level}. Anything else is an error.}
 }
 \value{
-A data frame with one row per quantity and the columns
-\code{Estimate}, \verb{Std. Error} and the two confidence limits, carrying
-the attribute \code{"block"} that names the group each row belongs to.
+A data frame with one row per quantity and four columns:
+\code{Estimate}, \verb{Std. Error}, and the two confidence limits, named after the
+percentiles they are (\verb{2.5\%} and \verb{97.5\%} at the default level). Its row
+names are the quantity names, and it carries the attribute \code{"block"}, a
+character vector naming the group each row belongs to, by which \code{print()}
+lays the summary out.
 }
 \description{
 Reports the standard deviations, correlations and whatever else
-\code{\link[=mv_derived]{mv_derived()}} declares for the fitted distribution, each with its
-standard error and confidence interval.
+\code{\link[=mv_derived]{mv_derived()}} declares for the fitted distribution, each with its standard
+error and its confidence interval. A multivariate fit estimates the free
+values of a \pkg{parameters7} parametrization, and those are coordinates:
+the estimate and standard error of \code{sigma_log_L2} answer no question anybody
+asked. This function carries the fit's variance matrix onto the quantities
+that do.
 }
-\details{
-A multivariate fit estimates the free values of a \pkg{parameters7}
-structure, and those are coordinates rather than quantities: the estimate
-and standard error of \code{sigma_log_L2} answer no question anybody asked.
-This function carries the fit's variance matrix onto the quantities that do,
-by the delta method,
+\section{The delta method}{
 \deqn{\widehat{\mathrm{Var}}\{g(\hat\theta)\}
   = J \, \widehat{\mathrm{Var}}(\hat\theta) \, J^\top,
   \qquad J = \partial g/\partial\theta,}
-with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the
-families that ship with the package.
-
-Each interval is built on the scale the quantity declares and mapped back,
-which is the same discipline \code{\link[=fit_distrib]{fit_distrib()}} applies to a
-univariate parameter: a standard deviation is intervalled on the log scale
-and a correlation on Fisher's \eqn{z}, so neither interval can leave the set
-its quantity lives in. An interval on the raw scale would routinely put a
-correlation above one.
+with \eqn{J} taken from \code{\link[=mv_derived]{mv_derived()}}, in closed form for the two families
+that ship and by one central difference for any other.
 }
+
+\section{Where each interval is built}{
+On the scale the quantity declares, then mapped back, which is the
+discipline \code{\link[=fit_distrib]{fit_distrib()}} applies to a univariate parameter. A standard
+deviation is intervalled on the log scale and a correlation on Fisher's
+\eqn{z}, so neither interval can leave the set its quantity lives in. An
+interval on the raw scale routinely puts a correlation above one.
+
+The standard error is carried onto that scale by the transform's own
+derivative, so the reported \verb{Std. Error} column stays on the quantity's
+natural scale while the limits are computed on the transformed one.
+}
+
+\section{Notation}{
+
+\eqn{\theta} is the parameter vector, \eqn{g} the map to the reported
+quantities, \eqn{J} its Jacobian and \eqn{z} Fisher's transform of a
+correlation.
+}
+
 \examples{
 set.seed(1)
 d <- mvgaussian_distrib(2)
-y <- distrib_rng(d, 500, list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
-                              sigma_log_L2 = 0, sigma_L2.1 = 0.7))
+truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
+              sigma_log_L2 = 0, sigma_L2.1 = 0.7)
+y <- distrib_rng(d, 500, truth)
 fit <- fit_distrib(d, y)
 
-# the standard deviations and the correlation, which is what one reads
+# The standard deviations and the correlation, which is what one reads.
 mv_summary(fit)
+
+# The coordinates the fit was estimated on, beside them.
+confint(fit)
+
+# Every interval stays inside the set its quantity lives in: the standard
+# deviations are positive and the correlation is inside (-1, 1).
+s <- mv_summary(fit)
+c(sd_lower_positive = all(s[1:2, 3] > 0),
+  cor_inside = s[3, 3] > -1 && s[3, 4] < 1)
+
+# A wider level widens the interval and leaves the estimate alone.
+mv_summary(fit, level = 0.99)
+
+# A univariate fit is rejected by name.
+try(mv_summary(fit_distrib(gaussian1_distrib(), rnorm(50))))
 
 }
 \seealso{
-\code{\link[=mv_derived]{mv_derived()}}, \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}
+\code{\link[=mv_derived]{mv_derived()}} for the quantities and the Jacobian,
+\code{\link[=confint.distrib_fit]{confint.distrib_fit()}} for the coordinates themselves, and
+\code{\link[=fit_distrib]{fit_distrib()}} for the fit.
 }

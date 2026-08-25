@@ -4,19 +4,55 @@
 \alias{mv_derived.multivariate_distrib}
 \title{Matrix Entries as the Default Interpretable Quantities}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}} that has
+no method of its own.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned by the generic.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list as described in \code{\link[=mv_derived]{mv_derived()}}.
+A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
+\code{\link[=mv_derived]{mv_derived()}} documents. There are \code{p * (p + 1) / 2} quantities, blocked
+as \code{"Variances"} and \code{"Covariances"}.
 }
 \description{
-The distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} returns, with a
-Jacobian from one central difference in each parameter. This is what a
-family gets when it says nothing more specific: the matrix on its own scale,
-named after the coordinates, rather than the matrix parameter's coordinates.
+Returns the distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces, named
+\code{sigma_vi_vj} after the coordinates they belong to, with a Jacobian from one
+central difference in each parameter. This is the fallback for a family that
+registers no method of its own: reporting the matrix on its own scale is
+worth more to a reader than reporting a Cholesky coordinate, even where the
+entries are not the standard deviations and correlations a closed-form
+method would give.
+}
+\details{
+The diagonal entries are variances and are intervalled on the log scale; the
+off-diagonal ones are unconstrained given the diagonal and are intervalled on
+their own. That is weaker than the closed-form methods, whose correlations
+ride Fisher's \eqn{z} and so cannot leave \eqn{(-1, 1)}.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+
+# The gaussian overrides, so reach the default method directly.
+base <- S7::method(mv_derived, multivariate_distrib)
+d0 <- base(d, distributions7:::align_theta(d, theta))
+d0$value
+d0$transform
+
+# The entries really are the matrix, read off its lower triangle.
+mv_sigma(d, theta)
+
+# Against the closed-form method, which reports standard deviations and a
+# correlation instead of variances and a covariance.
+mv_derived(d, theta)$value
+
+}
+\seealso{
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} and
+\code{\link[=mv_derived.MvStudentTDistrib]{mv_derived.MvStudentTDistrib()}} for the two closed-form methods,
+\code{\link[=mv_entry_index]{mv_entry_index()}} for the labeling, and \code{\link[=mv_derived]{mv_derived()}} for the generic.
 }
 \keyword{internal}

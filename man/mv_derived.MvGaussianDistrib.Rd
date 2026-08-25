@@ -4,21 +4,85 @@
 \alias{mv_derived.MvGaussianDistrib}
 \title{Standard Deviations and Correlations of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned by the generic.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list as described in \code{\link[=mv_derived]{mv_derived()}}.
+A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
+\code{\link[=mv_derived]{mv_derived()}} documents. A covariance parametrization gives
+\eqn{p(p+1)/2} quantities; a precision one adds \eqn{p} conditional
+variances and, above \eqn{p = 2}, \eqn{p(p-1)/2} partial correlations.
 }
 \description{
-The standard deviations and correlations of the response, whichever side the
-structure parametrizes. A precision structure additionally reports the
-\strong{partial} correlations, which are what it describes directly:
-\eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}} is the correlation of two
-coordinates given all the others, and it is zero exactly where the precision
+Returns the standard deviations and correlations of the response, whichever
+side the parametrization carries, with the closed-form Jacobian
+\code{\link[=mv_sd_cor]{mv_sd_cor()}} supplies. A PRECISION parametrization reports two further
+blocks, which are what it describes directly: the conditional variances
+\eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid Y_{-j})}, and above two
+dimensions the partial correlations
+\eqn{-\Omega_{jk}/\sqrt{\Omega_{jj}\Omega_{kk}}}, the correlation of two
+coordinates given all the others, which is zero exactly where the precision
 has a zero.
+}
+\section{What a precision's diagonal means}{
+The quantity with a reading is the conditional VARIANCE, so the diagonal
+quantities \code{\link[=mv_sd_cor]{mv_sd_cor()}} produces from \eqn{\Omega} are square roots of the
+wrong thing; they are dropped and \eqn{1/\Omega_{jj}} is reported instead.
+Its ratio to the marginal variance is \eqn{1 - R_j^2} for the regression of
+that coordinate on all the others.
+
+At \eqn{p = 2} there is nothing to condition on, so the partial correlation
+IS the correlation and is not printed twice.
+}
+
+\section{The parametrization's own quantities}{
+Whatever the matrix parametrization declares through
+\code{parameters7::param_readable()} is appended as a further block. An AR(1)
+covariance is about a scale and a correlation; a log-Cholesky one declares
+nothing and the summary stops at the standard deviations.
+}
+
+\section{Notation}{
+
+\eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
+\eqn{p} the dimension, \eqn{R_j^2} the coefficient of determination of the
+regression of coordinate \eqn{j} on the others, and \eqn{Y_{-j}} the
+response with that coordinate removed.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+mv_derived(d, theta)$value
+
+# The precision side reports the same law's standard deviations and
+# correlation, and adds the conditional variances.
+o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
+             omega_L2.1 = 0.5)
+od <- mv_derived(o, th_o)
+od$value
+od$block
+
+# A conditional variance is 1 / Omega_jj, and is at most the marginal one.
+Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
+c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
+
+# At three dimensions the partial correlations appear as a block of their
+# own, the partial and the marginal no longer coinciding.
+o3 <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+th3 <- as.list(stats::setNames(
+  c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
+unique(mv_derived(o3, th3)$block)
+
+}
+\seealso{
+\code{\link[=mv_sd_cor]{mv_sd_cor()}} for the closed-form Jacobian,
+\code{\link[=mv_param_block]{mv_param_block()}} for the appended block, \code{\link[=mv_summary]{mv_summary()}} for the printed
+result, and \code{\link[=mv_derived]{mv_derived()}} for the generic.
 }
 \keyword{internal}

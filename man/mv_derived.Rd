@@ -7,62 +7,97 @@
 mv_derived(distrib, theta, ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from class
-\code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
+\item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters.}
+\item{theta}{A named list or vector of parameters, each component a single
+number. Aligned by the generic before dispatch, so any order is accepted.}
 
-\item{...}{Passed to methods.}
+\item{...}{Passed to methods. No shipped method reads it.}
 }
 \value{
-A list with
+A named list with
 \describe{
 \item{\code{value}}{a named numeric vector of the quantities;}
-\item{\code{jacobian}}{a matrix with one row per quantity and one column
-per parameter of \code{distrib};}
-\item{\code{transform}}{a character vector, one of \code{"identity"},
-\code{"log"} or \code{"atanh"} per quantity, naming the scale its
-interval is built on;}
+\item{\code{jacobian}}{a numeric matrix with one row per quantity and one
+column per parameter of \code{distrib}, in \code{distrib@params} order;}
+\item{\code{transform}}{a character vector, one of \code{"identity"}, \code{"log"},
+\code{"atanh"} or \code{"logit"} per quantity, naming the scale its interval is
+built on;}
 \item{\code{block}}{a character vector labeling the group each quantity
-belongs to, used to lay the printed summary out.}
+belongs to, by which the printed summary is laid out.}
 }
+All four are named after the quantities and are the same length.
 }
 \description{
-Returns the quantities a reader of a multivariate fit actually wants ---
-standard deviations, correlations, and whatever else the family's matrix
-parameter means --- together with the Jacobian needed to carry standard
-errors onto them.
+Returns the quantities a reader of a multivariate fit wants: standard
+deviations, correlations, and whatever else the family's matrix
+parametrization is about. It returns with them the Jacobian that carries
+standard errors onto those quantities, and the scale each one's confidence
+interval should be built on.
 }
-\details{
-The free values of a \pkg{parameters7} structure are coordinates chosen so
-that an optimizer can move freely; they are not quantities anyone reads.
-The logarithm of the third diagonal entry of a Cholesky factor has an
-estimate and a standard error, and neither answers a question. This generic
-names the quantities that do, and supplies
-\eqn{\partial g/\partial\theta} so that \code{\link[=mv_summary]{mv_summary()}} can apply
-the delta method to them.
-
-Each quantity also declares the scale its confidence interval should be
-built on, exactly as \code{\link[=fit_distrib]{fit_distrib()}} builds a univariate interval
-on the link scale and maps it back: a standard deviation is intervalled on
-the log scale so that the interval cannot reach zero, a correlation on
-Fisher's \eqn{z = \mathrm{artanh}(\rho)} so that it cannot leave
-\eqn{(-1, 1)}, and an unconstrained quantity on its own scale.
-
-The default method, registered on \code{\link[=multivariate_distrib]{multivariate_distrib()}},
-returns the distinct entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces,
-named after the coordinates they belong to, with a Jacobian obtained by one
-central difference. A family whose matrix is not a covariance therefore
-still reports something on its original scale, which is better than
-reporting a Cholesky coordinate.
+\section{Why coordinates are not quantities}{
+The free values of a \pkg{parameters7} parametrization are coordinates
+chosen so that an optimizer can move freely. The logarithm of the second
+diagonal entry of a Cholesky factor has an estimate and a standard error,
+and neither answers a question anybody asked. This generic names the
+quantities that do and supplies \eqn{\partial g/\partial\theta}, so
+\code{\link[=mv_summary]{mv_summary()}} can apply the delta method to them.
 }
+
+\section{The interval scale each quantity declares}{
+Each quantity carries the scale its interval should be built on, exactly as
+\code{\link[=fit_distrib]{fit_distrib()}} builds a univariate interval on the link scale and maps it
+back. A standard deviation is intervalled on the log scale, so the interval
+cannot reach zero; a correlation on Fisher's
+\eqn{z = \mathrm{artanh}(\rho)}, so it cannot leave \eqn{(-1, 1)}; an
+unconstrained quantity on its own scale. On the raw scale a correlation's
+interval routinely exceeds one.
+}
+
+\section{What the default method reports}{
+The method registered on \code{\link[=multivariate_distrib]{multivariate_distrib()}} returns the distinct
+entries of the matrix \code{\link[=mv_sigma]{mv_sigma()}} produces, named \code{sigma_v1_v1} and so on,
+with a Jacobian from one central difference per parameter. A family whose
+matrix is not a covariance still reports it on its own scale, which beats
+reporting a Cholesky coordinate. The two shipped families override with
+closed-form Jacobians.
+}
+
+\section{Notation}{
+
+\eqn{\theta} is the parameter vector, \eqn{g} the map to the reported
+quantities, \eqn{\Sigma} the matrix the family carries and \eqn{\rho} a
+correlation.
+}
+
 \examples{
 d <- mvgaussian_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
-mv_derived(d, theta)$value
+der <- mv_derived(d, theta)
+der$value
+
+# Each quantity declares the scale its interval is built on.
+der$transform
+der$block
+
+# The Jacobian is exact for this family, against a numerical one.
+g <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  mv_derived(d, t2)$value
+}
+max(abs(der$jacobian - numDeriv::jacobian(g, unlist(theta))))
+
+# The mean parameters do not enter any of them, so those columns are zero.
+der$jacobian[, c("mu1", "mu2")]
+
+# A structured matrix reports its own quantities as a further block.
+a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+mv_derived(a, as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params)))$value
 
 }
 \seealso{
-\code{\link[=mv_summary]{mv_summary()}}, \code{\link[=mv_sigma]{mv_sigma()}}
+\code{\link[=mv_summary]{mv_summary()}}, which applies the delta method to this,
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} and \code{\link[=mv_derived.MvStudentTDistrib]{mv_derived.MvStudentTDistrib()}} for
+the two closed-form methods, and \code{\link[=mv_sigma]{mv_sigma()}} for the matrix.
 }

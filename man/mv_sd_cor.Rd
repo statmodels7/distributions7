@@ -15,39 +15,80 @@ mv_sd_cor(
 )
 }
 \arguments{
-\item{sigma}{The matrix.}
+\item{sigma}{A \eqn{p \times p} symmetric positive definite numeric matrix.}
 
-\item{a}{A list of derivative matrices, one per parameter, in the order of
-the distribution's parameters. Entries may be \code{NULL} for parameters
-the matrix does not depend on.}
+\item{a}{A list of \eqn{p \times p} numeric matrices, one per parameter of
+the distribution and in \code{params} order, holding
+\eqn{\partial\Sigma/\partial\theta_k}. A parameter the matrix does not
+depend on contributes a matrix of zeros.}
 
-\item{params}{The parameter names, used to label the Jacobian's columns.}
+\item{params}{The distribution's parameter names, which become the column
+names of the Jacobian.}
 
-\item{sd_label}{The label the diagonal quantities are named with.}
+\item{sd_label}{The prefix for the diagonal quantities. Defaults to \code{"sd"};
+the Student t passes \code{"scale_sd"}, its diagonal quantities not being
+standard deviations of the response.}
 
-\item{cor_label}{The label the off-diagonal quantities are named with.}
+\item{cor_label}{The prefix for the off-diagonal quantities. Defaults to
+\code{"cor"}.}
 
-\item{sd_block, cor_block}{The headings the two groups print under.}
+\item{sd_block, cor_block}{The block labels the printed summary groups by.}
 }
 \value{
-A list as described in \code{\link[=mv_derived]{mv_derived()}}.
+A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
+\code{\link[=mv_derived]{mv_derived()}} documents. There are \eqn{p} diagonal quantities on the log
+scale and \eqn{p(p-1)/2} off-diagonal ones on Fisher's \eqn{z}.
 }
 \description{
 Turns a symmetric positive definite matrix and the derivatives of its
-entries into the standard deviations and correlations it decomposes into,
-together with their Jacobian.
+entries into the standard deviations and correlations a reader wants, with
+the Jacobian written out. Writing \eqn{\Sigma = DRD} with \eqn{D} the
+diagonal of standard deviations,
+\deqn{\frac{\partial s_j}{\partial\theta_k} = \frac{A_k[j,j]}{2 s_j},
+  \qquad
+  \frac{\partial \rho_{jl}}{\partial\theta_k}
+    = \frac{A_k[j,l]}{s_j s_l}
+      - \frac{\rho_{jl}}{2}\left(\frac{A_k[j,j]}{\Sigma_{jj}}
+        + \frac{A_k[l,l]}{\Sigma_{ll}}\right),}
+with \eqn{A_k = \partial\Sigma/\partial\theta_k}. Nothing new is computed:
+the arrays come from the parametrization the caller already has.
 }
-\details{
-Writing \eqn{\Sigma = D R D} with \eqn{D} the diagonal of standard
-deviations, the two readings are \eqn{s_j = \sqrt{\Sigma_{jj}}} and
-\eqn{\rho_{jk} = \Sigma_{jk}/(s_j s_k)}. Differentiating,
-\deqn{\frac{\partial s_j}{\partial \eta_k} = \frac{A_k[j,j]}{2 s_j},
-      \qquad
-      \frac{\partial \rho_{jk}}{\partial \eta_l}
-        = \frac{A_l[j,k]}{s_j s_k}
-          - \frac{\rho_{jk}}{2}
-            \left(\frac{A_l[j,j]}{\Sigma_{jj}}
-                + \frac{A_l[k,k]}{\Sigma_{kk}}\right),}
-with \eqn{A_k = \partial\Sigma/\partial\eta_k}.
+\section{Notation}{
+
+\eqn{\Sigma} is the matrix, \eqn{D} the diagonal of its square roots,
+\eqn{R} the correlation matrix, \eqn{s_j} a standard deviation,
+\eqn{\rho_{jl}} a correlation, \eqn{\theta} the parameter vector and
+\eqn{A_k = \partial\Sigma/\partial\theta_k}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- distributions7:::align_theta(
+  d, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+          sigma_L2.1 = 0.5))
+S <- mv_sigma(d, theta)
+a <- distributions7:::mv_sigma_derivs(d, theta, 2)
+
+sc <- distributions7:::mv_sd_cor(S, a, d@params)
+sc$value
+sc$transform
+
+# The values really are the square roots of the diagonal and the
+# correlations off it.
+c(sqrt(diag(S)), S[2, 1] / sqrt(S[1, 1] * S[2, 2]))
+
+# The Jacobian against a numerical one taken through mv_sigma().
+g <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  M <- mv_sigma(d, t2)
+  c(sqrt(diag(M)), M[2, 1] / sqrt(M[1, 1] * M[2, 2]))
+}
+max(abs(sc$jacobian - numDeriv::jacobian(g, unlist(theta))))
+
+}
+\seealso{
+\code{\link[=mv_sigma_derivs]{mv_sigma_derivs()}} for the arrays it takes,
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} and \code{\link[=mv_derived.MvStudentTDistrib]{mv_derived.MvStudentTDistrib()}} for
+the two callers, and \code{\link[=mv_entry_index]{mv_entry_index()}} for the labeling.
 }
 \keyword{internal}

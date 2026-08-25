@@ -7,15 +7,37 @@
 mv_entry_index(p, prefix)
 }
 \arguments{
-\item{p}{The side of the matrix.}
+\item{p}{The side of the matrix, a single positive whole number.}
 
-\item{prefix}{The string the labels start with.}
+\item{prefix}{The label prefix, a single string. Entry \eqn{(i, j)} is named
+\code{prefix_vi_vj}, so \code{prefix = "cor"} gives \code{cor_v2_v1}.}
 }
 \value{
-A list with \code{i}, \code{j} and \code{name}.
+A named list with \code{i} and \code{j}, integer vectors of length
+\code{p * (p + 1) / 2} holding the row and column of each entry in
+column-major order over the lower triangle, and \code{name}, the character
+vector of labels.
 }
 \description{
-Returns the row and column indices of the lower triangle including the
-diagonal, together with a label for each.
+Returns the row and column indices of the lower triangle of a
+\eqn{p \times p} matrix, diagonal included, together with a label per entry.
+A symmetric matrix has \code{p * (p + 1) / 2} distinct entries, and reporting all
+\eqn{p^2} would give every off-diagonal quantity twice.
+}
+\examples{
+distributions7:::mv_entry_index(3, "cor")
+
+# The count is p(p + 1) / 2, the distinct entries of a symmetric matrix.
+c(got = length(distributions7:::mv_entry_index(4, "sigma")$i),
+  expected = 4 * 5 / 2)
+
+# Every index pair is on or below the diagonal.
+idx <- distributions7:::mv_entry_index(4, "sigma")
+all(idx$i >= idx$j)
+
+}
+\seealso{
+\code{\link[=mv_sd_cor]{mv_sd_cor()}} and \code{\link[=mv_derived.multivariate_distrib]{mv_derived.multivariate_distrib()}}, which label
+their quantities with this.
 }
 \keyword{internal}

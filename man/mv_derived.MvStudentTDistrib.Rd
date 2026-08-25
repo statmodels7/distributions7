@@ -4,20 +4,67 @@
 \alias{mv_derived.MvStudentTDistrib}
 \title{Scale Standard Deviations and Correlations of a Multivariate t}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned by the generic.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list as described in \code{\link[=mv_derived]{mv_derived()}}.
+A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block}, as
+\code{\link[=mv_derived]{mv_derived()}} documents: \eqn{p} scale standard deviations on the log
+scale and \eqn{p(p-1)/2} correlations on Fisher's \eqn{z}, plus whatever
+the matrix parametrization declares.
 }
 \description{
-The square roots of the diagonal of the \strong{scale} matrix and the
-correlations it implies. The correlations are those of the response as well,
-since the covariance is \eqn{\nu\Sigma/(\nu-2)} and a positive multiple of a
-matrix leaves its correlations alone; the diagonal quantities are not
-standard deviations of the response and are named to say so.
+Returns the square roots of the diagonal of the SCALE matrix and the
+correlations it implies, with the closed-form Jacobian \code{\link[=mv_sd_cor]{mv_sd_cor()}}
+supplies. The correlations are the response's as well: the covariance is
+\eqn{\nu\Sigma/(\nu-2)} where it exists, and a positive multiple of a matrix
+leaves its correlations alone. The diagonal quantities are NOT standard
+deviations of the response, and are named \code{scale_sd_v1}, ..., \code{scale_sd_vp}
+and blocked as \code{"Scale standard deviations"} to say so.
+}
+\details{
+The degrees of freedom appear in no quantity here. \eqn{\nu} is already an
+interpretable parameter on its own scale, so \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}
+reports it and this generic does not repeat it. That is also why the
+\eqn{\nu} column of the Jacobian is zero.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom and
+\eqn{p} the dimension.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5, nu = 6)
+der <- mv_derived(d, theta)
+der$value
+der$block
+
+# The diagonal quantities are the scale matrix's, not the response's: the
+# response is more spread than they say by sqrt(nu / (nu - 2)).
+c(scale_sd = der$value[["scale_sd_v1"]],
+  response_sd = sqrt(variance(d, theta)[1, 1]))
+
+# The correlation is the same either way, the two matrices being positive
+# multiples of each other.
+cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
+c(reported = der$value[["cor_v1_v2"]],
+  from_covariance = cv(variance(d, theta)))
+
+# nu enters no quantity here, so its Jacobian column is zero.
+der$jacobian[, "nu"]
+
+}
+\seealso{
+\code{\link[=mv_sd_cor]{mv_sd_cor()}} for the closed-form Jacobian,
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}}, whose diagonal quantities are genuine
+standard deviations, \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance,
+and \code{\link[=mv_derived]{mv_derived()}} for the generic.
 }
 \keyword{internal}

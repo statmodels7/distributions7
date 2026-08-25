@@ -7,18 +7,38 @@
 mv_append_block(out, extra)
 }
 \arguments{
-\item{out}{A list as described in \code{\link[=mv_derived]{mv_derived()}}.}
+\item{out}{A named list with \code{value}, \code{jacobian}, \code{transform} and \code{block},
+as \code{\link[=mv_derived]{mv_derived()}} returns.}
 
-\item{extra}{A list of the same shape, or \code{NULL}.}
+\item{extra}{A second such list, or \code{NULL}, in which case \code{out} is returned
+unchanged. Its Jacobian must have the same number of columns as \code{out}'s.}
 }
 \value{
-A list as described in \code{\link[=mv_derived]{mv_derived()}}.
+A named list of the same four components, with the rows of \code{extra}
+after those of \code{out}.
 }
 \description{
-Concatenates two lists in the shape of \code{\link[=mv_derived]{mv_derived()}}, returning
-the first unchanged when the second is \code{NULL}.
+Concatenates two results in the shape of \code{\link[=mv_derived]{mv_derived()}}, stacking the
+\code{value}, \code{transform} and \code{block} vectors and row-binding the two Jacobians.
+It is what joins a parametrization's own quantities, from
+\code{\link[=mv_param_block]{mv_param_block()}}, onto the standard deviations and correlations.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+der <- mv_derived(d, theta)
+
+# A NULL second argument leaves the first alone.
+identical(distributions7:::mv_append_block(der, NULL), der)
+
+# Otherwise the rows stack and the Jacobian keeps its width.
+both <- distributions7:::mv_append_block(der, der)
+c(rows = length(both$value), cols = ncol(both$jacobian))
+
 }
 \seealso{
-\code{\link[=mv_param_block]{mv_param_block()}}
+\code{\link[=mv_param_block]{mv_param_block()}} for the usual second argument and
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} for the caller.
 }
 \keyword{internal}

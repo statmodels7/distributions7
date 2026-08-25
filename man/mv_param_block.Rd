@@ -2,29 +2,64 @@
 % Please edit documentation in R/mv_summary.R
 \name{mv_param_block}
 \alias{mv_param_block}
-\title{The Quantities the Matrix Parameter Is About}
+\title{The Quantities the Matrix Parametrization Is About}
 \usage{
 mv_param_block(distrib, theta)
 }
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned.}
 }
 \value{
-A list in the shape of \code{\link[=mv_derived]{mv_derived()}}, or \code{NULL}.
+\code{NULL} where the parametrization declares nothing, or a named list
+in the shape of \code{\link[=mv_derived]{mv_derived()}}'s return: \code{value}, \code{jacobian}, \code{transform}
+and \code{block}, with the Jacobian as wide as \code{distrib@params}.
 }
 \description{
-The block a \pkg{parameters7} family declares through
-\code{\link[parameters7:param_readable]{parameters7::param_readable()}}, with its Jacobian widened from
-the free vector to the whole parameter vector of the distribution.
+Returns the block a \pkg{parameters7} family declares through
+\code{param_readable()}, widened to the distribution's own parameter vector: the
+parametrization's Jacobian columns are placed in the stretch of
+\code{distrib@params} its free values occupy, and every other column is zero. An
+AR(1) covariance, for instance, is about a scale and a correlation, and
+those are what a reader wants beside the standard deviations.
 }
 \details{
-The free values of the structure occupy a contiguous stretch of
-\code{distrib@params}, after the means and before anything the family adds
-of its own, so widening the Jacobian is placing its columns in that stretch
-and leaving the rest at zero: the quantities depend on no other parameter.
-A family that declares nothing yields \code{NULL} and the summary is what
-it was.
+A family that declares nothing returns \code{NULL}, and the summary is then
+whatever \code{\link[=mv_derived]{mv_derived()}} produced without it. The label says \code{(precision)}
+when the distribution is inverted, because the parametrization does not know
+which side of the model it was handed to.
+
+A multivariate family written OUTSIDE this package may have no \code{param}
+property at all, so the property is asked for with \code{S7::prop_names()} rather
+than assumed.
+}
+\examples{
+# A log-Cholesky covariance declares nothing: its free values are
+# coordinates and nothing more.
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+th <- distributions7:::align_theta(d, theta)
+is.null(distributions7:::mv_param_block(d, th))
+
+# An AR(1) covariance is about a scale and a correlation, and says so.
+a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+th <- as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params))
+pb <- distributions7:::mv_param_block(a, distributions7:::align_theta(a, th))
+pb$value
+pb$transform
+pb$block
+
+# The Jacobian is as wide as the distribution's parameter vector, with the
+# mean columns zero.
+dim(pb$jacobian)
+pb$jacobian[, 1:3]
+
+}
+\seealso{
+\code{\link[parameters7:param_readable]{parameters7::param_readable()}} for what a parametrization
+declares, \code{\link[=mv_append_block]{mv_append_block()}} for how the result is joined on, and
+\code{\link[=mv_derived.MvGaussianDistrib]{mv_derived.MvGaussianDistrib()}} for the consumer.
 }
 \keyword{internal}

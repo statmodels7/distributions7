@@ -7,26 +7,61 @@
 mv_sigma_derivs(distrib, theta, n_before)
 }
 \arguments{
-\item{distrib}{A distribution carrying a \code{param} property.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with a \code{param} property.}
 
 \item{theta}{A named list of parameters, already aligned.}
 
-\item{n_before}{How many parameters precede the matrix parameter's free values.}
+\item{n_before}{The number of parameters before the matrix parametrization's
+free values, which is \eqn{p} for both shipped families. Those positions
+get zero matrices.}
 }
 \value{
-A list of matrices and \code{NULL}s, of length
-\code{distrib@n_params}.
+A list of \eqn{p \times p} numeric matrices, as long as
+\code{distrib@params}. Every entry outside the parametrization's stretch is a
+matrix of zeros.
 }
 \description{
-Returns \eqn{\partial\Sigma/\partial\theta_k} for each parameter of a
-multivariate distribution built on a \pkg{parameters7} structure, as a list
-aligned with \code{distrib@params} and \code{NULL} where the covariance does
-not depend on the parameter.
+Returns \eqn{\partial\Sigma/\partial\theta_k} for EVERY parameter of a
+multivariate distribution, in \code{distrib@params} order, so that the list can
+be indexed by parameter position without any bookkeeping at the call site.
+The parametrization supplies the derivatives of its own free values; the
+location components and, for a Student \eqn{t}, the degrees of freedom leave
+the matrix alone and contribute a matrix of zeros.
 }
 \details{
-The mean components and, for a Student \eqn{t}, the degrees of freedom leave
-the matrix alone, so those entries are \code{NULL} and cost nothing. When
-the matrix parameter parametrizes the precision the chain rule of an inverse
-applies, \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
+Where the parametrization carries the PRECISION the arrays are carried onto
+the covariance by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma},
+so the result is always in the covariance whichever side the model is
+written on.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the covariance or scale matrix, \eqn{\eta} the free vector of
+the matrix parametrization, \eqn{\theta} the distribution's parameter vector
+and \eqn{A_k} the parametrization's own derivative array.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- distributions7:::align_theta(
+  d, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+          sigma_L2.1 = 0.5))
+a <- distributions7:::mv_sigma_derivs(d, theta, 2)
+
+# One entry per parameter, and the two mean entries are zero.
+length(a) == d@n_params
+a[[1]]
+
+# The third entry is the derivative in the first free value, against a
+# difference of mv_sigma().
+h <- 1e-5
+tp <- theta; tp$sigma_log_L1 <- tp$sigma_log_L1 + h
+tm <- theta; tm$sigma_log_L1 <- tm$sigma_log_L1 - h
+max(abs(a[[3]] - (mv_sigma(d, tp) - mv_sigma(d, tm)) / (2 * h)))
+
+}
+\seealso{
+\code{\link[=mv_sd_cor]{mv_sd_cor()}}, the consumer, and \code{\link[=mvg_pieces]{mvg_pieces()}}, which does the
+same conversion for the gaussian's own methods.
 }
 \keyword{internal}
