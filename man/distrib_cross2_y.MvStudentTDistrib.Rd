@@ -2,36 +2,84 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{distrib_cross2_y.MvStudentTDistrib}
 \alias{distrib_cross2_y.MvStudentTDistrib}
-\alias{distrib_grad_y_hess.MvStudentTDistrib}
-\alias{distrib_hess_y_hess.MvStudentTDistrib}
-\title{Multivariate Student t Higher Mixed Response Derivatives}
+\title{Multivariate Student t Third Derivative in Two Responses and One Parameter}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two differ here.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, keyed by parameter or by parameter pair.
+A named list of \eqn{p \times p \times n} numeric arrays, one per
+parameter, in \code{distrib@params} order.
 }
 \description{
-The three derivatives a marginal criterion reads when this family is a
-prior. With \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top},
+Computes \eqn{\partial^3\ell/\partial y\,\partial y^\top \partial\theta_a},
+one \eqn{p \times p \times n} array per parameter. Writing
+\eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} with
+\eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu+q},
 \deqn{\partial_a M = -c_a\Sigma^{-1} - c\,\partial_a\Sigma^{-1}
   + 2d_a ww^\top + 2d\left(w_aw^\top + ww_a^\top\right),}
-\deqn{\partial_a \ell^{(y)} = -c_a w - c\,w_a, \qquad
-  \partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
-and \eqn{\partial_{ab}M} is the same expansion carried one order further.
-Every piece comes from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
+every piece coming from \code{\link[=mvt_dpieces]{mvt_dpieces()}}.
 }
 \details{
-Unlike the gaussian's, this family's response Hessian depends on the
-observation, so \code{distrib_cross2_y} and \code{distrib_hess_y_hess}
-return one matrix per row rather than one matrix.
+The shape differs from the gaussian's, and the difference is the family's
+defining property. There the response Hessian is \eqn{-\Sigma^{-1}}, one
+matrix for the whole sample, so its derivative is one matrix per parameter.
+Here it depends on the observation through the weight, so this method and
+\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} return ONE MATRIX PER ROW. Nor
+does any component vanish: the gaussian's location components are exactly
+zero and none of these is.
+
+This is one of the three derivatives a marginal criterion reads when the
+family stands as a prior over a coefficient block.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom, \eqn{q}
+the squared Mahalanobis distance, \eqn{s = \nu+q}, \eqn{c} and \eqn{d} the
+two weights, \eqn{w = \Sigma^{-1}(y-\mu)}, and a subscript \eqn{a} denotes
+a derivative in parameter \eqn{a}.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+c2 <- distrib_cross2_y(d, y, theta)
+dim(c2$sigma_L2.1)
+
+# One matrix per row, so the location component is not zero as it is for a
+# gaussian.
+c2$mu1[, , 1]
+distrib_cross2_y(mvgaussian_distrib(2), y, theta[1:5])$mu1
+
+# Against a difference of the response Hessian.
+h <- 1e-5
+vapply(seq_along(d@params), function(k) {
+  tp <- theta; tp[[k]] <- tp[[k]] + h
+  tm <- theta; tm[[k]] <- tm[[k]] - h
+  max(abs(c2[[k]] -
+          (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
+}, numeric(1))
+
+}
+\seealso{
+\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y.MvStudentTDistrib()}}, whose derivative in the
+parameters this is, \code{\link[=distrib_grad_y_hess.MvStudentTDistrib]{distrib_grad_y_hess.MvStudentTDistrib()}} and
+\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}} for the other two a marginal
+criterion reads, \code{\link[=mvt_dpieces]{mvt_dpieces()}} for the assembly, and
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic.
 }
 \keyword{internal}

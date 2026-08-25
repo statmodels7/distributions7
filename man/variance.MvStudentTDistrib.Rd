@@ -4,18 +4,48 @@
 \alias{variance.MvStudentTDistrib}
 \title{Covariance of a Multivariate Student t}
 \arguments{
-\item{x}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A \eqn{p \times p} numeric matrix.
+A \eqn{p \times p} numeric matrix with both dimnames \code{v1}, ...,
+\code{vp}: the covariance for \eqn{\nu > 2}, and \code{Inf} in every entry for
+\eqn{\nu \le 2}, the boundary \eqn{\nu = 2} included.
 }
 \description{
-\eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2}, and infinite otherwise. This is
-the moment; the matrix the parametrization carries is
-\code{\link[=mv_sigma]{mv_sigma()}}, and the two differ by the factor above.
+Returns \eqn{\operatorname{Var}(Y) = \nu\Sigma/(\nu-2)} for \eqn{\nu > 2},
+and a matrix of \code{Inf} otherwise. The scale matrix \eqn{\Sigma} is what the
+parametrization carries and exists at every admissible \eqn{\nu}; the
+covariance is a moment, and the two differ by that factor, which is 3 at
+\eqn{\nu = 3} and approaches 1 as the tail lightens. \code{\link[=mv_sigma]{mv_sigma()}} returns
+the first and this returns the second.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+variance(d, theta)
+mv_sigma(d, theta)
+all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
+
+# The factor blows up as nu falls to 2 and the covariance goes with it.
+vapply(c(10, 3, 2.5, 2.05, 2), function(nu) {
+  t2 <- theta; t2$nu <- nu
+  variance(d, t2)[1, 1]
+}, numeric(1))
+
+# Correlations are unaffected: a positive multiple leaves them alone.
+cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
+c(scale = cv(mv_sigma(d, theta)), covariance = cv(variance(d, theta)))
+
+}
+\seealso{
+\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the scale matrix,
+\code{\link[=mean.MvStudentTDistrib]{mean.MvStudentTDistrib()}} for the first moment, which needs only
+\eqn{\nu > 1}, and \code{\link[=variance]{variance()}} for the generic.
 }
 \keyword{internal}

@@ -7,13 +7,40 @@
 mv_outer_rows(a, b)
 }
 \arguments{
-\item{a, b}{Matrices of \eqn{n} rows and \eqn{p} columns.}
+\item{a, b}{Numeric matrices with the same dimensions, \eqn{n} rows and
+\eqn{p} columns. Nothing is validated: mismatched dimensions recycle
+silently, as they would in the arithmetic underneath.}
 }
 \value{
-A \eqn{p \times p \times n} numeric array.
+A \eqn{p \times p \times n} numeric array. It is symmetric slice by
+slice only when \code{a} and \code{b} are the same matrix.
 }
 \description{
-The \eqn{p \times p \times n} array whose \eqn{i}th slice is
-\eqn{a_ib_i^\top}, assembled without a loop over the observations.
+Builds the \eqn{p \times p \times n} array whose \eqn{i}th slice is
+\eqn{a_ib_i^\top}, the outer product of row \eqn{i} of \code{a} with row \eqn{i}
+of \code{b}. The whole array is assembled by two column replications and one
+permutation, with no loop over the observations, so the response derivatives
+of a multivariate family stay affordable at a sample size worth fitting.
+}
+\examples{
+a <- matrix(1:6, 3, 2)
+b <- matrix(c(1, 0, -1, 2, 1, 0), 3, 2)
+o <- distributions7:::mv_outer_rows(a, b)
+dim(o)
+
+# Slice i is the outer product of the two i-th rows.
+o[, , 1]
+outer(a[1, ], b[1, ])
+all.equal(o[, , 2], outer(a[2, ], b[2, ]))
+
+# With one matrix given twice, every slice is symmetric.
+s <- distributions7:::mv_outer_rows(a, a)
+all(vapply(seq_len(dim(s)[3]),
+           function(i) isSymmetric(s[, , i]), TRUE))
+
+}
+\seealso{
+\code{\link[=.mvt_scale_slices]{.mvt_scale_slices()}} for the other array helper and
+\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}} for the consumer.
 }
 \keyword{internal}

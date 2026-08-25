@@ -4,19 +4,70 @@
 \alias{distrib_grad_y.MvStudentTDistrib}
 \title{Multivariate Student t Response Gradient}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-An \eqn{n \times p} numeric matrix.
+An \eqn{n \times p} numeric matrix, row \eqn{i} holding
+\eqn{\partial\ell_i/\partial y_i}.
 }
 \description{
-\eqn{\partial \ell / \partial y = -c\,\Sigma^{-1}(y-\mu)}, the gaussian
-expression with the family's weight in front of it.
+Computes the derivative of the log-density in the response,
+\deqn{\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu),
+  \qquad c = \frac{\nu+p}{\nu+q},}
+one row per observation: the gaussian's expression with the family's weight
+in front of it. The weight is what bounds the influence of a distant row.
+A gaussian's response gradient grows without limit as the observation moves
+away; this one rises, turns and decays like \eqn{1/\lVert y\rVert}, which is
+the redescending score of a heavy-tailed family.
+
+It is also minus the score in the location, this being a location family, so
+the same numbers appear in \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{p} the dimension, \eqn{q} the squared Mahalanobis
+distance and \eqn{c} the weight.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+distrib_grad_y(d, y, theta)
+
+# Against a numerical derivative taken row by row.
+num <- t(apply(y, 1, function(r)
+  numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
+max(abs(distrib_grad_y(d, y, theta) - num))
+
+# It is minus the score in the location.
+g <- distrib_gradient(d, y, theta)
+all.equal(distrib_grad_y(d, y, theta), -cbind(g$mu1, g$mu2),
+          check.attributes = FALSE)
+
+# It redescends: the gaussian's grows with the distance and the t's does
+# not, along the first coordinate from the location.
+far <- cbind(0.5 + c(1, 3, 10, 40), -0.3)
+g0 <- mvgaussian_distrib(2)
+rbind(t = distrib_grad_y(d, far, theta)[, 1],
+      gaussian = distrib_grad_y(g0, far, theta[1:5])[, 1])
+
+}
+\seealso{
+\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y.MvStudentTDistrib()}} for the second derivative,
+\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y.MvStudentTDistrib()}} for the mixed block,
+\code{\link[=mvt_weights]{mvt_weights()}} for the weight, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }
 \keyword{internal}

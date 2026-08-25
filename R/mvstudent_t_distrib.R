@@ -1322,14 +1322,65 @@ S7::method(distrib_expected_hessian, MvStudentTDistrib) <- function(
 
 #' @title Multivariate Student t Response Gradient
 #' @name distrib_grad_y.MvStudentTDistrib
+#'
 #' @description
-#' \eqn{\partial \ell / \partial y = -c\,\Sigma^{-1}(y-\mu)}, the gaussian
-#' expression with the family's weight in front of it.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return An \eqn{n \times p} numeric matrix.
+#' Computes the derivative of the log-density in the response,
+#' \deqn{\frac{\partial \ell}{\partial y} = -c\,\Sigma^{-1}(y-\mu),
+#'   \qquad c = \frac{\nu+p}{\nu+q},}
+#' one row per observation: the gaussian's expression with the family's weight
+#' in front of it. The weight is what bounds the influence of a distant row.
+#' A gaussian's response gradient grows without limit as the observation moves
+#' away; this one rises, turns and decays like \eqn{1/\lVert y\rVert}, which is
+#' the redescending score of a heavy-tailed family.
+#'
+#' It is also minus the score in the location, this being a location family, so
+#' the same numbers appear in [distrib_gradient.MvStudentTDistrib()].
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return An \eqn{n \times p} numeric matrix, row \eqn{i} holding
+#'   \eqn{\partial\ell_i/\partial y_i}.
+#'
+#' @section Notation:
+#' \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+#' degrees of freedom, \eqn{p} the dimension, \eqn{q} the squared Mahalanobis
+#' distance and \eqn{c} the weight.
+#'
+#' @seealso [distrib_hess_y.MvStudentTDistrib()] for the second derivative,
+#'   [distrib_cross_y.MvStudentTDistrib()] for the mixed block,
+#'   [mvt_weights()] for the weight, and [distrib_grad_y()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' distrib_grad_y(d, y, theta)
+#'
+#' # Against a numerical derivative taken row by row.
+#' num <- t(apply(y, 1, function(r)
+#'   numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), r)))
+#' max(abs(distrib_grad_y(d, y, theta) - num))
+#'
+#' # It is minus the score in the location.
+#' g <- distrib_gradient(d, y, theta)
+#' all.equal(distrib_grad_y(d, y, theta), -cbind(g$mu1, g$mu2),
+#'           check.attributes = FALSE)
+#'
+#' # It redescends: the gaussian's grows with the distance and the t's does
+#' # not, along the first coordinate from the location.
+#' far <- cbind(0.5 + c(1, 3, 10, 40), -0.3)
+#' g0 <- mvgaussian_distrib(2)
+#' rbind(t = distrib_grad_y(d, far, theta)[, 1],
+#'       gaussian = distrib_grad_y(g0, far, theta[1:5])[, 1])
+#'
 #' @keywords internal
 S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...) {
   y <- as_mv_matrix(distrib, y)
@@ -1339,27 +1390,33 @@ S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...
 }
 
 
-#' The Pieces Every Mixed Response Derivative of the t Is Written In
+#' @title The Pieces Every Mixed Response Derivative of the t Is Written In
 #'
 #' @description
-#' The response derivatives of this family are
+#' Assembles, once per call, the first and second derivatives in the parameters
+#' of the four quantities every mixed response derivative of this family is
+#' built from: \eqn{s = \nu + q}, the whitened residual \eqn{w}, the inverse
+#' scale matrix \eqn{\Sigma^{-1}}, and the two scalars \eqn{c = (\nu+p)/s} and
+#' \eqn{d = (\nu+p)/s^2} that follow from \eqn{s}. The response derivatives are
 #' \eqn{\ell^{(y)} = -c\,w} and
-#' \eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} with
-#' \eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu + q}, so every
-#' derivative in the parameters is assembled from the first and second
-#' derivatives of four things: \eqn{s}, \eqn{w}, \eqn{\Sigma^{-1}} and the
-#' scalars \eqn{c} and \eqn{d} that follow from \eqn{s}.
+#' \eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top}, so differentiating either
+#' in the parameters is a product rule over these pieces and nothing else.
 #'
 #' @details
-#' Writing \eqn{A_k} for the matrix parameter's first derivatives, \eqn{u_j}
-#' for the \eqn{j}th column of \eqn{\Sigma^{-1}} and \eqn{P_k} for
-#' \eqn{\Sigma^{-1}A_k\Sigma^{-1}}, the first derivatives are
+#' # First derivatives
+#'
+#' Writing \eqn{A_k} for the matrix parametrization's first derivatives,
+#' \eqn{u_j} for the \eqn{j}th column of \eqn{\Sigma^{-1}} and \eqn{P_k} for
+#' \eqn{\Sigma^{-1}A_k\Sigma^{-1}},
 #' \deqn{\partial_{\mu_j} s = -2w_j, \quad \partial_{\eta_k} s = -w^\top A_kw,
 #'   \quad \partial_\nu s = 1,}
 #' \deqn{\partial_{\mu_j} w = -u_j, \quad
 #'   \partial_{\eta_k} w = -\Sigma^{-1}A_kw, \quad \partial_\nu w = 0,
-#'   \qquad \partial_{\eta_k}\Sigma^{-1} = -P_k,}
-#' and the second ones vanish except for
+#'   \qquad \partial_{\eta_k}\Sigma^{-1} = -P_k.}
+#'
+#' # Second derivatives
+#'
+#' All vanish except
 #' \deqn{\partial_{\mu_j\mu_l} s = 2(\Sigma^{-1})_{jl}, \quad
 #'   \partial_{\mu_j\eta_k} s = 2(\Sigma^{-1}A_kw)_j, \quad
 #'   \partial_{\mu_j\eta_k} w = P_ke_j,}
@@ -1367,17 +1424,59 @@ S7::method(distrib_grad_y, MvStudentTDistrib) <- function(distrib, y, theta, ...
 #' \deqn{\partial_{\eta_k\eta_l} s = w^\top B_{kl}w, \quad
 #'   \partial_{\eta_k\eta_l} w = \Sigma^{-1}B_{kl}w, \quad
 #'   \partial_{\eta_k\eta_l}\Sigma^{-1} = \Sigma^{-1}B_{kl}\Sigma^{-1}.}
-#' The same middle matrix serves all three, which is what keeps the assembly
-#' short. \eqn{c} and \eqn{d} then follow from the quotient rule with
-#' \eqn{\nu+p} linear in \eqn{\nu} and constant in everything else.
+#' One middle matrix \eqn{B_{kl}} serves all three, which keeps the assembly
+#' short. \eqn{c} and \eqn{d} then follow by the quotient rule, \eqn{\nu+p}
+#' being linear in \eqn{\nu} and constant in everything else.
 #'
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations, already coerced
+#'   by [as_mv_matrix()].
+#' @param theta A named list of parameters, each component a single number.
 #'
-#' @return A list of the quantities above, indexed by parameter POSITION --
-#'   the means, then the matrix parameter's free values, then \eqn{\nu} -- with
-#'   `pair()` a function returning the second-order pieces of a pair.
+#' @return A named list of the quantities above, INDEXED BY PARAMETER POSITION:
+#'   the \eqn{p} locations, then the matrix parametrization's free values, then
+#'   \eqn{\nu}. Its components are `w`, `si`, `cw`, `dw` and `q` (the values),
+#'   `sa`, `wa`, `Sa`, `ca`, `da` (lists of first derivatives, one per
+#'   parameter), `npar`, and `pair(a, b)`, a function returning the second-order
+#'   pieces `s`, `w`, `S`, `c` and `d` for one pair of positions.
+#'
+#' @section Notation:
+#' \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+#' degrees of freedom, \eqn{\eta} the free vector of the matrix
+#' parametrization, \eqn{A_k} and \eqn{A_{kl}} its derivative arrays, \eqn{q}
+#' the squared Mahalanobis distance, \eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{e_j}
+#' the \eqn{j}th standard basis vector.
+#'
+#' @seealso [distrib_cross_y.MvStudentTDistrib()],
+#'   [distrib_cross2_y.MvStudentTDistrib()],
+#'   [distrib_grad_y_hess.MvStudentTDistrib()] and
+#'   [distrib_hess_y_hess.MvStudentTDistrib()], the four consumers, and
+#'   [mvt_weights()] for the values these differentiate.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#' z <- distributions7:::mvt_dpieces(d, y, theta)
+#' names(z)
+#'
+#' # Six parameters, so six first-derivative entries per quantity.
+#' c(npar = z$npar, n_sa = length(z$sa), n_wa = length(z$wa))
+#'
+#' # ds/dnu is exactly one, s being nu + q.
+#' z$sa[[6]]
+#'
+#' # And ds/dmu1 is -2 w1, against a difference of q + nu.
+#' h <- 1e-5
+#' sfun <- function(m1) {
+#'   t2 <- theta; t2$mu1 <- m1
+#'   pc <- distributions7:::mvt_pieces(d, t2)
+#'   distributions7:::mvt_weights(y, pc)$q + t2$nu
+#' }
+#' max(abs(z$sa[[1]] - (sfun(0.5 + h) - sfun(0.5 - h)) / (2 * h)))
 #'
 #' @keywords internal
 mvt_dpieces <- function(distrib, y, theta) {
@@ -1470,12 +1569,41 @@ mvt_a2 <- function(pc, k, l) {
   pc$a2[[paste(nm[ij], collapse = ":")]]
 }
 
-#' An Outer Product Per Observation
+#' @title An Outer Product Per Observation
+#'
 #' @description
-#' The \eqn{p \times p \times n} array whose \eqn{i}th slice is
-#' \eqn{a_ib_i^\top}, assembled without a loop over the observations.
-#' @param a,b Matrices of \eqn{n} rows and \eqn{p} columns.
-#' @return A \eqn{p \times p \times n} numeric array.
+#' Builds the \eqn{p \times p \times n} array whose \eqn{i}th slice is
+#' \eqn{a_ib_i^\top}, the outer product of row \eqn{i} of `a` with row \eqn{i}
+#' of `b`. The whole array is assembled by two column replications and one
+#' permutation, with no loop over the observations, so the response derivatives
+#' of a multivariate family stay affordable at a sample size worth fitting.
+#'
+#' @param a,b Numeric matrices with the same dimensions, \eqn{n} rows and
+#'   \eqn{p} columns. Nothing is validated: mismatched dimensions recycle
+#'   silently, as they would in the arithmetic underneath.
+#'
+#' @return A \eqn{p \times p \times n} numeric array. It is symmetric slice by
+#'   slice only when `a` and `b` are the same matrix.
+#'
+#' @seealso [.mvt_scale_slices()] for the other array helper and
+#'   [distrib_cross2_y.MvStudentTDistrib()] for the consumer.
+#'
+#' @examples
+#' a <- matrix(1:6, 3, 2)
+#' b <- matrix(c(1, 0, -1, 2, 1, 0), 3, 2)
+#' o <- distributions7:::mv_outer_rows(a, b)
+#' dim(o)
+#'
+#' # Slice i is the outer product of the two i-th rows.
+#' o[, , 1]
+#' outer(a[1, ], b[1, ])
+#' all.equal(o[, , 2], outer(a[2, ], b[2, ]))
+#'
+#' # With one matrix given twice, every slice is symmetric.
+#' s <- distributions7:::mv_outer_rows(a, a)
+#' all(vapply(seq_len(dim(s)[3]),
+#'            function(i) isSymmetric(s[, , i]), TRUE))
+#'
 #' @keywords internal
 mv_outer_rows <- function(a, b) {
   n <- nrow(a)
@@ -1487,11 +1615,13 @@ mv_outer_rows <- function(a, b) {
 
 #' @title Multivariate Student t Mixed Response-Parameter Derivatives
 #' @name distrib_cross_y.MvStudentTDistrib
+#'
 #' @description
-#' \eqn{\partial^2 \ell / \partial y \partial \theta_k}, one \eqn{n \times p}
-#' matrix per parameter. The response gradient is \eqn{-c\,w}, so every
-#' component carries the derivative of the weight beside the gaussian term it
-#' multiplies: with \eqn{A_k = \partial\Sigma/\partial\eta_k},
+#' Computes \eqn{\partial^2\ell/\partial y\,\partial\theta_k}, one
+#' \eqn{n \times p} matrix per parameter. The response gradient is
+#' \eqn{-c\,w}, so every component carries the derivative of the weight beside
+#' the gaussian term it multiplies. With
+#' \eqn{A_k = \partial\Sigma/\partial\eta_k},
 #' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu_j}
 #'     = c\,\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\,w,
 #'   \qquad \frac{\partial c}{\partial\mu_j}
@@ -1502,18 +1632,69 @@ mv_outer_rows <- function(a, b) {
 #'     = \frac{(\nu+p)\,w^\top A_k w}{(\nu+q)^2},}
 #' \deqn{\frac{\partial^2\ell}{\partial y\,\partial\nu}
 #'     = -\frac{(q-p)\,w}{(\nu+q)^2}.}
+#' Unlike the gaussian's, no component here is constant across rows: the
+#' location block carries the observation through \eqn{c} even though its
+#' gaussian part does not.
+#'
 #' @details
-#' Nothing here is obstructed: the log-density carries no distribution
-#' function, only `lgamma`, a logarithm and a quadratic form, each
-#' elementary in \eqn{\nu}. As \eqn{\nu \to \infty} the weight and its
-#' derivatives go to one and to zero, and every component becomes the
-#' gaussian's, which is what the tests compare it against.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param scale Handled by the generic.
-#' @param ... Unused.
-#' @return A named list, one \eqn{n \times p} matrix per parameter.
+#' Nothing here is obstructed. The log-density carries no distribution
+#' function, only `lgamma`, a logarithm and a quadratic form, each elementary
+#' in \eqn{\nu}. As \eqn{\nu \to \infty} the weight goes to one and its
+#' derivatives to zero, so every component becomes the gaussian's; the tests
+#' compare them against that limit, and at \eqn{\nu = 10^7} the two agree to
+#' \eqn{2.6\times10^{-6}}.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch. The two differ here, `nu` carrying a log link by
+#'   default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of \eqn{n \times p} numeric matrices, one per
+#'   parameter, in `distrib@params` order.
+#'
+#' @section Notation:
+#' \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+#' degrees of freedom, \eqn{\eta} the free vector of the matrix
+#' parametrization, \eqn{q} the squared Mahalanobis distance, \eqn{c} the
+#' weight, \eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{e_j} the \eqn{j}th standard
+#' basis vector.
+#'
+#' @seealso [distrib_grad_y.MvStudentTDistrib()], whose derivative in the
+#'   parameters this is, [mvt_dpieces()] for the assembly,
+#'   [distrib_cross_y.MvGaussianDistrib()] for the limiting family, and
+#'   [distrib_cross_y()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' cy <- distrib_cross_y(d, y, theta)
+#' names(cy)
+#'
+#' # Against a difference of the response gradient, parameter by parameter.
+#' h <- 1e-5
+#' vapply(seq_along(d@params), function(k) {
+#'   tp <- theta; tp[[k]] <- tp[[k]] + h
+#'   tm <- theta; tm[[k]] <- tm[[k]] - h
+#'   max(abs(cy[[k]] -
+#'           (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
+#' }, numeric(1))
+#'
+#' # As nu grows every shared component approaches the gaussian's.
+#' t2 <- theta; t2$nu <- 1e7
+#' g <- mvgaussian_distrib(2)
+#' cg <- distrib_cross_y(g, y, theta[1:5])
+#' ct <- distrib_cross_y(d, y, t2)
+#' max(vapply(1:5, function(k) max(abs(cg[[k]] - ct[[k]])), numeric(1)))
+#'
 #' @keywords internal
 S7::method(distrib_cross_y, MvStudentTDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -1527,27 +1708,78 @@ S7::method(distrib_cross_y, MvStudentTDistrib) <-
   }
 
 
-#' @title Multivariate Student t Higher Mixed Response Derivatives
+#' @title Multivariate Student t Third Derivative in Two Responses and One Parameter
 #' @name distrib_cross2_y.MvStudentTDistrib
+#'
 #' @description
-#' The three derivatives a marginal criterion reads when this family is a
-#' prior. With \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top},
+#' Computes \eqn{\partial^3\ell/\partial y\,\partial y^\top \partial\theta_a},
+#' one \eqn{p \times p \times n} array per parameter. Writing
+#' \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} with
+#' \eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu+q},
 #' \deqn{\partial_a M = -c_a\Sigma^{-1} - c\,\partial_a\Sigma^{-1}
 #'   + 2d_a ww^\top + 2d\left(w_aw^\top + ww_a^\top\right),}
-#' \deqn{\partial_a \ell^{(y)} = -c_a w - c\,w_a, \qquad
-#'   \partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
-#' and \eqn{\partial_{ab}M} is the same expansion carried one order further.
-#' Every piece comes from [mvt_dpieces()].
+#' every piece coming from [mvt_dpieces()].
+#'
 #' @details
-#' Unlike the gaussian's, this family's response Hessian depends on the
-#' observation, so `distrib_cross2_y` and `distrib_hess_y_hess`
-#' return one matrix per row rather than one matrix.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param scale Handled by the generic.
-#' @param ... Unused.
-#' @return A named list, keyed by parameter or by parameter pair.
+#' The shape differs from the gaussian's, and the difference is the family's
+#' defining property. There the response Hessian is \eqn{-\Sigma^{-1}}, one
+#' matrix for the whole sample, so its derivative is one matrix per parameter.
+#' Here it depends on the observation through the weight, so this method and
+#' [distrib_hess_y_hess.MvStudentTDistrib()] return ONE MATRIX PER ROW. Nor
+#' does any component vanish: the gaussian's location components are exactly
+#' zero and none of these is.
+#'
+#' This is one of the three derivatives a marginal criterion reads when the
+#' family stands as a prior over a coefficient block.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch. The two differ here.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of \eqn{p \times p \times n} numeric arrays, one per
+#'   parameter, in `distrib@params` order.
+#'
+#' @section Notation:
+#' \eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom, \eqn{q}
+#' the squared Mahalanobis distance, \eqn{s = \nu+q}, \eqn{c} and \eqn{d} the
+#' two weights, \eqn{w = \Sigma^{-1}(y-\mu)}, and a subscript \eqn{a} denotes
+#' a derivative in parameter \eqn{a}.
+#'
+#' @seealso [distrib_hess_y.MvStudentTDistrib()], whose derivative in the
+#'   parameters this is, [distrib_grad_y_hess.MvStudentTDistrib()] and
+#'   [distrib_hess_y_hess.MvStudentTDistrib()] for the other two a marginal
+#'   criterion reads, [mvt_dpieces()] for the assembly, and
+#'   [distrib_cross2_y()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' c2 <- distrib_cross2_y(d, y, theta)
+#' dim(c2$sigma_L2.1)
+#'
+#' # One matrix per row, so the location component is not zero as it is for a
+#' # gaussian.
+#' c2$mu1[, , 1]
+#' distrib_cross2_y(mvgaussian_distrib(2), y, theta[1:5])$mu1
+#'
+#' # Against a difference of the response Hessian.
+#' h <- 1e-5
+#' vapply(seq_along(d@params), function(k) {
+#'   tp <- theta; tp[[k]] <- tp[[k]] + h
+#'   tm <- theta; tm[[k]] <- tm[[k]] - h
+#'   max(abs(c2[[k]] -
+#'           (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
+#' }, numeric(1))
+#'
 #' @keywords internal
 S7::method(distrib_cross2_y, MvStudentTDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -1564,8 +1796,67 @@ S7::method(distrib_cross2_y, MvStudentTDistrib) <-
     }), distrib@params)
   }
 
-#' @rdname distrib_cross2_y.MvStudentTDistrib
+#' @title Multivariate Student t Third Derivative in One Response and Two Parameters
 #' @name distrib_grad_y_hess.MvStudentTDistrib
+#'
+#' @description
+#' Computes \eqn{\partial^3\ell/\partial y\,\partial\theta_a\partial\theta_b},
+#' one \eqn{n \times p} matrix per unordered pair of parameters. The response
+#' gradient is \eqn{\ell^{(y)} = -c\,w}, so a second derivative in the
+#' parameters is the ordinary product rule
+#' \deqn{\partial_{ab}\ell^{(y)} = -c_{ab}w - c_aw_b - c_bw_a - c\,w_{ab},}
+#' with every piece from [mvt_dpieces()]. No pair vanishes here, where a
+#' gaussian's pair of location parameters is exactly zero: its response
+#' gradient is linear in the location and this one is not.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch. The two differ here.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of \eqn{n \times p} numeric matrices, keyed as
+#'   [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{\nu} is the degrees of freedom, \eqn{c} the weight,
+#' \eqn{w = \Sigma^{-1}(y-\mu)}, and a subscript \eqn{a} or \eqn{ab} denotes a
+#' derivative in the parameters named.
+#'
+#' @seealso [distrib_cross_y.MvStudentTDistrib()] for the order below,
+#'   [distrib_hess_y_hess.MvStudentTDistrib()] for the sibling with two
+#'   response indices, [mvt_dpieces()] for the assembly, and
+#'   [distrib_grad_y_hess()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' gh <- distrib_grad_y_hess(d, y, theta)
+#' dim(gh$mu1_mu2)
+#'
+#' # A gaussian's two-location pair is exactly zero and this one is not.
+#' gh$mu1_mu2
+#' distrib_grad_y_hess(mvgaussian_distrib(2), y, theta[1:5])$mu1_mu2
+#'
+#' # Against a second difference of the response gradient. The reference
+#' # amplifies rounding by h^-2, so 1e-6 on a quantity of order 1 is its own
+#' # accuracy rather than a disagreement.
+#' h <- 1e-5
+#' f <- function(a, b) {
+#'   t2 <- theta; t2$mu1 <- t2$mu1 + a; t2$mu2 <- t2$mu2 + b
+#'   distrib_grad_y(d, y, t2)
+#' }
+#' c(gap = max(abs(gh$mu1_mu2 -
+#'                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
+#'   scale = max(abs(gh$mu1_mu2)))
+#'
 #' @keywords internal
 S7::method(distrib_grad_y_hess, MvStudentTDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -1582,8 +1873,73 @@ S7::method(distrib_grad_y_hess, MvStudentTDistrib) <-
     }), hess_names(nm))
   }
 
-#' @rdname distrib_cross2_y.MvStudentTDistrib
+#' @title Multivariate Student t Fourth Derivative in Two Responses and Two Parameters
 #' @name distrib_hess_y_hess.MvStudentTDistrib
+#'
+#' @description
+#' Computes \eqn{\partial^4\ell/\partial y\,\partial y^\top
+#' \partial\theta_a\partial\theta_b}, one \eqn{p \times p \times n} array per
+#' unordered pair of parameters. It is the expansion of
+#' \eqn{M = \ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} carried one order
+#' further than [distrib_cross2_y.MvStudentTDistrib()]:
+#' \deqn{\partial_{ab} M = -c_{ab}\Sigma^{-1} - c_a\partial_b\Sigma^{-1}
+#'   - c_b\partial_a\Sigma^{-1} - c\,\partial_{ab}\Sigma^{-1}
+#'   + 2d_{ab}\,ww^\top + 2d_a S(w_b, w) + 2d_b S(w_a, w)
+#'   + 2d\left\{S(w_{ab}, w) + S(w_a, w_b)\right\},}
+#' with \eqn{S(u, v) = uv^\top + vu^\top} and every piece from
+#' [mvt_dpieces()]. No pair vanishes, where for a gaussian every pair naming a
+#' location parameter is exactly zero.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
+#'   generic before dispatch. The two differ here.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of \eqn{p \times p \times n} numeric arrays, keyed as
+#'   [`hess_names(distrib@params)`][hess_names]. Every slice is symmetric, the
+#'   derivative of a symmetric matrix being symmetric.
+#'
+#' @section Notation:
+#' \eqn{\Sigma} is the scale matrix, \eqn{c} and \eqn{d} the two weights,
+#' \eqn{w = \Sigma^{-1}(y-\mu)}, and a subscript \eqn{a} or \eqn{ab} denotes a
+#' derivative in the parameters named.
+#'
+#' @seealso [distrib_cross2_y.MvStudentTDistrib()] for the same derivative one
+#'   parameter down, [distrib_grad_y_hess.MvStudentTDistrib()] for the sibling
+#'   with one response index, [mvt_dpieces()] for the assembly, and
+#'   [distrib_hess_y_hess()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' hh <- distrib_hess_y_hess(d, y, theta)
+#' dim(hh$nu_nu)
+#'
+#' # Every slice is symmetric.
+#' all(vapply(seq_len(4), function(i) isSymmetric(hh$nu_nu[, , i]), TRUE))
+#'
+#' # Against a second difference of the response Hessian, with the reference's
+#' # own h^-2 amplification beside it.
+#' h <- 1e-5
+#' f <- function(a, b) {
+#'   t2 <- theta
+#'   t2$sigma_log_L1 <- t2$sigma_log_L1 + a
+#'   t2$sigma_L2.1 <- t2$sigma_L2.1 + b
+#'   distrib_hess_y(d, y, t2)
+#' }
+#' key <- "sigma_log_L1_sigma_L2.1"
+#' c(gap = max(abs(hh[[key]] -
+#'                 (f(h, h) - f(h, -h) - f(-h, h) + f(-h, -h)) / (4 * h * h))),
+#'   scale = max(abs(hh[[key]])))
+#'
 #' @keywords internal
 S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -1610,19 +1966,34 @@ S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
     }), hess_names(nm))
   }
 
-#' Scale the Slices of an Array, and Repeat a Constant Matrix
+#' @title Scale the Slices of an Array
 #'
 #' @description
-#' `.mvt_scale_slices` multiplies the \eqn{i}th slice of an array by
-#' `v[i]`; `.mvt_const_slices` returns the array whose \eqn{i}th
-#' slice is `v[i] * m`, which is what a term constant in the observation
-#' contributes.
+#' Multiplies the \eqn{i}th slice of a \eqn{p \times p \times n} array by
+#' `v[i]`, which is how a term whose matrix part is the same at every
+#' observation but whose scalar part is not enters an assembled derivative.
+#' The multiplication is one vectorized recycle over the flattened array, so
+#' nothing loops over the observations.
 #'
-#' @param arr A \eqn{p \times p \times n} array.
-#' @param v A numeric vector of length \eqn{n}.
-#' @param m A \eqn{p \times p} matrix.
+#' @param arr A \eqn{p \times p \times n} numeric array.
+#' @param v A numeric vector of length \eqn{n}. A shorter vector recycles
+#'   silently, as the arithmetic underneath would.
 #'
-#' @return A \eqn{p \times p \times n} numeric array.
+#' @return A \eqn{p \times p \times n} numeric array with the same dimensions
+#'   as `arr`.
+#'
+#' @seealso [.mvt_const_slices()] for the case where the matrix is what stays
+#'   constant, [mv_outer_rows()] for the array these are combined with, and
+#'   [distrib_cross2_y.MvStudentTDistrib()] for the consumer.
+#'
+#' @examples
+#' arr <- array(1, c(2, 2, 3))
+#' distributions7:::.mvt_scale_slices(arr, c(1, 10, 100))[1, 1, ]
+#'
+#' # Slice by slice it is the scalar times the slice.
+#' a <- array(rnorm(12), c(2, 2, 3))
+#' s <- distributions7:::.mvt_scale_slices(a, c(2, -1, 0.5))
+#' all.equal(s[, , 2], -a[, , 2])
 #'
 #' @keywords internal
 .mvt_scale_slices <- function(arr, v) {
@@ -1630,7 +2001,34 @@ S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
   arr * rep(v, each = d[1L] * d[2L])
 }
 
-#' @rdname dot-mvt_scale_slices
+#' @title Repeat a Constant Matrix Across Slices
+#'
+#' @description
+#' Builds the \eqn{p \times p \times n} array whose \eqn{i}th slice is
+#' `v[i] * m`, the contribution of a term with a fixed matrix and a
+#' per-observation scalar. It is the mirror of
+#' [.mvt_scale_slices()], where the array varies and the scalar is applied to
+#' it; here the matrix is the same everywhere and only the scalar moves.
+#'
+#' @param m A \eqn{p \times p} numeric matrix.
+#' @param v A numeric vector of length \eqn{n}, which sets the third dimension
+#'   of the result.
+#'
+#' @return A \eqn{p \times p \times n} numeric array, with `n = length(v)`.
+#'
+#' @seealso [.mvt_scale_slices()] for the mirror case and
+#'   [distrib_hess_y_hess.MvStudentTDistrib()] for the consumer.
+#'
+#' @examples
+#' m <- matrix(c(1, 2, 2, 4), 2, 2)
+#' cs <- distributions7:::.mvt_const_slices(m, c(1, -1))
+#' dim(cs)
+#' cs[, , 2]
+#'
+#' # Every slice is a multiple of the one matrix.
+#' all.equal(cs[, , 1], m)
+#' all.equal(cs[, , 2], -m)
+#'
 #' @keywords internal
 .mvt_const_slices <- function(m, v) {
   p <- nrow(m)
@@ -1640,19 +2038,60 @@ S7::method(distrib_hess_y_hess, MvStudentTDistrib) <-
 
 #' @title Multivariate Student t Response Hessian
 #' @name distrib_hess_y.MvStudentTDistrib
+#'
 #' @description
-#' Closed form. With \eqn{w = \Sigma^{-1}(y-\mu)}, \eqn{q = (y-\mu)^\top w} and
-#' \eqn{c = (\nu+p)/(\nu+q)},
-#' \deqn{\dfrac{\partial^2 \ell}{\partial y \, \partial y^\top}
-#'   = -c\,\Sigma^{-1} + \dfrac{2c}{\nu+q}\, w w^\top,}
-#' which depends on the observation through \eqn{c} and \eqn{w} --- unlike the
-#' gaussian's, which is \eqn{-\Sigma^{-1}} everywhere --- so one matrix is
-#' returned per row.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y An \eqn{n \times p} matrix of observations.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A \eqn{p \times p \times n} numeric array.
+#' Computes the second derivative of the log-density in the response,
+#' \deqn{\frac{\partial^2 \ell}{\partial y\, \partial y^\top}
+#'   = -c\,\Sigma^{-1} + 2d\,ww^\top, \qquad
+#'   c = \frac{\nu+p}{\nu+q}, \quad d = \frac{\nu+p}{(\nu+q)^2},}
+#' one \eqn{p \times p} matrix PER OBSERVATION. The gaussian's response
+#' Hessian is one matrix for the whole sample; this one moves with the
+#' observation, and far enough out its rank-one term makes the curvature
+#' positive along the direction of the residual, which is the redescending
+#' score seen at second order.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
+#'   length \eqn{p} is read as a single observation.
+#' @param theta A named list of parameters, each component a single number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A \eqn{p \times p \times n} numeric array, slice \eqn{i} holding
+#'   \eqn{\partial^2\ell_i/\partial y_i\partial y_i^\top}. Compare
+#'   [distrib_hess_y.MvGaussianDistrib()], which returns a
+#'   \eqn{p \times p} matrix and no third dimension at all.
+#'
+#' @section Notation:
+#' \eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom, \eqn{p}
+#' the dimension, \eqn{q} the squared Mahalanobis distance, \eqn{c} and
+#' \eqn{d} the two weights and \eqn{w = \Sigma^{-1}(y-\mu)}.
+#'
+#' @seealso [distrib_grad_y.MvStudentTDistrib()] for the first derivative,
+#'   [distrib_cross2_y.MvStudentTDistrib()] for its derivative in the
+#'   parameters, and [distrib_hess_y()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#' set.seed(1)
+#' y <- distrib_rng(d, 4, theta)
+#'
+#' hy <- distrib_hess_y(d, y, theta)
+#' dim(hy)
+#'
+#' # Against a numerical Hessian at one observation.
+#' max(abs(hy[, , 1] -
+#'         numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
+#'                           y[1, ])))
+#'
+#' # Far out along one coordinate the curvature turns positive, where a
+#' # gaussian's never does.
+#' far <- cbind(0.5 + c(1, 3, 12), -0.3)
+#' vapply(1:3, function(i) distrib_hess_y(d, far, theta)[1, 1, i], numeric(1))
+#' distrib_hess_y(mvgaussian_distrib(2), far, theta[1:5])[1, 1]
+#'
 #' @keywords internal
 S7::method(distrib_hess_y, MvStudentTDistrib) <- function(distrib, y, theta, ...) {
   y <- as_mv_matrix(distrib, y)
@@ -1672,14 +2111,42 @@ S7::method(distrib_hess_y, MvStudentTDistrib) <- function(distrib, y, theta, ...
 
 #' @title Mean of a Multivariate Student t
 #' @name mean.MvStudentTDistrib
+#'
 #' @description
-#' The location vector, which is the mean when \eqn{\nu > 1} and undefined
-#' otherwise; `NaN` is returned there rather than the location, since the
-#' location exists as a parameter while the moment does not.
-#' @param x A [MvStudentTDistrib()] object.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector of length \eqn{p}.
+#' Returns \eqn{\mathbb{E}[Y] = \mu} for \eqn{\nu > 1}, and a vector of `NaN`
+#' otherwise. Below one degree of freedom the defining integral does not
+#' converge: the density decays like \eqn{\lVert y\rVert^{-(\nu+p)}} and the
+#' first absolute moment integrates \eqn{\lVert y\rVert^{1-\nu-p}} over a shell
+#' of surface \eqn{\lVert y\rVert^{p-1}}, which is finite only for
+#' \eqn{\nu > 1}. The location is a parameter and the mean is a moment; at
+#' \eqn{\nu \le 1} the first exists and the second does not, so `NaN` is the
+#' answer and \eqn{\mu} would be the wrong one.
+#'
+#' @param x An [MvStudentTDistrib] object, from [mvstudent_t_distrib()].
+#' @param theta A named list of parameters, each component a single number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of length \eqn{p}, named `v1`, ..., `vp`, holding
+#'   the location for \eqn{\nu > 1} and `NaN` throughout for \eqn{\nu \le 1}.
+#'
+#' @seealso [variance.MvStudentTDistrib()] for the second moment, which needs
+#'   \eqn{\nu > 2}, [mv_location.MvStudentTDistrib()] for the location, which
+#'   exists at every \eqn{\nu}, and [base::mean()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#'
+#' mean(d, theta)
+#'
+#' # Below one degree of freedom the mean does not exist, while the location
+#' # and the density both do.
+#' t2 <- theta; t2$nu <- 0.8
+#' mean(d, t2)
+#' mv_location(d, t2)
+#' distrib_pdf(d, c(0, 0), t2)
+#'
 #' @keywords internal
 S7::method(mean, MvStudentTDistrib) <- function(x, theta, ...) {
   mu <- mv_location(x, theta)
@@ -1691,14 +2158,46 @@ S7::method(mean, MvStudentTDistrib) <- function(x, theta, ...) {
 
 #' @title Covariance of a Multivariate Student t
 #' @name variance.MvStudentTDistrib
+#'
 #' @description
-#' \eqn{\nu\Sigma/(\nu-2)} for \eqn{\nu > 2}, and infinite otherwise. This is
-#' the moment; the matrix the parametrization carries is
-#' [mv_sigma()], and the two differ by the factor above.
-#' @param x A [MvStudentTDistrib()] object.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A \eqn{p \times p} numeric matrix.
+#' Returns \eqn{\operatorname{Var}(Y) = \nu\Sigma/(\nu-2)} for \eqn{\nu > 2},
+#' and a matrix of `Inf` otherwise. The scale matrix \eqn{\Sigma} is what the
+#' parametrization carries and exists at every admissible \eqn{\nu}; the
+#' covariance is a moment, and the two differ by that factor, which is 3 at
+#' \eqn{\nu = 3} and approaches 1 as the tail lightens. [mv_sigma()] returns
+#' the first and this returns the second.
+#'
+#' @param x An [MvStudentTDistrib] object, from [mvstudent_t_distrib()].
+#' @param theta A named list of parameters, each component a single number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A \eqn{p \times p} numeric matrix with both dimnames `v1`, ...,
+#'   `vp`: the covariance for \eqn{\nu > 2}, and `Inf` in every entry for
+#'   \eqn{\nu \le 2}, the boundary \eqn{\nu = 2} included.
+#'
+#' @seealso [mv_sigma.MvStudentTDistrib()] for the scale matrix,
+#'   [mean.MvStudentTDistrib()] for the first moment, which needs only
+#'   \eqn{\nu > 1}, and [variance()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#'
+#' variance(d, theta)
+#' mv_sigma(d, theta)
+#' all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
+#'
+#' # The factor blows up as nu falls to 2 and the covariance goes with it.
+#' vapply(c(10, 3, 2.5, 2.05, 2), function(nu) {
+#'   t2 <- theta; t2$nu <- nu
+#'   variance(d, t2)[1, 1]
+#' }, numeric(1))
+#'
+#' # Correlations are unaffected: a positive multiple leaves them alone.
+#' cv <- function(m) m[1, 2] / sqrt(m[1, 1] * m[2, 2])
+#' c(scale = cv(mv_sigma(d, theta)), covariance = cv(variance(d, theta)))
+#'
 #' @keywords internal
 S7::method(variance, MvStudentTDistrib) <- function(x, theta, ...) {
   sg <- mv_sigma(x, theta)
@@ -1713,16 +2212,59 @@ S7::method(variance, MvStudentTDistrib) <- function(x, theta, ...) {
 
 #' @title Marginal of a Multivariate Student t
 #' @name mv_marginal.MvStudentTDistrib
+#'
 #' @description
-#' A marginal of a \eqn{t} is a \eqn{t} with the same degrees of freedom, the
-#' subvector of the location and the corresponding block of the scale matrix.
-#' The degrees of freedom do not change with the dimension, which is what makes
-#' the family closed under marginalization at all.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param theta A named list of parameters.
-#' @param which An integer vector of coordinates.
-#' @param ... Unused.
-#' @return A list with `distrib` and `theta`.
+#' Returns the marginal law of a subset of coordinates, which for this family
+#' is again a Student t: the subvector of the location, the corresponding block
+#' of the scale matrix, and THE SAME degrees of freedom. \eqn{\nu} does not
+#' change with the dimension, and that is why the family is closed under
+#' marginalization: the mixing variable of the scale-mixture representation is
+#' shared by every coordinate, so it survives integrating any of them out.
+#'
+#' The returned object is a fresh [mvstudent_t_distrib()] of the reduced
+#' dimension on an unstructured scale matrix, so the free values are recomputed
+#' from the block by `parameters7::param_free()` and are not a subset of the
+#' original's.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param theta A named list of parameters, each component a single number.
+#' @param which An integer vector of coordinates to keep, between 1 and
+#'   \eqn{p}. Duplicates and out-of-range values are not checked and reach the
+#'   matrix subsetting.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list with `distrib`, an `MvStudentTDistrib` of dimension
+#'   `length(which)`, and `theta`, its parameters as a named list.
+#'
+#' @section Notation:
+#' \eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+#' degrees of freedom and \eqn{p} the dimension of the full law.
+#'
+#' @seealso [mv_sigma.MvStudentTDistrib()] for the matrix it takes a block of,
+#'   [plot.multivariate_distrib()], whose diagonal panels are these marginals,
+#'   and [mv_marginal()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(3)
+#' theta <- as.list(stats::setNames(
+#'   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2, 6), d@params))
+#'
+#' m <- mv_marginal(d, theta, c(1, 3))
+#' m$distrib@n_dim
+#'
+#' # The degrees of freedom are unchanged, and the scale block is the
+#' # submatrix of the full one.
+#' c(full = theta$nu, marginal = m$theta$nu)
+#' all.equal(mv_sigma(m$distrib, m$theta), mv_sigma(d, theta)[c(1, 3), c(1, 3)],
+#'           check.attributes = FALSE)
+#'
+#' # A single coordinate is the univariate t, against stats::dt scaled.
+#' m1 <- mv_marginal(d, theta, 1)
+#' s1 <- sqrt(mv_sigma(d, theta)[1, 1])
+#' c(ours = distrib_pdf(m1$distrib, 2.4, m1$theta, log = TRUE),
+#'   dt = dt((2.4 - 1) / s1, df = 6, log = TRUE) - log(s1))
+#'
 #' @keywords internal
 S7::method(mv_marginal, MvStudentTDistrib) <- function(distrib, theta, which, ...) {
   mu <- as.numeric(mv_location(distrib, theta))[which]
@@ -1739,13 +2281,45 @@ S7::method(mv_marginal, MvStudentTDistrib) <- function(distrib, theta, which, ..
 
 #' @title The Scale Matrix of a Multivariate Student t
 #' @name mv_sigma.MvStudentTDistrib
+#'
 #' @description
-#' The scale matrix, not the covariance. The two differ by
-#' \eqn{\nu/(\nu-2)}, and only the scale matrix exists for every admissible
-#' \eqn{\nu}; the covariance is [variance()].
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param theta A named list of parameters.
-#' @return A \eqn{p \times p} numeric matrix.
+#' Returns the scale matrix \eqn{\Sigma}, assembled from the matrix
+#' parametrization's free values. This is the matrix in the density, and it is
+#' not the covariance: the covariance is \eqn{\nu\Sigma/(\nu-2)} and exists
+#' only for \eqn{\nu > 2}, while the scale matrix exists at every admissible
+#' \eqn{\nu}. [variance.MvStudentTDistrib()] returns the covariance. The
+#' correlations read off either are the same, a positive multiple of a matrix
+#' leaving them alone.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param theta A named list of parameters, each component a single number.
+#'   The location components and `nu` are ignored.
+#'
+#' @return A \eqn{p \times p} symmetric positive definite numeric matrix, with
+#'   both dimnames `v1`, ..., `vp`.
+#'
+#' @seealso [variance.MvStudentTDistrib()] for the covariance,
+#'   [mv_sigma.MvGaussianDistrib()], where the two coincide,
+#'   [mv_summary()], which reports the square roots of this matrix's diagonal
+#'   as `scale_sd_v1` and so on, and [mv_sigma()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#'
+#' mv_sigma(d, theta)
+#'
+#' # Positive definite whatever the free values are.
+#' eigen(mv_sigma(d, theta), only.values = TRUE)$values
+#'
+#' # It does not move with nu, where the covariance does.
+#' vapply(c(3, 6, 60), function(nu) {
+#'   t2 <- theta; t2$nu <- nu
+#'   c(scale = mv_sigma(d, t2)[1, 1], covariance = variance(d, t2)[1, 1])
+#' }, numeric(2))
+#'
 #' @keywords internal
 S7::method(mv_sigma, MvStudentTDistrib) <- function(distrib, theta) {
   pc <- mvt_pieces(distrib, theta)
@@ -1757,13 +2331,42 @@ S7::method(mv_sigma, MvStudentTDistrib) <- function(distrib, theta) {
 
 #' @title Random Parameters for a Multivariate Student t
 #' @name generate_random_theta.MvStudentTDistrib
+#'
 #' @description
-#' A location near the origin, a scale near the identity, and degrees of
-#' freedom in a range where the family is heavy-tailed but the likelihood is
-#' still well conditioned.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param ... Unused.
-#' @return A named list of scalars.
+#' Draws a parameter vector for testing: each location uniform on
+#' \eqn{(-1, 1)}, each free value of the matrix parametrization uniform on
+#' \eqn{(-0.4, 0.4)}, and the degrees of freedom uniform on \eqn{(3, 12)}. The
+#' matrix band puts the scale matrix near the identity, as it does for the
+#' gaussian; the \eqn{\nu} band is chosen so that the family is genuinely
+#' heavy-tailed and every moment [check_distrib()] compares still exists, the
+#' variance needing \eqn{\nu > 2} and the kurtosis \eqn{\nu > 4}.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of `distrib@n_params` single numbers, named and ordered
+#'   as `distrib@params`.
+#'
+#' @seealso [generate_random_theta.MvGaussianDistrib()] for the gaussian's
+#'   bands, [check_distrib()], which draws parameters this way, and
+#'   [generate_random_theta()] for the generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#'
+#' set.seed(11)
+#' unlist(generate_random_theta(d))
+#'
+#' # The three bands, over 400 draws.
+#' set.seed(12)
+#' round(apply(replicate(400, unlist(generate_random_theta(d))), 1, range), 2)
+#'
+#' # Every draw keeps nu above 4, so the covariance and the kurtosis of every
+#' # coordinate exist.
+#' set.seed(13)
+#' all(replicate(50, is.finite(variance(d, generate_random_theta(d))[1, 1])))
+#'
 #' @keywords internal
 S7::method(generate_random_theta, MvStudentTDistrib) <- function(distrib, ...) {
   p <- distrib@n_dim
@@ -1777,12 +2380,38 @@ S7::method(generate_random_theta, MvStudentTDistrib) <- function(distrib, ...) {
 
 #' @title Location of a Multivariate Student t
 #' @name mv_location.MvStudentTDistrib
+#'
 #' @description
-#' The first \eqn{p} parameters. They are the mean when \eqn{\nu > 1} and the
-#' center of symmetry always, which is why the generic is called a location
-#' rather than a mean.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param theta A named list of parameters.
-#' @return A named numeric vector of length \eqn{p}.
+#' Returns the location \eqn{\mu}, the first \eqn{p} parameters read off
+#' `theta` in order. The method is [mv_leading_location()], shared with the
+#' gaussian. For this family the location is the center of symmetry at every
+#' admissible \eqn{\nu} and the mean only for \eqn{\nu > 1}, which is why the
+#' generic is named for a location: [mean.MvStudentTDistrib()] returns `NaN`
+#' below one degree of freedom and this returns the location regardless.
+#'
+#' @param distrib An [MvStudentTDistrib] object, from
+#'   [mvstudent_t_distrib()].
+#' @param theta A named list of parameters, one number each. Only the \eqn{p}
+#'   location components are read.
+#'
+#' @return A numeric vector of length \eqn{p}, named `v1`, ..., `vp` after the
+#'   coordinates of the response.
+#'
+#' @seealso [mean.MvStudentTDistrib()] for the moment,
+#'   [mv_sigma.MvStudentTDistrib()] for the matrix, and [mv_location()] for the
+#'   generic.
+#'
+#' @examples
+#' d <- mvstudent_t_distrib(2)
+#' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+#'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+#'
+#' mv_location(d, theta)
+#'
+#' # Above one degree of freedom the location is the mean; below it, only the
+#' # location survives.
+#' t2 <- theta; t2$nu <- 0.8
+#' rbind(location = mv_location(d, t2), mean = mean(d, t2))
+#'
 #' @keywords internal
 S7::method(mv_location, MvStudentTDistrib) <- mv_leading_location

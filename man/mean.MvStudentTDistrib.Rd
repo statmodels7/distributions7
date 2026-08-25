@@ -4,18 +4,44 @@
 \alias{mean.MvStudentTDistrib}
 \title{Mean of a Multivariate Student t}
 \arguments{
-\item{x}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of length \eqn{p}.
+A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp}, holding
+the location for \eqn{\nu > 1} and \code{NaN} throughout for \eqn{\nu \le 1}.
 }
 \description{
-The location vector, which is the mean when \eqn{\nu > 1} and undefined
-otherwise; \code{NaN} is returned there rather than the location, since the
-location exists as a parameter while the moment does not.
+Returns \eqn{\mathbb{E}[Y] = \mu} for \eqn{\nu > 1}, and a vector of \code{NaN}
+otherwise. Below one degree of freedom the defining integral does not
+converge: the density decays like \eqn{\lVert y\rVert^{-(\nu+p)}} and the
+first absolute moment integrates \eqn{\lVert y\rVert^{1-\nu-p}} over a shell
+of surface \eqn{\lVert y\rVert^{p-1}}, which is finite only for
+\eqn{\nu > 1}. The location is a parameter and the mean is a moment; at
+\eqn{\nu \le 1} the first exists and the second does not, so \code{NaN} is the
+answer and \eqn{\mu} would be the wrong one.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+mean(d, theta)
+
+# Below one degree of freedom the mean does not exist, while the location
+# and the density both do.
+t2 <- theta; t2$nu <- 0.8
+mean(d, t2)
+mv_location(d, t2)
+distrib_pdf(d, c(0, 0), t2)
+
+}
+\seealso{
+\code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the second moment, which needs
+\eqn{\nu > 2}, \code{\link[=mv_location.MvStudentTDistrib]{mv_location.MvStudentTDistrib()}} for the location, which
+exists at every \eqn{\nu}, and \code{\link[base:mean]{base::mean()}} for the generic.
 }
 \keyword{internal}

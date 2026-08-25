@@ -4,24 +4,65 @@
 \alias{distrib_hess_y.MvStudentTDistrib}
 \title{Multivariate Student t Response Hessian}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A \eqn{p \times p \times n} numeric array.
+A \eqn{p \times p \times n} numeric array, slice \eqn{i} holding
+\eqn{\partial^2\ell_i/\partial y_i\partial y_i^\top}. Compare
+\code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y.MvGaussianDistrib()}}, which returns a
+\eqn{p \times p} matrix and no third dimension at all.
 }
 \description{
-Closed form. With \eqn{w = \Sigma^{-1}(y-\mu)}, \eqn{q = (y-\mu)^\top w} and
-\eqn{c = (\nu+p)/(\nu+q)},
-\deqn{\dfrac{\partial^2 \ell}{\partial y \, \partial y^\top}
-  = -c\,\Sigma^{-1} + \dfrac{2c}{\nu+q}\, w w^\top,}
-which depends on the observation through \eqn{c} and \eqn{w} --- unlike the
-gaussian's, which is \eqn{-\Sigma^{-1}} everywhere --- so one matrix is
-returned per row.
+Computes the second derivative of the log-density in the response,
+\deqn{\frac{\partial^2 \ell}{\partial y\, \partial y^\top}
+  = -c\,\Sigma^{-1} + 2d\,ww^\top, \qquad
+  c = \frac{\nu+p}{\nu+q}, \quad d = \frac{\nu+p}{(\nu+q)^2},}
+one \eqn{p \times p} matrix PER OBSERVATION. The gaussian's response
+Hessian is one matrix for the whole sample; this one moves with the
+observation, and far enough out its rank-one term makes the curvature
+positive along the direction of the residual, which is the redescending
+score seen at second order.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the scale matrix, \eqn{\nu} the degrees of freedom, \eqn{p}
+the dimension, \eqn{q} the squared Mahalanobis distance, \eqn{c} and
+\eqn{d} the two weights and \eqn{w = \Sigma^{-1}(y-\mu)}.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+hy <- distrib_hess_y(d, y, theta)
+dim(hy)
+
+# Against a numerical Hessian at one observation.
+max(abs(hy[, , 1] -
+        numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
+                          y[1, ])))
+
+# Far out along one coordinate the curvature turns positive, where a
+# gaussian's never does.
+far <- cbind(0.5 + c(1, 3, 12), -0.3)
+vapply(1:3, function(i) distrib_hess_y(d, far, theta)[1, 1, i], numeric(1))
+distrib_hess_y(mvgaussian_distrib(2), far, theta[1:5])[1, 1]
+
+}
+\seealso{
+\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y.MvStudentTDistrib()}} for the first derivative,
+\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}} for its derivative in the
+parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }
 \keyword{internal}

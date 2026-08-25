@@ -4,24 +4,30 @@
 \alias{distrib_cross_y.MvStudentTDistrib}
 \title{Multivariate Student t Mixed Response-Parameter Derivatives}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two differ here, \code{nu} carrying a log link by
+default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one \eqn{n \times p} matrix per parameter.
+A named list of \eqn{n \times p} numeric matrices, one per
+parameter, in \code{distrib@params} order.
 }
 \description{
-\eqn{\partial^2 \ell / \partial y \partial \theta_k}, one \eqn{n \times p}
-matrix per parameter. The response gradient is \eqn{-c\,w}, so every
-component carries the derivative of the weight beside the gaussian term it
-multiplies: with \eqn{A_k = \partial\Sigma/\partial\eta_k},
+Computes \eqn{\partial^2\ell/\partial y\,\partial\theta_k}, one
+\eqn{n \times p} matrix per parameter. The response gradient is
+\eqn{-c\,w}, so every component carries the derivative of the weight beside
+the gaussian term it multiplies. With
+\eqn{A_k = \partial\Sigma/\partial\eta_k},
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\mu_j}
     = c\,\Sigma^{-1}e_j - \frac{\partial c}{\partial\mu_j}\,w,
   \qquad \frac{\partial c}{\partial\mu_j}
@@ -32,12 +38,58 @@ multiplies: with \eqn{A_k = \partial\Sigma/\partial\eta_k},
     = \frac{(\nu+p)\,w^\top A_k w}{(\nu+q)^2},}
 \deqn{\frac{\partial^2\ell}{\partial y\,\partial\nu}
     = -\frac{(q-p)\,w}{(\nu+q)^2}.}
+Unlike the gaussian's, no component here is constant across rows: the
+location block carries the observation through \eqn{c} even though its
+gaussian part does not.
 }
 \details{
-Nothing here is obstructed: the log-density carries no distribution
-function, only \code{lgamma}, a logarithm and a quadratic form, each
-elementary in \eqn{\nu}. As \eqn{\nu \to \infty} the weight and its
-derivatives go to one and to zero, and every component becomes the
-gaussian's, which is what the tests compare it against.
+Nothing here is obstructed. The log-density carries no distribution
+function, only \code{lgamma}, a logarithm and a quadratic form, each elementary
+in \eqn{\nu}. As \eqn{\nu \to \infty} the weight goes to one and its
+derivatives to zero, so every component becomes the gaussian's; the tests
+compare them against that limit, and at \eqn{\nu = 10^7} the two agree to
+\eqn{2.6\times10^{-6}}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{\eta} the free vector of the matrix
+parametrization, \eqn{q} the squared Mahalanobis distance, \eqn{c} the
+weight, \eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{e_j} the \eqn{j}th standard
+basis vector.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+
+cy <- distrib_cross_y(d, y, theta)
+names(cy)
+
+# Against a difference of the response gradient, parameter by parameter.
+h <- 1e-5
+vapply(seq_along(d@params), function(k) {
+  tp <- theta; tp[[k]] <- tp[[k]] + h
+  tm <- theta; tm[[k]] <- tm[[k]] - h
+  max(abs(cy[[k]] -
+          (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
+}, numeric(1))
+
+# As nu grows every shared component approaches the gaussian's.
+t2 <- theta; t2$nu <- 1e7
+g <- mvgaussian_distrib(2)
+cg <- distrib_cross_y(g, y, theta[1:5])
+ct <- distrib_cross_y(d, y, t2)
+max(vapply(1:5, function(k) max(abs(cg[[k]] - ct[[k]])), numeric(1)))
+
+}
+\seealso{
+\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y.MvStudentTDistrib()}}, whose derivative in the
+parameters this is, \code{\link[=mvt_dpieces]{mvt_dpieces()}} for the assembly,
+\code{\link[=distrib_cross_y.MvGaussianDistrib]{distrib_cross_y.MvGaussianDistrib()}} for the limiting family, and
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic.
 }
 \keyword{internal}

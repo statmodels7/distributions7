@@ -4,16 +4,40 @@
 \alias{mv_location.MvStudentTDistrib}
 \title{Location of a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, one number each. Only the \eqn{p}
+location components are read.}
 }
 \value{
-A named numeric vector of length \eqn{p}.
+A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp} after the
+coordinates of the response.
 }
 \description{
-The first \eqn{p} parameters. They are the mean when \eqn{\nu > 1} and the
-center of symmetry always, which is why the generic is called a location
-rather than a mean.
+Returns the location \eqn{\mu}, the first \eqn{p} parameters read off
+\code{theta} in order. The method is \code{\link[=mv_leading_location]{mv_leading_location()}}, shared with the
+gaussian. For this family the location is the center of symmetry at every
+admissible \eqn{\nu} and the mean only for \eqn{\nu > 1}, which is why the
+generic is named for a location: \code{\link[=mean.MvStudentTDistrib]{mean.MvStudentTDistrib()}} returns \code{NaN}
+below one degree of freedom and this returns the location regardless.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+mv_location(d, theta)
+
+# Above one degree of freedom the location is the mean; below it, only the
+# location survives.
+t2 <- theta; t2$nu <- 0.8
+rbind(location = mv_location(d, t2), mean = mean(d, t2))
+
+}
+\seealso{
+\code{\link[=mean.MvStudentTDistrib]{mean.MvStudentTDistrib()}} for the moment,
+\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the matrix, and \code{\link[=mv_location]{mv_location()}} for the
+generic.
 }
 \keyword{internal}

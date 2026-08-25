@@ -4,16 +4,43 @@
 \alias{generate_random_theta.MvStudentTDistrib}
 \title{Random Parameters for a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of scalars.
+A named list of \code{distrib@n_params} single numbers, named and ordered
+as \code{distrib@params}.
 }
 \description{
-A location near the origin, a scale near the identity, and degrees of
-freedom in a range where the family is heavy-tailed but the likelihood is
-still well conditioned.
+Draws a parameter vector for testing: each location uniform on
+\eqn{(-1, 1)}, each free value of the matrix parametrization uniform on
+\eqn{(-0.4, 0.4)}, and the degrees of freedom uniform on \eqn{(3, 12)}. The
+matrix band puts the scale matrix near the identity, as it does for the
+gaussian; the \eqn{\nu} band is chosen so that the family is genuinely
+heavy-tailed and every moment \code{\link[=check_distrib]{check_distrib()}} compares still exists, the
+variance needing \eqn{\nu > 2} and the kurtosis \eqn{\nu > 4}.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+
+set.seed(11)
+unlist(generate_random_theta(d))
+
+# The three bands, over 400 draws.
+set.seed(12)
+round(apply(replicate(400, unlist(generate_random_theta(d))), 1, range), 2)
+
+# Every draw keeps nu above 4, so the covariance and the kurtosis of every
+# coordinate exist.
+set.seed(13)
+all(replicate(50, is.finite(variance(d, generate_random_theta(d))[1, 1])))
+
+}
+\seealso{
+\code{\link[=generate_random_theta.MvGaussianDistrib]{generate_random_theta.MvGaussianDistrib()}} for the gaussian's
+bands, \code{\link[=check_distrib]{check_distrib()}}, which draws parameters this way, and
+\code{\link[=generate_random_theta]{generate_random_theta()}} for the generic.
 }
 \keyword{internal}

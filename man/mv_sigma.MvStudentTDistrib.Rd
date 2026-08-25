@@ -4,16 +4,46 @@
 \alias{mv_sigma.MvStudentTDistrib}
 \title{The Scale Matrix of a Multivariate Student t}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.
+The location components and \code{nu} are ignored.}
 }
 \value{
-A \eqn{p \times p} numeric matrix.
+A \eqn{p \times p} symmetric positive definite numeric matrix, with
+both dimnames \code{v1}, ..., \code{vp}.
 }
 \description{
-The scale matrix, not the covariance. The two differ by
-\eqn{\nu/(\nu-2)}, and only the scale matrix exists for every admissible
-\eqn{\nu}; the covariance is \code{\link[=variance]{variance()}}.
+Returns the scale matrix \eqn{\Sigma}, assembled from the matrix
+parametrization's free values. This is the matrix in the density, and it is
+not the covariance: the covariance is \eqn{\nu\Sigma/(\nu-2)} and exists
+only for \eqn{\nu > 2}, while the scale matrix exists at every admissible
+\eqn{\nu}. \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} returns the covariance. The
+correlations read off either are the same, a positive multiple of a matrix
+leaving them alone.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+mv_sigma(d, theta)
+
+# Positive definite whatever the free values are.
+eigen(mv_sigma(d, theta), only.values = TRUE)$values
+
+# It does not move with nu, where the covariance does.
+vapply(c(3, 6, 60), function(nu) {
+  t2 <- theta; t2$nu <- nu
+  c(scale = mv_sigma(d, t2)[1, 1], covariance = variance(d, t2)[1, 1])
+}, numeric(2))
+
+}
+\seealso{
+\code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance,
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}}, where the two coincide,
+\code{\link[=mv_summary]{mv_summary()}}, which reports the square roots of this matrix's diagonal
+as \code{scale_sd_v1} and so on, and \code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }
 \keyword{internal}

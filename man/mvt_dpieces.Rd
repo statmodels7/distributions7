@@ -7,36 +7,45 @@
 mvt_dpieces(distrib, y, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations, already coerced
+by \code{\link[=as_mv_matrix]{as_mv_matrix()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 }
 \value{
-A list of the quantities above, indexed by parameter POSITION --
-the means, then the matrix parameter's free values, then \eqn{\nu} -- with
-\code{pair()} a function returning the second-order pieces of a pair.
+A named list of the quantities above, INDEXED BY PARAMETER POSITION:
+the \eqn{p} locations, then the matrix parametrization's free values, then
+\eqn{\nu}. Its components are \code{w}, \code{si}, \code{cw}, \code{dw} and \code{q} (the values),
+\code{sa}, \code{wa}, \code{Sa}, \code{ca}, \code{da} (lists of first derivatives, one per
+parameter), \code{npar}, and \code{pair(a, b)}, a function returning the second-order
+pieces \code{s}, \code{w}, \code{S}, \code{c} and \code{d} for one pair of positions.
 }
 \description{
-The response derivatives of this family are
+Assembles, once per call, the first and second derivatives in the parameters
+of the four quantities every mixed response derivative of this family is
+built from: \eqn{s = \nu + q}, the whitened residual \eqn{w}, the inverse
+scale matrix \eqn{\Sigma^{-1}}, and the two scalars \eqn{c = (\nu+p)/s} and
+\eqn{d = (\nu+p)/s^2} that follow from \eqn{s}. The response derivatives are
 \eqn{\ell^{(y)} = -c\,w} and
-\eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top} with
-\eqn{c = (\nu+p)/s}, \eqn{d = (\nu+p)/s^2} and \eqn{s = \nu + q}, so every
-derivative in the parameters is assembled from the first and second
-derivatives of four things: \eqn{s}, \eqn{w}, \eqn{\Sigma^{-1}} and the
-scalars \eqn{c} and \eqn{d} that follow from \eqn{s}.
+\eqn{\ell^{(yy)} = -c\,\Sigma^{-1} + 2d\,ww^\top}, so differentiating either
+in the parameters is a product rule over these pieces and nothing else.
 }
-\details{
-Writing \eqn{A_k} for the matrix parameter's first derivatives, \eqn{u_j}
-for the \eqn{j}th column of \eqn{\Sigma^{-1}} and \eqn{P_k} for
-\eqn{\Sigma^{-1}A_k\Sigma^{-1}}, the first derivatives are
+\section{First derivatives}{
+Writing \eqn{A_k} for the matrix parametrization's first derivatives,
+\eqn{u_j} for the \eqn{j}th column of \eqn{\Sigma^{-1}} and \eqn{P_k} for
+\eqn{\Sigma^{-1}A_k\Sigma^{-1}},
 \deqn{\partial_{\mu_j} s = -2w_j, \quad \partial_{\eta_k} s = -w^\top A_kw,
   \quad \partial_\nu s = 1,}
 \deqn{\partial_{\mu_j} w = -u_j, \quad
   \partial_{\eta_k} w = -\Sigma^{-1}A_kw, \quad \partial_\nu w = 0,
-  \qquad \partial_{\eta_k}\Sigma^{-1} = -P_k,}
-and the second ones vanish except for
+  \qquad \partial_{\eta_k}\Sigma^{-1} = -P_k.}
+}
+
+\section{Second derivatives}{
+All vanish except
 \deqn{\partial_{\mu_j\mu_l} s = 2(\Sigma^{-1})_{jl}, \quad
   \partial_{\mu_j\eta_k} s = 2(\Sigma^{-1}A_kw)_j, \quad
   \partial_{\mu_j\eta_k} w = P_ke_j,}
@@ -44,8 +53,50 @@ and, with \eqn{B_{kl} = A_k\Sigma^{-1}A_l + A_l\Sigma^{-1}A_k - A_{kl}},
 \deqn{\partial_{\eta_k\eta_l} s = w^\top B_{kl}w, \quad
   \partial_{\eta_k\eta_l} w = \Sigma^{-1}B_{kl}w, \quad
   \partial_{\eta_k\eta_l}\Sigma^{-1} = \Sigma^{-1}B_{kl}\Sigma^{-1}.}
-The same middle matrix serves all three, which is what keeps the assembly
-short. \eqn{c} and \eqn{d} then follow from the quotient rule with
-\eqn{\nu+p} linear in \eqn{\nu} and constant in everything else.
+One middle matrix \eqn{B_{kl}} serves all three, which keeps the assembly
+short. \eqn{c} and \eqn{d} then follow by the quotient rule, \eqn{\nu+p}
+being linear in \eqn{\nu} and constant in everything else.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{\eta} the free vector of the matrix
+parametrization, \eqn{A_k} and \eqn{A_{kl}} its derivative arrays, \eqn{q}
+the squared Mahalanobis distance, \eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{e_j}
+the \eqn{j}th standard basis vector.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+z <- distributions7:::mvt_dpieces(d, y, theta)
+names(z)
+
+# Six parameters, so six first-derivative entries per quantity.
+c(npar = z$npar, n_sa = length(z$sa), n_wa = length(z$wa))
+
+# ds/dnu is exactly one, s being nu + q.
+z$sa[[6]]
+
+# And ds/dmu1 is -2 w1, against a difference of q + nu.
+h <- 1e-5
+sfun <- function(m1) {
+  t2 <- theta; t2$mu1 <- m1
+  pc <- distributions7:::mvt_pieces(d, t2)
+  distributions7:::mvt_weights(y, pc)$q + t2$nu
+}
+max(abs(z$sa[[1]] - (sfun(0.5 + h) - sfun(0.5 - h)) / (2 * h)))
+
+}
+\seealso{
+\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y.MvStudentTDistrib()}},
+\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y.MvStudentTDistrib()}},
+\code{\link[=distrib_grad_y_hess.MvStudentTDistrib]{distrib_grad_y_hess.MvStudentTDistrib()}} and
+\code{\link[=distrib_hess_y_hess.MvStudentTDistrib]{distrib_hess_y_hess.MvStudentTDistrib()}}, the four consumers, and
+\code{\link[=mvt_weights]{mvt_weights()}} for the values these differentiate.
 }
 \keyword{internal}
