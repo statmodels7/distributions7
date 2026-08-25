@@ -4,24 +4,74 @@
 \alias{distrib_pdf.MvStudentTDistrib}
 \title{Multivariate Student t Density}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations, one row each.
+A plain numeric vector of length \eqn{p} is read as a single observation.
+Every point of \eqn{\mathbb{R}^p} is in the support, so no row is
+rejected. A matrix with zero rows returns \code{numeric(0)}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number:
+\code{mu1}, ..., \code{mup}, the matrix parametrization's prefixed free values, and
+\code{nu}, which must be strictly positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned,
+which stays finite far into a tail. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector with one value per observation.
+A numeric vector of length \eqn{n}, one density per row of \code{y}.
 }
 \description{
+Computes the log-density
 \deqn{\ell = \log\Gamma\!\left(\tfrac{\nu+p}{2}\right)
   - \log\Gamma\!\left(\tfrac{\nu}{2}\right)
-  - \tfrac{p}{2}\log(\nu\pi) - \tfrac{1}{2}\log|\Sigma|
+  - \tfrac{p}{2}\log(\nu\pi) - \tfrac{1}{2}\log\lvert\Sigma\rvert
   - \tfrac{\nu+p}{2}\log\!\left(1 + \tfrac{q}{\nu}\right),}
-with \eqn{q = (y-\mu)^\top \Sigma^{-1}(y-\mu)}. The logarithm is taken with
-\code{log1p}, which is the difference between a number and a loss of every
-significant digit when \eqn{q/\nu} is small.
+with \eqn{q = (y-\mu)^\top \Sigma^{-1}(y-\mu)}, row by row, and
+exponentiates it unless \code{log = TRUE}. The last logarithm is taken with
+\code{\link[base:Log]{base::log1p()}}, which is the difference between a number and a loss of
+every significant digit when \eqn{q/\nu} is small: near the center of a
+family with many degrees of freedom, \code{log(1 + q/nu)} cancels its argument
+away.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{p} the dimension and \eqn{q} the squared
+Mahalanobis distance of an observation from the location.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
+
+distrib_pdf(d, y, theta)
+
+# Against the formula written out.
+S <- mv_sigma(d, theta)
+q <- mahalanobis(y, c(0.5, -0.3), S)
+ref <- lgamma(4) - lgamma(3) - log(6 * pi) - 0.5 * log(det(S)) -
+  4 * log1p(q / 6)
+all.equal(distrib_pdf(d, y, theta, log = TRUE), ref)
+
+# As nu grows the density approaches the gaussian's at the same matrix.
+g <- mvgaussian_distrib(2)
+vapply(c(6, 60, 6000), function(nu) {
+  t2 <- theta; t2$nu <- nu
+  distrib_pdf(d, c(1, -1), t2, log = TRUE)
+}, numeric(1))
+distrib_pdf(g, c(1, -1), theta[1:5], log = TRUE)
+
+}
+\seealso{
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the derivatives,
+\code{\link[=distrib_rng.MvStudentTDistrib]{distrib_rng.MvStudentTDistrib()}} to draw from it,
+\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf.MvGaussianDistrib()}} for the limiting family, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{MvStudentTDistrib}
 \alias{MvStudentTDistrib}
-\title{Multivariate Student's t Distribution}
+\title{Multivariate Student t Distribution Class}
 \usage{
 MvStudentTDistrib(
   distrib_name = character(0),
@@ -19,40 +19,82 @@ MvStudentTDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
+\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
+integer.}
 
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
+\item{param}{A \pkg{parameters7} parametrization of the SCALE matrix,
+inheriting from \code{parameters7::parameter}. Its \code{n_free} free values are
+flattened into scalar parameters of the distribution.}
 
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
-
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
-\item{n_dim}{The dimension \eqn{p} of an observation.}
-
-\item{param}{The \pkg{parameters7} structure carrying the scale matrix.}
+\item{...}{The properties of the parent \code{distrib} class, listed under Value.}
 }
 \value{
-An object of class \code{MvStudentTDistrib}.
+An S7 object of class \code{MvStudentTDistrib}, inheriting from
+\code{multivariate_distrib} and from \code{distrib}. Beyond the parent's
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params},
+\code{params_smooth} and \code{n_dim}, it carries \code{param} as supplied. Unlike
+\link{MvGaussianDistrib} it has no \code{inverted} property: the scale matrix is
+always parametrized as itself.
 }
 \description{
-The S7 class of multivariate Student t distributions: a mean vector, a
-\pkg{parameters7} structure for the scale matrix, and a degrees-of-freedom
-parameter. Constructed by \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.
+The S7 class of the elliptical Student t family on \eqn{\mathbb{R}^p}, with
+density
+\deqn{f(y) \propto \lvert\Sigma\rvert^{-1/2}
+  \left(1 + \frac{(y-\mu)^\top \Sigma^{-1} (y-\mu)}{\nu}\right)^{-(\nu+p)/2}.}
+The location \eqn{\mu} contributes \eqn{p} scalar parameters, the scale
+matrix \eqn{\Sigma} is carried by a \pkg{parameters7} parametrization whose
+free values become scalar parameters, and the degrees of freedom \eqn{\nu}
+is added last. It inherits from \code{multivariate_distrib}, so the response is
+an \eqn{n \times p} matrix and the distribution function and the quantile
+function are refused.
+
+Build one with \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}, which fills the properties in and
+checks the rank of the parametrization. This page documents the raw S7
+constructor, which validates nothing.
 }
+\section{Methods}{
+
+Registered on this class:
+\code{\link[=distrib_cross2_y.MvStudentTDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross_y.MvStudentTDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.MvStudentTDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.MvStudentTDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.MvStudentTDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf()}},
+\code{\link[=distrib_rng.MvStudentTDistrib]{distrib_rng()}},
+\code{\link[=generate_random_theta.MvStudentTDistrib]{generate_random_theta()}},
+\code{\link[=mean.MvStudentTDistrib]{mean()}},
+\code{\link[=mv_location.MvStudentTDistrib]{mv_location()}},
+\code{\link[=mv_marginal.MvStudentTDistrib]{mv_marginal()}},
+\code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma()}},
+\code{\link[=variance.MvStudentTDistrib]{variance()}}
+
+Everything else comes from \code{\link[=multivariate_distrib]{multivariate_distrib()}}. The third and fourth
+derivatives are registered in \code{mv_higher.R}, which the two multivariate
+families share.
+}
+
 \examples{
-S7::S7_inherits(mvstudent_t_distrib(2), MvStudentTDistrib)
+d <- mvstudent_t_distrib(2)
+S7::S7_inherits(d, multivariate_distrib)
+
+# Six parameters: two locations, three free values of the scale matrix, and
+# the degrees of freedom last.
+d@params
+d@params_interpretation
+
+# nu is the one parameter with a bound, and the one with a link that is not
+# the identity, so this family's link scale is not its parameter scale.
+d@params_bounds$nu
+vapply(d@link_params, function(l) l@link_name, character(1))
 
 }
 \seealso{
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} to build one, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for
+the limit \eqn{\nu \to \infty}, \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the
+scale matrix and \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance, which
+are different matrices here.
 }

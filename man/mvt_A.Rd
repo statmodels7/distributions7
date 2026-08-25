@@ -2,64 +2,82 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{mvt_A}
 \alias{mvt_A}
-\alias{mvt_A1}
-\alias{mvt_T}
-\alias{mvt_T1}
-\alias{mvt_D}
-\title{The Degrees of Freedom at Large nu, Without the Cancellation}
+\title{The Digamma Difference of a Multivariate t, Without the Cancellation}
 \usage{
 mvt_A(nu, p)
-
-mvt_A1(nu)
-
-mvt_T(nu, p)
-
-mvt_T1(nu)
-
-mvt_D(u)
 }
 \arguments{
-\item{nu}{The degrees of freedom.}
+\item{nu}{The degrees of freedom, a numeric vector of any length, strictly
+positive. Nothing is validated: a non-positive value reaches
+\code{\link[base:Special]{base::digamma()}} and returns \code{NaN}.}
 
-\item{p}{The dimension.}
+\item{p}{The dimension, a single positive whole number. Even and odd take
+different branches.}
 }
 \value{
-A numeric vector the length of \code{nu}.
+A numeric vector as long as \code{nu}, non-positive at every \eqn{p} and
+exactly zero at \eqn{p = 2}.
 }
 \description{
-\eqn{A_p(\nu) = \psi(\tfrac{\nu+p}{2}) - \psi(\tfrac{\nu}{2}) - \tfrac{p}{\nu}}
-and the corresponding first-order combination of the observed Hessian,
-each written so that the cancellation between their terms is performed
-EXACTLY rather than left to double precision.
+Computes
+\eqn{A_p(\nu) = \psi\!\left(\tfrac{\nu+p}{2}\right)
+- \psi\!\left(\tfrac{\nu}{2}\right) - \tfrac{p}{\nu}}, the part of the score
+in \eqn{\nu} that does not involve the data, in a form whose terms carry one
+sign so that nothing cancels.
 }
-\details{
-As \eqn{\nu} grows the multivariate t tends to the multivariate gaussian
-and every derivative in \eqn{\nu} vanishes, so each is a difference of
-terms that agree to leading order: \eqn{\psi(\tfrac{\nu+p}{2}) -
-\psi(\tfrac{\nu}{2})} is \eqn{p/\nu} and so is what it is subtracted from.
-Measured on the score the family returns, the direct form is wrong by
-4.9e-05 at \eqn{\nu = 10^6}, by 0.397 at \eqn{10^8} and by 838 at
-\eqn{10^{10}}, and it CHANGES SIGN: at \eqn{\nu = 10^9} it reads
-+8.2e-15 where the trend of the values below it gives -2.2e-16.
+\section{Why the direct form fails}{
+As \eqn{\nu} grows the multivariate t tends to the multivariate gaussian and
+every derivative in \eqn{\nu} vanishes, so \eqn{A_p} is a difference of
+terms agreeing to leading order:
+\eqn{\psi(\tfrac{\nu+p}{2}) - \psi(\tfrac{\nu}{2})} is \eqn{p/\nu}, and
+\eqn{p/\nu} is what it is subtracted from. Measured at \eqn{p = 4}, the
+direct form is wrong by a relative \eqn{4.9\times10^{-5}} at
+\eqn{\nu = 10^6}, by 39 per cent at \eqn{10^8}, and it CHANGES SIGN at
+\eqn{10^9}, reading \eqn{+3.3\times10^{-16}} where the exact value is
+\eqn{-4.0\times10^{-18}}.
+}
 
-The repair needs no series, because \eqn{p} is an integer dimension and
-the shift between the two arguments is therefore a whole number of steps
-of the recurrence \eqn{\psi(x+1) = \psi(x) + 1/x}. For even \eqn{p} that
-gives sums whose terms all carry ONE SIGN, so nothing cancels:
-\deqn{A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)},}
-\deqn{\tfrac12\Big[\psi'(\tfrac{\nu+p}{2}) - \psi'(\tfrac{\nu}{2})\Big]
-  + \frac{p}{\nu^2} = \sum_{j=0}^{p/2-1} \frac{8j(\nu+j)}{\nu^2(\nu+2j)^2}.}
-Both are exactly zero at \eqn{p = 2}, which is what the two sides of each
-identity give there and what the direct forms return as noise at 1e-16.
+\section{The repair needs no series for an even dimension}{
+\eqn{p} is an integer dimension, so the shift between the two digamma
+arguments is a whole number of steps of the recurrence
+\eqn{\psi(x+1) = \psi(x) + 1/x}. For even \eqn{p} that gives a sum whose
+terms all carry one sign:
+\deqn{A_p(\nu) = -\sum_{j=0}^{p/2-1} \frac{4j}{\nu(\nu+2j)}.}
+It is exactly zero at \eqn{p = 2}, where the direct form returns noise at
+\eqn{10^{-16}}.
 
 For odd \eqn{p} the shift is a half-integer, so the recurrence carries the
-quantity onto the UNIVARIATE \eqn{A_1(\nu)}, which keeps a series of its
-own above a measured crossover -- the same expansion
-\pkg{distributions7}'s own \code{student_t.cpp} carries, and the one place
-in this package where that series exists twice. The two are pinned against
-each other in the tests.
+quantity onto the univariate \code{\link[=mvt_A1]{mvt_A1()}}, which keeps a series of its own
+above a measured crossover.
+}
+
+\section{Notation}{
+
+\eqn{\nu} is the degrees of freedom, \eqn{p} the dimension and \eqn{\psi}
+the digamma function.
+}
+
+\examples{
+# At p = 2 the quantity is exactly zero and the direct form is noise.
+direct <- function(nu, p) digamma((nu + p) / 2) - digamma(nu / 2) - p / nu
+rbind(exact = distributions7:::mvt_A(c(3, 10, 1e6), 2),
+      direct = direct(c(3, 10, 1e6), 2))
+
+# At p = 4 the two agree while the direct form has digits left, and part
+# company at large nu, where the direct one changes sign.
+nu <- c(3, 1e3, 1e6, 1e8, 1e9)
+signif(rbind(exact = distributions7:::mvt_A(nu, 4),
+             direct = direct(nu, 4)), 5)
+
+# The exact form decays as -p(p - 2) / (2 nu^2), which is -4 / nu^2 at
+# p = 4.
+cbind(nu = nu, scaled = distributions7:::mvt_A(nu, 4) * nu^2)
+
 }
 \seealso{
-\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient()}}
+\code{\link[=mvt_A1]{mvt_A1()}} for the univariate case the odd branch reduces to,
+\code{\link[=mvt_T]{mvt_T()}} for the same treatment of the trigamma pair, \code{\link[=mvt_D]{mvt_D()}} for the
+third cancellation, and \code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the
+consumer.
 }
 \keyword{internal}

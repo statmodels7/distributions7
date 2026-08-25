@@ -2,90 +2,137 @@
 % Please edit documentation in R/mvstudent_t_distrib.R
 \name{mvstudent_t_distrib}
 \alias{mvstudent_t_distrib}
-\title{Construct a Multivariate Student's t Distribution}
+\title{Construct a Multivariate Student t Distribution}
 \usage{
 mvstudent_t_distrib(n_dim, sigma = NULL, link_nu = linkfunctions7::log_link())
 }
 \arguments{
-\item{n_dim}{The dimension \eqn{p}.}
+\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
+whole number, finite and at least 1. Anything else throws an error.}
 
-\item{sigma}{A \pkg{parameters7} structure for the scale matrix.
-Defaults to \code{parameters7::log_cholesky(n_dim)}.}
+\item{sigma}{A \pkg{parameters7} parametrization of the scale matrix, of
+dimension \code{n_dim} and of full rank. Defaults to
+\code{parameters7::log_cholesky(n_dim)}. A rank-deficient parametrization is
+rejected: the density would not normalize.}
 
-\item{link_nu}{The link for the degrees of freedom. Defaults to
-\code{linkfunctions7::log_link()}.}
+\item{link_nu}{The link carrying the degrees of freedom to the
+unconstrained scale, a \code{linkfunctions7::link} object. Defaults to
+\code{linkfunctions7::log_link()}, which keeps \eqn{\nu} strictly positive at
+every point of the free scale.}
 }
 \value{
-An object of class \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}}.
+An S7 object of class \link{MvStudentTDistrib}, with \code{param} the
+parametrization supplied. Its \code{params} are \code{mu1}, ..., \code{mup}, the prefixed
+free names, then \code{nu}; \code{n_params} is \code{p + param@n_free + 1}; every
+\code{params_bounds} entry is \eqn{(-\infty, \infty)} except \code{nu}'s, which is
+\eqn{(0, \infty)}; and every link is the identity except \code{nu}'s.
 }
 \description{
-The elliptical \eqn{t} on \eqn{\mathbb{R}^p}, with density
-\deqn{f(y) \propto |\Sigma|^{-1/2}
-  \left(1 + \frac{(y-\mu)^\top \Sigma^{-1} (y-\mu)}{\nu}\right)^{-(\nu+p)/2}.}
+Builds the elliptical Student t family on \eqn{\mathbb{R}^p}: a location
+vector of \eqn{p} free parameters, a scale matrix carried by a
+\pkg{parameters7} parametrization, and a positive degrees-of-freedom
+parameter. The free values of the parametrization become ordinary scalar
+parameters, so the object answers every generic of the \code{distrib} contract
+with \code{theta} a flat named list of numbers. The default scale matrix is
+unstructured in the log-Cholesky parametrization, which is
+\code{p * (p + 1) / 2} free values, and the default link for \code{nu} is the log.
 }
-\details{
-\eqn{\Sigma} is the \strong{scale} matrix and not the covariance: the
-covariance is \eqn{\nu\Sigma/(\nu-2)} where it exists at all, and for
-\eqn{\nu \le 2} it does not while the distribution is perfectly well
-defined. \code{\link[=mv_sigma]{mv_sigma()}} returns the scale matrix, which is the thing
-the parametrization carries, and \code{\link[=variance]{variance()}} returns the
-covariance, which is a moment. Keeping the two apart is what lets a fit run
-at \eqn{\nu = 1.5}.
-
-\strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, the
-structure contributes its free values under the \code{sigma_} prefix, and
-\code{nu} is added last. The mean and the matrix parameter are unconstrained and
-carry identity links; \code{nu} is positive and carries a log link by
-default, so unlike the multivariate gaussian this family's link scale is not
-its parameter scale.
-
-\strong{Reading a fit.} \code{\link[=mv_summary]{mv_summary()}} reports the square roots of
-the diagonal of the \strong{scale} matrix and the correlations. The
-correlations are the response's as well, a positive multiple of a matrix
-leaving them alone, but the diagonal quantities are not standard deviations
-of the response and are named \code{scale_sd_} to say so.
-
-\strong{What it is for.} A gaussian fitted to data with a few outlying rows
-inflates its covariance to cover them. A \eqn{t} with \eqn{\nu} estimated
-does not: the observations far from the center get a weight
-\eqn{(\nu+p)/(\nu+q)} that falls away with their Mahalanobis distance
-\eqn{q}, which is what appears in the score below and what makes the fit
-resistant. The gaussian is the limit \eqn{\nu \to \infty}.
-
-\strong{The expected information} has no closed form here and is
-approximated by sampling. \code{\link[=fit_distrib]{fit_distrib()}} therefore accepts
-\code{approx}, which it rejects for a family that computes it exactly.
+\section{The scale matrix is not the covariance}{
+\eqn{\Sigma} is the SCALE matrix. The covariance is \eqn{\nu\Sigma/(\nu-2)}
+where it exists, and for \eqn{\nu \le 2} it does not exist while the density
+is perfectly well defined. \code{\link[=mv_sigma]{mv_sigma()}} returns the scale matrix, which is
+what the parametrization carries, and \code{\link[=variance]{variance()}} returns the covariance,
+which is a moment. The separation is what allows a fit to run at
+\eqn{\nu = 1.5}, and below \eqn{\nu = 1} the mean does not exist either and
+\code{\link[base:mean]{base::mean()}} returns \code{NaN}.
 }
+
+\section{Parameters}{
+The location contributes \code{mu1}, ..., \code{mup}, the parametrization contributes
+its free values under the \code{sigma_} prefix, and \code{nu} comes last. The location
+and the matrix parameters are unconstrained and carry identity links; \code{nu}
+is positive and carries \code{link_nu}. So, unlike \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, this
+family's link scale is not its parameter scale, and \code{scale = "link"}
+multiplies each \code{nu} component by the chain-rule factor \eqn{\nu} under the
+default log link.
+}
+
+\section{What it is for}{
+A gaussian fitted to data with a few outlying rows inflates its covariance
+to cover them. A \eqn{t} with \eqn{\nu} estimated does not: an observation
+at Mahalanobis distance \eqn{q} enters every derivative through the weight
+\eqn{c = (\nu+p)/(\nu+q)}, which falls away as \eqn{1/q}. The gaussian is
+the limit \eqn{\nu \to \infty}, where \eqn{c \equiv 1} and nothing is
+downweighted.
+}
+
+\section{The expected information}{
+Closed form, from the family's own scale mixture; see
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the four blocks.
+\code{\link[=fit_distrib]{fit_distrib()}} therefore REJECTS an \code{approx} argument on
+\code{\link[=fisher_scoring]{fisher_scoring()}} for this family, as it does for any family that computes
+its expected information exactly.
+}
+
+\section{Reading a fit}{
+\code{\link[=mv_summary]{mv_summary()}} reports the square roots of the diagonal of the SCALE matrix
+and the correlations. The correlations are the response's as well, a
+positive multiple of a matrix leaving them alone, but the diagonal
+quantities are not standard deviations of the response and are named
+\code{scale_sd_v1}, ..., \code{scale_sd_vp} to say so.
+}
+
+\section{The response}{
+An \eqn{n \times p} matrix, one row per observation. A plain vector of
+length \eqn{p} is read as a single observation. A parameter may not vary
+from observation to observation.
+}
+
 \section{The distribution}{
 
-\deqn{f(y) = \frac{\Gamma\!\left(\frac{\nu+p}{2}\right)}{\Gamma\!\left(\frac{\nu}{2}\right)(\nu\pi)^{p/2}\lvert \Sigma \rvert^{1/2}}\left(1 + \frac{q}{\nu}\right)^{-(\nu+p)/2}, \qquad q = (y-\mu)'\Sigma^{-1}(y-\mu)}
+\deqn{f(y) = \frac{\Gamma\!\left(\frac{\nu+p}{2}\right)}{\Gamma\!\left(\frac{\nu}{2}\right)(\nu\pi)^{p/2}\lvert \Sigma \rvert^{1/2}}\left(1 + \frac{q}{\nu}\right)^{-(\nu+p)/2}, \qquad q = (y-\mu)^\top\Sigma^{-1}(y-\mu)}
 on \eqn{y \in \mathbb{R}^{p}}, with
-
 \deqn{\mathbb{E}[Y] = \mu \; (\nu > 1), \qquad \operatorname{Var}(Y) = \frac{\nu}{\nu-2}\Sigma \; (\nu > 2).}
+}
 
-Here \eqn{\Sigma} is the scale matrix and not the covariance, which
-is what lets the family be fitted where the second moment does not
-exist; \code{\link[=mv_sigma]{mv_sigma()}} returns the first and
-\code{\link[=variance]{variance()}} the second.
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{p} the dimension of one observation and \eqn{q} the
+squared Mahalanobis distance of an observation from the location. \eqn{\eta}
+is the free vector of the matrix parametrization.
 }
 
 \examples{
 d <- mvstudent_t_distrib(2)
-d@params
+d
 
-theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.4, nu = 5)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 
-# the scale matrix is what the matrix parameter carries; the covariance is a moment
+# The scale matrix is what the parametrization carries; the covariance is a
+# moment and is larger by nu / (nu - 2).
 mv_sigma(d, theta)
-variance(d, theta)
+all.equal(variance(d, theta), (6 / 4) * mv_sigma(d, theta))
 
-# and below two degrees of freedom the covariance does not exist at all,
-# while the density does
+# Below two degrees of freedom the covariance does not exist and the
+# density does; below one the mean goes too.
 theta$nu <- 1.5
-distrib_pdf(d, c(0, 0), theta)
-variance(d, theta)
+c(density = distrib_pdf(d, c(0, 0), theta), variance = variance(d, theta)[1, 1])
+theta$nu <- 0.8
+c(density = distrib_pdf(d, c(0, 0), theta), mean = mean(d, theta)[1])
+
+# The heavy tail is what the family is for: at four standard-scale units
+# out, a t at nu = 6 puts far more mass than a gaussian of the same scale.
+theta$nu <- 6
+g <- mvgaussian_distrib(2)
+c(t = distrib_pdf(d, c(4.5, -4.3), theta),
+  gaussian = distrib_pdf(g, c(4.5, -4.3), theta[1:5]))
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, \code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for the limiting family,
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the one-dimensional case,
+\code{\link[=mv_marginal.MvStudentTDistrib]{mv_marginal.MvStudentTDistrib()}} for a marginal, which keeps the same
+\eqn{\nu}, and \code{\link[=fit_distrib]{fit_distrib()}} to estimate one.
 }

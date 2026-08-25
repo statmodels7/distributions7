@@ -7,22 +7,65 @@
 mvt_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object.}
 
-\item{theta}{A named list of parameters, already aligned.}
+\item{theta}{A named list of parameters, already aligned by the generic, or
+any list whose components are in \code{distrib@params} order.}
 
-\item{derivs}{Whether the first derivative matrices are needed.}
+\item{derivs}{Logical of length 1. When \code{TRUE} the first derivative arrays
+of the scale matrix are computed and returned as \code{a}. Defaults to \code{FALSE}.}
 
-\item{derivs2}{Whether the second derivatives are needed as well.}
+\item{derivs2}{Logical of length 1. When \code{TRUE} the second derivative arrays
+are computed as well and returned as \code{a2}; the first derivatives are not
+computed with them, so a caller needing both sets \code{derivs} too. Defaults
+to \code{FALSE}.}
 }
 \value{
-A list with \code{mu}, \code{sigma}, \code{sigma_inv},
-\code{logdet}, \code{nu}, \code{eta}, \code{p}, \code{s}, and optionally
-\code{a} and \code{a2}.
+A named list with \code{mu} (numeric of length \eqn{p}), \code{eta} (the
+matrix parametrization's free vector), \code{nu} (a single number), \code{p}, \code{s}
+(the parametrization itself), \code{sigma} and \code{sigma_inv} (\eqn{p \times p}
+matrices) and \code{logdet} (the log-determinant of \eqn{\Sigma}), plus \code{a} and
+\code{a2} when asked for: lists of \eqn{p \times p} matrices, \code{a} one per free
+value and \code{a2} one per unordered pair.
 }
 \description{
-Assembles the location, the scale matrix, its inverse, the log-determinant
-and the degrees of freedom from a flat parameter vector, with the
-parameter's derivative matrices when they are needed.
+Assembles, once per call, the location, the scale matrix, its inverse, the
+log-determinant and the degrees of freedom from a flat parameter vector,
+together with the matrix parametrization's derivative arrays when they are
+asked for. Every method of \link{MvStudentTDistrib} calls this first and works
+from the result, so a parameter vector is unpacked and a matrix factorized
+once per call instead of once per component.
+}
+\details{
+The scale matrix is always parametrized as itself, so there is no inversion
+branch here and no sign to flip on the log-determinant. That is the whole
+difference from \code{\link[=mvg_pieces]{mvg_pieces()}}, whose parametrization may carry either side.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom and \eqn{\eta} the free vector of the matrix
+parametrization.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+pc <- distributions7:::mvt_pieces(d, theta, derivs = TRUE)
+names(pc)
+
+# sigma_inv is the inverse of the scale matrix, and logdet its determinant.
+all.equal(pc$sigma \%*\% pc$sigma_inv, diag(2), check.attributes = FALSE)
+all.equal(pc$logdet, log(det(pc$sigma)))
+
+# nu is carried apart from the matrix, as its own number.
+c(nu = pc$nu, n_free = length(pc$eta), n_deriv = length(pc$a))
+
+}
+\seealso{
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the family, \code{\link[=mvt_weights]{mvt_weights()}} for the
+quantities computed from these, and \code{\link[=mvg_pieces]{mvg_pieces()}} for the gaussian's
+twin.
 }
 \keyword{internal}

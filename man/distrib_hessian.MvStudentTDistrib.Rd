@@ -4,25 +4,92 @@
 \alias{distrib_hessian.MvStudentTDistrib}
 \title{Multivariate Student t Observed Hessian}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two differ here, \code{nu} carrying a log link by
+default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
+A named list of numeric vectors of length \eqn{n}, one per unordered
+pair of parameters, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}. Unlike the gaussian's, no
+block here is constant across rows.
 }
 \description{
-Closed form, obtained by differentiating the score of
-\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient()}} once
-more. Every block picks up a term in \eqn{\partial c/\partial\cdot}, because
-the weight depends on the observation through \eqn{q}; that dependence is
-what distinguishes the family from the gaussian, where \eqn{c} is one and
-those terms are absent.
+Computes the second derivatives of the log-density in closed form, by
+differentiating the score of
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} once more. Every block picks up a
+term in \eqn{\partial c/\partial\cdot}, the weight
+\eqn{c = (\nu+p)/(\nu+q)} depending on the observation through \eqn{q}. That
+dependence is what separates the family from the gaussian, where \eqn{c} is
+one and those terms are absent. Writing \eqn{w = \Sigma^{-1}(y-\mu)} and
+\eqn{d = \nu + q}, the location block is
+\deqn{\ell^{(\mu_a\mu_b)} = \frac{2c\,w_a w_b}{d} - c\,(\Sigma^{-1})_{ab},}
+and \eqn{\partial c/\partial\nu = (q-p)/d^2} is what carries \eqn{\nu} into
+every mixed block.
+}
+\details{
+The pure \eqn{\nu} component has three leading terms that cancel as
+\eqn{\nu} grows. They collapse exactly into \code{\link[=mvt_T]{mvt_T()}}, with no series and no
+crossover for an even dimension; see \code{\link[=mvt_A]{mvt_A()}} for what the direct form
+costs.
+
+The quantity \eqn{w^\top A_k w} appears in three of the blocks and is formed
+once per free value, as is \eqn{\Sigma^{-1}A_k}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{\eta} the free vector of the matrix
+parametrization, \eqn{A_k} and \eqn{A_{kl}} its first and second derivative
+arrays, \eqn{q} the squared Mahalanobis distance, \eqn{c} the weight and
+\eqn{\ell^{(ij)}} the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+set.seed(1)
+y <- distrib_rng(d, 25, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+# The location block moves with the observation, where a gaussian's does
+# not: the curvature at a far row is smaller.
+z <- distributions7:::mvt_weights(y, distributions7:::mvt_pieces(d, theta))
+near <- which.min(z$q); far <- which.max(z$q)
+c(q_near = z$q[near], curv_near = H$mu1_mu1[near],
+  q_far = z$q[far], curv_far = H$mu1_mu1[far])
+
+}
+\seealso{
+\code{\link[=distrib_expected_hessian.MvStudentTDistrib]{distrib_expected_hessian.MvStudentTDistrib()}} for the expectation
+of this matrix, which is closed form,
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the score, \code{\link[=mvt_T]{mvt_T()}} for the
+cancellation in the \eqn{\nu} component, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the
+generic.
 }
 \keyword{internal}

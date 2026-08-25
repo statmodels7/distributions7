@@ -4,21 +4,63 @@
 \alias{distrib_rng.MvStudentTDistrib}
 \title{Multivariate Student t Generator}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{n}{The number of observations to draw.}
+\item{n}{The number of observations to draw. A single non-negative whole
+number.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-An \eqn{n \times p} numeric matrix.
+An \eqn{n \times p} numeric matrix, one draw per row, with column
+names \code{v1}, ..., \code{vp}.
 }
 \description{
-The scale-mixture representation: \eqn{\mu + L z / \sqrt{g/\nu}} with
-\eqn{z} standard normal, \eqn{g \sim \chi^2_\nu} and \eqn{LL^\top = \Sigma}.
-A t is a gaussian whose precision has been multiplied by a gamma variate,
-which is the same fact that makes it robust.
+Draws from the family through its scale-mixture representation,
+\eqn{y = \mu + L z\sqrt{\nu/g}} with \eqn{z} a vector of independent
+standard normals, \eqn{g \sim \chi^2_\nu} independent of them, and
+\eqn{LL^\top = \Sigma}. A \eqn{t} is a gaussian whose precision has been
+multiplied by a gamma variate, and that same representation is what gives
+the family its heavy tails and its closed-form expected information.
+
+The draws consume \code{n * p} normal variates and \code{n} chi-squared variates from
+R's own generators, in that order, so the stream is reproducible under
+\code{\link[base:Random]{base::set.seed()}}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom and \eqn{L} a lower Cholesky factor of \eqn{\Sigma}.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+set.seed(1)
+distrib_rng(d, 4, theta)
+
+# At nu = 6 the covariance exists and the sample approaches it.
+set.seed(2)
+big <- distrib_rng(d, 40000, theta)
+round(var(big), 2)
+round(variance(d, theta), 2)
+
+# At nu = 1.5 it does not, and the sample covariance is a number that means
+# nothing: it grows with the sample instead of settling.
+t2 <- theta; t2$nu <- 1.5
+set.seed(3)
+vapply(c(2000, 20000, 200000),
+       function(m) var(distrib_rng(d, m, t2))[1, 1], numeric(1))
+
+}
+\seealso{
+\code{\link[=distrib_pdf.MvStudentTDistrib]{distrib_pdf.MvStudentTDistrib()}} for the density this draws from,
+\code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance the sample approaches
+when it exists, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
 \keyword{internal}

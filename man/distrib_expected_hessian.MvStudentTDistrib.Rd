@@ -4,56 +4,118 @@
 \alias{distrib_expected_hessian.MvStudentTDistrib}
 \title{Multivariate Student t Expected Information}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
 
-\item{y}{A numeric matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Only its row
+count is used: the expectation is taken over the law, so no observation
+enters any component.}
 
-\item{theta}{The parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The two differ here, \code{nu} carrying a log link by
+default.}
 
-\item{approx}{Ignored; the answer is exact.}
+\item{approx}{Ignored: the expectation is exact and no approximation
+strategy is consulted. \code{\link[=fit_distrib]{fit_distrib()}} rejects a \code{fisher_scoring(approx =)}
+for this family for that reason.}
 
-\item{nsim}{Ignored; the answer is exact.}
+\item{nsim}{Ignored, for the same reason.}
 
-\item{...}{Ignored.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected Hessian components.
+A named list of numeric vectors of length \eqn{n}, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant. The
+returned quantities are the expected SECOND DERIVATIVES, so the
+information is their negative.
 }
 \description{
-Closed form, from the family's own scale mixture rather than from a
-sample.
+Computes the expectation of the observed Hessian in closed form, taken from
+the family's own scale mixture. Every component is a Beta moment or a
+polygamma, so no sampling and no quadrature runs, and two calls at the same
+parameters return the same numbers. No component depends on the data, so
+every returned vector is constant across rows and \code{y} is read for its row
+count alone.
 }
-\details{
-Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{w = (\nu+p)/(\nu+q)}, the
-variable \eqn{v = q/(q+\nu)} is \strong{exactly} \eqn{\mathrm{Beta}(p/2,
-\nu/2)} and is independent of the direction \eqn{z/\lVert z\rVert}, which
-is uniform on the sphere. Every expectation the information needs is
-therefore a Beta moment or a polygamma, and the two averages separate:
-the radial one gives \eqn{wq = (\nu+p)v} and \eqn{w^2q^2 = (\nu+p)^2v^2},
-the angular one gives \eqn{\operatorname{E}[ee^\top] = I/p} and
-\eqn{\operatorname{E}[(e^\top Be)(e^\top Ce)] =
+\section{Why the expectations separate}{
+Writing \eqn{q = z^\top\Sigma^{-1}z} and \eqn{c = (\nu+p)/(\nu+q)}, the
+variable \eqn{v = q/(q+\nu)} is EXACTLY \eqn{\mathrm{Beta}(p/2, \nu/2)} and
+is independent of the direction \eqn{z/\lVert z\rVert}, which is uniform on
+the sphere. Each expectation therefore factors into a radial part and an
+angular part: the radial one gives \eqn{cq = (\nu+p)v} and
+\eqn{c^2q^2 = (\nu+p)^2v^2}, and the angular one gives
+\eqn{\mathbb{E}[ee^\top] = I/p} and
+\eqn{\mathbb{E}[(e^\top Be)(e^\top Ce)] =
 \{\operatorname{tr}B\operatorname{tr}C + 2\operatorname{tr}(BC)\}/
 \{p(p+2)\}}.
+}
 
+\section{The blocks}{
 With \eqn{t_k = \operatorname{tr}(\Sigma^{-1}A_k)} and
-\eqn{T_{kl} = \operatorname{tr}(\Sigma^{-1}A_k\Sigma^{-1}A_l)} the blocks
-come out as
-
+\eqn{T_{kl} = \operatorname{tr}(\Sigma^{-1}A_k\Sigma^{-1}A_l)},
 \deqn{I_{\mu\mu} = \frac{\nu+p}{\nu+p+2}\,\Sigma^{-1}, \qquad
   I_{kl} = \frac{(\nu+p)T_{kl} - t_kt_l}{2(\nu+p+2)}, \qquad
   I_{k\nu} = \frac{-t_k}{(\nu+p)(\nu+p+2)},}
-
 \deqn{I_{\nu\nu} = \frac{\psi'(\nu/2) - \psi'\{(\nu+p)/2\}}{4}
-  - \frac{p}{\nu(\nu+p)} + \frac{p}{2\nu(\nu+p+2)},}
+  - \frac{p}{\nu(\nu+p)} + \frac{p}{2\nu(\nu+p+2)}.}
+The location is orthogonal to everything else, every cross-expectation with
+it being odd in \eqn{z}.
+}
 
-with the location orthogonal to everything else, every cross-expectation
-with it being odd in \eqn{z}. Each reduces to the Gaussian's as
-\eqn{\nu \to \infty}: \eqn{I_{\mu\mu} \to \Sigma^{-1}},
-\eqn{I_{kl} \to T_{kl}/2}, and \eqn{I_{\nu\nu} \to 0}, the degrees of
-freedom ceasing to be identified in the limit.
+\section{The gaussian limit}{
+Each block reduces to the gaussian's as \eqn{\nu \to \infty}:
+\eqn{I_{\mu\mu} \to \Sigma^{-1}}, \eqn{I_{kl} \to T_{kl}/2}, and
+\eqn{I_{\nu\nu} \to 0}, the degrees of freedom ceasing to be identified in
+the limit. Measured at \eqn{p = 2} on an unstructured matrix, \eqn{I_{\nu\nu}}
+runs \eqn{2.8\times10^{-3}}, \eqn{8.2\times10^{-6}},
+\eqn{4.9\times10^{-9}}, \eqn{1.3\times10^{-14}} at
+\eqn{\nu = 6, 30, 200, 5000}, which is why a standard error for \eqn{\nu} is
+worth reading only where the tail is genuinely heavy.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{\eta} the free vector of the matrix
+parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k}, \eqn{\psi'} the
+trigamma function, \eqn{e} a uniform direction on the unit sphere and
+\eqn{I} an expected information block.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+
+EH <- distrib_expected_hessian(d, matrix(0, 3, 2), theta)
+round(vapply(EH, function(z) z[1], numeric(1)), 5)
+
+# Closed form, so two calls agree to the bit and nothing is sampled.
+identical(EH, distrib_expected_hessian(d, matrix(0, 3, 2), theta))
+
+# Every location-matrix and location-nu component is exactly zero.
+orth <- grep("^mu[0-9]+_(sigma|nu)", names(EH), value = TRUE)
+vapply(EH[orth], function(z) z[1], numeric(1))
+
+# And the closed form is what averaging the observed Hessian converges to.
+set.seed(3)
+big <- distrib_rng(d, 50000, theta)
+round(rbind(sampled = vapply(distrib_hessian(d, big, theta), mean, numeric(1)),
+            closed = vapply(EH, function(z) z[1], numeric(1))), 3)
+
+# The nu block vanishes as the tail lightens.
+vapply(c(6, 30, 200, 5000), function(nu) {
+  t2 <- theta; t2$nu <- nu
+  -distrib_expected_hessian(d, matrix(0, 1, 2), t2)$nu_nu[1]
+}, numeric(1))
+
 }
 \seealso{
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}
+\code{\link[=distrib_hessian.MvStudentTDistrib]{distrib_hessian.MvStudentTDistrib()}} for the observed matrix,
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian.MvGaussianDistrib()}} for the limiting family,
+\code{\link[=fit_distrib]{fit_distrib()}}, whose Fisher scoring inverts this matrix, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
+\keyword{internal}

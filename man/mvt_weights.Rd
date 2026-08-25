@@ -7,22 +7,60 @@
 mvt_weights(y, pc)
 }
 \arguments{
-\item{y}{An \eqn{n \times p} matrix.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations, already
+coerced by \code{\link[=as_mv_matrix]{as_mv_matrix()}}.}
 
-\item{pc}{The result of \code{\link[=mvt_pieces]{mvt_pieces()}}.}
+\item{pc}{The result of \code{\link[=mvt_pieces]{mvt_pieces()}}, from which \code{mu}, \code{sigma_inv}, \code{nu}
+and \code{p} are read.}
 }
 \value{
-A list with \code{r}, \code{w}, \code{q} and \code{cw}.
+A named list with \code{r} and \code{w}, each an \eqn{n \times p} numeric
+matrix, and \code{q} and \code{cw}, each a numeric vector of length \eqn{n}.
 }
 \description{
-\eqn{(\nu + p)/(\nu + q)} at each observation, with the whitened residuals
-that go with it.
+Computes the centered response \eqn{r_i = y_i - \mu}, its image
+\eqn{w_i = \Sigma^{-1}r_i} under the inverse scale matrix, the squared
+Mahalanobis distance \eqn{q_i = r_i^\top w_i}, and the weight
+\eqn{c_i = (\nu + p)/(\nu + q_i)}. Every derivative of the family is written
+in those four, so they are formed once per call.
 }
 \details{
-This weight is the whole of the family's robustness. At \eqn{q = 0} it is
-\eqn{(\nu+p)/\nu} and it decays like \eqn{1/q}, so an observation far from
-the center contributes less to every derivative rather than dragging the
-fit towards itself; letting \eqn{\nu \to \infty} sends it to one and
-recovers the gaussian, where nothing is downweighted.
+The weight is the whole of the family's resistance to outliers. At
+\eqn{q = 0} it is \eqn{(\nu+p)/\nu}, and it decays like \eqn{1/q}, so an
+observation far from the location contributes less to every derivative
+instead of dragging the fit towards itself. Letting \eqn{\nu \to \infty}
+sends it to one and recovers the gaussian, where nothing is downweighted.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\Sigma} the scale matrix, \eqn{\nu} the
+degrees of freedom, \eqn{p} the dimension, \eqn{q} the squared Mahalanobis
+distance and \eqn{c} the weight.
+}
+
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+              sigma_log_L2 = 0, sigma_L2.1 = 0, nu = 6)
+pc <- distributions7:::mvt_pieces(d, theta)
+
+# At the identity scale matrix q is the squared distance from the origin.
+y <- rbind(c(0, 0), c(1, 0), c(3, 0), c(10, 0))
+z <- distributions7:::mvt_weights(y, pc)
+rbind(q = z$q, weight = z$cw)
+
+# The weight starts at (nu + p) / nu and decays like 1 / q.
+c(at_zero = (6 + 2) / 6, computed = z$cw[1])
+
+# As nu grows it flattens to one, and the family stops downweighting.
+vapply(c(6, 60, 6000), function(nu) {
+  t2 <- theta; t2$nu <- nu
+  distributions7:::mvt_weights(y, distributions7:::mvt_pieces(d, t2))$cw[4]
+}, numeric(1))
+
+}
+\seealso{
+\code{\link[=mvt_pieces]{mvt_pieces()}} for the argument and
+\code{\link[=distrib_gradient.MvStudentTDistrib]{distrib_gradient.MvStudentTDistrib()}} for the first consumer.
 }
 \keyword{internal}
