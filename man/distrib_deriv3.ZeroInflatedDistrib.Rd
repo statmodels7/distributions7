@@ -4,22 +4,51 @@
 \alias{distrib_deriv3.ZeroInflatedDistrib}
 \title{Zero-Inflated Third Derivatives}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}, the
+inflation probability in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation, which for
+a lattice parent is an exact sum over the support.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{zi},
+each a numeric vector of length \code{length(y)}.
 }
 \description{
-At \eqn{y > 0} the likelihood separates; at \eqn{y = 0} it is \eqn{\log L_0}
-with \eqn{L_0} affine in \eqn{\zeta}, so the derivatives follow from the
-moment-to-cumulant expansion over set partitions.
+Two regimes, and the observation decides which. At \eqn{y > 0} the
+log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which \strong{separates}:
+every mixed component in \eqn{\zeta} and a parent parameter is exactly zero.
+At \eqn{y = 0} it is \eqn{\log L_0} with
+\eqn{L_0 = \zeta + (1-\zeta) f(0;\theta)}, and the derivatives follow from
+the moment-to-cumulant expansion over set partitions,
+\deqn{d^I \log L_0 = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
+      \prod_{B \in \pi} \frac{d^B L_0}{L_0}.}
+
+\eqn{L_0} is \strong{affine} in \eqn{\zeta}, so any block of a partition naming
+\eqn{\zeta} twice contributes nothing and the sum is shorter than it looks.
+A whole component may still be non-zero: its partition into singletons
+survives.
+}
+\examples{
+zi <- zero_inflated(poisson_distrib())
+th <- list(mu = 3, zi = 0.2)
+
+# At a positive count the likelihood separates, so a mixed component is 0.
+distrib_deriv3(zi, 2, th)[["mu_zi_zi"]]
+
+# At zero it is not: log L0 mixes the two.
+round(unlist(distrib_deriv3(zi, 0, th)), 4)
+
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=zero_inflated]{zero_inflated()}} for the wrapper and for why it cannot be
+stacked; \code{\link[=distrib_deriv4.ZeroInflatedDistrib]{distrib_deriv4.ZeroInflatedDistrib()}} for the order above;
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum used here.
 }

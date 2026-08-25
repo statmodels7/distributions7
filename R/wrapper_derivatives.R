@@ -478,146 +478,517 @@ trunc_deriv_k <- function(order) {
 
 #' @title Transformed Third Derivatives
 #' @name distrib_deriv3.TransformedDistrib
+#'
 #' @description
-#' Exactly the parent's, evaluated at \eqn{x = g^{-1}(y)}: the Jacobian does not
-#' depend on \eqn{\theta}, so it leaves every derivative in \eqn{\theta} untouched.
-#' @param distrib A `TransformedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [transformation()]
+#' Exactly the parent's third derivatives, read at the preimage
+#' \eqn{x = g^{-1}(y)}. A transformation of the response contributes
+#' \eqn{\log|dg^{-1}/dy|} to the log-density, and that Jacobian does not
+#' depend on \eqn{\theta}, so it vanishes from every derivative in
+#' \eqn{\theta} and leaves the parent's untouched.
+#'
+#' Measured on `transformation(gaussian1_distrib(), exp_transform())`, the
+#' whole component list is `all.equal` to the Gaussian's at `log(y)`, at this
+#' order and at the fourth.
+#'
+#' @param distrib A `TransformedDistrib` object, from [transformation()].
+#' @param y A numeric vector of observations on the transformed scale.
+#' @param theta A named list of the **parent's** parameters; a transformation
+#'   adds none.
+#' @param expected Logical of length 1. Passed to the parent, so the parent
+#'   decides whether an expectation is closed or approximated.
+#' @param ... Passed to the parent's method, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`.
+#'
+#' @examples
+#' # A lognormal built by transforming a Gaussian.
+#' logn <- transformation(gaussian1_distrib(), exp_transform())
+#' y <- c(1.2, 2.5)
+#' th <- list(mu = 0.3, sigma = 1.1)
+#'
+#' distrib_deriv3(logn, y, th)
+#'
+#' # It is the parent's answer at the preimage, component for component.
+#' all.equal(distrib_deriv3(logn, y, th),
+#'           distrib_deriv3(gaussian1_distrib(), log(y), th))
+#'
+#' @seealso [transformation()] for the wrapper;
+#'   [distrib_deriv4.TransformedDistrib()] for the order above;
+#'   [distrib_deriv3()] for the generic.
 S7::method(distrib_deriv3, TransformedDistrib) <- trans_deriv_k(3L)
 
 #' @title Transformed Fourth Derivatives
 #' @name distrib_deriv4.TransformedDistrib
-#' @description As [`the third()`][distrib_deriv3.TransformedDistrib], at fourth order.
-#' @param distrib A `TransformedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [transformation()]
+#'
+#' @description
+#' Exactly the parent's fourth derivatives, read at the preimage
+#' \eqn{x = g^{-1}(y)}, for the same reason as at third order: the Jacobian
+#' \eqn{\log|dg^{-1}/dy|} carries no \eqn{\theta}, so it contributes nothing to
+#' any derivative in \eqn{\theta} whatever the order.
+#'
+#' Nothing here is approximated and no partition sum is taken. The wrapper's
+#' work is entirely in the argument, not in the derivative.
+#'
+#' @param distrib A `TransformedDistrib` object, from [transformation()].
+#' @param y A numeric vector of observations on the transformed scale.
+#' @param theta A named list of the **parent's** parameters; a transformation
+#'   adds none.
+#' @param expected Logical of length 1. Passed to the parent.
+#' @param ... Passed to the parent's method.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`. A two-parameter parent gives five.
+#'
+#' @examples
+#' logn <- transformation(gaussian1_distrib(), exp_transform())
+#' y <- c(1.2, 2.5)
+#' th <- list(mu = 0.3, sigma = 1.1)
+#'
+#' names(distrib_deriv4(logn, y, th))
+#' all.equal(distrib_deriv4(logn, y, th),
+#'           distrib_deriv4(gaussian1_distrib(), log(y), th))
+#'
+#' @seealso [transformation()] for the wrapper;
+#'   [distrib_deriv3.TransformedDistrib()] for the order below;
+#'   [distrib_deriv4()] for the generic.
 S7::method(distrib_deriv4, TransformedDistrib) <- trans_deriv_k(4L)
 
 #' @title Zero-Inflated Third Derivatives
 #' @name distrib_deriv3.ZeroInflatedDistrib
+#'
 #' @description
-#' At \eqn{y > 0} the likelihood separates; at \eqn{y = 0} it is \eqn{\log L_0}
-#' with \eqn{L_0} affine in \eqn{\zeta}, so the derivatives follow from the
-#' moment-to-cumulant expansion over set partitions.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_inflated()]
+#' Two regimes, and the observation decides which. At \eqn{y > 0} the
+#' log-likelihood is \eqn{\log(1-\zeta) + \ell(y;\theta)}, which **separates**:
+#' every mixed component in \eqn{\zeta} and a parent parameter is exactly zero.
+#' At \eqn{y = 0} it is \eqn{\log L_0} with
+#' \eqn{L_0 = \zeta + (1-\zeta) f(0;\theta)}, and the derivatives follow from
+#' the moment-to-cumulant expansion over set partitions,
+#' \deqn{d^I \log L_0 = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
+#'       \prod_{B \in \pi} \frac{d^B L_0}{L_0}.}
+#'
+#' \eqn{L_0} is **affine** in \eqn{\zeta}, so any block of a partition naming
+#' \eqn{\zeta} twice contributes nothing and the sum is shorter than it looks.
+#' A whole component may still be non-zero: its partition into singletons
+#' survives.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param y A numeric vector of counts.
+#' @param theta A named list with the parent's parameters followed by `zi`, the
+#'   inflation probability in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation, which for
+#'   a lattice parent is an exact sum over the support.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `zi`,
+#'   each a numeric vector of length `length(y)`.
+#'
+#' @examples
+#' zi <- zero_inflated(poisson_distrib())
+#' th <- list(mu = 3, zi = 0.2)
+#'
+#' # At a positive count the likelihood separates, so a mixed component is 0.
+#' distrib_deriv3(zi, 2, th)[["mu_zi_zi"]]
+#'
+#' # At zero it is not: log L0 mixes the two.
+#' round(unlist(distrib_deriv3(zi, 0, th)), 4)
+#'
+#' @seealso [zero_inflated()] for the wrapper and for why it cannot be
+#'   stacked; [distrib_deriv4.ZeroInflatedDistrib()] for the order above;
+#'   [log_deriv()], the partition sum used here.
 S7::method(distrib_deriv3, ZeroInflatedDistrib) <- zi_deriv_k(3L)
 
 #' @title Zero-Inflated Fourth Derivatives
 #' @name distrib_deriv4.ZeroInflatedDistrib
-#' @description As [`the third()`][distrib_deriv3.ZeroInflatedDistrib], at fourth order.
-#' @param distrib A `ZeroInflatedDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `zi`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_inflated()]
+#'
+#' @description
+#' The same two regimes as at third order, one order along. At \eqn{y > 0} the
+#' log-likelihood separates into \eqn{\log(1-\zeta)} and the parent's, so a
+#' component mixing \eqn{\zeta} with a parent parameter is exactly zero; at
+#' \eqn{y = 0} the moment-to-cumulant sum over the partitions of a four-index
+#' set gives \eqn{d^I \log L_0}, with every block naming \eqn{\zeta} twice
+#' contributing nothing because \eqn{L_0} is affine in it.
+#'
+#' The partitions of four indices number fifteen against five for three, so
+#' this order is the more expensive of the two by that ratio and by nothing
+#' else: the same identity and the same ratios \eqn{d^B L_0 / L_0} are read.
+#'
+#' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
+#' @param y A numeric vector of counts.
+#' @param theta A named list with the parent's parameters followed by `zi`, the
+#'   inflation probability in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `zi`,
+#'   each a numeric vector of length `length(y)`. A one-parameter parent gives
+#'   five.
+#'
+#' @examples
+#' zi <- zero_inflated(poisson_distrib())
+#' th <- list(mu = 3, zi = 0.2)
+#'
+#' names(distrib_deriv4(zi, 0, th))
+#' round(unlist(distrib_deriv4(zi, 0, th)), 4)
+#'
+#' # Separation at a positive count holds at this order too.
+#' distrib_deriv4(zi, 2, th)[["mu_mu_zi_zi"]]
+#'
+#' @seealso [zero_inflated()] for the wrapper;
+#'   [distrib_deriv3.ZeroInflatedDistrib()] for the order below;
+#'   [log_deriv()], the partition sum used here.
 S7::method(distrib_deriv4, ZeroInflatedDistrib) <- zi_deriv_k(4L)
 
 #' @title Hurdle Third Derivatives
 #' @name distrib_deriv3.ZeroAdjustedDiscreteDistrib
+#'
 #' @description
-#' The likelihood separates, so mixed components vanish at every order; the
+#' The hurdle likelihood **factorizes** into a binary part and a positive part,
+#' so at every order the mixed components in `za` and a parent parameter are
+#' exactly zero, and the two halves are differentiated separately. The
 #' \eqn{\theta} part is the parent's derivative less that of the truncation
-#' constant \eqn{\log(1-f_0)}.
-#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `za`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_adjusted()]
+#' constant \eqn{\log(1 - f_0)}, which is the mass the parent puts at zero and
+#' the hurdle removes.
+#'
+#' This is the structural difference from [zero_inflated()], and it is one a
+#' reader can check in a line: there the mixed block is not zero, because
+#' inflation *adds* to the parent's mass at zero and no single zero can be
+#' attributed to a mechanism.
+#'
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
+#'   [zero_adjusted()].
+#' @param y A numeric vector of counts.
+#' @param theta A named list with the parent's parameters followed by `za`, the
+#'   probability of a zero, in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation, an exact
+#'   sum over the support for a lattice parent.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
+#'   each a numeric vector of length `length(y)`.
+#'
+#' @examples
+#' h <- zero_adjusted(poisson_distrib())
+#' th <- list(mu = 3, za = 0.25)
+#'
+#' round(unlist(distrib_deriv3(h, c(0, 2, 5), th)[["mu_mu_mu"]]), 6)
+#'
+#' # The mixed block is exactly zero at every observation, which the
+#' # zero-inflated wrapper's is not.
+#' distrib_deriv3(h, c(0, 2, 5), th)[["mu_mu_za"]]
+#' distrib_deriv3(zero_inflated(poisson_distrib()), 0,
+#'                list(mu = 3, zi = 0.25))[["mu_mu_zi"]]
+#'
+#' @seealso [zero_adjusted()] for the wrapper and the counting rule it
+#'   enforces; [distrib_deriv4.ZeroAdjustedDiscreteDistrib()] for the order
+#'   above; [distrib_deriv3.ZeroInflatedDistrib()] for the model this is not.
 S7::method(distrib_deriv3, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(3L)
 
 #' @title Hurdle Fourth Derivatives
 #' @name distrib_deriv4.ZeroAdjustedDiscreteDistrib
-#' @description As [`the third()`][distrib_deriv3.ZeroAdjustedDiscreteDistrib], at fourth order.
-#' @param distrib A `ZeroAdjustedDiscreteDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `za`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_adjusted()]
+#'
+#' @description
+#' The factorization of the hurdle likelihood holds at every order, so this is
+#' the third-order picture one step along: the components mixing `za` with a
+#' parent parameter are exactly zero, the `za` part is the fourth derivative of
+#' a binomial log-likelihood in one probability, and the \eqn{\theta} part is
+#' the parent's fourth derivative less that of \eqn{\log(1 - f_0)}.
+#'
+#' The truncation constant is where the work is. Its fourth derivative comes
+#' from the moment-to-cumulant expansion over the fifteen partitions of four
+#' indices, read on the ratios \eqn{d^B f_0 / f_0} alone.
+#'
+#' @param distrib A `ZeroAdjustedDiscreteDistrib` object, from
+#'   [zero_adjusted()].
+#' @param y A numeric vector of counts.
+#' @param theta A named list with the parent's parameters followed by `za`, the
+#'   probability of a zero, in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
+#'   each a numeric vector of length `length(y)`.
+#'
+#' @examples
+#' h <- zero_adjusted(poisson_distrib())
+#' th <- list(mu = 3, za = 0.25)
+#'
+#' names(distrib_deriv4(h, c(0, 2, 5), th))
+#'
+#' # Every mixed component vanishes, at this order as at the one below.
+#' vapply(c("mu_mu_mu_za", "mu_mu_za_za", "mu_za_za_za"),
+#'        function(k) distrib_deriv4(h, 2, th)[[k]], numeric(1))
+#'
+#' @seealso [zero_adjusted()] for the wrapper;
+#'   [distrib_deriv3.ZeroAdjustedDiscreteDistrib()] for the order below;
+#'   [log_deriv()], the partition sum the truncation constant uses.
 S7::method(distrib_deriv4, ZeroAdjustedDiscreteDistrib) <- za_disc_deriv_k(4L)
 
-#' @title Zero-Adjusted Continuous Third Derivatives
+#' @title Zero-Adjusted Third Derivatives, Continuous Parent
 #' @name distrib_deriv3.ZeroAdjustedContinuousDistrib
+#'
 #' @description
-#' There is no truncation constant, so away from the atom the \eqn{\theta}
-#' derivatives are the parent's and the mixed ones vanish.
-#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `za`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_adjusted()]
+#' A continuous parent puts **no** mass at zero, so there is nothing to
+#' truncate away and no normalizing constant to differentiate. Away from the
+#' atom the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)}: the
+#' \eqn{\theta} derivatives are the parent's unchanged, and every component
+#' mixing `za` with a parent parameter is exactly zero.
+#'
+#' The object is a **mixed** distribution, a density on the positive line plus
+#' an atom at zero, and it declares that atom through [distrib_atoms()], so
+#' [check_distrib()] tests it correctly: the density integrates to
+#' \eqn{1 - \pi}, not to 1.
+#'
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
+#'   [zero_adjusted()].
+#' @param y A numeric vector of observations, zero included.
+#' @param theta A named list with the parent's parameters followed by `za`, the
+#'   probability of the atom, in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation over the
+#'   mixed law, atom included.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
+#'   each a numeric vector of length `length(y)`. A two-parameter parent gives
+#'   ten.
+#'
+#' @examples
+#' za <- zero_adjusted(gamma2_distrib())
+#' th <- list(mu = 2, sigma2 = 0.7, za = 0.25)
+#'
+#' names(distrib_deriv3(za, c(0, 1.5, 3), th))
+#'
+#' # Away from the atom the theta derivatives are the parent's, exactly.
+#' all.equal(distrib_deriv3(za, c(1.5, 3), th)[["mu_mu_mu"]],
+#'           distrib_deriv3(gamma2_distrib(), c(1.5, 3),
+#'                          list(mu = 2, sigma2 = 0.7))[["mu_mu_mu"]])
+#'
+#' # And the mixed components vanish.
+#' distrib_deriv3(za, c(0, 1.5, 3), th)[["mu_mu_za"]]
+#'
+#' @seealso [zero_adjusted()] for the wrapper;
+#'   [distrib_atoms()], which declares the atom;
+#'   [distrib_deriv4.ZeroAdjustedContinuousDistrib()] for the order above;
+#'   [distrib_deriv3.ZeroAdjustedDiscreteDistrib()], where a truncation
+#'   constant does appear.
 S7::method(distrib_deriv3, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(3L)
 
-#' @title Zero-Adjusted Continuous Fourth Derivatives
+#' @title Zero-Adjusted Fourth Derivatives, Continuous Parent
 #' @name distrib_deriv4.ZeroAdjustedContinuousDistrib
-#' @description As [`the third()`][distrib_deriv3.ZeroAdjustedContinuousDistrib], at fourth order.
-#' @param distrib A `ZeroAdjustedContinuousDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list with the parent's parameters followed by `za`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [zero_adjusted()]
+#'
+#' @description
+#' The same separation as at third order, one step along, and for the same
+#' reason: a continuous parent has no mass at zero, so no normalizing constant
+#' enters and the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)} away
+#' from the atom. The \eqn{\theta} components are the parent's fourth
+#' derivatives unchanged, the pure `za` component is that of
+#' \eqn{\log(1-\pi)}, and everything mixing the two is exactly zero.
+#'
+#' No partition sum is taken here at all, so this is the cheapest of the six
+#' wrappers at this order.
+#'
+#' @param distrib A `ZeroAdjustedContinuousDistrib` object, from
+#'   [zero_adjusted()].
+#' @param y A numeric vector of observations, zero included.
+#' @param theta A named list with the parent's parameters followed by `za`, the
+#'   probability of the atom, in \eqn{(0, 1)}.
+#' @param expected Logical of length 1. `TRUE` takes the expectation over the
+#'   mixed law.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters and `za`,
+#'   each a numeric vector of length `length(y)`. A two-parameter parent gives
+#'   fifteen.
+#'
+#' @examples
+#' za <- zero_adjusted(gamma2_distrib())
+#' th <- list(mu = 2, sigma2 = 0.7, za = 0.25)
+#'
+#' length(distrib_deriv4(za, c(0, 1.5, 3), th))
+#' all.equal(distrib_deriv4(za, c(1.5, 3), th)[["mu_mu_mu_mu"]],
+#'           distrib_deriv4(gamma2_distrib(), c(1.5, 3),
+#'                          list(mu = 2, sigma2 = 0.7))[["mu_mu_mu_mu"]])
+#'
+#' @seealso [zero_adjusted()] for the wrapper;
+#'   [distrib_deriv3.ZeroAdjustedContinuousDistrib()] for the order below;
+#'   [distrib_deriv4.ZeroAdjustedDiscreteDistrib()], where a truncation
+#'   constant does appear.
 S7::method(distrib_deriv4, ZeroAdjustedContinuousDistrib) <- za_cont_deriv_k(4L)
 
-#' @title Truncated Third Derivatives (Continuous)
+#' @title Truncated Third Derivatives
 #' @name distrib_deriv3.TruncatedContinuousDistrib
+#'
 #' @description
-#' \eqn{\ell_T = \ell - \log Z}, and the derivatives of \eqn{\log Z} follow from
-#' the truncated expectations \eqn{\mathbb{E}_T[\partial^B f / f]} through the
-#' moment-to-cumulant expansion. Each distinct block costs one quadrature.
-#' @param distrib A `TruncatedContinuousDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [truncated()]
+#' Truncation adds no parameter and one \eqn{\theta}-dependent normalizing
+#' constant: \eqn{\ell_T = \ell - \log Z} with
+#' \eqn{Z(\theta) = F(U) - F(L^-)}. The derivatives of \eqn{\log Z} follow from
+#' the moment-to-cumulant expansion over set partitions, read on the truncated
+#' expectations \eqn{\mathbb{E}_T[\partial^B f / f]}:
+#' \deqn{d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
+#'       \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].}
+#'
+#' Each **distinct block** costs one quadrature, memoized across the partition
+#' sum, which is why a truncated derivative is far dearer than its parent's.
+#' Where the parent has genuinely closed cdf derivatives, or is a lattice
+#' family whose cdf derivatives are an exact sum, that route replaces the
+#' quadrature and is about three and a half times faster.
+#'
+#' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
+#' @param y A numeric vector of observations inside the truncation interval.
+#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   none, the endpoints being constants.
+#' @param expected Logical of length 1. `TRUE` takes the expectation under the
+#'   truncated law.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`.
+#'
+#' @examples
+#' tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)
+#' th <- list(mu = 0.3, sigma = 1.1)
+#'
+#' round(unlist(distrib_deriv3(tr, c(0, 1, 2), th)[["mu_mu_mu"]]), 6)
+#'
+#' # log Z is what separates it from the parent: the parent's third derivative
+#' # in mu is identically zero and the truncated one is not.
+#' c(truncated = distrib_deriv3(tr, 1, th)[["mu_mu_mu"]],
+#'   parent = distrib_deriv3(gaussian1_distrib(), 1, th)[["mu_mu_mu"]])
+#'
+#' @seealso [truncated()] for the wrapper and the endpoint convention;
+#'   [distrib_deriv4.TruncatedContinuousDistrib()] for the order above;
+#'   [distrib_grad_cdf()], the cheaper route where the parent has one.
 S7::method(distrib_deriv3, TruncatedContinuousDistrib) <- trunc_deriv_k(3L)
 
-#' @title Truncated Fourth Derivatives (Continuous)
+#' @title Truncated Fourth Derivatives
 #' @name distrib_deriv4.TruncatedContinuousDistrib
-#' @description As [`the third()`][distrib_deriv3.TruncatedContinuousDistrib], at fourth order.
-#' @param distrib A `TruncatedContinuousDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [truncated()]
+#'
+#' @description
+#' The third-order construction one step along: \eqn{\ell_T = \ell - \log Z},
+#' and \eqn{d^I \log Z} comes from the moment-to-cumulant expansion over the
+#' fifteen partitions of four indices, each block an expectation
+#' \eqn{\mathbb{E}_T[\partial^B f / f]} under the truncated law.
+#'
+#' The cost is set by the number of **distinct** blocks, not by the number of
+#' partitions: a block met twice is computed once and looked up. At four
+#' indices over two parameters that is five distinct blocks against fifteen
+#' partitions.
+#'
+#' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
+#' @param y A numeric vector of observations inside the truncation interval.
+#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   none.
+#' @param expected Logical of length 1. `TRUE` takes the expectation under the
+#'   truncated law.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`. A two-parameter parent gives five.
+#'
+#' @examples
+#' tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)
+#' th <- list(mu = 0.3, sigma = 1.1)
+#'
+#' names(distrib_deriv4(tr, c(0, 1, 2), th))
+#' round(unlist(distrib_deriv4(tr, 1, th)), 5)
+#'
+#' @seealso [truncated()] for the wrapper;
+#'   [distrib_deriv3.TruncatedContinuousDistrib()] for the order below;
+#'   [log_deriv()], the partition sum both orders use.
 S7::method(distrib_deriv4, TruncatedContinuousDistrib) <- trunc_deriv_k(4L)
 
-#' @title Truncated Third Derivatives (Discrete)
+#' @title Truncated Third Derivatives, Discrete Parent
 #' @name distrib_deriv3.TruncatedDiscreteDistrib
-#' @description As the continuous case, with the expectations taken by summation.
-#' @param distrib A `TruncatedDiscreteDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [truncated()]
+#'
+#' @description
+#' The same construction as for a continuous parent, \eqn{\ell_T = \ell -
+#' \log Z} with \eqn{d^I \log Z} from the moment-to-cumulant expansion over
+#' set partitions, with every expectation taken by **summation over the
+#' retained support** in place of a quadrature.
+#'
+#' That makes it both exact and cheap. The support of a truncated lattice
+#' family is finite whenever both endpoints are, so each block is a finite sum
+#' of terms the parent already computes, and the memoization across the
+#' partition sum applies as before.
+#'
+#' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
+#' @param y A numeric vector of counts inside the truncation interval. Both
+#'   endpoints are **included**.
+#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   none.
+#' @param expected Logical of length 1. `TRUE` takes the expectation under the
+#'   truncated law, itself an exact sum.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of third-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`. A one-parameter parent gives one.
+#'
+#' @examples
+#' tr <- truncated(poisson_distrib(), lower = 1, upper = 8)
+#' th <- list(mu = 3)
+#'
+#' distrib_deriv3(tr, c(2, 4, 6), th)
+#'
+#' # The parent's third derivative in mu is 2 y / mu^3 - ... and the truncated
+#' # one differs by the derivative of log Z, which is the whole wrapper.
+#' c(truncated = distrib_deriv3(tr, 4, th)[["mu_mu_mu"]],
+#'   parent = distrib_deriv3(poisson_distrib(), 4, th)[["mu_mu_mu"]])
+#'
+#' @seealso [truncated()] for the wrapper and the endpoint convention;
+#'   [distrib_deriv4.TruncatedDiscreteDistrib()] for the order above;
+#'   [distrib_deriv3.TruncatedContinuousDistrib()], where the same blocks cost
+#'   a quadrature apiece.
 S7::method(distrib_deriv3, TruncatedDiscreteDistrib) <- trunc_deriv_k(3L)
 
-#' @title Truncated Fourth Derivatives (Discrete)
+#' @title Truncated Fourth Derivatives, Discrete Parent
 #' @name distrib_deriv4.TruncatedDiscreteDistrib
-#' @description As [`the third()`][distrib_deriv3.TruncatedDiscreteDistrib], at fourth order.
-#' @param distrib A `TruncatedDiscreteDistrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list of the parent's parameters.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @return A named list of derivative components.
-#' @seealso [truncated()]
+#'
+#' @description
+#' The third-order construction one step along, with the expectations again
+#' taken by summation over the retained support: \eqn{\ell_T = \ell - \log Z},
+#' and \eqn{d^I \log Z} from the moment-to-cumulant expansion over the fifteen
+#' partitions of four indices.
+#'
+#' Because every block is a finite sum, this order costs what the order below
+#' costs times the ratio of distinct blocks, and nothing is approximated
+#' anywhere in it.
+#'
+#' @param distrib A `TruncatedDiscreteDistrib` object, from [truncated()].
+#' @param y A numeric vector of counts inside the truncation interval. Both
+#'   endpoints are **included**.
+#' @param theta A named list of the **parent's** parameters; truncation adds
+#'   none.
+#' @param expected Logical of length 1. `TRUE` takes the expectation under the
+#'   truncated law.
+#' @param ... Passed on, `approx` and `nsim` among them.
+#'
+#' @return A named list of fourth-derivative components, keyed
+#'   lexicographically by [deriv_names()] on the parent's parameters, each a
+#'   numeric vector of length `length(y)`.
+#'
+#' @examples
+#' tr <- truncated(poisson_distrib(), lower = 1, upper = 8)
+#' th <- list(mu = 3)
+#'
+#' distrib_deriv4(tr, c(2, 4, 6), th)
+#'
+#' # A truncated lattice family with both endpoints finite has a finite
+#' # support, so every expectation behind this is an exact sum.
+#' sum(distrib_pdf(tr, 1:8, th))
+#'
+#' @seealso [truncated()] for the wrapper;
+#'   [distrib_deriv3.TruncatedDiscreteDistrib()] for the order below;
+#'   [log_deriv()], the partition sum both orders use.
 S7::method(distrib_deriv4, TruncatedDiscreteDistrib) <- trunc_deriv_k(4L)
 

@@ -4,20 +4,48 @@
 \alias{distrib_deriv4.ZeroInflatedDistrib}
 \title{Zero-Inflated Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{ZeroInflatedDistrib} object.}
+\item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list with the parent's parameters followed by \code{zi}.}
+\item{theta}{A named list with the parent's parameters followed by \code{zi}, the
+inflation probability in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of fourth-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{zi},
+each a numeric vector of length \code{length(y)}. A one-parameter parent gives
+five.
 }
 \description{
-As \code{\link[=distrib_deriv3.ZeroInflatedDistrib]{the third()}}, at fourth order.
+The same two regimes as at third order, one order along. At \eqn{y > 0} the
+log-likelihood separates into \eqn{\log(1-\zeta)} and the parent's, so a
+component mixing \eqn{\zeta} with a parent parameter is exactly zero; at
+\eqn{y = 0} the moment-to-cumulant sum over the partitions of a four-index
+set gives \eqn{d^I \log L_0}, with every block naming \eqn{\zeta} twice
+contributing nothing because \eqn{L_0} is affine in it.
+
+The partitions of four indices number fifteen against five for three, so
+this order is the more expensive of the two by that ratio and by nothing
+else: the same identity and the same ratios \eqn{d^B L_0 / L_0} are read.
+}
+\examples{
+zi <- zero_inflated(poisson_distrib())
+th <- list(mu = 3, zi = 0.2)
+
+names(distrib_deriv4(zi, 0, th))
+round(unlist(distrib_deriv4(zi, 0, th)), 4)
+
+# Separation at a positive count holds at this order too.
+distrib_deriv4(zi, 2, th)[["mu_mu_zi_zi"]]
+
 }
 \seealso{
-\code{\link[=zero_inflated]{zero_inflated()}}
+\code{\link[=zero_inflated]{zero_inflated()}} for the wrapper;
+\code{\link[=distrib_deriv3.ZeroInflatedDistrib]{distrib_deriv3.ZeroInflatedDistrib()}} for the order below;
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum used here.
 }

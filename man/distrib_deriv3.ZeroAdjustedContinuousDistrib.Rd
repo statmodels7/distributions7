@@ -2,23 +2,58 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{distrib_deriv3.ZeroAdjustedContinuousDistrib}
 \alias{distrib_deriv3.ZeroAdjustedContinuousDistrib}
-\title{Zero-Adjusted Continuous Third Derivatives}
+\title{Zero-Adjusted Third Derivatives, Continuous Parent}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, zero included.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}, the
+probability of the atom, in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation over the
+mixed law, atom included.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{za},
+each a numeric vector of length \code{length(y)}. A two-parameter parent gives
+ten.
 }
 \description{
-There is no truncation constant, so away from the atom the \eqn{\theta}
-derivatives are the parent's and the mixed ones vanish.
+A continuous parent puts \strong{no} mass at zero, so there is nothing to
+truncate away and no normalizing constant to differentiate. Away from the
+atom the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)}: the
+\eqn{\theta} derivatives are the parent's unchanged, and every component
+mixing \code{za} with a parent parameter is exactly zero.
+
+The object is a \strong{mixed} distribution, a density on the positive line plus
+an atom at zero, and it declares that atom through \code{\link[=distrib_atoms]{distrib_atoms()}}, so
+\code{\link[=check_distrib]{check_distrib()}} tests it correctly: the density integrates to
+\eqn{1 - \pi}, not to 1.
+}
+\examples{
+za <- zero_adjusted(gamma2_distrib())
+th <- list(mu = 2, sigma2 = 0.7, za = 0.25)
+
+names(distrib_deriv3(za, c(0, 1.5, 3), th))
+
+# Away from the atom the theta derivatives are the parent's, exactly.
+all.equal(distrib_deriv3(za, c(1.5, 3), th)[["mu_mu_mu"]],
+          distrib_deriv3(gamma2_distrib(), c(1.5, 3),
+                         list(mu = 2, sigma2 = 0.7))[["mu_mu_mu"]])
+
+# And the mixed components vanish.
+distrib_deriv3(za, c(0, 1.5, 3), th)[["mu_mu_za"]]
+
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper;
+\code{\link[=distrib_atoms]{distrib_atoms()}}, which declares the atom;
+\code{\link[=distrib_deriv4.ZeroAdjustedContinuousDistrib]{distrib_deriv4.ZeroAdjustedContinuousDistrib()}} for the order above;
+\code{\link[=distrib_deriv3.ZeroAdjustedDiscreteDistrib]{distrib_deriv3.ZeroAdjustedDiscreteDistrib()}}, where a truncation
+constant does appear.
 }

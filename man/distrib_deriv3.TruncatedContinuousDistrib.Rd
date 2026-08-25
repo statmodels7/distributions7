@@ -2,24 +2,54 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{distrib_deriv3.TruncatedContinuousDistrib}
 \alias{distrib_deriv3.TruncatedContinuousDistrib}
-\title{Truncated Third Derivatives (Continuous)}
+\title{Truncated Third Derivatives}
 \arguments{
-\item{distrib}{A \code{TruncatedContinuousDistrib} object.}
+\item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations inside the truncation interval.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+none, the endpoints being constants.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
+truncated law.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters, each a
+numeric vector of length \code{length(y)}.
 }
 \description{
-\eqn{\ell_T = \ell - \log Z}, and the derivatives of \eqn{\log Z} follow from
-the truncated expectations \eqn{\mathbb{E}_T[\partial^B f / f]} through the
-moment-to-cumulant expansion. Each distinct block costs one quadrature.
+Truncation adds no parameter and one \eqn{\theta}-dependent normalizing
+constant: \eqn{\ell_T = \ell - \log Z} with
+\eqn{Z(\theta) = F(U) - F(L^-)}. The derivatives of \eqn{\log Z} follow from
+the moment-to-cumulant expansion over set partitions, read on the truncated
+expectations \eqn{\mathbb{E}_T[\partial^B f / f]}:
+\deqn{d^I \log Z = \sum_{\pi} (-1)^{|\pi|-1}(|\pi|-1)!
+      \prod_{B \in \pi} \mathbb{E}_T\!\left[\frac{\partial^B f}{f}\right].}
+
+Each \strong{distinct block} costs one quadrature, memoized across the partition
+sum, which is why a truncated derivative is far dearer than its parent's.
+Where the parent has genuinely closed cdf derivatives, or is a lattice
+family whose cdf derivatives are an exact sum, that route replaces the
+quadrature and is about three and a half times faster.
+}
+\examples{
+tr <- truncated(gaussian1_distrib(), lower = -1, upper = 3)
+th <- list(mu = 0.3, sigma = 1.1)
+
+round(unlist(distrib_deriv3(tr, c(0, 1, 2), th)[["mu_mu_mu"]]), 6)
+
+# log Z is what separates it from the parent: the parent's third derivative
+# in mu is identically zero and the truncated one is not.
+c(truncated = distrib_deriv3(tr, 1, th)[["mu_mu_mu"]],
+  parent = distrib_deriv3(gaussian1_distrib(), 1, th)[["mu_mu_mu"]])
+
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the wrapper and the endpoint convention;
+\code{\link[=distrib_deriv4.TruncatedContinuousDistrib]{distrib_deriv4.TruncatedContinuousDistrib()}} for the order above;
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}}, the cheaper route where the parent has one.
 }

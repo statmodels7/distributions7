@@ -2,22 +2,49 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{distrib_deriv4.TruncatedDiscreteDistrib}
 \alias{distrib_deriv4.TruncatedDiscreteDistrib}
-\title{Truncated Fourth Derivatives (Discrete)}
+\title{Truncated Fourth Derivatives, Discrete Parent}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts inside the truncation interval. Both
+endpoints are \strong{included}.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+none.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
+truncated law.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of fourth-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters, each a
+numeric vector of length \code{length(y)}.
 }
 \description{
-As \code{\link[=distrib_deriv3.TruncatedDiscreteDistrib]{the third()}}, at fourth order.
+The third-order construction one step along, with the expectations again
+taken by summation over the retained support: \eqn{\ell_T = \ell - \log Z},
+and \eqn{d^I \log Z} from the moment-to-cumulant expansion over the fifteen
+partitions of four indices.
+
+Because every block is a finite sum, this order costs what the order below
+costs times the ratio of distinct blocks, and nothing is approximated
+anywhere in it.
+}
+\examples{
+tr <- truncated(poisson_distrib(), lower = 1, upper = 8)
+th <- list(mu = 3)
+
+distrib_deriv4(tr, c(2, 4, 6), th)
+
+# A truncated lattice family with both endpoints finite has a finite
+# support, so every expectation behind this is an exact sum.
+sum(distrib_pdf(tr, 1:8, th))
+
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the wrapper;
+\code{\link[=distrib_deriv3.TruncatedDiscreteDistrib]{distrib_deriv3.TruncatedDiscreteDistrib()}} for the order below;
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum both orders use.
 }

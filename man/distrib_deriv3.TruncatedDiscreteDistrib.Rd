@@ -2,22 +2,52 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{distrib_deriv3.TruncatedDiscreteDistrib}
 \alias{distrib_deriv3.TruncatedDiscreteDistrib}
-\title{Truncated Third Derivatives (Discrete)}
+\title{Truncated Third Derivatives, Discrete Parent}
 \arguments{
-\item{distrib}{A \code{TruncatedDiscreteDistrib} object.}
+\item{distrib}{A \code{TruncatedDiscreteDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts inside the truncation interval. Both
+endpoints are \strong{included}.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the \strong{parent's} parameters; truncation adds
+none.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation under the
+truncated law, itself an exact sum.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters, each a
+numeric vector of length \code{length(y)}. A one-parameter parent gives one.
 }
 \description{
-As the continuous case, with the expectations taken by summation.
+The same construction as for a continuous parent, \eqn{\ell_T = \ell -
+\log Z} with \eqn{d^I \log Z} from the moment-to-cumulant expansion over
+set partitions, with every expectation taken by \strong{summation over the
+retained support} in place of a quadrature.
+
+That makes it both exact and cheap. The support of a truncated lattice
+family is finite whenever both endpoints are, so each block is a finite sum
+of terms the parent already computes, and the memoization across the
+partition sum applies as before.
+}
+\examples{
+tr <- truncated(poisson_distrib(), lower = 1, upper = 8)
+th <- list(mu = 3)
+
+distrib_deriv3(tr, c(2, 4, 6), th)
+
+# The parent's third derivative in mu is 2 y / mu^3 - ... and the truncated
+# one differs by the derivative of log Z, which is the whole wrapper.
+c(truncated = distrib_deriv3(tr, 4, th)[["mu_mu_mu"]],
+  parent = distrib_deriv3(poisson_distrib(), 4, th)[["mu_mu_mu"]])
+
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}
+\code{\link[=truncated]{truncated()}} for the wrapper and the endpoint convention;
+\code{\link[=distrib_deriv4.TruncatedDiscreteDistrib]{distrib_deriv4.TruncatedDiscreteDistrib()}} for the order above;
+\code{\link[=distrib_deriv3.TruncatedContinuousDistrib]{distrib_deriv3.TruncatedContinuousDistrib()}}, where the same blocks cost
+a quadrature apiece.
 }

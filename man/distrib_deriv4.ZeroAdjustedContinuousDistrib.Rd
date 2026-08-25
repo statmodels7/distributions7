@@ -2,22 +2,51 @@
 % Please edit documentation in R/wrapper_derivatives.R
 \name{distrib_deriv4.ZeroAdjustedContinuousDistrib}
 \alias{distrib_deriv4.ZeroAdjustedContinuousDistrib}
-\title{Zero-Adjusted Continuous Fourth Derivatives}
+\title{Zero-Adjusted Fourth Derivatives, Continuous Parent}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedContinuousDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, zero included.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}, the
+probability of the atom, in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation over the
+mixed law.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of fourth-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{za},
+each a numeric vector of length \code{length(y)}. A two-parameter parent gives
+fifteen.
 }
 \description{
-As \code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{the third()}}, at fourth order.
+The same separation as at third order, one step along, and for the same
+reason: a continuous parent has no mass at zero, so no normalizing constant
+enters and the log-likelihood is \eqn{\log(1 - \pi) + \ell(y;\theta)} away
+from the atom. The \eqn{\theta} components are the parent's fourth
+derivatives unchanged, the pure \code{za} component is that of
+\eqn{\log(1-\pi)}, and everything mixing the two is exactly zero.
+
+No partition sum is taken here at all, so this is the cheapest of the six
+wrappers at this order.
+}
+\examples{
+za <- zero_adjusted(gamma2_distrib())
+th <- list(mu = 2, sigma2 = 0.7, za = 0.25)
+
+length(distrib_deriv4(za, c(0, 1.5, 3), th))
+all.equal(distrib_deriv4(za, c(1.5, 3), th)[["mu_mu_mu_mu"]],
+          distrib_deriv4(gamma2_distrib(), c(1.5, 3),
+                         list(mu = 2, sigma2 = 0.7))[["mu_mu_mu_mu"]])
+
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper;
+\code{\link[=distrib_deriv3.ZeroAdjustedContinuousDistrib]{distrib_deriv3.ZeroAdjustedContinuousDistrib()}} for the order below;
+\code{\link[=distrib_deriv4.ZeroAdjustedDiscreteDistrib]{distrib_deriv4.ZeroAdjustedDiscreteDistrib()}}, where a truncation
+constant does appear.
 }

@@ -4,21 +4,49 @@
 \alias{distrib_deriv3.TransformedDistrib}
 \title{Transformed Third Derivatives}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the transformed scale.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the \strong{parent's} parameters; a transformation
+adds none.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. Passed to the parent, so the parent
+decides whether an expectation is closed or approximated.}
+
+\item{...}{Passed to the parent's method, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters, each a
+numeric vector of length \code{length(y)}.
 }
 \description{
-Exactly the parent's, evaluated at \eqn{x = g^{-1}(y)}: the Jacobian does not
-depend on \eqn{\theta}, so it leaves every derivative in \eqn{\theta} untouched.
+Exactly the parent's third derivatives, read at the preimage
+\eqn{x = g^{-1}(y)}. A transformation of the response contributes
+\eqn{\log|dg^{-1}/dy|} to the log-density, and that Jacobian does not
+depend on \eqn{\theta}, so it vanishes from every derivative in
+\eqn{\theta} and leaves the parent's untouched.
+
+Measured on \code{transformation(gaussian1_distrib(), exp_transform())}, the
+whole component list is \code{all.equal} to the Gaussian's at \code{log(y)}, at this
+order and at the fourth.
+}
+\examples{
+# A lognormal built by transforming a Gaussian.
+logn <- transformation(gaussian1_distrib(), exp_transform())
+y <- c(1.2, 2.5)
+th <- list(mu = 0.3, sigma = 1.1)
+
+distrib_deriv3(logn, y, th)
+
+# It is the parent's answer at the preimage, component for component.
+all.equal(distrib_deriv3(logn, y, th),
+          distrib_deriv3(gaussian1_distrib(), log(y), th))
+
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=transformation]{transformation()}} for the wrapper;
+\code{\link[=distrib_deriv4.TransformedDistrib]{distrib_deriv4.TransformedDistrib()}} for the order above;
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

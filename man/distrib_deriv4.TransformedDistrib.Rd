@@ -4,20 +4,43 @@
 \alias{distrib_deriv4.TransformedDistrib}
 \title{Transformed Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{TransformedDistrib} object.}
+\item{distrib}{A \code{TransformedDistrib} object, from \code{\link[=transformation]{transformation()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the transformed scale.}
 
-\item{theta}{A list of the parent's parameters.}
+\item{theta}{A named list of the \strong{parent's} parameters; a transformation
+adds none.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. Passed to the parent.}
+
+\item{...}{Passed to the parent's method.}
 }
 \value{
-A named list of derivative components.
+A named list of fourth-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters, each a
+numeric vector of length \code{length(y)}. A two-parameter parent gives five.
 }
 \description{
-As \code{\link[=distrib_deriv3.TransformedDistrib]{the third()}}, at fourth order.
+Exactly the parent's fourth derivatives, read at the preimage
+\eqn{x = g^{-1}(y)}, for the same reason as at third order: the Jacobian
+\eqn{\log|dg^{-1}/dy|} carries no \eqn{\theta}, so it contributes nothing to
+any derivative in \eqn{\theta} whatever the order.
+
+Nothing here is approximated and no partition sum is taken. The wrapper's
+work is entirely in the argument, not in the derivative.
+}
+\examples{
+logn <- transformation(gaussian1_distrib(), exp_transform())
+y <- c(1.2, 2.5)
+th <- list(mu = 0.3, sigma = 1.1)
+
+names(distrib_deriv4(logn, y, th))
+all.equal(distrib_deriv4(logn, y, th),
+          distrib_deriv4(gaussian1_distrib(), log(y), th))
+
 }
 \seealso{
-\code{\link[=transformation]{transformation()}}
+\code{\link[=transformation]{transformation()}} for the wrapper;
+\code{\link[=distrib_deriv3.TransformedDistrib]{distrib_deriv3.TransformedDistrib()}} for the order below;
+\code{\link[=distrib_deriv4]{distrib_deriv4()}} for the generic.
 }

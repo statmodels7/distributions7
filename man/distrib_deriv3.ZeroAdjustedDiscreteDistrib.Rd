@@ -4,22 +4,52 @@
 \alias{distrib_deriv3.ZeroAdjustedDiscreteDistrib}
 \title{Hurdle Third Derivatives}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}, the
+probability of a zero, in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation, an exact
+sum over the support for a lattice parent.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of third-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{za},
+each a numeric vector of length \code{length(y)}.
 }
 \description{
-The likelihood separates, so mixed components vanish at every order; the
+The hurdle likelihood \strong{factorizes} into a binary part and a positive part,
+so at every order the mixed components in \code{za} and a parent parameter are
+exactly zero, and the two halves are differentiated separately. The
 \eqn{\theta} part is the parent's derivative less that of the truncation
-constant \eqn{\log(1-f_0)}.
+constant \eqn{\log(1 - f_0)}, which is the mass the parent puts at zero and
+the hurdle removes.
+
+This is the structural difference from \code{\link[=zero_inflated]{zero_inflated()}}, and it is one a
+reader can check in a line: there the mixed block is not zero, because
+inflation \emph{adds} to the parent's mass at zero and no single zero can be
+attributed to a mechanism.
+}
+\examples{
+h <- zero_adjusted(poisson_distrib())
+th <- list(mu = 3, za = 0.25)
+
+round(unlist(distrib_deriv3(h, c(0, 2, 5), th)[["mu_mu_mu"]]), 6)
+
+# The mixed block is exactly zero at every observation, which the
+# zero-inflated wrapper's is not.
+distrib_deriv3(h, c(0, 2, 5), th)[["mu_mu_za"]]
+distrib_deriv3(zero_inflated(poisson_distrib()), 0,
+               list(mu = 3, zi = 0.25))[["mu_mu_zi"]]
+
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper and the counting rule it
+enforces; \code{\link[=distrib_deriv4.ZeroAdjustedDiscreteDistrib]{distrib_deriv4.ZeroAdjustedDiscreteDistrib()}} for the order
+above; \code{\link[=distrib_deriv3.ZeroInflatedDistrib]{distrib_deriv3.ZeroInflatedDistrib()}} for the model this is not.
 }

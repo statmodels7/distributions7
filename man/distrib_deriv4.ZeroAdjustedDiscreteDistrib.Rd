@@ -4,20 +4,47 @@
 \alias{distrib_deriv4.ZeroAdjustedDiscreteDistrib}
 \title{Hurdle Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object.}
+\item{distrib}{A \code{ZeroAdjustedDiscreteDistrib} object, from
+\code{\link[=zero_adjusted]{zero_adjusted()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{theta}{A list with the parent's parameters followed by \code{za}.}
+\item{theta}{A named list with the parent's parameters followed by \code{za}, the
+probability of a zero, in \eqn{(0, 1)}.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. \code{TRUE} takes the expectation.}
+
+\item{...}{Passed on, \code{approx} and \code{nsim} among them.}
 }
 \value{
-A named list of derivative components.
+A named list of fourth-derivative components, keyed
+lexicographically by \code{\link[=deriv_names]{deriv_names()}} on the parent's parameters and \code{za},
+each a numeric vector of length \code{length(y)}.
 }
 \description{
-As \code{\link[=distrib_deriv3.ZeroAdjustedDiscreteDistrib]{the third()}}, at fourth order.
+The factorization of the hurdle likelihood holds at every order, so this is
+the third-order picture one step along: the components mixing \code{za} with a
+parent parameter are exactly zero, the \code{za} part is the fourth derivative of
+a binomial log-likelihood in one probability, and the \eqn{\theta} part is
+the parent's fourth derivative less that of \eqn{\log(1 - f_0)}.
+
+The truncation constant is where the work is. Its fourth derivative comes
+from the moment-to-cumulant expansion over the fifteen partitions of four
+indices, read on the ratios \eqn{d^B f_0 / f_0} alone.
+}
+\examples{
+h <- zero_adjusted(poisson_distrib())
+th <- list(mu = 3, za = 0.25)
+
+names(distrib_deriv4(h, c(0, 2, 5), th))
+
+# Every mixed component vanishes, at this order as at the one below.
+vapply(c("mu_mu_mu_za", "mu_mu_za_za", "mu_za_za_za"),
+       function(k) distrib_deriv4(h, 2, th)[[k]], numeric(1))
+
 }
 \seealso{
-\code{\link[=zero_adjusted]{zero_adjusted()}}
+\code{\link[=zero_adjusted]{zero_adjusted()}} for the wrapper;
+\code{\link[=distrib_deriv3.ZeroAdjustedDiscreteDistrib]{distrib_deriv3.ZeroAdjustedDiscreteDistrib()}} for the order below;
+\code{\link[=log_deriv]{log_deriv()}}, the partition sum the truncation constant uses.
 }
