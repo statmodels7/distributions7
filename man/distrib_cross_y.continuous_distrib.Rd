@@ -4,21 +4,39 @@
 \alias{distrib_cross_y.continuous_distrib}
 \title{Default Mixed Derivatives for Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object.}
+\item{distrib}{An object inheriting from \code{continuous_distrib} that
+registers no method of its own.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, aligned by the generic.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method always
+returns the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}, each of length \code{length(y)}.
 }
 \description{
-Fallback: one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}}
-in each parameter (see \code{\link[=numerical_cross_y]{numerical_cross_y()}}).
+The fallback: one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each
+parameter, through \code{\link[=numerical_cross_y]{numerical_cross_y()}} at its default step of
+\eqn{\varepsilon^{1/3} \approx 6.1\times10^{-6}}. The quantity differenced
+is the response gradient, so a family with an analytic one pays for a single
+difference layer and reaches about \eqn{10^{-10}} relative accuracy; where
+the response gradient is itself a difference, the two act on different
+variables and commute into one four-point mixed stencil.
+
+\strong{No family shipped in this package reaches this method.} All 32 continuous
+families register a closed form, so this exists for a family defined
+outside the package, which gets the mixed block for free from its density
+alone.
+}
+\seealso{
+\code{\link[=numerical_cross_y]{numerical_cross_y()}}, which does the work;
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic;
+\code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}} for a closed form to compare against.
 }
 \keyword{internal}

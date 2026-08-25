@@ -7,51 +7,77 @@
 distrib_cross_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A distribution object inheriting from the \code{distrib} class.}
+\item{distrib}{An object inheriting from \code{continuous_distrib}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list (or named numeric vector) of distribution parameters.
-Each parameter must have length 1 or \code{length(y)}.}
+\item{theta}{A named list, or a named numeric vector, of parameters. Each
+component must have length 1 or \code{length(y)}; a component of length 1 is
+recycled. Reordered by name and validated against \code{params_bounds}, which
+are treated as open, before dispatch.}
 
-\item{scale}{Either \code{"parameter"} (default) for derivatives with respect to
-the parameters \eqn{\theta} on their natural (constrained) scale, or
-\code{"link"} for derivatives with respect to the unconstrained linear
-predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
-See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Applied by the generic after dispatch, so a method
+always returns the parameter scale and never reads this.}
 
-\item{...}{Additional arguments passed to the specific method.}
+\item{...}{Passed to the method. No shipped method reads it.}
 }
 \value{
-A named list with one numeric vector per parameter, keyed by
-\code{distrib@params}.
+A named list with one numeric vector per parameter, keyed and
+ordered by \code{distrib@params}, each of length \code{length(y)}.
 }
 \description{
 Computes the mixed second derivatives
 \eqn{\partial^2 \ell / \partial y\, \partial \theta_i}, one component per
-parameter, each a vector along \code{y}.
-}
-\details{
-This is the off-diagonal block of the joint Hessian in \eqn{(y, \theta)},
-whose diagonal blocks are \code{\link[=distrib_hess_y]{distrib_hess_y()}} and
-\code{\link[=distrib_hessian]{distrib_hessian()}}. It is what joint estimation over both
-arguments needs, and what the gradient of a profiled objective needs
-through the implicit function theorem.
+parameter and each a vector along \code{y}. Together with \code{\link[=distrib_hess_y]{distrib_hess_y()}} and
+\code{\link[=distrib_hessian]{distrib_hessian()}} this completes the joint Hessian of the log-density in
+\eqn{(y, \theta)}: those two are the diagonal blocks and this is the
+off-diagonal one.
 
-On the link scale the component for \eqn{\eta_i} is the parameter-scale
-component multiplied by \eqn{h_i'(\eta_i)}: the response derivative is
+Defined for continuous families only. A discrete family has no derivative
+in \eqn{y} to cross, and its base class refuses the call.
+}
+\section{What consumes it}{
+A penalty in \pkg{penalties7} is a negative log-density read at the
+coefficients, so estimating coefficients and hyperparameters together needs
+exactly this block, and so does the gradient of a profiled objective through
+the implicit function theorem.
+}
+
+\section{The link scale}{
+The component for \eqn{\eta_i} is the parameter-scale component multiplied
+by \eqn{h_i'(\eta_i)}, and nothing else. The response derivative is
 untouched by a reparametrization of \eqn{\theta}, so only the first-order
-diagonal chain rule enters, exactly as for \code{\link[=distrib_gradient]{distrib_gradient()}}.
-
-Distributions with a closed form provide it directly; the others fall back
-to one central difference of \code{\link[=distrib_grad_y]{distrib_grad_y()}} in each
-parameter (see \code{\link[=numerical_cross_y]{numerical_cross_y()}}).
+diagonal chain rule enters, exactly as for \code{\link[=distrib_gradient]{distrib_gradient()}}: on a
+Gaussian whose scale carries a log link the \code{sigma} component is multiplied
+by \eqn{\sigma} and the \code{mu} component by 1.
 }
+
+\section{Where the closed forms are}{
+All 32 continuous families in the package register one. The fallback in
+\code{\link[=distrib_cross_y.continuous_distrib]{distrib_cross_y.continuous_distrib()}} therefore exists for families
+defined outside the package, and it is one central difference of
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} in each parameter.
+}
+
 \examples{
 d <- gaussian1_distrib()
-distrib_cross_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
+y <- c(-1, 0, 2)
+th <- list(mu = 0.3, sigma = 1.4)
+distrib_cross_y(d, y, th)
+
+# The mu component is 1/sigma^2 at every observation, and the sigma
+# component is 2r/sigma^3, so it changes sign with the residual.
+all.equal(distrib_cross_y(d, y, th)$sigma, 2 * (y - 0.3) / 1.4^3)
+
+# On the link scale only the diagonal chain-rule factor enters: sigma
+# carries a log link, so its component is multiplied by sigma itself.
+distrib_cross_y(d, y, th, scale = "link")$sigma /
+  distrib_cross_y(d, y, th)$sigma
 
 }
 \seealso{
-\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}}
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}, the two diagonal blocks;
+\code{\link[=numerical_cross_y]{numerical_cross_y()}} for the fallback;
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the third-order block.
 }

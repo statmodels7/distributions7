@@ -8,18 +8,41 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, aligned by the
+generic. Each may be length 1 or \code{length(y)}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method always
+returns the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu} and \code{sigma}.
+A named list with components \code{mu} and \code{sigma}, each a numeric vector
+of length \code{length(y)}.
 }
 \description{
-Closed form: with \eqn{r = y - \mu},
-\eqn{\partial^2 \ell / \partial y\, \partial \mu = 1/\sigma^2} and
-\eqn{\partial^2 \ell / \partial y\, \partial \sigma = 2r/\sigma^3}.
+Closed form. With \eqn{r = y - \mu},
+\deqn{\frac{\partial^2 \ell}{\partial y\, \partial \mu} = \frac{1}{\sigma^2},
+      \qquad
+      \frac{\partial^2 \ell}{\partial y\, \partial \sigma} =
+      \frac{2r}{\sigma^3}.}
+
+The first is constant along \code{y}, a quadratic log-density in a location
+parameter giving nothing else; the second changes sign with the residual,
+being zero at the mean and growing linearly away from it.
+}
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1, 0, 2)
+distrib_cross_y(d, y, list(mu = 0.3, sigma = 1.4))
+
+# The sigma component vanishes exactly at the mean.
+distrib_cross_y(d, 0.3, list(mu = 0.3, sigma = 1.4))$sigma
+
+}
+\seealso{
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic;
+\code{\link[=distrib_cross_y.StudentT1Distrib]{distrib_cross_y.StudentT1Distrib()}}, whose mu component is not constant;
+\code{\link[=distrib_grad_y.Gaussian1Distrib]{distrib_grad_y.Gaussian1Distrib()}} for the quantity differentiated.
 }
 \keyword{internal}

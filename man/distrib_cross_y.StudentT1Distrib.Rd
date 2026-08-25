@@ -8,20 +8,51 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, aligned by
+the generic. Each may be length 1 or \code{length(y)}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{Handled by the generic after dispatch; this method always
+returns the parameter scale.}
 
 \item{...}{Unused.}
 }
 \value{
-A named list with components \code{mu}, \code{sigma} and \code{nu}.
+A named list with components \code{mu}, \code{sigma} and \code{nu}, each a numeric
+vector of length \code{length(y)}.
 }
 \description{
-Closed form: with \eqn{r = y - \mu} and
+Closed form in all three parameters. With \eqn{r = y - \mu} and
 \eqn{D = \nu\sigma^2 + r^2},
-\eqn{\partial^2 \ell / \partial y\, \partial \mu = (\nu+1)(\nu\sigma^2 - r^2)/D^2},
-\eqn{\partial^2 \ell / \partial y\, \partial \sigma = 2\nu\sigma(\nu+1)\, r/D^2},
-\eqn{\partial^2 \ell / \partial y\, \partial \nu = -r\,(r^2 - \sigma^2)/D^2}.
+\deqn{\frac{\partial^2 \ell}{\partial y\, \partial \mu} =
+      \frac{(\nu+1)(\nu\sigma^2 - r^2)}{D^2}, \qquad
+      \frac{\partial^2 \ell}{\partial y\, \partial \sigma} =
+      \frac{2\nu\sigma(\nu+1) r}{D^2}, \qquad
+      \frac{\partial^2 \ell}{\partial y\, \partial \nu} =
+      -\frac{r(r^2 - \sigma^2)}{D^2}.}
+
+The \eqn{\nu} component is elementary here, unlike the \eqn{\nu} components
+of the cdf derivatives: the log-density carries \code{lgamma} and a logarithm of
+\eqn{D}, both differentiable in \eqn{\nu} in closed form, and no
+distribution function appears.
+
+Note that the \eqn{\mu} component changes sign at \eqn{|r| = \sigma\sqrt\nu}
+and decays as \eqn{r^{-2}}, where the Gaussian's is constant. That is the
+redescending score seen one derivative along.
+}
+\examples{
+d <- student_t1_distrib()
+th <- list(mu = 0.2, sigma = 1.1, nu = 6)
+distrib_cross_y(d, c(-1, 0, 2), th)
+
+# The mu component changes sign where the residual passes sigma*sqrt(nu),
+# which is where the score of a t stops growing and starts to redescend.
+r0 <- 1.1 * sqrt(6)
+distrib_cross_y(d, 0.2 + c(0.5, 1, 1.5) * r0, th)$mu
+
+}
+\seealso{
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the generic;
+\code{\link[=distrib_cross_y.Gaussian1Distrib]{distrib_cross_y.Gaussian1Distrib()}}, the limit as \eqn{\nu} grows;
+\code{\link[=distrib_grad_y.StudentT1Distrib]{distrib_grad_y.StudentT1Distrib()}} for the redescending score itself.
 }
 \keyword{internal}
