@@ -407,7 +407,7 @@ S7::method(distrib_deriv3, DirichletDistrib) <- function(distrib, y, theta,
 #' term on the component all of whose indices name the concentration.
 #'
 #' @details
-#' The licence for this order is that the SAME assembly run at orders one and
+#' The license for this order is that the SAME assembly run at orders one and
 #' two reproduces the hand-written score and information, which are derived
 #' separately and are already under [check_distrib()]. Agreement at the orders
 #' that can be checked is what authorizes the order that cannot.
@@ -605,7 +605,7 @@ S7::method(distrib_deriv3, MultinomialDistrib) <- function(distrib, y, theta,
 #' \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights.
 #'
 #' @details
-#' The licence for this order is that the SAME assembly run at orders one and
+#' The license for this order is that the SAME assembly run at orders one and
 #' two reproduces the hand-written score and information, which are derived
 #' separately and are already under [check_distrib()].
 #' @param distrib A `MultinomialDistrib` object, from [multinomial_distrib()].
@@ -837,7 +837,7 @@ mvt_higher <- function(distrib, y, theta, order) {
 #' \eqn{(\nu+p)/2}.
 #'
 #' @details
-#' The licence for this order is that the SAME assembly run at orders one and
+#' The license for this order is that the SAME assembly run at orders one and
 #' two reproduces the hand-written score and information, which are derived
 #' separately and are already under [check_distrib()]. Against one stencil on
 #' the analytic Hessian, every component here agrees to a relative
@@ -929,7 +929,7 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #' prefactor \eqn{(\nu+p)/2}.
 #'
 #' @details
-#' The licence for this order is that the SAME assembly run at orders one and
+#' The license for this order is that the SAME assembly run at orders one and
 #' two reproduces the hand-written score and information, which are derived
 #' separately and are already under [check_distrib()].
 #'

@@ -39,7 +39,7 @@ sum per coordinate of the simplex, with
 \eqn{f^{(m)}(p) = (-1)^{m-1}(m-1)!\,p^{-m}} and the counts as weights.
 }
 \details{
-The licence for this order is that the SAME assembly run at orders one and
+The license for this order is that the SAME assembly run at orders one and
 two reproduces the hand-written score and information, which are derived
 separately and are already under \code{\link[=check_distrib]{check_distrib()}}.
 }

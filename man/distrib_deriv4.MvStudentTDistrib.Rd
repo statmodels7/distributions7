@@ -42,7 +42,7 @@ differentiating \eqn{(-1)^{m-1}(m-1)!/(\nu+q)^m} against the linear
 prefactor \eqn{(\nu+p)/2}.
 }
 \details{
-The licence for this order is that the SAME assembly run at orders one and
+The license for this order is that the SAME assembly run at orders one and
 two reproduces the hand-written score and information, which are derived
 separately and are already under \code{\link[=check_distrib]{check_distrib()}}.
 

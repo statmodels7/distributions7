@@ -45,7 +45,7 @@ the same array expansion the gaussian uses through \code{\link[=mvg_ptensors]{mv
 \eqn{(\nu+p)/2}.
 }
 \details{
-The licence for this order is that the SAME assembly run at orders one and
+The license for this order is that the SAME assembly run at orders one and
 two reproduces the hand-written score and information, which are derived
 separately and are already under \code{\link[=check_distrib]{check_distrib()}}. Against one stencil on
 the analytic Hessian, every component here agrees to a relative

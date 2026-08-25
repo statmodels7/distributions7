@@ -11,7 +11,7 @@ value is infinite unless the shape is exactly 1.}
 
 \item{theta}{A named list with components \code{mu} and \code{phi}, each a numeric
 vector of length 1 or of the length of \code{y}. \code{mu} is not read, the rate
-having cancelled. \code{phi} must be strictly positive.}
+having canceled. \code{phi} must be strictly positive.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

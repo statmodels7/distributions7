@@ -39,7 +39,7 @@ quadratic variance function.
 \section{The dispersion at large theta}{
 The dispersion component is \strong{not} computed as written above. As
 \eqn{\theta} grows the family tends to the Poisson and this derivative
-vanishes, its three terms cancelling to leading order:
+vanishes, its three terms canceling to leading order:
 \eqn{\psi(y+\theta) - \psi(\theta)} is \eqn{y/\theta},
 \eqn{\log\{\theta/s\}} is \eqn{-\mu/\theta} and \eqn{(\mu-y)/s} is
 \eqn{(\mu-y)/\theta}, and the three sum to zero, so the value is

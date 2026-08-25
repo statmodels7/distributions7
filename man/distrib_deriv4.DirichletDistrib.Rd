@@ -42,7 +42,7 @@ per coordinate of the simplex, run by \code{\link[=chain_univariate]{chain_univa
 term on the component all of whose indices name the concentration.
 }
 \details{
-The licence for this order is that the SAME assembly run at orders one and
+The license for this order is that the SAME assembly run at orders one and
 two reproduces the hand-written score and information, which are derived
 separately and are already under \code{\link[=check_distrib]{check_distrib()}}. Agreement at the orders
 that can be checked is what authorizes the order that cannot.

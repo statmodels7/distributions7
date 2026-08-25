@@ -32,7 +32,7 @@ given \eqn{L = \log(1-F)} and a function evaluating its partial derivatives.
 complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
 turns that into \eqn{\partial^{I}F = -S\,B_{I}}. The survival function is
 evaluated as \code{exp(L)} rather than as \code{1 - F}, which keeps the far
-tail from cancelling.
+tail from canceling.
 }
 \seealso{
 \code{\link[=bell_f_ratio]{bell_f_ratio()}}

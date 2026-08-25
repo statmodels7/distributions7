@@ -787,7 +787,7 @@ S7::method(distrib_grad_y, Gamma1Distrib) <- function(distrib, y, theta, ...) {
 #'   value is infinite unless the shape is exactly 1.
 #' @param theta A named list with components `mu` and `phi`, each a numeric
 #'   vector of length 1 or of the length of `y`. `mu` is not read, the rate
-#'   having cancelled. `phi` must be strictly positive.
+#'   having canceled. `phi` must be strictly positive.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `max(length(y), length(phi))`, one value

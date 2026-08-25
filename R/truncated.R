@@ -2509,7 +2509,7 @@ check_truncation_points <- function(distrib, lower, upper, is_disc) {
 #' - A discrete interval leaving too few support points to identify the
 #'   parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
 #'   `n_params + 1` points are required.
-#' - A parent modelling a probability of zero, from [zero_inflated()] or
+#' - A parent modeling a probability of zero, from [zero_inflated()] or
 #'   [zero_adjusted()], when the interval removes \eqn{0}. Truncating zero away
 #'   cancels that parameter out of the likelihood, leaving an identically zero
 #'   score. Truncating elsewhere, as in

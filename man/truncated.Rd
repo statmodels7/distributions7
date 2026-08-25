@@ -86,7 +86,7 @@ support points either side of it.
 \item A discrete interval leaving too few support points to identify the
 parameters: \eqn{k} points carry \eqn{k-1} free probabilities, so
 \code{n_params + 1} points are required.
-\item A parent modelling a probability of zero, from \code{\link[=zero_inflated]{zero_inflated()}} or
+\item A parent modeling a probability of zero, from \code{\link[=zero_inflated]{zero_inflated()}} or
 \code{\link[=zero_adjusted]{zero_adjusted()}}, when the interval removes \eqn{0}. Truncating zero away
 cancels that parameter out of the likelihood, leaving an identically zero
 score. Truncating elsewhere, as in
