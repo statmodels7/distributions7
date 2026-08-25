@@ -4,23 +4,56 @@
 \alias{distrib_quantile.GPDDistrib}
 \title{Generalized Pareto Quantile Function}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms when \code{log.p = TRUE}. At \code{p = 1} the value is the endpoint,
+which is \code{Inf} for a non-negative shape.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{p}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \code{p} is \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is the survival probability.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is given as its logarithm.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm
+and is exponentiated first. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the length of the recycled
+inputs.
 }
 \description{
-\deqn{Q(p) = \dfrac{\sigma}{\xi}\left((1-p)^{-\xi} - 1\right)}
-with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}.
+Computes the quantiles in closed form,
+\deqn{Q(p; \sigma, \xi) = \dfrac{\sigma}{\xi}\left\{(1-p)^{-\xi} - 1\right\},}
+with \eqn{-\sigma\log(1-p)} at \eqn{\xi = 0}. The generalized Pareto is one
+of the few families here whose quantile function is elementary, so nothing
+is inverted numerically and \code{\link[=distrib_rng.GPDDistrib]{distrib_rng.GPDDistrib()}} can use the inverse
+transform.
+
+Near zero the shape branch is taken on \eqn{|\xi| < 10^{-8}} and the value
+comes from \code{log1p(-p)}, which keeps its digits for a probability close to
+zero where \code{log(1 - p)} would not.
+}
+\examples{
+d <- gpd_distrib()
+th <- list(sigma = 1.5, xi = 0.3)
+
+# The round trip is exact, both functions being closed form.
+y <- c(0.2, 1, 4)
+all.equal(distrib_quantile(d, distrib_cdf(d, y, th), th), y)
+
+# Shape zero is the exponential quantile.
+p <- c(0.1, 0.5, 0.9)
+all.equal(distrib_quantile(d, p, list(sigma = 1.5, xi = 0)),
+          qexp(p, rate = 1 / 1.5))
+
+# A negative shape has a finite upper quantile: the endpoint itself.
+c(q999 = distrib_quantile(d, 0.999, list(sigma = 2, xi = -0.4)),
+  endpoint = distributions7:::gpd_endpoint(2, -0.4))
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_cdf.GPDDistrib]{distrib_cdf.GPDDistrib()}}, which it inverts,
+\code{\link[=distrib_rng.GPDDistrib]{distrib_rng.GPDDistrib()}}, which draws from it, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

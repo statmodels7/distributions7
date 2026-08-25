@@ -7,23 +7,42 @@
 gpd_endpoint(sigma, xi)
 }
 \arguments{
-\item{sigma}{The scale, a positive numeric vector.}
+\item{sigma}{A numeric vector of scales, strictly positive. Nothing is
+validated.}
 
-\item{xi}{The shape, a numeric vector.}
+\item{xi}{A numeric vector of shapes, of any sign.}
 }
 \value{
-A numeric vector.
+A numeric vector of endpoints, of the length of the recycled
+inputs. Entries are \code{Inf} wherever \code{xi >= 0}.
 }
 \description{
-\eqn{-\sigma/\xi} when \eqn{\xi < 0}, and infinity otherwise.
+Returns \eqn{-\sigma/\xi} where \eqn{\xi < 0} and \code{Inf} elsewhere: the point
+beyond which a generalized Pareto puts no mass.
 }
 \details{
-The endpoint depends on the parameters, which is the whole reason the
-family needs care: for \eqn{\xi < 0} the support is bounded and moves with
-\eqn{\sigma} and \eqn{\xi}, so the license to differentiate under the
-integral sign is not automatic. See \code{\link[=gpd_distrib]{gpd_distrib()}}.
+The endpoint depends on the parameters, which is the whole reason this
+family needs care. For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}
+and both ends of the interval move as the parameters do, so
+differentiating an expectation under the integral sign is not automatically
+licensed. The consequence a user meets is that the expected information
+exists only for \eqn{\xi > -1/2}; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
+
+\code{ifelse()} is correct here and is deliberate: both arguments are of the
+length of the test after recycling, so a vector of shapes gives a vector of
+endpoints.
+}
+\examples{
+# Finite only for a negative shape.
+distributions7:::gpd_endpoint(2, c(-0.4, -0.1, 0, 0.3))
+
+# The density really is zero at and beyond it.
+d <- gpd_distrib()
+distrib_pdf(d, c(4, 5, 6), list(sigma = 2, xi = -0.4))
+
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=gpd_distrib]{gpd_distrib()}} for the family and what the moving endpoint costs,
+and \code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian.GPDDistrib()}} for where it stops existing.
 }
 \keyword{internal}

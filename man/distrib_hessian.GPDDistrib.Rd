@@ -2,27 +2,71 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_hessian.GPDDistrib}
 \alias{distrib_hessian.GPDDistrib}
-\title{Generalized Pareto Analytical Observed Hessian}
+\title{Generalized Pareto Observed Hessian}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{y}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{sigma_sigma}, \code{xi_xi}, \code{sigma_xi}.
 }
 \description{
-The second derivatives of the same expressions, kept short by
-\eqn{t - \xi z = 1}, which makes \eqn{\partial u/\partial\sigma} equal to
-\eqn{-z/(\sigma t^2)}. The pure-\eqn{\xi} component goes through a series
-near zero, where its two singular terms cancel.
+Computes the three second derivatives of the log-density in closed form, in
+a compiled kernel. In the notation of \code{\link[=distrib_gradient.GPDDistrib]{distrib_gradient.GPDDistrib()}} the
+expressions stay short because \eqn{t - \xi z = 1}, which makes
+\eqn{\partial u/\partial\sigma} equal to \eqn{-z/(\sigma t^2)}.
+
+The pure-\eqn{\xi} component carries the same removable singularity the
+score does, one order worse, and goes through the same analytic function
+\eqn{\Lambda(u) = \log(1+u)/u}. The two terms that individually diverge as
+\eqn{\xi \to 0} cancel, and the limit is an ordinary point of the formula.
+
+This is the \strong{observed} curvature at the data. The expected one is closed
+form as well, but only above \eqn{\xi = -1/2}; see
+\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian.GPDDistrib()}}.
+}
+\section{Notation}{
+
+\eqn{z = y/\sigma}, \eqn{t = 1 + \xi z}, \eqn{u = z/t}, and \eqn{\ell} is
+the log-density of one observation.
+}
+
+\examples{
+d <- gpd_distrib()
+y <- c(0.2, 1, 4)
+th <- list(sigma = 1.5, xi = 0.3)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$sigma_xi,
+      numeric = (distrib_gradient(d, y, list(sigma = 1.5,
+                                             xi = 0.3 + eps))$sigma -
+                 distrib_gradient(d, y, list(sigma = 1.5,
+                                             xi = 0.3 - eps))$sigma) /
+                (2 * eps))
+
+# The pure-shape component passes through zero without a branch.
+vapply(c(1e-2, 1e-6, 0, -1e-6),
+       function(x) distrib_hessian(d, 1, list(sigma = 1, xi = x))$xi_xi, 0)
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_gradient.GPDDistrib]{distrib_gradient.GPDDistrib()}} for the order below,
+\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} for the order above,
+\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian.GPDDistrib()}} for the expectation, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

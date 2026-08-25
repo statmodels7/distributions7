@@ -4,18 +4,46 @@
 \alias{distrib_rng.GPDDistrib}
 \title{Generalized Pareto Random Generation}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of length \code{n}; a component of length 1 is recycled,
+so a parameter varying by observation draws one value per observation from
+its own member of the family.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of \code{n} draws, non-negative and bounded above by
+\code{\link[=gpd_endpoint]{gpd_endpoint()}} when the shape is negative.
 }
 \description{
-Inverse transform, the quantile function being elementary.
+Draws by the inverse transform, \code{distrib_quantile(distrib, runif(n), theta)}. The quantile function of this family is elementary, so the
+transform is exact and costs one uniform per draw; the base class's
+ratio-of-uniforms fallback is not needed.
+}
+\examples{
+d <- gpd_distrib()
+th <- list(sigma = 1.5, xi = 0.3)
+
+set.seed(41)
+x <- distrib_rng(d, 2e5, th)
+
+# The mean exists here (xi < 1) and matches sigma/(1 - xi).
+c(sample = mean(x), theory = mean(d, th))
+
+# A negative shape draws inside a bounded support.
+set.seed(42)
+xn <- distrib_rng(d, 1e4, list(sigma = 2, xi = -0.4))
+c(max_draw = max(xn), endpoint = distributions7:::gpd_endpoint(2, -0.4))
+
+# Shape zero draws an exponential sample.
+set.seed(43)
+x0 <- distrib_rng(d, 1e5, list(sigma = 1.5, xi = 0))
+c(sample_mean = mean(x0), theory = 1.5)
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile.GPDDistrib()}}, which it inverts through,
+\code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf.GPDDistrib()}} for the density the draws follow, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

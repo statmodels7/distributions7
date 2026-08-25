@@ -2,7 +2,7 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{GPDDistrib}
 \alias{GPDDistrib}
-\title{S7 Class for the Generalized Pareto Distribution}
+\title{Generalized Pareto Distribution Class}
 \usage{
 GPDDistrib(
   distrib_name = character(0),
@@ -36,26 +36,79 @@ GPDDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{GPDDistrib}.
+An S7 object of class \code{GPDDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. For an object built by
+\code{\link[=gpd_distrib]{gpd_distrib()}} the properties hold \code{"generalized pareto"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("sigma", "xi")}, the interpretations
+\code{c(sigma = "scale", xi = "shape")}, \code{2}, and the domains
+\eqn{(0,\infty)} and \eqn{(-\infty,\infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the
-generalized Pareto distribution in its scale and shape.
+The S7 class of the generalized Pareto family, the law of exceedances over a
+high threshold, parametrized by a scale \eqn{\sigma > 0} and a shape
+\eqn{\xi}:
+\eqn{f(y) = \sigma^{-1}(1 + \xi y/\sigma)^{-1/\xi-1}} on \eqn{y \ge 0}. At
+\eqn{\xi = 0} it is the exponential, reached by a series, so a fit may move
+the shape through zero.
+
+It is the first family in the package whose \strong{support moves with its
+parameters}: for \eqn{\xi < 0} it ends at \eqn{-\sigma/\xi}. That is what
+makes it non-regular, and it is why its expected information exists only
+above \eqn{\xi = -1/2}.
+
+Build one with \code{\link[=gpd_distrib]{gpd_distrib()}}, which supplies the two link functions. This
+page documents the raw S7 constructor, which validates none of the
+relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered in this file, all compiled apart from the first four:
+\code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf()}},
 \code{\link[=distrib_cdf.GPDDistrib]{distrib_cdf()}},
-\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile()}},
+\code{\link[=distrib_rng.GPDDistrib]{distrib_rng()}},
 \code{\link[=distrib_gradient.GPDDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian()}},
-\code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf()}},
-\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile()}},
-\code{\link[=distrib_rng.GPDDistrib]{distrib_rng()}}
+\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Registered elsewhere: the third and fourth orders in \code{gpd_higher.R}
+(\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4()}}); the response derivatives
+and the mixed one in \code{cross_derivatives_families.R}
+(\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}},
+\code{\link[=distrib_cross_y]{distrib_cross_y()}}); the four moments in \code{moments.R};
+and the second-order response derivatives in \code{theta2_more.R}.
 }
 
+\section{What the moving endpoint costs}{
+
+The derivatives are correct as derivatives of the log-density at every
+admissible point, whatever the sign of \eqn{\xi}. What is not automatic is
+the license to differentiate under the integral sign, which the Bartlett
+identities rest on. The expected information exists for \eqn{\xi > -1/2}
+and is Smith's closed form; at or below that it does not exist and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}, along with the classical
+asymptotics of the maximum likelihood estimator.
+}
+
+\examples{
+d <- gpd_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_interpretation
+
+# The declared bounds are fixed at construction; the true endpoint moves
+# with the parameters and is finite whenever the shape is negative.
+c(declared = d@bounds,
+  actual = c(0, distributions7:::gpd_endpoint(2, -0.4)))
+
+# The scale rides a log link and the shape may take either sign.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=gpd_distrib]{gpd_distrib()}} to build one;
+\code{\link[=exponential_distrib]{exponential_distrib()}} for the \eqn{\xi = 0} case;
+\code{\link[=gumbel_distrib]{gumbel_distrib()}} for the companion family in an analysis of extremes;
+\code{\link[=gpd_endpoint]{gpd_endpoint()}} for the upper limit of the support.
 }

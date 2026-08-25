@@ -4,22 +4,67 @@
 \alias{distrib_cdf.GPDDistrib}
 \title{Generalized Pareto Distribution Function}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{q}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value
+is \eqn{P(Y \le q)}; when \code{FALSE} it is the survival function, which is
+the quantity actually computed.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms with \code{log.p = TRUE}, of the length of the recycled inputs.
 }
 \description{
-\deqn{F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}}
+Computes the generalized Pareto distribution function
+\deqn{F(q; \sigma, \xi) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi},}
+with \eqn{1 - e^{-q/\sigma}} at \eqn{\xi = 0}. The survival function is
+formed first and the tail and the logarithm applied to it, so the far tail
+keeps its digits.
+
+The value is 0 below \eqn{q = 0} and 1 at and beyond \code{\link[=gpd_endpoint]{gpd_endpoint()}}, and
+is clamped to \eqn{[0, 1]} so that rounding cannot return a probability
+outside the unit interval.
+}
+\details{
+The branch on \eqn{|\xi| < 10^{-8}} is taken by indexing, and that is not a
+stylistic choice. \code{ifelse()} returns a result the length of its \strong{test}, so
+with it a scalar shape beside a vector of quantiles would collapse the
+answer to one number. The test is recycled to the answer's length first.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale and \eqn{\xi} the shape.
+}
+
+\examples{
+d <- gpd_distrib()
+q <- c(0.2, 1, 4)
+th <- list(sigma = 1.5, xi = 0.3)
+
+# The formula written out.
+all.equal(distrib_cdf(d, q, th), 1 - (1 + 0.3 * q / 1.5)^(-1 / 0.3))
+
+# A scalar shape with a vector of quantiles returns one value per
+# quantile, which an ifelse() branch would not.
+length(distrib_cdf(d, seq(0, 5, by = 1), th))
+
+# Shape zero is the exponential.
+all.equal(distrib_cdf(d, q, list(sigma = 1.5, xi = 0)),
+          pexp(q, rate = 1 / 1.5))
+
+# A negative shape reaches one at the endpoint and stays there.
+distrib_cdf(d, c(4, 5, 6), list(sigma = 2, xi = -0.4))
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_quantile.GPDDistrib]{distrib_quantile.GPDDistrib()}}, which inverts this in closed
+form, \code{\link[=distrib_pdf.GPDDistrib]{distrib_pdf.GPDDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}} for
+the generic.
 }

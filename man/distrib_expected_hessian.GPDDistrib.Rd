@@ -2,36 +2,95 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_expected_hessian.GPDDistrib}
 \alias{distrib_expected_hessian.GPDDistrib}
-\title{Generalized Pareto Analytical Expected Hessian}
+\title{Generalized Pareto Expected Information}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector. Its values do not enter the result, which is an
+expectation; only its length does, through recycling.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{y}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored: the expectation is closed form. Accepted so that the
+signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{sigma_sigma}, \code{xi_xi}, \code{sigma_xi}. Every entry is \code{NA} where
+\code{xi <= -0.5}.
 }
 \description{
-The closed form of Smith (1985), valid for \eqn{\xi > -1/2}:
-\deqn{\mathbb{E}\left[\dfrac{\partial^2\ell}{\partial\sigma^2}\right]
+Returns Smith's (1985) closed form, valid for \eqn{\xi > -1/2}:
+\deqn{E\!\left[\dfrac{\partial^2\ell}{\partial\sigma^2}\right]
         = \dfrac{-1}{(1+2\xi)\sigma^2}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2\ell}{\partial\sigma\partial\xi}\right]
+      E\!\left[\dfrac{\partial^2\ell}{\partial\sigma\partial\xi}\right]
         = \dfrac{-1}{(1+2\xi)\sigma(1+\xi)}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
-        = \dfrac{-2}{(1+2\xi)(1+\xi)}}
-At \eqn{\xi \le -1/2} the information does not exist and \code{NA} is
-returned rather than a number; see \code{\link[=gpd_distrib]{gpd_distrib()}}.
+      E\!\left[\dfrac{\partial^2\ell}{\partial\xi^2}\right]
+        = \dfrac{-2}{(1+2\xi)(1+\xi)}.}
+Every entry is free of the data, so \code{approx} and \code{nsim} are ignored and
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers \code{TRUE}.
+}
+\section{Where it stops existing}{
+At \eqn{\xi \le -1/2} the information does \strong{not exist} and every component
+is \code{NA}. The condition is exactly that the integrand be integrable: written
+on the probability scale, the second derivative grows like
+\eqn{(1-u)^{-2|\xi|}} near the upper endpoint, which is integrable if and
+only if \eqn{|\xi| < 1/2}. Below that point the classical asymptotics of the
+maximum likelihood estimator do not hold either, so the \code{NA} reports a
+quantity that does not exist.
+
+Approaching the boundary the information diverges: measured at
+\eqn{\sigma = 1.5}, the \eqn{\xi} component is \eqn{-2.00} at
+\eqn{\xi = 0}, \eqn{-7.14} at \eqn{-0.3} and \eqn{-196.1} at \eqn{-0.49}.
+}
+
+\section{Checking it}{
+A Monte Carlo average of the observed Hessian is the weaker reference here,
+and disagreed with this formula by 9 per cent at \eqn{\xi = -0.3} while the
+formula was right: the second derivative blows up at the upper endpoint, so
+the sample mean converges slowly. Integrating on the \strong{probability} scale
+instead, \eqn{E[h] = \int_0^1 h(Q(u))\,du}, turns the endpoint into an
+ordinary point and agrees to \eqn{10^{-11}}.
+}
+
+\examples{
+d <- gpd_distrib()
+th <- list(sigma = 1.5, xi = 0.3)
+e <- distrib_expected_hessian(d, 0, th)
+
+# Smith's formula written out.
+all.equal(unlist(e[c("sigma_sigma", "sigma_xi", "xi_xi")], use.names = FALSE),
+          c(-1 / (1.6 * 1.5^2), -1 / (1.6 * 1.5 * 1.3), -2 / (1.6 * 1.3)))
+
+# It diverges as the shape approaches -1/2, and does not exist at or
+# below it.
+t(vapply(c(-0.7, -0.5, -0.49, -0.3, 0),
+         function(x) {
+           u <- distrib_expected_hessian(d, 0, list(sigma = 1.5, xi = x))
+           c(xi = x, sigma_sigma = u$sigma_sigma, xi_xi = u$xi_xi)
+         }, numeric(3)))
+
+# The strategy argument is ignored, the expectation being closed form.
+identical(distrib_expected_hessian(d, 0, th),
+          distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 10))
+}
+\references{
+Smith, R. L. (1985). Maximum likelihood estimation in a class of nonregular
+cases. \emph{Biometrika} 72, 67-90.
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian.GPDDistrib()}} for the observed curvature,
+\code{\link[=gpd_endpoint]{gpd_endpoint()}} for the endpoint that causes the condition, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

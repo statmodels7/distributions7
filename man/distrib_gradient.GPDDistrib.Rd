@@ -2,30 +2,76 @@
 % Please edit documentation in R/gpd_distrib.R
 \name{distrib_gradient.GPDDistrib}
 \alias{distrib_gradient.GPDDistrib}
-\title{Generalized Pareto Analytical Gradient}
+\title{Generalized Pareto Score}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{y}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation to the link scale is applied in the generic's body, so this
+method always returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list with the \code{sigma} and \code{xi} components.
+A named list of two numeric vectors, \code{sigma} and \code{xi}, each of the
+length of the recycled inputs.
 }
 \description{
-With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and \eqn{u = z/t},
+Computes the two first derivatives of the log-density in closed form, in a
+compiled kernel. With \eqn{z = y/\sigma}, \eqn{t = 1 + \xi z} and
+\eqn{u = z/t},
 \deqn{\dfrac{\partial \ell}{\partial \sigma}
         = \dfrac{(\xi+1)u - 1}{\sigma}, \qquad
       \dfrac{\partial \ell}{\partial \xi}
-        = \dfrac{\log t}{\xi^2} - \left(1 + \dfrac{1}{\xi}\right)u}
-the second computed through a series near \eqn{\xi = 0}, where its limit is
-\eqn{z^2/2 - z}.
+        = \dfrac{\log t}{\xi^2} - \left(1 + \dfrac{1}{\xi}\right)u.}
+
+The shape component is written this way only away from zero. Both of its
+terms blow up as \eqn{\xi \to 0} and their difference has the finite limit
+\eqn{z^2/2 - z}, so the kernel evaluates it through the analytic function
+\eqn{\Lambda(u) = \log(1+u)/u} instead, whose derivatives come from a
+recursion above \eqn{|u| = 1/2} and from a Taylor series below it. Measured
+at \eqn{z = 1}, the component reads \eqn{-0.4967}, \eqn{-0.49997},
+\eqn{-0.5000000} at \eqn{\xi = 10^{-2}, 10^{-4}, 10^{-8}} against the limit
+\eqn{-1/2}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\sigma > 0} the
+scale, \eqn{\xi} the shape, \eqn{z = y/\sigma} and \eqn{t = 1 + \xi z}.
+}
+
+\examples{
+d <- gpd_distrib()
+y <- c(0.2, 1, 4)
+th <- list(sigma = 1.5, xi = 0.3)
+g <- distrib_gradient(d, y, th)
+
+# Against a central difference of the log-density.
+eps <- 1e-6
+rbind(analytic = g$xi,
+      numeric = (distrib_pdf(d, y, list(sigma = 1.5, xi = 0.3 + eps),
+                             log = TRUE) -
+                 distrib_pdf(d, y, list(sigma = 1.5, xi = 0.3 - eps),
+                             log = TRUE)) / (2 * eps))
+
+# The shape component has a finite limit at zero that its written form
+# does not: both of its terms diverge and the difference does not.
+vapply(c(1e-2, 1e-4, 1e-8, 1e-14),
+       function(x) distrib_gradient(d, 1, list(sigma = 1, xi = x))$xi, 0)
+
+# ...and the limit is z^2/2 - z, which at z = 1 is -0.5.
+distrib_gradient(d, 1, list(sigma = 1, xi = 0))$xi
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian.GPDDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.GPDDistrib]{distrib_expected_hessian.GPDDistrib()}} for Smith's closed form, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

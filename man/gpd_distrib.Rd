@@ -7,86 +7,112 @@
 gpd_distrib(link_sigma = log_link(), link_xi = identity_link())
 }
 \arguments{
-\item{link_sigma}{A link function object for \eqn{\sigma}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{linkfunctions7} link object for the scale
+\eqn{\sigma}, which must be strictly positive. Defaults to
+\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_xi}{A link function object for \eqn{\xi}. Defaults to
-\code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the shape being free to take
-either sign.}
+\item{link_xi}{A link object for the shape \eqn{\xi}, which is
+unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the shape
+being free to take either sign.}
 }
 \value{
-An S7 object of class \code{GPDDistrib}.
+An S7 object of class \link{GPDDistrib}, inheriting from
+\code{continuous_distrib}. Its \code{params} are \code{c("sigma", "xi")}, its \code{bounds}
+\code{c(0, Inf)}, and its \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the generalized Pareto distribution,
-parametrized by a scale \eqn{\sigma} and a shape \eqn{\xi}.
-}
-\details{
-The family of exceedances over a high threshold, and the natural companion
-of \code{\link[=gumbel_distrib]{gumbel_distrib()}} in an analysis of extremes.
+Builds a generalized Pareto distribution object with scale \eqn{\sigma > 0}
+and shape \eqn{\xi}. It is the family of exceedances over a high threshold,
+and the natural companion of \code{\link[=gumbel_distrib]{gumbel_distrib()}} in an analysis of extremes.
 
-\strong{Density and distribution function:}
+At \eqn{\xi = 0} it is the exponential, at \eqn{\xi > 0} it has a
+polynomial tail, and at \eqn{\xi < 0} it has a \strong{finite upper endpoint} at
+\eqn{-\sigma/\xi}. That last case makes the family non-regular, and it is
+the one thing to know before using it.
+}
+\section{Density and distribution function}{
 \deqn{f(y) = \dfrac{1}{\sigma}\left(1 + \dfrac{\xi y}{\sigma}\right)^{-1/\xi-1},
       \qquad
-      F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}}
-At \eqn{\xi = 0} both reduce to the exponential, which the implementation
-reaches through a series rather than by a special case, so the parameter may
-pass through zero during a fit.
+      F(q) = 1 - \left(1 + \dfrac{\xi q}{\sigma}\right)^{-1/\xi}.}
+At \eqn{\xi = 0} both reduce to the exponential. The implementation reaches
+that limit through a series, so the parameter may pass through zero during
+a fit. The quantile function is elementary,
+\eqn{Q(p) = \sigma\{(1-p)^{-\xi}-1\}/\xi}, so the generator is an exact
+inverse transform.
+}
 
-\strong{It is not parametrized by its mean}, unlike most families here. The
-mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a mean
-parametrization would leave the family undescribable exactly where it is
-most used --- the heavy-tailed regime. This is the argument that keeps
-\code{\link[=mv_sigma]{mv_sigma()}} and \code{\link[=variance]{variance()}} apart for the multivariate
-\eqn{t}: a parametrization must not depend on a moment that need not exist.
+\section{It is not parametrized by its mean}{
+The mean is \eqn{\sigma/(1-\xi)} and exists only for \eqn{\xi < 1}, so a
+mean parametrization would leave the family undescribable exactly where it
+is most used, in the heavy-tailed regime. The same argument keeps
+\code{\link[=mv_sigma]{mv_sigma()}} and \code{\link[=variance]{variance()}} apart for the multivariate \eqn{t}: a
+parametrization must not depend on a moment that need not exist.
+}
 
-\strong{The support depends on the parameters when \eqn{\xi < 0}}, being
-\eqn{[0, -\sigma/\xi]}, and this is the first family here of which that is
-true. What it costs is the automatic license to differentiate under the
-integral sign, on which the Bartlett identities rest. Two things survive and
-one does not:
+\section{The support depends on the parameters}{
+For \eqn{\xi < 0} the support is \eqn{[0, -\sigma/\xi]}, and this is the
+first family here of which that is true. What it costs is the automatic
+license to differentiate under the integral sign, on which the Bartlett
+identities rest. Two things survive and one does not:
 \itemize{
-\item the derivatives returned are correct as derivatives of the
-log-density at every admissible point, whatever the sign of \eqn{\xi};
-\item the expected information exists and is the closed form above for
+\item the derivatives returned are correct as derivatives of the log-density at
+every admissible point, whatever the sign of \eqn{\xi};
+\item the expected information exists and is Smith's closed form for
 \eqn{\xi > -1/2}. The condition is exactly that the integrand be
 integrable: near the upper endpoint the second derivative grows like
-\eqn{(1-u)^{-2|\xi|}} in the probability scale, which is integrable if
-and only if \eqn{|\xi| < 1/2};
+\eqn{(1-u)^{-2|\xi|}} on the probability scale, which is integrable if and
+only if \eqn{|\xi| < 1/2};
 \item below \eqn{\xi = -1/2} the information does not exist,
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}, and the
-classical asymptotics of the maximum likelihood estimator do not hold
-(Smith, 1985).
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} returns \code{NA}, and the classical asymptotics
+of the maximum likelihood estimator do not hold (Smith, 1985).
 }
 
-The \code{bounds} of the object are \code{c(0, Inf)} because they are fixed
-at construction while the true endpoint moves with the parameters; the
-density is zero beyond it, so nothing computes a wrong number, but a caller
-reading \code{bounds} learns less than usual.
+The object's \code{bounds} are \code{c(0, Inf)} because they are fixed at
+construction while the true endpoint moves with the parameters. The density
+is zero beyond it, so nothing computes a wrong number, and a caller reading
+\code{bounds} should ask \code{\link[=gpd_endpoint]{gpd_endpoint()}} instead.
+}
 
-\strong{Moments:} mean \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, variance
-\eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}.
+\section{Moments}{
+The mean is \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, the variance
+\eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, the skewness needs
+\eqn{\xi < 1/3} and the kurtosis \eqn{\xi < 1/4. } Each returns \code{Inf} above
+its threshold, so a fitted object can report a mean where it has no
+variance.
+}
 
-\strong{Parameter domains:}
+\section{Parameter domains}{
 \itemize{
-\item \eqn{\sigma \in (0, +\infty)}
-\item \eqn{\xi \in (-\infty, +\infty)}
+\item \eqn{\sigma \in (0, \infty)}
+\item \eqn{\xi \in (-\infty, \infty)}
 }
 }
+
 \examples{
 d <- gpd_distrib()
 d@params
+th <- list(sigma = 1.5, xi = 0.3)
 
-theta <- list(sigma = 1.5, xi = 0.3)
-distrib_pdf(d, c(0.2, 1, 4), theta)
-distrib_gradient(d, c(0.2, 1, 4), theta)
+distrib_pdf(d, c(0.2, 1, 4), th)
 
-# at xi = 0 it is the exponential, reached by a series
-max(abs(distrib_pdf(d, c(0.2, 1, 4), list(sigma = 1.5, xi = 0)) -
-        dexp(c(0.2, 1, 4), 1 / 1.5)))
+# Shape zero is the exponential, reached by a series.
+all.equal(distrib_pdf(d, c(0.2, 1, 4), list(sigma = 1.5, xi = 0)),
+          dexp(c(0.2, 1, 4), rate = 1 / 1.5))
 
-# the information exists only above -1/2
+# Which moments exist depends on the shape, and the mean can be finite
+# where the variance is not.
+t(vapply(c(-0.3, 0.2, 0.4, 0.6), function(x) {
+  p <- list(sigma = 1.5, xi = x)
+  c(xi = x, mean = mean(d, p), variance = variance(d, p))
+}, numeric(3)))
+
+# The information exists only above -1/2.
 distrib_expected_hessian(d, 0, list(sigma = 1.5, xi = -0.7))
+
+# A fit recovers both parameters.
+set.seed(44)
+x <- distrib_rng(d, 4000, th)
+coef(fit_distrib(d, x))
 
 }
 \references{
@@ -97,6 +123,8 @@ Davison, A. C. and Smith, R. L. (1990). Models for exceedances over high
 thresholds. \emph{Journal of the Royal Statistical Society B} 52, 393-442.
 }
 \seealso{
-\code{\link[=gumbel_distrib]{gumbel_distrib()}}, \code{\link[=exponential_distrib]{exponential_distrib()}},
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=exponential_distrib]{exponential_distrib()}} for the \eqn{\xi = 0} case,
+\code{\link[=gumbel_distrib]{gumbel_distrib()}} and \code{\link[=weibull1_distrib]{weibull1_distrib()}} for the other extreme-value
+families, \code{\link[=gpd_endpoint]{gpd_endpoint()}} for the moving support, and \link{GPDDistrib} for
+the class and its method list.
 }
