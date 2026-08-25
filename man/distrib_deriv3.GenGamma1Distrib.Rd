@@ -2,36 +2,78 @@
 % Please edit documentation in R/gengamma1_higher.R
 \name{distrib_deriv3.GenGamma1Distrib}
 \alias{distrib_deriv3.GenGamma1Distrib}
-\alias{distrib_deriv4.GenGamma1Distrib}
-\title{Generalized Gamma Third and Fourth Derivatives}
+\title{Generalized Gamma Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{GenGamma1Distrib} object.}
+\item{distrib}{A \code{GenGamma1Distrib} object, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations. With \code{expected = TRUE}
+only its length is read.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{y}, all strictly positive. A
+component of length 1 is recycled.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
+\code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo draws when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of ten numeric vectors, \code{a_a_a} through \code{p_p_p}, each
+of length \code{max(length(y), lengths(theta))}.
 }
 \description{
-Closed form at both orders, from \code{\link[=gengamma_components]{gengamma_components()}}: the
-log-density is elementary apart from \eqn{\lgamma(d/p)} and
-\eqn{\exp(p\log(y/a))}, and each of those is a univariate function of a
-two-variable map, so the written-out composition covers every component.
+Computes the ten distinct third derivatives of the generalized gamma
+log-density in \eqn{a}, \eqn{d} and \eqn{p}, \strong{in closed form}, through
+\code{\link[=gengamma_components]{gengamma_components()}}. The log-density is elementary apart from
+\eqn{\log\Gamma(d/p)} and \eqn{\exp\{p\log(y/a)\}}, and each of those is a
+univariate function of a two-variable map, so the written-out composition
+\code{\link[=fdb2]{fdb2()}} covers every component without forming a three-variable expansion.
+
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
+expected third derivatives have no closed form. That is the one place on
+this page where \code{approx} and \code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{a > 0} the scale,
+\eqn{d > 0} and \eqn{p > 0} the two shapes, and \eqn{\Gamma} the gamma
+function.
+}
+
+\examples{
+d <- gengamma1_distrib()
+y <- c(0.6, 1.4, 3.1)
+th <- list(a = 2, d = 1.5, p = 1.3)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-scale component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(a = 2 + eps, d = 1.5, p = 1.3))$a_a
+dn <- distrib_hessian(d, y, list(a = 2 - eps, d = 1.5, p = 1.3))$a_a
+all.equal((up - dn) / (2 * eps), d3$a_a_a, tolerance = 1e-6)
+
+# And the fully mixed component, which the two compositions never both
+# contribute to.
+up <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 + eps))$a_d
+dn <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 - eps))$a_d
+all.equal((up - dn) / (2 * eps), d3$a_d_p, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}
+\code{\link[=distrib_hessian.GenGamma1Distrib]{distrib_hessian.GenGamma1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.GenGamma1Distrib]{distrib_deriv4.GenGamma1Distrib()}} for the order above,
+\code{\link[=gengamma_components]{gengamma_components()}} for the assembly, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the
+generic.
 }

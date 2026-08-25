@@ -18,18 +18,47 @@ NULL
 #' Derivative Components of the Generalized Gamma
 #'
 #' @description
-#' The components of \eqn{\partial^{\alpha+\beta+\gamma}\ell /
-#' \partial a^\alpha \partial d^\beta \partial p^\gamma} at any order from one
-#' to four, assembled from the five terms of the log-density.
+#' Returns the components of
+#' \eqn{\partial^{\alpha+\beta+\gamma}\ell / \partial a^\alpha \partial d^\beta
+#' \partial p^\gamma} at any order from one to four, assembled term by term
+#' from the five pieces of the log-density.
 #'
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `a`, `d` and `p`.
-#' @param order The derivative order, 1 to 4.
+#' @details
+#' # Why the assembly is short
 #'
-#' @return A named list of component vectors, keyed as
-#'   [deriv_names()].
+#' With \eqn{L = \log(y/a)} the log-density splits into
+#' \deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
+#' and each piece is either elementary or a univariate function composed with a
+#' **two-variable** inner map, which the written-out template of [fdb2()]
+#' covers.
 #'
-#' @seealso [gengamma1_distrib()], [fdb2()]
+#' What keeps the sum from growing is that the two compositions do not share a
+#' variable pair: \eqn{-\log\Gamma(d/p)} involves \eqn{(d, p)} and
+#' \eqn{-e^{pL}} involves \eqn{(a, p)}. Every component of the three-variable
+#' derivative is therefore one term of one composition plus the elementary
+#' pieces, and no genuinely three-variable expansion is ever formed. A
+#' component naming both \eqn{a} and \eqn{d} comes from the elementary
+#' \eqn{-d\log a} alone.
+#'
+#' The assembly is checked at order two against the compiled Hessian, which was
+#' written independently, so the orders that cannot be checked against a
+#' hand-written form rest on the orders that can.
+#'
+#' @param y A numeric vector of positive observations.
+#' @param theta A named list with components `a`, `d` and `p`, each a numeric
+#'   vector of length 1 or of the length of `y`, all strictly positive. Shorter
+#'   components are recycled to the common length.
+#' @param order The derivative order, an integer from 1 to 4.
+#'
+#' @return A named list of component vectors, one per distinct multi-index of
+#'   the given order and keyed as [deriv_names()] keys them: three at order 1,
+#'   six at order 2, ten at order 3 and fifteen at order 4. Each has the
+#'   recycled length of the inputs.
+#'
+#' @seealso [distrib_deriv3.GenGamma1Distrib()] and
+#'   [distrib_deriv4.GenGamma1Distrib()], which call this;
+#'   [fdb2()] for the two-variable composition template; and
+#'   [gengamma1_distrib()] for the family.
 #' @keywords internal
 gengamma_components <- function(y, theta, order) {
   a <- theta[[1]]
@@ -103,23 +132,69 @@ gengamma_components <- function(y, theta, order) {
 }
 
 
-#' @title Generalized Gamma Third and Fourth Derivatives
+#' @title Generalized Gamma Third-Order Derivatives
 #' @name distrib_deriv3.GenGamma1Distrib
 #' @description
-#' Closed form at both orders, from [gengamma_components()]: the
-#' log-density is elementary apart from \eqn{\lgamma(d/p)} and
-#' \eqn{\exp(p\log(y/a))}, and each of those is a univariate function of a
-#' two-variable map, so the written-out composition covers every component.
-#' @param distrib A `GenGamma1Distrib` object.
-#' @param y A numeric vector of observations.
-#' @param theta A list containing `a`, `d` and `p`.
-#' @param expected Logical; if `TRUE`, the expected derivatives.
-#' @param scale Either `"parameter"` or `"link"`; handled by the generic.
-#' @param approx The approximation used when `expected` is `TRUE`.
-#' @param nsim Monte Carlo draws when `approx = "mc"`.
-#' @param ... Unused.
-#' @return A named list of third-derivative components.
-#' @seealso [gengamma1_distrib()]
+#' Computes the ten distinct third derivatives of the generalized gamma
+#' log-density in \eqn{a}, \eqn{d} and \eqn{p}, **in closed form**, through
+#' [gengamma_components()]. The log-density is elementary apart from
+#' \eqn{\log\Gamma(d/p)} and \eqn{\exp\{p\log(y/a)\}}, and each of those is a
+#' univariate function of a two-variable map, so the written-out composition
+#' [fdb2()] covers every component without forming a three-variable expansion.
+#'
+#' With `expected = TRUE` the method calls [expected_derivative()] instead: the
+#' expected third derivatives have no closed form. That is the one place on
+#' this page where `approx` and `nsim` are read.
+#'
+#' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
+#' @param y A numeric vector of positive observations. With `expected = TRUE`
+#'   only its length is read.
+#' @param theta A named list with components `a`, `d` and `p`, each a numeric
+#'   vector of length 1 or of the length of `y`, all strictly positive. A
+#'   component of length 1 is recycled.
+#' @param expected Logical of length 1. When `TRUE` the expectation under the
+#'   model is returned in place of the value at the data, computed numerically.
+#'   Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()]. Read by the generic, not by this method.
+#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
+#'   or `"opg"`, the strategy [expected_derivative()] uses. Read only when
+#'   `expected = TRUE`.
+#' @param nsim A single positive integer, the sample size when
+#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of ten numeric vectors, `a_a_a` through `p_p_p`, each
+#'   of length `max(length(y), lengths(theta))`.
+#'
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{a > 0} the scale,
+#' \eqn{d > 0} and \eqn{p > 0} the two shapes, and \eqn{\Gamma} the gamma
+#' function.
+#'
+#' @seealso [distrib_hessian.GenGamma1Distrib()] for the order below,
+#'   [distrib_deriv4.GenGamma1Distrib()] for the order above,
+#'   [gengamma_components()] for the assembly, and [distrib_deriv3()] for the
+#'   generic.
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#' y <- c(0.6, 1.4, 3.1)
+#' th <- list(a = 2, d = 1.5, p = 1.3)
+#' d3 <- distrib_deriv3(d, y, th)
+#' names(d3)
+#'
+#' # A central difference of the Hessian reproduces the pure-scale component.
+#' eps <- 1e-5
+#' up <- distrib_hessian(d, y, list(a = 2 + eps, d = 1.5, p = 1.3))$a_a
+#' dn <- distrib_hessian(d, y, list(a = 2 - eps, d = 1.5, p = 1.3))$a_a
+#' all.equal((up - dn) / (2 * eps), d3$a_a_a, tolerance = 1e-6)
+#'
+#' # And the fully mixed component, which the two compositions never both
+#' # contribute to.
+#' up <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 + eps))$a_d
+#' dn <- distrib_hessian(d, y, list(a = 2, d = 1.5, p = 1.3 - eps))$a_d
+#' all.equal((up - dn) / (2 * eps), d3$a_d_p, tolerance = 1e-6)
 S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),
@@ -132,9 +207,62 @@ S7::method(distrib_deriv3, GenGamma1Distrib) <- function(distrib, y, theta,
   gengamma_components(y, theta, 3L)
 }
 
-#' @rdname distrib_deriv3.GenGamma1Distrib
+#' @title Generalized Gamma Fourth-Order Derivatives
 #' @name distrib_deriv4.GenGamma1Distrib
-#' @return A named list of fourth-derivative components.
+#' @description
+#' Computes the fifteen distinct fourth derivatives of the generalized gamma
+#' log-density in \eqn{a}, \eqn{d} and \eqn{p}, **in closed form**, by the
+#' construction [distrib_deriv3.GenGamma1Distrib()] describes carried one order
+#' further: the two two-variable compositions of [fdb2()] plus the elementary
+#' pieces of the log-density.
+#'
+#' With `expected = TRUE` the method calls [expected_derivative()] instead: the
+#' expected fourth derivatives have no closed form. That is the one place on
+#' this page where `approx` and `nsim` are read.
+#'
+#' @param distrib A `GenGamma1Distrib` object, from [gengamma1_distrib()].
+#' @param y A numeric vector of positive observations. With `expected = TRUE`
+#'   only its length is read.
+#' @param theta A named list with components `a`, `d` and `p`, each a numeric
+#'   vector of length 1 or of the length of `y`, all strictly positive. A
+#'   component of length 1 is recycled.
+#' @param expected Logical of length 1. When `TRUE` the expectation under the
+#'   model is returned in place of the value at the data, computed numerically.
+#'   Defaults to `FALSE`.
+#' @param scale One of `"parameter"` (the default) or `"link"`, matched by
+#'   [base::match.arg()]. Read by the generic, not by this method.
+#' @param approx One of `"integrate"` (the default here), `"bartlett"`, `"mc"`
+#'   or `"opg"`. Read only when `expected = TRUE`.
+#' @param nsim A single positive integer, the sample size when
+#'   `approx = "mc"`. Read only when `expected = TRUE`. Defaults to `10000`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list of fifteen numeric vectors named for the multi-index
+#'   they carry, from `a_a_a_a` to `p_p_p_p`, each of length
+#'   `max(length(y), lengths(theta))`.
+#'
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{a > 0} the scale,
+#' \eqn{d > 0} and \eqn{p > 0} the two shapes.
+#'
+#' @seealso [distrib_deriv3.GenGamma1Distrib()] for the order below and the
+#'   construction, [gengamma_components()] for the assembly, and
+#'   [distrib_deriv4()] for the generic.
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#' y <- c(0.6, 1.4, 3.1)
+#' th <- list(a = 2, d = 1.5, p = 1.3)
+#' d4 <- distrib_deriv4(d, y, th)
+#' length(d4)
+#' names(d4)[1:4]
+#'
+#' # A central difference of the third order reproduces the pure-scale
+#' # component.
+#' eps <- 1e-4
+#' up <- distrib_deriv3(d, y, list(a = 2 + eps, d = 1.5, p = 1.3))$a_a_a
+#' dn <- distrib_deriv3(d, y, list(a = 2 - eps, d = 1.5, p = 1.3))$a_a_a
+#' all.equal((up - dn) / (2 * eps), d4$a_a_a_a, tolerance = 1e-5)
 S7::method(distrib_deriv4, GenGamma1Distrib) <- function(distrib, y, theta,
                                                           expected = FALSE,
                                                           scale = c("parameter", "link"),

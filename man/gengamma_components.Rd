@@ -7,22 +7,50 @@
 gengamma_components(y, theta, order)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of positive observations.}
 
-\item{theta}{A list containing \code{a}, \code{d} and \code{p}.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, each a numeric
+vector of length 1 or of the length of \code{y}, all strictly positive. Shorter
+components are recycled to the common length.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 }
 \value{
-A named list of component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names()}}.
+A named list of component vectors, one per distinct multi-index of
+the given order and keyed as \code{\link[=deriv_names]{deriv_names()}} keys them: three at order 1,
+six at order 2, ten at order 3 and fifteen at order 4. Each has the
+recycled length of the inputs.
 }
 \description{
-The components of \eqn{\partial^{\alpha+\beta+\gamma}\ell /
-\partial a^\alpha \partial d^\beta \partial p^\gamma} at any order from one
-to four, assembled from the five terms of the log-density.
+Returns the components of
+\eqn{\partial^{\alpha+\beta+\gamma}\ell / \partial a^\alpha \partial d^\beta
+\partial p^\gamma} at any order from one to four, assembled term by term
+from the five pieces of the log-density.
 }
+\section{Why the assembly is short}{
+With \eqn{L = \log(y/a)} the log-density splits into
+\deqn{\ell = \log p - d\log a - \log\Gamma(d/p) + (d-1)\log y - e^{pL},}
+and each piece is either elementary or a univariate function composed with a
+\strong{two-variable} inner map, which the written-out template of \code{\link[=fdb2]{fdb2()}}
+covers.
+
+What keeps the sum from growing is that the two compositions do not share a
+variable pair: \eqn{-\log\Gamma(d/p)} involves \eqn{(d, p)} and
+\eqn{-e^{pL}} involves \eqn{(a, p)}. Every component of the three-variable
+derivative is therefore one term of one composition plus the elementary
+pieces, and no genuinely three-variable expansion is ever formed. A
+component naming both \eqn{a} and \eqn{d} comes from the elementary
+\eqn{-d\log a} alone.
+
+The assembly is checked at order two against the compiled Hessian, which was
+written independently, so the orders that cannot be checked against a
+hand-written form rest on the orders that can.
+}
+
 \seealso{
-\code{\link[=gengamma1_distrib]{gengamma1_distrib()}}, \code{\link[=fdb2]{fdb2()}}
+\code{\link[=distrib_deriv3.GenGamma1Distrib]{distrib_deriv3.GenGamma1Distrib()}} and
+\code{\link[=distrib_deriv4.GenGamma1Distrib]{distrib_deriv4.GenGamma1Distrib()}}, which call this;
+\code{\link[=fdb2]{fdb2()}} for the two-variable composition template; and
+\code{\link[=gengamma1_distrib]{gengamma1_distrib()}} for the family.
 }
 \keyword{internal}
