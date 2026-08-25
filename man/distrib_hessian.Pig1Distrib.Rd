@@ -2,25 +2,58 @@
 % Please edit documentation in R/pig1_distrib.R
 \name{distrib_hessian.Pig1Distrib}
 \alias{distrib_hessian.Pig1Distrib}
-\title{Poisson-Inverse Gaussian Analytical Observed Hessian}
+\title{Poisson-Inverse Gaussian Observed Hessian}
 \arguments{
-\item{distrib}{A \code{Pig1Distrib} object.}
+\item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{sigma_sigma}, \code{mu_sigma}.
 }
 \description{
-The exact second derivatives in \eqn{(\mu, \sigma)}, from
-the compiled fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact second derivatives of the log-mass in
+\eqn{(\mu, \sigma)}, read off columns \code{d20}, \code{d02} and \code{d11} of the
+compiled fourth-order kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}.
+
+This is the \strong{observed} curvature at the data. The expected information has
+no closed form for this family and comes from
+\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}, whose default here is the exact sum over
+the support; see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}.
+}
+\examples{
+d <- pig1_distrib()
+y <- 0:6
+th <- list(mu = 3, sigma = 0.8)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$mu_sigma,
+      numeric = (distrib_gradient(d, y, list(mu = 3, sigma = 0.8 + eps))$mu -
+                 distrib_gradient(d, y, list(mu = 3, sigma = 0.8 - eps))$mu) /
+                (2 * eps))
+
+# The curvature in the mean is not of one sign: a count of zero and a
+# count in the tail pull it in opposite directions.
+distrib_hessian(d, c(0, 3, 30), th)$mu_mu
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the order below,
+\code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3.Pig1Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+the kernel, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

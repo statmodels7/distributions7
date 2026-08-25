@@ -4,21 +4,46 @@
 \alias{distrib_rng.Pig1Distrib}
 \title{Poisson-Inverse Gaussian Random Generation}
 \arguments{
-\item{distrib}{A \code{Pig1Distrib} object.}
+\item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of length \code{n}; a component of length 1 is recycled,
+so a parameter varying by observation draws one value per observation from
+its own member of the family.}
 }
 \value{
-A numeric vector of length \code{n}.
+An integer-valued numeric vector of \code{n} draws.
 }
 \description{
-Exact mixture sampling: \eqn{\lambda} is drawn from the inverse Gaussian
-with mean \eqn{\mu} and shape \eqn{\mu/\sigma}, whose variance
-\eqn{\sigma\mu^2} is exactly what the mixing construction requires, and
-\eqn{Y \mid \lambda} from the Poisson.
+Draws from the family's own mixture representation, exactly: \eqn{\lambda}
+from the inverse Gaussian with mean \eqn{\mu} and shape \eqn{\mu/\sigma},
+then \eqn{Y \mid \lambda} from the Poisson with that rate. The inverse
+Gaussian's variance is then \eqn{\sigma\mu^2}, the value the mixing
+construction requires, and the marginal variance comes out as
+\eqn{\mu + \sigma\mu^2}.
+
+The inverse Gaussian draw comes from \code{statmod::rinvgauss}, so the whole
+generator is two vectorized calls and no rejection step.
+}
+\examples{
+d <- pig1_distrib()
+th <- list(mu = 3, sigma = 0.8)
+
+set.seed(61)
+x <- distrib_rng(d, 2e5, th)
+
+# Two moments against their closed forms.
+rbind(sample = c(mean(x), var(x)),
+      theory = c(mean(d, th), variance(d, th)))
+
+# The empirical mass against the exact one, over the head of the support.
+rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
+      exact = distrib_pdf(d, 0:6, th))
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf.Pig1Distrib()}} for the mass the draws follow,
+\code{\link[=distrib_rng.Pig2Distrib]{distrib_rng.Pig2Distrib()}} for the same sampler in orthogonal
+coordinates, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

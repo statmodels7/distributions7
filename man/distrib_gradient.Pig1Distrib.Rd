@@ -2,25 +2,59 @@
 % Please edit documentation in R/pig1_distrib.R
 \name{distrib_gradient.Pig1Distrib}
 \alias{distrib_gradient.Pig1Distrib}
-\title{Poisson-Inverse Gaussian Analytical Gradient}
+\title{Poisson-Inverse Gaussian Score}
 \arguments{
-\item{distrib}{A \code{Pig1Distrib} object.}
+\item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A value off the support gives \code{NaN}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation to the link scale is applied in the generic's body, so this
+method always returns the parameter scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A named list with the \code{mu} and \code{sigma} components.
+A named list of two numeric vectors, \code{mu} and \code{sigma}, each of the
+length of the recycled inputs.
 }
 \description{
-The exact score in \eqn{(\mu, \sigma)}, from the compiled
-fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact first derivatives of the log-mass in \eqn{(\mu, \sigma)},
+read off columns \code{d10} and \code{d01} of the compiled fourth-order kernel of
+\code{\link[=pig_hd_block]{pig_hd_block()}}. Nothing is differenced: the kernel writes every partial
+out in closed form from the finite Bessel sum.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-mass of one observation, \eqn{\mu} the mean and
+\eqn{\sigma} the dispersion.
+}
+
+\examples{
+d <- pig1_distrib()
+y <- 0:6
+th <- list(mu = 3, sigma = 0.8)
+g <- distrib_gradient(d, y, th)
+
+# Against numerical differentiation of the log-likelihood.
+f <- function(p) sum(distrib_pdf(d, y, list(mu = p[1], sigma = p[2]),
+                                 log = TRUE))
+rbind(analytic = vapply(g, sum, 0),
+      numeric = numDeriv::grad(f, c(3, 0.8)))
+
+# The mean and the dispersion are not orthogonal here: the mixed entry of
+# the expected information is far from zero. pig2_distrib() removes that.
+sum(distrib_expected_hessian(d, 0:200, th, approx = "bartlett")$mu_sigma)
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel and the closed form it evaluates,
+\code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian.Pig1Distrib()}} for the second derivatives, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

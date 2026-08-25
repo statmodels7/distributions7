@@ -2,7 +2,7 @@
 % Please edit documentation in R/pig1_distrib.R
 \name{Pig1Distrib}
 \alias{Pig1Distrib}
-\title{S7 Class for the Poisson-Inverse Gaussian Distribution}
+\title{Poisson-Inverse Gaussian Distribution Class}
 \usage{
 Pig1Distrib(
   distrib_name = character(0),
@@ -36,27 +36,61 @@ Pig1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{Pig1Distrib}.
+An S7 object of class \code{Pig1Distrib}, inheriting from
+\code{discrete_distrib} and from \code{distrib}. For an object built by
+\code{\link[=pig1_distrib]{pig1_distrib()}} the properties hold \code{"poisson-inverse gaussian"},
+\code{"univariate"}, \code{c(0, Inf)}, \code{c("mu", "sigma")}, the interpretations
+\code{c(mu = "mean", sigma = "dispersion")}, \code{2}, and two domains
+\eqn{(0, \infty)}.
 }
 \description{
-A subclass of \code{discrete_distrib} representing the
-Poisson-inverse Gaussian distribution on \eqn{\{0, 1, 2, \dots\}} in its
-mean-dispersion parametrization, gamlss's \code{PIG}.
+The S7 class of the Poisson-inverse Gaussian on \eqn{\{0, 1, 2, \dots\}} in
+its mean-dispersion parametrization, gamlss's \code{PIG}: the mean is \eqn{\mu}
+and the variance \eqn{\mu + \sigma\mu^2}. The family is a Poisson mixed
+over an inverse Gaussian rate, an overdispersed count model with a heavier
+tail than the negative binomial at the same variance.
+
+Build one with \code{\link[=pig1_distrib]{pig1_distrib()}}, which supplies the two link functions. This
+page documents the raw S7 constructor, which validates none of the
+relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered in this file, the middle five reading one compiled kernel:
 \code{\link[=distrib_pdf.Pig1Distrib]{distrib_pdf()}},
 \code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian()}},
 \code{\link[=distrib_deriv3.Pig1Distrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4()}},
-\code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.Pig1Distrib]{distrib_rng()}}.
 
-Everything else, the distribution function and the quantile included, is
-inherited from \code{\link[=discrete_distrib]{discrete_distrib()}}.
+Registered elsewhere: the four moments in \code{moments.R} and the data-based
+starting value in \code{starting_values.R}.
+
+The \strong{distribution function} and the \strong{quantile} come from
+\code{\link[=discrete_distrib]{discrete_distrib()}}, where both are exact sums over the support. The
+\strong{expected information} has no closed form and goes
+through \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
 
+\examples{
+d <- pig1_distrib()
+S7::S7_inherits(d, discrete_distrib)
+
+d@params
+d@params_interpretation
+
+# The mean is a parameter and the variance follows from both.
+th <- list(mu = 3, sigma = 0.8)
+c(mean = mean(d, th), variance = variance(d, th),
+  formula = 3 + 0.8 * 3^2)
+
+# The mass sums to one over the support.
+sum(distrib_pdf(d, 0:300, th))
+}
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=pig1_distrib]{pig1_distrib()}} to build one;
+\code{\link[=pig2_distrib]{pig2_distrib()}} for the parametrization whose two parameters are
+orthogonal; \code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family;
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel all five derivative methods read.
 }

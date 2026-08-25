@@ -2,30 +2,68 @@
 % Please edit documentation in R/pig1_distrib.R
 \name{distrib_deriv3.Pig1Distrib}
 \alias{distrib_deriv3.Pig1Distrib}
-\title{Poisson-Inverse Gaussian Analytical Third Derivatives}
+\title{Poisson-Inverse Gaussian Third Derivatives}
 \arguments{
-\item{distrib}{A \code{Pig1Distrib} object.}
+\item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. With \code{expected = TRUE} its values are
+the support points the expectation is summed over.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical; the expected version goes through the generic's
-strategies.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned from the compiled kernel.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx, nsim}{Passed on when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, the
+strategy for the expectation. Read only when \code{expected = TRUE}; for a
+discrete family \code{"integrate"} is an exact sum over the support, not a
+quadrature.}
 
-\item{...}{Unused.}
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
+A named list of four numeric vectors: \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_sigma_sigma} and \code{sigma_sigma_sigma}.
 }
 \description{
-The exact third derivatives in \eqn{(\mu, \sigma)}, from the
-compiled fourth-order kernel described in \code{\link[=pig_hd_block]{pig_hd_block()}}.
+Returns the exact third derivatives of the log-mass in \eqn{(\mu, \sigma)},
+read off columns \code{d30}, \code{d21}, \code{d12} and \code{d03} of the compiled fourth-order
+kernel of \code{\link[=pig_hd_block]{pig_hd_block()}}. The kernel computes all four orders in one pass,
+so this order costs no more than the score does.
+
+With \code{expected = TRUE} the value is an expectation instead, and there it is
+\strong{not} closed form: the call routes to \code{expected_derivative()}, so \code{approx}
+and \code{nsim} are read.
+}
+\examples{
+d <- pig1_distrib()
+y <- 0:6
+th <- list(mu = 3, sigma = 0.8)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# Against a central difference of the analytic Hessian.
+eps <- 1e-5
+rbind(analytic = d3$mu_mu_sigma,
+      numeric = (distrib_hessian(d, y, list(mu = 3, sigma = 0.8 + eps))$mu_mu -
+                 distrib_hessian(d, y, list(mu = 3, sigma = 0.8 - eps))$mu_mu) /
+                (2 * eps))
+
+# The expected version is not closed form and reads the strategy.
+distrib_deriv3(d, 0:200, th, expected = TRUE)$mu_mu_mu[1]
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=distrib_hessian.Pig1Distrib]{distrib_hessian.Pig1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.Pig1Distrib]{distrib_deriv4.Pig1Distrib()}} for the order above, \code{\link[=pig_hd_block]{pig_hd_block()}} for
+the kernel, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

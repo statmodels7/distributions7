@@ -4,27 +4,74 @@
 \alias{distrib_pdf.Pig1Distrib}
 \title{Poisson-Inverse Gaussian Probability Mass Function}
 \arguments{
-\item{distrib}{A \code{Pig1Distrib} object.}
+\item{distrib}{A \code{Pig1Distrib} object, from \code{\link[=pig1_distrib]{pig1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts. A negative, non-integer or non-finite
+value is off the support and gives a probability of 0, or \code{-Inf} with
+\code{log = TRUE}.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
+vector of length 1 or of the length of \code{y}. Both must be strictly
+positive.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-probability is
+returned. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the compiled
+kernel may use. Defaults to \code{1L}. The result does not depend on the count.}
 }
 \value{
-A numeric vector of probability values.
+A numeric vector of probabilities, of the length of the recycled
+inputs.
 }
 \description{
-With \eqn{c = 1 + 2\sigma\mu} and \eqn{\alpha = \sqrt{c}/\sigma},
+Computes the Poisson-inverse Gaussian mass. With \eqn{c = 1 + 2\sigma\mu}
+and \eqn{\alpha = \sqrt{c}/\sigma},
 \deqn{P(Y = y) = \sqrt{\dfrac{2\alpha}{\pi}}\,
-  \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha),}
-evaluated through the finite half-integer Bessel sum, in which the
-prefactors cancel down to
-\eqn{\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt{c})/\sigma
-  + \log S_y(\alpha) - \log y!}. A non-integer or negative \eqn{y} has
-probability zero.
+  \dfrac{\mu^y e^{1/\sigma}}{(\alpha\sigma)^y\, y!}\, K_{y-1/2}(\alpha).}
+
+The value is not computed that way. At half-integer order the Bessel
+function is a finite sum, the prefactors cancel, and what the compiled
+kernel evaluates is
+\eqn{\ell(y) = y\log\mu - (y/2)\log c + (1-\sqrt c)/\sigma
+  + \log S_y(\alpha) - \log y!} with \eqn{S_y} a sum of \eqn{y} positive
+terms taken on the log scale. Nothing cancels and no Bessel routine is
+called.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\sigma} the dispersion, \eqn{K_\nu} the modified
+Bessel function of the second kind, and \eqn{S_y} the finite sum defined in
+\code{\link[=pig_hd_block]{pig_hd_block()}}.
+}
+
+\examples{
+d <- pig1_distrib()
+y <- 0:6
+th <- list(mu = 3, sigma = 0.8)
+
+# Against the Bessel formula written out, which the kernel does not use.
+al <- sqrt(1 / 0.8^2 + 2 * 3 / 0.8)
+all.equal(distrib_pdf(d, y, th),
+          sqrt(2 * al / pi) * 3^y * exp(1 / 0.8) /
+            ((al * 0.8)^y * factorial(y)) * besselK(al, y - 0.5))
+
+# The mass sums to one.
+sum(distrib_pdf(d, 0:300, th))
+
+# The upper tail is heavier than a negative binomial's at the same
+# variance, which is the reason to prefer this family.
+nb <- negbin2_distrib()
+rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
+      negbin = distrib_pdf(nb, c(20, 40, 60), list(mu = 3, theta = 1 / 0.8)))
+
+# Off the support.
+distrib_pdf(d, c(-1, 1.5), th)
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=distrib_gradient.Pig1Distrib]{distrib_gradient.Pig1Distrib()}} for the score,
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, \code{\link[=pig2_distrib]{pig2_distrib()}} for the same law in
+orthogonal coordinates, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -7,31 +7,62 @@
 pig1_distrib(link_mu = log_link(), link_sigma = log_link())
 }
 \arguments{
-\item{link_mu}{The link for \eqn{\mu}; defaults to \code{log_link()}.}
+\item{link_mu}{A \code{linkfunctions7} link object for the mean \eqn{\mu}, which
+must be strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_sigma}{The link for \eqn{\sigma}; defaults to \code{log_link()}.}
+\item{link_sigma}{A link object for the dispersion \eqn{\sigma}, also
+strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 }
 \value{
-A \code{Pig1Distrib} object.
+An S7 object of class \link{Pig1Distrib}, inheriting from
+\code{discrete_distrib}. Its \code{params} are \code{c("mu", "sigma")}, its \code{bounds}
+\code{c(0, Inf)}, and its \code{link_params} the two links given here.
 }
 \description{
-Creates a Poisson-inverse Gaussian distribution in its mean-dispersion
-parametrization: mean \eqn{\mu} and variance \eqn{\mu + \sigma\mu^2},
-gamlss's \code{PIG} (Rigby and Stasinopoulos, 2005). The family is the
-Poisson mixed over an inverse Gaussian rate, an overdispersed count model
-with a heavier tail than the negative binomial at the same variance.
+Builds a Poisson-inverse Gaussian distribution in its mean-dispersion
+parametrization: mean \eqn{\mu} and variance \eqn{\mu + \sigma\mu^2}, which
+is gamlss's \code{PIG}. The family is the Poisson mixed over an inverse Gaussian
+rate, an overdispersed count model with a \strong{heavier upper tail than the
+negative binomial at the same variance}.
 }
-\details{
-The mass function carries the modified Bessel function
-\eqn{K_{y-1/2}}, which at half-integer order is a finite sum; the
-log-likelihood and its derivatives to fourth order are exact, computed by
-a compiled kernel that carries a bivariate jet through the closed
-expression. The expected information has no closed form and goes through
-the summation strategies of
-\code{\link[=expected_derivative_methods]{expected_derivative_methods()}}. For the parametrization in
-which \eqn{\mu} and the second parameter are orthogonal, see
-\code{\link[=pig2_distrib]{pig2_distrib()}}.
+\section{The mass function, and how it is computed}{
+The mass carries the modified Bessel function \eqn{K_{y-1/2}}, which at
+half-integer order is a finite sum. What the kernel evaluates is that sum,
+on the log scale, after the prefactors have cancelled; no Bessel routine is
+called. The log-likelihood and its fourteen partial derivatives to fourth
+order come out of one pass, all exact, so the fourth order costs what the
+score does. See \code{\link[=pig_hd_block]{pig_hd_block()}} for the expression and for the jet twin the
+tests hold it to.
+
+The \strong{expected information} has no closed form and goes through the
+summation strategies of \code{\link[=expected_derivative_methods]{expected_derivative_methods()}}.
 }
+
+\section{The tail}{
+Measured at \eqn{\mu = 3}, \eqn{\sigma = 0.8}, against a negative binomial
+matched on the variance (\eqn{\theta = 1/\sigma}, both at 10.2): the mass at
+\eqn{y = 20} is \eqn{6.8\times10^{-4}} against \eqn{4.8\times10^{-4}}, at 40
+it is \eqn{5.8\times10^{-6}} against \eqn{5.4\times10^{-7}}, and at 60
+\eqn{7.2\times10^{-8}} against \eqn{5.6\times10^{-10}}. The gap widens with
+the count, and that widening is what a heavier tail means here.
+}
+
+\section{Which parametrization to use}{
+In this one \eqn{\mu} and \eqn{\sigma} are \strong{not} orthogonal: measured at
+the same setting, the mixed entry of the expected information summed over
+the support is 7.39. \code{\link[=pig2_distrib]{pig2_distrib()}} replaces \eqn{\sigma} by the Bessel
+argument \eqn{\alpha} and makes that entry zero, at the cost of a second
+parameter with no moment reading. Use this one to model the dispersion
+directly and that one to fit the two parameters independently.
+}
+
+\section{Parameter domains}{
+\itemize{
+\item \eqn{\mu \in (0, \infty)}
+\item \eqn{\sigma \in (0, \infty)}
+}
+}
+
 \section{The distribution}{
 
 \deqn{P(Y=y) = \sqrt{\frac{2\alpha}{\pi}}\,\frac{\mu^{y}e^{1/\sigma}}{(\alpha\sigma)^{y}\,y!}\,K_{y-1/2}(\alpha), \qquad \alpha = \sqrt{\frac{1}{\sigma^{2}} + \frac{2\mu}{\sigma}}}
@@ -42,10 +73,30 @@ on \eqn{y \in \{0, 1, \dots\}}.
 
 \examples{
 d <- pig1_distrib()
-theta <- list(mu = 3, sigma = 0.8)
-distrib_pdf(d, 0:5, theta)
-mean(d, theta)
-variance(d, theta)
+th <- list(mu = 3, sigma = 0.8)
+
+distrib_pdf(d, 0:5, th)
+c(mean = mean(d, th), variance = variance(d, th),
+  skewness = skewness(d, th))
+
+# Heavier in the tail than a negative binomial of the same variance.
+nb <- negbin2_distrib()
+nbth <- list(mu = 3, theta = 1 / 0.8)
+c(variance_pig = variance(d, th), variance_negbin = variance(nb, nbth))
+rbind(pig = distrib_pdf(d, c(20, 40, 60), th),
+      negbin = distrib_pdf(nb, c(20, 40, 60), nbth))
+
+# The two parameters are not orthogonal, which pig2_distrib() repairs.
+c(pig1 = sum(distrib_expected_hessian(d, 0:200, th,
+                                      approx = "bartlett")$mu_sigma),
+  pig2 = sum(distrib_expected_hessian(pig2_distrib(), 0:200,
+                                      list(mu = 3, alpha = 3.010399),
+                                      approx = "bartlett")$mu_alpha))
+
+# A fit recovers both parameters.
+set.seed(63)
+x <- distrib_rng(d, 4000, th)
+coef(fit_distrib(d, x))
 
 }
 \references{
@@ -57,5 +108,8 @@ Poisson-inverse-Gaussian regression model. \emph{Canadian Journal of
 Statistics} 17(2), 171--181.
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=negbin2_distrib]{negbin2_distrib()}}
+\code{\link[=pig2_distrib]{pig2_distrib()}} for the orthogonal parametrization,
+\code{\link[=negbin2_distrib]{negbin2_distrib()}} for the other overdispersed count family,
+\code{\link[=poisson_distrib]{poisson_distrib()}} for the limit at \eqn{\sigma \to 0},
+\code{\link[=pig_hd_block]{pig_hd_block()}} for the kernel, and \link{Pig1Distrib} for the class.
 }
