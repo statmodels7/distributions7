@@ -6,20 +6,47 @@
 \arguments{
 \item{distrib}{A \code{Pig1Distrib} object.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{n_start}{Ignored; one moment start is returned.}
+\item{n_start}{Ignored: one moment start is returned.}
 
 \item{...}{Unused.}
 }
 \value{
-A list with one named parameter list.
+A list of length 1 holding one named parameter list with components
+\code{mu} and \code{sigma}.
 }
 \description{
-Method of moments: the sample mean for \eqn{\mu}, and
-\eqn{(s^2 - \bar y)/\bar y^2} for \eqn{\sigma}, floored just above zero
-when the sample is underdispersed.
+Returns the method-of-moments estimate. The family has mean \eqn{\mu} and
+variance \eqn{\mu + \sigma\mu^2}, so setting both equal to the sample gives
+\eqn{\hat\mu = \bar y} and \eqn{\hat\sigma = (s^2 - \bar y)/\bar y^2}
+directly, with no root to find.
+
+Both are floored: \eqn{\mu} just above zero, and \eqn{\sigma} at
+\eqn{10^{-3}} when the sample is \strong{underdispersed} and the inversion
+returns a negative number. A Poisson sample is the case that produces it,
+and \eqn{10^{-3}} is where this family is nearly Poisson, which is the right
+place to start from there.
+}
+\examples{
+set.seed(4)
+d <- pig1_distrib()
+y <- distrib_rng(d, 5000, list(mu = 4, sigma = 0.5))
+
+# The inversion recovers the parameters it was drawn from.
+unlist(distrib_start(d, y)[[1]])
+
+# It is exactly the sample moments, read through mean and variance.
+c(mu = mean(y), sigma = (var(y) - mean(y)) / mean(y)^2)
+
+# An underdispersed sample would give a negative sigma, so it is floored
+# where the family is nearly Poisson.
+set.seed(5)
+unlist(distrib_start(d, rpois(2000, 4))[[1]])
+
 }
 \seealso{
-\code{\link[=pig1_distrib]{pig1_distrib()}}
+\code{\link[=pig1_distrib]{pig1_distrib()}} for the family;
+\code{\link[=distrib_start.Pig2Distrib]{distrib_start.Pig2Distrib()}}, the same estimate on the orthogonal chart;
+\code{\link[=distrib_start]{distrib_start()}} for the generic.
 }

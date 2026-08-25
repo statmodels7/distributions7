@@ -4,26 +4,46 @@
 \alias{distrib_start.MvGaussianDistrib}
 \title{The Maximum Likelihood Estimate as a Starting Value}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
 
-\item{y}{The response.}
+\item{y}{The response, an \eqn{n \times p} matrix.}
 
-\item{n_start}{Unused; one starting value is enough when it is the estimate.}
+\item{n_start}{Ignored: one starting value is returned, and it is the
+estimate.}
 
 \item{...}{Unused.}
 }
 \value{
-A list with one named parameter list.
+A list of length 1 holding one named parameter list: the \eqn{p}
+location components followed by the structure's free values, named and
+ordered as \code{distrib@params}.
 }
 \description{
-The sample mean and the sample covariance, which for an unstructured
-covariance are the maximum likelihood estimate itself, so the fit begins at
-the answer and confirms it in one step. For a structured covariance they are
-the closest thing the matrix parameter can represent, which is a good deal nearer
-than the origin.
+Returns the sample mean and the sample covariance, carried onto the
+distribution's matrix parametrization. For an unstructured covariance those
+\strong{are} the maximum likelihood estimate, so the fit begins at the answer
+and confirms it in one step; for a structured one they are the closest
+matrix the parametrization can represent, which is a great deal nearer than
+the origin.
+
+One starting value is returned whatever \code{n_start} asks for. There is nothing
+to explore when the first point is the estimate.
 }
 \details{
-When the matrix parameter parametrizes the precision the sample covariance is
-inverted first, since that is the matrix the matrix parameter has to represent.
+Where the object parametrizes the \strong{precision}, the sample covariance is
+inverted first: the matrix the structure has to represent is
+\eqn{\hat\Sigma^{-1}}, not \eqn{\hat\Sigma}.
+
+The covariance divides by \eqn{n}, which is the maximum likelihood
+estimator, and its eigenvalues are floored by \code{\link[=mv_moment_start]{mv_moment_start()}} so that a
+singular sample covariance still produces a usable point. Carrying it onto
+the structure goes through \code{\link[=param_free_or_fit]{param_free_or_fit()}}, which is exact where
+\code{parameters7::param_free()} succeeds and a least-squares fit where it does
+not.
+}
+\seealso{
+\code{\link[=distrib_start]{distrib_start()}} for the generic;
+\code{\link[=distrib_start.MvStudentTDistrib]{distrib_start.MvStudentTDistrib()}}, which starts from this;
+\code{\link[=mv_moment_start]{mv_moment_start()}} and \code{\link[=param_free_or_fit]{param_free_or_fit()}} for the two steps.
 }
 \keyword{internal}

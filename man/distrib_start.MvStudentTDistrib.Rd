@@ -4,26 +4,38 @@
 \alias{distrib_start.MvStudentTDistrib}
 \title{The Gaussian Estimate as a Starting Value for a t}
 \arguments{
-\item{distrib}{A \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
+\item{distrib}{An \code{\link[=MvStudentTDistrib]{MvStudentTDistrib()}} object.}
 
-\item{y}{The response.}
+\item{y}{The response, an \eqn{n \times p} matrix.}
 
-\item{n_start}{Unused.}
+\item{n_start}{Ignored: one starting value is returned.}
 
 \item{...}{Unused.}
 }
 \value{
-A list with one named parameter list.
+A list of length 1 holding one named parameter list: the \eqn{p}
+location components, the structure's free values, then \code{nu} at 8, named
+and ordered as \code{distrib@params}.
 }
 \description{
-The sample mean and the sample covariance, with the degrees of freedom set
-where the family is heavy tailed but its second moment exists. The gaussian
-estimate is the limit of this family as \eqn{\nu} grows, so it is the right
-place to start looking for a finite one.
+Returns the sample mean and the sample covariance with the degrees of
+freedom set at 8, which is heavy-tailed enough to be worth fitting and light
+enough for the second moment to exist. The Gaussian estimate is this
+family's limit as \eqn{\nu} grows, so it is where a finite \eqn{\nu} is
+looked for from.
+
+One starting value is returned whatever \code{n_start} asks for.
 }
 \details{
-The scale matrix is the covariance divided by \eqn{\nu/(\nu-2)}, and that
-factor is applied, since a starting value that confused the two would begin
-with a scale a third too large.
+The scale matrix is not the covariance. For a \eqn{t} with \eqn{\nu}
+degrees of freedom \eqn{\mathrm{Var}(Y) = \nu\Sigma/(\nu-2)}, so the sample
+covariance is multiplied by \eqn{(\nu_0-2)/\nu_0 = 0.75} before it is
+carried onto the structure. A starting value that confused the two would
+begin with a scale a third too large.
+}
+\seealso{
+\code{\link[=distrib_start]{distrib_start()}} for the generic;
+\code{\link[=distrib_start.MvGaussianDistrib]{distrib_start.MvGaussianDistrib()}}, the limit this starts from;
+\code{\link[=mv_sigma]{mv_sigma()}} for the scale matrix and \code{\link[=variance]{variance()}} for the covariance.
 }
 \keyword{internal}

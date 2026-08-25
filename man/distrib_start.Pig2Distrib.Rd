@@ -6,20 +6,43 @@
 \arguments{
 \item{distrib}{A \code{Pig2Distrib} object.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of counts.}
 
-\item{n_start}{Ignored; one moment start is returned.}
+\item{n_start}{Ignored: one moment start is returned.}
 
 \item{...}{Unused.}
 }
 \value{
-A list with one named parameter list.
+A list of length 1 holding one named parameter list with components
+\code{mu} and \code{alpha}.
 }
 \description{
-The moment start of
-\code{\link[=distrib_start.Pig1Distrib]{pig1()}}, mapped onto
-\eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
+Returns the moment estimate of \code{\link[=distrib_start.Pig1Distrib]{pig1()}} carried
+onto this chart. The two families are the same law, so the estimate is the
+same estimate: \eqn{\hat\mu = \bar y} and
+\eqn{\hat\sigma = (s^2 - \bar y)/\bar y^2} as before, then
+\deqn{\alpha = \frac{\sqrt{1 + 2\sigma\mu}}{\sigma}.}
+
+The same two floors apply, so an underdispersed sample gives a very large
+\eqn{\alpha}, which is where this parametrization puts the Poisson limit.
+}
+\examples{
+set.seed(4)
+d <- pig2_distrib()
+alpha0 <- sqrt(1 + 2 * 0.5 * 4) / 0.5
+y <- distrib_rng(d, 5000, list(mu = 4, alpha = alpha0))
+
+# The inversion recovers what the sample was drawn from.
+rbind(start = unlist(distrib_start(d, y)[[1]]),
+      truth = c(mu = 4, alpha = alpha0))
+
+# It is pig1's estimate carried through the map.
+s <- (var(y) - mean(y)) / mean(y)^2
+c(alpha = sqrt(1 + 2 * s * mean(y)) / s)
+
 }
 \seealso{
-\code{\link[=pig2_distrib]{pig2_distrib()}}
+\code{\link[=pig2_distrib]{pig2_distrib()}} for the family;
+\code{\link[=distrib_start.Pig1Distrib]{distrib_start.Pig1Distrib()}} for the estimate this maps;
+\code{\link[=distrib_start]{distrib_start()}} for the generic.
 }

@@ -9,46 +9,72 @@
 start_from_moments(distrib, y, n_start = 5L, ...)
 }
 \arguments{
-\item{distrib}{A univariate distribution.}
+\item{distrib}{A univariate distribution, supplying \code{params},
+\code{params_interpretation} and \code{params_bounds}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector. Non-finite entries are dropped, and
+a sample with fewer than two usable values gets the random draws alone.}
 
-\item{n_start}{How many starting values.}
+\item{n_start}{How many starting values are wanted, a single positive
+integer. Defaults to 5, and a value below 1 is raised to 1.}
 
 \item{...}{Unused.}
 }
 \value{
-A list of named lists, one per start.
+A list of \code{n_start} named parameter lists on the parameter scale,
+the first from the data where one could be computed.
 }
 \description{
-A starting value whose location and spread are the response's, for any
-univariate family that declares what its parameters mean.
-}
-\details{
-The base method draws each parameter from its own domain and never looks
-at \code{y}, which is fine while the response is of order one and fails
-completely when it is not: on a response of mean 919 and standard
-deviation 169 the draws are of order one, the first Newton step is taken
-from a point where the residuals are hundreds of standard deviations
-wide, and the scale runs to the largest representable double. Measured
-on a gaussian, \code{fit_distrib()} recovers N(5, 2) and N(50, 20) and
-fails on N(500, 200): the defect is a threshold in the scale of the data,
-not in the family.
+Returns \code{n_start} starting values whose first is computed from the response
+and whose rest are random draws. It is the method both
+\code{continuous_distrib} and \code{discrete_distrib} register, so it is what every
+univariate family in the package uses.
 
-What makes a general fix possible is that every shipped family already
-declares \code{params_interpretation}. A parameter that means a location
-is started at the sample median, one that means a spread at the sample
-standard deviation or its square, and one whose meaning is a shape, a
-dispersion or a probability is left to the draw, those being of order one
-whatever the data. A family declaring nothing recognizable loses nothing:
-it keeps the draw it had.
-
-The result is CLAMPED strictly inside each parameter's bounds, because a
-sample median can land exactly on the boundary of a support and the
-validator treats bounds as open. Only the first start is data-based; the
-rest stay random, so a caller asking for several still explores.
+The data-based value comes from \code{\link[=moment_estimates]{moment_estimates()}} where the family has an
+entry there, which 37 of the 42 univariate families do. The other five fall
+back to reading \code{params_interpretation}: a parameter meaning a location is
+started at the sample median, one meaning a spread at the sample standard
+deviation or its square, one meaning degrees of freedom at what the sample
+kurtosis implies, and a shape, a dispersion or a probability keeps its
+draw, those being of order one whatever the data.
 }
+\section{What this replaced, and why it was necessary}{
+The base method draws each parameter from its own domain and never reads
+\code{y}. That is adequate while the response is of order one and fails
+completely when it is not: on a response of mean 919 and standard deviation
+169 the draws are of order one, the first Newton step is taken where the
+residuals are hundreds of standard deviations wide, and the scale runs to
+the largest representable double. Measured on a Gaussian, \code{\link[=fit_distrib]{fit_distrib()}}
+recovers \eqn{N(5, 2)} and \eqn{N(50, 20)} and fails on \eqn{N(500, 200)}:
+the defect was a threshold in the scale of the data, not in the family.
+}
+
+\section{Degrees of freedom from the kurtosis}{
+A \eqn{t} of \eqn{\nu} degrees has excess kurtosis \eqn{6/(\nu-4)}, so a
+sample kurtosis above 0.05 inverts to \eqn{\nu = 6/\hat\gamma_2 + 4}, capped
+at 100; a sample no heavier-tailed than a Gaussian starts at 30. Starting
+large matters. A \code{student_t2}, whose scale parameter is the standard
+deviation, has a degenerate ridge at its lower bound of \eqn{\nu = 2} where
+the scale runs to infinity as \eqn{\nu} falls, and a run started small
+slides down it: measured on 610 abdominal circumferences, whose excess
+kurtosis is \eqn{-1.09}, the random draws put \eqn{\nu} between 2.8 and 8
+and the fit reached the boundary at a log-likelihood of \eqn{-3688.28},
+while any start of 2.5 or more with the location and scale at their sample
+values reaches \eqn{-3600.71}, the Gaussian limit and the true maximum.
+}
+
+\section{The clamp, and why only the first start}{
+Every value is moved strictly inside its parameter's bounds before it is
+returned, because a sample median can land exactly on the boundary of a
+support and the validator treats bounds as open. Only the first start is
+data-based; the rest stay random, so a caller asking for several still
+explores, and \code{\link[=fit_distrib]{fit_distrib()}} reaches them when the first fails.
+}
+
 \seealso{
-\code{\link[=distrib_start]{distrib_start()}}, \code{\link[=fit_distrib]{fit_distrib()}}
+\code{\link[=moment_estimates]{moment_estimates()}} for the family-by-family inversions;
+\code{\link[=distrib_start]{distrib_start()}} for the generic;
+\code{\link[=clamp_to_bounds]{clamp_to_bounds()}} for the boundary rule;
+\code{\link[=fit_distrib]{fit_distrib()}}, which consumes the list.
 }
 \keyword{internal}

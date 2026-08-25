@@ -6,18 +6,28 @@
 \arguments{
 \item{distrib}{A \code{\link[=distrib]{distrib()}} object.}
 
-\item{y}{The response, unused here.}
+\item{y}{The response. Unused here, and accepted only because the generic
+passes it.}
 
-\item{n_start}{How many to draw.}
+\item{n_start}{How many starting values to draw, a single positive integer.
+Defaults to 5. A value below 1 is raised to 1.}
 
 \item{...}{Unused.}
 }
 \value{
-A list of named parameter lists.
+A list of \code{n_start} named parameter lists on the parameter scale.
 }
 \description{
-The default: \code{n_start} draws from \code{\link[=generate_random_theta]{generate_random_theta()}},
-which uses the parameter domains and not the data. A family with a better
-idea registers its own method.
+The base method: \code{n_start} independent draws from
+\code{\link[=generate_random_theta]{generate_random_theta()}}, which samples each parameter inside its own
+domain and never looks at the response. It is what a family gets when it
+registers no method of its own, and it is adequate wherever the parameters
+are of order one whatever the data, which is true of a shape, a dispersion
+or a probability and false of a location or a scale.
+}
+\seealso{
+\code{\link[=distrib_start]{distrib_start()}} for the generic;
+\code{\link[=start_from_moments]{start_from_moments()}}, which the univariate classes register instead;
+\code{\link[=generate_random_theta]{generate_random_theta()}} for the draw itself.
 }
 \keyword{internal}

@@ -7,23 +7,36 @@
 mv_moment_start(y, p)
 }
 \arguments{
-\item{y}{The response, an \eqn{n \times p} matrix.}
+\item{y}{The response, an \eqn{n \times p} matrix, or anything
+\code{\link[base:matrix]{base::as.matrix()}} turns into one.}
 
-\item{p}{The dimension.}
+\item{p}{The dimension, a single positive integer. Used only for the
+one-row fallback.}
 }
 \value{
-A list with \code{mu} and \code{sigma}.
+A list with two components: \code{mu}, a numeric vector of length
+\eqn{p}, and \code{sigma}, a \eqn{p \times p} positive definite matrix.
 }
 \description{
 Returns the sample mean and the sample covariance of a multivariate
-response, with the covariance made safely positive definite.
+response, with the covariance made safely positive definite. The covariance
+divides by \eqn{n} rather than \eqn{n - 1}, which is the maximum likelihood
+estimator and therefore the point a Gaussian fit is looking for.
 }
 \details{
 A sample covariance is singular when there are fewer observations than
 coordinates, and nearly singular when two coordinates almost coincide.
-Either way a structure cannot be inverted onto it, so the eigenvalues are
-floored at a small multiple of the largest before the matrix is handed on.
-The floor moves a starting value, which is allowed to be approximate; it
-would not be allowed anywhere the answer is reported.
+Either way a \code{parameters7} structure cannot be inverted onto it, so the
+eigenvalues are floored at a small multiple of the largest before the matrix
+is handed on. The floor moves a starting value, which is allowed to be
+approximate; it would not be allowed anywhere the answer is reported.
+
+A response with one row has no covariance at all, and the identity is
+returned in its place.
+}
+\seealso{
+\code{\link[=distrib_start.MvGaussianDistrib]{distrib_start.MvGaussianDistrib()}} and
+\code{\link[=distrib_start.MvStudentTDistrib]{distrib_start.MvStudentTDistrib()}}, the two callers;
+\code{\link[=param_free_or_fit]{param_free_or_fit()}}, which carries the matrix onto a structure.
 }
 \keyword{internal}

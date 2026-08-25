@@ -2,28 +2,33 @@
 % Please edit documentation in R/starting_values.R
 \name{param_free_or_fit}
 \alias{param_free_or_fit}
-\title{Project a Matrix onto What a Structure Can Represent}
+\title{A Free Vector Representing a Matrix, Exactly or Approximately}
 \usage{
 param_free_or_fit(s, m)
 }
 \arguments{
-\item{s}{A \pkg{parameters7} structure.}
+\item{s}{A \pkg{parameters7} structure, supplying \code{n_free}, \code{param_free()}
+and \code{param_value()}.}
 
-\item{m}{The matrix to represent.}
+\item{m}{The matrix to represent, of the structure's own dimension.}
 }
 \value{
-A numeric vector of length \code{s@n_free}.
+An unnamed numeric vector of length \code{s@n_free}.
 }
 \description{
-Returns the free vector of the matrix parameter whose matrix is closest to the one
-supplied, or the matrix parameter's own inverse map when it has one.
+Returns the free vector of a \code{parameters7} structure whose matrix is \code{m}.
+\code{parameters7::param_free()} answers exactly where the structure can
+represent the matrix, which for an unstructured covariance is always. Where
+it cannot, that call signals an error and this falls back to least squares
+on the entries, started from the zero vector. A compound-symmetric
+structure asked for an arbitrary covariance is the ordinary case.
+
+The fallback is a starting value for a starting value and its accuracy does
+not matter. It is capped at 200 BFGS iterations and returns the zero vector
+if even that fails, so the caller always receives a usable vector.
 }
-\details{
-\code{\link[parameters7:param_free]{parameters7::param_free()}} is exact or rejected: a parameter that
-cannot represent the matrix signals an error rather than returning
-something plausible. That is the right contract for reporting an estimate and the
-wrong one for choosing where to begin, so a rejection here falls back to a
-short numerical search over the free values, which is allowed to be
-approximate because a starting value is.
+\seealso{
+\code{\link[=mv_moment_start]{mv_moment_start()}}, which supplies \code{m};
+\code{\link[parameters7:param_free]{parameters7::param_free()}} for the exact route.
 }
 \keyword{internal}

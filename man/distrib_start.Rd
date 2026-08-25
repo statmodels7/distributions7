@@ -2,46 +2,55 @@
 % Please edit documentation in R/starting_values.R
 \name{distrib_start}
 \alias{distrib_start}
-\title{A Starting Value Drawn from the Data}
+\title{A Starting Value Drawn From the Data}
 \usage{
 distrib_start(distrib, y, n_start = 5L, ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
-\item{y}{The response.}
+\item{y}{The response: a numeric vector, or an \eqn{n \times p} matrix for a
+multivariate family. A method may ignore it, and the base one does.}
 
-\item{n_start}{How many starting values are wanted. A method free to supply
-only one may ignore it.}
+\item{n_start}{How many starting values are wanted, a single positive
+integer. Defaults to 5. A method that returns its own estimate returns one
+and ignores this, which the two multivariate methods and the two
+Poisson-inverse Gaussian ones do.}
 
-\item{...}{Passed to methods.}
+\item{...}{Passed to methods. No shipped method reads it.}
 }
 \value{
-A list of named parameter lists, on the \strong{parameter} scale.
+A list of named parameter lists on the parameter scale, each
+complete: one component per entry of \code{distrib@params}, named and ordered
+as \code{distrib@params}. Every value is strictly inside its parameter's
+bounds, which the validator treats as open.
 }
 \description{
-Returns a starting value for \code{\link[=fit_distrib]{fit_distrib()}}, computed from the
-response rather than guessed.
+Returns the starting values \code{\link[=fit_distrib]{fit_distrib()}} begins from, computed from the
+response wherever the family knows how. The result is a list of named
+parameter lists on the \strong{parameter} scale; the fit tries them in order and
+stops at the first that converges, so the first element is the one the
+family prefers.
 }
 \details{
-A starting value that ignores the data is a starting value that can be
-arbitrarily far from the answer, and how far decides whether the fit takes
-one step or never arrives. A four-dimensional gaussian fitted to the iris
-measurements is the plain case: started at the origin of the unconstrained
-scale, which is a unit covariance and a zero mean, Newton with the expected
-information spends five hundred iterations and stops at a log-likelihood of
-\eqn{-836}; started at the sample mean and the sample covariance it
-converges in one iteration to \eqn{-379.9146}, which is the exact maximum.
-Nothing about the arithmetic changed.
+A starting value that ignores the data can be arbitrarily far from the
+answer, and how far decides whether the fit takes one step or never
+arrives. A four-dimensional Gaussian fitted to the iris measurements is the
+plain case: started at the origin of the unconstrained scale, which is a
+unit covariance and a zero mean, Newton with the expected information spends
+five hundred iterations and stops at a log-likelihood of \eqn{-836};
+started at the sample mean and the sample covariance it converges in one
+iteration to \eqn{-379.9146}, the exact maximum. Nothing about the
+arithmetic changed.
 
-The default method returns random parameters, as before, so a distribution
-that registers nothing loses nothing. A family with a better estimator
-registers a method: an exact maximum likelihood estimator where one is
-known, a method-of-moments estimator otherwise, or the estimate of a simpler
-family the harder one contains.
-
-A method may return several starting values, as a list, and
-\code{fit_distrib()} will try each; the first is the one it prefers.
+The base method draws each parameter from its own domain and never reads
+\code{y}, so a family that registers nothing loses nothing. A family with a
+better estimator registers a method: an exact maximum likelihood estimator
+where one is known, a method-of-moments estimator otherwise, or the estimate
+of a simpler family the harder one contains. The two univariate methods
+route through \code{\link[=start_from_moments]{start_from_moments()}}, which uses the family's own moment
+inversion where \code{\link[=moment_estimates]{moment_estimates()}} has one and reads
+\code{params_interpretation} where it does not.
 }
 \examples{
 set.seed(1)
@@ -49,13 +58,22 @@ d <- mvgaussian_distrib(2)
 y <- distrib_rng(d, 200, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
                               sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 
-# the gaussian has a closed-form maximum likelihood estimate, so the fit
-# starts there and has nothing left to do
+# An unstructured covariance has a closed-form estimate, so the fit starts
+# at the answer and has nothing left to do.
 start <- distrib_start(d, y)[[1]]
-mv_location(d, start)
-colMeans(y)
+rbind(start = mv_location(d, start), sample = colMeans(y))
+
+# A univariate family asked for several starts gets one from the data and
+# the rest at random, so a caller asking for more still explores.
+set.seed(2)
+s <- distrib_start(gaussian1_distrib(), rnorm(200, 900, 170), n_start = 3)
+length(s)
+vapply(s, function(th) unlist(th), numeric(2))
 
 }
 \seealso{
-\code{\link[=fit_distrib]{fit_distrib()}}, \code{\link[=generate_random_theta]{generate_random_theta()}}
+\code{\link[=fit_distrib]{fit_distrib()}}, which calls this;
+\code{\link[=start_from_moments]{start_from_moments()}} for the univariate route;
+\code{\link[=moment_estimates]{moment_estimates()}} for the family-by-family inversions;
+\code{\link[=generate_random_theta]{generate_random_theta()}} for the draw the base method makes.
 }

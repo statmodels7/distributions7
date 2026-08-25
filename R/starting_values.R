@@ -1,41 +1,48 @@
 #' @include distrib.R generics.R multivariate.R mvgaussian_distrib.R mvstudent_t_distrib.R pig1_distrib.R pig2_distrib.R
 NULL
 
-#' A Starting Value Drawn from the Data
+#' @title A Starting Value Drawn From the Data
 #'
 #' @description
-#' Returns a starting value for [fit_distrib()], computed from the
-#' response rather than guessed.
+#' Returns the starting values [fit_distrib()] begins from, computed from the
+#' response wherever the family knows how. The result is a list of named
+#' parameter lists on the **parameter** scale; the fit tries them in order and
+#' stops at the first that converges, so the first element is the one the
+#' family prefers.
 #'
 #' @details
-#' A starting value that ignores the data is a starting value that can be
-#' arbitrarily far from the answer, and how far decides whether the fit takes
-#' one step or never arrives. A four-dimensional gaussian fitted to the iris
-#' measurements is the plain case: started at the origin of the unconstrained
-#' scale, which is a unit covariance and a zero mean, Newton with the expected
-#' information spends five hundred iterations and stops at a log-likelihood of
-#' \eqn{-836}; started at the sample mean and the sample covariance it
-#' converges in one iteration to \eqn{-379.9146}, which is the exact maximum.
-#' Nothing about the arithmetic changed.
+#' A starting value that ignores the data can be arbitrarily far from the
+#' answer, and how far decides whether the fit takes one step or never
+#' arrives. A four-dimensional Gaussian fitted to the iris measurements is the
+#' plain case: started at the origin of the unconstrained scale, which is a
+#' unit covariance and a zero mean, Newton with the expected information spends
+#' five hundred iterations and stops at a log-likelihood of \eqn{-836};
+#' started at the sample mean and the sample covariance it converges in one
+#' iteration to \eqn{-379.9146}, the exact maximum. Nothing about the
+#' arithmetic changed.
 #'
-#' The default method returns random parameters, as before, so a distribution
-#' that registers nothing loses nothing. A family with a better estimator
-#' registers a method: an exact maximum likelihood estimator where one is
-#' known, a method-of-moments estimator otherwise, or the estimate of a simpler
-#' family the harder one contains.
+#' The base method draws each parameter from its own domain and never reads
+#' `y`, so a family that registers nothing loses nothing. A family with a
+#' better estimator registers a method: an exact maximum likelihood estimator
+#' where one is known, a method-of-moments estimator otherwise, or the estimate
+#' of a simpler family the harder one contains. The two univariate methods
+#' route through [start_from_moments()], which uses the family's own moment
+#' inversion where [moment_estimates()] has one and reads
+#' `params_interpretation` where it does not.
 #'
-#' A method may return several starting values, as a list, and
-#' `fit_distrib()` will try each; the first is the one it prefers.
+#' @param distrib An object inheriting from `distrib`.
+#' @param y The response: a numeric vector, or an \eqn{n \times p} matrix for a
+#'   multivariate family. A method may ignore it, and the base one does.
+#' @param n_start How many starting values are wanted, a single positive
+#'   integer. Defaults to 5. A method that returns its own estimate returns one
+#'   and ignores this, which the two multivariate methods and the two
+#'   Poisson-inverse Gaussian ones do.
+#' @param ... Passed to methods. No shipped method reads it.
 #'
-#' @param distrib An object inheriting from class `"distrib"`.
-#' @param y The response.
-#' @param n_start How many starting values are wanted. A method free to supply
-#'   only one may ignore it.
-#' @param ... Passed to methods.
-#'
-#' @return A list of named parameter lists, on the **parameter** scale.
-#'
-#' @seealso [fit_distrib()], [generate_random_theta()]
+#' @return A list of named parameter lists on the parameter scale, each
+#'   complete: one component per entry of `distrib@params`, named and ordered
+#'   as `distrib@params`. Every value is strictly inside its parameter's
+#'   bounds, which the validator treats as open.
 #'
 #' @examples
 #' set.seed(1)
@@ -43,12 +50,22 @@ NULL
 #' y <- distrib_rng(d, 200, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
 #'                               sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #'
-#' # the gaussian has a closed-form maximum likelihood estimate, so the fit
-#' # starts there and has nothing left to do
+#' # An unstructured covariance has a closed-form estimate, so the fit starts
+#' # at the answer and has nothing left to do.
 #' start <- distrib_start(d, y)[[1]]
-#' mv_location(d, start)
-#' colMeans(y)
+#' rbind(start = mv_location(d, start), sample = colMeans(y))
 #'
+#' # A univariate family asked for several starts gets one from the data and
+#' # the rest at random, so a caller asking for more still explores.
+#' set.seed(2)
+#' s <- distrib_start(gaussian1_distrib(), rnorm(200, 900, 170), n_start = 3)
+#' length(s)
+#' vapply(s, function(th) unlist(th), numeric(2))
+#'
+#' @seealso [fit_distrib()], which calls this;
+#'   [start_from_moments()] for the univariate route;
+#'   [moment_estimates()] for the family-by-family inversions;
+#'   [generate_random_theta()] for the draw the base method makes.
 #' @export
 distrib_start <- S7::new_generic("distrib_start", "distrib",
   function(distrib, y, n_start = 5L, ...) {
@@ -58,40 +75,63 @@ distrib_start <- S7::new_generic("distrib_start", "distrib",
 
 #' @title Random Starting Values
 #' @name distrib_start.distrib
+#'
 #' @description
-#' The default: `n_start` draws from [generate_random_theta()],
-#' which uses the parameter domains and not the data. A family with a better
-#' idea registers its own method.
+#' The base method: `n_start` independent draws from
+#' [generate_random_theta()], which samples each parameter inside its own
+#' domain and never looks at the response. It is what a family gets when it
+#' registers no method of its own, and it is adequate wherever the parameters
+#' are of order one whatever the data, which is true of a shape, a dispersion
+#' or a probability and false of a location or a scale.
+#'
 #' @param distrib A [distrib()] object.
-#' @param y The response, unused here.
-#' @param n_start How many to draw.
+#' @param y The response. Unused here, and accepted only because the generic
+#'   passes it.
+#' @param n_start How many starting values to draw, a single positive integer.
+#'   Defaults to 5. A value below 1 is raised to 1.
 #' @param ... Unused.
-#' @return A list of named parameter lists.
+#'
+#' @return A list of `n_start` named parameter lists on the parameter scale.
+#'
+#' @seealso [distrib_start()] for the generic;
+#'   [start_from_moments()], which the univariate classes register instead;
+#'   [generate_random_theta()] for the draw itself.
 #' @keywords internal
 S7::method(distrib_start, distrib) <- function(distrib, y, n_start = 5L, ...) {
   lapply(seq_len(max(1L, n_start)), function(i) generate_random_theta(distrib))
 }
 
 
-#' The Moment Estimates a Multivariate Family Starts From
+#' @title The Moment Estimates a Multivariate Family Starts From
 #'
 #' @description
 #' Returns the sample mean and the sample covariance of a multivariate
-#' response, with the covariance made safely positive definite.
+#' response, with the covariance made safely positive definite. The covariance
+#' divides by \eqn{n} rather than \eqn{n - 1}, which is the maximum likelihood
+#' estimator and therefore the point a Gaussian fit is looking for.
 #'
 #' @details
 #' A sample covariance is singular when there are fewer observations than
 #' coordinates, and nearly singular when two coordinates almost coincide.
-#' Either way a structure cannot be inverted onto it, so the eigenvalues are
-#' floored at a small multiple of the largest before the matrix is handed on.
-#' The floor moves a starting value, which is allowed to be approximate; it
-#' would not be allowed anywhere the answer is reported.
+#' Either way a `parameters7` structure cannot be inverted onto it, so the
+#' eigenvalues are floored at a small multiple of the largest before the matrix
+#' is handed on. The floor moves a starting value, which is allowed to be
+#' approximate; it would not be allowed anywhere the answer is reported.
 #'
-#' @param y The response, an \eqn{n \times p} matrix.
-#' @param p The dimension.
+#' A response with one row has no covariance at all, and the identity is
+#' returned in its place.
 #'
-#' @return A list with `mu` and `sigma`.
+#' @param y The response, an \eqn{n \times p} matrix, or anything
+#'   [base::as.matrix()] turns into one.
+#' @param p The dimension, a single positive integer. Used only for the
+#'   one-row fallback.
 #'
+#' @return A list with two components: `mu`, a numeric vector of length
+#'   \eqn{p}, and `sigma`, a \eqn{p \times p} positive definite matrix.
+#'
+#' @seealso [distrib_start.MvGaussianDistrib()] and
+#'   [distrib_start.MvStudentTDistrib()], the two callers;
+#'   [param_free_or_fit()], which carries the matrix onto a structure.
 #' @keywords internal
 mv_moment_start <- function(y, p) {
   y <- as.matrix(y)
@@ -108,25 +148,28 @@ mv_moment_start <- function(y, p) {
 }
 
 
-#' Project a Matrix onto What a Structure Can Represent
+#' @title A Free Vector Representing a Matrix, Exactly or Approximately
 #'
 #' @description
-#' Returns the free vector of the matrix parameter whose matrix is closest to the one
-#' supplied, or the matrix parameter's own inverse map when it has one.
+#' Returns the free vector of a `parameters7` structure whose matrix is `m`.
+#' `parameters7::param_free()` answers exactly where the structure can
+#' represent the matrix, which for an unstructured covariance is always. Where
+#' it cannot, that call signals an error and this falls back to least squares
+#' on the entries, started from the zero vector. A compound-symmetric
+#' structure asked for an arbitrary covariance is the ordinary case.
 #'
-#' @details
-#' [parameters7::param_free()] is exact or rejected: a parameter that
-#' cannot represent the matrix signals an error rather than returning
-#' something plausible. That is the right contract for reporting an estimate and the
-#' wrong one for choosing where to begin, so a rejection here falls back to a
-#' short numerical search over the free values, which is allowed to be
-#' approximate because a starting value is.
+#' The fallback is a starting value for a starting value and its accuracy does
+#' not matter. It is capped at 200 BFGS iterations and returns the zero vector
+#' if even that fails, so the caller always receives a usable vector.
 #'
-#' @param s A \pkg{parameters7} structure.
-#' @param m The matrix to represent.
+#' @param s A \pkg{parameters7} structure, supplying `n_free`, `param_free()`
+#'   and `param_value()`.
+#' @param m The matrix to represent, of the structure's own dimension.
 #'
-#' @return A numeric vector of length `s@n_free`.
+#' @return An unnamed numeric vector of length `s@n_free`.
 #'
+#' @seealso [mv_moment_start()], which supplies `m`;
+#'   [parameters7::param_free()] for the exact route.
 #' @keywords internal
 param_free_or_fit <- function(s, m) {
   eta <- tryCatch(parameters7::param_free(s, m), error = function(e) NULL)
@@ -150,20 +193,43 @@ param_free_or_fit <- function(s, m) {
 
 #' @title The Maximum Likelihood Estimate as a Starting Value
 #' @name distrib_start.MvGaussianDistrib
+#'
 #' @description
-#' The sample mean and the sample covariance, which for an unstructured
-#' covariance are the maximum likelihood estimate itself, so the fit begins at
-#' the answer and confirms it in one step. For a structured covariance they are
-#' the closest thing the matrix parameter can represent, which is a good deal nearer
-#' than the origin.
+#' Returns the sample mean and the sample covariance, carried onto the
+#' distribution's matrix parametrization. For an unstructured covariance those
+#' **are** the maximum likelihood estimate, so the fit begins at the answer
+#' and confirms it in one step; for a structured one they are the closest
+#' matrix the parametrization can represent, which is a great deal nearer than
+#' the origin.
+#'
+#' One starting value is returned whatever `n_start` asks for. There is nothing
+#' to explore when the first point is the estimate.
+#'
 #' @details
-#' When the matrix parameter parametrizes the precision the sample covariance is
-#' inverted first, since that is the matrix the matrix parameter has to represent.
-#' @param distrib A [MvGaussianDistrib()] object.
-#' @param y The response.
-#' @param n_start Unused; one starting value is enough when it is the estimate.
+#' Where the object parametrizes the **precision**, the sample covariance is
+#' inverted first: the matrix the structure has to represent is
+#' \eqn{\hat\Sigma^{-1}}, not \eqn{\hat\Sigma}.
+#'
+#' The covariance divides by \eqn{n}, which is the maximum likelihood
+#' estimator, and its eigenvalues are floored by [mv_moment_start()] so that a
+#' singular sample covariance still produces a usable point. Carrying it onto
+#' the structure goes through [param_free_or_fit()], which is exact where
+#' `parameters7::param_free()` succeeds and a least-squares fit where it does
+#' not.
+#'
+#' @param distrib An [MvGaussianDistrib()] object.
+#' @param y The response, an \eqn{n \times p} matrix.
+#' @param n_start Ignored: one starting value is returned, and it is the
+#'   estimate.
 #' @param ... Unused.
-#' @return A list with one named parameter list.
+#'
+#' @return A list of length 1 holding one named parameter list: the \eqn{p}
+#'   location components followed by the structure's free values, named and
+#'   ordered as `distrib@params`.
+#'
+#' @seealso [distrib_start()] for the generic;
+#'   [distrib_start.MvStudentTDistrib()], which starts from this;
+#'   [mv_moment_start()] and [param_free_or_fit()] for the two steps.
 #' @keywords internal
 S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5L, ...) {
   p <- distrib@n_dim
@@ -176,20 +242,35 @@ S7::method(distrib_start, MvGaussianDistrib) <- function(distrib, y, n_start = 5
 
 #' @title The Gaussian Estimate as a Starting Value for a t
 #' @name distrib_start.MvStudentTDistrib
+#'
 #' @description
-#' The sample mean and the sample covariance, with the degrees of freedom set
-#' where the family is heavy tailed but its second moment exists. The gaussian
-#' estimate is the limit of this family as \eqn{\nu} grows, so it is the right
-#' place to start looking for a finite one.
+#' Returns the sample mean and the sample covariance with the degrees of
+#' freedom set at 8, which is heavy-tailed enough to be worth fitting and light
+#' enough for the second moment to exist. The Gaussian estimate is this
+#' family's limit as \eqn{\nu} grows, so it is where a finite \eqn{\nu} is
+#' looked for from.
+#'
+#' One starting value is returned whatever `n_start` asks for.
+#'
 #' @details
-#' The scale matrix is the covariance divided by \eqn{\nu/(\nu-2)}, and that
-#' factor is applied, since a starting value that confused the two would begin
-#' with a scale a third too large.
-#' @param distrib A [MvStudentTDistrib()] object.
-#' @param y The response.
-#' @param n_start Unused.
+#' The scale matrix is not the covariance. For a \eqn{t} with \eqn{\nu}
+#' degrees of freedom \eqn{\mathrm{Var}(Y) = \nu\Sigma/(\nu-2)}, so the sample
+#' covariance is multiplied by \eqn{(\nu_0-2)/\nu_0 = 0.75} before it is
+#' carried onto the structure. A starting value that confused the two would
+#' begin with a scale a third too large.
+#'
+#' @param distrib An [MvStudentTDistrib()] object.
+#' @param y The response, an \eqn{n \times p} matrix.
+#' @param n_start Ignored: one starting value is returned.
 #' @param ... Unused.
-#' @return A list with one named parameter list.
+#'
+#' @return A list of length 1 holding one named parameter list: the \eqn{p}
+#'   location components, the structure's free values, then `nu` at 8, named
+#'   and ordered as `distrib@params`.
+#'
+#' @seealso [distrib_start()] for the generic;
+#'   [distrib_start.MvGaussianDistrib()], the limit this starts from;
+#'   [mv_sigma()] for the scale matrix and [variance()] for the covariance.
 #' @keywords internal
 S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5L, ...) {
   p <- distrib@n_dim
@@ -202,15 +283,46 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
 
 #' @title Poisson-Inverse Gaussian Starting Values
 #' @name distrib_start.Pig1Distrib
-#' @description Method of moments: the sample mean for \eqn{\mu}, and
-#' \eqn{(s^2 - \bar y)/\bar y^2} for \eqn{\sigma}, floored just above zero
-#' when the sample is underdispersed.
+#'
+#' @description
+#' Returns the method-of-moments estimate. The family has mean \eqn{\mu} and
+#' variance \eqn{\mu + \sigma\mu^2}, so setting both equal to the sample gives
+#' \eqn{\hat\mu = \bar y} and \eqn{\hat\sigma = (s^2 - \bar y)/\bar y^2}
+#' directly, with no root to find.
+#'
+#' Both are floored: \eqn{\mu} just above zero, and \eqn{\sigma} at
+#' \eqn{10^{-3}} when the sample is **underdispersed** and the inversion
+#' returns a negative number. A Poisson sample is the case that produces it,
+#' and \eqn{10^{-3}} is where this family is nearly Poisson, which is the right
+#' place to start from there.
+#'
 #' @param distrib A `Pig1Distrib` object.
-#' @param y A numeric vector of observations.
-#' @param n_start Ignored; one moment start is returned.
+#' @param y A numeric vector of counts.
+#' @param n_start Ignored: one moment start is returned.
 #' @param ... Unused.
-#' @return A list with one named parameter list.
-#' @seealso [pig1_distrib()]
+#'
+#' @return A list of length 1 holding one named parameter list with components
+#'   `mu` and `sigma`.
+#'
+#' @examples
+#' set.seed(4)
+#' d <- pig1_distrib()
+#' y <- distrib_rng(d, 5000, list(mu = 4, sigma = 0.5))
+#'
+#' # The inversion recovers the parameters it was drawn from.
+#' unlist(distrib_start(d, y)[[1]])
+#'
+#' # It is exactly the sample moments, read through mean and variance.
+#' c(mu = mean(y), sigma = (var(y) - mean(y)) / mean(y)^2)
+#'
+#' # An underdispersed sample would give a negative sigma, so it is floored
+#' # where the family is nearly Poisson.
+#' set.seed(5)
+#' unlist(distrib_start(d, rpois(2000, 4))[[1]])
+#'
+#' @seealso [pig1_distrib()] for the family;
+#'   [distrib_start.Pig2Distrib()], the same estimate on the orthogonal chart;
+#'   [distrib_start()] for the generic.
 S7::method(distrib_start, Pig1Distrib) <- function(distrib, y, n_start = 5L, ...) {
   mu <- max(mean(y), 1e-8)
   list(list(mu = mu, sigma = max((stats::var(y) - mu) / mu^2, 1e-3)))
@@ -218,15 +330,42 @@ S7::method(distrib_start, Pig1Distrib) <- function(distrib, y, n_start = 5L, ...
 
 #' @title Orthogonal Poisson-Inverse Gaussian Starting Values
 #' @name distrib_start.Pig2Distrib
-#' @description The moment start of
-#' [`pig1()`][distrib_start.Pig1Distrib], mapped onto
-#' \eqn{\alpha = \sqrt{1 + 2\sigma\mu}/\sigma}.
+#'
+#' @description
+#' Returns the moment estimate of [`pig1()`][distrib_start.Pig1Distrib] carried
+#' onto this chart. The two families are the same law, so the estimate is the
+#' same estimate: \eqn{\hat\mu = \bar y} and
+#' \eqn{\hat\sigma = (s^2 - \bar y)/\bar y^2} as before, then
+#' \deqn{\alpha = \frac{\sqrt{1 + 2\sigma\mu}}{\sigma}.}
+#'
+#' The same two floors apply, so an underdispersed sample gives a very large
+#' \eqn{\alpha}, which is where this parametrization puts the Poisson limit.
+#'
 #' @param distrib A `Pig2Distrib` object.
-#' @param y A numeric vector of observations.
-#' @param n_start Ignored; one moment start is returned.
+#' @param y A numeric vector of counts.
+#' @param n_start Ignored: one moment start is returned.
 #' @param ... Unused.
-#' @return A list with one named parameter list.
-#' @seealso [pig2_distrib()]
+#'
+#' @return A list of length 1 holding one named parameter list with components
+#'   `mu` and `alpha`.
+#'
+#' @examples
+#' set.seed(4)
+#' d <- pig2_distrib()
+#' alpha0 <- sqrt(1 + 2 * 0.5 * 4) / 0.5
+#' y <- distrib_rng(d, 5000, list(mu = 4, alpha = alpha0))
+#'
+#' # The inversion recovers what the sample was drawn from.
+#' rbind(start = unlist(distrib_start(d, y)[[1]]),
+#'       truth = c(mu = 4, alpha = alpha0))
+#'
+#' # It is pig1's estimate carried through the map.
+#' s <- (var(y) - mean(y)) / mean(y)^2
+#' c(alpha = sqrt(1 + 2 * s * mean(y)) / s)
+#'
+#' @seealso [pig2_distrib()] for the family;
+#'   [distrib_start.Pig1Distrib()] for the estimate this maps;
+#'   [distrib_start()] for the generic.
 S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...) {
   mu <- max(mean(y), 1e-8)
   sg <- max((stats::var(y) - mu) / mu^2, 1e-3)
@@ -234,45 +373,68 @@ S7::method(distrib_start, Pig2Distrib) <- function(distrib, y, n_start = 5L, ...
 }
 
 
-#' Where a Univariate Family Starts, From the Data
+#' @title Where a Univariate Family Starts, From the Data
 #'
 #' @description
-#' A starting value whose location and spread are the response's, for any
-#' univariate family that declares what its parameters mean.
+#' Returns `n_start` starting values whose first is computed from the response
+#' and whose rest are random draws. It is the method both
+#' `continuous_distrib` and `discrete_distrib` register, so it is what every
+#' univariate family in the package uses.
+#'
+#' The data-based value comes from [moment_estimates()] where the family has an
+#' entry there, which 37 of the 42 univariate families do. The other five fall
+#' back to reading `params_interpretation`: a parameter meaning a location is
+#' started at the sample median, one meaning a spread at the sample standard
+#' deviation or its square, one meaning degrees of freedom at what the sample
+#' kurtosis implies, and a shape, a dispersion or a probability keeps its
+#' draw, those being of order one whatever the data.
 #'
 #' @details
-#' The base method draws each parameter from its own domain and never looks
-#' at `y`, which is fine while the response is of order one and fails
-#' completely when it is not: on a response of mean 919 and standard
-#' deviation 169 the draws are of order one, the first Newton step is taken
-#' from a point where the residuals are hundreds of standard deviations
-#' wide, and the scale runs to the largest representable double. Measured
-#' on a gaussian, `fit_distrib()` recovers N(5, 2) and N(50, 20) and
-#' fails on N(500, 200): the defect is a threshold in the scale of the data,
-#' not in the family.
+#' # What this replaced, and why it was necessary
+#' The base method draws each parameter from its own domain and never reads
+#' `y`. That is adequate while the response is of order one and fails
+#' completely when it is not: on a response of mean 919 and standard deviation
+#' 169 the draws are of order one, the first Newton step is taken where the
+#' residuals are hundreds of standard deviations wide, and the scale runs to
+#' the largest representable double. Measured on a Gaussian, [fit_distrib()]
+#' recovers \eqn{N(5, 2)} and \eqn{N(50, 20)} and fails on \eqn{N(500, 200)}:
+#' the defect was a threshold in the scale of the data, not in the family.
 #'
-#' What makes a general fix possible is that every shipped family already
-#' declares `params_interpretation`. A parameter that means a location
-#' is started at the sample median, one that means a spread at the sample
-#' standard deviation or its square, and one whose meaning is a shape, a
-#' dispersion or a probability is left to the draw, those being of order one
-#' whatever the data. A family declaring nothing recognizable loses nothing:
-#' it keeps the draw it had.
+#' # Degrees of freedom from the kurtosis
+#' A \eqn{t} of \eqn{\nu} degrees has excess kurtosis \eqn{6/(\nu-4)}, so a
+#' sample kurtosis above 0.05 inverts to \eqn{\nu = 6/\hat\gamma_2 + 4}, capped
+#' at 100; a sample no heavier-tailed than a Gaussian starts at 30. Starting
+#' large matters. A `student_t2`, whose scale parameter is the standard
+#' deviation, has a degenerate ridge at its lower bound of \eqn{\nu = 2} where
+#' the scale runs to infinity as \eqn{\nu} falls, and a run started small
+#' slides down it: measured on 610 abdominal circumferences, whose excess
+#' kurtosis is \eqn{-1.09}, the random draws put \eqn{\nu} between 2.8 and 8
+#' and the fit reached the boundary at a log-likelihood of \eqn{-3688.28},
+#' while any start of 2.5 or more with the location and scale at their sample
+#' values reaches \eqn{-3600.71}, the Gaussian limit and the true maximum.
 #'
-#' The result is CLAMPED strictly inside each parameter's bounds, because a
-#' sample median can land exactly on the boundary of a support and the
-#' validator treats bounds as open. Only the first start is data-based; the
-#' rest stay random, so a caller asking for several still explores.
+#' # The clamp, and why only the first start
+#' Every value is moved strictly inside its parameter's bounds before it is
+#' returned, because a sample median can land exactly on the boundary of a
+#' support and the validator treats bounds as open. Only the first start is
+#' data-based; the rest stay random, so a caller asking for several still
+#' explores, and [fit_distrib()] reaches them when the first fails.
 #'
-#' @param distrib A univariate distribution.
-#' @param y The response.
-#' @param n_start How many starting values.
+#' @param distrib A univariate distribution, supplying `params`,
+#'   `params_interpretation` and `params_bounds`.
+#' @param y The response, a numeric vector. Non-finite entries are dropped, and
+#'   a sample with fewer than two usable values gets the random draws alone.
+#' @param n_start How many starting values are wanted, a single positive
+#'   integer. Defaults to 5, and a value below 1 is raised to 1.
 #' @param ... Unused.
 #'
-#' @return A list of named lists, one per start.
+#' @return A list of `n_start` named parameter lists on the parameter scale,
+#'   the first from the data where one could be computed.
 #'
-#' @seealso [distrib_start()], [fit_distrib()]
-#'
+#' @seealso [moment_estimates()] for the family-by-family inversions;
+#'   [distrib_start()] for the generic;
+#'   [clamp_to_bounds()] for the boundary rule;
+#'   [fit_distrib()], which consumes the list.
 #' @keywords internal
 start_from_moments <- function(distrib, y, n_start = 5L, ...) {
   out <- lapply(seq_len(max(1L, n_start)),
@@ -357,44 +519,58 @@ S7::method(distrib_start, continuous_distrib) <- start_from_moments
 S7::method(distrib_start, discrete_distrib) <- start_from_moments
 
 
-#' Method-of-Moments Estimates, Family by Family
+#' @title Method-of-Moments Estimates, Family by Family
 #'
 #' @description
-#' The parameters a family's own first two moments imply for a sample, in
-#' closed form where the inversion has one.
+#' Returns the parameters a family's own first two moments imply for a sample,
+#' in closed form where the inversion has one, and `NULL` where this family has
+#' no entry. **37 of the 42 univariate families have one.**
+#'
+#' A starting value should be an estimate. For most families the moment
+#' estimate is one line: the sample mean and variance are set equal to the
+#' family's own and the pair is inverted. [fit_distrib()] then refines it by
+#' maximum likelihood, and \pkg{statmodels7} takes the result as the intercept
+#' of each equation.
 #'
 #' @details
-#' A starting value should be an estimate, not a guess, and for most
-#' families the moment estimate is one line: the mean and the variance of
-#' the sample are set equal to the family's own and the pair is inverted.
-#' [fit_distrib()] then refines it by maximum likelihood, and
-#' \pkg{statmodels7} takes the result as the intercept of each equation.
+#' # How the inversions are written and checked
+#' Each is written against the family's own [mean()] and [variance()], not from
+#' memory, and the tests check it the same way: a family's moment estimate
+#' applied to a large sample drawn from a known parameter must return that
+#' parameter.
 #'
-#' The inversions are written against each family's `mean()` and
-#' `variance()` rather than from memory, and the tests check them that
-#' way: a family's moment estimate applied to a large sample from a known
-#' parameter must return that parameter.
+#' # Where a moment does not exist, and where the inversion is not closed
+#' A family with no moments takes the robust analogue. The Cauchy uses the
+#' median and half the interquartile range, which are its location and its
+#' scale. Where the inversion needs a root, the standard approximation
+#' stands in: the Weibull's shape from the coefficient of variation, the von
+#' Mises's concentration from the mean resultant length. A starting value is
+#' allowed to be approximate.
 #'
-#' Where the family has no moments the robust analogue is used instead --
-#' the Cauchy takes the median and half the interquartile range, which is
-#' what its location and scale are. Where the inversion needs a root the
-#' standard approximation is used, the Weibull's shape from the coefficient
-#' of variation and the von Mises's concentration from the mean resultant
-#' length; a starting value is allowed to be approximate. Families whose
-#' inversion is neither closed nor standard -- the generalized gamma, the
-#' skew normal in its direct parametrization, the skew t, the elastic net --
-#' are not listed and fall back to
-#' [start_from_moments()]'s reading of
-#' `params_interpretation`.
+#' Five families have no entry and fall through to
+#' [start_from_moments()]'s reading of `params_interpretation`: `gengamma1`,
+#' `gengamma2`, `skewt`, `pseudohuber` and `enet`. Their inversions are neither
+#' closed nor standard: two gamma-function ratios in two shapes for the
+#' generalized gamma, a moment that does not identify the pair for the skew
+#' \eqn{t}, no elementary moments at all for the elastic net.
 #'
-#' @param distrib A univariate distribution.
-#' @param y The response.
+#' # A fixed constant in the name
+#' A family carrying one announces it there, as in `"beta-binomial [size=10]"`,
+#' so the bracketed part is stripped before the name is used as a lookup key.
+#' Without that no beta-binomial of any size would match its own entry, and
+#' silently: a missing key is a legal fallback.
 #'
-#' @return A named list of parameters, or `NULL` where this family has
-#'   no entry.
+#' @param distrib A univariate distribution, read for its `distrib_name` and
+#'   its parameter names.
+#' @param y The response, a numeric vector, already filtered to finite values
+#'   by the caller.
 #'
-#' @seealso [distrib_start()], [start_from_moments()]
+#' @return A named list of parameters on the parameter scale, one component per
+#'   entry of `distrib@params`, or `NULL` where this family has no entry.
 #'
+#' @seealso [start_from_moments()], the only caller and the fallback;
+#'   [distrib_start()] for the generic; [mean()] and [variance()], which the
+#'   inversions are written against.
 #' @keywords internal
 moment_estimates <- function(distrib, y) {
   # A family carrying a fixed constant announces it in its name, as in
@@ -540,13 +716,30 @@ moment_estimates <- function(distrib, y) {
   clamp_to_bounds(out, distrib)
 }
 
-#' Move a Starting Value Strictly Inside the Parameter Bounds
+#' @title Move a Starting Value Strictly Inside the Parameter Bounds
 #'
-#' @param theta A named list.
-#' @param distrib The distribution whose bounds apply.
+#' @description
+#' Returns `theta` with every component moved strictly inside its own bounds.
+#' A moment estimate can land exactly on a boundary. A sample of non-negative
+#' counts gives a median of zero and a sample of proportions a maximum of one,
+#' and `align_theta()` treats `params_bounds` as **open**, so such a value is
+#' rejected by the first generic that sees it.
 #'
-#' @return `theta`, each element strictly inside its own bounds.
+#' A value at a finite non-zero bound is moved in by 16 machine epsilons
+#' relative to the bound. A value at a bound of exactly zero cannot be, there
+#' being no relative scale there, so it is replaced by \eqn{10^{-8}} times the
+#' larger of the value's own magnitude and 1. Both are far below anything a
+#' first optimizer step resolves.
 #'
+#' @param theta A named list of parameters on the parameter scale. Components
+#'   with no entry in `params_bounds`, and bounds that are not a pair, are left
+#'   alone.
+#' @param distrib The distribution whose `params_bounds` apply.
+#'
+#' @return `theta`, each component strictly inside its own bounds.
+#'
+#' @seealso [start_from_moments()] and [moment_estimates()], the callers;
+#'   [align_theta()], which enforces the open bounds this exists to satisfy.
 #' @keywords internal
 clamp_to_bounds <- function(theta, distrib) {
   bnds <- distrib@params_bounds
