@@ -7,28 +7,85 @@
 mapped_theta2(distrib, parent, th_par, maps, y, first, second)
 }
 \arguments{
-\item{distrib}{The distribution in the new parametrization.}
+\item{distrib}{The distribution in the NEW parametrization. Only its
+\code{params} are read, to key the result.}
 
-\item{parent}{The parent distribution.}
+\item{parent}{The parent distribution, whose \code{params} key the inputs.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{A named list of the parent's parameters, evaluated at the new
+ones.}
 
-\item{maps}{The map's keyed partial tables.}
+\item{maps}{The map's keyed partial tables, from \code{\link[=reparam_tables]{reparam_tables()}}: one
+entry per parent parameter, each a list keyed by new-parameter index.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Used only for its length,
+through the components.}
 
-\item{first}{The parent's first-order components, keyed by parameter.}
+\item{first}{The parent's first-order components, keyed by the parent's
+parameters.}
 
-\item{second}{The parent's second-order components, keyed by pair.}
+\item{second}{The parent's second-order components, keyed by the parent's
+parameter pairs. Either ordering of a pair's key is accepted.}
 }
 \value{
-A named list keyed by the new parameters' pairs.
+A named list with one numeric vector per unordered pair of the NEW
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The parent's paired components carried onto a new parametrization by the
-second-order chain rule.
+Carries the parent's paired components onto a new parametrization by the
+second-order chain rule. It is the arithmetic behind every
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} and \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} method of a
+reparametrized family, and it differentiates nothing itself.
+}
+\section{The expansion}{
+A derivative in the RESPONSE does not see the parameters, so a
+reparametrization acts on the \eqn{\theta} side alone and the ordinary
+two-term expansion applies:
+\deqn{\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
+  = \sum_{i,j} \frac{\partial\theta_i}{\partial\alpha_a}
+    \frac{\partial\theta_j}{\partial\alpha_b} f_{ij}
+  + \sum_i \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,}
+with \eqn{f_i} the parent's first-order mixed component and \eqn{f_{ij}} its
+second-order one. Both partial tables are the MAP's, already keyed by
+\code{\link[=reparam_tables]{reparam_tables()}} under the indices of the new parameters, \code{"1"} for a
+first partial and \code{"1,2"} for a second, so nothing is differentiated here.
+}
+
+\section{What \code{first} and \code{second} are}{
+They are the same quantity at two orders in \eqn{\theta}, and which
+quantity depends on the caller: \code{\link[=distrib_cross_y]{distrib_cross_y()}} with
+\code{\link[=distrib_grad_y_hess]{distrib_grad_y_hess()}} for the third-order derivative, and
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} with \code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the fourth.
+
+A missing key in a map's table is an exact zero and is skipped, so a map
+that is affine in one of its coordinates costs nothing for it.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+\eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+}
+
+\examples{
+# gaussian2 carries (mu, sigma2) where its parent carries (mu, sigma).
+d <- gaussian2_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma2 = 1.44)
+
+g <- distrib_grad_y_hess(d, y, theta)
+vapply(g, function(z) z[1], numeric(1))
+
+# Against a numerical Hessian of the response gradient in the NEW
+# parameters, which shares none of the map's arithmetic.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(f, c(0.3, 1.44))
 }
 \seealso{
-\code{\link[=mapped_cross_y]{mapped_cross_y()}}, \code{\link[=reparam_tables]{reparam_tables()}}
+\code{\link[=mapped_cross2_y]{mapped_cross2_y()}} for the first-order counterpart,
+\code{\link[=reparam_tables]{reparam_tables()}} for the partial tables, and
+\code{\link[=distrib_grad_y_hess.ReparamContinuousDistrib]{distrib_grad_y_hess.ReparamContinuousDistrib()}}, its caller.
 }
 \keyword{internal}

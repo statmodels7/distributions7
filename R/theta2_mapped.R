@@ -15,24 +15,81 @@ NULL
 # the indices of the new parameters -- "1" for a first partial and "1,2" for a
 # second -- so nothing is differentiated here either.
 
-#' A Second-Order Mixed Derivative Through a Map
+#' @title A Second-Order Mixed Derivative Through a Map
 #'
 #' @description
-#' The parent's paired components carried onto a new parametrization by the
-#' second-order chain rule.
+#' Carries the parent's paired components onto a new parametrization by the
+#' second-order chain rule. It is the arithmetic behind every
+#' [distrib_grad_y_hess()] and [distrib_hess_y_hess()] method of a
+#' reparametrized family, and it differentiates nothing itself.
 #'
-#' @param distrib The distribution in the new parametrization.
-#' @param parent The parent distribution.
-#' @param th_par The parent's parameters at the new ones.
-#' @param maps The map's keyed partial tables.
-#' @param y A numeric vector of observations.
-#' @param first The parent's first-order components, keyed by parameter.
-#' @param second The parent's second-order components, keyed by pair.
+#' @details
+#' # The expansion
 #'
-#' @return A named list keyed by the new parameters' pairs.
+#' A derivative in the RESPONSE does not see the parameters, so a
+#' reparametrization acts on the \eqn{\theta} side alone and the ordinary
+#' two-term expansion applies:
+#' \deqn{\frac{\partial^2 f}{\partial\alpha_a \partial\alpha_b}
+#'   = \sum_{i,j} \frac{\partial\theta_i}{\partial\alpha_a}
+#'     \frac{\partial\theta_j}{\partial\alpha_b} f_{ij}
+#'   + \sum_i \frac{\partial^2\theta_i}{\partial\alpha_a\partial\alpha_b} f_i,}
+#' with \eqn{f_i} the parent's first-order mixed component and \eqn{f_{ij}} its
+#' second-order one. Both partial tables are the MAP's, already keyed by
+#' [reparam_tables()] under the indices of the new parameters, `"1"` for a
+#' first partial and `"1,2"` for a second, so nothing is differentiated here.
 #'
-#' @seealso [mapped_cross_y()], [reparam_tables()]
+#' # What `first` and `second` are
+#'
+#' They are the same quantity at two orders in \eqn{\theta}, and which
+#' quantity depends on the caller: [distrib_cross_y()] with
+#' [distrib_grad_y_hess()] for the third-order derivative, and
+#' [distrib_cross2_y()] with [distrib_hess_y_hess()] for the fourth.
+#'
+#' A missing key in a map's table is an exact zero and is skipped, so a map
+#' that is affine in one of its coordinates costs nothing for it.
+#'
+#' @param distrib The distribution in the NEW parametrization. Only its
+#'   `params` are read, to key the result.
+#' @param parent The parent distribution, whose `params` key the inputs.
+#' @param th_par A named list of the parent's parameters, evaluated at the new
+#'   ones.
+#' @param maps The map's keyed partial tables, from [reparam_tables()]: one
+#'   entry per parent parameter, each a list keyed by new-parameter index.
+#' @param y A numeric vector of observations. Used only for its length,
+#'   through the components.
+#' @param first The parent's first-order components, keyed by the parent's
+#'   parameters.
+#' @param second The parent's second-order components, keyed by the parent's
+#'   parameter pairs. Either ordering of a pair's key is accepted.
+#'
+#' @return A named list with one numeric vector per unordered pair of the NEW
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+#' of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+#' \eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+#' \eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+#'
+#' @seealso [mapped_cross2_y()] for the first-order counterpart,
+#'   [reparam_tables()] for the partial tables, and
+#'   [distrib_grad_y_hess.ReparamContinuousDistrib()], its caller.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' # gaussian2 carries (mu, sigma2) where its parent carries (mu, sigma).
+#' d <- gaussian2_distrib()
+#' y <- c(-0.7, 0.3, 1.4)
+#' theta <- list(mu = 0.3, sigma2 = 1.44)
+#'
+#' g <- distrib_grad_y_hess(d, y, theta)
+#' vapply(g, function(z) z[1], numeric(1))
+#'
+#' # Against a numerical Hessian of the response gradient in the NEW
+#' # parameters, which shares none of the map's arithmetic.
+#' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+#' numDeriv::hessian(f, c(0.3, 1.44))
 mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
   old <- parent@params
   new_params <- distrib@params
@@ -68,15 +125,73 @@ mapped_theta2 <- function(distrib, parent, th_par, maps, y, first, second) {
 
 #' @title Second-Order Mixed Derivatives of a Reparametrized Distribution
 #' @name distrib_grad_y_hess.ReparamContinuousDistrib
+#'
 #' @description
-#' The parent's paired components carried by the second-order chain rule on
-#' the map, and its first-order ones by the map's second partials.
-#' @param distrib A reparametrized distribution.
+#' Carries the parent's paired components onto the new parametrization by the
+#' second-order chain rule, through [mapped_theta2()]: the parent's
+#' second-order components multiplied by two first partials of the map, plus
+#' its first-order components multiplied by the map's second partials. The
+#' fourth-order method is the same body reading [distrib_cross2_y()] and
+#' [distrib_hess_y_hess()] of the parent instead.
+#'
+#' @details
+#' A response derivative does not interact with a reparametrization of
+#' \eqn{\theta}, so nothing on the \eqn{y} side is touched and the whole
+#' correction is the map's. The partials come from [reparam_tables()], which a
+#' family supplies through `map_derivs` or, failing that, through one stencil
+#' per partial.
+#'
+#' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.
-#' @param theta A named list of the new parameters.
-#' @param scale Handled by the generic before dispatch.
-#' @param ... Unused.
-#' @return A named list keyed by parameter pair.
+#' @param theta A named list of the NEW parameters.
+#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
+#'   dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list with one numeric vector per unordered pair of the new
+#'   parameters, keyed as [`hess_names(distrib@params)`][hess_names].
+#'
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+#' of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+#' \eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+#' \eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+#'
+#' @seealso [mapped_theta2()], which does the work,
+#'   [distrib_cross2_y.ReparamContinuousDistrib()] for the first order in
+#'   \eqn{\theta}, and [reparametrize()] for the wrapper.
+#'
+#' @examples
+#' # A gaussian obtained in its variance rather than written out.
+#' d <- reparametrize(
+#'   gaussian1_distrib(),
+#'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+#'   params = c("mu", "sigma2"),
+#'   bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+#'   links = list(mu = linkfunctions7::identity_link(),
+#'                sigma2 = linkfunctions7::log_link())
+#' )
+#' y <- c(-0.7, 0.3, 1.4)
+#' theta <- list(mu = 0.3, sigma2 = 1.44)
+#'
+#' g3 <- distrib_grad_y_hess(d, y, theta)
+#' vapply(g3, function(z) z[1], numeric(1))
+#'
+#' # Against the family written out by hand, which shares none of the map's
+#' # arithmetic. The map's partials are stencils here, no map_derivs having
+#' # been given, so the two agree to about 1e-09.
+#' max(abs(unlist(g3) -
+#'         unlist(distrib_grad_y_hess(gaussian2_distrib(), y, theta))))
+#'
+#' # And against a numerical Hessian of the response gradient.
+#' f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+#' numDeriv::hessian(f, c(0.3, 1.44))
+#'
+#' # The fourth order takes the same route one derivative up in y.
+#' g4 <- distrib_hess_y_hess(d, y, theta)
+#' max(abs(unlist(g4) -
+#'         unlist(distrib_hess_y_hess(gaussian2_distrib(), y, theta))))
+#'
 #' @keywords internal
 S7::method(distrib_grad_y_hess, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -103,16 +218,54 @@ S7::method(distrib_hess_y_hess, ReparamContinuousDistrib) <-
 
 #' @title Second-Response Mixed Derivatives of a Reparametrized Distribution
 #' @name distrib_cross2_y.ReparamContinuousDistrib
+#'
 #' @description
-#' The parent's block carried by the first-order chain rule, exactly as
-#' [distrib_cross_y()] is: a derivative in the response does not
-#' interact with a reparametrization of the parameters.
-#' @param distrib A reparametrized distribution.
+#' Carries the parent's block onto the new parametrization by the FIRST-order
+#' chain rule, exactly as [distrib_cross_y()] is carried: a derivative in the
+#' response does not interact with a reparametrization of the parameters, so
+#' only the map's first partials enter and its second ones never appear.
+#'
+#' @param distrib A `ReparamContinuousDistrib` object, from [reparametrize()].
 #' @param y A numeric vector of observations.
-#' @param theta A named list of the new parameters.
-#' @param scale Handled by the generic before dispatch.
-#' @param ... Unused.
-#' @return A named list with one numeric vector per parameter.
+#' @param theta A named list of the NEW parameters.
+#' @param scale One of `"parameter"` or `"link"`, applied by the generic before
+#'   dispatch.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list with one numeric vector per new parameter, keyed by
+#'   `distrib@params`.
+#'
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+#' of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+#' \eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+#' \eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+#'
+#' @seealso [mapped_cross2_y()], which does the work,
+#'   [distrib_grad_y_hess.ReparamContinuousDistrib()] for the second order in
+#'   \eqn{\theta}, and [reparametrize()] for the wrapper.
+#'
+#' @examples
+#' d <- reparametrize(
+#'   gaussian1_distrib(),
+#'   map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+#'   params = c("mu", "sigma2"),
+#'   bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+#'   links = list(mu = linkfunctions7::identity_link(),
+#'                sigma2 = linkfunctions7::log_link())
+#' )
+#' y <- c(-0.7, 0.3, 1.4)
+#' theta <- list(mu = 0.3, sigma2 = 1.44)
+#'
+#' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+#'
+#' # Against the family written out by hand, and against a numerical
+#' # derivative of the response Hessian.
+#' max(abs(unlist(distrib_cross2_y(d, y, theta)) -
+#'         unlist(distrib_cross2_y(gaussian2_distrib(), y, theta))))
+#' f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+#' numDeriv::grad(f, c(0.3, 1.44))
+#'
 #' @keywords internal
 S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"), ...) {
@@ -122,22 +275,56 @@ S7::method(distrib_cross2_y, ReparamContinuousDistrib) <-
   }
 
 
-#' Second-Response Mixed Derivatives Through a Map
+#' @title Second-Response Mixed Derivatives Through a Map
 #'
 #' @description
-#' The same first-order chain rule [mapped_cross_y()] takes, on the
-#' second response derivative.
+#' Carries the parent's [distrib_cross2_y()] block onto a new parametrization
+#' by the first-order chain rule,
+#' \eqn{\sum_i (\partial\theta_i/\partial\alpha_a)\,
+#' \partial\ell^{(yy)}/\partial\theta_i}. It is the same expansion
+#' [mapped_cross_y()] takes, read one derivative further in the response.
 #'
-#' @param distrib The distribution in the new parametrization.
-#' @param parent The parent distribution.
-#' @param th_par The parent's parameters at the new ones.
-#' @param maps The map's keyed partial tables.
+#' @details
+#' Only the map's FIRST partials enter, so the second-partial tables
+#' [mapped_theta2()] needs are never touched. A missing key is an exact zero
+#' and is skipped.
+#'
+#' @param distrib The distribution in the new parametrization. Only its
+#'   `params` are read, to key the result.
+#' @param parent The parent distribution, which supplies the block.
+#' @param th_par A named list of the parent's parameters, evaluated at the new
+#'   ones.
+#' @param maps The map's keyed partial tables, from [reparam_tables()].
 #' @param y A numeric vector of observations.
 #'
-#' @return A named list with one numeric vector per new parameter.
+#' @return A named list with one numeric vector per new parameter, keyed by
+#'   `distrib@params`.
 #'
-#' @seealso [mapped_cross_y()]
+#' @section Notation:
+#' \eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+#' of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+#' \eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+#' \eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+#'
+#' @seealso [mapped_theta2()] for the second order in \eqn{\theta},
+#'   [distrib_cross2_y.ReparamContinuousDistrib()], its caller, and
+#'   [reparam_tables()] for the partial tables.
+#'
 #' @keywords internal
+#'
+#' @examples
+#' # gaussian2 carries (mu, sigma2) against a parent in (mu, sigma), so the
+#' # scale component picks up d(sigma)/d(sigma2) = 1 / (2 sqrt(sigma2)).
+#' d <- gaussian2_distrib()
+#' y <- c(-0.7, 0.3, 1.4)
+#' theta <- list(mu = 0.3, sigma2 = 1.44)
+#'
+#' vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+#'
+#' # The parent's own block, carried by that one factor.
+#' par_block <- distrib_cross2_y(gaussian1_distrib(), y,
+#'                               list(mu = 0.3, sigma = 1.2))
+#' c(mu = par_block$mu[1], sigma2 = par_block$sigma[1] / (2 * sqrt(1.44)))
 mapped_cross2_y <- function(distrib, parent, th_par, maps, y) {
   cy <- distrib_cross2_y(parent, y, th_par)
   new_params <- distrib@params
@@ -156,8 +343,7 @@ mapped_cross2_y <- function(distrib, parent, th_par, maps, y) {
 
 # --- the Laplace, which was registered at first order and not at second -----
 
-#' @name distrib_grad_y_hess.LaplaceDistrib
-#' @rdname loc_scale_grad_y_hess
-#' @keywords internal
+# Both aliases are carried by loc_scale_grad_y_hess's own page, in
+# theta2_families.R, where the shared body is documented.
 S7::method(distrib_grad_y_hess, LaplaceDistrib) <- loc_scale_grad_y_hess
 S7::method(distrib_hess_y_hess, LaplaceDistrib) <- loc_scale_hess_y_hess

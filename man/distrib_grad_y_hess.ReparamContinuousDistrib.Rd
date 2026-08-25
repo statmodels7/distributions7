@@ -5,21 +5,79 @@
 \alias{distrib_hess_y_hess.ReparamContinuousDistrib}
 \title{Second-Order Mixed Derivatives of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A \code{ReparamContinuousDistrib} object, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the NEW parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed by parameter pair.
+A named list with one numeric vector per unordered pair of the new
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The parent's paired components carried by the second-order chain rule on
-the map, and its first-order ones by the map's second partials.
+Carries the parent's paired components onto the new parametrization by the
+second-order chain rule, through \code{\link[=mapped_theta2]{mapped_theta2()}}: the parent's
+second-order components multiplied by two first partials of the map, plus
+its first-order components multiplied by the map's second partials. The
+fourth-order method is the same body reading \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} and
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} of the parent instead.
+}
+\details{
+A response derivative does not interact with a reparametrization of
+\eqn{\theta}, so nothing on the \eqn{y} side is touched and the whole
+correction is the map's. The partials come from \code{\link[=reparam_tables]{reparam_tables()}}, which a
+family supplies through \code{map_derivs} or, failing that, through one stencil
+per partial.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+\eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+}
+
+\examples{
+# A gaussian obtained in its variance rather than written out.
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma2 = 1.44)
+
+g3 <- distrib_grad_y_hess(d, y, theta)
+vapply(g3, function(z) z[1], numeric(1))
+
+# Against the family written out by hand, which shares none of the map's
+# arithmetic. The map's partials are stencils here, no map_derivs having
+# been given, so the two agree to about 1e-09.
+max(abs(unlist(g3) -
+        unlist(distrib_grad_y_hess(gaussian2_distrib(), y, theta))))
+
+# And against a numerical Hessian of the response gradient.
+f <- function(v) distrib_grad_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::hessian(f, c(0.3, 1.44))
+
+# The fourth order takes the same route one derivative up in y.
+g4 <- distrib_hess_y_hess(d, y, theta)
+max(abs(unlist(g4) -
+        unlist(distrib_hess_y_hess(gaussian2_distrib(), y, theta))))
+
+}
+\seealso{
+\code{\link[=mapped_theta2]{mapped_theta2()}}, which does the work,
+\code{\link[=distrib_cross2_y.ReparamContinuousDistrib]{distrib_cross2_y.ReparamContinuousDistrib()}} for the first order in
+\eqn{\theta}, and \code{\link[=reparametrize]{reparametrize()}} for the wrapper.
 }
 \keyword{internal}

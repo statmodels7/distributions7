@@ -4,22 +4,60 @@
 \alias{distrib_cross2_y.ReparamContinuousDistrib}
 \title{Second-Response Mixed Derivatives of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A \code{ReparamContinuousDistrib} object, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the NEW parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per new parameter, keyed by
+\code{distrib@params}.
 }
 \description{
-The parent's block carried by the first-order chain rule, exactly as
-\code{\link[=distrib_cross_y]{distrib_cross_y()}} is: a derivative in the response does not
-interact with a reparametrization of the parameters.
+Carries the parent's block onto the new parametrization by the FIRST-order
+chain rule, exactly as \code{\link[=distrib_cross_y]{distrib_cross_y()}} is carried: a derivative in the
+response does not interact with a reparametrization of the parameters, so
+only the map's first partials enter and its second ones never appear.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+\eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+}
+
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma2 = 1.44)
+
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# Against the family written out by hand, and against a numerical
+# derivative of the response Hessian.
+max(abs(unlist(distrib_cross2_y(d, y, theta)) -
+        unlist(distrib_cross2_y(gaussian2_distrib(), y, theta))))
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::grad(f, c(0.3, 1.44))
+
+}
+\seealso{
+\code{\link[=mapped_cross2_y]{mapped_cross2_y()}}, which does the work,
+\code{\link[=distrib_grad_y_hess.ReparamContinuousDistrib]{distrib_grad_y_hess.ReparamContinuousDistrib()}} for the second order in
+\eqn{\theta}, and \code{\link[=reparametrize]{reparametrize()}} for the wrapper.
 }
 \keyword{internal}

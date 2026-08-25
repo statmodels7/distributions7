@@ -7,24 +7,59 @@
 mapped_cross2_y(distrib, parent, th_par, maps, y)
 }
 \arguments{
-\item{distrib}{The distribution in the new parametrization.}
+\item{distrib}{The distribution in the new parametrization. Only its
+\code{params} are read, to key the result.}
 
-\item{parent}{The parent distribution.}
+\item{parent}{The parent distribution, which supplies the block.}
 
-\item{th_par}{The parent's parameters at the new ones.}
+\item{th_par}{A named list of the parent's parameters, evaluated at the new
+ones.}
 
-\item{maps}{The map's keyed partial tables.}
+\item{maps}{The map's keyed partial tables, from \code{\link[=reparam_tables]{reparam_tables()}}.}
 
 \item{y}{A numeric vector of observations.}
 }
 \value{
-A named list with one numeric vector per new parameter.
+A named list with one numeric vector per new parameter, keyed by
+\code{distrib@params}.
 }
 \description{
-The same first-order chain rule \code{\link[=mapped_cross_y]{mapped_cross_y()}} takes, on the
-second response derivative.
+Carries the parent's \code{\link[=distrib_cross2_y]{distrib_cross2_y()}} block onto a new parametrization
+by the first-order chain rule,
+\eqn{\sum_i (\partial\theta_i/\partial\alpha_a)\,
+\partial\ell^{(yy)}/\partial\theta_i}. It is the same expansion
+\code{\link[=mapped_cross_y]{mapped_cross_y()}} takes, read one derivative further in the response.
+}
+\details{
+Only the map's FIRST partials enter, so the second-partial tables
+\code{\link[=mapped_theta2]{mapped_theta2()}} needs are never touched. A missing key is an exact zero
+and is skipped.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\theta_i} a parameter
+of the PARENT and \eqn{\alpha_a} one of the new parametrization, so that
+\eqn{\theta = \theta(\alpha)} is the map. \eqn{\ell^{(y)}} and
+\eqn{\ell^{(yy)}} are the first and second derivatives in the response.
+}
+
+\examples{
+# gaussian2 carries (mu, sigma2) against a parent in (mu, sigma), so the
+# scale component picks up d(sigma)/d(sigma2) = 1 / (2 sqrt(sigma2)).
+d <- gaussian2_distrib()
+y <- c(-0.7, 0.3, 1.4)
+theta <- list(mu = 0.3, sigma2 = 1.44)
+
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# The parent's own block, carried by that one factor.
+par_block <- distrib_cross2_y(gaussian1_distrib(), y,
+                              list(mu = 0.3, sigma = 1.2))
+c(mu = par_block$mu[1], sigma2 = par_block$sigma[1] / (2 * sqrt(1.44)))
 }
 \seealso{
-\code{\link[=mapped_cross_y]{mapped_cross_y()}}
+\code{\link[=mapped_theta2]{mapped_theta2()}} for the second order in \eqn{\theta},
+\code{\link[=distrib_cross2_y.ReparamContinuousDistrib]{distrib_cross2_y.ReparamContinuousDistrib()}}, its caller, and
+\code{\link[=reparam_tables]{reparam_tables()}} for the partial tables.
 }
 \keyword{internal}
