@@ -2,27 +2,55 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_quantile.StudentT1Distrib}
 \alias{distrib_quantile.StudentT1Distrib}
-\title{Student's t Quantile Function}
+\title{Student t Quantile Function}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or of their
+logarithms when \code{log.p = TRUE}. A value outside the range gives \code{NaN} with
+a warning from \code{\link[stats:TDist]{stats::qt()}}.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{p}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le p)}, otherwise \eqn{P(Y > p)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is read as a logarithm.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles on \eqn{[-\infty, \infty]}, of length
+\code{max(length(p), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Computes the quantile function (inverse CDF) for the (location-scale) Student's t
-distribution:
+Computes the location-scale Student t quantile function
 \deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\, T_\nu^{-1}(p)}
-where \eqn{T_\nu^{-1}} is the standard Student's t quantile function with \eqn{\nu} degrees of freedom.
+with \eqn{T_\nu^{-1}} the standard Student t quantile function on \eqn{\nu}
+degrees of freedom, by calling \code{\link[stats:TDist]{stats::qt()}}. The distribution function is
+strictly increasing on the whole line, so the inverse is exact and unique
+and the root-finding fallback the base class supplies is bypassed. \code{Q(0)} is
+\code{-Inf} and \code{Q(1)} is \code{Inf}.
+}
+\examples{
+d <- student_t1_distrib()
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+
+# The quartiles, and the round trip back through the distribution function.
+q <- distrib_quantile(d, c(0.25, 0.5, 0.75), th)
+q
+all.equal(distrib_cdf(d, q, th), c(0.25, 0.5, 0.75))
+
+# The median is the location, the law being symmetric about it.
+distrib_quantile(d, 0.5, th)
+
+# Heavy tails put the extreme quantiles far further out than a Gaussian's.
+rbind(t = distrib_quantile(d, c(0.001, 0.999), th),
+      gaussian = qnorm(c(0.001, 0.999), 0.4, 1.2))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_cdf.StudentT1Distrib]{distrib_cdf.StudentT1Distrib()}} for the function inverted here,
+\code{\link[=distrib_rng.StudentT1Distrib]{distrib_rng.StudentT1Distrib()}} for draws, and \code{\link[=distrib_quantile]{distrib_quantile()}} for
+the generic.
 }

@@ -2,20 +2,57 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_hess_y.StudentT1Distrib}
 \alias{distrib_hess_y.StudentT1Distrib}
-\title{Student's t Response Second Derivative}
+\title{Student t Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation.
 }
 \description{
-Closed-form \eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/(\nu\sigma^2 + r^2)^2}, \eqn{r = y - \mu}.
+Computes \eqn{\partial^2 \ell / \partial y^2}, the second derivative of the
+Student t log-density with respect to the response, in closed form. With
+\eqn{r = y - \mu} and \eqn{D = \nu\sigma^2 + r^2},
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2}
+  = \dfrac{(\nu+1)\left(r^2 - \nu\sigma^2\right)}{D^2}.}
+The family is a location family, so this equals the pure-location entry of
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}}, with no sign change; two derivatives
+in \eqn{\mu} carry two factors of \eqn{-1}. It is negative near the mode and
+\strong{positive} beyond \eqn{|r| = \sigma\sqrt{\nu}}, so the log-density is not
+concave in the response, unlike a Gaussian's.
+}
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+
+# The closed form, written out.
+r <- y - 0.4; D <- 5 * 1.2^2 + r^2
+all.equal(distrib_hess_y(d, y, th), 6 * (r^2 - 5 * 1.2^2) / D^2)
+
+# A location family, so this is the pure-location entry of the Hessian.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# A central difference of the first derivative reproduces it.
+eps <- 1e-5
+all.equal((distrib_grad_y(d, y + eps, th) -
+           distrib_grad_y(d, y - eps, th)) / (2 * eps),
+          distrib_hess_y(d, y, th), tolerance = 1e-6)
+
+# Positive beyond |r| = sigma * sqrt(nu) = 2.68, so the log-density is
+# convex in the response out there.
+distrib_hess_y(d, 0.4 + c(1, 2, 4, 8), th)
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_grad_y.StudentT1Distrib]{distrib_grad_y.StudentT1Distrib()}} for the first derivative in the
+response, \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the second derivatives
+in the parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

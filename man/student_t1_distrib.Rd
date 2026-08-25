@@ -2,7 +2,7 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{student_t1_distrib}
 \alias{student_t1_distrib}
-\title{Student's t Distribution Object (Location-Scale Parameterization)}
+\title{Student t Distribution, Location, Scale and Degrees of Freedom}
 \usage{
 student_t1_distrib(
   link_mu = identity_link(),
@@ -11,79 +11,167 @@ student_t1_distrib(
 )
 }
 \arguments{
-\item{link_mu}{A link function object for the location parameter \eqn{\mu}.
-Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the location
+\eqn{\mu}. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}, the location
+ranging over the whole line already.}
 
-\item{link_sigma}{A link function object for the scale parameter \eqn{\sigma}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_sigma}{A \code{link} object from \code{linkfunctions7} for the scale
+\eqn{\sigma}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.}
 
-\item{link_nu}{A link function object for the degrees of freedom parameter \eqn{\nu}.
-Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_nu}{A \code{link} object from \code{linkfunctions7} for the degrees of
+freedom \eqn{\nu}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, for the same
+reason.}
 }
 \value{
-An S7 object of class \code{StudentT1Distrib} (inheriting from \code{continuous_distrib}) representing the Student's t distribution.
+An S7 object of class \code{StudentT1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"student t1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-Inf, Inf)}, \code{params}
+\code{c("mu", "sigma", "nu")}, \code{n_params} \code{3}, \code{params_bounds} the domains
+\eqn{(-\infty, \infty)}, \eqn{(0, \infty)} and \eqn{(0, \infty)}, and
+\code{link_params} the three links given here.
 }
 \description{
-Creates a distribution object for the Student's t distribution parameterized by location (\eqn{\mu}), scale (\eqn{\sigma}), and degrees of freedom (\eqn{\nu}).
+Builds the distribution object for the location-scale Student t family,
+parametrized by a location \eqn{\mu}, a scale \eqn{\sigma > 0} and degrees
+of freedom \eqn{\nu > 0}. The returned object carries closed-form
+derivatives of the log-density to fourth order in the parameters, closed
+first and second derivatives in the response, and a closed expected Hessian;
+the expected third and fourth orders are the only quantities that go through
+a numerical route.
+
+The family is the standard heavy-tailed alternative to a Gaussian. Its
+location score redescends, so a gross outlier contributes almost nothing to
+the estimating equation, and \eqn{\nu} is estimated from the data rather
+than set: a large fitted \eqn{\nu} reports that the sample looks Gaussian.
+
+The three arguments choose the links that carry each parameter to the
+unconstrained scale an optimizer works on.
 }
-\details{
-The (location-scale) Student's t distribution has location \eqn{\mu}, scale
-\eqn{\sigma} and degrees of freedom \eqn{\nu}. Write \eqn{d = \nu\sigma^2 + (y-\mu)^2}.
+\section{The parametrization}{
+The density on \eqn{y \in (-\infty, \infty)} is
+\deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}},}
+the distribution function \eqn{F(q) = T_\nu\{(q-\mu)/\sigma\}} and the
+quantile function \eqn{Q(p) = \mu + \sigma T_\nu^{-1}(p)}, with \eqn{T_\nu}
+the standard Student t distribution function.
 
-\strong{Probability density function:}
-\deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
+\eqn{\sigma} is the \strong{scale} and not the standard deviation, which is
+\eqn{\sigma\sqrt{\nu/(\nu-2)}} and exists only above \eqn{\nu = 2}. Keeping
+the two apart lets the family be fitted where the second moment does not
+exist; \code{\link[=student_t2_distrib]{student_t2_distrib()}} is the parametrization by the standard
+deviation, for a reader who wants one.
 
-\strong{Cumulative distribution function} (\eqn{T_\nu} the standard t CDF):
-\deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
+Two shapes are named families: \eqn{\nu = 1} is the Cauchy, and
+\eqn{\nu \to \infty} the Gaussian with standard deviation \eqn{\sigma}. The
+approach to the limit is \eqn{O(1/\nu)}, so at \eqn{\nu = 10^5} the density
+already agrees with a Gaussian's to seven figures.
+}
 
-\strong{Quantile function:}
-\deqn{Q(p; \mu, \sigma, \nu) = \mu + \sigma\,T_\nu^{-1}(p)}
-
-\strong{Score} (\eqn{\psi} the digamma function):
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)(y-\mu)}{d}, \qquad
-      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left[(y-\mu)^2 - \sigma^2\right]}{\sigma d}}
-\deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[ -\dfrac{1}{\nu} - \psi\left(\dfrac{\nu}{2}\right) + \psi\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)(y-\mu)^2}{\nu d} - \log\left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right) \right]}
-
-\strong{Expected Hessian} (\eqn{\psi_1} the trigamma function; \eqn{\mu} is orthogonal to \eqn{\sigma, \nu}):
+\section{Derivatives}{
+Write \eqn{r = y - \mu} and \eqn{D = \nu\sigma^2 + r^2}. The score is
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)r}{D}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left(r^2 - \sigma^2\right)}{\sigma D},}
+\deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[
+  -\dfrac{1}{\nu} - \psi\!\left(\dfrac{\nu}{2}\right)
+  + \psi\!\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)r^2}{\nu D}
+  - \log\!\left(1 + \dfrac{r^2}{\nu\sigma^2}\right)\right],}
+with \eqn{\psi} the digamma function. The observed Hessian is in
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}}, and its expectation is
 \deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
-      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma\,\partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
-The observed Hessian is available via \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}}.
-
-\strong{Moments} (defined for \eqn{\nu} large enough): mean \eqn{\mu} (\eqn{\nu>1}),
-variance \eqn{\sigma^2\nu/(\nu-2)} (\eqn{\nu>2}), skewness 0 (\eqn{\nu>3}),
-excess kurtosis \eqn{6/(\nu-4)} (\eqn{\nu>4}).
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\infty, +\infty)}
-\item \eqn{\sigma \in (0, +\infty)}
-\item \eqn{\nu \in (0, +\infty)}
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)},}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)},}
+with the two entries containing \eqn{\mu} exactly zero. The location is
+therefore orthogonal to the other two, whose estimates are asymptotically
+correlated with each other.
 }
 
-Analytical third- and fourth-order observed derivatives (\code{\link[=distrib_deriv3]{distrib_deriv3()}},
-\code{\link[=distrib_deriv4]{distrib_deriv4()}}; the expected ones use the numerical fallback) and
-response derivatives (\code{\link[=distrib_grad_y]{distrib_grad_y()}}, \code{\link[=distrib_hess_y]{distrib_hess_y()}})
-are also available.
+\section{Redescent, and where it costs}{
+The location score \eqn{(\nu+1)r/D} rises to
+\eqn{(\nu+1)/(2\sigma\sqrt{\nu})} at \eqn{|r| = \sigma\sqrt{\nu}} and falls
+back towards zero, so an observation far from the location is downweighted
+automatically. The price is that the curvature in \eqn{\mu} turns
+\strong{positive} past the same point, so the observed information is indefinite
+at an outlying observation. Fisher scoring is unaffected, the expected
+information being negative definite everywhere, which is why it is the
+default in \code{\link[=fit_distrib]{fit_distrib()}}.
 }
+
+\section{Moments}{
+Each exists only above its own threshold, and the family reports \code{NaN} or
+\code{Inf} where it does not: the mean is \eqn{\mu} for \eqn{\nu > 1}, the
+variance \eqn{\sigma^2\nu/(\nu-2)} for \eqn{\nu > 2}, the skewness 0 for
+\eqn{\nu > 3} and the excess kurtosis \eqn{6/(\nu-4)} for \eqn{\nu > 4}. At
+\eqn{\nu = 1.5}, for instance, the mean is \eqn{\mu} and the variance is
+\code{Inf}.
+}
+
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale by Fisher
+scoring. No estimate is closed form, the three estimating equations being
+coupled through \eqn{D}. On Gaussian data \eqn{\hat\nu} runs towards its
+upper boundary, which is the correct answer and is reported as a value near
+the clamp of its log link rather than as \code{Inf}.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale and \eqn{\nu > 0} the degrees of freedom.
+\eqn{\psi} and \eqn{\psi_1} are the digamma and trigamma functions,
+\code{digamma()} and \code{trigamma()} in R. \eqn{\eta} is a parameter on the
+unconstrained scale of its link, with \eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- student_t1_distrib()
-d@params
+d
 
-theta <- list(mu = 0, sigma = 1, nu = 5)
-distrib_pdf(d, c(-1, 0, 1), theta)
-distrib_gradient(d, c(-1, 0, 1), theta)
+# The density is stats::dt at the standardized value, over sigma.
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+all.equal(distrib_pdf(d, y, th), dt((y - 0.4) / 1.2, df = 5) / 1.2)
 
+# The scale is not the standard deviation; the moments carry thresholds.
+c(scale = th$sigma, mean = mean(d, th), var = variance(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+
+# Below its own threshold each moment reports that it does not exist.
+t(vapply(c(0.8, 1.5, 2.5, 3.5),
+         function(v) {
+           p <- list(mu = 0.4, sigma = 1.2, nu = v)
+           c(nu = v, mean = mean(d, p), var = variance(d, p),
+             kurt = kurtosis(d, p))
+         }, numeric(4)))
+
+# One degree of freedom is the Cauchy; a large one is the Gaussian.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.2, nu = 1)),
+          dcauchy(y, 0.4, 1.2))
+max(abs(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.2, nu = 1e5)) -
+        dnorm(y, 0.4, 1.2)))
+
+# Fitting recovers all three parameters.
+set.seed(4)
+z <- distrib_rng(d, 3000, list(mu = 1, sigma = 2, nu = 4))
+coef(fit_distrib(d, z))
+
+}
+\references{
+Lange, K. L., Little, R. J. A. and Taylor, J. M. G. (1989).
+Robust statistical modeling using the t distribution.
+\emph{Journal of the American Statistical Association}, \strong{84}(408), 881-896.
+
+Johnson, N. L., Kotz, S. and Balakrishnan, N. (1995).
+\emph{Continuous Univariate Distributions}, Volume 2, 2nd edition, Chapter 28.
+Wiley, New York.
 }
 \seealso{
-\itemize{
-\item \code{\link[=distrib_pdf.StudentT1Distrib]{distrib_pdf.StudentT1Distrib()}} for the probability density function.
-\item \code{\link[=distrib_cdf.StudentT1Distrib]{distrib_cdf.StudentT1Distrib()}} for the cumulative distribution function.
-\item \code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile.StudentT1Distrib()}} for the quantile function.
-\item \code{\link[=distrib_rng.StudentT1Distrib]{distrib_rng.StudentT1Distrib()}} for random number generation.
-\item \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the analytical gradient.
-\item \code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the analytical observed Hessian.
-\item \code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian.StudentT1Distrib()}} for the analytical expected Hessian.
-}
+\code{\link[=student_t2_distrib]{student_t2_distrib()}} for the same law in the standard deviation;
+\code{\link[=cauchy_distrib]{cauchy_distrib()}} for \eqn{\nu = 1} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the
+limit; \code{\link[=skewt_distrib]{skewt_distrib()}} to add a shape parameter;
+\code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for other robust families;
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the multivariate version;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{StudentT1Distrib} for the class.
 }

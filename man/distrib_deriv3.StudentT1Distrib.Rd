@@ -2,27 +2,92 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_deriv3.StudentT1Distrib}
 \alias{distrib_deriv3.StudentT1Distrib}
-\title{Student's t Analytical Third-Order Derivatives}
+\title{Student t Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length is read.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{expected}{Logical; if \code{TRUE}, returns the (numerically integrated) expected third derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}, the strategy \code{\link[=expected_derivative]{expected_derivative()}} uses. Read only when
+\code{expected = TRUE}.}
+
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Read only on the observed branch. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative component vectors.
+A named list of ten numeric vectors, \code{mu_mu_mu}, \code{mu_mu_sigma},
+\code{mu_mu_nu}, \code{mu_sigma_sigma}, \code{mu_sigma_nu}, \code{mu_nu_nu},
+\code{sigma_sigma_sigma}, \code{sigma_sigma_nu}, \code{sigma_nu_nu} and \code{nu_nu_nu}, each
+of length \code{max(length(y), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Closed-form observed third-order derivatives of the Student's t log-density. The
-expected third derivatives have no closed form, so \code{expected = TRUE} falls
-back to the numerical \code{\link[=expectation]{expectation()}} of the observed derivatives.
+Computes the ten distinct third derivatives of the location-scale Student t
+log-density in \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}. The observed values
+are closed form and run in a compiled kernel decomposed over the elements of
+the output, so they do not depend on the thread count.
+
+\strong{The expected values have no closed form.} With \code{expected = TRUE} the
+method calls \code{\link[=expected_derivative]{expected_derivative()}}, which integrates the observed
+derivatives against the density by the strategy \code{approx} names. That is the
+one place on this page where \code{approx} and \code{nsim} are read; on the observed
+branch both are ignored.
+}
+\section{Large degrees of freedom}{
+
+Every component is divided by \eqn{D^3} with \eqn{D = \nu\sigma^2 + r^2},
+and \eqn{D^3} overflows at \eqn{5.6\times10^{102}} where the log link
+reaches \eqn{1.8\times10^{308}}. The shipped kernel is written in
+\eqn{z = r/\sigma}, \eqn{u = z^2/\nu} and \eqn{t = 1/(1+u)} instead, so all
+ten stay finite to \code{.Machine$double.xmax}. \strong{On the link scale they do
+not}: the chain rule forms \eqn{(h')^k} against a component of order
+\eqn{\nu^{-k}}, and one of the ten ceases to be finite at
+\eqn{\nu = 10^{150}}. That regime is where the family is a Gaussian in all
+but name.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-location
+# component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 5))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
+
+# The expected branch is a quadrature, and averaging the observed one over
+# draws reaches it; the components odd in the residual go to zero.
+set.seed(2)
+z <- distrib_rng(d, 2e5, th)
+rbind(expected = vapply(distrib_deriv3(d, y, th, expected = TRUE),
+                        function(v) v[1], numeric(1)),
+      averaged = vapply(distrib_deriv3(d, z, th), mean, numeric(1)))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.StudentT1Distrib]{distrib_deriv4.StudentT1Distrib()}} for the order above,
+\code{\link[=expected_derivative]{expected_derivative()}} for the numerical expectation, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

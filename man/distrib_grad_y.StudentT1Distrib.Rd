@@ -2,23 +2,56 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_grad_y.StudentT1Distrib}
 \alias{distrib_grad_y.StudentT1Distrib}
-\title{Student's t Response Derivatives}
+\title{Student t First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation.
 }
 \description{
-Closed-form derivatives of the Student's t log-density with respect to the
-response. Let \eqn{r = y - \mu} and \eqn{d = \nu\sigma^2 + r^2}:
-\eqn{\partial \ell / \partial y = -(\nu+1)r/d} and
-\eqn{\partial^2 \ell / \partial y^2 = (\nu+1)(r^2 - \nu\sigma^2)/d^2}.
+Computes \eqn{\partial \ell / \partial y}, the derivative of the Student t
+log-density with respect to the response, in closed form. With
+\eqn{r = y - \mu} and \eqn{D = \nu\sigma^2 + r^2},
+\deqn{\dfrac{\partial \ell}{\partial y} = -\dfrac{(\nu+1)r}{D}.}
+The family is a location family in \eqn{\mu}, so this is exactly the
+negative of the location score
+\code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}}\verb{$mu}, and it redescends with it: it is
+largest in size at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero
+beyond that. This quantity is what a quantile residual's delta-method
+standard error and a change of variable in the response both need.
+}
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+
+# The closed form, written out.
+r <- y - 0.4
+all.equal(distrib_grad_y(d, y, th), -6 * r / (5 * 1.2^2 + r^2))
+
+# A location family, so this is minus the location score.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# It is the derivative of the log-density, so a central difference of the
+# log-density in y reproduces it.
+eps <- 1e-6
+all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
+           distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
+          distrib_grad_y(d, y, th), tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_hess_y.StudentT1Distrib]{distrib_hess_y.StudentT1Distrib()}} for the second derivative in
+the response, \code{\link[=distrib_cross_y.StudentT1Distrib]{distrib_cross_y.StudentT1Distrib()}} for the mixed
+derivative in the response and the parameters,
+\code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the derivatives in the
+parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

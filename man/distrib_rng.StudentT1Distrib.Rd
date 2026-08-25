@@ -2,20 +2,43 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_rng.StudentT1Distrib}
 \alias{distrib_rng.StudentT1Distrib}
-\title{Student's t Random Number Generator}
+\title{Student t Random Number Generator}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{n}{Number of observations to generate.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of length \code{n}. A component of length 1 is
+recycled, so a vector of length \code{n} draws one variate per parameter
+setting. \code{sigma} and \code{nu} must be strictly positive.}
 }
 \value{
-A numeric vector of random draws.
+A numeric vector of \code{n} draws.
 }
 \description{
-Generates random numbers from the Student's t distribution.
+Draws \code{n} independent location-scale Student t variates as
+\eqn{\mu + \sigma T} with \eqn{T} from \code{\link[stats:TDist]{stats::rt()}}, so the draws come from
+R's own generator and depend on \code{.Random.seed} in the usual way. The
+generalized ratio-of-uniforms fallback the base class supplies is bypassed.
+}
+\examples{
+d <- student_t1_distrib()
+
+# The draws are stats::rt shifted and scaled, so the same seed reproduces
+# them.
+set.seed(12)
+a <- distrib_rng(d, 3, list(mu = 0.4, sigma = 1.2, nu = 5))
+set.seed(12)
+identical(a, 0.4 + 1.2 * rt(3, df = 5))
+
+# The sample variance recovers sigma^2 * nu / (nu - 2), not sigma^2.
+set.seed(13)
+z <- distrib_rng(d, 5e4, list(mu = 0.4, sigma = 1.2, nu = 5))
+c(sample = var(z), theoretical = 1.2^2 * 5 / 3, sigma_sq = 1.2^2)
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile.StudentT1Distrib()}} for the inverse-transform
+route, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

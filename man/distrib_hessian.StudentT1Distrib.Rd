@@ -2,31 +2,85 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_hessian.StudentT1Distrib}
 \alias{distrib_hessian.StudentT1Distrib}
-\title{Student's t Analytical Observed Hessian}
+\title{Student t Observed Hessian}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of second derivatives.
+A named list of six numeric vectors, \code{mu_mu}, \code{sigma_sigma},
+\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}. The six name the
+distinct entries of a symmetric \eqn{3 \times 3} matrix per observation.
 }
 \description{
-Computes the analytical observed Hessian (second derivatives) of the Student's t log-density
-with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
+Computes the six distinct second derivatives of the location-scale Student t
+log-density with respect to \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, one value
+per observation, in closed form. With \eqn{r = y - \mu} and
+\eqn{D = \nu\sigma^2 + r^2},
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{(\nu+1)\left(r^2 - \nu\sigma^2\right)}{D^2}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\nu\left\{\nu\sigma^4 - (3\nu+1)\sigma^2 r^2 - r^4\right\}}{\sigma^2 D^2},}
+\deqn{\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4}\left[-\psi_1\!\left(\dfrac{\nu}{2}\right) + \psi_1\!\left(\dfrac{\nu+1}{2}\right) + \dfrac{2\left(\nu\sigma^4 + r^4\right)}{\nu D^2}\right],}
+\deqn{\dfrac{\partial^2 \ell}{\partial \mu \, \partial \sigma} = -\dfrac{2\nu(\nu+1)\sigma r}{D^2}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \mu \, \partial \nu} = \dfrac{r\left(r^2 - \sigma^2\right)}{D^2}, \qquad
+      \dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu} = \dfrac{r^2\left(r^2 - \sigma^2\right)}{\sigma D^2}.}
 
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu^2} = \dfrac{(\nu+1)\left[(y-\mu)^2 - \nu\sigma^2\right]}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma^2} = \dfrac{\nu\left[\nu\sigma^4 - (3\nu+1)\sigma^2(y-\mu)^2 - (y-\mu)^4\right]}{\sigma^2\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \nu^2} = \dfrac{1}{4}\left[ -\psi_1\left(\dfrac{\nu}{2}\right) + \psi_1\left(\dfrac{\nu+1}{2}\right) + \dfrac{2\left(\nu\sigma^4 + (y-\mu)^4\right)}{\nu\left[\nu\sigma^2 + (y-\mu)^2\right]^2} \right]}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \sigma} = -\dfrac{2\nu(\nu+1)\sigma(y-\mu)}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \mu \partial \nu} = \dfrac{(y-\mu)\left[(y-\mu)^2 - \sigma^2\right]}{\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
-\deqn{\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu} = \dfrac{(y-\mu)^2\left[(y-\mu)^2 - \sigma^2\right]}{\sigma\left[\nu\sigma^2 + (y-\mu)^2\right]^2}}
+The curvature in \eqn{\mu} \strong{turns positive} wherever \eqn{|r| >
+\sigma\sqrt{\nu}}, the same point at which the score peaks, so the observed
+information is indefinite in that direction at an outlying observation while
+its expectation is negative definite everywhere.
+
+The arithmetic runs in a compiled kernel decomposed over the elements of the
+output, so the result does not depend on the thread count.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale and \eqn{\nu > 0} the degrees of freedom.
+\eqn{\psi_1} is the trigamma function, \code{trigamma()} in R.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# The location and mixed location-scale components, written out.
+r <- y - 0.4; D <- 5 * 1.2^2 + r^2
+all.equal(h$mu_mu, 6 * (r^2 - 5 * 1.2^2) / D^2)
+all.equal(h$mu_sigma, -2 * 5 * 6 * 1.2 * r / D^2)
+
+# It is the second derivative of the log-density, so a central difference
+# of the score reproduces it.
+eps <- 1e-5
+up <- distrib_gradient(d, y, list(mu = 0.4 + eps, sigma = 1.2, nu = 5))$mu
+dn <- distrib_gradient(d, y, list(mu = 0.4 - eps, sigma = 1.2, nu = 5))$mu
+all.equal((up - dn) / (2 * eps), h$mu_mu, tolerance = 1e-6)
+
+# The curvature in mu is positive beyond |r| = sigma * sqrt(nu) = 2.68.
+rr <- c(0.5, 1, 2, 4, 8, 16)
+rbind(residual = rr,
+      mu_mu = 6 * (rr^2 - 5 * 1.2^2) / (5 * 1.2^2 + rr^2)^2)
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian.StudentT1Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.StudentT1Distrib]{distrib_deriv3.StudentT1Distrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

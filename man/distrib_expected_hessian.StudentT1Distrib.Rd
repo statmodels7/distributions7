@@ -2,31 +2,97 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_expected_hessian.StudentT1Distrib}
 \alias{distrib_expected_hessian.StudentT1Distrib}
-\title{Student's t Analytical Expected Hessian}
+\title{Student t Expected Hessian}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is read, the
+expectation not depending on the data; the values are ignored.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
+
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of expected second derivatives.
+A named list of six numeric vectors, \code{mu_mu}, \code{sigma_sigma},
+\code{nu_nu}, \code{mu_sigma}, \code{mu_nu} and \code{sigma_nu}, each of length \code{length(y)}
+and each constant along it. \code{mu_sigma} and \code{mu_nu} are exactly zero.
 }
 \description{
-Computes the analytical expected Hessian of the Student's t log-density
-with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)},}
+\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\!\left(\dfrac{\nu+1}{2}\right) - \psi_1\!\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}, \qquad
+      \mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \, \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}.}
 
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \mu^2}\right] = -\dfrac{\nu+1}{\sigma^2(\nu+3)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma^2}\right] = -\dfrac{2\nu}{\sigma^2(\nu+3)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \nu^2}\right] = \dfrac{1}{4}\left[\psi_1\left(\dfrac{\nu+1}{2}\right) - \psi_1\left(\dfrac{\nu}{2}\right)\right] + \dfrac{\nu+5}{2\nu(\nu+1)(\nu+3)}}
-\deqn{\mathbb{E}\left[\dfrac{\partial^2 \ell}{\partial \sigma \partial \nu}\right] = \dfrac{2}{\sigma(\nu+1)(\nu+3)}}
+The location is \strong{orthogonal} to both other parameters: the two mixed
+entries containing \eqn{\mu} are exactly zero, the law being symmetric about
+\eqn{\mu} while the other two components are even in \eqn{r}. So
+\eqn{\hat\mu} is asymptotically independent of \eqn{\hat\sigma} and
+\eqn{\hat\nu}, which the scale and the degrees of freedom are not of each
+other.
 
-The parameter \eqn{\mu} is orthogonal to \eqn{\sigma} and \eqn{\nu} (mixed expected derivatives are 0).
+Because a closed form exists, \code{approx} and \code{nsim} are ignored: every
+strategy returns the same six numbers. The arithmetic runs in a compiled
+kernel, so the result does not depend on the thread count.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale, \eqn{\nu > 0} the degrees of freedom and
+\eqn{\psi_1} the trigamma function.
+}
+
+\section{Large degrees of freedom}{
+
+The \eqn{\nu\nu} entry is a difference of two trigammas half a unit apart
+plus a term that cancels it to leading order, so writing it directly loses
+every digit at a large \eqn{\nu}: before the asymptotic branches were added
+it changed sign at \eqn{\nu \approx 3\times10^5} and read \eqn{-n/2} on the
+link scale. The shipped kernel switches to a series at measured crossovers
+and stays correctly signed to \code{.Machine$double.xmax}.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+eh <- distrib_expected_hessian(d, y, th)
+vapply(eh, function(z) z[1], numeric(1))
+
+# The four non-zero closed forms, written out.
+c(mu_mu = -6 / (1.2^2 * 8),
+  sigma_sigma = -10 / (1.2^2 * 8),
+  nu_nu = (trigamma(3) - trigamma(2.5)) / 4 + 10 / (2 * 5 * 6 * 8),
+  sigma_nu = 2 / (1.2 * 6 * 8))
+
+# Averaging the observed Hessian over draws reaches the same six numbers,
+# the two containing mu going to zero.
+set.seed(1)
+z <- distrib_rng(d, 4e5, th)
+vapply(distrib_hessian(d, z, th), mean, numeric(1))
+
+# The strategy argument is inert, the expectation being exact.
+identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the quantity this is the
+expectation of, \code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the score, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

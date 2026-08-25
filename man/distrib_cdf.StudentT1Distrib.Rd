@@ -2,27 +2,57 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_cdf.StudentT1Distrib}
 \alias{distrib_cdf.StudentT1Distrib}
-\title{Student's t Cumulative Distribution Function}
+\title{Student t Cumulative Distribution Function}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{q}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are \eqn{P(Y \le q)}, otherwise \eqn{P(Y > q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(Y \le q)}; when \code{FALSE} they are \eqn{P(Y > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities \eqn{p} are given as \eqn{\log(p)}.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(sigma), length(nu))}. With
+\code{log.p = TRUE} the values are logarithms and are non-positive.
 }
 \description{
-Computes the cumulative distribution function for the (location-scale) Student's t
-distribution:
+Computes the location-scale Student t distribution function
 \deqn{F(q; \mu, \sigma, \nu) = T_\nu\!\left(\dfrac{q-\mu}{\sigma}\right)}
-where \eqn{T_\nu} is the CDF of the standard Student's t with \eqn{\nu} degrees of freedom.
+with \eqn{T_\nu} the standard Student t distribution function on \eqn{\nu}
+degrees of freedom, by calling \code{\link[stats:TDist]{stats::pt()}} at the standardized value.
+Both tails are available exactly: \code{lower.tail = FALSE} evaluates
+\eqn{1 - F} without forming the difference, and \code{log.p = TRUE} returns a
+logarithm that stays finite where the probability itself underflows.
+}
+\examples{
+d <- student_t1_distrib()
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+
+# The method is stats::pt at the standardized value.
+all.equal(distrib_cdf(d, c(-2.5, 0.3, 1.8), th),
+          pt((c(-2.5, 0.3, 1.8) - 0.4) / 1.2, df = 5))
+
+# The law is symmetric about mu, so the two tails at equal distance match.
+c(distrib_cdf(d, 0.4 - 2, th),
+  distrib_cdf(d, 0.4 + 2, th, lower.tail = FALSE))
+
+# The upper tail decays polynomially, so at forty scales out it is still
+# representable where a Gaussian's has underflowed.
+c(t = distrib_cdf(d, 48, list(mu = 0, sigma = 1.2, nu = 5),
+                  lower.tail = FALSE),
+  gaussian = pnorm(48, 0, 1.2, lower.tail = FALSE))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_quantile.StudentT1Distrib]{distrib_quantile.StudentT1Distrib()}} for the inverse,
+\code{\link[=distrib_pdf.StudentT1Distrib]{distrib_pdf.StudentT1Distrib()}} for the density,
+\code{\link[=distrib_grad_cdf.StudentT1Distrib]{distrib_grad_cdf.StudentT1Distrib()}} for the derivatives of this function
+in the parameters, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

@@ -2,23 +2,60 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_pdf.StudentT1Distrib}
 \alias{distrib_pdf.StudentT1Distrib}
-\title{Student's t Probability Density Function}
+\title{Student t Probability Density Function}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Every real value is in the
+support, so no value is rejected.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive; a zero or
+negative value gives \code{NaN} with a warning from \code{\link[stats:TDist]{stats::dt()}}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(sigma), length(nu))}, one value per
+observation.
 }
 \description{
-Computes the probability density function for the Student's t distribution:
+Computes the location-scale Student t density
 \deqn{f(y; \mu, \sigma, \nu) = \dfrac{\Gamma\left(\dfrac{\nu+1}{2}\right)}{\sigma\sqrt{\nu\pi}\,\Gamma\left(\dfrac{\nu}{2}\right)} \left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right)^{-\dfrac{\nu+1}{2}}}
+by calling \code{\link[stats:TDist]{stats::dt()}} at the standardized value \eqn{(y-\mu)/\sigma} and
+dividing by \eqn{\sigma}, the Jacobian of the standardization. With
+\code{log = TRUE} the division becomes a subtraction of \eqn{\log\sigma}, so the
+logarithm stays finite far into the tails.
+
+The tails are polynomial, of order \eqn{|y|^{-(\nu+1)}}, so the density
+decays far more slowly than a Gaussian's and no value of \eqn{y} underflows
+at an ordinary \eqn{\nu}.
+}
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+
+# The method is stats::dt at the standardized value, over sigma.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.2, nu = 5)),
+          dt((y - 0.4) / 1.2, df = 5) / 1.2)
+
+# One degree of freedom is the Cauchy.
+all.equal(distrib_pdf(d, y, list(mu = 0.4, sigma = 1.2, nu = 1)),
+          dcauchy(y, location = 0.4, scale = 1.2))
+
+# The tails are polynomial, so a value forty scales out still carries mass
+# where a Gaussian's density has underflowed to zero.
+c(t = distrib_pdf(d, 48, list(mu = 0, sigma = 1.2, nu = 5)),
+  gaussian = dnorm(48, 0, 1.2))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_cdf.StudentT1Distrib]{distrib_cdf.StudentT1Distrib()}} for the distribution function,
+\code{\link[=distrib_gradient.StudentT1Distrib]{distrib_gradient.StudentT1Distrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic and
+\code{\link[=student_t1_distrib]{student_t1_distrib()}} for the family.
 }

@@ -2,28 +2,97 @@
 % Please edit documentation in R/student_t1_distrib.R
 \name{distrib_gradient.StudentT1Distrib}
 \alias{distrib_gradient.StudentT1Distrib}
-\title{Student's t Analytical Gradient}
+\title{Student t Score}
 \arguments{
-\item{distrib}{A \code{StudentT1Distrib} object.}
+\item{distrib}{A \code{StudentT1Distrib} object, from \code{\link[=student_t1_distrib]{student_t1_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing the parameters \code{mu}, \code{sigma}, and \code{nu}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
+numeric vector of length 1 or of the length of \code{y}. A component of length
+1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
 
-\item{threads}{How many threads the kernel may use; below the measured
-internal threshold it stays sequential whatever the count says.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the kernel may
+use. Below the measured internal threshold the kernel stays sequential
+whatever the count says. Defaults to \code{1L}.}
 }
 \value{
-A list containing the vectors of first derivatives.
+A named list of three numeric vectors, \code{mu}, \code{sigma} and \code{nu}, each
+of length \code{max(length(y), length(mu), length(sigma), length(nu))}.
 }
 \description{
-Computes the analytical gradient (first derivatives) of the Student's t log-density
-with respect to the parameters \eqn{\mu}, \eqn{\sigma}, and \eqn{\nu}.
+Computes the first derivatives of the location-scale Student t log-density
+with respect to \eqn{\mu}, \eqn{\sigma} and \eqn{\nu}, one value per
+observation, in closed form. Writing \eqn{r = y - \mu} and
+\eqn{D = \nu\sigma^2 + r^2},
+\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)r}{D}, \qquad
+      \dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left(r^2 - \sigma^2\right)}{\sigma D},}
+\deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[
+  -\dfrac{1}{\nu} - \psi\!\left(\dfrac{\nu}{2}\right)
+  + \psi\!\left(\dfrac{\nu+1}{2}\right)
+  + \dfrac{(\nu+1)r^2}{\nu D}
+  - \log\!\left(1 + \dfrac{r^2}{\nu\sigma^2}\right)\right].}
 
-\deqn{\dfrac{\partial \ell}{\partial \mu} = \dfrac{(\nu+1)(y-\mu)}{\nu\sigma^2 + (y-\mu)^2}}
-\deqn{\dfrac{\partial \ell}{\partial \sigma} = \dfrac{\nu\left[(y-\mu)^2 - \sigma^2\right]}{\sigma\left[\nu\sigma^2 + (y-\mu)^2\right]}}
-\deqn{\dfrac{\partial \ell}{\partial \nu} = \dfrac{1}{2}\left[ -\dfrac{1}{\nu} - \psi\left(\dfrac{\nu}{2}\right) + \psi\left(\dfrac{\nu+1}{2}\right) + \dfrac{(\nu+1)(y-\mu)^2}{\nu\left[\nu\sigma^2 + (y-\mu)^2\right]} - \log\left(1 + \dfrac{(y-\mu)^2}{\nu\sigma^2}\right) \right]}
+The location component \strong{redescends}: it rises to \eqn{(\nu+1)/(2\sigma\sqrt{\nu})}
+at \eqn{|r| = \sigma\sqrt{\nu}} and falls back towards zero beyond it, so a
+gross outlier contributes almost nothing to the estimating equation. A
+Gaussian's location score grows without bound instead, which is the whole
+reason this family is used for robust location estimation.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. This method always returns the parameter
+scale; the transformation happens in the generic. The arithmetic runs in a
+compiled kernel decomposed over the elements of the output, so the result
+does not depend on the thread count.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the location,
+\eqn{\sigma > 0} the scale and \eqn{\nu > 0} the degrees of freedom.
+\eqn{\psi} is the digamma function, \code{digamma()} in R.
+}
+
+\section{Large degrees of freedom}{
+
+Every component is written as a ratio in \eqn{z = r/\sigma} and
+\eqn{u = z^2/\nu} instead of as a quotient by powers of \eqn{D}, because
+\eqn{\nu\sigma^2} overflows well before the log link's own clamp is reached.
+All three components stay finite at every \eqn{\nu} the chart can produce,
+up to \code{.Machine$double.xmax}.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-2.5, 0.3, 1.8)
+th <- list(mu = 0.4, sigma = 1.2, nu = 5)
+g <- distrib_gradient(d, y, th)
+
+# The location and scale components, written out.
+r <- y - 0.4; D <- 5 * 1.2^2 + r^2
+all.equal(g$mu, 6 * r / D)
+all.equal(g$sigma, 5 * (r^2 - 1.2^2) / (1.2 * D))
+
+# The location score redescends: it peaks at |r| = sigma * sqrt(nu) = 2.68
+# and falls back, where a Gaussian's grows without bound.
+rr <- c(0.5, 1, 2, 4, 8, 16)
+rbind(residual = rr,
+      t = 6 * rr / (5 * 1.2^2 + rr^2),
+      gaussian = rr / 1.2^2)
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(4)
+z <- distrib_rng(d, 3000, list(mu = 1, sigma = 2, nu = 4))
+mle <- as.list(coef(fit_distrib(d, z)))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 }
 \seealso{
-\code{\link[=student_t1_distrib]{student_t1_distrib()}}
+\code{\link[=distrib_hessian.StudentT1Distrib]{distrib_hessian.StudentT1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.StudentT1Distrib]{distrib_expected_hessian.StudentT1Distrib()}} for their expectation,
+\code{\link[=distrib_grad_y.StudentT1Distrib]{distrib_grad_y.StudentT1Distrib()}} for the derivative in the response,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }
