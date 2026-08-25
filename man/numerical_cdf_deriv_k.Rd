@@ -13,34 +13,56 @@ numerical_cdf_deriv_k(
 )
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
 \item{order}{The derivative order, 3 or 4.}
 
-\item{h_rel}{Relative finite-difference step.}
+\item{h_rel}{The relative step. A single number, defaulting to
+\eqn{\varepsilon^{1/(\mathrm{order}+2)}}. A step much smaller than the
+default is worse, the rounding growing as \eqn{h^{-\mathrm{order}}}.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-One product stencil of the requested order applied to
-\code{\link[=distrib_cdf]{distrib_cdf()}}, which is analytic for every family in the
-catalog.
+One product stencil of the requested order applied to \code{\link[=distrib_cdf]{distrib_cdf()}}, which
+is analytic for every family in the catalog. This is the continuous
+family's route above second order, and it is a single stencil: a repeated
+parameter contributes the matching one-dimensional higher-order factor and
+distinct parameters each contribute a central two-point factor, so no
+difference of a difference is ever taken.
 }
-\details{
-A repeated parameter contributes the matching higher one-dimensional
-factor and distinct parameters each contribute a central two-point factor,
-so the whole thing is one stencil rather than a difference of a
-difference. The step is \eqn{\varepsilon^{1/(k+2)}} scaled by the
-parameter, which balances the \eqn{h^{2}} truncation against the
-\eqn{\varepsilon/h^{k}} rounding, and is chosen per observation because
-\code{theta} may vary by observation.
+\section{The step}{
+The relative step is \eqn{\varepsilon^{1/(k+2)}}, which is
+\eqn{7.4\times10^{-4}} at order 3 and \eqn{2.5\times10^{-3}} at order 4, and
+it is scaled per component by the parameter. It balances the \eqn{h^2}
+truncation against the \eqn{\varepsilon/h^{k}} rounding, and it is chosen
+per observation because \code{theta} may vary by observation.
 }
+
+\section{What it delivers}{
+Measured on a Gaussian against the closed forms that family registers, the
+relative error is \eqn{1.5\times10^{-5}} at order 3 and
+\eqn{1.3\times10^{-4}} at order 4. That is a long way short of the closed
+route and is the reason a family registers one where it can: the loss is
+about five digits at order 3 and about four at order 4.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{\theta} the parameter on its own
+scale, \eqn{h} the step and \eqn{\varepsilon} the machine epsilon.
+}
+
 \seealso{
-\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}}
+\code{\link[=numerical_cdf_deriv]{numerical_cdf_deriv()}} for orders 1 and 2;
+\code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}}, the exact route for a discrete family;
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}, the closed route this is measured against.
 }
 \keyword{internal}

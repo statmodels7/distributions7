@@ -10,45 +10,81 @@ distrib_deriv3_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 distrib_deriv4_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale. Components
+may be vectors, in which case one value is returned per setting.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default; \code{FALSE} flips the sign of every component.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default. Far into a tail the probability underflows to zero and
+the result is \code{-Inf} or \code{NaN}.}
 
-\item{...}{Passed to methods.}
+\item{...}{Passed to methods. No shipped method reads it.}
 }
 \value{
-A named list of derivative component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} or \code{4}.
+A named list of numeric vectors, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}} for
+\code{distrib_deriv3_cdf()} and as \code{deriv_names(distrib@params, 4)} for
+\code{distrib_deriv4_cdf()}. A two-parameter family has 4 third-order and 5
+fourth-order components; a one-parameter family has one of each.
 }
 \description{
-\eqn{\partial^{3}\log F(q)/\partial\theta_i\partial\theta_j\partial\theta_k}
-and its fourth-order analogue, on either tail.
+\code{distrib_deriv3_cdf()} returns
+\eqn{\partial^3 \log F(q)/\partial\theta_i\partial\theta_j\partial\theta_k}
+and \code{distrib_deriv4_cdf()} its fourth-order analogue, on either tail and on
+the natural or the logarithmic scale. Together with \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} they complete the cdf derivative surface to fourth
+order.
 }
-\details{
-These complete the sequence begun by \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
-\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}. What consumes them is truncation: with only
-the first two orders available, \code{\link[=truncated]{truncated()}} pays one quadrature
-per component at orders three and four, and with these it pays two calls on
-the parent instead.
+\section{The two routes}{
+A discrete family uses the exact finite sum of \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}}, and
+a continuous one takes a single product stencil on its analytic distribution
+function through \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}. 24 of the 42 univariate families
+register a closed form of their own; of the 18 that do not, the discrete
+ones sum exactly and the continuous ones (beta1, beta2, chisq, gamma1,
+gamma2, gengamma1 and the two von Mises) difference.
+}
 
-A discrete family uses the exact finite sum and a continuous one one
-product stencil on its analytic distribution function; see
-\code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}} and \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}.
-A family with a closed form registers its own method, as at the orders
-below.
+\section{What consumes them}{
+Truncation. \code{\link[=truncated]{truncated()}} needs the derivatives of its normalizing constant
+\eqn{Z = F(U) - F(L^-)}, and with only the first two orders available it
+pays one quadrature per component at orders three and four; with these it
+pays two calls on the parent instead.
 }
+
+\section{Accuracy against speed}{
+Unusually, the closed route is the slower of the two at these orders: on a
+Gaussian at 1000 quantiles it costs 7.0 ms against the stencil's 4.7 ms,
+because it runs a Faa di Bruno pass over the response derivatives. It is
+preferred for accuracy alone, the stencil being \eqn{1.5\times10^{-5}} out
+at order 3 and \eqn{1.3\times10^{-4}} at order 4.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{S = 1 - F} the survival function
+and \eqn{\theta} the parameter on its own scale.
+}
+
 \examples{
+# Four third-order components for a two-parameter family.
 distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1))
 
+# On the upper tail every sign flips.
+distrib_deriv3_cdf(gaussian1_distrib(), 1, list(mu = 0, sigma = 1),
+                   lower.tail = FALSE, log = FALSE)
+
+# One component for a one-parameter family, and the sum is exact here.
 distrib_deriv4_cdf(poisson_distrib(), 3, list(mu = 2))
 
 }
 \seealso{
-\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, \code{\link[=truncated]{truncated()}}
+\code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and \code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}} for the two orders
+below; \code{\link[=truncated]{truncated()}}, the consumer; \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}} and
+\code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}} for the two routes.
 }

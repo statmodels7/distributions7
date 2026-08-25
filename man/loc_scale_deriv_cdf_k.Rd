@@ -10,13 +10,26 @@ loc_scale_deriv_cdf_k(order)
 \item{order}{The derivative order, 3 or 4.}
 }
 \value{
-A function suitable for registering as an S7 method.
+A function of \verb{(distrib, q, theta, lower.tail, log, ...)} suitable
+for registering as an S7 method on either generic, returning a named list
+of numeric vectors of that order.
 }
 \description{
-The \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} and \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}}
-bodies shared by the location-scale families.
+Builds the \code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} or \code{\link[=distrib_deriv4_cdf]{distrib_deriv4_cdf()}} body that the
+location-scale families register: \code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} at every order
+up to the one wanted, put on the requested tail and scale by
+\code{\link[=cdf_scale_k]{cdf_scale_k()}}. Five families use it, the Gaussian, the logistic, the
+Cauchy and the Laplace here and the Gumbel in \code{cdf_mapped_higher.R}.
+}
+\details{
+Every lower order is computed because the log-scale conversion reads them
+all. The function is a factory so that the order can be closed over,
+\code{force(order)} being what keeps the two registrations from sharing one
+value.
 }
 \seealso{
-\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}}
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} for the formulas;
+\code{\link[=distrib_deriv3_cdf]{distrib_deriv3_cdf()}} for the generic;
+\code{\link[=loc_scale_grad_cdf]{loc_scale_grad_cdf()}} and \code{\link[=loc_scale_hess_cdf]{loc_scale_hess_cdf()}} for the orders below.
 }
 \keyword{internal}

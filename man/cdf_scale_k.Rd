@@ -7,39 +7,59 @@
 cdf_scale_k(distrib, Fq, dF, order, lower.tail, log)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}. Only its \code{params} are
+read, to name and enumerate the components.}
 
-\item{Fq}{The cdf evaluated at the quantile.}
+\item{Fq}{The distribution function at the quantile, a numeric vector.}
 
-\item{dF}{A list of length \code{order}; element \code{k} is the table of
+\item{dF}{A list of length \code{order}. Element \eqn{k} is the table of
 \eqn{k}-th derivatives of \eqn{F}, keyed as
-\code{\link[=deriv_names]{deriv_names(distrib@params, k)}}.}
+\code{\link[=deriv_names]{deriv_names(distrib@params, k)}}, on the natural scale and
+the lower tail.}
 
 \item{order}{The derivative order wanted, 1 to 4.}
 
-\item{lower.tail}{Logical; whether the lower tail is wanted.}
+\item{lower.tail}{Is the lower tail wanted? A single logical.}
 
-\item{log}{Logical; whether derivatives of the log probability are wanted.}
+\item{log}{Are derivatives of the log probability wanted? A single logical.
+\code{FALSE} reads only \code{dF[[order]]} and the lower tables are then unused.}
 }
 \value{
-A named list of derivative component vectors of the requested
-order.
+A named list of numeric vectors of the requested order alone. The
+lower orders are consumed on the way and do not appear in the result.
 }
 \description{
-The general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}: converts derivatives of
-\eqn{F} of every order up to the one wanted into derivatives of whichever
-tail was asked for, on the natural or the log scale.
+The general form of \code{\link[=cdf_tail_scale]{cdf_tail_scale()}}: converts derivatives of \eqn{F} into
+derivatives of whichever tail was asked for, on the natural or the
+logarithmic scale, at any order from 1 to 4.
 }
-\details{
-Switching tail flips the sign, since \eqn{S = 1 - F}. Switching to the log
-scale is the moment-to-cumulant relation
-\eqn{d^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
-\prod_{B} (d^B P / P)}, which at second order is the familiar
-\eqn{d^2 P/P - (dP/P)(dP/P)} and at third and fourth is what
-\code{\link[=log_deriv]{log_deriv()}} sums. Only the ratios are needed, which is why
-every order up to \code{order} has to be supplied.
+\section{The two conversions}{
+Switching to the upper tail flips the sign at every order, \eqn{S = 1 - F}.
+Switching to the log scale is the moment-to-cumulant relation
+\deqn{\partial^I \log P = \sum_\pi (-1)^{|\pi|-1}(|\pi|-1)!
+      \prod_{B \in \pi} \frac{\partial^B P}{P},}
+summed over the set partitions of the multi-index by \code{\link[=log_deriv]{log_deriv()}}. At
+second order it is the familiar
+\eqn{\partial^2 P/P - (\partial P/P)^2}, and at third and fourth it has 4
+and 15 terms.
 }
+
+\section{Why every lower order is needed}{
+A partition into \eqn{k} blocks reads \eqn{k} ratios, so the relation at
+order 4 needs the tables of orders 1, 2 and 3 as well. That is why \code{dF} is a
+list of tables, and why a caller that wants only the fourth order still
+assembles the first three.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{S = 1 - F} the survival function,
+\eqn{P} whichever was asked for, \eqn{\pi} a set partition of the
+multi-index and \eqn{B} one of its blocks.
+}
+
 \seealso{
-\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, \code{\link[=log_deriv]{log_deriv()}}
+\code{\link[=cdf_tail_scale]{cdf_tail_scale()}}, the written-out version for orders 1 and 2;
+\code{\link[=log_deriv]{log_deriv()}} for the partition sum; \code{\link[=cdf_tables]{cdf_tables()}}, which builds \code{dF}.
 }
 \keyword{internal}

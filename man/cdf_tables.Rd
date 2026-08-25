@@ -7,32 +7,38 @@
 cdf_tables(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
 \item{order}{The highest order wanted, 1 to 4.}
 }
 \value{
-A list of length \code{order} of named derivative tables of
-\eqn{F}.
+A list of length \code{order}. Element \eqn{k} is a named list of
+\eqn{k}-th derivatives of \eqn{F}, on the natural scale and the lower
+tail, keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, k)}}.
 }
 \description{
-The derivatives of \eqn{F} of orders 1 to \code{order}, by whichever route
-the class uses.
+Assembles the derivatives of \eqn{F} of orders 1 to \code{order} by whichever
+route the class uses: the exact finite sum for a discrete family, one
+product stencil on the analytic distribution function for a continuous one.
+Keeping the choice of route in a single statement is the point of the
+function.
 }
 \details{
-The conversion to the log scale needs every order below the one wanted, not
-just the one wanted, because the moment-to-cumulant relation is a sum over
-partitions of the multi-index and a partition into \eqn{k} blocks asks for
-\eqn{k} lower-order ratios. Collecting them in one place keeps the choice of
-route -- exact sum for a discrete family, one stencil on the analytic
-distribution function for a continuous one -- in a single statement.
+Every order below the one wanted is collected, and not just the one wanted,
+because the moment-to-cumulant relation \code{\link[=cdf_scale_k]{cdf_scale_k()}} applies is a sum
+over partitions of the multi-index: a partition into \eqn{k} blocks reads
+\eqn{k} lower-order ratios.
+
+At orders 1 and 2 the tables come from \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} and
+\code{\link[=distrib_hess_cdf]{distrib_hess_cdf()}}, so a family's own closed forms are used where it has
+them; only orders 3 and 4 reach the routes named above.
 }
 \seealso{
-\code{\link[=cdf_scale_k]{cdf_scale_k()}}, \code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}},
-\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}
+\code{\link[=cdf_scale_k]{cdf_scale_k()}}, the consumer;
+\code{\link[=discrete_cdf_deriv_k]{discrete_cdf_deriv_k()}} and \code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}, the two routes.
 }
 \keyword{internal}

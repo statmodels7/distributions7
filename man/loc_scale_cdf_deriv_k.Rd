@@ -7,38 +7,59 @@
 loc_scale_cdf_deriv_k(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib} whose first two
+parameters are a location and a scale, and which supplies response
+derivatives to the order asked for.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters, location first and scale second.}
+\item{theta}{A named list of parameters, the location first and the scale
+second.}
 
 \item{order}{The derivative order, 1 to 4.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+[\code{deriv_names(distrib@params[1:2], order)}][deriv_names].
 }
 \description{
 Closed-form derivatives of \eqn{F} of any order up to four, for a family
-that is location-scale in its first two parameters.
+that is location-scale in its first two parameters. The general form of
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}, which stops at second order.
 }
-\details{
+\section{The construction}{
 With \eqn{z = (q-\mu)/\sigma} the distribution function is
-\eqn{F(q) = F_0(z)}, so every derivative in \eqn{(\mu, \sigma)} is one
-Faa di Bruno pass over that composition. The inner derivatives are
-\eqn{F_0^{(m)}(z) = \sigma^{m} \partial^{m} F/\partial q^{m}}, and
-\eqn{\partial^{m} F/\partial q^{m} = f(q) B_{m-1}}, the complete Bell
-polynomial in the response derivatives of \eqn{\log f}. The map is
-\eqn{\partial^{i+j} z/\partial\mu^{i}\partial\sigma^{j}}, which vanishes
-for \eqn{i \ge 2} because \eqn{z} is linear in the location.
-
-This is what the response derivatives of order three and four are for:
-with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}}
-the construction stops at second order, which is where
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders one and two the two
-agree exactly.
+\eqn{F(q) = F_0(z)}, so every derivative in \eqn{(\mu, \sigma)} is one Faa
+di Bruno pass over that composition. The inner derivatives are
+\deqn{F_0^{(m)}(z) = \sigma^{m}\,\frac{\partial^{m} F}{\partial q^{m}},
+      \qquad
+      \frac{\partial^{m} F}{\partial q^{m}} = f(q)\,B_{m-1},}
+with \eqn{B_{m-1}} the complete Bell polynomial in the response derivatives
+of \eqn{\log f}. The outer map is
+\eqn{\partial^{i+j} z/\partial\mu^{i}\partial\sigma^{j}}, which vanishes for
+\eqn{i \ge 2} because \eqn{z} is linear in the location, so most of its
+partials are exact zeros.
 }
+
+\section{What it depends on}{
+The response derivatives of orders 3 and 4 are what make this reach past
+second order: with only \code{\link[=distrib_grad_y]{distrib_grad_y()}} and \code{\link[=distrib_hess_y]{distrib_hess_y()}} the
+construction stops where \code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} stops. At orders 1 and 2
+the two agree to the last bit, which is the check that licenses the orders
+above.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale,
+\eqn{z = (q-\mu)/\sigma}, \eqn{f} the density, \eqn{F_0} the standardized
+distribution function and \eqn{B_m} the complete Bell polynomial.
+}
+
 \seealso{
-\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}}, \code{\link[=chain_assemble]{chain_assemble()}}
+\code{\link[=loc_scale_cdf_deriv]{loc_scale_cdf_deriv()}} for orders 1 and 2;
+\code{\link[=loc_scale_deriv_cdf_k]{loc_scale_deriv_cdf_k()}}, which registers this as a method;
+\code{\link[=chain_assemble]{chain_assemble()}} for the partition sum; \code{\link[=bell_f_ratio]{bell_f_ratio()}}.
 }
 \keyword{internal}

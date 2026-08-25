@@ -3,27 +3,54 @@
 \name{distrib_deriv3_cdf.distrib}
 \alias{distrib_deriv3_cdf.distrib}
 \alias{distrib_deriv4_cdf.distrib}
-\title{Default Third Log-CDF Derivatives}
+\title{Default Third and Fourth Log-CDF Derivatives}
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
-\item{lower.tail}{Logical.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+For \code{distrib_deriv3_cdf()}, a named list of third-derivative
+components keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}; for
+\code{distrib_deriv4_cdf()}, the fourth-order components keyed as
+\code{deriv_names(distrib@params, 4)}. Each vector is the length of \code{q}
+recycled against \code{theta}.
 }
 \description{
-The route of \code{\link[=cdf_tables]{cdf_tables()}} for the class, put on
-the requested tail and scale.
+The fallback both generics take when a family registers no closed form.
+\code{\link[=cdf_tables]{cdf_tables()}} assembles the derivatives of \eqn{F} of every order up to the
+one wanted, by the exact sum for a discrete family and by one product
+stencil for a continuous one, and \code{\link[=cdf_scale_k]{cdf_scale_k()}} puts the top order on the
+requested tail and scale.
+}
+\details{
+18 of the 42 univariate families reach these methods. For the ten discrete
+ones the result is exact; for the eight continuous ones (beta1, beta2,
+chisq, gamma1, gamma2, gengamma1 and the two von Mises) it carries the
+stencil's error, about \eqn{1.5\times10^{-5}} at order 3 and
+\eqn{1.3\times10^{-4}} at order 4.
+}
+\examples{
+# A gamma reaches this method and differences its cdf.
+distrib_deriv3_cdf(gamma2_distrib(), 2, list(mu = 2, sigma2 = 1))
+
+# A beta-binomial reaches it too, and its sum is exact.
+distrib_deriv4_cdf(betabinom1_distrib(size = 10), 4,
+                   list(mu = 0.3, sigma = 0.5))
+
+}
+\seealso{
+\code{\link[=cdf_tables]{cdf_tables()}} and \code{\link[=cdf_scale_k]{cdf_scale_k()}}, the two halves;
+\code{\link[=loc_scale_deriv_cdf_k]{loc_scale_deriv_cdf_k()}}, the closed route four families take instead.
 }
 \keyword{internal}

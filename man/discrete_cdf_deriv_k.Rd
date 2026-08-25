@@ -2,39 +2,48 @@
 % Please edit documentation in R/cdf_higher.R
 \name{discrete_cdf_deriv_k}
 \alias{discrete_cdf_deriv_k}
-\title{CDF Derivatives of a Discrete Distribution, at Any Order}
+\title{CDF Derivatives of a Discrete Distribution at Any Order}
 \usage{
 discrete_cdf_deriv_k(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"discrete_distrib"}.}
+\item{distrib}{An object inheriting from \code{discrete_distrib}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Each is handled separately, the
+support being walked up to it, so the cost grows with the largest one.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
 \item{order}{The derivative order, 1 to 4.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
 The general form of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}: evaluates
-\eqn{d^I F(q) = \sum_{y \le q} f(y)\,(d^I f/f)(y)} for any order up to
-four.
+\eqn{\partial^I F(q) = \sum_{y \le q} f(y)\,\partial^I f/f\,(y)} for a
+discrete family at any order up to four. Nothing is differenced; the sum is
+exact wherever the support has a finite lower bound, which the discrete
+class requires.
 }
 \details{
-The quantity summed is the complete Bell polynomial in the log-derivatives,
-which \code{\link[=bell_f_ratio]{bell_f_ratio()}} computes, so the order enters only through
-how many of the family's derivative tables are fetched. At orders one and
-two this reproduces the written-out \eqn{f g} and
-\eqn{f(h + g_i g_j)} of \code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}.
-
-As there, a test must not check this against the partial-expectation sum,
-which is the same sum twice; finite differences of the cdf are the
-independent reference.
+What changes above second order is only the summand. \eqn{\partial^I f/f} is
+the complete Bell polynomial in the derivatives of \eqn{\log f}, and
+\code{\link[=bell_f_ratio]{bell_f_ratio()}} already computes it for the distribution wrappers, so this
+function reuses it and carries no second copy of the enumeration.
 }
+\section{Notation}{
+
+\eqn{f} is the mass function, \eqn{F} the distribution function,
+\eqn{\ell = \log f} and \eqn{\partial^I} a derivative with respect to a
+multi-index of parameters.
+}
+
 \seealso{
-\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}}, \code{\link[=bell_f_ratio]{bell_f_ratio()}}
+\code{\link[=discrete_cdf_deriv]{discrete_cdf_deriv()}} for orders 1 and 2;
+\code{\link[=numerical_cdf_deriv_k]{numerical_cdf_deriv_k()}}, the continuous route;
+\code{\link[=bell_f_ratio]{bell_f_ratio()}} for the summand; \code{\link[=cdf_tables]{cdf_tables()}}, the caller.
 }
 \keyword{internal}
