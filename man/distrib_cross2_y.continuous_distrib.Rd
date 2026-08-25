@@ -4,22 +4,43 @@
 \alias{distrib_cross2_y.continuous_distrib}
 \title{Default Mixed Second-Response Derivatives for Continuous Distributions}
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object.}
+\item{distrib}{A \code{continuous_distrib} object with no closed form of its own.}
 
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector per parameter, keyed by
+\code{distrib@params}.
 }
 \description{
-Fallback: one central difference of
-\code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter (see
-\code{\link[=numerical_cross2_y]{numerical_cross2_y()}}).
+Falls back to one central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each
+parameter, through \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}. Registering it on
+\code{continuous_distrib} gives the quantity to every continuous family, whether
+or not it writes one out.
+}
+\examples{
+# The gamma writes no closed form, so this method answers for it.
+d <- gamma2_distrib()
+y <- c(0.5, 1, 2)
+theta <- list(mu = 2, sigma2 = 1)
+attr(S7::method(distrib_cross2_y, S7::S7_class(d)), "signature")[[1]]
+
+vapply(distrib_cross2_y(d, y, theta), function(z) z[1], numeric(1))
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma2 = v[2]))
+numDeriv::grad(f, c(2, 1))
+}
+\seealso{
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic, \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}, which
+does the work, and \code{\link[=distrib_cross2_y.Gaussian1Distrib]{distrib_cross2_y.Gaussian1Distrib()}} for a family that
+overrides it.
 }
 \keyword{internal}

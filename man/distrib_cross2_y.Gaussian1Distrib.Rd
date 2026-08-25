@@ -6,20 +6,51 @@
 \arguments{
 \item{distrib}{A \code{Gaussian1Distrib} object.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Only its length is used.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with \code{mu} and \code{sigma}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list of two numeric vectors of length \code{length(y)}, keyed
+\code{mu} and \code{sigma}, the first exactly zero.
 }
 \description{
-Closed form: \eqn{\ell^{(yy)} = -1/\sigma^2} does not depend on
-the location, so \eqn{\partial^3\ell/\partial y^2\partial\mu = 0} and
-\eqn{\partial^3\ell/\partial y^2\partial\sigma = 2/\sigma^3}.
+Closed form, and half of it zero. The gaussian's response curvature is
+\eqn{\ell^{(yy)} = -1/\sigma^2}, which carries no location, so
+\deqn{\frac{\partial^3\ell}{\partial y^2\,\partial\mu} = 0, \qquad
+  \frac{\partial^3\ell}{\partial y^2\,\partial\sigma} = \frac{2}{\sigma^3}.}
+Neither component varies with the data.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one
+to the other. \eqn{\ell^{(yy)}} is \eqn{\partial^2\ell/\partial y^2}.
+}
+
+\examples{
+d <- gaussian1_distrib()
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3)
+distrib_cross2_y(d, y, theta)
+
+# The one surviving component, written out.
+2 / 1.3^3
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::grad(f, c(0.4, 1.3))
+}
+\seealso{
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic,
+\code{\link[=distrib_hess_y_hess.Gaussian1Distrib]{distrib_hess_y_hess.Gaussian1Distrib()}} for the next order in
+\eqn{\theta}, and \code{\link[=distrib_cross2_y.StudentT1Distrib]{distrib_cross2_y.StudentT1Distrib()}}, where nothing
+vanishes.
 }
 \keyword{internal}

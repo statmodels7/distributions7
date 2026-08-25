@@ -8,23 +8,62 @@
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{nu}.}
+\item{theta}{A named list with \code{mu}, \code{sigma} and \code{nu}.}
 
-\item{scale}{Handled by the generic before dispatch.}
+\item{scale}{One of \code{"parameter"} or \code{"link"}, applied by the generic before
+dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list of three numeric vectors of length \code{length(y)}, keyed
+\code{mu}, \code{sigma} and \code{nu}.
 }
 \description{
-Closed form. With \eqn{z = (y-\mu)/\sigma} and
-\eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2}, the response Hessian is
-\eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, and with
+Closed form in all three parameters. With \eqn{z = (y-\mu)/\sigma} and
+\eqn{Q(z) = (\nu - z^2)/(\nu + z^2)^2} the response curvature is
+\eqn{\ell^{(yy)} = -(\nu+1)Q/\sigma^2}, so writing
 \eqn{Q' = 2z(z^2 - 3\nu)/(\nu+z^2)^3} and
 \eqn{\partial Q/\partial\nu = (3z^2-\nu)/(\nu+z^2)^3},
-\deqn{\partial_\mu \ell^{(yy)} = (\nu+1)Q'/\sigma^3, \quad
-  \partial_\sigma \ell^{(yy)} = (\nu+1)(2Q + zQ')/\sigma^3, \quad
-  \partial_\nu \ell^{(yy)} = -(Q + (\nu+1)\partial_\nu Q)/\sigma^2.}
+\deqn{\frac{\partial\ell^{(yy)}}{\partial\mu} = \frac{(\nu+1)Q'}{\sigma^3},
+  \qquad \frac{\partial\ell^{(yy)}}{\partial\sigma}
+    = \frac{(\nu+1)(2Q + zQ')}{\sigma^3}, \qquad
+  \frac{\partial\ell^{(yy)}}{\partial\nu}
+    = -\frac{Q + (\nu+1)\partial_\nu Q}{\sigma^2}.}
+}
+\details{
+Nothing vanishes here, unlike the gaussian's, and every component varies
+with the data: the t's response curvature is a function of \eqn{z} rather
+than a constant, and it is that dependence which makes the family
+redescending. The three formulas share \eqn{Q}, \eqn{Q'} and
+\eqn{\partial_\nu Q}, so each is evaluated once per observation.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one
+to the other. \eqn{\ell^{(yy)}} is \eqn{\partial^2\ell/\partial y^2}.
+}
+
+\examples{
+d <- student_t1_distrib()
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3, nu = 6)
+distrib_cross2_y(d, y, theta)
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2],
+                                              nu = v[3]))
+numDeriv::grad(f, c(0.4, 1.3, 6))
+
+# Every component varies with y, where the gaussian's do not.
+distrib_cross2_y(d, y, theta)$mu
+distrib_cross2_y(gaussian1_distrib(), y, theta[1:2])$mu
+}
+\seealso{
+\code{\link[=distrib_cross2_y]{distrib_cross2_y()}} for the generic, \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the
+quantity being differentiated, and \code{\link[=distrib_cross2_y.Gaussian1Distrib]{distrib_cross2_y.Gaussian1Distrib()}},
+the limit as \eqn{\nu} grows.
 }
 \keyword{internal}

@@ -7,13 +7,12 @@
 distrib_cross2_y(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A distribution object inheriting from the \code{distrib}
-class.}
+\item{distrib}{A distribution object inheriting from \code{continuous_distrib}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list (or named numeric vector) of distribution
-parameters. Each parameter must have length 1 or \code{length(y)}.}
+\item{theta}{A named list, or named numeric vector, of distribution
+parameters. Each must have length 1 or \code{length(y)}.}
 
 \item{scale}{Either \code{"parameter"} (default) for derivatives with respect to
 the parameters \eqn{\theta} on their natural (constrained) scale, or
@@ -21,39 +20,79 @@ the parameters \eqn{\theta} on their natural (constrained) scale, or
 predictors \eqn{\eta = g(\theta)} defined by \code{distrib@link_params}.
 See \code{\link[=link_scale_derivatives]{link_scale_derivatives()}}.}
 
-\item{...}{Additional arguments passed to the specific method.}
+\item{...}{Passed to the method.}
 }
 \value{
-A named list with one numeric vector per parameter, keyed by
-\code{distrib@params}.
+A named list with one numeric vector per parameter, each as long as
+\code{y}, keyed by \code{distrib@params}.
 }
 \description{
 Computes \eqn{\partial^3 \ell / \partial y^2\, \partial \theta_i}, one
-component per parameter, each a vector along \code{y}.
+component per parameter, each a vector along \code{y}. Where \code{\link[=distrib_hess_y]{distrib_hess_y()}}
+says how curved the log-density is in the RESPONSE, this says how that
+curvature moves with each parameter.
 }
-\details{
-\code{\link[=distrib_hess_y]{distrib_hess_y()}} says how curved the log-density is in the
-response; this says how that curvature moves with each parameter. It
-completes the surface a marginal likelihood needs: where a penalty is
-\eqn{-\log f(D\beta;\theta)}, its Hessian in the coefficients is
-\eqn{-D'\mathrm{diag}(\ell^{(yy)})D} and the derivative of that in
-\eqn{\theta} is this component placed the same way.
-
-On the link scale the component for \eqn{\eta_i} is the parameter-scale
-component multiplied by \eqn{h_i'(\eta_i)}: the response derivatives are
-untouched by a reparametrization of \eqn{\theta}, so only the first-order
-diagonal chain rule enters, exactly as for \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
-
-Distributions with a closed form provide it directly; the others fall back
-to one central difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter
-(see \code{\link[=numerical_cross2_y]{numerical_cross2_y()}}). The reference is the analytic
-response Hessian, so a family with one pays for exactly one difference.
+\section{What consumes it}{
+It completes the surface a marginal likelihood needs. A penalty is
+\eqn{-\log f(D\beta;\theta)}, so its Hessian in the coefficients is
+\eqn{-D'\mathrm{diag}(\ell^{(yy)})D}, and the derivative of that in
+\eqn{\theta} is this component placed the same way. Differentiating the
+Laplace approximation once needs it; differentiating twice needs
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}}, which is this quantity one order further in the
+parameters.
 }
+
+\section{The link scale}{
+The component for \eqn{\eta_i} is the parameter-scale component multiplied
+by \eqn{h_i'(\eta_i)}. The response derivatives are untouched by a
+reparametrization of \eqn{\theta}, so only the first-order diagonal chain
+rule enters, exactly as for \code{\link[=distrib_cross_y]{distrib_cross_y()}}.
+}
+
+\section{Where the numbers come from}{
+A distribution with a closed form provides it. The rest take one central
+difference of \code{\link[=distrib_hess_y]{distrib_hess_y()}} in each parameter, through
+\code{\link[=numerical_cross2_y]{numerical_cross2_y()}}. The reference is the analytic response Hessian, so a
+family carrying one pays for exactly one difference.
+
+Continuous distributions only, as with every response derivative: a discrete
+family has no method and the call raises with its class named.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{y} the response,
+\eqn{\theta_i} a distribution parameter, \eqn{\eta_i} its value on the
+unconstrained scale and \eqn{h_i = g_i^{-1}} the inverse link carrying one
+to the other. \eqn{\ell^{(yy)}} is \eqn{\partial^2\ell/\partial y^2}.
+}
+
 \examples{
 d <- gaussian1_distrib()
-distrib_cross2_y(d, c(-1, 0, 2), list(mu = 0, sigma = 1))
+y <- c(-1, 0, 2)
+theta <- list(mu = 0.4, sigma = 1.3)
+distrib_cross2_y(d, y, theta)
+
+# The gaussian's response curvature is -1 / sigma^2, which carries no
+# location, so the mu component is exactly zero.
+c(sigma = 2 / 1.3^3)
+
+# Against a numerical derivative of the response Hessian.
+f <- function(v) distrib_hess_y(d, y[1], list(mu = v[1], sigma = v[2]))
+numDeriv::grad(f, c(0.4, 1.3))
+
+# On the link scale, sigma riding a log link, the component is multiplied
+# by h' = sigma and nothing else.
+c(link = distrib_cross2_y(d, y, theta, scale = "link")$sigma[1],
+  hand = distrib_cross2_y(d, y, theta)$sigma[1] * 1.3)
+
+# A discrete family has no method at all.
+try(distrib_cross2_y(poisson_distrib(), 1:3, list(mu = 2)))
 
 }
 \seealso{
-\code{\link[=distrib_hess_y]{distrib_hess_y()}}, \code{\link[=distrib_cross_y]{distrib_cross_y()}}
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} for the quantity being differentiated,
+\code{\link[=distrib_cross_y]{distrib_cross_y()}} for the first-response counterpart,
+\code{\link[=distrib_hess_y_hess]{distrib_hess_y_hess()}} for the next order in \eqn{\theta}, and
+\code{\link[=numerical_cross2_y]{numerical_cross2_y()}} for the fallback.
 }
