@@ -4,16 +4,41 @@
 \alias{mean.Beta1Distrib}
 \title{Mean of the Beta Distribution}
 \arguments{
-\item{x}{A \code{Beta1Distrib}.}
+\item{x}{A \code{Beta1Distrib}, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, strictly between
+0 and 1) and \code{phi} (the precision, positive), each a numeric vector of
+length 1 or \code{n}. Aligned and validated by name, so a mean at or outside
+the unit interval throws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$phi))}, strictly inside \eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{\mu}, a parameter of this parametrization.
+Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
+precision, so the mean is a read; the two shapes of the standard
+parametrization are recovered as \eqn{a = \mu\phi} and
+\eqn{b = (1-\mu)\phi}, and they sum to \eqn{\phi}.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
+\eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
+}
+
+\examples{
+d <- beta1_distrib()
+
+# The first parameter is the mean, and the precision does not move it.
+mean(d, list(mu = c(0.2, 0.5, 0.8), phi = 5))
+
+}
+\seealso{
+\code{\link[=variance.Beta1Distrib]{variance.Beta1Distrib()}}, where the precision does enter;
+\code{\link[=skewness.Beta1Distrib]{skewness.Beta1Distrib()}}; \code{\link[=mean.Beta2Distrib]{mean.Beta2Distrib()}} for the two-shape
+parametrization; \code{\link[=beta1_distrib]{beta1_distrib()}}.
 }
 \keyword{internal}

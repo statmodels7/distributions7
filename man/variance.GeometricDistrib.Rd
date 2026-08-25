@@ -4,16 +4,36 @@
 \alias{variance.GeometricDistrib}
 \title{Variance of the Geometric Distribution}
 \arguments{
-\item{x}{A \code{GeometricDistrib}.}
+\item{x}{A \code{GeometricDistrib}, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu(1+\mu)}.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
+at every parameter value, so the family is overdispersed relative to a
+Poisson, and it is exactly the negative binomial's variance at
+\eqn{\theta = 1}.
+}
+\examples{
+d <- geometric_distrib()
+
+# Mean times one plus the mean.
+all.equal(variance(d, list(mu = 3)), 12)
+
+# The negative binomial at theta = 1 is the same law.
+all.equal(variance(d, list(mu = 3)),
+          variance(negbin2_distrib(), list(mu = 3, theta = 1)))
+
+}
+\seealso{
+\code{\link[=mean.GeometricDistrib]{mean.GeometricDistrib()}}; \code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}}, of which
+this is the \eqn{\theta = 1} case; \code{\link[=variance.PoissonDistrib]{variance.PoissonDistrib()}}, the
+equidispersed comparison; \code{\link[=geometric_distrib]{geometric_distrib()}}.
 }
 \keyword{internal}

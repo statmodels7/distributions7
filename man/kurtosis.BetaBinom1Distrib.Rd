@@ -2,18 +2,53 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.BetaBinom1Distrib}
 \alias{kurtosis.BetaBinom1Distrib}
-\title{Kurtosis of the Beta-Binomial Distribution}
+\title{Excess Kurtosis of the Beta-Binomial Distribution}
 \arguments{
-\item{x}{A \code{BetaBinom1Distrib}.}
+\item{x}{A \code{BetaBinom1Distrib}, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
+and \code{sigma} (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, from the falling factorial moments; excess.
+Assembled from the falling factorial moments,
+\eqn{\gamma_2 = c_4/c_2^2 - 3} with \eqn{c_k} the central moments
+\code{\link[=betabinom_central]{betabinom_central()}} returns. The success probability is what sets its
+sign. Near \eqn{\mu = 1/2} it is negative and falls
+towards \eqn{-2} as the dispersion grows, the mass splitting between the two
+endpoints and the law approaching a scaled Bernoulli; near either end it is
+positive and large, the long tail towards the middle dominating.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+dispersion, \eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th
+central moment.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+
+# At a central success probability it falls towards -2 with the dispersion.
+round(kurtosis(d, list(mu = 0.5, sigma = c(0.1, 1, 100))), 4)
+
+# At an extreme one it is positive and large.
+round(kurtosis(d, list(mu = 0.05, sigma = c(0.01, 0.1, 1))), 4)
+
+# It falls onto the binomial's as the dispersion vanishes.
+c(betabinomial = kurtosis(d, list(mu = 0.3, sigma = 1e-8)),
+  binomial     = kurtosis(binomial_distrib(size = 10), list(mu = 0.3)))
+
+}
+\seealso{
+\code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}}, from the same moments;
+\code{\link[=kurtosis.BinomialDistrib]{kurtosis.BinomialDistrib()}}, the \eqn{\sigma \to 0} limit;
+\code{\link[=betabinom_central]{betabinom_central()}}; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

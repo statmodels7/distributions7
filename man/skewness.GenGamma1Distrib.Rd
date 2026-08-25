@@ -4,16 +4,44 @@
 \alias{skewness.GenGamma1Distrib}
 \title{Skewness of the Generalized Gamma Distribution}
 \arguments{
-\item{x}{A \code{GenGamma1Distrib}.}
+\item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
+each a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
+value.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length equal to the longest of the three
+components.
 }
 \description{
-Closed form, from the first three raw moments.
+Assembled from the first three raw moments,
+\eqn{\gamma_1 = (m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
+\eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, so the
+value depends on the two shapes alone; unlike a gamma's it can be negative,
+which is part of what the second shape parameter buys.
+}
+\section{Notation}{
+
+\eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
+raw moment. The scale does not enter a standardized moment.
+}
+
+\examples{
+d <- gengamma1_distrib()
+
+# At d = p it agrees with the Weibull, which changes sign with its shape.
+all.equal(skewness(d, list(a = 2, d = 3, p = 3)),
+          skewness(weibull1_distrib(), list(mu = 2, sigma = 3)))
+
+# The scale does not enter a standardized moment.
+skewness(d, list(a = c(0.1, 1, 100), d = 3, p = 1.5))
+
+}
+\seealso{
+\code{\link[=kurtosis.GenGamma1Distrib]{kurtosis.GenGamma1Distrib()}}, from the same raw moments;
+\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

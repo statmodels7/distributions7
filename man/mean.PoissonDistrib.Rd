@@ -4,16 +4,32 @@
 \alias{mean.PoissonDistrib}
 \title{Mean of the Poisson Distribution}
 \arguments{
-\item{x}{A \code{PoissonDistrib}.}
+\item{x}{A \code{PoissonDistrib}, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the mean, positive), a
+numeric vector of length 1 or \code{n}. Aligned and validated by name, so a
+non-positive value throws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu}.
+Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
+the mean, so this method reads it off. It is also the variance, which is the
+equidispersion the family is defined by.
+}
+\examples{
+d <- poisson_distrib()
+
+# The one parameter is the mean, and it is also the variance.
+c(mean(d, list(mu = 3)), variance(d, list(mu = 3)))
+
+}
+\seealso{
+\code{\link[=variance.PoissonDistrib]{variance.PoissonDistrib()}}, equal to this;
+\code{\link[=mean.NegBin2Distrib]{mean.NegBin2Distrib()}} and \code{\link[=mean.NegBin1Distrib]{mean.NegBin1Distrib()}}, the overdispersed
+count families; \code{\link[=poisson_distrib]{poisson_distrib()}}.
 }
 \keyword{internal}

@@ -2,18 +2,35 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.PoissonDistrib}
 \alias{kurtosis.PoissonDistrib}
-\title{Kurtosis of the Poisson Distribution}
+\title{Excess Kurtosis of the Poisson Distribution}
 \arguments{
-\item{x}{A \code{PoissonDistrib}.}
+\item{x}{A \code{PoissonDistrib}, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, the length of \code{theta$mu},
+positive throughout.
 }
 \description{
-Closed form: excess \eqn{1/\mu}.
+Closed form: \eqn{\gamma_2 = 1/\mu}, the excess over the Gaussian. It is
+positive at every mean and decays like \eqn{\mu^{-1}}, twice as fast as the
+skewness, so a Poisson of moderate mean looks Gaussian in its tails before
+it looks symmetric.
+}
+\examples{
+d <- poisson_distrib()
+
+# One over the mean, falling twice as fast as the skewness.
+rbind(skewness = skewness(d, list(mu = c(1, 25, 10000))),
+      kurtosis = kurtosis(d, list(mu = c(1, 25, 10000))))
+
+}
+\seealso{
+\code{\link[=skewness.PoissonDistrib]{skewness.PoissonDistrib()}}; \code{\link[=kurtosis.NegBin2Distrib]{kurtosis.NegBin2Distrib()}}, which
+tends to this; \code{\link[=poisson_distrib]{poisson_distrib()}}.
 }
 \keyword{internal}

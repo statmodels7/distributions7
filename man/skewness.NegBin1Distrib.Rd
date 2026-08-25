@@ -2,19 +2,43 @@
 % Please edit documentation in R/moments.R
 \name{skewness.NegBin1Distrib}
 \alias{skewness.NegBin1Distrib}
-\title{Skewness of the NB1 Negative Binomial Distribution}
+\title{Skewness of the Negative Binomial Distribution in the NB1 Parametrization}
 \arguments{
-\item{x}{A \code{NegBin1Distrib}.}
+\item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{theta}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$theta))}, positive throughout.
 }
 \description{
-Closed form: \eqn{(1+2\theta)/\sqrt{\mu(1+\theta)}}, which
-tends to the Poisson \eqn{1/\sqrt{\mu}} as \eqn{\theta \to 0}.
+Closed form: \eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
+positive at every parameter value and tends to the Poisson's
+\eqn{\mu^{-1/2}} as the dispersion goes to zero, which is where NB1
+approaches a Poisson.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+}
+
+\examples{
+d <- negbin1_distrib()
+
+# The published form, written out.
+all.equal(skewness(d, list(mu = 4, theta = 2)), 5 / sqrt(4 * 3))
+
+# It falls onto the Poisson's mu^(-1/2) = 0.5 as the dispersion vanishes.
+skewness(d, list(mu = 4, theta = c(1, 0.01, 1e-8)))
+
+}
+\seealso{
+\code{\link[=kurtosis.NegBin1Distrib]{kurtosis.NegBin1Distrib()}}; \code{\link[=skewness.NegBin2Distrib]{skewness.NegBin2Distrib()}}, the other
+parametrization; \code{\link[=skewness.PoissonDistrib]{skewness.PoissonDistrib()}}, the limit;
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}.
 }
 \keyword{internal}

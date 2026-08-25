@@ -4,16 +4,32 @@
 \alias{variance.BernoulliDistrib}
 \title{Variance of the Bernoulli Distribution}
 \arguments{
-\item{x}{A \code{BernoulliDistrib}.}
+\item{x}{A \code{BernoulliDistrib}, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}, in
+\eqn{(0, 1/4]}.
 }
 \description{
-Closed form: \eqn{\mu(1-\mu)}.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
+\eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end, the
+response becoming deterministic there. That quarter is the largest variance
+any distribution on \eqn{\{0,1\}} can have.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# Largest at one half, vanishing at either end.
+variance(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
+
+}
+\seealso{
+\code{\link[=mean.BernoulliDistrib]{mean.BernoulliDistrib()}}; \code{\link[=variance.BinomialDistrib]{variance.BinomialDistrib()}}, which is
+\code{size} times this; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.
 }
 \keyword{internal}

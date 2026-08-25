@@ -4,17 +4,50 @@
 \alias{variance.BetaBinom1Distrib}
 \title{Variance of the Beta-Binomial Distribution}
 \arguments{
-\item{x}{A \code{BetaBinom1Distrib}.}
+\item{x}{A \code{BetaBinom1Distrib}, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
+and \code{sigma} (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{n\mu(1-\mu)(1+n\sigma)/(1+\sigma)}, the binomial variance
-inflated by the dispersion.
+Closed form:
+\deqn{\operatorname{Var}(Y) = n\mu(1-\mu)\,\frac{1 + n\sigma}{1 + \sigma}.}
+The first factor is the binomial variance and the second is the
+overdispersion, at least 1 for every \eqn{n \ge 1} and growing towards
+\eqn{n} as the dispersion rises. At \eqn{\sigma \to 0} the family is
+binomial; at large \eqn{\sigma} the variance approaches
+\eqn{n^2\mu(1-\mu)}, which is a Bernoulli scaled by the trial count and is
+the largest a distribution on \eqn{\{0, \ldots, n\}} with that mean can
+have.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+dispersion and \eqn{n} the number of trials.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+
+# The published form, written out.
+all.equal(variance(d, list(mu = 0.3, sigma = 0.5)),
+          10 * 0.3 * 0.7 * (1 + 10 * 0.5) / (1 + 0.5))
+
+# It falls onto the binomial variance as the dispersion vanishes.
+c(betabinomial = variance(d, list(mu = 0.3, sigma = 1e-8)),
+  binomial     = variance(binomial_distrib(size = 10), list(mu = 0.3)))
+
+}
+\seealso{
+\code{\link[=mean.BetaBinom1Distrib]{mean.BetaBinom1Distrib()}}; \code{\link[=variance.BinomialDistrib]{variance.BinomialDistrib()}}, the
+\eqn{\sigma \to 0} limit; \code{\link[=betabinom_central]{betabinom_central()}};
+\code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

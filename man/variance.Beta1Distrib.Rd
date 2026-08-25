@@ -4,17 +4,43 @@
 \alias{variance.Beta1Distrib}
 \title{Variance of the Beta Distribution}
 \arguments{
-\item{x}{A \code{Beta1Distrib}.}
+\item{x}{A \code{Beta1Distrib}, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
+and \code{phi} (positive), each a numeric vector of length 1 or \code{n}. The
+variance tends to \eqn{\mu(1-\mu)} as the precision goes to zero, where
+the mass piles up at the two endpoints.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form: \eqn{\mu(1-\mu)/(\phi+1)}, which is why
-\eqn{\phi} is called a precision.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)}. The
+numerator is the Bernoulli variance at the same mean, the largest a
+distribution on \eqn{(0,1)} can have, and \eqn{\phi+1} divides it down.
+Larger \eqn{\phi} therefore means a tighter distribution, which is the
+reason the parameter is called a precision.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the mean and \eqn{\phi > 0} the precision.
+}
+
+\examples{
+d <- beta1_distrib()
+
+# mu (1 - mu) / (phi + 1).
+all.equal(variance(d, list(mu = 0.3, phi = 5)), 0.3 * 0.7 / 6)
+
+# At mu = 1/2 and phi = 2 the density is uniform, of variance 1/12.
+all.equal(variance(d, list(mu = 0.5, phi = 2)), 1 / 12)
+
+}
+\seealso{
+\code{\link[=mean.Beta1Distrib]{mean.Beta1Distrib()}}, \code{\link[=skewness.Beta1Distrib]{skewness.Beta1Distrib()}},
+\code{\link[=kurtosis.Beta1Distrib]{kurtosis.Beta1Distrib()}}, \code{\link[=beta1_distrib]{beta1_distrib()}}.
 }
 \keyword{internal}

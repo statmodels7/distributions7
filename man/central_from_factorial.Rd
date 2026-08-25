@@ -7,15 +7,30 @@
 central_from_factorial(f)
 }
 \arguments{
-\item{f}{A list of the four falling factorial moments.}
+\item{f}{An unnamed list of four, the falling factorial moments of order 1
+to 4 in that order, as \code{\link[=betabinom_factorial_moments]{betabinom_factorial_moments()}} returns. They are
+read by position.}
 }
 \value{
-A list with the mean and the second, third and fourth central
-moments.
+A named list with \code{mean} and the central moments \code{c2}, \code{c3} and
+\code{c4}, each a numeric vector the length of the inputs.
 }
 \description{
-Converts \eqn{E[Y^{(k)}]} to the first four central moments, through the
-raw moments \eqn{m_1 = f_1}, \eqn{m_2 = f_2 + f_1},
-\eqn{m_3 = f_3 + 3f_2 + f_1} and \eqn{m_4 = f_4 + 6f_3 + 7f_2 + f_1}.
+Converts the first four falling factorial moments into the mean and the
+second, third and fourth central moments. The raw moments come first,
+through the Stirling numbers of the second kind written out:
+\deqn{m_1 = f_1,\quad m_2 = f_2 + f_1,\quad m_3 = f_3 + 3f_2 + f_1,\quad
+      m_4 = f_4 + 6f_3 + 7f_2 + f_1,}
+and the central moments follow by the usual binomial expansion about
+\eqn{m_1}.
+}
+\examples{
+f <- distributions7:::betabinom_factorial_moments(2, 2, 10)
+distributions7:::central_from_factorial(f)$mean
+
+}
+\seealso{
+\code{\link[=betabinom_factorial_moments]{betabinom_factorial_moments()}} for the input;
+\code{\link[=betabinom_central]{betabinom_central()}}, which chains the two.
 }
 \keyword{internal}

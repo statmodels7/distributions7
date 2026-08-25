@@ -2,18 +2,39 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GeometricDistrib}
 \alias{kurtosis.GeometricDistrib}
-\title{Kurtosis of the Geometric Distribution}
+\title{Excess Kurtosis of the Geometric Distribution}
 \arguments{
-\item{x}{A \code{GeometricDistrib}.}
+\item{x}{A \code{GeometricDistrib}, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, the length of \code{theta$mu}, above
+6 throughout.
 }
 \description{
-Closed form: excess \eqn{6 + 1/\{\mu(1+\mu)\}}.
+Closed form: \eqn{\gamma_2 = 6 + 1/\{\mu(1+\mu)\}}, the excess over the
+Gaussian. It stays above 6 at every mean and tends to 6 as the counts grow,
+the exponential's value; the family is heavy-tailed at every parameter
+setting and does not become Gaussian as a Poisson does.
+}
+\examples{
+d <- geometric_distrib()
+
+# The published form, written out.
+all.equal(kurtosis(d, list(mu = 3)), 6 + 1 / 12)
+
+# It stays above six where a Poisson's excess kurtosis vanishes.
+rbind(geometric = kurtosis(d, list(mu = c(1, 10, 1000))),
+      poisson   = kurtosis(poisson_distrib(), list(mu = c(1, 10, 1000))))
+
+}
+\seealso{
+\code{\link[=skewness.GeometricDistrib]{skewness.GeometricDistrib()}}, which tends to 2;
+\code{\link[=kurtosis.ExponentialDistrib]{kurtosis.ExponentialDistrib()}}, the continuous limit;
+\code{\link[=kurtosis.PoissonDistrib]{kurtosis.PoissonDistrib()}}, which does vanish; \code{\link[=geometric_distrib]{geometric_distrib()}}.
 }
 \keyword{internal}

@@ -4,16 +4,34 @@
 \alias{skewness.BernoulliDistrib}
 \title{Skewness of the Bernoulli Distribution}
 \arguments{
-\item{x}{A \code{BernoulliDistrib}.}
+\item{x}{A \code{BernoulliDistrib}, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}.
+Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
+\eqn{\mu = 1/2}, positive below and negative above, and it diverges at
+either end of the unit interval, where almost all the mass sits on one of
+the two values.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# The published form, written out.
+all.equal(skewness(d, list(mu = 0.3)), (1 - 0.6) / sqrt(0.3 * 0.7))
+
+# Zero at one half, and it diverges towards either end.
+skewness(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
+
+}
+\seealso{
+\code{\link[=kurtosis.BernoulliDistrib]{kurtosis.BernoulliDistrib()}}; \code{\link[=skewness.BinomialDistrib]{skewness.BinomialDistrib()}}, which
+is this divided by \eqn{\sqrt{n}}; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.
 }
 \keyword{internal}

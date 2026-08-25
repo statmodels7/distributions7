@@ -2,18 +2,34 @@
 % Please edit documentation in R/moments.R
 \name{mean.NegBin1Distrib}
 \alias{mean.NegBin1Distrib}
-\title{Mean of the NB1 Negative Binomial Distribution}
+\title{Mean of the Negative Binomial Distribution in the NB1 Parametrization}
 \arguments{
-\item{x}{A \code{NegBin1Distrib}.}
+\item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the mean, positive) and
+\code{theta} (the dispersion, positive), each a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form: \eqn{\mu}.
+Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean as its
+first parameter, so the method reads it off. What distinguishes NB1 from NB2
+is the variance function and not the mean.
+}
+\examples{
+d <- negbin1_distrib()
+
+# The first parameter is the mean, and the dispersion does not move it.
+mean(d, list(mu = c(1, 2, 3), theta = 2))
+
+}
+\seealso{
+\code{\link[=variance.NegBin1Distrib]{variance.NegBin1Distrib()}}, which is linear in the mean;
+\code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}}, which is quadratic; \code{\link[=negbin1_distrib]{negbin1_distrib()}}.
 }
 \keyword{internal}

@@ -3715,11 +3715,37 @@ S7::method(kurtosis, InvGauss1Distrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Beta Distribution
 #' @name mean.Beta1Distrib
-#' @description Closed form: \eqn{\mu}, a parameter of this parametrization.
-#' @param x A `Beta1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean and a
+#' precision, so the mean is a read; the two shapes of the standard
+#' parametrization are recovered as \eqn{a = \mu\phi} and
+#' \eqn{b = (1-\mu)\phi}, and they sum to \eqn{\phi}.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
+#' \eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
+#'
+#' @param x A `Beta1Distrib`, from [beta1_distrib()].
+#' @param theta A named list with components `mu` (the mean, strictly between
+#'   0 and 1) and `phi` (the precision, positive), each a numeric vector of
+#'   length 1 or `n`. Aligned and validated by name, so a mean at or outside
+#'   the unit interval throws.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$mu), length(theta$phi))`, strictly inside \eqn{(0,1)}.
+#'
+#' @seealso [variance.Beta1Distrib()], where the precision does enter;
+#'   [skewness.Beta1Distrib()]; [mean.Beta2Distrib()] for the two-shape
+#'   parametrization; [beta1_distrib()].
+#'
+#' @examples
+#' d <- beta1_distrib()
+#'
+#' # The first parameter is the mean, and the precision does not move it.
+#' mean(d, list(mu = c(0.2, 0.5, 0.8), phi = 5))
+#'
 #' @keywords internal
 S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3728,12 +3754,39 @@ S7::method(mean, Beta1Distrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Beta Distribution
 #' @name variance.Beta1Distrib
-#' @description Closed form: \eqn{\mu(1-\mu)/(\phi+1)}, which is why
-#'   \eqn{\phi} is called a precision.
-#' @param x A `Beta1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)/(\phi+1)}. The
+#' numerator is the Bernoulli variance at the same mean, the largest a
+#' distribution on \eqn{(0,1)} can have, and \eqn{\phi+1} divides it down.
+#' Larger \eqn{\phi} therefore means a tighter distribution, which is the
+#' reason the parameter is called a precision.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the mean and \eqn{\phi > 0} the precision.
+#'
+#' @param x A `Beta1Distrib`, from [beta1_distrib()].
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `phi` (positive), each a numeric vector of length 1 or `n`. The
+#'   variance tends to \eqn{\mu(1-\mu)} as the precision goes to zero, where
+#'   the mass piles up at the two endpoints.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$phi))`.
+#'
+#' @seealso [mean.Beta1Distrib()], [skewness.Beta1Distrib()],
+#'   [kurtosis.Beta1Distrib()], [beta1_distrib()].
+#'
+#' @examples
+#' d <- beta1_distrib()
+#'
+#' # mu (1 - mu) / (phi + 1).
+#' all.equal(variance(d, list(mu = 0.3, phi = 5)), 0.3 * 0.7 / 6)
+#'
+#' # At mu = 1/2 and phi = 2 the density is uniform, of variance 1/12.
+#' all.equal(variance(d, list(mu = 0.5, phi = 2)), 1 / 12)
+#'
 #' @keywords internal
 S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3742,13 +3795,41 @@ S7::method(variance, Beta1Distrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Beta Distribution
 #' @name skewness.Beta1Distrib
-#' @description Closed form in the shapes \eqn{a = \mu\phi} and
-#'   \eqn{b = (1-\mu)\phi}:
-#'   \eqn{2(b-a)\sqrt{a+b+1}\,/\,\{(a+b+2)\sqrt{ab}\}}.
-#' @param x A `Beta1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
+#' \deqn{\gamma_1 = \frac{2(b - a)\sqrt{a + b + 1}}
+#'                       {(a + b + 2)\sqrt{ab}}.}
+#' It takes the sign of \eqn{b - a}, so a beta is right-skewed below a mean of
+#' one half, left-skewed above it, and exactly symmetric at \eqn{\mu = 1/2}
+#' whatever the precision.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
+#' \eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
+#'
+#' @param x A `Beta1Distrib`, from [beta1_distrib()].
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `phi` (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, of length
+#'   `max(length(theta$mu), length(theta$phi))`.
+#'
+#' @seealso [kurtosis.Beta1Distrib()], written in the same two shapes;
+#'   [variance.Beta1Distrib()]; [beta1_distrib()].
+#'
+#' @examples
+#' d <- beta1_distrib()
+#'
+#' # The published form in the two shapes, written out.
+#' a <- 0.3 * 5; b <- 0.7 * 5
+#' all.equal(skewness(d, list(mu = 0.3, phi = 5)),
+#'           2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b)))
+#'
+#' # Exactly zero at a mean of one half, at any precision.
+#' skewness(d, list(mu = 0.5, phi = c(0.5, 2, 50)))
+#'
 #' @keywords internal
 S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3757,14 +3838,42 @@ S7::method(skewness, Beta1Distrib) <- function(x, theta, ...) {
   2 * (b - a) * sqrt(a + b + 1) / ((a + b + 2) * sqrt(a * b))
 }
 
-#' @title Kurtosis of the Beta Distribution
+#' @title Excess Kurtosis of the Beta Distribution
 #' @name kurtosis.Beta1Distrib
-#' @description Closed form in the shapes \eqn{a} and \eqn{b}: excess
-#'   \eqn{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}/\{ab(a+b+2)(a+b+3)\}}.
-#' @param x A `Beta1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
+#' \deqn{\gamma_2 = \frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
+#'                       {ab(a+b+2)(a+b+3)}.}
+#' It is the one family in the toolkit whose excess kurtosis is routinely
+#' negative: a beta on a bounded support has no tails to be heavy, and at
+#' \eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform, whose excess
+#' kurtosis is \eqn{-6/5}, the smallest value any distribution attains.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
+#' \eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
+#'
+#' @param x A `Beta1Distrib`, from [beta1_distrib()].
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `phi` (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, of length
+#'   `max(length(theta$mu), length(theta$phi))`.
+#'
+#' @seealso [skewness.Beta1Distrib()], written in the same two shapes;
+#'   [variance.Beta1Distrib()]; [beta1_distrib()].
+#'
+#' @examples
+#' d <- beta1_distrib()
+#'
+#' # The uniform case sits at the lower bound of -6/5.
+#' all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
+#'
+#' # Negative over the symmetric middle, positive as the mass piles at an end.
+#' round(kurtosis(d, list(mu = c(0.5, 0.1, 0.02), phi = 5)), 4)
+#'
 #' @keywords internal
 S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3781,12 +3890,41 @@ S7::method(kurtosis, Beta1Distrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Generalized Pareto Distribution
 #' @name mean.GPDDistrib
-#' @description Closed form: \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, and
-#'   infinite at or above one.
-#' @param x A `GPDDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \sigma/(1-\xi)} for \eqn{\xi < 1}, and `Inf` at or
+#' above one, where the first moment diverges. The shape controls which moments
+#' exist at all: the moment of order \eqn{k} is finite exactly for
+#' \eqn{\xi < 1/k}, so a fitted object can report a mean and no variance.
+#'
+#' @section Notation:
+#' \eqn{\sigma > 0} is the scale and \eqn{\xi} the shape, of either sign. At
+#' \eqn{\xi = 0} the family is the exponential of mean \eqn{\sigma}, and at
+#' \eqn{\xi < 0} the support is bounded above by \eqn{\sigma/|\xi|}.
+#'
+#' @param x A `GPDDistrib`, from [gpd_distrib()].
+#' @param theta A named list with components `sigma` (the scale, positive) and
+#'   `xi` (the shape, any real value), each a numeric vector of length 1 or
+#'   `n`. Settings with \eqn{\xi \ge 1} give `Inf` in their own positions.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$sigma), length(theta$xi))`, `Inf` wherever
+#'   \eqn{\xi \ge 1}.
+#'
+#' @seealso [variance.GPDDistrib()], whose threshold is \eqn{1/2};
+#'   [mean.ExponentialDistrib()], the \eqn{\xi = 0} case; [gpd_distrib()].
+#'
+#' @examples
+#' d <- gpd_distrib()
+#'
+#' # Finite below shape one and infinite at or above it.
+#' mean(d, list(sigma = 1, xi = c(0, 0.5, 1, 1.5)))
+#'
+#' # At shape zero the family is exponential of mean sigma.
+#' all.equal(mean(d, list(sigma = 2, xi = 0)),
+#'           mean(exponential_distrib(), list(mu = 2)))
+#'
 #' @keywords internal
 S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3798,13 +3936,42 @@ S7::method(mean, GPDDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Generalized Pareto Distribution
 #' @name variance.GPDDistrib
-#' @description Closed form:
-#'   \eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, and infinite
-#'   at or above one half.
-#' @param x A `GPDDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form:
+#' \eqn{\operatorname{Var}(Y) = \sigma^2/\{(1-\xi)^2(1-2\xi)\}} for
+#' \eqn{\xi < 1/2}, and `Inf` at or above one half. The threshold is half the
+#' mean's, the second moment being the first to fail as the tail grows heavy,
+#' and a fitted object at \eqn{\xi = 0.6} reports a finite mean beside an
+#' infinite variance.
+#'
+#' @section Notation:
+#' \eqn{\sigma > 0} is the scale and \eqn{\xi} the shape, of either sign.
+#'
+#' @param x A `GPDDistrib`, from [gpd_distrib()].
+#' @param theta A named list with components `sigma` (positive) and `xi` (any
+#'   real value), each a numeric vector of length 1 or `n`. Settings with
+#'   \eqn{\xi \ge 1/2} give `Inf`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$sigma), length(theta$xi))`, `Inf` wherever
+#'   \eqn{\xi \ge 1/2}.
+#'
+#' @seealso [mean.GPDDistrib()], whose threshold is 1;
+#'   [skewness.GPDDistrib()], whose threshold is \eqn{1/3};
+#'   [gpd_distrib()].
+#'
+#' @examples
+#' d <- gpd_distrib()
+#'
+#' # Finite below shape one half and infinite at or above it.
+#' variance(d, list(sigma = 1, xi = c(0, 0.4, 0.5, 0.6)))
+#'
+#' # A mean without a variance, which is what the two thresholds allow.
+#' c(mean = mean(d, list(sigma = 1, xi = 0.6)),
+#'   variance = variance(d, list(sigma = 1, xi = 0.6)))
+#'
 #' @keywords internal
 S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3816,13 +3983,37 @@ S7::method(variance, GPDDistrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Generalized Pareto Distribution
 #' @name skewness.GPDDistrib
-#' @description Closed form:
-#'   \eqn{2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for \eqn{\xi < 1/3}, and infinite
-#'   at or above one third.
-#' @param x A `GPDDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
+#' \eqn{\xi < 1/3}, and `Inf` at or above one third. The scale cancels, so the
+#' value depends on the shape alone; it is 2 at \eqn{\xi = 0}, where the family
+#' is exponential, and it climbs without bound as the shape approaches its
+#' threshold.
+#'
+#' @section Notation:
+#' \eqn{\xi} is the shape, of either sign. The scale does not enter a
+#' standardized moment.
+#'
+#' @param x A `GPDDistrib`, from [gpd_distrib()].
+#' @param theta A named list with components `sigma` (positive) and `xi` (any
+#'   real value), each a numeric vector of length 1 or `n`. Only `xi` enters
+#'   the value; settings with \eqn{\xi \ge 1/3} give `Inf`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, of length
+#'   `max(length(theta$sigma), length(theta$xi))`, `Inf` wherever
+#'   \eqn{\xi \ge 1/3}.
+#'
+#' @seealso [kurtosis.GPDDistrib()], whose threshold is \eqn{1/4};
+#'   [skewness.ExponentialDistrib()], the \eqn{\xi = 0} case; [gpd_distrib()].
+#'
+#' @examples
+#' d <- gpd_distrib()
+#'
+#' # Two at shape zero, climbing steeply, infinite at or above one third.
+#' skewness(d, list(sigma = 1, xi = c(0, 0.3, 1 / 3, 0.4)))
+#'
 #' @keywords internal
 S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3831,15 +4022,44 @@ S7::method(skewness, GPDDistrib) <- function(x, theta, ...) {
   ifelse(xi < 1 / 3, 2 * (1 + xi) * sqrt(1 - 2 * xi) / (1 - 3 * xi), Inf)
 }
 
-#' @title Kurtosis of the Generalized Pareto Distribution
+#' @title Excess Kurtosis of the Generalized Pareto Distribution
 #' @name kurtosis.GPDDistrib
-#' @description Closed form: excess
-#'   \eqn{3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
-#'   \eqn{\xi < 1/4}, and infinite at or above one quarter.
-#' @param x A `GPDDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form:
+#' \eqn{\gamma_2 = 3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
+#' \eqn{\xi < 1/4}, and `Inf` at or above one quarter. The threshold is the
+#' tightest of the four moments, so this is the first quantity to become
+#' unreportable as a fitted shape rises.
+#'
+#' @section Notation:
+#' \eqn{\xi} is the shape, of either sign. The scale does not enter a
+#' standardized moment.
+#'
+#' @param x A `GPDDistrib`, from [gpd_distrib()].
+#' @param theta A named list with components `sigma` (positive) and `xi` (any
+#'   real value), each a numeric vector of length 1 or `n`. Only `xi` enters
+#'   the value; settings with \eqn{\xi \ge 1/4} give `Inf`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, of length
+#'   `max(length(theta$sigma), length(theta$xi))`, `Inf` wherever
+#'   \eqn{\xi \ge 1/4}.
+#'
+#' @seealso [skewness.GPDDistrib()], whose threshold is \eqn{1/3};
+#'   [kurtosis.ExponentialDistrib()], the \eqn{\xi = 0} case; [gpd_distrib()].
+#'
+#' @examples
+#' d <- gpd_distrib()
+#'
+#' # Six at shape zero, and infinite at or above one quarter.
+#' kurtosis(d, list(sigma = 1, xi = c(0, 0.2, 0.25, 0.3)))
+#'
+#' # The four thresholds, from the mean's 1 down to this one's 1/4.
+#' th <- list(sigma = 1, xi = 0.3)
+#' c(mean = mean(d, th), variance = variance(d, th),
+#'   skewness = skewness(d, th), kurtosis = kurtosis(d, th))
+#'
 #' @keywords internal
 S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3858,15 +4078,36 @@ S7::method(kurtosis, GPDDistrib) <- function(x, theta, ...) {
 # so the four central moments follow from four of them. The ratio is formed
 # through lgamma, since Gamma((d+k)/p) overflows long before the ratio does.
 
-#' Raw Moments of the Generalized Gamma
+#' Raw Moments of a Generalized Gamma
 #'
 #' @description
-#' \eqn{E[Y^k] = a^k\,\Gamma((d+k)/p)/\Gamma(d/p)} for \eqn{k = 1, \dots, 4},
-#' formed on the log scale.
+#' Returns the first four raw moments
+#' \eqn{E[Y^k] = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)} for \eqn{k = 1, \ldots, 4}.
+#' The four moment methods of the family share this helper and assemble
+#' different combinations of the four values.
 #'
-#' @param a,d,p The Stacy parameters.
+#' @details
+#' The gamma ratio is formed on the log scale, as
+#' `exp(k * log(a) + lgamma((d + k) / p) - lgamma(d / p))`, so it stays finite
+#' at shapes where either gamma function on its own would overflow.
 #'
-#' @return A list of the four raw moments.
+#' @param a The scale parameter, a positive numeric vector.
+#' @param d The first shape parameter, a positive numeric vector.
+#' @param p The second shape parameter, a positive numeric vector. Small `p`
+#'   pushes \eqn{(d+k)/p} to large arguments, where the log scale earns its
+#'   keep.
+#'
+#' @return A list of four numeric vectors, the raw moments of order 1 to 4,
+#'   each recycled to the longest of `a`, `d` and `p`.
+#'
+#' @seealso [mean.GenGamma1Distrib()], [variance.GenGamma1Distrib()],
+#'   [skewness.GenGamma1Distrib()] and [kurtosis.GenGamma1Distrib()] for the
+#'   four consumers.
+#'
+#' @examples
+#' # At d = p the family is Weibull, and the first raw moment is its mean.
+#' distributions7:::gengamma_raw_moments(2, 3, 3)[[1]]
+#' mean(weibull1_distrib(), list(mu = 2, sigma = 3))
 #'
 #' @keywords internal
 gengamma_raw_moments <- function(a, d, p) {
@@ -3876,12 +4117,46 @@ gengamma_raw_moments <- function(a, d, p) {
 
 #' @title Mean of the Generalized Gamma Distribution
 #' @name mean.GenGamma1Distrib
-#' @description Closed form:
-#'   \eqn{a\,\Gamma((d+1)/p)/\Gamma(d/p)}.
-#' @param x A `GenGamma1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
+#' moment. None of the three parameters is the mean: \eqn{a} is a scale and
+#' \eqn{d} and \eqn{p} are shapes, and the gamma ratio is what carries the
+#' shapes into the mean.
+#'
+#' @details
+#' The family nests four the toolkit ships separately, and each is a check on
+#' this formula: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
+#' exponential at \eqn{d = p = 1} and the half-normal at
+#' \eqn{a = \sqrt2, d = 1, p = 2}.
+#'
+#' @section Notation:
+#' \eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes.
+#'
+#' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
+#' @param theta A named list with components `a`, `d` and `p`, all positive,
+#'   each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, of length equal to the longest of the
+#'   three components.
+#'
+#' @seealso [variance.GenGamma1Distrib()], [gengamma_raw_moments()] for the
+#'   shared quantities, [gengamma1_distrib()].
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#'
+#' # At p = 1 the family is a gamma of shape d, whose mean is a d.
+#' all.equal(mean(d, list(a = 2, d = 3, p = 1)), 6)
+#'
+#' # At d = p it is a Weibull of scale a and shape p.
+#' all.equal(mean(d, list(a = 2, d = 3, p = 3)),
+#'           mean(weibull1_distrib(), list(mu = 2, sigma = 3)))
+#'
+#' # At a = sqrt(2), d = 1, p = 2 it is the half-normal, of mean sqrt(2/pi).
+#' all.equal(mean(d, list(a = sqrt(2), d = 1, p = 2)), sqrt(2 / pi))
+#'
 #' @keywords internal
 S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3890,11 +4165,39 @@ S7::method(mean, GenGamma1Distrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Generalized Gamma Distribution
 #' @name variance.GenGamma1Distrib
-#' @description Closed form, from the first two raw moments.
-#' @param x A `GenGamma1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form from the first two raw moments,
+#' \eqn{\operatorname{Var}(Y) = m_2 - m_1^2} with
+#' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
+#' square and the two shapes through the gamma ratios.
+#'
+#' @section Notation:
+#' \eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes, and
+#' \eqn{m_k} the \eqn{k}-th raw moment.
+#'
+#' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
+#' @param theta A named list with components `a`, `d` and `p`, all positive,
+#'   each a numeric vector of length 1 or `n`. Cancellation between the two
+#'   raw moments costs digits where the coefficient of variation is small.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, of length equal to the longest of the
+#'   three components.
+#'
+#' @seealso [mean.GenGamma1Distrib()], [skewness.GenGamma1Distrib()],
+#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#'
+#' # At p = 1 the family is a gamma of shape d, whose variance is a^2 d.
+#' all.equal(variance(d, list(a = 2, d = 3, p = 1)), 12)
+#'
+#' # At d = p it agrees with the Weibull.
+#' all.equal(variance(d, list(a = 2, d = 3, p = 3)),
+#'           variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
+#'
 #' @keywords internal
 S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3904,11 +4207,40 @@ S7::method(variance, GenGamma1Distrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Generalized Gamma Distribution
 #' @name skewness.GenGamma1Distrib
-#' @description Closed form, from the first three raw moments.
-#' @param x A `GenGamma1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Assembled from the first three raw moments,
+#' \eqn{\gamma_1 = (m_3 - 3m_1m_2 + 2m_1^3)/(m_2 - m_1^2)^{3/2}} with
+#' \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, so the
+#' value depends on the two shapes alone; unlike a gamma's it can be negative,
+#' which is part of what the second shape parameter buys.
+#'
+#' @section Notation:
+#' \eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
+#' raw moment. The scale does not enter a standardized moment.
+#'
+#' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
+#' @param theta A named list with components `a`, `d` and `p`, all positive,
+#'   each a numeric vector of length 1 or `n`. Only `d` and `p` enter the
+#'   value.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, of length equal to the longest of the three
+#'   components.
+#'
+#' @seealso [kurtosis.GenGamma1Distrib()], from the same raw moments;
+#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#'
+#' # At d = p it agrees with the Weibull, which changes sign with its shape.
+#' all.equal(skewness(d, list(a = 2, d = 3, p = 3)),
+#'           skewness(weibull1_distrib(), list(mu = 2, sigma = 3)))
+#'
+#' # The scale does not enter a standardized moment.
+#' skewness(d, list(a = c(0.1, 1, 100), d = 3, p = 1.5))
+#'
 #' @keywords internal
 S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3917,13 +4249,43 @@ S7::method(skewness, GenGamma1Distrib) <- function(x, theta, ...) {
   (m[[3]] - 3 * m[[1]] * m[[2]] + 2 * m[[1]]^3) / v^1.5
 }
 
-#' @title Kurtosis of the Generalized Gamma Distribution
+#' @title Excess Kurtosis of the Generalized Gamma Distribution
 #' @name kurtosis.GenGamma1Distrib
-#' @description Closed form, from the first four raw moments; excess.
-#' @param x A `GenGamma1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Assembled from the first four raw moments,
+#' \eqn{\gamma_2 = (m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
+#' with \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, and
+#' the two shapes move the skewness and the kurtosis with some freedom, where a
+#' gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
+#'
+#' @section Notation:
+#' \eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
+#' raw moment.
+#'
+#' @param x A `GenGamma1Distrib`, from [gengamma1_distrib()].
+#' @param theta A named list with components `a`, `d` and `p`, all positive,
+#'   each a numeric vector of length 1 or `n`. Only `d` and `p` enter the
+#'   value; the fourth-order combination cancels heavily at small dispersions.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, of length equal to the longest
+#'   of the three components.
+#'
+#' @seealso [skewness.GenGamma1Distrib()], from the same raw moments;
+#'   [gengamma_raw_moments()], [gengamma1_distrib()].
+#'
+#' @examples
+#' d <- gengamma1_distrib()
+#'
+#' # At d = p it agrees with the Weibull.
+#' all.equal(kurtosis(d, list(a = 2, d = 3, p = 3)),
+#'           kurtosis(weibull1_distrib(), list(mu = 2, sigma = 3)))
+#'
+#' # At p = 1 it agrees with the gamma, which ties it to the skewness.
+#' th <- list(a = 2, d = 3, p = 1)
+#' all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
+#'
 #' @keywords internal
 S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -3936,11 +4298,30 @@ S7::method(kurtosis, GenGamma1Distrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Poisson Distribution
 #' @name mean.PoissonDistrib
-#' @description Closed form: \eqn{\mu}.
-#' @param x A `PoissonDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \mu}. The family carries one parameter and it is
+#' the mean, so this method reads it off. It is also the variance, which is the
+#' equidispersion the family is defined by.
+#'
+#' @param x A `PoissonDistrib`, from [poisson_distrib()].
+#' @param theta A named list with one component, `mu` (the mean, positive), a
+#'   numeric vector of length 1 or `n`. Aligned and validated by name, so a
+#'   non-positive value throws.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, the length of `theta$mu`.
+#'
+#' @seealso [variance.PoissonDistrib()], equal to this;
+#'   [mean.NegBin2Distrib()] and [mean.NegBin1Distrib()], the overdispersed
+#'   count families; [poisson_distrib()].
+#'
+#' @examples
+#' d <- poisson_distrib()
+#'
+#' # The one parameter is the mean, and it is also the variance.
+#' c(mean(d, list(mu = 3)), variance(d, list(mu = 3)))
+#'
 #' @keywords internal
 S7::method(mean, PoissonDistrib) <- function(x, theta, ...) {
   align_theta(x, theta)[[1]]
@@ -3948,11 +4329,33 @@ S7::method(mean, PoissonDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Poisson Distribution
 #' @name variance.PoissonDistrib
-#' @description Closed form: \eqn{\mu}, equal to the mean.
-#' @param x A `PoissonDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = \mu}, equal to the mean. This is
+#' equidispersion, and it is the assumption every overdispersed count family in
+#' the toolkit relaxes: a sample whose variance exceeds its mean is evidence
+#' against a Poisson and for a negative binomial or a Poisson-inverse Gaussian.
+#'
+#' @param x A `PoissonDistrib`, from [poisson_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, the length of `theta$mu`.
+#'
+#' @seealso [mean.PoissonDistrib()], equal to this;
+#'   [variance.NegBin2Distrib()], which adds \eqn{\mu^2/\theta};
+#'   [poisson_distrib()].
+#'
+#' @examples
+#' d <- poisson_distrib()
+#'
+#' # Equal to the mean at every setting.
+#' variance(d, list(mu = c(0.5, 3, 100)))
+#'
+#' # The negative binomial exceeds it and falls onto it as theta grows.
+#' variance(negbin2_distrib(), list(mu = 3, theta = c(1, 100, 1e8)))
+#'
 #' @keywords internal
 S7::method(variance, PoissonDistrib) <- function(x, theta, ...) {
   align_theta(x, theta)[[1]]
@@ -3960,23 +4363,65 @@ S7::method(variance, PoissonDistrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Poisson Distribution
 #' @name skewness.PoissonDistrib
-#' @description Closed form: \eqn{1/\sqrt{\mu}}.
-#' @param x A `PoissonDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive at every mean, a
+#' count having a floor at zero and no ceiling, and it decays like
+#' \eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
+#' Gaussian as the counts grow.
+#'
+#' @param x A `PoissonDistrib`, from [poisson_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, the length of `theta$mu`, positive throughout.
+#'
+#' @seealso [kurtosis.PoissonDistrib()], which decays twice as fast;
+#'   [skewness.NegBin2Distrib()], which tends to this;
+#'   [poisson_distrib()].
+#'
+#' @examples
+#' d <- poisson_distrib()
+#'
+#' # One over the square root of the mean.
+#' all.equal(skewness(d, list(mu = 4)), 0.5)
+#'
+#' # It vanishes as the counts grow.
+#' skewness(d, list(mu = c(1, 25, 10000)))
+#'
 #' @keywords internal
 S7::method(skewness, PoissonDistrib) <- function(x, theta, ...) {
   1 / sqrt(align_theta(x, theta)[[1]])
 }
 
-#' @title Kurtosis of the Poisson Distribution
+#' @title Excess Kurtosis of the Poisson Distribution
 #' @name kurtosis.PoissonDistrib
-#' @description Closed form: excess \eqn{1/\mu}.
-#' @param x A `PoissonDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_2 = 1/\mu}, the excess over the Gaussian. It is
+#' positive at every mean and decays like \eqn{\mu^{-1}}, twice as fast as the
+#' skewness, so a Poisson of moderate mean looks Gaussian in its tails before
+#' it looks symmetric.
+#'
+#' @param x A `PoissonDistrib`, from [poisson_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, the length of `theta$mu`,
+#'   positive throughout.
+#'
+#' @seealso [skewness.PoissonDistrib()]; [kurtosis.NegBin2Distrib()], which
+#'   tends to this; [poisson_distrib()].
+#'
+#' @examples
+#' d <- poisson_distrib()
+#'
+#' # One over the mean, falling twice as fast as the skewness.
+#' rbind(skewness = skewness(d, list(mu = c(1, 25, 10000))),
+#'       kurtosis = kurtosis(d, list(mu = c(1, 25, 10000))))
+#'
 #' @keywords internal
 S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
   1 / align_theta(x, theta)[[1]]
@@ -3986,11 +4431,32 @@ S7::method(kurtosis, PoissonDistrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Bernoulli Distribution
 #' @name mean.BernoulliDistrib
-#' @description Closed form: \eqn{\mu}, the success probability.
-#' @param x A `BernoulliDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \mu}, the success probability. The response takes
+#' the values 0 and 1, so the mean is the probability of the second and every
+#' other moment is a function of it: a one-parameter family has nothing else
+#' for them to depend on.
+#'
+#' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
+#' @param theta A named list with one component, `mu` (the success
+#'   probability, strictly between 0 and 1), a numeric vector of length 1 or
+#'   `n`. Aligned and validated by name, so a value at or outside the unit
+#'   interval throws.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, the length of `theta$mu`, strictly inside
+#'   \eqn{(0,1)}.
+#'
+#' @seealso [variance.BernoulliDistrib()]; [mean.BinomialDistrib()], the sum of
+#'   `size` of these; [bernoulli_distrib()].
+#'
+#' @examples
+#' d <- bernoulli_distrib()
+#'
+#' # The one parameter is the mean.
+#' mean(d, list(mu = c(0.1, 0.5, 0.9)))
+#'
 #' @keywords internal
 S7::method(mean, BernoulliDistrib) <- function(x, theta, ...) {
   align_theta(x, theta)[[1]]
@@ -3998,11 +4464,30 @@ S7::method(mean, BernoulliDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Bernoulli Distribution
 #' @name variance.BernoulliDistrib
-#' @description Closed form: \eqn{\mu(1-\mu)}.
-#' @param x A `BernoulliDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1-\mu)}. It is largest at
+#' \eqn{\mu = 1/2}, where it is \eqn{1/4}, and goes to zero at either end, the
+#' response becoming deterministic there. That quarter is the largest variance
+#' any distribution on \eqn{\{0,1\}} can have.
+#'
+#' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, the length of `theta$mu`, in
+#'   \eqn{(0, 1/4]}.
+#'
+#' @seealso [mean.BernoulliDistrib()]; [variance.BinomialDistrib()], which is
+#'   `size` times this; [bernoulli_distrib()].
+#'
+#' @examples
+#' d <- bernoulli_distrib()
+#'
+#' # Largest at one half, vanishing at either end.
+#' variance(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
+#'
 #' @keywords internal
 S7::method(variance, BernoulliDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
@@ -4011,25 +4496,67 @@ S7::method(variance, BernoulliDistrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Bernoulli Distribution
 #' @name skewness.BernoulliDistrib
-#' @description Closed form: \eqn{(1-2\mu)/\sqrt{\mu(1-\mu)}}.
-#' @param x A `BernoulliDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{\mu(1-\mu)}}. It is zero at
+#' \eqn{\mu = 1/2}, positive below and negative above, and it diverges at
+#' either end of the unit interval, where almost all the mass sits on one of
+#' the two values.
+#'
+#' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, the length of `theta$mu`.
+#'
+#' @seealso [kurtosis.BernoulliDistrib()]; [skewness.BinomialDistrib()], which
+#'   is this divided by \eqn{\sqrt{n}}; [bernoulli_distrib()].
+#'
+#' @examples
+#' d <- bernoulli_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(skewness(d, list(mu = 0.3)), (1 - 0.6) / sqrt(0.3 * 0.7))
+#'
+#' # Zero at one half, and it diverges towards either end.
+#' skewness(d, list(mu = c(0.01, 0.3, 0.5, 0.7, 0.99)))
+#'
 #' @keywords internal
 S7::method(skewness, BernoulliDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
   (1 - 2 * p) / sqrt(p * (1 - p))
 }
 
-#' @title Kurtosis of the Bernoulli Distribution
+#' @title Excess Kurtosis of the Bernoulli Distribution
 #' @name kurtosis.BernoulliDistrib
-#' @description Closed form: excess
-#'   \eqn{\{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}.
-#' @param x A `BernoulliDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}, the excess
+#' over the Gaussian. It reaches its minimum \eqn{-2} at \eqn{\mu = 1/2}, which
+#' is the smallest excess kurtosis any distribution attains, and diverges at
+#' either end of the unit interval.
+#'
+#' @param x A `BernoulliDistrib`, from [bernoulli_distrib()].
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, the length of `theta$mu`, at or
+#'   above \eqn{-2}.
+#'
+#' @seealso [skewness.BernoulliDistrib()]; [kurtosis.BinomialDistrib()], which
+#'   is this divided by \eqn{n}; [bernoulli_distrib()].
+#'
+#' @examples
+#' d <- bernoulli_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(kurtosis(d, list(mu = 0.3)), (1 - 6 * 0.21) / 0.21)
+#'
+#' # Minus two at one half, the lower bound for any distribution.
+#' kurtosis(d, list(mu = c(0.1, 0.5, 0.9)))
+#'
 #' @keywords internal
 S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
@@ -4041,11 +4568,37 @@ S7::method(kurtosis, BernoulliDistrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Binomial Distribution
 #' @name mean.BinomialDistrib
-#' @description Closed form: \eqn{n\mu}.
-#' @param x A `BinomialDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = n\mu}, with \eqn{n} the number of trials and
+#' \eqn{\mu} the success probability. The trial count is a property of the
+#' object and not a parameter, so it is read from `x@size` and does not appear
+#' in `theta`.
+#'
+#' @section Notation:
+#' \eqn{n} is the number of trials, held on the object, and \eqn{\mu \in (0,1)}
+#' the success probability.
+#'
+#' @param x A `BinomialDistrib`, from [binomial_distrib()], carrying the trial
+#'   count in its `size` property.
+#' @param theta A named list with one component, `mu` (the success
+#'   probability, strictly between 0 and 1), a numeric vector of length 1 or
+#'   `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, the length of `theta$mu`, in
+#'   \eqn{(0, n)}.
+#'
+#' @seealso [variance.BinomialDistrib()]; [mean.BernoulliDistrib()], the
+#'   one-trial case; [mean.BetaBinom1Distrib()], the overdispersed extension;
+#'   [binomial_distrib()].
+#'
+#' @examples
+#' d <- binomial_distrib(size = 10)
+#'
+#' # Ten trials at probability 0.3.
+#' mean(d, list(mu = 0.3))
+#'
 #' @keywords internal
 S7::method(mean, BinomialDistrib) <- function(x, theta, ...) {
   x@size * align_theta(x, theta)[[1]]
@@ -4053,11 +4606,32 @@ S7::method(mean, BinomialDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Binomial Distribution
 #' @name variance.BinomialDistrib
-#' @description Closed form: \eqn{n\mu(1-\mu)}.
-#' @param x A `BinomialDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
+#' independent, so the variance is the trial count times the Bernoulli
+#' variance; a sample of counts out of \eqn{n} whose variance exceeds this is
+#' overdispersed, and a beta-binomial is the family that carries the excess.
+#'
+#' @param x A `BinomialDistrib`, from [binomial_distrib()], carrying the trial
+#'   count in its `size` property.
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, the length of `theta$mu`.
+#'
+#' @seealso [mean.BinomialDistrib()]; [variance.BernoulliDistrib()], the
+#'   one-trial case; [variance.BetaBinom1Distrib()], which inflates this;
+#'   [binomial_distrib()].
+#'
+#' @examples
+#' d <- binomial_distrib(size = 10)
+#'
+#' # Ten times the Bernoulli variance.
+#' all.equal(variance(d, list(mu = 0.3)),
+#'           10 * variance(bernoulli_distrib(), list(mu = 0.3)))
+#'
 #' @keywords internal
 S7::method(variance, BinomialDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
@@ -4066,25 +4640,72 @@ S7::method(variance, BinomialDistrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Binomial Distribution
 #' @name skewness.BinomialDistrib
-#' @description Closed form: \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}.
-#' @param x A `BinomialDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{n\mu(1-\mu)}}. It is the
+#' Bernoulli's divided by \eqn{\sqrt n}, so it vanishes as the trials
+#' accumulate, at the rate the central limit theorem gives. It is zero at
+#' \eqn{\mu = 1/2} at every trial count.
+#'
+#' @param x A `BinomialDistrib`, from [binomial_distrib()], carrying the trial
+#'   count in its `size` property.
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, the length of `theta$mu`.
+#'
+#' @seealso [kurtosis.BinomialDistrib()], which vanishes as \eqn{1/n};
+#'   [skewness.BernoulliDistrib()], the one-trial case;
+#'   [binomial_distrib()].
+#'
+#' @examples
+#' d <- binomial_distrib(size = 10)
+#'
+#' # The Bernoulli's divided by the square root of the trial count.
+#' all.equal(skewness(d, list(mu = 0.3)),
+#'           skewness(bernoulli_distrib(), list(mu = 0.3)) / sqrt(10))
+#'
+#' # Zero at one half, at any trial count.
+#' skewness(d, list(mu = 0.5))
+#'
 #' @keywords internal
 S7::method(skewness, BinomialDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
   (1 - 2 * p) / sqrt(x@size * p * (1 - p))
 }
 
-#' @title Kurtosis of the Binomial Distribution
+#' @title Excess Kurtosis of the Binomial Distribution
 #' @name kurtosis.BinomialDistrib
-#' @description Closed form: excess
-#'   \eqn{\{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}.
-#' @param x A `BinomialDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}, the
+#' excess over the Gaussian. It is the Bernoulli's divided by \eqn{n}, so it
+#' vanishes twice as fast as the skewness and can take either sign: it is
+#' negative over the middle of the unit interval, where the support is bounded
+#' at both ends and the tails are lighter than a Gaussian's.
+#'
+#' @param x A `BinomialDistrib`, from [binomial_distrib()], carrying the trial
+#'   count in its `size` property.
+#' @param theta A named list with one component, `mu` (strictly between 0 and
+#'   1), a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, the length of `theta$mu`.
+#'
+#' @seealso [skewness.BinomialDistrib()]; [kurtosis.BernoulliDistrib()], the
+#'   one-trial case; [binomial_distrib()].
+#'
+#' @examples
+#' d <- binomial_distrib(size = 10)
+#'
+#' # The Bernoulli's divided by the trial count.
+#' all.equal(kurtosis(d, list(mu = 0.3)),
+#'           kurtosis(bernoulli_distrib(), list(mu = 0.3)) / 10)
+#'
+#' # Negative over the middle, positive towards either end.
+#' round(kurtosis(d, list(mu = c(0.05, 0.3, 0.5, 0.95))), 4)
+#'
 #' @keywords internal
 S7::method(kurtosis, BinomialDistrib) <- function(x, theta, ...) {
   p <- align_theta(x, theta)[[1]]
@@ -4098,11 +4719,29 @@ S7::method(kurtosis, BinomialDistrib) <- function(x, theta, ...) {
 
 #' @title Mean of the Geometric Distribution
 #' @name mean.GeometricDistrib
-#' @description Closed form: \eqn{\mu}, the parameter itself.
-#' @param x A `GeometricDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \mu}. The family is parametrized by its mean, the
+#' expected number of failures before the first success, and the success
+#' probability it implies is \eqn{1/(1+\mu)}.
+#'
+#' @param x A `GeometricDistrib`, from [geometric_distrib()].
+#' @param theta A named list with one component, `mu` (the mean, positive), a
+#'   numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, the length of `theta$mu`.
+#'
+#' @seealso [variance.GeometricDistrib()], which exceeds this;
+#'   [mean.NegBin2Distrib()], of which this is the \eqn{\theta = 1} case;
+#'   [geometric_distrib()].
+#'
+#' @examples
+#' d <- geometric_distrib()
+#'
+#' # The one parameter is the mean.
+#' mean(d, list(mu = c(0.5, 3, 20)))
+#'
 #' @keywords internal
 S7::method(mean, GeometricDistrib) <- function(x, theta, ...) {
   align_theta(x, theta)[[1]]
@@ -4110,11 +4749,34 @@ S7::method(mean, GeometricDistrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Geometric Distribution
 #' @name variance.GeometricDistrib
-#' @description Closed form: \eqn{\mu(1+\mu)}.
-#' @param x A `GeometricDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\mu)}. It exceeds the mean
+#' at every parameter value, so the family is overdispersed relative to a
+#' Poisson, and it is exactly the negative binomial's variance at
+#' \eqn{\theta = 1}.
+#'
+#' @param x A `GeometricDistrib`, from [geometric_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, the length of `theta$mu`.
+#'
+#' @seealso [mean.GeometricDistrib()]; [variance.NegBin2Distrib()], of which
+#'   this is the \eqn{\theta = 1} case; [variance.PoissonDistrib()], the
+#'   equidispersed comparison; [geometric_distrib()].
+#'
+#' @examples
+#' d <- geometric_distrib()
+#'
+#' # Mean times one plus the mean.
+#' all.equal(variance(d, list(mu = 3)), 12)
+#'
+#' # The negative binomial at theta = 1 is the same law.
+#' all.equal(variance(d, list(mu = 3)),
+#'           variance(negbin2_distrib(), list(mu = 3, theta = 1)))
+#'
 #' @keywords internal
 S7::method(variance, GeometricDistrib) <- function(x, theta, ...) {
   mu <- align_theta(x, theta)[[1]]
@@ -4123,24 +4785,70 @@ S7::method(variance, GeometricDistrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Geometric Distribution
 #' @name skewness.GeometricDistrib
-#' @description Closed form: \eqn{(1+2\mu)/\sqrt{\mu(1+\mu)}}.
-#' @param x A `GeometricDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
+#' every mean and, unlike a Poisson's, it does not vanish as the counts grow:
+#' it tends to 2 from above, the exponential's value, which is the continuous
+#' limit of the family.
+#'
+#' @param x A `GeometricDistrib`, from [geometric_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, the length of `theta$mu`, above 2 throughout.
+#'
+#' @seealso [kurtosis.GeometricDistrib()], which tends to 6;
+#'   [skewness.ExponentialDistrib()], the continuous limit;
+#'   [geometric_distrib()].
+#'
+#' @examples
+#' d <- geometric_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(skewness(d, list(mu = 3)), 7 / sqrt(12))
+#'
+#' # It tends to the exponential's 2 as the mean grows.
+#' skewness(d, list(mu = c(1, 10, 1000)))
+#'
 #' @keywords internal
 S7::method(skewness, GeometricDistrib) <- function(x, theta, ...) {
   mu <- align_theta(x, theta)[[1]]
   (1 + 2 * mu) / sqrt(mu * (1 + mu))
 }
 
-#' @title Kurtosis of the Geometric Distribution
+#' @title Excess Kurtosis of the Geometric Distribution
 #' @name kurtosis.GeometricDistrib
-#' @description Closed form: excess \eqn{6 + 1/\{\mu(1+\mu)\}}.
-#' @param x A `GeometricDistrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_2 = 6 + 1/\{\mu(1+\mu)\}}, the excess over the
+#' Gaussian. It stays above 6 at every mean and tends to 6 as the counts grow,
+#' the exponential's value; the family is heavy-tailed at every parameter
+#' setting and does not become Gaussian as a Poisson does.
+#'
+#' @param x A `GeometricDistrib`, from [geometric_distrib()].
+#' @param theta A named list with one component, `mu` (positive), a numeric
+#'   vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, the length of `theta$mu`, above
+#'   6 throughout.
+#'
+#' @seealso [skewness.GeometricDistrib()], which tends to 2;
+#'   [kurtosis.ExponentialDistrib()], the continuous limit;
+#'   [kurtosis.PoissonDistrib()], which does vanish; [geometric_distrib()].
+#'
+#' @examples
+#' d <- geometric_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(kurtosis(d, list(mu = 3)), 6 + 1 / 12)
+#'
+#' # It stays above six where a Poisson's excess kurtosis vanishes.
+#' rbind(geometric = kurtosis(d, list(mu = c(1, 10, 1000))),
+#'       poisson   = kurtosis(poisson_distrib(), list(mu = c(1, 10, 1000))))
+#'
 #' @keywords internal
 S7::method(kurtosis, GeometricDistrib) <- function(x, theta, ...) {
   mu <- align_theta(x, theta)[[1]]
@@ -4153,40 +4861,121 @@ S7::method(kurtosis, GeometricDistrib) <- function(x, theta, ...) {
 # size at mu/theta and the success probability at 1/(1 + theta). Every moment
 # below reduces to the Poisson one as theta goes to zero.
 
-#' @title Mean of the NB1 Negative Binomial Distribution
+#' @title Mean of the Negative Binomial Distribution in the NB1 Parametrization
 #' @name mean.NegBin1Distrib
-#' @description Closed form: \eqn{\mu}.
-#' @param x A `NegBin1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = \mu}. This parametrization carries the mean as its
+#' first parameter, so the method reads it off. What distinguishes NB1 from NB2
+#' is the variance function and not the mean.
+#'
+#' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
+#' @param theta A named list with components `mu` (the mean, positive) and
+#'   `theta` (the dispersion, positive), each a numeric vector of length 1 or
+#'   `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$mu), length(theta$theta))`.
+#'
+#' @seealso [variance.NegBin1Distrib()], which is linear in the mean;
+#'   [variance.NegBin2Distrib()], which is quadratic; [negbin1_distrib()].
+#'
+#' @examples
+#' d <- negbin1_distrib()
+#'
+#' # The first parameter is the mean, and the dispersion does not move it.
+#' mean(d, list(mu = c(1, 2, 3), theta = 2))
+#'
 #' @keywords internal
 S7::method(mean, NegBin1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   moment_const(theta, 2L, 0) + theta[[1]]
 }
 
-#' @title Variance of the NB1 Negative Binomial Distribution
+#' @title Variance of the Negative Binomial Distribution in the NB1 Parametrization
 #' @name variance.NegBin1Distrib
-#' @description Closed form: \eqn{\mu(1+\theta)}, linear in the mean.
-#' @param x A `NegBin1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the
+#' mean. This is what NB1 means: the variance is a fixed multiple of the mean,
+#' where NB2 makes it \eqn{\mu + \mu^2/\theta} and so quadratic. The two are
+#' different models of overdispersion and are not reparametrizations of each
+#' other.
+#'
+#' @details
+#' The distinction follows Cameron and Trivedi's numbering, and it matters for
+#' regression: under NB1 the dispersion relative to a Poisson is the same at
+#' every fitted mean, and under NB2 it grows with the mean.
+#'
+#' @section Notation:
+#' \eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+#'
+#' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
+#' @param theta A named list with components `mu` (positive) and `theta`
+#'   (positive), each a numeric vector of length 1 or `n`. The Poisson limit is
+#'   \eqn{\theta \to 0} here, the opposite end from NB2's.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$theta))`.
+#'
+#' @references
+#' Cameron, A. C. and Trivedi, P. K. (2013). *Regression Analysis of Count
+#' Data*, 2nd edition. Cambridge University Press.
+#'
+#' @seealso [mean.NegBin1Distrib()]; [variance.NegBin2Distrib()], the quadratic
+#'   alternative; [variance.PoissonDistrib()], the \eqn{\theta \to 0} limit;
+#'   [negbin1_distrib()].
+#'
+#' @examples
+#' d <- negbin1_distrib()
+#'
+#' # Linear in the mean: the ratio to the Poisson variance is constant.
+#' variance(d, list(mu = c(1, 10, 100), theta = 2)) / c(1, 10, 100)
+#'
+#' # NB2's ratio grows with the mean instead.
+#' variance(negbin2_distrib(), list(mu = c(1, 10, 100), theta = 2)) / c(1, 10, 100)
+#'
 #' @keywords internal
 S7::method(variance, NegBin1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   theta[[1]] * (1 + theta[[2]])
 }
 
-#' @title Skewness of the NB1 Negative Binomial Distribution
+#' @title Skewness of the Negative Binomial Distribution in the NB1 Parametrization
 #' @name skewness.NegBin1Distrib
-#' @description Closed form: \eqn{(1+2\theta)/\sqrt{\mu(1+\theta)}}, which
-#'   tends to the Poisson \eqn{1/\sqrt{\mu}} as \eqn{\theta \to 0}.
-#' @param x A `NegBin1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_1 = (1+2\theta)/\sqrt{\mu(1+\theta)}}. It is
+#' positive at every parameter value and tends to the Poisson's
+#' \eqn{\mu^{-1/2}} as the dispersion goes to zero, which is where NB1
+#' approaches a Poisson.
+#'
+#' @section Notation:
+#' \eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+#'
+#' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
+#' @param theta A named list with components `mu` (positive) and `theta`
+#'   (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, of length
+#'   `max(length(theta$mu), length(theta$theta))`, positive throughout.
+#'
+#' @seealso [kurtosis.NegBin1Distrib()]; [skewness.NegBin2Distrib()], the other
+#'   parametrization; [skewness.PoissonDistrib()], the limit;
+#'   [negbin1_distrib()].
+#'
+#' @examples
+#' d <- negbin1_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(skewness(d, list(mu = 4, theta = 2)), 5 / sqrt(4 * 3))
+#'
+#' # It falls onto the Poisson's mu^(-1/2) = 0.5 as the dispersion vanishes.
+#' skewness(d, list(mu = 4, theta = c(1, 0.01, 1e-8)))
+#'
 #' @keywords internal
 S7::method(skewness, NegBin1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -4195,15 +4984,39 @@ S7::method(skewness, NegBin1Distrib) <- function(x, theta, ...) {
   (1 + 2 * th) / sqrt(mu * (1 + th))
 }
 
-#' @title Kurtosis of the NB1 Negative Binomial Distribution
+#' @title Excess Kurtosis of the Negative Binomial Distribution in the NB1 Parametrization
 #' @name kurtosis.NegBin1Distrib
-#' @description Closed form: excess
-#'   \eqn{6\theta/\mu + 1/\{\mu(1+\theta)\}}, which tends to the Poisson
-#'   \eqn{1/\mu} as \eqn{\theta \to 0}.
-#' @param x A `NegBin1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}, the excess
+#' over the Gaussian. Both terms are positive, so the family is always
+#' leptokurtic, and the expression tends to the Poisson's \eqn{1/\mu} as the
+#' dispersion goes to zero.
+#'
+#' @section Notation:
+#' \eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+#'
+#' @param x A `NegBin1Distrib`, from [negbin1_distrib()].
+#' @param theta A named list with components `mu` (positive) and `theta`
+#'   (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, of length
+#'   `max(length(theta$mu), length(theta$theta))`, positive throughout.
+#'
+#' @seealso [skewness.NegBin1Distrib()]; [kurtosis.NegBin2Distrib()], the other
+#'   parametrization; [kurtosis.PoissonDistrib()], the limit;
+#'   [negbin1_distrib()].
+#'
+#' @examples
+#' d <- negbin1_distrib()
+#'
+#' # The published form, written out.
+#' all.equal(kurtosis(d, list(mu = 4, theta = 2)), 12 / 4 + 1 / 12)
+#'
+#' # It falls onto the Poisson's 1 / mu = 0.25 as the dispersion vanishes.
+#' kurtosis(d, list(mu = 4, theta = c(1, 0.01, 1e-8)))
+#'
 #' @keywords internal
 S7::method(kurtosis, NegBin1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -4219,17 +5032,35 @@ S7::method(kurtosis, NegBin1Distrib) <- function(x, theta, ...) {
 #   E[Y (Y-1) ... (Y-k+1)] = n^(k) prod_{j<k} (a+j)/(a+b+j),
 # which are one product each, rather than from a transcribed quartic.
 
-#' Falling Factorial Moments of the Beta-Binomial
+#' Falling Factorial Moments of a Beta-Binomial
 #'
 #' @description
-#' \eqn{E[Y^{(k)}] = n^{(k)}\prod_{j=0}^{k-1}(a+j)/(a+b+j)} for
-#' \eqn{k = 1, \dots, 4}, from which the raw and then the central moments
-#' follow.
+#' Returns the first four falling factorial moments
+#' \deqn{E[Y^{(k)}] = n^{(k)} \prod_{j=0}^{k-1} \frac{a+j}{a+b+j},
+#'       \qquad k = 1, \ldots, 4,}
+#' with \eqn{x^{(k)} = x(x-1)\cdots(x-k+1)}. These are the quantities a
+#' beta-binomial has in closed form; the raw and central moments follow from
+#' them through [central_from_factorial()].
 #'
-#' @param a,b The beta shapes.
-#' @param n The number of trials.
+#' @section Notation:
+#' \eqn{a > 0} and \eqn{b > 0} are the two shapes of the mixing beta,
+#' \eqn{n} the number of trials, and \eqn{x^{(k)}} the falling factorial.
 #'
-#' @return A list of the four factorial moments.
+#' @param a The first shape of the mixing beta, a single positive number.
+#' @param b The second shape, a single positive number.
+#' @param n The number of trials, a single non-negative whole number. Factorial
+#'   moments of order above `n` are zero, the falling factorial \eqn{n^{(k)}}
+#'   vanishing there.
+#'
+#' @return An **unnamed** list of four numbers, the falling factorial moments of
+#'   order 1 to 4 in that order, reached by position.
+#'
+#' @seealso [central_from_factorial()], which converts these;
+#'   [betabinom_central()], the wrapper the moment methods call.
+#'
+#' @examples
+#' # At a = b the mixing beta is symmetric, so the mean is half the trials.
+#' distributions7:::betabinom_factorial_moments(2, 2, 10)[[1]]
 #'
 #' @keywords internal
 betabinom_factorial_moments <- function(a, b, n) {
@@ -4245,14 +5076,27 @@ betabinom_factorial_moments <- function(a, b, n) {
 #' Central Moments From Falling Factorial Moments
 #'
 #' @description
-#' Converts \eqn{E[Y^{(k)}]} to the first four central moments, through the
-#' raw moments \eqn{m_1 = f_1}, \eqn{m_2 = f_2 + f_1},
-#' \eqn{m_3 = f_3 + 3f_2 + f_1} and \eqn{m_4 = f_4 + 6f_3 + 7f_2 + f_1}.
+#' Converts the first four falling factorial moments into the mean and the
+#' second, third and fourth central moments. The raw moments come first,
+#' through the Stirling numbers of the second kind written out:
+#' \deqn{m_1 = f_1,\quad m_2 = f_2 + f_1,\quad m_3 = f_3 + 3f_2 + f_1,\quad
+#'       m_4 = f_4 + 6f_3 + 7f_2 + f_1,}
+#' and the central moments follow by the usual binomial expansion about
+#' \eqn{m_1}.
 #'
-#' @param f A list of the four falling factorial moments.
+#' @param f An unnamed list of four, the falling factorial moments of order 1
+#'   to 4 in that order, as [betabinom_factorial_moments()] returns. They are
+#'   read by position.
 #'
-#' @return A list with the mean and the second, third and fourth central
-#'   moments.
+#' @return A named list with `mean` and the central moments `c2`, `c3` and
+#'   `c4`, each a numeric vector the length of the inputs.
+#'
+#' @seealso [betabinom_factorial_moments()] for the input;
+#'   [betabinom_central()], which chains the two.
+#'
+#' @examples
+#' f <- distributions7:::betabinom_factorial_moments(2, 2, 10)
+#' distributions7:::central_from_factorial(f)$mean
 #'
 #' @keywords internal
 central_from_factorial <- function(f) {
@@ -4266,16 +5110,35 @@ central_from_factorial <- function(f) {
        c4 = m4 - 4 * m1 * m3 + 6 * m1^2 * m2 - 3 * m1^4)
 }
 
-#' Central Moments of a Beta-Binomial
+#' Mean and Central Moments of a Beta-Binomial
 #'
 #' @description
-#' The mean and the second, third and fourth central moments, vectorized over
-#' the parameters.
+#' The mean and the second, third and fourth central moments of a
+#' beta-binomial, one value per parameter setting. It maps the mean-dispersion
+#' parametrization onto the two shapes, \eqn{a = \mu/\sigma} and
+#' \eqn{b = (1-\mu)/\sigma}, then chains [betabinom_factorial_moments()] into
+#' [central_from_factorial()] once per setting and stacks the results. The four
+#' moment methods of the family share it.
 #'
-#' @param mu,sigma The mean proportion and the dispersion.
-#' @param n The number of trials.
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+#' dispersion and \eqn{n} the number of trials.
 #'
-#' @return A list of four numeric vectors.
+#' @param mu The success probability, a numeric vector strictly inside
+#'   \eqn{(0,1)}.
+#' @param sigma The dispersion, a positive numeric vector. As it goes to zero
+#'   the mixing beta concentrates and the family tends to a binomial.
+#' @param n The number of trials, a non-negative whole number.
+#'
+#' @return A named list with `mean` and the central moments `c2`, `c3` and
+#'   `c4`, each a numeric vector as long as the longer of `mu` and `sigma`.
+#'
+#' @seealso [variance.BetaBinom1Distrib()], [skewness.BetaBinom1Distrib()] and
+#'   [kurtosis.BetaBinom1Distrib()] for the consumers.
+#'
+#' @examples
+#' # The mean is n mu, whatever the dispersion.
+#' distributions7:::betabinom_central(0.3, 0.5, 10)$mean
 #'
 #' @keywords internal
 betabinom_central <- function(mu, sigma, n) {
@@ -4295,11 +5158,35 @@ betabinom_central <- function(mu, sigma, n) {
 
 #' @title Mean of the Beta-Binomial Distribution
 #' @name mean.BetaBinom1Distrib
-#' @description Closed form: \eqn{n\mu}, the shapes canceling.
-#' @param x A `BetaBinom1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. Mixing the success
+#' probability over a beta leaves the mean where it was, the beta's own mean
+#' being \eqn{\mu}; the dispersion shows in the variance and above, not here.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+#' dispersion and \eqn{n} the number of trials, held on the object.
+#'
+#' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
+#'   trial count in its `size` property.
+#' @param theta A named list with components `mu` (the success probability,
+#'   strictly between 0 and 1) and `sigma` (the dispersion, positive), each a
+#'   numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$mu), length(theta$sigma))`.
+#'
+#' @seealso [variance.BetaBinom1Distrib()], where the dispersion does enter;
+#'   [mean.BinomialDistrib()], which this equals; [betabinom1_distrib()].
+#'
+#' @examples
+#' d <- betabinom1_distrib(size = 10)
+#'
+#' # n mu, and the dispersion does not move it.
+#' mean(d, list(mu = 0.3, sigma = c(0.01, 0.5, 5)))
+#'
 #' @keywords internal
 S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -4308,13 +5195,46 @@ S7::method(mean, BetaBinom1Distrib) <- function(x, theta, ...) {
 
 #' @title Variance of the Beta-Binomial Distribution
 #' @name variance.BetaBinom1Distrib
+#'
 #' @description
-#' Closed form: \eqn{n\mu(1-\mu)(1+n\sigma)/(1+\sigma)}, the binomial variance
-#' inflated by the dispersion.
-#' @param x A `BetaBinom1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#' Closed form:
+#' \deqn{\operatorname{Var}(Y) = n\mu(1-\mu)\,\frac{1 + n\sigma}{1 + \sigma}.}
+#' The first factor is the binomial variance and the second is the
+#' overdispersion, at least 1 for every \eqn{n \ge 1} and growing towards
+#' \eqn{n} as the dispersion rises. At \eqn{\sigma \to 0} the family is
+#' binomial; at large \eqn{\sigma} the variance approaches
+#' \eqn{n^2\mu(1-\mu)}, which is a Bernoulli scaled by the trial count and is
+#' the largest a distribution on \eqn{\{0, \ldots, n\}} with that mean can
+#' have.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+#' dispersion and \eqn{n} the number of trials.
+#'
+#' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
+#'   trial count in its `size` property.
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `sigma` (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$sigma))`.
+#'
+#' @seealso [mean.BetaBinom1Distrib()]; [variance.BinomialDistrib()], the
+#'   \eqn{\sigma \to 0} limit; [betabinom_central()];
+#'   [betabinom1_distrib()].
+#'
+#' @examples
+#' d <- betabinom1_distrib(size = 10)
+#'
+#' # The published form, written out.
+#' all.equal(variance(d, list(mu = 0.3, sigma = 0.5)),
+#'           10 * 0.3 * 0.7 * (1 + 10 * 0.5) / (1 + 0.5))
+#'
+#' # It falls onto the binomial variance as the dispersion vanishes.
+#' c(betabinomial = variance(d, list(mu = 0.3, sigma = 1e-8)),
+#'   binomial     = variance(binomial_distrib(size = 10), list(mu = 0.3)))
+#'
 #' @keywords internal
 S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -4323,11 +5243,47 @@ S7::method(variance, BetaBinom1Distrib) <- function(x, theta, ...) {
 
 #' @title Skewness of the Beta-Binomial Distribution
 #' @name skewness.BetaBinom1Distrib
-#' @description Closed form, from the falling factorial moments.
-#' @param x A `BetaBinom1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Assembled from the falling factorial moments, \eqn{\gamma_1 = c_3/c_2^{3/2}}
+#' with \eqn{c_k} the central moments [betabinom_central()] returns. It is zero
+#' at \eqn{\mu = 1/2} whatever the dispersion, the mixing beta being symmetric
+#' there, and it takes the sign of \eqn{1 - 2\mu} elsewhere.
+#'
+#' @details
+#' The falling factorial moments are the quantities a beta-binomial has in
+#' closed form: each is a product of \eqn{k} ratios and needs no sum over the
+#' support. The raw and then the central moments follow from them by two
+#' written-out linear maps.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+#' dispersion, \eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th
+#' central moment.
+#'
+#' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
+#'   trial count in its `size` property.
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `sigma` (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector, of length
+#'   `max(length(theta$mu), length(theta$sigma))`.
+#'
+#' @seealso [kurtosis.BetaBinom1Distrib()], from the same moments;
+#'   [skewness.BinomialDistrib()], the \eqn{\sigma \to 0} limit;
+#'   [betabinom_central()]; [betabinom1_distrib()].
+#'
+#' @examples
+#' d <- betabinom1_distrib(size = 10)
+#'
+#' # Zero at a success probability of one half, at any dispersion.
+#' round(skewness(d, list(mu = 0.5, sigma = c(0.1, 1, 10))), 12)
+#'
+#' # It falls onto the binomial's as the dispersion vanishes.
+#' c(betabinomial = skewness(d, list(mu = 0.3, sigma = 1e-8)),
+#'   binomial     = skewness(binomial_distrib(size = 10), list(mu = 0.3)))
+#'
 #' @keywords internal
 S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
@@ -4335,13 +5291,49 @@ S7::method(skewness, BetaBinom1Distrib) <- function(x, theta, ...) {
   m$c3 / m$c2^1.5
 }
 
-#' @title Kurtosis of the Beta-Binomial Distribution
+#' @title Excess Kurtosis of the Beta-Binomial Distribution
 #' @name kurtosis.BetaBinom1Distrib
-#' @description Closed form, from the falling factorial moments; excess.
-#' @param x A `BetaBinom1Distrib`.
-#' @param theta A named list of parameters.
-#' @param ... Unused.
-#' @return A numeric vector.
+#'
+#' @description
+#' Assembled from the falling factorial moments,
+#' \eqn{\gamma_2 = c_4/c_2^2 - 3} with \eqn{c_k} the central moments
+#' [betabinom_central()] returns. The success probability is what sets its
+#' sign. Near \eqn{\mu = 1/2} it is negative and falls
+#' towards \eqn{-2} as the dispersion grows, the mass splitting between the two
+#' endpoints and the law approaching a scaled Bernoulli; near either end it is
+#' positive and large, the long tail towards the middle dominating.
+#'
+#' @section Notation:
+#' \eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+#' dispersion, \eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th
+#' central moment.
+#'
+#' @param x A `BetaBinom1Distrib`, from [betabinom1_distrib()], carrying the
+#'   trial count in its `size` property.
+#' @param theta A named list with components `mu` (strictly between 0 and 1)
+#'   and `sigma` (positive), each a numeric vector of length 1 or `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A numeric vector of excess kurtoses, of length
+#'   `max(length(theta$mu), length(theta$sigma))`.
+#'
+#' @seealso [skewness.BetaBinom1Distrib()], from the same moments;
+#'   [kurtosis.BinomialDistrib()], the \eqn{\sigma \to 0} limit;
+#'   [betabinom_central()]; [betabinom1_distrib()].
+#'
+#' @examples
+#' d <- betabinom1_distrib(size = 10)
+#'
+#' # At a central success probability it falls towards -2 with the dispersion.
+#' round(kurtosis(d, list(mu = 0.5, sigma = c(0.1, 1, 100))), 4)
+#'
+#' # At an extreme one it is positive and large.
+#' round(kurtosis(d, list(mu = 0.05, sigma = c(0.01, 0.1, 1))), 4)
+#'
+#' # It falls onto the binomial's as the dispersion vanishes.
+#' c(betabinomial = kurtosis(d, list(mu = 0.3, sigma = 1e-8)),
+#'   binomial     = kurtosis(binomial_distrib(size = 10), list(mu = 0.3)))
+#'
 #' @keywords internal
 S7::method(kurtosis, BetaBinom1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)

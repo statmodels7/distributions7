@@ -2,18 +2,47 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GenGamma1Distrib}
 \alias{kurtosis.GenGamma1Distrib}
-\title{Kurtosis of the Generalized Gamma Distribution}
+\title{Excess Kurtosis of the Generalized Gamma Distribution}
 \arguments{
-\item{x}{A \code{GenGamma1Distrib}.}
+\item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
+each a numeric vector of length 1 or \code{n}. Only \code{d} and \code{p} enter the
+value; the fourth-order combination cancels heavily at small dispersions.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length equal to the longest
+of the three components.
 }
 \description{
-Closed form, from the first four raw moments; excess.
+Assembled from the first four raw moments,
+\eqn{\gamma_2 = (m_4 - 4m_1m_3 + 6m_1^2m_2 - 3m_1^4)/(m_2 - m_1^2)^2 - 3}
+with \eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale cancels, and
+the two shapes move the skewness and the kurtosis with some freedom, where a
+gamma ties them by \eqn{\gamma_2 = 3\gamma_1^2/2}.
+}
+\section{Notation}{
+
+\eqn{d > 0} and \eqn{p > 0} are the two shapes and \eqn{m_k} the \eqn{k}-th
+raw moment.
+}
+
+\examples{
+d <- gengamma1_distrib()
+
+# At d = p it agrees with the Weibull.
+all.equal(kurtosis(d, list(a = 2, d = 3, p = 3)),
+          kurtosis(weibull1_distrib(), list(mu = 2, sigma = 3)))
+
+# At p = 1 it agrees with the gamma, which ties it to the skewness.
+th <- list(a = 2, d = 3, p = 1)
+all.equal(kurtosis(d, th), 1.5 * skewness(d, th)^2)
+
+}
+\seealso{
+\code{\link[=skewness.GenGamma1Distrib]{skewness.GenGamma1Distrib()}}, from the same raw moments;
+\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

@@ -4,16 +4,35 @@
 \alias{skewness.PoissonDistrib}
 \title{Skewness of the Poisson Distribution}
 \arguments{
-\item{x}{A \code{PoissonDistrib}.}
+\item{x}{A \code{PoissonDistrib}, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{theta$mu}, positive throughout.
 }
 \description{
-Closed form: \eqn{1/\sqrt{\mu}}.
+Closed form: \eqn{\gamma_1 = 1/\sqrt\mu}. It is positive at every mean, a
+count having a floor at zero and no ceiling, and it decays like
+\eqn{\mu^{-1/2}}, which is the rate at which the family approaches a
+Gaussian as the counts grow.
+}
+\examples{
+d <- poisson_distrib()
+
+# One over the square root of the mean.
+all.equal(skewness(d, list(mu = 4)), 0.5)
+
+# It vanishes as the counts grow.
+skewness(d, list(mu = c(1, 25, 10000)))
+
+}
+\seealso{
+\code{\link[=kurtosis.PoissonDistrib]{kurtosis.PoissonDistrib()}}, which decays twice as fast;
+\code{\link[=skewness.NegBin2Distrib]{skewness.NegBin2Distrib()}}, which tends to this;
+\code{\link[=poisson_distrib]{poisson_distrib()}}.
 }
 \keyword{internal}

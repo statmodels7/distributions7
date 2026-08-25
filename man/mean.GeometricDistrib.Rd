@@ -4,16 +4,31 @@
 \alias{mean.GeometricDistrib}
 \title{Mean of the Geometric Distribution}
 \arguments{
-\item{x}{A \code{GeometricDistrib}.}
+\item{x}{A \code{GeometricDistrib}, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the mean, positive), a
+numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu}, the parameter itself.
+Closed form: \eqn{E[Y] = \mu}. The family is parametrized by its mean, the
+expected number of failures before the first success, and the success
+probability it implies is \eqn{1/(1+\mu)}.
+}
+\examples{
+d <- geometric_distrib()
+
+# The one parameter is the mean.
+mean(d, list(mu = c(0.5, 3, 20)))
+
+}
+\seealso{
+\code{\link[=variance.GeometricDistrib]{variance.GeometricDistrib()}}, which exceeds this;
+\code{\link[=mean.NegBin2Distrib]{mean.NegBin2Distrib()}}, of which this is the \eqn{\theta = 1} case;
+\code{\link[=geometric_distrib]{geometric_distrib()}}.
 }
 \keyword{internal}

@@ -4,16 +4,51 @@
 \alias{skewness.BetaBinom1Distrib}
 \title{Skewness of the Beta-Binomial Distribution}
 \arguments{
-\item{x}{A \code{BetaBinom1Distrib}.}
+\item{x}{A \code{BetaBinom1Distrib}, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
+and \code{sigma} (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form, from the falling factorial moments.
+Assembled from the falling factorial moments, \eqn{\gamma_1 = c_3/c_2^{3/2}}
+with \eqn{c_k} the central moments \code{\link[=betabinom_central]{betabinom_central()}} returns. It is zero
+at \eqn{\mu = 1/2} whatever the dispersion, the mixing beta being symmetric
+there, and it takes the sign of \eqn{1 - 2\mu} elsewhere.
+}
+\details{
+The falling factorial moments are the quantities a beta-binomial has in
+closed form: each is a product of \eqn{k} ratios and needs no sum over the
+support. The raw and then the central moments follow from them by two
+written-out linear maps.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+dispersion, \eqn{n} the number of trials and \eqn{c_k} the \eqn{k}-th
+central moment.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+
+# Zero at a success probability of one half, at any dispersion.
+round(skewness(d, list(mu = 0.5, sigma = c(0.1, 1, 10))), 12)
+
+# It falls onto the binomial's as the dispersion vanishes.
+c(betabinomial = skewness(d, list(mu = 0.3, sigma = 1e-8)),
+  binomial     = skewness(binomial_distrib(size = 10), list(mu = 0.3)))
+
+}
+\seealso{
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}}, from the same moments;
+\code{\link[=skewness.BinomialDistrib]{skewness.BinomialDistrib()}}, the \eqn{\sigma \to 0} limit;
+\code{\link[=betabinom_central]{betabinom_central()}}; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

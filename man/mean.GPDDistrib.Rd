@@ -4,17 +4,45 @@
 \alias{mean.GPDDistrib}
 \title{Mean of the Generalized Pareto Distribution}
 \arguments{
-\item{x}{A \code{GPDDistrib}.}
+\item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{sigma} (the scale, positive) and
+\code{xi} (the shape, any real value), each a numeric vector of length 1 or
+\code{n}. Settings with \eqn{\xi \ge 1} give \code{Inf} in their own positions.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$sigma), length(theta$xi))}, \code{Inf} wherever
+\eqn{\xi \ge 1}.
 }
 \description{
-Closed form: \eqn{\sigma/(1-\xi)} for \eqn{\xi < 1}, and
-infinite at or above one.
+Closed form: \eqn{E[Y] = \sigma/(1-\xi)} for \eqn{\xi < 1}, and \code{Inf} at or
+above one, where the first moment diverges. The shape controls which moments
+exist at all: the moment of order \eqn{k} is finite exactly for
+\eqn{\xi < 1/k}, so a fitted object can report a mean and no variance.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale and \eqn{\xi} the shape, of either sign. At
+\eqn{\xi = 0} the family is the exponential of mean \eqn{\sigma}, and at
+\eqn{\xi < 0} the support is bounded above by \eqn{\sigma/|\xi|}.
+}
+
+\examples{
+d <- gpd_distrib()
+
+# Finite below shape one and infinite at or above it.
+mean(d, list(sigma = 1, xi = c(0, 0.5, 1, 1.5)))
+
+# At shape zero the family is exponential of mean sigma.
+all.equal(mean(d, list(sigma = 2, xi = 0)),
+          mean(exponential_distrib(), list(mu = 2)))
+
+}
+\seealso{
+\code{\link[=variance.GPDDistrib]{variance.GPDDistrib()}}, whose threshold is \eqn{1/2};
+\code{\link[=mean.ExponentialDistrib]{mean.ExponentialDistrib()}}, the \eqn{\xi = 0} case; \code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \keyword{internal}

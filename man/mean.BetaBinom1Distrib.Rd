@@ -4,16 +4,39 @@
 \alias{mean.BetaBinom1Distrib}
 \title{Mean of the Beta-Binomial Distribution}
 \arguments{
-\item{x}{A \code{BetaBinom1Distrib}.}
+\item{x}{A \code{BetaBinom1Distrib}, from \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}, carrying the
+trial count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (the success probability,
+strictly between 0 and 1) and \code{sigma} (the dispersion, positive), each a
+numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$sigma))}.
 }
 \description{
-Closed form: \eqn{n\mu}, the shapes canceling.
+Closed form: \eqn{E[Y] = n\mu}, the same as a binomial's. Mixing the success
+probability over a beta leaves the mean where it was, the beta's own mean
+being \eqn{\mu}; the dispersion shows in the variance and above, not here.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+dispersion and \eqn{n} the number of trials, held on the object.
+}
+
+\examples{
+d <- betabinom1_distrib(size = 10)
+
+# n mu, and the dispersion does not move it.
+mean(d, list(mu = 0.3, sigma = c(0.01, 0.5, 5)))
+
+}
+\seealso{
+\code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}, where the dispersion does enter;
+\code{\link[=mean.BinomialDistrib]{mean.BinomialDistrib()}}, which this equals; \code{\link[=betabinom1_distrib]{betabinom1_distrib()}}.
 }
 \keyword{internal}

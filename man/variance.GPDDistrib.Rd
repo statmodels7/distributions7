@@ -4,18 +4,46 @@
 \alias{variance.GPDDistrib}
 \title{Variance of the Generalized Pareto Distribution}
 \arguments{
-\item{x}{A \code{GPDDistrib}.}
+\item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or \code{n}. Settings with
+\eqn{\xi \ge 1/2} give \code{Inf}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$sigma), length(theta$xi))}, \code{Inf} wherever
+\eqn{\xi \ge 1/2}.
 }
 \description{
 Closed form:
-\eqn{\sigma^2/\{(1-\xi)^2(1-2\xi)\}} for \eqn{\xi < 1/2}, and infinite
-at or above one half.
+\eqn{\operatorname{Var}(Y) = \sigma^2/\{(1-\xi)^2(1-2\xi)\}} for
+\eqn{\xi < 1/2}, and \code{Inf} at or above one half. The threshold is half the
+mean's, the second moment being the first to fail as the tail grows heavy,
+and a fitted object at \eqn{\xi = 0.6} reports a finite mean beside an
+infinite variance.
+}
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale and \eqn{\xi} the shape, of either sign.
+}
+
+\examples{
+d <- gpd_distrib()
+
+# Finite below shape one half and infinite at or above it.
+variance(d, list(sigma = 1, xi = c(0, 0.4, 0.5, 0.6)))
+
+# A mean without a variance, which is what the two thresholds allow.
+c(mean = mean(d, list(sigma = 1, xi = 0.6)),
+  variance = variance(d, list(sigma = 1, xi = 0.6)))
+
+}
+\seealso{
+\code{\link[=mean.GPDDistrib]{mean.GPDDistrib()}}, whose threshold is 1;
+\code{\link[=skewness.GPDDistrib]{skewness.GPDDistrib()}}, whose threshold is \eqn{1/3};
+\code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \keyword{internal}

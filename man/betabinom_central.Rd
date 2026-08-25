@@ -2,20 +2,44 @@
 % Please edit documentation in R/moments.R
 \name{betabinom_central}
 \alias{betabinom_central}
-\title{Central Moments of a Beta-Binomial}
+\title{Mean and Central Moments of a Beta-Binomial}
 \usage{
 betabinom_central(mu, sigma, n)
 }
 \arguments{
-\item{mu, sigma}{The mean proportion and the dispersion.}
+\item{mu}{The success probability, a numeric vector strictly inside
+\eqn{(0,1)}.}
 
-\item{n}{The number of trials.}
+\item{sigma}{The dispersion, a positive numeric vector. As it goes to zero
+the mixing beta concentrates and the family tends to a binomial.}
+
+\item{n}{The number of trials, a non-negative whole number.}
 }
 \value{
-A list of four numeric vectors.
+A named list with \code{mean} and the central moments \code{c2}, \code{c3} and
+\code{c4}, each a numeric vector as long as the longer of \code{mu} and \code{sigma}.
 }
 \description{
-The mean and the second, third and fourth central moments, vectorized over
-the parameters.
+The mean and the second, third and fourth central moments of a
+beta-binomial, one value per parameter setting. It maps the mean-dispersion
+parametrization onto the two shapes, \eqn{a = \mu/\sigma} and
+\eqn{b = (1-\mu)/\sigma}, then chains \code{\link[=betabinom_factorial_moments]{betabinom_factorial_moments()}} into
+\code{\link[=central_from_factorial]{central_from_factorial()}} once per setting and stacks the results. The four
+moment methods of the family share it.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the success probability, \eqn{\sigma > 0} the
+dispersion and \eqn{n} the number of trials.
+}
+
+\examples{
+# The mean is n mu, whatever the dispersion.
+distributions7:::betabinom_central(0.3, 0.5, 10)$mean
+
+}
+\seealso{
+\code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}, \code{\link[=skewness.BetaBinom1Distrib]{skewness.BetaBinom1Distrib()}} and
+\code{\link[=kurtosis.BetaBinom1Distrib]{kurtosis.BetaBinom1Distrib()}} for the consumers.
 }
 \keyword{internal}

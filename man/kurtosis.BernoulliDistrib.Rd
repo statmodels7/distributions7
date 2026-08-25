@@ -2,19 +2,37 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.BernoulliDistrib}
 \alias{kurtosis.BernoulliDistrib}
-\title{Kurtosis of the Bernoulli Distribution}
+\title{Excess Kurtosis of the Bernoulli Distribution}
 \arguments{
-\item{x}{A \code{BernoulliDistrib}.}
+\item{x}{A \code{BernoulliDistrib}, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, the length of \code{theta$mu}, at or
+above \eqn{-2}.
 }
 \description{
-Closed form: excess
-\eqn{\{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}.
+Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{\mu(1-\mu)\}}, the excess
+over the Gaussian. It reaches its minimum \eqn{-2} at \eqn{\mu = 1/2}, which
+is the smallest excess kurtosis any distribution attains, and diverges at
+either end of the unit interval.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# The published form, written out.
+all.equal(kurtosis(d, list(mu = 0.3)), (1 - 6 * 0.21) / 0.21)
+
+# Minus two at one half, the lower bound for any distribution.
+kurtosis(d, list(mu = c(0.1, 0.5, 0.9)))
+
+}
+\seealso{
+\code{\link[=skewness.BernoulliDistrib]{skewness.BernoulliDistrib()}}; \code{\link[=kurtosis.BinomialDistrib]{kurtosis.BinomialDistrib()}}, which
+is this divided by \eqn{n}; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.
 }
 \keyword{internal}

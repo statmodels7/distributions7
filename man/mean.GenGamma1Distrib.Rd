@@ -4,17 +4,50 @@
 \alias{mean.GenGamma1Distrib}
 \title{Mean of the Generalized Gamma Distribution}
 \arguments{
-\item{x}{A \code{GenGamma1Distrib}.}
+\item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
+each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, of length equal to the longest of the
+three components.
 }
 \description{
-Closed form:
-\eqn{a\,\Gamma((d+1)/p)/\Gamma(d/p)}.
+Closed form: \eqn{E[Y] = a\,\Gamma\{(d+1)/p\}/\Gamma(d/p)}, the first raw
+moment. None of the three parameters is the mean: \eqn{a} is a scale and
+\eqn{d} and \eqn{p} are shapes, and the gamma ratio is what carries the
+shapes into the mean.
+}
+\details{
+The family nests four the toolkit ships separately, and each is a check on
+this formula: the gamma at \eqn{p = 1}, the Weibull at \eqn{d = p}, the
+exponential at \eqn{d = p = 1} and the half-normal at
+\eqn{a = \sqrt2, d = 1, p = 2}.
+}
+\section{Notation}{
+
+\eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes.
+}
+
+\examples{
+d <- gengamma1_distrib()
+
+# At p = 1 the family is a gamma of shape d, whose mean is a d.
+all.equal(mean(d, list(a = 2, d = 3, p = 1)), 6)
+
+# At d = p it is a Weibull of scale a and shape p.
+all.equal(mean(d, list(a = 2, d = 3, p = 3)),
+          mean(weibull1_distrib(), list(mu = 2, sigma = 3)))
+
+# At a = sqrt(2), d = 1, p = 2 it is the half-normal, of mean sqrt(2/pi).
+all.equal(mean(d, list(a = sqrt(2), d = 1, p = 2)), sqrt(2 / pi))
+
+}
+\seealso{
+\code{\link[=variance.GenGamma1Distrib]{variance.GenGamma1Distrib()}}, \code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}} for the
+shared quantities, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

@@ -2,18 +2,54 @@
 % Please edit documentation in R/moments.R
 \name{variance.NegBin1Distrib}
 \alias{variance.NegBin1Distrib}
-\title{Variance of the NB1 Negative Binomial Distribution}
+\title{Variance of the Negative Binomial Distribution in the NB1 Parametrization}
 \arguments{
-\item{x}{A \code{NegBin1Distrib}.}
+\item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{theta}
+(positive), each a numeric vector of length 1 or \code{n}. The Poisson limit is
+\eqn{\theta \to 0} here, the opposite end from NB2's.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$theta))}.
 }
 \description{
-Closed form: \eqn{\mu(1+\theta)}, linear in the mean.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu(1+\theta)}, linear in the
+mean. This is what NB1 means: the variance is a fixed multiple of the mean,
+where NB2 makes it \eqn{\mu + \mu^2/\theta} and so quadratic. The two are
+different models of overdispersion and are not reparametrizations of each
+other.
+}
+\details{
+The distinction follows Cameron and Trivedi's numbering, and it matters for
+regression: under NB1 the dispersion relative to a Poisson is the same at
+every fitted mean, and under NB2 it grows with the mean.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+}
+
+\examples{
+d <- negbin1_distrib()
+
+# Linear in the mean: the ratio to the Poisson variance is constant.
+variance(d, list(mu = c(1, 10, 100), theta = 2)) / c(1, 10, 100)
+
+# NB2's ratio grows with the mean instead.
+variance(negbin2_distrib(), list(mu = c(1, 10, 100), theta = 2)) / c(1, 10, 100)
+
+}
+\references{
+Cameron, A. C. and Trivedi, P. K. (2013). \emph{Regression Analysis of Count
+Data}, 2nd edition. Cambridge University Press.
+}
+\seealso{
+\code{\link[=mean.NegBin1Distrib]{mean.NegBin1Distrib()}}; \code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}}, the quadratic
+alternative; \code{\link[=variance.PoissonDistrib]{variance.PoissonDistrib()}}, the \eqn{\theta \to 0} limit;
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}.
 }
 \keyword{internal}

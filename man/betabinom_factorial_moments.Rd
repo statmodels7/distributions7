@@ -2,21 +2,44 @@
 % Please edit documentation in R/moments.R
 \name{betabinom_factorial_moments}
 \alias{betabinom_factorial_moments}
-\title{Falling Factorial Moments of the Beta-Binomial}
+\title{Falling Factorial Moments of a Beta-Binomial}
 \usage{
 betabinom_factorial_moments(a, b, n)
 }
 \arguments{
-\item{a, b}{The beta shapes.}
+\item{a}{The first shape of the mixing beta, a single positive number.}
 
-\item{n}{The number of trials.}
+\item{b}{The second shape, a single positive number.}
+
+\item{n}{The number of trials, a single non-negative whole number. Factorial
+moments of order above \code{n} are zero, the falling factorial \eqn{n^{(k)}}
+vanishing there.}
 }
 \value{
-A list of the four factorial moments.
+An \strong{unnamed} list of four numbers, the falling factorial moments of
+order 1 to 4 in that order, reached by position.
 }
 \description{
-\eqn{E[Y^{(k)}] = n^{(k)}\prod_{j=0}^{k-1}(a+j)/(a+b+j)} for
-\eqn{k = 1, \dots, 4}, from which the raw and then the central moments
-follow.
+Returns the first four falling factorial moments
+\deqn{E[Y^{(k)}] = n^{(k)} \prod_{j=0}^{k-1} \frac{a+j}{a+b+j},
+      \qquad k = 1, \ldots, 4,}
+with \eqn{x^{(k)} = x(x-1)\cdots(x-k+1)}. These are the quantities a
+beta-binomial has in closed form; the raw and central moments follow from
+them through \code{\link[=central_from_factorial]{central_from_factorial()}}.
+}
+\section{Notation}{
+
+\eqn{a > 0} and \eqn{b > 0} are the two shapes of the mixing beta,
+\eqn{n} the number of trials, and \eqn{x^{(k)}} the falling factorial.
+}
+
+\examples{
+# At a = b the mixing beta is symmetric, so the mean is half the trials.
+distributions7:::betabinom_factorial_moments(2, 2, 10)[[1]]
+
+}
+\seealso{
+\code{\link[=central_from_factorial]{central_from_factorial()}}, which converts these;
+\code{\link[=betabinom_central]{betabinom_central()}}, the wrapper the moment methods call.
 }
 \keyword{internal}

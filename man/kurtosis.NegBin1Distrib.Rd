@@ -2,20 +2,43 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.NegBin1Distrib}
 \alias{kurtosis.NegBin1Distrib}
-\title{Kurtosis of the NB1 Negative Binomial Distribution}
+\title{Excess Kurtosis of the Negative Binomial Distribution in the NB1 Parametrization}
 \arguments{
-\item{x}{A \code{NegBin1Distrib}.}
+\item{x}{A \code{NegBin1Distrib}, from \code{\link[=negbin1_distrib]{negbin1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{theta}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$theta))}, positive throughout.
 }
 \description{
-Closed form: excess
-\eqn{6\theta/\mu + 1/\{\mu(1+\theta)\}}, which tends to the Poisson
-\eqn{1/\mu} as \eqn{\theta \to 0}.
+Closed form: \eqn{\gamma_2 = 6\theta/\mu + 1/\{\mu(1+\theta)\}}, the excess
+over the Gaussian. Both terms are positive, so the family is always
+leptokurtic, and the expression tends to the Poisson's \eqn{1/\mu} as the
+dispersion goes to zero.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean and \eqn{\theta > 0} the dispersion.
+}
+
+\examples{
+d <- negbin1_distrib()
+
+# The published form, written out.
+all.equal(kurtosis(d, list(mu = 4, theta = 2)), 12 / 4 + 1 / 12)
+
+# It falls onto the Poisson's 1 / mu = 0.25 as the dispersion vanishes.
+kurtosis(d, list(mu = 4, theta = c(1, 0.01, 1e-8)))
+
+}
+\seealso{
+\code{\link[=skewness.NegBin1Distrib]{skewness.NegBin1Distrib()}}; \code{\link[=kurtosis.NegBin2Distrib]{kurtosis.NegBin2Distrib()}}, the other
+parametrization; \code{\link[=kurtosis.PoissonDistrib]{kurtosis.PoissonDistrib()}}, the limit;
+\code{\link[=negbin1_distrib]{negbin1_distrib()}}.
 }
 \keyword{internal}

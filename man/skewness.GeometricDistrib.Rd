@@ -4,16 +4,35 @@
 \alias{skewness.GeometricDistrib}
 \title{Skewness of the Geometric Distribution}
 \arguments{
-\item{x}{A \code{GeometricDistrib}.}
+\item{x}{A \code{GeometricDistrib}, from \code{\link[=geometric_distrib]{geometric_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{theta$mu}, above 2 throughout.
 }
 \description{
-Closed form: \eqn{(1+2\mu)/\sqrt{\mu(1+\mu)}}.
+Closed form: \eqn{\gamma_1 = (1+2\mu)/\sqrt{\mu(1+\mu)}}. It is positive at
+every mean and, unlike a Poisson's, it does not vanish as the counts grow:
+it tends to 2 from above, the exponential's value, which is the continuous
+limit of the family.
+}
+\examples{
+d <- geometric_distrib()
+
+# The published form, written out.
+all.equal(skewness(d, list(mu = 3)), 7 / sqrt(12))
+
+# It tends to the exponential's 2 as the mean grows.
+skewness(d, list(mu = c(1, 10, 1000)))
+
+}
+\seealso{
+\code{\link[=kurtosis.GeometricDistrib]{kurtosis.GeometricDistrib()}}, which tends to 6;
+\code{\link[=skewness.ExponentialDistrib]{skewness.ExponentialDistrib()}}, the continuous limit;
+\code{\link[=geometric_distrib]{geometric_distrib()}}.
 }
 \keyword{internal}

@@ -2,20 +2,48 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.GPDDistrib}
 \alias{kurtosis.GPDDistrib}
-\title{Kurtosis of the Generalized Pareto Distribution}
+\title{Excess Kurtosis of the Generalized Pareto Distribution}
 \arguments{
-\item{x}{A \code{GPDDistrib}.}
+\item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or \code{n}. Only \code{xi} enters
+the value; settings with \eqn{\xi \ge 1/4} give \code{Inf}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$sigma), length(theta$xi))}, \code{Inf} wherever
+\eqn{\xi \ge 1/4}.
 }
 \description{
-Closed form: excess
-\eqn{3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
-\eqn{\xi < 1/4}, and infinite at or above one quarter.
+Closed form:
+\eqn{\gamma_2 = 3(1-2\xi)(2\xi^2+\xi+3)/\{(1-3\xi)(1-4\xi)\} - 3} for
+\eqn{\xi < 1/4}, and \code{Inf} at or above one quarter. The threshold is the
+tightest of the four moments, so this is the first quantity to become
+unreportable as a fitted shape rises.
+}
+\section{Notation}{
+
+\eqn{\xi} is the shape, of either sign. The scale does not enter a
+standardized moment.
+}
+
+\examples{
+d <- gpd_distrib()
+
+# Six at shape zero, and infinite at or above one quarter.
+kurtosis(d, list(sigma = 1, xi = c(0, 0.2, 0.25, 0.3)))
+
+# The four thresholds, from the mean's 1 down to this one's 1/4.
+th <- list(sigma = 1, xi = 0.3)
+c(mean = mean(d, th), variance = variance(d, th),
+  skewness = skewness(d, th), kurtosis = kurtosis(d, th))
+
+}
+\seealso{
+\code{\link[=skewness.GPDDistrib]{skewness.GPDDistrib()}}, whose threshold is \eqn{1/3};
+\code{\link[=kurtosis.ExponentialDistrib]{kurtosis.ExponentialDistrib()}}, the \eqn{\xi = 0} case; \code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \keyword{internal}

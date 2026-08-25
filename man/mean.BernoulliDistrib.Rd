@@ -4,16 +4,34 @@
 \alias{mean.BernoulliDistrib}
 \title{Mean of the Bernoulli Distribution}
 \arguments{
-\item{x}{A \code{BernoulliDistrib}.}
+\item{x}{A \code{BernoulliDistrib}, from \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the success
+probability, strictly between 0 and 1), a numeric vector of length 1 or
+\code{n}. Aligned and validated by name, so a value at or outside the unit
+interval throws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}, strictly inside
+\eqn{(0,1)}.
 }
 \description{
-Closed form: \eqn{\mu}, the success probability.
+Closed form: \eqn{E[Y] = \mu}, the success probability. The response takes
+the values 0 and 1, so the mean is the probability of the second and every
+other moment is a function of it: a one-parameter family has nothing else
+for them to depend on.
+}
+\examples{
+d <- bernoulli_distrib()
+
+# The one parameter is the mean.
+mean(d, list(mu = c(0.1, 0.5, 0.9)))
+
+}
+\seealso{
+\code{\link[=variance.BernoulliDistrib]{variance.BernoulliDistrib()}}; \code{\link[=mean.BinomialDistrib]{mean.BinomialDistrib()}}, the sum of
+\code{size} of these; \code{\link[=bernoulli_distrib]{bernoulli_distrib()}}.
 }
 \keyword{internal}

@@ -4,16 +4,35 @@
 \alias{variance.PoissonDistrib}
 \title{Variance of the Poisson Distribution}
 \arguments{
-\item{x}{A \code{PoissonDistrib}.}
+\item{x}{A \code{PoissonDistrib}, from \code{\link[=poisson_distrib]{poisson_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{\mu}, equal to the mean.
+Closed form: \eqn{\operatorname{Var}(Y) = \mu}, equal to the mean. This is
+equidispersion, and it is the assumption every overdispersed count family in
+the toolkit relaxes: a sample whose variance exceeds its mean is evidence
+against a Poisson and for a negative binomial or a Poisson-inverse Gaussian.
+}
+\examples{
+d <- poisson_distrib()
+
+# Equal to the mean at every setting.
+variance(d, list(mu = c(0.5, 3, 100)))
+
+# The negative binomial exceeds it and falls onto it as theta grows.
+variance(negbin2_distrib(), list(mu = 3, theta = c(1, 100, 1e8)))
+
+}
+\seealso{
+\code{\link[=mean.PoissonDistrib]{mean.PoissonDistrib()}}, equal to this;
+\code{\link[=variance.NegBin2Distrib]{variance.NegBin2Distrib()}}, which adds \eqn{\mu^2/\theta};
+\code{\link[=poisson_distrib]{poisson_distrib()}}.
 }
 \keyword{internal}

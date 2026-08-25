@@ -4,16 +4,43 @@
 \alias{variance.GenGamma1Distrib}
 \title{Variance of the Generalized Gamma Distribution}
 \arguments{
-\item{x}{A \code{GenGamma1Distrib}.}
+\item{x}{A \code{GenGamma1Distrib}, from \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{a}, \code{d} and \code{p}, all positive,
+each a numeric vector of length 1 or \code{n}. Cancellation between the two
+raw moments costs digits where the coefficient of variation is small.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, of length equal to the longest of the
+three components.
 }
 \description{
-Closed form, from the first two raw moments.
+Closed form from the first two raw moments,
+\eqn{\operatorname{Var}(Y) = m_2 - m_1^2} with
+\eqn{m_k = a^k\,\Gamma\{(d+k)/p\}/\Gamma(d/p)}. The scale enters as a
+square and the two shapes through the gamma ratios.
+}
+\section{Notation}{
+
+\eqn{a > 0} is the scale, \eqn{d > 0} and \eqn{p > 0} the two shapes, and
+\eqn{m_k} the \eqn{k}-th raw moment.
+}
+
+\examples{
+d <- gengamma1_distrib()
+
+# At p = 1 the family is a gamma of shape d, whose variance is a^2 d.
+all.equal(variance(d, list(a = 2, d = 3, p = 1)), 12)
+
+# At d = p it agrees with the Weibull.
+all.equal(variance(d, list(a = 2, d = 3, p = 3)),
+          variance(weibull1_distrib(), list(mu = 2, sigma = 3)))
+
+}
+\seealso{
+\code{\link[=mean.GenGamma1Distrib]{mean.GenGamma1Distrib()}}, \code{\link[=skewness.GenGamma1Distrib]{skewness.GenGamma1Distrib()}},
+\code{\link[=gengamma_raw_moments]{gengamma_raw_moments()}}, \code{\link[=gengamma1_distrib]{gengamma1_distrib()}}.
 }
 \keyword{internal}

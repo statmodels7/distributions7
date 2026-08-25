@@ -4,16 +4,34 @@
 \alias{variance.BinomialDistrib}
 \title{Variance of the Binomial Distribution}
 \arguments{
-\item{x}{A \code{BinomialDistrib}.}
+\item{x}{A \code{BinomialDistrib}, from \code{\link[=binomial_distrib]{binomial_distrib()}}, carrying the trial
+count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of variances, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{n\mu(1-\mu)}.
+Closed form: \eqn{\operatorname{Var}(Y) = n\mu(1-\mu)}. The trials are
+independent, so the variance is the trial count times the Bernoulli
+variance; a sample of counts out of \eqn{n} whose variance exceeds this is
+overdispersed, and a beta-binomial is the family that carries the excess.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+
+# Ten times the Bernoulli variance.
+all.equal(variance(d, list(mu = 0.3)),
+          10 * variance(bernoulli_distrib(), list(mu = 0.3)))
+
+}
+\seealso{
+\code{\link[=mean.BinomialDistrib]{mean.BinomialDistrib()}}; \code{\link[=variance.BernoulliDistrib]{variance.BernoulliDistrib()}}, the
+one-trial case; \code{\link[=variance.BetaBinom1Distrib]{variance.BetaBinom1Distrib()}}, which inflates this;
+\code{\link[=binomial_distrib]{binomial_distrib()}}.
 }
 \keyword{internal}

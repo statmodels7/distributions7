@@ -2,19 +2,46 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.Beta1Distrib}
 \alias{kurtosis.Beta1Distrib}
-\title{Kurtosis of the Beta Distribution}
+\title{Excess Kurtosis of the Beta Distribution}
 \arguments{
-\item{x}{A \code{Beta1Distrib}.}
+\item{x}{A \code{Beta1Distrib}, from \code{\link[=beta1_distrib]{beta1_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{mu} (strictly between 0 and 1)
+and \code{phi} (positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$phi))}.
 }
 \description{
-Closed form in the shapes \eqn{a} and \eqn{b}: excess
-\eqn{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}/\{ab(a+b+2)(a+b+3)\}}.
+Closed form in the two shapes \eqn{a = \mu\phi} and \eqn{b = (1-\mu)\phi}:
+\deqn{\gamma_2 = \frac{6\{(a-b)^2(a+b+1) - ab(a+b+2)\}}
+                      {ab(a+b+2)(a+b+3)}.}
+It is the one family in the toolkit whose excess kurtosis is routinely
+negative: a beta on a bounded support has no tails to be heavy, and at
+\eqn{\mu = 1/2}, \eqn{\phi = 2} the density is uniform, whose excess
+kurtosis is \eqn{-6/5}, the smallest value any distribution attains.
+}
+\section{Notation}{
+
+\eqn{\mu \in (0,1)} is the mean, \eqn{\phi > 0} the precision, and
+\eqn{a = \mu\phi}, \eqn{b = (1-\mu)\phi} the two shapes.
+}
+
+\examples{
+d <- beta1_distrib()
+
+# The uniform case sits at the lower bound of -6/5.
+all.equal(kurtosis(d, list(mu = 0.5, phi = 2)), -1.2)
+
+# Negative over the symmetric middle, positive as the mass piles at an end.
+round(kurtosis(d, list(mu = c(0.5, 0.1, 0.02), phi = 5)), 4)
+
+}
+\seealso{
+\code{\link[=skewness.Beta1Distrib]{skewness.Beta1Distrib()}}, written in the same two shapes;
+\code{\link[=variance.Beta1Distrib]{variance.Beta1Distrib()}}; \code{\link[=beta1_distrib]{beta1_distrib()}}.
 }
 \keyword{internal}

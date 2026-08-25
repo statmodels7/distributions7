@@ -4,16 +4,37 @@
 \alias{skewness.BinomialDistrib}
 \title{Skewness of the Binomial Distribution}
 \arguments{
-\item{x}{A \code{BinomialDistrib}.}
+\item{x}{A \code{BinomialDistrib}, from \code{\link[=binomial_distrib]{binomial_distrib()}}, carrying the trial
+count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{theta$mu}.
 }
 \description{
-Closed form: \eqn{(1-2\mu)/\sqrt{n\mu(1-\mu)}}.
+Closed form: \eqn{\gamma_1 = (1-2\mu)/\sqrt{n\mu(1-\mu)}}. It is the
+Bernoulli's divided by \eqn{\sqrt n}, so it vanishes as the trials
+accumulate, at the rate the central limit theorem gives. It is zero at
+\eqn{\mu = 1/2} at every trial count.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+
+# The Bernoulli's divided by the square root of the trial count.
+all.equal(skewness(d, list(mu = 0.3)),
+          skewness(bernoulli_distrib(), list(mu = 0.3)) / sqrt(10))
+
+# Zero at one half, at any trial count.
+skewness(d, list(mu = 0.5))
+
+}
+\seealso{
+\code{\link[=kurtosis.BinomialDistrib]{kurtosis.BinomialDistrib()}}, which vanishes as \eqn{1/n};
+\code{\link[=skewness.BernoulliDistrib]{skewness.BernoulliDistrib()}}, the one-trial case;
+\code{\link[=binomial_distrib]{binomial_distrib()}}.
 }
 \keyword{internal}

@@ -2,19 +2,39 @@
 % Please edit documentation in R/moments.R
 \name{kurtosis.BinomialDistrib}
 \alias{kurtosis.BinomialDistrib}
-\title{Kurtosis of the Binomial Distribution}
+\title{Excess Kurtosis of the Binomial Distribution}
 \arguments{
-\item{x}{A \code{BinomialDistrib}.}
+\item{x}{A \code{BinomialDistrib}, from \code{\link[=binomial_distrib]{binomial_distrib()}}, carrying the trial
+count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (strictly between 0 and
+1), a numeric vector of length 1 or \code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of excess kurtoses, the length of \code{theta$mu}.
 }
 \description{
-Closed form: excess
-\eqn{\{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}.
+Closed form: \eqn{\gamma_2 = \{1 - 6\mu(1-\mu)\}/\{n\mu(1-\mu)\}}, the
+excess over the Gaussian. It is the Bernoulli's divided by \eqn{n}, so it
+vanishes twice as fast as the skewness and can take either sign: it is
+negative over the middle of the unit interval, where the support is bounded
+at both ends and the tails are lighter than a Gaussian's.
+}
+\examples{
+d <- binomial_distrib(size = 10)
+
+# The Bernoulli's divided by the trial count.
+all.equal(kurtosis(d, list(mu = 0.3)),
+          kurtosis(bernoulli_distrib(), list(mu = 0.3)) / 10)
+
+# Negative over the middle, positive towards either end.
+round(kurtosis(d, list(mu = c(0.05, 0.3, 0.5, 0.95))), 4)
+
+}
+\seealso{
+\code{\link[=skewness.BinomialDistrib]{skewness.BinomialDistrib()}}; \code{\link[=kurtosis.BernoulliDistrib]{kurtosis.BernoulliDistrib()}}, the
+one-trial case; \code{\link[=binomial_distrib]{binomial_distrib()}}.
 }
 \keyword{internal}

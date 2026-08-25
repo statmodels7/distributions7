@@ -4,18 +4,41 @@
 \alias{skewness.GPDDistrib}
 \title{Skewness of the Generalized Pareto Distribution}
 \arguments{
-\item{x}{A \code{GPDDistrib}.}
+\item{x}{A \code{GPDDistrib}, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or \code{n}. Only \code{xi} enters
+the value; settings with \eqn{\xi \ge 1/3} give \code{Inf}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector, of length
+\code{max(length(theta$sigma), length(theta$xi))}, \code{Inf} wherever
+\eqn{\xi \ge 1/3}.
 }
 \description{
-Closed form:
-\eqn{2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for \eqn{\xi < 1/3}, and infinite
-at or above one third.
+Closed form: \eqn{\gamma_1 = 2(1+\xi)\sqrt{1-2\xi}/(1-3\xi)} for
+\eqn{\xi < 1/3}, and \code{Inf} at or above one third. The scale cancels, so the
+value depends on the shape alone; it is 2 at \eqn{\xi = 0}, where the family
+is exponential, and it climbs without bound as the shape approaches its
+threshold.
+}
+\section{Notation}{
+
+\eqn{\xi} is the shape, of either sign. The scale does not enter a
+standardized moment.
+}
+
+\examples{
+d <- gpd_distrib()
+
+# Two at shape zero, climbing steeply, infinite at or above one third.
+skewness(d, list(sigma = 1, xi = c(0, 0.3, 1 / 3, 0.4)))
+
+}
+\seealso{
+\code{\link[=kurtosis.GPDDistrib]{kurtosis.GPDDistrib()}}, whose threshold is \eqn{1/4};
+\code{\link[=skewness.ExponentialDistrib]{skewness.ExponentialDistrib()}}, the \eqn{\xi = 0} case; \code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \keyword{internal}

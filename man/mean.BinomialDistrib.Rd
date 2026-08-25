@@ -4,16 +4,41 @@
 \alias{mean.BinomialDistrib}
 \title{Mean of the Binomial Distribution}
 \arguments{
-\item{x}{A \code{BinomialDistrib}.}
+\item{x}{A \code{BinomialDistrib}, from \code{\link[=binomial_distrib]{binomial_distrib()}}, carrying the trial
+count in its \code{size} property.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list with one component, \code{mu} (the success
+probability, strictly between 0 and 1), a numeric vector of length 1 or
+\code{n}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of means, the length of \code{theta$mu}, in
+\eqn{(0, n)}.
 }
 \description{
-Closed form: \eqn{n\mu}.
+Closed form: \eqn{E[Y] = n\mu}, with \eqn{n} the number of trials and
+\eqn{\mu} the success probability. The trial count is a property of the
+object and not a parameter, so it is read from \code{x@size} and does not appear
+in \code{theta}.
+}
+\section{Notation}{
+
+\eqn{n} is the number of trials, held on the object, and \eqn{\mu \in (0,1)}
+the success probability.
+}
+
+\examples{
+d <- binomial_distrib(size = 10)
+
+# Ten trials at probability 0.3.
+mean(d, list(mu = 0.3))
+
+}
+\seealso{
+\code{\link[=variance.BinomialDistrib]{variance.BinomialDistrib()}}; \code{\link[=mean.BernoulliDistrib]{mean.BernoulliDistrib()}}, the
+one-trial case; \code{\link[=mean.BetaBinom1Distrib]{mean.BetaBinom1Distrib()}}, the overdispersed extension;
+\code{\link[=binomial_distrib]{binomial_distrib()}}.
 }
 \keyword{internal}
