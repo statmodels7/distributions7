@@ -9,46 +9,77 @@ mv_support(distrib, theta, ...)
 \arguments{
 \item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters. Families whose support does not
-depend on them ignore it.}
+\item{theta}{A named list or vector of parameters. Families whose support
+does not depend on them, which is every one that ships, ignore it.}
 
-\item{...}{Passed to methods.}
+\item{...}{Passed to methods. No shipped method reads it.}
 }
 \value{
-A matrix with one row per support point and one column per
+A numeric matrix with one row per support point and one column per
 coordinate.
 }
 \description{
-The points a discrete multivariate distribution places mass on, as a matrix
-with one row per point.
+Returns the points a discrete multivariate distribution places mass on, as a
+matrix with one row per point. Enumerating them turns every expectation into
+an EXACT SUM and lets \code{\link[=check_distrib]{check_distrib()}} verify the total mass by addition
+instead of by sampling: a normalization wrong by a thousandth is caught by
+the sum and would not be by a sample.
 }
-\details{
-A univariate discrete distribution needs no such generic: its support is a
-stretch of the integers and the package walks it. On a vector the support is
-a set whose shape depends on the family --- the multinomial's is the
-compositions of its size --- and enumerating it is what lets an expectation
-be an exact sum and the validator check the total mass by addition rather
-than by sampling.
+\section{Why the generic exists at all}{
+A univariate discrete distribution needs none: its support is a stretch of
+the integers and the package walks it. On a vector the support is a set
+whose shape depends on the family, and no walk covers every case.
+}
 
-The base class rejects. A continuous family has no such set, and a discrete
-one whose support is infinite has no finite matrix to return; either way an
-answer would be a fiction, and the caller is better told.
-
-For the multinomial on \eqn{p} coordinates with \eqn{n} trials the support
-is the weak compositions of \eqn{n} into \eqn{p} parts,
-
+\section{The multinomial's support}{
+For \eqn{p} coordinates and \eqn{n} trials it is the weak compositions of
+\eqn{n} into \eqn{p} parts,
 \deqn{\mathcal{S} = \Bigl\{y \in \mathbb{N}_0^{p} :
   \textstyle\sum_{j=1}^{p} y_j = n\Bigr\},
   \qquad \lvert\mathcal{S}\rvert = \binom{n + p - 1}{p - 1},}
-
-enumerated by \code{\link[numericals7:compositions]{numericals7::compositions()}}. Every expectation is
-then the finite sum \eqn{\sum_{y \in \mathcal{S}} g(y) f(y; \theta)}.
+enumerated by \code{\link[numericals7:compositions]{numericals7::compositions()}}. Every expectation is then the
+finite sum \eqn{\sum_{y \in \mathcal{S}} g(y) f(y; \theta)}. The count grows
+quickly: 15 points at \eqn{n = 4, p = 3}, and 5151 at \eqn{n = 100, p = 3}.
 }
+
+\section{What the base class does}{
+It signals an error. A continuous family has no such set, and a discrete one
+whose support is infinite has no finite matrix to return; either way an
+answer would be a fiction. \code{\link[=has_mv_support]{has_mv_support()}} is the predicate a consumer
+asks before calling.
+}
+
+\section{Notation}{
+
+\eqn{\mathcal{S}} is the support, \eqn{p} the dimension, \eqn{n} the number
+of trials of a multinomial and \eqn{f} the mass function.
+}
+
 \examples{
 d <- multinomial_distrib(3, size = 4)
-nrow(mv_support(d, list(probs_alr1 = 0, probs_alr2 = 0)))
+theta <- list(probs_alr1 = 0.4, probs_alr2 = -0.3)
+sup <- mv_support(d, theta)
+
+# One row per point, every row summing to the number of trials.
+dim(sup)
+unique(rowSums(sup))
+head(sup, 4)
+
+# The count is the number of weak compositions.
+c(got = nrow(sup), expected = choose(4 + 3 - 1, 3 - 1))
+
+# And the mass over it sums to one exactly, which is the check a sample
+# could not make.
+sum(distrib_pdf(d, sup, theta))
+
+# A continuous family has no such set and says so.
+try(mv_support(mvgaussian_distrib(2),
+               list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+                    sigma_log_L2 = 0, sigma_L2.1 = 0)))
 
 }
 \seealso{
-\code{\link[=multinomial_distrib]{multinomial_distrib()}}, \code{\link[numericals7:compositions]{numericals7::compositions()}}
+\code{\link[=multinomial_distrib]{multinomial_distrib()}}, the one family that answers,
+\code{\link[=has_mv_support]{has_mv_support()}} for the predicate, \code{\link[numericals7:compositions]{numericals7::compositions()}} for
+the enumeration, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
 }

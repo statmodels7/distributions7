@@ -7,16 +7,34 @@
 mv_leading_location(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object whose leading \eqn{p}
+parameters are the location.}
 
 \item{theta}{A named list of parameters, already aligned.}
 }
 \value{
-A named numeric vector of length \eqn{p}.
+A numeric vector of length \code{distrib@n_dim}, named \code{v1}, ..., \code{vp}.
 }
 \description{
-The helper the elliptical families implement \code{\link[=mv_location]{mv_location()}} with:
-the first \eqn{p} entries of the flat parameter vector, labeled by
-coordinate.
+Reads the first \eqn{p} components of \code{theta} as the location vector. It is
+the implementation both elliptical families register \code{\link[=mv_location]{mv_location()}} with.
+It is correct exactly where a family's leading parameters ARE its location,
+which is a fact about the family; the shape of \code{theta} says nothing about
+it.
+}
+\examples{
+d <- mvgaussian_distrib(3)
+theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
+th <- distributions7:::align_theta(d, theta)
+distributions7:::mv_leading_location(d, th)
+
+# Which is what mv_location() returns for this family, the method being
+# this function.
+mv_location(d, theta)
+
+}
+\seealso{
+\code{\link[=mv_location]{mv_location()}} for the generic and
+\code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for a registration that uses this.
 }
 \keyword{internal}

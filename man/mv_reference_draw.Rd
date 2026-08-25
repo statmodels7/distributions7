@@ -7,48 +7,78 @@
 mv_reference_draw(distrib, theta, n, ...)
 }
 \arguments{
-\item{distrib}{An object inheriting from class
-\code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
+\item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters.}
+\item{theta}{A named list or vector of parameters, each component a single
+number.}
 
-\item{n}{The number of draws.}
+\item{n}{The number of draws, a single positive whole number.}
 
-\item{...}{Passed to methods.}
+\item{...}{Passed to methods. No shipped method reads it.}
 }
 \value{
-A list with \code{y}, a matrix of \code{n} draws, and \code{logd},
-their log-density under the proposal.
+A named list with \code{y}, an \eqn{n \times p} numeric matrix of draws,
+and \code{logd}, a numeric vector of length \eqn{n} holding their log-density
+under the PROPOSAL.
 }
 \description{
-Draws from a distribution that dominates the family, together with the
+Draws from a distribution that DOMINATES the family, together with the
 log-density of those draws, so that an importance-sampling estimate of
-\eqn{\int f = 1} can be formed.
+\eqn{\int f = 1} can be formed. It is consumed by \code{\link[=check_distrib]{check_distrib()}} and by
+nothing else, a discrete family taking the exact sum over \code{\link[=mv_support]{mv_support()}}
+instead.
 }
-\details{
-The default proposal is a gaussian with the same mean and twice the
-covariance, which serves any family supported on all of \eqn{\mathbb{R}^p}.
-The inflation matters: a proposal equal to the distribution itself makes
-every ratio one and certifies nothing.
-
-A family whose support is a lower-dimensional subset of \eqn{\mathbb{R}^p},
-such as a Dirichlet on the simplex, must register its own method, because a
-proposal spread over the ambient space places no mass at all on the support
-and the estimate would be zero. The draws and the log-density must be taken
-with respect to the same dominating measure the family's density is written
-against.
-
-This is consumed by \code{\link[=check_distrib]{check_distrib()}} and by nothing else. A
-discrete family does not need it, its normalization being an exact sum over
-\code{\link[=mv_support]{mv_support()}}.
+\section{Why the proposal is inflated}{
+The default is a gaussian with the family's mean and TWICE its covariance,
+which serves any family supported on all of \eqn{\mathbb{R}^p}. The
+inflation is load-bearing: a proposal equal to the distribution itself makes
+every importance ratio one, so the estimate is one by construction and
+certifies nothing.
 }
+
+\section{A family on a lower-dimensional support must override}{
+A Dirichlet lives on the simplex, a set of measure zero in
+\eqn{\mathbb{R}^p}, and a gaussian proposal spread over the ambient space
+places no mass on it. The failure is QUIET: \code{chol()} accepts the singular
+covariance, and the estimate of an integral that is 1 comes back at
+\eqn{2\times10^{-8}}. The Dirichlet therefore registers the uniform on the
+simplex, whose density is the constant \eqn{\Gamma(p)}.
+
+The draws and the log-density must be taken against the SAME dominating
+measure the family's density is written against, or the ratio means nothing.
+}
+
+\section{Notation}{
+
+\eqn{f} is the family's density, \eqn{p} the dimension and \eqn{\Gamma} the
+gamma function.
+}
+
 \examples{
 d <- mvgaussian_distrib(2)
-theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0)
 set.seed(1)
 str(mv_reference_draw(d, theta, 5))
 
+# The estimate it is built for: the density over the proposal, averaged.
+set.seed(2)
+r <- mv_reference_draw(d, theta, 20000)
+mean(exp(distrib_pdf(d, r$y, theta, log = TRUE) - r$logd))
+
+# A Dirichlet lives on the simplex and registers its own proposal, the
+# uniform there.
+dd <- dirichlet_distrib(3)
+thd <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)
+set.seed(3)
+rd <- mv_reference_draw(dd, thd, 5)
+round(rd$y, 4)
+unique(round(rd$logd, 10))
+log(gamma(3))
+
 }
 \seealso{
-\code{\link[=check_distrib]{check_distrib()}}, \code{\link[=mv_support]{mv_support()}}
+\code{\link[=check_distrib]{check_distrib()}}, the only consumer,
+\code{\link[=mv_reference_draw.multivariate_distrib]{mv_reference_draw.multivariate_distrib()}} for the default, and
+\code{\link[=mv_support]{mv_support()}}, the exact route a discrete family takes.
 }

@@ -4,19 +4,41 @@
 \alias{mv_marginal.multivariate_distrib}
 \title{No Marginal Without a Closed Form}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined: the error is raised
+before it is read.}
 
-\item{which}{An integer vector of coordinates.}
+\item{which}{An integer vector of coordinates, already validated by the
+generic. Not examined.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-Rejected. Integrating out the other coordinates has no general closed form,
-and a numerical marginal would be a different object with the same name.
+Signals an error. Integrating the other coordinates out has no general
+closed form, and a numerical marginal would be a different object under the
+same name: a quadrature's answer is a grid of numbers, not a distribution
+another generic can be asked of. A family whose marginals are known
+registers its own method, and all four that ship do.
+}
+\examples{
+# Every shipped family registers a method, so reach the refusal directly.
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0)
+base <- S7::method(mv_marginal, multivariate_distrib)
+try(base(d, distributions7:::align_theta(d, theta), 1L))
+
+# The family's own method answers.
+mv_marginal(d, theta, 1)$distrib@n_dim
+
+}
+\seealso{
+\code{\link[=mv_marginal]{mv_marginal()}} for the generic and what each shipped family
+gives, and \code{\link[=plot.multivariate_distrib]{plot.multivariate_distrib()}}, which exists exactly where the
+marginals do.
 }
 \keyword{internal}

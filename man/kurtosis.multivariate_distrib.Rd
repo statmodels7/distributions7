@@ -6,18 +6,43 @@
 \arguments{
 \item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined: the error is raised
+before it is read.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-Rejected, for the reason given at
-\code{\link[=skewness.multivariate_distrib]{skewness()}}.
+Signals an error, for the reason \code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} gives: a
+scalar kurtosis for a vector response is a choice among Mardia's,
+Malkovich-Afifi's and the vector of coordinatewise marginal kurtoses, which
+are different numbers. A caller who wants a coordinatewise one takes the
+marginal and asks it, where the marginal is a genuinely univariate object:
+a Dirichlet's is a beta and answers, an elliptical family's is a
+one-dimensional object of its own class and inherits this refusal.
+}
+\examples{
+d <- mvstudent_t_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5, nu = 6)
+try(kurtosis(d, theta))
+
+# A Student t's marginal is a one-dimensional MvStudentTDistrib, so it
+# inherits the same refusal.
+try(kurtosis(mv_marginal(d, theta, 1)$distrib,
+             mv_marginal(d, theta, 1)$theta))
+
+# A Dirichlet's marginal is a genuine univariate beta and answers.
+b <- mv_marginal(dirichlet_distrib(3),
+                 list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
+kurtosis(b$distrib, b$theta)
+
 }
 \seealso{
-\code{\link[=mv_marginal]{mv_marginal()}}
+\code{\link[=skewness.multivariate_distrib]{skewness.multivariate_distrib()}} for the same refusal one moment
+down, \code{\link[=mv_marginal]{mv_marginal()}} for the explicit route, and \code{\link[=kurtosis]{kurtosis()}} for the
+generic.
 }
 \keyword{internal}

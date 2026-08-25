@@ -4,17 +4,36 @@
 \alias{mv_location.multivariate_distrib}
 \title{No Location Without a Family That Has One}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined: the error is raised
+before it is read.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-Rejected. Not every multivariate family has a location: a Dirichlet is
-described by concentrations and a Wishart by a scale and a count, and
+Signals an error. Not every multivariate family has a location: a Dirichlet
+is described by concentrations and a Wishart by a scale and a count, and
 handing back the first \eqn{p} parameters under the name of a mean would be
-a wrong answer in the shape of a right one.
+a wrong answer in the shape of a right one. A family that HAS one registers
+its own method, and the two elliptical families register
+\code{\link[=mv_leading_location]{mv_leading_location()}}.
+}
+\examples{
+# The Dirichlet registers no location.
+try(mv_location(dirichlet_distrib(3),
+                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
+
+# The gaussian does.
+mv_location(mvgaussian_distrib(2),
+            list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
+                 sigma_log_L2 = 0, sigma_L2.1 = 0))
+
+}
+\seealso{
+\code{\link[=mv_location]{mv_location()}} for the generic, \code{\link[=mv_leading_location]{mv_leading_location()}} for the
+implementation the elliptical families use, and
+\code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for one that answers.
 }
 \keyword{internal}

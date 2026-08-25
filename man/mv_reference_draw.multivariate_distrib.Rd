@@ -4,23 +4,66 @@
 \alias{mv_reference_draw.multivariate_distrib}
 \title{An Inflated Gaussian Proposal}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with a mean and a finite
+covariance.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, already aligned by the generic.}
 
-\item{n}{The number of draws.}
+\item{n}{The number of draws, a single positive whole number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list with the draws \code{y} and their log-density \code{logd}.
+A named list with \code{y}, an \eqn{n \times p} numeric matrix, and
+\code{logd}, a numeric vector of length \eqn{n}.
 }
 \description{
-The default: a gaussian with the family's mean and twice its covariance.
-Requires the covariance to be non-singular, which is what a support of full
-dimension gives.
+The default proposal: a gaussian with the family's mean and TWICE its
+covariance, drawn as \eqn{\mu + Lz} with \eqn{LL^\top = 2\Sigma}. The
+inflation makes the importance ratio informative; at the family's own
+covariance every ratio would be one.
+}
+\details{
+It requires the covariance to be non-singular, which a support of full
+dimension in \eqn{\mathbb{R}^p} gives. On a family whose support is a
+lower-dimensional set the covariance is singular and \code{chol()} may accept it
+anyway, so the failure is quiet: see \code{\link[=mv_reference_draw]{mv_reference_draw()}} for the measured
+consequence. Such a family registers its own method.
+
+The log-density is formed from the Cholesky factor directly. The whitened
+residual is \eqn{L^{-1}r}, a LOWER triangular system, so
+\code{\link[base:backsolve]{base::forwardsolve()}} is what solves it; \code{backsolve()} on the transpose
+solves \eqn{L^\top x = b}, a different vector of the same shape.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{L} a lower Cholesky
+factor of \eqn{2\Sigma} and \eqn{p} the dimension.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+
+set.seed(1)
+r <- mv_reference_draw(d, theta, 4)
+r$y
+
+# logd really is the log-density of the inflated gaussian at those draws.
+S2 <- 2 * variance(d, theta)
+mu <- c(1, -1)
+ref <- -0.5 * (2 * log(2 * pi) + log(det(S2)) + mahalanobis(r$y, mu, S2))
+all.equal(r$logd, as.numeric(ref))
+
+# And the sample is twice as spread as the family, which is the point.
+set.seed(2)
+round(rbind(proposal = diag(var(mv_reference_draw(d, theta, 20000)$y)),
+            family = diag(variance(d, theta))), 3)
+
 }
 \seealso{
-\code{\link[=mv_reference_draw]{mv_reference_draw()}}
+\code{\link[=mv_reference_draw]{mv_reference_draw()}} for the generic and the override a
+simplex-valued family needs, and \code{\link[=check_distrib]{check_distrib()}} for the consumer.
 }
 \keyword{internal}

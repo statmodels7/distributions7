@@ -6,24 +6,46 @@
 \arguments{
 \item{x}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined: the error is raised
+before it is read.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-Rejected. A scalar skewness for a vector response is not one quantity but a
-choice among several -- Mardia's, Malkovich-Afifi's, or the vector of
-coordinatewise marginal skewnesses -- and they do not agree. Returning any
-of them under the bare name would be a wrong answer in the shape of a right
-one, so the caller names the quantity it wants instead. Note that
-\code{\link[=mv_marginal]{mv_marginal()}} is not a way round this for an elliptical family,
-whose marginal is a smaller multivariate distribution and rejects in turn;
-it is for the Dirichlet and the multinomial, whose marginals are univariate.
+Signals an error. A scalar skewness for a vector response is not one
+quantity but a choice among several: Mardia's, Malkovich-Afifi's, and the
+vector of coordinatewise marginal skewnesses are different numbers, and they
+do not agree. Returning any one of them under the bare name would make a
+choice the caller did not.
+}
+\details{
+\code{\link[=mv_marginal]{mv_marginal()}} is only a way round this where the marginal is a genuinely
+univariate object. A Dirichlet's marginal is a beta and answers; an
+elliptical family's marginal is a one-dimensional object of its own class,
+so it inherits this refusal. Where it does answer, taking the marginal and
+asking it is explicit about which quantity is meant, which is the point.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
+try(skewness(d, theta))
+
+# A Dirichlet's marginal is a genuine univariate beta and has one. An
+# elliptical family's marginal is a one-dimensional object of its own
+# class, so it inherits this refusal rather than answering zero.
+m <- mv_marginal(dirichlet_distrib(3),
+                 list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8), 1)
+skewness(m$distrib, m$theta)
+try(skewness(mv_marginal(d, theta, 1)$distrib,
+             mv_marginal(d, theta, 1)$theta))
+
 }
 \seealso{
-\code{\link[=mv_marginal]{mv_marginal()}}
+\code{\link[=kurtosis.multivariate_distrib]{kurtosis.multivariate_distrib()}}, refused for the same reason,
+\code{\link[=mv_marginal]{mv_marginal()}} for the explicit route, and \code{\link[=skewness]{skewness()}} for the generic.
 }
 \keyword{internal}

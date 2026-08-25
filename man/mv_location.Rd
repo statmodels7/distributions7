@@ -2,47 +2,61 @@
 % Please edit documentation in R/multivariate.R
 \name{mv_location}
 \alias{mv_location}
-\alias{mv_sigma}
-\title{The Mean Vector and Covariance a Parameter List Describes}
+\title{The Location Vector a Parameter List Describes}
 \usage{
 mv_location(distrib, theta)
-
-mv_sigma(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters.
-
-Both are generics whose base-class method rejects: not every multivariate
-family has a location, and one that does not should say so rather than
-hand back its first p parameters under a name that does not fit them.}
+\item{theta}{A named list or vector of parameters, each component a single
+number. Aligned by the generic before dispatch.}
 }
 \value{
-A numeric vector of length \eqn{p} for \code{mv_location()}, and a
-\eqn{p \times p} matrix for \code{mv_sigma()}.
+A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp} after the
+coordinates of the response.
 }
 \description{
-Assembles the mean vector and the covariance matrix of a multivariate
-distribution from its flat parameter list.
+Returns the location of a multivariate distribution as a numeric vector of
+length \eqn{p}. The parameters of a multivariate distribution are scalars,
+so that every generic of the package can index them; this generic puts the
+location back into the shape a reader thinks in.
 }
 \details{
-The parameters of a multivariate distribution are scalars, so that every
-generic of the package can index them, and these two functions put them back
-into the shapes a reader thinks in. \code{mv_sigma()} returns the matrix the
-PARAMETRIZATION carries, whichever side the matrix parameter describes: the
-covariance for a gaussian, and the scale matrix for a Student t, whose
-covariance is \eqn{\nu\Sigma/(\nu-2)} and does not exist below two degrees
-of freedom. The moment is \code{\link[=variance]{variance()}}, and keeping the two apart
-is what lets a heavy-tailed family be described at all.
+Not every multivariate family HAS a location: a Dirichlet is described by
+concentrations and a Wishart by a scale and a count. The base-class method
+therefore signals an error. Handing back the first \eqn{p} parameters under
+a name that does not fit them would be worse. The elliptical families
+register \code{\link[=mv_leading_location]{mv_leading_location()}}, which does exactly that and is right for
+them.
+
+The location is the center of symmetry of the density. It is the MEAN as
+well for a gaussian, and for a Student t only above one degree of freedom;
+\code{\link[=mean]{mean()}} is the generic that answers about the moment.
 }
+\section{Notation}{
+
+\eqn{\mu} is the location and \eqn{p} the dimension of one observation.
+}
+
 \examples{
 d <- mvgaussian_distrib(2)
-theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0.5)
 mv_location(d, theta)
-mv_sigma(d, theta)
+
+# A Student t has a location at every nu, and a mean only above nu = 1.
+t2 <- mvstudent_t_distrib(2)
+th <- c(theta, list(nu = 0.8))
+rbind(location = mv_location(t2, th), mean = mean(t2, th))
+
+# A Dirichlet has neither, and says so.
+try(mv_location(dirichlet_distrib(3),
+                list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}
+\code{\link[=mv_sigma]{mv_sigma()}} for the matrix, \code{\link[=mv_leading_location]{mv_leading_location()}} for the
+implementation the elliptical families use, \code{\link[=mean]{mean()}} for the moment, and
+\code{\link[=mv_location.multivariate_distrib]{mv_location.multivariate_distrib()}} for the refusal.
 }

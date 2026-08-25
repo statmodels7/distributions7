@@ -4,19 +4,38 @@
 \alias{mv_support.multivariate_distrib}
 \title{No Enumerable Support}
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object with no method of its own.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Not examined: the error is raised
+before it is read.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-Never returns; raises an error.
+Never returns: it always signals an error naming the family.
 }
 \description{
-The base-class method, which rejects.
+Signals an error. A continuous family places no mass on any finite set of
+points, and a discrete family whose support is infinite has no finite matrix
+to return, so there is nothing correct to hand back. A family that DOES have
+a finite support registers its own method, and among the four that ship only
+the multinomial does.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
+              sigma_L2.1 = 0)
+try(mv_support(d, theta))
+
+# The predicate a consumer asks first.
+c(gaussian = distributions7:::has_mv_support(d),
+  multinomial = distributions7:::has_mv_support(
+    multinomial_distrib(3, size = 4)))
+
 }
 \seealso{
-\code{\link[=mv_support]{mv_support()}}
+\code{\link[=mv_support]{mv_support()}} for the generic and the multinomial's answer,
+\code{\link[=has_mv_support]{has_mv_support()}} for the predicate that avoids this error, and
+\code{\link[=mv_reference_draw]{mv_reference_draw()}}, the route a continuous family takes instead.
 }
 \keyword{internal}
