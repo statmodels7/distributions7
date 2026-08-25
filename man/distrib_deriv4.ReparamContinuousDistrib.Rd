@@ -3,6 +3,7 @@
 \name{distrib_deriv4.ReparamContinuousDistrib}
 \alias{distrib_deriv4.ReparamContinuousDistrib}
 \alias{reparam_deriv4}
+\alias{distrib_deriv4.ReparamDiscreteDistrib}
 \title{Fourth-Order Derivatives of a Reparametrized Distribution}
 \usage{
 reparam_deriv4(
@@ -17,29 +18,56 @@ reparam_deriv4(
 )
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Should the expected derivatives be carried? A single logical,
+\code{FALSE} by default.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic after this method has returned.}
 
-\item{approx}{Passed to the parent.}
+\item{approx}{The strategy the parent uses for an expected derivative it has
+no closed form for, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
+Passed straight through.}
 
-\item{nsim}{Passed to the parent.}
+\item{nsim}{The number of draws for \code{approx = "mc"}, 10000 by default.
+Passed through.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-derivative components.
+A named list of numeric vectors keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, 4)}}, each the length of \code{y}
+recycled against \code{theta}.
 }
 \description{
-The partition sum at order four, observed or expected.
+The partition sum at order four, observed or expected. This is the highest
+order the toolkit carries, and it is what a marginal criterion's exact
+gradient reads, so a reparametrized family used inside a penalized fit
+reaches it through this method.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+# Five components for a two-parameter family.
+names(distrib_deriv4(d, c(0, 1, 2), th))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the identity;
+\code{\link[=distrib_deriv3.ReparamContinuousDistrib]{distrib_deriv3.ReparamContinuousDistrib()}} for the order below;
+\code{\link[=reparam_tables]{reparam_tables()}}, whose accuracy this inherits; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

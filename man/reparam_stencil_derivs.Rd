@@ -7,23 +7,35 @@
 reparam_stencil_derivs(map, params, parent_params)
 }
 \arguments{
-\item{map}{The map function.}
+\item{map}{The map function, of a named list of the new parameters returning
+a named list of the parent's.}
 
-\item{params}{The new parameter names.}
+\item{params}{A character vector naming the new parameters.}
 
-\item{parent_params}{The parent parameter names.}
+\item{parent_params}{A character vector naming the parent's, which fixes the
+order of the returned list.}
 }
 \value{
-A function usable as \code{reparam_derivs}.
+A function of the new parameters, usable as an object's
+\code{reparam_derivs}, returning the keyed tables \code{\link[=reparam_tables]{reparam_tables()}} describes.
 }
 \description{
-The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: every
-partial of the map is one central stencil of
-\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} in each direction, applied to
-the analytic map, iterated across DISTINCT directions (a cross-variable
-composition, which is not the forbidden same-variable nesting).
+The numerical fallback behind \code{\link[=reparam_tables]{reparam_tables()}}: every partial of the map
+is one central stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} in each direction,
+applied to the analytic map, iterated across \strong{distinct} directions. A
+cross-variable composition of two first differences is one mixed stencil and
+not the same-variable nesting the toolkit forbids.
+}
+\details{
+The accuracy is about \eqn{10^{-8}} at first order and fades with the order,
+which is why a family fitted in earnest supplies \code{map_derivs} instead. What
+the fallback buys is that a user's own reparametrization works immediately,
+with no derivatives written: the same bargain
+\code{\link[=distrib_grad_y.continuous_distrib]{distrib_grad_y.continuous_distrib()}} offers a density-only family.
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparam_tables]{reparam_tables()}}, which calls the result;
+\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} for the stencil;
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} for the exact alternative.
 }
 \keyword{internal}

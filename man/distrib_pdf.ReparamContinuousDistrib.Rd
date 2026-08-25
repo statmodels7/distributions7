@@ -3,26 +3,51 @@
 \name{distrib_pdf.ReparamContinuousDistrib}
 \alias{distrib_pdf.ReparamContinuousDistrib}
 \alias{reparam_pdf}
+\alias{distrib_pdf.ReparamDiscreteDistrib}
 \title{Density of a Reparametrized Distribution}
 \usage{
 reparam_pdf(distrib, y, theta, log = FALSE, ...)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Should the log-density be returned? A single logical, \code{FALSE} by
+default.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, the length of \code{y} recycled against
+\code{theta}.
 }
 \description{
-The parent's density at the mapped parameters.
+The parent's density, evaluated at the mapped parameters. A change of
+parametrization does not change the law, so nothing is recomputed here: the
+new parameters go through \code{\link[=reparam_theta]{reparam_theta()}} and the parent answers.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+# The same numbers as the family written out by hand.
+all.equal(distrib_pdf(d, c(0, 1, 2), th),
+          distrib_pdf(gaussian2_distrib(), c(0, 1, 2), th))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}}; \code{\link[=reparam_theta]{reparam_theta()}} for the map;
+\code{\link[=distrib_gradient.ReparamContinuousDistrib]{distrib_gradient.ReparamContinuousDistrib()}}, where the parametrization
+does enter.
 }
 \keyword{internal}

@@ -3,30 +3,69 @@
 \name{distrib_hessian.ReparamContinuousDistrib}
 \alias{distrib_hessian.ReparamContinuousDistrib}
 \alias{reparam_hessian}
+\alias{distrib_hessian.ReparamDiscreteDistrib}
 \title{Observed Hessian of a Reparametrized Distribution}
 \usage{
 reparam_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic after this method has returned.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
+length of \code{y} recycled against \code{theta}. Note the \strong{order}: this route
+enumerates as \code{\link[=hess_names]{hess_names()}} does, diagonal first, while a family written
+out by hand may enumerate lexicographically. Compare two such results by
+name and not by position.
 }
 \description{
-The second-order chain rule, which keeps the term in the parent's score and
-the second derivative of the map:
-\eqn{\ell^{(ab)} = \sum_{ij}\ell^{(ij)}h^i_a h^j_b + \sum_i \ell^{(i)} h^i_{ab}}.
+The second-order chain rule, which keeps the term in the parent's score as
+well as the one in its Hessian:
+\deqn{\ell^{(ab)} = \sum_{i,j} \ell^{(ij)}
+      \frac{\partial\theta_i}{\partial\psi_a}
+      \frac{\partial\theta_j}{\partial\psi_b}
+      + \sum_i \ell^{(i)}
+      \frac{\partial^2\theta_i}{\partial\psi_a \partial\psi_b}.}
+The second sum is what a first-order chain does not have, and it is why the
+map's second partials are needed as well as its first.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density, \eqn{\theta} the parent's parameters and
+\eqn{\psi} the new ones.
+}
+
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+a <- distrib_hessian(d, c(0, 1, 2), th)
+b <- distrib_hessian(gaussian2_distrib(), c(0, 1, 2), th)
+
+# The two enumerate their components in different orders, so match by name.
+rbind(reparametrized = names(a), written_out = names(b))
+max(abs(unlist(a[names(b)]) - unlist(b)))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_gradient.ReparamContinuousDistrib]{distrib_gradient.ReparamContinuousDistrib()}} for the first order;
+\code{\link[=distrib_expected_hessian.ReparamContinuousDistrib]{distrib_expected_hessian.ReparamContinuousDistrib()}}, where the second
+sum drops; \code{\link[=chain_derivatives]{chain_derivatives()}}.
 }
 \keyword{internal}

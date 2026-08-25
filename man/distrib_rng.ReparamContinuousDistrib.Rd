@@ -3,24 +3,47 @@
 \name{distrib_rng.ReparamContinuousDistrib}
 \alias{distrib_rng.ReparamContinuousDistrib}
 \alias{reparam_rng}
+\alias{distrib_rng.ReparamDiscreteDistrib}
 \title{Random Generation from a Reparametrized Distribution}
 \usage{
 reparam_rng(distrib, n, theta)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.
+A component of length \code{n} gives one draw per setting.}
 }
 \value{
-A numeric vector.
+A numeric vector of \code{n} draws.
 }
 \description{
-The parent's generator at the mapped parameters.
+The parent's generator, at the mapped parameters. The draws come from the
+parent's own method and consume its random numbers, so a seed set before the
+call gives the same sample the parent would give at the mapped values.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+
+# The same draws the parent gives at the mapped parameters.
+set.seed(1); a <- distrib_rng(d, 5, list(mu = 1, sigma2 = 4))
+set.seed(1); b <- distrib_rng(gaussian1_distrib(), 5,
+                              list(mu = 1, sigma = 2))
+all.equal(a, b)
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}};
+\code{\link[=distrib_quantile.ReparamContinuousDistrib]{distrib_quantile.ReparamContinuousDistrib()}}, which an inverse-transform
+parent uses.
 }
 \keyword{internal}

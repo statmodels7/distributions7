@@ -2,24 +2,48 @@
 % Please edit documentation in R/reparametrize.R
 \name{distrib_grad_y.ReparamContinuousDistrib}
 \alias{distrib_grad_y.ReparamContinuousDistrib}
-\title{Response Derivatives of a Reparametrized Distribution}
+\title{Response Derivative of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{...}{Passed to the parent.}
+\item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{y} recycled against \code{theta}.
 }
 \description{
-The parent's, unchanged: a reparametrization touches the parameters and not
-the response.
+The parent's, unchanged. A reparametrization touches the parameters and
+leaves the response alone, so \eqn{\partial\log f/\partial y} is the
+parent's at the mapped parameters and no chain rule enters.
+}
+\details{
+Only the continuous class registers this. A discrete family has no response
+derivative, and the base class refuses one, so there is nothing for a
+discrete reparametrization to delegate.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+
+# Identical to the parent's at the mapped parameters.
+all.equal(distrib_grad_y(d, c(0, 1, 2), list(mu = 1, sigma2 = 4)),
+          distrib_grad_y(gaussian1_distrib(), c(0, 1, 2),
+                         list(mu = 1, sigma = 2)))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_hess_y.ReparamContinuousDistrib]{distrib_hess_y.ReparamContinuousDistrib()}} for the second order;
+\code{\link[=distrib_gradient.ReparamContinuousDistrib]{distrib_gradient.ReparamContinuousDistrib()}}, where the map does enter;
+\code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

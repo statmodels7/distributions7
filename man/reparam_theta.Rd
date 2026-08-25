@@ -9,16 +9,26 @@ reparam_theta(distrib, theta)
 \arguments{
 \item{distrib}{A reparametrized distribution.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.
+Components may be vectors.}
 }
 \value{
-A named list of the parent's parameters.
+A named list of the parent's parameters, in the parent's order.
 }
 \description{
-Runs the map on plain numbers, which is what every probability function
-needs before delegating to the parent.
+Runs the map on plain numbers and returns the parent's parameters in the
+parent's own order, which is the form every probability function needs
+before delegating. The new parameters are aligned and validated first, so a missing
+or out-of-bounds component throws here and not several frames down.
+}
+\details{
+A map that fails to return some parent parameter is caught with a message
+naming the parameter and the parent's full list. The check is cheap and is
+repeated on every call: a map is ordinary R and may return different names
+at different points, so the construction cannot settle it once.
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparam_tables]{reparam_tables()}} for the map's derivatives;
+\code{\link[=reparametrize]{reparametrize()}}; \code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}}.
 }
 \keyword{internal}

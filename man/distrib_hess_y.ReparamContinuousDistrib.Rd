@@ -4,21 +4,38 @@
 \alias{distrib_hess_y.ReparamContinuousDistrib}
 \title{Second Response Derivative of a Reparametrized Distribution}
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{...}{Passed to the parent.}
+\item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector.
+A numeric vector, the length of \code{y} recycled against \code{theta}.
 }
 \description{
-The parent's, unchanged.
+The parent's, unchanged, for the same reason as the first: a
+reparametrization moves the parameters and leaves the response where it was.
+Only the continuous class registers it.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+
+# A Gaussian's is -1/sigma^2, whatever the parametrization.
+distrib_hess_y(d, c(0, 1, 2), list(mu = 1, sigma2 = 4))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_grad_y.ReparamContinuousDistrib]{distrib_grad_y.ReparamContinuousDistrib()}} for the first order;
+\code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

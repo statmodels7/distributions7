@@ -36,41 +36,71 @@ ReparamDiscreteDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
+\item{distrib_name}{The name of the family, a single string.}
 
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
+\item{bounds}{A length-two numeric vector, the support.}
 
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
+\item{params}{A character vector naming the new parameters.}
 
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
+\item{params_interpretation}{A named character vector describing each new
+parameter.}
 
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
+\item{n_params}{The number of new parameters.}
 
-\item{n_params}{A numeric value specifying the total number of parameters.}
+\item{params_bounds}{A named list of length-two numeric vectors, the open
+interval each new parameter lives in.}
 
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
+\item{params_smooth}{A named logical vector saying which parameters the
+log-density is differentiable in.}
 
 \item{parent_distrib}{The distribution being rewritten.}
 
-\item{reparam_map}{The map from the new parameters to the parent's.}
+\item{reparam_map}{The map from the new parameters to the parent's, a
+function of one named list returning another.}
 
-\item{reparam_derivs}{The function returning the map's keyed partial
-tables, as \code{\link[=reparam_tables]{reparam_tables()}} consumes them.}
+\item{reparam_derivs}{The function returning the map's keyed partial tables,
+as \code{\link[=reparam_tables]{reparam_tables()}} consumes them.}
+
+\item{params_links}{A named list of \pkg{linkfunctions7} links, one per new
+parameter.}
 }
 \value{
-An object of the corresponding class.
+An object of class \code{ReparamContinuousDistrib} or
+\code{ReparamDiscreteDistrib}, carrying every property of a \code{distrib} plus the
+three above.
 }
 \description{
-The wrapper \code{\link[=reparametrize]{reparametrize()}} returns: the same law as its parent,
-written in different coordinates. There is one class per kind of parent, so
-that a continuous parent keeps the defaults registered on
-\code{\link[=continuous_distrib]{continuous_distrib()}} and a discrete one those of
-\code{\link[=discrete_distrib]{discrete_distrib()}}.
+What \code{\link[=reparametrize]{reparametrize()}} returns: the same law as its parent, written in
+different coordinates. There is one class per kind of parent, so that a
+continuous parent keeps the defaults registered on \code{\link[=continuous_distrib]{continuous_distrib()}}
+and a discrete one those of \code{\link[=discrete_distrib]{discrete_distrib()}}. Nothing else distinguishes
+the two: every method in this file is registered on both, from the same
+body.
+}
+\details{
+The three properties beyond a distribution's own are what the methods read.
+\code{parent_distrib} is the law being rewritten and is delegated to for the
+density, the distribution function, the quantile function, the generator and
+the response derivatives, all of which a change of parametrization leaves
+alone. \code{reparam_map} carries the new parameters to the parent's, and
+\code{reparam_derivs} carries the map's partial derivatives, which is where the
+exactness of the parameter derivatives comes from.
+}
+\examples{
+# The class a continuous parent gives.
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+class(d)
+d@parent_distrib@distrib_name
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}}, the constructor that fills these in;
+\code{\link[=is_reparam]{is_reparam()}} to test for either class;
+\code{\link[=reparam_theta]{reparam_theta()}} and \code{\link[=reparam_tables]{reparam_tables()}}, the two readers.
 }

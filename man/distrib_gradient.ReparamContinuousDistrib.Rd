@@ -3,29 +3,64 @@
 \name{distrib_gradient.ReparamContinuousDistrib}
 \alias{distrib_gradient.ReparamContinuousDistrib}
 \alias{reparam_gradient}
+\alias{distrib_gradient.ReparamDiscreteDistrib}
 \title{Gradient of a Reparametrized Distribution}
 \usage{
 reparam_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}. Handled by the
+generic, which applies the chain rule onto the link scale after this
+method has returned; the method itself always answers on the parameter
+scale.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of numeric vectors, one per new parameter, each the
+length of \code{y} recycled against \code{theta}.
 }
 \description{
 The parent's score carried by the Jacobian of the map,
-\eqn{\ell^{(a)} = \sum_i \ell^{(i)} \partial\theta_i/\partial\psi_a}.
+\deqn{\ell^{(a)} = \sum_i \ell^{(i)}\,
+      \frac{\partial\theta_i}{\partial\psi_a}.}
+It is exact whenever the parent's score is, and the map's partials are
+whatever \code{\link[=reparam_tables]{reparam_tables()}} supplies: a hand-written table where the family
+has one, and one stencil per partial otherwise.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density, \eqn{\theta} the parent's parameters and
+\eqn{\psi} the new ones.
+}
+
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+# The same numbers as the family written out by hand, to 1e-12: the map's
+# partials are differenced here and written out there.
+a <- distrib_gradient(d, c(0, 1, 2), th)
+b <- distrib_gradient(gaussian2_distrib(), c(0, 1, 2), th)
+max(abs(unlist(a[names(b)]) - unlist(b)))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the identity;
+\code{\link[=distrib_hessian.ReparamContinuousDistrib]{distrib_hessian.ReparamContinuousDistrib()}} for the second order;
+\code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

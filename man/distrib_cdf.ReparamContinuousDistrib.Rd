@@ -3,30 +3,49 @@
 \name{distrib_cdf.ReparamContinuousDistrib}
 \alias{distrib_cdf.ReparamContinuousDistrib}
 \alias{reparam_cdf}
+\alias{distrib_cdf.ReparamDiscreteDistrib}
 \title{Distribution Function of a Reparametrized Distribution}
 \usage{
 reparam_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Should probabilities be \eqn{P(Y \le q)}? A single
+logical, \code{TRUE} by default.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns log-probabilities.}
+\item{log.p}{Should log-probabilities be returned? A single logical, \code{FALSE}
+by default.}
 
-\item{...}{Passed to the parent.}
+\item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector.
+A numeric vector of probabilities, the length of \code{q} recycled
+against \code{theta}.
 }
 \description{
-The parent's distribution function at the mapped parameters.
+The parent's distribution function, evaluated at the mapped parameters. The
+\code{lower.tail} and \code{log.p} arguments are passed through and applied by the
+parent, so they are not applied twice.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+distrib_cdf(d, c(0, 1, 2), list(mu = 1, sigma2 = 4))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}};
+\code{\link[=distrib_grad_cdf.ReparamContinuousDistrib]{distrib_grad_cdf.ReparamContinuousDistrib()}} for its derivatives.
 }
 \keyword{internal}

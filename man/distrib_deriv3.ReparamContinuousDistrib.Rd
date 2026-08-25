@@ -3,6 +3,7 @@
 \name{distrib_deriv3.ReparamContinuousDistrib}
 \alias{distrib_deriv3.ReparamContinuousDistrib}
 \alias{reparam_deriv3}
+\alias{distrib_deriv3.ReparamDiscreteDistrib}
 \title{Third-Order Derivatives of a Reparametrized Distribution}
 \usage{
 reparam_deriv3(
@@ -17,29 +18,63 @@ reparam_deriv3(
 )
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Should the expected derivatives be carried? A single logical,
+\code{FALSE} by default. Under expectation the term in the parent's score drops,
+the score having mean zero.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic after this method has returned.}
 
-\item{approx}{Passed to the parent.}
+\item{approx}{The strategy the parent uses for an expected derivative it has
+no closed form for, one of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}.
+Passed straight through; read only when \code{expected} is \code{TRUE} and only by a
+parent that approximates.}
 
-\item{nsim}{Passed to the parent.}
+\item{nsim}{The number of draws for \code{approx = "mc"}, 10000 by default.
+Passed through.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
+A named list of numeric vectors keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, 3)}}, each the length of \code{y}
+recycled against \code{theta}.
 }
 \description{
-The partition sum at order three, observed or expected.
+The partition sum at order three, observed or expected. Every order the
+parent has in closed form survives in closed form, so a family reparametrized
+from one of the 42 that carry analytic third derivatives keeps them.
+}
+\details{
+The sum reads the map's partials up to order three, which is where a
+hand-written table begins to pay against the stencil: the numerical route's
+accuracy fades with the order, and by the third it is several digits short of
+the parent's own.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+# Four components for a two-parameter family.
+names(distrib_deriv3(d, c(0, 1, 2), th))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_derivatives]{chain_derivatives()}} for the identity;
+\code{\link[=distrib_hessian.ReparamContinuousDistrib]{distrib_hessian.ReparamContinuousDistrib()}} for the order below;
+\code{\link[=reparam_tables]{reparam_tables()}}, whose accuracy this inherits; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

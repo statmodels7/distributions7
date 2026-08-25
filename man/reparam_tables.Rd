@@ -9,29 +9,34 @@ reparam_tables(distrib, theta)
 \arguments{
 \item{distrib}{A reparametrized distribution.}
 
-\item{theta}{A named list of the new parameters, already aligned.}
+\item{theta}{A named list of the new parameters, already aligned by
+\code{\link[=reparam_theta]{reparam_theta()}}'s caller. Only the first \code{n_params} components are read.}
 }
 \value{
-A list over parent parameters of keyed partial tables.
+A list over the parent's parameters, each element a keyed list of
+that component's partial derivatives.
 }
 \description{
-Returns, for every parent parameter, the partial derivatives of the map
-component with respect to the new parameters, keyed by the sorted tuple
-of new-parameter positions ("1", "1,2", "2,2,3,3", ...). A missing key
-is an exact zero.
+Returns, for every parent parameter, the partial derivatives of that
+component of the map with respect to the new parameters, keyed by the sorted
+tuple of new-parameter positions: \code{"1"}, \code{"1,2"}, \code{"2,2,3,3"} and so on. A
+missing key is an exact zero, so a map with many vanishing partials costs
+nothing for them.
 }
-\details{
-When the family supplies \code{map_derivs}, the tables are its
-hand-written closed forms; the shipped second parametrizations all do,
-and the formulas live in \code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Otherwise
-each needed partial comes from one finite-difference stencil of
-\code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to the analytic map --
-a single stencil per order, never a chain of differences, at the
-accuracy that construction carries (about 1e-8 at first order, fading
-with the order). Exact tables are therefore the recommendation for any
-family fitted in earnest.
+\section{Where the tables come from}{
+When the family supplies \code{map_derivs}, they are its hand-written closed
+forms; the shipped second parametrizations all do, and the formulas live in
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}}. Otherwise each needed partial comes from one
+finite-difference stencil of \code{\link[numericals7:fd_derivative]{numericals7::fd_derivative()}} applied to the
+analytic map, a single stencil per order and never a chain of differences,
+at the accuracy that construction carries: about \eqn{10^{-8}} at first
+order, fading with the order. Exact tables are therefore the recommendation
+for any family fitted in earnest.
 }
+
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparam_stencil_derivs]{reparam_stencil_derivs()}} for the numerical route;
+\code{\link[=reparam_map_derivs]{reparam_map_derivs()}} for the hand-written tables;
+\code{\link[=chain_derivatives]{chain_derivatives()}}, the consumer.
 }
 \keyword{internal}

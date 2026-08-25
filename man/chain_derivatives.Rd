@@ -9,29 +9,59 @@ chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
 \arguments{
 \item{parent}{The distribution whose derivatives are being carried.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{th_par}{The parent's parameters, as plain numbers.}
+\item{th_par}{The parent's parameters as plain numbers, from
+\code{\link[=reparam_theta]{reparam_theta()}}.}
 
-\item{maps}{The keyed partial tables of the map, as
-\code{\link[=reparam_tables]{reparam_tables()}} returns them.}
+\item{maps}{The keyed partial tables of the map, as \code{\link[=reparam_tables]{reparam_tables()}}
+returns them.}
 
-\item{new_params}{The names of the new parameters.}
+\item{new_params}{A character vector naming the new parameters, which names
+and orders the result.}
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Should the expected derivatives be carried? A single
+logical, \code{FALSE} by default.}
 }
 \value{
-A named list of component vectors.
+A named list of numeric vectors, keyed as
+\code{\link[=deriv_names]{deriv_names(new_params, order)}}.
 }
 \description{
-Carries the parent's derivatives into new coordinates, given the jets of the
-map. Separated from \code{\link[=reparam_chain]{reparam_chain()}} so that a family written in
-its own right, rather than obtained through \code{\link[=reparametrize]{reparametrize()}},
-can use the same machinery instead of a second copy of it.
+Carries a parent's derivatives of the log-density into new coordinates,
+given the keyed partial tables of the map. It is separated from
+\code{\link[=reparam_chain]{reparam_chain()}} so that a family written in its own right, not obtained
+through \code{\link[=reparametrize]{reparametrize()}}, can use the same machinery instead of a second
+copy of it: the hand-written second parametrizations all do.
 }
+\section{The identity}{
+\deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
+      \ell^{(i_1 \dots i_{|\pi|})}(\theta)
+      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial\psi_B},}
+the sum over set partitions of the multi-index. Every order the parent has
+in closed form therefore survives in closed form.
+}
+
+\section{Under expectation}{
+Expectation is linear and the map deterministic, so the expected derivatives
+obey the same formula, and the term carrying the parent's score drops
+because the score has mean zero. That is why \code{D[[1]]} is left \code{NULL} when
+\code{expected} is \code{TRUE}: a parent with an exact expected information gives an
+exact one here.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density, \eqn{\theta} the parent's parameters,
+\eqn{\psi} the new ones, \eqn{\pi} a set partition of the multi-index and
+\eqn{B} one of its blocks.
+}
+
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_assemble]{chain_assemble()}}, the sum it delegates to;
+\code{\link[=reparam_chain]{reparam_chain()}}, its caller for a \code{\link[=reparametrize]{reparametrize()}} object;
+\code{\link[=chain_cdf_deriv]{chain_cdf_deriv()}}, the same construction on the distribution function.
 }
 \keyword{internal}

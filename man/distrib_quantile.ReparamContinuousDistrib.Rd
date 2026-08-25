@@ -3,30 +3,49 @@
 \name{distrib_quantile.ReparamContinuousDistrib}
 \alias{distrib_quantile.ReparamContinuousDistrib}
 \alias{reparam_quantile}
+\alias{distrib_quantile.ReparamDiscreteDistrib}
 \title{Quantile Function of a Reparametrized Distribution}
 \usage{
 reparam_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0,1]}, or of
+log-probabilities when \code{log.p} is \code{TRUE}.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{lower.tail}{Logical; if \code{TRUE}, probabilities are \eqn{P(Y \le q)}.}
+\item{lower.tail}{Are the probabilities \eqn{P(Y \le q)}? A single logical,
+\code{TRUE} by default.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is a log-probability.}
+\item{log.p}{Is \code{p} a log-probability? A single logical, \code{FALSE} by default.}
 
-\item{...}{Passed to the parent.}
+\item{...}{Passed to the parent's method.}
 }
 \value{
-A numeric vector.
+A numeric vector of quantiles, the length of \code{p} recycled against
+\code{theta}.
 }
 \description{
-The parent's quantile function at the mapped parameters.
+The parent's quantile function, evaluated at the mapped parameters. Where
+the parent inverts its distribution function numerically, so does this; the
+map costs one evaluation and does not enter the search.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+distrib_quantile(d, c(0.25, 0.5, 0.75), list(mu = 1, sigma2 = 4))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}};
+\code{\link[=distrib_cdf.ReparamContinuousDistrib]{distrib_cdf.ReparamContinuousDistrib()}}, which this inverts.
 }
 \keyword{internal}

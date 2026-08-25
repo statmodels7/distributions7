@@ -3,22 +3,44 @@
 \name{distrib_atoms.ReparamContinuousDistrib}
 \alias{distrib_atoms.ReparamContinuousDistrib}
 \alias{reparam_atoms}
+\alias{distrib_atoms.ReparamDiscreteDistrib}
 \title{Atoms of a Reparametrized Distribution}
 \usage{
 reparam_atoms(distrib, theta)
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 }
 \value{
-A numeric vector of atom locations, possibly empty.
+A named list with components \code{y} (the atom locations) and \code{p}
+(their probabilities), both numeric vectors of the same length, possibly
+of length zero.
 }
 \description{
-The parent's, unchanged: a reparametrization does not move mass.
+The parent's, unchanged: a reparametrization does not move mass. Delegating
+matters because \code{\link[=check_distrib]{check_distrib()}} consults this to decide which of its
+checks apply, and a reparametrized mixed family would otherwise be validated
+as though it were purely continuous.
+}
+\examples{
+# A reparametrized zero-adjusted gamma keeps its atom at zero.
+za <- zero_adjusted(gamma2_distrib())
+d <- reparametrize(
+  za,
+  map = function(psi) list(mu = psi$mu, sigma2 = psi$s, za = psi$p0),
+  params = c("mu", "s", "p0"),
+  bounds = list(mu = c(0, Inf), s = c(0, Inf), p0 = c(0, 1)),
+  links = list(mu = linkfunctions7::log_link(),
+               s = linkfunctions7::log_link(),
+               p0 = linkfunctions7::logit_link())
+)
+distrib_atoms(d, list(mu = 2, s = 1, p0 = 0.3))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the generic and what consults it;
+\code{\link[=check_distrib]{check_distrib()}}; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

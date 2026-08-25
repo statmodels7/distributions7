@@ -3,7 +3,8 @@
 \name{distrib_expected_hessian.ReparamContinuousDistrib}
 \alias{distrib_expected_hessian.ReparamContinuousDistrib}
 \alias{reparam_expected_hessian}
-\title{Expected Hessian of a Reparametrized Distribution}
+\alias{distrib_expected_hessian.ReparamDiscreteDistrib}
+\title{Expected Information of a Reparametrized Distribution}
 \usage{
 reparam_expected_hessian(
   distrib,
@@ -16,31 +17,60 @@ reparam_expected_hessian(
 )
 }
 \arguments{
-\item{distrib}{A reparametrized distribution.}
+\item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector. Its length is what the result is
+recycled to; the values are read only where the parent's own expected
+information reads them.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic after this method has returned.}
 
-\item{approx}{Passed to the parent when it has no closed form.}
-
-\item{nsim}{Passed to the parent.}
-
-\item{...}{Unused.}
+\item{...}{Passed to the parent's method, which is where \code{approx} and
+\code{nsim} are read for a family that approximates its expected information.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
+length of \code{y} recycled against \code{theta}, in that enumeration's order.
 }
 \description{
-The same congruence applied to the parent's expected information,
-\eqn{\mathbb{E}[\ell^{(ab)}] = \sum_{ij}\mathbb{E}[\ell^{(ij)}]h^i_a h^j_b}.
-The second-derivative term of the map drops out because the score has mean
-zero, so a parent with an exact expected information gives an exact one
-here.
+The same chain rule as the observed Hessian, with the term in the parent's
+score dropped: expectation is linear and the map deterministic, and the
+score has mean zero, so
+\deqn{E[\ell^{(ab)}] = \sum_{i,j} E[\ell^{(ij)}]
+      \frac{\partial\theta_i}{\partial\psi_a}
+      \frac{\partial\theta_j}{\partial\psi_b}.}
+A parent with an exact expected information therefore gives an exact one
+here, and the map's second partials are not read at all.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density, \eqn{\theta} the parent's parameters and
+\eqn{\psi} the new ones.
+}
+
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+a <- distrib_expected_hessian(d, c(0, 1, 2), th)
+b <- distrib_expected_hessian(gaussian2_distrib(), c(0, 1, 2), th)
+
+# Matched by name, the two enumerating in different orders.
+max(abs(unlist(a[names(b)]) - unlist(b)))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=distrib_hessian.ReparamContinuousDistrib]{distrib_hessian.ReparamContinuousDistrib()}}, which keeps the score
+term; \code{\link[=chain_derivatives]{chain_derivatives()}}; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

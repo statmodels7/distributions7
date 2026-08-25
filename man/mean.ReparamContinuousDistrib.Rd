@@ -3,6 +3,10 @@
 \name{mean.ReparamContinuousDistrib}
 \alias{mean.ReparamContinuousDistrib}
 \alias{reparam_mean}
+\alias{mean.ReparamDiscreteDistrib}
+\alias{variance.ReparamDiscreteDistrib}
+\alias{skewness.ReparamDiscreteDistrib}
+\alias{kurtosis.ReparamDiscreteDistrib}
 \alias{variance.ReparamContinuousDistrib}
 \alias{reparam_variance}
 \alias{skewness.ReparamContinuousDistrib}
@@ -20,22 +24,43 @@ reparam_skewness(x, theta, ...)
 reparam_kurtosis(x, theta, ...)
 }
 \arguments{
-\item{x}{A reparametrized distribution.}
+\item{x}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
-\item{...}{Passed to the parent.}
+\item{...}{Passed to the parent's method, and from there to \code{\link[=moment]{moment()}} if
+the parent has no closed form.}
 }
 \value{
-A numeric vector.
+A numeric vector: means for \code{mean()}, variances for \code{\link[=variance]{variance()}},
+and the standardized third and fourth moments for \code{\link[=skewness]{skewness()}} and
+\code{\link[=kurtosis]{kurtosis()}}, the excess in the last case. \code{NaN} or \code{Inf} wherever the
+parent's own method gives one.
 }
 \description{
-The parent's, at the mapped parameters. A reparametrization does not change
-the law, so it does not change a moment: what changes is the coordinates the
-moment is computed from. Delegating keeps the parent's closed forms instead
-of falling through to a quadrature.
+\code{mean()}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} all delegate to the
+parent at the mapped parameters. A reparametrization does not change the
+law, so it does not change a moment; what changes is the coordinates the
+moment is computed from. Delegating keeps the parent's closed forms, where
+falling through to the \code{distrib} default would run a quadrature.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+th <- list(mu = 1, sigma2 = 4)
+
+# The parent's closed forms, in the new coordinates.
+c(mean(d, th), variance(d, th), skewness(d, th), kurtosis(d, th))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=moment]{moment()}} for the numerical route the parent may take;
+\code{\link[=mean.distrib]{mean.distrib()}} for the default this replaces; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}

@@ -7,15 +7,32 @@
 is_reparam(distrib)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}, or anything else.}
 }
 \value{
 A single logical.
 }
 \description{
-\code{TRUE} for either of the two wrapper classes.
+\code{TRUE} for either of the two wrapper classes, \code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}}
+and \code{\link[=ReparamDiscreteDistrib]{ReparamDiscreteDistrib()}}, and \code{FALSE} for anything else. The test
+exists because the two classes have different parents, so no single
+\code{S7_inherits()} call answers it.
+}
+\examples{
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+c(distributions7:::is_reparam(d),
+  distributions7:::is_reparam(gaussian2_distrib()))
+
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=reparametrize]{reparametrize()}}, which builds them;
+\code{\link[=ReparamContinuousDistrib]{ReparamContinuousDistrib()}} for the classes.
 }
 \keyword{internal}

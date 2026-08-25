@@ -2,48 +2,36 @@
 % Please edit documentation in R/reparametrize.R
 \name{reparam_chain}
 \alias{reparam_chain}
-\title{The Chain Rule of Any Order Through a Reparametrization}
+\title{Parameter Derivatives of a Reparametrized Distribution}
 \usage{
 reparam_chain(distrib, y, theta, order, expected = FALSE)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution.}
 
-\item{y}{The response.}
+\item{y}{The response, a numeric vector.}
 
-\item{theta}{A named list of the new parameters.}
+\item{theta}{A named list of the new parameters, on the new parameter scale.}
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{expected}{Logical; if \code{TRUE}, carries the expected derivatives.}
+\item{expected}{Should the expected derivatives be carried? A single
+logical, \code{FALSE} by default. \code{TRUE} is meaningful from order 2 up, the
+score having mean zero.}
 }
 \value{
-A named list of component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names()}} keys them.
+A named list of numeric vectors, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-Carries a derivative of the parent's log-density into the new coordinates.
-}
-\details{
-With \eqn{\theta = h(\psi)}, the derivative of order \eqn{|I|} is
-\deqn{\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
-      \ell^{(i_1 \dots i_{|\pi|})}(\theta)
-      \prod_{B \in \pi} \frac{\partial^{|B|}\theta_{i_B}}{\partial \psi_B}}
-the outer sum running over the set partitions of the \strong{positions} of
-\eqn{I} and the inner one over the assignment of a parent parameter to each
-block. This is Faa di Bruno with a dense Jacobian, and it is the same
-partition enumeration the wrappers of \code{\link[=zero_inflated]{zero_inflated()}} and the
-rest already use.
-
-Blocks index positions rather than variables, which is what makes a repeated
-index carry its multiplicity without a factorial correction.
-
-Expectation is linear and \eqn{h} is deterministic, so the expected
-derivatives obey the same formula with the parent's expected derivatives in
-place of the observed ones. The first-order term drops, the score having
-mean zero.
+The body the four derivative methods share: aligns the new parameters, maps
+them to the parent's, fetches the map's tables and hands all three to
+\code{\link[=chain_derivatives]{chain_derivatives()}}. The \code{order} and \code{expected} arguments are what
+separate the four registrations.
 }
 \seealso{
-\code{\link[=reparametrize]{reparametrize()}}
+\code{\link[=chain_derivatives]{chain_derivatives()}}, which does the work;
+\code{\link[=distrib_gradient.ReparamContinuousDistrib]{distrib_gradient.ReparamContinuousDistrib()}} and its three siblings, the
+registrations; \code{\link[=reparametrize]{reparametrize()}}.
 }
 \keyword{internal}
