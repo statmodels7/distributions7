@@ -4,20 +4,52 @@
 \alias{distrib_rng.VonMises1Distrib}
 \title{von Mises Random Generation}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be
+strictly positive. The envelope's constants are built once per call, so a
+parameter varying by observation is not supported here.}
 }
 \value{
-A numeric vector of length \code{n}, in \eqn{[-\pi, \pi)}.
+A numeric vector of \code{n} angles in \eqn{[-\pi, \pi)}.
 }
 \description{
-The rejection algorithm of Best and Fisher (1979), which draws from a
-wrapped Cauchy envelope and accepts with a probability that does not
-involve the Bessel function at all.
+Draws \code{n} independent angles by the rejection algorithm of Best and Fisher
+(1979), which proposes from a wrapped Cauchy envelope and accepts with a
+probability that \strong{involves no Bessel function at all}, so the generator is
+cheap at any concentration: the normalizing constant, the expensive part of
+the density, never enters.
+
+The accepted angles are drawn about zero and then shifted by \eqn{\mu} and
+wrapped back into \eqn{[-\pi, \pi)}, so every draw lies in the declared
+support. The loop over-proposes and repeats until \code{n} draws have been
+accepted, so it consumes an unpredictable number of R's uniform streams.
+}
+\examples{
+d <- vonmises1_distrib()
+th <- list(mu = 0.5, kappa = 2)
+set.seed(1)
+z <- distrib_rng(d, 3e5, th)
+
+# Every draw is in the declared support.
+range(z)
+
+# The circular mean recovers mu and the mean resultant length recovers
+# A(kappa) = I_1 / I_0; the ordinary mean recovers neither.
+c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
+c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2),
+  A = numericals7::bessel_i_ratio(2))
+}
+\references{
+Best, D. J. and Fisher, N. I. (1979). Efficient simulation of the von Mises
+distribution. \emph{Journal of the Royal Statistical Society, Series C},
+\strong{28}(2), 152-157.
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf.VonMises1Distrib()}} for the density,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

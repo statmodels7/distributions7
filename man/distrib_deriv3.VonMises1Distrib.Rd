@@ -2,41 +2,83 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_deriv3.VonMises1Distrib}
 \alias{distrib_deriv3.VonMises1Distrib}
-\alias{distrib_deriv4.VonMises1Distrib}
-\title{von Mises Third and Fourth Derivatives}
+\title{von Mises Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles in \eqn{[-\pi, \pi)}. With
+\code{expected = TRUE} only its length is read.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{kappa} must be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method. \strong{Note the
+argument order}: \code{scale} precedes \code{expected} here, unlike on most
+families, so both are best given by name.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo draws when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of four numeric vectors, \code{mu_mu_mu}, \code{mu_mu_kappa},
+\code{mu_kappa_kappa} and \code{kappa_kappa_kappa}, each of length \code{length(y)}.
+\code{mu_kappa_kappa} is exactly zero.
 }
 \description{
-Closed form at both orders. The log-density is
-\eqn{\kappa\cos(y-\mu) - \log(2\pi I_0(\kappa))}, linear in
-\eqn{\kappa} apart from the normalizing constant, so every component with
-one \eqn{\mu} and two or more \eqn{\kappa} vanishes exactly. The pure
-\eqn{\mu} components cycle through
-\eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)}, and the pure
-\eqn{\kappa} ones are minus the derivatives of \eqn{A(\kappa)}, which
-\pkg{numericals7} supplies from the Riccati recursion
-\eqn{A' = 1 - A/\kappa - A^2}.
+Computes the four distinct third derivatives of the von Mises log-density in
+\eqn{\mu} and \eqn{\kappa}, in closed form. The log-density is
+\eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, \strong{linear in}
+\eqn{\kappa} apart from the normalizing constant, so a component naming one
+\eqn{\mu} and two or more \eqn{\kappa} is \strong{exactly zero}. What remains
+cycles: the pure-\eqn{\mu} components run through
+\eqn{\kappa\{\sin, -\cos, -\sin, \cos\}(y-\mu)} with the order, the
+\eqn{\mu\mu\kappa} component is \eqn{-\cos(y-\mu)}, and the
+pure-\eqn{\kappa} one is \eqn{-A''(\kappa)}, which
+\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} supplies from the Riccati recursion
+\eqn{A' = 1 - A/\kappa - A^2} differentiated.
+
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}}, which is
+the one place on this page where \code{approx} and \code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\kappa > 0} the concentration, \eqn{I_m} the modified Bessel
+function of the first kind of order \eqn{m}, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d <- vonmises1_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, kappa = 2)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# The component with one mu and two kappa is exactly zero, the log-density
+# being linear in kappa apart from the constant.
+d3$mu_kappa_kappa
+
+# A central difference of the Hessian reproduces the pure-direction one.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(mu = 0.5 + eps, kappa = 2))$mu_mu
+dn <- distrib_hessian(d, y, list(mu = 0.5 - eps, kappa = 2))$mu_mu
+all.equal((up - dn) / (2 * eps), d3$mu_mu_mu, tolerance = 1e-6)
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the order below,
+\code{\link[=distrib_deriv4.VonMises1Distrib]{distrib_deriv4.VonMises1Distrib()}} for the order above,
+\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} for the derivatives of \eqn{A}, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

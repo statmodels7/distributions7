@@ -2,28 +2,79 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_hessian.VonMises1Distrib}
 \alias{distrib_hessian.VonMises1Distrib}
-\title{von Mises Analytical Observed Hessian}
+\title{von Mises Observed Hessian}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles in \eqn{[-\pi, \pi)}.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second-derivative components.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
+\code{kappa_kappa}, each of length
+\code{max(length(y), length(mu), length(kappa))}.
 }
 \description{
+Computes the three distinct second derivatives of the von Mises log-density,
+one value per observation, in closed form:
 \deqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu), \qquad
       \ell^{(\mu\kappa)} = \sin(y-\mu), \qquad
-      \ell^{(\kappa\kappa)} = -A'(\kappa)}
-the last free of the data, \eqn{\log I_0} being the only place
-\eqn{\kappa} appears alone.
+      \ell^{(\kappa\kappa)} = -A'(\kappa),}
+with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. The
+pure-concentration entry is \strong{free of the data}: the log-density is
+\eqn{\kappa\cos(y-\mu) - \log\{2\pi I_0(\kappa)\}}, linear in \eqn{\kappa}
+apart from the normalizing constant, so \eqn{\kappa} appears twice only
+inside \eqn{\log I_0}. It therefore equals its own expectation at every
+observation.
+
+\eqn{A'} comes from the Riccati recurrence
+\eqn{A' = 1 - A/\kappa - A^2}, which \code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}}
+runs, so no second Bessel evaluation is needed. It is the variance of
+\eqn{\cos(Y-\mu)} and is positive, so the information is positive
+definite.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\kappa > 0} the concentration, \eqn{I_m} the modified Bessel
+function of the first kind of order \eqn{m}, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d <- vonmises1_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, kappa = 2)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# The pure-concentration entry is one number, repeated.
+unique(h$kappa_kappa)
+
+# And it is minus A', which the Riccati recurrence gives.
+A <- numericals7::bessel_i_ratio(2)
+c(riccati = 1 - A / 2 - A^2,
+  supplied = numericals7::bessel_i_ratio_derivs(2)$d1)
+
+# numDeriv on the summed log-density reproduces the summed matrix.
+fn <- function(p)
+  sum(distrib_pdf(d, y, list(mu = p[1], kappa = p[2]), log = TRUE))
+H <- numDeriv::hessian(fn, c(0.5, 2))
+rbind(numeric = c(H[1, 1], H[2, 2], H[1, 2]),
+      closed = c(sum(h$mu_mu), sum(h$kappa_kappa), sum(h$mu_kappa)))
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for the expectation of this
+quantity, \code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} for \eqn{A'}, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

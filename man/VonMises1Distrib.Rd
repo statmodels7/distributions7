@@ -2,7 +2,7 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{VonMises1Distrib}
 \alias{VonMises1Distrib}
-\title{S7 Class for the von Mises Distribution}
+\title{von Mises Distribution Class}
 \usage{
 VonMises1Distrib(
   distrib_name = character(0),
@@ -36,28 +36,68 @@ VonMises1Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{VonMises1Distrib}.
+An S7 object of class \code{VonMises1Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} they hold \code{"von mises1"},
+\code{"univariate"}, \code{c(-pi, pi)}, \code{c("mu", "kappa")}, the interpretations
+\code{c(mu = "mean direction", kappa = "concentration")}, \code{2}, and the domains
+\eqn{(-\pi, \pi)} and \eqn{(0, \infty)}.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the von
-Mises distribution on the circle.
+The S7 class of the von Mises family, the natural distribution for an angle,
+parametrized by a mean direction \eqn{\mu} and a concentration
+\eqn{\kappa > 0}, with density
+\eqn{f(y) = e^{\kappa\cos(y-\mu)}/\{2\pi I_0(\kappa)\}} on
+\eqn{[-\pi, \pi)}. It inherits from \code{continuous_distrib}; the nine methods
+listed below are registered on it directly.
+
+This is the first family in the package whose support has the topology of a
+circle: the two ends of the interval are the same point, so the density need
+not vanish at either.
+
+Build one with \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.VonMises1Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.VonMises1Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian()}},
-\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_grad_y.VonMises1Distrib]{distrib_grad_y()}},
-\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian()}},
+\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.VonMises1Distrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng()}}.
 
-The distribution function and the quantile come from
-\code{\link[=continuous_distrib]{continuous_distrib()}}, by quadrature and root finding over the
-bounded support.
+The \strong{quantile} comes from \code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on the
+distribution function; the distribution function itself is this class's own
+and is a Bessel series, not the parent's quadrature. The four moments come
+from \code{\link[=mean.distrib]{mean.distrib()}} and its siblings, numerically, and are the ordinary
+moments of \eqn{Y} as a number rather than the circular ones.
 }
 
+\examples{
+d <- vonmises1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The support is the circle, written as a half-open interval.
+d@bounds
+d@params
+d@params_interpretation
+
+# The direction rides a bounded link and the concentration a log.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} to build one;
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}} for the same law parametrized by the mean resultant
+length; \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line;
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}} for the Bessel series.
 }

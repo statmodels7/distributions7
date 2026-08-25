@@ -2,26 +2,76 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_gradient.VonMises1Distrib}
 \alias{distrib_gradient.VonMises1Distrib}
-\title{von Mises Analytical Gradient}
+\title{von Mises Score}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles in \eqn{[-\pi, \pi)}.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be strictly
+positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with the \code{mu} and \code{kappa} components.
+A named list of two numeric vectors, \code{mu} and \code{kappa}, each of
+length \code{max(length(y), length(mu), length(kappa))}.
 }
 \description{
+Computes the first derivatives of the von Mises log-density with respect to
+the mean direction \eqn{\mu} and the concentration \eqn{\kappa}, one value
+per observation, in closed form:
 \deqn{\dfrac{\partial \ell}{\partial \mu} = \kappa \sin(y - \mu), \qquad
-      \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa)}
-with \eqn{A = I_1/I_0}, the derivative of \eqn{\log I_0}.
+      \dfrac{\partial \ell}{\partial \kappa} = \cos(y - \mu) - A(\kappa),}
+with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the derivative of
+\eqn{\log I_0} and also the \strong{mean resultant length} of the family.
+
+The ratio comes from \code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}}, which switches to an
+asymptotic expansion past \eqn{\kappa = 10^4}. R's own scaled \code{besselI}
+underflows to an exact zero between \eqn{10^5} and \eqn{10^6}, so forming
+the ratio from two calls gives \code{NaN} over part of that band.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries. This method always returns the parameter scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\kappa > 0} the concentration, \eqn{I_m} the modified Bessel
+function of the first kind of order \eqn{m}, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d <- vonmises1_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, kappa = 2)
+g <- distrib_gradient(d, y, th)
+
+# The two closed forms, written out.
+all.equal(g$mu, 2 * sin(y - 0.5))
+all.equal(g$kappa, cos(y - 0.5) - besselI(2, 1) / besselI(2, 0))
+
+# numDeriv on the summed log-density reproduces the summed score.
+fn <- function(p)
+  sum(distrib_pdf(d, y, list(mu = p[1], kappa = p[2]), log = TRUE))
+rbind(numeric = numDeriv::grad(fn, c(0.5, 2)),
+      closed = vapply(g, sum, numeric(1)))
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(7)
+z <- distrib_rng(d, 2000, list(mu = 0.8, kappa = 3))
+mle <- as.list(coef(fit_distrib(d, z)))
+vapply(distrib_gradient(d, z, mle), sum, numeric(1))
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for their expectation,
+\code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}} for \eqn{A}, and \code{\link[=distrib_gradient]{distrib_gradient()}} for
+the generic.
 }

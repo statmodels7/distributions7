@@ -2,22 +2,57 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_grad_y.VonMises1Distrib}
 \alias{distrib_grad_y.VonMises1Distrib}
-\title{von Mises Response Gradient}
+\title{von Mises First Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles. The expression is evaluated wherever it
+is given, including outside \eqn{[-\pi, \pi)}, where the density itself is
+zero.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{kappa} must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(kappa))}, one value per observation.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu)}
+Computes \eqn{\partial \ell / \partial y}, the derivative of the von Mises
+log-density with respect to the angle, in closed form:
+\deqn{\dfrac{\partial \ell}{\partial y} = -\kappa \sin(y - \mu).}
+The family is a location family on the circle, so this is exactly the
+negative of the direction score
+\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}}\verb{$mu}. It is \strong{bounded by} \eqn{\kappa}
+and vanishes at both the mode \eqn{y = \mu} and the antimode
+\eqn{y = \mu \pm \pi}, as a periodic density must.
+}
+\examples{
+d <- vonmises1_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, kappa = 2)
+
+# The closed form, written out.
+all.equal(distrib_grad_y(d, y, th), -2 * sin(y - 0.5))
+
+# A location family on the circle, so this is minus the direction score.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# A central difference of the log-density reproduces it.
+eps <- 1e-6
+all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
+           distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
+          distrib_grad_y(d, y, th), tolerance = 1e-6)
+
+# It vanishes at the mode and at the antimode, and is bounded by kappa.
+distrib_grad_y(d, c(0.5, 0.5 - pi), th)
+max(abs(distrib_grad_y(d, seq(-pi, pi, length.out = 401), th)))
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_hess_y.VonMises1Distrib]{distrib_hess_y.VonMises1Distrib()}} for the second derivative in
+the angle, \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the derivatives in
+the parameters, and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

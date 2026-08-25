@@ -2,22 +2,56 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_hess_y.VonMises1Distrib}
 \alias{distrib_hess_y.VonMises1Distrib}
-\title{von Mises Response Hessian}
+\title{von Mises Second Derivative in the Response}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles. The expression is evaluated wherever it
+is given, including outside \eqn{[-\pi, \pi)}, where the density itself is
+zero.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1 or of the length of \code{y}. A component of length 1 is
+recycled. \code{kappa} must be strictly positive.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of length
+\code{max(length(y), length(mu), length(kappa))}, one value per observation.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu)}
+Computes \eqn{\partial^2 \ell / \partial y^2} in closed form:
+\deqn{\dfrac{\partial^2 \ell}{\partial y^2} = -\kappa \cos(y - \mu).}
+The family is a location family on the circle, so this equals the
+pure-direction entry of \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}}, with no sign
+change. It is negative near the mode and \strong{positive} on the half of the
+circle further than a quarter turn from it, the density having a minimum at
+the antimode; a periodic density cannot be concave everywhere.
+}
+\examples{
+d <- vonmises1_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, kappa = 2)
+
+# The closed form, written out.
+all.equal(distrib_hess_y(d, y, th), -2 * cos(y - 0.5))
+
+# A location family, so this is the pure-direction entry of the Hessian.
+all.equal(distrib_hess_y(d, y, th), distrib_hessian(d, y, th)$mu_mu)
+
+# A central difference of the first derivative reproduces it.
+eps <- 1e-5
+all.equal((distrib_grad_y(d, y + eps, th) -
+           distrib_grad_y(d, y - eps, th)) / (2 * eps),
+          distrib_hess_y(d, y, th), tolerance = 1e-6)
+
+# Negative at the mode and positive at the antimode: a periodic density is
+# not concave everywhere.
+distrib_hess_y(d, c(0.5, 0.5 - pi), th)
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_grad_y.VonMises1Distrib]{distrib_grad_y.VonMises1Distrib()}} for the first derivative in the
+angle, \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the second derivatives in
+the parameters, and \code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

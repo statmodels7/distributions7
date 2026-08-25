@@ -2,7 +2,7 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{vonmises1_distrib}
 \alias{vonmises1_distrib}
-\title{von Mises Distribution Object}
+\title{von Mises Distribution, Mean Direction and Concentration}
 \usage{
 vonmises1_distrib(
   link_mu = bounded_link(lwr = -pi, upr = pi),
@@ -10,97 +10,154 @@ vonmises1_distrib(
 )
 }
 \arguments{
-\item{link_mu}{A link function object for \eqn{\mu}. Defaults to
-\code{\link[linkfunctions7:bounded_link]{linkfunctions7::bounded_link()}} on \eqn{(-\pi, \pi)}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean direction
+\eqn{\mu}. Defaults to \code{linkfunctions7::bounded_link(lwr = -pi, upr = pi)},
+which maps the free scale onto \eqn{(-\pi, \pi)}. See the note on the
+chart below.}
 
-\item{link_kappa}{A link function object for \eqn{\kappa}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_kappa}{A \code{link} object from \code{linkfunctions7} for the
+concentration \eqn{\kappa}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}},
+which maps \eqn{(0, \infty)} onto the line and so keeps every fitted value
+positive.}
 }
 \value{
-An S7 object of class \code{VonMises1Distrib}.
+An S7 object of class \code{VonMises1Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"von mises1"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-pi, pi)}, \code{params} \code{c("mu", "kappa")},
+\code{n_params} \code{2}, \code{params_bounds} the domains \eqn{(-\pi, \pi)} and
+\eqn{(0, \infty)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a distribution object for the von Mises distribution, the natural
-family for an angle, parametrized by a mean direction \eqn{\mu} and a
-concentration \eqn{\kappa}.
+Builds the distribution object for the von Mises family, the natural
+distribution for an angle, parametrized by a mean direction \eqn{\mu} and a
+concentration \eqn{\kappa > 0}. The returned object carries closed-form
+derivatives of the log-density to fourth order in the parameters and in the
+response, a closed-form expected information, and a \strong{distribution function
+from a Bessel series} in place of the quadrature the base class would use.
 }
-\details{
-The observation is an angle and the support is a circle, written here as
-\eqn{[-\pi, \pi)}. This is the first family in the package whose support has
-that topology: the two ends of the interval are the same point, so a density
-need not vanish at either.
+\section{The parametrization}{
+The density on \eqn{y \in [-\pi, \pi)} is
+\deqn{f(y; \mu, \kappa) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},}
+with \eqn{I_0} the modified Bessel function of the first kind. This is the
+first family in the package whose support has the topology of a circle: the
+two ends of the interval are the same point, so the density need not vanish
+at either. \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} is the same law parametrized by the mean
+resultant length in place of the concentration.
 
-\strong{Density:}
-\deqn{f(y) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)}}
-The normalizing constant is a modified Bessel function, and it is evaluated
-exponentially scaled with the exponent added back, so a concentration past
-\eqn{\kappa = 700} does not overflow.
+The normalizing constant goes through \code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}}. R's
+exponentially scaled \code{besselI} underflows to an exact zero between
+\eqn{\kappa = 10^5} and \eqn{10^6}, where the logarithm returns \code{-Inf};
+measured at \eqn{\kappa = 10^6} the toolkit's routine returns 999992.17.
+}
 
-\strong{Moments.} \code{\link[=mean]{mean()}}, \code{\link[=variance]{variance()}},
-\code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the ordinary moments
-of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, and they are obtained
-numerically. They are not the circular quantities and they are not what
-\eqn{\mu} and \eqn{\kappa} describe: \eqn{\mu} is the mean \emph{direction},
-and \eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the
-interval is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the
-density is not symmetric about \eqn{\mu} on it. At \eqn{\mu = 1.2} and
-\eqn{\kappa = 2} the ordinary mean is 1.079. The circular mean is
-\eqn{\mu} and the mean resultant length is
-\eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form, and neither is
-returned by a generic whose name means something else.
-
-\strong{Score, observed and expected Hessian.} Writing
-\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} for the derivative of
+\section{Score, information, and orthogonality}{
+Writing \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} for the derivative of
 \eqn{\log I_0},
 \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\kappa} = \cos(y-\mu) - A(\kappa),}
 and every second derivative is closed form, with
-\eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2} obtained from the
-Bessel recurrences rather than from a further evaluation. Since
-\eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, \strong{the two parameters
-are orthogonal}: the expected information is diagonal, and Fisher scoring
+\eqn{A'(\kappa) = 1 - A(\kappa)/\kappa - A(\kappa)^2} from the Bessel
+recurrences and no further evaluation. Since
+\eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, \strong{the two parameters are
+orthogonal}: the expected information is diagonal, and Fisher scoring
 updates the direction and the concentration independently.
 
 \eqn{A(\kappa)} is the mean resultant length, so \eqn{A'(\kappa)} is the
-variance of \eqn{\cos(Y-\mu)} and is positive, which is what makes the
-information positive definite.
+variance of \eqn{\cos(Y-\mu)} and is positive, which keeps the information
+positive definite.
 
-\strong{The mean direction is carried on a bounded chart}, the default link
-mapping the free scale onto \eqn{(-\pi, \pi)}. That keeps the parameter
-identified, at the cost that a fit cannot walk across the boundary: data
-concentrated near \eqn{\pm\pi} are better rotated before fitting than
-handed to the optimizer as they are. Leaving \eqn{\mu} unbounded instead
-would make the likelihood periodic and every maximum one of infinitely
-many.
-
-\strong{Parameter domains:}
-\itemize{
-\item \eqn{\mu \in (-\pi, \pi)}
-\item \eqn{\kappa \in (0, +\infty)}
+The log-density is linear in \eqn{\kappa} apart from the normalizing
+constant, so at orders three and four every component naming one \eqn{\mu}
+and two or more \eqn{\kappa} is exactly zero.
 }
 
-The distribution function has no elementary form and comes from the base
-class by quadrature over the bounded support, with the quantile by root
-finding on it.
+\section{The moments a generic returns are not the circular ones}{
+\code{\link[=mean.distrib]{mean.distrib()}}, \code{\link[=variance]{variance()}}, \code{\link[=skewness]{skewness()}} and \code{\link[=kurtosis]{kurtosis()}} are the
+ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
+numerically. They are \strong{not} the circular quantities and not what \eqn{\mu}
+and \eqn{\kappa} describe. \eqn{\mu} is the mean \emph{direction}, and
+\eqn{\mathbb{E}[Y] \ne \mu} whenever \eqn{\mu \ne 0}, because the interval
+is cut at \eqn{\pm\pi} rather than at \eqn{\mu \pm \pi} and the density is
+not symmetric about \eqn{\mu} on it: at \eqn{\mu = 1.2} and \eqn{\kappa = 2}
+the ordinary mean is 1.079.
+
+The circular mean is \eqn{\mu} and the mean resultant length is
+\eqn{\rho = I_1(\kappa)/I_0(\kappa)}, both closed form. Neither is returned
+by a generic whose name means something else; compute them from a sample as
+\code{atan2(mean(sin(z)), mean(cos(z)))} and
+\code{sqrt(mean(cos(z))^2 + mean(sin(z))^2)}.
 }
+
+\section{The direction is carried on a bounded chart}{
+The default link maps the free scale onto \eqn{(-\pi, \pi)}, which keeps
+\eqn{\mu} identified. The cost is that a fit cannot walk across the
+boundary, so data concentrated near \eqn{\pm\pi} are better rotated before
+fitting than handed to the optimizer as they are. Leaving \eqn{\mu}
+unbounded would make the likelihood periodic and every maximum one of
+infinitely many.
+}
+
+\section{The distribution function}{
+The density has no elementary antiderivative. The base class would
+integrate it once per observation, which measured 4.5 seconds at ten
+thousand points; this class supplies \code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}}
+instead, a Fourier series integrated term by term whose term count is
+\eqn{8.5\sqrt{\kappa} + 10}, measured. The \strong{quantile} does come from
+\code{\link[=continuous_distrib]{continuous_distrib()}}, by root finding on that series.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\kappa > 0} the concentration, \eqn{I_m} the modified Bessel
+function of the first kind of order \eqn{m}, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the mean resultant length.
+\eqn{\eta} is a parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
+}
+
 \examples{
 d <- vonmises1_distrib()
-d@params
+d
 
-theta <- list(mu = 0.5, kappa = 2)
-distrib_pdf(d, c(-1, 0, 0.5, 2), theta)
+# The density integrates to one over the circle.
+th <- list(mu = 0.5, kappa = 2)
+integrate(function(v) distrib_pdf(d, v, th), -pi, pi)$value
 
-# the expected information is diagonal: direction and concentration are
-# orthogonal, the sine having mean zero
-distrib_expected_hessian(d, 0, theta)
+# The expected information is diagonal: direction and concentration are
+# orthogonal, the sine having mean zero.
+vapply(distrib_expected_hessian(d, 0, th), function(v) v[1], numeric(1))
+
+# The ordinary mean is not the mean direction, the interval being cut at
+# plus or minus pi.
+c(ordinary = mean(d, list(mu = 1.2, kappa = 2)), direction = 1.2)
+
+# A sample recovers the circular quantities, which no generic returns.
+set.seed(1)
+z <- distrib_rng(d, 3e5, th)
+c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
+c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2),
+  A = numericals7::bessel_i_ratio(2))
+
+# Fitting recovers both parameters.
+set.seed(7)
+coef(fit_distrib(d, distrib_rng(d, 2000, list(mu = 0.8, kappa = 3))))
 
 }
 \references{
 Best, D. J. and Fisher, N. I. (1979). Efficient simulation of the von Mises
-distribution. \emph{Applied Statistics} 28, 152-157.
+distribution. \emph{Journal of the Royal Statistical Society, Series C},
+\strong{28}(2), 152-157.
 
-Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}. Wiley.
+Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}, Chapter 3.
+Wiley, Chichester.
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}} for the same law in the mean resultant length;
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the analogous family on the line, which the von
+Mises approaches at a large concentration;
+\code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} and \code{\link[numericals7:bessel_i_ratio]{numericals7::bessel_i_ratio()}} for the
+Bessel machinery; \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters;
+\code{\link[=check_distrib]{check_distrib()}} to validate a family of your own against the same battery
+this one passes; \link{VonMises1Distrib} for the class.
 }

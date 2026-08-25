@@ -2,33 +2,77 @@
 % Please edit documentation in R/vonmises1_distrib.R
 \name{distrib_expected_hessian.VonMises1Distrib}
 \alias{distrib_expected_hessian.VonMises1Distrib}
-\title{von Mises Analytical Expected Hessian}
+\title{von Mises Expected Hessian}
 \arguments{
-\item{distrib}{A \code{VonMises1Distrib} object.}
+\item{distrib}{A \code{VonMises1Distrib} object, from \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles. Only its length is read, the
+expectation not depending on the data; the values are ignored.}
 
-\item{theta}{A list containing \code{mu} and \code{kappa}.}
+\item{theta}{A named list with components \code{mu} and \code{kappa}, each a numeric
+vector of length 1. \code{kappa} must be strictly positive.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of three numeric vectors, \code{mu_mu}, \code{mu_kappa} and
+\code{kappa_kappa}, each of length \code{length(y)} and constant along it.
+\code{mu_kappa} is exactly zero.
 }
 \description{
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. Under the model
 \eqn{\mathbb{E}[\cos(Y-\mu)] = A(\kappa)} and
 \eqn{\mathbb{E}[\sin(Y-\mu)] = 0} by symmetry, so
 \deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A(\kappa), \qquad
       \mathbb{E}[\ell^{(\mu\kappa)}] = 0, \qquad
-      \mathbb{E}[\ell^{(\kappa\kappa)}] = -A'(\kappa)}
-The location and the concentration are therefore orthogonal.
+      \mathbb{E}[\ell^{(\kappa\kappa)}] = -A'(\kappa),}
+with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+
+The zero off-diagonal makes the direction and the concentration
+\strong{orthogonal}: the expected information is diagonal, their estimates are
+asymptotically independent, and Fisher scoring updates the two
+independently. \code{approx} and \code{nsim} are ignored, the expectation being exact.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\kappa > 0} the concentration, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} the mean resultant length.
+}
+
+\examples{
+d <- vonmises1_distrib()
+th <- list(mu = 0.5, kappa = 2)
+eh <- distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th)
+vapply(eh, function(v) v[1], numeric(1))
+
+# The closed forms, written out; the off-diagonal is exactly zero, so the
+# two parameters are orthogonal.
+A <- numericals7::bessel_i_ratio(2)
+c(mu_mu = -2 * A, mu_kappa = 0,
+  kappa_kappa = -numericals7::bessel_i_ratio_derivs(2)$d1)
+
+# Averaging the observed Hessian over draws reaches the same three numbers.
+set.seed(1)
+z <- distrib_rng(d, 3e5, th)
+vapply(distrib_hessian(d, z, th), mean, numeric(1))
+
+# The strategy argument is inert, the expectation being exact.
+identical(eh, distrib_expected_hessian(d, c(-1, 0, 0.5, 2), th,
+                                       approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the quantity this is the
+expectation of, \code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the score, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

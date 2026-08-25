@@ -7,49 +7,60 @@
 vm_cdf(y, mu, kappa)
 }
 \arguments{
-\item{y}{The quantiles.}
+\item{y}{A numeric vector of quantiles. Below \eqn{-\pi} the value is 0 and
+at or above \eqn{\pi} it is 1. \code{NA} and non-finite values give \code{NA}.}
 
-\item{mu}{The mean directions.}
+\item{mu}{A numeric vector of mean directions, recycled to the length of
+\code{y}.}
 
-\item{kappa}{The concentrations.}
+\item{kappa}{A numeric vector of concentrations, recycled to the length of
+\code{y}. A value at or below zero gives \code{NA}.}
 }
 \value{
-The distribution function at \code{y}.
+A numeric vector of probabilities in \eqn{[0, 1]}, of the recycled
+length of the inputs.
 }
 \description{
-\eqn{F(x)} on \eqn{[-\pi, \pi)}, from the Fourier expansion of the
-density integrated term by term.
+Returns \eqn{F(x)} on \eqn{[-\pi, \pi)} from the Fourier expansion of the
+density, integrated term by term, in place of a quadrature.
 }
-\details{
-The density has no elementary antiderivative, and the base class
-integrates it numerically: one quadrature per observation, which measured
-4.5 seconds at ten thousand points and made this family a thousand times
-dearer than any other. It has a rapidly convergent series instead. From
+\section{Why a series}{
+The density has no elementary antiderivative, and the base class integrates
+it numerically: one quadrature per observation, which measured 4.5 seconds
+at ten thousand points and made this family a thousand times dearer than any
+other. The series is rapidly convergent. From
 \eqn{e^{\kappa\cos\theta} = I_0(\kappa) + 2\sum_{j\ge1} I_j(\kappa)
 \cos(j\theta)}, integrating from \eqn{-\pi} to \eqn{x},
 \deqn{F(x) = \frac{x + \pi}{2\pi} + \frac{1}{\pi I_0(\kappa)}
   \sum_{j\ge1} \frac{I_j(\kappa)}{j}
   \big[\sin(j(x - \mu)) + \sin(j(\pi + \mu))\big].}
-The second sine is the lower limit and is what makes this the
-distribution function of the family as written -- the support is
-\eqn{[-\pi, \pi)} with the location inside it, not a variable wrapped
+The second sine is the lower limit, and it makes this the distribution
+function of the family \strong{as written}: the support is
+\eqn{[-\pi, \pi)} with the direction inside it, not a variable wrapped
 around the circle.
 
-Only the RATIOS \eqn{I_j/I_0} are needed and
-\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} gives them by a backward
-recurrence whose loop runs over the series index rather than over the
-data. That is what makes the series cheaper: \eqn{n} quadratures become a
-few dozen vectorized steps.
-
-HOW MANY TERMS is measured rather than assumed. Comparing against the same
-series at four times the length, machine precision is reached at 10 terms
-at \eqn{\kappa = 0.5}, 26 at 10, 90 at 100, 242 at 1000 and 404 at 3000 --
-always under \eqn{8.5\sqrt{\kappa} + 10}, which is the rule used. The sum
-is accumulated over blocks of observations because the natural expression
-forms an \eqn{n \times m} matrix, which at a hundred thousand points and a
-concentration of a hundred is already hundreds of megabytes.
+Only the \strong{ratios} \eqn{I_j/I_0} are needed, and
+\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} gives them by a backward recurrence whose
+loop runs over the series index and not over the data. The series is cheap
+for that reason: \eqn{n} quadratures become a few dozen vectorized steps.
 }
+
+\section{How many terms, measured}{
+Compared against the same series at four times the length, machine precision
+is reached at 10 terms at \eqn{\kappa = 0.5}, 26 at 10, 90 at 100, 242 at
+1000 and 404 at 3000, always under \eqn{8.5\sqrt{\kappa} + 10}, which is the
+rule used, with a floor of 20.
+
+The sum is accumulated over blocks of observations, because the natural
+expression forms an \eqn{n \times m} matrix, which at a hundred thousand
+points and a concentration of a hundred is already hundreds of megabytes.
+The result is clamped to \eqn{[0, 1]}: the series is exact and its rounding
+is not, and a distribution function cannot leave its own interval.
+}
+
 \seealso{
-\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}}
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}}, which calls this;
+\code{\link[numericals7:bessel_i_ratios]{numericals7::bessel_i_ratios()}} for the recurrence; and
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the family.
 }
 \keyword{internal}
