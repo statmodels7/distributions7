@@ -25,8 +25,8 @@ built at call time; at load time the class it names may not exist yet.}
 \item{md_fn}{A function of \code{theta} returning the map's keyed partial tables.}
 
 \item{q_fn}{The transformation of the response, for a parent that is the
-same law on a transformed scale. \code{\link[=identity]{identity()}} by default, and \code{log} for
-the lognormal.}
+same law on a transformed scale. \code{identity} by default, and \code{log} for the
+lognormal.}
 
 \item{orders}{An integer vector of the orders to register, \code{3:4} by default.
 A family whose written-out route stops below the fourth order takes the

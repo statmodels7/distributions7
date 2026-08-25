@@ -7,30 +7,60 @@
 phi_terms_cdf_deriv_k(distrib, q, order, terms)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}. Its \code{params} name and
+order the components.}
 
 \item{q}{A numeric vector of quantiles.}
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{terms}{A list of terms, each a list with \code{sign}, \code{logw},
-\code{wderiv}, \code{x} and \code{xderiv}.}
+\item{terms}{A list of terms. Each is a list with \code{sign} (\eqn{\pm 1}),
+\code{logw} (the log weight), \code{wderiv} (a function of a block of parameter
+names returning that partial of the log weight), \code{x} (the tail argument)
+and \code{xderiv} (the same for \code{x}). A term whose weight is 1 passes a \code{logw}
+of zero and a \code{wderiv} returning zero.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-Evaluates \eqn{\partial^{I}F} for every component of the requested order,
-for \eqn{F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)}.
+Evaluates every component of \eqn{\partial^I F} of the requested order for a
+distribution function of the form
+\deqn{F = c_0 + \sum_k s_k\,e^{w_k}\,\Phi(x_k).}
+Two families in the package have that shape, the inverse Gaussian and the
+elastic net, and both reach all four orders through this one function.
 }
-\details{
-The Leibniz rule splits the positions of \eqn{I} between the weight and the
-tail, \eqn{\partial^{S}e^{w} = e^{w}B_{S}(w)} being the complete Bell
-polynomial in the partials of the log weight and \eqn{\partial^{T}\Phi(x)}
-one Faa di Bruno pass over \eqn{x}. Nothing is transcribed: both sums run on
-the package's own partition enumeration.
+\section{The two sums}{
+The Leibniz rule splits the positions of the multi-index \eqn{I} between the
+weight and the tail. The weight side is
+\eqn{\partial^{S} e^{w} = e^{w} B_{S}(w)}, the complete Bell polynomial in
+the partials of the \strong{log} weight; the tail side is one Faa di Bruno pass
+over \eqn{x}, whose inner derivatives are the Hermite factors of
+\code{\link[=phi_hermite]{phi_hermite()}} times \eqn{\varphi(x)}. Nothing is transcribed: both sums
+run on the package's own partition enumeration.
 }
+
+\section{Why the log weight}{
+The weight is never formed on its own. It is combined with the tail as
+\code{exp(w + pnorm(x, log.p = TRUE))}, because for the inverse Gaussian
+\eqn{e^{2/(\phi\mu)}} overflows exactly where \eqn{\Phi(b)} underflows: at
+\eqn{\mu = 0.01}, \eqn{\phi = 0.1} the weight is \code{Inf} while the product is
+about \eqn{3\times10^{-106}}, and the fourth derivative there comes back at
+\eqn{3\times10^{-91}}.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{\Phi} and \eqn{\varphi} the
+standard normal distribution and density, \eqn{w} a log weight, \eqn{x} a
+tail argument and \eqn{B_S} the complete Bell polynomial.
+}
+
 \seealso{
-\code{\link[=bell_f_ratio]{bell_f_ratio()}}
+\code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}, which turns a term function into the
+four methods; \code{\link[=phi_hermite]{phi_hermite()}}; \code{\link[=separable_deriv]{separable_deriv()}} for the commonest
+shape of \code{wderiv} and \code{xderiv}.
 }
 \keyword{internal}

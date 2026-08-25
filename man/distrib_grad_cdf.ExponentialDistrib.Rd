@@ -4,27 +4,59 @@
 \alias{distrib_grad_cdf.ExponentialDistrib}
 \title{Exponential Log-CDF Derivatives}
 \arguments{
-\item{distrib}{An \code{ExponentialDistrib} object.}
+\item{distrib}{An \code{ExponentialDistrib} object, from \code{\link[=exponential_distrib]{exponential_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values at or below zero give
+derivatives of exactly zero.}
 
-\item{theta}{A list containing \code{mu}.}
+\item{theta}{A named list with one component, \code{mu} (positive), a numeric
+vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list with one numeric vector per component of the order the
+generic asked for, which for a one-parameter family is one at every order.
 }
 \description{
-Closed form at every order from the survival function
-\eqn{S = \exp(-q/\mu)}, whose logarithm has the partial derivatives
-\eqn{\partial^{j}L/\partial\mu^{j} = -q(-1)^{j}j!/\mu^{j+1}}.
+Closed form at every order from one to four, from the survival function
+\eqn{S = e^{-q/\mu}}. Its logarithm is \eqn{L = -q/\mu}, whose partial
+derivatives are \eqn{\partial^j L/\partial\mu^j = -q(-1)^j j!/\mu^{j+1}},
+and \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} turns those into the derivatives of \eqn{F}.
+}
+\details{
+Against a product stencil on the same cdf: \eqn{2.7\times10^{-11}} at order
+1 and \eqn{2.7\times10^{-5}} at order 4. Below the support every derivative
+is exactly zero, the mask in \code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} suppressing the finite
+value \eqn{L} would otherwise give there.
+}
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{F} the distribution function and
+\eqn{S = 1 - F} the survival function.
+}
+
+\examples{
+d <- exponential_distrib()
+q <- c(0.5, 2, 5)
+
+# Against a central difference of the cdf, which shares no arithmetic.
+fd <- numerical_cdf_deriv(d, q, list(mu = 3), order = 1)
+max(abs(distrib_grad_cdf(d, q, list(mu = 3), log = FALSE)$mu / fd$mu - 1))
+
+# Exactly zero below the support.
+distrib_grad_cdf(d, c(-1, 0.5), list(mu = 3), log = FALSE)$mu
+
 }
 \seealso{
-\code{\link[=exponential_distrib]{exponential_distrib()}}
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} for the identity;
+\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}} and \code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf.GPDDistrib()}},
+the two families that contain this one; \code{\link[=exponential_distrib]{exponential_distrib()}}.
 }
 \keyword{internal}

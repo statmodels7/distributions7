@@ -4,29 +4,78 @@
 \alias{distrib_grad_cdf.GPDDistrib}
 \title{Generalized Pareto Log-CDF Derivatives}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values outside the support give
+derivatives of exactly zero.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list of numeric vectors of the order the generic asked for,
+keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: two
+components for the gradient, three for the Hessian, four at order 3 and
+five at order 4.
 }
 \description{
-Closed form at every order, from the survival function
+Closed form at every order from one to four, from the survival function
 \eqn{S = (1 + \xi q/\sigma)^{-1/\xi}}. Its logarithm is written
-\eqn{-(q/\sigma)\Lambda(\xi q/\sigma)} with \eqn{\Lambda(u) = \log(1+u)/u},
-which carries no division by the shape, so the exponential limit
-\eqn{\xi \to 0} is an ordinary point of the formula rather than a branch.
+\eqn{L = -(q/\sigma)\,\Lambda(\xi q/\sigma)} with
+\eqn{\Lambda(u) = \log(1+u)/u}, which carries no division by the shape, so
+the exponential limit \eqn{\xi \to 0} is an ordinary point of the formula
+and not a branch.
+}
+\section{The support moves with the shape}{
+At \eqn{\xi \ge 0} the support is \eqn{(0, \infty)}; at \eqn{\xi < 0} it is
+bounded above at \eqn{\sigma/|\xi|}, and past that endpoint every derivative
+is exactly zero. The mask is computed in \code{\link[=gpd_surv_pieces]{gpd_surv_pieces()}}, the family's
+fixed bounds being unable to record a support that moves with a parameter.
+}
+
+\section{What it is worth, and the limit as a check}{
+Against a product stencil on the same cdf at \eqn{\sigma = 1},
+\eqn{\xi = 0.3}: \eqn{5.2\times10^{-11}} at order 1,
+\eqn{2.7\times10^{-7}} at order 2, \eqn{1.7\times10^{-5}} at order 3 and
+\eqn{8.4\times10^{-4}} at order 4. At \eqn{\xi = 0} the scale component
+equals the exponential family's to the last bit, and the fourth derivative
+reads the same value at \eqn{\xi = 10^{-7}} and at \eqn{10^{-9}}, which is
+what a removable singularity handled properly looks like.
+}
+
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale, \eqn{\xi} the shape of either sign,
+\eqn{u = \xi q/\sigma}, \eqn{\Lambda(u) = \log(1+u)/u}, \eqn{F} the
+distribution function and \eqn{S = 1 - F} the survival function.
+}
+
+\examples{
+d <- gpd_distrib()
+q <- c(0.5, 2, 5)
+
+# At shape zero the scale component is the exponential family's.
+rbind(gpd = distrib_grad_cdf(d, q, list(sigma = 3, xi = 0),
+                             log = FALSE)$sigma,
+      exponential = distrib_grad_cdf(exponential_distrib(), q,
+                                     list(mu = 3), log = FALSE)$mu)
+
+# A negative shape bounds the support at sigma / |xi| = 2.
+distrib_grad_cdf(d, c(1, 2, 3), list(sigma = 1, xi = -0.5),
+                 log = FALSE)$sigma
+
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=gpd_surv_pieces]{gpd_surv_pieces()}} and \code{\link[=gpd_lambda_derivs]{gpd_lambda_derivs()}} for the construction;
+\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}}, the \eqn{\xi = 0} case;
+\code{\link[=gpd_distrib]{gpd_distrib()}}.
 }
 \keyword{internal}

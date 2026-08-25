@@ -7,23 +7,44 @@
 sn_cdf_deriv_k(distrib, q, theta, order)
 }
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, whose \code{params} name and order
+the components.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
+\code{alpha} (any sign).}
 
 \item{order}{The derivative order, 1 to 4.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}.
 }
 \description{
-Chains the standard-coordinate table of
-\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} through \eqn{z = (q-\mu)/\sigma}, the
-shape passing straight through as the second index of that table.
+Chains the standard-coordinate table of \code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} through
+\eqn{z = (q-\mu)/\sigma}, the shape passing straight through as the second
+index of that table. Together the two functions give the family closed cdf
+derivatives at all four orders in all three parameters.
 }
+\details{
+The map is the one the other location-scale families are chained through:
+\eqn{z} is linear in the location and a reciprocal in the scale, so a block
+naming the location twice contributes an exact zero and only eight partials
+of the map are non-zero up to order four. The shape does not enter \eqn{z}
+at all, which is why it can be carried as an index of the inner table rather
+than through the chain.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
+shape, \eqn{z = (q-\mu)/\sigma} and \eqn{F} the distribution function.
+}
+
 \seealso{
-\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}}
+\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} for the inner table;
+\code{\link[=distrib_grad_cdf.SkewNormal1Distrib]{distrib_grad_cdf.SkewNormal1Distrib()}}, the family page;
+\code{\link[=loc_scale_cdf_deriv_k]{loc_scale_cdf_deriv_k()}} for the same chain without a shape.
 }
 \keyword{internal}

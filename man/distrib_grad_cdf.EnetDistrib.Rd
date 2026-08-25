@@ -2,38 +2,89 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{distrib_grad_cdf.EnetDistrib}
 \alias{distrib_grad_cdf.EnetDistrib}
-\title{Elastic-Net Log-CDF Derivatives}
+\title{Elastic Net Log-CDF Derivatives}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu} (any real value), \code{lambda}
+(positive) and \code{alpha} (strictly between 0 and 1), each a numeric vector
+of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list of numeric vectors of the order the generic asked for,
+keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: three
+components for the gradient, six for the Hessian, ten at order 3 and
+fifteen at order 4.
 }
 \description{
-Closed form at every order. Each half of the distribution function is a
-truncated Gaussian, so with \eqn{z = q - \mu}, \eqn{s = \sqrt{c}} and
-\eqn{x = a/\sqrt{c}} it is \eqn{e^{w}\Phi(X)} below the location and
+Closed form at every order from one to four. Each half of the distribution
+function is a truncated Gaussian: with \eqn{z = q - \mu}, \eqn{s = \sqrt c}
+and \eqn{x = a/\sqrt c} it is \eqn{e^{w}\Phi(X)} below the location and
 \eqn{1 - e^{w}\Phi(X)} above it, for \eqn{X = \pm sz - x} and a weight
-\eqn{w = -\log M(x) + x^{2}/2 + \mathrm{const}} written through the Mills
-ratio the family already carries. Both \eqn{s} and \eqn{x} are products of
-a function of \eqn{\lambda} and a function of \eqn{\alpha}, so their mixed
-partial derivatives are products of one-variable ones.
+\eqn{w = -\log M(x) + x^2/2 + \mathrm{const}} written through the Mills
+ratio the family already carries. The four registrations are made together
+by \code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}.
+}
+\section{Why four orders are cheap here}{
+Both \eqn{s} and \eqn{x} are a function of \eqn{\lambda} times a function of
+\eqn{\alpha}, so their mixed partials are products of one-variable ones
+through \code{\link[=separable_deriv]{separable_deriv()}}, and the one-variable ones are powers of affine
+functions through \code{\link[=dpow_affine]{dpow_affine()}}. No multivariate expansion is formed at
+any order.
+}
 
-The location is the non-regular direction, as in the Laplace the family
-contains: the second derivative in \eqn{\mu} carries a point mass at
-\eqn{q = \mu}, and the formulas below hold on either side of it.
+\section{The kink at the location}{
+The location is the non-regular direction, as it is in the Laplace this
+family contains: the second derivative in \eqn{\mu} carries a point mass at
+\eqn{q = \mu}, and the formulas hold on either side of it. A numerical check
+that straddles the location is checking the arithmetic against a reference
+that is not valid there.
+}
+
+\section{What the closed route is worth}{
+Against a product stencil on the same cdf: \eqn{1.6\times10^{-9}} at order
+1, \eqn{3.5\times10^{-7}} at order 2, \eqn{3.0\times10^{-5}} at order 3 and
+\eqn{3.9\times10^{-4}} at order 4.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\lambda > 0} and \eqn{\alpha \in (0,1)} the
+two hyperparameters, \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}
+the two rates, \eqn{M} the Mills ratio, \eqn{\Phi} the standard normal
+distribution function and \eqn{F} the elastic net's.
+}
+
+\examples{
+d <- enet_distrib()
+q <- c(-1, 0.5, 2)
+th <- list(mu = 0, lambda = 1, alpha = 0.5)
+
+# Against a central difference of the cdf, which shares no arithmetic.
+fd <- numerical_cdf_deriv(d, q, th, order = 1)
+max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
+
+# Three, six, ten and fifteen components as the order rises.
+lengths(list(distrib_grad_cdf(d, q, th),
+             distrib_hess_cdf(d, q, th),
+             distrib_deriv3_cdf(d, q, th),
+             distrib_deriv4_cdf(d, q, th)))
+
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} for the construction;
+\code{\link[=separable_deriv]{separable_deriv()}} and \code{\link[=dpow_affine]{dpow_affine()}} for the partials;
+\code{\link[=distrib_grad_cdf.InvGauss1Distrib]{distrib_grad_cdf.InvGauss1Distrib()}}, the other family of this shape;
+\code{\link[=enet_distrib]{enet_distrib()}}.
 }
 \keyword{internal}

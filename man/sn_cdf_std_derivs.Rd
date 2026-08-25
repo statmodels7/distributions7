@@ -7,30 +7,58 @@
 sn_cdf_std_derivs(z, al, order)
 }
 \arguments{
-\item{z}{The standardized quantile.}
+\item{z}{The standardized quantile, a numeric vector.}
 
-\item{al}{The shape.}
+\item{al}{The shape, a numeric vector of any sign recyclable against \code{z}.}
 
-\item{order}{The highest total order, 1 to 4.}
+\item{order}{The highest total order wanted, 1 to 4.}
 }
 \value{
-A nested list, \verb{[[i + 1]][[j + 1]]}.
+A nested list indexed \verb{[[i + 1]][[j + 1]]}, holding
+\eqn{\partial^i_z\partial^j_\alpha G} as a numeric vector. Entries with
+\eqn{i + j} above \code{order} are absent.
 }
 \description{
-Returns \eqn{\partial^{i}_{z}\partial^{j}_{\alpha}G} for
-\eqn{G(z, \alpha) = \Phi(z) - 2T(z, \alpha)}, over the pairs with
-\eqn{1 \le i + j \le} \code{order}, as a list indexed by \code{i + 1} then
-\code{j + 1}.
+Returns \eqn{\partial^i_z \partial^j_\alpha G} for
+\eqn{G(z, \alpha) = \Phi(z) - 2T(z, \alpha)} over the pairs with
+\eqn{1 \le i + j \le} \code{order}, with \eqn{T} Owen's T. This is the whole of
+the skew normal's cdf derivative surface in standard coordinates; the
+location and the scale are chained on afterwards by \code{\link[=sn_cdf_deriv_k]{sn_cdf_deriv_k()}}.
 }
-\details{
-The first derivatives are \eqn{G_{z} = 2\varphi(z)\Phi(u)} and
-\eqn{G_{\alpha} = -2\varphi(z)\varphi(u)R} with \eqn{u = \alpha z} and
-\eqn{R = (1+\alpha^{2})^{-1}}; everything above them is one Leibniz rule
-over those factors, with \eqn{\Phi(u)} and \eqn{\varphi(u)} differentiated
-by Faa di Bruno over \eqn{u}, which is bilinear and so has only three
-non-zero partial derivatives.
+\section{Why the integral never has to be differentiated}{
+Owen's T is defined by an integral, and both of its partial derivatives are
+elementary:
+\deqn{\frac{\partial T}{\partial h} = -\varphi(h)\left\{\Phi(ah) -
+      \tfrac12\right\}, \qquad
+      \frac{\partial T}{\partial a} = \frac{\varphi(h)\,\varphi(ah)}{1+a^2}.}
+The integral is therefore differentiated away at the first order and never
+has to be differentiated again. A quantity defined by an integral is not
+thereby a quantity whose derivatives need one.
 }
+
+\section{The first derivatives, and the check on them}{
+\eqn{G_z = 2\varphi(z)\Phi(u)} and
+\eqn{G_\alpha = -2\varphi(z)\varphi(u)R} with \eqn{u = \alpha z} and
+\eqn{R = (1+\alpha^2)^{-1}}. The first is the skew normal's own density,
+which confirms the identity above; the second is checked against the
+gradient the family reports.
+
+Everything above the first order is one Leibniz rule over those factors,
+with \eqn{\Phi(u)} and \eqn{\varphi(u)} differentiated by Faa di Bruno over
+\eqn{u}. That map is bilinear, so it has only three non-zero partials and
+the expansion stays short.
+}
+
+\section{Notation}{
+
+\eqn{z} is the standardized quantile, \eqn{\alpha} the shape,
+\eqn{u = \alpha z}, \eqn{\Phi} and \eqn{\varphi} the standard normal
+distribution and density, and \eqn{T} Owen's T.
+}
+
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=sn_cdf_deriv_k]{sn_cdf_deriv_k()}}, which chains this onto the location and the
+scale; \code{\link[=recip_1p_sq]{recip_1p_sq()}} for the shape factor;
+\code{\link[numericals7:owen_t]{numericals7::owen_t()}} for the function itself.
 }
 \keyword{internal}

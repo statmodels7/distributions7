@@ -4,31 +4,75 @@
 \alias{distrib_grad_cdf.Weibull1Distrib}
 \title{Weibull Log-CDF Derivatives}
 \arguments{
-\item{distrib}{A \code{Weibull1Distrib} object.}
+\item{distrib}{A \code{Weibull1Distrib} object, from \code{\link[=weibull1_distrib]{weibull1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values at or below zero give
+derivatives of exactly zero.}
 
-\item{theta}{A list containing \code{mu} and \code{sigma}.}
+\item{theta}{A named list with components \code{mu} (the scale, positive) and
+\code{sigma} (the shape, positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list of numeric vectors of the order the generic asked for,
+keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: two
+components for the gradient, three for the Hessian, four at order 3 and
+five at order 4.
 }
 \description{
-Closed form at every order from the survival function
-\eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing \eqn{h = \sigma(\log q -
-\log\mu)} the exponent is \eqn{L = -e^{h}}, so its partial derivatives are
-\eqn{-e^{h}} times the complete Bell polynomial in the partials of \eqn{h},
-and those are elementary: \eqn{\partial^{j}h/\partial\mu^{j} =
-\sigma(-1)^{j}(j-1)!/\mu^{j}}, the same without the \eqn{\sigma} when one
-index names the shape, and zero when two do.
+Closed form at every order from one to four, from the survival function
+\eqn{S = \exp\{-(q/\mu)^{\sigma}\}}. Writing
+\eqn{h = \sigma(\log q - \log\mu)} the exponent is \eqn{L = -e^{h}}, so its
+partial derivatives are \eqn{-e^{h}} times the complete Bell polynomial in
+the partials of \eqn{h}, and those are elementary.
+}
+\section{The partials of h}{
+\eqn{\partial^j h/\partial\mu^j = \sigma(-1)^j(j-1)!/\mu^j}, the same
+without the factor \eqn{\sigma} when one index names the shape, and exactly
+zero when two do: \eqn{h} is linear in the shape. That is what keeps the
+expansion short at the higher orders.
+}
+
+\section{An exact zero worth knowing about}{
+At \eqn{q = \mu} the exponent \eqn{h} vanishes and so does
+\eqn{\partial h/\partial\sigma = \log q - \log\mu}, so the shape component
+of the gradient is exactly zero there. A relative comparison against a
+numerical derivative at that point measures nothing; an absolute one is what
+to use, and it puts the closed route within \eqn{2.3\times10^{-11}} of a
+central difference of the cdf.
+}
+
+\section{Notation}{
+
+\eqn{\mu > 0} is the scale, \eqn{\sigma > 0} the shape,
+\eqn{h = \sigma(\log q - \log\mu)}, \eqn{F} the distribution function and
+\eqn{S = 1 - F} the survival function. The mean is
+\eqn{\mu\,\Gamma(1+1/\sigma)}.
+}
+
+\examples{
+d <- weibull1_distrib()
+q <- c(0.5, 2, 5)
+th <- list(mu = 2, sigma = 3)
+
+# Against a central difference of the cdf, on an absolute scale.
+fd <- numerical_cdf_deriv(d, q, th, order = 1)
+max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) - unlist(fd)))
+
+# The shape component is exactly zero at q = mu.
+distrib_grad_cdf(d, 2, th, log = FALSE)$sigma
+
 }
 \seealso{
-\code{\link[=weibull1_distrib]{weibull1_distrib()}}
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} for the identity;
+\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}}, the shape-1 case;
+\code{\link[=weibull1_distrib]{weibull1_distrib()}}.
 }
 \keyword{internal}

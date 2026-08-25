@@ -7,34 +7,65 @@
 surv_cdf_deriv_k(distrib, q, theta, order, Lval, Lderiv, inside = NULL)
 }
 \arguments{
-\item{distrib}{An object inheriting from class \code{"distrib"}.}
+\item{distrib}{An object inheriting from \code{distrib}. Its \code{params} name and
+order the components, and its lower bound supplies the default mask.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale.}
 
 \item{order}{The derivative order, 1 to 4.}
 
-\item{Lval}{The value of \eqn{L} at \code{q}.}
+\item{Lval}{The value of \eqn{L} at \code{q}, a numeric vector.}
 
 \item{Lderiv}{A function of a character vector of parameter names returning
-the corresponding partial derivative of \eqn{L}.}
+the corresponding partial derivative of \eqn{L}. An empty block is the
+zeroth order and is never asked for.}
+
+\item{inside}{A logical vector saying which quantiles lie inside the
+support, or \code{NULL} (the default), which reads \code{q > distrib@bounds[1]}. A
+family whose support depends on a parameter, as the generalized Pareto's
+does at a negative shape, supplies its own; the fixed bounds cannot see
+it.}
 }
 \value{
-A named list of derivative components of \eqn{F}.
+A named list of numeric vectors, derivatives of \eqn{F} itself on
+the natural scale, keyed as
+\code{\link[=deriv_names]{deriv_names(distrib@params, order)}}, and exactly zero
+wherever \code{inside} is \code{FALSE}.
 }
 \description{
-Returns \eqn{\partial^{I}F} for every component of the requested order,
-given \eqn{L = \log(1-F)} and a function evaluating its partial derivatives.
+Returns \eqn{\partial^I F} for every component of the requested order, for a
+family whose survival function is the exponential of something elementary.
+Given \eqn{L = \log(1-F)} and a function evaluating its partial derivatives,
+all four orders follow at once, so a family has only to say what \eqn{L} is.
 }
-\details{
-\eqn{S = e^{L}} gives \eqn{\partial^{I}S = S\,B_{I}}, with \eqn{B_{I}} the
+\section{The identity}{
+\eqn{S = e^{L}} gives \eqn{\partial^I S = S\,B_I}, with \eqn{B_I} the
 complete Bell polynomial in the partials of \eqn{L}, and \eqn{F = 1 - S}
-turns that into \eqn{\partial^{I}F = -S\,B_{I}}. The survival function is
-evaluated as \code{exp(L)} rather than as \code{1 - F}, which keeps the far
-tail from canceling.
+turns that into \eqn{\partial^I F = -S\,B_I}. It is the same identity the
+distribution wrappers use, read on the survival function instead of on the
+density, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} runs the partition sum, so nothing here is
+transcribed from an expansion.
 }
+
+\section{Two things the arithmetic needs}{
+The survival function is evaluated as \code{exp(Lval)} and not as \code{1 - F}, which
+keeps the far tail from cancelling. And below the support \eqn{F} is
+identically zero and so is every derivative, while \eqn{L} is still finite
+there and would otherwise give a survival above one; the \code{inside} mask is
+what suppresses that.
+}
+
+\section{Notation}{
+
+\eqn{F} is the distribution function, \eqn{S = 1 - F} the survival function,
+\eqn{L = \log S} and \eqn{B_I} the complete Bell polynomial.
+}
+
 \seealso{
-\code{\link[=bell_f_ratio]{bell_f_ratio()}}
+\code{\link[=register_surv_cdf]{register_surv_cdf()}}, which turns a pieces function into the four
+methods; \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the partition sum;
+\code{\link[=gpd_surv_pieces]{gpd_surv_pieces()}} for the most involved of the three families.
 }
 \keyword{internal}

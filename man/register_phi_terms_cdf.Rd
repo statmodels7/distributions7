@@ -2,20 +2,34 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{register_phi_terms_cdf}
 \alias{register_phi_terms_cdf}
-\title{Register the Four CDF Derivative Orders of a Normal-Tail Family}
+\title{Register All Four CDF Orders on a Sum of Normal Tails}
 \usage{
 register_phi_terms_cdf(cls, term_fn)
 }
 \arguments{
-\item{cls}{The S7 class.}
+\item{cls}{The S7 class to register on.}
 
-\item{term_fn}{A function of \verb{(distrib, q, theta)} returning the term
-list \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} consumes.}
+\item{term_fn}{A function of \verb{(distrib, q, theta)} returning the list of
+terms \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} documents.}
 }
 \value{
-Invisibly \code{NULL}; called for the registration.
+Invisibly \code{NULL}. Called for the registration.
 }
 \description{
-Turns a function returning the terms into the four methods.
+Turns one term function into the four S7 methods a family of the shape
+\eqn{F = c_0 + \sum_k s_k e^{w_k}\Phi(x_k)} needs, so that the family states
+its terms once instead of four times. The inverse Gaussian and the elastic
+net are the two families registered through it.
+}
+\details{
+All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
+families take the closed route from the first order up and never reach a
+stencil. \code{force(o)} inside the factory is what keeps the four registrations
+from sharing one order.
+}
+\seealso{
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, the body it registers;
+\code{\link[=distrib_grad_cdf.InvGauss1Distrib]{distrib_grad_cdf.InvGauss1Distrib()}} and
+\code{\link[=distrib_grad_cdf.EnetDistrib]{distrib_grad_cdf.EnetDistrib()}}, the two families.
 }
 \keyword{internal}

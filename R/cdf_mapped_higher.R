@@ -149,8 +149,8 @@ mapped_cdf_deriv_k <- function(distrib, parent, th_par, maps, q, theta, order,
 #' @param th_fn A function of `theta` returning the parent's parameters.
 #' @param md_fn A function of `theta` returning the map's keyed partial tables.
 #' @param q_fn The transformation of the response, for a parent that is the
-#'   same law on a transformed scale. [identity()] by default, and `log` for
-#'   the lognormal.
+#'   same law on a transformed scale. `identity` by default, and `log` for the
+#'   lognormal.
 #' @param orders An integer vector of the orders to register, `3:4` by default.
 #'   A family whose written-out route stops below the fourth order takes the
 #'   rest here.

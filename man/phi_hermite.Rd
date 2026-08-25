@@ -7,16 +7,34 @@
 phi_hermite(x, m)
 }
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{A numeric vector of arguments.}
 
-\item{m}{The order, 1 to 4.}
+\item{m}{The order, 1 to 4. Any other value returns \code{NULL}, \code{switch()}
+falling through; no caller passes one.}
 }
 \value{
-A numeric vector.
+A numeric vector the length of \code{x}, the polynomial factor alone.
+Multiply by \code{dnorm(x)} for the derivative itself.
 }
 \description{
-Returns the factor \eqn{h_m} in
-\eqn{\Phi^{(m)}(x) = h_m(x)\varphi(x)} for \eqn{m = 1, \ldots, 4}, the
-Hermite polynomials.
+Returns the factor \eqn{h_m} in \eqn{\Phi^{(m)}(x) = h_m(x)\,\varphi(x)} for
+\eqn{m = 1, \ldots, 4}: \eqn{1}, \eqn{-x}, \eqn{x^2 - 1} and
+\eqn{3x - x^3}. These are the probabilists' Hermite polynomials up to a
+sign, and factoring the density out of them is what keeps the tails
+evaluable: \eqn{\varphi} is supplied by the caller and multiplied in once.
+}
+\section{Notation}{
+
+\eqn{\Phi} is the standard normal distribution function and \eqn{\varphi}
+its density.
+}
+
+\examples{
+# The first derivative of Phi is the density itself, so h1 is 1.
+all.equal(distributions7:::phi_hermite(0.5, 1) * dnorm(0.5), dnorm(0.5))
+
+}
+\seealso{
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, the one consumer.
 }
 \keyword{internal}

@@ -7,28 +7,47 @@
 gpd_surv_pieces(distrib, q, theta)
 }
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} (positive) and \code{xi} (any
+real value), each a numeric vector of length 1 or \code{n}.}
 }
 \value{
-A list with \code{Lval}, \code{Lderiv} and \code{inside}.
+A list with \code{Lval} (a numeric vector), \code{Lderiv} (a function of a
+block of parameter names) and \code{inside} (a logical vector).
 }
 \description{
 Returns \eqn{L = \log(1-F)} and an evaluator of its partial derivatives in
-\eqn{(\sigma, \xi)}.
+\eqn{(\sigma, \xi)}, in the form \code{\link[=register_surv_cdf]{register_surv_cdf()}} wants. Writing
+\eqn{L = -z\,\Lambda(u)} with \eqn{z = q/\sigma} and \eqn{u = \xi z} is what
+keeps every division by the shape out of the expression.
 }
-\details{
-\eqn{L = -z\,\Lambda(u)} with \eqn{z = q/\sigma} and \eqn{u = \xi z}. The
-scale enters \eqn{z} as a plain reciprocal and \eqn{u} is bilinear in the
-shape and \eqn{z}, so a block naming the shape twice contributes nothing to
-\eqn{u}; the partials of \eqn{\Lambda(u)} follow by Faa di Bruno over that,
-and the product with \eqn{z} by Leibniz over the scale indices alone, the
-shape not entering \eqn{z}.
+\section{How the partials split}{
+The scale enters \eqn{z} as a plain reciprocal, and \eqn{u} is bilinear in
+the shape and \eqn{z}, so a block naming the shape twice contributes nothing
+to \eqn{u}. The partials of \eqn{\Lambda(u)} follow by Faa di Bruno over
+that, and the product with \eqn{z} by Leibniz over the scale indices alone,
+the shape not entering \eqn{z}.
 }
+
+\section{The support}{
+A negative shape bounds the support above, at \eqn{u = -1}, so the mask is
+\code{q > 0 & u > -1} and is supplied here, the family's fixed bounds being
+unable to see it. Past the upper endpoint every derivative of \eqn{F} is
+exactly zero.
+}
+
+\section{Notation}{
+
+\eqn{\sigma > 0} is the scale, \eqn{\xi} the shape of either sign,
+\eqn{z = q/\sigma}, \eqn{u = \xi z} and \eqn{\Lambda(u) = \log(1+u)/u}.
+}
+
 \seealso{
-\code{\link[=gpd_lambda_derivs]{gpd_lambda_derivs()}}, \code{\link[=register_surv_cdf]{register_surv_cdf()}}
+\code{\link[=gpd_lambda_derivs]{gpd_lambda_derivs()}} for the univariate function;
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} and \code{\link[=register_surv_cdf]{register_surv_cdf()}};
+\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf.GPDDistrib()}} for the family page.
 }
 \keyword{internal}

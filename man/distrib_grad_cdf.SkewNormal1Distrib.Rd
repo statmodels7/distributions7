@@ -4,31 +4,84 @@
 \alias{distrib_grad_cdf.SkewNormal1Distrib}
 \title{Skew Normal Log-CDF Derivatives}
 \arguments{
-\item{distrib}{A \code{SkewNormal1Distrib} object.}
+\item{distrib}{A \code{SkewNormal1Distrib} object, from \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{sigma} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{sigma} (positive) and
+\code{alpha} (any sign), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list of numeric vectors of the order the generic asked for,
+keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: three
+components for the gradient, six for the Hessian, ten at order 3 and
+fifteen at order 4.
 }
 \description{
-Closed form at every order, in the shape as well as in the location and the
-scale. With \eqn{z = (q-\mu)/\sigma} the distribution function is
-\eqn{\Phi(z) - 2T(z, \alpha)}, and Owen's \eqn{T} has elementary partial
-derivatives, so the integral in its definition is differentiated away at the
-first order and never has to be differentiated again. The location and the
-scale then enter only through \eqn{z}, by the same chain rule the other
-location-scale families use.
+Closed form at every order from one to four, in the shape as well as in the
+location and the scale. With \eqn{z = (q-\mu)/\sigma} the distribution
+function is \eqn{\Phi(z) - 2T(z,\alpha)}, and Owen's \eqn{T} has elementary
+partial derivatives in both arguments, so the integral in its definition is
+differentiated away at the first order and never has to be differentiated
+again. The location and the scale then enter only through \eqn{z}, by the
+same chain rule the other location-scale families use.
+}
+\section{What it is worth}{
+Against a product stencil on the same cdf, at \eqn{\mu = 0.3},
+\eqn{\sigma = 1.2}, \eqn{\alpha = 2}: \eqn{3.6\times10^{-9}} at order 1,
+\eqn{2.1\times10^{-6}} at order 2, \eqn{9.5\times10^{-5}} at order 3 and
+\eqn{3.8\times10^{-4}} at order 4.
+}
+
+\section{The family this leaves behind}{
+The skew normal used to be grouped with the Student t and the pseudo-Huber,
+whose shape components are differenced. It is not any more, and the reason
+is the elementary partials above: only the skew t still differences a shape
+here, its degrees of freedom entering through a Student t distribution
+function.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\sigma > 0} the scale, \eqn{\alpha} the
+shape, \eqn{z = (q-\mu)/\sigma}, \eqn{\Phi} the standard normal distribution
+function and \eqn{T} Owen's T.
+}
+
+\examples{
+d <- skewnormal1_distrib()
+q <- c(-1, 0.5, 2)
+th <- list(mu = 0.3, sigma = 1.2, alpha = 2)
+
+# The location component is exact, the density itself.
+all.equal(distrib_grad_cdf(d, q, th, log = FALSE)$mu,
+          -distrib_pdf(d, q, th))
+
+# At shape zero the family is Gaussian, and so are its cdf derivatives.
+g0 <- distrib_grad_cdf(d, q, list(mu = 0.3, sigma = 1.2, alpha = 0),
+                       log = FALSE)
+gg <- distrib_grad_cdf(gaussian1_distrib(), q, list(mu = 0.3, sigma = 1.2),
+                       log = FALSE)
+max(abs(g0$mu - gg$mu))
+
+# Three, six, ten and fifteen components as the order rises.
+lengths(list(distrib_grad_cdf(d, q, th),
+             distrib_hess_cdf(d, q, th),
+             distrib_deriv3_cdf(d, q, th),
+             distrib_deriv4_cdf(d, q, th)))
+
 }
 \seealso{
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}
+\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}} and \code{\link[=sn_cdf_deriv_k]{sn_cdf_deriv_k()}} for the construction;
+\code{\link[=distrib_grad_cdf.SkewTDistrib]{distrib_grad_cdf.SkewTDistrib()}}, which does difference its shape;
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}.
 }
 \keyword{internal}

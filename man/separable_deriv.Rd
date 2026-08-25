@@ -7,17 +7,37 @@
 separable_deriv(nm, uderiv, vderiv)
 }
 \arguments{
-\item{nm}{The two parameter names, in order.}
+\item{nm}{A character vector of length 2, the two parameter names, the one
+\code{uderiv} differentiates first.}
 
-\item{uderiv}{A function of the order returning \eqn{U^{(j)}}.}
+\item{uderiv}{A function of a non-negative whole number \eqn{j} returning
+\eqn{\partial^j u/\partial\theta_1^j}.}
 
-\item{vderiv}{A function of the order returning \eqn{V^{(k)}}.}
+\item{vderiv}{The same for \eqn{v} in the second parameter.}
 }
 \value{
-A function of a character vector of parameter names.
+A function of a block, a character vector of parameter names, that
+returns the corresponding mixed partial. A block naming a parameter
+outside \code{nm} gives the order-zero factor for both, which is the value
+itself; no caller does that.
 }
 \description{
-Builds the evaluator for a quantity \eqn{U(\mu)V(\phi)}, whose mixed partial
-is the product of the two one-variable derivatives.
+Builds the \code{wderiv} or \code{xderiv} callback \code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} wants,
+for a quantity that factorizes as \eqn{u(\theta_1)\,v(\theta_2)}. A mixed
+partial of such a product is the product of two one-variable derivatives,
+so a block of parameter names is answered by counting how many of each it
+holds.
+}
+\details{
+Both families this file serves are separable in exactly this way. The
+inverse Gaussian's \eqn{a}, \eqn{b} and \eqn{c} are each a function of the
+mean times a function of the dispersion; the elastic net's \eqn{s} and
+\eqn{x} are each a function of \eqn{\lambda} times a function of
+\eqn{\alpha}. Separability is why four orders are cheap here: no
+multivariate expansion is ever formed.
+}
+\seealso{
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}}, whose \code{wderiv} and \code{xderiv} this builds;
+\code{\link[=dpow_affine]{dpow_affine()}} for the other shape.
 }
 \keyword{internal}

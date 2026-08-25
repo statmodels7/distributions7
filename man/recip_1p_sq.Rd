@@ -7,15 +7,28 @@
 recip_1p_sq(a, j)
 }
 \arguments{
-\item{a}{A numeric vector.}
+\item{a}{A numeric vector, the shape.}
 
-\item{j}{The order, 0 to 3.}
+\item{j}{The order, 0 to 3. Any other value returns \code{NULL}, \code{switch()}
+falling through; three is the highest the fourth-order cdf derivative
+needs.}
 }
 \value{
-A numeric vector.
+A numeric vector the length of \code{a}.
 }
 \description{
-Returns \eqn{d^{j}/da^{j}\,(1+a^{2})^{-1}} for \eqn{j = 0, \ldots, 3}, the
-factor the skew normal's shape derivative carries.
+Returns \eqn{\partial^j (1+a^2)^{-1}/\partial a^j} for \eqn{j = 0, \ldots, 3}:
+\eqn{(1+a^2)^{-1}}, \eqn{-2a(1+a^2)^{-2}}, \eqn{(6a^2-2)(1+a^2)^{-3}} and
+\eqn{24a(1-a^2)(1+a^2)^{-4}}. This is the factor the skew normal's shape
+derivative carries, and writing it out saves a Faa di Bruno pass over a
+quantity whose derivatives are four short expressions.
+}
+\examples{
+# The first derivative at a = 2 is -2a / (1 + a^2)^2 = -0.16.
+distributions7:::recip_1p_sq(2, 1)
+
+}
+\seealso{
+\code{\link[=sn_cdf_std_derivs]{sn_cdf_std_derivs()}}, the one consumer.
 }
 \keyword{internal}

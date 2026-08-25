@@ -2,24 +2,38 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{dpow_affine}
 \alias{dpow_affine}
-\title{Derivatives of a Power of an Affine Argument}
+\title{Derivatives of a Power of an Affine Function}
 \usage{
 dpow_affine(u, p, k, inner)
 }
 \arguments{
-\item{u}{The base, already evaluated.}
+\item{u}{A numeric vector, the affine function evaluated at the parameter.}
 
-\item{p}{The exponent.}
+\item{p}{The power, a single number, not necessarily a whole one.}
 
-\item{k}{The derivative order.}
+\item{k}{The derivative order, a non-negative whole number. Zero returns
+\eqn{u^p} itself.}
 
-\item{inner}{The derivative of the base in the variable, 1 or -1.}
+\item{inner}{The slope of the affine function, a single number or a numeric
+vector recyclable against \code{u}.}
 }
 \value{
-A numeric vector.
+A numeric vector the length of \code{u}.
 }
 \description{
-Returns \eqn{d^{k}u^{p}/dv^{k}} for \eqn{u = v} or \eqn{u = 1 - v}, the two
-shapes the elastic net's scale and its argument are built from.
+Returns \eqn{\partial^k u^p/\partial\theta^k} where \eqn{u} is affine in
+\eqn{\theta} with slope \code{inner}, which is
+\eqn{(\mathrm{inner})^k\,p(p-1)\cdots(p-k+1)\,u^{p-k}}. The elastic net's
+tail arguments are powers of affine functions of its two hyperparameters, so
+this supplies their one-variable derivatives to \code{\link[=separable_deriv]{separable_deriv()}}.
+}
+\examples{
+# The second derivative of (2 theta)^3 at theta = 1 is 8 * 3 * 2 * 2 = 24.
+distributions7:::dpow_affine(u = 2, p = 3, k = 2, inner = 2)
+
+}
+\seealso{
+\code{\link[=separable_deriv]{separable_deriv()}}, which combines two of these;
+\code{\link[=distrib_grad_cdf.EnetDistrib]{distrib_grad_cdf.EnetDistrib()}}, the consumer.
 }
 \keyword{internal}

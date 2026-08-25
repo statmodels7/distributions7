@@ -7,16 +7,35 @@
 register_surv_cdf(cls, pieces)
 }
 \arguments{
-\item{cls}{The S7 class.}
+\item{cls}{The S7 class to register on.}
 
 \item{pieces}{A function of \verb{(distrib, q, theta)} returning a list with
-\code{Lval} and \code{Lderiv}.}
+\code{Lval} and \code{Lderiv}, and optionally \code{inside}, as
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}} documents.}
 }
 \value{
-Invisibly \code{NULL}; called for the registration.
+Invisibly \code{NULL}. Called for the registration.
 }
 \description{
-Turns a function returning \eqn{L} and its partial-derivative evaluator into
-the four methods.
+Turns a function returning \eqn{L = \log(1-F)} and its partial-derivative
+evaluator into the four S7 methods, so that a family states its survival
+function once instead of four times. Three families are registered through
+it: the exponential, the Weibull and the generalized Pareto.
+}
+\details{
+All four orders are registered, \code{\link[=distrib_grad_cdf]{distrib_grad_cdf()}} included, so these
+families take the closed route from the first order up. Where the upper tail
+is asked for on the natural scale the derivatives of \eqn{S} are returned
+directly, \eqn{\partial^I S = -\partial^I F}, which is the one case where
+the survival function is the quantity the construction produces first.
+
+\code{force(o)} inside the factory is what keeps the four registrations from
+sharing one order.
+}
+\seealso{
+\code{\link[=surv_cdf_deriv_k]{surv_cdf_deriv_k()}}, the body it registers;
+\code{\link[=distrib_grad_cdf.ExponentialDistrib]{distrib_grad_cdf.ExponentialDistrib()}},
+\code{\link[=distrib_grad_cdf.Weibull1Distrib]{distrib_grad_cdf.Weibull1Distrib()}} and
+\code{\link[=distrib_grad_cdf.GPDDistrib]{distrib_grad_cdf.GPDDistrib()}}, the three families.
 }
 \keyword{internal}

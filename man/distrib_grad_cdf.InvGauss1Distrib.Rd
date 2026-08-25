@@ -2,35 +2,87 @@
 % Please edit documentation in R/cdf_normal_higher.R
 \name{distrib_grad_cdf.InvGauss1Distrib}
 \alias{distrib_grad_cdf.InvGauss1Distrib}
-\title{Inverse-Gaussian Log-CDF Derivatives}
+\title{Inverse Gaussian Log-CDF Derivatives}
 \arguments{
-\item{distrib}{An \code{InvGauss1Distrib} object.}
+\item{distrib}{An \code{InvGauss1Distrib} object, from \code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles, positive.}
 
-\item{theta}{A list containing \code{mu} and \code{phi}.}
+\item{theta}{A named list with components \code{mu} (positive) and \code{phi}
+(positive), each a numeric vector of length 1 or \code{n}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), the lower tail.}
+\item{lower.tail}{Is the lower tail wanted? A single logical, \code{TRUE} by
+default.}
 
-\item{log}{Logical; if \code{TRUE} (default), derivatives of the log probability.}
+\item{log}{Are derivatives of the log probability wanted? A single logical,
+\code{TRUE} by default.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one vector per component.
+A named list of numeric vectors of the order the generic asked for,
+keyed as \code{\link[=deriv_names]{deriv_names(distrib@params, order)}}: two
+components for the gradient, three for the Hessian, four at order 3 and
+five at order 4.
 }
 \description{
-Closed form at every order. The distribution function is
-\eqn{\Phi(a) + e^{c}\Phi(b)} with
-\eqn{a = (q/\mu - 1)/\sqrt{\phi q}}, \eqn{b = -(q/\mu + 1)/\sqrt{\phi q}}
-and \eqn{c = 2/(\phi\mu)}. Each of the three is a product of a function of
-the mean and a function of the dispersion, so its mixed partial derivatives
-are products of one-variable ones, and the two terms are then a Leibniz
-split between the weight and the tail. The weight and the tail are combined
-on the log scale: \eqn{e^{c}} overflows exactly where \eqn{\Phi(b)}
-underflows.
+Closed form at every order from one to four. Unusually for a positive
+family, the inverse Gaussian's distribution function is elementary,
+\deqn{F(q) = \Phi(a) + e^{c}\,\Phi(b), \qquad
+      a = \frac{q/\mu - 1}{\sqrt{\phi q}}, \quad
+      b = -\frac{q/\mu + 1}{\sqrt{\phi q}}, \quad
+      c = \frac{2}{\phi\mu},}
+so it can simply be differentiated. This page's four registrations are made
+together by \code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}.
+}
+\section{Why four orders are cheap here}{
+Each of \eqn{a}, \eqn{b} and \eqn{c} is a product of a function of the mean
+and a function of the dispersion, so every mixed partial is a product of two
+one-variable derivatives and no multivariate expansion is formed. The two
+terms are then a Leibniz split between the weight and the tail, which
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} runs on the package's own partition enumeration.
+}
+
+\section{The overflow, and how it is avoided}{
+\eqn{e^{c}} is \code{Inf} at ordinary settings: the exponent is 2000 at
+\eqn{\mu = 0.01}, \eqn{\phi = 0.1}. That is exactly where \eqn{\Phi(b)}
+underflows, so the product is finite and neither factor is. The weight and
+the tail are combined as \code{exp(c + pnorm(b, log.p = TRUE))}, and at that
+setting the gradient comes back at \eqn{3\times10^{-106}} and the fourth
+derivative at \eqn{3\times10^{-91}}.
+}
+
+\section{What the closed route is worth}{
+Against a product stencil on the same cdf: \eqn{1.0\times10^{-10}} at order
+1, \eqn{8.8\times10^{-7}} at order 2, \eqn{1.8\times10^{-5}} at order 3 and
+\eqn{3.7\times10^{-4}} at order 4. The gap is the stencil's error, and it is
+the reason the family registers all four.
+}
+
+\section{Notation}{
+
+\eqn{\mu > 0} is the mean, \eqn{\phi > 0} the dispersion, \eqn{\Phi} the
+standard normal distribution function and \eqn{F} the inverse Gaussian's.
+}
+
+\examples{
+d <- invgauss1_distrib()
+q <- c(0.5, 2, 5)
+th <- list(mu = 2, phi = 0.5)
+
+# Against a central difference of the cdf, which shares no arithmetic.
+fd <- numerical_cdf_deriv(d, q, th, order = 1)
+max(abs(unlist(distrib_grad_cdf(d, q, th, log = FALSE)) / unlist(fd) - 1))
+
+# Finite where the weight alone is not: exp(2 / (phi mu)) is Inf here.
+exp(2 / (0.01 * 0.1))
+distrib_grad_cdf(d, 0.02, list(mu = 0.01, phi = 0.1), log = FALSE)
+
 }
 \seealso{
-\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}
+\code{\link[=phi_terms_cdf_deriv_k]{phi_terms_cdf_deriv_k()}} for the construction;
+\code{\link[=register_phi_terms_cdf]{register_phi_terms_cdf()}}, which makes the four registrations;
+\code{\link[=distrib_grad_cdf.EnetDistrib]{distrib_grad_cdf.EnetDistrib()}}, the other family of this shape;
+\code{\link[=invgauss1_distrib]{invgauss1_distrib()}}.
 }
 \keyword{internal}
