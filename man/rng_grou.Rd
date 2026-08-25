@@ -14,8 +14,8 @@ rng_grou(distrib, n, theta, r = 2)
 \item{theta}{A named list of parameters, each of length one.}
 
 \item{r}{Numeric tuning parameter of the transformation power, default \code{2}.
-\code{r = 1} is the classical Ratio-of-Uniforms; larger values enclose
-heavier tails (\code{r = 2} keeps the acceptance region bounded for tails as
+\code{r=1} is the classical Ratio-of-Uniforms; larger values enclose
+heavier tails (\code{r=2} keeps the acceptance region bounded for tails as
 heavy as the Cauchy's, which is why it is the default).}
 }
 \value{
@@ -101,7 +101,7 @@ The kernel must be unimodal and the parameters in \code{theta} must be scalars.
 Densities that diverge at one or at both edges of their support are handled by
 the reparametrizations described below.
 
-Heavy tails are not an obstacle: with the default \code{r = 2} the sampler
+Heavy tails are not an obstacle: with the default \code{r=2} the sampler
 handles a Student's t with half a degree of freedom and a Pareto with infinite
 mean, and multimodal densities are usually accepted as well.
 }

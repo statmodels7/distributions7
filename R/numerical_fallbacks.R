@@ -307,8 +307,8 @@ has_analytic_quantile <- function(distrib) {
 #' @param n Number of observations to generate.
 #' @param theta A named list of parameters, each of length one.
 #' @param r Numeric tuning parameter of the transformation power, default `2`.
-#'   `r = 1` is the classical Ratio-of-Uniforms; larger values enclose
-#'   heavier tails (`r = 2` keeps the acceptance region bounded for tails as
+#'   `r=1` is the classical Ratio-of-Uniforms; larger values enclose
+#'   heavier tails (`r=2` keeps the acceptance region bounded for tails as
 #'   heavy as the Cauchy's, which is why it is the default).
 #'
 #' @details
@@ -382,7 +382,7 @@ has_analytic_quantile <- function(distrib) {
 #' Densities that diverge at one or at both edges of their support are handled by
 #' the reparametrizations described below.
 #'
-#' Heavy tails are not an obstacle: with the default `r = 2` the sampler
+#' Heavy tails are not an obstacle: with the default `r=2` the sampler
 #' handles a Student's t with half a degree of freedom and a Pareto with infinite
 #' mean, and multimodal densities are usually accepted as well.
 #'
