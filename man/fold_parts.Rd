@@ -7,27 +7,55 @@
 fold_parts(parent, x, theta)
 }
 \arguments{
-\item{parent}{The wrapped distribution.}
+\item{parent}{The wrapped \code{continuous_distrib} object.}
 
-\item{x}{A numeric vector of folded observations.}
+\item{x}{A numeric vector of points at which to evaluate. Negative values
+are not screened out here; the calling method zeroes them.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A list with \code{fp}, \code{fm}, \code{L} and \code{w}.
+A named list of four numeric vectors of the recycled length: \code{fp}
+and \code{fm}, the parent's density at \eqn{+x} and \eqn{-x}; \code{L}, their sum;
+and \code{w}, the ratio \code{fp / L}.
 }
 \description{
-The parent's density at \eqn{+x} and at \eqn{-x}, their sum, and the weight
-\eqn{w = f(x)/L} the first carries.
+Computes the parent's density at \eqn{+x} and at \eqn{-x}, their sum, and
+the weight \eqn{w = f(x)/L(x)} of the positive preimage. Every method of
+\link{FoldedDistrib} needs the same four quantities, so they are formed once per
+call: the density is \eqn{L}, the score is \eqn{w s(x) + (1-w) s(-x)}, and
+every higher-order ratio is a \eqn{w}-weighted average of the parent's own.
 }
 \details{
-Every method of \code{\link[=FoldedDistrib]{FoldedDistrib()}} needs the same four quantities,
-and computing them once keeps the parent's density from being evaluated
-twice per call. Points outside the folded support contribute nothing and are
-returned with a zero density rather than being dropped, so that the result
-aligns with the input.
+At \eqn{x = 0} the two preimages coincide, so \eqn{w = 1/2} whatever the
+parameters are and the folded density is exactly twice the parent's. Far out
+in the tail of a parent centered above zero, \eqn{w} approaches one and the
+fold becomes invisible.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{w} the weight
+of the positive preimage and \eqn{s} the parent's score.
+}
+
+\examples{
+g <- gaussian1_distrib()
+theta <- list(mu = 0.5, sigma = 1.2)
+p <- distributions7:::fold_parts(g, c(0, 1, 3), theta)
+str(p)
+
+# L is the sum of the two preimages, which is the folded density.
+all.equal(p$L, dnorm(c(0, 1, 3), 0.5, 1.2) + dnorm(-c(0, 1, 3), 0.5, 1.2))
+
+# At zero the two preimages coincide, so the weight is exactly one half.
+p$w[1]
+
+# And far into the tail the fold becomes invisible: w approaches one.
+distributions7:::fold_parts(g, c(3, 6, 12), theta)$w
+
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=fold_ratio]{fold_ratio()}} for the higher-order quantities built on these, and
+\code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf.FoldedDistrib()}} for the first consumer.
 }
 \keyword{internal}

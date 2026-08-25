@@ -4,22 +4,51 @@
 \alias{distrib_grad_y.FoldedDistrib}
 \title{Folded Response Gradient}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial x} = w\, g(x) - (1-w)\, g(-x)}
-with \eqn{g = \partial \log f/\partial y}. The minus sign is the chain rule
-through the reflected preimage.
+Computes the derivative of the folded log-density in the response,
+\deqn{\frac{\partial \ell}{\partial x} = w\, g(x) - (1-w)\, g(-x),}
+with \eqn{g = \partial\log f/\partial y} the parent's own response gradient
+and \eqn{w} the weight of the positive preimage. The MINUS sign is the chain
+rule through the reflected preimage: moving \eqn{x} up moves \eqn{-x} down.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{g} its response gradient, \eqn{w} the
+weight of the positive preimage and \eqn{\ell} the folded log-density.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+y <- c(0.2, 1, 3)
+
+distrib_grad_y(d, y, theta)
+
+# Against a numerical derivative of the folded log-density.
+vapply(y, function(v)
+  numDeriv::grad(function(z) distrib_pdf(d, z, theta, log = TRUE), v),
+  numeric(1))
+
+# The minus sign written out: the reflected preimage pushes the other way.
+g0 <- gaussian1_distrib()
+w <- distributions7:::fold_parts(g0, y, theta)$w
+all.equal(distrib_grad_y(d, y, theta),
+          w * distrib_grad_y(g0, y, theta) -
+            (1 - w) * distrib_grad_y(g0, -y, theta))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_hess_y.FoldedDistrib]{distrib_hess_y.FoldedDistrib()}} for the second order,
+\code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient.FoldedDistrib()}} for the derivatives in the parameters,
+and \code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

@@ -7,29 +7,39 @@
 declares_atoms(parent)
 }
 \arguments{
-\item{parent}{A distribution object.}
+\item{parent}{A \code{distrib} object.}
 }
 \value{
-A single logical.
+\code{TRUE} when \code{\link[=distrib_atoms]{distrib_atoms()}} is registered on a class strictly
+below \code{distrib}, \code{FALSE} when the method comes from the base class or is
+absent.
 }
 \description{
-Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for
-itself rather than inheriting the base class's empty answer.
+Answers whether a distribution registers \code{\link[=distrib_atoms]{distrib_atoms()}} for itself, which
+is how \code{\link[=folded]{folded()}} decides that a parent carries a point mass and must be
+rejected. The question is asked of the CLASS the method is registered on,
+not of a value: a distribution with an atom declares one at every parameter
+setting, and a value taken at one setting could be empty by accident.
 }
 \details{
-The question is asked of the class rather than of a value, since a
-constructor has no \code{theta} to evaluate the generic at, and the answer
-is structural in any case. The class a method was registered on is what
-settles it: \code{identical()} on the method object would not, S7 wrapping
-it.
+The argument is named \code{parent} deliberately. The base class of this package
+is called \code{distrib}, and an argument of that name would shadow it: the
+comparison meant for the base class would then be against the object. That
+defect has been met before in this package and is avoided by naming.
+}
+\examples{
+# A plain gaussian declares none.
+distributions7:::declares_atoms(gaussian1_distrib())
 
-The argument is named \code{parent} deliberately. The base class of this
-package is called \code{distrib}, so an argument of that name would shadow
-it and the comparison below would test the class against the distribution
-object instead -- answering \code{TRUE} for every family, which is exactly
-what it did before this helper existed.
+# A zero-adjusted continuous parent is a mixed distribution and does.
+distributions7:::declares_atoms(zero_adjusted(gaussian1_distrib()))
+
+# Which is why folded() rejects the second by name.
+try(folded(zero_adjusted(gaussian1_distrib())))
+
 }
 \seealso{
-\code{\link[=folded]{folded()}}, \code{\link[=distrib_atoms]{distrib_atoms()}}
+\code{\link[=distrib_atoms]{distrib_atoms()}} for the generic, \code{\link[=folded]{folded()}}, which consults this,
+and \code{\link[=zero_adjusted]{zero_adjusted()}}, which produces a parent it rejects.
 }
 \keyword{internal}

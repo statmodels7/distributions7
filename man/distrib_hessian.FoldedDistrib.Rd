@@ -2,26 +2,68 @@
 % Please edit documentation in R/folded.R
 \name{distrib_hessian.FoldedDistrib}
 \alias{distrib_hessian.FoldedDistrib}
-\title{Folded Analytical Observed Hessian}
+\title{Folded Observed Hessian}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one component per pair of parameters.
+A named list of numeric vectors, one per unordered pair of
+parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
 }
 \description{
-The moment-to-cumulant relation applied to the ratios
-\eqn{d^B L / L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))}, which at
-second order is the familiar mixture Hessian.
+Computes the second derivatives of the folded log-density by the
+moment-to-cumulant relation applied to the block ratios
+\deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
+  + (1-w) \frac{d^B f(-x)}{f(-x)},}
+which at second order is the familiar mixture Hessian: the weighted average
+of the two components' second-order ratios, less the square of the weighted
+average of their first-order ones.
+}
+\details{
+No formula is written out for the fold. \code{\link[=fold_ratio]{fold_ratio()}} supplies the ratios
+and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L}, the same two
+functions the third and fourth orders use. Each ratio is a complete Bell
+polynomial in the parent's own log-derivatives, so a parent with closed
+forms gives the folded family closed forms.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{B} a multiset
+of parameter names, \eqn{w} the weight of the positive preimage and
+\eqn{\ell} the folded log-density.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+set.seed(2)
+y <- distrib_rng(d, 30, theta)
+
+H <- distrib_hessian(d, y, theta)
+vapply(H, sum, numeric(1))
+
+# Against a numerical Hessian of the folded log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient.FoldedDistrib()}} for the first order,
+\code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}} for the third, \code{\link[=fold_ratio]{fold_ratio()}} for the
+ratios, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

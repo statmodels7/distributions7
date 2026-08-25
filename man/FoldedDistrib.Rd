@@ -18,50 +18,63 @@ FoldedDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
-
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
-
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
-
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
 \item{parent_distrib}{The wrapped \code{continuous_distrib} object.}
+
+\item{...}{The properties of the parent \code{distrib} class, listed under Value.}
 }
 \value{
-An object of class \code{FoldedDistrib}.
+An S7 object of class \code{FoldedDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. It carries \code{parent_distrib}
+beside the parent's \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params} and
+\code{params_smooth}. For an object built by \code{\link[=folded]{folded()}} the parameters are the
+wrapped family's, \code{bounds} becomes \verb{c(0, max(abs(parent bounds)))}, and
+\code{distrib_name} is \code{"folded "} followed by the parent's.
 }
 \description{
-A subclass of \code{continuous_distrib} representing the distribution of
-\eqn{|Y|} when \eqn{Y} follows the wrapped distribution.
+The S7 class of the distribution of \eqn{|Y|} when \eqn{Y} follows the
+wrapped continuous distribution, with density
+\deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
+the two preimages of \eqn{x} added together. It inherits from
+\code{continuous_distrib} and carries the SAME parameters as its parent: folding
+adds none and removes none.
+
+Build one with \code{\link[=folded]{folded()}}, which checks that the parent reaches below zero
+and carries no atom. This page documents the raw S7 constructor, which
+validates neither.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
 \code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf()}},
 \code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3()}},
 \code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4()}},
-\code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient()}},
 \code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian()}},
+\code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hess_y.FoldedDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf()}},
 \code{\link[=distrib_rng.FoldedDistrib]{distrib_rng()}}
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, whose
-numerical quantile inverts the exact folded distribution function.
+Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}, whose numerical
+quantile inverts the exact folded distribution function above.
 }
 
+\examples{
+d <- folded(gaussian1_distrib())
+S7::S7_inherits(d, continuous_distrib)
+
+# The parameters are the parent's, unchanged, and the support is the
+# non-negative half line.
+d@params
+d@bounds
+d@distrib_name
+
+# The parent is kept, so a method can reach it at both preimages.
+d@parent_distrib@distrib_name
+}
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=folded]{folded()}} to build one, \code{\link[=truncated]{truncated()}} for the other wrapper that
+adds no parameter, and \code{\link[=fixed]{fixed()}}, which with \code{mu = 0} turns a folded
+gaussian into the half-normal.
 }

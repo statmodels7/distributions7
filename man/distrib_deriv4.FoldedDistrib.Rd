@@ -2,31 +2,68 @@
 % Please edit documentation in R/folded.R
 \name{distrib_deriv4.FoldedDistrib}
 \alias{distrib_deriv4.FoldedDistrib}
-\title{Folded Analytical Fourth-Order Derivatives}
+\title{Folded Fourth Derivatives}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation is
+approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{approx}{How the expectation is approximated when requested.}
+\item{approx}{The strategy \code{\link[=expected_derivative]{expected_derivative()}} uses when
+\code{expected = TRUE}. Ignored otherwise.}
 
-\item{nsim}{Monte Carlo sample size.}
+\item{nsim}{The Monte Carlo sample size when \code{approx = "mc"}. Defaults to
+\code{10000}. Ignored otherwise.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of fourth-order components.
+A named list of numeric vectors, keyed and ordered as
+\code{deriv_names(distrib@params, 4)}.
 }
 \description{
-Fourth-order derivatives from the same partition sums as the
-Hessian; see \code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}}.
+Computes every fourth derivative of the folded log-density from the same
+partition sums as \code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}}, one order up: the block
+ratios \eqn{d^B L/L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} handed
+to \code{\link[=log_deriv]{log_deriv()}}. A parent with closed forms to fourth order gives the
+folded family closed forms to fourth order.
+}
+\details{
+With \code{expected = TRUE} the expectation goes to \code{\link[=expected_derivative]{expected_derivative()}},
+which reads \code{approx} and \code{nsim}.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{B} a multiset
+of parameter names and \eqn{w} the weight of the positive preimage.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+set.seed(2)
+y <- distrib_rng(d, 30, theta)
+
+d4 <- distrib_deriv4(d, y, theta)
+length(d4)
+
+# Against one stencil on the analytic third order.
+h <- 1e-4
+tp <- theta; tp$sigma <- tp$sigma + h
+tm <- theta; tm$sigma <- tm$sigma - h
+c(exact = sum(d4[["mu_mu_sigma_sigma"]]),
+  stencil = (sum(distrib_deriv3(d, y, tp)[["mu_mu_sigma"]]) -
+             sum(distrib_deriv3(d, y, tm)[["mu_mu_sigma"]])) / (2 * h))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}} for the order below,
+\code{\link[=fold_deriv_k]{fold_deriv_k()}} for the shared body, and \code{\link[=distrib_deriv4]{distrib_deriv4()}} for the
+generic.
 }

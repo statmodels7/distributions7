@@ -4,24 +4,54 @@
 \alias{distrib_hess_y.FoldedDistrib}
 \title{Folded Response Hessian}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{\dfrac{\partial^2 \ell}{\partial x^2}
+Computes the second derivative of the folded log-density in the response,
+\deqn{\frac{\partial^2 \ell}{\partial x^2}
       = w\left(h(x) + g(x)^2\right) + (1-w)\left(h(-x) + g(-x)^2\right)
-        - \left(w g(x) - (1-w) g(-x)\right)^2}
-with \eqn{g} and \eqn{h} the parent's first and second response
-derivatives.
+        - \left(w g(x) - (1-w) g(-x)\right)^2,}
+with \eqn{g} and \eqn{h} the parent's first and second response derivatives.
+The last term is the square of \code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y.FoldedDistrib()}}'s value, so
+the expression is the mixture's second-order ratio less the square of its
+first: the same moment-to-cumulant step the parameter derivatives take,
+applied in the response.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{g} and \eqn{h} its first and second
+response derivatives, \eqn{w} the weight of the positive preimage and
+\eqn{\ell} the folded log-density.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+y <- c(0.2, 1, 3)
+
+distrib_hess_y(d, y, theta)
+
+# Against a numerical second derivative.
+vapply(y, function(v)
+  numDeriv::hessian(function(z) distrib_pdf(d, z, theta, log = TRUE),
+                    v)[1, 1],
+  numeric(1))
+
+# Far from zero the fold is invisible and the curvature is the parent's,
+# which for a gaussian is -1 / sigma^2.
+c(folded = distrib_hess_y(d, 8, theta), parent = -1 / 1.2^2)
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_grad_y.FoldedDistrib]{distrib_grad_y.FoldedDistrib()}} for the first order,
+\code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}} for the parameter derivatives, and
+\code{\link[=distrib_hess_y]{distrib_hess_y()}} for the generic.
 }

@@ -4,21 +4,64 @@
 \alias{distrib_pdf.FoldedDistrib}
 \title{Folded Density}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. Negative values return \code{0}
+without an error, the folded support being \eqn{[0, \infty)}.}
 
-\item{theta}{A named list of the parent's parameters.}
+\item{theta}{A named list of the PARENT's parameters, each a numeric vector
+of length 1 or of the length of \code{y}. Folding adds and removes nothing.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+The logarithm is taken of the sum, not inside the parent, so it underflows
+where the sum does. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of the recycled length of \code{y} and \code{theta}.
 }
 \description{
-\deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0}
-the two preimages of \eqn{x} under the absolute value added together.
+Computes the folded density
+\deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
+the parent's density at the two preimages of \eqn{x} under the absolute
+value, added together. Below zero the folded variable places no mass, so the
+density is exactly \code{0} and its logarithm \code{-Inf}.
+}
+\details{
+At \eqn{x = 0} the two preimages coincide and the folded density is twice
+the parent's. The addition is what separates a fold from a change of
+variable: the map is two to one, so there is no Jacobian to divide by, and
+\code{\link[=transformer]{transformer()}} cannot express it.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one and \eqn{\theta} the
+parameters shared by both.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+
+distrib_pdf(d, c(0, 0.5, 2), theta)
+
+# Which is the parent's density at the two preimages, added.
+y <- c(0, 0.5, 2)
+all.equal(distrib_pdf(d, y, theta),
+          dnorm(y, 0.5, 1.2) + dnorm(-y, 0.5, 1.2))
+
+# At zero the preimages coincide, so the density is twice the parent's.
+c(folded = distrib_pdf(d, 0, theta), twice = 2 * dnorm(0, 0.5, 1.2))
+
+# Below zero there is no mass.
+distrib_pdf(d, c(-1, -0.1), theta)
+
+# And it integrates to one over the half line.
+integrate(function(z) distrib_pdf(d, z, theta), 0, Inf)$value
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_cdf.FoldedDistrib]{distrib_cdf.FoldedDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.FoldedDistrib]{distrib_gradient.FoldedDistrib()}} for the score, \code{\link[=folded]{folded()}} for the
+family, and \code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

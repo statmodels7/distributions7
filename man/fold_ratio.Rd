@@ -7,34 +7,69 @@
 fold_ratio(parent, x, theta, order, params, w)
 }
 \arguments{
-\item{parent}{The wrapped distribution.}
+\item{parent}{The wrapped \code{continuous_distrib} object.}
 
-\item{x}{A numeric vector of folded observations.}
+\item{x}{A numeric vector of points.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{order}{The highest order needed, 1 to 4.}
+\item{order}{The highest derivative order the caller will ask for, a single
+whole number from 1 to 4. Blocks longer than this are not prepared.}
 
-\item{params}{The parent's parameter names, in declaration order.}
+\item{params}{The parameter names, as \code{distrib@params}.}
 
-\item{w}{The weight of the positive preimage, from
-\code{\link[=fold_parts]{fold_parts()}}.}
+\item{w}{The weight of the positive preimage, from \code{\link[=fold_parts]{fold_parts()}}.}
 }
 \value{
-A function of one block, returning that ratio's vector.
+A function of one character vector, the block, returning a numeric
+vector of the recycled length of \code{x}.
 }
 \description{
-Returns a memoized function giving \eqn{d^B L / L} for any block, which is
-what \code{\link[=log_deriv]{log_deriv()}} consumes.
+Returns a memoized function giving \eqn{d^B L / L} for any block \eqn{B} of
+parameter names. That is what \code{\link[=log_deriv]{log_deriv()}} consumes to assemble a
+derivative of \eqn{\log L} of any order. The ratio is the parent's complete
+Bell polynomial evaluated at each preimage and averaged with the weight
+\eqn{w},
+\deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
+  + (1-w) \frac{d^B f(-x)}{f(-x)}.}
 }
 \details{
-The ratio is the parent's complete Bell polynomial at each preimage,
-weighted by which preimage the point came from:
-\eqn{w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))}. Both parent
-evaluations are fetched once and the result memoized, since a partition sum
-at fourth order asks for the same blocks repeatedly.
+The memoization matters because a partition sum asks for the same block many
+times: at order four the same singleton block appears in most of the
+partitions. Each distinct block costs two evaluations of the parent's
+derivatives, one at \eqn{+x} and one at \eqn{-x}, and no more.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{B} a multiset
+of parameter names, \eqn{d^B} the corresponding partial derivative and
+\eqn{w} the weight of the positive preimage.
+}
+
+\examples{
+g <- gaussian1_distrib()
+theta <- list(mu = 0.5, sigma = 1.2)
+x <- c(0.5, 1, 3)
+w <- distributions7:::fold_parts(g, x, theta)$w
+r <- distributions7:::fold_ratio(g, x, theta, 2L, c("mu", "sigma"), w)
+
+# A singleton block is the weighted average of the parent's own score.
+sp <- distrib_gradient(g, x, theta)$mu
+sm <- distrib_gradient(g, -x, theta)$mu
+all.equal(r("mu"), w * sp + (1 - w) * sm)
+
+# Which at first order IS the folded score, log L having no other term.
+all.equal(r("mu"), distrib_gradient(folded(g), x, theta)$mu)
+
+# A two-element block is the second-order ratio, not the second derivative
+# of the logarithm: the two differ by the square of the first.
+c(ratio = r(c("mu", "mu"))[2],
+  log_second = distrib_hessian(folded(g), x, theta)$mu_mu[2],
+  difference = r(c("mu", "mu"))[2] - r("mu")[2]^2)
+
 }
 \seealso{
-\code{\link[=folded]{folded()}}, \code{\link[=fold_parts]{fold_parts()}}
+\code{\link[=fold_parts]{fold_parts()}} for the weight, \code{\link[=log_deriv]{log_deriv()}} for the partition sum
+this feeds, and \code{\link[=bell_f_ratio]{bell_f_ratio()}} for the parent's own Bell quantity.
 }
 \keyword{internal}

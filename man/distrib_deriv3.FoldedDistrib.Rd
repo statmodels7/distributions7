@@ -2,31 +2,73 @@
 % Please edit documentation in R/folded.R
 \name{distrib_deriv3.FoldedDistrib}
 \alias{distrib_deriv3.FoldedDistrib}
-\title{Folded Analytical Third-Order Derivatives}
+\title{Folded Third Derivatives}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{expected}{Logical; if \code{TRUE}, the expectation is approximated.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation is
+approximated by \code{\link[=expected_derivative]{expected_derivative()}}. Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch.}
 
-\item{approx}{How the expectation is approximated when requested.}
+\item{approx}{The strategy \code{\link[=expected_derivative]{expected_derivative()}} uses when
+\code{expected = TRUE}: one of \code{"integrate"} (the default), \code{"bartlett"},
+\code{"mc"} or \code{"opg"}. Ignored otherwise.}
 
-\item{nsim}{Monte Carlo sample size.}
+\item{nsim}{The Monte Carlo sample size when \code{approx = "mc"}. Defaults to
+\code{10000}. Ignored otherwise.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-order components.
+A named list of numeric vectors, keyed and ordered as
+\code{deriv_names(distrib@params, 3)}.
 }
 \description{
-Third-order derivatives from the same partition sums as the
-Hessian; see \code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}}.
+Computes every third derivative of the folded log-density from the SAME
+partition sums the Hessian uses, one order up. The block ratios are
+\deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
+  + (1-w) \frac{d^B f(-x)}{f(-x)},}
+each term a complete Bell polynomial in the parent's own log-derivatives,
+and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L} by the
+moment-to-cumulant relation. A parent with closed forms to third order gives
+the folded family closed forms to third order.
+}
+\details{
+With \code{expected = TRUE} the expectation goes to \code{\link[=expected_derivative]{expected_derivative()}},
+which reads \code{approx} and \code{nsim}; there is no closed-form expectation for a
+fold in general.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{B} a multiset
+of parameter names and \eqn{w} the weight of the positive preimage.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+set.seed(2)
+y <- distrib_rng(d, 30, theta)
+
+d3 <- distrib_deriv3(d, y, theta)
+names(d3)
+
+# Against one stencil on the analytic Hessian.
+h <- 1e-4
+tp <- theta; tp$sigma <- tp$sigma + h
+tm <- theta; tm$sigma <- tm$sigma - h
+c(exact = sum(d3[["mu_mu_sigma"]]),
+  stencil = (sum(distrib_hessian(d, y, tp)[["mu_mu"]]) -
+             sum(distrib_hessian(d, y, tm)[["mu_mu"]])) / (2 * h))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4.FoldedDistrib()}} for the next order,
+\code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}} for the second, \code{\link[=fold_deriv_k]{fold_deriv_k()}} for the
+shared body, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

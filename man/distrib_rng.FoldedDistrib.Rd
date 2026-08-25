@@ -4,19 +4,40 @@
 \alias{distrib_rng.FoldedDistrib}
 \title{Folded Random Generation}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{The number of draws, a single non-negative whole number.}
 
 \item{theta}{A named list of the parent's parameters.}
 }
 \value{
-A numeric vector of length \code{n}.
+A numeric vector of length \code{n}, every value non-negative.
 }
 \description{
-Draws from the parent and takes the absolute value, which is
-the definition rather than an approximation of it.
+Draws \code{n} values from the parent and takes the absolute value. That is the
+DEFINITION of the folded variable, not an approximation of it, so the draws
+are exact whatever route the parent's own generator takes. They consume
+whatever the parent consumes from R's stream, and are reproducible under
+\code{\link[base:Random]{base::set.seed()}}.
+}
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+
+set.seed(1)
+distrib_rng(d, 5, theta)
+
+# It is the parent's draw with the sign removed, from the same seed.
+set.seed(1)
+abs(distrib_rng(gaussian1_distrib(), 5, theta))
+
+# And a large sample reproduces the folded density.
+set.seed(2)
+big <- distrib_rng(d, 20000, theta)
+c(sampled = mean(big < 1),
+  exact = distrib_cdf(d, 1, theta))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf.FoldedDistrib()}} for the density these are drawn
+from, \code{\link[=folded]{folded()}} for the family, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

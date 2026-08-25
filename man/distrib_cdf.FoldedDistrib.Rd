@@ -4,22 +4,63 @@
 \alias{distrib_cdf.FoldedDistrib}
 \title{Folded Distribution Function}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of quantiles. Values below zero give probability
+\code{0}.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(|Y| \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default,
+probabilities are \eqn{P(|Y| \le q)}; when \code{FALSE} they are
+\eqn{P(|Y| > q)}.}
 
-\item{log.p}{Logical; if \code{TRUE}, probabilities are returned as logarithms.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
+Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of cumulative probabilities.
+A numeric vector of probabilities, in \eqn{[0, 1]}.
 }
 \description{
-\deqn{P(|Y| \le q) = F(q) - F(-q)}
+Computes \eqn{P(|Y| \le q) = F(q) - F(-q)} from the parent's own
+distribution function, exactly and with no quadrature. It is the difference
+of two calls on the parent, clamped to \eqn{[0, 1]} against rounding and set
+to zero below the support.
+}
+\details{
+\code{lower.tail = FALSE} and \code{log.p = TRUE} are formed from the computed
+probability, as \eqn{1 - p} and \eqn{\log p}, not by a separate route
+through the parent. Far into the upper tail that difference cancels, so a
+caller who needs the survival function of a folded distribution to many
+digits should expect the loss the subtraction implies.
+}
+\section{Notation}{
+
+\eqn{F} is the parent's distribution function and \eqn{Y} the parent's
+variable.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+
+q <- c(0, 1, 3)
+distrib_cdf(d, q, theta)
+
+# Which is the difference of the parent's own distribution function.
+all.equal(distrib_cdf(d, q, theta),
+          pnorm(q, 0.5, 1.2) - pnorm(-q, 0.5, 1.2))
+
+# Both tails and the logarithm.
+distrib_cdf(d, 1, theta, lower.tail = FALSE)
+distrib_cdf(d, 1, theta, log.p = TRUE)
+
+# The inherited quantile inverts it, so the round trip closes.
+p <- c(0.1, 0.5, 0.9)
+max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_pdf.FoldedDistrib]{distrib_pdf.FoldedDistrib()}} for the density,
+\code{\link[=distrib_quantile]{distrib_quantile()}}, which the class inherits and which inverts this
+exactly, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }

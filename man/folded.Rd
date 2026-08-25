@@ -7,74 +7,118 @@
 folded(distrib)
 }
 \arguments{
-\item{distrib}{A \code{continuous_distrib} object whose support reaches
-below zero.}
+\item{distrib}{A \code{continuous_distrib} object whose support reaches below
+zero and which declares no atom. A discrete distribution, a distribution
+supported on \eqn{[0, \infty)}, an already folded distribution, and a
+zero-adjusted continuous one are each rejected with an error saying which
+condition failed.}
 }
 \value{
-An S7 object of class \code{\link[=FoldedDistrib]{FoldedDistrib()}}.
+An S7 object of class \link{FoldedDistrib} carrying \code{parent_distrib}. Its
+\code{params}, \code{params_bounds} and \code{link_params} are the parent's unchanged;
+\code{bounds} is \verb{c(0, max(abs(parent bounds)))}; \code{distrib_name} is \code{"folded "}
+followed by the parent's; and \code{params_smooth} is the parent's smoothness.
 }
 \description{
 Wraps a continuous distribution into the distribution of the absolute value
-of its variable.
-}
-\details{
-Folding is not a change of variable. The map \eqn{y \mapsto |y|} is two to
-one and has no inverse, so it cannot be a
-\code{\link[=transformer]{transformer()}}: instead of carrying a density through a Jacobian
-it adds the two preimages,
+of its variable. The result has density
 \deqn{L(x; \theta) = f(x; \theta) + f(-x; \theta), \qquad x \ge 0,}
-with distribution function \eqn{F(x) - F(-x)}. No parameter is added and
-none is removed, as with \code{\link[=truncated]{truncated()}}.
+distribution function \eqn{F(x) - F(-x)}, and exactly the parent's
+parameters: folding adds none and removes none, as \code{\link[=truncated]{truncated()}} does not.
+The half-normal is \code{fixed(folded(gaussian1_distrib()), mu = 0)}, and the
+folded normal proper is \code{folded(gaussian1_distrib())}.
+}
+\section{A fold is not a change of variable}{
+The map \eqn{y \mapsto |y|} is TWO TO ONE and has no inverse, so it cannot
+be a \code{\link[=transformer]{transformer()}}. Instead of carrying a density through a Jacobian it
+ADDS the two preimages. Every point above zero has two of them and zero has
+one, which is why the constructor is careful about atoms.
+}
 
-Every derivative comes from the wrapper machinery unchanged. Writing
+\section{Where the derivatives come from}{
+Every one comes from the wrapper machinery unchanged. Writing
 \eqn{w = f(x)/L(x)} for the weight of the positive preimage, the ratios that
 machinery consumes are
-\deqn{\dfrac{d^B L}{L} = w \dfrac{d^B f(x)}{f(x)}
-      + (1-w) \dfrac{d^B f(-x)}{f(-x)},}
+\deqn{\frac{d^B L}{L} = w \frac{d^B f(x)}{f(x)}
+      + (1-w) \frac{d^B f(-x)}{f(-x)},}
 each term a complete Bell polynomial in the parent's own log-derivatives,
-one evaluated at \eqn{+x} and one at \eqn{-x}; \eqn{\log L} then follows
-from the moment-to-cumulant relation. At first order this is
+one at \eqn{+x} and one at \eqn{-x}; \eqn{\log L} then follows by the
+moment-to-cumulant relation. At first order this reads
 \eqn{w s(x) + (1-w) s(-x)}, the score of a two-component mixture, which is
-what a fold is.
-
-The parent must reach below zero. A distribution already supported on the
-non-negative half line folds to itself, and returning it unchanged would
-hide a mistaken call rather than report it; the same check makes
-\code{folded()} of a folded distribution an error.
-
-A parent with an atom is rejected as well. The point zero is its own
-preimage while every other point has two, so an atom at zero would be
-counted twice by the sum above and an atom elsewhere would be moved onto its
-reflection.
-
-\strong{The half-normal} is \code{fixed(folded(gaussian1_distrib()), mu = 0)},
-and the folded normal proper is \code{folded(gaussian1_distrib())}.
-
-\strong{The sign of a symmetric parent's location is not identified.} When
-the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x; -\mu)},
-so the two terms of \eqn{L} merely swap and the likelihood is
-\emph{exactly} even in \eqn{\mu}: a fit converges to \eqn{+\hat\mu} or
-\eqn{-\hat\mu} according to where it started, at the same maximized value
-to every digit. This is a property of the model rather than of the fitting,
-and it is not rejected, the folded normal being a standard family; what is
-estimable is \eqn{|\mu|} together with the remaining parameters. Holding
-the location at zero removes the question and gives the half-normal. A
-parent that is not symmetric about its location, such as
-\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, has no such invariance and its sign is
-identified.
+what a fold is. A parent analytic to fourth order gives a folded family
+analytic to fourth order.
 }
+
+\section{What is rejected}{
+A parent that does not reach below zero folds to itself, so the call would
+be a no-op; returning it unchanged would hide a mistaken call rather than
+report it, and the same check makes \code{folded()} of a folded distribution an
+error. A parent with an atom is rejected too: zero is its own preimage while
+every other point has two, so an atom at zero would be counted twice by the
+sum above and one elsewhere would be moved onto its reflection. A discrete
+parent is rejected outright.
+}
+
+\section{The sign of a symmetric parent's location is not identified}{
+When the parent is symmetric about its location, \eqn{f(-x; \mu) = f(x;
+-\mu)}, so the two terms of \eqn{L} merely swap and the likelihood is
+EXACTLY even in \eqn{\mu}. A fit converges to \eqn{+\hat\mu} or
+\eqn{-\hat\mu} according to where it started, at the same maximized value to
+every digit: measured on 400 draws at \eqn{\mu = 1.5}, two fits started at
+\eqn{\pm 1} reach \eqn{\pm 1.50494} with the same log-likelihood of
+\eqn{-511.2516}. This is a property of the model, not of the fitting, and it
+is not rejected, the folded normal being a standard family; what is
+estimable is \eqn{|\mu|} together with the remaining parameters. Holding the
+location at zero removes the question and gives the half-normal. A parent
+that is not symmetric about its location, such as \code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}},
+has no such invariance and its sign is identified.
+}
+
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{F} its distribution function, \eqn{L}
+the folded density, \eqn{w} the weight of the positive preimage, \eqn{s} the
+parent's score and \eqn{B} a multiset of parameter names.
+}
+
 \examples{
 d <- folded(gaussian1_distrib())
 theta <- list(mu = 0.5, sigma = 1)
 distrib_pdf(d, c(0, 0.5, 2), theta)
 
-# the half-normal: a folded gaussian with its location held at zero
+# The half-normal: a folded gaussian with its location held at zero, whose
+# density is twice the gaussian's and whose mean is sigma sqrt(2 / pi).
 hn <- fixed(folded(gaussian1_distrib()), mu = 0)
 hn@params
-distrib_pdf(hn, c(0.5, 1), list(sigma = 2))
+all.equal(distrib_pdf(hn, c(0.5, 1), list(sigma = 2)),
+          2 * dnorm(c(0.5, 1), 0, 2))
+c(mean = mean(hn, list(sigma = 2)), theory = 2 * sqrt(2 / pi))
+
+# The sign of a symmetric parent's location is not identified: two fits
+# started either side reach the same maximum at opposite signs.
+set.seed(3)
+z <- distrib_rng(d, 400, list(mu = 1.5, sigma = 1))
+f1 <- fit_distrib(d, z, start = list(mu = 1, sigma = 1))
+f2 <- fit_distrib(d, z, start = list(mu = -1, sigma = 1))
+rbind(from_plus = c(coef(f1), logLik = as.numeric(logLik(f1))),
+      from_minus = c(coef(f2), logLik = as.numeric(logLik(f2))))
+
+# A parent that is not symmetric about its location has no such invariance.
+sn <- folded(skewnormal1_distrib())
+set.seed(4)
+zs <- distrib_rng(sn, 300, list(mu = 1, sigma = 1, alpha = 3))
+lf <- function(m)
+  sum(distrib_pdf(sn, zs, list(mu = m, sigma = 1, alpha = 3), log = TRUE))
+c(at_plus_1 = lf(1), at_minus_1 = lf(-1))
+
+# Three rejections, each naming the condition that failed.
+try(folded(gamma1_distrib()))
+try(folded(folded(gaussian1_distrib())))
+try(folded(poisson_distrib()))
 
 }
 \seealso{
-\code{\link[=truncated]{truncated()}}, \code{\link[=fixed]{fixed()}},
-\code{\link[=transformation]{transformation()}}
+\code{\link[=truncated]{truncated()}}, the other wrapper that adds no parameter,
+\code{\link[=fixed]{fixed()}}, which gives the half-normal, \code{\link[=transformation]{transformation()}} for a map that
+IS one to one, and \link{FoldedDistrib} for the class.
 }

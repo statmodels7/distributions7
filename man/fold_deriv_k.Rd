@@ -2,27 +2,56 @@
 % Please edit documentation in R/folded.R
 \name{fold_deriv_k}
 \alias{fold_deriv_k}
-\title{Derivatives of a Folded Distribution}
+\title{Build a Folded Derivative Method of a Given Order}
 \usage{
 fold_deriv_k(order)
 }
 \arguments{
-\item{order}{The derivative order, 3 or 4.}
+\item{order}{The derivative order, \code{3L} or \code{4L}.}
 }
 \value{
-A function suitable for registering as an S7 method.
+A function with the signature of \code{distrib_deriv3()}, suitable for
+\verb{S7::method(...) <- }.
 }
 \description{
-Builds the order-\code{k} derivative method for \code{\link[=folded]{folded()}}.
+Returns the method \code{\link[=folded]{folded()}} registers for \code{distrib_deriv3()} or
+\code{distrib_deriv4()}. Both orders run the same three steps, so the body is
+written once and the order is closed over: form the weight with
+\code{\link[=fold_parts]{fold_parts()}}, build the block ratios with \code{\link[=fold_ratio]{fold_ratio()}}, and hand them to
+\code{\link[=log_deriv]{log_deriv()}} for every component of the order.
 }
 \details{
-The ratios handed to \code{\link[=log_deriv]{log_deriv()}} are
-\eqn{d^B L / L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))} with
-\eqn{w = f(x)/L}, each term a complete Bell polynomial in the parent's own
-log-derivatives evaluated at one of the two preimages. Folding adds no
-parameter, so every index is an index of the parent's.
+The ratios are \eqn{d^B L/L = w\,(d^B f(x)/f(x)) + (1-w)\,(d^B f(-x)/f(-x))},
+and \code{\link[=log_deriv]{log_deriv()}} turns them into derivatives of \eqn{\log L} by the
+moment-to-cumulant relation. Nothing about the fold is written out at third
+or fourth order; the same two functions serve every order the parent
+supplies.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{w} the weight
+of the positive preimage and \eqn{B} a multiset of parameter names.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+set.seed(1)
+y <- distrib_rng(d, 6, theta)
+
+m3 <- distributions7:::fold_deriv_k(3L)
+
+# It builds the method the class registers, so the two agree.
+all.equal(m3(d, y, theta), distrib_deriv3(d, y, theta))
+
+# And the order it was built at fixes the component count.
+c(order3 = length(m3(d, y, theta)),
+  order4 = length(distributions7:::fold_deriv_k(4L)(d, y, theta)))
+
 }
 \seealso{
-\code{\link[=folded]{folded()}}, \code{\link[=fold_ratio]{fold_ratio()}}
+\code{\link[=distrib_deriv3.FoldedDistrib]{distrib_deriv3.FoldedDistrib()}} and
+\code{\link[=distrib_deriv4.FoldedDistrib]{distrib_deriv4.FoldedDistrib()}}, the two methods it builds, and
+\code{\link[=log_deriv]{log_deriv()}} for the partition sum.
 }
 \keyword{internal}

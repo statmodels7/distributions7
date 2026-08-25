@@ -2,27 +2,68 @@
 % Please edit documentation in R/folded.R
 \name{distrib_gradient.FoldedDistrib}
 \alias{distrib_gradient.FoldedDistrib}
-\title{Folded Analytical Gradient}
+\title{Folded Score}
 \arguments{
-\item{distrib}{A \code{FoldedDistrib} object.}
+\item{distrib}{A \code{FoldedDistrib} object, from \code{\link[=folded]{folded()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, non-negative.}
 
 \item{theta}{A named list of the parent's parameters.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. The links are the parent's, so the two scales
+differ exactly where the parent's do.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one component per parameter.
+A named list with one numeric vector per parameter, in
+\code{distrib@params} order, which is the parent's order.
 }
 \description{
-\deqn{\dfrac{\partial \ell}{\partial \theta_i}
-      = w\, s_i(x) + (1-w)\, s_i(-x), \qquad w = \dfrac{f(x)}{L(x)}}
-the score of a two-component mixture, the components being the two
-preimages.
+Computes the first derivatives of the folded log-density,
+\deqn{\frac{\partial \ell}{\partial \theta_i}
+      = w\, s_i(x) + (1-w)\, s_i(-x), \qquad w = \frac{f(x)}{L(x)},}
+the score of a TWO-COMPONENT MIXTURE whose components are the two preimages.
+It needs nothing of the fold beyond the weight: \eqn{s} is the parent's own
+score, evaluated at \eqn{+x} and at \eqn{-x}.
+}
+\details{
+The weight is where the folded score departs from the parent's. Near zero
+\eqn{w} is one half and the two preimages contribute equally; far into the
+tail of a parent centered above zero \eqn{w} approaches one and the folded
+score approaches the parent's.
+}
+\section{Notation}{
+
+\eqn{f} is the parent's density, \eqn{L} the folded one, \eqn{s} the
+parent's score, \eqn{w} the weight of the positive preimage and \eqn{\ell}
+the folded log-density.
+}
+
+\examples{
+d <- folded(gaussian1_distrib())
+theta <- list(mu = 0.5, sigma = 1.2)
+set.seed(2)
+y <- distrib_rng(d, 30, theta)
+
+g <- distrib_gradient(d, y, theta)
+vapply(g, sum, numeric(1))
+
+# Against a numerical derivative of the folded log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+
+# It is the mixture score, written out from the parent's own.
+p <- distributions7:::fold_parts(gaussian1_distrib(), y, theta)
+sp <- distrib_gradient(gaussian1_distrib(), y, theta)$mu
+sm <- distrib_gradient(gaussian1_distrib(), -y, theta)$mu
+all.equal(g$mu, p$w * sp + (1 - p$w) * sm)
 }
 \seealso{
-\code{\link[=folded]{folded()}}
+\code{\link[=distrib_hessian.FoldedDistrib]{distrib_hessian.FoldedDistrib()}} for the second order,
+\code{\link[=fold_parts]{fold_parts()}} for the weight, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }
