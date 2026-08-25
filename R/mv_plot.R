@@ -2,44 +2,92 @@
 NULL
 
 
-#' Panels of a Multivariate Density
-#'
+#' @title Panels of a Multivariate Density
 #' @name plot.multivariate_distrib
 #'
 #' @description
 #' Draws a multivariate distribution as a matrix of panels: the marginal
-#' density of each coordinate on the diagonal, and contours of each bivariate
-#' marginal below it.
+#' density of each coordinate on the diagonal, contours of each bivariate
+#' marginal below it, and the implied correlation printed above it. The picture
+#' is built entirely from marginals, so it exists exactly where
+#' [mv_marginal()] does, which for the two families that ship is everywhere.
 #'
 #' @details
-#' The picture is built from marginals, so it exists exactly when
-#' [mv_marginal()] does. Above about three coordinates the panel
-#' matrix stops being readable, so a larger distribution is rejected with the
-#' suggestion of choosing coordinates rather than being drawn illegibly.
+#' # Why at most three coordinates
 #'
-#' The contours are drawn at levels of the density itself rather than at
-#' probability levels: the equal-density contour is what the density's shape
-#' means, and computing a probability level would need the orthant integral
-#' this package does not approximate in several dimensions.
+#' A panel matrix of \eqn{k} coordinates has \eqn{k^2} panels, and past three
+#' the panels are too small to read. A larger distribution is rejected with an
+#' error naming the count and suggesting `which`; drawing it illegibly would be
+#' the worse answer.
 #'
-#' @param x An object inheriting from class [multivariate_distrib()].
-#' @param theta A named list or vector of parameters. Generated at random when
-#'   missing, as for a univariate distribution.
-#' @param which The coordinates to show. Defaults to all of them.
+#' # What the contours are levels of
+#'
+#' The contours are levels of the DENSITY, not of the probability. An
+#' equal-density contour is what the shape of the density means, and a
+#' probability level would need the orthant integral this package does not
+#' approximate in several dimensions. The levels are chosen from the density's
+#' own range on the grid.
+#'
+#' # One setting only
+#'
+#' A univariate `plot()` method reads a `theta` component of length \eqn{k} as
+#' \eqn{k} settings drawn over one another. Here the picture is already a matrix
+#' of panels, with no axis left to overlay them on, so a component longer than
+#' one is rejected by name.
+#'
+#' # The range each panel is drawn over
+#'
+#' Two and a half standard deviations either side of the location, with the
+#' spread taken from the matrix the parametrization carries. A multivariate
+#' Student t at \eqn{\nu \le 2} has no variance at all, and that is precisely
+#' the shape worth drawing, so [variance()] cannot be the source. For an
+#' elliptical family the two agree up to a factor, which is all a plotting
+#' range needs.
+#'
+#' @param x An object inheriting from [multivariate_distrib()].
+#' @param theta A named list or vector of parameters, each component a single
+#'   number. When missing, parameters are drawn by
+#'   [generate_random_theta()] and reported in a message. A component of
+#'   length greater than one is an error.
+#' @param which An integer vector of the coordinates to show, at most three.
+#'   Defaults to `NULL`, which means all of them and is itself an error above
+#'   three coordinates.
 #' @param n_grid Points per axis for the marginal densities and the contours.
-#' @param col_fit Color of the density and of the contours.
+#'   Defaults to `80`. The bivariate panels evaluate the density on an
+#'   `n_grid * n_grid` grid, so the cost is quadratic in it.
+#' @param col_fit Color of the density curves, the contours and the printed
+#'   correlations. Defaults to `"#B22222"`.
 #' @param ... Passed to the underlying plotting calls.
 #'
-#' @return `x`, invisibly.
+#' @return `x`, invisibly. Called for the plot it draws.
 #'
-#' @seealso [mv_marginal()], [plot.distrib_fit()]
+#' @seealso [mv_marginal()], which supplies every panel,
+#'   [plot.distrib_fit()], which draws the same matrix with the data on it,
+#'   and [plot.continuous_distrib()] for the one-dimensional case, which does
+#'   overlay several settings.
 #'
 #' @examples
 #' d <- mvgaussian_distrib(3)
 #' theta <- as.list(stats::setNames(
 #'   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 #' ))
+#'
+#' op <- graphics::par(no.readonly = TRUE)
 #' plot(d, theta)
+#' graphics::par(op)
+#'
+#' # Two coordinates of a heavy-tailed family, whose contours are wider than a
+#' # gaussian's at the same matrix.
+#' t2 <- mvstudent_t_distrib(3)
+#' th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
+#' op <- graphics::par(no.readonly = TRUE)
+#' plot(t2, th2, which = c(1, 2))
+#' graphics::par(op)
+#'
+#' # Four coordinates would be sixteen panels, so it is refused by name.
+#' d4 <- mvgaussian_distrib(4)
+#' th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
+#' try(plot(d4, th4))
 #'
 #' @keywords internal
 S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
@@ -70,30 +118,63 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 }
 
 
-#' Draw the Panel Matrix of a Multivariate Density
+#' @title Draw the Panel Matrix of a Multivariate Density
 #'
 #' @description
-#' The common engine of [plot.multivariate_distrib()] and the
-#' multivariate branch of [plot.distrib_fit()]: one panel per pair of
-#' coordinates, the marginal densities on the diagonal.
+#' The shared engine of [plot.multivariate_distrib()] and the multivariate
+#' branch of [plot.distrib_fit()]. It lays out one panel per ordered pair of
+#' the chosen coordinates: the marginal density on the diagonal, contours of
+#' the bivariate marginal below it, and the implied correlation printed above
+#' it. Every panel comes from [mv_marginal()], so nothing is integrated.
 #'
 #' @details
-#' When `data` is supplied the diagonal also carries a kernel density
-#' estimate of the observed coordinate and the off-diagonal panels carry the
-#' observations, so that the fitted shape and the sample are read against each
-#' other in the same frame. The kernel estimate is the comparison that does not
-#' assume the model: it is what the data say without the family's help.
+#' When `data` is supplied the diagonal also carries a kernel density estimate
+#' of the observed coordinate and the off-diagonal panels carry the
+#' observations, so the fitted shape and the sample are read against each other
+#' in one frame. The kernel estimate is the comparison that assumes no model:
+#' it is what the data say without the family's help.
+#'
+#' The range each coordinate is drawn over is two and a half standard
+#' deviations either side of the location, with the spread taken from
+#' [mv_sigma()], so a Student t at \eqn{\nu \le 2} still has a range where
+#' [variance()] would give it none.
 #'
 #' @param d A [multivariate_distrib()] object.
-#' @param theta A named list of parameters, already aligned.
-#' @param which The coordinates to show, or `NULL` for all.
-#' @param n_grid Points per axis.
-#' @param col_fit Color of the fitted density.
-#' @param data An \eqn{n \times p} matrix of observations, or `NULL`.
-#' @param col_data Color of the observed summary.
+#' @param theta A named list of parameters, already aligned by the caller.
+#' @param which An integer vector of coordinates, or `NULL` for all of them.
+#'   More than three is an error.
+#' @param n_grid Points per axis, a single positive whole number.
+#' @param col_fit Color of the fitted density, the contours and the printed
+#'   correlations.
+#' @param data An \eqn{n \times p} matrix of observations, or `NULL` for a
+#'   distribution with no data behind it.
+#' @param col_data Color of the observed summary, used only when `data` is
+#'   given. Defaults to `"#4682B4"`.
 #' @param ... Unused.
 #'
-#' @return Invisibly `NULL`.
+#' @return `NULL`, invisibly. Called for the plot it draws, and it changes
+#'   `graphics::par("mfrow")` and the margins, so a caller who needs the
+#'   previous settings back saves them first.
+#'
+#' @seealso [plot.multivariate_distrib()] and [plot.distrib_fit()], its two
+#'   callers, and [mv_marginal()] for the panels.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(2)
+#' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
+#'               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
+#'
+#' # Without data: the density alone.
+#' op <- graphics::par(no.readonly = TRUE)
+#' distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222", data = NULL)
+#' graphics::par(op)
+#'
+#' # With data: the same frame carries a kernel estimate and the observations.
+#' set.seed(1)
+#' op <- graphics::par(no.readonly = TRUE)
+#' distributions7:::mv_pairs_panels(d, theta, NULL, 40, "#B22222",
+#'                                  data = distrib_rng(d, 200, theta))
+#' graphics::par(op)
 #'
 #' @keywords internal
 mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
@@ -213,20 +294,64 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 
 #' @title Marginal of a Multivariate Gaussian
 #' @name mv_marginal.MvGaussianDistrib
+#'
 #' @description
-#' A marginal of a gaussian is a gaussian: the mean is the subvector and the
-#' covariance the corresponding block, with no integration to perform.
+#' Returns the marginal law of a subset of coordinates, which for a gaussian is
+#' again a gaussian: the mean is the subvector and the covariance the
+#' corresponding block, with nothing to integrate. The result is a fresh
+#' [mvgaussian_distrib()] of the reduced dimension, whose parameters are its
+#' own: a caller cannot expect them to be a subset of the ones passed in.
+#'
 #' @details
-#' The marginal is returned on an unstructured covariance whatever the parent
+#' The marginal is returned on an UNSTRUCTURED covariance whatever the parent
 #' carried, because a block of a structured matrix need not have the parent's
-#' structure -- the leading block of an AR(1) is AR(1), but a block of a
-#' compound-symmetry matrix taken at scattered indices need not be, and a
-#' precision block is not the inverse of the covariance block at all.
-#' @param distrib A [MvGaussianDistrib()] object.
-#' @param theta A named list of parameters.
-#' @param which An integer vector of coordinates.
-#' @param ... Unused.
-#' @return A list with `distrib` and `theta`.
+#' structure. The leading block of an AR(1) is AR(1); a block of a
+#' compound-symmetry matrix taken at scattered indices need not be; and a block
+#' of a precision matrix is not the inverse of the corresponding covariance
+#' block at all. Returning the unstructured form is correct in every case, at
+#' the cost of `k(k+1)/2` free values where the parent may have spent fewer.
+#'
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param theta A named list of parameters, each component a single number.
+#' @param which An integer vector of coordinates to keep, between 1 and
+#'   \eqn{p}. Duplicates and out-of-range values are not checked and reach the
+#'   matrix subsetting.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
+#'
+#' @return A named list with `distrib`, an `MvGaussianDistrib` of dimension
+#'   `length(which)` on a log-Cholesky covariance, and `theta`, its parameters
+#'   as a named list.
+#'
+#' @seealso [mv_marginal.MvStudentTDistrib()], where the degrees of freedom are
+#'   carried across unchanged, [plot.multivariate_distrib()], whose panels are
+#'   these marginals, and [mv_marginal()] for the generic.
+#'
+#' @examples
+#' d <- mvgaussian_distrib(3)
+#' theta <- as.list(stats::setNames(
+#'   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2), d@params))
+#'
+#' m <- mv_marginal(d, theta, c(1, 3))
+#' m$distrib@n_dim
+#'
+#' # The covariance block is carried across exactly.
+#' all.equal(mv_sigma(m$distrib, m$theta),
+#'           mv_sigma(d, theta)[c(1, 3), c(1, 3)], check.attributes = FALSE)
+#'
+#' # And a single coordinate is the univariate normal, against stats::dnorm.
+#' m1 <- mv_marginal(d, theta, 2)
+#' s <- sqrt(mv_sigma(d, theta)[2, 2])
+#' c(ours = distrib_pdf(m1$distrib, -1.4, m1$theta, log = TRUE),
+#'   dnorm = dnorm(-1.4, mean = -2, sd = s, log = TRUE))
+#'
+#' # A precision parametrization marginalizes to a covariance, the block of
+#' # the precision not being the precision of the block.
+#' o <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+#' th_o <- as.list(stats::setNames(unlist(theta), o@params))
+#' all.equal(mv_sigma(mv_marginal(o, th_o, c(1, 3))$distrib,
+#'                    mv_marginal(o, th_o, c(1, 3))$theta),
+#'           mv_sigma(o, th_o)[c(1, 3), c(1, 3)], check.attributes = FALSE)
+#'
 #' @keywords internal
 S7::method(mv_marginal, MvGaussianDistrib) <- function(distrib, theta, which, ...) {
   mu <- as.numeric(mv_location(distrib, theta))[which]

@@ -4,47 +4,95 @@
 \alias{plot.multivariate_distrib}
 \title{Panels of a Multivariate Density}
 \arguments{
-\item{x}{An object inheriting from class \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
+\item{x}{An object inheriting from \code{\link[=multivariate_distrib]{multivariate_distrib()}}.}
 
-\item{theta}{A named list or vector of parameters. Generated at random when
-missing, as for a univariate distribution.}
+\item{theta}{A named list or vector of parameters, each component a single
+number. When missing, parameters are drawn by
+\code{\link[=generate_random_theta]{generate_random_theta()}} and reported in a message. A component of
+length greater than one is an error.}
 
-\item{which}{The coordinates to show. Defaults to all of them.}
+\item{which}{An integer vector of the coordinates to show, at most three.
+Defaults to \code{NULL}, which means all of them and is itself an error above
+three coordinates.}
 
-\item{n_grid}{Points per axis for the marginal densities and the contours.}
+\item{n_grid}{Points per axis for the marginal densities and the contours.
+Defaults to \code{80}. The bivariate panels evaluate the density on an
+\code{n_grid * n_grid} grid, so the cost is quadratic in it.}
 
-\item{col_fit}{Color of the density and of the contours.}
+\item{col_fit}{Color of the density curves, the contours and the printed
+correlations. Defaults to \code{"#B22222"}.}
 
 \item{...}{Passed to the underlying plotting calls.}
 }
 \value{
-\code{x}, invisibly.
+\code{x}, invisibly. Called for the plot it draws.
 }
 \description{
 Draws a multivariate distribution as a matrix of panels: the marginal
-density of each coordinate on the diagonal, and contours of each bivariate
-marginal below it.
+density of each coordinate on the diagonal, contours of each bivariate
+marginal below it, and the implied correlation printed above it. The picture
+is built entirely from marginals, so it exists exactly where
+\code{\link[=mv_marginal]{mv_marginal()}} does, which for the two families that ship is everywhere.
 }
-\details{
-The picture is built from marginals, so it exists exactly when
-\code{\link[=mv_marginal]{mv_marginal()}} does. Above about three coordinates the panel
-matrix stops being readable, so a larger distribution is rejected with the
-suggestion of choosing coordinates rather than being drawn illegibly.
+\section{Why at most three coordinates}{
+A panel matrix of \eqn{k} coordinates has \eqn{k^2} panels, and past three
+the panels are too small to read. A larger distribution is rejected with an
+error naming the count and suggesting \code{which}; drawing it illegibly would be
+the worse answer.
+}
 
-The contours are drawn at levels of the density itself rather than at
-probability levels: the equal-density contour is what the density's shape
-means, and computing a probability level would need the orthant integral
-this package does not approximate in several dimensions.
+\section{What the contours are levels of}{
+The contours are levels of the DENSITY, not of the probability. An
+equal-density contour is what the shape of the density means, and a
+probability level would need the orthant integral this package does not
+approximate in several dimensions. The levels are chosen from the density's
+own range on the grid.
 }
+
+\section{One setting only}{
+A univariate \code{plot()} method reads a \code{theta} component of length \eqn{k} as
+\eqn{k} settings drawn over one another. Here the picture is already a matrix
+of panels, with no axis left to overlay them on, so a component longer than
+one is rejected by name.
+}
+
+\section{The range each panel is drawn over}{
+Two and a half standard deviations either side of the location, with the
+spread taken from the matrix the parametrization carries. A multivariate
+Student t at \eqn{\nu \le 2} has no variance at all, and that is precisely
+the shape worth drawing, so \code{\link[=variance]{variance()}} cannot be the source. For an
+elliptical family the two agree up to a factor, which is all a plotting
+range needs.
+}
+
 \examples{
 d <- mvgaussian_distrib(3)
 theta <- as.list(stats::setNames(
   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 ))
+
+op <- graphics::par(no.readonly = TRUE)
 plot(d, theta)
+graphics::par(op)
+
+# Two coordinates of a heavy-tailed family, whose contours are wider than a
+# gaussian's at the same matrix.
+t2 <- mvstudent_t_distrib(3)
+th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
+op <- graphics::par(no.readonly = TRUE)
+plot(t2, th2, which = c(1, 2))
+graphics::par(op)
+
+# Four coordinates would be sixteen panels, so it is refused by name.
+d4 <- mvgaussian_distrib(4)
+th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
+try(plot(d4, th4))
 
 }
 \seealso{
-\code{\link[=mv_marginal]{mv_marginal()}}, \code{\link[=plot.distrib_fit]{plot.distrib_fit()}}
+\code{\link[=mv_marginal]{mv_marginal()}}, which supplies every panel,
+\code{\link[=plot.distrib_fit]{plot.distrib_fit()}}, which draws the same matrix with the data on it,
+and \code{\link[=plot.continuous_distrib]{plot.continuous_distrib()}} for the one-dimensional case, which does
+overlay several settings.
 }
 \keyword{internal}
