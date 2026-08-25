@@ -2,36 +2,81 @@
 % Please edit documentation in R/gpd_higher.R
 \name{distrib_deriv3.GPDDistrib}
 \alias{distrib_deriv3.GPDDistrib}
-\alias{distrib_deriv4.GPDDistrib}
-\title{Generalized Pareto Third and Fourth Derivatives}
+\title{Generalized Pareto Third-Order Derivatives}
 \arguments{
-\item{distrib}{A \code{GPDDistrib} object.}
+\item{distrib}{A \code{GPDDistrib} object, from \code{\link[=gpd_distrib]{gpd_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the support. With
+\code{expected = TRUE} only its length is read.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{sigma} must be strictly
+positive; \code{xi} may be of either sign, including zero.}
 
-\item{expected}{Logical; if \code{TRUE}, the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{TRUE} the expectation under the
+model is returned in place of the value at the data, computed numerically.
+Defaults to \code{FALSE}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{The approximation used when \code{expected} is \code{TRUE}.}
+\item{approx}{One of \code{"integrate"} (the default here), \code{"bartlett"}, \code{"mc"}
+or \code{"opg"}. Read only when \code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo draws when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the sample size when
+\code{approx = "mc"}. Read only when \code{expected = TRUE}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, how many threads the polynomial
+kernel of the series branch may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of four numeric vectors, \code{sigma_sigma_sigma},
+\code{sigma_sigma_xi}, \code{sigma_xi_xi} and \code{xi_xi_xi}, each of length
+\code{max(length(y), lengths(theta))}.
 }
 \description{
-Closed form at both orders, from \code{\link[=gpd_components]{gpd_components()}}: the
-log-density splits into \eqn{-\log\sigma}, \eqn{-\log t} and
-\eqn{-\log(t)/\xi}, and the last is taken from its series where the
-Leibniz form's terms cancel.
+Computes the four distinct third derivatives of the generalized Pareto
+log-density in \eqn{\sigma} and \eqn{\xi}, \strong{in closed form}, through
+\code{\link[=gpd_components]{gpd_components()}}. The log-density splits as
+\eqn{-\log\sigma - \log t - \log(t)/\xi} with \eqn{t = 1 + \xi y/\sigma}, and
+the last piece is taken from its own series wherever the Leibniz form's
+terms of size \eqn{\xi^{-(b+1)}} cancel against each other.
+
+With \code{expected = TRUE} the method calls \code{\link[=expected_derivative]{expected_derivative()}} instead: the
+expected third derivatives have no closed form. That is the one place on
+this page where \code{approx} and \code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\sigma > 0} the
+scale, \eqn{\xi} the shape, \eqn{z = y/\sigma} and \eqn{t = 1 + \xi z}.
+}
+
+\examples{
+d <- gpd_distrib()
+y <- c(0.5, 2, 8)
+th <- list(sigma = 1.5, xi = 0.3)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# A central difference of the Hessian reproduces the pure-scale component.
+eps <- 1e-5
+up <- distrib_hessian(d, y, list(sigma = 1.5 + eps, xi = 0.3))$sigma_sigma
+dn <- distrib_hessian(d, y, list(sigma = 1.5 - eps, xi = 0.3))$sigma_sigma
+all.equal((up - dn) / (2 * eps), d3$sigma_sigma_sigma, tolerance = 1e-6)
+
+# At a shape near zero the family is the exponential, and the scale
+# components converge onto that family's at rate O(xi).
+de <- exponential_distrib()
+vapply(c(1e-6, 1e-9), function(x)
+  max(abs(distrib_deriv3(d, y, list(sigma = 1.5, xi = x))$sigma_sigma_sigma -
+          distrib_deriv3(de, y, list(mu = 1.5))$mu_mu_mu)), numeric(1))
 }
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}
+\code{\link[=distrib_hessian.GPDDistrib]{distrib_hessian.GPDDistrib()}} for the order below,
+\code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4.GPDDistrib()}} for the order above,
+\code{\link[=gpd_components]{gpd_components()}} for the two routes and the measured threshold, and
+\code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

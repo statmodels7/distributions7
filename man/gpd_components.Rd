@@ -7,34 +7,78 @@
 gpd_components(y, theta, order, cut = 0.2, threads = 1L)
 }
 \arguments{
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations on the support.}
 
-\item{theta}{A list containing \code{sigma} and \code{xi}.}
+\item{theta}{A named list with components \code{sigma} and \code{xi}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{sigma} must be strictly
+positive; \code{xi} may be of either sign, including zero, which is the
+exponential limit. Shorter components are recycled.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{The derivative order, an integer from 1 to 4.}
 
-\item{cut}{The value of \eqn{\lvert\xi z\rvert} below which the series
-is used.}
+\item{cut}{The value of \eqn{\lvert\xi z\rvert} below which the series is
+used, defaulting to \code{0.2}. It is exposed so that a test can force either
+route in the region where both are accurate and compare them; a caller has
+no reason to change it.}
 
-\item{threads}{How many threads the series kernel may use.}
+\item{threads}{A single positive integer, how many threads the polynomial
+kernel may use. Defaults to \code{1L}.}
 }
 \value{
-A named list of component vectors, keyed as
-\code{\link[=deriv_names]{deriv_names()}}.
+A named list of component vectors, one per distinct multi-index of
+the given order and keyed as \code{\link[=deriv_names]{deriv_names()}} keys them: two at order 1,
+three at order 2, four at order 3 and five at order 4. Each has the
+recycled length of the inputs.
 }
 \description{
-The components of \eqn{\partial^{a+b}\ell/\partial\sigma^a\partial\xi^b} at
-any order from one to four.
+Returns the components of
+\eqn{\partial^{a+b}\ell/\partial\sigma^a\partial\xi^b} at any order from one
+to four, by splitting the log-density into a part that is analytic at
+\eqn{\xi = 0} and a part that carries a removable singularity there.
 }
-\details{
-The shape direction goes through the series of \eqn{\log(1+\xi z)/\xi}
-wherever \eqn{\lvert\xi z\rvert} is below \code{cut}, which is the
-region where the Leibniz form's terms of size \eqn{\xi^{-(b+1)}} cancel
-against each other; elsewhere the Leibniz form is used directly. The
-threshold is exposed so that a test can force either route where both are
-accurate and compare them.
+\section{The split}{
+With \eqn{z = y/\sigma} and \eqn{t = 1 + \xi z},
+\deqn{\ell = -\log\sigma - L - W, \qquad L = \log t, \qquad W = L/\xi.}
+\eqn{t} is affine in \eqn{\xi}, so every partial of it carrying two or more
+\eqn{\xi} vanishes and the written-out template of \code{\link[=fdb2]{fdb2()}} covers \eqn{L}
+outright.
 }
+
+\section{Why W has two routes}{
+\eqn{W = L/\xi} has a removable singularity at \eqn{\xi = 0}, where it tends
+to \eqn{z}. Differentiating it by Leibniz,
+\deqn{\partial^{a,b} W = \sum_{j} \binom{b}{j}\, \partial^{a,j}L \cdot
+      \partial^{b-j}(1/\xi),}
+produces terms of size \eqn{\xi^{-(b+1)}} that cancel against each other, so
+near zero the form loses every digit. Below a threshold it is replaced by the
+series the cancellation leaves,
+\deqn{W = \sum_{k \ge 0} \frac{(-1)^k \xi^k z^{k+1}}{k+1},}
+differentiated term by term.
+
+The threshold is on \eqn{\lvert\xi z\rvert} and \strong{not} on \eqn{\xi}. At
+order \eqn{b} the Leibniz terms are of size \eqn{z\xi^{-b}} against an answer
+of size \eqn{z^{b+1}}, so the relative cancellation is
+\eqn{(\xi z)^{-b}} and the accuracy is \eqn{\varepsilon(\xi z)^{-b}}, which
+at order four reaches 0.3 by \eqn{\xi z = 1.7\times10^{-4}}. That prediction
+was measured, and matching it is what fixed the switch. The series needs
+\eqn{\lvert\xi z\rvert < 1} to converge and is cut at 0.2, where forty terms
+leave \eqn{10^{-28}} while the Leibniz form still carries \eqn{10^{-13}}, so
+the two overlap.
+}
+
+\section{What the series branch evaluates}{
+The two elementwise powers the sum appears to need are algebraically one:
+with \eqn{u = \xi z}, \eqn{\xi^{k-b}z^{k+1} = u^{k-b}z^{b+1}}, so
+\eqn{z^{b+1}/\sigma^a} leaves the sum and what remains is a \strong{polynomial in}
+\eqn{u} whose coefficients are scalar in \eqn{k}. \code{gpd_poly_cpp()} evaluates
+it by Horner from the highest power down, which sums a decaying series
+smallest first. Each branch also runs on its own elements only, so a sample
+straddling the cut does not pay for both in full.
+}
+
 \seealso{
-\code{\link[=gpd_distrib]{gpd_distrib()}}, \code{\link[=fdb2]{fdb2()}}
+\code{\link[=distrib_deriv3.GPDDistrib]{distrib_deriv3.GPDDistrib()}} and \code{\link[=distrib_deriv4.GPDDistrib]{distrib_deriv4.GPDDistrib()}},
+which call this; \code{\link[=fdb2]{fdb2()}} for the two-variable composition template; and
+\code{\link[=gpd_distrib]{gpd_distrib()}} for the family.
 }
 \keyword{internal}
