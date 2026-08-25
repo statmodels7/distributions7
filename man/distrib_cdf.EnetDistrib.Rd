@@ -4,24 +4,64 @@
 \alias{distrib_cdf.EnetDistrib}
 \title{Elastic-Net Distribution Function}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
 \item{q}{A numeric vector of quantiles.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{q}. \code{lambda} must be
+strictly positive and \code{alpha} strictly inside \eqn{(0, 1)}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), \eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, the value
+is \eqn{P(Y \le q)}; when \code{FALSE} it is one minus that.}
 
-\item{log.p}{Logical; if \code{TRUE}, returns the log-probability.}
+\item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
+probability is returned. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of probabilities.
+A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms with \code{log.p = TRUE}, of the length of the recycled inputs.
 }
 \description{
-Each half of the density is a truncated Gaussian, so
-\eqn{F(q) = \Phi(\sqrt{c}\,z - x) / (2\Phi(-x))} for \eqn{z \le 0} and
-its reflection above, with \eqn{z = q-\mu} and \eqn{x = a/\sqrt{c}}.
+Computes the distribution function in closed form. Each half of the density
+is a truncated Gaussian, so with \eqn{z = q-\mu} and \eqn{x = a/\sqrt c},
+\deqn{F(q) = \dfrac{\Phi(\sqrt{c}\,z - x)}{2\Phi(-x)} \quad (z \le 0),
+      \qquad
+      F(q) = 1 - \dfrac{\Phi(-\sqrt{c}\,z - x)}{2\Phi(-x)} \quad (z > 0).}
+
+Both ratios are taken on the log scale and exponentiated. The denominator
+\eqn{\Phi(-x)} is exactly zero past \eqn{x = 38} in double precision, and
+\eqn{x} reaches that at ordinary values of \eqn{\alpha}: at
+\eqn{\lambda = 20}, \eqn{\alpha = 0.995} it is 63.
+}
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{x = a/\sqrt c},
+and \eqn{\Phi} the standard Gaussian distribution function.
+}
+
+\examples{
+d <- enet_distrib()
+q <- c(-2, -0.5, 0, 0.5, 2)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+
+# Against a direct quadrature of the density.
+rbind(closed = distrib_cdf(d, q, th),
+      quadrature = vapply(q, function(u)
+        integrate(function(v) distrib_pdf(d, v, th), -Inf, u)$value, 0))
+
+# The density is symmetric about the location, so the median is mu.
+distrib_cdf(d, 0, th)
+
+# An ordinary elastic net puts the Mills argument past 38, where the
+# denominator of both halves has underflowed to zero on the natural scale.
+hard <- list(mu = 0, lambda = 20, alpha = 0.995)
+c(x = 20 * 0.995 / sqrt(20 * 0.005),
+  phi_minus_x = pnorm(-20 * 0.995 / sqrt(20 * 0.005)),
+  cdf = distrib_cdf(d, 0.1, hard))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile.EnetDistrib()}}, which inverts this in closed
+form, \code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf.EnetDistrib()}} for the density, and \code{\link[=distrib_cdf]{distrib_cdf()}}
+for the generic.
 }

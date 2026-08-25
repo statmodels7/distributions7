@@ -2,28 +2,74 @@
 % Please edit documentation in R/enet_distrib.R
 \name{distrib_hessian.EnetDistrib}
 \alias{distrib_hessian.EnetDistrib}
-\title{Elastic-Net Observed Information}
+\title{Elastic-Net Observed Hessian}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{...}{Ignored.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of Hessian components.
+A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{lambda_lambda}, \code{alpha_alpha}, \code{mu_lambda}, \code{mu_alpha},
+\code{lambda_alpha}. Two of them, \code{lambda_lambda} and \code{alpha_alpha}, carry no
+data at all and are their own expectations.
 }
 \description{
-The second derivatives of the log-density. The data term
-is linear in the two rates, so every rate block is a second derivative
-of \eqn{\log Z} carried through the bilinear map
-\eqn{(\lambda,\alpha) \mapsto (a, c)}, whose own cross term
-contributes the \eqn{\lambda\alpha} entry.
+Computes the six second derivatives of the log-density in closed form. The
+data term of the log-density is \strong{linear in the two rates}, so every rate
+block is a second derivative of \eqn{\log Z} carried through the bilinear
+map \eqn{(\lambda,\alpha) \mapsto (a, c)}, whose own cross term contributes
+the \eqn{\lambda\alpha} entry. In the location the curvature is simply
+\eqn{-c}.
+
+That \eqn{-c} is the observed curvature and \strong{not} the information. It
+misses the point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z =
+2\delta(z)} the absolute value carries at the location, exactly as the
+Laplace does; see \code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}} for what the
+information is instead.
+}
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{z = y - \mu},
+\eqn{x = a/\sqrt c}, and \eqn{Z} the normalizing constant.
+}
+
+\examples{
+d <- enet_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+h <- distrib_hessian(d, y, th)
+names(h)
+
+# The curvature in the location is -c at every observation, the absolute
+# value contributing nothing away from the kink.
+c(observed = unique(h$mu_mu), minus_c = -(2 * (1 - 0.5)))
+
+# Two entries carry no data, so they equal their own expectations.
+e <- distrib_expected_hessian(d, y, th)
+rbind(observed = c(h$lambda_lambda[1], h$alpha_alpha[1], h$mu_mu[1]),
+      expected = c(e$lambda_lambda[1], e$alpha_alpha[1], e$mu_mu[1]))
+
+# Against a central difference of the score.
+eps <- 1e-5
+rbind(analytic = h$lambda_alpha,
+      numeric = (distrib_gradient(d, y, list(mu = 0, lambda = 2,
+                                             alpha = 0.5 + eps))$lambda -
+                 distrib_gradient(d, y, list(mu = 0, lambda = 2,
+                                             alpha = 0.5 - eps))$lambda) /
+                (2 * eps))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient.EnetDistrib()}} for the order below,
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3.EnetDistrib()}} for the order above,
+\code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}} for the information, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

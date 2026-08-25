@@ -2,21 +2,60 @@
 % Please edit documentation in R/enet_distrib.R
 \name{distrib_grad_y.EnetDistrib}
 \alias{distrib_grad_y.EnetDistrib}
-\title{Elastic-Net Response Derivatives}
+\title{Elastic-Net Response Derivative}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 }
 \value{
-A numeric vector.
+A numeric vector of the length of the recycled inputs.
 }
 \description{
-\eqn{\ell^{(y)} = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},
-undefined at the location.
+Computes \eqn{\partial\ell/\partial y = -a\,\mathrm{sgn}(y-\mu) - c(y-\mu)},
+with \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}. It is minus
+the derivative in \eqn{\mu}, the response and the location entering only
+through their difference.
+
+It is \strong{undefined at the location}, where the sign jumps. \code{sign(0)} is 0 in
+R, so the value returned there is \eqn{-c(y-\mu) = 0}, one point of the
+subdifferential.
+
+The score is bounded below by \eqn{-a - c(y-\mu)} on either side, so the
+Laplace part contributes a jump of \eqn{2a} across the location and the
+Gaussian part the slope.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{a = \lambda\alpha}
+and \eqn{c = \lambda(1-\alpha)}.
+}
+
+\examples{
+d <- enet_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+
+# It is minus the score in the location, exactly.
+all.equal(distrib_grad_y(d, y, th), -distrib_gradient(d, y, th)$mu)
+
+# Against a central difference of the log-density, away from the kink.
+eps <- 1e-6
+rbind(analytic = distrib_grad_y(d, y, th),
+      numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
+                 distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
+
+# The jump across the location is 2a, which is the Laplace part.
+c(just_below = distrib_grad_y(d, -1e-9, th),
+  just_above = distrib_grad_y(d, 1e-9, th),
+  two_a = 2 * 2 * 0.5)
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_hess_y.EnetDistrib]{distrib_hess_y.EnetDistrib()}} for the second derivative,
+\code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y.EnetDistrib()}} for the mixed one,
+\code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient.EnetDistrib()}} for the parameter derivatives, and
+\code{\link[=distrib_grad_y]{distrib_grad_y()}} for the generic.
 }

@@ -4,25 +4,53 @@
 \alias{distrib_quantile.EnetDistrib}
 \title{Elastic-Net Quantile Function}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{p}{A numeric vector of probabilities.}
+\item{p}{A numeric vector of probabilities in \eqn{[0, 1]}, or their
+logarithms when \code{log.p = TRUE}.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{p}.}
 
-\item{lower.tail}{Logical; if \code{TRUE} (default), probabilities are
-\eqn{P(Y \le q)}.}
+\item{lower.tail}{Logical of length 1. When \code{TRUE}, the default, \code{p} is
+\eqn{P(Y \le q)}; when \code{FALSE} it is the survival probability.}
 
-\item{log.p}{Logical; if \code{TRUE}, \code{p} is on the log scale.}
+\item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm
+and is exponentiated first. Defaults to \code{FALSE}.}
 }
 \value{
-A numeric vector of quantiles.
+A numeric vector of quantiles, of the length of the recycled
+inputs.
 }
 \description{
-The distribution function of
-\code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}} inverted in
-closed form, each half being a truncated Gaussian.
+Inverts \code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf.EnetDistrib()}} in closed form, each half of the density
+being a truncated Gaussian. Below the median the quantile is
+\eqn{\mu + \{x + \Phi^{-1}(2p\,\Phi(-x))\}/\sqrt c} and above it the
+reflection. Nothing is inverted by root finding, so
+\code{\link[=distrib_rng.EnetDistrib]{distrib_rng.EnetDistrib()}} can use the inverse transform.
+
+The \code{qnorm} call is made on the \strong{log} scale, its argument being
+\eqn{\log(2p) + \log\Phi(-x)}, because \eqn{\Phi(-x)} underflows to zero
+past \eqn{x = 38}.
+}
+\examples{
+d <- enet_distrib()
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+
+# The round trip is exact, both functions being closed form.
+q <- c(-2, -0.5, 0.5, 2)
+all.equal(distrib_quantile(d, distrib_cdf(d, q, th), th), q)
+
+# Symmetric about the location.
+p <- c(0.1, 0.25, 0.5, 0.75, 0.9)
+round(distrib_quantile(d, p, th), 10)
+
+# It still answers where the Mills argument has passed 38.
+distrib_quantile(d, c(0.25, 0.75),
+                 list(mu = 0, lambda = 20, alpha = 0.995))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf.EnetDistrib()}}, which it inverts,
+\code{\link[=distrib_rng.EnetDistrib]{distrib_rng.EnetDistrib()}}, which draws from it, and
+\code{\link[=distrib_quantile]{distrib_quantile()}} for the generic.
 }

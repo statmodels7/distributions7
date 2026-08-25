@@ -4,25 +4,71 @@
 \alias{distrib_pdf.EnetDistrib}
 \title{Elastic-Net Density}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations, anywhere on the real line.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}. \code{lambda} must be
+strictly positive and \code{alpha} strictly inside \eqn{(0, 1)}; at either
+endpoint the constant's argument is not defined and the value is \code{NaN}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of density values.
+A numeric vector of densities, of the length of the recycled inputs.
 }
 \description{
+Computes the elastic-net density
 \deqn{f(y; \mu, \lambda, \alpha) = \frac{1}{Z}
   \exp\left\{-a|y-\mu| - \tfrac{c}{2}(y-\mu)^2\right\},}
 with \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
-\eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}}, where \eqn{M} is the Mills ratio.
-The constant is evaluated through the log Mills ratio, both factors of
-which underflow separately.
+\eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}}, where \eqn{M} is the Mills ratio. The
+constant is finite at both ends of the mixing weight: \eqn{2/a} as
+\eqn{\alpha \to 1} and \eqn{\sqrt{2\pi/c}} as \eqn{\alpha \to 0}.
+
+The constant goes through \eqn{\log M}. Written directly, \eqn{\log M(x)}
+adds \eqn{x^2/2} to a log-probability of the same size and opposite sign,
+so it loses a digit for every factor of ten in \eqn{x}; past \eqn{x = 30}
+the asymptotic series is used instead. At \eqn{\alpha = 1 - 10^{-12}} the
+argument reaches \eqn{10^6}, which an ordinary elastic net does.
+}
+\section{Notation}{
+
+\eqn{\mu} is the location, \eqn{\lambda > 0} the overall rate,
+\eqn{\alpha \in (0,1)} the mixing weight, \eqn{M} the Mills ratio
+\eqn{\Phi(-x)/\phi(x)}, and \eqn{Z} the normalizing constant.
+}
+
+\examples{
+d <- enet_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+
+# It integrates to one.
+integrate(function(u) distrib_pdf(d, u, th), -Inf, Inf)$value
+
+# The kernel written out, up to the constant.
+r <- distrib_pdf(d, y, th) /
+     exp(-1 * abs(y) - 1 * y^2 / 2)     # a = c = 1 at alpha = 0.5
+all.equal(r, rep(r[1], length(r)))
+
+# The two ends, approached to ten figures.
+rbind(alpha = c(1 - 1e-10, 1e-10),
+      enet = c(distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
+                                        alpha = 1 - 1e-10)),
+               distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
+                                        alpha = 1e-10))),
+      limit = c(distrib_pdf(laplace2_distrib(), 0.7,
+                            list(mu = 0, lambda = 2)),
+                dnorm(0.7, 0, 1 / sqrt(2))))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf.EnetDistrib()}} for the distribution function,
+\code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient.EnetDistrib()}} for the score,
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two ends, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

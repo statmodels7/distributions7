@@ -4,18 +4,40 @@
 \alias{distrib_rng.EnetDistrib}
 \title{Elastic-Net Random Generation}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of length \code{n}; a component of length 1 is
+recycled.}
 }
 \value{
-A numeric vector of draws.
+A numeric vector of \code{n} draws, symmetric about \code{mu}.
 }
 \description{
-Inverse transform on the closed-form quantile function.
+Draws by the inverse transform, \code{distrib_quantile(distrib, runif(n), theta)}. The quantile function of this family is closed form, so the
+transform is exact and costs one uniform per draw; the base class's
+ratio-of-uniforms fallback is not needed.
+}
+\examples{
+d <- enet_distrib()
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+
+set.seed(71)
+x <- distrib_rng(d, 2e5, th)
+
+# Two moments against their closed forms, and the symmetry.
+rbind(sample = c(mean(x), var(x), mean((x - mean(x))^3) / sd(x)^3),
+      theory = c(mean(d, th), variance(d, th), skewness(d, th)))
+
+# As alpha approaches one the draws become Laplace.
+set.seed(72)
+xl <- distrib_rng(d, 1e5, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
+c(sample_var = var(xl), laplace_var = 2 / 2^2)
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile.EnetDistrib()}}, which it inverts through,
+\code{\link[=variance.EnetDistrib]{variance.EnetDistrib()}} for the moment the draws reproduce, and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

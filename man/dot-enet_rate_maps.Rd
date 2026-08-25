@@ -7,22 +7,48 @@
 .enet_rate_maps(p)
 }
 \arguments{
-\item{p}{The value of \code{.enet_parts}.}
+\item{p}{The value of \code{.enet_parts()}, read for \code{al} and \code{lam}.}
 }
 \value{
-A list of keyed tables, one per rate coordinate.
+A named list of three keyed tables, one per rate coordinate, with
+keys \code{"1"}, \code{"2"}, \code{"3"} for the first partials in \eqn{\mu},
+\eqn{\lambda}, \eqn{\alpha} and \code{"2,3"} for the one non-zero second
+partial.
 }
 \description{
-The partial tables of \eqn{(\mu, a, c)} as functions of
+Returns the partial derivatives of \eqn{(\mu, a, c)} as functions of
 \eqn{(\mu, \lambda, \alpha)}, with \eqn{a = \lambda\alpha} and
-\eqn{c = \lambda(1-\alpha)}.
+\eqn{c = \lambda(1-\alpha)}, in the keyed-table form \code{\link[=chain_assemble]{chain_assemble()}}
+consumes.
 }
 \details{
-The map is bilinear, so its second partials are the constants
-\eqn{\pm 1} and its third and higher vanish. Those second partials are
-what carries a low-order derivative in the rates up to a high-order one
-in the parameters, which is why the third derivatives in
-\eqn{(\lambda, \alpha)} still depend on the data although the third
+The map is bilinear, so its second partials are the constants \eqn{\pm 1}
+and its third and higher vanish; the table says so by leaving them out.
+
+Those second partials are what carries a low-order derivative in the rates
+up to a high-order one in the parameters. That is why the third derivatives
+in \eqn{(\lambda, \alpha)} still depend on the data although the third
 derivatives in the rates do not.
+}
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, and the numeric keys
+index \eqn{(\mu, \lambda, \alpha)} in that order.
+}
+
+\examples{
+p <- distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5))
+distributions7:::.enet_rate_maps(p)
+
+# The two rates add up to lambda whatever alpha is, so their first
+# partials in lambda sum to one and those in alpha cancel.
+m <- distributions7:::.enet_rate_maps(p)
+c(in_lambda = m$a[["2"]] + m$c[["2"]],
+  in_alpha = m$a[["3"]] + m$c[["3"]])
+
+}
+\seealso{
+\code{\link[=.enet_chain]{.enet_chain()}}, its only caller, and \code{\link[=chain_assemble]{chain_assemble()}} for the
+partition sum that consumes it.
 }
 \keyword{internal}

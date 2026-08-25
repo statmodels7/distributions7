@@ -2,47 +2,86 @@
 % Please edit documentation in R/enet_higher.R
 \name{distrib_deriv3.EnetDistrib}
 \alias{distrib_deriv3.EnetDistrib}
-\alias{distrib_deriv4.EnetDistrib}
-\title{Elastic-Net Third and Fourth Derivatives}
+\title{Elastic-Net Third Derivatives}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector of observations. With \code{expected = TRUE} only its
+length matters.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{expected}{Logical; whether to return the expected derivatives.}
+\item{expected}{Logical of length 1. When \code{FALSE}, the default, the observed
+derivatives at \code{y} are returned.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the
-generic.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{approx}{How the expectation is approximated.}
+\item{approx}{One of \code{"integrate"}, \code{"bartlett"}, \code{"mc"} or \code{"opg"}, read
+only when \code{expected = TRUE}.}
 
-\item{nsim}{Monte Carlo sample size, used when \code{approx = "mc"}.}
+\item{nsim}{A single positive integer, the Monte Carlo sample size used when
+\code{approx = "mc"}. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of third-derivative components.
-
-A named list of fourth-derivative components.
+A named list of ten numeric vectors, from \code{mu_mu_mu} to
+\code{alpha_alpha_alpha} as \code{\link[=deriv_names]{deriv_names()}} names them.
 }
 \description{
-The third and fourth derivatives of the log-density, assembled in the
-two rates and carried onto \eqn{(\lambda, \alpha)} by the bilinear map.
-}
-\details{
-Written in \eqn{(\mu, a, c)} the log-density is quadratic in \eqn{z} and
-linear in each rate, so at these orders only the normalizing constant
-contributes, apart from
-\eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}; see
-\code{.enet_ac_derivs}. Running the same assembly at orders one and two
-reproduces the hand-written score and Hessian, which is what licenses it
-at the orders where there is nothing to compare against.
+Computes the ten third derivatives of the log-density in closed form,
+through \code{\link[=.enet_chain]{.enet_chain()}}. Written in \eqn{(\mu, a, c)} the log-density is
+quadratic in \eqn{z = y-\mu} and linear in each rate, so at this order only
+the normalizing constant contributes, apart from
+\eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}. The bilinear map to
+\eqn{(\lambda, \alpha)} then puts the data back in: \code{mu_mu_lambda} and
+\code{mu_mu_alpha} are not constant across observations even though their
+preimages are.
 
-The expected derivatives have no closed form here and go through
-\code{\link[=expected_derivative]{expected_derivative()}}.
+The licence for this order is that the same assembly at orders one and two
+reproduces the hand-written score and Hessian, measured at exactly 0 and
+\eqn{1.1\times10^{-16}}.
+
+With \code{expected = TRUE} the value is an expectation, and there it is \strong{not}
+closed form: the call routes to \code{\link[=expected_derivative]{expected_derivative()}}, so \code{approx} and
+\code{nsim} are read.
+}
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{z = y - \mu}, and
+\eqn{G = \mathrm{d}\log M/\mathrm{d}x} with \eqn{M} the Mills ratio.
+}
+
+\examples{
+d <- enet_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+d3 <- distrib_deriv3(d, y, th)
+names(d3)
+
+# Against a central difference of the analytic Hessian.
+eps <- 1e-5
+rbind(analytic = d3$mu_mu_lambda,
+      numeric = (distrib_hessian(d, y, list(mu = 0, lambda = 2 + eps,
+                                            alpha = 0.5))$mu_mu -
+                 distrib_hessian(d, y, list(mu = 0, lambda = 2 - eps,
+                                            alpha = 0.5))$mu_mu) / (2 * eps))
+
+# The log-density is quadratic in the response, so the third derivative in
+# the location alone is exactly zero.
+d3$mu_mu_mu
+
+# The pure-lambda component against one stencil on the log-density, a
+# route that shares no algebra with the assembly.
+ld <- function(v) sum(distrib_pdf(d, y, list(mu = 0, lambda = v,
+                                             alpha = 0.5), log = TRUE))
+c(ours = sum(d3$lambda_lambda_lambda),
+  stencil = numericals7::fd_derivative(ld, 2, 3L, h = 0.02))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the order below,
+\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4.EnetDistrib()}} for the order above, \code{\link[=.enet_chain]{.enet_chain()}} for
+the assembly, and \code{\link[=distrib_deriv3]{distrib_deriv3()}} for the generic.
 }

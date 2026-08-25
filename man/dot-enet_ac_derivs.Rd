@@ -9,34 +9,70 @@
 \arguments{
 \item{y}{A numeric vector of observations.}
 
-\item{p}{The value of \code{.enet_parts}, extended by
-\code{.enet_g_higher}.}
+\item{p}{The value of \code{.enet_parts()}, extended by \code{\link[=.enet_g_higher]{.enet_g_higher()}} when
+\code{order} is 3 or 4.}
 
-\item{order}{The derivative order, 1 to 4.}
+\item{order}{A single integer, 1 to 4: the highest derivative order wanted.}
 }
 \value{
-A list of length \code{order}; element \code{k} is the table of
+A list of length \code{order}; element \code{k} is a named list of the
 order-\code{k} derivatives, keyed as
-\code{\link[=deriv_names]{deriv_names(c("mu", "a", "c"), k)}}.
+\code{\link[=deriv_names]{deriv_names(c("mu", "a", "c"), k)}} names them, each entry
+a numeric vector of the length of \code{y}.
 }
 \description{
-The log-density's derivatives with respect to \eqn{(\mu, a, c)} -- the
-location and the two rates -- up to the requested order.
+Returns the log-density's derivatives with respect to the location and the
+two rates, \eqn{(\mu, a, c)}, up to the requested order. It is the inner
+half of \code{\link[=.enet_chain]{.enet_chain()}}; the outer half carries the result onto
+\eqn{(\mu, \lambda, \alpha)}.
 }
-\details{
-In these coordinates the log-density is
+\section{Why these coordinates}{
+In them the log-density is
 \eqn{-a|z| - cz^{2}/2 - \log 2 - L(x) + \tfrac{1}{2}\log c} with
 \eqn{z = y - \mu}, \eqn{x = ac^{-1/2}} and \eqn{L = \log M}, so the data
-term is quadratic in \eqn{z} and linear in each rate. Every derivative
-of order three or more is therefore a derivative of the normalizing
-constant, apart from
-\eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}, and the
-normalizer is one pass of \code{\link[=chain_assemble]{chain_assemble()}} over
-\eqn{L(x(a,c))}: the inner derivatives are \eqn{-G, -G', -G'', -G'''}
-and the map has \eqn{\partial^{2}x/\partial a^{2} = 0}, which leaves a
-short table.
+term is quadratic in \eqn{z} and linear in each rate. Every derivative of
+order three or more is therefore a derivative of the \strong{normalizing
+constant}, apart from \eqn{\partial^{3}\ell/\partial\mu^{2}\partial c = -1}.
 
-The location is not differentiable at \eqn{z = 0}, as in the Laplace,
-and the sign function is what the first derivative carries there.
+The normalizer is one pass of \code{\link[=chain_assemble]{chain_assemble()}} over \eqn{L(x(a,c))}: the
+inner derivatives are \eqn{-G, -G', -G'', -G'''} and the map has
+\eqn{\partial^{2}x/\partial a^{2} = 0}, so a key with two or more \eqn{a}'s
+is an exact zero and the table leaves it out. The remaining
+\eqn{\tfrac12\log c} is pure in \eqn{c} and is added component by component.
+}
+
+\section{The kink}{
+The location is not differentiable at \eqn{z = 0}, as in the Laplace, and
+the sign function is what the first derivative carries there. Nothing at
+order four touches \eqn{\mu} at all.
+}
+
+\section{Notation}{
+
+\eqn{a = \lambda\alpha} is the Laplace rate, \eqn{c = \lambda(1-\alpha)} the
+Gaussian one, \eqn{x = a/\sqrt c}, \eqn{L = \log M} with \eqn{M} the Mills
+ratio, and \eqn{z = y - \mu}.
+}
+
+\examples{
+p <- distributions7:::.enet_g_higher(
+  distributions7:::.enet_parts(list(mu = 0, lambda = 2, alpha = 0.5)))
+y <- c(-1.5, 0.4, 2.1)
+out <- distributions7:::.enet_ac_derivs(y, p, 3L)
+vapply(out, length, 0L)          # 3, 6 and 10 components
+
+# The one third-order component that carries data.
+out[[3]][["mu_mu_c"]]
+
+# Everything else at order three is free of y, the data term being
+# quadratic in z and linear in each rate.
+vapply(out[[3]][setdiff(names(out[[3]]), "mu_mu_c")],
+       function(v) diff(range(v)), 0)
+
+}
+\seealso{
+\code{\link[=.enet_chain]{.enet_chain()}}, which calls this and carries the result onward;
+\code{\link[=chain_assemble]{chain_assemble()}} for the partition sum; and \code{\link[=enet_distrib]{enet_distrib()}} for the
+family.
 }
 \keyword{internal}

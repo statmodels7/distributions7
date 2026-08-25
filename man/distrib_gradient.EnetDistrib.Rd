@@ -4,27 +4,69 @@
 \alias{distrib_gradient.EnetDistrib}
 \title{Elastic-Net Score}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
 \item{y}{A numeric vector of observations.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
+numeric vector of length 1 or of the length of \code{y}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation to the link scale is applied in the generic's body, so this
+method always returns the parameter scale.}
 
-\item{...}{Ignored.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of score components.
+A named list of three numeric vectors, \code{mu}, \code{lambda} and \code{alpha},
+each of the length of the recycled inputs.
 }
 \description{
-With \eqn{z = y-\mu}, \eqn{\ell^{(\mu)} = a\,\mathrm{sgn}(z) + cz}
+Computes the three first derivatives of the log-density in closed form. With
+\eqn{z = y-\mu}, \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)},
+\deqn{\dfrac{\partial\ell}{\partial\mu} = a\,\mathrm{sgn}(z) + cz,}
 and the two rate components are the data terms less the derivatives of
-\eqn{\log Z}, which are \eqn{G/\sqrt{c}} and
-\eqn{-(1+xG)/(2c)} for \eqn{a} and \eqn{c}; the chain to
-\eqn{(\lambda, \alpha)} is linear, \eqn{a = \lambda\alpha} and
-\eqn{c = \lambda(1-\alpha)}.
+\eqn{\log Z}, which are \eqn{G/\sqrt c} in \eqn{a} and \eqn{-(1+xG)/(2c)} in
+\eqn{c}. The chain to \eqn{(\lambda, \alpha)} is linear, the map being
+bilinear.
+
+The location component is \strong{undefined at \eqn{y = \mu}}, where
+\eqn{\mathrm{sgn}} jumps; \code{sign(0)} is 0 in R, so the value returned there
+is \eqn{cz = 0}, one point of the subdifferential. \code{params_smooth}
+records \code{mu = FALSE} so that
+\code{\link[=check_distrib]{check_distrib()}}'s finite-difference guard knows.
+}
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{x = a/\sqrt c},
+\eqn{G = \mathrm{d}\log M/\mathrm{d}x} with \eqn{M} the Mills ratio, and
+\eqn{Z} the normalizing constant.
+}
+
+\examples{
+d <- enet_distrib()
+y <- c(-1.5, -0.3, 0.4, 2.1)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+g <- distrib_gradient(d, y, th)
+
+# The location component written out.
+all.equal(g$mu, 1 * sign(y) + 1 * y)
+
+# The two rate components against numerical differentiation.
+f <- function(p) sum(distrib_pdf(d, y, list(mu = 0, lambda = p[1],
+                                            alpha = p[2]), log = TRUE))
+rbind(analytic = c(sum(g$lambda), sum(g$alpha)),
+      numeric = numDeriv::grad(f, c(2, 0.5)))
+
+# At the location the derivative does not exist; the value returned is
+# one point of the subdifferential.
+c(at_kink = distrib_gradient(d, 0, th)$mu,
+  just_below = distrib_gradient(d, -1e-9, th)$mu,
+  just_above = distrib_gradient(d, 1e-9, th)$mu)
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}} for the information, which does
+not agree with the observed curvature at the kink, and
+\code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

@@ -4,68 +4,106 @@
 \alias{distrib_expected_hessian.EnetDistrib}
 \title{Elastic-Net Expected Information}
 \arguments{
-\item{distrib}{An \code{EnetDistrib} object.}
+\item{distrib}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{y}{A numeric vector of observations.}
+\item{y}{A numeric vector. Its values do not enter the result, which is an
+expectation; only its length does, through recycling.}
 
-\item{theta}{A list containing \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}.}
+\item{scale}{Either \code{"parameter"}, the default, or \code{"link"}. The
+transformation is applied in the generic's body.}
 
-\item{expected}{Ignored; the answer is exact.}
+\item{approx}{Ignored: the answer is exact. Accepted so that the signature
+matches the generic's.}
 
-\item{approx}{Ignored; the answer is exact.}
+\item{nsim}{Ignored, for the same reason.}
 
-\item{nsim}{Ignored; the answer is exact.}
-
-\item{...}{Ignored.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected Hessian components.
+A named list of six numeric vectors in \code{\link[=hess_names]{hess_names()}}'s order:
+\code{mu_mu}, \code{lambda_lambda}, \code{alpha_alpha}, \code{mu_lambda}, \code{mu_alpha},
+\code{lambda_alpha}. The two mixed location entries are exactly zero.
 }
 \description{
-The expected Hessian in closed form, which the family already carries
-every piece of.
-}
-\details{
-In the two rates the density is an exponential family with sufficient
-statistics \eqn{-|z|} and \eqn{-z^2/2}, so \eqn{\log Z} is its cumulant
-generating function and the information in \eqn{(a, c)} is exactly the
-Hessian of \eqn{\log Z},
+Returns the expected Hessian in closed form. The family already carries
+every piece of it: in the two rates the density is an exponential family, so
+the information is the Hessian of its own log normalizing constant, and
+\code{.enet_logz_derivs()} computes that for the observed Hessian already.
 
+\code{expected}, \code{approx} and \code{nsim} are all ignored, the answer being exact.
+}
+\section{The rate block}{
+With sufficient statistics \eqn{-|z|} and \eqn{-z^2/2}, \eqn{\log Z} is the
+cumulant generating function and
 \deqn{I_{aa} = \operatorname{Var}(|z|), \quad
   I_{ac} = \operatorname{Cov}\!\left(-|z|, -\tfrac{z^2}{2}\right), \quad
-  I_{cc} = \tfrac{1}{4}\operatorname{Var}(z^2),}
+  I_{cc} = \tfrac{1}{4}\operatorname{Var}(z^2).}
+The map to \eqn{(\lambda, \alpha)} is bilinear, so the information
+transforms by \eqn{J^\top I J} with no second-derivative term.
 
-which \code{.enet_logz_derivs()} computes for the observed Hessian
-already. The map to \eqn{(\lambda, \alpha)} is bilinear, so the
-information transforms by \eqn{J'IJ} with no second-derivative term.
+Two of the three rate entries of the observed Hessian carry no data and are
+therefore their own expectations, which is why \code{lambda_lambda} and
+\code{alpha_alpha} repeat them exactly. The third does not: \code{lambda_alpha}
+carries \eqn{-|z| + z^2/2}, whose expectation
+\eqn{\partial_a\log Z - \partial_c\log Z} cancels the constant of the same
+value sitting beside it and leaves the \eqn{\log Z} term alone.
+}
 
-Two of the three rate entries of the observed Hessian carry no data at
-all and are therefore their own expectations, which is why
-\code{lambda_lambda} and \code{alpha_alpha} below repeat them exactly.
-The third does not: \code{lambda_alpha} carries \eqn{-|z| + z^2/2},
-whose expectation \eqn{\partial_a \log Z - \partial_c \log Z} cancels
-the constant of the same value sitting beside it and leaves the
-\eqn{\log Z} term alone.
-
-The location is where the two differ, and the reason is the kink. The
-observed second derivative in \eqn{\mu} is \eqn{-c}, which misses the
-point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)}
-the density carries at its own location, exactly as the Laplace does.
-The information is defined there as the variance of the score, and
-
-\deqn{I_{\mu\mu} = \operatorname{E}\left[(a\,\mathrm{sgn}(z) + cz)^2\right]
-  = a^2 + 2ac\,\operatorname{E}|z| + c^2\operatorname{E}[z^2]
+\section{The location, where the kink lives}{
+The observed second derivative in \eqn{\mu} is \eqn{-c}, which misses the
+point mass \eqn{\mathrm{d}\,\mathrm{sgn}(z)/\mathrm{d}z = 2\delta(z)} the
+density carries at its own location, exactly as the Laplace does. The
+information is defined there as the variance of the score, and
+\deqn{I_{\mu\mu} = E\left[(a\,\mathrm{sgn}(z) + cz)^2\right]
+  = a^2 + 2ac\,E|z| + c^2E[z^2]
   = a^2 - 2ac\,\partial_a \log Z - 2c^2 \partial_c \log Z,}
+since \eqn{E|z| = -\partial_a\log Z} and \eqn{E[z^2] = -2\partial_c\log Z}.
 
-since \eqn{\operatorname{E}|z| = -\partial_a \log Z} and
-\eqn{\operatorname{E}[z^2] = -2\partial_c \log Z}. It reduces to
-\eqn{\lambda^2} at \eqn{\alpha = 1}, which is the Laplace's
-\eqn{1/\sigma^2}, and to \eqn{c} at \eqn{\alpha = 0}, which is the
-Gaussian's. The location stays orthogonal to both rates, every
-cross-expectation vanishing by symmetry.
+Measured at \eqn{\lambda = 2}: it is 3.99999996 as \eqn{\alpha \to 1}, which
+is the Laplace's \eqn{\lambda^2 = 1/\sigma^2}, and exactly 2 as
+\eqn{\alpha \to 0}, which is the Gaussian's \eqn{c}.
+
+The location stays \strong{orthogonal} to both rates, every cross-expectation
+vanishing by symmetry, so \code{mu_lambda} and \code{mu_alpha} are exactly zero.
+}
+
+\section{Notation}{
+
+\eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{z = y-\mu} and
+\eqn{Z} the normalizing constant.
+}
+
+\examples{
+d <- enet_distrib()
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+e <- distrib_expected_hessian(d, 0, th)
+names(e)
+
+# The location is orthogonal to both rates.
+c(mu_lambda = e$mu_lambda, mu_alpha = e$mu_alpha)
+
+# The observed and expected curvature differ in the location and nowhere
+# else among the entries that carry no data.
+h <- distrib_hessian(d, 0, th)
+rbind(observed = c(h$mu_mu, h$lambda_lambda, h$alpha_alpha),
+      expected = c(e$mu_mu, e$lambda_lambda, e$alpha_alpha))
+
+# The location entry reaches both ends: lambda^2 at alpha -> 1, c at 0.
+inf_mu <- function(a)
+  -distrib_expected_hessian(d, 0, list(mu = 0, lambda = 2, alpha = a))$mu_mu
+rbind(alpha = c(1 - 1e-8, 0.5, 1e-8),
+      information = vapply(c(1 - 1e-8, 0.5, 1e-8), inf_mu, 0),
+      limit = c(2^2, NA, 2 * (1 - 1e-8)))
+
+# The strategy argument is ignored, the answer being exact.
+identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 }
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian.EnetDistrib()}} for the observed curvature, which
+differs from this only in the location;
+\code{\link[=distrib_expected_hessian.Laplace2Distrib]{distrib_expected_hessian.Laplace2Distrib()}} for the same phenomenon in
+the family this one contains; and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
+generic.
 }

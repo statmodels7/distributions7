@@ -2,7 +2,7 @@
 % Please edit documentation in R/enet_distrib.R
 \name{EnetDistrib}
 \alias{EnetDistrib}
-\title{S7 Class for the Elastic-Net Distribution}
+\title{Elastic-Net Distribution Class}
 \usage{
 EnetDistrib(
   distrib_name = character(0),
@@ -36,39 +36,88 @@ EnetDistrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{EnetDistrib}.
+An S7 object of class \code{EnetDistrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. For an object built by
+\code{\link[=enet_distrib]{enet_distrib()}} the properties hold \code{"enet"}, \code{"univariate"},
+\code{c(-Inf, Inf)}, \code{c("mu", "lambda", "alpha")}, the interpretations
+\code{c(mu = "location", lambda = "rate", alpha = "mixing weight")}, \code{3}, the
+domains \eqn{(-\infty,\infty)}, \eqn{(0,\infty)} and \eqn{(0,1)}, and
+\code{params_smooth = c(mu = FALSE, lambda = TRUE, alpha = TRUE)}.
 }
 \description{
-A subclass of \code{continuous_distrib} for the density
-whose negative logarithm is the elastic-net penalty,
-\eqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu| -
-\lambda(1-\alpha)(y-\mu)^2/2\}}: the product of a Laplace and a
-Gaussian, normalized. At \eqn{\alpha \to 1} it is the Laplace of
-\code{\link[=Laplace2Distrib]{Laplace2Distrib()}} and at \eqn{\alpha \to 0} the Gaussian,
-both of which remain families of their own; \eqn{\alpha} is confined
-to the open interval, as every bounded parameter in this package is.
-Like the Laplace, its log-likelihood is not differentiable in
-\eqn{\mu}.
+The S7 class of the density whose negative logarithm is the elastic-net
+penalty: a Laplace and a Gaussian at the same location, multiplied together
+and normalized,
+\deqn{f(y) \propto \exp\{-\lambda\alpha|y-\mu|
+      - \lambda(1-\alpha)(y-\mu)^2/2\}.}
+At \eqn{\alpha \to 1} it is the Laplace of \link{Laplace2Distrib} and at
+\eqn{\alpha \to 0} the Gaussian; \eqn{\alpha} is confined to the open
+interval, as every bounded parameter in this package is, so neither end is
+a member. Both remain families of their own.
+
+Like the Laplace, its log-likelihood is \strong{not differentiable in
+\eqn{\mu}}: the absolute value carries a kink at the location, and
+\code{params_smooth} records \code{mu = FALSE}.
+
+Build one with \code{\link[=enet_distrib]{enet_distrib()}}, which supplies the three link functions.
+This page documents the raw S7 constructor, which validates none of the
+relationships between its properties.
 }
 \section{Methods}{
 
-Methods implemented for this class:
-\code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}},
-\code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y()}},
-\code{\link[=distrib_grad_y.EnetDistrib]{distrib_grad_y()}},
-\code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient()}},
-\code{\link[=distrib_hess_y.EnetDistrib]{distrib_hess_y()}},
-\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian()}},
+Registered in this file:
 \code{\link[=distrib_pdf.EnetDistrib]{distrib_pdf()}},
+\code{\link[=distrib_cdf.EnetDistrib]{distrib_cdf()}},
 \code{\link[=distrib_quantile.EnetDistrib]{distrib_quantile()}},
 \code{\link[=distrib_rng.EnetDistrib]{distrib_rng()}},
-\code{\link[=mean.distrib]{mean()}},
-\code{\link[=skewness]{skewness()}},
-\code{\link[=variance]{variance()}}
+\code{\link[=distrib_gradient.EnetDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hessian.EnetDistrib]{distrib_hessian()}},
+\code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.EnetDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_hess_y.EnetDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_cross_y.EnetDistrib]{distrib_cross_y()}},
+\code{\link[=mean.EnetDistrib]{mean()}}, \code{\link[=variance.EnetDistrib]{variance()}},
+\code{\link[=skewness.EnetDistrib]{skewness()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+Registered in \code{enet_higher.R}, both closed form:
+\code{\link[=distrib_deriv3.EnetDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.EnetDistrib]{distrib_deriv4()}}.
+
+The \strong{kurtosis} has no closed form here and comes from the base class by
+quadrature. So does the fourth response derivative and beyond, which are
+zero: the log-density is quadratic in \eqn{y} away from the location.
 }
 
+\section{The two quantities everything is written in}{
+
+With \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)} and
+\eqn{x = a/\sqrt c}, every derivative in the two rates is a polynomial in
+\eqn{x} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, where \eqn{M} is the
+Mills ratio. The map \eqn{(\lambda, \alpha) \mapsto (a, c)} is bilinear, so
+the chain onto the reported parameters adds one cross term and nothing else.
+}
+
+\examples{
+d <- enet_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+d@params
+d@params_bounds
+
+# The location carries a kink, so it is declared non-smooth. That is what
+# switches off the finite-difference guard in check_distrib().
+d@params_smooth
+
+# The two ends, approached but not reached.
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
+c(laplace = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10)),
+  laplace_exact = distrib_pdf(laplace2_distrib(), 0.7,
+                              list(mu = 0, lambda = 2)),
+  gaussian = distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1e-10)),
+  gaussian_exact = dnorm(0.7, 0, 1 / sqrt(2)))
+}
 \seealso{
-\code{\link[=enet_distrib]{enet_distrib()}}, \code{\link[=laplace2_distrib]{laplace2_distrib()}}
+\code{\link[=enet_distrib]{enet_distrib()}} to build one;
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two ends;
+\code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}}, the consumer this family exists for.
 }

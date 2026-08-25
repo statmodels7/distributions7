@@ -2,7 +2,7 @@
 % Please edit documentation in R/enet_distrib.R
 \name{enet_distrib}
 \alias{enet_distrib}
-\title{Construct an Elastic-Net Distribution}
+\title{Elastic-Net Distribution Object}
 \usage{
 enet_distrib(
   link_mu = identity_link(),
@@ -11,36 +11,101 @@ enet_distrib(
 )
 }
 \arguments{
-\item{link_mu}{A \pkg{linkfunctions7} link for the location.}
+\item{link_mu}{A \code{linkfunctions7} link object for the location \eqn{\mu},
+which is unconstrained. Defaults to \code{\link[linkfunctions7:identity_link]{linkfunctions7::identity_link()}}.}
 
-\item{link_lambda}{A link for the overall rate, positive.}
+\item{link_lambda}{A link object for the overall rate \eqn{\lambda}, which
+must be strictly positive. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}.}
 
-\item{link_alpha}{A link for the mixing weight, in \eqn{(0,1)}.}
+\item{link_alpha}{A link object for the mixing weight \eqn{\alpha}, which
+must lie strictly inside \eqn{(0, 1)}. Defaults to
+\code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}.}
 }
 \value{
-An object of class \code{\link[=EnetDistrib]{EnetDistrib()}}.
+An S7 object of class \link{EnetDistrib}, inheriting from
+\code{continuous_distrib}. Its \code{params} are \code{c("mu", "lambda", "alpha")}, its
+\code{bounds} \code{c(-Inf, Inf)}, its \code{params_smooth}
+\code{c(mu = FALSE, lambda = TRUE, alpha = TRUE)}, and its \code{link_params} the
+three links given here.
 }
 \description{
-The density whose negative logarithm is the elastic-net penalty: the
-product of a Laplace and a Gaussian at the same location, normalized.
-It exists so that \code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}} is the
-same construction as ridge and lasso -- a
-\code{\link[penalties7:distrib_penalty]{penalties7::distrib_penalty()}} over a
-\code{\link[=fixed]{fixed()}} family -- rather than a branch of its own.
-}
-\details{
-Writing \eqn{a = \lambda\alpha} and \eqn{c = \lambda(1-\alpha)}, the
-normalizing constant is \eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}} with \eqn{M}
-the Mills ratio, which is finite at both ends: \eqn{2/a} as
-\eqn{\alpha \to 1} and \eqn{\sqrt{2\pi/c}} as \eqn{\alpha \to 0}. Every
-derivative in the two rates is a polynomial in \eqn{x = a/\sqrt{c}} and
-\eqn{G = \mathrm{d}\log M/\mathrm{d}x}, and the chain to
-\eqn{(\lambda, \alpha)} is bilinear.
+Builds the density whose negative logarithm is the elastic-net penalty: a
+Laplace and a Gaussian at the same location, multiplied together and
+normalized. It exists so that \code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}} is the same
+construction as ridge and lasso, a \code{\link[penalties7:distrib_penalty]{penalties7::distrib_penalty()}} over a
+\code{\link[=fixed]{fixed()}} family, instead of a branch of its own.
 
-Orders three and four in the parameters come from the numerical
-fallback; the response derivatives are exact at every order, the third
-and beyond being zero.
+The parametrization is the one a reader of the penalty expects: an overall
+rate \eqn{\lambda} and a mixing weight \eqn{\alpha}, with
+\eqn{a = \lambda\alpha} the Laplace rate and \eqn{c = \lambda(1-\alpha)} the
+Gaussian one.
 }
+\section{The normalizing constant}{
+\eqn{Z = 2M(a/\sqrt{c})/\sqrt{c}} with \eqn{M} the Mills ratio, finite at
+both ends: \eqn{2/a} as \eqn{\alpha \to 1} and \eqn{\sqrt{2\pi/c}} as
+\eqn{\alpha \to 0}. Every derivative in the two rates is a polynomial in
+\eqn{x = a/\sqrt c} and \eqn{G = \mathrm{d}\log M/\mathrm{d}x}, with
+\eqn{G' = 1 + xG - G^2} closing the recursion, and the chain to
+\eqn{(\lambda, \alpha)} is bilinear.
+}
+
+\section{What is closed form}{
+All four derivative orders in the parameters, the expected information, the
+distribution function, the quantile function, the mean, the variance and the
+skewness. The \strong{kurtosis} is not, and comes from the base class by
+quadrature.
+
+The expected information is closed form for a reason worth naming: in the
+two rates the density is an exponential family with sufficient statistics
+\eqn{-|z|} and \eqn{-z^2/2}, so the information there is the Hessian of
+\eqn{\log Z}, which the observed Hessian already computes. See
+\code{\link[=distrib_expected_hessian.EnetDistrib]{distrib_expected_hessian.EnetDistrib()}}.
+}
+
+\section{The kink}{
+Like the Laplace, the log-likelihood is not differentiable in \eqn{\mu}.
+\code{params_smooth} records \code{mu = FALSE}, the observed curvature there is
+\eqn{-c} and misses the point mass at the location, and the information is
+defined as the variance of the score instead. The two agree at every other
+entry.
+}
+
+\section{Two numerical cautions}{
+Both were found by sweeping the parameters, and both bite at ordinary
+settings.
+\itemize{
+\item \eqn{\log M(x)} written directly adds \eqn{x^2/2} to a log-probability of
+the same size and opposite sign, losing a digit per factor of ten in
+\eqn{x}. At \eqn{\alpha = 1 - 10^{-12}} the argument reaches \eqn{10^6}
+and the density was wrong in the fourth digit; past \eqn{x = 30} the
+asymptotic series of the Mills ratio is used instead.
+\item \eqn{\Phi(-x)} is exactly zero past \eqn{x = 38}, and the distribution
+function and the quantile divide by it. At \eqn{\lambda = 20},
+\eqn{\alpha = 0.995} the argument is 63, so both work through \code{log.p} and
+\code{qnorm(..., log.p = TRUE)}.
+}
+}
+
+\section{Comparison with glmnet}{
+\code{glmnet} standardizes the response internally for the Gaussian family and
+corrects \code{lambda} by a single factor. That correction is exact for the
+\eqn{\ell_1} part, homogeneous of degree one, and cannot be for the
+\eqn{\ell_2} part, homogeneous of degree two. So a nominal
+\eqn{(\lambda, \alpha)} names two different objectives in the two packages
+whenever \eqn{\alpha < 1}. At \eqn{\alpha = 1} the two agree to
+\eqn{1.4\times10^{-4}} whatever the scale of the response.
+}
+
+\section{Parameter domains}{
+\itemize{
+\item \eqn{\mu \in (-\infty, \infty)}
+\item \eqn{\lambda \in (0, \infty)}
+\item \eqn{\alpha \in (0, 1)}, open at both ends: at 1 it is
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} and at 0 \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, both of which remain
+families of their own.
+}
+}
+
 \section{The distribution}{
 
 \deqn{f(y) = \frac{1}{Z}\exp\!\left\{-a|y-\mu| - \frac{c}{2}(y-\mu)^{2}\right\}, \qquad a = \lambda\alpha, \quad c = \lambda(1-\alpha), \quad Z = \frac{2M(a/\sqrt{c})}{\sqrt{c}}}
@@ -51,13 +116,32 @@ on \eqn{y \in \mathbb{R}}.
 
 \examples{
 d <- enet_distrib()
-theta <- list(mu = 0, lambda = 2, alpha = 0.5)
-distrib_pdf(d, c(-1, 0, 1), theta)
+th <- list(mu = 0, lambda = 2, alpha = 0.5)
 
-# the density integrates to one, and the two ends are the two families
-stats::integrate(function(u) distrib_pdf(d, u, theta), -Inf, Inf)$value
-distrib_pdf(d, 0.7, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
-distrib_pdf(laplace2_distrib(), 0.7, list(mu = 0, lambda = 2))
+distrib_pdf(d, c(-1, 0, 1), th)
+
+# It integrates to one, and the two ends are the two families.
+integrate(function(u) distrib_pdf(d, u, th), -Inf, Inf)$value
+rbind(enet = c(distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
+                                        alpha = 1 - 1e-10)),
+               distrib_pdf(d, 0.7, list(mu = 0, lambda = 2,
+                                        alpha = 1e-10))),
+      limit = c(distrib_pdf(laplace2_distrib(), 0.7,
+                            list(mu = 0, lambda = 2)),
+                dnorm(0.7, 0, 1 / sqrt(2))))
+
+# The kurtosis sits between the two ends, and is the one moment that is
+# not closed form.
+c(gaussian = 0, enet = kurtosis(d, th), laplace = 3)
+
+# The location carries a kink, so its observed curvature and its
+# information differ; every other entry agrees.
+rbind(observed = unlist(distrib_hessian(d, 0, th)),
+      expected = unlist(distrib_expected_hessian(d, 0, th)))
+
+# Held at zero, this is the prior a penalty is written from.
+p <- fixed(d, mu = 0)
+p@params
 
 }
 \references{
@@ -66,5 +150,8 @@ via the elastic net. \emph{Journal of the Royal Statistical Society,
 Series B} 67, 301-320.
 }
 \seealso{
-\code{\link[=laplace2_distrib]{laplace2_distrib()}}, \code{\link[=gaussian1_distrib]{gaussian1_distrib()}}
+\code{\link[=laplace2_distrib]{laplace2_distrib()}} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the two ends,
+\code{\link[penalties7:ridge_penalty]{penalties7::elasticnet_penalty()}} for the consumer,
+\code{\link[=fixed]{fixed()}} for holding the location at zero, which is how a penalty uses
+this, and \link{EnetDistrib} for the class and its method list.
 }
