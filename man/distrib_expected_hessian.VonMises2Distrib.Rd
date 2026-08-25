@@ -2,36 +2,79 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{distrib_expected_hessian.VonMises2Distrib}
 \alias{distrib_expected_hessian.VonMises2Distrib}
-\title{von Mises Analytical Expected Hessian in the Resultant Length}
+\title{von Mises Expected Hessian in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles. Only its length is read, the
+expectation not depending on the data; the values are ignored.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1. \code{rho} must lie in \eqn{(0, 1)}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{rho_rho} and
+\code{mu_rho}, each of length \code{length(y)} and constant along it. \code{mu_rho} is
+exactly zero.
 }
 \description{
-Closed form. Since \eqn{\mathbb{E}[\cos(Y-\mu)] = A} and
-\eqn{\mathbb{E}[\sin(Y-\mu)] = 0}, the term in the second derivative of the
-map drops and
-\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A, \qquad
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation. Since
+\eqn{\mathbb{E}[\cos(Y-\mu)] = A(\kappa)} and
+\eqn{\mathbb{E}[\sin(Y-\mu)] = 0}, the term carrying the map's second
+derivative drops out and
+\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa A(\kappa), \qquad
       \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
       \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)}.}
-The last is the inverse of the information in \eqn{\kappa}, which is what a
-one-to-one reparametrization of a single parameter must give, and the two
-parameters stay orthogonal.
+
+The last equality is the reparametrization identity: the information in
+\eqn{\kappa} is \eqn{A'(\kappa)} and \eqn{\kappa'(\rho) = 1/A'(\kappa)}, so
+\eqn{A'(\kappa)\{\kappa'(\rho)\}^2 = 1/A'(\kappa)}. The information in
+\eqn{\rho} is therefore the \strong{reciprocal} of the information in
+\eqn{\kappa}, which a one-to-one reparametrization of a single parameter
+whose Jacobian is that reciprocal must give. The two parameters stay
+orthogonal.
+
+\code{approx} and \code{nsim} are ignored, the expectation being exact.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\rho \in (0,1)} the mean resultant length, \eqn{\kappa} the
+concentration and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d2 <- vonmises2_distrib()
+th <- list(mu = 0.5, rho = 0.7)
+eh <- distrib_expected_hessian(d2, c(-1, 0, 0.5, 2), th)
+vapply(eh, function(v) v[1], numeric(1))
+
+# The reparametrization identity: the information in rho is the reciprocal
+# of the information in kappa.
+k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+Ap <- numericals7::bessel_i_ratio_derivs(k)$d1
+c(supplied = eh$rho_rho[1], reciprocal = -1 / Ap)
+
+# Averaging the observed Hessian over draws reaches the same three numbers.
+set.seed(1)
+z <- distrib_rng(d2, 3e5, th)
+vapply(distrib_hessian(d2, z, th), mean, numeric(1))
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian.VonMises2Distrib()}} for the quantity this is the
+expectation of, \code{\link[=distrib_expected_hessian.VonMises1Distrib]{distrib_expected_hessian.VonMises1Distrib()}} for the same
+quantity in the concentration, and \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the
+generic.
 }

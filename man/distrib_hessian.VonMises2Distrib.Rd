@@ -2,29 +2,69 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{distrib_hessian.VonMises2Distrib}
 \alias{distrib_hessian.VonMises2Distrib}
-\title{von Mises Analytical Observed Hessian in the Resultant Length}
+\title{von Mises Observed Hessian in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles in \eqn{[-\pi, \pi)}.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} must lie in
+\eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second derivatives.
+A named list of three numeric vectors, \code{mu_mu}, \code{rho_rho} and
+\code{mu_rho}, each of length \code{max(length(y), length(mu), length(rho))}.
 }
 \description{
-The concentration parametrization's second derivatives carried through the
+Computes the three distinct second derivatives of the log-density in
+\eqn{\mu} and \eqn{\rho}, one value per observation, in closed form. The
+concentration parametrization's second derivatives are carried through the
 one-variable chain rule,
-\deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}(\kappa')^2
-                         + \ell^{(\kappa)}\kappa'',}
-with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)} and
-\eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)}.
+\deqn{\ell^{(\rho\rho)} = \ell^{(\kappa\kappa)}\{\kappa'(\rho)\}^2
+                         + \ell^{(\kappa)}\kappa''(\rho), \qquad
+      \ell^{(\mu\rho)} = \ell^{(\mu\kappa)}\kappa'(\rho),}
+with \eqn{\ell^{(\kappa\kappa)} = -A'(\kappa)},
+\eqn{\ell^{(\mu\kappa)} = \sin(y-\mu)} and
+\eqn{\ell^{(\mu\mu)} = -\kappa\cos(y-\mu)} unchanged.
+
+Unlike in the concentration parametrization, the pure second derivative is
+\strong{not} free of the data: the term in \eqn{\kappa''} carries
+\eqn{\cos(y-\mu)}, which the map's curvature brings in.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\rho \in (0,1)} the mean resultant length, \eqn{\kappa} the
+concentration and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d2 <- vonmises2_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, rho = 0.7)
+h <- distrib_hessian(d2, y, th)
+names(h)
+
+# numDeriv on the summed log-density reproduces the summed matrix.
+fn <- function(v)
+  sum(distrib_pdf(d2, y, list(mu = v[1], rho = v[2]), log = TRUE))
+H <- numDeriv::hessian(fn, c(0.5, 0.7))
+rbind(numeric = c(H[1, 1], H[2, 2], H[1, 2]),
+      closed = c(sum(h$mu_mu), sum(h$rho_rho), sum(h$mu_rho)))
+
+# The pure second derivative varies with the data here, where in the
+# concentration parametrization it does not.
+h$rho_rho
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_gradient.VonMises2Distrib]{distrib_gradient.VonMises2Distrib()}} for the score,
+\code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian.VonMises2Distrib()}} for the expectation of this
+quantity, \code{\link[=distrib_hessian.VonMises1Distrib]{distrib_hessian.VonMises1Distrib()}} for the same quantity in
+the concentration, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

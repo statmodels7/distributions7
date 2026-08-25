@@ -4,18 +4,37 @@
 \alias{distrib_rng.VonMises2Distrib}
 \title{von Mises Random Generation in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{rho} in
+\eqn{(0, 1)}.}
 }
 \value{
-A numeric vector of angles.
+A numeric vector of \code{n} angles in \eqn{[-\pi, \pi)}.
 }
 \description{
-Delegates to the concentration parametrization.
+Draws \code{n} independent angles by inverting the map once and calling
+\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng.VonMises1Distrib()}} at the implied concentration
+\eqn{\kappa = A^{-1}(\rho)}. The generator is the rejection algorithm of
+Best and Fisher (1979), which involves no Bessel function; the only Bessel
+work here is the single inversion of \eqn{A}.
+}
+\examples{
+d2 <- vonmises2_distrib()
+th <- list(mu = 0.5, rho = 0.7)
+set.seed(1)
+z <- distrib_rng(d2, 3e5, th)
+
+# This parametrization is the one a sample reads back directly: the mean
+# resultant length of the draws is rho, and the circular mean is mu.
+c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
+c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_rng.VonMises1Distrib]{distrib_rng.VonMises1Distrib()}}, which this calls;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters back from a sample; and
+\code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }

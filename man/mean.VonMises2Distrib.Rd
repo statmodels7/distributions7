@@ -2,24 +2,35 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{mean.VonMises2Distrib}
 \alias{mean.VonMises2Distrib}
-\title{Moments of the von Mises in the Resultant Length}
+\title{Mean of a von Mises in the Resultant Length}
 \arguments{
-\item{x}{A \code{VonMises2Distrib} object.}
+\item{x}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}. The
+argument is named \code{x} because the generic is \code{\link[base:mean]{base::mean()}}.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1. \code{rho} must lie in \eqn{(0, 1)}.}
 
-\item{...}{Passed on.}
+\item{...}{Passed on to \code{\link[=mean.distrib]{mean.distrib()}}, which reads the quadrature's
+settings.}
 }
 \value{
-A numeric vector.
+A numeric vector of length 1, the ordinary mean of \eqn{Y}.
 }
 \description{
-The ordinary moments of \eqn{Y} as a number on \eqn{[-\pi, \pi)}, obtained
-numerically as they are for \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}: \eqn{\mu} is
-the mean \emph{direction} and \eqn{\rho} the mean resultant length, and
-neither is an ordinary moment.
+Returns the ordinary expectation of \eqn{Y} as a number on
+\eqn{[-\pi, \pi)}, obtained numerically by delegating to
+\code{\link[=mean.distrib]{mean.distrib()}} at the implied concentration.
+
+It is \strong{not} a circular quantity and not what either parameter describes.
+\eqn{\mu} is the mean \emph{direction} and \eqn{\rho} the mean resultant length;
+\eqn{\mathbb{E}[Y]} differs from \eqn{\mu} whenever \eqn{\mu \ne 0}, because
+the interval is cut at \eqn{\pm\pi} and the density is not symmetric about
+\eqn{\mu} on it. Compute the circular mean of a sample as
+\code{atan2(mean(sin(z)), mean(cos(z)))}, which recovers \eqn{\mu}.
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=mean.distrib]{mean.distrib()}}, which this calls;
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}, whose page discusses the same distinction; and
+\code{\link[=variance]{variance()}} for the other ordinary moments.
 }
 \keyword{internal}

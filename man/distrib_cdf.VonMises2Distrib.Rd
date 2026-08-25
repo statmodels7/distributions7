@@ -4,29 +4,53 @@
 \alias{distrib_cdf.VonMises2Distrib}
 \title{von Mises Distribution Function in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{q}{A numeric vector of quantiles.}
+\item{q}{A numeric vector of angles. Below \eqn{-\pi} the value is 0 and at
+or above \eqn{\pi} it is 1.}
 
-\item{theta}{A named list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1 or of the length of \code{q}. \code{mu} must lie in
+\eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.
+This method takes \strong{no} \code{lower.tail} or \code{log.p}: the upper tail is
+\code{1 - F(q)} and the logarithm is \code{log(F(q))}.}
 }
 \value{
-The distribution function at \code{q}.
+A numeric vector of probabilities in \eqn{[0, 1]}, of length
+\code{max(length(q), length(mu), length(rho))}.
 }
 \description{
-The concentration parametrization's series, read at the concentration this
-one's resultant length implies.
+Computes \eqn{F(q) = P(Y \le q)} on \eqn{[-\pi, \pi)} from the Fourier
+series of the concentration parametrization, read at
+\eqn{\kappa = A^{-1}(\rho)}. The map touches the second parameter only and
+the response not at all, so the distribution function is the other family's
+at that concentration.
+
+What it replaces is the base class's quadrature, one integration per
+observation. See \code{\link[=vm_cdf]{vm_cdf()}} for the series, its measured term count and the
+blocking that keeps the intermediate small.
 }
-\details{
-The map touches the second parameter only and the response not at all, so
-the distribution function is the other family's at
-\eqn{\kappa = A^{-1}(\rho)}. What it replaces is the base class's
-quadrature, one per observation; see \code{\link[=vm_cdf]{vm_cdf()}} for the series
-and for how many terms it takes.
+\examples{
+d2 <- vonmises2_distrib()
+th <- list(mu = 0.5, rho = 0.7)
+y <- c(-1, 0, 0.5, 2)
+
+# The series agrees with a direct quadrature of the density.
+rbind(series = distrib_cdf(d2, y, th),
+      quadrature = vapply(y, function(v)
+        integrate(function(u) distrib_pdf(d2, u, th), -pi, v)$value,
+        numeric(1)))
+
+# And with the concentration parametrization at the implied concentration.
+k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+all.equal(distrib_cdf(d2, y, th),
+          distrib_cdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
 }
 \seealso{
-\code{\link[=vm_cdf]{vm_cdf()}}, \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=vm_cdf]{vm_cdf()}} for the series,
+\code{\link[=distrib_cdf.VonMises1Distrib]{distrib_cdf.VonMises1Distrib()}} for the same quantity in the
+concentration, and \code{\link[=distrib_cdf]{distrib_cdf()}} for the generic.
 }
 \keyword{internal}

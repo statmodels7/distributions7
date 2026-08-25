@@ -2,7 +2,7 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{VonMises2Distrib}
 \alias{VonMises2Distrib}
-\title{S7 Class for the von Mises Distribution in Its Resultant Length}
+\title{von Mises Distribution Class, Mean Resultant Length}
 \usage{
 VonMises2Distrib(
   distrib_name = character(0),
@@ -36,24 +36,67 @@ VonMises2Distrib(
 \item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
 }
 \value{
-An object of class \code{VonMises2Distrib}.
+An S7 object of class \code{VonMises2Distrib}, inheriting from
+\code{continuous_distrib} and from \code{distrib}. Its properties are the parent's:
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params}, \code{params_interpretation},
+\code{n_params}, \code{params_bounds}, \code{link_params} and \code{params_smooth}. For an
+object built by \code{\link[=vonmises2_distrib]{vonmises2_distrib()}} they hold \code{"von mises2"},
+\code{"univariate"}, \code{c(-pi, pi)}, \code{c("mu", "rho")}, the interpretations
+\code{c(mu = "mean direction", rho = "mean resultant length")}, \code{2}, and the
+domains \eqn{(-\pi, \pi)} and \eqn{(0, 1)}.
 }
 \description{
-A subclass of \code{continuous_distrib} for the von Mises
-written in its mean direction and its mean resultant length.
+The S7 class of the von Mises family written in its mean direction
+\eqn{\mu} and its \strong{mean resultant length} \eqn{\rho \in (0, 1)}, the
+quantity circular statistics reports and one minus the circular variance.
+It inherits from \code{continuous_distrib}; the nine methods listed below are
+registered on it directly.
+
+The concentration of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is recovered as
+\eqn{\kappa = A^{-1}(\rho)} with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)},
+a strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}
+whose inverse has no closed form. That is why this is a family of its own
+and not a \code{\link[=reparametrize]{reparametrize()}} of the other.
+
+Build one with \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}, which supplies the two link functions
+and fills the properties in. This page documents the raw S7 constructor,
+which takes the parent's properties and validates none of the relationships
+between them.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class:
+\code{\link[=distrib_cdf.VonMises2Distrib]{distrib_cdf()}},
+\code{\link[=distrib_deriv3.VonMises2Distrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.VonMises2Distrib]{distrib_deriv4()}},
 \code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.VonMises2Distrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian()}},
 \code{\link[=distrib_pdf.VonMises2Distrib]{distrib_pdf()}},
-\code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}}
+\code{\link[=distrib_rng.VonMises2Distrib]{distrib_rng()}},
+\code{\link[=mean.VonMises2Distrib]{mean()}}.
 
-Everything else is inherited from \code{\link[=continuous_distrib]{continuous_distrib()}}.
+The \strong{quantile} and the response derivatives come from
+\code{\link[=continuous_distrib]{continuous_distrib()}}, the quantile by root finding on this class's own
+distribution function. The remaining moments come from \code{\link[=variance]{variance()}} and its
+siblings, numerically, and are the ordinary moments of \eqn{Y} as a number.
 }
 
+\examples{
+d <- vonmises2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+
+# The resultant length is bounded, which is what makes it readable.
+d@params
+d@params_bounds$rho
+d@params_interpretation
+
+# The direction rides a bounded link and the resultant length a logit.
+vapply(d@link_params, function(l) l@link_name, character(1))
+}
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}, \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}} to build one;
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the same law in the concentration;
+\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} for the map;
+\code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian.VonMises2Distrib()}} for the information.
 }

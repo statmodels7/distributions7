@@ -2,21 +2,44 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{vm2_parts}
 \alias{vm2_parts}
-\title{The Pieces a von Mises Derivative in rho Needs}
+\title{The Pieces a von Mises Derivative in the Resultant Length Needs}
 \usage{
 vm2_parts(theta)
 }
 \arguments{
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1 or of a common length. \code{rho} must lie in \eqn{(0, 1)};
+only it is read here, \code{mu} not entering the map.}
 }
 \value{
-A list with \code{kappa}, \code{kd} and \code{ad}.
+A named list with \code{kappa}, the concentration; \code{kd}, the result of
+\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}}, carrying \code{kappa} and its
+derivatives \code{d1} to \code{d4} in \eqn{\rho}; and \code{ad}, the result of
+\code{\link[numericals7:bessel_i_ratio_derivs]{numericals7::bessel_i_ratio_derivs()}} at that concentration, carrying \code{A}
+and its derivatives \code{d1} to \code{d4} in \eqn{\kappa}.
 }
 \description{
-The concentration, its four derivatives in \eqn{\rho}, and the derivatives
-of \eqn{A} at that concentration, computed once per call.
+Evaluates the concentration \eqn{\kappa = A^{-1}(\rho)}, its four
+derivatives in \eqn{\rho}, and the derivatives of
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)} at that concentration, once per
+call, so that a density or a derivative method shares them.
+}
+\details{
+The inverse of \eqn{A} has no closed form.
+\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} obtains \eqn{\kappa} by root finding
+on \eqn{\log\kappa} and differentiates it by the inverse function rule, so
+\eqn{\mathrm{d}\kappa/\mathrm{d}\rho = 1/A'(\kappa)} and the higher
+derivatives follow from \eqn{A'} to \eqn{A^{(4)}}. Those come from the
+Bessel recurrences and from the same two evaluations \eqn{A} already needs,
+so no further Bessel call is made at any order.
+
+The map is very steep near \eqn{\rho = 1}: measured,
+\eqn{\mathrm{d}\kappa/\mathrm{d}\rho} is 2.00 at \eqn{\rho = 0.01}, 3.14 at
+0.5, 199 at 0.95 and \eqn{5.0\times10^{5}} at 0.999.
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_gradient.VonMises2Distrib]{distrib_gradient.VonMises2Distrib()}} for the first consumer,
+\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} for the root finding, and
+\code{\link[=vonmises2_distrib]{vonmises2_distrib()}} for the family.
 }
 \keyword{internal}

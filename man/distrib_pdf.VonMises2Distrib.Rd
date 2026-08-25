@@ -4,20 +4,63 @@
 \alias{distrib_pdf.VonMises2Distrib}
 \title{von Mises Density in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles. A value outside \eqn{[-\pi, \pi)} is
+off the support and gives a density of 0.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} must lie in
+\eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
+
+\item{threads}{A single positive integer, passed on to
+\code{\link[numericals7:log_bessel_i]{numericals7::log_bessel_i()}} through the concentration parametrization.
+Defaults to \code{1L}.}
 }
 \value{
-A numeric vector.
+A numeric vector of densities, of length
+\code{max(length(y), length(mu), length(rho))}, one value per observation.
 }
 \description{
-The von Mises density at the concentration \eqn{\kappa = A^{-1}(\rho)}.
+Computes the von Mises density
+\deqn{f(y; \mu, \rho) = \dfrac{e^{\kappa\cos(y-\mu)}}{2\pi I_0(\kappa)},
+      \qquad \kappa = A^{-1}(\rho),}
+by inverting the map once and calling
+\code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf.VonMises1Distrib()}} at the implied concentration. The two
+parametrizations are the same law, so the value is identical to that
+family's at \eqn{\kappa}.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean direction, \eqn{\rho \in (0,1)} the mean resultant
+length, \eqn{\kappa} the concentration, \eqn{I_m} the modified Bessel
+function of the first kind of order \eqn{m}, and
+\eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}.
+}
+
+\examples{
+d2 <- vonmises2_distrib()
+th <- list(mu = 0.5, rho = 0.7)
+y <- c(-1, 0, 0.5, 2)
+distrib_pdf(d2, y, th)
+
+# It is the same law as the concentration parametrization, at the
+# concentration this resultant length implies.
+k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+k
+all.equal(distrib_pdf(d2, y, th),
+          distrib_pdf(vonmises1_distrib(), y, list(mu = 0.5, kappa = k)))
+
+# And that concentration maps back to the resultant length given.
+numericals7::bessel_i_ratio(k)
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_pdf.VonMises1Distrib]{distrib_pdf.VonMises1Distrib()}}, which this calls;
+\code{\link[=distrib_cdf.VonMises2Distrib]{distrib_cdf.VonMises2Distrib()}} for the distribution function; and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

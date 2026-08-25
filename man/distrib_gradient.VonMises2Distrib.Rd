@@ -2,28 +2,74 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{distrib_gradient.VonMises2Distrib}
 \alias{distrib_gradient.VonMises2Distrib}
-\title{von Mises Analytical Gradient in the Resultant Length}
+\title{von Mises Score in the Resultant Length}
 \arguments{
-\item{distrib}{A \code{VonMises2Distrib} object.}
+\item{distrib}{A \code{VonMises2Distrib} object, from \code{\link[=vonmises2_distrib]{vonmises2_distrib()}}.}
 
-\item{y}{A numeric vector of angles.}
+\item{y}{A numeric vector of angles in \eqn{[-\pi, \pi)}.}
 
-\item{theta}{A list with \code{mu} and \code{rho}.}
+\item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
+vector of length 1 or of the length of \code{y}. \code{mu} must lie in
+\eqn{(-\pi, \pi)} and \code{rho} in \eqn{(0, 1)}.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of first derivatives.
+A named list of two numeric vectors, \code{mu} and \code{rho}, each of length
+\code{max(length(y), length(mu), length(rho))}.
 }
 \description{
+Computes the first derivatives of the log-density with respect to the mean
+direction \eqn{\mu} and the mean resultant length \eqn{\rho}, one value per
+observation, in closed form:
 \deqn{\dfrac{\partial\ell}{\partial\mu} = \kappa\sin(y-\mu), \qquad
       \dfrac{\partial\ell}{\partial\rho}
-        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho)}
-The map touches only the second parameter, so the chain rule is the
-one-variable one and no cancellation is involved.
+        = \left\{\cos(y-\mu) - A(\kappa)\right\}\kappa'(\rho),}
+with \eqn{\kappa = A^{-1}(\rho)} and
+\eqn{\kappa'(\rho) = 1/A'(\kappa)} from the inverse function rule.
+
+The map touches the \strong{second parameter only}, so the chain rule is the
+one-variable one: the direction's component is unchanged from the
+concentration parametrization, and the second is that family's multiplied by
+a single factor. No multivariate expansion and no cancellation are involved
+at any order.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries. This method always returns the parameter scale.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\rho \in (0,1)} the mean resultant length, \eqn{\kappa} the
+concentration and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}, so that
+\eqn{\rho = A(\kappa)}.
+}
+
+\examples{
+d2 <- vonmises2_distrib()
+y <- c(-1, 0, 0.5, 2)
+th <- list(mu = 0.5, rho = 0.7)
+g <- distrib_gradient(d2, y, th)
+
+# numDeriv on the summed log-density reproduces the summed score.
+fn <- function(v)
+  sum(distrib_pdf(d2, y, list(mu = v[1], rho = v[2]), log = TRUE))
+rbind(numeric = numDeriv::grad(fn, c(0.5, 0.7)),
+      closed = vapply(g, sum, numeric(1)))
+
+# The direction component is unchanged from the concentration
+# parametrization, the map touching the second parameter only.
+k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+all.equal(g$mu,
+          distrib_gradient(vonmises1_distrib(), y,
+                           list(mu = 0.5, kappa = k))$mu)
 }
 \seealso{
-\code{\link[=vonmises2_distrib]{vonmises2_distrib()}}
+\code{\link[=distrib_hessian.VonMises2Distrib]{distrib_hessian.VonMises2Distrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.VonMises2Distrib]{distrib_expected_hessian.VonMises2Distrib()}} for their expectation,
+\code{\link[=distrib_gradient.VonMises1Distrib]{distrib_gradient.VonMises1Distrib()}} for the same quantity in the
+concentration, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }

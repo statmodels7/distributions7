@@ -2,7 +2,7 @@
 % Please edit documentation in R/vonmises2_distrib.R
 \name{vonmises2_distrib}
 \alias{vonmises2_distrib}
-\title{von Mises Distribution in the Mean Resultant Length}
+\title{von Mises Distribution, Mean Direction and Mean Resultant Length}
 \usage{
 vonmises2_distrib(
   link_mu = bounded_link(lwr = -pi, upr = pi),
@@ -10,59 +10,130 @@ vonmises2_distrib(
 )
 }
 \arguments{
-\item{link_mu}{Link function for the mean direction. Defaults to a link
-bounded to \eqn{(-\pi, \pi)}.}
+\item{link_mu}{A \code{link} object from \code{linkfunctions7} for the mean direction
+\eqn{\mu}. Defaults to \code{linkfunctions7::bounded_link(lwr = -pi, upr = pi)}.
+The chart keeps \eqn{\mu} identified at the cost that a fit cannot walk
+across \eqn{\pm\pi}; see \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.}
 
-\item{link_rho}{Link function for the resultant length. Defaults to the
-logit, the natural link onto \eqn{(0, 1)}.}
+\item{link_rho}{A \code{link} object from \code{linkfunctions7} for the resultant
+length \eqn{\rho}. Defaults to \code{\link[linkfunctions7:logit_link]{linkfunctions7::logit_link()}}, the natural
+link onto \eqn{(0, 1)}.}
 }
 \value{
-An S7 object of class \code{\link[=VonMises2Distrib]{VonMises2Distrib()}}.
+An S7 object of class \code{VonMises2Distrib}, inheriting from
+\code{continuous_distrib}, with \code{distrib_name} \code{"von mises2"}, \code{dimension}
+\code{"univariate"}, \code{bounds} \code{c(-pi, pi)}, \code{params} \code{c("mu", "rho")},
+\code{n_params} \code{2}, \code{params_bounds} the domains \eqn{(-\pi, \pi)} and
+\eqn{(0, 1)}, and \code{link_params} the two links given here.
 }
 \description{
-Creates a von Mises distribution object parametrized by its mean direction
-and its \strong{mean resultant length} \eqn{\rho = A(\kappa)}, which lives
-in \eqn{(0, 1)}.
+Builds the distribution object for the von Mises family parametrized by its
+mean direction \eqn{\mu} and its \strong{mean resultant length}
+\eqn{\rho \in (0, 1)}. The returned object carries closed-form derivatives
+of the log-density to fourth order, a closed-form expected information, and
+the same Bessel-series distribution function the concentration
+parametrization uses.
+
+The concentration \eqn{\kappa} of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is unbounded and
+hard to read. The resultant length is bounded, is the quantity circular
+statistics reports, and is one minus the circular variance; a sample reads
+it back directly as
+\code{sqrt(mean(cos(z))^2 + mean(sin(z))^2)}.
 }
-\details{
-The concentration \eqn{\kappa} of \code{\link[=vonmises1_distrib]{vonmises1_distrib()}} is
-unbounded and hard to read; the resultant length is bounded, is the quantity
-circular statistics reports, and is one minus the circular variance. The two
-are related by \eqn{\rho = I_1(\kappa)/I_0(\kappa)}, a strictly increasing
-bijection.
+\section{The parametrization, and why it is a family of its own}{
+The density on \eqn{y \in [-\pi, \pi)} is
+\deqn{f(y; \mu, \rho) = \frac{e^{\kappa\cos(y-\mu)}}{2\pi I_{0}(\kappa)},
+      \qquad \kappa = A^{-1}(\rho),}
+with \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}, and
+\eqn{\mathbb{E}[\cos(Y-\mu)] = \rho}. The map \eqn{\rho = A(\kappa)} is a
+strictly increasing bijection from \eqn{(0, \infty)} onto \eqn{(0, 1)}.
 
-That bijection has no closed inverse, which is why this is a family of its
-own rather than a \code{\link[=reparametrize]{reparametrize()}} of the other: \eqn{\kappa} is
-obtained by root finding on \eqn{\log\kappa}, and its four derivatives come
-from the inverse function rule applied to \eqn{A' \dots A''''}, which the
-Bessel recurrences give from the same two evaluations \eqn{A} already needs.
+\strong{Its inverse has no closed form}, which is why this is a family of its own
+and not a \code{\link[=reparametrize]{reparametrize()}} of the other. \eqn{\kappa} is obtained by root
+finding on \eqn{\log\kappa}, and its four derivatives come from the inverse
+function rule applied to \eqn{A'} through \eqn{A^{(4)}}, which the Bessel
+recurrences give from the same two evaluations \eqn{A} already needs.
 
-The map touches the second parameter only, so the chain rule is the
-one-variable one and the derivatives are exact. The expected information is
-closed form and the two parameters are orthogonal, as they are in the
-concentration parametrization.
-
-\strong{The moments are not the parameters.} \code{\link[=mean]{mean()}} returns the
-ordinary expectation of \eqn{Y} on \eqn{[-\pi, \pi)}, which differs from
-\eqn{\mu} whenever \eqn{\mu \ne 0}; see \code{\link[=vonmises1_distrib]{vonmises1_distrib()}}.
+The map is steep near \eqn{\rho = 1}: measured,
+\eqn{\mathrm{d}\kappa/\mathrm{d}\rho} is 2.00 at \eqn{\rho = 0.01}, 3.14 at
+0.5, 199 at 0.95 and \eqn{5.0\times10^{5}} at 0.999. A fit whose data are
+nearly all in one direction is therefore far better conditioned in
+\eqn{\kappa} than in \eqn{\rho}.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \frac{e^{\kappa\cos(y-\mu)}}{2\pi I_{0}(\kappa)}, \qquad \kappa = A^{-1}(\rho)}
-on \eqn{y \in [-\pi, \pi)}.
+\section{Derivatives and information}{
+The map touches the \strong{second parameter only}, so every chain rule is the
+one-variable one and the derivatives are exact at every order. Every
+component carrying at least one \eqn{\mu} collapses to a single term, the
+concentration parametrization's \eqn{\mu}-derivatives being linear in
+\eqn{\kappa}.
 
-\deqn{\mathbb{E}[\cos(Y-\mu)] = \rho}
+The expected information is closed form and the two parameters are
+orthogonal, as in the concentration parametrization, with
+\deqn{\mathbb{E}[\ell^{(\mu\mu)}] = -\kappa\rho, \qquad
+      \mathbb{E}[\ell^{(\mu\rho)}] = 0, \qquad
+      \mathbb{E}[\ell^{(\rho\rho)}] = -\dfrac{1}{A'(\kappa)},}
+the last being the reciprocal of the information in \eqn{\kappa}, since the
+Jacobian of the map is that reciprocal.
+}
+
+\section{The moments are not the parameters}{
+\code{\link[=mean.VonMises2Distrib]{mean.VonMises2Distrib()}} returns the ordinary expectation of \eqn{Y} on
+\eqn{[-\pi, \pi)}, which differs from \eqn{\mu} whenever \eqn{\mu \ne 0};
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} discusses the same distinction. What this
+parametrization buys is that the \strong{second} parameter is a quantity a sample
+reads back directly, which the concentration is not.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean
+direction, \eqn{\rho \in (0,1)} the mean resultant length, \eqn{\kappa} the
+concentration, \eqn{I_m} the modified Bessel function of the first kind of
+order \eqn{m}, and \eqn{A(\kappa) = I_1(\kappa)/I_0(\kappa)}. \eqn{\eta} is
+a parameter on the unconstrained scale of its link, with
+\eqn{\theta = g^{-1}(\eta)}.
 }
 
 \examples{
 d <- vonmises2_distrib()
-theta <- list(mu = 0.5, rho = 0.7)
-distrib_pdf(d, c(-1, 0, 1), theta)
+d
 
-# rho is bounded, which is what makes it readable
+# The resultant length is bounded, which is what makes it readable.
 d@params_bounds$rho
 
+# The same law as the concentration parametrization at the implied kappa.
+th <- list(mu = 0.5, rho = 0.7)
+k <- numericals7::bessel_i_ratio_inverse(0.7)$kappa
+all.equal(distrib_pdf(d, c(-1, 0, 1), th),
+          distrib_pdf(vonmises1_distrib(), c(-1, 0, 1),
+                      list(mu = 0.5, kappa = k)))
+
+# A sample reads the second parameter back directly, which is the point.
+set.seed(1)
+z <- distrib_rng(d, 3e5, th)
+c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
+
+# The map is steep near one, so a nearly deterministic direction is better
+# conditioned in kappa than in rho.
+vapply(c(0.01, 0.5, 0.95, 0.999),
+       function(r) numericals7::bessel_i_ratio_inverse(r)$d1, numeric(1))
+
+# Fitting recovers both parameters.
+set.seed(3)
+coef(fit_distrib(d, distrib_rng(d, 2000, list(mu = 0.8, rho = 0.6))))
+
+}
+\references{
+Mardia, K. V. and Jupp, P. E. (2000). \emph{Directional Statistics}, Chapter 3.
+Wiley, Chichester.
 }
 \seealso{
-\code{\link[=vonmises1_distrib]{vonmises1_distrib()}}
+\code{\link[=vonmises1_distrib]{vonmises1_distrib()}} for the same law in the concentration, which is
+better conditioned at a nearly deterministic direction;
+\code{\link[numericals7:bessel_i_ratio_inverse]{numericals7::bessel_i_ratio_inverse()}} for the map and its derivatives;
+\code{\link[=beta1_distrib]{beta1_distrib()}} for another family on \eqn{(0, 1)};
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{VonMises2Distrib} for the class.
 }
