@@ -2,28 +2,74 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{distrib_gradient.DirichletDistrib}
 \alias{distrib_gradient.DirichletDistrib}
-\title{Dirichlet Analytical Gradient}
+\title{Dirichlet Score}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row on the open simplex. A single observation may be given as a plain
+vector.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list, one component per parameter.
+A named list with one numeric vector per parameter, in the order
+\code{distrib@params} gives, each of length \code{nrow(y)}.
 }
 \description{
-With \eqn{g_j = \log y_j - \psi(\alpha_j)} and
-\eqn{A = \partial\mu/\partial\eta},
-\deqn{\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_j g_j A_{jk},
+Computes the first derivatives of the Dirichlet log-density with respect to
+the mean's free values and the concentration, one value per observation, in
+closed form. Writing \eqn{g_j = \log y_j - \psi(\alpha_j)} and
+\eqn{A = \partial\mu/\partial\eta} for the simplex's own Jacobian,
+\deqn{\dfrac{\partial\ell}{\partial\eta_k} = \phi \sum_{j} g_j A_{jk},
       \qquad
-      \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_j g_j \mu_j}
+      \dfrac{\partial\ell}{\partial\phi} = \psi(\phi) + \sum_{j} g_j \mu_j.}
+The data enter only through \eqn{\log y}, the family being an exponential
+family in that statistic, so \eqn{g} carries the whole of it.
+
+With \code{scale = "link"} the generic applies the chain rule for the links the
+family carries before returning. Every mean coordinate rides the identity,
+its free value being unconstrained already, so only the concentration's
+component changes.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean vector,
+\eqn{\phi > 0} the concentration, \eqn{\alpha = \phi\mu} the shapes,
+\eqn{\eta} the free vector of the simplex chart and \eqn{\psi} the digamma
+function.
+}
+
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+g <- distrib_gradient(d, Y, th)
+names(g)
+
+# It is the derivative of the log-density, so numDeriv on the summed
+# log-density reproduces the summed score.
+fn <- function(v)
+  sum(distrib_pdf(d, Y, as.list(stats::setNames(v, d@params)), log = TRUE))
+rbind(numeric = numDeriv::grad(fn, unlist(th)),
+      closed = vapply(g, sum, numeric(1)))
+
+# The summed score vanishes at the maximum likelihood estimate.
+set.seed(9)
+Z <- distrib_rng(d, 800, th)
+mle <- as.list(coef(fit_distrib(d, Z)))
+vapply(distrib_gradient(d, Z, mle), sum, numeric(1))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} for the second derivatives,
+\code{\link[=distrib_expected_hessian.DirichletDistrib]{distrib_expected_hessian.DirichletDistrib()}} for their expectation,
+\code{\link[=dir_parts]{dir_parts()}} for the shared pieces, and \code{\link[=distrib_gradient]{distrib_gradient()}} for the
+generic.
 }

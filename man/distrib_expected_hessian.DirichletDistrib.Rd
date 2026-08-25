@@ -2,34 +2,87 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{distrib_expected_hessian.DirichletDistrib}
 \alias{distrib_expected_hessian.DirichletDistrib}
-\title{Dirichlet Analytical Expected Hessian}
+\title{Dirichlet Expected Hessian}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix of observations. Only its row count is read
+through \code{\link[=n_obs]{n_obs()}}, the expectation not depending on the data; the values
+are ignored.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{approx}{Ignored; the expectation is closed form.}
+\item{approx}{Ignored here, the expectation being exact. Accepted so that
+the signature matches the generic's, where it selects between
+\code{"bartlett"}, \code{"integrate"}, \code{"mc"} and \code{"opg"}.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored here, for the same reason. Defaults to \code{10000}.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of expected second-derivative components.
+A named list of numeric vectors, one per distinct entry of the
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
+\code{n_obs(distrib, y)} and constant along it.
 }
 \description{
-Closed form. \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
-\eqn{\mathbb{E}[g_j] = -\psi(\phi)} for every \eqn{j}; the columns of
-\eqn{A} and every second-derivative vector of the simplex sum to zero, so
-each data-carrying term drops out and
-\deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -\phi^2\sum_j t_j A_{jk}A_{jl},
+Returns the expectation of the observed Hessian under the model, in closed
+form and with no quadrature or simulation:
+\deqn{\mathbb{E}[\ell^{(\eta_k\eta_l)}] = -\phi^2\sum_{j} t_j A_{jk}A_{jl},
       \qquad
-      \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_j t_j \mu_j A_{jk}}
+      \mathbb{E}[\ell^{(\eta_k\phi)}] = -\phi\sum_{j} t_j \mu_j A_{jk},
+      \qquad
+      \mathbb{E}[\ell^{(\phi\phi)}] = \psi'(\phi) - \sum_{j} t_j \mu_j^2,}
+with \eqn{t_j = \psi'(\alpha_j)} and \eqn{A = \partial\mu/\partial\eta}.
+\code{approx} and \code{nsim} are ignored: every strategy returns the same matrix.
+}
+\section{Why the data-carrying terms drop out}{
+Under the model \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)}, so
+\eqn{\mathbb{E}[g_j] = -\psi(\phi)}, \strong{the same constant for every}
+\eqn{j}. Each term of the observed Hessian that carries the data is that
+constant times a sum over \eqn{j} of a column of \eqn{A} or of a
+second-derivative vector of the simplex, and both of those sum to zero:
+differentiating \eqn{\sum_j \mu_j = 1} once gives the first, twice the
+second. Every such term is therefore exactly zero under expectation, which
+is why a family with no location and scale to separate still has a
+closed-form information matrix.
+}
+
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean vector,
+\eqn{\phi > 0} the concentration, \eqn{\alpha = \phi\mu} the shapes,
+\eqn{\eta} the free vector of the simplex chart, and \eqn{\psi}, \eqn{\psi'}
+the digamma and trigamma functions.
+}
+
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+eh <- distrib_expected_hessian(d, Y, th)
+vapply(eh, function(v) v[1], numeric(1))
+
+# Averaging the observed Hessian over draws reaches the same matrix.
+set.seed(3)
+Z <- distrib_rng(d, 3e5, th)
+vapply(distrib_hessian(d, Z, th), mean, numeric(1))
+
+# The two zero sums the derivation rests on, read off the simplex itself.
+eta <- c(0.3, -0.2)
+colSums(do.call(cbind, parameters7::param_d1(d@param, eta)))
+vapply(parameters7::param_d2(d@param, eta), sum, numeric(1))
+
+# The strategy argument is inert, the expectation being exact.
+identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian.DirichletDistrib()}} for the quantity this is the
+expectation of, \code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient.DirichletDistrib()}} for the score, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }

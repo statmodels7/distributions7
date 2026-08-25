@@ -4,16 +4,36 @@
 \alias{mv_location.DirichletDistrib}
 \title{Dirichlet Mean Vector}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1. The concentration is read
+but not used here.}
 }
 \value{
-A numeric vector summing to one.
+A numeric vector of length \eqn{p}, strictly positive and summing to
+one.
 }
 \description{
-The simplex the mean parameter carries, which is the mean.
+Returns the point of the simplex the mean parameter carries at the free
+values in \code{theta}. For this family that point \strong{is} the mean,
+\eqn{\mathbb{E}[Y_j] = \mu_j}, so \code{\link[=mean.DirichletDistrib]{mean.DirichletDistrib()}} delegates here.
+The value comes from \code{\link[parameters7:param_value]{parameters7::param_value()}} on the object's own
+simplex chart, so it lies on the open simplex by construction whatever the
+free values are.
+}
+\examples{
+d <- dirichlet_distrib(3)
+mu <- mv_location(d, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12))
+mu
+sum(mu)
+
+# Whatever the free values, the result is on the simplex.
+m2 <- mv_location(d, list(mean_alr1 = -8, mean_alr2 = 5, phi = 12))
+c(min = min(m2), sum = sum(m2))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=mv_sigma.DirichletDistrib]{mv_sigma.DirichletDistrib()}} for the covariance,
+\code{\link[=mean.DirichletDistrib]{mean.DirichletDistrib()}}, which calls this, and \code{\link[=mv_location]{mv_location()}} for the
+generic.
 }

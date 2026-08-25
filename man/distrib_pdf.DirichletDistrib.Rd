@@ -4,22 +4,69 @@
 \alias{distrib_pdf.DirichletDistrib}
 \title{Dirichlet Density}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{y}{A matrix with one row per observation, each summing to one.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row strictly positive and summing to one within \code{1e-8}. A single
+observation may be given as a plain vector and is read as one row. A row
+failing either test gives a density of 0, or \code{-Inf} with \code{log = TRUE}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1. A parameter may not vary
+by observation here, the mean being one point of the simplex for the whole
+sample.}
 
-\item{log}{Logical; if \code{TRUE}, returns the log-density.}
+\item{log}{Logical of length 1. When \code{TRUE} the log-density is returned.
+Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, one entry per row of \code{y}.
+A numeric vector of densities of length \code{nrow(y)}, one per
+observation.
 }
 \description{
-\deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_j \Gamma(\alpha_j)}
-      \prod_j y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu}
-evaluated on the open simplex, one row of \code{y} per observation.
+Computes the Dirichlet density
+\deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_{j=1}^{p} \Gamma(\alpha_j)}
+      \prod_{j=1}^{p} y_j^{\alpha_j - 1}, \qquad \alpha = \phi\mu,}
+one value per row of \code{y}, with respect to the \eqn{(p-1)}-dimensional
+measure the simplex carries.
+
+The support is tested \strong{before} the logarithm is taken. A negative
+coordinate would make \code{\link[base:Log]{base::log()}} warn, and a density evaluated off its
+support is 0, so a row that is not on the simplex returns 0 without a
+numerical complaint.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean vector, a point of the simplex; \eqn{\phi > 0} the
+concentration; \eqn{\alpha = \phi\mu} the shapes; and \eqn{p} the number of
+coordinates.
+}
+
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+mu <- mv_location(d, th)
+
+# The density at four draws, against the formula written out.
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+al <- 12 * mu
+all.equal(distrib_pdf(d, Y, th),
+          as.numeric(exp(lgamma(12) - sum(lgamma(al))) *
+                       apply(Y, 1, function(r) prod(r^(al - 1)))))
+
+# A row that does not sum to one, or has a negative coordinate, is off the
+# support and returns zero rather than warning.
+distrib_pdf(d, rbind(c(0.5, 0.5, 0.5), c(-0.1, 0.6, 0.5)), th)
+
+# A single observation may be given as a vector.
+distrib_pdf(d, c(0.4, 0.25, 0.35), th)
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient.DirichletDistrib()}} for the derivatives of the
+log-density, \code{\link[=distrib_rng.DirichletDistrib]{distrib_rng.DirichletDistrib()}} for draws,
+\code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}} for a coordinate's beta marginal, and
+\code{\link[=distrib_pdf]{distrib_pdf()}} for the generic.
 }

@@ -4,19 +4,27 @@
 \alias{mean.DirichletDistrib}
 \title{Mean of a Dirichlet}
 \arguments{
-\item{x}{A \code{DirichletDistrib} object.}
+\item{x}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}. The
+argument is named \code{x} because the generic is \code{\link[base:mean]{base::mean()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector summing to one.
+A numeric vector of length \eqn{p}, strictly positive and summing to
+one.
 }
 \description{
-The mean vector, which is a parameter of the family.
+Returns the mean vector \eqn{\mathbb{E}[Y] = \mu}, which for this family is
+a parameter and needs no computation: the method delegates to
+\code{\link[=mv_location.DirichletDistrib]{mv_location.DirichletDistrib()}}. The result sums to one, being a point of
+the simplex.
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=variance.DirichletDistrib]{variance.DirichletDistrib()}} for the covariance,
+\code{\link[=mv_location.DirichletDistrib]{mv_location.DirichletDistrib()}}, which this calls, and
+\code{\link[=mean.distrib]{mean.distrib()}} for the generic's default.
 }
 \keyword{internal}

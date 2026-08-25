@@ -2,7 +2,7 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{DirichletDistrib}
 \alias{DirichletDistrib}
-\title{S7 Class for the Dirichlet Distribution}
+\title{Dirichlet Distribution Class, Mean Vector and Concentration}
 \usage{
 DirichletDistrib(
   distrib_name = character(0),
@@ -39,19 +39,38 @@ DirichletDistrib(
 
 \item{n_dim}{The dimension \eqn{p} of an observation.}
 
-\item{param}{The \pkg{parameters7} simplex carrying the mean.}
+\item{param}{The \code{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} carrying the mean.
+Its \code{n_free} is \eqn{p-1}, one fewer than the number of coordinates, the
+simplex being a set of dimension \eqn{p-1} in \eqn{\mathbb{R}^p}.}
 }
 \value{
-An object of class \code{DirichletDistrib}.
+An S7 object of class \code{DirichletDistrib}, inheriting from
+\code{multivariate_distrib} and from \code{distrib}. Beyond \code{param} its properties
+are the parent's: \code{distrib_name}, \code{dimension}, \code{n_dim}, \code{bounds},
+\code{params}, \code{params_interpretation}, \code{n_params}, \code{params_bounds},
+\code{link_params} and \code{params_smooth}. For an object built by
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}} \code{params} is \code{c("mean_<free names>", "phi")},
+\code{n_params} is \eqn{p}, and every mean coordinate carries an identity link,
+its free value being unconstrained already.
 }
 \description{
-A subclass of \code{multivariate_distrib} representing the
-Dirichlet distribution on the simplex, written in a mean vector and a
-concentration.
+The S7 class of the Dirichlet family on the open simplex of \eqn{p}
+coordinates, parametrized by a mean vector \eqn{\mu} carried on a
+\code{parameters7} simplex and a concentration \eqn{\phi > 0}. It inherits from
+\code{multivariate_distrib}, so the distribution function and the quantile are
+refused rather than approximated; the eleven methods listed below are
+registered on it in this file and two more in \code{mv_higher.R}.
+
+The class carries an extra property beyond the parent's, \code{param}: the
+\code{parameters7} simplex the mean lies on, whose free names become the
+family's own parameter names prefixed by \code{mean_}. Build one with
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}, which validates the simplex against \code{n_dim},
+supplies the concentration's link and fills the properties in. This page
+documents the raw S7 constructor, which validates none of that.
 }
 \section{Methods}{
 
-Methods implemented for this class:
+Registered on this class in this file:
 \code{\link[=distrib_expected_hessian.DirichletDistrib]{distrib_expected_hessian()}},
 \code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient()}},
 \code{\link[=distrib_hessian.DirichletDistrib]{distrib_hessian()}},
@@ -59,12 +78,36 @@ Methods implemented for this class:
 \code{\link[=distrib_rng.DirichletDistrib]{distrib_rng()}},
 \code{\link[=mv_location.DirichletDistrib]{mv_location()}},
 \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal()}},
-\code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}}
+\code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw()}},
+\code{\link[=mv_sigma.DirichletDistrib]{mv_sigma()}},
+\code{\link[=mean.DirichletDistrib]{mean()}} and
+\code{\link[=variance.DirichletDistrib]{variance()}}.
 
-Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, which
-rejects the distribution function and the quantile.
+Two more are registered in \code{mv_higher.R}:
+\code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3()}} and
+\code{\link[=distrib_deriv4.DirichletDistrib]{distrib_deriv4()}}, both closed form.
+
+Everything else is inherited from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, which refuses
+the distribution function, the quantile and the response derivatives.
 }
 
+\examples{
+d <- dirichlet_distrib(3)
+S7::S7_inherits(d, multivariate_distrib)
+
+# Three coordinates, so two free mean values plus the concentration.
+d@n_dim
+d@params
+d@params_interpretation
+
+# The mean lives on a parameters7 simplex, which is the extra property.
+d@param@param_name
+d@param@n_free
+}
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}} to build one;
+\code{\link[=beta1_distrib]{beta1_distrib()}}, which is a coordinate's marginal and the
+two-coordinate case seen on the line;
+\code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the same simplex;
+\code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart.
 }

@@ -7,27 +7,37 @@
 dir_parts(distrib, theta)
 }
 \arguments{
-\item{distrib}{A \code{\link[=DirichletDistrib]{DirichletDistrib()}} object.}
+\item{distrib}{A \code{\link[=DirichletDistrib]{DirichletDistrib()}} object, read for its \code{param} and its
+parameter names.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values, in the simplex's own order, followed by the concentration
+\code{phi}.}
 }
 \value{
-A list with \code{mu}, \code{phi}, \code{alpha}, \code{A} (a
-\eqn{p \times (p-1)} matrix), \code{B} (the second derivatives, keyed by
-tuple) and \code{idx} (their index tuples).
+A named list with \code{mu}, the mean vector of length \eqn{p} summing to
+one; \code{phi}, the concentration; \code{alpha}, the shapes \eqn{\phi\mu}; \code{A}, the
+\eqn{p \times (p-1)} matrix of first derivatives of the mean in the free
+values; \code{B}, the list of second-derivative vectors keyed by unordered
+tuple; \code{idx}, those tuples; and \code{k}, the number of free mean values.
 }
 \description{
-The mean vector, the concentration, the shapes \eqn{\alpha = \phi\mu} and
-the simplex's first two derivatives, computed once per call.
+Evaluates the mean vector, the concentration, the shapes
+\eqn{\alpha = \phi\mu} and the simplex's first two derivative arrays once,
+so that a density or a derivative method computes them a single time and
+shares them.
 }
 \details{
-Two identities keep every formula short, both
-following from \eqn{\sum_j \mu_j = 1} differentiated once and twice: the
-columns of \eqn{A = \partial\mu/\partial\eta} sum to zero, and so does
-every second-derivative vector. They are what make the expected information
-closed form, since the terms carrying the data drop out under expectation.
+Two identities keep every formula on the family's pages short, and both
+follow from differentiating \eqn{\sum_j \mu_j = 1}: once, the columns of
+\eqn{A = \partial\mu/\partial\eta} sum to zero; twice, so does every
+second-derivative vector \eqn{B_{\cdot,kl}}. They are what makes the
+expected information closed form, since every term carrying the data is a
+constant times one of those zero sums and drops out under expectation.
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=dir_b_index]{dir_b_index()}} for locating an entry of \code{B},
+\code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient.DirichletDistrib()}} for the first consumer, and
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}} for the family.
 }
 \keyword{internal}

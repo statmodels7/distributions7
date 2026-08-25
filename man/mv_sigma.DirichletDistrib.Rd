@@ -4,18 +4,47 @@
 \alias{mv_sigma.DirichletDistrib}
 \title{Dirichlet Covariance Matrix}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 }
 \value{
-A symmetric matrix.
+A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 }
 \description{
+Returns the covariance matrix of the family,
 \deqn{\operatorname{Cov}(Y_i, Y_j)
-      = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}}
-singular by construction, the coordinates summing to a constant.
+      = \dfrac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1},}
+so the coordinate variances are \eqn{\mu_j(1-\mu_j)/(\phi+1)} and every
+covariance is negative, a rise in one coordinate having to be paid for by
+the others.
+
+The matrix is \strong{singular by construction}: the coordinates sum to one, so
+the vector of ones is in its null space and the rank is \eqn{p-1}. Anything
+that inverts a covariance must use the marginals or the free vector instead.
+The concentration acts as a precision, every entry falling as
+\eqn{1/(\phi+1)}.
+}
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+S <- mv_sigma(d, th)
+round(S, 6)
+
+# Singular by construction: the rank is p - 1 and the ones vector is in
+# the null space.
+c(rank = qr(S)$rank, dim = ncol(S))
+round(S \%*\% rep(1, 3), 12)
+
+# The concentration is a precision: every entry falls as 1 / (phi + 1).
+vapply(c(2, 12, 100), function(p)
+  mv_sigma(d, list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = p))[1, 1],
+  numeric(1))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=mv_location.DirichletDistrib]{mv_location.DirichletDistrib()}} for the mean,
+\code{\link[=variance.DirichletDistrib]{variance.DirichletDistrib()}}, which calls this,
+\code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}} for a coordinate's law, and
+\code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }

@@ -2,30 +2,72 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{distrib_hessian.DirichletDistrib}
 \alias{distrib_hessian.DirichletDistrib}
-\title{Dirichlet Analytical Observed Hessian}
+\title{Dirichlet Observed Hessian}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{y}{A matrix with one row per observation.}
+\item{y}{A numeric matrix with one row per observation and \eqn{p} columns,
+each row on the open simplex. A single observation may be given as a plain
+vector.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 
-\item{scale}{Either \code{"parameter"} or \code{"link"}; handled by the generic.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, matched by
+\code{\link[base:match.arg]{base::match.arg()}}. Read by the generic, not by this method.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list of second-derivative components.
+A named list of numeric vectors, one per distinct entry of the
+symmetric matrix and named as \code{\link[=hess_names]{hess_names()}} names them, each of length
+\code{nrow(y)}. For \eqn{p} coordinates there are \eqn{p(p+1)/2} of them.
 }
 \description{
-The second derivatives of the same expressions, with
-\eqn{t_j = \psi'(\alpha_j)}:
-\deqn{\ell^{(\eta_k\eta_l)} = \phi\sum_j\left(-t_j\phi A_{jk}A_{jl}
+Computes the distinct second derivatives of the Dirichlet log-density with
+respect to the mean's free values and the concentration, one value per
+observation, in closed form. With \eqn{g_j = \log y_j - \psi(\alpha_j)},
+\eqn{t_j = \psi'(\alpha_j)}, \eqn{A = \partial\mu/\partial\eta} and
+\eqn{B_{\cdot,kl} = \partial^2\mu/\partial\eta_k\partial\eta_l},
+\deqn{\ell^{(\eta_k\eta_l)} = \phi\sum_{j}\left(-t_j\phi A_{jk}A_{jl}
         + g_j B_{j,kl}\right), \qquad
-      \ell^{(\phi\phi)} = \psi'(\phi) - \sum_j t_j \mu_j^2}
-the last free of the data, the family being an exponential family in
-\eqn{\log y}.
+      \ell^{(\eta_k\phi)} = -\phi\sum_{j} t_j \mu_j A_{jk}
+        + \sum_{j} g_j A_{jk},}
+\deqn{\ell^{(\phi\phi)} = \psi'(\phi) - \sum_{j} t_j \mu_j^2.}
+The pure-concentration entry is \strong{free of the data}, the family being an
+exponential family in \eqn{\log y} whose concentration multiplies a
+statistic linearly; it therefore equals its own expectation at every
+observation. The other two carry the data through \eqn{g}.
+}
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean vector,
+\eqn{\phi > 0} the concentration, \eqn{\alpha = \phi\mu} the shapes,
+\eqn{\eta} the free vector of the simplex chart, and \eqn{\psi}, \eqn{\psi'}
+the digamma and trigamma functions.
+}
+
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+h <- distrib_hessian(d, Y, th)
+names(h)
+
+# The pure-concentration entry is the same number at every observation.
+h$phi_phi
+
+# numDeriv on the summed log-density reproduces the summed matrix.
+fn <- function(v)
+  sum(distrib_pdf(d, Y, as.list(stats::setNames(v, d@params)), log = TRUE))
+H <- numDeriv::hessian(fn, unlist(th))
+rbind(numeric = c(H[1, 1], H[2, 2], H[3, 3], H[1, 2], H[1, 3], H[2, 3]),
+      closed = vapply(h, sum, numeric(1)))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_gradient.DirichletDistrib]{distrib_gradient.DirichletDistrib()}} for the score,
+\code{\link[=distrib_expected_hessian.DirichletDistrib]{distrib_expected_hessian.DirichletDistrib()}} for the expectation of this
+quantity, \code{\link[=distrib_deriv3.DirichletDistrib]{distrib_deriv3.DirichletDistrib()}} for the order above, and
+\code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }

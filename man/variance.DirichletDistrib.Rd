@@ -4,20 +4,27 @@
 \alias{variance.DirichletDistrib}
 \title{Variance of a Dirichlet}
 \arguments{
-\item{x}{A \code{DirichletDistrib} object.}
+\item{x}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}. The
+argument is named \code{x} for consistency with \code{\link[base:mean]{base::mean()}}, whose signature
+the moment generics follow.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A symmetric \eqn{p \times p} matrix.
+A symmetric \eqn{p \times p} numeric matrix of rank \eqn{p-1}.
 }
 \description{
-The covariance matrix \code{\link[=mv_sigma]{mv_sigma()}} carries, singular
-because the coordinates sum to one.
+Returns the covariance matrix of the family by delegating to
+\code{\link[=mv_sigma.DirichletDistrib]{mv_sigma.DirichletDistrib()}}. It is singular, the coordinates summing to
+one, so a caller wanting something to invert should take the marginals or
+work on the simplex's free vector.
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=mean.DirichletDistrib]{mean.DirichletDistrib()}} for the mean vector,
+\code{\link[=mv_sigma.DirichletDistrib]{mv_sigma.DirichletDistrib()}}, which this calls, and \code{\link[=variance]{variance()}} for the
+generic.
 }
 \keyword{internal}

@@ -4,25 +4,37 @@
 \alias{mv_reference_draw.DirichletDistrib}
 \title{A Uniform Proposal on the Simplex}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}, read
+for its \code{n_dim} alone.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters. Ignored: the proposal is uniform
+and does not depend on where the family sits.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A list with the draws \code{y} and their log-density \code{logd}.
+A named list with \code{y}, an \code{n} by \eqn{p} matrix whose rows are
+uniform on the simplex, and \code{logd}, a numeric vector of length \code{n} holding
+the constant \eqn{\log\Gamma(p)}.
 }
 \description{
-Draws from the uniform distribution on the simplex, which is the Dirichlet
-with every shape equal to one and has the constant density \eqn{\Gamma(p)}
-with respect to the same dominating measure the family's density is written
-against. The base class's gaussian proposal lives in \eqn{\mathbb{R}^p} and
-would place no mass at all on the simplex.
+Supplies the importance-sampling proposal \code{\link[=check_distrib]{check_distrib()}} integrates the
+density against: the uniform distribution on the simplex, which is the
+Dirichlet with every shape equal to one. Its density is the constant
+\eqn{\Gamma(p)} with respect to the same dominating measure the family's own
+density is written against, so the normalization check is a plain average.
+
+The base class's proposal is an inflated gaussian on \eqn{\mathbb{R}^p},
+which places no mass on the simplex at all. It does not fail loudly there:
+\code{\link[base:chol]{base::chol()}} accepts the singular covariance, and the estimate of an
+integral that is 1 comes back at about \code{2e-08}. Overriding the proposal is
+what makes that check mean anything for this family.
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=check_distrib]{check_distrib()}}, which consumes this,
+\code{\link[=distrib_rng.DirichletDistrib]{distrib_rng.DirichletDistrib()}} for draws from the family itself, and
+\code{\link[=mv_reference_draw]{mv_reference_draw()}} for the generic.
 }
 \keyword{internal}

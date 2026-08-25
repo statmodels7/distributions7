@@ -8,19 +8,23 @@ dir_b_index(idx, k, l)
 }
 \arguments{
 \item{idx}{The tuple index list, as returned by
-\code{parameters7::param_tuple_indices()}.}
+\code{\link[parameters7:param_tuple_indices]{parameters7::param_tuple_indices()}} at order 2.}
 
-\item{k, l}{The two free-value positions.}
+\item{k, l}{The two free-value positions, in either order.}
 }
 \value{
-An integer position into the second-derivative list.
+A single integer, the position into the second-derivative list. \code{NA}
+if no tuple matches, which cannot happen for indices inside the
+parameter's own range.
 }
 \description{
-Locates the \eqn{(k, l)} entry in the list of second derivatives a
-\pkg{parameters7} parameter returns, whose elements are keyed by unordered
-tuple rather than by position.
+Returns the position of the \eqn{(k, l)} entry in the list of second
+derivatives a \code{parameters7} parameter supplies. That list is keyed by
+unordered tuple rather than by position, so a caller holding two free-value
+indices has to search for the entry naming them, in either order.
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=dir_parts]{dir_parts()}}, which supplies both the list and the tuples, and
+\code{\link[=dirichlet_distrib]{dirichlet_distrib()}} for the family.
 }
 \keyword{internal}

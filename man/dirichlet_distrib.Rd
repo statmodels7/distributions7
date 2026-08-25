@@ -2,7 +2,7 @@
 % Please edit documentation in R/dirichlet_distrib.R
 \name{dirichlet_distrib}
 \alias{dirichlet_distrib}
-\title{Dirichlet Distribution Object}
+\title{Dirichlet Distribution, Mean Vector and Concentration}
 \usage{
 dirichlet_distrib(
   n_dim,
@@ -11,91 +11,145 @@ dirichlet_distrib(
 )
 }
 \arguments{
-\item{n_dim}{The number of coordinates \eqn{p}.}
+\item{n_dim}{The number of coordinates \eqn{p}, a single integer of at least
+2. Anything else signals an error naming the argument.}
 
-\item{mean}{A \pkg{parameters7} \code{\link[parameters7:simplex]{parameters7::simplex()}} of the
-same dimension, carrying the mean. Defaults to
-\code{parameters7::simplex(n_dim)}.}
+\item{mean}{A \code{parameters7} parameter producing \eqn{p} coordinates that sum
+to one, normally a \code{\link[parameters7:simplex]{parameters7::simplex()}}. Defaults to
+\code{parameters7::simplex(n_dim)}. An object that is not a \code{parameters7}
+parameter, or that produces a different number of coordinates, signals an
+error naming both counts.}
 
-\item{link_phi}{A link function object for \eqn{\phi}. Defaults to
-\code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}} to ensure positivity.}
+\item{link_phi}{A \code{link} object from \code{linkfunctions7} for the concentration
+\eqn{\phi}. Defaults to \code{\link[linkfunctions7:log_link]{linkfunctions7::log_link()}}, which maps
+\eqn{(0, \infty)} onto the line and so keeps every fitted value positive.
+The mean's free values are unconstrained already and carry the identity.}
 }
 \value{
-An S7 object of class \code{DirichletDistrib}.
+An S7 object of class \code{DirichletDistrib}, inheriting from
+\code{multivariate_distrib}, with \code{param} the simplex given here,
+\code{distrib_name} \code{"dirichlet [pd, mean=<chart>]"}, \code{dimension}
+\code{"multivariate"}, \code{n_dim} \eqn{p}, \code{bounds} \code{c(0, 1)}, \code{params} the
+simplex's free names prefixed by \code{mean_} followed by \code{"phi"}, \code{n_params}
+\eqn{p}, and \code{link_params} the identity for each mean coordinate and
+\code{link_phi} for the concentration.
 }
 \description{
-Creates a distribution object for the Dirichlet distribution on the
-simplex, parametrized by a mean vector and a concentration \eqn{\phi}.
+Builds the distribution object for the Dirichlet family on the open simplex
+of \eqn{p} coordinates, parametrized by a mean vector \eqn{\mu} and a
+concentration \eqn{\phi > 0}. The returned object carries closed-form
+derivatives of the log-density to fourth order and a \strong{closed-form expected
+information}, which is unusual for a family with no location and scale to
+separate.
+
+The mean is carried on a \code{parameters7} simplex and flattened into scalar
+parameters, so every generic of the package indexes it as it does any other
+family.
 }
-\details{
-The first family here that is multivariate and \strong{not elliptical}, and
-therefore the second real test of that layer: there is no location and
-scale to separate, the support is a simplex rather than a Euclidean space,
-and the covariance is singular by construction because the coordinates sum
-to one.
+\section{The parametrization}{
+Writing \eqn{\alpha = \phi\mu} for the shapes, the density on the simplex
+\eqn{\{y_j > 0, \sum_j y_j = 1\}} is
+\deqn{f(y) = \frac{\Gamma(\phi)}{\prod_{j=1}^{p}\Gamma(\alpha_j)}
+      \prod_{j=1}^{p} y_j^{\alpha_j - 1},}
+with
+\deqn{\mathbb{E}[Y_j] = \mu_j, \qquad
+      \operatorname{Cov}(Y_i, Y_j) = \frac{\delta_{ij}\mu_i - \mu_i\mu_j}{\phi + 1}.}
+So \eqn{\phi} is a \strong{precision}: the larger it is, the tighter the draws
+sit about the mean. The covariance is singular, the coordinates summing to
+one, and every off-diagonal entry is negative.
 
-The parametrization follows the same design as the multivariate gaussian's.
-The constrained object --- here a point of the simplex rather than a
-positive definite matrix --- is carried by a \pkg{parameters7} parameter and
-\strong{flattened into scalars} with identity links, so every generic of the
-package indexes it as it always did. The shapes are
-\eqn{\alpha = \phi\mu}.
+The parametrization follows the design of the multivariate gaussian's. The
+constrained object, here a point of the simplex, is carried by a
+\code{parameters7} parameter and \strong{flattened into scalars} with identity links,
+so \code{align_theta()}, the derivative names, the link scale and
+\code{\link[=fit_distrib]{fit_distrib()}} need no special case. The parameter names are the simplex's
+own free names prefixed by \code{mean_}, followed by \code{phi}.
+}
 
-\strong{Density:}
-\deqn{f(y) = \dfrac{\Gamma(\phi)}{\prod_j\Gamma(\alpha_j)}
-      \prod_j y_j^{\alpha_j-1}}
+\section{A multivariate family that is not elliptical}{
+This is the first family of the package with no location and scale to
+separate: the support is a set of dimension \eqn{p-1}, not a Euclidean
+space, and the covariance is singular by construction. It is therefore the
+real test of the multivariate layer, and two of its methods exist to answer
+that test. \code{\link[=mv_marginal.DirichletDistrib]{mv_marginal.DirichletDistrib()}} returns a beta object rather
+than an error, and \code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}} replaces the base
+class's gaussian proposal with the uniform on the simplex, without which
+\code{\link[=check_distrib]{check_distrib()}} would estimate an integral that is 1 at about \code{2e-08}.
+}
 
-\strong{Moments:} mean \eqn{\mu} and
-\eqn{\operatorname{Cov}(Y_i,Y_j) = (\delta_{ij}\mu_i - \mu_i\mu_j)/(\phi+1)},
-so \eqn{\phi} is a precision: the larger it is, the tighter the draws about
-the mean.
-
-\strong{The expected information is closed form}, which two identities make
-possible. Differentiating \eqn{\sum_j\mu_j = 1} once and twice shows that
-the columns of \eqn{A = \partial\mu/\partial\eta} sum to zero and so does
-every second-derivative vector of the simplex; and
+\section{Why the expected information is closed form}{
+Two identities do the work. Differentiating \eqn{\sum_j \mu_j = 1} once
+shows that the columns of \eqn{A = \partial\mu/\partial\eta} sum to zero,
+and twice that every second-derivative vector of the simplex does; and
 \eqn{\mathbb{E}[\log y_j] = \psi(\alpha_j) - \psi(\phi)} makes
-\eqn{\mathbb{E}[g_j] = -\psi(\phi)} the same for every \eqn{j}. Every term
-carrying the data is therefore a constant times one of those zero sums, and
-drops out.
-
-\strong{The marginals are Beta}, coordinate \eqn{j} being
-\eqn{\mathrm{Beta}(\alpha_j, \phi-\alpha_j)}, so
-\code{\link[=mv_marginal]{mv_marginal()}} returns an object rather than signaling an error --- which
-is what makes this family a useful test of that generic rather than another
-rejection. Several coordinates together are again Dirichlet, but only after
-the remaining mass is collapsed into a coordinate of its own, so that case
-is rejected rather than returned under a name that would mislead.
-
-The distribution function and the quantile are rejected by
-\code{\link[=multivariate_distrib]{multivariate_distrib()}}, as for every family of that class.
+\eqn{\mathbb{E}[g_j] = -\psi(\phi)} the same constant for every \eqn{j}.
+Every term of the observed Hessian that carries the data is that constant
+times one of the two zero sums, and vanishes.
 }
-\section{The distribution}{
 
-\deqn{f(y) = \frac{\Gamma(\phi)}{\prod_{j=1}^{p}\Gamma(\phi\mu_j)}\prod_{j=1}^{p} y_j^{\phi\mu_j - 1}}
-on the simplex \eqn{y_j > 0}, \eqn{\sum_j y_j = 1}, with
+\section{What is refused}{
+The distribution function and the quantile are refused by
+\code{\link[=multivariate_distrib]{multivariate_distrib()}}, as for every family of that class: a distribution
+function on \eqn{\mathbb{R}^p} is an orthant probability and a quantile
+needs an ordering. The response derivatives are refused too. A marginal over
+several coordinates at once is refused with the reason.
+}
 
-\deqn{\mathbb{E}[Y_j] = \mu_j, \qquad \operatorname{Var}(Y_j) = \frac{\mu_j(1-\mu_j)}{\phi + 1}.}
+\section{Estimation}{
+\code{\link[=fit_distrib]{fit_distrib()}} maximizes the log-likelihood on the link scale, over the
+simplex's free values and \eqn{\log\phi}. No estimate is closed form.
+}
 
-The mean lies on a \pkg{parameters7} simplex and \eqn{\phi} is the
-concentration, shared by every coordinate; the marginals are Beta
-with that same \eqn{\phi}.
+\section{Notation}{
+
+\eqn{\ell} is the log-density of one observation, \eqn{\mu} the mean vector,
+\eqn{\phi > 0} the concentration, \eqn{\alpha = \phi\mu} the shapes,
+\eqn{p} the number of coordinates, \eqn{\eta} the free vector of the simplex
+chart and \eqn{\psi} the digamma function.
 }
 
 \examples{
 d <- dirichlet_distrib(3)
-d@params
+d
 
-theta <- as.list(stats::setNames(c(0.3, -0.2, log(12)), d@params))
-mv_location(d, theta)
-round(mv_sigma(d, theta), 5)
+# Two free mean values and a concentration, all on the parameter scale.
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+mv_location(d, th)
+round(mv_sigma(d, th), 6)
 
-# the marginals are Beta, so a panel of a pairs plot is a real object
-mv_marginal(d, theta, which = 1)$theta
+# The covariance is singular: rank p - 1, with the ones vector in the null
+# space.
+c(rank = qr(mv_sigma(d, th))$rank, dim = 3)
+
+# The marginals are beta with the same concentration, so a panel of a pairs
+# plot is a real distribution.
+mv_marginal(d, th, which = 1)$theta
+
+# The density and the sample agree on the mean and the coordinate variance.
+set.seed(3)
+Z <- distrib_rng(d, 3e5, th)
+rbind(sample = c(mean(Z[, 1]), var(Z[, 1])),
+      theoretical = c(mv_location(d, th)[1], mv_sigma(d, th)[1, 1]))
+
+# Fitting recovers the parameters.
+set.seed(9)
+coef(fit_distrib(d, distrib_rng(d, 800, th)))
 
 }
+\references{
+Kotz, S., Balakrishnan, N. and Johnson, N. L. (2000).
+\emph{Continuous Multivariate Distributions}, Volume 1, 2nd edition, Chapter 49.
+Wiley, New York.
+
+Aitchison, J. (1986). \emph{The Statistical Analysis of Compositional Data}.
+Chapman and Hall, London.
+}
 \seealso{
-\code{\link[=beta1_distrib]{beta1_distrib()}} for the two-coordinate case seen on the
-line, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}},
-\code{\link[parameters7:simplex]{parameters7::simplex()}}
+\code{\link[=beta1_distrib]{beta1_distrib()}} for a coordinate's marginal and the two-coordinate case
+seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the
+same simplex; \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for the elliptical multivariate
+family; \code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides;
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
+family of your own against the same battery this one passes;
+\link{DirichletDistrib} for the class.
 }

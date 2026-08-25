@@ -4,19 +4,45 @@
 \alias{distrib_rng.DirichletDistrib}
 \title{Dirichlet Random Generation}
 \arguments{
-\item{distrib}{A \code{DirichletDistrib} object.}
+\item{distrib}{A \code{DirichletDistrib} object, from \code{\link[=dirichlet_distrib]{dirichlet_distrib()}}.}
 
-\item{n}{The number of draws.}
+\item{n}{A single positive integer, the number of draws.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters on the parameter scale: the mean's
+free values followed by \code{phi}, each of length 1.}
 }
 \value{
-A matrix with \code{n} rows, each summing to one.
+A numeric matrix with \code{n} rows and \eqn{p} columns, each row
+strictly positive and summing to one.
 }
 \description{
-Independent Gamma draws with the shapes \eqn{\alpha_j}, normalized by their
-sum, which is the representation the family is defined by.
+Draws \code{n} independent Dirichlet vectors by the representation the family is
+defined by: independent gamma variates with shapes \eqn{\alpha_j = \phi\mu_j}
+and a common rate, divided by their sum. The normalization removes the rate,
+so \code{\link[stats:GammaDist]{stats::rgamma()}}'s default of 1 is used, and every row of the result
+sums to one by construction. The draws depend on \code{.Random.seed} in the usual
+way and consume \eqn{p} of R's streams per observation.
+}
+\examples{
+d <- dirichlet_distrib(3)
+th <- list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 12)
+
+# Every row is on the simplex.
+set.seed(1)
+Y <- distrib_rng(d, 4, th)
+round(Y, 4)
+rowSums(Y)
+
+# The sample recovers the mean and the coordinate variances, which fall as
+# 1 / (phi + 1).
+set.seed(3)
+Z <- distrib_rng(d, 3e5, th)
+rbind(sample = c(mean(Z[, 1]), var(Z[, 1])),
+      theoretical = c(mv_location(d, th)[1], mv_sigma(d, th)[1, 1]))
 }
 \seealso{
-\code{\link[=dirichlet_distrib]{dirichlet_distrib()}}
+\code{\link[=distrib_pdf.DirichletDistrib]{distrib_pdf.DirichletDistrib()}} for the density,
+\code{\link[=mv_reference_draw.DirichletDistrib]{mv_reference_draw.DirichletDistrib()}} for the uniform proposal
+\code{\link[=check_distrib]{check_distrib()}} integrates against, \code{\link[=fit_distrib]{fit_distrib()}} to estimate the
+parameters back from a sample, and \code{\link[=distrib_rng]{distrib_rng()}} for the generic.
 }
