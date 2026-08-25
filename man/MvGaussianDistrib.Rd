@@ -2,7 +2,7 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{MvGaussianDistrib}
 \alias{MvGaussianDistrib}
-\title{Multivariate Gaussian Distribution}
+\title{Multivariate Gaussian Distribution Class}
 \usage{
 MvGaussianDistrib(
   distrib_name = character(0),
@@ -20,43 +20,95 @@ MvGaussianDistrib(
 )
 }
 \arguments{
-\item{distrib_name}{A single character string specifying the name of the distribution (e.g., \code{"student t"}).}
+\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
+integer.}
 
-\item{dimension}{A character string indicating the dimensionality (\code{"univariate"} or \code{"multivariate"}).}
+\item{param}{A \pkg{parameters7} parametrization of the matrix, inheriting
+from \code{parameters7::parameter}. Its \code{n_free} free values are flattened
+into scalar parameters of the distribution.}
 
-\item{bounds}{A numeric vector of length 2 defining the overall support of the distribution \code{c(lower, upper)}.}
+\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
+precision \eqn{\Omega = \Sigma^{-1}} and \code{FALSE} when it carries the
+covariance \eqn{\Sigma}. Nothing but the sign of the log-determinant and
+one matrix inversion depends on it; the law is the same either way.}
 
-\item{params}{A character vector containing the names of the distribution parameters (e.g., \code{c("mu", "sigma")}).}
-
-\item{params_interpretation}{A character vector (typically named) providing the statistical interpretation of each parameter (e.g., \code{c(mu = "location")}).}
-
-\item{n_params}{A numeric value specifying the total number of parameters.}
-
-\item{params_bounds}{A list of numeric vectors of length 2, specifying the valid mathematical domain for each individual parameter.}
-
-\item{link_params}{A list of link function objects corresponding to each parameter, primarily used to map parameters to the unconstrained real line for optimization algorithms.}
-
-\item{params_smooth}{An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all \code{TRUE} (leave empty). Set an entry to \code{FALSE} for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \eqn{-\mathbb{E}[H]} (see \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}).}
-
-\item{n_dim}{The dimension \eqn{p} of an observation.}
-
-\item{param}{The \pkg{parameters7} structure carrying the matrix.}
-
-\item{inverted}{Whether the matrix parameter parametrizes the precision rather than
-the covariance.}
+\item{...}{The properties of the parent \code{distrib} class, listed under
+Value.}
 }
 \value{
-An object of class \code{MvGaussianDistrib}.
+An S7 object of class \code{MvGaussianDistrib}, inheriting from
+\code{multivariate_distrib} and from \code{distrib}. Beyond the parent's
+\code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
+\code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params},
+\code{params_smooth} and \code{n_dim}, it carries \code{param} and \code{inverted} as
+supplied. For an object built by \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} at \eqn{p = 2} on
+an unstructured covariance, \code{params} is
+\code{c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")}, every
+\code{params_bounds} entry is \eqn{(-\infty, \infty)} and every link is the
+identity.
 }
 \description{
-The S7 class of multivariate gaussian distributions, parametrized by a mean
-vector and by a \pkg{parameters7} structure for the covariance or the
-precision. Constructed by \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.
+The S7 class of the gaussian family on \eqn{\mathbb{R}^p}, with density
+\deqn{f(y) = (2\pi)^{-p/2}\lvert\Sigma\rvert^{-1/2}
+  \exp\!\left\{-\tfrac{1}{2}(y-\mu)^\top\Sigma^{-1}(y-\mu)\right\}.}
+The mean \eqn{\mu} contributes \eqn{p} scalar parameters and the matrix is
+carried by a \pkg{parameters7} parametrization, whose free values become
+scalar parameters in their turn. It inherits from \code{multivariate_distrib},
+so the response is an \eqn{n \times p} matrix and the distribution function
+and the quantile function are refused.
+
+Build one with \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, which fills the properties in and
+checks that the matrix parametrization has full rank. This page documents
+the raw S7 constructor, which validates neither the rank nor the agreement
+between \code{n_dim} and the parametrization's dimension.
 }
+\section{Methods}{
+
+Registered on this class:
+\code{\link[=distrib_cross2_y.MvGaussianDistrib]{distrib_cross2_y()}},
+\code{\link[=distrib_cross_y.MvGaussianDistrib]{distrib_cross_y()}},
+\code{\link[=distrib_deriv3.MvGaussianDistrib]{distrib_deriv3()}},
+\code{\link[=distrib_deriv4.MvGaussianDistrib]{distrib_deriv4()}},
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian()}},
+\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y()}},
+\code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient()}},
+\code{\link[=distrib_hess_y.MvGaussianDistrib]{distrib_hess_y()}},
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian()}},
+\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf()}},
+\code{\link[=distrib_rng.MvGaussianDistrib]{distrib_rng()}},
+\code{\link[=generate_random_theta.MvGaussianDistrib]{generate_random_theta()}},
+\code{\link[=mean.MvGaussianDistrib]{mean()}},
+\code{\link[=mv_location.MvGaussianDistrib]{mv_location()}},
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma()}},
+\code{\link[=variance.MvGaussianDistrib]{variance()}}
+
+Everything else comes from \code{\link[=multivariate_distrib]{multivariate_distrib()}}, including the two
+refusals.
+}
+
 \examples{
-S7::S7_inherits(mvgaussian_distrib(2), MvGaussianDistrib)
+d <- mvgaussian_distrib(2)
+S7::S7_inherits(d, multivariate_distrib)
+
+# Five scalar parameters: two means and the three free values of the
+# log-Cholesky covariance, prefixed by the matrix they describe.
+d@params
+d@n_dim
+d@param@free_names
+
+# Every parameter is already unconstrained, so every link is the identity
+# and the positive definiteness lives inside the matrix parametrization.
+vapply(d@link_params, function(l) l@link_name, character(1))
+
+# The precision form differs in one property and in the prefix.
+o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+c(covariance = d@inverted, precision = o@inverted)
+o@params
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} to build one, \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for
+the heavy-tailed sibling, \code{\link[=mv_sigma]{mv_sigma()}} for the covariance a parameter
+vector describes, and \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the
+closed-form score.
 }

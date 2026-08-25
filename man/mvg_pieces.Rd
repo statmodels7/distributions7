@@ -7,29 +7,80 @@
 mvg_pieces(distrib, theta, derivs = FALSE, derivs2 = FALSE)
 }
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object.}
 
-\item{theta}{A named list of parameters, already aligned.}
+\item{theta}{A named list of parameters, already aligned by the generic, or
+any list whose components are in \code{distrib@params} order.}
 
-\item{derivs}{Whether the matrix parameter's first derivative matrices are needed.}
+\item{derivs}{Logical of length 1. When \code{TRUE} the first derivative arrays
+of the covariance are computed and returned as \code{a}. Defaults to \code{FALSE}.}
 
-\item{derivs2}{Whether its second derivatives are needed as well.}
+\item{derivs2}{Logical of length 1. When \code{TRUE} the second derivative arrays
+are computed as well and returned as \code{a2}; the first derivatives are
+computed with them, so \code{derivs} need not also be set. Defaults to \code{FALSE}.}
 }
 \value{
-A list with \code{mu}, \code{sigma}, \code{sigma_inv},
-\code{logdet}, \code{eta}, and optionally \code{a} and \code{a2}, the
-derivatives of the covariance with respect to the free values.
+A named list with \code{mu} (numeric of length \eqn{p}), \code{sigma} and
+\code{sigma_inv} (\eqn{p \times p} matrices), \code{logdet} (the log-determinant of
+\eqn{\Sigma}, a single number), \code{eta} (the matrix parametrization's free
+vector), \code{p} and \code{s} (the parametrization itself), plus \code{a} and \code{a2} when
+asked for: lists of \eqn{p \times p} matrices, \code{a} one per free value and
+\code{a2} one per unordered pair in \code{parameters7::param_tuple_indices()} order.
 }
 \description{
-Assembles, once per call, the mean, the covariance, its inverse and its
-log-determinant from a flat parameter vector, together with the matrix parameter's
-derivative matrices when they are asked for.
+Assembles, once per call, the mean, the covariance, the inverse covariance
+and the log-determinant from a flat parameter vector, together with the
+matrix parametrization's derivative arrays when they are asked for. Every
+method of \link{MvGaussianDistrib} calls this first and works from the result, so
+a parameter vector is unpacked and a matrix factorized once per call instead
+of once per component.
 }
 \details{
-Whichever side the matrix parameter parametrizes, the arithmetic below is written
-in the covariance, so a precision structure is inverted once here rather
-than at every use. The log-determinant follows the matrix parameter's own, with its
-sign flipped for a precision, which is the one place the two forms differ in
-anything but cost.
+The arithmetic downstream is written in the covariance whichever side the
+parametrization carries, so a precision parametrization is inverted here.
+Three things then change relative to a covariance parametrization: the
+log-determinant takes the opposite sign, the first derivatives are carried
+across by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}, and the
+second derivatives by differentiating that expression once more,
+\deqn{\frac{\partial^2\Sigma}{\partial\eta_k\partial\eta_l} =
+  \Sigma\left(A_l\Sigma A_k + A_k \Sigma A_l - \frac{\partial^2\Omega}{\partial\eta_k\partial\eta_l}\right)\Sigma,}
+with \eqn{A_k = \partial\Omega/\partial\eta_k}. Those conversions are why
+the precision form is not the cheaper one here, contrary to what a reader
+might expect from the density alone.
+}
+\section{Notation}{
+
+\eqn{\Sigma} is the covariance, \eqn{\Omega = \Sigma^{-1}} the precision,
+\eqn{\eta} the free vector of the matrix parametrization and
+\eqn{A_k = \partial M/\partial\eta_k} the derivative of whichever matrix
+the parametrization carries.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
+names(pc)
+
+# sigma_inv really is the inverse, and logdet its log-determinant.
+all.equal(pc$sigma \%*\% pc$sigma_inv, diag(2), check.attributes = FALSE)
+all.equal(pc$logdet, log(det(pc$sigma)))
+
+# One derivative array per free value of the parametrization.
+length(pc$a)
+round(pc$a[[3]], 4)
+
+# The same pieces from the precision side describe the same covariance.
+o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+th_o <- list(mu1 = 0.5, mu2 = -0.3, omega_log_L1 = 0.1,
+             omega_log_L2 = -0.2, omega_L2.1 = 0.4)
+po <- distributions7:::mvg_pieces(o, th_o)
+all.equal(po$logdet, -parameters7::param_logdet(o@param, unlist(th_o)[3:5]))
+
+}
+\seealso{
+\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for the family and
+\code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the first consumer.
 }
 \keyword{internal}

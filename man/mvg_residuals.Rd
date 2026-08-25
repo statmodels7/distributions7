@@ -2,21 +2,61 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mvg_residuals}
 \alias{mvg_residuals}
-\title{Residuals and Whitened Residuals}
+\title{Residuals and Whitened Residuals of a Multivariate Gaussian}
 \usage{
 mvg_residuals(y, pc)
 }
 \arguments{
-\item{y}{An \eqn{n \times p} matrix.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations, already
+coerced by \code{\link[=as_mv_matrix]{as_mv_matrix()}}.}
 
-\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}}.}
+\item{pc}{The result of \code{\link[=mvg_pieces]{mvg_pieces()}}, from which \code{mu} and \code{sigma_inv} are
+read.}
 }
 \value{
-A list with \code{r}, the residuals, and \code{w}, the rows of
-\eqn{R \Sigma^{-1}}.
+A named list with \code{r} and \code{w}, each an \eqn{n \times p} numeric
+matrix. Row \eqn{i} of \code{w} is \eqn{\Sigma^{-1}(y_i - \mu)}, the
+right-multiplication \code{r \%*\% sigma_inv} giving the same rows because
+\eqn{\Sigma^{-1}} is symmetric.
 }
 \description{
-The centered response and its image under the inverse covariance, which are
-what every derivative of a multivariate gaussian is written in.
+Computes the centered response \eqn{r_i = y_i - \mu} and its image under the
+inverse covariance, \eqn{w_i = \Sigma^{-1} r_i}. Every derivative of a
+multivariate gaussian is written in those two: the score in the mean is
+\eqn{w}, the quadratic form of the log-density is \eqn{r^\top w}, and the
+matrix components are quadratic forms \eqn{w^\top A w}. Forming them once
+per call is what keeps a component from re-solving the same system.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance and \eqn{y_i} the
+\eqn{i}-th row of the response.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+pc <- distributions7:::mvg_pieces(d, theta)
+y <- rbind(c(0, 0), c(1, -1), c(2, 0.5))
+res <- distributions7:::mvg_residuals(y, pc)
+
+# r is the centered response and w its image under the inverse covariance.
+res$r
+all.equal(res$w, res$r \%*\% solve(pc$sigma), check.attributes = FALSE)
+
+# The quadratic form of the log-density is the row sum of r * w.
+all.equal(rowSums(res$r * res$w),
+          mahalanobis(y, pc$mu, pc$sigma))
+
+# And the score in the mean is w itself, one row per observation.
+g <- distrib_gradient(d, y, theta)
+all.equal(cbind(g$mu1, g$mu2), res$w, check.attributes = FALSE)
+
+}
+\seealso{
+\code{\link[=mvg_pieces]{mvg_pieces()}} for the argument, and
+\code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} and
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the consumers.
 }
 \keyword{internal}

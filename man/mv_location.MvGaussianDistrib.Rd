@@ -2,16 +2,39 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mv_location.MvGaussianDistrib}
 \alias{mv_location.MvGaussianDistrib}
-\title{Mean of a Multivariate Gaussian}
+\title{Mean Vector of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, one number each. Only the \eqn{p}
+mean components are read.}
 }
 \value{
-A named numeric vector of length \eqn{p}.
+A numeric vector of length \eqn{p}, named \code{v1}, ..., \code{vp} after the
+coordinates of the response. The parameter names \code{mu1}, ..., \code{mup} do not
+appear on it.
 }
 \description{
-The first \eqn{p} parameters, which are the mean vector.
+Returns the mean vector \eqn{\mu}, which for this family is the first
+\eqn{p} parameters read off \code{theta} in order. The method is
+\code{\link[=mv_leading_location]{mv_leading_location()}}, shared with every multivariate family whose
+location is its leading parameters, so the gaussian adds nothing of its own
+here: \eqn{\mu} is both the location the density is centered on and the
+expectation of the law, which is not true of every family.
+}
+\examples{
+d <- mvgaussian_distrib(3)
+theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
+
+mv_location(d, theta)
+
+# For a gaussian the location is also the expectation, so the two agree.
+all.equal(unname(mv_location(d, theta)), unname(mean(d, theta)))
+
+}
+\seealso{
+\code{\link[=mean.MvGaussianDistrib]{mean.MvGaussianDistrib()}}, which returns the same vector as the
+expectation of the law, \code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the matrix,
+and \code{\link[=mv_location]{mv_location()}} for the generic.
 }
 \keyword{internal}

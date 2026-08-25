@@ -4,27 +4,77 @@
 \alias{distrib_gradient.MvGaussianDistrib}
 \title{Multivariate Gaussian Score}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic; the two scales coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. Every link of this family is the identity, so the
+two scales coincide and the results are the same numbers to the bit.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list with one numeric vector per parameter.
+A named list with one numeric vector of length \eqn{n} per
+parameter, in \code{distrib@params} order: \eqn{p} mean components followed by
+one per free value of the matrix parametrization.
 }
 \description{
-Closed form. With \eqn{w = \Sigma^{-1}(y - \mu)} and \eqn{A_k} the
-derivative of \eqn{\Sigma} in the \eqn{k}-th free value of the matrix parameter,
+Computes the first derivatives of the log-density in closed form. With
+\eqn{w = \Sigma^{-1}(y - \mu)} and \eqn{A_k} the derivative of \eqn{\Sigma}
+in the \eqn{k}-th free value of the matrix parametrization,
 \deqn{\frac{\partial \ell}{\partial \mu} = w, \qquad
   \frac{\partial \ell}{\partial \eta_k} =
-  -\frac{1}{2}\frac{\partial \log|\Sigma|}{\partial \eta_k}
-  + \frac{1}{2} w^\top A_k w.}
-The first term of the second expression is the matrix parameter's own
-\code{param_dlogdet()}, so no trace is formed here.
+  -\frac{1}{2}\frac{\partial \log\lvert\Sigma\rvert}{\partial \eta_k}
+  + \frac{1}{2}\, w^\top A_k w.}
+The first term of the matrix component is the parametrization's own
+\code{param_dlogdet()}, so no trace is formed here; its sign is flipped where the
+parametrization carries the precision. The mean component needs no
+derivative array at all, which is why the mean and the matrix cost so
+differently in a fit.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
+vector of the matrix parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k}
+and \eqn{\ell} the log-density of one observation.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 25, theta)
+
+g <- distrib_gradient(d, y, theta)
+names(g)
+vapply(g, sum, numeric(1))
+
+# Against a numerical derivative of the log-likelihood, which shares no
+# arithmetic with the closed form.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
+
+# The mean component is the whitened residual, one row per observation.
+S <- mv_sigma(d, theta)
+w <- sweep(y, 2, c(0.5, -0.3)) \%*\% solve(S)
+all.equal(cbind(g$mu1, g$mu2), w, check.attributes = FALSE)
+
+# Every link is the identity, so the link scale changes nothing.
+identical(g, distrib_gradient(d, y, theta, scale = "link"))
+
+}
+\seealso{
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the observed curvature,
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian.MvGaussianDistrib()}} for the information,
+\code{\link[=distrib_grad_y.MvGaussianDistrib]{distrib_grad_y.MvGaussianDistrib()}} for the derivative in the response,
+and \code{\link[=distrib_gradient]{distrib_gradient()}} for the generic.
 }
 \keyword{internal}

@@ -7,20 +7,46 @@
 mv_hess_indices(distrib)
 }
 \arguments{
-\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object.}
+\item{distrib}{A \code{\link[=multivariate_distrib]{multivariate_distrib()}} object, or any \code{distrib} whose
+\code{params} are the parameter names.}
 }
 \value{
-A list of integer vectors of length 2.
+A list of integer vectors of length 2, one per unordered pair, as
+long as \code{hess_names(distrib@params)} and in that order. Each pair is
+\verb{(a, b)} with \code{a} and \code{b} positions in \code{distrib@params}.
 }
 \description{
-The positions in \code{distrib@params} of each unordered pair, in the order
-\code{\link[=hess_names]{hess_names()}} uses.
+Returns, for each key of \code{\link[=hess_names]{hess_names()}}, the two positions in
+\code{distrib@params} that the key names, in the same order the keys come in. A
+multivariate method branches on whether a component belongs to the mean
+block, the matrix block or the mixed block, which is a question about
+position, so positions are what it asks for.
 }
 \details{
-\code{\link[=hess_pairs]{hess_pairs()}} returns pairs of parameter NAMES, which is what a
-univariate method wants when it looks a component up. A multivariate method
-needs the positions instead, to tell a mean component from a matrix one, so
-the names are matched back rather than the enumeration being written a
-second time.
+\code{\link[=hess_pairs]{hess_pairs()}} answers the same question with parameter names, which suits a
+univariate method looking a closed-form component up in a table. Here the
+names are matched back to positions, so the two orderings come from one
+enumeration and cannot drift apart.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+idx <- distributions7:::mv_hess_indices(d)
+length(idx) == length(hess_names(d@params))
+
+# Key by key, the positions name the parameters the key is built from.
+head(data.frame(key = hess_names(d@params),
+                a = vapply(idx, `[`, integer(1), 1L),
+                b = vapply(idx, `[`, integer(1), 2L)), 6)
+
+# Which is the same enumeration hess_pairs() gives as names.
+all.equal(lapply(idx, function(p) d@params[p]),
+          distributions7:::hess_pairs(d@params),
+          check.attributes = FALSE)
+
+}
+\seealso{
+\code{\link[=hess_names]{hess_names()}} for the keys, \code{\link[=hess_pairs]{hess_pairs()}} for the same
+enumeration as names, and \code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the
+consumer.
 }
 \keyword{internal}

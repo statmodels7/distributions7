@@ -7,105 +7,154 @@
 mvgaussian_distrib(n_dim, sigma = NULL, omega = NULL)
 }
 \arguments{
-\item{n_dim}{The dimension \eqn{p}.}
+\item{n_dim}{The dimension \eqn{p} of one observation. A single positive
+whole number, finite and at least 1. Anything else throws an error.}
 
-\item{sigma}{A \pkg{parameters7} structure for the covariance.
-Defaults to \code{parameters7::log_cholesky(n_dim)} when neither structure
-is given.}
+\item{sigma}{A \pkg{parameters7} parametrization of the covariance, of
+dimension \code{n_dim} and of full rank. Defaults to
+\code{parameters7::log_cholesky(n_dim)} when neither this nor \code{omega} is given.}
 
-\item{omega}{A \pkg{parameters7} structure for the precision.}
+\item{omega}{A \pkg{parameters7} parametrization of the precision, of
+dimension \code{n_dim} and of full rank. Defaults to \code{NULL}. Giving both this
+and \code{sigma} is an error.}
 }
 \value{
-An object of class \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}}.
+An S7 object of class \link{MvGaussianDistrib}, with \code{param} the
+parametrization supplied and \code{inverted} recording which side it carries.
+Its \code{params} are \code{mu1}, ..., \code{mup} followed by the prefixed free names,
+\code{n_params} is \code{p + param@n_free}, every entry of \code{params_bounds} is
+\eqn{(-\infty, \infty)} and every link is the identity.
 }
 \description{
-The gaussian distribution on \eqn{\mathbb{R}^p}, with the mean a vector of
-\eqn{p} free parameters and the matrix carried by a structure from
-\pkg{parameters7}.
+Builds the gaussian family on \eqn{\mathbb{R}^p}. The mean is a vector of
+\eqn{p} free parameters and the matrix is carried by a \pkg{parameters7}
+parametrization, either as the covariance \eqn{\Sigma} or as the precision
+\eqn{\Omega = \Sigma^{-1}}. The free values of that parametrization become
+ordinary scalar parameters of the distribution, so the object answers every
+generic of the \code{distrib} contract with \code{theta} a flat named list of numbers.
+The default is an unstructured covariance in the log-Cholesky
+parametrization, which is \code{p * (p + 1) / 2} free values.
 }
-\details{
-Exactly one of \code{sigma} and \code{omega} may be given, and
-the name of the argument decides which side of the model the matrix parameter
-parametrizes: the covariance in the first case, the precision in the second.
-One constructor returns one of two behaviors, in the manner of
-\code{\link[=truncated]{truncated()}}, which chooses between its continuous and discrete
-classes from the arguments it is handed.
+\section{Which side the matrix parametrizes}{
+Give at most one of \code{sigma} and \code{omega}, and the name of the argument
+decides which side of the model the matrix parametrization describes. Giving
+both is an error: the two name the same matrix and a distribution
+parametrized by both would be over-determined.
 
-The precision form is the cheaper one and is preferable where the
-modeling allows it. Written in \eqn{\Omega}, the log-density, the score and
-the Hessian are multiplications, and the first term of the score is the
-parameter's own \code{param_dlogdet()}; written in \eqn{\Sigma} the same
-quantities need a solve at every step.
+The two forms describe the same family and cost about the same. Every
+derivative here is written in the covariance, so a precision
+parametrization is inverted once per call and its derivative arrays are
+carried across by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
+Measured at \eqn{n = 1000} on an unstructured matrix, the precision form
+costs 0.86 to 1.07 times the covariance form for the score and 0.97 to 1.10
+for the Hessian, across \eqn{p = 4, 8, 12}. Choose the side the model is
+written in.
+}
 
-\strong{Parameters.} The mean contributes \code{mu1}, ..., \code{mup}, and
-the matrix parameter contributes its free values prefixed by the matrix they
-describe: \code{sigma_} for a covariance and \code{omega_} for a precision.
-A two-dimensional gaussian on an unstructured covariance therefore has five
-parameters, \code{mu1}, \code{mu2}, \code{sigma_log_L1},
-\code{sigma_log_L2} and \code{sigma_L2.1}, while the same structure on the
-precision gives \code{omega_log_L1} and the rest. The prefix is what
-distinguishes the two models in a printed table, since the name of a free
-value says how the matrix is built and not which matrix it is.
+\section{Parameters}{
+The mean contributes \code{mu1}, ..., \code{mup}. The matrix contributes the
+parametrization's free values, prefixed by the matrix they describe:
+\code{sigma_} for a covariance and \code{omega_} for a precision. A two-dimensional
+gaussian on an unstructured covariance therefore has the five parameters
+\code{mu1}, \code{mu2}, \code{sigma_log_L1}, \code{sigma_log_L2} and \code{sigma_L2.1}, while the
+same parametrization on the precision gives \code{omega_log_L1} and the rest.
+The prefix is what distinguishes the two models in a printed table: a free
+value's name says how the matrix is built, not which matrix it is.
 
-All of the parameters are unconstrained, and their links are therefore the
-identity: the constraint that makes the matrix positive definite lives
-inside the matrix parameter, which is why it needs no link to express it. A
+All of these parameters are unconstrained, so all of the links are the
+identity. The constraint that makes the matrix positive definite lives
+inside the matrix parametrization, which needs no link to express it. One
 practical consequence is that the parameter scale and the link scale
-coincide here, so \code{scale = "link"} changes nothing.
-
-\strong{Reading a fit.} The free values are coordinates, not quantities
-anybody reads. \code{\link[=mv_summary]{mv_summary()}} carries the fit's variance matrix
-onto the standard deviations and correlations by the delta method, and
-\code{print()} shows them; a precision parametrization also reports the
-conditional variances and the partial correlations, which are what it
-describes directly. The conditional variance is
-\eqn{1/\Omega_{jj} = \mathrm{Var}(Y_j \mid Y_{-j})}, and its ratio to the
-marginal variance is \eqn{1 - R_j^2} for the regression of that coordinate
-on all the others.
-
-\strong{Rank.} A rank-deficient structure is rejected. A singular covariance
-gives a law supported on a subspace, with no density against Lebesgue
-measure, and a singular precision gives a quadratic form that is flat along
-its null space and does not normalize. The two are different failures and
-both are failures; a structure of that kind is a legitimate penalty and not
-a legitimate density.
-
-\strong{The response} is an \eqn{n \times p} matrix, one row per
-observation. A plain vector of length \eqn{p} is read as a single
-observation.
+coincide, so \code{scale = "link"} returns the same numbers as
+\code{scale = "parameter"}, to the bit.
 }
+
+\section{Reading a fit}{
+The free values are coordinates, and nobody reads a logarithm of a diagonal
+entry of a Cholesky factor. \code{\link[=mv_summary]{mv_summary()}} carries a fit's variance matrix
+onto the standard deviations and the correlations by the delta method, and
+\code{print()} shows those. A precision parametrization also reports the
+conditional standard deviations and the partial correlations, which are what
+it describes directly: \eqn{1/\Omega_{jj} = \operatorname{Var}(Y_j \mid
+Y_{-j})}, whose ratio to the marginal variance is \eqn{1 - R_j^2} for the
+regression of that coordinate on all the others. At \eqn{p = 2} the partial
+correlation and the marginal correlation are the same number, so it is not
+printed twice.
+}
+
+\section{Rank}{
+A rank-deficient parametrization is rejected with an error. A singular
+covariance gives a law supported on a subspace, with no density against
+Lebesgue measure; a singular precision gives a quadratic form that is flat
+along its null space and does not normalize. Both are failures, and a
+parametrization of that kind is a legitimate penalty but not a legitimate
+density.
+}
+
+\section{The response}{
+An \eqn{n \times p} matrix, one row per observation. A plain vector of
+length \eqn{p} is read as a single observation. A parameter may not vary
+from observation to observation here: the parametrization describes one
+matrix for the whole sample.
+}
+
 \section{The distribution}{
 
-\deqn{f(y) = (2\pi)^{-p/2}\lvert \Sigma \rvert^{-1/2}\exp\!\left\{-\tfrac{1}{2}(y-\mu)'\Sigma^{-1}(y-\mu)\right\}}
+\deqn{f(y) = (2\pi)^{-p/2}\lvert \Sigma \rvert^{-1/2}\exp\!\left\{-\tfrac{1}{2}(y-\mu)^\top\Sigma^{-1}(y-\mu)\right\}}
 on \eqn{y \in \mathbb{R}^{p}}, with
-
 \deqn{\mathbb{E}[Y] = \mu, \qquad \operatorname{Var}(Y) = \Sigma.}
+}
 
-The matrix parameter is carried by \pkg{parameters7}, either as the
-covariance \eqn{\Sigma} or as the precision
-\eqn{\Omega = \Sigma^{-1}}, and its free values are flattened into
-ordinary scalar parameters with identity links.
+\section{Notation}{
+
+\eqn{\mu} is the mean vector, \eqn{\Sigma} the covariance, \eqn{\Omega} the
+precision, \eqn{p} the dimension of one observation and \eqn{n} the number
+of observations. \eqn{\eta} is the free vector of the matrix
+parametrization, the unconstrained coordinates an optimizer moves, and
+\eqn{A_k = \partial\Sigma/\partial\eta_k}.
 }
 
 \examples{
 d <- mvgaussian_distrib(2)
 d
 
-theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+
+# The covariance the free values describe, and its positive definiteness,
+# which holds for any five numbers at all.
+S <- mv_sigma(d, theta)
+round(S, 4)
+eigen(S, only.values = TRUE)$values
+
+# The density, against the formula written out.
 y <- rbind(c(0, 0), c(1, -1))
-distrib_pdf(d, y, theta, log = TRUE)
+mu <- c(0.5, -0.3)
+ref <- apply(y, 1, function(r)
+  -0.5 * (2 * log(2 * pi) + log(det(S)) + t(r - mu) \%*\% solve(S) \%*\% (r - mu)))
+all.equal(distrib_pdf(d, y, theta, log = TRUE), as.numeric(ref))
 
-# the covariance the free values describe
-mv_sigma(d, theta)
-
-# a diagonal covariance: two variances instead of three free values
+# A structured covariance spends fewer parameters: two variances, no
+# correlation.
 mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
 
-# or the precision, which is the cheaper parametrization
-mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
+# The precision form carries the same law and reports its own quantities.
+o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o@params
+th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
+             omega_log_L2 = -0.2, omega_L2.1 = 0.4)
+Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
+all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
+
+# The conditional variance of the first coordinate given the second, and
+# the marginal variance beside it.
+c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 
 }
 \seealso{
-\code{\link[=gaussian1_distrib]{gaussian1_distrib()}}, \code{\link[=fit_distrib]{fit_distrib()}},
-\code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}}
+\code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the one-dimensional case,
+\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the heavy-tailed sibling,
+\code{\link[=mv_summary]{mv_summary()}} for the quantities a fit reports,
+\code{\link[=fit_distrib]{fit_distrib()}} to estimate one, and
+\code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} for the default parametrization.
 }

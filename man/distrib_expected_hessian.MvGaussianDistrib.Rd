@@ -2,37 +2,94 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{distrib_expected_hessian.MvGaussianDistrib}
 \alias{distrib_expected_hessian.MvGaussianDistrib}
-\title{Multivariate Gaussian Expected Hessian}
+\title{Multivariate Gaussian Expected Information}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. Only its row
+count is used: the expectation is taken over the law, so no observation
+enters any component.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic; the two scales coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. Every link of this family is the identity, so the
+two scales coincide.}
 
-\item{approx}{Ignored: the expectation is exact.}
+\item{approx}{Ignored: the expectation is exact and no approximation
+strategy is consulted. Present so that the signature matches the generic's.}
 
-\item{nsim}{Ignored.}
+\item{nsim}{Ignored, for the same reason.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
+A named list of numeric vectors of length \eqn{n}, keyed as
+\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
 }
 \description{
-Closed form, and simpler than the observed one.
+Computes the expectation of the observed Hessian in closed form, which for
+this family is simpler than the observed matrix itself:
 \deqn{\mathbb{E}[\ell^{(\mu_a \mu_b)}] = -(\Sigma^{-1})_{ab}, \qquad
   \mathbb{E}[\ell^{(\mu_a \eta_k)}] = 0, \qquad
   \mathbb{E}[\ell^{(\eta_k \eta_l)}] =
-  -\tfrac{1}{2}\mathrm{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).}
+  -\tfrac{1}{2}\operatorname{tr}(\Sigma^{-1} A_k \Sigma^{-1} A_l).}
+No component depends on the data, so every returned vector is constant
+across rows and \code{y} is read for its row count alone.
 }
-\details{
-The mixed block vanishes because \eqn{\mathbb{E}[w] = 0}, which is the
-orthogonality of the mean and the covariance parameters that makes Fisher
-scoring on this family so well behaved. The matrix block needs no second
-derivative at all: the terms in \eqn{A_{kl}} cancel between the
-log-determinant and the quadratic form.
+\section{Why the mixed block vanishes}{
+Each mixed component is a linear function of \eqn{w = \Sigma^{-1}(y-\mu)},
+and \eqn{\mathbb{E}[w] = 0}. The mean parameters and the matrix parameters
+are therefore orthogonal, and the information matrix is block diagonal
+whatever the matrix parametrization is. Fisher scoring on this family is
+well behaved for that reason: a step in the mean and a step in the
+covariance do not interfere.
+}
+
+\section{Why no second derivative array is needed}{
+The observed matrix block carries \eqn{A_{kl}} through both the
+log-determinant term and the quadratic form. Under the expectation the two
+cancel, and only the first derivatives survive. That saves the whole
+\code{param_d2()} computation, which is the dearest part of the observed Hessian
+at any dimension worth the name.
+}
+
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
+vector of the matrix parametrization, \eqn{A_k = \partial\Sigma/\partial\eta_k},
+and \eqn{\ell^{(ij)}} the second derivative of the log-density in parameters
+\eqn{i} and \eqn{j}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+y <- matrix(0, 3, 2)
+
+EH <- distrib_expected_hessian(d, y, theta)
+
+# The mean block is minus the inverse covariance.
+c(EH$mu1_mu1[1], EH$mu1_mu2[1])
+-solve(mv_sigma(d, theta))[1, ]
+
+# Every mixed mean-matrix component is exactly zero, not merely small.
+mixed <- grep("^mu[0-9]+_sigma", names(EH), value = TRUE)
+vapply(EH[mixed], function(z) z[1], numeric(1))
+
+# And the closed form is what averaging the observed Hessian converges to.
+set.seed(4)
+big <- distrib_rng(d, 50000, theta)
+emp <- vapply(distrib_hessian(d, big, theta), mean, numeric(1))
+round(rbind(sampled = emp,
+            closed = vapply(EH, function(z) z[1], numeric(1))), 3)
+
+}
+\seealso{
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the observed matrix,
+\code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the score, \code{\link[=fit_distrib]{fit_distrib()}},
+whose Fisher scoring inverts this matrix, and
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the generic.
 }
 \keyword{internal}

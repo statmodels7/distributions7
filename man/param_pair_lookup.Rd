@@ -2,23 +2,53 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{param_pair_lookup}
 \alias{param_pair_lookup}
-\title{Where Each Pair of Free Values Sits in a Structure's Second Derivatives}
+\title{Where Each Pair of Free Values Sits in a Parametrization's Second Derivatives}
 \usage{
 param_pair_lookup(s)
 }
 \arguments{
-\item{s}{A \pkg{parameters7} structure.}
+\item{s}{A \pkg{parameters7} parametrization, from which
+\code{param_tuple_indices()} supplies the enumeration.}
 }
 \value{
-A named list of integers, keyed \code{"k:l"} with \eqn{k \le l}.
+A named list of single integers, one per unordered pair of free
+values, keyed \code{"k:l"} with \eqn{k \le l}. Its length is
+\code{s@n_free * (s@n_free + 1) / 2}.
 }
 \description{
-A lookup from a pair of free-value positions to the position of the
-corresponding component of \code{param_d2()}.
+Builds a lookup from a pair of free-value positions to the position of the
+matching component of \code{parameters7::param_d2()}. A Hessian method walks the
+unordered pairs of the distribution's own parameters and has to find, for
+each matrix pair, the second derivative array that belongs to it; the two
+enumerations are not the same, because the distribution's parameters carry
+the mean components in front.
 }
 \details{
-Built from \pkg{parameters7}'s own enumeration rather than by taking a
-component key apart, for the reason that package documents: a free value
-whose label contains the separator splits into the wrong number of pieces.
+The keys are built from \pkg{parameters7}'s own enumeration rather than by
+taking a component name apart, for the reason that package documents: a free
+value whose label contains the separator splits into the wrong number of
+pieces, so a name is not a safe route back to a pair of indices.
+}
+\examples{
+s <- parameters7::log_cholesky(2)
+lk <- distributions7:::param_pair_lookup(s)
+unlist(lk)
+
+# The lookup is a permutation of the positions of param_d2()'s components.
+d2 <- parameters7::param_d2(s, c(0.1, -0.2, 0.4))
+setequal(unlist(lk), seq_along(d2))
+
+# The array it finds for the pair (1, 3) is the mixed second derivative in
+# those two free values, against a difference of the first derivatives.
+eta <- c(0.1, -0.2, 0.4)
+h <- 1e-5
+num <- (parameters7::param_d1(s, eta + c(0, 0, h))[[1]] -
+        parameters7::param_d1(s, eta - c(0, 0, h))[[1]]) / (2 * h)
+max(abs(d2[[lk[["1:3"]]]] - num))
+
+}
+\seealso{
+\code{\link[=mv_hess_indices]{mv_hess_indices()}} for the other half of the same bookkeeping and
+\code{\link[=distrib_hessian.MvGaussianDistrib]{distrib_hessian.MvGaussianDistrib()}} for the consumer.
 }
 \keyword{internal}

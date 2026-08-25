@@ -4,26 +4,74 @@
 \alias{distrib_hessian.MvGaussianDistrib}
 \title{Multivariate Gaussian Observed Hessian}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{y}{An \eqn{n \times p} matrix of observations.}
+\item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
+length \eqn{p} is read as a single observation.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{scale}{Handled by the generic; the two scales coincide here.}
+\item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
+generic before dispatch. Every link of this family is the identity, so the
+two scales coincide.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A named list keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}.
+A named list of numeric vectors of length \eqn{n}, one per unordered
+pair of parameters, keyed as \code{\link[=hess_names]{hess_names(distrib@params)}}:
+the diagonal first, then the off-diagonal pairs.
 }
 \description{
-Closed form. With \eqn{w = \Sigma^{-1}(y-\mu)}, \eqn{A_k} and \eqn{A_{kl}}
-the first and second derivatives of \eqn{\Sigma},
+Computes the second derivatives of the log-density in closed form. With
+\eqn{w = \Sigma^{-1}(y-\mu)} and \eqn{A_k}, \eqn{A_{kl}} the first and
+second derivatives of \eqn{\Sigma} in the free values,
 \deqn{\ell^{(\mu_a \mu_b)} = -(\Sigma^{-1})_{ab}, \qquad
   \ell^{(\mu_a \eta_k)} = -(\Sigma^{-1} A_k w)_a,}
 \deqn{\ell^{(\eta_k \eta_l)} =
-  -\tfrac{1}{2}\frac{\partial^2 \log|\Sigma|}{\partial\eta_k \partial\eta_l}
-  + \tfrac{1}{2} w^\top A_{kl} w - w^\top A_l \Sigma^{-1} A_k w.}
+  -\tfrac{1}{2}\frac{\partial^2 \log\lvert\Sigma\rvert}{\partial\eta_k \partial\eta_l}
+  + \tfrac{1}{2}\, w^\top A_{kl} w - w^\top A_l \Sigma^{-1} A_k w.}
+The mean block does not depend on the response, so it is constant across
+rows; the mixed and matrix blocks do. The product \eqn{\Sigma^{-1}A_k} is
+formed once and reused between the mixed block and the matrix block.
+}
+\section{Notation}{
+
+\eqn{\mu} is the mean, \eqn{\Sigma} the covariance, \eqn{\eta} the free
+vector of the matrix parametrization, \eqn{A_k} and \eqn{A_{kl}} its first
+and second derivative arrays, and \eqn{\ell^{(ij)}} the second derivative of
+the log-density in parameters \eqn{i} and \eqn{j}.
+}
+
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+set.seed(1)
+y <- distrib_rng(d, 25, theta)
+
+H <- distrib_hessian(d, y, theta)
+names(H)
+
+# The mean block is minus the inverse covariance and does not move with y.
+c(H$mu1_mu1[1], H$mu1_mu2[1])
+-solve(mv_sigma(d, theta))[1, ]
+
+# Against a numerical Hessian of the log-likelihood.
+ll <- function(v) {
+  t2 <- as.list(v); names(t2) <- d@params
+  sum(distrib_pdf(d, y, t2, log = TRUE))
+}
+Hn <- numDeriv::hessian(ll, unlist(theta))
+ref <- vapply(distributions7:::hess_pairs(d@params),
+              function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
+              numeric(1))
+max(abs(vapply(H, sum, numeric(1)) - ref))
+
+}
+\seealso{
+\code{\link[=distrib_expected_hessian.MvGaussianDistrib]{distrib_expected_hessian.MvGaussianDistrib()}} for the expectation
+of this matrix, which is simpler, \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}}
+for the score, and \code{\link[=distrib_hessian]{distrib_hessian()}} for the generic.
 }
 \keyword{internal}

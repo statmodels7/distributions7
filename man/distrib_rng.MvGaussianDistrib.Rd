@@ -4,20 +4,48 @@
 \alias{distrib_rng.MvGaussianDistrib}
 \title{Multivariate Gaussian Generator}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{n}{The number of observations to draw.}
+\item{n}{The number of observations to draw. A single non-negative whole
+number; \code{n = 0} returns a matrix with zero rows.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, each component a single number.}
 
-\item{...}{Unused.}
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-An \eqn{n \times p} numeric matrix.
+An \eqn{n \times p} numeric matrix, one draw per row, with column
+names \code{v1}, ..., \code{vp} and no row names.
 }
 \description{
-\eqn{\mu + L z} with \eqn{z} standard normal and \eqn{LL^\top = \Sigma}, the
-factor taken from the matrix parameter where it parametrizes the covariance and
-from a factorization of the inverse otherwise.
+Draws from the multivariate gaussian by the standard factorization,
+\eqn{y = \mu + L z} with \eqn{z} a vector of independent standard normals
+and \eqn{L L^\top = \Sigma}. The factor is a Cholesky decomposition of the
+covariance, taken after the precision has been inverted where the matrix
+parametrization carries that side. The draws consume \code{n * p} values from R's
+own generator through \code{\link[stats:Normal]{stats::rnorm()}}, so the stream is reproducible under
+\code{\link[base:Random]{base::set.seed()}}.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+
+set.seed(1)
+y <- distrib_rng(d, 4, theta)
+y
+
+# The sample moments approach the parameters, at the usual 1/sqrt(n) rate.
+set.seed(2)
+big <- distrib_rng(d, 20000, theta)
+round(colMeans(big), 3)
+round(var(big), 3)
+round(mv_sigma(d, theta), 3)
+
+}
+\seealso{
+\code{\link[=distrib_pdf.MvGaussianDistrib]{distrib_pdf.MvGaussianDistrib()}} for the density this draws from,
+\code{\link[=mv_sigma.MvGaussianDistrib]{mv_sigma.MvGaussianDistrib()}} for the covariance, and \code{\link[=distrib_rng]{distrib_rng()}}
+for the generic.
 }
 \keyword{internal}

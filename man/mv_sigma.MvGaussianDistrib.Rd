@@ -2,17 +2,46 @@
 % Please edit documentation in R/mvgaussian_distrib.R
 \name{mv_sigma.MvGaussianDistrib}
 \alias{mv_sigma.MvGaussianDistrib}
-\title{The Covariance a Multivariate Gaussian Carries}
+\title{Covariance of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{A \code{\link[=MvGaussianDistrib]{MvGaussianDistrib()}} object.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
 
-\item{theta}{A named list of parameters.}
+\item{theta}{A named list of parameters, one number each. The \eqn{p} mean
+components are ignored.}
 }
 \value{
-A \eqn{p \times p} numeric matrix.
+A \eqn{p \times p} symmetric positive definite numeric matrix, with
+both dimnames \code{v1}, ..., \code{vp}.
 }
 \description{
-The covariance, assembled from the matrix parameter and inverted first when the
-structure parametrizes the precision.
+Returns the covariance \eqn{\Sigma}, assembled from the matrix
+parametrization's free values. Where the parametrization carries the
+precision the matrix is inverted first, so the result is the covariance
+either way. For this family the matrix is both the scale matrix of the
+density and the variance of the law, so \code{\link[=variance.MvGaussianDistrib]{variance.MvGaussianDistrib()}}
+returns the same matrix; the two part company in the heavy-tailed sibling.
+}
+\examples{
+d <- mvgaussian_distrib(2)
+theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+              sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
+round(mv_sigma(d, theta), 4)
+
+# For a gaussian the scale matrix is the variance.
+all.equal(mv_sigma(d, theta), variance(d, theta))
+
+# A precision parametrization reports the covariance too, inverted here.
+o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
+             omega_log_L2 = -0.2, omega_L2.1 = 0.4)
+Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
+all.equal(mv_sigma(o, th_o), solve(Om), check.attributes = FALSE)
+
+}
+\seealso{
+\code{\link[=variance.MvGaussianDistrib]{variance.MvGaussianDistrib()}} for the same matrix read as a
+moment, \code{\link[=mv_location.MvGaussianDistrib]{mv_location.MvGaussianDistrib()}} for the mean,
+\code{\link[=mv_summary]{mv_summary()}} for the standard deviations and correlations a reader
+wants, and \code{\link[=mv_sigma]{mv_sigma()}} for the generic.
 }
 \keyword{internal}
