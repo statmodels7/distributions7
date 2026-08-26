@@ -6,7 +6,9 @@
 \arguments{
 \item{x}{An \code{EnetDistrib} object, from \code{\link[=enet_distrib]{enet_distrib()}}.}
 
-\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.}
+\item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}.
+Aligned and validated by name, so a missing or out-of-bounds
+component throws.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

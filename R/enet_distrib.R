@@ -891,6 +891,8 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
+#'   Aligned and validated by name, so a missing or out-of-bounds
+#'   component throws.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of means, of the length the recycled
@@ -914,6 +916,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' @keywords internal
 S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
   .enet_parts(theta)$mu + moment_const(theta, 3L, 0)
 }
 
@@ -932,6 +935,8 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
+#'   Aligned and validated by name, so a missing or out-of-bounds
+#'   component throws.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of variances, strictly positive, of the
@@ -963,6 +968,7 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
+  theta <- align_theta(x, theta)
   p <- .enet_parts(theta)
   (1 + p$x * p$g) / p$c + moment_const(theta, 3L, 0)
 }
@@ -983,6 +989,8 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @param x An `EnetDistrib` object, from [enet_distrib()].
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
+#'   Aligned and validated by name, so a missing or out-of-bounds
+#'   component throws.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros, of the length the recycled
@@ -1006,7 +1014,7 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
-  moment_const(theta, 3L, 0)
+  moment_const(align_theta(x, theta), 3L, 0)
 }
 
 #' @title Elastic-Net Distribution Object

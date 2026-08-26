@@ -448,7 +448,8 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #' @param x A `VonMises2Distrib` object, from [vonmises2_distrib()]. The
 #'   argument is named `x` because the generic is [base::mean()].
 #' @param theta A named list with components `mu` and `rho`, each a numeric
-#'   vector of length 1. `rho` must lie in \eqn{(0, 1)}.
+#'   vector of length 1. `rho` must lie in \eqn{(0, 1)}. Aligned and
+#'   validated by name, so a missing or out-of-bounds component throws.
 #' @param ... Passed on to [mean.distrib()], which reads the quadrature's
 #'   settings.
 #'
@@ -459,7 +460,9 @@ S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, t
 #'   [variance()] for the other ordinary moments.
 #' @keywords internal
 S7::method(mean, VonMises2Distrib) <- function(x, theta, ...) {
-  mean(vonmises1_distrib(), list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), ...)
+  theta <- align_theta(x, theta)
+  mean(vonmises1_distrib(),
+       list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa), ...)
 }
 
 

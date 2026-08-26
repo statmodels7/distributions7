@@ -1,3 +1,50 @@
+# distributions7 0.41.0
+
+* Four moment methods read `theta` by position and now read it by name. Every
+  generic here takes `theta` as a **named** list, and `align_theta()` reorders
+  it, strips stray names off the values and validates it against the open
+  `params_bounds`. No moment generic aligns before it dispatches, so each
+  method has to, and 165 of 168 did.
+
+* The consequence was a silently different number:
+
+  ```r
+  mean(enet_distrib(), list(mu = 0.3, lambda = 2, alpha = 0.7))
+  #> 0.3
+  mean(enet_distrib(), list(alpha = 0.7, lambda = 2, mu = 0.3))
+  #> 0.7          the same three values, named in another order
+  ```
+
+  and on the von Mises in its resultant length the mean read 0.2594 one way
+  and 0.3862 the other. Nothing warned, and every other generic in the package
+  accepts any order, so there was no reason for a caller to write them in the
+  family's own.
+
+* The four are `mean`, `variance` and `skewness` of the elastic net, which
+  reach `theta` through `.enet_parts()`, and `mean` of `vonmises2`, which reads
+  `theta[[1]]` and calls `vm2_parts()`. `std_dev` of the elastic net is
+  `sqrt(variance(...))` and is fixed by `variance`: it read 0.68749872 in the
+  family's order and 0.69481641 reversed.
+
+* The methods that delegate to `moment()` were already order-independent and
+  are untouched. `moment()` does not align either, but it reaches its value
+  through `expectation()` and `distrib_pdf()`, whose generic aligns before it
+  dispatches.
+
+* `.enet_parts()` and `vm2_parts()` are not the place for the fix: they receive
+  `theta` and not the distribution, and `align_theta()` needs both.
+
+* Aligning also **validates**, which is the behavior the other 165 have: a
+  component outside its open domain, or a missing one, is now an error where
+  these four returned a number. At a `theta` already in the family's own order
+  nothing moves, aligning an ordered list being the identity.
+
+* Found by three instruments that each miss what the others see, which is why
+  all three are kept: a probe over the four moment generics, a probe over every
+  generic, and a static scan of the method table for a body that indexes
+  `theta` without aligning it. The first reported three, the second four, the
+  third one.
+
 # distributions7 0.40.0
 
 * Every method of every generic accepts `...` where its generic declares one.

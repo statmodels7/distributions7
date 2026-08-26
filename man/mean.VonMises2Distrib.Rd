@@ -8,7 +8,8 @@
 argument is named \code{x} because the generic is \code{\link[base:mean]{base::mean()}}.}
 
 \item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
-vector of length 1. \code{rho} must lie in \eqn{(0, 1)}.}
+vector of length 1. \code{rho} must lie in \eqn{(0, 1)}. Aligned and
+validated by name, so a missing or out-of-bounds component throws.}
 
 \item{...}{Passed on to \code{\link[=mean.distrib]{mean.distrib()}}, which reads the quadrature's
 settings.}
