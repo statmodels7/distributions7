@@ -43,10 +43,10 @@ numerical fallback derived from it.
 
 ## See also
 
-[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
-[`distrib_quantile`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
-[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
-[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
+[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
 
 ## Examples
 

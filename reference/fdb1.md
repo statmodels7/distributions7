@@ -21,4 +21,14 @@ fdb1(h, u)
 
 ## Value
 
-A list with the four derivatives of the composition.
+A named list with components `h1` to `h4`, the four derivatives of the
+composition, each the length of the vectors passed in.
+
+## See also
+
+[`fdb2()`](https://statmodels7.github.io/distributions7/reference/fdb2.md)
+for a bivariate inner function;
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
+which consumes these through `map_derivs`;
+[`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
+for the general partition sum this writes out.

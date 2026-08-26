@@ -1,9 +1,24 @@
-# S7 Class for Laplace Distribution
+# Laplace Distribution Class, Location and Scale
 
-A subclass of `continuous_distrib` representing the Laplace
-(double-exponential) distribution. It is the canonical example of a
-distribution whose log-likelihood is **not differentiable** in its
-location parameter.
+The S7 class of the Laplace (double exponential) family with location
+\\\mu\\ and scale \\\sigma \> 0\\, with density \\f(y) =
+(2\sigma)^{-1}\exp(-\|y-\mu\|/\sigma)\\ on the whole real line. It
+inherits from `continuous_distrib`, so it answers every generic of the
+`distrib` contract; the eleven methods listed below are registered on it
+directly and everything else comes from the parent.
+
+The density has a **kink** at \\y = \mu\\, where \\\|y - \mu\|\\ is not
+differentiable. This makes the family non-regular in its location: the
+observed second derivative in \\\mu\\ is 0 almost everywhere while the
+information is \\1/\sigma^2\\. The class records that by setting
+`params_smooth` to `c(mu = FALSE, sigma = TRUE)`, which
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+and the finite-difference guards consult.
+
+Build one with
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md).
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -72,34 +87,70 @@ LaplaceDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `LaplaceDistrib`.
+An S7 object of class `LaplaceDistrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+they hold `"laplace"`, `"univariate"`, `c(-Inf, Inf)`,
+`c("mu", "sigma")`, the interpretations
+`c(mu = "location", sigma = "scale")`, `2`, the domains \\(-\infty,
+\infty)\\ and \\(0, \infty)\\, the two links, and
+`c(mu = FALSE, sigma = TRUE)` for `params_smooth`.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.LaplaceDistrib.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LaplaceDistrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.LaplaceDistrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.LaplaceDistrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.LaplaceDistrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.LaplaceDistrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.LaplaceDistrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.LaplaceDistrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.LaplaceDistrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.LaplaceDistrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.LaplaceDistrib.md),
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.LaplaceDistrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+to build one;
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+for the same law written by its rate \\\lambda = 1/\sigma\\;
+[`distrib_expected_hessian.LaplaceDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.LaplaceDistrib.md)
+for the information at the kink;
+[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+for a smooth relative.
+
+## Examples
+
+``` r
+d <- laplace_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The class declares that the log-likelihood has a kink in mu.
+d@params_smooth
+#>    mu sigma 
+#> FALSE  TRUE 
+
+# sigma is a scale, not a standard deviation: the variance is 2 sigma^2.
+th <- list(mu = 0.4, sigma = 1.5)
+c(variance = variance(d, th), two_sigma_sq = 2 * 1.5^2)
+#>     variance two_sigma_sq 
+#>          4.5          4.5 
+
+# Heavier tailed than a Gaussian: the excess kurtosis is 3.
+kurtosis(d, th)
+#> [1] 3
+```

@@ -43,4 +43,4 @@ repeatedly, and the parent's derivative may itself be expensive.
 
 ## See also
 
-[`canon_key`](https://statmodels7.github.io/distributions7/reference/canon_key.md)
+[`canon_key()`](https://statmodels7.github.io/distributions7/reference/canon_key.md)

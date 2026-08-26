@@ -1,7 +1,24 @@
-# S7 Class for the von Mises Distribution in Its Resultant Length
+# von Mises Distribution Class, Mean Resultant Length
 
-A subclass of `continuous_distrib` for the von Mises written in its mean
-direction and its mean resultant length.
+The S7 class of the von Mises family written in its mean direction
+\\\mu\\ and its **mean resultant length** \\\rho \in (0, 1)\\, the
+quantity circular statistics reports and one minus the circular
+variance. It inherits from `continuous_distrib`; the nine methods listed
+below are registered on it directly.
+
+The concentration of
+[`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
+is recovered as \\\kappa = A^{-1}(\rho)\\ with \\A(\kappa) =
+I_1(\kappa)/I_0(\kappa)\\, a strictly increasing bijection from \\(0,
+\infty)\\ onto \\(0, 1)\\ whose inverse has no closed form. That is why
+the family is written out here instead of through
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md).
+
+Build one with
+[`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md),
+which supplies the two link functions and fills the properties in. This
+page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,25 +87,73 @@ VonMises2Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `VonMises2Distrib`.
+An S7 object of class `VonMises2Distrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
+they hold `"von mises2"`, `"univariate"`, `c(-pi, pi)`,
+`c("mu", "rho")`, the interpretations
+`c(mu = "mean direction", rho = "mean resultant length")`, `2`, and the
+domains \\(-\pi, \pi)\\ and \\(0, 1)\\.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.VonMises2Distrib.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.VonMises2Distrib.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.VonMises2Distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises2Distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.VonMises2Distrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.VonMises2Distrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.VonMises2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.VonMises2Distrib.md),
+[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.VonMises2Distrib.md).
 
-Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+The **quantile** and the response derivatives come from
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+the quantile by root finding on this class's own distribution function.
+The remaining moments come from
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+and its siblings, numerically, and are the ordinary moments of \\Y\\ as
+a number.
 
 ## See also
 
-[`vonmises2_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md),
-[`vonmises1_distrib`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
+[`vonmises2_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises2_distrib.md)
+to build one;
+[`vonmises1_distrib()`](https://statmodels7.github.io/distributions7/reference/vonmises1_distrib.md)
+for the same law in the concentration;
+[`numericals7::bessel_i_ratio_inverse()`](https://statmodels7.github.io/numericals7/reference/bessel_i_ratio_inverse.html)
+for the map;
+[`distrib_expected_hessian.VonMises2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.VonMises2Distrib.md)
+for the information.
+
+## Examples
+
+``` r
+d <- vonmises2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The resultant length is bounded, which is what makes it readable.
+d@params
+#> [1] "mu"  "rho"
+d@params_bounds$rho
+#> [1] 0 1
+d@params_interpretation
+#>                      mu                     rho 
+#>        "mean direction" "mean resultant length" 
+
+# The direction rides a bounded link and the resultant length a logit.
+vapply(d@link_params, function(l) l@link_name, character(1))
+#>                                                     mu 
+#> "bounded(lwr=-3.14159265358979, upr=3.14159265358979)" 
+#>                                                    rho 
+#>                                                "logit" 
+```

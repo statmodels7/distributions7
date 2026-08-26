@@ -43,7 +43,7 @@ observations sharing a \\\theta\\ share an answer, and a model with a
 scalar \\\theta\\ costs one simulation however long `y` is.
 
 Estimates the same quantity as
-[`expected_by_integrate`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md),
+[`expected_by_integrate()`](https://statmodels7.github.io/distributions7/reference/expected_by_integrate.md),
 with an error falling as \\1/\sqrt{n\_{sim}}\\, and is stochastic unless
 the seed is fixed. Its cost is the cost of sampling, so it is the wrong
 choice for a distribution whose RNG falls back to inverse transform on a
@@ -51,4 +51,4 @@ numerical quantile.
 
 ## See also
 
-[`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)

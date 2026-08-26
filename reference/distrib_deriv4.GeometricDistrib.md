@@ -1,48 +1,92 @@
-# Geometric Analytical Fourth-Order Derivative
+# Geometric Fourth-Order Derivative
 
-\$\$\ell^{(\mu\mu\mu\mu)} = -6\left(\dfrac{y}{\mu^4} -
-\dfrac{y+1}{(1+\mu)^4}\right), \qquad
-\mathbb{E}\[\ell^{(\mu\mu\mu\mu)}\] = -6\left(\dfrac{1}{\mu^3} -
-\dfrac{1}{(1+\mu)^3}\right)\$\$
+Computes the fourth derivative of the geometric log-mass with respect to
+the mean, in closed form. As at third order it is a combination of
+\\\mu^{-k}\\ and \\(1+\mu)^{-k}\\ with the data entering linearly
+through \\y\\.
+
+With `expected = TRUE` the expectation is returned, obtained by
+substituting \\\mathbb{E}\[Y\] = \mu\\. Both routes are closed form, so
+`approx` and `nsim` are ignored.
 
 ## Arguments
 
 - distrib:
 
-  A `GeometricDistrib` object.
+  A `GeometricDistrib` object, from
+  [`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md).
 
 - y:
 
-  A numeric vector of observations.
+  A numeric vector of counts. With `expected = TRUE` only its length is
+  used.
 
 - theta:
 
-  A list containing the parameter `mu`.
+  A named list with the single component `mu`, a numeric vector of
+  length 1 or of the length of `y`. `mu` must be strictly positive.
 
 - expected:
 
-  Logical; if `TRUE`, returns the expected derivative.
+  Logical of length 1. When `TRUE` the expectation under the model is
+  returned in place of the observed value. Defaults to `FALSE`.
 
 - scale:
 
-  Either `"parameter"` or `"link"`; handled by the generic.
+  One of `"parameter"` (the default) or `"link"`, matched by
+  [`base::match.arg()`](https://rdrr.io/r/base/match.arg.html). Read by
+  the generic, not by this method.
 
 - approx:
 
-  Ignored; the expectation is closed form.
+  Ignored, a closed form being available for both routes.
 
 - nsim:
 
-  Ignored.
+  Ignored, for the same reason. Defaults to `10000`.
 
 - ...:
 
-  Unused.
+  Unused, and accepted so that the signature matches the generic's.
+
+- threads:
+
+  A single positive integer, how many threads the kernel may use.
+  Defaults to `1L`.
 
 ## Value
 
-A named list with the `mu_mu_mu_mu` component.
+A named list of one numeric vector, `mu_mu_mu_mu`, of length
+`max(length(y), length(mu))`.
+
+## Notation
+
+\\\ell^{(\mu\mu\mu\mu)}\\ is the fourth derivative of the log-mass with
+respect to \\\mu\\. Parenthesized superscripts name derivatives.
 
 ## See also
 
-[`geometric_distrib`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+[`distrib_deriv3.GeometricDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md)
+for the order below;
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+for the generic.
+
+## Examples
+
+``` r
+d <- geometric_distrib()
+y <- c(0, 2, 7)
+th <- list(mu = 3)
+
+# A central difference of the third order reproduces the fourth.
+eps <- 1e-6
+up <- distrib_deriv3(d, y, list(mu = 3 + eps))$mu_mu_mu
+dn <- distrib_deriv3(d, y, list(mu = 3 - eps))$mu_mu_mu
+all.equal((up - dn) / (2 * eps), distrib_deriv4(d, y, th)$mu_mu_mu_mu,
+          tolerance = 1e-5)
+#> [1] TRUE
+
+# The expected value is one number.
+unique(distrib_deriv4(d, y, th, expected = TRUE)$mu_mu_mu_mu)
+#> [1] -0.1284722
+```

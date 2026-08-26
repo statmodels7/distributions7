@@ -1,7 +1,27 @@
-# S7 Class for the Geometric Distribution
+# Geometric Distribution Class
 
-A subclass of `discrete_distrib` representing the geometric distribution
-on \\\\0, 1, 2, \dots\\\\ in its mean parametrization.
+The S7 class of the geometric family parametrized by its **mean** \\\mu
+\> 0\\: the number of failures before the first success in independent
+trials, each succeeding with probability \\p = 1/(1+\mu)\\. It inherits
+from `discrete_distrib`, so its support is a set of isolated points, so
+expectations are sums and no derivative with respect to the response is
+defined.
+
+The parametrization is by the mean, the quantity the modeling layer
+above models: a link carries \\\mu\\ to the unconstrained scale and the
+probability follows. R's own `dgeom` takes `prob`, and the methods
+convert through
+[`geom_prob()`](https://statmodels7.github.io/distributions7/reference/geom_prob.md).
+
+The variance is \\\mu(1+\mu)\\, always above the mean, so this family is
+overdispersed relative to a Poisson of the same mean. It is the negative
+binomial at a dispersion of one, and it is the only discrete law that is
+memoryless.
+
+Build one with
+[`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md).
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,15 +90,22 @@ GeometricDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `GeometricDistrib`.
+An S7 object of class `GeometricDistrib`, inheriting from
+`discrete_distrib` and from `distrib`. Its properties are the parent's:
+`distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+they hold `"geometric"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
+`c(mu = "mean")`, `1`, the domain \\(0, \infty)\\, and the one link.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.GeometricDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.GeometricDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.GeometricDistrib.md),
@@ -90,8 +117,42 @@ Methods implemented for this class:
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.GeometricDistrib.md)
 
 Everything else is inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
 
-[`geometric_distrib`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+[`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+to build one;
+[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md),
+of which this is the case \\\theta = 1\\;
+[`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md),
+its memoryless continuous counterpart;
+[`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
+for the equidispersed alternative.
+
+## Examples
+
+``` r
+d <- geometric_distrib()
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+d@params
+#> [1] "mu"
+d@params_interpretation
+#>     mu 
+#> "mean" 
+
+# Overdispersed by construction: the variance is mu(1+mu), above the mean.
+vapply(c(0.5, 3, 20), function(m) {
+  th <- list(mu = m)
+  c(mean = mean(d, th), var = variance(d, th))
+}, numeric(2))
+#>      [,1] [,2] [,3]
+#> mean 0.50    3   20
+#> var  0.75   12  420
+
+# The mass is R's own at prob = 1/(1+mu).
+all.equal(distrib_pdf(d, c(0, 2, 7), list(mu = 3)),
+          dgeom(c(0, 2, 7), prob = 1 / 4))
+#> [1] TRUE
+```

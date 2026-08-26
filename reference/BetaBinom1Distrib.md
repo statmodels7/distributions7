@@ -1,7 +1,21 @@
-# S7 Class for the Beta-Binomial Distribution
+# Beta-Binomial Distribution Class, Mean Proportion and Dispersion
 
-A subclass of `discrete_distrib` representing the beta-binomial
-distribution, written in its mean proportion and a dispersion parameter.
+The S7 class of the beta-binomial family parametrized by a mean
+proportion \\\mu \in (0, 1)\\ and a dispersion \\\sigma \> 0\\, on the
+finite support \\\\0, 1, \dots, n\\\\. It inherits from
+`discrete_distrib`, so it answers every generic of the `distrib`
+contract; the seven methods listed below are registered on it in this
+file, two more in `betabinom1_higher.R`, and everything else comes from
+the parent.
+
+The class carries an extra property beyond the parent's, `size`: the
+number of trials \\n\\, fixed at construction as it is for
+[`BinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/BinomialDistrib.md).
+Build one with
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md),
+which validates `size`, supplies the two link functions and fills the
+properties in. This page documents the raw S7 constructor, which
+validates none of the relationships between them.
 
 ## Usage
 
@@ -71,34 +85,86 @@ BetaBinom1Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - size:
 
-  The number of trials \\n\\, a constant of the distribution rather than
-  a parameter, as for
-  [`BinomialDistrib`](https://statmodels7.github.io/distributions7/reference/BinomialDistrib.md).
+  The number of trials \\n\\, a single positive integer stored as a
+  numeric. It belongs to the object, so an object cannot be reused
+  across data sets whose group sizes differ.
 
 ## Value
 
-An object of class `BetaBinom1Distrib`.
+An S7 object of class `BetaBinom1Distrib`, inheriting from
+`discrete_distrib` and from `distrib`. Beyond `size` its properties are
+the parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+they hold `"beta-binomial [size=n]"`, `"univariate"`, `c(0, size)`,
+`c("mu", "sigma")`, the interpretations
+`c(mu = "mean proportion", sigma = "dispersion")`, `2`, the domains
+\\(0, 1)\\ and \\(0, \infty)\\, and the two links.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class in this file:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BetaBinom1Distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.BetaBinom1Distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.BetaBinom1Distrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.BetaBinom1Distrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom1Distrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.BetaBinom1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom1Distrib.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BetaBinom1Distrib.md).
 
-Everything else is inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md);
-third and fourth derivatives come from the numerical fallback, which for
-a family on a finite support is differencing an exact mass function.
+Six more are registered on the class from other files: the closed-form
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BetaBinom1Distrib.md)
+and
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BetaBinom1Distrib.md)
+in `betabinom1_higher.R`, and the four moments
+[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.BetaBinom1Distrib.md),
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.BetaBinom1Distrib.md),
+[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.BetaBinom1Distrib.md)
+and
+[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.BetaBinom1Distrib.md)
+in `moments.R`.
+
+The response derivatives are refused, as for every discrete family: a
+mass function has no derivative in its argument.
 
 ## See also
 
-[`betabinom1_distrib`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+to build one;
+[`betabinom2_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom2_distrib.md)
+for the same law in its two beta shapes;
+[`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+for the limit at \\\sigma \to 0\\;
+[`distrib_pdf.BetaBinom1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.BetaBinom1Distrib.md)
+for the mass function.
+
+## Examples
+
+``` r
+d <- betabinom1_distrib(size = 10)
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+
+# The trial count is a property of the object, not an entry of theta.
+d@size
+#> [1] 10
+d@bounds
+#> [1]  0 10
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+#> [1] "mu"    "sigma"
+d@params_interpretation
+#>                mu             sigma 
+#> "mean proportion"      "dispersion" 
+
+# The mean proportion rides a logit and the dispersion a log.
+vapply(d@link_params, function(l) l@link_name, character(1))
+#>      mu   sigma 
+#> "logit"   "log" 
+```

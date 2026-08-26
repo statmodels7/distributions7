@@ -42,16 +42,16 @@ which for a continuous strictly increasing \\F\\ is the ordinary inverse
 and for a discrete family the smallest support point whose cumulative
 mass reaches \\p\\. Without a method the value comes from root-finding
 on
-[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 in the continuous case and from an exact table lookup in the discrete
 one.
 
 ## See also
 
-[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
-[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
-[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
-[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
 
 ## Examples
 

@@ -37,13 +37,13 @@ parameters causing the mismatch.
 
 ## See also
 
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-[`expand_params`](https://statmodels7.github.io/distributions7/reference/expand_params.md),
-[`transpose_params`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
-[`check_theta_bounds`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
-[`param_smoothness`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
-[`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+[`expand_params()`](https://statmodels7.github.io/distributions7/reference/expand_params.md),
+[`transpose_params()`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
+[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
+[`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
+[`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
 
 ## Examples
 

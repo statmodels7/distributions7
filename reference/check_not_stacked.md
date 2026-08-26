@@ -1,8 +1,9 @@
 # Reject the Composition of Two Zero Wrappers
 
-Rejects an attempt to wrap a distribution that already models the
-probability of a zero, and rejects a parameter name the parent has
-already used.
+Signals an error when the parent already models the probability of a
+zero, which is how both wrappers refuse to stack. The models this
+rejects are well defined and inestimable, so the constructor is the only
+place the problem can be caught: nothing at run time reports it.
 
 ## Usage
 
@@ -14,36 +15,60 @@ check_not_stacked(distrib, fun, param)
 
 - distrib:
 
-  The parent distribution being wrapped.
+  The candidate parent, a `distrib` object.
 
 - fun:
 
-  The calling constructor's name, used in the message.
+  The name of the calling constructor, a single string, quoted in the
+  message.
 
 - param:
 
-  The name of the parameter the wrapper wants to add.
+  The name of the parameter it would add, a single string. Not currently
+  placed in the message; it is carried for the caller's own record.
 
 ## Value
 
-Invisibly `NULL`; raises an error if either condition fails.
+`NULL`, invisibly, when the parent is not a zero wrapper. Otherwise it
+signals an error naming the parent.
 
 ## Details
 
-Two zero parameters cannot both be identified. Zero-truncating a
-distribution that already has one removes it from the likelihood
-entirely – the factor cancels between the numerator and the truncation
-constant, leaving its score identically zero – and mixing a further
-point mass in only ever shifts the total mass at zero, which one
-parameter already describes.
-
-The distributions this rejects are well-defined but not estimable, and
-nothing detects that at run time: the pmf sums to one,
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
-passes, and a fit converges to an arbitrary point of a flat ridge. The
-constructor is therefore the only place the condition can be enforced.
+Two zero parameters cannot both be identified. Zero-adjusting a
+zero-inflated parent truncates the zero away, which cancels the
+\\(1-\zeta)\\ factor between the numerator and the normalizing constant,
+so \\\zeta\\ leaves the likelihood entirely and its score is IDENTICALLY
+zero. The other order keeps only the combination \\\zeta +
+(1-\zeta)\pi\\. Either way an optimizer wanders along a flat ridge, the
+mass function sums to one throughout, and
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+passes.
 
 ## See also
 
-[`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
-[`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+[`is_zero_wrapper()`](https://statmodels7.github.io/distributions7/reference/is_zero_wrapper.md)
+for the test, and
+[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+and
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),
+the two callers.
+
+## Examples
+
+``` r
+# A plain parent passes silently.
+distributions7:::check_not_stacked(poisson_distrib(),
+                                   "zero_inflated()", "zi")
+
+# A wrapped one does not, and the two orders are refused alike.
+try(zero_inflated(zero_adjusted(poisson_distrib())))
+#> Error : zero_inflated() cannot wrap 'zero-adjusted poisson', which already models the probability of a zero.
+#>   Stacking the two leaves only their combination identified: the second
+#>   parameter has an identically zero score, and any optimizer will wander
+#>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
+try(zero_adjusted(zero_inflated(poisson_distrib())))
+#> Error : zero_adjusted() cannot wrap 'zero-inflated poisson', which already models the probability of a zero.
+#>   Stacking the two leaves only their combination identified: the second
+#>   parameter has an identically zero score, and any optimizer will wander
+#>   along that ridge. Apply exactly one zero wrapper to a plain distribution.
+```

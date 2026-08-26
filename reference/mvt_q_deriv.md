@@ -23,7 +23,7 @@ mvt_q_deriv(b, r, pget, p)
 - pget:
 
   The accessor for \\\partial^{t}\Sigma^{-1}\\, as returned by
-  [`mvg_ptensors`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md).
+  [`mvg_ptensors()`](https://statmodels7.github.io/distributions7/reference/mvg_ptensors.md).
 
 - p:
 

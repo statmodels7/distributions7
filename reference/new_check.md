@@ -1,7 +1,7 @@
 # Record One Check Result
 
 Builds the single-row data frame that
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 accumulates into its report.
 
 ## Usage
@@ -36,5 +36,5 @@ A one-row data frame with columns `check`, `status`, `statistic` and
 
 ## See also
 
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
-[`safe_check`](https://statmodels7.github.io/distributions7/reference/safe_check.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md),
+[`safe_check()`](https://statmodels7.github.io/distributions7/reference/safe_check.md)

@@ -3,7 +3,7 @@
 Computes the gradient of the log-density with respect to each parameter
 by central finite differences of `distrib_pdf(..., log = TRUE)`. This
 powers the default
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 method for distributions that do not implement an analytical gradient:
 any `distrib` subclass that defines only `distrib_pdf` gets its score
 function for free.
@@ -58,8 +58,8 @@ and less precise than an analytical implementation.
 
 ## See also
 
-[`numerical_hessian`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 
 ## Examples
 

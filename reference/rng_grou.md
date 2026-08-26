@@ -4,7 +4,7 @@ Draws from a continuous distribution using the Generalized
 Ratio-of-Uniforms (GRoU) method. The sampler needs nothing but the (log)
 density: no CDF, no quantile function and no inversion. It is the engine
 behind the default
-[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md)
 method for continuous distributions that provide neither a native RNG
 nor an analytical quantile function.
 
@@ -31,9 +31,9 @@ rng_grou(distrib, n, theta, r = 2)
 - r:
 
   Numeric tuning parameter of the transformation power, default `2`.
-  `r = 1` is the classical Ratio-of-Uniforms; larger values enclose
-  heavier tails (`r = 2` keeps the acceptance region bounded for tails
-  as heavy as the Cauchy's, which is why it is the default).
+  `r=1` is the classical Ratio-of-Uniforms; larger values enclose
+  heavier tails (`r=2` keeps the acceptance region bounded for tails as
+  heavy as the Cauchy's, which is why it is the default).
 
 ## Value
 
@@ -69,10 +69,10 @@ density:
 The bounds \\v\_{\min}, v\_{\max}\\ are obtained by expanding
 geometrically away from the mode until \\h\\ has clearly turned back
 towards zero (finite support bounds are used directly), then combining
-[`optimize`](https://rdrr.io/r/stats/optimize.html) with a grid search
-over the resulting bracket; the box is enclosing by construction for a
-unimodal kernel. Candidates are generated and filtered in vectorized
-batches whose size adapts to the observed acceptance rate.
+[`stats::optimize()`](https://rdrr.io/r/stats/optimize.html) with a grid
+search over the resulting bracket; the box is enclosing by construction
+for a unimodal kernel. Candidates are generated and filtered in
+vectorized batches whose size adapts to the observed acceptance rate.
 
 ## Unbounded densities
 
@@ -85,9 +85,9 @@ If \\f(y) \sim \|y-a\|^{\alpha-1}\\ near the edge \\a\\, with \\\alpha
 \\x^{\lambda\alpha-1}\\ there, which is bounded as soon as
 \\\lambda\alpha \> 1\\. Sampling \\X\\ and mapping back is exact: no
 quadrature and no inversion are involved. The exponent \\\alpha\\ is
-read off the same probe that detects the divergence – walking towards
-the edge in decades lifts the log-density by \\(1-\alpha)\log 10\\ per
-step – and \\\lambda\\ is chosen from it. A Gamma of shape \\0.4\\, for
+read off the same probe that detects the divergence: walking towards the
+edge in decades lifts the log-density by \\(1-\alpha)\log 10\\ per step,
+and \\\lambda\\ follows from that slope. A Gamma of shape \\0.4\\, for
 instance, is sampled through \\X = Y^{1/4}\\.
 
 A density diverging at *both* edges, such as a Beta with both shapes
@@ -106,10 +106,10 @@ onto the edge and the density evaluated there returns infinity. The
 distance from the edge is still exact on the \\u\\ scale, so the power
 law is used there instead, calibrated once where the density can be
 evaluated. This keeps the mass rather than rejecting it. It cannot place
-it any more finely than the arithmetic allows – for a Beta(0.9, 0.1)
-some 2.5\\ unit in the last place of 1, and those draws come back equal
-to 1 exactly, which is also what
-[`rbeta`](https://rdrr.io/r/stats/Beta.html) does.
+it any more finely than the arithmetic allows. For a Beta(0.9, 0.1) some
+2.5\\ unit in the last place of 1, and those draws come back equal to 1
+exactly, which is also what
+[`stats::rbeta()`](https://rdrr.io/r/stats/Beta.html) does.
 
 ## Requirements
 
@@ -117,14 +117,14 @@ The kernel must be unimodal and the parameters in `theta` must be
 scalars. Densities that diverge at one or at both edges of their support
 are handled by the reparametrizations described below.
 
-Heavy tails are not an obstacle: with the default `r = 2` the sampler
+Heavy tails are not an obstacle: with the default `r=2` the sampler
 handles a Student's t with half a degree of freedom and a Pareto with
 infinite mean, and multimodal densities are usually accepted as well.
 
 ## See also
 
-[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 
 ## Examples
 
@@ -147,5 +147,5 @@ d <- MyDist(
 y <- rng_grou(d, 1000, list(mu = 2, b = 1.5))
 c(mean = mean(y), var = var(y)) # ~ 2 and ~ 2 * 1.5^2
 #>     mean      var 
-#> 1.936598 4.797486 
+#> 1.990910 4.941355 
 ```

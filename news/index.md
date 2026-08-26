@@ -1,5 +1,150 @@
 # Changelog
 
+## distributions7 0.41.0
+
+- Four moment methods read `theta` by position and now read it by name.
+  Every generic here takes `theta` as a **named** list, and
+  [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
+  reorders it, strips stray names off the values and validates it
+  against the open `params_bounds`. No moment generic aligns before it
+  dispatches, so each method has to, and 165 of 168 did.
+
+- The consequence was a silently different number:
+
+  ``` r
+
+  mean(enet_distrib(), list(mu = 0.3, lambda = 2, alpha = 0.7))
+  #> 0.3
+  mean(enet_distrib(), list(alpha = 0.7, lambda = 2, mu = 0.3))
+  #> 0.7          the same three values, named in another order
+  ```
+
+  and on the von Mises in its resultant length the mean read 0.2594 one
+  way and 0.3862 the other. Nothing warned, and every other generic in
+  the package accepts any order, so there was no reason for a caller to
+  write them in the family’s own.
+
+- The four are `mean`, `variance` and `skewness` of the elastic net,
+  which reach `theta` through `.enet_parts()`, and `mean` of
+  `vonmises2`, which reads `theta[[1]]` and calls
+  [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md).
+  `std_dev` of the elastic net is `sqrt(variance(...))` and is fixed by
+  `variance`: it read 0.68749872 in the family’s order and 0.69481641
+  reversed.
+
+- The methods that delegate to
+  [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+  were already order-independent and are untouched.
+  [`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+  does not align either, but it reaches its value through
+  [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+  and
+  [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+  whose generic aligns before it dispatches.
+
+- `.enet_parts()` and
+  [`vm2_parts()`](https://statmodels7.github.io/distributions7/reference/vm2_parts.md)
+  are not the place for the fix: they receive `theta` and not the
+  distribution, and
+  [`align_theta()`](https://statmodels7.github.io/distributions7/reference/align_theta.md)
+  needs both.
+
+- Aligning also **validates**, which is the behavior the other 165 have:
+  a component outside its open domain, or a missing one, is now an error
+  where these four returned a number. At a `theta` already in the
+  family’s own order nothing moves, aligning an ordered list being the
+  identity.
+
+- Found by three instruments that each miss what the others see, which
+  is why all three are kept: a probe over the four moment generics, a
+  probe over every generic, and a static scan of the method table for a
+  body that indexes `theta` without aligning it. The first reported
+  three, the second four, the third one.
+
+## distributions7 0.40.0
+
+- Every method of every generic accepts `...` where its generic declares
+  one. 0.29.0 did this for `distrib_pdf`, for a measured reason: the von
+  Mises family needed a thread count carried down to `log_bessel_i`, and
+  43 of 45 methods signalled `unused argument` on an argument they do
+  not read. Eight generics were still split, and 197 of their methods
+  refused.
+
+- The argument for closing it is uniformity rather than extensibility.
+  27 of the package’s 35 generics were already uniform, every method
+  accepting; the eight that were not accepted on some families and
+  refused on others, so the same call succeeded on one family and failed
+  on another with no way for a reader to predict which. `distrib_rng`
+  accepted on 5 methods of 56 and `distrib_quantile` on 11 of 44, and
+  the ones that accepted were mostly the wrappers and the reparametrized
+  families, which were forced to by having to forward to a parent.
+
+- 171 inline method definitions and nine shared helper bodies are
+  edited. `loc_scale_grad_cdf` serves five families and `trunc_cdf` two,
+  so nine edits close 26 registrations; the helpers are named functions,
+  so roxygen generates a `\usage` for them and the `@param ...` is
+  required there rather than conventional.
+
+- The cost, stated: an argument a method does not read is now absorbed
+  rather than reported, so
+  `distrib_cdf(d, q, theta, lower.tial = FALSE)` is silently ignored
+  where it used to stop. That is the cost `distrib_pdf` has paid since
+  0.29.0 and every one of the other 26 uniform generics pays; what
+  changes is that it is now paid consistently.
+
+- `mv_location` and `mv_sigma` declare no `...` at all, so their methods
+  cannot be given one without changing the generic. They are left as
+  they are.
+
+- No behavior beyond the absorption changes, and the suite is unmoved at
+  6430 passing.
+
+## distributions7 0.39.0
+
+- Every moment method returns one value per parameter setting. 147 of
+  the 168 forced the shape with `moment_const(theta, k, 0)`, which
+  recycles to the length the family’s `k` parameters imply; eighteen
+  were written without it and answered with the length of whichever
+  components entered the formula, so a quantity that does not read the
+  location came back of length 1 when only the location varied:
+
+  ``` r
+
+  skewness(weibull1_distrib(), list(mu = c(0.1, 1, 100), sigma = 2))
+  #> 0.6311107          # length 1, where three settings were asked for
+  ```
+
+- Nothing warned. A caller binding moments to the rows of a data frame
+  got one number recycled down the column for a Laplace and the right
+  numbers for a Gaussian, the two differing only in whether the
+  component being varied happens to enter the value.
+
+- The eighteen are the elastic net’s `mean`, `variance` and `skewness`;
+  `variance` for the Gumbel, both Laplace charts and the pseudo-Huber;
+  `kurtosis` for the pseudo-Huber; `mean` for both
+  Poisson-inverse-Gaussian charts; `variance`, `skewness` and `kurtosis`
+  for the skew normal in its direct chart and for the skew t; and
+  `skewness` and `kurtosis` for the Weibull in its scale chart.
+  `kurtosis` for the skew normal’s centered chart and the Weibull’s two
+  in its mean chart follow through their delegations, so eighteen edits
+  close 21 (family, generic) pairs.
+
+- No value moved. `moment_const(theta, k, 0)` is a vector of zeros, so
+  every one of the 160 moments a scalar theta produces is what it was,
+  the largest absolute change over the set being 0.
+
+- Found by an instrument that varies EVERY parameter in turn. A survey
+  that varies the first alone reports eighteen pairs and cannot see the
+  three `mean` methods that read the first parameter but no later one,
+  which is how the figure recorded when the defect was first noticed
+  came to be three short.
+
+- `test-moments-recycling.R` is the regression test, and its sweep
+  cannot be satisfied by repairing one family: it asks the question of
+  every parameter of every univariate family. Beside it are the closed
+  forms transcribed by hand, so a fix that moved a value would fail
+  rather than pass quietly.
+
 ## distributions7 0.38.0
 
 - The von Mises distribution function is a series and no longer a
@@ -89,7 +234,7 @@
 
       psi''((nu+1)/2) - psi''(nu/2) = 8/nu^3 + 12/nu^4 - 20/nu^6 + 84/nu^8
 
-  the two Bernoulli expansions cancelling term by term at . `t_T3rest()`
+  the two Bernoulli expansions canceling term by term at . `t_T3rest()`
   carries the inside, as `t_S()` carries its own , because the only
   consumer pairs it with a term that cancels precisely that.
 
@@ -149,9 +294,9 @@
 
       log1p(y/r) - log1p(theta) = log1p( theta (y - mu) / (mu (1 + theta)) )
 
-  so none of the leading behaviour is formed and then subtracted, and
-  the trigamma pair goes through `psi_T_rest()` with its own leading
-  term `(y/r)/(y+r)` written out. The expected information sums the
+  so none of the leading behavior is formed and then subtracted, and the
+  trigamma pair goes through `psi_T_rest()` with its own leading term
+  `(y/r)/(y+r)` written out. The expected information sums the
   DIFFERENCE term by term rather than taking `psi'(r)` off an
   expectation of `psi'(Y+r)`, the two agreeing to leading order.
 
@@ -233,8 +378,8 @@
   variation of 1e-4. That is a degenerate fit, which is precisely when
   its derivatives should not be noise.
 
-  `f1` splits into two cancelling pairs rather than one, the second
-  being `1 + log(z) - z = log1p(w) - w` with `w = z - 1`, which is the
+  `f1` splits into two canceling pairs rather than one, the second being
+  `1 + log(z) - z = log1p(w) - w` with `w = z - 1`, which is the
   `psi_Ew()` the negative binomial already carries. The crossover is 50
   for all four, measured: the series sits within 5.4e-15, 7.5e-14,
   3.7e-13 and 1.2e-12 there and the direct forms still have every digit.
@@ -311,9 +456,9 @@
 - `src/psi_diff.h` carries `psi_A_rest()`, `psi_T_rest()` and
   `psi_Ew()`, each taking the SHIFT – a count, a size or a dimension,
   and therefore an integer – and returning the difference with its own
-  leading behaviour subtracted, so a caller pairing it with that
-  behaviour cancels symbolically. The header states which families reach
-  which boundary and what each direct form was measured to cost.
+  leading behavior subtracted, so a caller pairing it with that behavior
+  cancels symbolically. The header states which families reach which
+  boundary and what each direct form was measured to cost.
 
 ## distributions7 0.33.0
 
@@ -548,10 +693,10 @@
   carry the count down to
   [`numericals7::log_bessel_i()`](https://statmodels7.github.io/numericals7/reference/log_bessel_i.html),
   which is where this family spends its time: profiled at **80.8 per
-  cent** of a fit whose concentration is modelled, the concentration
-  then being a vector rather than one number. Measured end to end at n =
-  8000 with both parameters smoothed, 5.7 s against 2.0, and the
-  coefficients and the log-likelihood are identical to the bit.
+  cent** of a fit whose concentration is modeled, the concentration then
+  being a vector rather than one number. Measured end to end at n = 8000
+  with both parameters smoothed, 5.7 s against 2.0, and the coefficients
+  and the log-likelihood are identical to the bit.
 
 ## distributions7 0.28.0
 
@@ -721,7 +866,7 @@
 - The default method is ONE central difference of the family’s own
   expected information, which is a single stencil on an analytic
   quantity wherever that information is a written-out formula – the
-  licence the skew t already has for its degrees of freedom, and not the
+  license the skew t already has for its degrees of freedom, and not the
   nested differencing the package forbids. Validated against the
   gaussian’s hand-written components (7.2e-11) and against the identity
   `E[l_abc] + E[l_ab l_c]` computed by quadrature on a beta, every one
@@ -761,7 +906,7 @@
   the direct parameters runs through the cube root of `gamma1`, whose
   derivative is unbounded there: the first derivatives of the
   log-density survive the limit – they approach a finite value from both
-  sides, the map’s factor cancelling – and the second ones grow like
+  sides, the map’s factor canceling – and the second ones grow like
   `gamma1^(-2/3)`, which is a property of the CENTERED parametrization
   and not of the family. Until now the resulting `NA` reached a
   comparison several frames further on and the message named nothing.
@@ -774,7 +919,7 @@
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
   [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   and
-  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
   are closed form for the multivariate Student t, which was the last
   family a marginal criterion could not estimate a correlated prior’s
   matrix with. Unlike the gaussian’s, this family’s response Hessian
@@ -791,7 +936,7 @@
   `A_k Sigma^-1 A_l + A_l Sigma^-1 A_k - A_kl`.
   [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
   was rewritten to read the same pieces, so its existing checks validate
-  them at first order – the licence the toolkit uses for an order it
+  them at first order – the license the toolkit uses for an order it
   cannot check directly.
 
 - Verified against ONE difference of the analytic quantity below each,
@@ -816,7 +961,7 @@
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
   [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   and
-  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
   are closed form for the multivariate gaussian, which is what a
   marginal criterion reads to estimate the covariance of a correlated
   random effect. The response Hessian is `-Sigma^-1`, so it does not
@@ -960,7 +1105,7 @@
 
   Now recovered across five decades of scale, N(5,2) to N(50000,20000),
   and on gamma, lognormal, Student t, Weibull, Poisson and negative
-  binomial responses centred in the hundreds. `statmod()` on the Nile
+  binomial responses centered in the hundreds. `statmod()` on the Nile
   agrees with `lm` to 4.3e-16.
 
 - [`moment_estimates()`](https://statmodels7.github.io/distributions7/reference/moment_estimates.md)
@@ -1113,7 +1258,7 @@
 - [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
   [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   and
-  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
   reach 21 families each, up from 13. The eleven that remain are not
   location-scale and have no transformation onto one.
 
@@ -1147,7 +1292,7 @@
   [`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.md),
   [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   and
-  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
   go from 2, 1 and 1 closed families to 9, 8 and
   8.  A family with a shape parameter beyond the two keeps its
       location-scale pairs closed and differences the rest, as the
@@ -1157,7 +1302,7 @@
 
 - [`distrib_grad_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
   and
-  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y_hess.md)
+  [`distrib_hess_y_hess()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y_hess.md)
   close the mixed grid: one or two derivatives in the response and TWO
   in the parameters. They are what the SECOND derivative of a marginal
   criterion needs of a penalty. Closed forms for the gaussian, one

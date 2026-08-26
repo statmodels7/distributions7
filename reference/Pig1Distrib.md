@@ -1,8 +1,16 @@
-# S7 Class for the Poisson-Inverse Gaussian Distribution
+# Poisson-Inverse Gaussian Distribution Class
 
-A subclass of `discrete_distrib` representing the Poisson-inverse
-Gaussian distribution on \\\\0, 1, 2, \dots\\\\ in its mean-dispersion
-parametrization, gamlss's `PIG`.
+The S7 class of the Poisson-inverse Gaussian on \\\\0, 1, 2, \dots\\\\
+in its mean-dispersion parametrization, gamlss's `PIG`: the mean is
+\\\mu\\ and the variance \\\mu + \sigma\mu^2\\. The family is a Poisson
+mixed over an inverse Gaussian rate, an overdispersed count model with a
+heavier tail than the negative binomial at the same variance.
+
+Build one with
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
+which supplies the two link functions. This page documents the raw S7
+constructor, which validates none of the relationships between its
+properties.
 
 ## Usage
 
@@ -71,27 +79,69 @@ Pig1Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `Pig1Distrib`.
+An S7 object of class `Pig1Distrib`, inheriting from `discrete_distrib`
+and from `distrib`. For an object built by
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+the properties hold `"poisson-inverse gaussian"`, `"univariate"`,
+`c(0, Inf)`, `c("mu", "sigma")`, the interpretations
+`c(mu = "mean", sigma = "dispersion")`, `2`, and two domains \\(0,
+\infty)\\.
 
 ## Methods
 
-Methods implemented for this class:
+Registered in this file, the middle five reading one compiled kernel:
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Pig1Distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Pig1Distrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Pig1Distrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Pig1Distrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Pig1Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig1Distrib.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Pig1Distrib.md).
 
-Everything else, the distribution function and the quantile included, is
-inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+Registered elsewhere: the four moments in `moments.R` and the data-based
+starting value in `starting_values.R`.
+
+The **distribution function** and the **quantile** come from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
+where both are exact sums over the support. The **expected information**
+has no closed form and goes through
+[`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 ## See also
 
-[`pig1_distrib`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md),
-[`pig2_distrib`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+[`pig1_distrib()`](https://statmodels7.github.io/distributions7/reference/pig1_distrib.md)
+to build one;
+[`pig2_distrib()`](https://statmodels7.github.io/distributions7/reference/pig2_distrib.md)
+for the parametrization whose two parameters are orthogonal;
+[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+for the other overdispersed count family;
+[`pig_hd_block()`](https://statmodels7.github.io/distributions7/reference/pig_hd_block.md)
+for the kernel all five derivative methods read.
+
+## Examples
+
+``` r
+d <- pig1_distrib()
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+
+d@params
+#> [1] "mu"    "sigma"
+d@params_interpretation
+#>           mu        sigma 
+#>       "mean" "dispersion" 
+
+# The mean is a parameter and the variance follows from both.
+th <- list(mu = 3, sigma = 0.8)
+c(mean = mean(d, th), variance = variance(d, th),
+  formula = 3 + 0.8 * 3^2)
+#>     mean variance  formula 
+#>      3.0     10.2     10.2 
+
+# The mass sums to one over the support.
+sum(distrib_pdf(d, 0:300, th))
+#> [1] 1
+```

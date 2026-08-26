@@ -11,7 +11,7 @@ in the location."><meta property="og:image" content="https://statmodels7.github.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,9 @@ in the location.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A function suitable for registering as an S7 method.</p>
+    <p>A function suitable for registering as an S7 method: it takes
+<code>(distrib, y, theta, ...)</code> and returns a numeric vector of length
+<code>length(y)</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -75,6 +77,22 @@ two orders below, where \(\partial\ell/\partial y = -\partial\ell/
 \partial\mu\) and \(\partial^{2}\ell/\partial y^{2} =
 \partial^{2}\ell/\partial\mu^{2}\), and the tests check the new orders
 against exactly that.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="registered-on">Registered on<a class="anchor" aria-label="anchor" href="#registered-on"></a></h2>
+
+
+<p>This body serves both third- and fourth-order response derivatives on all
+fourteen location families, so <code>?distrib_deriv3_y.Gaussian1Distrib</code> and its
+twenty-seven siblings open this page:
+<code>Gaussian1Distrib</code>, <code>Gaussian2Distrib</code>, <code>Gaussian3Distrib</code>, <code>CauchyDistrib</code>, <code>LogisticDistrib</code>, <code>LaplaceDistrib</code>, <code>Laplace2Distrib</code>, <code>EnetDistrib</code>, <code>PseudoHuberDistrib</code>, <code>StudentT1Distrib</code>, <code>SkewNormal1Distrib</code>, <code>SkewNormal2Distrib</code>, <code>SkewTDistrib</code>, <code>GumbelDistrib</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="distrib_deriv3_y.continuous_distrib.html">distrib_deriv3_y.continuous_distrib()</a></code> for the stencil a family
+outside this list falls back to; <code><a href="register_dy_k.html">register_dy_k()</a></code>, the companion for
+families whose response is not a pure location; <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code> and
+<code><a href="distrib_deriv4.html">distrib_deriv4()</a></code>, whose components this reads.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -1,10 +1,29 @@
-# S7 Class for the Laplace Distribution in Location and Rate
+# Laplace Distribution Class, Location and Rate
 
-A subclass of `continuous_distrib` for the Laplace (double-exponential)
-distribution written in its location \\\mu\\ and its **rate** \\\lambda
-= 1/\sigma\\. Like
-[`LaplaceDistrib`](https://statmodels7.github.io/distributions7/reference/LaplaceDistrib.md),
-its log-likelihood is not differentiable in \\\mu\\.
+The S7 class of the Laplace (double exponential) family written by its
+**rate** \\\lambda \> 0\\ in place of its scale, with density \\f(y) =
+(\lambda/2)\exp(-\lambda\|y-\mu\|)\\ on the whole real line. It is the
+same law as
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+at \\\lambda = 1/\sigma\\; the parametrization differs and the
+derivatives with it. It inherits from `continuous_distrib`, so it
+answers every generic of the `distrib` contract.
+
+The rate form is the one a lasso penalty is written in: with \\\mu = 0\\
+the negative log-density is \\\lambda\|y\| - \log(\lambda/2)\\, so
+\\\lambda\\ is the penalty's own tuning parameter and larger values
+shrink harder. `penalties7::lasso_penalty()` is this family with the
+location held at zero.
+
+Like
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md),
+this family has a **kink** at \\y = \mu\\ and is non-regular in its
+location; `params_smooth` is `c(mu = FALSE, lambda = TRUE)`.
+
+Build one with
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md).
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -73,35 +92,70 @@ Laplace2Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `Laplace2Distrib`.
+An S7 object of class `Laplace2Distrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+they hold `"laplace2"`, `"univariate"`, `c(-Inf, Inf)`,
+`c("mu", "lambda")`, the interpretations
+`c(mu = "location", lambda = "rate")`, `2`, the domains \\(-\infty,
+\infty)\\ and \\(0, \infty)\\, the two links, and
+`c(mu = FALSE, lambda = TRUE)` for `params_smooth`.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Laplace2Distrib.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Laplace2Distrib.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Laplace2Distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.Laplace2Distrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.Laplace2Distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Laplace2Distrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.Laplace2Distrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.Laplace2Distrib.md),
-[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Laplace2Distrib.md),
-[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Laplace2Distrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Laplace2Distrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Laplace2Distrib.md),
-[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Laplace2Distrib.md),
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Laplace2Distrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`laplace2_distrib`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md),
-[`laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+[`laplace2_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace2_distrib.md)
+to build one;
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+for the same law in its scale;
+[`enet_distrib()`](https://statmodels7.github.io/distributions7/reference/enet_distrib.md),
+which mixes this family with a Gaussian.
+
+## Examples
+
+``` r
+d <- laplace2_distrib()
+d@params
+#> [1] "mu"     "lambda"
+d@params_interpretation
+#>         mu     lambda 
+#> "location"     "rate" 
+d@params_smooth
+#>     mu lambda 
+#>  FALSE   TRUE 
+
+# The same law as laplace_distrib() at lambda = 1/sigma.
+y <- c(-1.2, 0.3, 2.5)
+all.equal(distrib_pdf(d, y, list(mu = 0.4, lambda = 1 / 1.5)),
+          distrib_pdf(laplace_distrib(), y, list(mu = 0.4, sigma = 1.5)))
+#> [1] TRUE
+
+# The variance is 2/lambda^2, so a larger rate is a tighter distribution.
+vapply(c(0.5, 1, 2), function(l) variance(d, list(mu = 0, lambda = l)),
+       numeric(1))
+#> [1] 8.0 2.0 0.5
+```

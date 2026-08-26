@@ -42,8 +42,8 @@ distrib_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 
   Logical; if `TRUE` (default), derivatives of the *log* tail
   probability. With `FALSE` the derivatives of the probability itself
-  are returned, which is what interval censoring and the truncation
-  constant are built from.
+  are returned, which interval censoring and the truncation constant are
+  built from.
 
 - ...:
 
@@ -64,13 +64,13 @@ gradient of the log distribution function is a *partial mean of the
 score*. For a discrete distribution the integral is a finite sum and the
 identity is exact, which is how the default method computes it there;
 for a continuous one the default differentiates
-[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
 numerically, and distributions with a closed form register it directly.
 
 ## See also
 
-[`distrib_hess_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
+[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md)
 
 ## Examples
 

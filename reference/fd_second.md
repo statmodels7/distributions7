@@ -26,7 +26,7 @@ fd_second(f, x, k, l, h_rel = NULL)
 - h_rel:
 
   Deprecated and unused; the step is
-  [`fd_step`](https://statmodels7.github.io/numericals7/reference/fd_step.html)'s
+  [`numericals7::fd_step()`](https://statmodels7.github.io/numericals7/reference/fd_step.html)'s
   at order two.
 
 ## Value
@@ -43,4 +43,4 @@ derivative is along two.
 
 ## See also
 
-[`fd_weights`](https://statmodels7.github.io/numericals7/reference/fd_weights.html)
+[`numericals7::fd_weights()`](https://statmodels7.github.io/numericals7/reference/fd_weights.html)

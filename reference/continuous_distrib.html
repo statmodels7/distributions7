@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@
 
 
 <dt id="arg-params-smooth">params_smooth<a class="anchor" aria-label="anchor" href="#arg-params-smooth"></a></dt>
-<dd><p>An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all <code>TRUE</code> (leave empty). Set an entry to <code>FALSE</code> for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \(-\mathbb{E}[H]\) (see <code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code>).</p></dd>
+<dd><p>An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all <code>TRUE</code> (leave empty). Set an entry to <code>FALSE</code> for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \(-\mathbb{E}[H]\) (see <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -108,7 +108,7 @@
 
 <p>Defaults for continuous distributions, built from the density alone: the cdf by
 quadrature, the quantile function by root finding, and the generator by
-Generalized Ratio-of-Uniforms (<code><a href="rng_grou.html">rng_grou</a></code>) or inverse transform when
+Generalized Ratio-of-Uniforms (<code><a href="rng_grou.html">rng_grou()</a></code>) or inverse transform when
 an analytical quantile is available.</p>
 <p><code><a href="distrib_cdf.continuous_distrib.html">distrib_cdf()</a></code>,
 <code><a href="distrib_grad_y.continuous_distrib.html">distrib_grad_y()</a></code>,
@@ -117,11 +117,11 @@ an analytical quantile is available.</p>
 <code><a href="distrib_rng.continuous_distrib.html">distrib_rng()</a></code>,
 <code><a href="expectation.html">expectation()</a></code>,
 <code><a href="plot.continuous_distrib.html">plot()</a></code></p>
-<p>Everything else is inherited from <code><a href="distrib.html">distrib</a></code>.</p>
+<p>Everything else is inherited from <code><a href="distrib.html">distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib.html">distrib</a></code>, <code><a href="discrete_distrib.html">discrete_distrib</a></code>, <code><a href="multivariate_distrib.html">multivariate_distrib</a></code></p></div>
+    <div class="dont-index"><p><code><a href="distrib.html">distrib()</a></code>, <code><a href="discrete_distrib.html">discrete_distrib()</a></code>, <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code></p></div>
     </div>
 
     <div class="section level2">

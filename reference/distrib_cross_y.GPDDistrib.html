@@ -17,7 +17,7 @@ limit."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,15 @@ limit.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with one numeric vector per parameter.</p>
+    <p>A named list with components <code>sigma</code> and <code>xi</code>, each a numeric vector of
+length <code>length(y)</code>. Measured against Richardson on the analytic
+response gradient the worst is \(4.9\times10^{-11}\) relative.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="gpd_distrib.html">gpd_distrib()</a></code> for the family and for the removable singularity at
+\(\xi = 0\); <code><a href="distrib_grad_y.GPDDistrib.html">distrib_grad_y.GPDDistrib()</a></code> for the quantity
+differentiated; <code><a href="distrib_cross_y.html">distrib_cross_y()</a></code> for the generic.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

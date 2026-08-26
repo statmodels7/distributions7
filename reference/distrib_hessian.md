@@ -30,7 +30,7 @@ distrib_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
   parameters \\\theta\\ on their natural (constrained) scale, or
   `"link"` for derivatives with respect to the unconstrained linear
   predictors \\\eta = g(\theta)\\ defined by `distrib@link_params`. See
-  [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+  [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 
 - ...:
 
@@ -39,7 +39,7 @@ distrib_hessian(distrib, y, theta, scale = c("parameter", "link"), ...)
 ## Value
 
 A named list of numeric vectors, keyed as
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)`(distrib@params)`
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 (e.g. `"mu_sigma"`).
 
 ## Details
@@ -51,7 +51,7 @@ of parameters,
 \theta_j},\$\$
 
 evaluated at the observed \\y\\ (see
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 for its expectation). On the link scale the reparametrization \\\theta_i
 = h_i(\eta_i)\\ is diagonal, so the second-order chain rule carries a
 first-order term on the diagonal alone:
@@ -64,10 +64,10 @@ the parameter scale.
 
 ## See also
 
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 
 ## Examples
 

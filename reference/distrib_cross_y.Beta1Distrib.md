@@ -28,4 +28,14 @@ Closed form. The shapes are \\a = \mu\phi\\ and \\b = (1-\mu)\phi\\, and
 
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with components `mu` and `phi`, each a numeric vector of
+length `length(y)`.
+
+## See also
+
+[`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
+for the family;
+[`distrib_cross_y.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Beta2Distrib.md)
+for the shape chart;
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the generic.

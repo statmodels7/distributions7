@@ -2,9 +2,9 @@
 
 Computes the unique third-order partial derivatives of the log-density
 by central finite differences of
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
 This powers the default
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 method for distributions without a closed-form implementation, and is
 the reference used to validate the analytical kernels.
 
@@ -36,7 +36,7 @@ numerical_deriv3(distrib, y, theta, h_rel = .Machine$double.eps^(1/3))
 ## Value
 
 A named list of third-derivative component vectors, keyed as in
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)`(distrib@params, 3)`.
+[`deriv_names(distrib@params, 3)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
 
 ## Details
 
@@ -48,8 +48,8 @@ parameter-domain boundaries.
 
 ## See also
 
-[`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
 
 ## Examples
 

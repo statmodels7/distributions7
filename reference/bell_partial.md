@@ -40,5 +40,5 @@ could.
 
 ## See also
 
-[`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)

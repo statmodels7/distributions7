@@ -4,14 +4,12 @@ coordinate, by the partition form of Faa di Bruno
 $$\partial^{S} f(u) = \sum_{\pi} f^{(\lvert\pi\rvert)}(u)
       \prod_{B \in \pi} \partial^{B} u,$$
 the sum running over the set partitions of the multiset \(S\). Everything
-is vectorized over the coordinates, so one call serves every \(j\) at
-once."><meta property="og:description" content="Evaluates \(\partial^{S} f(u(v))\) for a scalar function \(f\) of one
+is vectorized over the coordinates, so one call serves every \(j\) at once."><meta property="og:description" content="Evaluates \(\partial^{S} f(u(v))\) for a scalar function \(f\) of one
 coordinate, by the partition form of Faa di Bruno
 $$\partial^{S} f(u) = \sum_{\pi} f^{(\lvert\pi\rvert)}(u)
       \prod_{B \in \pi} \partial^{B} u,$$
 the sum running over the set partitions of the multiset \(S\). Everything
-is vectorized over the coordinates, so one call serves every \(j\) at
-once."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
+is vectorized over the coordinates, so one call serves every \(j\) at once."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -19,7 +17,7 @@ once."><meta property="og:image" content="https://statmodels7.github.io/distribu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,8 +55,7 @@ coordinate, by the partition form of Faa di Bruno
 $$\partial^{S} f(u) = \sum_{\pi} f^{(\lvert\pi\rvert)}(u)
       \prod_{B \in \pi} \partial^{B} u,$$
 the sum running over the set partitions of the multiset \(S\). Everything
-is vectorized over the coordinates, so one call serves every \(j\) at
-once.</p>
+is vectorized over the coordinates, so one call serves every \(j\) at once.</p>
     </div>
 
     <div class="section level2">
@@ -71,24 +68,74 @@ once.</p>
 
 
 <dl><dt id="arg-tuple">tuple<a class="anchor" aria-label="anchor" href="#arg-tuple"></a></dt>
-<dd><p>An integer vector of free-value indices, with repeats.</p></dd>
+<dd><p>An integer vector of free-value indices, with repeats allowed.
+Its length is the derivative order.</p></dd>
 
 
 <dt id="arg-fd">fd<a class="anchor" aria-label="anchor" href="#arg-fd"></a></dt>
-<dd><p>A list whose \(m\)-th element is \(f^{(m)}\) evaluated at
-every coordinate.</p></dd>
+<dd><p>A list whose \(m\)-th element is \(f^{(m)}\) evaluated at every
+coordinate, a numeric vector each. It must run to <code>length(tuple)</code>.</p></dd>
 
 
 <dt id="arg-ud">ud<a class="anchor" aria-label="anchor" href="#arg-ud"></a></dt>
-<dd><p>A named list of the map's derivative tensors, keyed by sorted
-tuple as <code><a href="simplex_map_tensors.html">simplex_map_tensors</a></code> returns them.</p></dd>
+<dd><p>A named list of the map's derivative arrays, keyed by sorted tuple
+as <code><a href="simplex_map_tensors.html">simplex_map_tensors()</a></code> returns them. Every block of every partition of
+<code>tuple</code> must have a key in it.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector over the coordinates.</p>
+    <p>A numeric vector over the coordinates, as long as the elements of
+<code>fd</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This is why the two simplex-valued families are cheap at orders three and
+four. Their log-densities are sums of terms each depending on ONE coordinate,
+\(\log\Gamma(\alpha_j)\) for the Dirichlet and \(\log p_j\) for the
+multinomial, so the multivariate Faa di Bruno collapses to one univariate
+partition sum per coordinate and no mixed derivative array is ever formed.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="notation">Notation<a class="anchor" aria-label="anchor" href="#notation"></a></h2>
+
+
+<p>\(S\) is a multiset of free-value indices, \(\pi\) a set partition of it,
+\(B\) a block of that partition, and \(u\) the map being composed with.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="index_partitions.html">index_partitions()</a></code> for the enumeration it sums over,
+<code><a href="simplex_map_tensors.html">simplex_map_tensors()</a></code> for the argument, and <code><a href="dirichlet_higher.html">dirichlet_higher()</a></code> and
+<code><a href="multinomial_higher.html">multinomial_higher()</a></code> for the consumers.</p></div>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/simplex.html" class="external-link">simplex</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">eta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.3</span>, <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ud</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu"><a href="simplex_map_tensors.html">simplex_map_tensors</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">eta</span>, <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Compose f(u) = log(u) with the map: f'(u) = 1/u, f''(u) = -1/u^2.</span></span></span>
+<span class="r-in"><span><span class="va">u</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/param_value.html" class="external-link">param_value</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">eta</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">fd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">/</span> <span class="va">u</span>, <span class="op">-</span><span class="fl">1</span> <span class="op">/</span> <span class="va">u</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># The mixed second derivative of log(mu_j) in the two free values.</span></span></span>
+<span class="r-in"><span><span class="va">got</span> <span class="op">&lt;-</span> <span class="fu">distributions7</span><span class="fu">:::</span><span class="fu">chain_univariate</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1L</span>, <span class="fl">2L</span><span class="op">)</span>, <span class="va">fd</span>, <span class="va">ud</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">got</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1100772 0.1100772 0.1100772</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Against a difference of the first-order chain rule, taken directly.</span></span></span>
+<span class="r-in"><span><span class="va">h</span> <span class="op">&lt;-</span> <span class="fl">1e-5</span></span></span>
+<span class="r-in"><span><span class="va">d1</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">e</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">uu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/param_value.html" class="external-link">param_value</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">e</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/param_d1.html" class="external-link">param_d1</a></span><span class="op">(</span><span class="va">s</span>, <span class="va">e</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="va">uu</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">got</span> <span class="op">-</span> <span class="op">(</span><span class="fu">d1</span><span class="op">(</span><span class="va">eta</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="fu">d1</span><span class="op">(</span><span class="va">eta</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5.591458e-12</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside></div>
 

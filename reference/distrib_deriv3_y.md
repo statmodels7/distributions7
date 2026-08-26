@@ -2,9 +2,9 @@
 
 \\\partial^{3}\ell/\partial y^{3}\\ and \\\partial^{4}\ell/\partial
 y^{4}\\, completing the sequence begun by
-[`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 and
-[`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md).
 
 ## Usage
 
@@ -50,8 +50,8 @@ lattice.
 
 ## See also
 
-[`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
-[`numerical_deriv_y`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+[`numerical_deriv_y()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv_y.md)
 
 ## Examples
 

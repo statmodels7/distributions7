@@ -1,8 +1,18 @@
 # Skew Normal Distribution Object
 
-Creates a distribution object for Azzalini's skew normal distribution,
-with location \\\mu\\, scale \\\sigma\\ and shape \\\alpha\\. The
-gaussian is the special case \\\alpha = 0\\.
+Builds a skew normal distribution object in Azzalini's direct
+parametrization: a location \\\mu\\, a scale \\\sigma \> 0\\ and a shape
+\\\alpha\\ that tilts the Gaussian. With \\z = (y-\mu)/\sigma\\ the
+density is \\2\phi(z)\Phi(\alpha z)/\sigma\\, and \\\alpha = 0\\ gives
+the Gaussian exactly.
+
+The returned object carries the three link functions and every method of
+the family. `mu` and `sigma` are a location and a scale, not the mean
+and the standard deviation;
+[`mean.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/mean.SkewNormal1Distrib.md)
+and
+[`variance.SkewNormal1Distrib()`](https://statmodels7.github.io/distributions7/reference/variance.SkewNormal1Distrib.md)
+give those.
 
 ## Usage
 
@@ -18,84 +28,93 @@ skewnormal1_distrib(
 
 - link_mu:
 
-  A link function object for the location \\\mu\\. Defaults to
-  [`identity_link`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html).
+  A `linkfunctions7` link object for the location \\\mu\\, which is
+  unconstrained. Defaults to
+  [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html).
 
 - link_sigma:
 
-  A link function object for the scale \\\sigma\\. Defaults to
-  [`log_link`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html)
-  to ensure positivity.
+  A link object for the scale \\\sigma\\, which must be strictly
+  positive. Defaults to
+  [`linkfunctions7::log_link()`](https://statmodels7.github.io/linkfunctions7/reference/log_link.html),
+  so that any real linear predictor maps to an admissible scale.
 
 - link_alpha:
 
-  A link function object for the shape \\\alpha\\, which is
-  unconstrained. Defaults to
-  [`identity_link`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html).
+  A link object for the shape \\\alpha\\, which is unconstrained.
+  Defaults to
+  [`linkfunctions7::identity_link()`](https://statmodels7.github.io/linkfunctions7/reference/identity_link.html).
 
 ## Value
 
 An S7 object of class
-[`SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md)
-(inheriting from `continuous_distrib`).
+[SkewNormal1Distrib](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md),
+inheriting from `continuous_distrib`. Its `params` are
+`c("mu", "sigma", "alpha")`, its `bounds` `c(-Inf, Inf)`, and its
+`link_params` the three links given here.
 
-## Details
+## Density and distribution function
 
-**Probability density function**, with \\z = (y-\mu)/\sigma\\: \$\$f(y;
-\mu, \sigma, \alpha) = \dfrac{2}{\sigma}\\\phi(z)\\\Phi(\alpha z)\$\$
-The factor \\2\Phi(\alpha z)\\ tilts the gaussian: it is above one where
-\\\alpha z \> 0\\ and below one where \\\alpha z \< 0\\, so positive
-\\\alpha\\ skews the density to the right. At \\\alpha = 0\\ it is
-identically one and the family reduces to the gaussian.
-
-**Cumulative distribution function:** \$\$F(q; \mu, \sigma, \alpha) =
-\Phi(z) - 2\\T(z, \alpha)\$\$ with \\T\\ Owen's T function; see
-[`owen_t`](https://statmodels7.github.io/numericals7/reference/owen_t.html).
+\$\$f(y; \mu, \sigma, \alpha) = \dfrac{2}{\sigma}\\\phi(z)\\\Phi(\alpha
+z), \qquad z = (y-\mu)/\sigma.\$\$ The factor \\2\Phi(\alpha z)\\
+exceeds one where \\\alpha z \> 0\\ and falls below it where \\\alpha z
+\< 0\\, so a positive \\\alpha\\ moves mass to the right. The
+distribution function is Azzalini's identity \\F(q) = \Phi(z) - 2T(z,
+\alpha)\\ with \\T\\ Owen's T, one bounded quadrature per observation
+through
+[`numericals7::owen_t()`](https://statmodels7.github.io/numericals7/reference/owen_t.html).
 The quantile function has no closed form and comes from the base class
 by root finding.
 
-**Score and observed Hessian** are closed form, written in the inverse
-Mills ratio \\R(t) = \phi(t)/\Phi(t)\\ at \\t = \alpha z\\ and its
-derivative \\R' = -R(t+R)\\; see
-[`distrib_gradient.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.SkewNormal1Distrib.md)
-and
-[`distrib_hessian.SkewNormal1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.SkewNormal1Distrib.md).
+## Derivatives
 
-**Expected information.** There is no elementary closed form, so none is
+The score and the observed Hessian are closed form, written in the
+inverse Mills ratio \\R(t) = \phi(t)/\Phi(t)\\ at \\t = \alpha z\\, and
+so are the third and fourth orders, in compiled kernels. One identity
+does all of it: \\R' = -R(t+R)\\, so every derivative of \\\log\Phi(t)\\
+is a polynomial in \\t\\ and \\R\\.
+
+The **expected** information has no elementary form, so none is
 registered and
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
-approximates it by the strategy named in `approx`, the default being the
-score variance.
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+approximates it by the strategy named in its `approx` argument. The
+expected third and fourth orders share that obstruction.
 
-**Singularity at the gaussian.** At \\\alpha = 0\\ the expected
-information of this parametrization is **singular**: the derivative in
-\\\alpha\\ becomes collinear with the derivative in \\\mu\\, so the two
-cannot be separated there. This is a property of the family and not of
-the implementation, and it is why the profile log-likelihood in
-\\\alpha\\ is flat at the origin. A fit whose true shape is near zero
-will report a large standard error for \\\alpha\\; the centered
-parametrization of Azzalini and Capitanio removes the singularity and is
-a different object, not a reparametrization this class performs.
+## Singularity at symmetry
 
-**Moments.** With \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b =
-\sqrt{2/\pi}\\, the mean is \\\mu + \sigma b \delta\\ and the variance
-\\\sigma^2(1 - b^2\delta^2)\\. The skewness is bounded: it lies in
-\\(-0.9953, 0.9953)\\ whatever \\\alpha\\ is, which is the limitation of
-the family and the reason the skew \\t\\ exists.
+At \\\alpha = 0\\ the expected information has rank 2 and not 3. The
+score shows why: the shape component is \\z\sqrt{2/\pi}\\ and the
+location component \\z/\sigma\\, so the two are exactly proportional and
+no data can separate them. Measured, the smallest eigenvalue is
+\\-5.6\times10^{-17}\\ against a largest of 2 at \\\alpha = 0\\, and it
+grows like \\\alpha^4\\ thereafter.
 
-**Higher orders.** The observed third and fourth derivatives are closed
-form, every derivative of \\\log\Phi(t)\\ being a polynomial in \\t\\
-and the inverse Mills ratio through \\R' = -R(t+R)\\; their expected
-values share the obstruction of the expected information and are
-approximated numerically.
+The consequence for use is that a fit whose true shape is near zero
+identifies \\\alpha\\ weakly, and that a variance matrix computed at
+exactly zero is not invertible. Azzalini and Capitanio's centered
+parametrization removes the singularity; it is
+[`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md),
+a separate object.
 
-**Parameter Domains:**
+## Moments, and the bound on the skewness
 
-- \\\mu \in (-\infty, +\infty)\\
+With \\\delta = \alpha/\sqrt{1+\alpha^2}\\ and \\b = \sqrt{2/\pi}\\,
+\$\$E\[Y\] = \mu + \sigma b \delta, \qquad \mathrm{Var}(Y) =
+\sigma^2(1 - b^2\delta^2).\$\$ All four moments are closed form. The
+skewness is bounded: \\\delta\\ saturates at one as
+\\\|\alpha\|\to\infty\\, so \\\gamma_1\\ cannot leave \\(-0.9953,
+0.9953)\\ whatever the shape is. Measured, it reaches 0.9556 at \\\alpha
+= 10\\ and 0.99527 at \\\alpha = 10^4\\, and does not move after that. A
+sample skewer than this needs
+[`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md).
 
-- \\\sigma \in (0, +\infty)\\
+## Parameter domains
 
-- \\\alpha \in (-\infty, +\infty)\\
+- \\\mu \in (-\infty, \infty)\\
+
+- \\\sigma \in (0, \infty)\\
+
+- \\\alpha \in (-\infty, \infty)\\
 
 ## References
 
@@ -107,8 +126,14 @@ Families*. Cambridge University Press.
 
 ## See also
 
-[`skewnormal2_distrib`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md),
-[`skewt_distrib`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+[`skewnormal2_distrib()`](https://statmodels7.github.io/distributions7/reference/skewnormal2_distrib.md)
+for the centered parametrization,
+[`skewt_distrib()`](https://statmodels7.github.io/distributions7/reference/skewt_distrib.md)
+for the four-parameter family that reaches a larger skewness,
+[`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
+for the case \\\alpha = 0\\, and
+[SkewNormal1Distrib](https://statmodels7.github.io/distributions7/reference/SkewNormal1Distrib.md)
+for the class and its method list.
 
 ## Examples
 
@@ -116,29 +141,32 @@ Families*. Cambridge University Press.
 d <- skewnormal1_distrib()
 d@params
 #> [1] "mu"    "sigma" "alpha"
+th <- list(mu = 0, sigma = 1, alpha = 3)
 
-theta <- list(mu = 0, sigma = 1, alpha = 3)
-distrib_pdf(d, c(-1, 0, 1), theta)
-#> [1] 0.0006532716 0.3989422804 0.4832881774
-distrib_gradient(d, c(-1, 0, 1), theta)
-#> $mu
-#> [1] -10.8492960  -2.3936537   0.9866865
-#> 
-#> $sigma
-#> [1]  9.84929596 -1.00000000 -0.01331352
-#> 
-#> $alpha
-#> [1] -3.283098655  0.000000000  0.004437839
-#> 
+# The location is not the mean, and the scale is not the standard deviation.
+rbind(parameter = c(th$mu, th$sigma),
+      moment = c(mean(d, th), sqrt(variance(d, th))))
+#>                [,1]      [,2]
+#> parameter 0.0000000 1.0000000
+#> moment    0.7569398 0.6534847
 
-# shape zero is the gaussian
-max(abs(distrib_pdf(d, c(-1, 0, 1), list(mu = 0, sigma = 1, alpha = 0)) -
-        stats::dnorm(c(-1, 0, 1))))
-#> [1] 5.551115e-17
+# Shape zero is the Gaussian, in the density and in the distribution function.
+y <- c(-1, 0, 1)
+th0 <- list(mu = 0, sigma = 1, alpha = 0)
+c(density = max(abs(distrib_pdf(d, y, th0) - dnorm(y))),
+  cdf = max(abs(distrib_cdf(d, y, th0) - pnorm(y))))
+#>      density          cdf 
+#> 5.551115e-17 0.000000e+00 
 
-# the skewness the family can reach is bounded
-c(alpha_3 = skewness(d, theta),
-  alpha_50 = skewness(d, list(mu = 0, sigma = 1, alpha = 50)))
-#>   alpha_3  alpha_50 
-#> 0.6670236 0.9936306 
+# The skewness the family can reach is bounded, and saturates early.
+vapply(c(1, 3, 10, 50, 1e4),
+       function(a) skewness(d, list(mu = 0, sigma = 1, alpha = a)), 0)
+#> [1] 0.1369488 0.6670236 0.9555571 0.9936306 0.9952717
+
+# A fit recovers all three parameters.
+set.seed(5)
+x <- distrib_rng(d, 3000, list(mu = 2, sigma = 1.5, alpha = 4))
+coef(fit_distrib(d, x))
+#>       mu    sigma    alpha 
+#> 2.010681 1.505278 3.963568 
 ```

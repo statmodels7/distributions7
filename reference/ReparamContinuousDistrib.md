@@ -1,13 +1,15 @@
 # S7 Classes for a Reparametrized Distribution
 
-The wrapper
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+What
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 returns: the same law as its parent, written in different coordinates.
 There is one class per kind of parent, so that a continuous parent keeps
 the defaults registered on
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md)
 and a discrete one those of
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+Nothing else distinguishes the two: every method in this file is
+registered on both, from the same body.
 
 ## Usage
 
@@ -47,54 +49,47 @@ ReparamDiscreteDistrib(
 
 - distrib_name:
 
-  A single character string specifying the name of the distribution
-  (e.g., `"student t"`).
+  The name of the family, a single string.
 
 - dimension:
 
-  A character string indicating the dimensionality (`"univariate"` or
-  `"multivariate"`).
+  `"univariate"` or `"multivariate"`. Always the first for a
+  reparametrization,
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+  refusing a multivariate parent.
 
 - bounds:
 
-  A numeric vector of length 2 defining the overall support of the
-  distribution `c(lower, upper)`.
+  A length-two numeric vector, the support.
 
 - params:
 
-  A character vector containing the names of the distribution parameters
-  (e.g., `c("mu", "sigma")`).
+  A character vector naming the new parameters.
 
 - params_interpretation:
 
-  A character vector (typically named) providing the statistical
-  interpretation of each parameter (e.g., `c(mu = "location")`).
+  A named character vector describing each new parameter.
 
 - n_params:
 
-  A numeric value specifying the total number of parameters.
+  The number of new parameters.
 
 - params_bounds:
 
-  A list of numeric vectors of length 2, specifying the valid
-  mathematical domain for each individual parameter.
+  A named list of length-two numeric vectors, the open interval each new
+  parameter lives in.
 
 - link_params:
 
-  A list of link function objects corresponding to each parameter,
-  primarily used to map parameters to the unconstrained real line for
-  optimization algorithms.
+  A named list of linkfunctions7 links, one per new parameter. Note the
+  name: it is `link_params` on the object and `links` in
+  [`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)'s
+  signature.
 
 - params_smooth:
 
-  An optional named logical vector flagging, for each parameter, whether
-  the log-likelihood is differentiable with respect to it. Defaults to
-  all `TRUE` (leave empty). Set an entry to `FALSE` for parameters at
-  which the log-likelihood has a kink (e.g. the location of a Laplace
-  distribution): the observed Hessian is then degenerate and the
-  expected information must be obtained from the score variance rather
-  than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  A named logical vector saying which parameters the log-density is
+  differentiable in.
 
 - parent_distrib:
 
@@ -102,18 +97,60 @@ ReparamDiscreteDistrib(
 
 - reparam_map:
 
-  The map from the new parameters to the parent's.
+  The map from the new parameters to the parent's, a function of one
+  named list returning another.
 
 - reparam_derivs:
 
   The function returning the map's keyed partial tables, as
-  [`reparam_tables`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
+  [`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
   consumes them.
 
 ## Value
 
-An object of the corresponding class.
+An object of class `ReparamContinuousDistrib` or
+`ReparamDiscreteDistrib`, carrying every property of a `distrib` plus
+the three above.
+
+## Details
+
+The three properties beyond a distribution's own are what the methods
+read. `parent_distrib` is the law being rewritten and is delegated to
+for the density, the distribution function, the quantile function, the
+generator and the response derivatives, all of which a change of
+parametrization leaves alone. `reparam_map` carries the new parameters
+to the parent's, and `reparam_derivs` carries the map's partial
+derivatives, which is where the exactness of the parameter derivatives
+comes from.
 
 ## See also
 
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
+the constructor that fills these in;
+[`is_reparam()`](https://statmodels7.github.io/distributions7/reference/is_reparam.md)
+to test for either class;
+[`reparam_theta()`](https://statmodels7.github.io/distributions7/reference/reparam_theta.md)
+and
+[`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md),
+the two readers.
+
+## Examples
+
+``` r
+# The class a continuous parent gives.
+d <- reparametrize(
+  gaussian1_distrib(),
+  map = function(psi) list(mu = psi$mu, sigma = sqrt(psi$sigma2)),
+  params = c("mu", "sigma2"),
+  bounds = list(mu = c(-Inf, Inf), sigma2 = c(0, Inf)),
+  links = list(mu = linkfunctions7::identity_link(),
+               sigma2 = linkfunctions7::log_link())
+)
+class(d)
+#> [1] "distributions7::ReparamContinuousDistrib"
+#> [2] "distributions7::continuous_distrib"      
+#> [3] "distributions7::distrib"                 
+#> [4] "S7_object"                               
+d@parent_distrib@distrib_name
+#> [1] "gaussian1"
+```

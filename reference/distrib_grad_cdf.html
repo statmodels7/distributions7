@@ -23,7 +23,7 @@ what the delta method needs for the standard error of a quantile residual."><met
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ Each parameter must have length 1 or <code>length(q)</code>.</p></dd>
 <dt id="arg-log">log<a class="anchor" aria-label="anchor" href="#arg-log"></a></dt>
 <dd><p>Logical; if <code>TRUE</code> (default), derivatives of the <em>log</em>
 tail probability. With <code>FALSE</code> the derivatives of the probability
-itself are returned, which is what interval censoring and the truncation
+itself are returned, which interval censoring and the truncation
 constant are built from.</p></dd>
 
 
@@ -120,12 +120,12 @@ $$\frac{\partial F(q;\theta)}{\partial\theta_i}
 so the gradient of the log distribution function is a <em>partial mean of
 the score</em>. For a discrete distribution the integral is a finite sum and the
 identity is exact, which is how the default method computes it there; for a
-continuous one the default differentiates <code><a href="distrib_cdf.html">distrib_cdf</a></code>
+continuous one the default differentiates <code><a href="distrib_cdf.html">distrib_cdf()</a></code>
 numerically, and distributions with a closed form register it directly.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_hess_cdf.html">distrib_hess_cdf</a></code>, <code><a href="distrib_gradient.html">distrib_gradient</a></code></p></div>
+    <div class="dont-index"><p><code><a href="distrib_hess_cdf.html">distrib_hess_cdf()</a></code>, <code><a href="distrib_gradient.html">distrib_gradient()</a></code></p></div>
     </div>
 
     <div class="section level2">

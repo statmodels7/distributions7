@@ -27,7 +27,7 @@ A numeric vector of length 2, named `lower` and `upper`.
 ## Details
 
 A density that diverges at an edge is the one case the ratio-of-uniforms
-sampler cannot handle directly, so it has to be detected – and then
+sampler cannot handle directly, so it has to be detected and then
 removed by a change of variable, which needs the exponent.
 
 Detecting and measuring are the same operation. Walking towards the edge
@@ -39,5 +39,5 @@ draw by several orders of magnitude for strongly divergent shapes.
 
 ## See also
 
-[`grou_two_sided`](https://statmodels7.github.io/distributions7/reference/grou_two_sided.md),
-[`rng_grou`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)
+[`grou_two_sided()`](https://statmodels7.github.io/distributions7/reference/grou_two_sided.md),
+[`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)

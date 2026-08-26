@@ -1,8 +1,16 @@
 # S7 Class for Zero-Inflated Distributions
 
-A subclass of `discrete_distrib` representing the zero-inflated version
-of a wrapped discrete distribution: a mixture of a point mass at zero
-(with probability \\\zeta\\) and the original count distribution.
+The S7 class of the zero-inflated version of a discrete distribution,
+with mass function \$\$P(Y = y) = \zeta\\\mathbb{I}(y = 0) + (1 -
+\zeta)\\ f(y; \theta).\$\$ It inherits from `discrete_distrib` and
+carries the parent's parameters followed by `zi`, which is the
+probability \\\zeta\\ of a structural zero and rides a link of its own.
+
+Build one with
+[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md),
+which checks that the parent is discrete, is not already a zero wrapper,
+and has enough support points for the extra parameter to be identified.
+This page documents the raw S7 constructor, which checks none of that.
 
 ## Usage
 
@@ -72,7 +80,7 @@ ZeroInflatedDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - parent_distrib:
 
@@ -80,11 +88,18 @@ ZeroInflatedDistrib(
 
 ## Value
 
-An object of class `ZeroInflatedDistrib`.
+An S7 object of class `ZeroInflatedDistrib`, inheriting from
+`discrete_distrib` and from `distrib`. It carries `parent_distrib`
+beside the parent's `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+the parameters are the parent's followed by `zi`, whose bound is \\(0,
+1)\\ and whose interpretation is `"prob. of structural zero"`.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroInflatedDistrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroInflatedDistrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroInflatedDistrib.md),
@@ -93,9 +108,42 @@ Methods implemented for this class:
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ZeroInflatedDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ZeroInflatedDistrib.md)
 
-Everything else is inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+The third and fourth derivatives come from the shared wrapper machinery
+in `wrapper_derivatives.R`; everything else is inherited from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
 
-[`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
+to build one,
+[ZeroAdjustedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedDiscreteDistrib.md)
+for the wrapper that REPLACES the mass at zero where this one adds to
+it, and
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md),
+the constructor to reach for with a continuous parent.
+
+## Examples
+
+``` r
+d <- zero_inflated(poisson_distrib())
+theta <- list(mu = 3, zi = 0.25)
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+
+# The parent's parameters, then zi last with its own link and bound.
+d@params
+#> [1] "mu" "zi"
+d@params_bounds$zi
+#> [1] 0 1
+vapply(d@link_params, function(l) l@link_name, character(1))
+#>      mu      zi 
+#>   "log" "logit" 
+d@params_interpretation
+#>                         mu                         zi 
+#>                     "mean" "prob. of structural zero" 
+
+# Inflation can only ADD zeros: the mass at zero exceeds the parent's.
+c(inflated = distrib_pdf(d, 0, theta), parent = dpois(0, 3))
+#>   inflated     parent 
+#> 0.28734030 0.04978707 
+```

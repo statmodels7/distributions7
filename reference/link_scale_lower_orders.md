@@ -2,7 +2,7 @@
 
 Collects the parameter-scale derivatives of every order strictly below
 `order`, in the layout
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
 expects.
 
 ## Usage
@@ -49,4 +49,4 @@ information transforms as a plain congruence.
 
 ## See also
 
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)

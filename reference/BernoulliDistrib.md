@@ -1,7 +1,25 @@
-# S7 Class for Bernoulli Distribution
+# Bernoulli Distribution Class
 
-A subclass of `discrete_distrib` representing the Bernoulli
-distribution.
+The S7 class of the Bernoulli family parametrized by its success
+probability \\\mu \in (0, 1)\\, with mass \\P(Y = 1) = \mu\\ and \\P(Y =
+0) = 1 - \mu\\. It inherits from `discrete_distrib`, so expectations
+over its support are sums and no derivative with respect to the response
+is defined.
+
+The mean is \\\mu\\ and the variance \\\mu(1-\mu)\\, so the two are tied
+and the family has no dispersion parameter of its own. The default link
+is the logit, which is the **canonical** link here: on its scale the
+observed and the expected information coincide.
+
+A Bernoulli is a binomial on one trial.
+[`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md)
+with `size = 1` gives the same law, and the two are worth keeping apart
+only because the binomial carries a `size` property this class does not.
+
+Build one with
+[`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md).
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,15 +88,22 @@ BernoulliDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `BernoulliDistrib`.
+An S7 object of class `BernoulliDistrib`, inheriting from
+`discrete_distrib` and from `distrib`. Its properties are the parent's:
+`distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
+they hold `"bernoulli"`, `"univariate"`, `c(0, 1)`, `"mu"`,
+`c(mu = "probability")`, `1`, the domain \\(0, 1)\\, and the one link.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.BernoulliDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.BernoulliDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.BernoulliDistrib.md),
@@ -90,8 +115,47 @@ Methods implemented for this class:
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.BernoulliDistrib.md)
 
 Everything else is inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
 
-[`bernoulli_distrib`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
+[`bernoulli_distrib()`](https://statmodels7.github.io/distributions7/reference/bernoulli_distrib.md)
+to build one;
+[`binomial_distrib()`](https://statmodels7.github.io/distributions7/reference/binomial_distrib.md),
+of which this is the one-trial case;
+[`betabinom1_distrib()`](https://statmodels7.github.io/distributions7/reference/betabinom1_distrib.md)
+for a binomial whose probability varies;
+[`linkfunctions7::logit_link()`](https://statmodels7.github.io/linkfunctions7/reference/logit_link.html),
+the canonical link.
+
+## Examples
+
+``` r
+d <- bernoulli_distrib()
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+d@params_interpretation
+#>            mu 
+#> "probability" 
+d@params_bounds
+#> $mu
+#> [1] 0 1
+#> 
+
+# The default link is the logit, the canonical one.
+d@link_params$mu@link_name
+#> [1] "logit"
+
+# Mean and variance are tied: p and p(1-p), maximal at p = 1/2.
+vapply(c(0.1, 0.5, 0.9), function(p) {
+  th <- list(mu = p)
+  c(mean = mean(d, th), var = variance(d, th))
+}, numeric(2))
+#>      [,1] [,2] [,3]
+#> mean 0.10 0.50 0.90
+#> var  0.09 0.25 0.09
+
+# The two masses sum to one.
+sum(distrib_pdf(d, c(0, 1), list(mu = 0.3)))
+#> [1] 1
+```

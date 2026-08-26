@@ -37,8 +37,8 @@ A numeric vector of the same length as `y`.
 
 ## See also
 
-[`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
-[`distrib_cross_y`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md),
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 
 ## Examples
 

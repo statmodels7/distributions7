@@ -70,7 +70,7 @@ discrete_distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
@@ -89,13 +89,13 @@ finite lower bound, which every standard count distribution has.
 [`plot()`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md)
 
 Everything else is inherited from
-[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
+[`distrib()`](https://statmodels7.github.io/distributions7/reference/distrib.md).
 
 ## See also
 
-[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md),
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+[`distrib()`](https://statmodels7.github.io/distributions7/reference/distrib.md),
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
 
 ## Examples
 

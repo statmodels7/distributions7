@@ -1,12 +1,12 @@
 # Derivatives on the Link (Real) Scale
 
 The derivative generics of the package
-([`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md))
-accept a `scale` argument selecting the parameterization the derivatives
+([`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md))
+accept a `scale` argument selecting the parametrization the derivatives
 are taken with respect to:
 
 - `scale = "parameter"` (default): derivatives with respect to the
@@ -50,13 +50,58 @@ score has zero expectation, so the information transforms as the
 congruence \\\mathrm{diag}(h')\\\mathbb{E}\[H\]\\\mathrm{diag}(h')\\.
 
 The inverse-link derivatives \\h', h'', h''', h''''\\ are obtained from
-[`linkinvderiv`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
+[`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
 so link-scale derivatives are available up to order 4 for every link in
 linkfunctions7.
 
 ## See also
 
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md)
+and
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md),
+the five generics that take `scale`;
+[`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
+for the polynomials this assembles;
+[`linkfunctions7::linkinvderiv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinvderiv.html),
+which supplies the four inverse-link derivatives;
+[`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md),
+which optimizes on this scale for the reason given above.
+
+## Examples
+
+``` r
+d <- gaussian1_distrib()
+y <- c(-1, 0, 2)
+th <- list(mu = 0, sigma = 2)
+
+# The scale carries a log link, so h' = sigma and the first-order case is
+# one multiplication.
+rbind(parameter = distrib_gradient(d, y, th)$sigma,
+      link = distrib_gradient(d, y, th, scale = "link")$sigma)
+#>             [,1] [,2] [,3]
+#> parameter -0.375 -0.5    0
+#> link      -0.750 -1.0    0
+
+# At second order the term in h'' appears, so the link-scale component is
+# NOT the parameter-scale one times h' squared.
+g <- distrib_gradient(d, y, th)$sigma
+h <- distrib_hessian(d, y, th)$sigma_sigma
+all.equal(distrib_hessian(d, y, th, scale = "link")$sigma_sigma,
+          h * 2^2 + g * 2)
+#> [1] TRUE
+
+# For the EXPECTED Hessian the first-order term vanishes, the score having
+# mean zero, so the information transforms by congruence.
+e <- distrib_expected_hessian(d, y, th)$sigma_sigma
+all.equal(distrib_expected_hessian(d, y, th, scale = "link")$sigma_sigma,
+          e * 2^2)
+#> [1] TRUE
+
+# A parameter on the identity link is unchanged at every order.
+all.equal(distrib_deriv4(d, y, th)$mu_mu_mu_mu,
+          distrib_deriv4(d, y, th, scale = "link")$mu_mu_mu_mu)
+#> [1] TRUE
+```

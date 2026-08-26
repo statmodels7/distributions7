@@ -9,7 +9,7 @@ definition as the same class."><meta property="og:image" content="https://statmo
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,8 +73,8 @@ definition as the same class.</p>
 subclass register its own?", and answer it with the documented S7 trick of
 reading <code>attr(m, "signature")[[1]]</code>. The comparison that follows must not
 be <code><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical()</a></code>: on S7 class objects that is object identity, so it
-returns <code>FALSE</code> for a class re-created from the same definition — which
-is what happens whenever the package's code is re-evaluated rather than
+returns <code>FALSE</code> for a class re-created from the same definition. That
+happens whenever the package's code is re-evaluated in place of being
 loaded, as it is under coverage instrumentation.</p>
 <p>The failure is silent and can be severe. In <span class="pkg">linkfunctions7</span> the same
 mistake made a numerical fallback look like an analytic method and sent the
@@ -84,7 +84,7 @@ and name-with-package as the answer.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="has_analytic_quantile.html">has_analytic_quantile</a></code>, <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv</a></code></p></div>
+    <div class="dont-index"><p><code><a href="has_analytic_quantile.html">has_analytic_quantile()</a></code>, <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

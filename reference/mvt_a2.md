@@ -1,7 +1,7 @@
 # The Second Derivative of the Scale Matrix, by Position
 
 As
-[`mvg_a2`](https://statmodels7.github.io/distributions7/reference/mvg_a2.md),
+[`mvg_a2()`](https://statmodels7.github.io/distributions7/reference/mvg_a2.md),
 for the Student t's pieces.
 
 ## Usage
@@ -15,7 +15,7 @@ mvt_a2(pc, k, l)
 - pc:
 
   The result of
-  [`mvt_pieces`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
+  [`mvt_pieces()`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
   with `derivs2`.
 
 - k, l:

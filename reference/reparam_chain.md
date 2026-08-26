@@ -1,7 +1,11 @@
-# The Chain Rule of Any Order Through a Reparametrization
+# Parameter Derivatives of a Reparametrized Distribution
 
-Carries a derivative of the parent's log-density into the new
-coordinates.
+The body the four derivative methods share: aligns the new parameters,
+maps them to the parent's, fetches the map's tables and hands all three
+to
+[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md).
+The `order` and `expected` arguments are what separate the four
+registrations.
 
 ## Usage
 
@@ -17,11 +21,11 @@ reparam_chain(distrib, y, theta, order, expected = FALSE)
 
 - y:
 
-  The response.
+  The response, a numeric vector.
 
 - theta:
 
-  A named list of the new parameters.
+  A named list of the new parameters, on the new parameter scale.
 
 - order:
 
@@ -29,35 +33,19 @@ reparam_chain(distrib, y, theta, order, expected = FALSE)
 
 - expected:
 
-  Logical; if `TRUE`, carries the expected derivatives.
+  Should the expected derivatives be carried? A single logical, `FALSE`
+  by default. `TRUE` is meaningful from order 2 up, the score having
+  mean zero.
 
 ## Value
 
-A named list of component vectors, keyed as
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
-keys them.
-
-## Details
-
-With \\\theta = h(\psi)\\, the derivative of order \\\|I\|\\ is
-\$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1 \dots i\_{\|\pi\|}}
-\ell^{(i_1 \dots i\_{\|\pi\|})}(\theta) \prod\_{B \in \pi}
-\frac{\partial^{\|B\|}\theta\_{i_B}}{\partial \psi_B}\$\$ the outer sum
-running over the set partitions of the **positions** of \\I\\ and the
-inner one over the assignment of a parent parameter to each block. This
-is Faa di Bruno with a dense Jacobian, and it is the same partition
-enumeration the wrappers of
-[`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md)
-and the rest already use.
-
-Blocks index positions rather than variables, which is what makes a
-repeated index carry its multiplicity without a factorial correction.
-
-Expectation is linear and \\h\\ is deterministic, so the expected
-derivatives obey the same formula with the parent's expected derivatives
-in place of the observed ones. The first-order term drops, the score
-having mean zero.
+A named list of numeric vectors, keyed as
+[`deriv_names(distrib@params, order)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
 
 ## See also
 
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`chain_derivatives()`](https://statmodels7.github.io/distributions7/reference/chain_derivatives.md),
+which does the work;
+[`distrib_gradient.ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ReparamContinuousDistrib.md)
+and its three siblings, the registrations;
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md).

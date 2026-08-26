@@ -3,7 +3,7 @@
 Sums `term(k, i)` over the integers of `[from, to]` for each of `n_rows`
 parameter rows at once. A finite support is summed directly in one
 matrix evaluation; a support unbounded above goes through
-[`series_vec`](https://statmodels7.github.io/numericals7/reference/series_vec.html);
+[`numericals7::series_vec()`](https://statmodels7.github.io/numericals7/reference/series_vec.html);
 one unbounded below is reflected; one unbounded on both sides is folded
 around zero. A row whose series does not converge raises an error naming
 it.

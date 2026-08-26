@@ -1,7 +1,7 @@
 # Canonical Component Name of a Block
 
 Names a block of parameters the way
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 does: in the order the distribution declares them, joined by an
 underscore.
 

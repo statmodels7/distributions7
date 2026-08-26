@@ -30,7 +30,7 @@ distrib_gradient(distrib, y, theta, scale = c("parameter", "link"), ...)
   parameters \\\theta\\ on their natural (constrained) scale, or
   `"link"` for derivatives with respect to the unconstrained linear
   predictors \\\eta = g(\theta)\\ defined by `distrib@link_params`. See
-  [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+  [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 
 - ...:
 
@@ -43,10 +43,10 @@ A named list with one numeric vector per parameter, keyed by
 
 ## See also
 
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 
 ## Examples
 

@@ -1,7 +1,7 @@
 # Derivatives of a Zero-Inflated Distribution
 
 Builds the order-`k` derivative method for
-[`zero_inflated`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md).
+[`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md).
 
 ## Usage
 

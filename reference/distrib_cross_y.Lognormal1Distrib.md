@@ -28,4 +28,14 @@ y)\\ and \\(\log y - \mu)/(\sigma^4 y)\\.
 
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with components `mu` and `sigma`, each a numeric vector of
+length `length(y)`.
+
+## See also
+
+[`lognormal1_distrib()`](https://statmodels7.github.io/distributions7/reference/lognormal1_distrib.md)
+for the family;
+[`distrib_cross_y.Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gaussian1Distrib.md),
+the law on the log scale;
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the generic.

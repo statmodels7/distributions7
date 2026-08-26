@@ -35,7 +35,7 @@ A reparametrized distribution object.
 ## Details
 
 The scale of
-[`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
+[`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
 is not the standard deviation: the two differ by \\\sqrt{\nu/(\nu-2)}\\.
 Here the map is \$\$\sigma\_{\text{scale}} =
 \sigma\sqrt{\dfrac{\nu-2}{\nu}},\$\$ which exists only for \\\nu \> 2\\,
@@ -55,8 +55,8 @@ deviation exists.
 
 ## See also
 
-[`student_t1_distrib`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md),
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 
 ## Examples
 

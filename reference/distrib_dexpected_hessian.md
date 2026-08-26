@@ -39,7 +39,7 @@ distrib_dexpected_hessian(
 - approx, nsim:
 
   Passed to
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md).
 
 - ...:
 
@@ -48,7 +48,7 @@ distrib_dexpected_hessian(
 ## Value
 
 A named list of numeric vectors, keyed as
-[`dexpected_names`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)`(distrib@params)`.
+[`dexpected_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md).
 
 ## Details
 
@@ -57,29 +57,29 @@ The components are symmetric in \\(a,b)\\ and NOT in \\c\\: writing
 \mathbb{E}\[\ell\_{abc}\] + \mathbb{E}\[\ell\_{ab}\ell\_{c}\],\$\$ the
 first term is fully symmetric and the second is not, so the result is
 keyed by
-[`dexpected_names`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
 rather than by the sorted triples
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 uses at order three.
 
 **The default method differences the family's own expected
 information**, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a
 written-out formula. It is refused where it is not: see
-[`has_exact_expected_hessian`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md).
+[`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md).
 
 On `scale = "link"` the difference is taken along the free scale of the
 parameter being differentiated, and the expected information is read on
 the link scale at each of the two points, so the chain rule is never
 written out here and cannot disagree with the one
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 already applies.
 
 ## See also
 
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`dexpected_names`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md),
-[`has_exact_expected_hessian`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md),
+[`has_exact_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/has_exact_expected_hessian.md)
 
 ## Examples
 

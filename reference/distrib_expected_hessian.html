@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,7 +78,7 @@ Each parameter must have length 1 or <code>length(y)</code>.</p></dd>
 the parameters \(\theta\) on their natural (constrained) scale, or
 <code>"link"</code> for derivatives with respect to the unconstrained linear
 predictors \(\eta = g(\theta)\) defined by <code>distrib@link_params</code>.
-See <code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code>.</p></dd>
+See <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code>.</p></dd>
 
 
 <dt id="arg-approx">approx<a class="anchor" aria-label="anchor" href="#arg-approx"></a></dt>
@@ -86,7 +86,7 @@ See <code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code
 has no closed-form expected Hessian</strong>; ignored otherwise. One of
 <code>"bartlett"</code> (default, equivalently <code>"opg"</code>: the outer product of
 the score), <code>"integrate"</code> (quadrature/summation of the observed Hessian)
-or <code>"mc"</code> (Monte Carlo). See <code><a href="expected_derivative_methods.html">expected_derivative_methods</a></code>
+or <code>"mc"</code> (Monte Carlo). See <code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code>
 for the accuracy/speed trade-offs.</p></dd>
 
 
@@ -101,7 +101,7 @@ for the accuracy/speed trade-offs.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors, keyed as
-<code><a href="hess_names.html">hess_names</a>(distrib@params)</code>, holding the expected second
+<code><a href="hess_names.html">hess_names(distrib@params)</a></code>, holding the expected second
 derivatives, that is minus the Fisher information.</p>
     </div>
     <div class="section level2">
@@ -113,7 +113,7 @@ congruence \(\mathrm{diag}(h')\, \mathbb{E}[H]\, \mathrm{diag}(h')\) with
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_gradient.html">distrib_gradient</a></code>, <code><a href="distrib_hessian.html">distrib_hessian</a></code>, <code><a href="distrib_deriv3.html">distrib_deriv3</a></code>, <code><a href="distrib_deriv4.html">distrib_deriv4</a></code></p></div>
+    <div class="dont-index"><p><code><a href="distrib_gradient.html">distrib_gradient()</a></code>, <code><a href="distrib_hessian.html">distrib_hessian()</a></code>, <code><a href="distrib_deriv3.html">distrib_deriv3()</a></code>, <code><a href="distrib_deriv4.html">distrib_deriv4()</a></code></p></div>
     </div>
 
     <div class="section level2">

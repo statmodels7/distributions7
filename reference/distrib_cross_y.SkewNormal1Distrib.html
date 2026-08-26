@@ -5,16 +5,16 @@ location-scale identity with \(\ell^{(y)} = (\alpha R - z)/\sigma\) and
 \(\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2\) substituted, and the shape
 component is \((R + t R')/\sigma\), the response entering \(\alpha\)
 only through \(t\). The three are assembled from a single evaluation of
-mills_ratio rather than by calling
-distrib_grad_y and distrib_hess_y, which would
+numericals7::mills_ratio() rather than by calling
+distrib_grad_y() and distrib_hess_y(), which would
 evaluate it twice more."><meta property="og:description" content="Closed form throughout, written in the inverse Mills ratio \(R\) at
 \(t = \alpha z\). The location and scale components are the
 location-scale identity with \(\ell^{(y)} = (\alpha R - z)/\sigma\) and
 \(\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2\) substituted, and the shape
 component is \((R + t R')/\sigma\), the response entering \(\alpha\)
 only through \(t\). The three are assembled from a single evaluation of
-mills_ratio rather than by calling
-distrib_grad_y and distrib_hess_y, which would
+numericals7::mills_ratio() rather than by calling
+distrib_grad_y() and distrib_hess_y(), which would
 evaluate it twice more."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
@@ -23,7 +23,7 @@ evaluate it twice more."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,8 +62,8 @@ location-scale identity with \(\ell^{(y)} = (\alpha R - z)/\sigma\) and
 \(\ell^{(yy)} = (\alpha^2 R' - 1)/\sigma^2\) substituted, and the shape
 component is \((R + t R')/\sigma\), the response entering \(\alpha\)
 only through \(t\). The three are assembled from a single evaluation of
-<code><a href="https://statmodels7.github.io/numericals7/reference/mills_ratio.html" class="external-link">mills_ratio</a></code> rather than by calling
-<code><a href="distrib_grad_y.html">distrib_grad_y</a></code> and <code><a href="distrib_hess_y.html">distrib_hess_y</a></code>, which would
+<code><a href="https://statmodels7.github.io/numericals7/reference/mills_ratio.html" class="external-link">numericals7::mills_ratio()</a></code> rather than by calling
+<code><a href="distrib_grad_y.html">distrib_grad_y()</a></code> and <code><a href="distrib_hess_y.html">distrib_hess_y()</a></code>, which would
 evaluate it twice more.</p>
     </div>
 
@@ -94,7 +94,16 @@ evaluate it twice more.</p>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A named list with one numeric vector per parameter.</p>
+    <p>A named list with components <code>mu</code>, <code>sigma</code> and <code>alpha</code>, each a numeric
+vector of length <code>length(y)</code>. All three are exact; measured against
+Richardson on the analytic response gradient the worst is
+\(3.6\times10^{-11}\) relative.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="https://statmodels7.github.io/numericals7/reference/mills_ratio.html" class="external-link">numericals7::mills_ratio()</a></code>, evaluated once for all three;
+<code><a href="skewnormal1_distrib.html">skewnormal1_distrib()</a></code> for the family;
+<code><a href="distrib_cross_y.SkewTDistrib.html">distrib_cross_y.SkewTDistrib()</a></code>, where the shape is differenced.</p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

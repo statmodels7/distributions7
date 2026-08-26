@@ -2,9 +2,9 @@
 
 Computes the unique fourth-order partial derivatives of the log-density
 by second central differences of
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md).
 This powers the default
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 method for distributions without a closed-form implementation.
 
 ## Usage
@@ -35,7 +35,7 @@ numerical_deriv4(distrib, y, theta, h_rel = .Machine$double.eps^(1/4))
 ## Value
 
 A named list of fourth-derivative component vectors, keyed as in
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)`(distrib@params, 4)`.
+[`deriv_names(distrib@params, 4)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
 
 ## Details
 
@@ -47,8 +47,8 @@ stencil when \\k = l\\, a four-point cross stencil otherwise.
 
 ## See also
 
-[`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 
 ## Examples
 

@@ -1,7 +1,7 @@
 # The Key of One Component of the Expected Information's Derivative
 
 The name under which
-[`distrib_dexpected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
+[`distrib_dexpected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_dexpected_hessian.md)
 returns \\\partial\\\mathbb{E}\[\ell\_{ab}\]/\partial\theta_c\\.
 
 ## Usage
@@ -31,7 +31,7 @@ A single string.
 
 ## See also
 
-[`dexpected_names`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md)
 
 ## Examples
 

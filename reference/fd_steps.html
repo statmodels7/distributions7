@@ -11,7 +11,7 @@ strictly inside the parameter's mathematical domain."><meta property="og:image" 
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,8 +79,8 @@ chosen for the stencil in use.</p></dd>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The domain clamp is what allows a finite-difference fallback to be offered at
-all. Parameter domains here are <strong>open</strong> – a scale parameter is positive,
-not non-negative – so a step chosen from the magnitude alone will step a small
+all. Parameter domains here are <strong>open</strong>: a scale parameter is positive, not
+non-negative. A step chosen from the magnitude alone therefore takes a small
 \(\sigma\) straight through zero, and the log-density comes back <code>NaN</code>
 for reasons that look like a bug in the density. Clamping to 49\<!-- % of the -->
 distance to each finite boundary keeps both evaluation points inside.</p>
@@ -89,7 +89,7 @@ is reported rather than differentiated.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="numerical_gradient.html">numerical_gradient</a></code>, <code><a href="numerical_hessian.html">numerical_hessian</a></code></p></div>
+    <div class="dont-index"><p><code><a href="numerical_gradient.html">numerical_gradient()</a></code>, <code><a href="numerical_hessian.html">numerical_hessian()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

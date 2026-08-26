@@ -38,7 +38,7 @@ distrib_expected_hessian(
   parameters \\\theta\\ on their natural (constrained) scale, or
   `"link"` for derivatives with respect to the unconstrained linear
   predictors \\\eta = g(\theta)\\ defined by `distrib@link_params`. See
-  [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+  [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 
 - approx:
 
@@ -47,7 +47,7 @@ distrib_expected_hessian(
   (default, equivalently `"opg"`: the outer product of the score),
   `"integrate"` (quadrature/summation of the observed Hessian) or `"mc"`
   (Monte Carlo). See
-  [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
+  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md)
   for the accuracy/speed trade-offs.
 
 - nsim:
@@ -61,7 +61,7 @@ distrib_expected_hessian(
 ## Value
 
 A named list of numeric vectors, keyed as
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)`(distrib@params)`,
+[`hess_names(distrib@params)`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
 holding the expected second derivatives, that is minus the Fisher
 information.
 
@@ -74,10 +74,10 @@ transforms as the simple congruence \\\mathrm{diag}(h')\\
 
 ## See also
 
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_deriv3`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 
 ## Examples
 

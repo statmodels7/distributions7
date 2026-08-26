@@ -45,7 +45,7 @@ A numeric vector the length of `y`.
 
 The stencil reaches two steps either side, so the step is clamped to
 half of what
-[`fd_steps_y`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
+[`fd_steps_y()`](https://statmodels7.github.io/distributions7/reference/fd_steps_y.md)
 allows: a Gamma observation near zero would otherwise be differentiated
 at a point outside the support. The relative step is
 \\\varepsilon^{1/(k+2)}\\, which balances the \\h^{2}\\ truncation
@@ -53,7 +53,7 @@ against the \\\varepsilon/h^{k}\\ rounding.
 
 ## See also
 
-[`numerical_hess_y`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
+[`numerical_hess_y()`](https://statmodels7.github.io/distributions7/reference/numerical_hess_y.md)
 
 ## Examples
 

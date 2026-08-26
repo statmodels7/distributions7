@@ -1,13 +1,20 @@
-# Gaussian Distribution Function in Mean and Precision
+# Gaussian Cumulative Distribution Function in Mean and Precision
 
-The normal distribution function at standard deviation
-\\1/\sqrt{\tau}\\.
+Computes the Gaussian distribution function \$\$F(q; \mu, \tau) =
+\Phi\left(\sqrt{\tau}\\(q-\mu)\right)\$\$ with \\\Phi\\ the standard
+normal distribution function, by calling
+[`stats::pnorm()`](https://rdrr.io/r/stats/Normal.html) at
+`sd = 1/sqrt(tau)`. Both tails are available exactly:
+`lower.tail = FALSE` evaluates \\1 - F\\ without forming the difference,
+and `log.p = TRUE` returns a logarithm that stays finite where the
+probability itself underflows to zero.
 
 ## Arguments
 
 - distrib:
 
-  A `Gaussian3Distrib` object.
+  A `Gaussian3Distrib` object, from
+  [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md).
 
 - q:
 
@@ -15,24 +22,59 @@ The normal distribution function at standard deviation
 
 - theta:
 
-  A list with `mu` and `tau`.
+  A named list with components `mu` and `tau`, each a numeric vector of
+  length 1 or of the length of `q`. A component of length 1 is recycled.
+  `tau` must be strictly positive.
 
 - lower.tail:
 
-  Logical; if `TRUE`, probabilities are \\P(Y \le q)\\.
+  Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
-  Logical; if `TRUE`, returns log-probabilities.
+  Logical of length 1. When `TRUE` the logarithm of the probability is
+  returned. Defaults to `FALSE`.
 
 - ...:
 
-  Unused.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 
-A numeric vector.
+A numeric vector of probabilities in \\\[0, 1\]\\, of length
+`max(length(q), length(mu), length(tau))`. With `log.p = TRUE` the
+values are logarithms and are non-positive.
 
 ## See also
 
-[`gaussian3_distrib`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
+[`distrib_quantile.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gaussian3Distrib.md)
+for the inverse,
+[`distrib_pdf.Gaussian3Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gaussian3Distrib.md)
+for the density,
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+for the derivatives of this function in the parameters, and
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+for the generic.
+
+## Examples
+
+``` r
+d <- gaussian3_distrib()
+th <- list(mu = 1, tau = 0.25)
+
+# The method is stats::pnorm at sd = 1/sqrt(tau).
+all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), th),
+          pnorm(c(-1.2, 0.3, 2.5), mean = 1, sd = 2))
+#> [1] TRUE
+
+# The two tails sum to one.
+distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
+#> [1] 1
+
+# Forty standard deviations out the upper tail underflows; its log does not.
+distrib_cdf(d, 40, list(mu = 0, tau = 1), lower.tail = FALSE)
+#> [1] 0
+distrib_cdf(d, 40, list(mu = 0, tau = 1), lower.tail = FALSE, log.p = TRUE)
+#> [1] -804.6084
+```

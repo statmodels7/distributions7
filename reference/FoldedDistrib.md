@@ -1,7 +1,15 @@
 # S7 Class for Folded Distributions
 
-A subclass of `continuous_distrib` representing the distribution of
-\\\|Y\|\\ when \\Y\\ follows the wrapped distribution.
+The S7 class of the distribution of \\\|Y\|\\ when \\Y\\ follows the
+wrapped continuous distribution, with density \$\$L(x; \theta) = f(x;
+\theta) + f(-x; \theta), \qquad x \ge 0,\$\$ the two preimages of \\x\\
+added together. It inherits from `continuous_distrib` and carries the
+SAME parameters as its parent: folding adds none and removes none.
+
+Build one with
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
+which checks that the parent reaches below zero and carries no atom.
+This page documents the raw S7 constructor, which validates neither.
 
 ## Usage
 
@@ -71,7 +79,7 @@ FoldedDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - parent_distrib:
 
@@ -79,25 +87,60 @@ FoldedDistrib(
 
 ## Value
 
-An object of class `FoldedDistrib`.
+An S7 object of class `FoldedDistrib`, inheriting from
+`continuous_distrib` and from `distrib`. It carries `parent_distrib`
+beside the parent's `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+the parameters are the wrapped family's, `bounds` becomes
+`c(0, max(abs(parent bounds)))`, and `distrib_name` is `"folded "`
+followed by the parent's.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.FoldedDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.FoldedDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.FoldedDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.FoldedDistrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.FoldedDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.FoldedDistrib.md),
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.FoldedDistrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.FoldedDistrib.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.FoldedDistrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.FoldedDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.FoldedDistrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-whose numerical quantile inverts the exact folded distribution function.
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+whose numerical quantile inverts the exact folded distribution function
+above.
 
 ## See also
 
-[`folded`](https://statmodels7.github.io/distributions7/reference/folded.md)
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md)
+to build one,
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+for the other wrapper that adds no parameter, and
+[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+which with `mu = 0` turns a folded gaussian into the half-normal.
+
+## Examples
+
+``` r
+d <- folded(gaussian1_distrib())
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The parameters are the parent's, unchanged, and the support is the
+# non-negative half line.
+d@params
+#> [1] "mu"    "sigma"
+d@bounds
+#> [1]   0 Inf
+d@distrib_name
+#> [1] "folded gaussian1"
+
+# The parent is kept, so a method can reach it at both preimages.
+d@parent_distrib@distrib_name
+#> [1] "gaussian1"
+```

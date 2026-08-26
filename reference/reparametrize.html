@@ -9,7 +9,7 @@ caller's choosing."><meta property="og:image" content="https://statmodels7.githu
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -93,7 +93,7 @@ parameter, the non-zero partial derivatives of the map with respect to
 the new parameters to fourth order, keyed by the sorted tuple of
 new-parameter positions ("1", "1,2", "2,2,3,3", ...); a missing key is
 an exact zero. The shipped second parametrizations supply hand-written
-tables (see <code><a href="reparam_map_derivs.html">reparam_map_derivs</a></code>); when <code>NULL</code>, each
+tables (see <code><a href="reparam_map_derivs.html">reparam_map_derivs()</a></code>); when <code>NULL</code>, each
 needed partial comes from one finite-difference stencil on the map.</p></dd>
 
 
@@ -110,8 +110,8 @@ the new parameters appended.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A distribution object of class
-<code><a href="ReparamContinuousDistrib.html">ReparamContinuousDistrib</a></code> or
-<code><a href="ReparamContinuousDistrib.html">ReparamDiscreteDistrib</a></code>.</p>
+<code><a href="ReparamContinuousDistrib.html">ReparamContinuousDistrib()</a></code> or
+<code><a href="ReparamContinuousDistrib.html">ReparamDiscreteDistrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -126,12 +126,16 @@ mentions derivatives:</p>
 <span><span class="kw">function</span><span class="op">(</span><span class="va">psi</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="va">psi</span><span class="op">$</span><span class="va">mean</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/Special.html" class="external-link">gamma</a></span><span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">psi</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span>,</span>
 <span>                   sigma <span class="op">=</span> <span class="va">psi</span><span class="op">$</span><span class="va">sigma</span><span class="op">)</span></span></code></pre></div>
 
-<p>The derivatives of the map come from running that same expression on
-<strong>jets</strong> – values carrying every partial derivative to fourth order –
-so they are exact at every order with no chain rule transcribed. The
-arithmetic operators and the mathematical functions dispatch on them. A map
-that branches on the value of a parameter is rejected rather than
-approximated, a comparison having no derivative to carry.</p>
+<p><strong>Where the map's derivatives come from.</strong> Two routes, and <code>map_derivs</code>
+chooses between them. Supply it, and the tables are hand-written closed
+forms, exact at every order with no chain rule transcribed; the shipped
+second parametrizations all do, and their formulas live in
+<code><a href="reparam_map_derivs.html">reparam_map_derivs()</a></code>. Leave it <code>NULL</code>, and each partial the chain needs
+comes from one central stencil of <code><a href="https://statmodels7.github.io/numericals7/reference/fd_derivative.html" class="external-link">numericals7::fd_derivative()</a></code> applied to
+the analytic map, a single stencil per order and never a chain of
+differences. The stencil route is good to about \(10^{-8}\) at first
+order and fades with the order, so a family fitted in earnest is worth a
+table.</p>
 <p><strong>What is exact and what is inherited.</strong> The derivatives of the
 log-density are carried by
 $$\ell^{(I)}(\psi) = \sum_{\pi} \sum_{i_1 \dots i_{|\pi|}}
@@ -150,7 +154,7 @@ case a fit is in.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="fixed.html">fixed</a></code>, <code><a href="transformation.html">transformation</a></code></p></div>
+    <div class="dont-index"><p><code><a href="fixed.html">fixed()</a></code>, <code><a href="transformation.html">transformation()</a></code></p></div>
     </div>
 
     <div class="section level2">

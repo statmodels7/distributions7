@@ -1,27 +1,39 @@
 # Variance of a Multinomial
 
-The covariance matrix
-[`mv_sigma`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
-carries, singular because the counts sum to the size.
+Returns the covariance matrix of the counts by delegating to
+[`mv_sigma.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md).
+It is singular, the counts summing to the trial count, so a caller
+wanting something to invert should take the marginals or work on the
+simplex's free vector.
 
 ## Arguments
 
 - x:
 
-  A `MultinomialDistrib` object.
+  A `MultinomialDistrib` object, from
+  [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md).
+  The argument is named `x` for consistency with
+  [`base::mean()`](https://rdrr.io/r/base/mean.html), whose signature
+  the moment generics follow.
 
 - theta:
 
-  A named list of parameters.
+  A named list of the simplex's free values on the parameter scale, each
+  of length 1.
 
 - ...:
 
-  Unused.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 
-A symmetric \\p \times p\\ matrix.
+A symmetric \\p \times p\\ numeric matrix of rank \\p-1\\.
 
 ## See also
 
-[`multinomial_distrib`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
+[`mean.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mean.MultinomialDistrib.md)
+for the mean vector,
+[`mv_sigma.MultinomialDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MultinomialDistrib.md),
+which this calls, and
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+for the generic.

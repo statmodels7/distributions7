@@ -1,7 +1,7 @@
 # Aligned Parameter Columns for an Expectation
 
 Shared preparation for the
-[`expectation`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
 methods: checks that the names in `...` do not collide with those of
 `theta`, then expands every component to one aligned column per
 parameter combination.

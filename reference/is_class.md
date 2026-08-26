@@ -31,9 +31,9 @@ S7 trick of reading `attr(m, "signature")[[1]]`. The comparison that
 follows must not be
 [`identical()`](https://rdrr.io/r/base/identical.html): on S7 class
 objects that is object identity, so it returns `FALSE` for a class
-re-created from the same definition — which is what happens whenever the
-package's code is re-evaluated rather than loaded, as it is under
-coverage instrumentation.
+re-created from the same definition. That happens whenever the package's
+code is re-evaluated in place of being loaded, as it is under coverage
+instrumentation.
 
 The failure is silent and can be severe. In linkfunctions7 the same
 mistake made a numerical fallback look like an analytic method and sent
@@ -43,5 +43,5 @@ a fast path and name-with-package as the answer.
 
 ## See also
 
-[`has_analytic_quantile`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md),
-[`has_exact_cdf_deriv`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
+[`has_analytic_quantile()`](https://statmodels7.github.io/distributions7/reference/has_analytic_quantile.md),
+[`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)

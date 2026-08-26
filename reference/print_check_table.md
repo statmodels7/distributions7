@@ -1,7 +1,7 @@
 # Print a Validation Table
 
 Renders what
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 found, in the same shape for a univariate and a multivariate
 distribution.
 
@@ -39,4 +39,4 @@ Invisibly `NULL`.
 
 ## See also
 
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)

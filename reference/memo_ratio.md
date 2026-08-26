@@ -31,4 +31,4 @@ between one integration per block and one per occurrence.
 
 ## See also
 
-[`trunc_deriv_k`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)
+[`trunc_deriv_k()`](https://statmodels7.github.io/distributions7/reference/trunc_deriv_k.md)

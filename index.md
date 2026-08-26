@@ -249,7 +249,7 @@ plot(fitm)
 [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
 is the heavy-tailed alternative, with the degrees of freedom estimated
 alongside everything else. Its
-[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_location.md)
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 is the **scale** matrix and its
 [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
 the covariance, which differ by $`\nu/(\nu-2)`$ and which the family

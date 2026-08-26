@@ -1,7 +1,7 @@
 # Validate a Multivariate Distribution
 
 The battery
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 runs on a multivariate distribution, where the one-dimensional checks
 have no counterpart.
 
@@ -16,7 +16,7 @@ check_distrib_mv(distrib, theta, n, nsim, tol)
 - distrib:
 
   A
-  [`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+  [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
   object.
 
 - theta:
@@ -38,7 +38,7 @@ check_distrib_mv(distrib, theta, n, nsim, tol)
 ## Value
 
 A list of one-row data frames, as
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
 builds.
 
 ## Details
@@ -57,17 +57,17 @@ What replaces them are checks that do generalize:
 
 2.  **the density integrates to one**. For a family that enumerates its
     support through
-    [`mv_support`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
+    [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md)
     this is an exact sum over that support; otherwise it is importance
     sampling from the proposal
-    [`mv_reference_draw`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
+    [`mv_reference_draw()`](https://statmodels7.github.io/distributions7/reference/mv_reference_draw.md)
     supplies, which by default is a gaussian with the same mean and an
     inflated covariance. The proposal is deliberately not the
     distribution itself, which would make the ratio identically one and
     the check vacuous;
 
 3.  **the score has mean zero**, the first Bartlett identity, under the
-    distribution's own generator – so it is also a check that the
+    distribution's own generator, so it is also a check that the
     generator and the density describe the same law;
 
 4.  **gradient and Hessian** against finite differences of the summed
@@ -85,10 +85,10 @@ The last of these is emitted only when it applies, as the univariate
 battery already omits the checks that a discrete family has no
 counterpart for. A family with an enumerable support is discrete and has
 no derivative in the response, and the multivariate base class rejects
-[`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
 by design, so a family that has not registered one has made a choice
 rather than left a gap.
 
 ## See also
 
-[`check_distrib`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)

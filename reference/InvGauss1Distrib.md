@@ -1,7 +1,17 @@
-# S7 Class for Inverse-Gaussian Distribution
+# Inverse Gaussian Distribution Class, Mean and Dispersion
 
-A subclass of `continuous_distrib` representing the Inverse-Gaussian
-distribution.
+The S7 class of the inverse Gaussian family on \\(0, \infty)\\
+parametrized by its mean \\\mu \> 0\\ and a dispersion \\\phi \> 0\\, so
+that \\\operatorname{Var}(Y) = \phi\mu^3\\. It inherits from
+`continuous_distrib`, so it answers every generic of the `distrib`
+contract; the eleven methods listed below are registered on it directly
+and everything else comes from the parent.
+
+Build one with
+[`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md),
+which supplies the two link functions and fills the properties in. This
+page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,15 +80,23 @@ InvGauss1Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `InvGauss1Distrib`.
+An S7 object of class `InvGauss1Distrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
+they hold `"invgauss1"`, `"univariate"`, `c(0, Inf)`, `c("mu", "phi")`,
+the interpretations `c(mu = "mean", phi = "dispersion")`, `2`, the
+domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.InvGauss1Distrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.InvGauss1Distrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.InvGauss1Distrib.md),
@@ -92,8 +110,38 @@ Methods implemented for this class:
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.InvGauss1Distrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`invgauss1_distrib`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
+[`invgauss1_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss1_distrib.md)
+to build one;
+[`invgauss2_distrib()`](https://statmodels7.github.io/distributions7/reference/invgauss2_distrib.md)
+for the same law in mean and variance;
+[`distrib_pdf.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.InvGauss1Distrib.md)
+and
+[`distrib_gradient.InvGauss1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.InvGauss1Distrib.md)
+for the closed forms this class supplies.
+
+## Examples
+
+``` r
+d <- invgauss1_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+#> [1] "mu"  "phi"
+d@params_interpretation
+#>           mu          phi 
+#>       "mean" "dispersion" 
+d@bounds
+#> [1]   0 Inf
+
+# The variance function is mu^3, so the spread grows faster with the mean
+# than a gamma's, whose variance function is mu^2.
+vapply(c(1, 2, 4), function(m) variance(d, list(mu = m, phi = 2)),
+       numeric(1))
+#> [1]   2  16 128
+```

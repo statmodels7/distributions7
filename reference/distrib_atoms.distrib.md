@@ -14,6 +14,10 @@ distribution registers something more specific.
 
   A named list of parameters.
 
+- ...:
+
+  Unused, and accepted so that the signature matches the generic's.
+
 ## Value
 
 A list with empty `y` and `p`.

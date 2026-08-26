@@ -1,7 +1,7 @@
 # Derivatives of a Truncated Distribution
 
 Builds the order-`k` derivative method for
-[`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md).
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md).
 
 ## Usage
 
@@ -29,4 +29,4 @@ partition sum.
 
 ## See also
 
-[`memo_ratio`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)
+[`memo_ratio()`](https://statmodels7.github.io/distributions7/reference/memo_ratio.md)

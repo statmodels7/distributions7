@@ -1,7 +1,7 @@
 # Derivatives of a Zero-Adjusted Discrete Distribution
 
 Builds the order-`k` derivative method for the hurdle form of
-[`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md).
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md).
 
 ## Usage
 

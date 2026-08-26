@@ -1,7 +1,17 @@
-# S7 Class for the Beta Distribution in Its Shapes
+# Beta Distribution Class, the Two Shapes
 
-A subclass of `continuous_distrib` for the beta in its canonical
-parametrization, the two shapes.
+The S7 class of the beta family on \\(0, 1)\\ in its canonical
+parametrization, the two shapes \\\alpha \> 0\\ and \\\beta \> 0\\, with
+density \\y^{\alpha-1}(1-y)^{\beta-1}/B(\alpha, \beta)\\. It inherits
+from `continuous_distrib`, so it answers every generic of the `distrib`
+contract; the eleven methods listed below are registered on it directly
+and everything else comes from the parent.
+
+Build one with
+[`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md),
+which supplies the two link functions and fills the properties in. This
+page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,15 +80,23 @@ Beta2Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `Beta2Distrib`.
+An S7 object of class `Beta2Distrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
+they hold `"beta2"`, `"univariate"`, `c(0, 1)`, `c("alpha", "beta")`,
+the interpretations `c(alpha = "shape", beta = "shape")`, `2`, the
+domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Beta2Distrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Beta2Distrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.Beta2Distrib.md),
@@ -92,9 +110,36 @@ Methods implemented for this class:
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.Beta2Distrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`beta2_distrib`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md),
-[`beta1_distrib`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
+[`beta2_distrib()`](https://statmodels7.github.io/distributions7/reference/beta2_distrib.md)
+to build one;
+[`beta1_distrib()`](https://statmodels7.github.io/distributions7/reference/beta1_distrib.md)
+for the same law in mean and precision;
+[`distrib_pdf.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Beta2Distrib.md)
+and
+[`distrib_gradient.Beta2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.Beta2Distrib.md)
+for the closed forms this class supplies.
+
+## Examples
+
+``` r
+d <- beta2_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+#> [1] "alpha" "beta" 
+d@params_interpretation
+#>   alpha    beta 
+#> "shape" "shape" 
+d@bounds
+#> [1] 0 1
+
+# Both parameters are shapes, so neither is a mean: the mean is their ratio.
+mean(d, list(alpha = 2, beta = 5))
+#> [1] 0.2857143
+```

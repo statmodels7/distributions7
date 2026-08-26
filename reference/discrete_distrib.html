@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -95,7 +95,7 @@
 
 
 <dt id="arg-params-smooth">params_smooth<a class="anchor" aria-label="anchor" href="#arg-params-smooth"></a></dt>
-<dd><p>An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all <code>TRUE</code> (leave empty). Set an entry to <code>FALSE</code> for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \(-\mathbb{E}[H]\) (see <code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code>).</p></dd>
+<dd><p>An optional named logical vector flagging, for each parameter, whether the log-likelihood is differentiable with respect to it. Defaults to all <code>TRUE</code> (leave empty). Set an entry to <code>FALSE</code> for parameters at which the log-likelihood has a kink (e.g. the location of a Laplace distribution): the observed Hessian is then degenerate and the expected information must be obtained from the score variance rather than from \(-\mathbb{E}[H]\) (see <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>).</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -114,11 +114,11 @@ which every standard count distribution has.</p>
 <code><a href="distrib_rng.discrete_distrib.html">distrib_rng()</a></code>,
 <code><a href="expectation.html">expectation()</a></code>,
 <code><a href="plot.discrete_distrib.html">plot()</a></code></p>
-<p>Everything else is inherited from <code><a href="distrib.html">distrib</a></code>.</p>
+<p>Everything else is inherited from <code><a href="distrib.html">distrib()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib.html">distrib</a></code>, <code><a href="continuous_distrib.html">continuous_distrib</a></code>, <code><a href="multivariate_distrib.html">multivariate_distrib</a></code></p></div>
+    <div class="dont-index"><p><code><a href="distrib.html">distrib()</a></code>, <code><a href="continuous_distrib.html">continuous_distrib()</a></code>, <code><a href="multivariate_distrib.html">multivariate_distrib()</a></code></p></div>
     </div>
 
     <div class="section level2">

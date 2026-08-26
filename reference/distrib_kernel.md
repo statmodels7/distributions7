@@ -46,7 +46,7 @@ h(\eta_p)\\,
 \ell_p\\h''(\eta_p),\$\$
 
 which is what
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
 computes for those two components and nothing else.
 
 The bargain is that the caller takes on what the generic was doing.
@@ -55,13 +55,13 @@ unnamed and of a length the family accepts against `y`; nothing is
 checked. The entry for `param` is replaced, so its value on the way in
 is immaterial. The inverse link is clamped strictly inside its bounds
 exactly as
-[`linkinv`](https://statmodels7.github.io/linkfunctions7/reference/linkinv.html)
+[`linkfunctions7::linkinv()`](https://statmodels7.github.io/linkfunctions7/reference/linkinv.html)
 does, because that is a correctness property and not an optimization.
 
 ## See also
 
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md),
-[`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md),
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
 
 ## Examples
 

@@ -1,7 +1,7 @@
 # Invert the Hessian Component Names
 
 Maps each name produced by
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 back to the pair of parameters it differentiates with respect to.
 
 ## Usage
@@ -31,10 +31,10 @@ own name contains an underscore (`"log_scale"`) makes
 the last silently yields `c("log", "scale")`. Building the map from the
 parameter vector cannot be fooled.
 
-[`deriv_indices`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
+[`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
 is the same idea for orders above two.
 
 ## See also
 
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-[`deriv_indices`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+[`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md)

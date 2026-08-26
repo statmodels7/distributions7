@@ -1,9 +1,15 @@
 # S7 Class for Zero-Adjusted Continuous Distributions
 
-A subclass of `continuous_distrib` representing the zero-adjusted
-version of a wrapped continuous distribution: a point mass at zero with
-probability \\\pi\\ (parameter `za`) mixed with the original continuous
-distribution.
+The S7 class of a continuous distribution with a point mass at zero:
+\$\$P(Y = 0) = \pi, \qquad f_Y(y) = (1-\pi) f(y; \theta) \\ (y \ne
+0).\$\$ The result is a MIXED distribution, a density plus an atom, and
+it declares that atom through
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
+That declaration is how
+[`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+and
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+learn to treat it as one.
 
 ## Usage
 
@@ -73,7 +79,7 @@ ZeroAdjustedContinuousDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - parent_distrib:
 
@@ -81,14 +87,35 @@ ZeroAdjustedContinuousDistrib(
 
 ## Value
 
-An object of class `ZeroAdjustedContinuousDistrib`.
+An S7 object of class `ZeroAdjustedContinuousDistrib`, inheriting from
+`continuous_distrib` and from `distrib`. It carries `parent_distrib`
+beside the parent's properties, with `za` added last.
+
+## Details
+
+No truncation is needed here. A continuous parent has \\P(Y = 0) = 0\\,
+so there is no mass to remove before placing the atom, and the density
+is simply scaled by \\1-\pi\\. That is the whole difference from
+[ZeroAdjustedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedDiscreteDistrib.md),
+whose parent must be truncated away from the point it already occupies.
+
+The likelihood factorizes completely: the mixed blocks of the Hessian
+are exactly zero, \\\pi\\ is estimated by the proportion of zeros and
+\\\theta\\ by the parent's own fit to the non-zero observations.
+
+Build one with
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md).
+This page documents the raw S7 constructor, which validates nothing.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md),
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ZeroAdjustedContinuousDistrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ZeroAdjustedContinuousDistrib.md),
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ZeroAdjustedContinuousDistrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ZeroAdjustedContinuousDistrib.md),
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ZeroAdjustedContinuousDistrib.md),
 [`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ZeroAdjustedContinuousDistrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ZeroAdjustedContinuousDistrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ZeroAdjustedContinuousDistrib.md),
@@ -96,8 +123,48 @@ Methods implemented for this class:
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.ZeroAdjustedContinuousDistrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+
+## Notation
+
+\\f\\ is the parent's density, \\\pi\\ the probability of a zero and
+\\\ell\\ the log-density of one observation.
 
 ## See also
 
-[`zero_adjusted`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+to build one,
+[ZeroAdjustedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/ZeroAdjustedDiscreteDistrib.md)
+for the discrete branch,
+[`distrib_atoms.ZeroAdjustedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.ZeroAdjustedContinuousDistrib.md)
+for the atom it declares, and
+[`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md),
+which REJECTS a parent of this class for exactly that atom.
+
+## Examples
+
+``` r
+d <- zero_adjusted(gaussian1_distrib())
+theta <- list(mu = 1, sigma = 2, za = 0.3)
+d@params
+#> [1] "mu"    "sigma" "za"   
+
+# It is a MIXED distribution: an atom at zero and a density elsewhere.
+distrib_atoms(d, theta)
+#> $y
+#> [1] 0
+#> 
+#> $p
+#> [1] 0.3
+#> 
+c(at_zero = distrib_pdf(d, 0, theta),
+  elsewhere = distrib_pdf(d, 2, theta),
+  scaled_parent = 0.7 * dnorm(2, 1, 2))
+#>       at_zero     elsewhere scaled_parent 
+#>     0.3000000     0.1232229     0.1232229 
+
+# The density part integrates to 1 - pi, the atom carrying the rest.
+integrate(function(z) ifelse(z == 0, 0, distrib_pdf(d, z, theta)),
+          -Inf, Inf)$value
+#> [1] 0.7
+```

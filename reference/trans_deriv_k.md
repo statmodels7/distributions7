@@ -1,7 +1,7 @@
 # Derivatives of a Transformed Distribution
 
 Builds the order-`k` derivative method for
-[`transformation`](https://statmodels7.github.io/distributions7/reference/transformation.md).
+[`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md).
 
 ## Usage
 

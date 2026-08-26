@@ -1,7 +1,7 @@
 # Multi-Indices of a Given Order, as Parameter Names
 
 The multi-indices of a given order, in the order
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 lists them, expressed as parameter names.
 
 ## Usage
@@ -27,11 +27,11 @@ A list of character vectors, each of length `order`.
 ## Details
 
 A thin wrapper on
-[`deriv_indices`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md).
+[`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md).
 It is deliberately not
 [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
 from `link_scale.R`, whose order-2 case is ordered for
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 – diagonal first – while
 [`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 is lexicographic; pairing those would silently attach the name
@@ -42,5 +42,5 @@ never being reached.
 
 ## See also
 
-[`deriv_indices`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md),
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+[`deriv_indices()`](https://statmodels7.github.io/distributions7/reference/deriv_indices.md),
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)

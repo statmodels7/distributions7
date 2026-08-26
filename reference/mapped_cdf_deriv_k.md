@@ -1,7 +1,12 @@
-# Third and Fourth Log-CDF Derivatives of a Mapped Family
+# Higher CDF Derivatives of a Family Written as a Map of Another
 
-The chain rule on the parent's when the parent's are exact at every
-order up to the one asked for, and the stencil otherwise.
+The body every mapped family registers at orders 3 and 4, and at 2 where
+its written-out route stops there. It asks whether the parent's cdf
+derivatives are exact at **every** order up to the one wanted, takes
+[`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
+if they are, and falls back to
+[`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
+on the new family's own cdf if they are not.
 
 ## Usage
 
@@ -24,15 +29,15 @@ mapped_cdf_deriv_k(
 
 - distrib:
 
-  The mapped distribution.
+  The mapped family, whose cdf and parameter names are read.
 
 - parent:
 
-  The distribution being mapped.
+  The distribution it maps onto.
 
 - th_par:
 
-  The parent's parameters at the new ones.
+  The parent's parameters, evaluated at the new ones.
 
 - maps:
 
@@ -40,7 +45,7 @@ mapped_cdf_deriv_k(
 
 - q:
 
-  A numeric vector of quantiles.
+  A numeric vector of quantiles, on the new family's own scale.
 
 - theta:
 
@@ -48,35 +53,48 @@ mapped_cdf_deriv_k(
 
 - order:
 
-  The derivative order, 3 or 4.
+  The derivative order, 2 to 4.
 
 - lower.tail:
 
-  Logical; whether the lower tail is wanted.
+  Is the lower tail wanted? A single logical.
 
 - log:
 
-  Logical; whether derivatives of the log probability are wanted.
+  Are derivatives of the log probability wanted? A single logical.
 
 - q_par:
 
-  The point at which to evaluate the parent, when the two families are
-  related by a monotone transformation of the response as well as by a
-  map of the parameters. A lognormal is a gaussian at \\\log q\\, and
-  since the transformation carries no parameter the derivatives in
-  \\\theta\\ are the parent's with the point substituted.
+  The quantiles on the parent's scale. `q` by default, and `log(q)` for
+  a lognormal.
 
 ## Value
 
-A named list of derivative component vectors.
+A named list of numeric vectors of the requested order, on the requested
+tail and scale.
 
-## Details
+## The gate
 
-The gate is the one orders one and two use. A chain rule carrying a
-differenced quantity would report a closed form and deliver the parent's
-noise, and the truncation wrapper reads that distinction to choose its
-own route.
+The chain is exact only if everything it carries is exact, and the
+higher orders read the lower ones, so the test is over all of them. It
+is what stops a family from adding an exact transformation to a
+differenced parent and reporting the result as closed.
+
+## A transformed response
+
+A family may be the parent's law at a transformed point as well as at a
+mapped parameter. A lognormal is a Gaussian at \\\log q\\, and since the
+transformation carries no parameter, the derivatives in \\\theta\\ are
+the parent's with the point substituted. `q_par` is where that
+substitution is handed in.
 
 ## See also
 
-[`mapped_cdf_deriv`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
+[`chain_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/chain_cdf_deriv_k.md)
+for the exact route;
+[`cdf_tables()`](https://statmodels7.github.io/distributions7/reference/cdf_tables.md)
+for the fallback;
+[`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
+for the gate;
+[`mapped_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/mapped_cdf_deriv.md)
+for orders 1 and 2.

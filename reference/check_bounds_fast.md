@@ -1,7 +1,7 @@
 # Check Parameter Domains, Taking the Properties as Arguments
 
 The body behind
-[`check_theta_bounds`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
+[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
 differing only in that it receives the distribution's properties instead
 of reaching for them.
 
@@ -48,4 +48,4 @@ three distinct offending values are shown.
 
 ## See also
 
-[`check_theta_bounds`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md)
+[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md)

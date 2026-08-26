@@ -30,7 +30,7 @@ check_distrib(
 
   A named list of parameter values at which to run the checks. If `NULL`
   (default) a random admissible value is drawn with
-  [`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
+  [`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md).
 
 - n:
 
@@ -76,29 +76,29 @@ The checks performed are:
   discrete ones).
 
 - **rng**: the sample mean and variance of a large draw agree with
-  [`mean`](https://rdrr.io/r/base/mean.html) and
-  [`variance`](https://statmodels7.github.io/distributions7/reference/variance.md)
+  [`mean()`](https://rdrr.io/r/base/mean.html) and
+  [`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
   within Monte Carlo error.
 
 - **gradient, hessian, deriv3, deriv4**: analytical values against
-  [`numerical_gradient`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
-  [`numerical_hessian`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
-  [`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
+  [`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
+  [`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
+  [`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)
   and
-  [`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md).
+  [`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md).
 
 - **expected information**:
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
   against a Monte Carlo estimate of
   \\-\mathbb{E}\[\nabla\ell\\\nabla\ell^\top\]\\. The outer product of
   the score is used as reference because it remains valid when the
   log-likelihood is not differentiable in a parameter (see
-  [`laplace_distrib`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)).
+  [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)).
 
 - **response derivatives** (continuous only):
-  [`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
+  [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md)
   and
-  [`distrib_hess_y`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
+  [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.md)
   against finite differences in \\y\\.
 
 - **link scale**: `scale = "link"` derivatives against finite
@@ -113,7 +113,7 @@ produced by
 [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
 on a continuous parent — are handled as long as they declare their atoms
 through
-[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md).
 The density is then expected to integrate to one minus the atomic mass,
 quantiles falling inside a jump of the CDF are checked as generalized
 inverses rather than exact ones, and finite differences in \\y\\ are
@@ -121,9 +121,9 @@ kept away from the atoms, where no derivative exists.
 
 ## See also
 
-[`numerical_gradient`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
-[`numerical_hessian`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
-[`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
+[`numerical_gradient()`](https://statmodels7.github.io/distributions7/reference/numerical_gradient.md),
+[`numerical_hessian()`](https://statmodels7.github.io/distributions7/reference/numerical_hessian.md),
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md)
 
 ## Examples
 

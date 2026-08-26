@@ -37,7 +37,7 @@ A named list of link-scale derivative component vectors.
 ## Details
 
 The mathematics is set out in
-[`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 Two things in the implementation are deliberate and are the reason it is
 not simply a transcription of the formula:
 
@@ -54,5 +54,5 @@ together and is paid once per component on every call.
 
 ## See also
 
-[`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
-[`bell_partial`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)
+[`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md),
+[`bell_partial()`](https://statmodels7.github.io/distributions7/reference/bell_partial.md)

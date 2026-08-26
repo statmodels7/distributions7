@@ -1,7 +1,11 @@
 # S7 Class for Truncated Continuous Distributions
 
-A subclass of `continuous_distrib` representing a continuous
-distribution restricted to \\\[\ell, u\]\\ and renormalized.
+Represents a continuous parent restricted to \\\[L, U\]\\ and
+renormalized by the retained mass \\Z(\theta)\\. Construct one with
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md),
+which validates the endpoints, collapses a nested truncation and copies
+the parent's parameter metadata; calling the class directly does none of
+that.
 
 ## Usage
 
@@ -73,19 +77,56 @@ TruncatedContinuousDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - parent_distrib:
 
-  The wrapped `continuous_distrib` object.
+  The wrapped `continuous_distrib` object. Its parameters become the
+  truncated object's, unchanged.
 
 - lower, upper:
 
-  The truncation points.
+  The truncation points, `L` and `U`. Either may be infinite, giving
+  one-sided truncation, and both are included in the support.
 
 ## Value
 
-An object of class `TruncatedContinuousDistrib`.
+An S7 object of class `TruncatedContinuousDistrib`, inheriting from
+`continuous_distrib`.
+
+## What truncation adds, and what it does not
+
+It adds NO parameter. The endpoints are known constants, like a
+binomial's `size`, so the truncated object carries exactly the parent's
+`params`, `params_bounds` and `link_params`. What it adds is the
+\\\theta\\-dependent normalizing constant \\Z\\, and every derivative of
+\\\ell_T = \ell - \log Z\\ carries its contribution.
+
+The support does not move with \\\theta\\. That is the condition under
+which \\Z\\ may be differentiated under the integral sign, and it is
+what keeps truncation at fixed points a regular problem.
+
+## A mixed parent
+
+The parent may itself carry point masses, as
+[`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md)
+of a continuous distribution does. Those atoms survive truncation where
+they lie inside the interval, rescaled by \\1/Z\\, and
+[`distrib_atoms.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.TruncatedContinuousDistrib.md)
+reports them. Two methods exist only for that case:
+[`expectation.TruncatedContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
+adds the masses to the integral, and
+[`parent_mass_at()`](https://statmodels7.github.io/distributions7/reference/parent_mass_at.md)
+asks the parent for the mass on a single point instead of assuming a
+continuous parent has none.
+
+## Notation
+
+\\L\\ and \\U\\ are the truncation endpoints, both included in the
+support; \\Z(\theta) = P(L \le Y \le U)\\ is the retained mass; \\f\\
+and \\F\\ are the parent's density and distribution function; \\s_i\\
+and \\H\_{ij}\\ are the parent's score and observed Hessian; and
+\\\mathbb{E}\_T\\ is expectation under the truncated law.
 
 ## Methods
 
@@ -103,8 +144,41 @@ Methods implemented for this class:
 [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.TruncatedContinuousDistrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`truncated`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+[`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md)
+for the constructor,
+[TruncatedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/TruncatedDiscreteDistrib.md)
+for the discrete branch, and
+[`trunc_constants()`](https://statmodels7.github.io/distributions7/reference/trunc_constants.md)
+for \\Z\\.
+
+## Examples
+
+``` r
+tn <- truncated(gaussian1_distrib(), lower = -1, upper = 2)
+theta <- list(mu = 0.3, sigma = 1.2)
+
+class(tn)[1]
+#> [1] "distributions7::TruncatedContinuousDistrib"
+c(name = tn@distrib_name, params = paste(tn@params, collapse = ", "))
+#>                          name                        params 
+#> "truncated gaussian1 [-1, 2]"                   "mu, sigma" 
+tn@bounds
+#> [1] -1  2
+
+# The parameters are the parent's, unchanged: truncation adds none.
+identical(tn@params, gaussian1_distrib()@params)
+#> [1] TRUE
+identical(tn@params_bounds, gaussian1_distrib()@params_bounds)
+#> [1] TRUE
+
+# The density is the parent's divided by the retained mass.
+Z <- pnorm(2, 0.3, 1.2) - pnorm(-1, 0.3, 1.2)
+c(truncated = distrib_pdf(tn, 0, theta),
+  parent_over_Z = dnorm(0, 0.3, 1.2) / Z)
+#>     truncated parent_over_Z 
+#>     0.4118505     0.4118505 
+```

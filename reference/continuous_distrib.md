@@ -70,7 +70,7 @@ continuous_distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
@@ -81,7 +81,7 @@ An object of class `continuous_distrib`.
 Defaults for continuous distributions, built from the density alone: the
 cdf by quadrature, the quantile function by root finding, and the
 generator by Generalized Ratio-of-Uniforms
-([`rng_grou`](https://statmodels7.github.io/distributions7/reference/rng_grou.md))
+([`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md))
 or inverse transform when an analytical quantile is available.
 
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.continuous_distrib.md),
@@ -93,13 +93,13 @@ or inverse transform when an analytical quantile is available.
 [`plot()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
 
 Everything else is inherited from
-[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md).
+[`distrib()`](https://statmodels7.github.io/distributions7/reference/distrib.md).
 
 ## See also
 
-[`distrib`](https://statmodels7.github.io/distributions7/reference/distrib.md),
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
-[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+[`distrib()`](https://statmodels7.github.io/distributions7/reference/distrib.md),
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
 
 ## Examples
 

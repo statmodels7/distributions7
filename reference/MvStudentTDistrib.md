@@ -1,9 +1,20 @@
-# Multivariate Student's t Distribution
+# Multivariate Student t Distribution Class
 
-The S7 class of multivariate Student t distributions: a mean vector, a
-parameters7 structure for the scale matrix, and a degrees-of-freedom
-parameter. Constructed by
-[`mvstudent_t_distrib`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+The S7 class of the elliptical Student t family on \\\mathbb{R}^p\\,
+with density \$\$f(y) \propto \lvert\Sigma\rvert^{-1/2} \left(1 +
+\frac{(y-\mu)^\top \Sigma^{-1} (y-\mu)}{\nu}\right)^{-(\nu+p)/2}.\$\$
+The location \\\mu\\ contributes \\p\\ scalar parameters, the scale
+matrix \\\Sigma\\ is carried by a parameters7 parametrization whose free
+values become scalar parameters, and the degrees of freedom \\\nu\\ is
+added last. It inherits from `multivariate_distrib`, so the response is
+an \\n \times p\\ matrix and the distribution function and the quantile
+function are refused.
+
+Build one with
+[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md),
+which fills the properties in and checks the rank of the
+parametrization. This page documents the raw S7 constructor, which
+validates nothing.
 
 ## Usage
 
@@ -74,27 +85,88 @@ MvStudentTDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 - n_dim:
 
-  The dimension \\p\\ of an observation.
+  The dimension \\p\\ of one observation. A single positive integer.
 
 - param:
 
-  The parameters7 structure carrying the scale matrix.
+  A parameters7 parametrization of the SCALE matrix, inheriting from
+  [`parameters7::parameter`](https://statmodels7.github.io/parameters7/reference/parameter.html).
+  Its `n_free` free values are flattened into scalar parameters of the
+  distribution.
 
 ## Value
 
-An object of class `MvStudentTDistrib`.
+An S7 object of class `MvStudentTDistrib`, inheriting from
+`multivariate_distrib` and from `distrib`. Beyond the parent's
+`distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params`,
+`params_smooth` and `n_dim`, it carries `param` as supplied. Unlike
+[MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
+it has no `inverted` property: the scale matrix is always parametrized
+as itself.
+
+## Methods
+
+Registered on this class:
+[`distrib_cross2_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross2_y.MvStudentTDistrib.md),
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.MvStudentTDistrib.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.MvStudentTDistrib.md),
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.MvStudentTDistrib.md),
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvStudentTDistrib.md),
+[`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.MvStudentTDistrib.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.MvStudentTDistrib.md),
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.MvStudentTDistrib.md),
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.MvStudentTDistrib.md),
+[`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.MvStudentTDistrib.md),
+[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.MvStudentTDistrib.md),
+[`mv_location()`](https://statmodels7.github.io/distributions7/reference/mv_location.MvStudentTDistrib.md),
+[`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.md),
+[`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md),
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
+
+Everything else comes from
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md).
+The third and fourth derivatives are registered in `mv_higher.R`, which
+the two multivariate families share.
 
 ## See also
 
-[`mvstudent_t_distrib`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+to build one,
+[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+for the limit \\\nu \to \infty\\,
+[`mv_sigma.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
+for the scale matrix and
+[`variance.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/variance.MvStudentTDistrib.md)
+for the covariance, which are different matrices here.
 
 ## Examples
 
 ``` r
-S7::S7_inherits(mvstudent_t_distrib(2), MvStudentTDistrib)
+d <- mvstudent_t_distrib(2)
+S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
+
+# Six parameters: two locations, three free values of the scale matrix, and
+# the degrees of freedom last.
+d@params
+#> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
+#> [6] "nu"          
+d@params_interpretation
+#>                  mu1                  mu2         sigma_log_L1 
+#>           "location"           "location"              "scale" 
+#>         sigma_log_L2           sigma_L2.1                   nu 
+#>              "scale"              "scale" "degrees of freedom" 
+
+# nu is the one parameter with a bound, and the one with a link that is not
+# the identity, so this family's link scale is not its parameter scale.
+d@params_bounds$nu
+#> [1]   0 Inf
+vapply(d@link_params, function(l) l@link_name, character(1))
+#>          mu1          mu2 sigma_log_L1 sigma_log_L2   sigma_L2.1           nu 
+#>   "identity"   "identity"   "identity"   "identity"   "identity"        "log" 
 ```

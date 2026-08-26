@@ -9,7 +9,7 @@ shape."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -69,12 +69,12 @@ shape.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The first parameter of <code><a href="weibull1_distrib.html">weibull1_distrib</a></code> is the scale and not
+    <p>The first parameter of <code><a href="weibull1_distrib.html">weibull1_distrib()</a></code> is the scale and not
 the mean: the mean is \(\mu\,\Gamma(1 + 1/\sigma)\). Inverting that gives
 the map used here,
 $$\mu = \dfrac{m}{\Gamma(1 + 1/\sigma)},$$
 so every derivative becomes a derivative of the gamma function, which is
-why <code><a href="weibull1_distrib.html">weibull1_distrib</a></code> is not written this way.</p>
+why <code><a href="weibull1_distrib.html">weibull1_distrib()</a></code> is not written this way.</p>
 <p>The number follows gamlss, where the Weibull in the mean is <code>WEI3</code>.
 Leaving <code>weibull2</code> unused is deliberate: it names a different
 parametrization there.</p>
@@ -95,7 +95,7 @@ Society, Series C</em> 54, 507-554.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="weibull1_distrib.html">weibull1_distrib</a></code>, <code><a href="reparametrize.html">reparametrize</a></code></p></div>
+    <div class="dont-index"><p><code><a href="weibull1_distrib.html">weibull1_distrib()</a></code>, <code><a href="reparametrize.html">reparametrize()</a></code></p></div>
     </div>
 
     <div class="section level2">

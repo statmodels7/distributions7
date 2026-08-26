@@ -70,7 +70,7 @@ distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
@@ -82,7 +82,7 @@ Registered on the base class, so every distribution inherits them unless
 it registers something more specific. Those that compute derivatives do
 so by finite differences, which is why a subclass that implements
 nothing but
-[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md)
 is already fully functional. Note that `distrib_pdf` itself has no
 default: the density is the one thing a distribution must supply.
 
@@ -101,9 +101,9 @@ default: the density is the one thing a distribution must supply.
 
 ## See also
 
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
-[`multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md),
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md),
+[`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
 
 ## Examples
 

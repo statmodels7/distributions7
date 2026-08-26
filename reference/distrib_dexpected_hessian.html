@@ -9,7 +9,7 @@ pair \((a,b)\) and differentiating parameter \(c\)."><meta property="og:image" c
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@ information.</p></dd>
 
 
 <dt id="arg-approx-nsim">approx, nsim<a class="anchor" aria-label="anchor" href="#arg-approx-nsim"></a></dt>
-<dd><p>Passed to <code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code>.</p></dd>
+<dd><p>Passed to <code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -93,7 +93,7 @@ information.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of numeric vectors, keyed as
-<code><a href="dexpected_names.html">dexpected_names</a>(distrib@params)</code>.</p>
+<code><a href="dexpected_names.html">dexpected_names(distrib@params)</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -101,23 +101,23 @@ information.</p></dd>
 $$\frac{\partial}{\partial\theta_c}\mathbb{E}[\ell_{ab}]
   = \mathbb{E}[\ell_{abc}] + \mathbb{E}[\ell_{ab}\ell_{c}],$$
 the first term is fully symmetric and the second is not, so the result is
-keyed by <code><a href="dexpected_names.html">dexpected_names</a></code> rather than by the sorted triples
-<code><a href="deriv_names.html">deriv_names</a></code> uses at order three.</p>
+keyed by <code><a href="dexpected_names.html">dexpected_names()</a></code> rather than by the sorted triples
+<code><a href="deriv_names.html">deriv_names()</a></code> uses at order three.</p>
 <p><strong>The default method differences the family's own expected
 information</strong>, one central stencil per parameter, which is a single
 difference of an analytic quantity wherever that quantity is a written-out
 formula. It is refused where it is not: see
-<code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian</a></code>.</p>
+<code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code>.</p>
 <p>On <code>scale = "link"</code> the difference is taken along the free scale of the
 parameter being differentiated, and the expected information is read on the
 link scale at each of the two points, so the chain rule is never written out
 here and cannot disagree with the one
-<code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code> already applies.</p>
+<code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code> already applies.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="distrib_expected_hessian.html">distrib_expected_hessian</a></code>,
-<code><a href="dexpected_names.html">dexpected_names</a></code>, <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian</a></code></p></div>
+    <div class="dont-index"><p><code><a href="distrib_expected_hessian.html">distrib_expected_hessian()</a></code>,
+<code><a href="dexpected_names.html">dexpected_names()</a></code>, <code><a href="has_exact_expected_hessian.html">has_exact_expected_hessian()</a></code></p></div>
     </div>
 
     <div class="section level2">

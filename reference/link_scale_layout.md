@@ -29,7 +29,7 @@ its order and its lookup key.
 
 ## Details
 
-[`to_link_scale`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
+[`to_link_scale()`](https://statmodels7.github.io/distributions7/reference/to_link_scale.md)
 used to rebuild this on every call: the multi-index list, a `unique` and
 a `tabulate` per component, and a `sort` and a `paste` per combination
 to spell the key of the parameter-scale component to look up. None of it

@@ -46,10 +46,10 @@ the density.
 
 ## See also
 
-[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
-[`distrib_quantile`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
-[`distrib_rng`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
-[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
+[`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.md),
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
 
 ## Examples
 

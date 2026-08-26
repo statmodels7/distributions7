@@ -1,7 +1,7 @@
 # Default Derivative of the Expected Information
 
 One central difference of
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)
 per parameter, refused where that quantity is itself approximated.
 
 ## Arguments
@@ -33,4 +33,4 @@ per parameter, refused where that quantity is itself approximated.
 ## Value
 
 A named list keyed as
-[`dexpected_names`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md).
+[`dexpected_names()`](https://statmodels7.github.io/distributions7/reference/dexpected_names.md).

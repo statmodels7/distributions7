@@ -27,4 +27,14 @@ Closed form: the mean is a pure scale, so the identity \\-z\ell^{(yy)} -
 
 ## Value
 
-A named list with one numeric vector.
+A named list with the single component `mu`, a numeric vector of length
+`length(y)` holding \\1/\mu^2\\ at every observation.
+
+## See also
+
+[`loc_scale_cross_block()`](https://statmodels7.github.io/distributions7/reference/loc_scale_cross_block.md)
+for the identity, whose scale half applies here with no location;
+[`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+for the family;
+[`distrib_cross_y.Weibull1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Weibull1Distrib.md),
+which adds a shape to it.

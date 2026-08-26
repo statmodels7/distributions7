@@ -2,7 +2,7 @@
 
 One key per pair \\(a,b)\\ and differentiating parameter \\c\\, built by
 joining
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 with the parameter differentiated in.
 
 ## Usage
@@ -27,14 +27,14 @@ The keys are BUILT and never parsed, which is the package's rule
 wherever a component name is a concatenation of parameter names: a
 parameter whose own name contains an underscore makes the string
 ambiguous to read back, and
-[`dexpected_key`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md)
+[`dexpected_key()`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md)
 exists so that a consumer composes the same string this function
 enumerates.
 
 ## See also
 
-[`dexpected_key`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md),
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`dexpected_key()`](https://statmodels7.github.io/distributions7/reference/dexpected_key.md),
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 
 ## Examples
 

@@ -1,7 +1,7 @@
 # Batched Series Summation with Rejection
 
 Calls
-[`series_vec`](https://statmodels7.github.io/numericals7/reference/series_vec.html)
+[`numericals7::series_vec()`](https://statmodels7.github.io/numericals7/reference/series_vec.html)
 with its warning muffled and promotes a row that did not converge to an
 error naming it: a series that does not converge is a failure of the
 request, not a number.

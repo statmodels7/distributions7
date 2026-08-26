@@ -28,4 +28,13 @@ Closed form. With \\w = (y/a)^p\\ and \\L = \log(y/a)\\, \\\ell^{(y)} =
 
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with components `a`, `d` and `p`, each a numeric vector of
+length `length(y)`. Measured against Richardson on the analytic response
+gradient the worst is \\2.8\times10^{-11}\\ relative.
+
+## See also
+
+[`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
+for the family and its parametrization;
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the generic.

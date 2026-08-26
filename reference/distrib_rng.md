@@ -34,10 +34,10 @@ A numeric vector of `n` draws for a univariate distribution, and an \\n
 
 ## See also
 
-[`distrib_pdf`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
-[`distrib_cdf`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
-[`distrib_quantile`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
-[`distrib_atoms`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
+[`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.md),
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md),
+[`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.md),
+[`distrib_atoms()`](https://statmodels7.github.io/distributions7/reference/distrib_atoms.md)
 
 ## Examples
 

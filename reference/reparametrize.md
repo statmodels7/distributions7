@@ -50,7 +50,7 @@ reparametrize(
   positions ("1", "1,2", "2,2,3,3", ...); a missing key is an exact
   zero. The shipped second parametrizations supply hand-written tables
   (see
-  [`reparam_map_derivs`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md));
+  [`reparam_map_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md));
   when `NULL`, each needed partial comes from one finite-difference
   stencil on the map.
 
@@ -67,9 +67,9 @@ reparametrize(
 ## Value
 
 A distribution object of class
-[`ReparamContinuousDistrib`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
+[`ReparamContinuousDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md)
 or
-[`ReparamDiscreteDistrib`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md).
+[`ReparamDiscreteDistrib()`](https://statmodels7.github.io/distributions7/reference/ReparamContinuousDistrib.md).
 
 ## Details
 
@@ -86,12 +86,18 @@ mentions derivatives:
     function(psi) list(mu = psi$mean / gamma(1 + 1 / psi$sigma),
                        sigma = psi$sigma)
 
-The derivatives of the map come from running that same expression on
-**jets** – values carrying every partial derivative to fourth order – so
-they are exact at every order with no chain rule transcribed. The
-arithmetic operators and the mathematical functions dispatch on them. A
-map that branches on the value of a parameter is rejected rather than
-approximated, a comparison having no derivative to carry.
+**Where the map's derivatives come from.** Two routes, and `map_derivs`
+chooses between them. Supply it, and the tables are hand-written closed
+forms, exact at every order with no chain rule transcribed; the shipped
+second parametrizations all do, and their formulas live in
+[`reparam_map_derivs()`](https://statmodels7.github.io/distributions7/reference/reparam_map_derivs.md).
+Leave it `NULL`, and each partial the chain needs comes from one central
+stencil of
+[`numericals7::fd_derivative()`](https://statmodels7.github.io/numericals7/reference/fd_derivative.html)
+applied to the analytic map, a single stencil per order and never a
+chain of differences. The stencil route is good to about \\10^{-8}\\ at
+first order and fades with the order, so a family fitted in earnest is
+worth a table.
 
 **What is exact and what is inherited.** The derivatives of the
 log-density are carried by \$\$\ell^{(I)}(\psi) = \sum\_{\pi} \sum\_{i_1
@@ -112,8 +118,8 @@ the case a fit is in.
 
 ## See also
 
-[`fixed`](https://statmodels7.github.io/distributions7/reference/fixed.md),
-[`transformation`](https://statmodels7.github.io/distributions7/reference/transformation.md)
+[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md),
+[`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md)
 
 ## Examples
 

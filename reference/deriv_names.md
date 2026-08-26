@@ -5,7 +5,7 @@ with respect to a vector of parameters. Because mixed partial
 derivatives are symmetric, only one representative per multi-index is
 listed, using non-decreasing parameter order (e.g. `"mu_mu_sigma"` but
 not `"mu_sigma_mu"`). For `order = 2` this coincides with the set of
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 (though possibly in a different order).
 
 ## Usage
@@ -31,13 +31,13 @@ unique component names, where \\p\\ is the number of parameters.
 
 ## See also
 
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
-[`expand_params`](https://statmodels7.github.io/distributions7/reference/expand_params.md),
-[`transpose_params`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
-[`check_params_dim`](https://statmodels7.github.io/distributions7/reference/check_params_dim.md),
-[`check_theta_bounds`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
-[`param_smoothness`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
-[`generate_random_theta`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md),
+[`expand_params()`](https://statmodels7.github.io/distributions7/reference/expand_params.md),
+[`transpose_params()`](https://statmodels7.github.io/distributions7/reference/transpose_params.md),
+[`check_params_dim()`](https://statmodels7.github.io/distributions7/reference/check_params_dim.md),
+[`check_theta_bounds()`](https://statmodels7.github.io/distributions7/reference/check_theta_bounds.md),
+[`param_smoothness()`](https://statmodels7.github.io/distributions7/reference/param_smoothness.md),
+[`generate_random_theta()`](https://statmodels7.github.io/distributions7/reference/generate_random_theta.md)
 
 ## Examples
 

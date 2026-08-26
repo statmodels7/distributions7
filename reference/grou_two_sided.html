@@ -11,7 +11,7 @@ each end."><meta property="og:image" content="https://statmodels7.github.io/dist
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ each end.</p>
 
 <dt id="arg-div">div<a class="anchor" aria-label="anchor" href="#arg-div"></a></dt>
 <dd><p>The exponents at the two edges, from
-<code><a href="lp_edge_divergence.html">lp_edge_divergence</a></code>.</p></dd>
+<code><a href="lp_edge_divergence.html">lp_edge_divergence()</a></code>.</p></dd>
 
 
 <dt id="arg-n">n<a class="anchor" aria-label="anchor" href="#arg-n"></a></dt>
@@ -92,14 +92,14 @@ It increases monotonically from 0 to 1, behaves like \(u^p\) on the left and
 like \(1 - (1-u)^q\) on the right, and has a closed-form derivative.</p>
 <p>The density of \(U\) therefore carries the exponents \(p\alpha - 1\) and
 \(q\beta - 1\) at the two ends and is bounded as soon as \(p\alpha &gt; 1\)
-and \(q\beta &gt; 1\) – indeed it vanishes there, turning the original
+and \(q\beta &gt; 1\). It vanishes there, in fact, turning the original
 U-shaped density into a single-peaked one, which is exactly what the sampler
 wants. Both exponents come from the same probe that detected the divergence,
 so nothing has to be searched for.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="grou_core.html">grou_core</a></code>, <code><a href="lp_edge_divergence.html">lp_edge_divergence</a></code></p></div>
+    <div class="dont-index"><p><code><a href="grou_core.html">grou_core()</a></code>, <code><a href="lp_edge_divergence.html">lp_edge_divergence()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

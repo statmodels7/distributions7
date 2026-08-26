@@ -1,8 +1,14 @@
-# Labels for a Plot of Several Settings
+# The Legend Entries and the Title of a Distribution Plot
 
-The legend entries and the title of a plot drawing several settings: the
-parameters that vary go in the legend, one entry per curve, and those
-held fixed go in the title, where they are stated once.
+Splits a set of plot settings into what varies and what does not: the
+varying parameters become one legend entry per curve, and the fixed ones
+are stated once in the title beside the family's name. A reader then
+sees which parameter the panel is about without counting curves, and
+reads the held values without a second key.
+
+Where nothing varies there is one curve and no legend, and the title
+carries every parameter. Where nothing is fixed the title is the
+family's name alone. Values are rounded to three decimals.
 
 ## Usage
 
@@ -14,14 +20,28 @@ plot_labels(x, ps)
 
 - x:
 
-  A distribution object.
+  A distribution object, read for `distrib_name` and `params`.
 
 - ps:
 
   The value of
-  [`plot_settings`](https://statmodels7.github.io/distributions7/reference/plot_settings.md).
+  [`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md),
+  read for `settings` and `varying`.
 
 ## Value
 
-A list with `legend` (character, length `ps$k`, or `NULL` when nothing
-varies) and `main`.
+A list with two components: `legend`, a character vector of length
+`ps$k` or `NULL` when nothing varies, and `main`, a character string of
+length 1 carrying a newline between the family's name and the fixed
+values.
+
+## See also
+
+[`plot_settings()`](https://statmodels7.github.io/distributions7/reference/plot_settings.md),
+which supplies `ps`;
+[`plot_legend_side()`](https://statmodels7.github.io/distributions7/reference/plot_legend_side.md)
+for where the legend goes;
+[`plot.continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.continuous_distrib.md)
+and
+[`plot.discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/plot.discrete_distrib.md),
+the callers.

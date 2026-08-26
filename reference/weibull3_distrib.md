@@ -26,12 +26,12 @@ A reparametrized distribution object.
 ## Details
 
 The first parameter of
-[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
+[`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 is the scale and not the mean: the mean is \\\mu\\\Gamma(1 +
 1/\sigma)\\. Inverting that gives the map used here, \$\$\mu =
 \dfrac{m}{\Gamma(1 + 1/\sigma)},\$\$ so every derivative becomes a
 derivative of the gamma function, which is why
-[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
+[`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
 is not written this way.
 
 The number follows gamlss, where the Weibull in the mean is `WEI3`.
@@ -55,8 +55,8 @@ Society, Series C* 54, 507-554.
 
 ## See also
 
-[`weibull1_distrib`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 
 ## Examples
 

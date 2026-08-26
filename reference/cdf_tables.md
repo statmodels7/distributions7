@@ -1,7 +1,10 @@
 # CDF Derivative Tables of Every Order Up To One
 
-The derivatives of \\F\\ of orders 1 to `order`, by whichever route the
-class uses.
+Assembles the derivatives of \\F\\ of orders 1 to `order` by whichever
+route the class uses: the exact finite sum for a discrete family, one
+product stencil on the analytic distribution function for a continuous
+one. Keeping the choice of route in a single statement is the point of
+the function.
 
 ## Usage
 
@@ -13,7 +16,7 @@ cdf_tables(distrib, q, theta, order)
 
 - distrib:
 
-  An object inheriting from class `"distrib"`.
+  An object inheriting from `distrib`.
 
 - q:
 
@@ -21,7 +24,7 @@ cdf_tables(distrib, q, theta, order)
 
 - theta:
 
-  A named list of parameters.
+  A named list of parameters on the parameter scale.
 
 - order:
 
@@ -29,20 +32,30 @@ cdf_tables(distrib, q, theta, order)
 
 ## Value
 
-A list of length `order` of named derivative tables of \\F\\.
+A list of length `order`. Element \\k\\ is a named list of \\k\\-th
+derivatives of \\F\\, on the natural scale and the lower tail, keyed as
+[`deriv_names(distrib@params, k)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
 
 ## Details
 
-The conversion to the log scale needs every order below the one wanted,
-not just the one wanted, because the moment-to-cumulant relation is a
-sum over partitions of the multi-index and a partition into \\k\\ blocks
-asks for \\k\\ lower-order ratios. Collecting them in one place keeps
-the choice of route – exact sum for a discrete family, one stencil on
-the analytic distribution function for a continuous one – in a single
-statement.
+Every order below the one wanted is collected, and not just the one
+wanted, because the moment-to-cumulant relation
+[`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md)
+applies is a sum over partitions of the multi-index: a partition into
+\\k\\ blocks reads \\k\\ lower-order ratios.
+
+At orders 1 and 2 the tables come from
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+and
+[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.md),
+so a family's own closed forms are used where it has them; only orders 3
+and 4 reach the routes named above.
 
 ## See also
 
-[`cdf_scale_k`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md),
-[`discrete_cdf_deriv_k`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.md),
-[`numerical_cdf_deriv_k`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md)
+[`cdf_scale_k()`](https://statmodels7.github.io/distributions7/reference/cdf_scale_k.md),
+the consumer;
+[`discrete_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/discrete_cdf_deriv_k.md)
+and
+[`numerical_cdf_deriv_k()`](https://statmodels7.github.io/distributions7/reference/numerical_cdf_deriv_k.md),
+the two routes.

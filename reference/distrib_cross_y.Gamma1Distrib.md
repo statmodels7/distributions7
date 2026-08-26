@@ -28,4 +28,14 @@ the mean component is \\1/(\phi\mu^2)\\ and the dispersion one
 
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with components `mu` and `sigma2`, each a numeric vector of
+length `length(y)`.
+
+## See also
+
+[`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
+for the family;
+[`distrib_cross_y.Gamma2Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.Gamma2Distrib.md)
+for the dispersion chart;
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the generic.

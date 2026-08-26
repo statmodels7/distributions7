@@ -1,7 +1,7 @@
 # Index Tuples Behind the Higher-Order Derivative Names
 
 The multi-indices
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 names, in exactly the same order: non-decreasing tuples of length
 `order` over `seq_along(params)`, enumerated lexicographically.
 
@@ -40,14 +40,14 @@ enumeration removes the possibility of disagreement.
 Note that this is **not** interchangeable with
 [`deriv_index_list()`](https://statmodels7.github.io/distributions7/reference/deriv_index_list.md)
 in `link_scale.R`: that one is ordered to match
-[`hess_names`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
+[`hess_names()`](https://statmodels7.github.io/distributions7/reference/hess_names.md)
 at order 2, which puts the diagonal first, whereas this one is
 lexicographic throughout to match
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md).
 At order 2 use
-[`hess_pairs`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md).
+[`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md).
 
 ## See also
 
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
-[`hess_pairs`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)
+[`deriv_names()`](https://statmodels7.github.io/distributions7/reference/deriv_names.md),
+[`hess_pairs()`](https://statmodels7.github.io/distributions7/reference/hess_pairs.md)

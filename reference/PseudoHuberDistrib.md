@@ -1,8 +1,18 @@
-# S7 Class for Pseudo-Huber Distribution
+# Pseudo-Huber Distribution Class
 
-A subclass of `continuous_distrib` representing the Pseudo-Huber
-distribution, whose density is defined by the Pseudo-Huber loss kernel
-(a special case of the Generalized Hyperbolic distribution).
+The S7 class of the pseudo-Huber family, a location-scale family on the
+whole real line whose log-density is the negative pseudo-Huber loss
+\\-\sqrt{\nu + z^2}\\, with a shape \\\nu \> 0\\ interpolating between a
+Laplace at \\\nu \to 0\\ and a Gaussian at \\\nu \to \infty\\. It is the
+symmetric hyperbolic distribution, a special case of the generalized
+hyperbolic. It inherits from `continuous_distrib`; the eleven methods
+listed below are registered on it in this file.
+
+Build one with
+[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md),
+which supplies the three link functions and fills the properties in.
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -71,15 +81,24 @@ PseudoHuberDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `PseudoHuberDistrib`.
+An S7 object of class `PseudoHuberDistrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+they hold `"pseudo huber"`, `"univariate"`, `c(-Inf, Inf)`,
+`c("mu", "sigma", "nu")`, the interpretations
+`c(mu = "location", sigma = "scale", nu = "shape")`, `3`, and the
+domains \\(-\infty, \infty)\\, \\(0, \infty)\\, \\(0, \infty)\\.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class in this file:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.PseudoHuberDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.PseudoHuberDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.PseudoHuberDistrib.md),
@@ -91,14 +110,56 @@ Methods implemented for this class:
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuberDistrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.PseudoHuberDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.PseudoHuberDistrib.md),
-[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.md),
-[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.distrib.md),
-[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.md),
-[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.md)
+and the predicate
+[`expected_hessian_exact()`](https://statmodels7.github.io/distributions7/reference/expected_hessian_exact.PseudoHuberDistrib.md),
+which answers `FALSE` here.
+
+Registered from other files: the mixed derivative
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.PseudoHuberDistrib.md)
+and the distribution-function derivatives
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.PseudoHuberDistrib.md)
+and
+[`distrib_hess_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_cdf.PseudoHuberDistrib.md),
+plus the four moments
+[`mean()`](https://statmodels7.github.io/distributions7/reference/mean.PseudoHuberDistrib.md),
+[`variance()`](https://statmodels7.github.io/distributions7/reference/variance.PseudoHuberDistrib.md),
+[`skewness()`](https://statmodels7.github.io/distributions7/reference/skewness.PseudoHuberDistrib.md)
+and
+[`kurtosis()`](https://statmodels7.github.io/distributions7/reference/kurtosis.PseudoHuberDistrib.md)
+in `moments.R`.
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`pseudohuber_distrib`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+[`pseudohuber_distrib()`](https://statmodels7.github.io/distributions7/reference/pseudohuber_distrib.md)
+to build one;
+[`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
+and
+[`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
+for the two limits;
+[`student_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/student_t1_distrib.md)
+for the other robust three-parameter family here;
+[`distrib_pdf.PseudoHuberDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.PseudoHuberDistrib.md)
+for the density.
+
+## Examples
+
+``` r
+d <- pseudohuber_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+#> [1] "mu"    "sigma" "nu"   
+d@params_interpretation
+#>         mu      sigma         nu 
+#> "location"    "scale"    "shape" 
+
+# This is the one family here whose expected information is not written
+# out, and the predicate says so.
+distributions7:::expected_hessian_exact(d)
+#> [1] FALSE
+```

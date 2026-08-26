@@ -1,7 +1,10 @@
 # Splice the Fixed Values Back Into a Full Parameter List
 
 Combines the wrapper's free `theta` with its fixed values into the full
-parameter list of the parent, in the parent's order.
+parameter list the PARENT expects, in the parent's own order. Every
+method of every `Fixed*` class begins with this call and then delegates,
+so it is the single point at which the two parameter sets are
+reconciled.
 
 ## Usage
 
@@ -13,26 +16,38 @@ fixed_full_theta(distrib, theta)
 
 - distrib:
 
-  A fixed-parameter wrapper object.
+  A `FixedContinuousDistrib`, `FixedDiscreteDistrib` or
+  `FixedMultivariateDistrib` object.
 
 - theta:
 
-  A named list or vector of the free parameters.
+  A named list of the FREE parameters, already aligned. A fully-fixed
+  wrapper takes [`list()`](https://rdrr.io/r/base/list.html).
 
 ## Value
 
-A named list covering every parameter of the parent.
-
-## Details
-
-`theta` is aligned against the wrapper first, so the function is safe to
-call both from generic-dispatched methods, whose `theta` is already
-aligned, and from delegating methods such as
-[`mean()`](https://rdrr.io/r/base/mean.html), whose `theta` arrives as
-the caller wrote it. Free values may be vectors – the wrapper is as
-vectorized in `theta` as its parent – while the fixed values are scalars
-by construction.
+A named list of the parent's parameters, complete and in the parent's
+order.
 
 ## See also
 
-[`fixed`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+[`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md)
+for the wrapper and
+[FixedContinuousDistrib](https://statmodels7.github.io/distributions7/reference/FixedContinuousDistrib.md)
+for what the methods do with the result.
+
+## Examples
+
+``` r
+d <- fixed(gaussian1_distrib(), mu = 0)
+str(distributions7:::fixed_full_theta(d, list(sigma = 2)))
+#> List of 2
+#>  $ mu   : num 0
+#>  $ sigma: num 2
+
+# Which is exactly what the parent is then called at.
+all.equal(distrib_pdf(d, c(-1, 1), list(sigma = 2)),
+          distrib_pdf(gaussian1_distrib(), c(-1, 1),
+                      distributions7:::fixed_full_theta(d, list(sigma = 2))))
+#> [1] TRUE
+```

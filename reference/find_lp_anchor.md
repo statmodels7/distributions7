@@ -1,7 +1,7 @@
 # Locate a High-Density Point of a Bare Log-Density
 
 The search behind
-[`find_pdf_anchor`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md),
+[`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md),
 expressed on a plain log-density over an interval.
 
 ## Usage
@@ -33,4 +33,4 @@ its own.
 
 ## See also
 
-[`find_pdf_anchor`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)
+[`find_pdf_anchor()`](https://statmodels7.github.io/distributions7/reference/find_pdf_anchor.md)

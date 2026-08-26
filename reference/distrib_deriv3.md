@@ -4,7 +4,7 @@ Computes the unique third-order partial derivatives of the
 log-likelihood with respect to the distribution's parameters.
 Distributions with a closed-form implementation provide it directly (in
 C++); the others fall back to finite differences of the Hessian (see
-[`numerical_deriv3`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)).
+[`numerical_deriv3()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv3.md)).
 
 ## Usage
 
@@ -48,7 +48,7 @@ distrib_deriv3(
   parameters \\\theta\\ on their natural (constrained) scale, or
   `"link"` for derivatives with respect to the unconstrained linear
   predictors \\\eta = g(\theta)\\ defined by `distrib@link_params`. See
-  [`link_scale_derivatives`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
+  [`link_scale_derivatives()`](https://statmodels7.github.io/distributions7/reference/link_scale_derivatives.md).
 
 - approx:
 
@@ -56,7 +56,7 @@ distrib_deriv3(
   distribution has no closed-form expected third derivatives; ignored
   otherwise. One of `"integrate"` (default), `"bartlett"` (equivalently
   `"opg"`) or `"mc"`. See
-  [`expected_derivative_methods`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
+  [`expected_derivative_methods()`](https://statmodels7.github.io/distributions7/reference/expected_derivative_methods.md).
 
 - nsim:
 
@@ -69,15 +69,15 @@ distrib_deriv3(
 ## Value
 
 A named list of derivative-component vectors, keyed as in
-[`deriv_names`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)`(distrib@params, 3)`
+[`deriv_names(distrib@params, 3)`](https://statmodels7.github.io/distributions7/reference/deriv_names.md)
 (e.g. `"mu_mu_sigma"`).
 
 ## See also
 
-[`distrib_gradient`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
-[`distrib_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
-[`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
-[`distrib_deriv4`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.md),
+[`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md),
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.md)
 
 ## Examples
 

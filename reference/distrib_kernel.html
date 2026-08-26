@@ -11,7 +11,7 @@ depend on the data already resolved."><meta property="og:image" content="https:/
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,19 +89,19 @@ The Jacobian of the parametrization is diagonal, so with
   \qquad
   \frac{\partial^2 \ell}{\partial \eta_p^2}
     = \ell_{pp}\,h'(\eta_p)^2 + \ell_p\,h''(\eta_p),$$</p>
-<p>which is what <code><a href="to_link_scale.html">to_link_scale</a></code> computes for those two
+<p>which is what <code><a href="to_link_scale.html">to_link_scale()</a></code> computes for those two
 components and nothing else.</p>
 <p>The bargain is that the caller takes on what the generic was doing.
 <code>theta</code> must already be a list in the family's own order, its values
 unnamed and of a length the family accepts against <code>y</code>; nothing is
 checked. The entry for <code>param</code> is replaced, so its value on the way
 in is immaterial. The inverse link is clamped strictly inside its bounds
-exactly as <code><a href="https://statmodels7.github.io/linkfunctions7/reference/linkinv.html" class="external-link">linkinv</a></code> does, because that is a
+exactly as <code><a href="https://statmodels7.github.io/linkfunctions7/reference/linkinv.html" class="external-link">linkfunctions7::linkinv()</a></code> does, because that is a
 correctness property and not an optimization.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="to_link_scale.html">to_link_scale</a></code>, <code><a href="link_scale_derivatives.html">link_scale_derivatives</a></code></p></div>
+    <div class="dont-index"><p><code><a href="to_link_scale.html">to_link_scale()</a></code>, <code><a href="link_scale_derivatives.html">link_scale_derivatives()</a></code></p></div>
     </div>
 
     <div class="section level2">

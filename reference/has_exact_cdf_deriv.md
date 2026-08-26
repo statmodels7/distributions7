@@ -1,8 +1,11 @@
 # Can the Parent Supply Exact CDF Derivatives?
 
-`TRUE` when the parent has a genuine closed-form cdf derivative of the
-given order, or is a discrete family whose cdf derivatives are an exact
-sum.
+Reports whether the parent has a genuine closed-form derivative of its
+distribution function at the given order, or is a discrete family, whose
+cdf derivatives are an exact finite sum.
+[`trunc_mass_derivs()`](https://statmodels7.github.io/distributions7/reference/trunc_mass_derivs.md)
+takes the cheap route only where this is `TRUE`, and falls back to
+quadrature otherwise.
 
 ## Usage
 
@@ -14,36 +17,70 @@ has_exact_cdf_deriv(parent, order)
 
 - parent:
 
-  The parent distribution.
+  The parent distribution, before wrapping.
 
 - order:
 
-  The cdf derivative order, 1 to 4.
+  The derivative order, an integer from 1 to 4.
 
 ## Value
 
 A single logical.
 
-## Details
+## Why the cheap route is gated
 
-Replacing the quadrature for \\d^B Z\\ with two calls on the parent's
-cdf derivative is roughly an order of magnitude faster, and is taken
-only where it is at least as accurate as what it replaces: when the
-parent has no closed form that route differences its cdf, carrying more
-relative error into the Hessian than the quadrature does.
+Reading \\d^B Z\\ off the parent's cdf derivatives replaces one
+quadrature per component with two calls on the parent: measured on a
+truncated gaussian's Hessian, 1.4 ms against 4.9 ms. Where the parent
+has no closed form, though, that route differences its distribution
+function and carries roughly \\10^{-8}\\ of relative error into the
+Hessian, where the quadrature it replaced carried \\10^{-10}\\.
 
-That is invisible in the Hessian itself but not downstream:
-[`numerical_deriv4`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
+That is invisible in the Hessian itself, and visible downstream:
+[`numerical_deriv4()`](https://statmodels7.github.io/distributions7/reference/numerical_deriv4.md)
 differentiates the analytical Hessian, so a noisier Hessian degrades the
-*reference* the fourth-order check compares against, and the check fails
-on code that is right.
+REFERENCE the fourth-order check compares against, and the check then
+fails on code that is right.
 
-Detecting a genuine method uses the documented S7 trick:
+## How a genuine method is recognized
+
 `attr(m, "signature")[[1]]` is the class the method was registered on,
-so an inherited fallback gives `continuous_distrib`.
+so an inherited fallback answers with a base class.
 [`identical()`](https://rdrr.io/r/base/identical.html) on the method
-object does not answer the question, because S7 wraps it.
+object cannot be used for this, S7 wrapping it. The third- and
+fourth-order defaults sit on `distrib` where the first two sit on
+`continuous_distrib`, so both base classes are excluded or a stencil
+would be read as a closed form.
+
+The question is asked of the OWNING CLASS, so a family that registers a
+method combining closed components with a stencil in one direction
+answers `TRUE`. That is the intended reading: what the gate protects
+against is the generic differencing the cdf itself.
 
 ## See also
 
-[`trunc_mass_derivs`](https://statmodels7.github.io/distributions7/reference/trunc_mass_derivs.md)
+[`trunc_mass_derivs()`](https://statmodels7.github.io/distributions7/reference/trunc_mass_derivs.md),
+its one caller, and
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+for the generics it asks about.
+
+## Examples
+
+``` r
+# A discrete family answers TRUE at every order: its cdf derivatives are an
+# exact sum.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(poisson_distrib(), k), logical(1))
+#> [1] TRUE TRUE TRUE TRUE
+
+# The gaussian writes all four out.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(gaussian1_distrib(), k), logical(1))
+#> [1] TRUE TRUE TRUE TRUE
+
+# The gamma does not, the derivative of an incomplete gamma in its shape
+# having no elementary form, so truncation falls back to quadrature there.
+vapply(1:4, function(k)
+  distributions7:::has_exact_cdf_deriv(gamma2_distrib(), k), logical(1))
+#> [1] FALSE FALSE FALSE FALSE
+```

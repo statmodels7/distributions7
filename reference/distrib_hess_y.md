@@ -36,8 +36,8 @@ A numeric vector of the same length as `y`.
 
 ## See also
 
-[`distrib_grad_y`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
-[`distrib_cross_y`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+[`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.md),
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
 
 ## Examples
 

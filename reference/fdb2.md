@@ -24,5 +24,15 @@ fdb2(h, u)
 
 ## Value
 
-A named list of the fourteen partials of the composition, keyed like the
-input.
+A named list of the fourteen partials of the composition, keyed exactly
+as `u` is: `x`, `z`, `xx`, `xz`, `zz`, `xxx`, `xxz`, `xzz`, `zzz`,
+`xxxx`, `xxxz`, `xxzz`, `xzzz`, `zzzz`.
+
+## See also
+
+[`fdb1()`](https://statmodels7.github.io/distributions7/reference/fdb1.md)
+for a univariate inner function;
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md),
+which consumes these through `map_derivs`;
+[`chain_assemble()`](https://statmodels7.github.io/distributions7/reference/chain_assemble.md)
+for the general partition sum this writes out.

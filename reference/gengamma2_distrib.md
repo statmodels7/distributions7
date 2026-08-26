@@ -34,7 +34,7 @@ A reparametrized distribution object.
 ## Details
 
 The Stacy parametrization of
-[`gengamma1_distrib`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
+[`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md)
 carries a scale, a shape and a power, and exposes no mean at all, which
 is awkward for a family a regression would put a linear predictor on.
 Since \\\mathbb{E}\[Y\] = a\\\Gamma((d+1)/p)/\Gamma(d/p)\\, the map is
@@ -50,8 +50,8 @@ a = \mu\\\frac{\Gamma(d/p)}{\Gamma((d+1)/p)}\$\$ on \\y \in (0,
 
 ## See also
 
-[`gengamma1_distrib`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),
-[`reparametrize`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
+[`gengamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gengamma1_distrib.md),
+[`reparametrize()`](https://statmodels7.github.io/distributions7/reference/reparametrize.md)
 
 ## Examples
 

@@ -29,9 +29,9 @@ The test uses the documented S7 trick. S7 records the class a method was
 registered on in the method's `signature` attribute, so an inherited
 fallback is recognized by that class being `continuous_distrib` itself.
 Note that [`identical()`](https://rdrr.io/r/base/identical.html) does
-not work for this – S7 wraps the method object, so comparing against the
+not work for this. S7 wraps the method object, so comparing against the
 fallback fails even when it is the fallback.
 
 ## See also
 
-[`rng_grou`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)
+[`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)

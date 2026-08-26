@@ -1,7 +1,18 @@
-# S7 Class for the NB1 Negative Binomial
+# Negative Binomial Distribution Class, NB1
 
-A subclass of `discrete_distrib` representing the negative binomial
-whose variance is **linear** in the mean.
+The S7 class of the negative binomial family on the non-negative
+integers whose variance is **linear** in the mean: with a mean \\\mu \>
+0\\ and a dispersion \\\theta \> 0\\, \\\operatorname{Var}(Y) =
+\mu(1+\theta)\\, so the variance-to-mean ratio is \\1+\theta\\ at every
+mean. It inherits from `discrete_distrib`, so it answers every generic
+of the `distrib` contract; the seven methods listed below are registered
+on it in this file and everything else comes from the parent.
+
+Build one with
+[`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md),
+which supplies the two link functions and fills the properties in. This
+page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,15 +81,23 @@ NegBin1Distrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `NegBin1Distrib`.
+An S7 object of class `NegBin1Distrib`, inheriting from
+`discrete_distrib` and from `distrib`. Its properties are the parent's:
+`distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+they hold `"negbin1"`, `"univariate"`, `c(0, Inf)`, `c("mu", "theta")`,
+the interpretations `c(mu = "mean", theta = "dispersion")`, `2`, the
+domain \\(0, \infty)\\ for both parameters, and the two links.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class in this file:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.NegBin1Distrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.NegBin1Distrib.md),
 [`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md),
@@ -87,10 +106,49 @@ Methods implemented for this class:
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.NegBin1Distrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.NegBin1Distrib.md)
 
-Everything else is inherited from
-[`discrete_distrib`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
+The third and fourth orders,
+[`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.NegBin1Distrib.md)
+and
+[`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.NegBin1Distrib.md),
+are registered elsewhere in the package, on top of
+[`negbin1_components()`](https://statmodels7.github.io/distributions7/reference/negbin1_components.md).
+A discrete family has no derivatives in the response. Everything else is
+inherited from
+[`discrete_distrib()`](https://statmodels7.github.io/distributions7/reference/discrete_distrib.md).
 
 ## See also
 
-[`negbin1_distrib`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md),
-[`negbin2_distrib`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+[`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
+to build one;
+[`negbin2_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin2_distrib.md)
+for the quadratic-variance family, which is a different family and not a
+reparametrization of this one;
+[`poisson_distrib()`](https://statmodels7.github.io/distributions7/reference/poisson_distrib.md)
+for the limit as \\\theta\\ goes to zero;
+[`distrib_pdf.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.NegBin1Distrib.md)
+and
+[`distrib_gradient.NegBin1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.NegBin1Distrib.md)
+for the closed forms this class supplies.
+
+## Examples
+
+``` r
+d <- negbin1_distrib()
+S7::S7_inherits(d, discrete_distrib)
+#> [1] TRUE
+
+# The properties a consumer reads to drive the family without knowing it.
+d@params
+#> [1] "mu"    "theta"
+d@params_interpretation
+#>           mu        theta 
+#>       "mean" "dispersion" 
+d@bounds
+#> [1]   0 Inf
+
+# The variance-to-mean ratio is 1 + theta at every mean, which is what
+# separates this family from the quadratic one.
+vapply(c(1, 10, 100),
+       function(m) variance(d, list(mu = m, theta = 4)) / m, numeric(1))
+#> [1] 5 5 5
+```

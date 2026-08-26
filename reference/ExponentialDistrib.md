@@ -1,7 +1,23 @@
-# S7 Class for the Exponential Distribution
+# Exponential Distribution Class
 
-A subclass of `continuous_distrib` representing the exponential
-distribution in its mean parametrization.
+The S7 class of the exponential family parametrized by its **mean**
+\\\mu \> 0\\, with density \\f(y) = \mu^{-1}e^{-y/\mu}\\ on \\\[0,
+\infty)\\. It inherits from `continuous_distrib`, so it answers every
+generic of the `distrib` contract; the eleven methods listed below are
+registered on it directly.
+
+This is the only single-parameter continuous family in the package, so
+every derivative array it returns has one component per order and its
+information is a number.
+
+The parametrization is by the mean, not by the rate: R's own `dexp`
+takes `rate`, and the methods pass `rate = 1/mu`. The mean is the scale
+of the distribution, so \\\mu\\ is also its standard deviation.
+
+Build one with
+[`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md).
+This page documents the raw S7 constructor, which takes the parent's
+properties and validates none of the relationships between them.
 
 ## Usage
 
@@ -70,30 +86,68 @@ ExponentialDistrib(
   distribution): the observed Hessian is then degenerate and the
   expected information must be obtained from the score variance rather
   than from \\-\mathbb{E}\[H\]\\ (see
-  [`distrib_expected_hessian`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
+  [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.md)).
 
 ## Value
 
-An object of class `ExponentialDistrib`.
+An S7 object of class `ExponentialDistrib`, inheriting from
+`continuous_distrib` and from `distrib`. Its properties are the
+parent's: `distrib_name`, `dimension`, `bounds`, `params`,
+`params_interpretation`, `n_params`, `params_bounds`, `link_params` and
+`params_smooth`. For an object built by
+[`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+they hold `"exponential"`, `"univariate"`, `c(0, Inf)`, `"mu"`,
+`c(mu = "mean")`, `1`, the domain \\(0, \infty)\\, and the one link.
 
 ## Methods
 
-Methods implemented for this class:
+Registered on this class:
 [`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.ExponentialDistrib.md),
 [`distrib_deriv3()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.ExponentialDistrib.md),
 [`distrib_deriv4()`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.ExponentialDistrib.md),
 [`distrib_expected_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_expected_hessian.ExponentialDistrib.md),
-[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ExponentialDistrib.md),
 [`distrib_grad_y()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_y.ExponentialDistrib.md),
-[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md),
+[`distrib_gradient()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.ExponentialDistrib.md),
 [`distrib_hess_y()`](https://statmodels7.github.io/distributions7/reference/distrib_hess_y.ExponentialDistrib.md),
+[`distrib_hessian()`](https://statmodels7.github.io/distributions7/reference/distrib_hessian.ExponentialDistrib.md),
 [`distrib_pdf()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.ExponentialDistrib.md),
 [`distrib_quantile()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.ExponentialDistrib.md),
 [`distrib_rng()`](https://statmodels7.github.io/distributions7/reference/distrib_rng.ExponentialDistrib.md)
 
 Everything else is inherited from
-[`continuous_distrib`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
+[`continuous_distrib()`](https://statmodels7.github.io/distributions7/reference/continuous_distrib.md).
 
 ## See also
 
-[`exponential_distrib`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+[`exponential_distrib()`](https://statmodels7.github.io/distributions7/reference/exponential_distrib.md)
+to build one;
+[`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
+and
+[`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md),
+both of which contain this family at a unit shape;
+[`geometric_distrib()`](https://statmodels7.github.io/distributions7/reference/geometric_distrib.md)
+for its discrete analogue.
+
+## Examples
+
+``` r
+d <- exponential_distrib()
+S7::S7_inherits(d, continuous_distrib)
+#> [1] TRUE
+
+# One parameter, the mean, on the positive half line.
+d@params
+#> [1] "mu"
+d@n_params
+#> [1] 1
+d@bounds
+#> [1]   0 Inf
+
+# The mean is also the standard deviation, and the shape is fixed: the
+# skewness is 2 and the excess kurtosis 6 at every mu.
+th <- list(mu = 2)
+c(mean = mean(d, th), sd = std_dev(d, th),
+  skew = skewness(d, th), kurt = kurtosis(d, th))
+#> mean   sd skew kurt 
+#>    2    2    2    6 
+```

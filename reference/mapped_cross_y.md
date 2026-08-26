@@ -38,5 +38,5 @@ A named list with one numeric vector per new parameter.
 
 ## See also
 
-[`distrib_cross_y`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
-[`reparam_tables`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md),
+[`reparam_tables()`](https://statmodels7.github.io/distributions7/reference/reparam_tables.md)

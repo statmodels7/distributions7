@@ -30,4 +30,14 @@ identity and reduces to \\\sigma^2 w/(\mu y)\\ with \\w =
 
 ## Value
 
-A named list with one numeric vector per parameter.
+A named list with components `mu` and `sigma`, each a numeric vector of
+length `length(y)`.
+
+## See also
+
+[`distrib_cross_y.ExponentialDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.ExponentialDistrib.md),
+the case \\\sigma = 1\\;
+[`weibull1_distrib()`](https://statmodels7.github.io/distributions7/reference/weibull1_distrib.md)
+for the family;
+[`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)
+for the generic.

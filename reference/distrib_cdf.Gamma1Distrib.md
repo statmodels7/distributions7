@@ -1,37 +1,88 @@
-# Gamma Distribution Function in Mean and Dispersion
+# Gamma Cumulative Distribution Function in Mean and Dispersion
 
-The gamma distribution function at the implied shape and rate.
+Computes the gamma distribution function, the regularized incomplete
+gamma function \$\$F(q; \mu, \phi) = \dfrac{1}{\Gamma(a)}\int_0^{bq}
+t^{a-1}e^{-t}\\dt, \qquad a = \dfrac{1}{\phi}, \quad b =
+\dfrac{1}{\phi\mu},\$\$ by calling
+[`stats::pgamma()`](https://rdrr.io/r/stats/GammaDist.html) at that
+shape and rate. Both tails are available exactly: `lower.tail = FALSE`
+evaluates \\1 - F\\ without forming the difference, and `log.p = TRUE`
+returns a logarithm that stays finite where the probability itself
+underflows to zero.
 
 ## Arguments
 
 - distrib:
 
-  A `Gamma1Distrib` object.
+  A `Gamma1Distrib` object, from
+  [`gamma1_distrib()`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md).
 
 - q:
 
-  A numeric vector of quantiles.
+  A numeric vector of quantiles. A value at or below zero gives a
+  lower-tail probability of 0.
 
 - theta:
 
-  A list with `mu` and `phi`.
+  A named list with components `mu` and `phi`, each a numeric vector of
+  length 1 or of the length of `q`. A component of length 1 is recycled.
+  Both must be strictly positive.
 
 - lower.tail:
 
-  Logical; if `TRUE`, probabilities are \\P(Y \le q)\\.
+  Logical of length 1. When `TRUE`, the default, probabilities are \\P(Y
+  \le q)\\; when `FALSE` they are \\P(Y \> q)\\.
 
 - log.p:
 
-  Logical; if `TRUE`, returns log-probabilities.
+  Logical of length 1. When `TRUE` the logarithm of the probability is
+  returned. Defaults to `FALSE`.
 
 - ...:
 
-  Unused.
+  Unused, and accepted so that the signature matches the generic's.
 
 ## Value
 
-A numeric vector.
+A numeric vector of probabilities in \\\[0, 1\]\\, of length
+`max(length(q), length(mu), length(phi))`. With `log.p = TRUE` the
+values are logarithms and are non-positive.
 
 ## See also
 
-[`gamma1_distrib`](https://statmodels7.github.io/distributions7/reference/gamma1_distrib.md)
+[`distrib_quantile.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_quantile.Gamma1Distrib.md)
+for the inverse,
+[`distrib_pdf.Gamma1Distrib()`](https://statmodels7.github.io/distributions7/reference/distrib_pdf.Gamma1Distrib.md)
+for the density,
+[`distrib_grad_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_grad_cdf.md)
+for the derivatives of this function in the parameters, which the gamma
+takes by finite difference because the derivative of an incomplete gamma
+in its shape is hypergeometric, and
+[`distrib_cdf()`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.md)
+for the generic.
+
+## Examples
+
+``` r
+d <- gamma1_distrib()
+th <- list(mu = 3, phi = 0.5)
+
+# The method is stats::pgamma at the implied shape and rate.
+all.equal(distrib_cdf(d, c(1, 3, 5), th),
+          pgamma(c(1, 3, 5), shape = 2, rate = 1 / 1.5))
+#> [1] TRUE
+
+# The two tails sum to one.
+distrib_cdf(d, 5, th) + distrib_cdf(d, 5, th, lower.tail = FALSE)
+#> [1] 1
+
+# The gamma is right skewed, so less than half the mass lies below the mean.
+distrib_cdf(d, 3, th)
+#> [1] 0.5939942
+
+# Far in the upper tail the probability underflows and its log does not.
+distrib_cdf(d, 3000, th, lower.tail = FALSE)
+#> [1] 0
+distrib_cdf(d, 3000, th, lower.tail = FALSE, log.p = TRUE)
+#> [1] -1992.399
+```

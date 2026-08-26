@@ -40,5 +40,5 @@ the bracket measured in \\y\\.
 
 ## See also
 
-[`find_lp_anchor`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md),
-[`rng_grou`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)
+[`find_lp_anchor()`](https://statmodels7.github.io/distributions7/reference/find_lp_anchor.md),
+[`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md)

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.38.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,14 +83,14 @@
 per observation: the expectation depends on \(\theta\) alone, so observations
 sharing a \(\theta\) share an answer, and a model with a scalar \(\theta\)
 costs one simulation however long <code>y</code> is.</p>
-<p>Estimates the same quantity as <code><a href="expected_by_integrate.html">expected_by_integrate</a></code>, with an
+<p>Estimates the same quantity as <code><a href="expected_by_integrate.html">expected_by_integrate()</a></code>, with an
 error falling as \(1/\sqrt{n_{sim}}\), and is stochastic unless the seed is
 fixed. Its cost is the cost of sampling, so it is the wrong choice for a
 distribution whose RNG falls back to inverse transform on a numerical quantile.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="expected_derivative_methods.html">expected_derivative_methods</a></code></p></div>
+    <div class="dont-index"><p><code><a href="expected_derivative_methods.html">expected_derivative_methods()</a></code></p></div>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
