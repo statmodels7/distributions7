@@ -11,7 +11,9 @@
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of zeros.
+A numeric vector of zeros, of the length the recycled
+parameters imply. The family is symmetric about its location at
+every setting of the two rates, so no parameter enters the value.
 }
 \description{
 Returns 0. The density is symmetric about \eqn{\mu} at every parameter

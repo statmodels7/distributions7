@@ -13,9 +13,9 @@ two are read for their lengths and are still validated.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, as long as \code{nu}. The location
-and the scale do not enter the value and do not lengthen it, so a setting
-that varies either alone comes back of length 1.
+A numeric vector of excess kurtoses, of the length the recycled
+parameters imply. Only \code{nu} enters the value, so a setting that varies
+the location or the scale alone repeats one number.
 }
 \description{
 Closed form, replacing the numerical default:

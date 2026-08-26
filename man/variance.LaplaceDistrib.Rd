@@ -12,9 +12,9 @@
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, as long as \code{sigma}. The location does
-not enter the value and does not lengthen it, so a setting that varies \code{mu}
-alone comes back of length 1.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$sigma))}. The location does not
+enter the value, so a setting that varies \code{mu} alone repeats one number.
 }
 \description{
 Closed form, replacing the numerical default:

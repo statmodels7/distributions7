@@ -948,9 +948,9 @@ S7::method(mean, PseudoHuberDistrib) <- function(x, theta, ...) {
 #'   length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as the longest of `sigma`
-#'   and `nu`. The location does not enter the value and does not lengthen it,
-#'   so a setting that varies `mu` alone comes back of length 1.
+#' @return A numeric vector of variances, of the length the recycled
+#'   parameters imply. The scale and `nu` enter the value, so a setting that
+#'   varies `mu` alone repeats one number.
 #'
 #' @seealso [kurtosis.PseudoHuberDistrib()], which is a ratio of the same
 #'   Bessel functions; [mean.PseudoHuberDistrib()]; [pseudohuber_distrib()].
@@ -973,7 +973,7 @@ S7::method(variance, PseudoHuberDistrib) <- function(x, theta, ...) {
   sq_nu <- sqrt(theta[[3]])
   # Scaled Bessel functions: the exponential factors cancel in the ratio
   ratio <- besselK(sq_nu, 2, expon.scaled = TRUE) / besselK(sq_nu, 1, expon.scaled = TRUE)
-  theta[[2]]^2 * sq_nu * ratio
+  theta[[2]]^2 * sq_nu * ratio + moment_const(theta, 3L, 0)
 }
 
 #' @title Skewness of the Pseudo-Huber Distribution
@@ -1038,9 +1038,9 @@ S7::method(skewness, PseudoHuberDistrib) <- function(x, theta, ...) {
 #'   two are read for their lengths and are still validated.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, as long as `nu`. The location
-#'   and the scale do not enter the value and do not lengthen it, so a setting
-#'   that varies either alone comes back of length 1.
+#' @return A numeric vector of excess kurtoses, of the length the recycled
+#'   parameters imply. Only `nu` enters the value, so a setting that varies
+#'   the location or the scale alone repeats one number.
 #'
 #' @seealso [variance.PseudoHuberDistrib()] for the other Bessel ratio,
 #'   [kurtosis.LaplaceDistrib()] and [kurtosis.Gaussian1Distrib()] for the two
@@ -1062,7 +1062,7 @@ S7::method(kurtosis, PseudoHuberDistrib) <- function(x, theta, ...) {
   k1 <- besselK(sq_nu, 1, expon.scaled = TRUE)
   k2 <- besselK(sq_nu, 2, expon.scaled = TRUE)
   k3 <- besselK(sq_nu, 3, expon.scaled = TRUE)
-  3 * (k3 * k1) / (k2^2) - 3
+  3 * (k3 * k1) / (k2^2) - 3 + moment_const(theta, 3L, 0)
 }
 
 #' @title Mean of the Laplace Distribution
@@ -1113,9 +1113,9 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 #'   (the scale, positive), each a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as `sigma`. The location does
-#'   not enter the value and does not lengthen it, so a setting that varies `mu`
-#'   alone comes back of length 1.
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$sigma))`. The location does not
+#'   enter the value, so a setting that varies `mu` alone repeats one number.
 #'
 #' @seealso [mean.LaplaceDistrib()], [kurtosis.LaplaceDistrib()],
 #'   [variance.Laplace2Distrib()] for the rate parametrization,
@@ -1133,7 +1133,7 @@ S7::method(mean, LaplaceDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, LaplaceDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  2 * theta[[2]]^2
+  2 * theta[[2]]^2 + moment_const(theta, 2L, 0)
 }
 
 #' @title Skewness of the Laplace Distribution
@@ -1250,9 +1250,9 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #'   variance diverges as the rate approaches zero.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as `lambda`. The location does
-#'   not enter the value and does not lengthen it, so a setting that varies `mu`
-#'   alone comes back of length 1.
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$lambda))`. The location does not
+#'   enter the value, so a setting that varies `mu` alone repeats one number.
 #'
 #' @seealso [variance.LaplaceDistrib()], the same quantity in the scale
 #'   parametrization; [mean.Laplace2Distrib()]; [laplace2_distrib()].
@@ -1270,7 +1270,7 @@ S7::method(mean, Laplace2Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, Laplace2Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  2 / theta[[2]]^2
+  2 / theta[[2]]^2 + moment_const(theta, 2L, 0)
 }
 
 #' @title Skewness of the Laplace Distribution in Location and Rate
@@ -1488,9 +1488,9 @@ S7::method(variance, Weibull1Distrib) <- function(x, theta, ...) {
 #'   The third moment requires a shape above \eqn{1/3}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, as long as `sigma`. The scale does not enter the
-#'   value and does not lengthen it, so a setting that varies `mu` alone comes
-#'   back of length 1.
+#' @return A numeric vector, of length
+#'   `max(length(theta$mu), length(theta$sigma))`. Only the shape enters the
+#'   value, so a setting that varies the scale alone repeats one number.
 #'
 #' @seealso [kurtosis.Weibull1Distrib()], also free of the scale;
 #'   [variance.Weibull1Distrib()], which is not;
@@ -1513,7 +1513,8 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   g <- weibull_gamma_factors(theta[[2]], 3L)
   v <- g$g2 - g$g1^2
-  (g$g3 - 3 * g$g1 * g$g2 + 2 * g$g1^3) / v^1.5
+  (g$g3 - 3 * g$g1 * g$g2 + 2 * g$g1^3) / v^1.5 +
+    moment_const(theta, 2L, 0)
 }
 
 #' @title Excess Kurtosis of the Weibull Distribution
@@ -1537,9 +1538,9 @@ S7::method(skewness, Weibull1Distrib) <- function(x, theta, ...) {
 #'   The fourth moment requires a shape above \eqn{1/4}.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, as long as `sigma`. The scale
-#'   does not enter the value and does not lengthen it, so a setting that varies
-#'   `mu` alone comes back of length 1.
+#' @return A numeric vector of excess kurtoses, of length
+#'   `max(length(theta$mu), length(theta$sigma))`. Only the shape enters the
+#'   value, so a setting that varies the scale alone repeats one number.
 #'
 #' @seealso [skewness.Weibull1Distrib()], [variance.Weibull1Distrib()],
 #'   [weibull_gamma_factors()], [weibull1_distrib()].
@@ -1558,7 +1559,8 @@ S7::method(kurtosis, Weibull1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   g <- weibull_gamma_factors(theta[[2]], 4L)
   v <- g$g2 - g$g1^2
-  (g$g4 - 4 * g$g1 * g$g3 + 6 * g$g1^2 * g$g2 - 3 * g$g1^4) / v^2 - 3
+  (g$g4 - 4 * g$g1 * g$g3 + 6 * g$g1^2 * g$g2 - 3 * g$g1^4) / v^2 - 3 +
+    moment_const(theta, 2L, 0)
 }
 
 
@@ -1621,9 +1623,9 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #'   (the scale, positive), each a numeric vector of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as `sigma`. The location does
-#'   not enter the value and does not lengthen it, so a setting that varies `mu`
-#'   alone comes back of length 1.
+#' @return A numeric vector of variances, of length
+#'   `max(length(theta$mu), length(theta$sigma))`. The location does not
+#'   enter the value, so a setting that varies `mu` alone repeats one number.
 #'
 #' @seealso [mean.GumbelDistrib()], [kurtosis.GumbelDistrib()],
 #'   [gumbel_distrib()].
@@ -1640,7 +1642,7 @@ S7::method(mean, GumbelDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, GumbelDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  pi^2 * theta[[2]]^2 / 6
+  pi^2 * theta[[2]]^2 / 6 + moment_const(theta, 2L, 0)
 }
 
 #' @title Skewness of the Gumbel Distribution
@@ -1829,9 +1831,9 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'   of length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as the longer of `sigma` and
-#'   `alpha`. The location does not enter the value and does not lengthen it, so
-#'   a setting that varies `mu` alone comes back of length 1.
+#' @return A numeric vector of variances, of the length the recycled
+#'   parameters imply. The scale and `alpha` enter the value, so a setting
+#'   that varies `mu` alone repeats one number.
 #'
 #' @seealso [mean.SkewNormal1Distrib()], [kurtosis.SkewNormal1Distrib()],
 #'   [skewnormal_delta()], [skewnormal1_distrib()].
@@ -1846,7 +1848,8 @@ S7::method(mean, SkewNormal1Distrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  theta[[2]]^2 * (1 - skewnormal_delta(theta[[3]])$bd^2)
+  theta[[2]]^2 * (1 - skewnormal_delta(theta[[3]])$bd^2) +
+    moment_const(theta, 3L, 0)
 }
 
 #' @title Skewness of the Skew Normal Distribution
@@ -1873,10 +1876,9 @@ S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'   enters the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, as long as `alpha`, always inside
-#'   \eqn{(-0.9953, 0.9953)}. Neither the location nor the scale enters the
-#'   value or lengthens it, so a setting that varies either alone comes back of
-#'   length 1.
+#' @return A numeric vector, of the length the recycled parameters imply,
+#'   always inside \eqn{(-0.9953, 0.9953)}. Only `alpha` enters the value, so
+#'   a setting that varies the location or the scale alone repeats one number.
 #'
 #' @seealso [kurtosis.SkewNormal1Distrib()], bounded for the same reason;
 #'   [skewness.SkewTDistrib()], which is not bounded;
@@ -1895,7 +1897,7 @@ S7::method(variance, SkewNormal1Distrib) <- function(x, theta, ...) {
 S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   bd <- skewnormal_delta(theta[[3]])$bd
-  ((4 - pi) / 2) * bd^3 / (1 - bd^2)^1.5
+  ((4 - pi) / 2) * bd^3 / (1 - bd^2)^1.5 + moment_const(theta, 3L, 0)
 }
 
 #' @title Excess Kurtosis of the Skew Normal Distribution
@@ -1921,9 +1923,10 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 #'   enters the value.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, as long as `alpha`, always in
-#'   \eqn{[0, 0.8692)}. Neither the location nor the scale enters the value or
-#'   lengthens it, so a setting that varies either alone comes back of length 1.
+#' @return A numeric vector of excess kurtoses, of the length the recycled
+#'   parameters imply, always in \eqn{[0, 0.8692)}. Only `alpha` enters the
+#'   value, so a setting that varies the location or the scale alone repeats
+#'   one number.
 #'
 #' @seealso [skewness.SkewNormal1Distrib()], bounded for the same reason;
 #'   [kurtosis.SkewTDistrib()], which is not bounded;
@@ -1942,7 +1945,7 @@ S7::method(skewness, SkewNormal1Distrib) <- function(x, theta, ...) {
 S7::method(kurtosis, SkewNormal1Distrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
   bd <- skewnormal_delta(theta[[3]])$bd
-  2 * (pi - 3) * bd^4 / (1 - bd^2)^2
+  2 * (pi - 3) * bd^4 / (1 - bd^2)^2 + moment_const(theta, 3L, 0)
 }
 
 
@@ -2073,9 +2076,9 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #'   Settings with \eqn{\nu \le 2} give `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, as long as the longest of `sigma`,
-#'   `alpha` and `nu`, `NaN` wherever \eqn{\nu \le 2}. The location does not
-#'   enter the value and does not lengthen it.
+#' @return A numeric vector of variances, of the length the recycled
+#'   parameters imply, `NaN` wherever \eqn{\nu \le 2}. The scale, `alpha` and
+#'   `nu` enter the value; the location does not.
 #'
 #' @references
 #' Azzalini, A. and Capitanio, A. (2003). Distributions generated by
@@ -2099,7 +2102,8 @@ S7::method(mean, SkewTDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
   theta <- align_theta(x, theta)
-  theta[[2]]^2 * skewt_moment_pieces(theta[[3]], theta[[4]])$vz
+  theta[[2]]^2 * skewt_moment_pieces(theta[[3]], theta[[4]])$vz +
+    moment_const(theta, 4L, 0)
 }
 
 #' @title Skewness of the Skew t Distribution
@@ -2127,9 +2131,8 @@ S7::method(variance, SkewTDistrib) <- function(x, theta, ...) {
 #'   `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector, as long as the longer of `alpha` and `nu`, `NaN`
-#'   wherever \eqn{\nu \le 3}. Neither the location nor the scale enters the
-#'   value or lengthens it.
+#' @return A numeric vector, of the length the recycled parameters imply,
+#'   `NaN` wherever \eqn{\nu \le 3}. Only `alpha` and `nu` enter the value.
 #'
 #' @references
 #' Azzalini, A. and Capitanio, A. (2003). Distributions generated by
@@ -2159,7 +2162,7 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
   p <- skewt_moment_pieces(theta[[3]], nu)
   val <- (p$mz / p$vz^1.5) *
     (nu * (3 - p$delta^2) / (nu - 3) - 3 * nu / (nu - 2) + 2 * p$mz^2)
-  ifelse(nu > 3, val, NaN)
+  ifelse(nu > 3, val, NaN) + moment_const(theta, 4L, 0)
 }
 
 #' @title Excess Kurtosis of the Skew t Distribution
@@ -2186,9 +2189,9 @@ S7::method(skewness, SkewTDistrib) <- function(x, theta, ...) {
 #'   `NaN`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of excess kurtoses, as long as the longer of
-#'   `alpha` and `nu`, `NaN` wherever \eqn{\nu \le 4}. Neither the location nor
-#'   the scale enters the value or lengthens it.
+#' @return A numeric vector of excess kurtoses, of the length the recycled
+#'   parameters imply, `NaN` wherever \eqn{\nu \le 4}. Only `alpha` and `nu`
+#'   enter the value.
 #'
 #' @references
 #' Azzalini, A. and Capitanio, A. (2003). Distributions generated by
@@ -2219,7 +2222,7 @@ S7::method(kurtosis, SkewTDistrib) <- function(x, theta, ...) {
   val <- (3 * nu^2 / ((nu - 2) * (nu - 4)) -
     4 * p$mz^2 * nu * (3 - p$delta^2) / (nu - 3) +
     6 * p$mz^2 * nu / (nu - 2) - 3 * p$mz^4) / p$vz^2 - 3
-  ifelse(nu > 4, val, NaN)
+  ifelse(nu > 4, val, NaN) + moment_const(theta, 4L, 0)
 }
 
 # ---------------------------------------------------------------------------
@@ -6293,8 +6296,9 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'   `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, the length of `theta$mu`. The dispersion
-#'   does not enter the value and does not lengthen it.
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$mu), length(theta$sigma))`. The value is the mean
+#'   parameter itself, the dispersion entering neither it nor the length.
 #'
 #' @seealso [variance.Pig1Distrib()], which exceeds this;
 #'   [mean.Pig2Distrib()] for the orthogonal parametrization;
@@ -6308,7 +6312,8 @@ S7::method(kurtosis, BetaBinom2Distrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 S7::method(mean, Pig1Distrib) <- function(x, theta, ...) {
-  align_theta(x, theta)[[1]]
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
 }
 
 #' @title Variance of the Poisson-Inverse Gaussian Distribution
@@ -6473,8 +6478,9 @@ S7::method(kurtosis, Pig1Distrib) <- function(x, theta, ...) {
 #'   length 1 or `n`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means, the length of `theta$mu`. The dispersion
-#'   does not enter the value and does not lengthen it.
+#' @return A numeric vector of means, of length
+#'   `max(length(theta$mu), length(theta$alpha))`. The value is the mean
+#'   parameter itself, the dispersion entering neither it nor the length.
 #'
 #' @seealso [variance.Pig2Distrib()], where the dispersion does enter;
 #'   [pig2_sigma()] for the mapping; [mean.Pig1Distrib()];
@@ -6488,7 +6494,8 @@ S7::method(kurtosis, Pig1Distrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 S7::method(mean, Pig2Distrib) <- function(x, theta, ...) {
-  align_theta(x, theta)[[1]]
+  theta <- align_theta(x, theta)
+  moment_const(theta, 2L, 0) + theta[[1]]
 }
 
 #' @title Variance of the Orthogonal Poisson-Inverse Gaussian Distribution

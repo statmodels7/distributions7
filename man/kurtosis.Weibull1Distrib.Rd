@@ -13,9 +13,9 @@ The fourth moment requires a shape above \eqn{1/4}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of excess kurtoses, as long as \code{sigma}. The scale
-does not enter the value and does not lengthen it, so a setting that varies
-\code{mu} alone comes back of length 1.
+A numeric vector of excess kurtoses, of length
+\code{max(length(theta$mu), length(theta$sigma))}. Only the shape enters the
+value, so a setting that varies the scale alone repeats one number.
 }
 \description{
 Closed form:

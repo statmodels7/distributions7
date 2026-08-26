@@ -13,10 +13,9 @@ enters the value.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, as long as \code{alpha}, always inside
-\eqn{(-0.9953, 0.9953)}. Neither the location nor the scale enters the
-value or lengthens it, so a setting that varies either alone comes back of
-length 1.
+A numeric vector, of the length the recycled parameters imply,
+always inside \eqn{(-0.9953, 0.9953)}. Only \code{alpha} enters the value, so
+a setting that varies the location or the scale alone repeats one number.
 }
 \description{
 Closed form:

@@ -13,9 +13,9 @@ of length 1 or \code{n}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, as long as the longer of \code{sigma} and
-\code{alpha}. The location does not enter the value and does not lengthen it, so
-a setting that varies \code{mu} alone comes back of length 1.
+A numeric vector of variances, of the length the recycled
+parameters imply. The scale and \code{alpha} enter the value, so a setting
+that varies \code{mu} alone repeats one number.
 }
 \description{
 Closed form: \eqn{\operatorname{Var}(Y) = \sigma^2(1 - b^2\delta^2)}, with

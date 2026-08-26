@@ -1,3 +1,45 @@
+# distributions7 0.39.0
+
+* Every moment method returns one value per parameter setting. 147 of the 168
+  forced the shape with `moment_const(theta, k, 0)`, which recycles to the
+  length the family's `k` parameters imply; eighteen were written without it
+  and answered with the length of whichever components entered the formula, so
+  a quantity that does not read the location came back of length 1 when only
+  the location varied:
+
+  ```r
+  skewness(weibull1_distrib(), list(mu = c(0.1, 1, 100), sigma = 2))
+  #> 0.6311107          # length 1, where three settings were asked for
+  ```
+
+* Nothing warned. A caller binding moments to the rows of a data frame got one
+  number recycled down the column for a Laplace and the right numbers for a
+  Gaussian, the two differing only in whether the component being varied
+  happens to enter the value.
+
+* The eighteen are the elastic net's `mean`, `variance` and `skewness`;
+  `variance` for the Gumbel, both Laplace charts and the pseudo-Huber;
+  `kurtosis` for the pseudo-Huber; `mean` for both Poisson-inverse-Gaussian
+  charts; `variance`, `skewness` and `kurtosis` for the skew normal in its
+  direct chart and for the skew t; and `skewness` and `kurtosis` for the
+  Weibull in its scale chart. `kurtosis` for the skew normal's centered chart
+  and the Weibull's two in its mean chart follow through their delegations, so
+  eighteen edits close 21 (family, generic) pairs.
+
+* No value moved. `moment_const(theta, k, 0)` is a vector of zeros, so every
+  one of the 160 moments a scalar theta produces is what it was, the largest
+  absolute change over the set being 0.
+
+* Found by an instrument that varies EVERY parameter in turn. A survey that
+  varies the first alone reports eighteen pairs and cannot see the three `mean`
+  methods that read the first parameter but no later one, which is how the
+  figure recorded when the defect was first noticed came to be three short.
+
+* `test-moments-recycling.R` is the regression test, and its sweep cannot be
+  satisfied by repairing one family: it asks the question of every parameter of
+  every univariate family. Beside it are the closed forms transcribed by hand,
+  so a fix that moved a value would fail rather than pass quietly.
+
 # distributions7 0.38.0
 
 * The von Mises distribution function is a series and no longer a quadrature.

@@ -888,7 +888,9 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of means.
+#' @return A numeric vector of means, of the length the recycled
+#'   parameters imply. The value is the location; the two rates do not
+#'   enter it, so a setting that varies one of them repeats one number.
 #'
 #' @seealso [variance.EnetDistrib()] and [skewness.EnetDistrib()] for the
 #'   other two closed-form moments, [kurtosis()] for the fourth, which is not
@@ -907,7 +909,7 @@ S7::method(distrib_cross_y, EnetDistrib) <- function(distrib, y, theta,
 #'
 #' @keywords internal
 S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
-  .enet_parts(theta)$mu
+  .enet_parts(theta)$mu + moment_const(theta, 3L, 0)
 }
 
 #' @title Variance of the Elastic-Net Distribution
@@ -927,7 +929,9 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of variances, strictly positive.
+#' @return A numeric vector of variances, strictly positive, of the
+#'   length the recycled parameters imply. The location does not enter
+#'   the value, so a setting that varies it repeats one number.
 #'
 #' @section Notation:
 #' \eqn{a = \lambda\alpha}, \eqn{c = \lambda(1-\alpha)}, \eqn{x = a/\sqrt c},
@@ -955,7 +959,7 @@ S7::method(mean, EnetDistrib) <- function(x, theta, ...) {
 #' @keywords internal
 S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
   p <- .enet_parts(theta)
-  (1 + p$x * p$g) / p$c
+  (1 + p$x * p$g) / p$c + moment_const(theta, 3L, 0)
 }
 
 #' @title Skewness of the Elastic-Net Distribution
@@ -976,7 +980,9 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #' @param theta A named list with components `mu`, `lambda` and `alpha`.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
-#' @return A numeric vector of zeros.
+#' @return A numeric vector of zeros, of the length the recycled
+#'   parameters imply. The family is symmetric about its location at
+#'   every setting of the two rates, so no parameter enters the value.
 #'
 #' @seealso [mean.EnetDistrib()] and [variance.EnetDistrib()] for the other two
 #'   closed-form moments, and [kurtosis()] for the fourth.
@@ -995,7 +1001,7 @@ S7::method(variance, EnetDistrib) <- function(x, theta, ...) {
 #'
 #' @keywords internal
 S7::method(skewness, EnetDistrib) <- function(x, theta, ...) {
-  0 * .enet_parts(theta)$c
+  moment_const(theta, 3L, 0)
 }
 
 #' @title Elastic-Net Distribution Object

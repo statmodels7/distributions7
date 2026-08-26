@@ -13,8 +13,9 @@ length 1 or \code{n}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means, the length of \code{theta$mu}. The dispersion
-does not enter the value and does not lengthen it.
+A numeric vector of means, of length
+\code{max(length(theta$mu), length(theta$alpha))}. The value is the mean
+parameter itself, the dispersion entering neither it nor the length.
 }
 \description{
 Closed form: \eqn{E[Y] = \mu}. This is the same law as \code{\link[=pig1_distrib]{pig1_distrib()}}

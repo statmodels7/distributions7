@@ -11,7 +11,9 @@
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, strictly positive.
+A numeric vector of variances, strictly positive, of the
+length the recycled parameters imply. The location does not enter
+the value, so a setting that varies it repeats one number.
 }
 \description{
 Returns \eqn{(1 + xG)/c} in closed form, with \eqn{c = \lambda(1-\alpha)},

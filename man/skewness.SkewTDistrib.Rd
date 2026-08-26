@@ -14,9 +14,8 @@ Only \code{alpha} and \code{nu} enter the value; settings with \eqn{\nu \le 3} g
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector, as long as the longer of \code{alpha} and \code{nu}, \code{NaN}
-wherever \eqn{\nu \le 3}. Neither the location nor the scale enters the
-value or lengthens it.
+A numeric vector, of the length the recycled parameters imply,
+\code{NaN} wherever \eqn{\nu \le 3}. Only \code{alpha} and \code{nu} enter the value.
 }
 \description{
 Closed form for \eqn{\nu > 3}, from Azzalini and Capitanio (2003):

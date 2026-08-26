@@ -13,9 +13,9 @@ Settings with \eqn{\nu \le 2} give \code{NaN}.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, as long as the longest of \code{sigma},
-\code{alpha} and \code{nu}, \code{NaN} wherever \eqn{\nu \le 2}. The location does not
-enter the value and does not lengthen it.
+A numeric vector of variances, of the length the recycled
+parameters imply, \code{NaN} wherever \eqn{\nu \le 2}. The scale, \code{alpha} and
+\code{nu} enter the value; the location does not.
 }
 \description{
 Closed form for \eqn{\nu > 2}:

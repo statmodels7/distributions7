@@ -13,9 +13,9 @@ variance diverges as the rate approaches zero.}
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of variances, as long as \code{lambda}. The location does
-not enter the value and does not lengthen it, so a setting that varies \code{mu}
-alone comes back of length 1.
+A numeric vector of variances, of length
+\code{max(length(theta$mu), length(theta$lambda))}. The location does not
+enter the value, so a setting that varies \code{mu} alone repeats one number.
 }
 \description{
 Closed form, replacing the numerical default:

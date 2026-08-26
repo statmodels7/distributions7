@@ -11,7 +11,9 @@
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
-A numeric vector of means.
+A numeric vector of means, of the length the recycled
+parameters imply. The value is the location; the two rates do not
+enter it, so a setting that varies one of them repeats one number.
 }
 \description{
 Returns \eqn{\mu}, the location. The density is symmetric about it, both
