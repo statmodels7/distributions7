@@ -221,7 +221,7 @@
   psi''((nu+1)/2) - psi''(nu/2) = 8/nu^3 + 12/nu^4 - 20/nu^6 + 84/nu^8
   ```
 
-  the two Bernoulli expansions cancelling term by term at \eqn{\nu^{-2}}.
+  the two Bernoulli expansions canceling term by term at \eqn{\nu^{-2}}.
   `t_T3rest()` carries the \eqn{8/\nu^3} inside, as `t_S()` carries its own
   \eqn{2/\nu^2}, because the only consumer pairs it with a term that cancels
   precisely that.
@@ -366,7 +366,7 @@
   That is a degenerate fit, which is precisely when its derivatives should
   not be noise.
 
-  `f1` splits into two cancelling pairs rather than one, the second being
+  `f1` splits into two canceling pairs rather than one, the second being
   `1 + log(z) - z = log1p(w) - w` with `w = z - 1`, which is the `psi_Ew()`
   the negative binomial already carries.  The crossover is 50 for all four,
   measured: the series sits within 5.4e-15, 7.5e-14, 3.7e-13 and 1.2e-12
@@ -659,7 +659,7 @@
 
 * `vonmises1_distrib()` and `vonmises2_distrib()` carry the count down to
   `numericals7::log_bessel_i()`, which is where this family spends its time:
-  profiled at **80.8 per cent** of a fit whose concentration is modelled, the
+  profiled at **80.8 per cent** of a fit whose concentration is modeled, the
   concentration then being a vector rather than one number. Measured end to
   end at n = 8000 with both parameters smoothed, 5.7 s against 2.0, and the
   coefficients and the log-likelihood are identical to the bit.
@@ -815,7 +815,7 @@
 
 * The default method is ONE central difference of the family's own expected
   information, which is a single stencil on an analytic quantity wherever that
-  information is a written-out formula -- the licence the skew t already has
+  information is a written-out formula -- the license the skew t already has
   for its degrees of freedom, and not the nested differencing the package
   forbids. Validated against the gaussian's hand-written components (7.2e-11)
   and against the identity `E[l_abc] + E[l_ab l_c]` computed by quadrature on
@@ -848,7 +848,7 @@
   parameters runs through the cube root of `gamma1`, whose derivative is
   unbounded there: the first derivatives of the log-density survive the limit
   -- they approach a finite value from both sides, the map's factor
-  cancelling -- and the second ones grow like `gamma1^(-2/3)`, which is a
+  canceling -- and the second ones grow like `gamma1^(-2/3)`, which is a
   property of the CENTERED parametrization and not of the family. Until now
   the resulting `NA` reached a comparison several frames further on and the
   message named nothing. Patching the first order alone would have been
@@ -870,7 +870,7 @@
   derivatives all vanish except four, and three of those share one middle
   matrix `A_k Sigma^-1 A_l + A_l Sigma^-1 A_k - A_kl`. `distrib_cross_y()` was
   rewritten to read the same pieces, so its existing checks validate them at
-  first order -- the licence the toolkit uses for an order it cannot check
+  first order -- the license the toolkit uses for an order it cannot check
   directly.
 
 * Verified against ONE difference of the analytic quantity below each, at
@@ -1019,7 +1019,7 @@
 
   Now recovered across five decades of scale, N(5,2) to N(50000,20000), and
   on gamma, lognormal, Student t, Weibull, Poisson and negative binomial
-  responses centred in the hundreds. `statmod()` on the Nile agrees with
+  responses centered in the hundreds. `statmod()` on the Nile agrees with
   `lm` to 4.3e-16.
 
 * `moment_estimates()` gives a family its own method-of-moments estimate,
