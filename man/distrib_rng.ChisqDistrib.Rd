@@ -12,6 +12,8 @@
 length 1 or of length \code{n}. A component of length 1 is recycled, so a
 vector of length \code{n} draws one variate per parameter setting. It must be
 strictly positive and need not be a whole number.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} strictly positive draws.

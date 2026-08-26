@@ -155,6 +155,7 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #'   computed directly and so exact in the upper tail.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(distrib@size))`.
@@ -177,7 +178,7 @@ S7::method(distrib_pdf, BinomialDistrib) <- function(distrib, y, theta, log = FA
 #' # The jump at an integer is exactly the mass there.
 #' c(jump = distrib_cdf(d, 4, th) - distrib_cdf(d, 3, th),
 #'   mass = distrib_pdf(d, 4, th))
-S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pbinom(
     q = q,
     size = distrib@size,
@@ -206,6 +207,7 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of integers between 0 and `size`, of length
 #'   `max(length(p), length(mu), length(distrib@size))`.
@@ -223,7 +225,7 @@ S7::method(distrib_cdf, BinomialDistrib) <- function(distrib, q, theta, lower.ta
 #' # The round trip overshoots, the support being a lattice.
 #' p <- c(0.025, 0.5, 0.975)
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
-S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qbinom(
     p = p,
     size = distrib@size,
@@ -247,6 +249,7 @@ S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, low
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of length `n`. A value of length 1 is recycled. `mu` must
 #'   lie in \eqn{(0, 1)}.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return An integer vector of `n` counts, each between 0 and the
 #'   corresponding `size`.
@@ -273,7 +276,7 @@ S7::method(distrib_quantile, BinomialDistrib) <- function(distrib, p, theta, low
 #' set.seed(5)
 #' g <- binomial_distrib(size = c(5, 10, 20, 50))
 #' rbind(size = c(5, 10, 20, 50), draw = distrib_rng(g, 4, list(mu = 0.3)))
-S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, BinomialDistrib) <- function(distrib, n, theta, ...) {
   stats::rbinom(
     n = n,
     size = distrib@size,

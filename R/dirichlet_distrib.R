@@ -240,6 +240,7 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list of parameters on the parameter scale: the mean's
 #'   free values followed by `phi`, each of length 1.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric matrix with `n` rows and \eqn{p} columns, each row
 #'   strictly positive and summing to one.
@@ -265,7 +266,7 @@ S7::method(distrib_pdf, DirichletDistrib) <- function(distrib, y, theta, log = F
 #' Z <- distrib_rng(d, 3e5, th)
 #' rbind(sample = c(mean(Z[, 1]), var(Z[, 1])),
 #'       theoretical = c(mv_location(d, th)[1], mv_sigma(d, th)[1, 1]))
-S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, DirichletDistrib) <- function(distrib, n, theta, ...) {
   p <- dir_parts(distrib, theta)
   d <- length(p$alpha)
   g <- matrix(stats::rgamma(n * d, rep(p$alpha, each = n)), nrow = n)

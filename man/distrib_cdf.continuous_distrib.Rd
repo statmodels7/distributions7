@@ -20,6 +20,8 @@ complement.}
 probability. The logarithm is taken after the integration, so it does not
 recover a tail that has already underflowed; a family whose far tail
 matters should write its own method.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of cumulative probabilities, the length of the

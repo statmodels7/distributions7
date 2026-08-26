@@ -997,6 +997,7 @@ trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
 #'   \eqn{1 - F_T(q)} is returned.
 #' @param log.p Logical, default `FALSE`. When `TRUE` the probability is
 #'   returned on the log scale.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, of the length `q` and `theta`
 #'   recycle to.
@@ -1028,7 +1029,7 @@ trunc_pdf <- function(distrib, y, theta, log = FALSE, ...) {
 #' # The two tails sum to one, on either scale.
 #' distrib_cdf(tn, 0.3, theta) + distrib_cdf(tn, 0.3, theta, lower.tail = FALSE)
 #' exp(distrib_cdf(tn, 0.3, theta, log.p = TRUE))
-trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   cs <- trunc_constants(distrib, theta)
   res <- (distrib_cdf(distrib@parent_distrib, q, theta) - cs$Fl) / cs$Z
   res <- pmin(pmax(res, 0), 1)
@@ -1058,6 +1059,7 @@ trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
 #'   upper-tail probability.
 #' @param log.p Logical, default `FALSE`. When `TRUE`, `p` is given on the log
 #'   scale.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length `p` and `theta` recycle
 #'   to.
@@ -1091,7 +1093,7 @@ trunc_cdf <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
 #' # A discrete parent needs no separate treatment.
 #' ztp <- truncated(poisson_distrib(), lower = 1)
 #' distrib_quantile(ztp, c(0.1, 0.5, 0.9), list(mu = 2))
-trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
   p <- pmin(pmax(p, 0), 1)
@@ -1123,6 +1125,7 @@ trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) 
 #' @param n The number of draws, a single positive integer.
 #' @param theta A named list of the parent's parameters. A component varying by
 #'   observation must have length `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws, every one inside \eqn{[L, U]}.
 #'
@@ -1154,7 +1157,7 @@ trunc_quantile <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) 
 #' far <- truncated(gaussian1_distrib(), lower = 4, upper = 5)
 #' set.seed(2)
 #' range(distrib_rng(far, 1000, theta))
-trunc_rng <- function(distrib, n, theta) {
+trunc_rng <- function(distrib, n, theta, ...) {
   trunc_quantile(distrib, stats::runif(n), theta)
 }
 
@@ -2094,6 +2097,7 @@ S7::method(distrib_expected_hessian, TruncatedDiscreteDistrib) <- trunc_expected
 #'
 #' @param distrib A `TruncatedContinuousDistrib` object, from [truncated()].
 #' @param theta A named list of the parent's parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `y`, the surviving atom locations, and `p`, their
 #'   probabilities under the truncated law. Both are length zero for a parent
@@ -2121,7 +2125,7 @@ S7::method(distrib_expected_hessian, TruncatedDiscreteDistrib) <- trunc_expected
 #' th <- list(mu = 2, sigma2 = 1, za = 0.3)
 #' distrib_atoms(tz, th)
 #' 0.3 / distributions7:::trunc_constants(tz, th)$Z
-S7::method(distrib_atoms, TruncatedContinuousDistrib) <- function(distrib, theta) {
+S7::method(distrib_atoms, TruncatedContinuousDistrib) <- function(distrib, theta, ...) {
   at <- distrib_atoms(distrib@parent_distrib, theta)
   if (!length(at$y)) return(at)
   keep <- trunc_inside(distrib, at$y)
@@ -2202,6 +2206,7 @@ S7::method(expectation, TruncatedContinuousDistrib) <- function(distrib, f, thet
 #' @param y A numeric vector of observations. A point outside \eqn{[L, U]}
 #'   gives `NaN`.
 #' @param theta A named list of the parent's parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -2224,7 +2229,7 @@ S7::method(expectation, TruncatedContinuousDistrib) <- function(distrib, f, thet
 #'
 #' # Inside the interval it is the parent's own.
 #' distrib_grad_y(gaussian1_distrib(), c(0, 1), theta)
-S7::method(distrib_grad_y, TruncatedContinuousDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, TruncatedContinuousDistrib) <- function(distrib, y, theta, ...) {
   trunc_y_deriv(distrib, y, theta, distrib_grad_y)
 }
 
@@ -2241,6 +2246,7 @@ S7::method(distrib_grad_y, TruncatedContinuousDistrib) <- function(distrib, y, t
 #' @param y A numeric vector of observations. A point outside \eqn{[L, U]}
 #'   gives `NaN`.
 #' @param theta A named list of the parent's parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -2263,7 +2269,7 @@ S7::method(distrib_grad_y, TruncatedContinuousDistrib) <- function(distrib, y, t
 #'
 #' # For a gaussian it is -1 / sigma^2 wherever it exists.
 #' c(truncated = distrib_hess_y(tn, 1, theta), parent = -1 / 1.2^2)
-S7::method(distrib_hess_y, TruncatedContinuousDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, TruncatedContinuousDistrib) <- function(distrib, y, theta, ...) {
   trunc_y_deriv(distrib, y, theta, distrib_hess_y)
 }
 

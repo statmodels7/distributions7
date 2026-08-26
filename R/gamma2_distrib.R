@@ -153,6 +153,7 @@ S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALS
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma2))`. With `log.p = TRUE` the
@@ -181,7 +182,7 @@ S7::method(distrib_pdf, Gamma2Distrib) <- function(distrib, y, theta, log = FALS
 #' # Far in the upper tail the probability underflows and its log does not.
 #' distrib_cdf(d, 3000, th, lower.tail = FALSE)
 #' distrib_cdf(d, 3000, th, lower.tail = FALSE, log.p = TRUE)
-S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pgamma(
     q = q,
     shape = theta[[1]]^2 / theta[[2]],
@@ -214,6 +215,7 @@ S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities, which is how a quantile deep in a tail is
 #'   requested without the probability underflowing. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu), length(sigma2))`.
@@ -235,7 +237,7 @@ S7::method(distrib_cdf, Gamma2Distrib) <- function(distrib, q, theta, lower.tail
 #'
 #' # The median falls below the mean, the gamma being right skewed.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
-S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qgamma(
     p = p,
     shape = theta[[1]]^2 / theta[[2]],
@@ -260,6 +262,7 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -280,7 +283,7 @@ S7::method(distrib_quantile, Gamma2Distrib) <- function(distrib, p, theta, lower
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, sigma2 = 2))
 #' c(mu = mean(z), sigma2 = var(z))
-S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Gamma2Distrib) <- function(distrib, n, theta, ...) {
   stats::rgamma(
     n = n,
     shape = theta[[1]]^2 / theta[[2]],
@@ -679,6 +682,7 @@ S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' @param theta A named list with components `mu` and `sigma2`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma2))`, one value per observation.
@@ -707,7 +711,7 @@ S7::method(distrib_deriv4, Gamma2Distrib) <- function(distrib, y, theta, expecte
 #' eps <- 1e-6
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; s2 <- theta[[2]]
   (mu^2 / s2 - 1) / y - mu / s2
 }
@@ -730,6 +734,7 @@ S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu` and `sigma2`, each a numeric
 #'   vector of length 1 or of the length of `y`. Both must be strictly
 #'   positive; they enter only through the shape.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma2))`, one value per observation.
@@ -753,7 +758,7 @@ S7::method(distrib_grad_y, Gamma2Distrib) <- function(distrib, y, theta) {
 #' vapply(c(2, 9, 20),
 #'        function(v) distrib_hess_y(d, 3, list(mu = 3, sigma2 = v)),
 #'        numeric(1))
-S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, Gamma2Distrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; s2 <- theta[[2]]
   -(mu^2 / s2 - 1) / y^2
 }

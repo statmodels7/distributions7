@@ -380,6 +380,7 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 #'   far into the upper tail.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
 #'
@@ -410,7 +411,7 @@ S7::method(distrib_pdf, ZeroInflatedDistrib) <- function(distrib, y, theta, log 
 #' # Both tails and the logarithm.
 #' distrib_cdf(d, 2, theta, lower.tail = FALSE)
 #' distrib_cdf(d, 2, theta, log.p = TRUE)
-S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   zi <- pars$mix
 
@@ -445,6 +446,7 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the recycled length of `p` and
 #'   `theta`.
@@ -474,7 +476,7 @@ S7::method(distrib_cdf, ZeroInflatedDistrib) <- function(distrib, q, theta, lowe
 #' p <- c(0.1, 0.3, 0.9)
 #' rbind(asked = p,
 #'       reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))
-S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
 
@@ -517,6 +519,7 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list with the parent's parameters followed by `zi`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `n`.
 #'
@@ -543,7 +546,7 @@ S7::method(distrib_quantile, ZeroInflatedDistrib) <- function(distrib, p, theta,
 #' big <- distrib_rng(d, 20000, theta)
 #' c(sampled = mean(big == 0), exact = distrib_pdf(d, 0, theta),
 #'   parent = dpois(0, 3))
-S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, ZeroInflatedDistrib) <- function(distrib, n, theta, ...) {
   pars <- split_mix_theta(distrib, theta)
   y <- distrib_rng(distrib@parent_distrib, n, pars$orig)
   y[stats::runif(n) < pars$mix] <- 0

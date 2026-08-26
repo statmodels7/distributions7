@@ -9,6 +9,8 @@
 \item{n}{The number of draws, a single non-negative whole number.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{zi}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of length \code{n}.

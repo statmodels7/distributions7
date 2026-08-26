@@ -253,6 +253,7 @@ S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -274,7 +275,7 @@ S7::method(distrib_quantile, InvGauss2Distrib) <- function(distrib, p, theta,
 #' set.seed(3)
 #' z <- distrib_rng(d, 2e4, list(mu = 2, lambda = 3))
 #' c(mu = mean(z), lambda = 1 / (mean(1 / z) - 1 / mean(z)))
-S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, InvGauss2Distrib) <- function(distrib, n, theta, ...) {
   statmod::rinvgauss(n, mean = theta[[1]], dispersion = 1 / theta[[2]])
 }
 

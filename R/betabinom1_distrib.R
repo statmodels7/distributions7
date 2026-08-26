@@ -164,6 +164,7 @@ S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = 
 #'   formed as \eqn{1 - F}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `length(q)`. With `log.p = TRUE` the values are logarithms and are
@@ -190,7 +191,7 @@ S7::method(distrib_pdf, BetaBinom1Distrib) <- function(distrib, y, theta, log = 
 #' distrib_cdf(d, 4, th) + distrib_cdf(d, 4, th, lower.tail = FALSE)
 S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
-                                                      log.p = FALSE) {
+                                                      log.p = FALSE, ...) {
   n <- distrib@size
   supp <- 0:n
   mass <- exp(betabinom_logpmf_cpp(supp, theta[[1]], theta[[2]], n))
@@ -224,6 +225,7 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is read as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of counts in \eqn{\{0, \dots, n\}}, of length
 #'   `length(p)`.
@@ -247,7 +249,7 @@ S7::method(distrib_cdf, BetaBinom1Distrib) <- function(distrib, q, theta,
 #'       F_at_Q = distrib_cdf(d, distrib_quantile(d, c(0.2, 0.45, 0.8), th), th))
 S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
                                                             lower.tail = TRUE,
-                                                            log.p = FALSE) {
+                                                            log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
   n <- distrib@size
@@ -277,6 +279,7 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `mu` must lie in \eqn{(0, 1)} and `sigma` be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` counts in \eqn{\{0, \dots, size\}}.
 #'
@@ -297,7 +300,7 @@ S7::method(distrib_quantile, BetaBinom1Distrib) <- function(distrib, p, theta,
 #' # The counts are bounded by the trial count, which is the object's size and
 #' # not the argument n.
 #' range(z)
-S7::method(distrib_rng, BetaBinom1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, BetaBinom1Distrib) <- function(distrib, n, theta, ...) {
   a <- theta[[1]] / theta[[2]]
   b <- (1 - theta[[1]]) / theta[[2]]
   stats::rbinom(n, size = distrib@size, prob = stats::rbeta(n, a, b))

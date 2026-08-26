@@ -10,6 +10,8 @@
 \item{y}{A numeric vector of observations. Exactly zero gives \code{NaN}.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector as long as \code{y}.

@@ -153,6 +153,7 @@ S7::method(distrib_pdf, NegBin2Distrib) <- function(distrib, y, theta, log = FAL
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(theta))`. With `log.p = TRUE` the
@@ -182,7 +183,7 @@ S7::method(distrib_pdf, NegBin2Distrib) <- function(distrib, y, theta, log = FAL
 #' # Far in the upper tail the probability underflows and its log does not.
 #' distrib_cdf(d, 2000, th, lower.tail = FALSE)
 #' distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
-S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pnbinom(
     q = q,
     mu = theta[[1]],
@@ -215,6 +216,7 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of non-negative integers, of length
 #'   `max(length(p), length(mu), length(theta))`.
@@ -238,7 +240,7 @@ S7::method(distrib_cdf, NegBin2Distrib) <- function(distrib, q, theta, lower.tai
 #'
 #' # The generalized inverse is a step function of p.
 #' distrib_quantile(d, c(0.3, 0.4, 0.5), th)
-S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qnbinom(
     p = p,
     mu = theta[[1]],
@@ -263,6 +265,7 @@ S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lowe
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one count per parameter setting. Both must
 #'   be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` non-negative integers.
 #'
@@ -287,7 +290,7 @@ S7::method(distrib_quantile, NegBin2Distrib) <- function(distrib, p, theta, lowe
 #'
 #' # Overdispersion is the point: the variance is three times the mean here.
 #' c(mean = mean(z), var = var(z))
-S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, NegBin2Distrib) <- function(distrib, n, theta, ...) {
   stats::rnbinom(
     n = n,
     mu = theta[[1]],

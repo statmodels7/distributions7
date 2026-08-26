@@ -169,6 +169,7 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #'   `pgamma` rather than as one minus the other.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
 #'   logarithms with `log.p = TRUE`, of the length of the recycled inputs.
@@ -200,7 +201,7 @@ S7::method(distrib_pdf, GenGamma1Distrib) <- function(distrib, y, theta, log = F
 #'   one_minus_lower = 1 - distrib_cdf(d, 20, th))
 S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
-                                                      log.p = FALSE) {
+                                                      log.p = FALSE, ...) {
   a <- theta[[1]]; d <- theta[[2]]; p <- theta[[3]]
   w <- pmax(q, 0)^p / a^p
   stats::pgamma(w, shape = d / p, rate = 1,
@@ -230,6 +231,7 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #'   through to `qgamma`.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length of the recycled
 #'   inputs, strictly positive for a probability in \eqn{(0, 1)}.
@@ -255,7 +257,7 @@ S7::method(distrib_cdf, GenGamma1Distrib) <- function(distrib, q, theta,
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
-                                                           log.p = FALSE) {
+                                                           log.p = FALSE, ...) {
   a <- theta[[1]]; d <- theta[[2]]; pw <- theta[[3]]
   g <- stats::qgamma(p, shape = d / pw, rate = 1,
                      lower.tail = lower.tail, log.p = log.p)
@@ -277,6 +279,7 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`; a component of length 1 is recycled,
 #'   so a parameter varying by observation draws one value per observation from
 #'   its own member of the family.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -298,7 +301,7 @@ S7::method(distrib_quantile, GenGamma1Distrib) <- function(distrib, p, theta,
 #' # The representation, written out at the same seed.
 #' set.seed(51)
 #' all.equal(x, 2 * rgamma(2e5, shape = 3 / 1.5)^(1 / 1.5))
-S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, GenGamma1Distrib) <- function(distrib, n, theta, ...) {
   a <- theta[[1]]; d <- theta[[2]]; p <- theta[[3]]
   a * stats::rgamma(n, shape = d / p, rate = 1)^(1 / p)
 }

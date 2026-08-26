@@ -19,6 +19,8 @@ default.}
 
 \item{log}{Are derivatives of the log probability wanted? A single logical,
 \code{TRUE} by default.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with one numeric vector, \code{mu}, the length of \code{q}

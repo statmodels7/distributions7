@@ -237,6 +237,7 @@ S7::method(distrib_quantile, Gaussian3Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. `tau`
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -257,7 +258,7 @@ S7::method(distrib_quantile, Gaussian3Distrib) <- function(distrib, p, theta,
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, tau = 0.25))
 #' c(mean = mean(z), tau = 1 / var(z))
-S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Gaussian3Distrib) <- function(distrib, n, theta, ...) {
   stats::rnorm(n, mean = theta[[1]], sd = 1 / sqrt(theta[[2]]))
 }
 

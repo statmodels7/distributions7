@@ -7,6 +7,8 @@
 \item{distrib}{A \code{TruncatedContinuousDistrib} object, from \code{\link[=truncated]{truncated()}}.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with \code{y}, the surviving atom locations, and \code{p}, their

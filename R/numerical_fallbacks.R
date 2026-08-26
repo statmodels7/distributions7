@@ -151,6 +151,7 @@ find_lp_anchor <- function(lp_raw, b) {
 #'   probability. The logarithm is taken after the integration, so it does not
 #'   recover a tail that has already underflowed; a family whose far tail
 #'   matters should write its own method.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of cumulative probabilities, the length of the
 #'   recycled `q` and `theta`. `NA` for a row whose quadrature did not reach
@@ -161,7 +162,7 @@ find_lp_anchor <- function(lp_raw, b) {
 #'   [distrib_quantile.continuous_distrib()], which inverts this;
 #'   [distrib_cdf()] for the generic.
 #' @keywords internal
-S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   b <- distrib@bounds
   all_params <- expand_params(c(list(.q = q), theta))
   qv <- all_params$.q
@@ -242,6 +243,7 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #' @param log.p Logical of length 1. `TRUE` treats `p` as a logarithm and
 #'   exponentiates it first, so a probability that has underflowed is not
 #'   recovered.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, the length of the recycled `p` and
 #'   `theta`.
@@ -251,7 +253,7 @@ S7::method(distrib_cdf, continuous_distrib) <- function(distrib, q, theta, lower
 #'   [has_analytic_quantile()], which asks whether this method is what a caller
 #'   would reach; [distrib_quantile()] for the generic.
 #' @keywords internal
-S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, continuous_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
 
@@ -849,6 +851,7 @@ grou_core <- function(lp, b, n, r) {
 #' @param n The number of draws, a single non-negative integer.
 #' @param theta A named list of parameters, each of length 1 or `n`. A
 #'   component of length `n` gives one draw per parameter setting.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -857,7 +860,7 @@ grou_core <- function(lp, b, n, r) {
 #'   [distrib_rng.discrete_distrib()], where the question does not arise;
 #'   [distrib_rng()] for the generic.
 #' @keywords internal
-S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, continuous_distrib) <- function(distrib, n, theta, ...) {
   if (has_analytic_quantile(distrib)) {
     return(distrib_quantile(distrib, stats::runif(n), theta))
   }
@@ -975,6 +978,7 @@ disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 
 #'   \eqn{P(Y \le q)}; `FALSE` returns the complement.
 #' @param log.p Logical of length 1. `TRUE` returns the logarithm, taken after
 #'   the summation.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of cumulative probabilities, the length of the
 #'   recycled `q` and `theta`.
@@ -984,7 +988,7 @@ disc_cum_table <- function(distrib, theta, need_p = -Inf, need_k = -Inf, kmax = 
 #'   [distrib_cdf.continuous_distrib()], where the same question needs a
 #'   quadrature; [distrib_cdf()] for the generic.
 #' @keywords internal
-S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   b <- distrib@bounds
   all_params <- expand_params(c(list(.q = q), theta))
   rows <- transpose_params(all_params)
@@ -1039,6 +1043,7 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #'   \eqn{P(Y \le q)}; `FALSE` treats it as the upper tail.
 #' @param log.p Logical of length 1. `TRUE` treats `p` as a logarithm and
 #'   exponentiates it first.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of support points, the length of the recycled `p`
 #'   and `theta`.
@@ -1048,7 +1053,7 @@ S7::method(distrib_cdf, discrete_distrib) <- function(distrib, q, theta, lower.t
 #'   [distrib_rng.discrete_distrib()], which reads the same table;
 #'   [distrib_quantile()] for the generic.
 #' @keywords internal
-S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
 
@@ -1121,6 +1126,7 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #' @param theta A named list of parameters, each of length 1 or `n`. A
 #'   component of length `n` gives one draw per parameter setting, and the
 #'   draws are grouped by distinct setting so that each builds one table.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws, every one a support point.
 #'
@@ -1129,7 +1135,7 @@ S7::method(distrib_quantile, discrete_distrib) <- function(distrib, p, theta, lo
 #'   probabilities; [distrib_rng.continuous_distrib()], where an exact
 #'   inversion is not available; [distrib_rng()] for the generic.
 #' @keywords internal
-S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, discrete_distrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 

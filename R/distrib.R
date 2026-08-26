@@ -124,9 +124,10 @@ distrib <- S7::new_class("distrib",
 #' registers something more specific.
 #' @param distrib A `distrib` object.
 #' @param theta A named list of parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #' @return A list with empty `y` and `p`.
 #' @keywords internal
-S7::method(distrib_atoms, distrib) <- function(distrib, theta) {
+S7::method(distrib_atoms, distrib) <- function(distrib, theta, ...) {
   list(y = numeric(0), p = numeric(0))
 }
 

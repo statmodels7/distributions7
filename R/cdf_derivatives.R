@@ -353,6 +353,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default. Far into a tail the probability underflows and the
 #'   result is `-Inf` or `NaN`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per parameter, each the length
 #'   of `q` recycled against `theta`.
@@ -369,7 +370,7 @@ numerical_cdf_deriv <- function(distrib, q, theta, order = 1L,
 #'
 #' @keywords internal
 S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
-                                                             lower.tail = TRUE, log = TRUE) {
+                                                             lower.tail = TRUE, log = TRUE, ...) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  numerical_cdf_deriv(distrib, q, theta, 1L),
                  NULL, lower.tail, log)
@@ -402,6 +403,7 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], each the
 #'   length of `q` recycled against `theta`. The gradient is not returned
@@ -417,7 +419,7 @@ S7::method(distrib_grad_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'
 #' @keywords internal
 S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
-                                                             lower.tail = TRUE, log = TRUE) {
+                                                             lower.tail = TRUE, log = TRUE, ...) {
   # the first-order part comes from distrib_grad_cdf, so a closed form registered
   # for this family is used here too rather than differenced a second time
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
@@ -455,6 +457,7 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per parameter, each the length
 #'   of `q` recycled against `theta`.
@@ -470,7 +473,7 @@ S7::method(distrib_hess_cdf, continuous_distrib) <- function(distrib, q, theta,
 #'
 #' @keywords internal
 S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
-                                                           lower.tail = TRUE, log = TRUE) {
+                                                           lower.tail = TRUE, log = TRUE, ...) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  discrete_cdf_deriv(distrib, q, theta, 1L),
                  NULL, lower.tail, log)
@@ -493,6 +496,7 @@ S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], each the
 #'   length of `q` recycled against `theta`. The gradient is not returned
@@ -508,7 +512,7 @@ S7::method(distrib_grad_cdf, discrete_distrib) <- function(distrib, q, theta,
 #'
 #' @keywords internal
 S7::method(distrib_hess_cdf, discrete_distrib) <- function(distrib, q, theta,
-                                                           lower.tail = TRUE, log = TRUE) {
+                                                           lower.tail = TRUE, log = TRUE, ...) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  distrib_grad_cdf(distrib, q, theta, lower.tail = TRUE, log = FALSE),
                  discrete_cdf_deriv(distrib, q, theta, 2L),
@@ -611,6 +615,7 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, one per parameter, each the
 #'   length of `q` recycled against `theta`.
@@ -620,7 +625,7 @@ loc_scale_cdf_deriv <- function(distrib, q, theta, order) {
 #'   [distrib_grad_cdf.Gaussian1Distrib()] for one of the four registrations.
 #'
 #' @keywords internal
-loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
+loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  loc_scale_cdf_deriv(distrib, q, theta, 1L), NULL, lower.tail, log)
 }
@@ -642,6 +647,7 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`. The gradient is not returned
@@ -652,7 +658,7 @@ loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE)
 #'   [distrib_hess_cdf.Gaussian1Distrib()] for one of the four registrations.
 #'
 #' @keywords internal
-loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
+loc_scale_hess_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta),
                  loc_scale_cdf_deriv(distrib, q, theta, 1L),
                  loc_scale_cdf_deriv(distrib, q, theta, 2L), lower.tail, log)
@@ -1066,6 +1072,7 @@ S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `lambda`, each the
 #'   length of `q` recycled against `theta`.
@@ -1083,7 +1090,7 @@ S7::method(distrib_hess_cdf, LaplaceDistrib) <- loc_scale_hess_cdf
 #' all.equal(g$mu, -distrib_pdf(d, q, th))
 #' all.equal(g$lambda, (q - 0.3) * distrib_pdf(d, q, th) / (1 / 1.2))
 S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
-                                                          lower.tail = TRUE, log = TRUE) {
+                                                          lower.tail = TRUE, log = TRUE, ...) {
   f <- distrib_pdf(distrib, q, theta)
   d1 <- stats::setNames(list(-f, (q - theta[[1]]) * f / theta[[2]]), distrib@params)
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
@@ -1117,6 +1124,7 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of three numeric vectors keyed as [hess_names()], each
 #'   the length of `q` recycled against `theta`.
@@ -1138,7 +1146,7 @@ S7::method(distrib_grad_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' fd <- numerical_cdf_deriv(d, q, th, order = 2)
 #' max(abs(unlist(exact[names(fd)]) / unlist(fd) - 1))
 S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
-                                                          lower.tail = TRUE, log = TRUE) {
+                                                          lower.tail = TRUE, log = TRUE, ...) {
   lam <- theta[[2]]
   r <- q - theta[[1]]
   s <- sign(r)
@@ -1199,6 +1207,7 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `sigma2`, each the
 #'   length of `q` recycled against `theta`.
@@ -1220,7 +1229,7 @@ S7::method(distrib_hess_cdf, Laplace2Distrib) <- function(distrib, q, theta,
 #' fd <- numerical_cdf_deriv(d, q, th, order = 1)
 #' max(abs(distrib_grad_cdf(d, q, th, log = FALSE)$sigma2 / fd$sigma2 - 1))
 S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
-                                                           lower.tail = TRUE, log = TRUE) {
+                                                           lower.tail = TRUE, log = TRUE, ...) {
   s <- sqrt(theta[[2]])
   z <- (base::log(q) - theta[[1]]) / s
   f <- distrib_pdf(distrib, q, theta)
@@ -1277,6 +1286,7 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector, `mu`, the length of `q`
 #'   recycled against `theta`.
@@ -1297,7 +1307,7 @@ S7::method(distrib_grad_cdf, Lognormal1Distrib) <- function(distrib, q, theta,
 #' distrib_grad_cdf(d, q, list(mu = 3))$mu
 #' distrib_grad_cdf(d, q, list(mu = 3), lower.tail = FALSE)$mu
 S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
-                                                         lower.tail = TRUE, log = TRUE) {
+                                                         lower.tail = TRUE, log = TRUE, ...) {
   d1 <- list(mu = -distrib_pdf(distrib, floor(q), theta) * (q >= 0))
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
 }
@@ -1326,6 +1336,7 @@ S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector, `mu`, the length of `q`
 #'   recycled against `theta`.
@@ -1342,7 +1353,7 @@ S7::method(distrib_grad_cdf, PoissonDistrib) <- function(distrib, q, theta,
 #' all.equal(distrib_grad_cdf(d, q, list(mu = 0.3), log = FALSE)$mu,
 #'           -10 * dbinom(q, 9, 0.3))
 S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
-                                                          lower.tail = TRUE, log = TRUE) {
+                                                          lower.tail = TRUE, log = TRUE, ...) {
   n <- distrib@size
   d1 <- list(mu = -n * stats::dbinom(floor(q), n - 1, theta[[1]]) * (q >= 0))
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
@@ -1373,6 +1384,7 @@ S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
 #'   `TRUE` by default. At \eqn{k = 1} the lower-tail probability is 1 and the
 #'   log-scale derivative is 0; the upper-tail probability is 0 there, and the
 #'   log-scale derivative is `NaN`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with one numeric vector, `mu`, the length of `q`
 #'   recycled against `theta`.
@@ -1389,7 +1401,7 @@ S7::method(distrib_grad_cdf, BinomialDistrib) <- function(distrib, q, theta,
 #' # On the log scale at k = 0 that is -1 / (1 - p).
 #' all.equal(distrib_grad_cdf(d, 0, list(mu = 0.3))$mu, -1 / 0.7)
 S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
-                                                           lower.tail = TRUE, log = TRUE) {
+                                                           lower.tail = TRUE, log = TRUE, ...) {
   d1 <- list(mu = -stats::dbinom(floor(q), 0, theta[[1]]) * (q >= 0))
   cdf_tail_scale(distrib, distrib_cdf(distrib, q, theta), d1, NULL, lower.tail, log)
 }
@@ -1422,6 +1434,7 @@ S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of two numeric vectors, `mu` and `theta`, each the
 #'   length of `q` recycled against the parameters.
@@ -1445,7 +1458,7 @@ S7::method(distrib_grad_cdf, BernoulliDistrib) <- function(distrib, q, theta,
 #'       poisson = distrib_grad_cdf(poisson_distrib(), q, list(mu = 3),
 #'                                  log = FALSE)$mu)
 S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
-                                                        lower.tail = TRUE, log = TRUE) {
+                                                        lower.tail = TRUE, log = TRUE, ...) {
   k <- floor(q)
   f <- distrib_pdf(distrib, k, theta)
   d1 <- list(mu = -f * (k + theta[[2]]) / (theta[[2]] + theta[[1]]) * (q >= 0),
@@ -1500,6 +1513,7 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
 #'   default.
 #' @param log Are derivatives of the log probability wanted? A single logical,
 #'   `TRUE` by default.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors, one per parameter, in the parameter
 #'   order.
@@ -1510,7 +1524,7 @@ S7::method(distrib_grad_cdf, NegBin2Distrib) <- function(distrib, q, theta,
 #'   [distrib_grad_cdf.PseudoHuberDistrib()], the two registrations.
 #'
 #' @keywords internal
-partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE) {
+partial_loc_scale_grad_cdf <- function(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...) {
   params <- distrib@params
   z <- (q - theta[[1]]) / theta[[2]]
   f <- distrib_pdf(distrib, q, theta)

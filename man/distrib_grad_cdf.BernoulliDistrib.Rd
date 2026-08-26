@@ -20,6 +20,8 @@ default.}
 \code{TRUE} by default. At \eqn{k = 1} the lower-tail probability is 1 and the
 log-scale derivative is 0; the upper-tail probability is 0 there, and the
 log-scale derivative is \code{NaN}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with one numeric vector, \code{mu}, the length of \code{q}

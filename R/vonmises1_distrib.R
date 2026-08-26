@@ -171,6 +171,7 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #'   vector of length 1. `mu` must lie in \eqn{(-\pi, \pi)} and `kappa` be
 #'   strictly positive. The envelope's constants are built once per call, so a
 #'   parameter varying by observation is not supported here.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` angles in \eqn{[-\pi, \pi)}.
 #'
@@ -197,7 +198,7 @@ S7::method(distrib_pdf, VonMises1Distrib) <- function(distrib, y, theta,
 #' c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
 #' c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2),
 #'   A = numericals7::bessel_i_ratio(2))
-S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, VonMises1Distrib) <- function(distrib, n, theta, ...) {
   mu <- theta[[1]]
   k <- theta[[2]]
   a <- 1 + sqrt(1 + 4 * k * k)

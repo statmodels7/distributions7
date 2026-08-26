@@ -138,6 +138,7 @@ S7::method(distrib_pdf, LogisticDistrib) <- function(distrib, y, theta, log = FA
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned, which stays finite far into either tail.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -163,7 +164,7 @@ S7::method(distrib_pdf, LogisticDistrib) <- function(distrib, y, theta, log = FA
 #' all.equal(distrib_cdf(d, c(-1.2, 0.3, 2.5), list(mu = 0, sigma = 1)),
 #'           linkfunctions7::linkinv(linkfunctions7::logit_link(),
 #'                                   c(-1.2, 0.3, 2.5)))
-S7::method(distrib_cdf, LogisticDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, LogisticDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::plogis(
     q = q,
     location = theta[[1]],
@@ -193,6 +194,7 @@ S7::method(distrib_cdf, LogisticDistrib) <- function(distrib, q, theta, lower.ta
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -214,7 +216,7 @@ S7::method(distrib_cdf, LogisticDistrib) <- function(distrib, q, theta, lower.ta
 #'
 #' # It is mu + sigma times the log odds.
 #' all.equal(distrib_quantile(d, p, th), 0.4 + 1.5 * log(p / (1 - p)))
-S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qlogis(
     p = p,
     location = theta[[1]],
@@ -237,6 +239,7 @@ S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, low
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -257,7 +260,7 @@ S7::method(distrib_quantile, LogisticDistrib) <- function(distrib, p, theta, low
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
 #' c(mean = mean(z), var = var(z), pi_sq_over_3 = pi^2 * 4 / 3)
-S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, LogisticDistrib) <- function(distrib, n, theta, ...) {
   stats::rlogis(
     n = n,
     location = theta[[1]],
@@ -646,7 +649,7 @@ S7::method(distrib_deriv4, LogisticDistrib) <- function(distrib, y, theta, expec
 #' # Bounded by 1/sigma however far out the observation is.
 #' max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #' 1 / 1.5
-S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta, ...) {
   s <- theta[[2]]
   -tanh(0.5 * (y - theta[[1]]) / s) / s
 }
@@ -692,7 +695,7 @@ S7::method(distrib_grad_y, LogisticDistrib) <- function(distrib, y, theta) {
 #' # Concave everywhere, unlike the Cauchy, which turns convex in its tails.
 #' all(distrib_hess_y(d, seq(-50, 50, length.out = 1e3), th) < 0)
 #' any(distrib_hess_y(cauchy_distrib(), seq(-50, 50, length.out = 1e3), th) > 0)
-S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, LogisticDistrib) <- function(distrib, y, theta, ...) {
   s <- theta[[2]]
   th <- tanh(0.5 * (y - theta[[1]]) / s)
   -(1 - th^2) / (2 * s^2)

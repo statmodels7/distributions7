@@ -12,6 +12,8 @@ value is infinite unless the shape is exactly 1.}
 \item{theta}{A named list with components \code{mu} and \code{sigma2}, each a numeric
 vector of length 1 or of the length of \code{y}. Both must be strictly
 positive; they enter only through the shape.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of length

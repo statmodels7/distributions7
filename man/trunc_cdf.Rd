@@ -4,7 +4,7 @@
 \alias{trunc_cdf}
 \title{Distribution Function of a Truncated Distribution}
 \usage{
-trunc_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE)
+trunc_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...)
 }
 \arguments{
 \item{distrib}{A truncated distribution object, of either class.}
@@ -18,6 +18,8 @@ trunc_cdf(distrib, q, theta, lower.tail = TRUE, log.p = FALSE)
 
 \item{log.p}{Logical, default \code{FALSE}. When \code{TRUE} the probability is
 returned on the log scale.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities, of the length \code{q} and \code{theta}

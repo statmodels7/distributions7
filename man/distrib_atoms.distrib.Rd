@@ -7,6 +7,8 @@
 \item{distrib}{A \code{distrib} object.}
 
 \item{theta}{A named list of parameters.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A list with empty \code{y} and \code{p}.

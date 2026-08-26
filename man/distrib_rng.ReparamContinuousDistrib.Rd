@@ -6,7 +6,7 @@
 \alias{distrib_rng.ReparamDiscreteDistrib}
 \title{Random Generation from a Reparametrized Distribution}
 \usage{
-reparam_rng(distrib, n, theta)
+reparam_rng(distrib, n, theta, ...)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
@@ -15,6 +15,8 @@ reparam_rng(distrib, n, theta)
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.
 A component of length \code{n} gives one draw per setting.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws.

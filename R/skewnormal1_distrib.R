@@ -188,6 +188,7 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`. The logarithm is taken after
 #'   the clamp, so a quantile far into the light tail returns `-Inf`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
 #'   logarithms with `log.p = TRUE`, of length
@@ -218,7 +219,7 @@ S7::method(distrib_pdf, SkewNormal1Distrib) <- function(distrib, y, theta, log =
 #'
 #' # The two tails sum to one.
 #' distrib_cdf(d, q, th) + distrib_cdf(d, q, th, lower.tail = FALSE)
-S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   z <- (q - theta[[1]]) / theta[[2]]
   res <- stats::pnorm(z) - 2 * numericals7::owen_t(z, theta[[3]])
   res <- pmin(pmax(res, 0), 1)
@@ -249,6 +250,7 @@ S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower
 #'   numeric vector of length 1 or of length `n`; a component of length 1 is
 #'   recycled, so a parameter varying by observation draws one value per
 #'   observation from its own member of the family.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -277,7 +279,7 @@ S7::method(distrib_cdf, SkewNormal1Distrib) <- function(distrib, q, theta, lower
 #' set.seed(1)
 #' z <- delta * abs(rnorm(2e5)) + sqrt(1 - delta^2) * rnorm(2e5)
 #' all.equal(x, z)
-S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, SkewNormal1Distrib) <- function(distrib, n, theta, ...) {
   alpha <- theta[[3]]
   delta <- alpha / sqrt(1 + alpha^2)
   z <- delta * abs(stats::rnorm(n)) + sqrt(1 - delta^2) * stats::rnorm(n)
@@ -648,6 +650,7 @@ S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of the recycled inputs, one value per
 #'   observation.
@@ -674,7 +677,7 @@ S7::method(distrib_deriv4, SkewNormal1Distrib) <- function(distrib, y, theta, ex
 #' rbind(analytic = distrib_grad_y(d, y, th),
 #'       numeric = (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'                  distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps))
-S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - theta[[1]]) / sigma
@@ -701,6 +704,7 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of the recycled inputs, negative
 #'   throughout.
@@ -731,7 +735,7 @@ S7::method(distrib_grad_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
 #' # -1/sigma^2, which is the Gaussian's own curvature.
 #' vapply(c(-20, -1, 0, 1, 20), function(a)
 #'   max(distrib_hess_y(d, seq(-6, 6, by = 0.5), list(mu = 0, sigma = 1, alpha = a))), 0)
-S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, SkewNormal1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   alpha <- theta[[3]]
   z <- (y - theta[[1]]) / sigma

@@ -636,6 +636,7 @@ S7::method(distrib_quantile, ReparamDiscreteDistrib) <- reparam_quantile
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list of the new parameters, on the new parameter scale.
 #'   A component of length `n` gives one draw per setting.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -660,7 +661,7 @@ S7::method(distrib_quantile, ReparamDiscreteDistrib) <- reparam_quantile
 #' all.equal(a, b)
 #'
 #' @keywords internal
-reparam_rng <- function(distrib, n, theta) {
+reparam_rng <- function(distrib, n, theta, ...) {
   distrib_rng(distrib@parent_distrib, n, reparam_theta(distrib, theta))
 }
 S7::method(distrib_rng, ReparamContinuousDistrib) <- reparam_rng
@@ -1055,6 +1056,7 @@ S7::method(distrib_hess_y, ReparamContinuousDistrib) <- function(distrib, y, the
 #'
 #' @param distrib A reparametrized distribution, from [reparametrize()].
 #' @param theta A named list of the new parameters, on the new parameter scale.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with components `y` (the atom locations) and `p`
 #'   (their probabilities), both numeric vectors of the same length, possibly
@@ -1078,7 +1080,7 @@ S7::method(distrib_hess_y, ReparamContinuousDistrib) <- function(distrib, y, the
 #' distrib_atoms(d, list(mu = 2, s = 1, p0 = 0.3))
 #'
 #' @keywords internal
-reparam_atoms <- function(distrib, theta) {
+reparam_atoms <- function(distrib, theta, ...) {
   distrib_atoms(distrib@parent_distrib, reparam_theta(distrib, theta))
 }
 S7::method(distrib_atoms, ReparamContinuousDistrib) <- reparam_atoms

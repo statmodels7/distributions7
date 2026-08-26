@@ -151,6 +151,7 @@ S7::method(distrib_pdf, Lognormal1Distrib) <- function(distrib, y, theta, log = 
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma2))`. With `log.p = TRUE` the
@@ -180,7 +181,7 @@ S7::method(distrib_pdf, Lognormal1Distrib) <- function(distrib, y, theta, log = 
 #' # Far in the upper tail the probability underflows and its log does not.
 #' distrib_cdf(d, 1e12, th, lower.tail = FALSE)
 #' distrib_cdf(d, 1e12, th, lower.tail = FALSE, log.p = TRUE)
-S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::plnorm(
     q = q,
     meanlog = theta[[1]],
@@ -213,6 +214,7 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities, which is how a quantile deep in a tail is
 #'   requested without the probability underflowing. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu), length(sigma2))`.
@@ -237,7 +239,7 @@ S7::method(distrib_cdf, Lognormal1Distrib) <- function(distrib, q, theta, lower.
 #' # The median is exp(mu) and the mean is larger.
 #' c(median = distrib_quantile(d, 0.5, th), exp_mu = exp(0.5),
 #'   mean = mean(d, th))
-S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qlnorm(
     p = p,
     meanlog = theta[[1]],
@@ -261,6 +263,7 @@ S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, l
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting.
 #'   `sigma2` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -285,7 +288,7 @@ S7::method(distrib_quantile, Lognormal1Distrib) <- function(distrib, p, theta, l
 #'
 #' # On the original scale the sample mean is exp(mu + sigma2/2).
 #' c(sample = mean(z), theory = exp(0.5 + 0.36 / 2))
-S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Lognormal1Distrib) <- function(distrib, n, theta, ...) {
   stats::rlnorm(
     n = n,
     meanlog = theta[[1]],
@@ -684,6 +687,7 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' @param theta A named list with components `mu` and `sigma2`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma2` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma2))`, one value per observation.
@@ -710,7 +714,7 @@ S7::method(distrib_deriv4, Lognormal1Distrib) <- function(distrib, y, theta, exp
 #' eps <- 1e-7
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta, ...) {
   r <- log(y) - theta[[1]]
   s2 <- theta[[2]]
   -(1 + r / s2) / y
@@ -735,6 +739,7 @@ S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu` and `sigma2`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma2` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma2))`, one value per observation.
@@ -757,7 +762,7 @@ S7::method(distrib_grad_y, Lognormal1Distrib) <- function(distrib, y, theta) {
 #'   below = distrib_hess_y(d, cut / 2, th),
 #'   at = distrib_hess_y(d, cut, th),
 #'   above = distrib_hess_y(d, 2 * cut, th))
-S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, Lognormal1Distrib) <- function(distrib, y, theta, ...) {
   r <- log(y) - theta[[1]]
   s2 <- theta[[2]]
   (1 + (r - 1) / s2) / y^2

@@ -301,6 +301,7 @@ betabinom_log_mass <- function(y, a, b, n) {
 #' @param theta A named list with components `alpha` and `beta`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   Both must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` counts in \eqn{\{0, \dots, size\}}.
 #'
@@ -321,7 +322,7 @@ betabinom_log_mass <- function(y, a, b, n) {
 #' # The counts are bounded by the trial count, which is the object's size and
 #' # not the argument n.
 #' range(z)
-S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, BetaBinom2Distrib) <- function(distrib, n, theta, ...) {
   p <- stats::rbeta(n, shape1 = theta[[1]], shape2 = theta[[2]])
   stats::rbinom(n, size = distrib@size, prob = p)
 }

@@ -151,6 +151,7 @@ S7::method(distrib_pdf, Beta1Distrib) <- function(distrib, y, theta, log = FALSE
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(phi))`. With `log.p = TRUE` the values
@@ -179,7 +180,7 @@ S7::method(distrib_pdf, Beta1Distrib) <- function(distrib, y, theta, log = FALSE
 #' # Near the lower boundary the probability underflows and its log does not.
 #' distrib_cdf(d, 1e-30, list(mu = 0.4, phi = 50))
 #' distrib_cdf(d, 1e-30, list(mu = 0.4, phi = 50), log.p = TRUE)
-S7::method(distrib_cdf, Beta1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, Beta1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pbeta(
     q = q,
     shape1 = theta[[1]] * theta[[2]],
@@ -212,6 +213,7 @@ S7::method(distrib_cdf, Beta1Distrib) <- function(distrib, q, theta, lower.tail 
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, 1]}, of length
 #'   `max(length(p), length(mu), length(phi))`.
@@ -233,7 +235,7 @@ S7::method(distrib_cdf, Beta1Distrib) <- function(distrib, q, theta, lower.tail 
 #'
 #' # At mu = 1/2 and phi = 2 the beta is the uniform, so Q(p) = p.
 #' distrib_quantile(d, p, list(mu = 0.5, phi = 2))
-S7::method(distrib_quantile, Beta1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, Beta1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qbeta(
     p = p,
     shape1 = theta[[1]] * theta[[2]],
@@ -257,6 +259,7 @@ S7::method(distrib_quantile, Beta1Distrib) <- function(distrib, p, theta, lower.
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. `mu`
 #'   must lie strictly in \eqn{(0, 1)} and `phi` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws in \eqn{(0, 1)}.
 #'
@@ -278,7 +281,7 @@ S7::method(distrib_quantile, Beta1Distrib) <- function(distrib, p, theta, lower.
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 0.4, phi = 5))
 #' c(mu = mean(z), phi = mean(z) * (1 - mean(z)) / var(z) - 1)
-S7::method(distrib_rng, Beta1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Beta1Distrib) <- function(distrib, n, theta, ...) {
   stats::rbeta(
     n = n,
     shape1 = theta[[1]] * theta[[2]],
@@ -684,6 +687,7 @@ S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie strictly in \eqn{(0, 1)} and `phi` must be
 #'   strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(phi))`, one value per observation.
@@ -714,7 +718,7 @@ S7::method(distrib_deriv4, Beta1Distrib) <- function(distrib, y, theta, expected
 #' eps <- 1e-6
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, Beta1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, Beta1Distrib) <- function(distrib, y, theta, ...) {
   a <- theta[[1]] * theta[[2]]
   b <- (1 - theta[[1]]) * theta[[2]]
   (a - 1) / y - (b - 1) / (1 - y)
@@ -741,6 +745,7 @@ S7::method(distrib_grad_y, Beta1Distrib) <- function(distrib, y, theta) {
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `mu` must lie strictly in \eqn{(0, 1)} and `phi` must be
 #'   strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(phi))`, one value per observation.
@@ -764,7 +769,7 @@ S7::method(distrib_grad_y, Beta1Distrib) <- function(distrib, y, theta) {
 #'
 #' # Exactly flat at mu = 1/2, phi = 2, where the beta is the uniform.
 #' distrib_hess_y(d, y, list(mu = 0.5, phi = 2))
-S7::method(distrib_hess_y, Beta1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, Beta1Distrib) <- function(distrib, y, theta, ...) {
   a <- theta[[1]] * theta[[2]]
   b <- (1 - theta[[1]]) * theta[[2]]
   -(a - 1) / y^2 - (b - 1) / (1 - y)^2

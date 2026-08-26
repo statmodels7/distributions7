@@ -141,6 +141,7 @@ S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALS
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -164,7 +165,7 @@ S7::method(distrib_pdf, CauchyDistrib) <- function(distrib, y, theta, log = FALS
 #'
 #' # The two tails sum to one.
 #' distrib_cdf(d, 3, th) + distrib_cdf(d, 3, th, lower.tail = FALSE)
-S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pcauchy(
     q = q,
     location = theta[[1]],
@@ -196,6 +197,7 @@ S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -218,7 +220,7 @@ S7::method(distrib_cdf, CauchyDistrib) <- function(distrib, q, theta, lower.tail
 #' # The tails are heavy, so the extreme quantiles are far out: the 99.9th
 #' # percentile sits at over 300 scale units.
 #' (distrib_quantile(d, 0.999, th) - 0.4) / 1.5
-S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qcauchy(
     p = p,
     location = theta[[1]],
@@ -245,6 +247,7 @@ S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -268,7 +271,7 @@ S7::method(distrib_quantile, CauchyDistrib) <- function(distrib, p, theta, lower
 #' n <- c(1e2, 1e3, 1e4, 1e5)
 #' rbind(median = vapply(n, function(k) median(z[1:k]), numeric(1)),
 #'       mean   = vapply(n, function(k) mean(z[1:k]), numeric(1)))
-S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, CauchyDistrib) <- function(distrib, n, theta, ...) {
   stats::rcauchy(
     n = n,
     location = theta[[1]],
@@ -642,7 +645,7 @@ S7::method(distrib_deriv4, CauchyDistrib) <- function(distrib, y, theta, expecte
 #' # Bounded by 1/sigma however far out the observation is.
 #' max(abs(distrib_grad_y(d, seq(-1e3, 1e3, length.out = 1e4), th)))
 #' 1 / 1.5
-S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
   -2 * r / (theta[[2]]^2 + r^2)
 }
@@ -689,7 +692,7 @@ S7::method(distrib_grad_y, CauchyDistrib) <- function(distrib, y, theta) {
 #' data.frame(r = z * 1.5,
 #'            hess_y = distrib_hess_y(d, 0.4 + z * 1.5, th),
 #'            concave = distrib_hess_y(d, 0.4 + z * 1.5, th) < 0)
-S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, CauchyDistrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
   s2 <- theta[[2]]^2
   2 * (r^2 - s2) / (s2 + r^2)^2

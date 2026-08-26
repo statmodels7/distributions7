@@ -11,6 +11,8 @@
 \item{theta}{A named list with components \code{mu}, \code{lambda} and \code{alpha}, each a
 numeric vector of length 1 or of length \code{n}; a component of length 1 is
 recycled.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws, symmetric about \code{mu}.

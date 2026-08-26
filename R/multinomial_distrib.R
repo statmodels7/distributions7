@@ -199,6 +199,7 @@ S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log =
 #'   number of **trials** is the object's `size` property, not this argument.
 #' @param theta A named list of the simplex's free values on the parameter
 #'   scale, each of length 1.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric matrix with `n` rows and \eqn{p} columns, each row a
 #'   vector of non-negative integers summing to the object's `size`.
@@ -223,7 +224,7 @@ S7::method(distrib_pdf, MultinomialDistrib) <- function(distrib, y, theta, log =
 #' Z <- distrib_rng(d, 2e4, th)
 #' rbind(sample = c(colMeans(Z), diag(var(Z))),
 #'       theoretical = c(mv_location(d, th), diag(mv_sigma(d, th))))
-S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, MultinomialDistrib) <- function(distrib, n, theta, ...) {
   p <- mn_parts(distrib, theta)
   t(stats::rmultinom(n, size = distrib@size, prob = p$prob))
 }

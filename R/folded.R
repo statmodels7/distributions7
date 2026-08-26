@@ -360,6 +360,7 @@ S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALS
 #'   \eqn{P(|Y| > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
 #'
@@ -391,7 +392,7 @@ S7::method(distrib_pdf, FoldedDistrib) <- function(distrib, y, theta, log = FALS
 #' max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
 S7::method(distrib_cdf, FoldedDistrib) <- function(distrib, q, theta,
                                                    lower.tail = TRUE,
-                                                   log.p = FALSE) {
+                                                   log.p = FALSE, ...) {
   parent <- distrib@parent_distrib
   p <- distrib_cdf(parent, q, theta) - distrib_cdf(parent, -q, theta)
   p[q < 0] <- 0
@@ -413,6 +414,7 @@ S7::method(distrib_cdf, FoldedDistrib) <- function(distrib, q, theta,
 #' @param distrib A `FoldedDistrib` object, from [folded()].
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list of the parent's parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `n`, every value non-negative.
 #'
@@ -435,7 +437,7 @@ S7::method(distrib_cdf, FoldedDistrib) <- function(distrib, q, theta,
 #' big <- distrib_rng(d, 20000, theta)
 #' c(sampled = mean(big < 1),
 #'   exact = distrib_cdf(d, 1, theta))
-S7::method(distrib_rng, FoldedDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, FoldedDistrib) <- function(distrib, n, theta, ...) {
   abs(distrib_rng(distrib@parent_distrib, n, theta))
 }
 

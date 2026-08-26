@@ -16,6 +16,8 @@ is inverted before reaching the parent.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned,
 computed by the parent. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities, in \eqn{[0, 1]}.

@@ -195,6 +195,7 @@ S7::method(distrib_pdf, NegBin1Distrib) <- function(distrib, y, theta, log = FAL
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(theta))`. With `log.p = TRUE` the
@@ -224,7 +225,7 @@ S7::method(distrib_pdf, NegBin1Distrib) <- function(distrib, y, theta, log = FAL
 #' distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
                                                      lower.tail = TRUE,
-                                                     log.p = FALSE) {
+                                                     log.p = FALSE, ...) {
   stats::pnbinom(q, size = nb1_size(theta[[1]], theta[[2]]),
                  prob = nb1_prob(theta[[2]]),
                  lower.tail = lower.tail, log.p = log.p)
@@ -253,6 +254,7 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of non-negative integers, of length
 #'   `max(length(p), length(mu), length(theta))`.
@@ -280,7 +282,7 @@ S7::method(distrib_cdf, NegBin1Distrib) <- function(distrib, q, theta,
 #'   poisson = distrib_quantile(poisson_distrib(), 0.975, list(mu = 4)))
 S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
                                                           lower.tail = TRUE,
-                                                          log.p = FALSE) {
+                                                          log.p = FALSE, ...) {
   stats::qnbinom(p, size = nb1_size(theta[[1]], theta[[2]]),
                  prob = nb1_prob(theta[[2]]),
                  lower.tail = lower.tail, log.p = log.p)
@@ -301,6 +303,7 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one count per parameter setting. Both must
 #'   be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` non-negative integers.
 #'
@@ -322,7 +325,7 @@ S7::method(distrib_quantile, NegBin1Distrib) <- function(distrib, p, theta,
 #' set.seed(5)
 #' z <- distrib_rng(d, 2e4, list(mu = 4, theta = 4))
 #' c(mu = mean(z), theta = var(z) / mean(z) - 1)
-S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, NegBin1Distrib) <- function(distrib, n, theta, ...) {
   stats::rnbinom(n, size = nb1_size(theta[[1]], theta[[2]]),
                  prob = nb1_prob(theta[[2]]))
 }

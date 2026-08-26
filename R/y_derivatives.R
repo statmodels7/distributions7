@@ -243,6 +243,7 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -286,7 +287,7 @@ numerical_hess_y <- function(distrib, y, theta, h_rel = .Machine$double.eps^(1 /
 #'
 #' # A discrete family has no method at all.
 #' try(distrib_grad_y(poisson_distrib(), 1:3, list(mu = 2)))
-S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta, ...) {
   numerical_grad_y(distrib, y, theta)
 }
 
@@ -317,6 +318,7 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta) {
 #' @param distrib A `continuous_distrib` object with no closed form of its own.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -358,6 +360,6 @@ S7::method(distrib_grad_y, continuous_distrib) <- function(distrib, y, theta) {
 #'
 #' # A discrete family has no method at all.
 #' try(distrib_hess_y(poisson_distrib(), 1:3, list(mu = 2)))
-S7::method(distrib_hess_y, continuous_distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, continuous_distrib) <- function(distrib, y, theta, ...) {
   numerical_hess_y(distrib, y, theta)
 }

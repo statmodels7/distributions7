@@ -10,6 +10,8 @@
 
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{gamma1}, each a
 numeric vector of length 1 or of length \code{n}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws, whose first three sample moments

@@ -17,6 +17,8 @@ probabilities are \eqn{P(|Y| \le q)}; when \code{FALSE} they are
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm is returned.
 Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities, in \eqn{[0, 1]}.

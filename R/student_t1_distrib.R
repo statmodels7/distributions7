@@ -163,6 +163,7 @@ S7::method(distrib_pdf, StudentT1Distrib) <- function(distrib, y, theta, log = F
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma), length(nu))`. With
@@ -190,7 +191,7 @@ S7::method(distrib_pdf, StudentT1Distrib) <- function(distrib, y, theta, log = F
 #' c(t = distrib_cdf(d, 48, list(mu = 0, sigma = 1.2, nu = 5),
 #'                   lower.tail = FALSE),
 #'   gaussian = pnorm(48, 0, 1.2, lower.tail = FALSE))
-S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pt(
     q = (q - theta[[1]]) / theta[[2]],
     df = theta[[3]],
@@ -221,6 +222,7 @@ S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.t
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is read as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles on \eqn{[-\infty, \infty]}, of length
 #'   `max(length(p), length(mu), length(sigma), length(nu))`.
@@ -244,7 +246,7 @@ S7::method(distrib_cdf, StudentT1Distrib) <- function(distrib, q, theta, lower.t
 #' # Heavy tails put the extreme quantiles far further out than a Gaussian's.
 #' rbind(t = distrib_quantile(d, c(0.001, 0.999), th),
 #'       gaussian = qnorm(c(0.001, 0.999), 0.4, 1.2))
-S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   theta[[1]] + theta[[2]] * stats::qt(
     p = p,
     df = theta[[3]],
@@ -267,6 +269,7 @@ S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lo
 #'   numeric vector of length 1 or of length `n`. A component of length 1 is
 #'   recycled, so a vector of length `n` draws one variate per parameter
 #'   setting. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -288,7 +291,7 @@ S7::method(distrib_quantile, StudentT1Distrib) <- function(distrib, p, theta, lo
 #' set.seed(13)
 #' z <- distrib_rng(d, 5e4, list(mu = 0.4, sigma = 1.2, nu = 5))
 #' c(sample = var(z), theoretical = 1.2^2 * 5 / 3, sigma_sq = 1.2^2)
-S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, StudentT1Distrib) <- function(distrib, n, theta, ...) {
   theta[[1]] + theta[[2]] * stats::rt(
     n = n,
     df = theta[[3]]
@@ -731,6 +734,7 @@ S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`, one value per
@@ -760,7 +764,7 @@ S7::method(distrib_deriv4, StudentT1Distrib) <- function(distrib, y, theta, expe
 #' all.equal((distrib_pdf(d, y + eps, th, log = TRUE) -
 #'            distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps),
 #'           distrib_grad_y(d, y, th), tolerance = 1e-6)
-S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
   nu <- theta[[3]]
   -(nu + 1) * r / (nu * theta[[2]]^2 + r^2)
@@ -785,6 +789,7 @@ S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`, one value per
@@ -815,7 +820,7 @@ S7::method(distrib_grad_y, StudentT1Distrib) <- function(distrib, y, theta) {
 #' # Positive beyond |r| = sigma * sqrt(nu) = 2.68, so the log-density is
 #' # convex in the response out there.
 #' distrib_hess_y(d, 0.4 + c(1, 2, 4, 8), th)
-S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...) {
   r <- y - theta[[1]]
   nu <- theta[[3]]
   vs2 <- nu * theta[[2]]^2

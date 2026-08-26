@@ -138,6 +138,7 @@ S7::method(distrib_pdf, Gaussian1Distrib) <- function(distrib, y, theta, log = F
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -162,7 +163,7 @@ S7::method(distrib_pdf, Gaussian1Distrib) <- function(distrib, y, theta, log = F
 #' # Forty standard deviations out the upper tail underflows; its log does not.
 #' distrib_cdf(d, 40, list(mu = 0, sigma = 1), lower.tail = FALSE)
 #' distrib_cdf(d, 40, list(mu = 0, sigma = 1), lower.tail = FALSE, log.p = TRUE)
-S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pnorm(
     q = q,
     mean = theta[[1]],
@@ -193,6 +194,7 @@ S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.t
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities, which is how a quantile deep in a tail is
 #'   requested without the probability underflowing. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -216,7 +218,7 @@ S7::method(distrib_cdf, Gaussian1Distrib) <- function(distrib, q, theta, lower.t
 #' # because the probability itself is zero in double precision.
 #' distrib_quantile(d, pnorm(-40, log.p = TRUE), list(mu = 0, sigma = 1),
 #'                  log.p = TRUE)
-S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qnorm(
     p = p,
     mean = theta[[1]],
@@ -240,6 +242,7 @@ S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lo
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting.
 #'   `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -260,7 +263,7 @@ S7::method(distrib_quantile, Gaussian1Distrib) <- function(distrib, p, theta, lo
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
 #' c(mean = mean(z), sd = sd(z))
-S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Gaussian1Distrib) <- function(distrib, n, theta, ...) {
   stats::rnorm(
     n = n,
     mean = theta[[1]],
@@ -654,7 +657,7 @@ S7::method(distrib_deriv4, Gaussian1Distrib) <- function(distrib, y, theta, expe
 #' eps <- 1e-5
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, Gaussian1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, Gaussian1Distrib) <- function(distrib, y, theta, ...) {
   -(y - theta[[1]]) / theta[[2]]^2
 }
 
@@ -696,7 +699,7 @@ S7::method(distrib_grad_y, Gaussian1Distrib) <- function(distrib, y, theta) {
 #'
 #' # Negative everywhere, so the log-density is concave in the response.
 #' all(distrib_hess_y(d, y, th) < 0)
-S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, Gaussian1Distrib) <- function(distrib, y, theta, ...) {
   rep(-1 / theta[[2]]^2, length.out = length(y))
 }
 

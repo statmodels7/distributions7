@@ -12,6 +12,8 @@
 vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{kappa} be
 strictly positive. The envelope's constants are built once per call, so a
 parameter varying by observation is not supported here.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} angles in \eqn{[-\pi, \pi)}.

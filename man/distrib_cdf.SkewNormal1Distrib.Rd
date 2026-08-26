@@ -19,6 +19,8 @@ complement.}
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}. The logarithm is taken after
 the clamp, so a quantile far into the light tail returns \code{-Inf}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, or their

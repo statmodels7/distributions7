@@ -186,6 +186,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #'   probability is returned, taken after the quadrature, so it carries the
 #'   quadrature's own accuracy rather than improving on it in the far tail.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma), length(nu))`, clamped to that
@@ -211,7 +212,7 @@ S7::method(distrib_pdf, PseudoHuberDistrib) <- function(distrib, y, theta, log =
 #' # It agrees with a direct integration of the density.
 #' c(method = distrib_cdf(d, 2, th),
 #'   integral = integrate(function(v) distrib_pdf(d, v, th), -Inf, 2)$value)
-S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   all_params <- expand_params(c(list(.q = q), theta))
   qv <- all_params$.q
   th_cols <- all_params[distrib@params]
@@ -269,6 +270,7 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is read as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles on \eqn{[-\infty, \infty]}, of length
 #'   `max(length(p), length(mu), length(sigma), length(nu))`.
@@ -291,7 +293,7 @@ S7::method(distrib_cdf, PseudoHuberDistrib) <- function(distrib, q, theta, lower
 #'
 #' # Symmetry: the two quartiles are equidistant from the location.
 #' q - 0.4
-S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
 
@@ -349,6 +351,7 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #'   numeric vector of length 1 or of length `n`. A component of length 1 is
 #'   recycled, so a vector of length `n` draws one variate per parameter
 #'   setting. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -373,7 +376,7 @@ S7::method(distrib_quantile, PseudoHuberDistrib) <- function(distrib, p, theta, 
 #' z <- distrib_rng(d, 300, th)
 #' rbind(sample = c(mean(z), var(z)),
 #'       theoretical = c(mean(d, th), variance(d, th)))
-S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, PseudoHuberDistrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 
@@ -793,6 +796,7 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`, one value per
@@ -823,7 +827,7 @@ S7::method(distrib_deriv4, PseudoHuberDistrib) <- function(distrib, y, theta, ex
 #'
 #' # Bounded by 1 / sigma however far out the response is.
 #' c(distrib_grad_y(d, 0.4 + c(10, 1000, 1e6), th), bound = -1 / 1.2)
-S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
   r <- y - mu
   sigma2 <- sigma^2
@@ -849,6 +853,7 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu`, `sigma` and `nu`, each a
 #'   numeric vector of length 1 or of the length of `y`. A component of length
 #'   1 is recycled. `sigma` and `nu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma), length(nu))`, one value per
@@ -878,7 +883,7 @@ S7::method(distrib_grad_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
 #'
 #' # Negative everywhere, decaying like |r|^-3 in the tails.
 #' distrib_hess_y(d, 0.4 + c(1, 10, 100), th)
-S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, PseudoHuberDistrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; sigma <- theta[[2]]; nu <- theta[[3]]
   r <- y - mu
   sigma2 <- sigma^2

@@ -18,6 +18,8 @@ of length 1 or of the length of \code{p}. \code{mu} must lie in \eqn{(0, 1)}.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the values in \code{p} are read as
 logarithms of probabilities. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of integers between 0 and \code{size}, of length

@@ -17,6 +17,8 @@ default.}
 \item{log}{Are derivatives of the log probability wanted? A single logical,
 \code{TRUE} by default. Far into a tail the probability underflows and the
 result is \code{-Inf} or \code{NaN}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors, one per parameter, each the length

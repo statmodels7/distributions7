@@ -22,6 +22,8 @@ formed as \eqn{1 - F}.}
 probability is returned, taken after the quadrature, so it carries the
 quadrature's own accuracy rather than improving on it in the far tail.
 Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of length

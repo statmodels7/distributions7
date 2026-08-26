@@ -12,6 +12,8 @@ is consumed per draw.}
 \item{theta}{A named list with components \code{mu} and \code{lambda}, each a numeric
 vector of length 1 or of length \code{n}. A component of length 1 is recycled.
 \code{lambda} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws.

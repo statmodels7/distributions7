@@ -245,6 +245,7 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #'   formed as \eqn{1 - F}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
 #'
@@ -272,7 +273,7 @@ S7::method(distrib_pdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, the
 #' # Both tails and the logarithm.
 #' distrib_cdf(d, 2, theta, lower.tail = FALSE)
 #' distrib_cdf(d, 2, theta, log.p = TRUE)
-S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   za <- pars$mix
@@ -313,6 +314,7 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the recycled length of `p` and
 #'   `theta`. Every value is either `0` or a positive support point of the
@@ -339,7 +341,7 @@ S7::method(distrib_cdf, ZeroAdjustedDiscreteDistrib) <- function(distrib, q, the
 #' p <- c(0.5, 0.95)
 #' rbind(asked = p,
 #'       reached = distrib_cdf(d, distrib_quantile(d, p, theta), theta))
-S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
 
@@ -381,6 +383,7 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #'   [zero_adjusted()].
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list with the parent's parameters followed by `za`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `n`, every value a non-negative support
 #'   point of the parent.
@@ -406,7 +409,7 @@ S7::method(distrib_quantile, ZeroAdjustedDiscreteDistrib) <- function(distrib, p
 #' big <- distrib_rng(d, 20000, theta)
 #' c(sampled_zero = mean(big == 0), parameter = 0.4,
 #'   smallest_positive = min(big[big > 0]))
-S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, ZeroAdjustedDiscreteDistrib) <- function(distrib, n, theta, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   za <- pars$mix
@@ -796,6 +799,7 @@ S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, t
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
 #'
@@ -819,7 +823,7 @@ S7::method(distrib_pdf, ZeroAdjustedContinuousDistrib) <- function(distrib, y, t
 #'
 #' # Away from the atom it is the parent's, scaled and shifted.
 #' all.equal(distrib_cdf(d, 2, theta), 0.7 * pnorm(2, 1, 2) + 0.3)
-S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
 
@@ -854,6 +858,7 @@ S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, t
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the recycled length of `p` and
 #'   `theta`.
@@ -882,7 +887,7 @@ S7::method(distrib_cdf, ZeroAdjustedContinuousDistrib) <- function(distrib, q, t
 #' # Away from the jump the round trip closes.
 #' p <- c(0.05, 0.95)
 #' max(abs(distrib_cdf(d, distrib_quantile(d, p, theta), theta) - p))
-S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
 
@@ -936,6 +941,7 @@ S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #'   [zero_adjusted()].
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list with the parent's parameters followed by `za`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `n`, in which the value `0` appears with
 #'   probability \eqn{\pi} and is exact.
@@ -962,7 +968,7 @@ S7::method(distrib_quantile, ZeroAdjustedContinuousDistrib) <- function(distrib,
 #' big <- distrib_rng(d, 20000, theta)
 #' c(sampled_atom = mean(big == 0), parameter = 0.3)
 #' round(c(mean = mean(big[big != 0]), sd = sd(big[big != 0])), 2)
-S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, ZeroAdjustedContinuousDistrib) <- function(distrib, n, theta, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
 
@@ -1226,6 +1232,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
 #'   [zero_adjusted()].
 #' @param theta A named list with the parent's parameters followed by `za`.
 #'   Only `za` is read, and only its first element.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list with `y`, the numeric vector `0`, and `p`, the
 #'   probability at it.
@@ -1248,7 +1255,7 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
 #'
 #' # The declaration is what folded() refuses on.
 #' try(folded(d))
-S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, theta) {
+S7::method(distrib_atoms, ZeroAdjustedContinuousDistrib) <- function(distrib, theta, ...) {
   list(y = 0, p = unname(theta[[distrib@n_params]][1]))
 }
 
@@ -1323,6 +1330,7 @@ za_y_deriv <- function(distrib, y, theta, fun) {
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations. Exactly zero gives `NaN`.
 #' @param theta A named list with the parent's parameters followed by `za`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -1342,7 +1350,7 @@ za_y_deriv <- function(distrib, y, theta, fun) {
 #'
 #' # Away from the atom it is the parent's own.
 #' distrib_grad_y(gaussian1_distrib(), c(-1, 2), theta[c("mu", "sigma")])
-S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, ...) {
   za_y_deriv(distrib, y, theta, distrib_grad_y)
 }
 
@@ -1359,6 +1367,7 @@ S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #'   [zero_adjusted()].
 #' @param y A numeric vector of observations. Exactly zero gives `NaN`.
 #' @param theta A named list with the parent's parameters followed by `za`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector as long as `y`.
 #'
@@ -1379,7 +1388,7 @@ S7::method(distrib_grad_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y
 #' # Away from the atom it is the parent's, which for a gaussian is
 #' # -1 / sigma^2 everywhere.
 #' c(mixed = distrib_hess_y(d, 2, theta), parent = -1 / 2^2)
-S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, ...) {
   za_y_deriv(distrib, y, theta, distrib_hess_y)
 }
 

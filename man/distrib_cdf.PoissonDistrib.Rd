@@ -18,6 +18,8 @@ computed directly and so exact far into the upper tail.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE} the logarithm of the
 probability is returned. Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of probabilities in \eqn{[0, 1]}, of length

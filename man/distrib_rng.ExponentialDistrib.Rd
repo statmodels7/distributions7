@@ -11,6 +11,8 @@
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of length \code{n}. A value of length 1 is recycled, so a vector
 of length \code{n} draws one variate per mean. \code{mu} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} non-negative draws.

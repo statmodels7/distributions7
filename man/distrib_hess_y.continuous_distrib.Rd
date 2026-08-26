@@ -9,6 +9,8 @@
 \item{y}{A numeric vector of observations.}
 
 \item{theta}{A named list of parameters.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector as long as \code{y}.

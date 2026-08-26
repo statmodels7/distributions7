@@ -272,6 +272,7 @@ S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -293,7 +294,7 @@ S7::method(distrib_quantile, Gamma1Distrib) <- function(distrib, p, theta,
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, phi = 0.5))
 #' c(mu = mean(z), phi = var(z) / mean(z)^2)
-S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Gamma1Distrib) <- function(distrib, n, theta, ...) {
   sr <- gamma1_shape_rate(theta)
   stats::rgamma(n, shape = sr$shape, rate = sr$rate)
 }

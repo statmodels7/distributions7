@@ -9,6 +9,8 @@
 
 \item{theta}{A named list with the parent's parameters followed by \code{za}.
 Only \code{za} is read, and only its first element.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with \code{y}, the numeric vector \code{0}, and \code{p}, the

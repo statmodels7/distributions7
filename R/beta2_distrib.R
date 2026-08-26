@@ -239,6 +239,7 @@ S7::method(distrib_quantile, Beta2Distrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws in \eqn{(0, 1)}.
 #'
@@ -262,7 +263,7 @@ S7::method(distrib_quantile, Beta2Distrib) <- function(distrib, p, theta,
 #' m <- mean(z)
 #' k <- m * (1 - m) / var(z) - 1
 #' c(alpha = k * m, beta = k * (1 - m))
-S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Beta2Distrib) <- function(distrib, n, theta, ...) {
   stats::rbeta(n, shape1 = theta[[1]], shape2 = theta[[2]])
 }
 

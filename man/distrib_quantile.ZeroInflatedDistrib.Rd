@@ -16,6 +16,8 @@ the \code{log.p} and \code{lower.tail} transformations are applied.}
 
 \item{log.p}{Logical of length 1. When \code{TRUE}, \code{p} is given as a logarithm.
 Defaults to \code{FALSE}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of quantiles, of the recycled length of \code{p} and

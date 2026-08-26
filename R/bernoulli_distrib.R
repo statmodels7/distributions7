@@ -142,6 +142,7 @@ S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = F
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu))`.
@@ -163,7 +164,7 @@ S7::method(distrib_pdf, BernoulliDistrib) <- function(distrib, y, theta, log = F
 #'
 #' # The method is stats::pbinom at size 1.
 #' all.equal(distrib_cdf(d, c(0, 1), th), pbinom(c(0, 1), size = 1, prob = 0.3))
-S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pbinom(
     q = q,
     size = 1,
@@ -190,6 +191,7 @@ S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.t
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of zeros and ones, of length
 #'   `max(length(p), length(mu))`.
@@ -207,7 +209,7 @@ S7::method(distrib_cdf, BernoulliDistrib) <- function(distrib, q, theta, lower.t
 #' # The median is 0 whenever mu < 1/2 and 1 whenever mu > 1/2.
 #' vapply(c(0.3, 0.7), function(p) distrib_quantile(d, 0.5, list(mu = p)),
 #'        numeric(1))
-S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qbinom(
     p = p,
     size = 1,
@@ -230,6 +232,7 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #'   of length 1 or of length `n`. A value of length 1 is recycled, so a vector
 #'   of length `n` draws one variate per probability, the shape a regression
 #'   on a Bernoulli response supplies. `mu` must lie in \eqn{(0, 1)}.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return An integer vector of `n` zeros and ones.
 #'
@@ -254,7 +257,7 @@ S7::method(distrib_quantile, BernoulliDistrib) <- function(distrib, p, theta, lo
 #' set.seed(5)
 #' p <- plogis(seq(-2, 2, length.out = 6))
 #' rbind(p = round(p, 3), draw = distrib_rng(d, 6, list(mu = p)))
-S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, BernoulliDistrib) <- function(distrib, n, theta, ...) {
   stats::rbinom(
     n = n,
     size = 1,

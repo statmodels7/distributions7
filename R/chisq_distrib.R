@@ -143,6 +143,7 @@ S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu))`. With `log.p = TRUE` the values are
@@ -172,7 +173,7 @@ S7::method(distrib_pdf, ChisqDistrib) <- function(distrib, y, theta, log = FALSE
 #' distrib_cdf(d, 2000, th, lower.tail = FALSE, log.p = TRUE)
 S7::method(distrib_cdf, ChisqDistrib) <- function(distrib, q, theta,
                                                   lower.tail = TRUE,
-                                                  log.p = FALSE) {
+                                                  log.p = FALSE, ...) {
   stats::pchisq(q, df = theta[[1]], lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -197,6 +198,7 @@ S7::method(distrib_cdf, ChisqDistrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu))`.
@@ -223,7 +225,7 @@ S7::method(distrib_cdf, ChisqDistrib) <- function(distrib, q, theta,
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
 S7::method(distrib_quantile, ChisqDistrib) <- function(distrib, p, theta,
                                                        lower.tail = TRUE,
-                                                       log.p = FALSE) {
+                                                       log.p = FALSE, ...) {
   stats::qchisq(p, df = theta[[1]], lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -241,6 +243,7 @@ S7::method(distrib_quantile, ChisqDistrib) <- function(distrib, p, theta,
 #'   length 1 or of length `n`. A component of length 1 is recycled, so a
 #'   vector of length `n` draws one variate per parameter setting. It must be
 #'   strictly positive and need not be a whole number.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -262,7 +265,7 @@ S7::method(distrib_quantile, ChisqDistrib) <- function(distrib, p, theta,
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 4))
 #' c(mean = mean(z), var = var(z))
-S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, ChisqDistrib) <- function(distrib, n, theta, ...) {
   stats::rchisq(n, df = theta[[1]])
 }
 

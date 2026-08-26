@@ -10,6 +10,8 @@
 gives \code{NaN}.}
 
 \item{theta}{A named list of the parent's parameters.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector as long as \code{y}.

@@ -12,6 +12,8 @@
 vector of length 1 or of length \code{n}; a component of length 1 is recycled,
 so a parameter varying by observation draws one value per observation from
 its own member of the family.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} strictly positive draws.

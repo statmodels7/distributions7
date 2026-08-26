@@ -192,6 +192,7 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' @param theta A named list with components `mu` and `rho`, each a numeric
 #'   vector of length 1. `mu` must lie in \eqn{(-\pi, \pi)} and `rho` in
 #'   \eqn{(0, 1)}.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` angles in \eqn{[-\pi, \pi)}.
 #'
@@ -209,7 +210,7 @@ S7::method(distrib_pdf, VonMises2Distrib) <- function(distrib, y, theta,
 #' # resultant length of the draws is rho, and the circular mean is mu.
 #' c(resultant = sqrt(mean(cos(z))^2 + mean(sin(z))^2), rho = 0.7)
 #' c(circular_mean = atan2(mean(sin(z)), mean(cos(z))), mu = 0.5)
-S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, VonMises2Distrib) <- function(distrib, n, theta, ...) {
   distrib_rng(vonmises1_distrib(), n,
               list(mu = theta[[1]], kappa = vm2_parts(theta)$kappa))
 }

@@ -213,6 +213,7 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, 
 #'   the quantity actually computed.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
 #'   logarithms with `log.p = TRUE`, of the length of the recycled inputs.
@@ -244,7 +245,7 @@ S7::method(distrib_pdf, GPDDistrib) <- function(distrib, y, theta, log = FALSE, 
 #' distrib_cdf(d, c(4, 5, 6), list(sigma = 2, xi = -0.4))
 S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
                                                  lower.tail = TRUE,
-                                                 log.p = FALSE) {
+                                                 log.p = FALSE, ...) {
   # ifelse() returns a result the length of its TEST, so a scalar shape would
   # collapse a vector of quantiles to one number. The branch is taken with a
   # test recycled to the answer's length instead.
@@ -289,6 +290,7 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is the survival probability.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm
 #'   and is exponentiated first. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length of the recycled
 #'   inputs.
@@ -315,7 +317,7 @@ S7::method(distrib_cdf, GPDDistrib) <- function(distrib, q, theta,
 #'   endpoint = distributions7:::gpd_endpoint(2, -0.4))
 S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
-                                                      log.p = FALSE) {
+                                                      log.p = FALSE, ...) {
   if (log.p) p <- exp(p)
   if (!lower.tail) p <- 1 - p
   s <- theta[[1]]
@@ -345,6 +347,7 @@ S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
 #'   vector of length 1 or of length `n`; a component of length 1 is recycled,
 #'   so a parameter varying by observation draws one value per observation from
 #'   its own member of the family.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws, non-negative and bounded above by
 #'   [gpd_endpoint()] when the shape is negative.
@@ -372,7 +375,7 @@ S7::method(distrib_quantile, GPDDistrib) <- function(distrib, p, theta,
 #' set.seed(43)
 #' x0 <- distrib_rng(d, 1e5, list(sigma = 1.5, xi = 0))
 #' c(sample_mean = mean(x0), theory = 1.5)
-S7::method(distrib_rng, GPDDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, GPDDistrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 

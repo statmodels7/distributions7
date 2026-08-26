@@ -4,7 +4,7 @@
 \alias{trunc_rng}
 \title{Random Generation From a Truncated Distribution}
 \usage{
-trunc_rng(distrib, n, theta)
+trunc_rng(distrib, n, theta, ...)
 }
 \arguments{
 \item{distrib}{A truncated distribution object, of either class.}
@@ -13,6 +13,8 @@ trunc_rng(distrib, n, theta)
 
 \item{theta}{A named list of the parent's parameters. A component varying by
 observation must have length \code{n}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws, every one inside \eqn{[L, U]}.

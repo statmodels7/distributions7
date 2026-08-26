@@ -468,6 +468,7 @@ S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE
 #' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`,
 #'   each a numeric vector of length 1 or of length `n`; a component of length
 #'   1 is recycled.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -497,7 +498,7 @@ S7::method(distrib_pdf, SkewTDistrib) <- function(distrib, y, theta, log = FALSE
 #' delta <- 3 / sqrt(1 + 9)
 #' z <- delta * abs(rnorm(1e5)) + sqrt(1 - delta^2) * rnorm(1e5)
 #' all.equal(x, 1 + 2 * z / sqrt(rchisq(1e5, df = 8) / 8))
-S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, SkewTDistrib) <- function(distrib, n, theta, ...) {
   alpha <- theta[[3]]
   nu <- theta[[4]]
   delta <- alpha / sqrt(1 + alpha^2)
@@ -955,6 +956,7 @@ S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`,
 #'   each a numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of the recycled inputs.
 #'
@@ -982,7 +984,7 @@ S7::method(distrib_deriv4, SkewTDistrib) <- function(distrib, y, theta, expected
 #'
 #' # The score redescends in the heavy tail, as a Student t's does.
 #' distrib_grad_y(d, c(2, 8, 32, 128), th)
-S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
   p <- skewt_pieces(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]])
   (p$a + p$q * p$b) / theta[[2]]
 }
@@ -1005,6 +1007,7 @@ S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `sigma`, `alpha` and `nu`,
 #'   each a numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of the recycled inputs. It is not of
 #'   one sign.
@@ -1037,7 +1040,7 @@ S7::method(distrib_grad_y, SkewTDistrib) <- function(distrib, y, theta) {
 #' far <- c(-20, -8, 8, 20)
 #' rbind(skew_t = distrib_hess_y(d, far, th),
 #'       skew_normal = distrib_hess_y(sn, far, list(mu = 0, sigma = 1, alpha = 3)))
-S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, SkewTDistrib) <- function(distrib, y, theta, ...) {
   p <- skewt_pieces(y, theta[[1]], theta[[2]], theta[[3]], theta[[4]])
   (p$da + p$dq * p$b^2 + p$q * p$db) / theta[[2]]^2
 }

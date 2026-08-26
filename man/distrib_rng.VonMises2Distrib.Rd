@@ -11,6 +11,8 @@
 \item{theta}{A named list with components \code{mu} and \code{rho}, each a numeric
 vector of length 1. \code{mu} must lie in \eqn{(-\pi, \pi)} and \code{rho} in
 \eqn{(0, 1)}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} angles in \eqn{[-\pi, \pi)}.

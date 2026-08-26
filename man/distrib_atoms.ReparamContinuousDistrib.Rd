@@ -6,12 +6,14 @@
 \alias{distrib_atoms.ReparamDiscreteDistrib}
 \title{Atoms of a Reparametrized Distribution}
 \usage{
-reparam_atoms(distrib, theta)
+reparam_atoms(distrib, theta, ...)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution, from \code{\link[=reparametrize]{reparametrize()}}.}
 
 \item{theta}{A named list of the new parameters, on the new parameter scale.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list with components \code{y} (the atom locations) and \code{p}

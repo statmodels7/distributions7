@@ -134,6 +134,7 @@ S7::method(distrib_pdf, ExponentialDistrib) <- function(distrib, y, theta, log =
 #'   function \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu))`.
@@ -161,7 +162,7 @@ S7::method(distrib_pdf, ExponentialDistrib) <- function(distrib, y, theta, log =
 #'   distrib_cdf(d, 1, th, lower.tail = FALSE))
 S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
                                                         lower.tail = TRUE,
-                                                        log.p = FALSE) {
+                                                        log.p = FALSE, ...) {
   stats::pexp(q, rate = 1 / theta[[1]], lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -185,6 +186,7 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #'   then \eqn{-\mu\log p}, which is exact deep in the tail.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty)}, of length
 #'   `max(length(p), length(mu))`.
@@ -208,7 +210,7 @@ S7::method(distrib_cdf, ExponentialDistrib) <- function(distrib, q, theta,
 #' -2 * log(1e-300)
 S7::method(distrib_quantile, ExponentialDistrib) <- function(distrib, p, theta,
                                                              lower.tail = TRUE,
-                                                             log.p = FALSE) {
+                                                             log.p = FALSE, ...) {
   stats::qexp(p, rate = 1 / theta[[1]], lower.tail = lower.tail, log.p = log.p)
 }
 
@@ -225,6 +227,7 @@ S7::method(distrib_quantile, ExponentialDistrib) <- function(distrib, p, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of length `n`. A value of length 1 is recycled, so a vector
 #'   of length `n` draws one variate per mean. `mu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` non-negative draws.
 #'
@@ -245,7 +248,7 @@ S7::method(distrib_quantile, ExponentialDistrib) <- function(distrib, p, theta,
 #' set.seed(21)
 #' z <- distrib_rng(d, 2e4, list(mu = 3))
 #' c(mean = mean(z), sd = sd(z))
-S7::method(distrib_rng, ExponentialDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, ExponentialDistrib) <- function(distrib, n, theta, ...) {
   stats::rexp(n, rate = 1 / theta[[1]])
 }
 

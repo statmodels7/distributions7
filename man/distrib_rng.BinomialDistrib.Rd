@@ -13,6 +13,8 @@ draw.}
 \item{theta}{A named list with the single component \code{mu}, a numeric vector
 of length 1 or of length \code{n}. A value of length 1 is recycled. \code{mu} must
 lie in \eqn{(0, 1)}.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 An integer vector of \code{n} counts, each between 0 and the

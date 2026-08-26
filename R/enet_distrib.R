@@ -244,6 +244,7 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #'   is \eqn{P(Y \le q)}; when `FALSE` it is one minus that.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, or their
 #'   logarithms with `log.p = TRUE`, of the length of the recycled inputs.
@@ -277,7 +278,7 @@ S7::method(distrib_pdf, EnetDistrib) <- function(distrib, y, theta,
 #'   cdf = distrib_cdf(d, 0.1, hard))
 S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
                                                  lower.tail = TRUE,
-                                                 log.p = FALSE) {
+                                                 log.p = FALSE, ...) {
   p <- .enet_parts(theta)
   z <- q - p$mu
   s <- sqrt(p$c)
@@ -315,6 +316,7 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is the survival probability.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm
 #'   and is exponentiated first. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of the length of the recycled
 #'   inputs.
@@ -340,7 +342,7 @@ S7::method(distrib_cdf, EnetDistrib) <- function(distrib, q, theta,
 #'                  list(mu = 0, lambda = 20, alpha = 0.995))
 S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
                                                       lower.tail = TRUE,
-                                                      log.p = FALSE) {
+                                                      log.p = FALSE, ...) {
   pr <- if (log.p) exp(p) else p
   if (!lower.tail) pr <- 1 - pr
   pa <- .enet_parts(theta)
@@ -365,6 +367,7 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, each a
 #'   numeric vector of length 1 or of length `n`; a component of length 1 is
 #'   recycled.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws, symmetric about `mu`.
 #'
@@ -387,7 +390,7 @@ S7::method(distrib_quantile, EnetDistrib) <- function(distrib, p, theta,
 #' set.seed(72)
 #' xl <- distrib_rng(d, 1e5, list(mu = 0, lambda = 2, alpha = 1 - 1e-10))
 #' c(sample_var = var(xl), laplace_var = 2 / 2^2)
-S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, EnetDistrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 
@@ -706,6 +709,7 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' @param y A numeric vector of observations.
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of the recycled inputs.
 #'
@@ -736,7 +740,7 @@ S7::method(distrib_expected_hessian, EnetDistrib) <- function(
 #' c(just_below = distrib_grad_y(d, -1e-9, th),
 #'   just_above = distrib_grad_y(d, 1e-9, th),
 #'   two_a = 2 * 2 * 0.5)
-S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta, ...) {
   p <- .enet_parts(theta)
   z <- y - p$mu
   -p$a * sign(z) - p$c * z
@@ -763,6 +767,7 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta) {
 #'   result; only its length does.
 #' @param theta A named list with components `mu`, `lambda` and `alpha`, each a
 #'   numeric vector of length 1 or of the length of `y`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of the length of `y`, every entry \eqn{-c}.
 #'
@@ -795,7 +800,7 @@ S7::method(distrib_grad_y, EnetDistrib) <- function(distrib, y, theta) {
 #' vapply(c(0.1, 0.5, 0.9, 0.999),
 #'        function(a) distrib_hess_y(d, 1, list(mu = 0, lambda = 2,
 #'                                              alpha = a)), 0)
-S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, EnetDistrib) <- function(distrib, y, theta, ...) {
   p <- .enet_parts(theta)
   rep(-p$c, length(y))
 }

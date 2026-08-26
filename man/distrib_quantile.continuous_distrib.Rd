@@ -20,6 +20,8 @@ logarithms under \code{log.p}. The bounds of the support are returned at 0 and
 \item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm and
 exponentiates it first, so a probability that has underflowed is not
 recovered.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of quantiles, the length of the recycled \code{p} and

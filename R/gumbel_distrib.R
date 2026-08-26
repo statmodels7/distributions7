@@ -152,6 +152,7 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -181,7 +182,7 @@ S7::method(distrib_pdf, GumbelDistrib) <- function(distrib, y, theta, log = FALS
 #' # Deep in the lower tail the probability underflows and its log does not.
 #' distrib_cdf(d, -700, th)
 #' distrib_cdf(d, -700, th, log.p = TRUE)
-S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   z <- (q - theta[[1]]) / theta[[2]]
   w <- exp(-z)
   if (lower.tail) {
@@ -214,6 +215,7 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -238,7 +240,7 @@ S7::method(distrib_cdf, GumbelDistrib) <- function(distrib, q, theta, lower.tail
 #'
 #' # A return level: the value exceeded once in 100 periods.
 #' distrib_quantile(d, 1 - 1 / 100, th)
-S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   # log p is what the formula needs, so it is kept rather than exponentiated
   # and logged again; for the upper tail log(1 - p) comes from log1p.
   lp <- if (lower.tail) {
@@ -264,6 +266,7 @@ S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting.
 #'   `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws on the whole real line.
 #'
@@ -286,7 +289,7 @@ S7::method(distrib_quantile, GumbelDistrib) <- function(distrib, p, theta, lower
 #' z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
 #' s <- sd(z) * sqrt(6) / pi
 #' c(mu = mean(z) + digamma(1) * s, sigma = s)
-S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, GumbelDistrib) <- function(distrib, n, theta, ...) {
   theta[[1]] - theta[[2]] * log(stats::rexp(n))
 }
 
@@ -695,6 +698,7 @@ S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma))`, one value per observation.
@@ -722,7 +726,7 @@ S7::method(distrib_deriv4, GumbelDistrib) <- function(distrib, y, theta, expecte
 #' eps <- 1e-6
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   (exp(-(y - theta[[1]]) / sigma) - 1) / sigma
 }
@@ -745,6 +749,7 @@ S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma))`, one value per observation,
@@ -766,7 +771,7 @@ S7::method(distrib_grad_y, GumbelDistrib) <- function(distrib, y, theta) {
 #'
 #' # Negative everywhere, so the log-density is concave in the response.
 #' all(distrib_hess_y(d, c(-20, 0, 20), th) < 0)
-S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, GumbelDistrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   -exp(-(y - theta[[1]]) / sigma) / sigma^2
 }

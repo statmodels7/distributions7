@@ -4,7 +4,7 @@
 \alias{loc_scale_hess_cdf}
 \title{Location-Scale CDF Hessian}
 \usage{
-loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE)
+loc_scale_hess_cdf(distrib, q, theta, lower.tail = TRUE, log = TRUE, ...)
 }
 \arguments{
 \item{distrib}{An object inheriting from \code{distrib} whose first two
@@ -20,6 +20,8 @@ default.}
 
 \item{log}{Are derivatives of the log probability wanted? A single logical,
 \code{TRUE} by default.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of three numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each

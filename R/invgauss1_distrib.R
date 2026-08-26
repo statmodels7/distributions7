@@ -154,6 +154,7 @@ S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = F
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(phi))`. With `log.p = TRUE` the values
@@ -188,7 +189,7 @@ S7::method(distrib_pdf, InvGauss1Distrib) <- function(distrib, y, theta, log = F
 #' # Far in the upper tail the probability underflows and its log does not.
 #' distrib_cdf(d, 1e4, th, lower.tail = FALSE)
 #' distrib_cdf(d, 1e4, th, lower.tail = FALSE, log.p = TRUE)
-S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   statmod::pinvgauss(
     q = q,
     mean = theta[[1]],
@@ -220,6 +221,7 @@ S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.t
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities, which is how a quantile deep in a tail is
 #'   requested without the probability underflowing. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu), length(phi))`.
@@ -241,7 +243,7 @@ S7::method(distrib_cdf, InvGauss1Distrib) <- function(distrib, q, theta, lower.t
 #'
 #' # The median falls well below the mean at this dispersion.
 #' c(median = distrib_quantile(d, 0.5, th), mean = mean(d, th))
-S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   statmod::qinvgauss(
     p = p,
     mean = theta[[1]],
@@ -265,6 +267,7 @@ S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lo
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` strictly positive draws.
 #'
@@ -286,7 +289,7 @@ S7::method(distrib_quantile, InvGauss1Distrib) <- function(distrib, p, theta, lo
 #' set.seed(3)
 #' z <- distrib_rng(d, 2e4, list(mu = 1, phi = 2))
 #' c(mu = mean(z), phi = mean(1 / z) - 1 / mean(z))
-S7::method(distrib_rng, InvGauss1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, InvGauss1Distrib) <- function(distrib, n, theta, ...) {
   statmod::rinvgauss(
     n = n,
     mean = theta[[1]],
@@ -673,6 +676,7 @@ S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #' @param theta A named list with components `mu` and `phi`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(phi))`, one value per observation.
@@ -699,7 +703,7 @@ S7::method(distrib_deriv4, InvGauss1Distrib) <- function(distrib, y, theta, expe
 #' eps <- 1e-6
 #' (distrib_pdf(d, y + eps, th, log = TRUE) -
 #'   distrib_pdf(d, y - eps, th, log = TRUE)) / (2 * eps)
-S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta, ...) {
   mu <- theta[[1]]; phi <- theta[[2]]
   -1.5 / y - (y^2 - mu^2) / (2 * phi * mu^2 * y^2)
 }
@@ -723,6 +727,7 @@ S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu` and `phi`, each a numeric
 #'   vector of length 1 or of the length of `y`. `mu` is not read. `phi` must
 #'   be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `max(length(y), length(phi))`, one value
 #'   per observation.
@@ -747,7 +752,7 @@ S7::method(distrib_grad_y, InvGauss1Distrib) <- function(distrib, y, theta) {
 #' c(below = distrib_hess_y(d, cut / 2, th),
 #'   at = distrib_hess_y(d, cut, th),
 #'   above = distrib_hess_y(d, 2 * cut, th))
-S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, InvGauss1Distrib) <- function(distrib, y, theta, ...) {
   phi <- theta[[2]]
   1.5 / y^2 - 1 / (phi * y^3)
 }

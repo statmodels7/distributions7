@@ -13,6 +13,8 @@ the value infinite unless the corresponding shape is exactly 1.}
 vector of length 1 or of the length of \code{y}. A component of length 1 is
 recycled. \code{mu} must lie strictly in \eqn{(0, 1)} and \code{phi} must be
 strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of length

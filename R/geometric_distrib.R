@@ -167,6 +167,7 @@ S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = F
 #'   function \eqn{P(Y > q)}, exact far into the tail.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu))`.
@@ -193,7 +194,7 @@ S7::method(distrib_pdf, GeometricDistrib) <- function(distrib, y, theta, log = F
 #'     distrib_cdf(d, s, th, lower.tail = FALSE), numeric(1))
 S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
                                                       lower.tail = TRUE,
-                                                      log.p = FALSE) {
+                                                      log.p = FALSE, ...) {
   stats::pgeom(q, prob = geom_prob(theta[[1]]), lower.tail = lower.tail,
                log.p = log.p)
 }
@@ -216,6 +217,7 @@ S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are read as
 #'   logarithms of probabilities. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of non-negative integers, of length
 #'   `max(length(p), length(mu))`.
@@ -235,7 +237,7 @@ S7::method(distrib_cdf, GeometricDistrib) <- function(distrib, q, theta,
 #' rbind(asked = p, reached = distrib_cdf(d, distrib_quantile(d, p, th), th))
 S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
                                                            lower.tail = TRUE,
-                                                           log.p = FALSE) {
+                                                           log.p = FALSE, ...) {
   stats::qgeom(p, prob = geom_prob(theta[[1]]), lower.tail = lower.tail,
                log.p = log.p)
 }
@@ -252,6 +254,7 @@ S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
 #' @param theta A named list with the single component `mu`, a numeric vector
 #'   of length 1 or of length `n`. A value of length 1 is recycled, so a vector
 #'   of length `n` draws one count per mean. `mu` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return An integer vector of `n` non-negative counts.
 #'
@@ -271,7 +274,7 @@ S7::method(distrib_quantile, GeometricDistrib) <- function(distrib, p, theta,
 #' set.seed(5)
 #' z <- distrib_rng(d, 2e4, list(mu = 2.5))
 #' c(mean = mean(z), var = var(z), mu_1_plus_mu = 2.5 * 3.5)
-S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, GeometricDistrib) <- function(distrib, n, theta, ...) {
   stats::rgeom(n, prob = geom_prob(theta[[1]]))
 }
 

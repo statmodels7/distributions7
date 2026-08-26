@@ -747,6 +747,7 @@ S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log =
 #'   is inverted before reaching the parent.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm is returned,
 #'   computed by the parent. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities, in \eqn{[0, 1]}.
 #'
@@ -772,7 +773,7 @@ S7::method(distrib_pdf, TransformedDistrib) <- function(distrib, y, theta, log =
 #' ig@transformer@decreasing
 #' c(transformed = distrib_cdf(ig, 0.5, th2),
 #'   parent_upper = distrib_cdf(gamma1_distrib(), 2, th2, lower.tail = FALSE))
-S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   tr <- distrib@transformer
   if (tr@decreasing) lower.tail <- !lower.tail
   distrib_cdf(distrib@parent_distrib, tr@trans_inv(q), theta, lower.tail = lower.tail, log.p = log.p)
@@ -795,6 +796,7 @@ S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower
 #'   reaching the parent.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is given as a logarithm
 #'   and passed as such to the parent. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles on the transformed scale.
 #'
@@ -822,7 +824,7 @@ S7::method(distrib_cdf, TransformedDistrib) <- function(distrib, q, theta, lower
 #' th2 <- list(mu = 2, phi = 0.3)
 #' c(transformed = distrib_quantile(ig, 0.9, th2),
 #'   mapped = 1 / distrib_quantile(gamma1_distrib(), 0.1, th2))
-S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   tr <- distrib@transformer
   if (tr@decreasing) lower.tail <- !lower.tail
   tr@trans_fun(distrib_quantile(distrib@parent_distrib, p, theta, lower.tail = lower.tail, log.p = log.p))
@@ -840,6 +842,7 @@ S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, 
 #' @param distrib A `TransformedDistrib` object, from [transformation()].
 #' @param n The number of draws, a single non-negative whole number.
 #' @param theta A named list of the parent's parameters.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length `n`, on the transformed scale.
 #'
@@ -861,7 +864,7 @@ S7::method(distrib_quantile, TransformedDistrib) <- function(distrib, p, theta, 
 #' set.seed(2)
 #' big <- distrib_rng(d, 20000, theta)
 #' c(sampled = mean(big < 2), exact = distrib_cdf(d, 2, theta))
-S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, TransformedDistrib) <- function(distrib, n, theta, ...) {
   distrib@transformer@trans_fun(distrib_rng(distrib@parent_distrib, n, theta))
 }
 

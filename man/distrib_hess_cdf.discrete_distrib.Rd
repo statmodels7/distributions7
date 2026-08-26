@@ -15,6 +15,8 @@ default.}
 
 \item{log}{Are derivatives of the log probability wanted? A single logical,
 \code{TRUE} by default.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the

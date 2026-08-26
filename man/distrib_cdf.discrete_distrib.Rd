@@ -17,6 +17,8 @@ distribution function on a lattice requires.}
 
 \item{log.p}{Logical of length 1. \code{TRUE} returns the logarithm, taken after
 the summation.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of cumulative probabilities, the length of the

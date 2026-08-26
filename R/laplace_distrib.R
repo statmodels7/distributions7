@@ -153,6 +153,7 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned, taken after the probability itself is formed.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -177,7 +178,7 @@ S7::method(distrib_pdf, LaplaceDistrib) <- function(distrib, y, theta, log = FAL
 #'
 #' # Symmetric: F(mu - a) + F(mu + a) = 1.
 #' distrib_cdf(d, 0.4 - 2, th) + distrib_cdf(d, 0.4 + 2, th)
-S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
   res <- ifelse(q < mu, 0.5 * exp((q - mu) / b), 1 - 0.5 * exp(-(q - mu) / b))
@@ -205,6 +206,7 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 #'   `1 - p` before the formula is applied.
 #' @param log.p Logical of length 1. When `TRUE` the values in `p` are
 #'   exponentiated first. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -224,7 +226,7 @@ S7::method(distrib_cdf, LaplaceDistrib) <- function(distrib, q, theta, lower.tai
 #' # Exact inverse: the round trip returns the probabilities it was given.
 #' p <- c(0.025, 0.5, 0.975)
 #' all.equal(distrib_cdf(d, distrib_quantile(d, p, th), th), p)
-S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   mu <- theta[[1]]
   b <- theta[[2]]
   if (log.p) p <- exp(p)
@@ -248,6 +250,7 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled.
 #'   `sigma` must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws.
 #'
@@ -268,7 +271,7 @@ S7::method(distrib_quantile, LaplaceDistrib) <- function(distrib, p, theta, lowe
 #' set.seed(7)
 #' z <- distrib_rng(d, 2e4, list(mu = 3, sigma = 2))
 #' c(mean = mean(z), var = var(z), two_sigma_sq = 2 * 4)
-S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, LaplaceDistrib) <- function(distrib, n, theta, ...) {
   distrib_quantile(distrib, stats::runif(n), theta)
 }
 
@@ -669,7 +672,7 @@ S7::method(distrib_deriv4, LaplaceDistrib) <- function(distrib, y, theta, expect
 #'
 #' # Three values only, and 0 at the kink itself.
 #' distrib_grad_y(d, 0.4 + c(-100, -1e-9, 0, 1e-9, 100), th)
-S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
   -sign(y - theta[[1]]) / theta[[2]]
 }
 
@@ -711,7 +714,7 @@ S7::method(distrib_grad_y, LaplaceDistrib) <- function(distrib, y, theta) {
 #' # curvature the zero above does not see.
 #' diff(distrib_grad_y(d, 0.4 + c(-1e-9, 1e-9), th))
 #' -2 / 1.5
-S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, LaplaceDistrib) <- function(distrib, y, theta, ...) {
   rep(0, length.out = length(y))
 }
 

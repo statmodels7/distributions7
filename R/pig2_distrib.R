@@ -434,6 +434,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
 #'   vector of length 1 or of length `n`; a component of length 1 is recycled,
 #'   so a parameter varying by observation draws one value per observation from
 #'   its own member of the family.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return An integer-valued numeric vector of `n` draws.
 #'
@@ -456,7 +457,7 @@ S7::method(distrib_deriv4, Pig2Distrib) <- function(distrib, y, theta,
 #' # The empirical mass against the exact one, over the head of the support.
 #' rbind(sample = as.numeric(table(factor(x, levels = 0:6))) / 2e5,
 #'       exact = distrib_pdf(d, 0:6, th))
-S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Pig2Distrib) <- function(distrib, n, theta, ...) {
   mu <- rep_len(theta[[1]], n)
   sg <- pig2_sigma(mu, rep_len(theta[[2]], n))
   lam <- statmod::rinvgauss(n, mean = mu, shape = mu / sg)

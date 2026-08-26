@@ -553,6 +553,7 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #' @param n A single positive integer, the number of draws.
 #' @param theta A named list with components `mu`, `sigma` and `gamma1`, each a
 #'   numeric vector of length 1 or of length `n`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` draws, whose first three sample moments
 #'   estimate `mu`, `sigma^2` and `gamma1`.
@@ -572,7 +573,7 @@ S7::method(distrib_quantile, SkewNormal2Distrib) <- function(distrib, p, theta,
 #' # point of this parametrization.
 #' rbind(sample = c(mean(x), sd(x), mean((x - mean(x))^3) / sd(x)^3),
 #'       parameter = c(th$mu, th$sigma, th$gamma1))
-S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, SkewNormal2Distrib) <- function(distrib, n, theta, ...) {
   distrib_rng(skewnormal1_distrib(), n, sn2_theta(theta))
 }
 

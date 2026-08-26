@@ -4,7 +4,7 @@
 \alias{trunc_quantile}
 \title{Quantile Function of a Truncated Distribution}
 \usage{
-trunc_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE)
+trunc_quantile(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...)
 }
 \arguments{
 \item{distrib}{A truncated distribution object, of either class.}
@@ -18,6 +18,8 @@ upper-tail probability.}
 
 \item{log.p}{Logical, default \code{FALSE}. When \code{TRUE}, \code{p} is given on the log
 scale.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of quantiles, of the length \code{p} and \code{theta} recycle

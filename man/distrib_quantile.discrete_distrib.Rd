@@ -17,6 +17,8 @@ logarithms under \code{log.p}.}
 
 \item{log.p}{Logical of length 1. \code{TRUE} treats \code{p} as a logarithm and
 exponentiates it first.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of support points, the length of the recycled \code{p}

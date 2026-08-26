@@ -11,6 +11,8 @@
 \item{theta}{A named list with components \code{mu}, \code{sigma} and \code{nu}, each a
 numeric vector of length 1 or of the length of \code{y}. A component of length
 1 is recycled. \code{sigma} and \code{nu} must be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of length

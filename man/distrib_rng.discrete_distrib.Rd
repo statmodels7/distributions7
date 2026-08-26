@@ -12,6 +12,8 @@ no method of its own.}
 \item{theta}{A named list of parameters, each of length 1 or \code{n}. A
 component of length \code{n} gives one draw per parameter setting, and the
 draws are grouped by distinct setting so that each builds one table.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} draws, every one a support point.

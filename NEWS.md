@@ -1,3 +1,38 @@
+# distributions7 0.40.0
+
+* Every method of every generic accepts `...` where its generic declares one.
+  0.29.0 did this for `distrib_pdf`, for a measured reason: the von Mises
+  family needed a thread count carried down to `log_bessel_i`, and 43 of 45
+  methods signalled `unused argument` on an argument they do not read. Eight
+  generics were still split, and 197 of their methods refused.
+
+* The argument for closing it is uniformity rather than extensibility. 27 of
+  the package's 35 generics were already uniform, every method accepting; the
+  eight that were not accepted on some families and refused on others, so the
+  same call succeeded on one family and failed on another with no way for a
+  reader to predict which. `distrib_rng` accepted on 5 methods of 56 and
+  `distrib_quantile` on 11 of 44, and the ones that accepted were mostly the
+  wrappers and the reparametrized families, which were forced to by having to
+  forward to a parent.
+
+* 171 inline method definitions and nine shared helper bodies are edited.
+  `loc_scale_grad_cdf` serves five families and `trunc_cdf` two, so nine edits
+  close 26 registrations; the helpers are named functions, so roxygen
+  generates a `\usage` for them and the `@param ...` is required there rather
+  than conventional.
+
+* The cost, stated: an argument a method does not read is now absorbed rather
+  than reported, so `distrib_cdf(d, q, theta, lower.tial = FALSE)` is silently
+  ignored where it used to stop. That is the cost `distrib_pdf` has paid since
+  0.29.0 and every one of the other 26 uniform generics pays; what changes is
+  that it is now paid consistently.
+
+* `mv_location` and `mv_sigma` declare no `...` at all, so their methods
+  cannot be given one without changing the generic. They are left as they are.
+
+* No behavior beyond the absorption changes, and the suite is unmoved at 6430
+  passing.
+
 # distributions7 0.39.0
 
 * Every moment method returns one value per parameter setting. 147 of the 168

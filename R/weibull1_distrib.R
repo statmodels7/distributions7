@@ -183,6 +183,7 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #'   probabilities are \eqn{P(Y \le q)}; when `FALSE` they are \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE` the logarithm of the
 #'   probability is returned. Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of probabilities in \eqn{[0, 1]}, of length
 #'   `max(length(q), length(mu), length(sigma))`. With `log.p = TRUE` the
@@ -207,7 +208,7 @@ S7::method(distrib_pdf, Weibull1Distrib) <- function(distrib, y, theta, log = FA
 #'
 #' # There the survival probability itself has underflowed to zero.
 #' distrib_cdf(d, 40, th, lower.tail = FALSE)
-S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::pweibull(
     q = q, shape = theta[[2]], scale = theta[[1]],
     lower.tail = lower.tail, log.p = log.p
@@ -235,6 +236,7 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #'   \eqn{P(Y \le q)}; when `FALSE` it is \eqn{P(Y > q)}.
 #' @param log.p Logical of length 1. When `TRUE`, `p` is read as a logarithm.
 #'   Defaults to `FALSE`.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of quantiles in \eqn{[0, \infty]}, of length
 #'   `max(length(p), length(mu), length(sigma))`.
@@ -254,7 +256,7 @@ S7::method(distrib_cdf, Weibull1Distrib) <- function(distrib, q, theta, lower.ta
 #'
 #' # The median is mu times (log 2)^(1/sigma), whatever the shape.
 #' all.equal(distrib_quantile(d, 0.5, th), 2 * log(2)^(1 / 1.5))
-S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE) {
+S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, lower.tail = TRUE, log.p = FALSE, ...) {
   stats::qweibull(
     p = p, shape = theta[[2]], scale = theta[[1]],
     lower.tail = lower.tail, log.p = log.p
@@ -276,6 +278,7 @@ S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, low
 #'   vector of length 1 or of length `n`. A component of length 1 is recycled,
 #'   so a vector of length `n` draws one variate per parameter setting. Both
 #'   must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of `n` positive draws.
 #'
@@ -296,7 +299,7 @@ S7::method(distrib_quantile, Weibull1Distrib) <- function(distrib, p, theta, low
 #' set.seed(11)
 #' z <- distrib_rng(d, 2e4, list(mu = 2, sigma = 1.5))
 #' c(sample = mean(z), theoretical = 2 * gamma(1 + 1 / 1.5), scale = 2)
-S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta) {
+S7::method(distrib_rng, Weibull1Distrib) <- function(distrib, n, theta, ...) {
   stats::rweibull(n = n, shape = theta[[2]], scale = theta[[1]])
 }
 
@@ -698,6 +701,7 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma))`, one value per observation.
@@ -727,7 +731,7 @@ S7::method(distrib_deriv4, Weibull1Distrib) <- function(distrib, y, theta, expec
 #' # It vanishes at the mode, which exists because the shape exceeds one.
 #' mode <- 2 * ((1.5 - 1) / 1.5)^(1 / 1.5)
 #' c(mode = mode, deriv = distrib_grad_y(d, mode, th))
-S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   p <- weibull_pieces(y, theta[[1]], sigma)
   (sigma - 1 - sigma * p$u) / y
@@ -752,6 +756,7 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' @param theta A named list with components `mu` and `sigma`, each a numeric
 #'   vector of length 1 or of the length of `y`. A component of length 1 is
 #'   recycled. Both must be strictly positive.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A numeric vector of length
 #'   `max(length(y), length(mu), length(sigma))`, one value per observation.
@@ -779,7 +784,7 @@ S7::method(distrib_grad_y, Weibull1Distrib) <- function(distrib, y, theta) {
 #' # zero; at a smaller shape it turns positive.
 #' rbind(shape_1.0 = distrib_hess_y(d, y, list(mu = 2, sigma = 1)),
 #'       shape_0.6 = distrib_hess_y(d, y, list(mu = 2, sigma = 0.6)))
-S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta) {
+S7::method(distrib_hess_y, Weibull1Distrib) <- function(distrib, y, theta, ...) {
   sigma <- theta[[2]]
   p <- weibull_pieces(y, theta[[1]], sigma)
   -(sigma - 1) * (1 + sigma * p$u) / y^2

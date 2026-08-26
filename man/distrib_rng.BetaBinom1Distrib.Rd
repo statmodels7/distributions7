@@ -12,6 +12,8 @@ number of \strong{trials} is the object's \code{size} property, not this argumen
 \item{theta}{A named list with components \code{mu} and \code{sigma}, each a numeric
 vector of length 1 or of length \code{n}. A component of length 1 is recycled.
 \code{mu} must lie in \eqn{(0, 1)} and \code{sigma} be strictly positive.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A numeric vector of \code{n} counts in \eqn{\{0, \dots, size\}}.
