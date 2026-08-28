@@ -100,10 +100,34 @@
 <span><span class="co">#&gt; [1] -3.879892  2.000000  7.879892</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="moments">Moments<a class="anchor" aria-label="anchor" href="#moments"></a>
+</h2>
+<p>A distribution is asked for its moments rather than having them looked up: the mean, the variance, the standard deviation, the skewness and the excess kurtosis, in closed form where one exists and by quadrature against the density where it does not. <code><a href="reference/moment.html">moment()</a></code> answers for an arbitrary order, raw or central.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># sigma^2 and 3 sigma^4 at the even orders; the odd ones vanish, and they</span></span>
+<span><span class="co"># vanish to the accuracy of the quadrature that produced them rather than</span></span>
+<span><span class="co"># because a table said so</span></span>
+<span><span class="fu"><a href="reference/moment.html">moment</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span>, p <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, central <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 5.884182e-15 9.000000e+00 1.456613e-13 2.430000e+02</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>skewness <span class="op">=</span> <span class="fu"><a href="reference/skewness.html">skewness</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span>, kurtosis <span class="op">=</span> <span class="fu"><a href="reference/kurtosis.html">kurtosis</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; skewness kurtosis </span></span>
+<span><span class="co">#&gt;        0        0</span></span></code></pre></div>
+<p>Every moment returns <strong>one value per parameter setting</strong>, so a component given as a vector asks for one moment per element and the answer can be bound to the rows it came from. That holds whether or not the parameter being varied happens to enter the formula: the variance of a Weibull below does not read its scale as a separate quantity, and still comes back three long.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">w</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/weibull1_distrib.html">weibull1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/variance.html">variance</a></span><span class="op">(</span><span class="va">w</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">1</span>, <span class="fl">100</span><span class="op">)</span>, sigma <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2.146018e-03 2.146018e-01 2.146018e+03</span></span></code></pre></div>
+<p><code>theta</code> is read by name and not by position here as everywhere else, so the components may be written in any order.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>          <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">d</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sigma <span class="op">=</span> <span class="fl">3</span>, mu <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="derivatives">Derivatives<a class="anchor" aria-label="anchor" href="#derivatives"></a>
 </h2>
 <p>The score, the observed and expected information, and the third and fourth order derivatives are all closed form.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="va">d</span>, <span class="fl">5</span>, <span class="va">theta</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">)</span></span>
@@ -122,7 +146,7 @@
 <span><span class="co">#&gt; $mu_sigma</span></span>
 <span><span class="co">#&gt; [1] 0</span></span></code></pre></div>
 <p>On the <strong>link scale</strong> the same generics return derivatives with respect to the unconstrained parameters instead, computed through the chain rule rather than by differentiating numerically:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/distrib_gradient.html">distrib_gradient</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, scale <span class="op">=</span> <span class="st">"link"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $mu</span></span>
 <span><span class="co">#&gt; [1] -0.20881794  0.06121444 -0.27854287  0.53176027  0.10983592</span></span>
@@ -134,14 +158,14 @@
 <h2 id="fitting">Fitting<a class="anchor" aria-label="anchor" href="#fitting"></a>
 </h2>
 <p><code><a href="reference/fit_distrib.html">fit_distrib()</a></code> maximizes the likelihood on the link scale, where the parameters are unconstrained, then reports estimates back on their natural scale. Confidence intervals are built on the link scale and mapped through <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>g</mi><mrow><mi>−</mi><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">g^{-1}</annotation></semantics></math>, so they can never leave a parameter’s domain.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/distrib_rng.html">distrib_rng</a></span><span class="op">(</span><span class="fu"><a href="reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="fl">500</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">3</span>, sigma2 <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms</span></span>
-<span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06 or |df| &lt; 1e-12 (relative))</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms</span></span>
+<span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
 <span><span class="co">#&gt;        Estimate Std. Error   2.5%  97.5%</span></span>
@@ -153,16 +177,16 @@
 <span><span class="co">#&gt; mu       1.0842     0.0213 1.0424 1.1260</span></span>
 <span><span class="co">#&gt; sigma2   0.6875     0.0744 0.5416 0.8334</span></span></code></pre></div>
 <p>The fit carries the data it was estimated from, so it can be checked against the data and simulated from:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-fit-plot-1.png" alt="" width="100%"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sims</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">fit</span>, <span class="fl">100</span>, seed <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">sims</span>, <span class="va">median</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     2.5%    97.5% </span></span>
 <span><span class="co">#&gt; 2.570081 2.881259</span></span></code></pre></div>
 <p>The optimization itself is delegated to <a href="https://statmodels7.github.io/optimizers7/" class="external-link">optimizers7</a>. One argument says how to optimize, and it takes either an optimizer of that package, which brings its own stopping rule, or <code><a href="reference/fisher_scoring.html">fisher_scoring()</a></code>, which is Newton’s method with the expected information and carries how that information is to be obtained when the family has no closed form for it.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="fu"><a href="reference/gamma2_distrib.html">gamma2_distrib</a></span><span class="op">(</span><span class="op">)</span>, <span class="va">y</span>,</span>
 <span>                    method <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/lbfgs.html" class="external-link">lbfgs</a></span><span class="op">(</span></span>
 <span>                      criterion <span class="op">=</span> <span class="fu">optimizers7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/optimizers7/reference/crit_grad.html" class="external-link">crit_grad</a></span><span class="op">(</span><span class="fl">1e-12</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -170,7 +194,7 @@
 <span><span class="co">#&gt;    fisher     lbfgs </span></span>
 <span><span class="co">#&gt; -841.2326 -841.2326</span></span></code></pre></div>
 <p>Where a fit starts matters more than it looks, so a family is asked for its own starting value through <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family with a known estimator returns it and the fit begins there; one that says nothing gets random draws.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">f4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d4</span>, <span class="va">y4</span><span class="op">)</span></span>
@@ -182,7 +206,7 @@
 <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a>
 </h2>
 <p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, <code><a href="reference/fit_distrib.html">fit_distrib()</a></code> included. The names say which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">dm</span><span class="op">@</span><span class="va">params</span></span>
 <span><span class="co">#&gt; [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"</span></span>
@@ -195,19 +219,19 @@
 <span><span class="co">#&gt; v1 1.0476959 0.7273189</span></span>
 <span><span class="co">#&gt; v2 0.7273189 1.5380692</span></span></code></pre></div>
 <p>Those free values are coordinates an optimizer moves in, not quantities anybody reads, and they are not what the fit prints. <code><a href="reference/mv_summary.html">mv_summary()</a></code> carries the fit’s variance matrix onto the ones that are, by the delta method, and builds each interval on the scale that keeps it in its own set: a standard deviation on the log scale, a correlation on Fisher’s <em>z</em>. A precision parametrization reports the same standard deviations and correlations — they are properties of the law — and adds the conditional variances and partial correlations, which are what it describes directly.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/mv_summary.html">mv_summary</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span>
 <span><span class="co">#&gt;            Estimate Std. Error      2.5%     97.5%</span></span>
 <span><span class="co">#&gt; sd_v1     1.0235702 0.03236813 0.9620558 1.0890178</span></span>
 <span><span class="co">#&gt; sd_v2     1.2401892 0.03921823 1.1656565 1.3194875</span></span>
 <span><span class="co">#&gt; cor_v1_v2 0.5729534 0.03004043 0.5111287 0.6288798</span></span></code></pre></div>
 <p>Up to three coordinates the fit can be drawn, each panel showing a marginal: the fitted density against a kernel estimate on the diagonal, and contours against the observations below it.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mv-plot-1.png" alt="" width="100%"></p>
 <p><code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math> and which the family keeps apart so that it remains usable below two degrees of freedom, where the covariance does not exist.</p>
 <p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector — a <code>parameters7</code> simplex — and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="va">th</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>probs_alr1 <span class="op">=</span> <span class="fl">0.3</span>, probs_alr2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="fu"><a href="reference/distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">dm</span>, <span class="fu"><a href="reference/mv_support.html">mv_support</a></span><span class="op">(</span><span class="va">dm</span>, <span class="va">th</span><span class="op">)</span>, <span class="va">th</span><span class="op">)</span><span class="op">)</span></span>
@@ -217,7 +241,7 @@
 <h2 id="a-user-defined-distribution-needs-only-its-density">A user-defined distribution needs only its density<a class="anchor" aria-label="anchor" href="#a-user-defined-distribution-needs-only-its-density"></a>
 </h2>
 <p>Everything above has a numerical fallback registered on the base classes: the distribution function by quadrature, the quantile function by root finding, the generator by Generalized Ratio-of-Uniforms, and every derivative by finite differences. So a new distribution is a subclass and one method.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">MyLaplace</span> <span class="op">&lt;-</span> <span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/new_class.html" class="external-link">new_class</a></span><span class="op">(</span><span class="st">"MyLaplace"</span>, parent <span class="op">=</span> <span class="va">continuous_distrib</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/method.html" class="external-link">method</a></span><span class="op">(</span><span class="va">distrib_pdf</span>, <span class="va">MyLaplace</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">distrib</span>, <span class="va">y</span>, <span class="va">theta</span>, <span class="va">log</span> <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
@@ -250,7 +274,7 @@
 <h2 id="validating-a-distribution">Validating a distribution<a class="anchor" aria-label="anchor" href="#validating-a-distribution"></a>
 </h2>
 <p><code><a href="reference/check_distrib.html">check_distrib()</a></code> puts a distribution through thirteen numerical checks. It verifies that the density integrates to one, that the distribution function agrees with it, that the quantile function inverts it, and that the generator follows it. It also checks every derivative order against finite differences, on both scales.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="reference/check_distrib.html">check_distrib</a></span><span class="op">(</span><span class="va">d2</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">0</span>, b <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, nsim <span class="op">=</span> <span class="fl">2e4</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Distribution: my laplace</span></span>
 <span><span class="co">#&gt; Parameters:   mu = 0, b = 2</span></span>

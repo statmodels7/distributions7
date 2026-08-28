@@ -66,6 +66,51 @@ distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
 #> [1] -3.879892  2.000000  7.879892
 ```
 
+## Moments
+
+A distribution is asked for its moments rather than having them looked
+up: the mean, the variance, the standard deviation, the skewness and the
+excess kurtosis, in closed form where one exists and by quadrature
+against the density where it does not.
+[`moment()`](https://statmodels7.github.io/distributions7/reference/moment.md)
+answers for an arbitrary order, raw or central.
+
+``` r
+
+# sigma^2 and 3 sigma^4 at the even orders; the odd ones vanish, and they
+# vanish to the accuracy of the quadrature that produced them rather than
+# because a table said so
+moment(d, theta, p = 1:4, central = TRUE)
+#> [1] 5.884182e-15 9.000000e+00 1.456613e-13 2.430000e+02
+c(skewness = skewness(d, theta), kurtosis = kurtosis(d, theta))
+#> skewness kurtosis 
+#>        0        0
+```
+
+Every moment returns **one value per parameter setting**, so a component
+given as a vector asks for one moment per element and the answer can be
+bound to the rows it came from. That holds whether or not the parameter
+being varied happens to enter the formula: the variance of a Weibull
+below does not read its scale as a separate quantity, and still comes
+back three long.
+
+``` r
+
+w <- weibull1_distrib()
+variance(w, list(mu = c(0.1, 1, 100), sigma = 2))
+#> [1] 2.146018e-03 2.146018e-01 2.146018e+03
+```
+
+`theta` is read by name and not by position here as everywhere else, so
+the components may be written in any order.
+
+``` r
+
+identical(mean(d, list(mu = 2, sigma = 3)),
+          mean(d, list(sigma = 3, mu = 2)))
+#> [1] TRUE
+```
+
 ## Derivatives
 
 The score, the observed and expected information, and the third and
@@ -121,8 +166,8 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 17   evaluations: f 18, g 18   time: 30 ms
-#> Converged: yes (gradient (max-norm) < 1e-06 or |df| < 1e-12 (relative))
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
+#> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
 #>        Estimate Std. Error   2.5%  97.5%
