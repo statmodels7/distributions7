@@ -104,6 +104,42 @@ distrib_cdf(d, c(0, 2, 4), theta)
 distrib_quantile(d, c(0.025, 0.5, 0.975), theta)
 ```
 
+## Moments
+
+A distribution is asked for its moments rather than having them looked up:
+the mean, the variance, the standard deviation, the skewness and the excess
+kurtosis, in closed form where one exists and by quadrature against the
+density where it does not. `moment()` answers for an arbitrary order, raw or
+central.
+
+```{r}
+# sigma^2 and 3 sigma^4 at the even orders; the odd ones vanish, and they
+# vanish to the accuracy of the quadrature that produced them rather than
+# because a table said so
+moment(d, theta, p = 1:4, central = TRUE)
+c(skewness = skewness(d, theta), kurtosis = kurtosis(d, theta))
+```
+
+Every moment returns **one value per parameter setting**, so a component
+given as a vector asks for one moment per element and the answer can be
+bound to the rows it came from. That holds whether or not the parameter
+being varied happens to enter the formula: the variance of a Weibull below
+does not read its scale as a separate quantity, and still comes back three
+long.
+
+```{r}
+w <- weibull1_distrib()
+variance(w, list(mu = c(0.1, 1, 100), sigma = 2))
+```
+
+`theta` is read by name and not by position here as everywhere else, so the
+components may be written in any order.
+
+```{r}
+identical(mean(d, list(mu = 2, sigma = 3)),
+          mean(d, list(sigma = 3, mu = 2)))
+```
+
 ## Derivatives
 
 The score, the observed and expected information, and the third and fourth
