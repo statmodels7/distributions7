@@ -41,7 +41,7 @@ for the response convention.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 
 # A vector of length p is one observation.
 dim(distributions7:::as_mv_matrix(d, c(1, -1)))

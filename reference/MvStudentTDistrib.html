@@ -9,7 +9,7 @@ free values become scalar parameters, and the degrees of freedom \(\nu\)
 is added last. It inherits from multivariate_distrib, so the response is
 an \(n \times p\) matrix and the distribution function and the quantile
 function are refused.
-Build one with mvstudent_t_distrib(), which fills the properties in and
+Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which validates nothing."><meta property="og:description" content="The S7 class of the elliptical Student t family on \(\mathbb{R}^p\), with
 density
@@ -21,7 +21,7 @@ free values become scalar parameters, and the degrees of freedom \(\nu\)
 is added last. It inherits from multivariate_distrib, so the response is
 an \(n \times p\) matrix and the distribution function and the quantile
 function are refused.
-Build one with mvstudent_t_distrib(), which fills the properties in and
+Build one with mvstudent_t1_distrib(), which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which validates nothing."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -31,7 +31,7 @@ constructor, which validates nothing."><meta property="og:image" content="https:
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +74,7 @@ free values become scalar parameters, and the degrees of freedom \(\nu\)
 is added last. It inherits from <code>multivariate_distrib</code>, so the response is
 an \(n \times p\) matrix and the distribution function and the quantile
 function are refused.</p>
-<p>Build one with <code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which fills the properties in and
+<p>Build one with <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which validates nothing.</p>
     </div>
@@ -92,7 +92,8 @@ constructor, which validates nothing.</p>
 <span>  link_params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  params_smooth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
 <span>  n_dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span>,</span>
-<span>  param <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/parameter.html" class="external-link">parameter</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  param <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/parameter.html" class="external-link">parameter</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  inverted <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></span><span class="op">(</span><span class="fl">0</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -142,9 +143,18 @@ integer.</p></dd>
 
 
 <dt id="arg-param">param<a class="anchor" aria-label="anchor" href="#arg-param"></a></dt>
-<dd><p>A <span class="pkg">parameters7</span> parametrization of the SCALE matrix,
-inheriting from <code><a href="https://statmodels7.github.io/parameters7/reference/parameter.html" class="external-link">parameters7::parameter</a></code>. Its <code>n_free</code> free values are
-flattened into scalar parameters of the distribution.</p></dd>
+<dd><p>A <span class="pkg">parameters7</span> parametrization of the scale matrix or of
+its inverse, according to <code>inverted</code>, inheriting from
+<code><a href="https://statmodels7.github.io/parameters7/reference/parameter.html" class="external-link">parameters7::parameter</a></code>. Its <code>n_free</code> free values are flattened into
+scalar parameters of the distribution.</p></dd>
+
+
+<dt id="arg-inverted">inverted<a class="anchor" aria-label="anchor" href="#arg-inverted"></a></dt>
+<dd><p>Logical of length 1. <code>TRUE</code> when <code>param</code> carries the
+inverse scale matrix \(\Sigma^{-1}\) and <code>FALSE</code> when it carries the
+scale matrix \(\Sigma\). Nothing but the sign of the log-determinant and
+one matrix inversion depends on it; the law is the same either way, and
+neither matrix is a moment of the response.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -153,9 +163,8 @@ flattened into scalar parameters of the distribution.</p></dd>
 <code>multivariate_distrib</code> and from <code>distrib</code>. Beyond the parent's
 <code>distrib_name</code>, <code>dimension</code>, <code>bounds</code>, <code>params</code>,
 <code>params_interpretation</code>, <code>n_params</code>, <code>params_bounds</code>, <code>link_params</code>,
-<code>params_smooth</code> and <code>n_dim</code>, it carries <code>param</code> as supplied. Unlike
-<a href="MvGaussianDistrib.html">MvGaussianDistrib</a> it has no <code>inverted</code> property: the scale matrix is
-always parametrized as itself.</p>
+<code>params_smooth</code> and <code>n_dim</code>, it carries <code>param</code> and <code>inverted</code> as
+supplied.</p>
     </div>
     <div class="section level2">
     <h2 id="methods">Methods<a class="anchor" aria-label="anchor" href="#methods"></a></h2>
@@ -183,7 +192,7 @@ families share.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> to build one, <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code> for
+    <div class="dont-index"><p><code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> to build one, <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for
 the limit \(\nu \to \infty\), <code><a href="mv_sigma.MvStudentTDistrib.html">mv_sigma.MvStudentTDistrib()</a></code> for the
 scale matrix and <code><a href="variance.MvStudentTDistrib.html">variance.MvStudentTDistrib()</a></code> for the covariance, which
 are different matrices here.</p></div>
@@ -191,7 +200,7 @@ are different matrices here.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t_distrib.html">mvstudent_t_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7_inherits</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">multivariate_distrib</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

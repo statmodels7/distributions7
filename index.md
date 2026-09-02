@@ -42,14 +42,14 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-The package carries 42 univariate distributions and 4 multivariate ones,
+The package carries 42 univariate distributions and 6 multivariate ones,
 one name per parametrization where a family has several –
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 in mean and scale,
 [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
 in mean and variance,
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
-in mean and precision, and likewise for 12 other families. Each
+in mean and precision, and likewise for 14 other families. Each
 constructor takes the link functions used for its parameters, and
 parameters travel as a named list.
 
@@ -166,7 +166,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -225,7 +225,7 @@ that says nothing gets random draws.
 
 ``` r
 
-d4 <- mvgaussian_distrib(4)
+d4 <- mvgaussian1_distrib(4)
 y4 <- as.matrix(iris[, 1:4])
 f4 <- fit_distrib(d4, y4)
 c(iterations = f4@iterations, converged = f4@converged)
@@ -247,7 +247,7 @@ structure on the two sides is two different models.
 
 ``` r
 
-dm <- mvgaussian_distrib(2)
+dm <- mvgaussian1_distrib(2)
 dm@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"
 
@@ -291,7 +291,7 @@ plot(fitm)
 
 ![](reference/figures/README-mv-plot-1.png)
 
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 is the heavy-tailed alternative, with the degrees of freedom estimated
 alongside everything else. Its
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
@@ -402,6 +402,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
 | discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
-| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrized by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
+| multivariate | [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md) and [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md), parametrized by a covariance and by a precision structure respectively from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md) and [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md) on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
 | wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md), [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |

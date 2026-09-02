@@ -7,7 +7,7 @@ carried by a parameters7 parametrization, whose free values become
 scalar parameters in their turn. It inherits from multivariate_distrib,
 so the response is an \(n \times p\) matrix and the distribution function
 and the quantile function are refused.
-Build one with mvgaussian_distrib(), which fills the properties in and
+Build one with mvgaussian1_distrib(), which fills the properties in and
 checks that the matrix parametrization has full rank. This page documents
 the raw S7 constructor, which validates neither the rank nor the agreement
 between n_dim and the parametrization's dimension."><meta property="og:description" content="The S7 class of the gaussian family on \(\mathbb{R}^p\), with density
@@ -18,7 +18,7 @@ carried by a parameters7 parametrization, whose free values become
 scalar parameters in their turn. It inherits from multivariate_distrib,
 so the response is an \(n \times p\) matrix and the distribution function
 and the quantile function are refused.
-Build one with mvgaussian_distrib(), which fills the properties in and
+Build one with mvgaussian1_distrib(), which fills the properties in and
 checks that the matrix parametrization has full rank. This page documents
 the raw S7 constructor, which validates neither the rank nor the agreement
 between n_dim and the parametrization's dimension."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -29,7 +29,7 @@ between n_dim and the parametrization's dimension."><meta property="og:image" co
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,7 +70,7 @@ carried by a <span class="pkg">parameters7</span> parametrization, whose free va
 scalar parameters in their turn. It inherits from <code>multivariate_distrib</code>,
 so the response is an \(n \times p\) matrix and the distribution function
 and the quantile function are refused.</p>
-<p>Build one with <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, which fills the properties in and
+<p>Build one with <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>, which fills the properties in and
 checks that the matrix parametrization has full rank. This page documents
 the raw S7 constructor, which validates neither the rank nor the agreement
 between <code>n_dim</code> and the parametrization's dimension.</p>
@@ -159,7 +159,7 @@ one matrix inversion depends on it; the law is the same either way.</p></dd>
 <code>distrib_name</code>, <code>dimension</code>, <code>bounds</code>, <code>params</code>,
 <code>params_interpretation</code>, <code>n_params</code>, <code>params_bounds</code>, <code>link_params</code>,
 <code>params_smooth</code> and <code>n_dim</code>, it carries <code>param</code> and <code>inverted</code> as
-supplied. For an object built by <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code> at \(p = 2\) on
+supplied. For an object built by <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> at \(p = 2\) on
 an unstructured covariance, <code>params</code> is
 <code>c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")</code>, every
 <code>params_bounds</code> entry is \((-\infty, \infty)\) and every link is the
@@ -191,7 +191,7 @@ refusals.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code> to build one, <code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> for
+    <div class="dont-index"><p><code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> to build one, <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> for
 the heavy-tailed sibling, <code><a href="mv_sigma.html">mv_sigma()</a></code> for the covariance a parameter
 vector describes, and <code><a href="distrib_gradient.MvGaussianDistrib.html">distrib_gradient.MvGaussianDistrib()</a></code> for the
 closed-form score.</p></div>
@@ -199,7 +199,7 @@ closed-form score.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">S7</span><span class="fu">::</span><span class="fu"><a href="https://rconsortium.github.io/S7/reference/S7_inherits.html" class="external-link">S7_inherits</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">multivariate_distrib</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
@@ -219,7 +219,7 @@ closed-form score.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   "identity"   "identity"   "identity"   "identity"   "identity" </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The precision form differs in one property and in the prefix.</span></span></span>
-<span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian2_distrib</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>covariance <span class="op">=</span> <span class="va">d</span><span class="op">@</span><span class="va">inverted</span>, precision <span class="op">=</span> <span class="va">o</span><span class="op">@</span><span class="va">inverted</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> covariance  precision </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      FALSE       TRUE </span>

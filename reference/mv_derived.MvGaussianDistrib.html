@@ -23,7 +23,7 @@ has a zero."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -73,7 +73,7 @@ has a zero.</p>
 
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
-<dd><p>An <a href="MvGaussianDistrib.html">MvGaussianDistrib</a> object, from <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>.</p></dd>
+<dd><p>An <a href="MvGaussianDistrib.html">MvGaussianDistrib</a> object, from <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -126,7 +126,7 @@ result, and <code><a href="mv_derived.html">mv_derived()</a></code> for the gene
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>              sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="mv_derived.html">mv_derived</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span></span>
@@ -135,7 +135,7 @@ result, and <code><a href="mv_derived.html">mv_derived()</a></code> for the gene
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># The precision side reports the same law's standard deviations and</span></span></span>
 <span class="r-in"><span><span class="co"># correlation, and adds the conditional variances.</span></span></span>
-<span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">o</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian2_distrib</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th_o</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, omega_log_L1 <span class="op">=</span> <span class="fl">0</span>, omega_log_L2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>             omega_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">od</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_derived.html">mv_derived</a></span><span class="op">(</span><span class="va">o</span>, <span class="va">th_o</span><span class="op">)</span></span></span>
@@ -156,7 +156,7 @@ result, and <code><a href="mv_derived.html">mv_derived()</a></code> for the gene
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># At three dimensions the partial correlations appear as a block of their</span></span></span>
 <span class="r-in"><span><span class="co"># own, the partial and the marginal no longer coinciding.</span></span></span>
-<span class="r-in"><span><span class="va">o3</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">3</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">o3</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian2_distrib</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">th3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="va">o3</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="mv_derived.html">mv_derived</a></span><span class="op">(</span><span class="va">o3</span>, <span class="va">th3</span><span class="op">)</span><span class="op">$</span><span class="va">block</span><span class="op">)</span></span></span>

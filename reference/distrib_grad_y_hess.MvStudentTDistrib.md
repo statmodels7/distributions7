@@ -18,7 +18,7 @@ one is not.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -63,7 +63,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -80,7 +80,7 @@ gh$mu1_mu2
 #> [2,] -0.5298276  0.55887216
 #> [3,]  0.3837536 -0.62965640
 #> [4,] -0.1588397  0.01859468
-distrib_grad_y_hess(mvgaussian_distrib(2), y, theta[1:5])$mu1_mu2
+distrib_grad_y_hess(mvgaussian1_distrib(2), y, theta[1:5])$mu1_mu2
 #>      [,1] [,2]
 #> [1,]    0    0
 #> [2,]    0    0

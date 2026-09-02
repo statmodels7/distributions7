@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -829,7 +829,7 @@
       </dl></div><div class="section level2">
       <h2 id="several-dimensions">Several dimensions<a class="anchor" aria-label="anchor" href="#several-dimensions"></a></h2>
 
-      <div class="section-desc"><p>Distributions whose observations are vectors. The response is a matrix with one row per observation, and the parameters stay scalars: a mean vector contributes one each, and a covariance contributes the free values of the parameters7 structure that parametrizes it, so every generic of the package indexes them as it always did.</p></div>
+      <div class="section-desc"><p>Distributions whose observations are vectors. The response is a matrix with one row per observation, and the parameters stay scalars: a mean vector contributes one each, and the matrix contributes the free values of the parameters7 structure that parametrizes it, so every generic of the package indexes them as it always did. There is one name per parametrization here as elsewhere, so the gaussian is written either in its covariance or in its precision and the t either in its scale matrix or in the inverse of that.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -838,14 +838,14 @@
 
       <dl><dt>
 
-          <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>
+          <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> <code><a href="mvgaussian1_distrib.html">mvgaussian2_distrib()</a></code>
 
         </dt>
         <dd>Construct a Multivariate Gaussian Distribution</dd>
 
         <dt>
 
-          <code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>
+          <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> <code><a href="mvstudent_t1_distrib.html">mvstudent_t2_distrib()</a></code>
 
         </dt>
         <dd>Construct a Multivariate Student t Distribution</dd>
@@ -1231,6 +1231,13 @@
 
         <dt>
 
+          <code><a href="MvGaussian1Distrib.html">MvGaussian1Distrib()</a></code> <code><a href="MvGaussian1Distrib.html">MvGaussian2Distrib()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Two Multivariate Gaussian Parametrizations</dd>
+
+        <dt>
+
           <code><a href="distrib_cdf.Gaussian1Distrib.html">distrib_cdf.Gaussian1Distrib</a></code>
 
         </dt>
@@ -1335,6 +1342,13 @@
 
         </dt>
         <dd>Gaussian Distribution Class, Mean and Variance</dd>
+
+        <dt>
+
+          <code><a href="MvGaussian1Distrib.html">MvGaussian1Distrib()</a></code> <code><a href="MvGaussian1Distrib.html">MvGaussian2Distrib()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Two Multivariate Gaussian Parametrizations</dd>
 
         <dt>
 
@@ -1735,6 +1749,13 @@
 
         </dt>
         <dd>Student t Distribution Class, Location, Scale and Degrees of Freedom</dd>
+
+        <dt>
+
+          <code><a href="MvStudentT1Distrib.html">MvStudentT1Distrib()</a></code> <code><a href="MvStudentT1Distrib.html">MvStudentT2Distrib()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Two Multivariate Student t Parametrizations</dd>
 
         <dt>
 
@@ -4755,6 +4776,13 @@
 
         </dt>
         <dd>Multivariate Gaussian Distribution Class</dd>
+
+        <dt>
+
+          <code><a href="MvGaussian1Distrib.html">MvGaussian1Distrib()</a></code> <code><a href="MvGaussian1Distrib.html">MvGaussian2Distrib()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Two Multivariate Gaussian Parametrizations</dd>
       </dl></div><div class="section level2">
       <h2 id="multivariate-student-t">Multivariate Student t<a class="anchor" aria-label="anchor" href="#multivariate-student-t"></a></h2>
 
@@ -4771,6 +4799,13 @@
 
         </dt>
         <dd>Multivariate Student t Distribution Class</dd>
+
+        <dt>
+
+          <code><a href="MvStudentT1Distrib.html">MvStudentT1Distrib()</a></code> <code><a href="MvStudentT1Distrib.html">MvStudentT2Distrib()</a></code>
+
+        </dt>
+        <dd>S7 Classes for the Two Multivariate Student t Parametrizations</dd>
 
         <dt>
 
@@ -5790,14 +5825,14 @@
 
         <dt>
 
-          <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>
+          <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> <code><a href="mvgaussian1_distrib.html">mvgaussian2_distrib()</a></code>
 
         </dt>
         <dd>Construct a Multivariate Gaussian Distribution</dd>
 
         <dt>
 
-          <code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>
+          <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> <code><a href="mvstudent_t1_distrib.html">mvstudent_t2_distrib()</a></code>
 
         </dt>
         <dd>Construct a Multivariate Student t Distribution</dd>
@@ -8494,6 +8529,13 @@
 
         <dt>
 
+          <code><a href="mv_matrix_pieces.html">mv_matrix_pieces()</a></code>
+
+        </dt>
+        <dd>The Matrix, Its Inverse and Their Derivatives, From Either Side</dd>
+
+        <dt>
+
           <code><a href="mv_moment_start.html">mv_moment_start()</a></code>
 
         </dt>
@@ -8624,6 +8666,20 @@
 
         </dt>
         <dd>Residuals and Whitened Residuals of a Multivariate Gaussian</dd>
+
+        <dt>
+
+          <code><a href="mvgaussian_build.html">mvgaussian_build()</a></code>
+
+        </dt>
+        <dd>Build One of the Two Multivariate Gaussian Families</dd>
+
+        <dt>
+
+          <code><a href="mvstudent_t_build.html">mvstudent_t_build()</a></code>
+
+        </dt>
+        <dd>Build One of the Two Multivariate Student t Families</dd>
 
         <dt>
 

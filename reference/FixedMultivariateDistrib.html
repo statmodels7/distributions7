@@ -25,7 +25,7 @@ parameter alone is what a random effect is distributed by."><meta property="og:i
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -198,7 +198,7 @@ go on rejecting through this wrapper.</p>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="fixed.html">fixed()</a></code> to build one, <a href="FixedContinuousDistrib.html">FixedContinuousDistrib</a> and
-<a href="FixedDiscreteDistrib.html">FixedDiscreteDistrib</a> for the two siblings, <code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code> for a
+<a href="FixedDiscreteDistrib.html">FixedDiscreteDistrib</a> for the two siblings, <code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> for a
 parent, and <code><a href="mv_summary.html">mv_summary()</a></code> for the quantities a fit of one reports.</p></div>
     </div>
 
@@ -206,7 +206,7 @@ parent, and <code><a href="mv_summary.html">mv_summary()</a></code> for the quan
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># A centered two-dimensional gaussian: the matrix alone, which is what a</span></span></span>
 <span class="r-in"><span><span class="co"># random effect is distributed by.</span></span></span>
-<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixed.html">fixed</a></span><span class="op">(</span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">d</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  </span>
 <span class="r-in"><span><span class="va">d</span></span></span>
@@ -228,7 +228,7 @@ parent, and <code><a href="mv_summary.html">mv_summary()</a></code> for the quan
 <span class="r-in"><span><span class="co"># The law is the parent's at the spliced theta.</span></span></span>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">theta</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="va">y</span>,</span></span>
+<span class="r-in"><span>          <span class="fu"><a href="distrib_pdf.html">distrib_pdf</a></span><span class="op">(</span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span>, <span class="va">y</span>,</span></span>
 <span class="r-in"><span>                      <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>, <span class="va">theta</span><span class="op">)</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>

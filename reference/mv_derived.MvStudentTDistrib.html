@@ -19,7 +19,7 @@ and blocked as &quot;Scale standard deviations&quot; to say so."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ and blocked as <code>"Scale standard deviations"</code> to say so.</p>
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
 <dd><p>An <a href="MvStudentTDistrib.html">MvStudentTDistrib</a> object, from
-<code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>.</p></dd>
+<code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -110,7 +110,7 @@ and <code><a href="mv_derived.html">mv_derived()</a></code> for the generic.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t_distrib.html">mvstudent_t_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>              sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">der</span> <span class="op">&lt;-</span> <span class="fu"><a href="mv_derived.html">mv_derived</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>

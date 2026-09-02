@@ -19,7 +19,7 @@ cost so differently in a fit.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - y:
 
@@ -66,7 +66,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 set.seed(1)
@@ -86,7 +86,7 @@ ll <- function(v) {
   sum(distrib_pdf(d, y, t2, log = TRUE))
 }
 max(abs(vapply(g, sum, numeric(1)) - numDeriv::grad(ll, unlist(theta))))
-#> [1] 4.389364e-09
+#> [1] 4.368311e-09
 
 # The mean component is the whitened residual, one row per observation.
 S <- mv_sigma(d, theta)

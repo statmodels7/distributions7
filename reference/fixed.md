@@ -72,7 +72,7 @@ returning it silently would hide a missing argument.
 
 A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with
 its scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-`fixed(mvgaussian_distrib(p), mu1 = 0, ...)` is what a random effect is
+`fixed(mvgaussian1_distrib(p), mu1 = 0, ...)` is what a random effect is
 distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
 half-normal.
 

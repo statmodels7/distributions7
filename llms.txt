@@ -42,14 +42,14 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-The package carries 42 univariate distributions and 4 multivariate ones,
+The package carries 42 univariate distributions and 6 multivariate ones,
 one name per parametrization where a family has several –
 [`gaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian1_distrib.md)
 in mean and scale,
 [`gaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian2_distrib.md)
 in mean and variance,
 [`gaussian3_distrib()`](https://statmodels7.github.io/distributions7/reference/gaussian3_distrib.md)
-in mean and precision, and likewise for 12 other families. Each
+in mean and precision, and likewise for 14 other families. Each
 constructor takes the link functions used for its parameters, and
 parameters travel as a named list.
 
@@ -166,7 +166,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -225,7 +225,7 @@ that says nothing gets random draws.
 
 ``` r
 
-d4 <- mvgaussian_distrib(4)
+d4 <- mvgaussian1_distrib(4)
 y4 <- as.matrix(iris[, 1:4])
 f4 <- fit_distrib(d4, y4)
 c(iterations = f4@iterations, converged = f4@converged)
@@ -247,7 +247,7 @@ structure on the two sides is two different models.
 
 ``` r
 
-dm <- mvgaussian_distrib(2)
+dm <- mvgaussian1_distrib(2)
 dm@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"
 
@@ -291,7 +291,7 @@ plot(fitm)
 
 ![](reference/figures/README-mv-plot-1.png)
 
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 is the heavy-tailed alternative, with the degrees of freedom estimated
 alongside everything else. Its
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
@@ -402,7 +402,7 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
 | discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
-| multivariate | [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md), parametrized by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md), which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
+| multivariate | [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md) and [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md), parametrized by a covariance and by a precision structure respectively from [parameters7](https://statmodels7.github.io/parameters7/); [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md) and [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md) on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md) on the simplex, whose marginals are beta; and [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md), whose support is enumerated by [`mv_support()`](https://statmodels7.github.io/distributions7/reference/mv_support.md) so that every expectation is an exact sum |
 | wrappers | [`zero_inflated()`](https://statmodels7.github.io/distributions7/reference/zero_inflated.md), [`zero_adjusted()`](https://statmodels7.github.io/distributions7/reference/zero_adjusted.md), [`truncated()`](https://statmodels7.github.io/distributions7/reference/truncated.md), [`folded()`](https://statmodels7.github.io/distributions7/reference/folded.md), [`fixed()`](https://statmodels7.github.io/distributions7/reference/fixed.md), [`transformation()`](https://statmodels7.github.io/distributions7/reference/transformation.md) with twelve transformers |
 | tools | [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md), [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md), [`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md), moments, [`rng_grou()`](https://statmodels7.github.io/distributions7/reference/rng_grou.md) |
 
@@ -657,13 +657,18 @@ values.
 
 Distributions whose observations are vectors. The response is a matrix
 with one row per observation, and the parameters stay scalars: a mean
-vector contributes one each, and a covariance contributes the free
-values of the parameters7 structure that parametrizes it, so every
-generic of the package indexes them as it always did.
+vector contributes one each, and the matrix contributes the free values
+of the parameters7 structure that parametrizes it, so every generic of
+the package indexes them as it always did. There is one name per
+parametrization here as elsewhere, so the gaussian is written either in
+its covariance or in its precision and the t either in its scale matrix
+or in the inverse of that.
 
-- [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+- [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
   : Construct a Multivariate Gaussian Distribution
-- [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+- [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
   : Construct a Multivariate Student t Distribution
 - [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
   : Dirichlet Distribution, Mean Vector and Concentration
@@ -780,6 +785,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`Gaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/Gaussian1Distrib.md)
   : Gaussian Distribution Class, Mean and Standard Deviation
+- [`MvGaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  [`MvGaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  : S7 Classes for the Two Multivariate Gaussian Parametrizations
 - [`distrib_cdf.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gaussian1Distrib.md)
   : Gaussian Cumulative Distribution Function
 - [`distrib_deriv3.Gaussian1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian1Distrib.md)
@@ -811,6 +819,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`Gaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/Gaussian2Distrib.md)
   : Gaussian Distribution Class, Mean and Variance
+- [`MvGaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  [`MvGaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  : S7 Classes for the Two Multivariate Gaussian Parametrizations
 - [`distrib_cdf.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.Gaussian2Distrib.md)
   : Gaussian Cumulative Distribution Function in Mean and Variance
 - [`distrib_deriv3.Gaussian2Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.Gaussian2Distrib.md)
@@ -927,6 +938,9 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`StudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/StudentT1Distrib.md)
   : Student t Distribution Class, Location, Scale and Degrees of Freedom
+- [`MvStudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  [`MvStudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  : S7 Classes for the Two Multivariate Student t Parametrizations
 - [`distrib_cdf.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_cdf.StudentT1Distrib.md)
   : Student t Cumulative Distribution Function
 - [`distrib_deriv3.StudentT1Distrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.StudentT1Distrib.md)
@@ -1807,11 +1821,17 @@ Rarely called directly, but useful as a reference for what is happening.
 
 - [`MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   : Multivariate Gaussian Distribution Class
+- [`MvGaussian1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  [`MvGaussian2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.md)
+  : S7 Classes for the Two Multivariate Gaussian Parametrizations
 
 ## Multivariate Student t
 
 - [`MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   : Multivariate Student t Distribution Class
+- [`MvStudentT1Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  [`MvStudentT2Distrib()`](https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.md)
+  : S7 Classes for the Two Multivariate Student t Parametrizations
 - [`distrib_deriv3.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv3.MvStudentTDistrib.md)
   : Multivariate Student t Third Derivatives
 - [`distrib_deriv4.MvStudentTDistrib`](https://statmodels7.github.io/distributions7/reference/distrib_deriv4.MvStudentTDistrib.md)
@@ -2110,9 +2130,11 @@ inherits unless it registers something more specific.
   : Multinomial Distribution
 - [`multivariate_distrib()`](https://statmodels7.github.io/distributions7/reference/multivariate_distrib.md)
   : S7 Class for Multivariate Distributions
-- [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+- [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
   : Construct a Multivariate Gaussian Distribution
-- [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+- [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
   : Construct a Multivariate Student t Distribution
 - [`negbin1_distrib()`](https://statmodels7.github.io/distributions7/reference/negbin1_distrib.md)
   : Negative Binomial Distribution, NB1
@@ -3327,6 +3349,9 @@ divergent density.
 - [`mv_marginal.multivariate_distrib`](https://statmodels7.github.io/distributions7/reference/mv_marginal.multivariate_distrib.md)
   : No Marginal Without a Closed Form
 
+- [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+  : The Matrix, Its Inverse and Their Derivatives, From Either Side
+
 - [`mv_moment_start()`](https://statmodels7.github.io/distributions7/reference/mv_moment_start.md)
   : The Moment Estimates a Multivariate Family Starts From
 
@@ -3383,6 +3408,12 @@ divergent density.
 
 - [`mvg_residuals()`](https://statmodels7.github.io/distributions7/reference/mvg_residuals.md)
   : Residuals and Whitened Residuals of a Multivariate Gaussian
+
+- [`mvgaussian_build()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_build.md)
+  : Build One of the Two Multivariate Gaussian Families
+
+- [`mvstudent_t_build()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_build.md)
+  : Build One of the Two Multivariate Student t Families
 
 - [`mvt_A()`](https://statmodels7.github.io/distributions7/reference/mvt_A.md)
   : The Digamma Difference of a Multivariate t, Without the Cancellation

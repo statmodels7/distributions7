@@ -141,7 +141,7 @@ for a coordinate's marginal and the two-coordinate case seen on the
 line;
 [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
 for the discrete family on the same simplex;
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 for the elliptical multivariate family;
 [`parameters7::simplex()`](https://statmodels7.github.io/parameters7/reference/simplex.html)
 for the chart the mean rides;

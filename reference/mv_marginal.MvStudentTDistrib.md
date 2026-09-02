@@ -9,7 +9,7 @@ scale-mixture representation is shared by every coordinate, so it
 survives integrating any of them out.
 
 The returned object is a fresh
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 of the reduced dimension on an unstructured scale matrix, so the free
 values are recomputed from the block by
 [`parameters7::param_free()`](https://statmodels7.github.io/parameters7/reference/param_free.html)
@@ -22,7 +22,7 @@ and are not a subset of the original's.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - theta:
 
@@ -60,7 +60,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(3)
+d <- mvstudent_t1_distrib(3)
 theta <- as.list(stats::setNames(
   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2, 6), d@params))
 

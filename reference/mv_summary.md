@@ -82,7 +82,7 @@ for the fit.
 
 ``` r
 set.seed(1)
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
               sigma_log_L2 = 0, sigma_L2.1 = 0.7)
 y <- distrib_rng(d, 500, truth)

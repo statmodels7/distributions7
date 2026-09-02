@@ -48,7 +48,7 @@ for the consumer.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 idx <- distributions7:::mv_hess_indices(d)
 length(idx) == length(hess_names(d@params))
 #> [1] TRUE

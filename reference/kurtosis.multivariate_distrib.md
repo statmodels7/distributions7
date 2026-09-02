@@ -43,7 +43,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5, nu = 6)
 try(kurtosis(d, theta))

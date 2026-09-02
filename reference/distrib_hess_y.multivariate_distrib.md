@@ -61,8 +61,8 @@ try(distrib_hess_y(d, y, theta))
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)
 yy <- rbind(c(1, -1), c(0, 0))
-dim(distrib_hess_y(mvgaussian_distrib(2), yy, th))
+dim(distrib_hess_y(mvgaussian1_distrib(2), yy, th))
 #> [1] 2 2
-dim(distrib_hess_y(mvstudent_t_distrib(2), yy, c(th, list(nu = 6))))
+dim(distrib_hess_y(mvstudent_t1_distrib(2), yy, c(th, list(nu = 6))))
 #> [1] 2 2 2
 ```

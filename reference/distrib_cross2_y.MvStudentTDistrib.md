@@ -15,7 +15,7 @@ Writing \\M = \ell^{(yy)} = -c\\\Sigma^{-1} + 2d\\ww^\top\\ with \\c =
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -77,7 +77,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -93,7 +93,7 @@ c2$mu1[, , 1]
 #>            [,1]       [,2]
 #> [1,]  0.7080609 -0.3831362
 #> [2,] -0.3831362  0.5149049
-distrib_cross2_y(mvgaussian_distrib(2), y, theta[1:5])$mu1
+distrib_cross2_y(mvgaussian1_distrib(2), y, theta[1:5])$mu1
 #>      [,1] [,2]
 #> [1,]    0    0
 #> [2,]    0    0
@@ -106,6 +106,6 @@ vapply(seq_along(d@params), function(k) {
   max(abs(c2[[k]] -
           (distrib_hess_y(d, y, tp) - distrib_hess_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.428202e-11 6.885559e-11 1.155835e-10 1.811258e-10 2.061795e-10
+#> [1] 2.428202e-11 6.885559e-11 1.211347e-10 1.811258e-10 2.061795e-10
 #> [6] 1.042630e-11
 ```

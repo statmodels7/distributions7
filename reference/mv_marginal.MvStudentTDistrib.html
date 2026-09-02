@@ -5,7 +5,7 @@ of the scale matrix, and THE SAME degrees of freedom. \(\nu\) does not
 change with the dimension, and that is why the family is closed under
 marginalization: the mixing variable of the scale-mixture representation is
 shared by every coordinate, so it survives integrating any of them out.
-The returned object is a fresh mvstudent_t_distrib() of the reduced
+The returned object is a fresh mvstudent_t1_distrib() of the reduced
 dimension on an unstructured scale matrix, so the free values are recomputed
 from the block by parameters7::param_free() and are not a subset of the
 original's."><meta property="og:description" content="Returns the marginal law of a subset of coordinates, which for this family
@@ -14,7 +14,7 @@ of the scale matrix, and THE SAME degrees of freedom. \(\nu\) does not
 change with the dimension, and that is why the family is closed under
 marginalization: the mixing variable of the scale-mixture representation is
 shared by every coordinate, so it survives integrating any of them out.
-The returned object is a fresh mvstudent_t_distrib() of the reduced
+The returned object is a fresh mvstudent_t1_distrib() of the reduced
 dimension on an unstructured scale matrix, so the free values are recomputed
 from the block by parameters7::param_free() and are not a subset of the
 original's."><meta property="og:image" content="https://statmodels7.github.io/distributions7/logo.png"></head><body>
@@ -25,7 +25,7 @@ original's."><meta property="og:image" content="https://statmodels7.github.io/di
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,7 +64,7 @@ of the scale matrix, and THE SAME degrees of freedom. \(\nu\) does not
 change with the dimension, and that is why the family is closed under
 marginalization: the mixing variable of the scale-mixture representation is
 shared by every coordinate, so it survives integrating any of them out.</p>
-<p>The returned object is a fresh <code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> of the reduced
+<p>The returned object is a fresh <code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> of the reduced
 dimension on an unstructured scale matrix, so the free values are recomputed
 from the block by <code><a href="https://statmodels7.github.io/parameters7/reference/param_free.html" class="external-link">parameters7::param_free()</a></code> and are not a subset of the
 original's.</p>
@@ -77,7 +77,7 @@ original's.</p>
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
 <dd><p>An <a href="MvStudentTDistrib.html">MvStudentTDistrib</a> object, from
-<code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>.</p></dd>
+<code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>.</p></dd>
 
 
 <dt id="arg-theta">theta<a class="anchor" aria-label="anchor" href="#arg-theta"></a></dt>
@@ -115,7 +115,7 @@ and <code><a href="mv_marginal.html">mv_marginal()</a></code> for the generic.</
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t_distrib.html">mvstudent_t_distrib</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">2</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span>, <span class="op">-</span><span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">6</span><span class="op">)</span>, <span class="va">d</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

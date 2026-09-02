@@ -37,7 +37,7 @@ one.
 
 ## See also
 
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md),
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md),
 whose two forms this distinguishes, and
 [`parameters7::log_cholesky()`](https://statmodels7.github.io/parameters7/reference/log_cholesky.html)
 for a source of free names.
@@ -51,8 +51,8 @@ distributions7:::mv_prefixed_names(c("log_L1", "L2.1"), inverted = TRUE)
 #> [1] "omega_log_L1" "omega_L2.1"  
 
 # Which is what separates the two parametrizations of one law.
-mvgaussian_distrib(2)@params
+mvgaussian1_distrib(2)@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
-mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
+mvgaussian2_distrib(2, parameters7::log_cholesky(2))@params
 #> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  
 ```

@@ -15,7 +15,7 @@ interval should be built on."><meta property="og:image" content="https://statmod
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,7 +143,7 @@ the two closed-form methods, and <code><a href="mv_sigma.html">mv_sigma()</a></c
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0</span>, mu2 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0</span>, sigma_log_L2 <span class="op">=</span> <span class="fl">0</span>,</span></span>
 <span class="r-in"><span>              sigma_L2.1 <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">der</span> <span class="op">&lt;-</span> <span class="fu">mv_derived</span><span class="op">(</span><span class="va">d</span>, <span class="va">theta</span><span class="op">)</span></span></span>
@@ -175,7 +175,7 @@ the two closed-form methods, and <code><a href="mv_sigma.html">mv_sigma()</a></c
 <span class="r-out co"><span class="r-pr">#&gt;</span> cor_v1_v2   0   0</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A structured matrix reports its own quantities as a further block.</span></span></span>
-<span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">3</span>, sigma <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">ar1</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">a</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/ar1.html" class="external-link">ar1</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">mv_derived</span><span class="op">(</span><span class="va">a</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span><span class="op">)</span>, <span class="va">a</span><span class="op">@</span><span class="va">params</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">value</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      sd_v1      sd_v2      sd_v3  cor_v1_v2  cor_v1_v3  cor_v2_v3      scale </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1.05127110 1.05127110 1.05127110 0.29131261 0.08486304 0.29131261 1.10517092 </span>

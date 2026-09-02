@@ -45,7 +45,7 @@ A numeric vector of `n` draws for a univariate distribution, and an \\n
 set.seed(1)
 distrib_rng(gaussian1_distrib(), 5, list(mu = 0, sigma = 1))
 #> [1] -0.6264538  0.1836433 -0.8356286  1.5952808  0.3295078
-distrib_rng(mvgaussian_distrib(2), 3, list(mu1 = 0, mu2 = 0,
+distrib_rng(mvgaussian1_distrib(2), 3, list(mu1 = 0, mu2 = 0,
   sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #>              v1          v2
 #> [1,] -0.8204684  0.16554716

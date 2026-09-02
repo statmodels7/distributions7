@@ -43,7 +43,7 @@ which exists exactly where the marginals do.
 
 ``` r
 # Every shipped family registers a method, so reach the refusal directly.
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0)
 base <- S7::method(mv_marginal, multivariate_distrib)

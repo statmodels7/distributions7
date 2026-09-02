@@ -18,7 +18,7 @@ reused between the mixed block and the matrix block.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - y:
 
@@ -65,7 +65,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 set.seed(1)
@@ -99,5 +99,5 @@ ref <- vapply(distributions7:::hess_pairs(d@params),
               function(q) Hn[match(q[1], d@params), match(q[2], d@params)],
               numeric(1))
 max(abs(vapply(H, sum, numeric(1)) - ref))
-#> [1] 1.013385e-08
+#> [1] 1.013387e-08
 ```

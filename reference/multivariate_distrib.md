@@ -130,9 +130,9 @@ this one.
 
 ## See also
 
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 and
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the elliptical families,
 [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md)
 and
@@ -146,7 +146,7 @@ for the quantities a fit reports.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 c(n_dim = d@n_dim, n_params = d@n_params)
@@ -165,7 +165,7 @@ vapply(d@link_params, function(l) l@link_name, character(1))
 #>   "identity"   "identity"   "identity"   "identity"   "identity" 
 
 # And the four shipped families all sit here.
-vapply(list(mvgaussian_distrib(2), mvstudent_t_distrib(2),
+vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)
 #> [1] TRUE TRUE TRUE TRUE

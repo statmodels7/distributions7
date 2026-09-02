@@ -64,7 +64,7 @@ try(distrib_grad_y(d, y, theta))
 #> Error : distrib_grad_y() is not defined for 'dirichlet [3d, mean=simplex]': the univariate numerical fallback differences along a line; register a closed form on the family.
 
 # The gaussian registers one and answers with an n by p matrix.
-g <- mvgaussian_distrib(2)
+g <- mvgaussian1_distrib(2)
 th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
            sigma_L2.1 = 0.5)
 dim(distrib_grad_y(g, rbind(c(1, -1), c(0, 0)), th))

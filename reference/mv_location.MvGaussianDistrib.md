@@ -15,7 +15,7 @@ law, which is not true of every family.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - theta:
 
@@ -40,7 +40,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 
 mv_location(d, theta)

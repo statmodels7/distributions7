@@ -54,7 +54,7 @@ for the first consumer.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
               sigma_log_L2 = 0, sigma_L2.1 = 0, nu = 6)
 pc <- distributions7:::mvt_pieces(d, theta)

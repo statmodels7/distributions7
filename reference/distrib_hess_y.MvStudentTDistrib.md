@@ -16,7 +16,7 @@ is the redescending score seen at second order.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -56,7 +56,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -77,6 +77,6 @@ max(abs(hy[, , 1] -
 far <- cbind(0.5 + c(1, 3, 12), -0.3)
 vapply(1:3, function(i) distrib_hess_y(d, far, theta)[1, 1, i], numeric(1))
 #> [1] -0.82220937  0.11087892  0.04915131
-distrib_hess_y(mvgaussian_distrib(2), far, theta[1:5])[1, 1]
+distrib_hess_y(mvgaussian1_distrib(2), far, theta[1:5])[1, 1]
 #> [1] -1.014155
 ```

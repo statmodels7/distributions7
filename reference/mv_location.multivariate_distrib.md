@@ -43,7 +43,7 @@ try(mv_location(dirichlet_distrib(3),
 #> [1] 0.4260125 0.2583897 0.3155978
 
 # The gaussian does.
-mv_location(mvgaussian_distrib(2),
+mv_location(mvgaussian1_distrib(2),
             list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
                  sigma_log_L2 = 0, sigma_L2.1 = 0))
 #> v1 v2 

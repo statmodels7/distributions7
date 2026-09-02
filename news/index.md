@@ -1,5 +1,123 @@
 # Changelog
 
+## distributions7 0.43.0
+
+- `mvstudent_t_distrib()` is split into two numbered families, as
+  `mvgaussian_distrib()` was at 0.42.0:
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  parametrizes the **scale matrix** and
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
+  its **inverse**. There is no alias. `MvStudentTDistrib` gains an
+  `inverted` property and two concrete subclasses, and keeps every
+  method.
+
+  Unlike the gaussian this is a capability the family did not have: the
+  inverse parametrization is new, not renamed.
+
+- The constructor’s page says what the two matrices ARE, because neither
+  is a moment. The scalings are written out,
+
+  ``` R
+  Var(Y)    = nu / (nu - 2)  Sigma
+  Var(Y)^-1 = (nu - 2) / nu  Sigma^-1
+  ```
+
+  so
+  [`mvstudent_t2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)’s
+  matrix is the precision of the response only up to (nu - 2) / nu,
+  which is 2/3 at nu = 6, and a coordinate named `omega_log_L1` builds
+  Sigma^-1 and not the precision. The prefixes stay the gaussian’s –
+  they say which of the two matrices a free value builds – and the page
+  says what those matrices mean.
+
+  Two readings carry over to the response with no factor, both measured
+  against the response’s own covariance in the tests: the
+  **correlations** of Sigma are the response’s, and the **partial
+  correlations** read off Sigma^-1 are the response’s, a positive
+  multiple cancelling out of a ratio. One does not: for a gaussian
+  1/Omega_jj is a conditional variance, here it is the Schur complement
+  of the SCALE matrix.
+  [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
+  prints it as `cscale_vj`, by the rule that already makes the diagonal
+  quantities `scale_sd_vj`.
+
+- [`mv_matrix_pieces()`](https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.md)
+  is the one place a parametrization carrying the other side is
+  transported: the matrix, its inverse, the log-determinant and the
+  derivative arrays, all of Sigma. Both
+  [`mvg_pieces()`](https://statmodels7.github.io/distributions7/reference/mvg_pieces.md)
+  and
+  [`mvt_pieces()`](https://statmodels7.github.io/distributions7/reference/mvt_pieces.md)
+  read it, so the two families share the arithmetic instead of a copy of
+  it.
+
+  ⚠️ The log-determinant’s derivatives are transported there too, and
+  that is what the change was for. The sign flip used to be written by
+  hand at each call site, and the Student t’s new gradient was **14
+  relative** out while its Hessian was right, because the gradient read
+  [`parameters7::param_dlogdet()`](https://statmodels7.github.io/parameters7/reference/param_dlogdet.html)
+  directly.
+  [`check_distrib()`](https://statmodels7.github.io/distributions7/reference/check_distrib.md)
+  caught it – the gradient and the score-mean-zero checks failed while
+  the Hessian passed, which is the signature of exactly that term.
+  Measured before assuming: the gaussian’s own orders three and four,
+  which also read the log-determinant directly, are CORRECT for the
+  inverted form (2.66e-10 against a control of 1.03e-10), so nothing
+  there needed repair.
+
+- [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  and
+  [`distrib_start()`](https://statmodels7.github.io/distributions7/reference/distrib_start.md)
+  keep the parametrization they are given, for the t as for the
+  gaussian.
+
+## distributions7 0.42.0
+
+- `mvgaussian_distrib()` is split into two numbered families:
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  parametrizes the covariance and
+  [`mvgaussian2_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
+  the precision. The two arguments `sigma` and `omega` are gone with it,
+  each constructor taking only its own. There is no alias: the old name
+  is removed, as `covstructs7` was when it became `parameters7`.
+
+  It is the convention the package already applies to `gaussian1`,
+  `gaussian2` and `gaussian3` – one name per parametrization, because a
+  parametrization decides what a linear predictor acts on – and the book
+  had been arguing for weeks that the two are different families while
+  the package gave one name.
+
+  The split is not cosmetic, and the measurement is the reason. Where
+  the matrix parametrization is closed under inversion the two describe
+  the same laws in different coordinates: on 400 four-dimensional
+  observations with `log_cholesky(4)` both reach -1867.271395 and differ
+  by 5e-13. Where it is not, they are different models: the same
+  measurement with `ar1(4)` gives -1868.65 against -1982.61, a gap of
+  **113.95**, the inverse of an AR(1) covariance being tridiagonal and
+  not an AR(1) at any parameters. A test pins both readings.
+
+  `MvGaussian1Distrib` and `MvGaussian2Distrib` are the two classes,
+  both subclasses of `MvGaussianDistrib`, which keeps every method and
+  the `inverted` property: the two differ in what their free values
+  describe, not in how anything is computed.
+
+- Neither family comments on the parametrization it is given.
+  `mvgaussian2_distrib(p, parameters7::ar1(p))` is the model whose
+  precision has the entries rho^\|i-j\|; it is a legitimate law and is
+  built in silence. To write the AR(1) process on the precision side,
+  pass the family whose value is that inverse,
+  `parameters7::ar1_inv(p)`.
+
+- [`mv_marginal()`](https://statmodels7.github.io/distributions7/reference/mv_marginal.md)
+  keeps the parametrization it came from: the marginal of a
+  precision-parametrized gaussian reports a precision, its free values
+  read off the inverse of the covariance submatrix.
+
+- Nothing reads `parameters7`’s `role`, which that package removes at
+  0.19.0. A census taken before the change found zero uses of it here;
+  the side has always been recorded by `inverted` and reported through
+  `params_interpretation`.
+
 ## distributions7 0.41.0
 
 - Four moment methods read `theta` by position and now read it by name.
@@ -1535,16 +1653,15 @@
   parameters. The three that were still on the numerical fallback –
   [`dirichlet_distrib()`](https://statmodels7.github.io/distributions7/reference/dirichlet_distrib.md),
   [`multinomial_distrib()`](https://statmodels7.github.io/distributions7/reference/multinomial_distrib.md)
-  and
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
-  – have closed third and fourth derivatives. The two simplex-valued
-  log-densities are a sum of terms each depending on one coordinate, so
-  the chain rule is one univariate partition sum per coordinate; the
-  Student t splits into the mean-and-matrix part, which reuses the
-  gaussian’s expansion of the derivative of an inverse, and a part in
-  the degrees of freedom, which is elementary. In each case the same
-  assembly run at orders one and two reproduces the hand-written score
-  and information, to 9e-16 and 4e-15.
+  and `mvstudent_t_distrib()` – have closed third and fourth
+  derivatives. The two simplex-valued log-densities are a sum of terms
+  each depending on one coordinate, so the chain rule is one univariate
+  partition sum per coordinate; the Student t splits into the
+  mean-and-matrix part, which reuses the gaussian’s expansion of the
+  derivative of an inverse, and a part in the degrees of freedom, which
+  is elementary. In each case the same assembly run at orders one and
+  two reproduces the hand-written score and information, to 9e-16 and
+  4e-15.
 
 - The mixed derivative
   [`distrib_cross_y()`](https://statmodels7.github.io/distributions7/reference/distrib_cross_y.md)

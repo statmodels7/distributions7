@@ -40,7 +40,7 @@ for the class.
 c(plain = distributions7:::is_fixed(gaussian1_distrib()),
   fixed = distributions7:::is_fixed(fixed(gaussian1_distrib(), mu = 0)),
   multivariate = distributions7:::is_fixed(
-    fixed(mvgaussian_distrib(2), mu1 = 0)))
+    fixed(mvgaussian1_distrib(2), mu1 = 0)))
 #>        plain        fixed multivariate 
 #>        FALSE         TRUE         TRUE 
 

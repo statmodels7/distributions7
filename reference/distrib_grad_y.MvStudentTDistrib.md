@@ -20,7 +20,7 @@ family, so the same numbers appear in
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -60,7 +60,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -88,7 +88,7 @@ all.equal(distrib_grad_y(d, y, theta), -cbind(g$mu1, g$mu2),
 # It redescends: the gaussian's grows with the distance and the t's does
 # not, along the first coordinate from the location.
 far <- cbind(0.5 + c(1, 3, 10, 40), -0.3)
-g0 <- mvgaussian_distrib(2)
+g0 <- mvgaussian1_distrib(2)
 rbind(t = distrib_grad_y(d, far, theta)[, 1],
       gaussian = distrib_grad_y(g0, far, theta[1:5])[, 1])
 #>               [,1]      [,2]        [,3]        [,4]

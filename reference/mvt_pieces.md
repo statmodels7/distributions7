@@ -65,7 +65,7 @@ parametrization.
 
 ## See also
 
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the family,
 [`mvt_weights()`](https://statmodels7.github.io/distributions7/reference/mvt_weights.md)
 for the quantities computed from these, and
@@ -75,13 +75,13 @@ for the gaussian's twin.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 pc <- distributions7:::mvt_pieces(d, theta, derivs = TRUE)
 names(pc)
-#> [1] "mu"        "eta"       "nu"        "p"         "s"         "sigma"    
-#> [7] "sigma_inv" "logdet"    "a"        
+#>  [1] "mu"        "eta"       "nu"        "p"         "s"         "sigma"    
+#>  [7] "sigma_inv" "logdet"    "a"         "dlogdet"  
 
 # sigma_inv is the inverse of the scale matrix, and logdet its determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)

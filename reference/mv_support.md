@@ -107,7 +107,7 @@ sum(distrib_pdf(d, sup, theta))
 #> [1] 1
 
 # A continuous family has no such set and says so.
-try(mv_support(mvgaussian_distrib(2),
+try(mv_support(mvgaussian1_distrib(2),
                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                     sigma_log_L2 = 0, sigma_L2.1 = 0)))
 #> Error : 'multivariate gaussian [2d, sigma=log_cholesky]' does not enumerate a support. A continuous family has no such set,

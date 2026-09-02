@@ -22,7 +22,7 @@ through \\c\\ even though its gaussian part does not.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -79,7 +79,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -98,12 +98,12 @@ vapply(seq_along(d@params), function(k) {
   max(abs(cy[[k]] -
           (distrib_grad_y(d, y, tp) - distrib_grad_y(d, y, tm)) / (2 * h)))
 }, numeric(1))
-#> [1] 2.464828e-11 2.847478e-11 1.023532e-10 7.835999e-11 7.881074e-11
+#> [1] 2.464828e-11 2.847478e-11 8.014878e-11 7.835999e-11 7.881074e-11
 #> [6] 1.358529e-11
 
 # As nu grows every shared component approaches the gaussian's.
 t2 <- theta; t2$nu <- 1e7
-g <- mvgaussian_distrib(2)
+g <- mvgaussian1_distrib(2)
 cg <- distrib_cross_y(g, y, theta[1:5])
 ct <- distrib_cross_y(d, y, t2)
 max(vapply(1:5, function(k) max(abs(cg[[k]] - ct[[k]])), numeric(1)))

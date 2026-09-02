@@ -18,7 +18,7 @@ of freedom, `log(1 + q/nu)` cancels its argument away.
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -66,7 +66,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
@@ -83,7 +83,7 @@ all.equal(distrib_pdf(d, y, theta, log = TRUE), ref)
 #> [1] TRUE
 
 # As nu grows the density approaches the gaussian's at the same matrix.
-g <- mvgaussian_distrib(2)
+g <- mvgaussian1_distrib(2)
 vapply(c(6, 60, 6000), function(nu) {
   t2 <- theta; t2$nu <- nu
   distrib_pdf(d, c(1, -1), t2, log = TRUE)

@@ -44,7 +44,7 @@ for the other route to the same enumeration.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 pc <- distributions7:::mvg_pieces(d, theta, derivs2 = TRUE)

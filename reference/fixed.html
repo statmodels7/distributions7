@@ -15,7 +15,7 @@ derivatives are the parent's components among the free indices."><meta property=
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -117,7 +117,7 @@ silently would hide a missing argument.</p>
     <h2 id="what-it-is-for">What it is for<a class="anchor" aria-label="anchor" href="#what-it-is-for"></a></h2>
     <p>A prior. <code>fixed(gaussian1_distrib(), mu = 0)</code> is the ridge penalty with its
 scale free, <code>fixed(laplace2_distrib(), mu = 0)</code> is the lasso, and
-<code>fixed(mvgaussian_distrib(p), mu1 = 0, ...)</code> is what a random effect is
+<code>fixed(mvgaussian1_distrib(p), mu1 = 0, ...)</code> is what a random effect is
 distributed by. <code>fixed(folded(gaussian1_distrib()), mu = 0)</code> is the
 half-normal.</p>
 <p>The per-parameter smoothness declaration travels with the free parameters,

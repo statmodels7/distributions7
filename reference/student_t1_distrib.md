@@ -173,7 +173,7 @@ to add a shape parameter;
 and
 [`laplace_distrib()`](https://statmodels7.github.io/distributions7/reference/laplace_distrib.md)
 for other robust families;
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the multivariate version;
 [`fit_distrib()`](https://statmodels7.github.io/distributions7/reference/fit_distrib.md)
 to estimate the parameters;

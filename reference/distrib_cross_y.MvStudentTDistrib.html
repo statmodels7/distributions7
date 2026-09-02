@@ -41,7 +41,7 @@ gaussian part does not."><meta property="og:image" content="https://statmodels7.
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@ gaussian part does not.</p>
 
 <dl><dt id="arg-distrib">distrib<a class="anchor" aria-label="anchor" href="#arg-distrib"></a></dt>
 <dd><p>An <a href="MvStudentTDistrib.html">MvStudentTDistrib</a> object, from
-<code><a href="mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>.</p></dd>
+<code><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code>.</p></dd>
 
 
 <dt id="arg-y">y<a class="anchor" aria-label="anchor" href="#arg-y"></a></dt>
@@ -157,7 +157,7 @@ parameters this is, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code> fo
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t_distrib.html">mvstudent_t_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvstudent_t1_distrib.html">mvstudent_t1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu1 <span class="op">=</span> <span class="fl">0.5</span>, mu2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.3</span>, sigma_log_L1 <span class="op">=</span> <span class="fl">0.1</span>,</span></span>
 <span class="r-in"><span>              sigma_log_L2 <span class="op">=</span> <span class="op">-</span><span class="fl">0.2</span>, sigma_L2.1 <span class="op">=</span> <span class="fl">0.4</span>, nu <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
@@ -176,12 +176,12 @@ parameters this is, <code><a href="mvt_dpieces.html">mvt_dpieces()</a></code> fo
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cy</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span></span></span>
 <span class="r-in"><span>          <span class="op">(</span><span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tp</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="distrib_grad_y.html">distrib_grad_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">tm</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">2</span> <span class="op">*</span> <span class="va">h</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.464828e-11 2.847478e-11 1.023532e-10 7.835999e-11 7.881074e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.464828e-11 2.847478e-11 8.014878e-11 7.835999e-11 7.881074e-11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [6] 1.358529e-11</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># As nu grows every shared component approaches the gaussian's.</span></span></span>
 <span class="r-in"><span><span class="va">t2</span> <span class="op">&lt;-</span> <span class="va">theta</span>; <span class="va">t2</span><span class="op">$</span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fl">1e7</span></span></span>
-<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">cg</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_cross_y.html">distrib_cross_y</a></span><span class="op">(</span><span class="va">g</span>, <span class="va">y</span>, <span class="va">theta</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ct</span> <span class="op">&lt;-</span> <span class="fu"><a href="distrib_cross_y.html">distrib_cross_y</a></span><span class="op">(</span><span class="va">d</span>, <span class="va">y</span>, <span class="va">t2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="kw">function</span><span class="op">(</span><span class="va">k</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">cg</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="va">ct</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>

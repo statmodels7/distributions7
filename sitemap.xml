@@ -41,7 +41,9 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/LogisticDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/Lognormal1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/MultinomialDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/MvGaussian1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/MvStudentT1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/NegBin1Distrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/NegBin2Distrib.html</loc></url>
@@ -1007,6 +1009,7 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_marginal.MvStudentTDistrib.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_marginal.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_marginal.multivariate_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mv_matrix_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_moment_start.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_ordered_partitions.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mv_outer_rows.html</loc></url>
@@ -1033,8 +1036,10 @@
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_pieces.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_ptensors.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvg_residuals.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.html</loc></url>
-<url><loc>https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvgaussian_build.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.html</loc></url>
+<url><loc>https://statmodels7.github.io/distributions7/reference/mvstudent_t_build.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_A.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_A1.html</loc></url>
 <url><loc>https://statmodels7.github.io/distributions7/reference/mvt_D.html</loc></url>

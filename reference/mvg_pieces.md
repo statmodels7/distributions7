@@ -75,7 +75,7 @@ parametrization carries.
 
 ## See also
 
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 for the family and
 [`distrib_gradient.MvGaussianDistrib()`](https://statmodels7.github.io/distributions7/reference/distrib_gradient.MvGaussianDistrib.md)
 for the first consumer.
@@ -83,13 +83,13 @@ for the first consumer.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
 names(pc)
-#> [1] "mu"        "sigma"     "sigma_inv" "logdet"    "eta"       "p"        
-#> [7] "s"         "a"        
+#> [1] "mu"        "eta"       "p"         "s"         "sigma"     "sigma_inv"
+#> [7] "logdet"    "a"         "dlogdet"  
 
 # sigma_inv really is the inverse, and logdet its log-determinant.
 all.equal(pc$sigma %*% pc$sigma_inv, diag(2), check.attributes = FALSE)
@@ -106,7 +106,7 @@ round(pc$a[[3]], 4)
 #> [2,] 1.1052 0.8000
 
 # The same pieces from the precision side describe the same covariance.
-o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0.5, mu2 = -0.3, omega_log_L1 = 0.1,
              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
 po <- distributions7:::mvg_pieces(o, th_o)

@@ -16,7 +16,7 @@ sibling.
   An
   [MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
   object, from
-  [`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md).
+  [`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md).
 
 - theta:
 
@@ -42,7 +42,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 round(mv_sigma(d, theta), 4)
@@ -55,7 +55,7 @@ all.equal(mv_sigma(d, theta), variance(d, theta))
 #> [1] TRUE
 
 # A precision parametrization reports the covariance too, inverted here.
-o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
 Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])

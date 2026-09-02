@@ -54,7 +54,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 
@@ -65,7 +65,7 @@ try(distrib_cdf(d, rbind(c(0, 0)), theta))
 # inherits the same refusal.
 m <- mv_marginal(d, theta, 1)
 class(m$distrib)[1]
-#> [1] "distributions7::MvGaussianDistrib"
+#> [1] "distributions7::MvGaussian1Distrib"
 try(distrib_cdf(m$distrib, 0, m$theta))
 #> Error : distrib_cdf() is not defined for 'multivariate gaussian [1d, sigma=log_cholesky]': the distribution function is an integral over an orthant, with no closed form and no one-dimensional fallback.
 

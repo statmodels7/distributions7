@@ -107,7 +107,7 @@ for the matrix.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 der <- mv_derived(d, theta)
@@ -139,7 +139,7 @@ der$jacobian[, c("mu1", "mu2")]
 #> cor_v1_v2   0   0
 
 # A structured matrix reports its own quantities as a further block.
-a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 mv_derived(a, as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params)))$value
 #>      sd_v1      sd_v2      sd_v3  cor_v1_v2  cor_v1_v3  cor_v2_v3      scale 
 #> 1.05127110 1.05127110 1.05127110 0.29131261 0.08486304 0.29131261 1.10517092 

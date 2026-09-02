@@ -17,7 +17,7 @@ names."><meta property="og:image" content="https://statmodels7.github.io/distrib
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@ know which side of a model it has been handed to, so it cannot apply one.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, whose two forms this distinguishes, and
+    <div class="dont-index"><p><code><a href="mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code>, whose two forms this distinguishes, and
 <code><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">parameters7::log_cholesky()</a></code> for a source of free names.</p></div>
     </div>
 
@@ -100,9 +100,9 @@ know which side of a model it has been handed to, so it cannot apply one.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "omega_log_L1" "omega_L2.1"  </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Which is what separates the two parametrizations of one law.</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  </span>
-<span class="r-in"><span><span class="fu"><a href="mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span>, omega <span class="op">=</span> <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="mvgaussian1_distrib.html">mvgaussian2_distrib</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu">parameters7</span><span class="fu">::</span><span class="fu"><a href="https://statmodels7.github.io/parameters7/reference/log_cholesky.html" class="external-link">log_cholesky</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">@</span><span class="va">params</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "mu1"          "mu2"          "omega_log_L1" "omega_log_L2" "omega_L2.1"  </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

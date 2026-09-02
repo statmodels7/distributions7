@@ -18,7 +18,7 @@ and a \\\nu\\ part obtained by differentiating
   An
   [MvStudentTDistrib](https://statmodels7.github.io/distributions7/reference/MvStudentTDistrib.md)
   object, from
-  [`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md).
+  [`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md).
 
 - y:
 
@@ -101,7 +101,7 @@ for the generic.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(3)
@@ -113,7 +113,7 @@ length(d3)
 
 # A gaussian's three-location component is exactly zero and this one is not.
 c(t = sum(d3[["mu1_mu1_mu1"]]),
-  gaussian = sum(distrib_deriv3(mvgaussian_distrib(2), y,
+  gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
                                 theta[1:5])[["mu1_mu1_mu1"]]))
 #>        t gaussian 
 #>  1.36229  0.00000 

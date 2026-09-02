@@ -10,7 +10,7 @@ scalar parameters in their turn. It inherits from
 the distribution function and the quantile function are refused.
 
 Build one with
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md),
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md),
 which fills the properties in and checks that the matrix parametrization
 has full rank. This page documents the raw S7 constructor, which
 validates neither the rank nor the agreement between `n_dim` and the
@@ -114,7 +114,7 @@ An S7 object of class `MvGaussianDistrib`, inheriting from
 `params_interpretation`, `n_params`, `params_bounds`, `link_params`,
 `params_smooth` and `n_dim`, it carries `param` and `inverted` as
 supplied. For an object built by
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 at \\p = 2\\ on an unstructured covariance, `params` is
 `c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")`, every
 `params_bounds` entry is \\(-\infty, \infty)\\ and every link is the
@@ -146,9 +146,9 @@ including the two refusals.
 
 ## See also
 
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 to build one,
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 for the heavy-tailed sibling,
 [`mv_sigma()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.md)
 for the covariance a parameter vector describes, and
@@ -158,7 +158,7 @@ for the closed-form score.
 ## Examples
 
 ``` r
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 
@@ -178,7 +178,7 @@ vapply(d@link_params, function(l) l@link_name, character(1))
 #>   "identity"   "identity"   "identity"   "identity"   "identity" 
 
 # The precision form differs in one property and in the prefix.
-o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 c(covariance = d@inverted, precision = o@inverted)
 #> covariance  precision 
 #>      FALSE       TRUE 

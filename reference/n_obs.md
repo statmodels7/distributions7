@@ -56,7 +56,7 @@ n_obs(gaussian1_distrib(), c(1.2, -0.4, 0.8))
 
 # A multivariate one by rows, where length() would give the entry count.
 y <- matrix(0, 5, 2)
-c(n_obs = n_obs(mvgaussian_distrib(2), y), length = length(y))
+c(n_obs = n_obs(mvgaussian1_distrib(2), y), length = length(y))
 #>  n_obs length 
 #>      5     10 
 ```

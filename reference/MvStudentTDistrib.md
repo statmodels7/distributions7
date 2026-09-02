@@ -11,7 +11,7 @@ an \\n \times p\\ matrix and the distribution function and the quantile
 function are refused.
 
 Build one with
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md),
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md),
 which fills the properties in and checks the rank of the
 parametrization. This page documents the raw S7 constructor, which
 validates nothing.
@@ -30,7 +30,8 @@ MvStudentTDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  param = parameters7::parameter()
+  param = parameters7::parameter(),
+  inverted = logical(0)
 )
 ```
 
@@ -93,10 +94,19 @@ MvStudentTDistrib(
 
 - param:
 
-  A parameters7 parametrization of the SCALE matrix, inheriting from
+  A parameters7 parametrization of the scale matrix or of its inverse,
+  according to `inverted`, inheriting from
   [`parameters7::parameter`](https://statmodels7.github.io/parameters7/reference/parameter.html).
   Its `n_free` free values are flattened into scalar parameters of the
   distribution.
+
+- inverted:
+
+  Logical of length 1. `TRUE` when `param` carries the inverse scale
+  matrix \\\Sigma^{-1}\\ and `FALSE` when it carries the scale matrix
+  \\\Sigma\\. Nothing but the sign of the log-determinant and one matrix
+  inversion depends on it; the law is the same either way, and neither
+  matrix is a moment of the response.
 
 ## Value
 
@@ -104,10 +114,8 @@ An S7 object of class `MvStudentTDistrib`, inheriting from
 `multivariate_distrib` and from `distrib`. Beyond the parent's
 `distrib_name`, `dimension`, `bounds`, `params`,
 `params_interpretation`, `n_params`, `params_bounds`, `link_params`,
-`params_smooth` and `n_dim`, it carries `param` as supplied. Unlike
-[MvGaussianDistrib](https://statmodels7.github.io/distributions7/reference/MvGaussianDistrib.md)
-it has no `inverted` property: the scale matrix is always parametrized
-as itself.
+`params_smooth` and `n_dim`, it carries `param` and `inverted` as
+supplied.
 
 ## Methods
 
@@ -135,9 +143,9 @@ the two multivariate families share.
 
 ## See also
 
-[`mvstudent_t_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t_distrib.md)
+[`mvstudent_t1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvstudent_t1_distrib.md)
 to build one,
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 for the limit \\\nu \to \infty\\,
 [`mv_sigma.MvStudentTDistrib()`](https://statmodels7.github.io/distributions7/reference/mv_sigma.MvStudentTDistrib.md)
 for the scale matrix and
@@ -147,7 +155,7 @@ for the covariance, which are different matrices here.
 ## Examples
 
 ``` r
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 #> [1] TRUE
 

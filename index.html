@@ -32,7 +32,7 @@
 
     <a class="navbar-brand me-2" href="index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@
 <div class="section level2">
 <h2 id="the-usual-functions">The usual functions<a class="anchor" aria-label="anchor" href="#the-usual-functions"></a>
 </h2>
-<p>The package carries 42 univariate distributions and 4 multivariate ones, one name per parametrization where a family has several – <code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for 12 other families. Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
+<p>The package carries 42 univariate distributions and 6 multivariate ones, one name per parametrization where a family has several – <code><a href="reference/gaussian1_distrib.html">gaussian1_distrib()</a></code> in mean and scale, <code><a href="reference/gaussian2_distrib.html">gaussian2_distrib()</a></code> in mean and variance, <code><a href="reference/gaussian3_distrib.html">gaussian3_distrib()</a></code> in mean and precision, and likewise for 14 other families. Each constructor takes the link functions used for its parameters, and parameters travel as a named list.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/gaussian1_distrib.html">gaussian1_distrib</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>mu <span class="op">=</span> <span class="fl">2</span>, sigma <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -164,7 +164,7 @@
 <span><span class="va">fit</span></span>
 <span><span class="co">#&gt; Maximum-likelihood fit: gamma2</span></span>
 <span><span class="co">#&gt; Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695</span></span>
-<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms</span></span>
+<span><span class="co">#&gt; Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms</span></span>
 <span><span class="co">#&gt; Converged: yes (gradient (max-norm) &lt; 1e-06)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Parameter scale:</span></span>
@@ -195,7 +195,7 @@
 <span><span class="co">#&gt; -841.2326 -841.2326</span></span></code></pre></div>
 <p>Where a fit starts matters more than it looks, so a family is asked for its own starting value through <code><a href="reference/distrib_start.html">distrib_start()</a></code>. A family with a known estimator returns it and the fit begins there; one that says nothing gets random draws.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">d4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
 <span><span class="va">y4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">iris</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">f4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fit_distrib.html">fit_distrib</a></span><span class="op">(</span><span class="va">d4</span>, <span class="va">y4</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>iterations <span class="op">=</span> <span class="va">f4</span><span class="op">@</span><span class="va">iterations</span>, converged <span class="op">=</span> <span class="va">f4</span><span class="op">@</span><span class="va">converged</span><span class="op">)</span></span>
@@ -207,7 +207,7 @@
 </h2>
 <p>A multivariate distribution carries a mean vector and a matrix, and the matrix comes from a structure of <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>. Its free values are scalars, so the parameter vector is a named list of numbers exactly as above and every generic here applies unchanged, <code><a href="reference/fit_distrib.html">fit_distrib()</a></code> included. The names say which matrix the structure describes, <code>sigma_</code> for a covariance and <code>omega_</code> for a precision, because the same structure on the two sides is two different models.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mvgaussian1_distrib.html">mvgaussian1_distrib</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">dm</span><span class="op">@</span><span class="va">params</span></span>
 <span><span class="co">#&gt; [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"</span></span>
 <span></span>
@@ -229,7 +229,7 @@
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fitm</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-mv-plot-1.png" alt="" width="100%"></p>
-<p><code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math> and which the family keeps apart so that it remains usable below two degrees of freedom, where the covariance does not exist.</p>
+<p><code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> is the heavy-tailed alternative, with the degrees of freedom estimated alongside everything else. Its <code><a href="reference/mv_sigma.html">mv_sigma()</a></code> is the <strong>scale</strong> matrix and its <code><a href="reference/variance.html">variance()</a></code> the covariance, which differ by <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ν</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>ν</mi><mo>−</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\nu/(\nu-2)</annotation></semantics></math> and which the family keeps apart so that it remains usable below two degrees of freedom, where the covariance does not exist.</p>
 <p>Two families are not elliptical. <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> lives on the simplex, written in a mean vector — a <code>parameters7</code> simplex — and a concentration, and its marginals are beta with that same concentration. <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code> is discrete, and being discrete it can enumerate its support: <code><a href="reference/mv_support.html">mv_support()</a></code> returns every vector of counts summing to the size, so its normalization and its expected information are exact sums rather than samples.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/multinomial_distrib.html">multinomial_distrib</a></span><span class="op">(</span><span class="fl">3</span>, size <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
@@ -316,7 +316,7 @@
 <tr>
 <td>multivariate</td>
 <td>
-<code><a href="reference/mvgaussian_distrib.html">mvgaussian_distrib()</a></code>, parametrized by a covariance or a precision structure from <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>; <code><a href="reference/mvstudent_t_distrib.html">mvstudent_t_distrib()</a></code>, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> on the simplex, whose marginals are beta; and <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code>, whose support is enumerated by <code><a href="reference/mv_support.html">mv_support()</a></code> so that every expectation is an exact sum</td>
+<code><a href="reference/mvgaussian1_distrib.html">mvgaussian1_distrib()</a></code> and <code><a href="reference/mvgaussian1_distrib.html">mvgaussian2_distrib()</a></code>, parametrized by a covariance and by a precision structure respectively from <a href="https://statmodels7.github.io/parameters7/" class="external-link">parameters7</a>; <code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t1_distrib()</a></code> and <code><a href="reference/mvstudent_t1_distrib.html">mvstudent_t2_distrib()</a></code> on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; <code><a href="reference/dirichlet_distrib.html">dirichlet_distrib()</a></code> on the simplex, whose marginals are beta; and <code><a href="reference/multinomial_distrib.html">multinomial_distrib()</a></code>, whose support is enumerated by <code><a href="reference/mv_support.html">mv_support()</a></code> so that every expectation is an exact sum</td>
 </tr>
 <tr>
 <td>wrappers</td>

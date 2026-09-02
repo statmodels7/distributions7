@@ -81,8 +81,12 @@ calls on it, measured at 1.4 ms against 4.9 ms for a truncated
 gaussian's Hessian; see
 [`has_exact_cdf_deriv()`](https://statmodels7.github.io/distributions7/reference/has_exact_cdf_deriv.md)
 for why that route is gated on accuracy. Third and fourth derivatives
-fall back to finite differences of the analytical Hessian in either
-case.
+are closed form as well, assembled by the partition sums of
+`wrapper_derivatives.R` from the same ratios taken at higher blocks, and
+they take the same two routes: the parent's cdf derivative of that order
+where the gate admits it, and one memoized
+[`expectation()`](https://statmodels7.github.io/distributions7/reference/expectation.md)
+per distinct block otherwise.
 
 ## What the constructor rejects
 

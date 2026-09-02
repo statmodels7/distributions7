@@ -188,7 +188,7 @@ to build one,
 and
 [FixedDiscreteDistrib](https://statmodels7.github.io/distributions7/reference/FixedDiscreteDistrib.md)
 for the two siblings,
-[`mvgaussian_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian_distrib.md)
+[`mvgaussian1_distrib()`](https://statmodels7.github.io/distributions7/reference/mvgaussian1_distrib.md)
 for a parent, and
 [`mv_summary()`](https://statmodels7.github.io/distributions7/reference/mv_summary.md)
 for the quantities a fit of one reports.
@@ -198,7 +198,7 @@ for the quantities a fit of one reports.
 ``` r
 # A centered two-dimensional gaussian: the matrix alone, which is what a
 # random effect is distributed by.
-d <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+d <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
 d@params
 #> [1] "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"  
 d
@@ -220,7 +220,7 @@ theta <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 # The law is the parent's at the spliced theta.
 y <- rbind(c(0, 0), c(1, -1))
 all.equal(distrib_pdf(d, y, theta, log = TRUE),
-          distrib_pdf(mvgaussian_distrib(2), y,
+          distrib_pdf(mvgaussian1_distrib(2), y,
                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 #> [1] TRUE
 

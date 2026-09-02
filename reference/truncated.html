@@ -21,7 +21,7 @@ Poisson on \(\{1, 2, \dots\}\), and truncating above one."><meta property="og:im
 
     <a class="navbar-brand me-2" href="../index.html">distributions7</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.41.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.43.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,8 +130,11 @@ obtained by quadrature or summation through <code><a href="expectation.html">exp
 parent has exact cdf derivatives they come instead from two calls on it,
 measured at 1.4 ms against 4.9 ms for a truncated gaussian's Hessian; see
 <code><a href="has_exact_cdf_deriv.html">has_exact_cdf_deriv()</a></code> for why that route is gated on accuracy. Third and
-fourth derivatives fall back to finite differences of the analytical
-Hessian in either case.</p>
+fourth derivatives are closed form as well, assembled by the partition sums
+of <code>wrapper_derivatives.R</code> from the same ratios taken at higher blocks, and
+they take the same two routes: the parent's cdf derivative of that order
+where the gate admits it, and one memoized <code><a href="expectation.html">expectation()</a></code> per distinct
+block otherwise.</p>
     </div>
     <div class="section level2">
     <h2 id="what-the-constructor-rejects">What the constructor rejects<a class="anchor" aria-label="anchor" href="#what-the-constructor-rejects"></a></h2>
