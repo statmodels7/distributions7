@@ -34,7 +34,7 @@ per call is what keeps a component from re-solving the same system.
 }
 
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 pc <- distributions7:::mvg_pieces(d, theta)

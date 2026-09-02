@@ -988,7 +988,7 @@ S7::method(distrib_hess_y, StudentT1Distrib) <- function(distrib, y, theta, ...)
 #' [cauchy_distrib()] for \eqn{\nu = 1} and [gaussian1_distrib()] for the
 #' limit; [skewt_distrib()] to add a shape parameter;
 #' [pseudohuber_distrib()] and [laplace_distrib()] for other robust families;
-#' [mvstudent_t_distrib()] for the multivariate version;
+#' [mvstudent_t1_distrib()] for the multivariate version;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
 #' family of your own against the same battery this one passes;
 #' [StudentT1Distrib] for the class.

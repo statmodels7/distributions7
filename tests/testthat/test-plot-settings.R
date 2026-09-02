@@ -115,7 +115,7 @@ test_that("the window covers every setting, not the first", {
 })
 
 test_that("a multivariate family rejects several settings", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- generate_random_theta(d)
   th[[1L]] <- c(0, 1)
   expect_error(plot(d, th), "one setting")

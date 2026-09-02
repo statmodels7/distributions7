@@ -85,7 +85,7 @@ layer above this one.
 }
 
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 c(n_dim = d@n_dim, n_params = d@n_params)
 
@@ -98,13 +98,13 @@ S7::S7_inherits(d, continuous_distrib)
 vapply(d@link_params, function(l) l@link_name, character(1))
 
 # And the four shipped families all sit here.
-vapply(list(mvgaussian_distrib(2), mvstudent_t_distrib(2),
+vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} and \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the
+\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} and \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the
 elliptical families, \code{\link[=dirichlet_distrib]{dirichlet_distrib()}} and \code{\link[=multinomial_distrib]{multinomial_distrib()}} for
 the simplex-valued ones, \code{\link[=n_obs]{n_obs()}} for the observation count, and
 \code{\link[=mv_summary]{mv_summary()}} for the quantities a fit reports.

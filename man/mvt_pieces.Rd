@@ -49,7 +49,7 @@ parametrization.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 pc <- distributions7:::mvt_pieces(d, theta, derivs = TRUE)
@@ -64,7 +64,7 @@ c(nu = pc$nu, n_free = length(pc$eta), n_deriv = length(pc$a))
 
 }
 \seealso{
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the family, \code{\link[=mvt_weights]{mvt_weights()}} for the
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the family, \code{\link[=mvt_weights]{mvt_weights()}} for the
 quantities computed from these, and \code{\link[=mvg_pieces]{mvg_pieces()}} for the gaussian's
 twin.
 }

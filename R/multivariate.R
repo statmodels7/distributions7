@@ -52,13 +52,13 @@ NULL
 #'   `params`, `params_interpretation`, `n_params`, `params_bounds`,
 #'   `link_params` and `params_smooth`, it carries `n_dim`.
 #'
-#' @seealso [mvgaussian_distrib()] and [mvstudent_t_distrib()] for the
+#' @seealso [mvgaussian1_distrib()] and [mvstudent_t1_distrib()] for the
 #'   elliptical families, [dirichlet_distrib()] and [multinomial_distrib()] for
 #'   the simplex-valued ones, [n_obs()] for the observation count, and
 #'   [mv_summary()] for the quantities a fit reports.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' S7::S7_inherits(d, multivariate_distrib)
 #' c(n_dim = d@n_dim, n_params = d@n_params)
 #'
@@ -71,7 +71,7 @@ NULL
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 #'
 #' # And the four shipped families all sit here.
-#' vapply(list(mvgaussian_distrib(2), mvstudent_t_distrib(2),
+#' vapply(list(mvgaussian1_distrib(2), mvstudent_t1_distrib(2),
 #'             dirichlet_distrib(3), multinomial_distrib(3, size = 5)),
 #'        function(x) S7::S7_inherits(x, multivariate_distrib), TRUE)
 #'
@@ -126,7 +126,7 @@ multivariate_distrib <- S7::new_class("multivariate_distrib",
 #'
 #' # A multivariate one by rows, where length() would give the entry count.
 #' y <- matrix(0, 5, 2)
-#' c(n_obs = n_obs(mvgaussian_distrib(2), y), length = length(y))
+#' c(n_obs = n_obs(mvgaussian1_distrib(2), y), length = length(y))
 #'
 #' @export
 n_obs <- function(distrib, y) {
@@ -162,7 +162,7 @@ n_obs <- function(distrib, y) {
 #'   response convention.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #'
 #' # A vector of length p is one observation.
 #' dim(distributions7:::as_mv_matrix(d, c(1, -1)))
@@ -225,7 +225,7 @@ as_mv_matrix <- function(distrib, y) {
 #'   [multivariate_distrib()] for the convention.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' distributions7:::mv_flat_theta(d, distributions7:::align_theta(d, theta))
@@ -279,7 +279,7 @@ mv_flat_theta <- function(distrib, theta) {
 #'   [kurtosis.multivariate_distrib()] for the refusals it produces.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #'
 #' # The wording every refusal on this class shares. The name carries no
 #' # parentheses; they are appended here.
@@ -329,7 +329,7 @@ mv_refuse <- function(distrib, what, why) {
 #'   distribution that does answer, and [distrib_cdf()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #'
@@ -380,7 +380,7 @@ S7::method(distrib_cdf, multivariate_distrib) <- function(distrib, q, theta, ...
 #'   generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #'
@@ -438,7 +438,7 @@ S7::method(distrib_quantile, multivariate_distrib) <- function(distrib, p, theta
 #' try(distrib_grad_y(d, y, theta))
 #'
 #' # The gaussian registers one and answers with an n by p matrix.
-#' g <- mvgaussian_distrib(2)
+#' g <- mvgaussian1_distrib(2)
 #' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'            sigma_L2.1 = 0.5)
 #' dim(distrib_grad_y(g, rbind(c(1, -1), c(0, 0)), th))
@@ -489,8 +489,8 @@ S7::method(distrib_grad_y, multivariate_distrib) <- function(distrib, y, theta, 
 #' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'            sigma_L2.1 = 0.5)
 #' yy <- rbind(c(1, -1), c(0, 0))
-#' dim(distrib_hess_y(mvgaussian_distrib(2), yy, th))
-#' dim(distrib_hess_y(mvstudent_t_distrib(2), yy, c(th, list(nu = 6))))
+#' dim(distrib_hess_y(mvgaussian1_distrib(2), yy, th))
+#' dim(distrib_hess_y(mvstudent_t1_distrib(2), yy, c(th, list(nu = 6))))
 #'
 #' @keywords internal
 S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, ...) {
@@ -533,7 +533,7 @@ S7::method(distrib_hess_y, multivariate_distrib) <- function(distrib, y, theta, 
 #' try(distrib_cross_y(d, y, theta))
 #'
 #' # The shape a method returns: one n by p matrix per parameter.
-#' g <- mvgaussian_distrib(2)
+#' g <- mvgaussian1_distrib(2)
 #' th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'            sigma_L2.1 = 0.5)
 #' cy <- distrib_cross_y(g, rbind(c(1, -1), c(0, 0)), th)
@@ -599,7 +599,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #'
 #' @examples
 #' # Every shipped family overrides, so reach the fallback directly.
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' base <- S7::method(distrib_expected_hessian, multivariate_distrib)
@@ -670,7 +670,7 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #'
 #' @return A character vector as long as `free_names`.
 #'
-#' @seealso [mvgaussian_distrib()], whose two forms this distinguishes, and
+#' @seealso [mvgaussian1_distrib()], whose two forms this distinguishes, and
 #'   [parameters7::log_cholesky()] for a source of free names.
 #'
 #' @examples
@@ -678,12 +678,102 @@ S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
 #' distributions7:::mv_prefixed_names(c("log_L1", "L2.1"), inverted = TRUE)
 #'
 #' # Which is what separates the two parametrizations of one law.
-#' mvgaussian_distrib(2)@params
-#' mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
+#' mvgaussian1_distrib(2)@params
+#' mvgaussian2_distrib(2, parameters7::log_cholesky(2))@params
 #'
 #' @keywords internal
 mv_prefixed_names <- function(free_names, inverted = FALSE) {
   paste0(if (isTRUE(inverted)) "omega_" else "sigma_", free_names)
+}
+
+
+#' The Matrix, Its Inverse and Their Derivatives, From Either Side
+#'
+#' @description
+#' The four matrix quantities every elliptical family evaluates from, computed
+#' from a matrix parametrization that carries either \eqn{\Sigma} or
+#' \eqn{\Sigma^{-1}}: the matrix, its inverse, the log-determinant of
+#' \eqn{\Sigma}, and the derivative arrays of \eqn{\Sigma}.
+#'
+#' @details
+#' Every derivative in this package is written in \eqn{\Sigma}, so a
+#' parametrization carrying the other side is transported once, here, by the
+#' chain rule for an inverse:
+#'
+#' \deqn{\partial_k\Sigma = -\Sigma A_k \Sigma, \qquad
+#'   \partial_{kl}\Sigma = \Sigma\left(A_l\Sigma A_k + A_k\Sigma A_l
+#'     - A_{kl}\right)\Sigma,}
+#'
+#' with \eqn{A_k} and \eqn{A_{kl}} the parametrization's own arrays. Writing
+#' it once is what keeps [mvg_pieces()] and [mvt_pieces()] the same arithmetic:
+#' the two families differ in what they do with these quantities, not in how
+#' the quantities are obtained.
+#'
+#' @param s A \pkg{parameters7} matrix parametrization.
+#' @param eta Its free vector.
+#' @param inverted `TRUE` when `s` carries \eqn{\Sigma^{-1}}.
+#' @param derivs,derivs2 Whether the first and second derivative arrays are
+#'   wanted.
+#'
+#' The log-determinant's derivatives come back transported too, as `dlogdet`
+#' and `d2logdet`. They are the one place a caller is likely to get the sign
+#' wrong: \eqn{\log|\Sigma| = -\log|M|}, so both are the parametrization's own
+#' negated, and reading them from here rather than from
+#' [parameters7::param_dlogdet()] is what keeps the flip from being written by
+#' hand at each of the four call sites -- which is how the Student t's
+#' gradient came to be out by 14 while its Hessian was right.
+#'
+#' @return A list with `sigma`, `sigma_inv`, `logdet` (of \eqn{\Sigma}) and,
+#'   according to the flags, `a`, `dlogdet` and then `a2`, `d2logdet`, all of
+#'   \eqn{\Sigma}.
+#'
+#' @seealso [mvg_pieces()] and [mvt_pieces()], the two callers.
+#'
+#' @keywords internal
+mv_matrix_pieces <- function(s, eta, inverted, derivs = FALSE,
+                             derivs2 = FALSE) {
+  m <- parameters7::param_value(s, eta)
+  ld <- parameters7::param_logdet(s, eta)
+
+  if (isTRUE(inverted)) {
+    sigma <- parameters7::param_solve(s, eta)
+    sigma_inv <- m
+    logdet <- -ld
+  } else {
+    sigma <- m
+    sigma_inv <- parameters7::param_solve(s, eta)
+    logdet <- ld
+  }
+  out <- list(sigma = unname(sigma), sigma_inv = unname(sigma_inv),
+              logdet = logdet)
+
+  if (derivs || derivs2) {
+    d <- parameters7::param_d1(s, eta)
+    if (isTRUE(inverted)) {
+      d <- lapply(d, function(ak) -(sigma %*% ak %*% sigma))
+    }
+    out$a <- lapply(d, unname)
+    dld <- parameters7::param_dlogdet(s, eta)
+    out$dlogdet <- if (isTRUE(inverted)) -dld else dld
+  }
+  if (derivs2) {
+    d2ld <- parameters7::param_d2logdet(s, eta)
+    out$d2logdet <- if (isTRUE(inverted)) -d2ld else d2ld
+    d2 <- parameters7::param_d2(s, eta)
+    if (isTRUE(inverted)) {
+      idx <- parameters7::param_tuple_indices(s)
+      a1 <- parameters7::param_d1(s, eta)
+      d2 <- lapply(seq_along(idx), function(i) {
+        k <- idx[[i]][1L]
+        l <- idx[[i]][2L]
+        sigma %*% (a1[[l]] %*% sigma %*% a1[[k]] +
+          a1[[k]] %*% sigma %*% a1[[l]] - d2[[i]]) %*% sigma
+      })
+      names(d2) <- parameters7::param_tuple_names(s)
+    }
+    out$a2 <- lapply(d2, unname)
+  }
+  out
 }
 
 
@@ -755,7 +845,7 @@ mv_prefixed_names <- function(free_names, inverted = FALSE) {
 #' sum(distrib_pdf(d, sup, theta))
 #'
 #' # A continuous family has no such set and says so.
-#' try(mv_support(mvgaussian_distrib(2),
+#' try(mv_support(mvgaussian1_distrib(2),
 #'                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
 #'                     sigma_log_L2 = 0, sigma_L2.1 = 0)))
 #'
@@ -786,7 +876,7 @@ mv_support <- S7::new_generic("mv_support", "distrib",
 #'   [mv_reference_draw()], the route a continuous family takes instead.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0)
 #' try(mv_support(d, theta))
@@ -855,7 +945,7 @@ S7::method(mv_support, multivariate_distrib) <- function(distrib, theta, ...) {
 #'   [mv_support()], the exact route a discrete family takes.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0)
 #' set.seed(1)
@@ -922,7 +1012,7 @@ mv_reference_draw <- S7::new_generic("mv_reference_draw", "distrib",
 #'   simplex-valued family needs, and [check_distrib()] for the consumer.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #'
@@ -994,13 +1084,13 @@ S7::method(mv_reference_draw, multivariate_distrib) <- function(distrib, theta, 
 #'   and [mv_location.multivariate_distrib()] for the refusal.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' mv_location(d, theta)
 #'
 #' # A Student t has a location at every nu, and a mean only above nu = 1.
-#' t2 <- mvstudent_t_distrib(2)
+#' t2 <- mvstudent_t1_distrib(2)
 #' th <- c(theta, list(nu = 0.8))
 #' rbind(location = mv_location(t2, th), mean = mean(t2, th))
 #'
@@ -1041,7 +1131,7 @@ mv_location <- S7::new_generic("mv_location", "distrib", function(distrib, theta
 #'                 list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
 #'
 #' # The gaussian does.
-#' mv_location(mvgaussian_distrib(2),
+#' mv_location(mvgaussian1_distrib(2),
 #'             list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
 #'                  sigma_log_L2 = 0, sigma_L2.1 = 0))
 #'
@@ -1072,7 +1162,7 @@ S7::method(mv_location, multivariate_distrib) <- function(distrib, theta) {
 #'   [mv_location.MvGaussianDistrib()] for a registration that uses this.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(3)
+#' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 #' th <- distributions7:::align_theta(d, theta)
 #' distributions7:::mv_leading_location(d, th)
@@ -1102,7 +1192,7 @@ mv_leading_location <- function(distrib, theta) {
 #'
 #' @details
 #' Where the parametrization carries the PRECISION, as
-#' `mvgaussian_distrib(omega = )` does, the matrix is inverted here, so the
+#' `mvgaussian2_distrib()` does, the matrix is inverted here, so the
 #' result is the covariance either way.
 #'
 #' The base-class method signals an error: not every multivariate family has a
@@ -1125,13 +1215,13 @@ mv_leading_location <- function(distrib, theta) {
 #'   [mv_sigma.MvStudentTDistrib()] for the two methods.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' mv_sigma(d, theta)
 #'
 #' # For a gaussian the matrix is the variance; for a Student t it is not.
-#' t2 <- mvstudent_t_distrib(2)
+#' t2 <- mvstudent_t1_distrib(2)
 #' th <- c(theta, list(nu = 6))
 #' all.equal(mv_sigma(d, theta), variance(d, theta))
 #' all.equal(variance(t2, th), (6 / 4) * mv_sigma(t2, th))
@@ -1206,7 +1296,7 @@ mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
 #'   [mv_marginal.multivariate_distrib()] for the methods and the refusal.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(3)
+#' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(
 #'   c(1, 2, 3, 0, 0, 0, 0.3, 0.2, 0.1), d@params))
 #'
@@ -1217,7 +1307,7 @@ mv_sigma <- S7::new_generic("mv_sigma", "distrib", function(distrib, theta) {
 #' mv_sigma(d, theta)[1:2, 1:2]
 #'
 #' # A Student t's marginal keeps the same degrees of freedom.
-#' t3 <- mvstudent_t_distrib(3)
+#' t3 <- mvstudent_t1_distrib(3)
 #' th <- as.list(stats::setNames(c(unlist(theta), 5), t3@params))
 #' c(full = th$nu, marginal = mv_marginal(t3, th, c(1, 3))$theta$nu)
 #'
@@ -1272,7 +1362,7 @@ mv_marginal <- S7::new_generic("mv_marginal", "distrib",
 #'
 #' @examples
 #' # Every shipped family registers a method, so reach the refusal directly.
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0)
 #' base <- S7::method(mv_marginal, multivariate_distrib)
@@ -1318,7 +1408,7 @@ S7::method(mv_marginal, multivariate_distrib) <- function(distrib, theta, which,
 #'   [mv_marginal()] for the explicit route, and [skewness()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' try(skewness(d, theta))
@@ -1364,7 +1454,7 @@ S7::method(skewness, multivariate_distrib) <- function(x, theta, ...) {
 #'   generic.
 #'
 #' @examples
-#' d <- mvstudent_t_distrib(2)
+#' d <- mvstudent_t1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5, nu = 6)
 #' try(kurtosis(d, theta))

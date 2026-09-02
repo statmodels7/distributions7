@@ -5,7 +5,7 @@
 \title{Marginal of a Multivariate Student t}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
@@ -27,7 +27,7 @@ change with the dimension, and that is why the family is closed under
 marginalization: the mixing variable of the scale-mixture representation is
 shared by every coordinate, so it survives integrating any of them out.
 
-The returned object is a fresh \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} of the reduced
+The returned object is a fresh \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} of the reduced
 dimension on an unstructured scale matrix, so the free values are recomputed
 from the block by \code{parameters7::param_free()} and are not a subset of the
 original's.
@@ -39,7 +39,7 @@ degrees of freedom and \eqn{p} the dimension of the full law.
 }
 
 \examples{
-d <- mvstudent_t_distrib(3)
+d <- mvstudent_t1_distrib(3)
 theta <- as.list(stats::setNames(
   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2, 6), d@params))
 

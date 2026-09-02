@@ -171,7 +171,7 @@ test_that("every continuous family has a closed mixed block", {
   # later without one is caught. A method is the base fallback when the class
   # it was registered on is continuous_distrib itself.
   exported <- grep("_distrib$", getNamespaceExports("distributions7"), value = TRUE)
-  skip_these <- c("mvgaussian_distrib", "mvstudent_t_distrib",
+  skip_these <- c("mvgaussian1_distrib", "mvstudent_t1_distrib",
                   "dirichlet_distrib", "multinomial_distrib",
                   "check_distrib", "continuous_distrib", "discrete_distrib",
                   "fit_distrib", "multivariate_distrib")

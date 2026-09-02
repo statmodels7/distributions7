@@ -67,7 +67,7 @@ NULL
 #'   overlay several settings.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(3)
+#' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(
 #'   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 #' ))
@@ -78,14 +78,14 @@ NULL
 #'
 #' # Two coordinates of a heavy-tailed family, whose contours are wider than a
 #' # gaussian's at the same matrix.
-#' t2 <- mvstudent_t_distrib(3)
+#' t2 <- mvstudent_t1_distrib(3)
 #' th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
 #' op <- graphics::par(no.readonly = TRUE)
 #' plot(t2, th2, which = c(1, 2))
 #' graphics::par(op)
 #'
 #' # Four coordinates would be sixteen panels, so it is refused by name.
-#' d4 <- mvgaussian_distrib(4)
+#' d4 <- mvgaussian1_distrib(4)
 #' th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 #' try(plot(d4, th4))
 #'
@@ -160,7 +160,7 @@ S7::method(plot, multivariate_distrib) <- function(x, theta, which = NULL,
 #'   callers, and [mv_marginal()] for the panels.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
 #'               sigma_log_L2 = 0, sigma_L2.1 = 0.6)
 #'
@@ -299,7 +299,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 #' Returns the marginal law of a subset of coordinates, which for a gaussian is
 #' again a gaussian: the mean is the subvector and the covariance the
 #' corresponding block, with nothing to integrate. The result is a fresh
-#' [mvgaussian_distrib()] of the reduced dimension, whose parameters are its
+#' [mvgaussian1_distrib()] of the reduced dimension, whose parameters are its
 #' own: a caller cannot expect them to be a subset of the ones passed in.
 #'
 #' @details
@@ -311,7 +311,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 #' block at all. Returning the unstructured form is correct in every case, at
 #' the cost of `k(k+1)/2` free values where the parent may have spent fewer.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, each component a single number.
 #' @param which An integer vector of coordinates to keep, between 1 and
 #'   \eqn{p}. Duplicates and out-of-range values are not checked and reach the
@@ -327,7 +327,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 #'   these marginals, and [mv_marginal()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(3)
+#' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(
 #'   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2), d@params))
 #'
@@ -346,7 +346,7 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 #'
 #' # A precision parametrization marginalizes to a covariance, the block of
 #' # the precision not being the precision of the block.
-#' o <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+#' o <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 #' th_o <- as.list(stats::setNames(unlist(theta), o@params))
 #' all.equal(mv_sigma(mv_marginal(o, th_o, c(1, 3))$distrib,
 #'                    mv_marginal(o, th_o, c(1, 3))$theta),
@@ -356,8 +356,17 @@ mv_pairs_panels <- function(d, theta, which, n_grid, col_fit, data,
 S7::method(mv_marginal, MvGaussianDistrib) <- function(distrib, theta, which, ...) {
   mu <- as.numeric(mv_location(distrib, theta))[which]
   sg <- mv_sigma(distrib, theta)[which, which, drop = FALSE]
-  md <- mvgaussian_distrib(length(which))
-  eta <- parameters7::param_free(md@param, unname(sg))
+  # the marginal keeps the parametrization it came from: a family written in
+  # the precision reports a precision, its free values read off the inverse of
+  # the covariance submatrix
+  md <- if (isTRUE(distrib@inverted)) {
+    mvgaussian2_distrib(length(which))
+  } else {
+    mvgaussian1_distrib(length(which))
+  }
+  eta <- parameters7::param_free(
+    md@param, if (isTRUE(distrib@inverted)) solve(unname(sg)) else unname(sg)
+  )
   list(
     distrib = md,
     theta = as.list(stats::setNames(c(mu, unname(eta)), md@params))

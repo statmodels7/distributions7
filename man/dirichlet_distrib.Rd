@@ -147,7 +147,7 @@ Chapman and Hall, London.
 \seealso{
 \code{\link[=beta1_distrib]{beta1_distrib()}} for a coordinate's marginal and the two-coordinate case
 seen on the line; \code{\link[=multinomial_distrib]{multinomial_distrib()}} for the discrete family on the
-same simplex; \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for the elliptical multivariate
+same simplex; \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for the elliptical multivariate
 family; \code{\link[parameters7:simplex]{parameters7::simplex()}} for the chart the mean rides;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
 family of your own against the same battery this one passes;

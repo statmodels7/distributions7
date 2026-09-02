@@ -37,14 +37,14 @@ than assumed.
 \examples{
 # A log-Cholesky covariance declares nothing: its free values are
 # coordinates and nothing more.
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 th <- distributions7:::align_theta(d, theta)
 is.null(distributions7:::mv_param_block(d, th))
 
 # An AR(1) covariance is about a scale and a correlation, and says so.
-a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 th <- as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params))
 pb <- distributions7:::mv_param_block(a, distributions7:::align_theta(a, th))
 pb$value

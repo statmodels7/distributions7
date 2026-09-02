@@ -54,11 +54,11 @@ pak::pak("statmodels7/statmodels7")
 
 ## The usual functions
 
-The package carries 42 univariate distributions and 4 multivariate ones,
+The package carries 42 univariate distributions and 6 multivariate ones,
 one name per parametrization where a family has several –
 `gaussian1_distrib()` in mean and scale, `gaussian2_distrib()` in mean
 and variance, `gaussian3_distrib()` in mean and precision, and likewise
-for 12 other families. Each constructor takes the link functions used
+for 14 other families. Each constructor takes the link functions used
 for its parameters, and parameters travel as a named list.
 
 ``` r
@@ -165,7 +165,7 @@ fit <- fit_distrib(gamma2_distrib(), y)
 fit
 #> Maximum-likelihood fit: gamma2
 #> Observations: 500   Log-likelihood: -841.2   AIC: 1686   BIC: 1695
-#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 30 ms
+#> Method: Fisher scoring   iterations: 2   evaluations: f 3, g 3   time: 0 ms
 #> Converged: yes (gradient (max-norm) < 1e-06)
 #> 
 #> Parameter scale:
@@ -217,7 +217,7 @@ estimator returns it and the fit begins there; one that says nothing
 gets random draws.
 
 ``` r
-d4 <- mvgaussian_distrib(4)
+d4 <- mvgaussian1_distrib(4)
 y4 <- as.matrix(iris[, 1:4])
 f4 <- fit_distrib(d4, y4)
 c(iterations = f4@iterations, converged = f4@converged)
@@ -237,7 +237,7 @@ describes, `sigma_` for a covariance and `omega_` for a precision,
 because the same structure on the two sides is two different models.
 
 ``` r
-dm <- mvgaussian_distrib(2)
+dm <- mvgaussian1_distrib(2)
 dm@params
 #> [1] "mu1"          "mu2"          "sigma_log_L1" "sigma_log_L2" "sigma_L2.1"
 
@@ -278,7 +278,7 @@ plot(fitm)
 
 <img src="man/figures/README-mv-plot-1.png" alt="" width="100%" />
 
-`mvstudent_t_distrib()` is the heavy-tailed alternative, with the
+`mvstudent_t1_distrib()` is the heavy-tailed alternative, with the
 degrees of freedom estimated alongside everything else. Its `mv_sigma()`
 is the **scale** matrix and its `variance()` the covariance, which
 differ by $\nu/(\nu-2)$ and which the family keeps apart so that it
@@ -377,6 +377,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |----|----|
 | continuous | gaussian, cauchy, logistic, Student’s t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
 | discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
-| multivariate | `mvgaussian_distrib()`, parametrized by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
+| multivariate | `mvgaussian1_distrib()` and `mvgaussian2_distrib()`, parametrized by a covariance and by a precision structure respectively from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t1_distrib()` and `mvstudent_t2_distrib()` on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
 | wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `folded()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |

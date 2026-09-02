@@ -205,7 +205,7 @@ test_that("the Student t's expected information in nu keeps its sign", {
 })
 
 test_that("the multivariate t's nu derivatives survive the gaussian limit", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   y <- matrix(c(0.4, -0.2), 1)
   nms <- d@params
   inu <- length(nms)

@@ -4,7 +4,7 @@
 \alias{variance.MvGaussianDistrib}
 \title{Variance of a Multivariate Gaussian}
 \arguments{
-\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.
 The \eqn{p} mean components are ignored.}
@@ -28,7 +28,7 @@ The return is a matrix, not the numeric vector a univariate family gives,
 the second central moment of a vector being a matrix.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 

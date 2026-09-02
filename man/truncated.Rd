@@ -69,8 +69,11 @@ obtained by quadrature or summation through \code{\link[=expectation]{expectatio
 parent has exact cdf derivatives they come instead from two calls on it,
 measured at 1.4 ms against 4.9 ms for a truncated gaussian's Hessian; see
 \code{\link[=has_exact_cdf_deriv]{has_exact_cdf_deriv()}} for why that route is gated on accuracy. Third and
-fourth derivatives fall back to finite differences of the analytical
-Hessian in either case.
+fourth derivatives are closed form as well, assembled by the partition sums
+of \code{wrapper_derivatives.R} from the same ratios taken at higher blocks, and
+they take the same two routes: the parent's cdf derivative of that order
+where the gate admits it, and one memoized \code{\link[=expectation]{expectation()}} per distinct
+block otherwise.
 }
 
 \section{What the constructor rejects}{

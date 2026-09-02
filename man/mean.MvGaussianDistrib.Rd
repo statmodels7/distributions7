@@ -4,7 +4,7 @@
 \alias{mean.MvGaussianDistrib}
 \title{Mean of a Multivariate Gaussian}
 \arguments{
-\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{x}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.
 Only the \eqn{p} mean components are read.}
@@ -22,7 +22,7 @@ order, so the first moment exists at every parameter value the constructor
 admits.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 

@@ -4,7 +4,7 @@
 \alias{distrib_pdf.MvGaussianDistrib}
 \title{Multivariate Gaussian Density}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations, one row each.
 A plain numeric vector of length \eqn{p} is read as a single observation.
@@ -36,7 +36,7 @@ explicit inverse is formed by this method. Both are computed once per call,
 not once per observation, since the matrix does not vary with the response.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))

@@ -33,12 +33,12 @@ distributions7:::mv_prefixed_names(c("log_L1", "log_L2", "L2.1"))
 distributions7:::mv_prefixed_names(c("log_L1", "L2.1"), inverted = TRUE)
 
 # Which is what separates the two parametrizations of one law.
-mvgaussian_distrib(2)@params
-mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))@params
+mvgaussian1_distrib(2)@params
+mvgaussian2_distrib(2, parameters7::log_cholesky(2))@params
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, whose two forms this distinguishes, and
+\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, whose two forms this distinguishes, and
 \code{\link[parameters7:log_cholesky]{parameters7::log_cholesky()}} for a source of free names.
 }
 \keyword{internal}

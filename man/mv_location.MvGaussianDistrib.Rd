@@ -4,7 +4,7 @@
 \alias{mv_location.MvGaussianDistrib}
 \title{Mean Vector of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{theta}{A named list of parameters, one number each. Only the \eqn{p}
 mean components are read.}
@@ -23,7 +23,7 @@ here: \eqn{\mu} is both the location the density is centered on and the
 expectation of the law, which is not true of every family.
 }
 \examples{
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 
 mv_location(d, theta)

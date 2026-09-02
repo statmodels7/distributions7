@@ -4,7 +4,7 @@
 \alias{variance.MvStudentTDistrib}
 \title{Covariance of a Multivariate Student t}
 \arguments{
-\item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\item{x}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
@@ -24,7 +24,7 @@ covariance is a moment, and the two differ by that factor, which is 3 at
 the first and this returns the second.
 }
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 

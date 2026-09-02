@@ -23,7 +23,7 @@ object's free set to be reconstructed at every call.
 c(plain = distributions7:::is_fixed(gaussian1_distrib()),
   fixed = distributions7:::is_fixed(fixed(gaussian1_distrib(), mu = 0)),
   multivariate = distributions7:::is_fixed(
-    fixed(mvgaussian_distrib(2), mu1 = 0)))
+    fixed(mvgaussian1_distrib(2), mu1 = 0)))
 
 # Which is why two calls collapse into one wrapper holding both values.
 d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)

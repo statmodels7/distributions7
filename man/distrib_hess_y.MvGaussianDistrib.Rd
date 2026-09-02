@@ -4,7 +4,7 @@
 \alias{distrib_hess_y.MvGaussianDistrib}
 \title{Multivariate Gaussian Response Hessian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. Its values do
 not enter the result.}
@@ -26,7 +26,7 @@ consumer that expects one matrix per row must handle this family's shape
 explicitly.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 set.seed(1)

@@ -134,7 +134,7 @@ go on rejecting through this wrapper.
 \examples{
 # A centered two-dimensional gaussian: the matrix alone, which is what a
 # random effect is distributed by.
-d <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+d <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
 d@params
 d
 
@@ -143,7 +143,7 @@ theta <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 # The law is the parent's at the spliced theta.
 y <- rbind(c(0, 0), c(1, -1))
 all.equal(distrib_pdf(d, y, theta, log = TRUE),
-          distrib_pdf(mvgaussian_distrib(2), y,
+          distrib_pdf(mvgaussian1_distrib(2), y,
                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 
 # The multivariate contract survives the wrapper.
@@ -156,6 +156,6 @@ try(distrib_cdf(d, y, theta))
 }
 \seealso{
 \code{\link[=fixed]{fixed()}} to build one, \link{FixedContinuousDistrib} and
-\link{FixedDiscreteDistrib} for the two siblings, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for a
+\link{FixedDiscreteDistrib} for the two siblings, \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for a
 parent, and \code{\link[=mv_summary]{mv_summary()}} for the quantities a fit of one reports.
 }

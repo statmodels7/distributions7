@@ -67,7 +67,7 @@ NULL
 #'   the two closed-form methods, and [mv_sigma()] for the matrix.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' der <- mv_derived(d, theta)
@@ -88,7 +88,7 @@ NULL
 #' der$jacobian[, c("mu1", "mu2")]
 #'
 #' # A structured matrix reports its own quantities as a further block.
-#' a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+#' a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 #' mv_derived(a, as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params)))$value
 #'
 #' @export
@@ -176,14 +176,14 @@ mv_entry_index <- function(p, prefix) {
 #' @examples
 #' # A log-Cholesky covariance declares nothing: its free values are
 #' # coordinates and nothing more.
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' th <- distributions7:::align_theta(d, theta)
 #' is.null(distributions7:::mv_param_block(d, th))
 #'
 #' # An AR(1) covariance is about a scale and a correlation, and says so.
-#' a <- mvgaussian_distrib(3, sigma = parameters7::ar1(3))
+#' a <- mvgaussian1_distrib(3, parameters7::ar1(3))
 #' th <- as.list(stats::setNames(c(0, 0, 0, 0.1, 0.3), a@params))
 #' pb <- distributions7:::mv_param_block(a, distributions7:::align_theta(a, th))
 #' pb$value
@@ -244,7 +244,7 @@ mv_param_block <- function(distrib, theta) {
 #'   [mv_derived.MvGaussianDistrib()] for the caller.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' der <- mv_derived(d, theta)
@@ -300,7 +300,7 @@ mv_append_block <- function(out, extra) {
 #'   [mv_entry_index()] for the labeling, and [mv_derived()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #'
@@ -395,7 +395,7 @@ S7::method(mv_derived, multivariate_distrib) <- function(distrib, theta, ...) {
 #'   the two callers, and [mv_entry_index()] for the labeling.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- distributions7:::align_theta(
 #'   d, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'           sigma_L2.1 = 0.5))
@@ -512,7 +512,7 @@ mv_sd_cor <- function(sigma, a, params, sd_label = "sd", cor_label = "cor",
 #'   same conversion for the gaussian's own methods.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- distributions7:::align_theta(
 #'   d, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'           sigma_L2.1 = 0.5))
@@ -580,7 +580,7 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #' covariance is about a scale and a correlation; a log-Cholesky one declares
 #' nothing and the summary stops at the standard deviations.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, already aligned by the generic.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -600,14 +600,14 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #'   result, and [mv_derived()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5)
 #' mv_derived(d, theta)$value
 #'
 #' # The precision side reports the same law's standard deviations and
 #' # correlation, and adds the conditional variances.
-#' o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+#' o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 #' th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
 #'              omega_L2.1 = 0.5)
 #' od <- mv_derived(o, th_o)
@@ -620,7 +620,7 @@ mv_sigma_derivs <- function(distrib, theta, n_before) {
 #'
 #' # At three dimensions the partial correlations appear as a block of their
 #' # own, the partial and the marginal no longer coinciding.
-#' o3 <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+#' o3 <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 #' th3 <- as.list(stats::setNames(
 #'   c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
 #' unique(mv_derived(o3, th3)$block)
@@ -712,7 +712,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #' \eqn{\nu} column of the Jacobian is zero.
 #'
 #' @param distrib An [MvStudentTDistrib] object, from
-#'   [mvstudent_t_distrib()].
+#'   [mvstudent_t1_distrib()].
 #' @param theta A named list of parameters, already aligned by the generic.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
@@ -731,7 +731,7 @@ S7::method(mv_derived, MvGaussianDistrib) <- function(distrib, theta, ...) {
 #'   and [mv_derived()] for the generic.
 #'
 #' @examples
-#' d <- mvstudent_t_distrib(2)
+#' d <- mvstudent_t1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
 #'               sigma_L2.1 = 0.5, nu = 6)
 #' der <- mv_derived(d, theta)
@@ -757,11 +757,63 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
   p <- distrib@n_dim
   sigma <- unname(mv_sigma(distrib, theta))
   a <- mv_sigma_derivs(distrib, theta, n_before = p)
-  mv_append_block(
-    mv_sd_cor(sigma, a, distrib@params,
-              sd_label = "scale_sd", sd_block = "Scale standard deviations"),
-    mv_param_block(distrib, theta)
+  out <- mv_sd_cor(sigma, a, distrib@params,
+                   sd_label = "scale_sd",
+                   sd_block = "Scale standard deviations")
+
+  if (!isTRUE(distrib@inverted)) {
+    return(mv_append_block(out, mv_param_block(distrib, theta)))
+  }
+
+  # The inverse parametrization's own reading. Sigma^-1 and its derivatives are
+  # the matrix parameter's matrix directly, so they are taken from it.
+  #
+  # A partial correlation is minus the correlation of the inverse, and here it
+  # IS the response's: the response's precision is (nu - 2) / nu times this
+  # matrix, and a positive multiple cancels out of -M_jk / sqrt(M_jj M_kk).
+  # The diagonal is the case that does NOT carry over. For a gaussian
+  # 1 / Omega_jj is the conditional variance; here it is the Schur complement
+  # of the SCALE matrix, so it is a conditional SCALE, and the conditional law
+  # of a t is a t whose scale carries a further factor depending on the
+  # conditioning values. It is named cscale to say so, as the diagonal
+  # quantities above are named scale_sd.
+  s <- distrib@param
+  v <- mv_flat_theta(distrib, theta)
+  eta <- v[p + seq_len(s@n_free)]
+  om <- unname(parameters7::param_value(s, eta))
+  aw <- vector("list", distrib@n_params)
+  aw[p + seq_len(s@n_free)] <- lapply(parameters7::param_d1(s, eta), unname)
+
+  pc <- mv_sd_cor(om, aw, distrib@params)
+  # In two dimensions there is nothing to condition on, so the partial
+  # correlation IS the correlation and printing it again would be noise.
+  keep <- grepl("^cor_", names(pc$value)) & p >= 3L
+  cscale <- 1 / diag(om)
+  nm_cs <- sprintf("cscale_v%d", seq_len(p))
+  jac_cs <- matrix(0, p, distrib@n_params,
+                   dimnames = list(nm_cs, distrib@params))
+  for (k in seq_along(aw)) {
+    if (is.null(aw[[k]])) next
+    jac_cs[, k] <- -diag(aw[[k]]) / diag(om)^2
+  }
+
+  # The partial correlations are named by renaming the correlations they come
+  # from, and every one of the four fields is renamed with them: the consumer
+  # indexes them positionally, so a stale name there is inert today and is a
+  # trap for whoever indexes by name next.
+  nm_pc <- sub("^cor_", "pcor_", names(pc$value)[keep])
+  extra <- list(
+    value = c(stats::setNames(cscale, nm_cs),
+              stats::setNames(-pc$value[keep], nm_pc)),
+    jacobian = rbind(jac_cs,
+                     `rownames<-`(-pc$jacobian[keep, , drop = FALSE], nm_pc)),
+    transform = c(stats::setNames(rep("log", p), nm_cs),
+                  stats::setNames(unname(pc$transform[keep]), nm_pc)),
+    block = c(stats::setNames(rep("Conditional scales", p), nm_cs),
+              stats::setNames(rep("Partial correlations", sum(keep)), nm_pc))
   )
+
+  mv_append_block(mv_append_block(out, extra), mv_param_block(distrib, theta))
 }
 
 
@@ -821,7 +873,7 @@ S7::method(mv_derived, MvStudentTDistrib) <- function(distrib, theta, ...) {
 #'
 #' @examples
 #' set.seed(1)
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' truth <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0,
 #'               sigma_log_L2 = 0, sigma_L2.1 = 0.7)
 #' y <- distrib_rng(d, 500, truth)

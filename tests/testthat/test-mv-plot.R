@@ -18,7 +18,7 @@ test_that("a marginal is refused for a family that has no closed form", {
 })
 
 test_that("the panel matrix refuses to be unreadable", {
-  d <- mvgaussian_distrib(5)
+  d <- mvgaussian1_distrib(5)
   th <- generate_random_theta(d)
   expect_error(plot(d, th), "not readable")
   # and says what to do about it
@@ -35,7 +35,7 @@ test_that("the panel matrix draws a density and a fit", {
   grDevices::pdf(NULL)
   on.exit(grDevices::dev.off(), add = TRUE)
 
-  d <- mvgaussian_distrib(3)
+  d <- mvgaussian1_distrib(3)
   th <- as.list(stats::setNames(
     c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
   ))
@@ -54,14 +54,14 @@ test_that("the panel matrix draws a density and a fit", {
 
   # a heavy-tailed family is drawn from its scale matrix, which exists where
   # the covariance does not
-  dt <- mvstudent_t_distrib(2)
+  dt <- mvstudent_t1_distrib(2)
   expect_silent(plot(dt, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                               sigma_L2.1 = 0.3, nu = 1.5)))
 })
 
 test_that("the strategy for the expected information lives on fisher_scoring()", {
   set.seed(52)
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.3, nu = 6)
   y <- distrib_rng(d, 200, th)
 
@@ -79,7 +79,7 @@ test_that("the strategy for the expected information lives on fisher_scoring()",
   # The gaussian's expected information is a closed form, so a strategy for
   # approximating it would be ignored, and an argument that is silently
   # ignored is how a caller comes to believe a fit used a method it did not.
-  g <- mvgaussian_distrib(2)
+  g <- mvgaussian1_distrib(2)
   yg <- distrib_rng(g, 200, th[1:5])
   expect_error(
     fit_distrib(g, yg, method = fisher_scoring(approx = "mc")), "closed form"
@@ -115,7 +115,7 @@ test_that("a family without a closed form still fits by Fisher scoring", {
   # Nothing is refused when the argument is left alone: the default strategy
   # applies, whatever the family can do.
   set.seed(54)
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
   fit <- fit_distrib(d, y, method = "fisher")
@@ -131,7 +131,7 @@ test_that("a family is asked correctly whether its expected information is exact
   # against that class compared the owning class with the distribution object
   # and every base-class fallback was reported as a closed form.
   exact <- list(gaussian1_distrib(), laplace_distrib(),
-                weibull1_distrib(), gumbel_distrib(), mvgaussian_distrib(2))
+                weibull1_distrib(), gumbel_distrib(), mvgaussian1_distrib(2))
   for (d in exact) {
     expect_true(distributions7:::has_exact_expected_hessian(d),
                 label = d@distrib_name)
@@ -154,7 +154,7 @@ test_that("a family is asked correctly whether its expected information is exact
   }
   # The multivariate t was among them until its scale mixture closed it.
   expect_true(distributions7:::has_exact_expected_hessian(
-    mvstudent_t_distrib(2)))
+    mvstudent_t1_distrib(2)))
 
   # and the consequence, at the level a caller sees it
   set.seed(71)

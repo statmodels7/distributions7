@@ -850,7 +850,7 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
 #' Monte Carlo error of order `nsim^(-1/2)`.
-#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t_distrib()].
+#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -881,7 +881,7 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'   family, and [distrib_deriv3()] for the generic.
 #'
 #' @examples
-#' d <- mvstudent_t_distrib(2)
+#' d <- mvstudent_t1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 #' set.seed(3)
@@ -892,7 +892,7 @@ mvt_higher <- function(distrib, y, theta, order) {
 #'
 #' # A gaussian's three-location component is exactly zero and this one is not.
 #' c(t = sum(d3[["mu1_mu1_mu1"]]),
-#'   gaussian = sum(distrib_deriv3(mvgaussian_distrib(2), y,
+#'   gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
 #'                                 theta[1:5])[["mu1_mu1_mu1"]]))
 #'
 #' # Against one stencil on the analytic Hessian.
@@ -935,7 +935,7 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #'
 #' With `expected = TRUE` the expectation is taken by sampling and carries
 #' Monte Carlo error of order `nsim^(-1/2)`.
-#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t_distrib()].
+#' @param distrib An [MvStudentTDistrib] object, from [mvstudent_t1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -965,7 +965,7 @@ S7::method(distrib_deriv3, MvStudentTDistrib) <- function(distrib, y, theta,
 #'   generic.
 #'
 #' @examples
-#' d <- mvstudent_t_distrib(2)
+#' d <- mvstudent_t1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 #' set.seed(3)

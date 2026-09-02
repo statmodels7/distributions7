@@ -908,7 +908,7 @@ S7::method(mv_marginal, DirichletDistrib) <- function(distrib, theta, which, ...
 #' @seealso
 #' [beta1_distrib()] for a coordinate's marginal and the two-coordinate case
 #' seen on the line; [multinomial_distrib()] for the discrete family on the
-#' same simplex; [mvgaussian_distrib()] for the elliptical multivariate
+#' same simplex; [mvgaussian1_distrib()] for the elliptical multivariate
 #' family; [parameters7::simplex()] for the chart the mean rides;
 #' [fit_distrib()] to estimate the parameters; [check_distrib()] to validate a
 #' family of your own against the same battery this one passes;

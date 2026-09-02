@@ -264,7 +264,7 @@ test_that("distrib_kernel agrees with the generic route it bypasses", {
   expect_true(is.finite(k$logdens(0, list(mu = 0, sigma = NA), -800)))
 
   expect_error(distrib_kernel(d, "nope"), "not a parameter")
-  expect_error(distrib_kernel(mvgaussian_distrib(2), "mu1"), "univariate")
+  expect_error(distrib_kernel(mvgaussian1_distrib(2), "mu1"), "univariate")
 })
 
 test_that("every moment estimate inverts its own family's moments", {

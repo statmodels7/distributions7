@@ -5,7 +5,7 @@
 \title{Multivariate Student t Response Hessian}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
@@ -39,7 +39,7 @@ the dimension, \eqn{q} the squared Mahalanobis distance, \eqn{c} and
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -57,7 +57,7 @@ max(abs(hy[, , 1] -
 # gaussian's never does.
 far <- cbind(0.5 + c(1, 3, 12), -0.3)
 vapply(1:3, function(i) distrib_hess_y(d, far, theta)[1, 1, i], numeric(1))
-distrib_hess_y(mvgaussian_distrib(2), far, theta[1:5])[1, 1]
+distrib_hess_y(mvgaussian1_distrib(2), far, theta[1:5])[1, 1]
 
 }
 \seealso{

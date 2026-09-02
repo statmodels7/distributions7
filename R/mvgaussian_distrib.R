@@ -14,7 +14,7 @@ NULL
 #' so the response is an \eqn{n \times p} matrix and the distribution function
 #' and the quantile function are refused.
 #'
-#' Build one with [mvgaussian_distrib()], which fills the properties in and
+#' Build one with [mvgaussian1_distrib()], which fills the properties in and
 #' checks that the matrix parametrization has full rank. This page documents
 #' the raw S7 constructor, which validates neither the rank nor the agreement
 #' between `n_dim` and the parametrization's dimension.
@@ -35,13 +35,13 @@ NULL
 #'   `distrib_name`, `dimension`, `bounds`, `params`,
 #'   `params_interpretation`, `n_params`, `params_bounds`, `link_params`,
 #'   `params_smooth` and `n_dim`, it carries `param` and `inverted` as
-#'   supplied. For an object built by [mvgaussian_distrib()] at \eqn{p = 2} on
+#'   supplied. For an object built by [mvgaussian1_distrib()] at \eqn{p = 2} on
 #'   an unstructured covariance, `params` is
 #'   `c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")`, every
 #'   `params_bounds` entry is \eqn{(-\infty, \infty)} and every link is the
 #'   identity.
 #'
-#' @seealso [mvgaussian_distrib()] to build one, [mvstudent_t_distrib()] for
+#' @seealso [mvgaussian1_distrib()] to build one, [mvstudent_t1_distrib()] for
 #'   the heavy-tailed sibling, [mv_sigma()] for the covariance a parameter
 #'   vector describes, and [distrib_gradient.MvGaussianDistrib()] for the
 #'   closed-form score.
@@ -69,7 +69,7 @@ NULL
 #' refusals.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' S7::S7_inherits(d, multivariate_distrib)
 #'
 #' # Five scalar parameters: two means and the three free values of the
@@ -83,7 +83,7 @@ NULL
 #' vapply(d@link_params, function(l) l@link_name, character(1))
 #'
 #' # The precision form differs in one property and in the prefix.
-#' o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+#' o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 #' c(covariance = d@inverted, precision = o@inverted)
 #' o@params
 #'
@@ -97,34 +97,104 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 )
 
 
+#' @title S7 Classes for the Two Multivariate Gaussian Parametrizations
+#'
+#' @description
+#' `MvGaussian1Distrib` is the family whose matrix parametrization is the
+#' **covariance** and `MvGaussian2Distrib` the family whose matrix
+#' parametrization is the **precision**. Both inherit from
+#' [MvGaussianDistrib], which carries every method: the two differ in what
+#' their free values describe, not in how anything is computed.
+#'
+#' @details
+#' The two are separate families for the reason `gaussian1_distrib()`,
+#' `gaussian2_distrib()` and `gaussian3_distrib()` are separate families: a
+#' parametrization is a modeling decision, and a predictor imposed on the
+#' coordinates of \eqn{\Sigma} is a different model from the same predictor
+#' imposed on the coordinates of \eqn{\Omega}. Where the matrix
+#' parametrization is closed under inversion the two describe the same laws in
+#' different coordinates; where it is not, they describe different laws.
+#'
+#' @inheritParams MvGaussianDistrib
+#'
+#' @return An object of class `MvGaussian1Distrib` or `MvGaussian2Distrib`, a
+#'   subclass of [MvGaussianDistrib] adding no properties of its own.
+#'
+#' @seealso [mvgaussian1_distrib()] and [mvgaussian2_distrib()], the
+#'   constructors, and [MvGaussianDistrib] for the properties and the methods.
+#'
+#' @examples
+#' c(covariance = S7::S7_inherits(mvgaussian1_distrib(2), MvGaussian1Distrib),
+#'   precision = S7::S7_inherits(mvgaussian2_distrib(2), MvGaussian2Distrib))
+#'
+#' # Both are multivariate gaussians, which is what carries the methods.
+#' S7::S7_inherits(mvgaussian2_distrib(2), MvGaussianDistrib)
+#'
+#' @export
+MvGaussian1Distrib <- S7::new_class("MvGaussian1Distrib",
+  parent = MvGaussianDistrib
+)
+
+#' @rdname MvGaussian1Distrib
+#' @export
+MvGaussian2Distrib <- S7::new_class("MvGaussian2Distrib",
+  parent = MvGaussianDistrib
+)
+
+
 #' @title Construct a Multivariate Gaussian Distribution
 #'
 #' @description
-#' Builds the gaussian family on \eqn{\mathbb{R}^p}. The mean is a vector of
-#' \eqn{p} free parameters and the matrix is carried by a \pkg{parameters7}
-#' parametrization, either as the covariance \eqn{\Sigma} or as the precision
-#' \eqn{\Omega = \Sigma^{-1}}. The free values of that parametrization become
-#' ordinary scalar parameters of the distribution, so the object answers every
-#' generic of the `distrib` contract with `theta` a flat named list of numbers.
-#' The default is an unstructured covariance in the log-Cholesky
+#' Two families on \eqn{\mathbb{R}^p}, differing in which matrix of the law
+#' their parametrization describes: `mvgaussian1_distrib()` parametrizes the
+#' **covariance** \eqn{\Sigma} and `mvgaussian2_distrib()` the **precision**
+#' \eqn{\Omega = \Sigma^{-1}}. The mean is a vector of \eqn{p} free parameters
+#' and the matrix is carried by a \pkg{parameters7} parametrization whose free
+#' values become ordinary scalar parameters, so the object answers every
+#' generic of the `distrib` contract with `theta` a flat named list of
+#' numbers. Both default to an unstructured matrix in the log-Cholesky
 #' parametrization, which is `p * (p + 1) / 2` free values.
 #'
 #' @details
-#' # Which side the matrix parametrizes
+#' # Why they are two families and not one argument
 #'
-#' Give at most one of `sigma` and `omega`, and the name of the argument
-#' decides which side of the model the matrix parametrization describes. Giving
-#' both is an error: the two name the same matrix and a distribution
-#' parametrized by both would be over-determined.
+#' The numbering is the package's convention, the one that separates
+#' [gaussian1_distrib()], [gaussian2_distrib()] and [gaussian3_distrib()]:
+#' one name per parametrization, because in a modeling framework a
+#' parametrization decides what a linear predictor acts on. Here the decision
+#' is sharper than a change of coordinates. A matrix parametrization is
+#' **closed under inversion** when the inverse of every matrix it produces is
+#' one of its own; [parameters7::log_cholesky()],
+#' [parameters7::matrix_log()], [parameters7::diagonal_matrix()],
+#' [parameters7::scalar_matrix()], [parameters7::compound_symmetry()] and
+#' [parameters7::dr_prod()] are, and [parameters7::correlation_matrix()],
+#' [parameters7::ar1()] and [parameters7::autoregressive()] are not.
 #'
-#' The two forms describe the same family and cost about the same. Every
-#' derivative here is written in the covariance, so a precision
-#' parametrization is inverted once per call and its derivative arrays are
-#' carried across by \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}.
-#' Measured at \eqn{n = 1000} on an unstructured matrix, the precision form
-#' costs 0.86 to 1.07 times the covariance form for the score and 0.97 to 1.10
-#' for the Hessian, across \eqn{p = 4, 8, 12}. Choose the side the model is
-#' written in.
+#' Where it is closed the two families describe the same laws in different
+#' coordinates, and a fit reaches the same maximum: measured on 400
+#' four-dimensional observations with `log_cholesky(4)`, both report
+#' \eqn{-1867.271395} and the two differ by \eqn{5\times10^{-13}}. Where it is
+#' not closed they are different models, and the same measurement with
+#' [parameters7::ar1()] gives \eqn{-1868.65} against \eqn{-1982.61}, a gap of
+#' 113.95: the inverse of an AR(1) covariance is tridiagonal and is not an
+#' AR(1) at any parameters.
+#'
+#' Neither family restricts which parametrization it takes.
+#' `mvgaussian2_distrib(p, parameters7::ar1(p))` is the model whose precision
+#' has the entries \eqn{\rho^{|i-j|}}, which is a legitimate law and is
+#' accepted without comment. To write the AR(1) **process** on the precision
+#' side, pass the family whose value is that inverse:
+#' `mvgaussian2_distrib(p, parameters7::ar1_inv(p))`.
+#'
+#' # What it costs
+#'
+#' The two cost about the same. Every derivative here is written in the
+#' covariance, so a precision parametrization is inverted once per call and
+#' its derivative arrays are carried across by
+#' \eqn{\partial\Sigma/\partial\eta_k = -\Sigma A_k \Sigma}. Measured at
+#' \eqn{n = 1000} on an unstructured matrix, the precision form costs 0.86 to
+#' 1.07 times the covariance form for the score and 0.97 to 1.10 for the
+#' Hessian, across \eqn{p = 4, 8, 12}.
 #'
 #' # Parameters
 #'
@@ -189,25 +259,26 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #'   whole number, finite and at least 1. Anything else throws an error.
 #' @param sigma A \pkg{parameters7} parametrization of the covariance, of
 #'   dimension `n_dim` and of full rank. Defaults to
-#'   `parameters7::log_cholesky(n_dim)` when neither this nor `omega` is given.
+#'   `parameters7::log_cholesky(n_dim)`.
 #' @param omega A \pkg{parameters7} parametrization of the precision, of
-#'   dimension `n_dim` and of full rank. Defaults to `NULL`. Giving both this
-#'   and `sigma` is an error.
+#'   dimension `n_dim` and of full rank. Defaults to
+#'   `parameters7::log_cholesky(n_dim)`.
 #'
-#' @return An S7 object of class [MvGaussianDistrib], with `param` the
-#'   parametrization supplied and `inverted` recording which side it carries.
-#'   Its `params` are `mu1`, ..., `mup` followed by the prefixed free names,
-#'   `n_params` is `p + param@n_free`, every entry of `params_bounds` is
-#'   \eqn{(-\infty, \infty)} and every link is the identity.
+#' @return An S7 object of class [MvGaussian1Distrib] or [MvGaussian2Distrib],
+#'   with `param` the parametrization supplied and `inverted` recording which
+#'   side it carries. Its `params` are `mu1`, ..., `mup` followed by the
+#'   prefixed free names, `n_params` is `p + param@n_free`, every entry of
+#'   `params_bounds` is \eqn{(-\infty, \infty)} and every link is the identity.
 #'
 #' @seealso [gaussian1_distrib()] for the one-dimensional case,
-#'   [mvstudent_t_distrib()] for the heavy-tailed sibling,
+#'   [mvstudent_t1_distrib()] for the heavy-tailed sibling,
 #'   [mv_summary()] for the quantities a fit reports,
-#'   [fit_distrib()] to estimate one, and
-#'   [parameters7::log_cholesky()] for the default parametrization.
+#'   [fit_distrib()] to estimate one,
+#'   [parameters7::log_cholesky()] for the default parametrization, and
+#'   [parameters7::inverse_of()] for writing a structure on the other side.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' d
 #'
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
@@ -228,10 +299,11 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #'
 #' # A structured covariance spends fewer parameters: two variances, no
 #' # correlation.
-#' mvgaussian_distrib(2, sigma = parameters7::diagonal_matrix(2))@params
+#' mvgaussian1_distrib(2, parameters7::diagonal_matrix(2))@params
 #'
-#' # The precision form carries the same law and reports its own quantities.
-#' o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+#' # The precision form is the other family, and its free values are prefixed
+#' # by the matrix they describe.
+#' o <- mvgaussian2_distrib(2)
 #' o@params
 #' th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
 #'              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
@@ -242,23 +314,49 @@ MvGaussianDistrib <- S7::new_class("MvGaussianDistrib",
 #' # the marginal variance beside it.
 #' c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 #'
+#' # An AR(1) covariance and an AR(1) precision are different models, and the
+#' # family names which one is meant.
+#' c(covariance = mvgaussian1_distrib(4, parameters7::ar1(4))@distrib_name,
+#'   precision = mvgaussian2_distrib(4, parameters7::ar1(4))@distrib_name)
+#'
 #' @export
-mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
+mvgaussian1_distrib <- function(n_dim, sigma = NULL) {
+  mvgaussian_build(n_dim, sigma, inverted = FALSE, cls = MvGaussian1Distrib)
+}
+
+#' @rdname mvgaussian1_distrib
+#' @export
+mvgaussian2_distrib <- function(n_dim, omega = NULL) {
+  mvgaussian_build(n_dim, omega, inverted = TRUE, cls = MvGaussian2Distrib)
+}
+
+
+#' Build One of the Two Multivariate Gaussian Families
+#'
+#' @description
+#' The body [mvgaussian1_distrib()] and [mvgaussian2_distrib()] share. The two
+#' differ in the class they instantiate, in the prefix their free names carry
+#' and in what `params_interpretation` calls the matrix, and in nothing else:
+#' every method is registered on [MvGaussianDistrib], the parent both inherit.
+#'
+#' @param n_dim The dimension of one observation.
+#' @param s The matrix parametrization, or `NULL` for
+#'   `parameters7::log_cholesky(n_dim)`.
+#' @param inverted `TRUE` where `s` carries the precision.
+#' @param cls The S7 class to instantiate.
+#'
+#' @return An object of class `cls`.
+#'
+#' @seealso [mvgaussian1_distrib()], the constructors this serves.
+#'
+#' @keywords internal
+mvgaussian_build <- function(n_dim, s, inverted, cls) {
   if (!is.numeric(n_dim) || length(n_dim) != 1L || !is.finite(n_dim) ||
     n_dim < 1 || n_dim != round(n_dim)) {
     stop("'n_dim' must be a single positive integer.", call. = FALSE)
   }
   p <- as.integer(n_dim)
 
-  if (!is.null(sigma) && !is.null(omega)) {
-    stop(paste0(
-      "Give at most one of 'sigma' and 'omega'. They name the\n",
-      "  two sides of the same model, and a distribution parametrized by both\n",
-      "  would be over-determined."
-    ), call. = FALSE)
-  }
-  inverted <- !is.null(omega)
-  s <- if (inverted) omega else sigma
   if (is.null(s)) s <- parameters7::log_cholesky(p)
 
   if (!S7::S7_inherits(s, parameters7::parameter)) {
@@ -294,7 +392,7 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
   params <- c(mu_names, free_names)
   n_par <- length(params)
 
-  MvGaussianDistrib(
+  cls(
     # No spaces inside the brackets: print() capitalises the first letter after
     # every space in a distribution's name, and "Covariance Log_cholesky" is
     # not what the matrix parameter is called. Same convention as truncated().
@@ -374,11 +472,11 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
 #' \eqn{A_k = \partial M/\partial\eta_k} the derivative of whichever matrix
 #' the parametrization carries.
 #'
-#' @seealso [mvgaussian_distrib()] for the family and
+#' @seealso [mvgaussian1_distrib()] for the family and
 #'   [distrib_gradient.MvGaussianDistrib()] for the first consumer.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' pc <- distributions7:::mvg_pieces(d, theta, derivs = TRUE)
@@ -393,7 +491,7 @@ mvgaussian_distrib <- function(n_dim, sigma = NULL, omega = NULL) {
 #' round(pc$a[[3]], 4)
 #'
 #' # The same pieces from the precision side describe the same covariance.
-#' o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+#' o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 #' th_o <- list(mu1 = 0.5, mu2 = -0.3, omega_log_L1 = 0.1,
 #'              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
 #' po <- distributions7:::mvg_pieces(o, th_o)
@@ -407,50 +505,11 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
   mu <- v[seq_len(p)]
   eta <- v[p + seq_len(s@n_free)]
 
-  m <- parameters7::param_value(s, eta)
-  ld <- parameters7::param_logdet(s, eta)
-
-  if (distrib@inverted) {
-    omega <- m
-    sigma <- parameters7::param_solve(s, eta)
-    sigma_inv <- omega
-    logdet <- -ld
-  } else {
-    sigma <- m
-    sigma_inv <- parameters7::param_solve(s, eta)
-    logdet <- ld
-  }
-
-  out <- list(
-    mu = unname(mu), sigma = unname(sigma), sigma_inv = unname(sigma_inv),
-    logdet = logdet, eta = eta, p = p, s = s
-  )
-
-  if (derivs || derivs2) {
-    d <- parameters7::param_d1(s, eta)
-    if (distrib@inverted) {
-      # dSigma/deta = -Sigma (dOmega/deta) Sigma, the derivative of an inverse.
-      d <- lapply(d, function(ak) -(sigma %*% ak %*% sigma))
-    }
-    out$a <- lapply(d, unname)
-  }
-  if (derivs2) {
-    d2 <- parameters7::param_d2(s, eta)
-    if (distrib@inverted) {
-      idx <- parameters7::param_tuple_indices(s)
-      om1 <- parameters7::param_d1(s, eta)
-      d2 <- lapply(seq_along(idx), function(i) {
-        k <- idx[[i]][1L]
-        l <- idx[[i]][2L]
-        # Differentiating -S B_k S once more, with dS/deta_l = -S B_l S.
-        sigma %*% (om1[[l]] %*% sigma %*% om1[[k]] +
-          om1[[k]] %*% sigma %*% om1[[l]] - d2[[i]]) %*% sigma
-      })
-      names(d2) <- parameters7::param_tuple_names(s)
-    }
-    out$a2 <- lapply(d2, unname)
-  }
-  out
+  # the matrix, its inverse and their arrays, transported once where the
+  # parametrization carries the precision; written in mv_matrix_pieces() so
+  # that the Student t reads the same arithmetic and not a second copy of it
+  c(list(mu = unname(mu), eta = eta, p = p, s = s),
+    mv_matrix_pieces(s, eta, distrib@inverted, derivs, derivs2))
 }
 
 
@@ -465,7 +524,7 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 #' here: \eqn{\mu} is both the location the density is centered on and the
 #' expectation of the law, which is not true of every family.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, one number each. Only the \eqn{p}
 #'   mean components are read.
 #'
@@ -478,7 +537,7 @@ mvg_pieces <- function(distrib, theta, derivs = FALSE, derivs2 = FALSE) {
 #'   and [mv_location()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(3)
+#' d <- mvgaussian1_distrib(3)
 #' theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 #'
 #' mv_location(d, theta)
@@ -500,7 +559,7 @@ S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
 #' density and the variance of the law, so [variance.MvGaussianDistrib()]
 #' returns the same matrix; the two part company in the heavy-tailed sibling.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, one number each. The \eqn{p} mean
 #'   components are ignored.
 #'
@@ -513,7 +572,7 @@ S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
 #'   wants, and [mv_sigma()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' round(mv_sigma(d, theta), 4)
@@ -522,7 +581,7 @@ S7::method(mv_location, MvGaussianDistrib) <- mv_leading_location
 #' all.equal(mv_sigma(d, theta), variance(d, theta))
 #'
 #' # A precision parametrization reports the covariance too, inverted here.
-#' o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+#' o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 #' th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0.1,
 #'              omega_log_L2 = -0.2, omega_L2.1 = 0.4)
 #' Om <- parameters7::param_value(o@param, unlist(th_o)[3:5])
@@ -566,7 +625,7 @@ S7::method(mv_sigma, MvGaussianDistrib) <- function(distrib, theta) {
 #'   [distrib_hessian.MvGaussianDistrib()] for the consumers.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' pc <- distributions7:::mvg_pieces(d, theta)
@@ -605,7 +664,7 @@ mvg_residuals <- function(y, pc) {
 #' explicit inverse is formed by this method. Both are computed once per call,
 #' not once per observation, since the matrix does not vary with the response.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations, one row each.
 #'   A plain numeric vector of length \eqn{p} is read as a single observation.
 #'   Every point of \eqn{\mathbb{R}^p} is in the support, so no row is
@@ -627,7 +686,7 @@ mvg_residuals <- function(y, pc) {
 #'   [distrib_pdf()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
@@ -672,7 +731,7 @@ S7::method(distrib_pdf, MvGaussianDistrib) <- function(distrib, y, theta,
 #' own generator through [stats::rnorm()], so the stream is reproducible under
 #' [base::set.seed()].
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param n The number of observations to draw. A single non-negative whole
 #'   number; `n = 0` returns a matrix with zero rows.
 #' @param theta A named list of parameters, each component a single number.
@@ -686,7 +745,7 @@ S7::method(distrib_pdf, MvGaussianDistrib) <- function(distrib, y, theta,
 #'   for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #'
@@ -731,7 +790,7 @@ S7::method(distrib_rng, MvGaussianDistrib) <- function(distrib, n, theta, ...) {
 #' derivative array at all, which is why the mean and the matrix cost so
 #' differently in a fit.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -755,7 +814,7 @@ S7::method(distrib_rng, MvGaussianDistrib) <- function(distrib, n, theta, ...) {
 #'   and [distrib_gradient()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -795,8 +854,7 @@ S7::method(distrib_gradient, MvGaussianDistrib) <- function(distrib, y, theta,
   names(out) <- distrib@params
   for (j in seq_len(pc$p)) out[[j]] <- w[, j]
 
-  dld <- parameters7::param_dlogdet(pc$s, pc$eta)
-  if (distrib@inverted) dld <- -dld
+  dld <- pc$dlogdet
   for (k in seq_along(pc$a)) {
     out[[pc$p + k]] <- -0.5 * dld[[k]] +
       0.5 * rowSums((w %*% pc$a[[k]]) * w)
@@ -821,7 +879,7 @@ S7::method(distrib_gradient, MvGaussianDistrib) <- function(distrib, y, theta,
 #' rows; the mixed and matrix blocks do. The product \eqn{\Sigma^{-1}A_k} is
 #' formed once and reused between the mixed block and the matrix block.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -845,7 +903,7 @@ S7::method(distrib_gradient, MvGaussianDistrib) <- function(distrib, y, theta,
 #'   for the score, and [distrib_hessian()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -880,8 +938,7 @@ S7::method(distrib_hessian, MvGaussianDistrib) <- function(distrib, y, theta,
   w <- mvg_residuals(y, pc)$w
   si <- pc$sigma_inv
 
-  d2ld <- parameters7::param_d2logdet(pc$s, pc$eta)
-  if (distrib@inverted) d2ld <- -d2ld
+  d2ld <- pc$d2logdet
   # Sigma^{-1} A_k, formed once: it appears in the mixed block and again in the
   # matrix block.
   sa <- lapply(pc$a, function(ak) si %*% ak)
@@ -939,7 +996,7 @@ S7::method(distrib_hessian, MvGaussianDistrib) <- function(distrib, y, theta,
 #'   consumer.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' idx <- distributions7:::mv_hess_indices(d)
 #' length(idx) == length(hess_names(d@params))
 #'
@@ -1044,7 +1101,7 @@ param_pair_lookup <- function(s) {
 #' `param_d2()` computation, which is the dearest part of the observed Hessian
 #' at any dimension worth the name.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. Only its row
 #'   count is used: the expectation is taken over the law, so no observation
 #'   enters any component.
@@ -1072,7 +1129,7 @@ param_pair_lookup <- function(s) {
 #'   [distrib_expected_hessian()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' y <- matrix(0, 3, 2)
@@ -1142,7 +1199,7 @@ S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
 #' it is an \eqn{n \times p} matrix, and a consumer written for a vector will
 #' recycle it silently.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation and gives a one-row result.
 #' @param theta A named list of parameters, each component a single number.
@@ -1156,7 +1213,7 @@ S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
 #'   [distrib_grad_y()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -1194,7 +1251,7 @@ S7::method(distrib_grad_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' consumer that expects one matrix per row must handle this family's shape
 #' explicitly.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. Its values do
 #'   not enter the result.
 #' @param theta A named list of parameters, each component a single number.
@@ -1207,7 +1264,7 @@ S7::method(distrib_grad_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #'   parameters, and [distrib_hess_y()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -1255,7 +1312,7 @@ S7::method(distrib_hess_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #' Every link of this family is the identity, so `scale = "link"` and
 #' `scale = "parameter"` give the same numbers.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -1277,7 +1334,7 @@ S7::method(distrib_hess_y, MvGaussianDistrib) <- function(distrib, y, theta, ...
 #'   order, and [distrib_cross_y()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -1341,7 +1398,7 @@ S7::method(distrib_cross_y, MvGaussianDistrib) <-
 #' identity, so `scale = "link"` and `scale = "parameter"` give the same
 #' numbers.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. Not read: no
 #'   component of this derivative depends on the response.
 #' @param theta A named list of parameters, each component a single number.
@@ -1365,7 +1422,7 @@ S7::method(distrib_cross_y, MvGaussianDistrib) <-
 #'   generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' y <- matrix(0, 4, 2)
@@ -1413,7 +1470,7 @@ S7::method(distrib_cross2_y, MvGaussianDistrib) <-
 #' with \eqn{A_k} and \eqn{A_{kl}} the first and second derivatives of
 #' \eqn{\Sigma}. No component depends on the observation, so `y` is not read.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. Not read.
 #' @param theta A named list of parameters, each component a single number.
 #' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
@@ -1434,7 +1491,7 @@ S7::method(distrib_cross2_y, MvGaussianDistrib) <-
 #'   with one response index, and [distrib_hess_y_hess()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' y <- matrix(0, 4, 2)
@@ -1497,7 +1554,7 @@ S7::method(distrib_hess_y_hess, MvGaussianDistrib) <-
 #' \eqn{w = \Sigma^{-1}(y-\mu)}. Only the pure matrix pairs carry the
 #' observation, through \eqn{w}; the mixed pairs repeat one row.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -1520,7 +1577,7 @@ S7::method(distrib_hess_y_hess, MvGaussianDistrib) <-
 #'   marginal criterion reads, and [distrib_grad_y_hess()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -1604,7 +1661,7 @@ S7::method(distrib_grad_y_hess, MvGaussianDistrib) <-
 #'   other route to the same enumeration.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' pc <- distributions7:::mvg_pieces(d, theta, derivs2 = TRUE)
@@ -1640,7 +1697,7 @@ mvg_a2 <- function(pc, k, l) {
 #' order, so the first moment exists at every parameter value the constructor
 #' admits.
 #'
-#' @param x An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param x An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, each component a single number.
 #'   Only the \eqn{p} mean components are read.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -1652,7 +1709,7 @@ mvg_a2 <- function(pc, k, l) {
 #'   density's center, and [base::mean()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #'
@@ -1683,7 +1740,7 @@ S7::method(mean, MvGaussianDistrib) <- function(x, theta, ...) {
 #' The return is a matrix, not the numeric vector a univariate family gives,
 #' the second central moment of a vector being a matrix.
 #'
-#' @param x An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param x An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param theta A named list of parameters, each component a single number.
 #'   The \eqn{p} mean components are ignored.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
@@ -1697,7 +1754,7 @@ S7::method(mean, MvGaussianDistrib) <- function(x, theta, ...) {
 #'   differ, and [variance()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #'
@@ -1728,7 +1785,7 @@ S7::method(variance, MvGaussianDistrib) <- function(x, theta, ...) {
 #' covariance drawn that way is a starting point no fit recovers from. The
 #' narrow band keeps [check_distrib()] reproducible on this family.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of `distrib@n_params` single numbers, named and ordered
@@ -1738,7 +1795,7 @@ S7::method(variance, MvGaussianDistrib) <- function(x, theta, ...) {
 #'   [generate_random_theta()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #'
 #' set.seed(11)
 #' unlist(generate_random_theta(d))
@@ -1816,7 +1873,7 @@ S7::method(generate_random_theta, MvGaussianDistrib) <- function(distrib, ...) {
 #'   [mvg_higher()] for the consumer, and [mvg_pieces()] for the argument.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' pc <- distributions7:::mvg_pieces(d, theta, derivs2 = TRUE)
@@ -2011,7 +2068,7 @@ mv_ordered_partitions <- function(pos) {
 #' costs anything is the pure-matrix one, and even that is a quadratic form per
 #' observation once the array is in hand.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. A vector of
 #'   length \eqn{p} is read as a single observation.
 #' @param theta A named list of parameters, each component a single number.
@@ -2036,7 +2093,7 @@ mv_ordered_partitions <- function(pos) {
 #'   [mvg_ptensors()] for the arrays it reads.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -2138,7 +2195,7 @@ mvg_higher <- function(distrib, y, theta, order) {
 #' depend on the response is returned exactly, whatever `nsim` is, because
 #' averaging a constant returns it.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. With
 #'   `expected = TRUE` only its row count is used.
 #' @param theta A named list of parameters, each component a single number.
@@ -2167,7 +2224,7 @@ mvg_higher <- function(distrib, y, theta, order) {
 #'   the shared engine, and [distrib_deriv3()] for the generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)
@@ -2224,7 +2281,7 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #' three. `approx` is not read, and the result carries Monte Carlo error of
 #' order `nsim^(-1/2)`.
 #'
-#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian_distrib()].
+#' @param distrib An [MvGaussianDistrib] object, from [mvgaussian1_distrib()].
 #' @param y An \eqn{n \times p} numeric matrix of observations. With
 #'   `expected = TRUE` only its row count is used.
 #' @param theta A named list of parameters, each component a single number.
@@ -2253,7 +2310,7 @@ S7::method(distrib_deriv3, MvGaussianDistrib) <- function(distrib, y, theta, exp
 #'   generic.
 #'
 #' @examples
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
 #'               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 #' set.seed(1)

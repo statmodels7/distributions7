@@ -25,9 +25,9 @@ test_that("the support is enumerated and carries the whole mass", {
 
 
 test_that("the base class refuses a support it cannot enumerate", {
-  expect_error(mv_support(mvgaussian_distrib(2), list()),
+  expect_error(mv_support(mvgaussian1_distrib(2), list()),
                "does not enumerate a support")
-  expect_error(mv_support(mvstudent_t_distrib(2), list()),
+  expect_error(mv_support(mvstudent_t1_distrib(2), list()),
                "does not enumerate a support")
 })
 

@@ -5,7 +5,7 @@
 \title{Multivariate Student t Third Derivative in One Response and Two Parameters}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
@@ -39,7 +39,7 @@ derivative in the parameters named.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -50,7 +50,7 @@ dim(gh$mu1_mu2)
 
 # A gaussian's two-location pair is exactly zero and this one is not.
 gh$mu1_mu2
-distrib_grad_y_hess(mvgaussian_distrib(2), y, theta[1:5])$mu1_mu2
+distrib_grad_y_hess(mvgaussian1_distrib(2), y, theta[1:5])$mu1_mu2
 
 # Against a second difference of the response gradient. The reference
 # amplifies rounding by h^-2, so 1e-6 on a quantity of order 1 is its own

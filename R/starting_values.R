@@ -46,7 +46,7 @@ NULL
 #'
 #' @examples
 #' set.seed(1)
-#' d <- mvgaussian_distrib(2)
+#' d <- mvgaussian1_distrib(2)
 #' y <- distrib_rng(d, 200, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
 #'                               sigma_log_L2 = 0, sigma_L2.1 = 0.5))
 #'
@@ -276,7 +276,11 @@ S7::method(distrib_start, MvStudentTDistrib) <- function(distrib, y, n_start = 5
   p <- distrib@n_dim
   m <- mv_moment_start(y, p)
   nu0 <- 8
-  eta <- param_free_or_fit(distrib@param, m$sigma * (nu0 - 2) / nu0)
+  # the sample covariance carried onto the SCALE matrix, which is what the
+  # parametrization holds, and inverted where it holds the other side
+  target <- m$sigma * (nu0 - 2) / nu0
+  if (isTRUE(distrib@inverted)) target <- solve(target)
+  eta <- param_free_or_fit(distrib@param, target)
   list(as.list(stats::setNames(c(m$mu, eta, nu0), distrib@params)))
 }
 

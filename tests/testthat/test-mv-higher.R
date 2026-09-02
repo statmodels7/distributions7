@@ -16,7 +16,7 @@ mvh_cases <- function() {
                    phi = 9)),
     list(name = "multinomial", d = multinomial_distrib(3, size = 7),
          th = list(probs_alr1 = 0.2, probs_alr2 = -0.5)),
-    list(name = "mvstudent_t", d = mvstudent_t_distrib(2),
+    list(name = "mvstudent_t", d = mvstudent_t1_distrib(2),
          th = list(mu1 = 0.2, mu2 = -0.3, sigma_log_L1 = 0.1,
                    sigma_log_L2 = -0.2, sigma_L2.1 = 0.3, nu = 7))
   )

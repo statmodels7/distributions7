@@ -6,8 +6,8 @@
 # written out by hand.
 
 test_that("the parameter names say which matrix the structure describes", {
-  ds <- mvgaussian_distrib(2)
-  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+  ds <- mvgaussian1_distrib(2)
+  do <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 
   expect_identical(
     ds@params, c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")
@@ -21,19 +21,19 @@ test_that("the parameter names say which matrix the structure describes", {
 
   # the scale matrix of a t is written Sigma, so it takes the same prefix
   expect_identical(
-    mvstudent_t_distrib(2)@params,
+    mvstudent_t1_distrib(2)@params,
     c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1", "nu")
   )
 
   # a diagonal structure carries its own labels through the same prefix
   expect_identical(
-    mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))@params,
+    mvgaussian1_distrib(3, parameters7::diagonal_matrix(3))@params,
     c("mu1", "mu2", "mu3", "sigma_log_d1", "sigma_log_d2", "sigma_log_d3")
   )
 })
 
 test_that("the derived quantities are the decomposition, written out by hand", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2,
              sigma_L2.1 = 0.4)
   s <- mv_sigma(d, th)
@@ -49,11 +49,11 @@ test_that("the derived quantities are the decomposition, written out by hand", {
 })
 
 test_that("the derived Jacobian is closed form and agrees with an independent one", {
-  for (d in list(mvgaussian_distrib(2),
-                 mvgaussian_distrib(3),
-                 mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3)),
-                 mvgaussian_distrib(3, omega = parameters7::log_cholesky(3)),
-                 mvstudent_t_distrib(2))) {
+  for (d in list(mvgaussian1_distrib(2),
+                 mvgaussian1_distrib(3),
+                 mvgaussian1_distrib(3, parameters7::diagonal_matrix(3)),
+                 mvgaussian2_distrib(3, parameters7::log_cholesky(3)),
+                 mvstudent_t1_distrib(2))) {
     set.seed(61)
     th <- generate_random_theta(d)
     v0 <- unlist(th)
@@ -68,8 +68,8 @@ test_that("the derived Jacobian is closed form and agrees with an independent on
 })
 
 test_that("a precision parametrization reports what it describes directly", {
-  ds <- mvgaussian_distrib(3)
-  do <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+  ds <- mvgaussian1_distrib(3)
+  do <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 
   set.seed(62)
   ths <- generate_random_theta(ds)
@@ -98,7 +98,7 @@ test_that("a precision parametrization reports what it describes directly", {
 
   # in two dimensions there is nothing to condition on, so the partial
   # correlation would repeat the correlation and is not printed
-  d2 <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+  d2 <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
   set.seed(63)
   v2 <- mv_derived(d2, generate_random_theta(d2))$value
   expect_false(any(grepl("^pcor_", names(v2))))
@@ -109,7 +109,7 @@ test_that("the base class reports the matrix on its own scale", {
   # A family that says nothing more specific still gets its matrix back, named
   # after the coordinates, rather than the structure's coordinates.
   Odd <- S7::new_class("OddMv2", parent = multivariate_distrib, package = NULL)
-  g <- mvgaussian_distrib(2)
+  g <- mvgaussian1_distrib(2)
   gen <- mv_sigma
   S7::method(gen, Odd) <- function(distrib, theta) {
     matrix(c(2, 0.5, 0.5, 3), 2, 2)
@@ -131,7 +131,7 @@ test_that("the base class reports the matrix on its own scale", {
 })
 
 test_that("mv_summary carries the standard errors across and respects the domains", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   true <- list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0, sigma_log_L2 = 0,
                sigma_L2.1 = 0.7)
   set.seed(64)
@@ -176,7 +176,7 @@ test_that("the correlation's standard error matches the known asymptotic one", {
   # For a bivariate gaussian the maximum likelihood correlation has asymptotic
   # variance (1 - rho^2)^2 / n. That is a statement about the model, computed
   # nowhere in the package, so it tests the whole delta-method chain at once.
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   rho <- 0.6
   s <- matrix(c(1, rho, rho, 1), 2, 2)
   eta <- parameters7::param_free(d@param, s)
@@ -205,14 +205,14 @@ test_that("mv_summary refuses what it is not for", {
   expect_error(mv_summary(uni), "multivariate fit")
   expect_error(mv_summary("not a fit"), "distrib_fit")
 
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   set.seed(67)
   fit <- fit_distrib(d, distrib_rng(d, 200, generate_random_theta(d)))
   expect_error(mv_summary(fit, level = 1), "in \\(0, 1\\)")
 })
 
 test_that("print shows the interpretable blocks rather than only the coordinates", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   set.seed(68)
   y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                                 sigma_log_L2 = 0, sigma_L2.1 = 0.3))
@@ -226,7 +226,7 @@ test_that("print shows the interpretable blocks rather than only the coordinates
 
   # the t names its diagonal quantities for what they are: the scale matrix is
   # not the covariance
-  dt <- mvstudent_t_distrib(2)
+  dt <- mvstudent_t1_distrib(2)
   set.seed(69)
   yt <- distrib_rng(dt, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                                   sigma_log_L2 = 0, sigma_L2.1 = 0.3, nu = 6))
@@ -249,7 +249,7 @@ test_that("the expected information of a multivariate fit is the right size", {
   # Fisher scoring on the same data.
   set.seed(81)
   for (p in 2:4) {
-    d <- mvgaussian_distrib(p)
+    d <- mvgaussian1_distrib(p)
     th <- generate_random_theta(d)
     n <- 500
     y <- distrib_rng(d, n, th)
@@ -279,7 +279,7 @@ test_that("the reported standard errors match the asymptotic ones", {
   # information to the delta method.
   set.seed(82)
   for (p in c(2L, 4L)) {
-    d <- mvgaussian_distrib(p)
+    d <- mvgaussian1_distrib(p)
     n <- 2000
     y <- distrib_rng(d, n, generate_random_theta(d))
     fit <- fit_distrib(d, y)
@@ -299,10 +299,10 @@ test_that("the two parametrizations report the same uncertainty", {
   # They are the same model, so a derived quantity has the same standard error
   # under either. A disagreement means one of the two informations is wrong.
   set.seed(83)
-  ds <- mvgaussian_distrib(3)
+  ds <- mvgaussian1_distrib(3)
   th <- generate_random_theta(ds)
   y <- distrib_rng(ds, 1000, th)
-  do <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+  do <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 
   a <- mv_summary(fit_distrib(ds, y))
   b <- mv_summary(fit_distrib(do, y))
@@ -316,7 +316,7 @@ test_that("the two parametrizations report the same uncertainty", {
 
 test_that("a structured matrix reports the quantities the family is about", {
   set.seed(77)
-  d <- mvgaussian_distrib(6, sigma = parameters7::autoregressive(6, order = 2))
+  d <- mvgaussian1_distrib(6, parameters7::autoregressive(6, order = 2))
   th <- as.list(stats::setNames(
     c(rep(0, 6), log(3), atanh(0.7), atanh(-0.3)), d@params
   ))
@@ -355,7 +355,7 @@ test_that("the delta method behind the block agrees with a numerical Jacobian", 
   # reference differentiates the map from the free vector to the quantities,
   # which shares nothing with it.
   skip_if_not_installed("numDeriv")
-  d <- mvgaussian_distrib(5, sigma = parameters7::autoregressive(5, order = 2))
+  d <- mvgaussian1_distrib(5, parameters7::autoregressive(5, order = 2))
   th <- as.list(stats::setNames(
     c(0.2, -0.1, 0.4, 0, 0.3, log(2), atanh(0.6), atanh(-0.25)), d@params
   ))
@@ -370,7 +370,7 @@ test_that("the delta method behind the block agrees with a numerical Jacobian", 
 
 
 test_that("a precision parametrization says which matrix the block describes", {
-  d <- mvgaussian_distrib(4, omega = parameters7::ar1(4))
+  d <- mvgaussian2_distrib(4, parameters7::ar1(4))
   th <- as.list(stats::setNames(c(0, 0, 0, 0, log(2), atanh(0.5)), d@params))
   der <- mv_derived(d, th)
   expect_true("Autoregressive structure (precision)" %in% der$block)
@@ -380,7 +380,7 @@ test_that("a precision parametrization says which matrix the block describes", {
 
 
 test_that("an unstructured matrix adds no block and is unchanged", {
-  d <- mvgaussian_distrib(3)
+  d <- mvgaussian1_distrib(3)
   th <- as.list(stats::setNames(c(0, 0, 0, 0.1, -0.2, 0.05, 0.4, 0.3, -0.1),
                                 d@params))
   der <- mv_derived(d, th)

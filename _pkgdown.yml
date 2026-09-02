@@ -166,12 +166,16 @@ reference:
   desc: >
     Distributions whose observations are vectors. The response is a matrix with
     one row per observation, and the parameters stay scalars: a mean vector
-    contributes one each, and a covariance contributes the free values of the
+    contributes one each, and the matrix contributes the free values of the
     parameters7 structure that parametrizes it, so every generic of the package
-    indexes them as it always did.
+    indexes them as it always did. There is one name per parametrization here
+    as elsewhere, so the gaussian is written either in its covariance or in its
+    precision and the t either in its scale matrix or in the inverse of that.
   contents:
-  - mvgaussian_distrib
-  - mvstudent_t_distrib
+  - mvgaussian1_distrib
+  - mvgaussian2_distrib
+  - mvstudent_t1_distrib
+  - mvstudent_t2_distrib
   - dirichlet_distrib
   - multinomial_distrib
   - mv_location
@@ -318,10 +322,12 @@ reference:
   contents: [GeometricDistrib, ends_with(".GeometricDistrib")]
 
 - title: Multivariate gaussian
-  contents: [MvGaussianDistrib, ends_with(".MvGaussianDistrib")]
+  contents: [MvGaussianDistrib, MvGaussian1Distrib, MvGaussian2Distrib,
+             ends_with(".MvGaussianDistrib")]
 
 - title: Multivariate Student t
-  contents: [MvStudentTDistrib, ends_with(".MvStudentTDistrib")]
+  contents: [MvStudentTDistrib, MvStudentT1Distrib, MvStudentT2Distrib,
+             ends_with(".MvStudentTDistrib")]
 
 - title: Dirichlet
   contents: [DirichletDistrib, ends_with(".DirichletDistrib")]

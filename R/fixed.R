@@ -313,13 +313,13 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #'   `fixed_params` beside the parent's properties, `n_dim` included.
 #'
 #' @seealso [fixed()] to build one, [FixedContinuousDistrib] and
-#'   [FixedDiscreteDistrib] for the two siblings, [mvgaussian_distrib()] for a
+#'   [FixedDiscreteDistrib] for the two siblings, [mvgaussian1_distrib()] for a
 #'   parent, and [mv_summary()] for the quantities a fit of one reports.
 #'
 #' @examples
 #' # A centered two-dimensional gaussian: the matrix alone, which is what a
 #' # random effect is distributed by.
-#' d <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+#' d <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
 #' d@params
 #' d
 #'
@@ -328,7 +328,7 @@ FixedDiscreteDistrib <- S7::new_class("FixedDiscreteDistrib",
 #' # The law is the parent's at the spliced theta.
 #' y <- rbind(c(0, 0), c(1, -1))
 #' all.equal(distrib_pdf(d, y, theta, log = TRUE),
-#'           distrib_pdf(mvgaussian_distrib(2), y,
+#'           distrib_pdf(mvgaussian1_distrib(2), y,
 #'                       c(list(mu1 = 0, mu2 = 0), theta), log = TRUE))
 #'
 #' # The multivariate contract survives the wrapper.
@@ -366,7 +366,7 @@ FixedMultivariateDistrib <- S7::new_class("FixedMultivariateDistrib",
 #' c(plain = distributions7:::is_fixed(gaussian1_distrib()),
 #'   fixed = distributions7:::is_fixed(fixed(gaussian1_distrib(), mu = 0)),
 #'   multivariate = distributions7:::is_fixed(
-#'     fixed(mvgaussian_distrib(2), mu1 = 0)))
+#'     fixed(mvgaussian1_distrib(2), mu1 = 0)))
 #'
 #' # Which is why two calls collapse into one wrapper holding both values.
 #' d <- fixed(fixed(gaussian1_distrib(), mu = 0), sigma = 1)
@@ -866,7 +866,7 @@ S7::method(print, FixedMultivariateDistrib) <- function(x, ...) {
 #'
 #' A prior. `fixed(gaussian1_distrib(), mu = 0)` is the ridge penalty with its
 #' scale free, `fixed(laplace2_distrib(), mu = 0)` is the lasso, and
-#' `fixed(mvgaussian_distrib(p), mu1 = 0, ...)` is what a random effect is
+#' `fixed(mvgaussian1_distrib(p), mu1 = 0, ...)` is what a random effect is
 #' distributed by. `fixed(folded(gaussian1_distrib()), mu = 0)` is the
 #' half-normal.
 #'

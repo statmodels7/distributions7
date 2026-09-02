@@ -26,7 +26,7 @@ try(mv_location(dirichlet_distrib(3),
                 list(mean_alr1 = 0.3, mean_alr2 = -0.2, phi = 8)))
 
 # The gaussian does.
-mv_location(mvgaussian_distrib(2),
+mv_location(mvgaussian1_distrib(2),
             list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0,
                  sigma_log_L2 = 0, sigma_L2.1 = 0))
 

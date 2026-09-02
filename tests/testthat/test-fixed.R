@@ -277,7 +277,7 @@ test_that("print shows the fixed values", {
 # ---------------------------------------------------------------------------
 
 test_that("fixed() holds the location of a multivariate family", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   z <- fixed(d, mu1 = 0, mu2 = 0)
   expect_s3_class(z, "distributions7::FixedMultivariateDistrib")
   expect_true(S7::S7_inherits(z, multivariate_distrib))
@@ -288,7 +288,7 @@ test_that("fixed() holds the location of a multivariate family", {
 
 
 test_that("every multivariate method delegates exactly", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   z <- fixed(d, mu1 = 0, mu2 = 0)
   th_f <- list(sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.3)
   th_p <- c(list(mu1 = 0, mu2 = 0), th_f)
@@ -313,7 +313,7 @@ test_that("every multivariate method delegates exactly", {
 
 
 test_that("the wrapper inherits the refusals rather than answering", {
-  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  z <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
   th <- list(sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
   expect_error(distrib_cdf(z, matrix(0, 1, 2), th))
   expect_error(distrib_quantile(z, 0.5, th))
@@ -323,7 +323,7 @@ test_that("the wrapper inherits the refusals rather than answering", {
 test_that("the mv predicates ask the family, not the wrapper", {
   # a wrapper delegates every accessor, so registering the delegation must not
   # turn a family's refusal into a TRUE
-  expect_true(has_mv_grad_y(fixed(mvgaussian_distrib(2), mu1 = 0)))
+  expect_true(has_mv_grad_y(fixed(mvgaussian1_distrib(2), mu1 = 0)))
   expect_false(has_mv_grad_y(fixed(dirichlet_distrib(3), phi = 5)))
   expect_true(has_mv_support(
     fixed(multinomial_distrib(3, size = 4), probs_alr1 = 0.1)))
@@ -331,7 +331,7 @@ test_that("the mv predicates ask the family, not the wrapper", {
 
 
 test_that("a fully fixed multivariate distribution has no free parameters", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   z0 <- fixed(d, mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0)
   expect_identical(z0@n_params, 0L)
@@ -344,7 +344,7 @@ test_that("a fully fixed multivariate distribution has no free parameters", {
 
 
 test_that("fixed() of fixed() collapses on the multivariate branch too", {
-  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  z <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
   z2 <- fixed(z, sigma_L2.1 = 0.3)
   expect_s3_class(z2, "distributions7::FixedMultivariateDistrib")
   expect_identical(z2@params, c("sigma_log_L1", "sigma_log_L2"))
@@ -354,7 +354,7 @@ test_that("fixed() of fixed() collapses on the multivariate branch too", {
 
 
 test_that("a centered multivariate prior passes check_distrib", {
-  z <- fixed(mvgaussian_distrib(2), mu1 = 0, mu2 = 0)
+  z <- fixed(mvgaussian1_distrib(2), mu1 = 0, mu2 = 0)
   th <- list(sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.3)
   res <- check_distrib(z, theta = th, verbose = FALSE)
   expect_true(all(res$status == "OK"),
@@ -366,7 +366,7 @@ test_that("the wrapper reports the quantities the family declares", {
   # without a method here the wrapper falls to the base one, which reports the
   # distinct entries of the covariance rather than the standard deviations and
   # correlations -- a centered prior read on a scale its family does not use
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   z <- fixed(d, mu1 = 0, mu2 = 0)
   th <- list(sigma_log_L1 = 0.2, sigma_log_L2 = -0.1, sigma_L2.1 = 0.5)
   full <- c(list(mu1 = 0, mu2 = 0), th)

@@ -4,7 +4,7 @@
 \alias{mv_marginal.MvGaussianDistrib}
 \title{Marginal of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{theta}{A named list of parameters, each component a single number.}
 
@@ -23,7 +23,7 @@ as a named list.
 Returns the marginal law of a subset of coordinates, which for a gaussian is
 again a gaussian: the mean is the subvector and the covariance the
 corresponding block, with nothing to integrate. The result is a fresh
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} of the reduced dimension, whose parameters are its
+\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} of the reduced dimension, whose parameters are its
 own: a caller cannot expect them to be a subset of the ones passed in.
 }
 \details{
@@ -36,7 +36,7 @@ block at all. Returning the unstructured form is correct in every case, at
 the cost of \code{k(k+1)/2} free values where the parent may have spent fewer.
 }
 \examples{
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(
   c(1, -2, 0.5, 0.1, -0.2, 0.3, 0.4, -0.1, 0.2), d@params))
 
@@ -55,7 +55,7 @@ c(ours = distrib_pdf(m1$distrib, -1.4, m1$theta, log = TRUE),
 
 # A precision parametrization marginalizes to a covariance, the block of
 # the precision not being the precision of the block.
-o <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+o <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 th_o <- as.list(stats::setNames(unlist(theta), o@params))
 all.equal(mv_sigma(mv_marginal(o, th_o, c(1, 3))$distrib,
                    mv_marginal(o, th_o, c(1, 3))$theta),

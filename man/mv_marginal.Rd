@@ -64,7 +64,7 @@ concentration.
 }
 
 \examples{
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(
   c(1, 2, 3, 0, 0, 0, 0.3, 0.2, 0.1), d@params))
 
@@ -75,7 +75,7 @@ mv_sigma(m$distrib, m$theta)
 mv_sigma(d, theta)[1:2, 1:2]
 
 # A Student t's marginal keeps the same degrees of freedom.
-t3 <- mvstudent_t_distrib(3)
+t3 <- mvstudent_t1_distrib(3)
 th <- as.list(stats::setNames(c(unlist(theta), 5), t3@params))
 c(full = th$nu, marginal = mv_marginal(t3, th, c(1, 3))$theta$nu)
 

@@ -66,7 +66,7 @@ range needs.
 }
 
 \examples{
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(
   c(0, 1, -1, 0, 0, 0, 0.6, -0.3, 0.2), d@params
 ))
@@ -77,14 +77,14 @@ graphics::par(op)
 
 # Two coordinates of a heavy-tailed family, whose contours are wider than a
 # gaussian's at the same matrix.
-t2 <- mvstudent_t_distrib(3)
+t2 <- mvstudent_t1_distrib(3)
 th2 <- as.list(stats::setNames(c(unlist(theta), 3), t2@params))
 op <- graphics::par(no.readonly = TRUE)
 plot(t2, th2, which = c(1, 2))
 graphics::par(op)
 
 # Four coordinates would be sixteen panels, so it is refused by name.
-d4 <- mvgaussian_distrib(4)
+d4 <- mvgaussian1_distrib(4)
 th4 <- as.list(stats::setNames(rep(0, d4@n_params), d4@params))
 try(plot(d4, th4))
 

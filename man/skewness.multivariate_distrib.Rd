@@ -29,7 +29,7 @@ so it inherits this refusal. Where it does answer, taking the marginal and
 asking it is explicit about which quantity is meant, which is the point.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 try(skewness(d, theta))

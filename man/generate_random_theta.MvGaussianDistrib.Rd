@@ -4,7 +4,7 @@
 \alias{generate_random_theta.MvGaussianDistrib}
 \title{Random Parameters for a Multivariate Gaussian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -22,7 +22,7 @@ covariance drawn that way is a starting point no fit recovers from. The
 narrow band keeps \code{\link[=check_distrib]{check_distrib()}} reproducible on this family.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 
 set.seed(11)
 unlist(generate_random_theta(d))

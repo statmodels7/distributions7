@@ -4,7 +4,7 @@
 \alias{distrib_rng.MvGaussianDistrib}
 \title{Multivariate Gaussian Generator}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{n}{The number of observations to draw. A single non-negative whole
 number; \code{n = 0} returns a matrix with zero rows.}
@@ -27,7 +27,7 @@ own generator through \code{\link[stats:Normal]{stats::rnorm()}}, so the stream 
 \code{\link[base:Random]{base::set.seed()}}.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
 

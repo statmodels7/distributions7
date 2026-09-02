@@ -30,7 +30,7 @@ through it, so the eight of them read alike and none of them silently
 returns a number of the wrong shape.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 
 # The wording every refusal on this class shares. The name carries no
 # parentheses; they are appended here.

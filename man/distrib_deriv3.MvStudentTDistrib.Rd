@@ -4,7 +4,7 @@
 \alias{distrib_deriv3.MvStudentTDistrib}
 \title{Multivariate Student t Third Derivatives}
 \arguments{
-\item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\item{distrib}{An \link{MvStudentTDistrib} object, from \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
@@ -67,7 +67,7 @@ dimension and \eqn{\ell} the log-density of one observation.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(3)
@@ -78,7 +78,7 @@ length(d3)
 
 # A gaussian's three-location component is exactly zero and this one is not.
 c(t = sum(d3[["mu1_mu1_mu1"]]),
-  gaussian = sum(distrib_deriv3(mvgaussian_distrib(2), y,
+  gaussian = sum(distrib_deriv3(mvgaussian1_distrib(2), y,
                                 theta[1:5])[["mu1_mu1_mu1"]]))
 
 # Against one stencil on the analytic Hessian.

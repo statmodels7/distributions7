@@ -73,7 +73,7 @@ c(got = nrow(sup), expected = choose(4 + 3 - 1, 3 - 1))
 sum(distrib_pdf(d, sup, theta))
 
 # A continuous family has no such set and says so.
-try(mv_support(mvgaussian_distrib(2),
+try(mv_support(mvgaussian1_distrib(2),
                list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0,
                     sigma_log_L2 = 0, sigma_L2.1 = 0)))
 

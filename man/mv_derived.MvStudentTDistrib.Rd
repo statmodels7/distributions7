@@ -5,7 +5,7 @@
 \title{Scale Standard Deviations and Correlations of a Multivariate t}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{theta}{A named list of parameters, already aligned by the generic.}
 
@@ -39,7 +39,7 @@ reports it and this generic does not repeat it. That is also why the
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5, nu = 6)
 der <- mv_derived(d, theta)

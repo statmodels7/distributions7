@@ -56,7 +56,7 @@ An S7 object of class \code{MvGaussianDistrib}, inheriting from
 \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
 \code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params},
 \code{params_smooth} and \code{n_dim}, it carries \code{param} and \code{inverted} as
-supplied. For an object built by \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} at \eqn{p = 2} on
+supplied. For an object built by \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} at \eqn{p = 2} on
 an unstructured covariance, \code{params} is
 \code{c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1")}, every
 \code{params_bounds} entry is \eqn{(-\infty, \infty)} and every link is the
@@ -72,7 +72,7 @@ scalar parameters in their turn. It inherits from \code{multivariate_distrib},
 so the response is an \eqn{n \times p} matrix and the distribution function
 and the quantile function are refused.
 
-Build one with \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}, which fills the properties in and
+Build one with \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}, which fills the properties in and
 checks that the matrix parametrization has full rank. This page documents
 the raw S7 constructor, which validates neither the rank nor the agreement
 between \code{n_dim} and the parametrization's dimension.
@@ -102,7 +102,7 @@ refusals.
 }
 
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 
 # Five scalar parameters: two means and the three free values of the
@@ -116,13 +116,13 @@ d@param@free_names
 vapply(d@link_params, function(l) l@link_name, character(1))
 
 # The precision form differs in one property and in the prefix.
-o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 c(covariance = d@inverted, precision = o@inverted)
 o@params
 
 }
 \seealso{
-\code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} to build one, \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for
+\code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} to build one, \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for
 the heavy-tailed sibling, \code{\link[=mv_sigma]{mv_sigma()}} for the covariance a parameter
 vector describes, and \code{\link[=distrib_gradient.MvGaussianDistrib]{distrib_gradient.MvGaussianDistrib()}} for the
 closed-form score.

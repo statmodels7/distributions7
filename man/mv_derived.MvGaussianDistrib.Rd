@@ -4,7 +4,7 @@
 \alias{mv_derived.MvGaussianDistrib}
 \title{Standard Deviations and Correlations of a Multivariate Gaussian}
 \arguments{
-\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}}.}
+\item{distrib}{An \link{MvGaussianDistrib} object, from \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}}.}
 
 \item{theta}{A named list of parameters, already aligned by the generic.}
 
@@ -54,14 +54,14 @@ response with that coordinate removed.
 }
 
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 mv_derived(d, theta)$value
 
 # The precision side reports the same law's standard deviations and
 # correlation, and adds the conditional variances.
-o <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+o <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 th_o <- list(mu1 = 0, mu2 = 0, omega_log_L1 = 0, omega_log_L2 = 0,
              omega_L2.1 = 0.5)
 od <- mv_derived(o, th_o)
@@ -74,7 +74,7 @@ c(conditional = 1 / Om[1, 1], marginal = mv_sigma(o, th_o)[1, 1])
 
 # At three dimensions the partial correlations appear as a block of their
 # own, the partial and the marginal no longer coinciding.
-o3 <- mvgaussian_distrib(3, omega = parameters7::log_cholesky(3))
+o3 <- mvgaussian2_distrib(3, parameters7::log_cholesky(3))
 th3 <- as.list(stats::setNames(
   c(0, 0, 0, 0, 0, 0, 0.5, -0.4, 0.3), o3@params))
 unique(mv_derived(o3, th3)$block)

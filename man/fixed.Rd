@@ -61,7 +61,7 @@ silently would hide a missing argument.
 \section{What it is for}{
 A prior. \code{fixed(gaussian1_distrib(), mu = 0)} is the ridge penalty with its
 scale free, \code{fixed(laplace2_distrib(), mu = 0)} is the lasso, and
-\code{fixed(mvgaussian_distrib(p), mu1 = 0, ...)} is what a random effect is
+\code{fixed(mvgaussian1_distrib(p), mu1 = 0, ...)} is what a random effect is
 distributed by. \code{fixed(folded(gaussian1_distrib()), mu = 0)} is the
 half-normal.
 

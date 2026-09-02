@@ -5,7 +5,7 @@
 \title{Random Parameters for a Multivariate Student t}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
@@ -23,7 +23,7 @@ heavy-tailed and every moment \code{\link[=check_distrib]{check_distrib()}} comp
 variance needing \eqn{\nu > 2} and the kurtosis \eqn{\nu > 4}.
 }
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 
 set.seed(11)
 unlist(generate_random_theta(d))

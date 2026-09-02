@@ -23,7 +23,7 @@ which is a fact about the family; the shape of \code{theta} says nothing about
 it.
 }
 \examples{
-d <- mvgaussian_distrib(3)
+d <- mvgaussian1_distrib(3)
 theta <- as.list(stats::setNames(c(1, -2, 0.5, rep(0, 6)), d@params))
 th <- distributions7:::align_theta(d, theta)
 distributions7:::mv_leading_location(d, th)

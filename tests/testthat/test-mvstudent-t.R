@@ -37,20 +37,20 @@ th2 <- function() {
 }
 
 test_that("the constructor validates its arguments", {
-  expect_error(mvstudent_t_distrib(0), "positive integer")
-  expect_error(mvstudent_t_distrib(2, sigma = diag(2)), "parameter")
+  expect_error(mvstudent_t1_distrib(0), "positive integer")
+  expect_error(mvstudent_t1_distrib(2, diag(2)), "parameter")
   expect_error(
-    mvstudent_t_distrib(3, sigma = parameters7::log_cholesky(2)),
+    mvstudent_t1_distrib(3, parameters7::log_cholesky(2)),
     "dimension 2 but the distribution has dimension 3"
   )
-  expect_error(mvstudent_t_distrib(2, link_nu = "log"), "link object")
+  expect_error(mvstudent_t1_distrib(2, link_nu = "log"), "link object")
 
   pen <- parameters7::scaled_matrix(crossprod(diff(diag(5), differences = 2)))
-  expect_error(mvstudent_t_distrib(5, sigma = pen), "rank deficient")
+  expect_error(mvstudent_t1_distrib(5, pen), "rank deficient")
 })
 
 test_that("the degrees of freedom are a parameter of their own", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
 
   expect_identical(d@params, c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1", "nu"))
   expect_identical(d@n_params, 6L)
@@ -68,7 +68,7 @@ test_that("the degrees of freedom are a parameter of their own", {
 })
 
 test_that("the density is the formula, written out by hand", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   y <- rbind(c(0, 0), c(1, -1), c(-0.5, 0.8), c(3, 2))
 
@@ -88,7 +88,7 @@ test_that("the density is the formula, written out by hand", {
 })
 
 test_that("the scale matrix and the covariance are different objects", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   s <- mv_sigma(d, th)
 
@@ -114,7 +114,7 @@ test_that("the scale matrix and the covariance are different objects", {
 })
 
 test_that("the score and the Hessian agree with finite differences", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   set.seed(41)
   y <- distrib_rng(d, 40, th)
@@ -139,7 +139,7 @@ test_that("the score and the Hessian agree with finite differences", {
 })
 
 test_that("the link scale is the chain rule through the log link on nu", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   set.seed(42)
   y <- distrib_rng(d, 30, th)
@@ -164,7 +164,7 @@ test_that("the link scale is the chain rule through the log link on nu", {
 })
 
 test_that("the generator matches the moments and the Mahalanobis law", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   set.seed(43)
   r <- distrib_rng(d, 2e5, th)
@@ -182,7 +182,7 @@ test_that("the generator matches the moments and the Mahalanobis law", {
 })
 
 test_that("the response derivatives are closed form", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   y <- rbind(c(0, 0), c(1, -1), c(2.5, -2))
 
@@ -201,8 +201,8 @@ test_that("the response derivatives are closed form", {
 })
 
 test_that("the gaussian is the limit of large degrees of freedom", {
-  d <- mvstudent_t_distrib(2)
-  g <- mvgaussian_distrib(2)
+  d <- mvstudent_t1_distrib(2)
+  g <- mvgaussian1_distrib(2)
   th <- th2()
   th$nu <- 1e8
   y <- rbind(c(0, 0), c(1, -1), c(-0.5, 0.8), c(3, 2))
@@ -219,7 +219,7 @@ test_that("the gaussian is the limit of large degrees of freedom", {
 })
 
 test_that("a marginal is a t with the same degrees of freedom", {
-  d <- mvstudent_t_distrib(3)
+  d <- mvstudent_t1_distrib(3)
   th <- as.list(stats::setNames(
     c(0, 1, -1, 0.1, -0.1, 0.2, 0.5, -0.2, 0.3, 7), d@params
   ))
@@ -240,7 +240,7 @@ test_that("a marginal is a t with the same degrees of freedom", {
 })
 
 test_that("the expected information is exact and needs no strategy", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- th2()
   y1 <- matrix(c(0, 0), 1L, 2L)
 
@@ -267,13 +267,13 @@ test_that("the expected information is exact and needs no strategy", {
 
 test_that("check_distrib runs the multivariate battery on the t", {
   set.seed(46)
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   res <- check_distrib(d, theta = th2(), nsim = 5e4, verbose = FALSE)
   expect_true(all(res$status == "OK"))
 })
 
 test_that("fit_distrib recovers the degrees of freedom", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   true <- list(mu1 = 1, mu2 = -0.5, sigma_log_L1 = log(1.2), sigma_log_L2 = log(0.8),
                sigma_L2.1 = 0.6, nu = 6)
   set.seed(47)
@@ -301,12 +301,12 @@ test_that("fit_distrib recovers the degrees of freedom", {
 
   # a gaussian fitted to the same data is beaten by the t, which is the whole
   # point of the family
-  g <- mvgaussian_distrib(2)
+  g <- mvgaussian1_distrib(2)
   expect_gt(as.numeric(logLik(fit)), as.numeric(logLik(fit_distrib(g, y))))
 })
 
 test_that("Fisher scoring inverts the exact information here", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   set.seed(48)
   y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3, nu = 5))
@@ -327,7 +327,7 @@ test_that("Fisher scoring inverts the exact information here", {
 
 
 test_that("the response Hessian is the reweighted gaussian expression", {
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   th <- list(mu1 = 0.4, mu2 = -0.3, sigma_log_L1 = 0.2, sigma_log_L2 = -0.1,
              sigma_L2.1 = 0.5, nu = 5)
   set.seed(3)
@@ -350,7 +350,7 @@ test_that("the response Hessian is the reweighted gaussian expression", {
   # and in the nu -> infinity limit it is the gaussian's -Sigma^{-1}
   th_big <- th; th_big$nu <- 1e8
   Hb <- distrib_hess_y(d, y, th_big)
-  Hg <- distrib_hess_y(mvgaussian_distrib(2), y, th[names(th) != "nu"])
+  Hg <- distrib_hess_y(mvgaussian1_distrib(2), y, th[names(th) != "nu"])
   expect_equal(Hb[, , 1], Hg, tolerance = 1e-6, ignore_attr = TRUE)
 })
 
@@ -360,12 +360,12 @@ test_that("response derivatives without a closed form are refused, not guessed",
   # stencils difference along a line and would return numbers of the wrong
   # shape for a matrix response. The two elliptical families answer because a
   # closed form is registered on each; a family without one still refuses.
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
              sigma_L2.1 = 0.3)
   y <- distrib_rng(d, 3, th)
   expect_named(distrib_cross_y(d, y, th), d@params)
-  dt <- mvstudent_t_distrib(2)
+  dt <- mvstudent_t1_distrib(2)
   expect_named(distrib_cross_y(dt, y, c(th, nu = 5)), dt@params)
 
   dd <- dirichlet_distrib(3)
@@ -381,7 +381,7 @@ test_that("third and fourth parameter derivatives work on a matrix response", {
   # The fallbacks stencil along the parameters, so a matrix response passes
   # through untouched; checked against a Richardson jacobian of the summed
   # analytic Hessian, which shares nothing with the single stencil.
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.3, mu2 = -0.2, sigma_log_L1 = 0.1, sigma_log_L2 = -0.1,
              sigma_L2.1 = 0.4)
   set.seed(4)
@@ -421,7 +421,7 @@ test_that("the expected information is closed and matches the sampling route", {
   skip_on_cran()
   set.seed(7)
   for (p in c(2L, 3L)) {
-    d <- mvstudent_t_distrib(p)
+    d <- mvstudent_t1_distrib(p)
     y0 <- matrix(stats::rnorm(20 * p), 20, p)
     th <- distrib_start(d, y0, 1L)[[1L]]
     for (nu in c(4, 8, 25)) {
@@ -445,8 +445,8 @@ test_that("the expected information is closed and matches the sampling route", {
 
 test_that("the expected information tends to the gaussian's", {
   p <- 3L
-  d <- mvstudent_t_distrib(p)
-  g <- mvgaussian_distrib(p)
+  d <- mvstudent_t1_distrib(p)
+  g <- mvgaussian1_distrib(p)
   set.seed(3)
   y0 <- matrix(stats::rnorm(10 * p), 10, p)
   tht <- distrib_start(d, y0, 1L)[[1L]]
@@ -466,7 +466,7 @@ test_that("the expected information tends to the gaussian's", {
 test_that("the location stays orthogonal to the scale and the shape", {
   # odd in z against even in z: every cross-expectation with the location
   # vanishes, which is why those blocks are exactly zero rather than small
-  d <- mvstudent_t_distrib(2)
+  d <- mvstudent_t1_distrib(2)
   set.seed(5)
   y0 <- matrix(stats::rnorm(20), 10, 2)
   th <- distrib_start(d, y0, 1L)[[1L]]
@@ -483,7 +483,7 @@ test_that("the mixed response-parameter block agrees with numDeriv", {
   # the two routes share no arithmetic
   set.seed(5)
   for (p in 2:4) {
-    d <- mvstudent_t_distrib(p)
+    d <- mvstudent_t1_distrib(p)
     nm <- d@params
     v <- c(stats::rnorm(p, 0, 0.5), stats::rnorm(length(nm) - p - 1, 0, 0.3), 6)
     th <- stats::setNames(as.list(v), nm)
@@ -506,8 +506,8 @@ test_that("the mixed block becomes the gaussian's at the rate 1/nu", {
   # the limit is checked at its RATE and not only at one large value: an
   # arithmetic accident does not fall by a hundred when nu rises by a hundred
   p <- 3
-  dg <- mvgaussian_distrib(p)
-  dt <- mvstudent_t_distrib(p)
+  dg <- mvgaussian1_distrib(p)
+  dt <- mvstudent_t1_distrib(p)
   v <- c(0.2, -0.4, 0.1, 0.15, -0.2, 0.25, 0.1, -0.05, 0.3)
   set.seed(9)
   y <- matrix(stats::rnorm(4 * p), ncol = p)
@@ -534,7 +534,7 @@ test_that("the higher mixed response derivatives agree with one difference", {
   # cross2_y and hess_y_hess return one matrix per row.
   set.seed(21)
   for (p in 2:3) {
-    d <- mvstudent_t_distrib(p)
+    d <- mvstudent_t1_distrib(p)
     nm <- d@params
     v <- c(stats::rnorm(p, 0, 0.4),
            stats::rnorm(length(nm) - p - 1, 0, 0.25), 7)
@@ -584,8 +584,8 @@ test_that("the higher mixed derivatives reach the gaussian's at the rate 1/nu", 
   # distrib_hess_y already follows, so the constant is repeated to compare.
   bc <- function(m, n) array(as.numeric(m), c(nrow(m), ncol(m), n))
   for (p in 2:3) {
-    d <- mvstudent_t_distrib(p)
-    dg <- mvgaussian_distrib(p)
+    d <- mvstudent_t1_distrib(p)
+    dg <- mvgaussian1_distrib(p)
     nm <- d@params
     set.seed(21 + p)
     vg <- c(stats::rnorm(p, 0, 0.4),
@@ -613,4 +613,119 @@ test_that("the higher mixed derivatives reach the gaussian's at the rate 1/nu", 
     expect_equal(hi / lo, rep(1e-4, 3L), tolerance = 0.05,
                  info = paste("p =", p))
   }
+})
+
+test_that("the two t families are two classes under one parent", {
+  d1 <- mvstudent_t1_distrib(2)
+  d2 <- mvstudent_t2_distrib(2)
+  expect_true(S7::S7_inherits(d1, MvStudentT1Distrib))
+  expect_true(S7::S7_inherits(d2, MvStudentT2Distrib))
+  expect_true(S7::S7_inherits(d1, MvStudentTDistrib))
+  expect_true(S7::S7_inherits(d2, MvStudentTDistrib))
+  expect_false(d1@inverted)
+  expect_true(d2@inverted)
+  expect_identical(d1@params[3:5],
+                   c("sigma_log_L1", "sigma_log_L2", "sigma_L2.1"))
+  expect_identical(d2@params[3:5],
+                   c("omega_log_L1", "omega_log_L2", "omega_L2.1"))
+  # neither constructor takes the other's argument
+  expect_error(mvstudent_t1_distrib(2, omega = parameters7::log_cholesky(2)),
+               "unused argument")
+  expect_error(mvstudent_t2_distrib(2, sigma = parameters7::log_cholesky(2)),
+               "unused argument")
+})
+
+test_that("the same law is described from either side", {
+  d1 <- mvstudent_t1_distrib(2)
+  d2 <- mvstudent_t2_distrib(2)
+  th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
+             sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
+  S <- unname(mv_sigma(d1, th))
+  eta <- parameters7::param_free(d2@param, solve(S))
+  th2 <- as.list(stats::setNames(c(0.5, -0.3, eta, 6), d2@params))
+
+  y <- rbind(c(0, 0), c(1, -1), c(-0.5, 0.8))
+  expect_equal(distrib_pdf(d2, y, th2, log = TRUE),
+               distrib_pdf(d1, y, th, log = TRUE))
+  expect_equal(unname(mv_sigma(d2, th2)), S)
+  expect_equal(unname(variance(d2, th2)), unname(variance(d1, th)))
+})
+
+test_that("the matrices are neither a covariance nor a precision", {
+  # the two scalings the constructor's page writes out, and the two readings
+  # that carry over without one
+  d2 <- mvstudent_t2_distrib(3)
+  nu <- 6
+  set.seed(9)
+  eta <- stats::rnorm(6, 0, 0.3)
+  th <- as.list(stats::setNames(c(0, 0, 0, eta, nu), d2@params))
+  Om <- unname(unclass(parameters7::param_value(d2@param, eta)))
+  V <- unname(variance(d2, th))
+
+  # Var = nu/(nu-2) Sigma and Var^-1 = (nu-2)/nu Sigma^-1
+  expect_equal(V, nu / (nu - 2) * solve(Om))
+  expect_equal(solve(V), (nu - 2) / nu * Om)
+  # the matrix is NOT the precision: the factor is 2/3 here
+  expect_gt(max(abs(solve(V) - Om)), 0.05)
+
+  # correlations and partial correlations ARE the response's
+  expect_equal(cov2cor(unname(mv_sigma(d2, th))), cov2cor(V))
+  pcor <- function(M) {
+    d <- sqrt(diag(M))
+    -M / outer(d, d)
+  }
+  expect_equal(pcor(Om), pcor(solve(V)))
+})
+
+test_that("check_distrib passes on both t families", {
+  # the inverted form's gradient reads the log-determinant derivative
+  # transported, and a missing sign flip there was 14 relative while the
+  # Hessian stayed right, so this is the check that catches it
+  for (d in list(mvstudent_t1_distrib(2), mvstudent_t2_distrib(2),
+                 mvstudent_t2_distrib(3, parameters7::ar1(3)))) {
+    r <- check_distrib(d, verbose = FALSE)
+    expect_identical(sum(r$status == "FAIL"), 0L, info = d@distrib_name)
+  }
+})
+
+test_that("ar1_inv on the inverse side is the AR(1) scale again", {
+  d1 <- mvstudent_t1_distrib(4, parameters7::ar1(4))
+  d2 <- mvstudent_t2_distrib(4, parameters7::ar1_inv(4))
+  eta <- c(0.2, atanh(0.6))
+  th1 <- as.list(stats::setNames(c(rep(0, 4), eta, 6), d1@params))
+  th2 <- as.list(stats::setNames(c(rep(0, 4), eta, 6), d2@params))
+  expect_equal(unname(mv_sigma(d2, th2)), unname(mv_sigma(d1, th1)))
+})
+
+test_that("the marginal keeps the parametrization it came from", {
+  d2 <- mvstudent_t2_distrib(3)
+  set.seed(5)
+  eta <- stats::rnorm(6, 0, 0.3)
+  th <- as.list(stats::setNames(c(0, 1, -1, eta, 7), d2@params))
+  m <- mv_marginal(d2, th, c(1, 3))
+  expect_true(S7::S7_inherits(m$distrib, MvStudentT2Distrib))
+  expect_equal(mv_sigma(m$distrib, m$theta),
+               mv_sigma(d2, th)[c(1, 3), c(1, 3)], ignore_attr = TRUE)
+  # and the marginal keeps the same degrees of freedom
+  expect_identical(m$theta[["nu"]], 7)
+})
+
+test_that("the inverted summary reports scales, not variances", {
+  d2 <- mvstudent_t2_distrib(3)
+  set.seed(6)
+  eta <- stats::rnorm(6, 0, 0.3)
+  th <- as.list(stats::setNames(c(0, 0, 0, eta, 8), d2@params))
+  r <- mv_derived(d2, th)
+  expect_true(any(grepl("^cscale_", names(r$value))))
+  expect_false(any(grepl("^cvar_", names(r$value))))
+  expect_true(any(grepl("^pcor_", names(r$value))))
+  # the conditional scale is the reciprocal diagonal of the matrix carried
+  Om <- unname(unclass(parameters7::param_value(d2@param, eta)))
+  expect_equal(unname(r$value[grepl("^cscale_", names(r$value))]),
+               1 / diag(Om))
+  # and the scale form reports neither
+  r1 <- mv_derived(mvstudent_t1_distrib(3),
+                   as.list(stats::setNames(c(0, 0, 0, eta, 8),
+                                           mvstudent_t1_distrib(3)@params)))
+  expect_false(any(grepl("^cscale_|^pcor_", names(r1$value))))
 })

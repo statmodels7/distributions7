@@ -170,7 +170,7 @@ Wiley, New York.
 \code{\link[=cauchy_distrib]{cauchy_distrib()}} for \eqn{\nu = 1} and \code{\link[=gaussian1_distrib]{gaussian1_distrib()}} for the
 limit; \code{\link[=skewt_distrib]{skewt_distrib()}} to add a shape parameter;
 \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}} and \code{\link[=laplace_distrib]{laplace_distrib()}} for other robust families;
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} for the multivariate version;
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} for the multivariate version;
 \code{\link[=fit_distrib]{fit_distrib()}} to estimate the parameters; \code{\link[=check_distrib]{check_distrib()}} to validate a
 family of your own against the same battery this one passes;
 \link{StudentT1Distrib} for the class.

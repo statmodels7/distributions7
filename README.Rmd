@@ -33,8 +33,10 @@ set.seed(1)
 .ctor_args <- list(betabinom1_distrib = list(size = 10),
                    betabinom2_distrib = list(size = 10),
                    binomial_distrib = list(size = 10),
-                   mvgaussian_distrib = list(n_dim = 2),
-                   mvstudent_t_distrib = list(n_dim = 2),
+                   mvgaussian1_distrib = list(n_dim = 2),
+                   mvgaussian2_distrib = list(n_dim = 2),
+                   mvstudent_t1_distrib = list(n_dim = 2),
+                   mvstudent_t2_distrib = list(n_dim = 2),
                    dirichlet_distrib = list(n_dim = 3),
                    multinomial_distrib = list(n_dim = 3, size = 5))
 .is_mv <- vapply(.ctors, function(cn) {
@@ -204,7 +206,7 @@ own starting value through `distrib_start()`. A family with a known estimator
 returns it and the fit begins there; one that says nothing gets random draws.
 
 ```{r}
-d4 <- mvgaussian_distrib(4)
+d4 <- mvgaussian1_distrib(4)
 y4 <- as.matrix(iris[, 1:4])
 f4 <- fit_distrib(d4, y4)
 c(iterations = f4@iterations, converged = f4@converged)
@@ -222,7 +224,7 @@ say which matrix the structure describes, `sigma_` for a covariance and
 different models.
 
 ```{r}
-dm <- mvgaussian_distrib(2)
+dm <- mvgaussian1_distrib(2)
 dm@params
 
 ym <- distrib_rng(dm, 500, list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
@@ -252,7 +254,7 @@ against the observations below it.
 plot(fitm)
 ```
 
-`mvstudent_t_distrib()` is the heavy-tailed alternative, with the degrees of
+`mvstudent_t1_distrib()` is the heavy-tailed alternative, with the degrees of
 freedom estimated alongside everything else. Its `mv_sigma()` is the **scale**
 matrix and its `variance()` the covariance, which differ by $\nu/(\nu-2)$ and
 which the family keeps apart so that it remains usable below two degrees of
@@ -322,6 +324,6 @@ invisible(check_distrib(d2, list(mu = 0, b = 2), nsim = 2e4))
 |---|---|
 | continuous | gaussian, cauchy, logistic, Student's t, Laplace, pseudo-Huber, skew normal, skew t, gamma, generalized gamma, inverse gaussian, lognormal, exponential, chi-squared, Weibull, Gumbel, generalized Pareto, beta, von Mises |
 | discrete | bernoulli, binomial, beta-binomial, poisson, geometric, negative binomial in both the quadratic and the linear variance parametrization |
-| multivariate | `mvgaussian_distrib()`, parametrized by a covariance or a precision structure from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t_distrib()`, which keeps its scale matrix and its covariance apart so that it is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
+| multivariate | `mvgaussian1_distrib()` and `mvgaussian2_distrib()`, parametrized by a covariance and by a precision structure respectively from [parameters7](https://statmodels7.github.io/parameters7/); `mvstudent_t1_distrib()` and `mvstudent_t2_distrib()` on the scale matrix and on its inverse, which keep the scale matrix and the covariance apart so that the family is usable where the second moment does not exist; `dirichlet_distrib()` on the simplex, whose marginals are beta; and `multinomial_distrib()`, whose support is enumerated by `mv_support()` so that every expectation is an exact sum |
 | wrappers | `zero_inflated()`, `zero_adjusted()`, `truncated()`, `folded()`, `fixed()`, `transformation()` with twelve transformers |
 | tools | `fit_distrib()`, `check_distrib()`, `expectation()`, moments, `rng_grou()` |

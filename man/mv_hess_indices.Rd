@@ -29,7 +29,7 @@ names are matched back to positions, so the two orderings come from one
 enumeration and cannot drift apart.
 }
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 idx <- distributions7:::mv_hess_indices(d)
 length(idx) == length(hess_names(d@params))
 

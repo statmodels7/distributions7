@@ -37,30 +37,33 @@ fd_hess <- function(f, x, k, l, h = 1e-4) {
 }
 
 test_that("the constructor validates its arguments", {
-  expect_error(mvgaussian_distrib(0), "positive integer")
-  expect_error(mvgaussian_distrib(2.5), "positive integer")
+  expect_error(mvgaussian1_distrib(0), "positive integer")
+  expect_error(mvgaussian1_distrib(2.5), "positive integer")
+  # The side is the family's, so neither constructor takes the other's
+  # argument: what used to be an over-determined call is now unwritable.
   expect_error(
-    mvgaussian_distrib(2,
-      sigma = parameters7::log_cholesky(2),
-      omega = parameters7::log_cholesky(2)
-    ),
-    "at most one"
+    mvgaussian1_distrib(2, omega = parameters7::log_cholesky(2)),
+    "unused argument"
   )
-  expect_error(mvgaussian_distrib(2, sigma = diag(2)), "parameter")
   expect_error(
-    mvgaussian_distrib(3, sigma = parameters7::log_cholesky(2)),
+    mvgaussian2_distrib(2, sigma = parameters7::log_cholesky(2)),
+    "unused argument"
+  )
+  expect_error(mvgaussian1_distrib(2, diag(2)), "parameter")
+  expect_error(
+    mvgaussian1_distrib(3, parameters7::log_cholesky(2)),
     "dimension 2 but the distribution has dimension 3"
   )
 
   # A rank-deficient structure is a penalty, not a density, and the refusal is
   # the same whichever side it parametrizes.
   pen <- parameters7::scaled_matrix(crossprod(diff(diag(5), differences = 2)))
-  expect_error(mvgaussian_distrib(5, sigma = pen), "rank deficient")
-  expect_error(mvgaussian_distrib(5, omega = pen), "rank deficient")
+  expect_error(mvgaussian1_distrib(5, pen), "rank deficient")
+  expect_error(mvgaussian2_distrib(5, pen), "rank deficient")
 })
 
 test_that("the parameters are the mean components and the structure's free values", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
 
   expect_identical(d@params, c("mu1", "mu2", "sigma_log_L1", "sigma_log_L2", "sigma_L2.1"))
   expect_identical(d@n_params, 5L)
@@ -79,13 +82,13 @@ test_that("the parameters are the mean components and the structure's free value
   expect_true(all(vapply(d@params_bounds, function(b) all(!is.finite(b)), logical(1))))
 
   # a diagonal structure contributes fewer of them
-  dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
+  dd <- mvgaussian1_distrib(3, parameters7::diagonal_matrix(3))
   expect_identical(dd@params,
     c("mu1", "mu2", "mu3", "sigma_log_d1", "sigma_log_d2", "sigma_log_d3"))
 })
 
 test_that("the density is the formula, written out by hand", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   y <- rbind(c(0, 0), c(1, -1), c(-0.5, 0.8))
 
@@ -109,7 +112,7 @@ test_that("the density is the formula, written out by hand", {
 })
 
 test_that("the mean and the covariance come back in the shapes they belong to", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0.5)
 
   expect_equal(unname(mv_location(d, th)), c(1, -1))
@@ -127,13 +130,13 @@ test_that("the mean and the covariance come back in the shapes they belong to", 
 })
 
 test_that("a parameter that varies by observation is refused", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = c(0, 1), mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
   expect_error(distrib_pdf(d, rbind(c(0, 0), c(1, 1)), th), "belong to a model")
 })
 
 test_that("the score and the Hessian agree with finite differences", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(21)
   y <- distrib_rng(d, 40, th)
@@ -157,7 +160,7 @@ test_that("the score and the Hessian agree with finite differences", {
 })
 
 test_that("the expected information is exact and block diagonal", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(22)
   big <- distrib_rng(d, 2e5, th)
@@ -182,7 +185,7 @@ test_that("the expected information is exact and block diagonal", {
 })
 
 test_that("the generator matches the first two moments", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 1.5, mu2 = -0.5, sigma_log_L1 = 0.2, sigma_log_L2 = -0.1, sigma_L2.1 = 0.6)
   set.seed(23)
   r <- distrib_rng(d, 2e5, th)
@@ -193,7 +196,7 @@ test_that("the generator matches the first two moments", {
 })
 
 test_that("the response derivatives are closed form", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   y <- rbind(c(0, 0), c(1, -1))
   si <- solve(mv_sigma(d, th))
@@ -205,7 +208,7 @@ test_that("the response derivatives are closed form", {
 })
 
 test_that("the link scale is the parameter scale", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.4)
   set.seed(24)
   y <- distrib_rng(d, 20, th)
@@ -221,7 +224,7 @@ test_that("the link scale is the parameter scale", {
 })
 
 test_that("the one-dimensional quantities are refused rather than approximated", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0, sigma_L2.1 = 0)
 
   expect_error(distrib_cdf(d, rbind(c(0, 0)), th), "orthant")
@@ -231,8 +234,8 @@ test_that("the one-dimensional quantities are refused rather than approximated",
 test_that("the precision form describes the same law as the covariance form", {
   # Omega = Sigma^{-1} through a structure on the other side: the density, the
   # score and the Hessian must agree once the two are matched.
-  ds <- mvgaussian_distrib(2)
-  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+  ds <- mvgaussian1_distrib(2)
+  do <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
 
   th_s <- list(mu1 = 0.3, mu2 = -0.4, sigma_log_L1 = 0.1, sigma_log_L2 = -0.2, sigma_L2.1 = 0.5)
   sigma <- mv_sigma(ds, th_s)
@@ -256,7 +259,7 @@ test_that("the precision form describes the same law as the covariance form", {
 })
 
 test_that("the precision form has correct derivatives of its own", {
-  do <- mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
+  do <- mvgaussian2_distrib(2, parameters7::log_cholesky(2))
   th <- list(mu1 = 0.2, mu2 = -0.1, omega_log_L1 = 0.15, omega_log_L2 = -0.05,
              omega_L2.1 = 0.3)
   set.seed(26)
@@ -279,7 +282,7 @@ test_that("the precision form has correct derivatives of its own", {
 })
 
 test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   true <- list(mu1 = 1.5, mu2 = -0.5, sigma_log_L1 = log(1.2), sigma_log_L2 = log(0.8),
                sigma_L2.1 = 0.6)
   set.seed(27)
@@ -320,7 +323,7 @@ test_that("fit_distrib recovers the closed-form maximum likelihood estimate", {
 })
 
 test_that("the three fitting methods reach the same optimum", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   set.seed(28)
   y <- distrib_rng(d, 800, list(mu1 = 0, mu2 = 1, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.4))
@@ -331,7 +334,7 @@ test_that("the three fitting methods reach the same optimum", {
 })
 
 test_that("a diagonal covariance is fitted with fewer parameters", {
-  dd <- mvgaussian_distrib(3, sigma = parameters7::diagonal_matrix(3))
+  dd <- mvgaussian1_distrib(3, parameters7::diagonal_matrix(3))
   set.seed(29)
   y <- distrib_rng(dd, 1500, list(mu1 = 0, mu2 = 1, mu3 = -1,
                                   sigma_log_d1 = log(2),
@@ -350,7 +353,7 @@ test_that("a diagonal covariance is fitted with fewer parameters", {
 })
 
 test_that("the fit prints the quantities a reader reads, and each once", {
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   set.seed(30)
   y <- distrib_rng(d, 400, list(mu1 = 0, mu2 = 0, sigma_log_L1 = 0, sigma_log_L2 = 0,
                                 sigma_L2.1 = 0.3))
@@ -384,7 +387,7 @@ test_that("the fit prints the quantities a reader reads, and each once", {
 
 test_that("check_distrib runs the multivariate battery", {
   set.seed(31)
-  d <- mvgaussian_distrib(2)
+  d <- mvgaussian1_distrib(2)
   th <- list(mu1 = 0.4, mu2 = -0.2, sigma_log_L1 = 0.1, sigma_log_L2 = -0.1, sigma_L2.1 = 0.35)
   res <- check_distrib(d, theta = th, nsim = 5e4, verbose = FALSE)
 
@@ -406,7 +409,7 @@ test_that("check_distrib catches a deliberately wrong component", {
     g[["mu1"]] <- 1.05 * g[["mu1"]]
     g
   }
-  good <- mvgaussian_distrib(2)
+  good <- mvgaussian1_distrib(2)
   bad <- Wrong(
     distrib_name = "wrong", dimension = "multivariate", n_dim = good@n_dim,
     bounds = good@bounds, params = good@params,
@@ -431,17 +434,17 @@ test_that("check_distrib catches a deliberately wrong component", {
 
 test_that("n_obs counts observations rather than entries", {
   expect_identical(n_obs(gaussian1_distrib(), c(1, 2, 3)), 3L)
-  expect_identical(n_obs(mvgaussian_distrib(2), matrix(0, 5, 2)), 5L)
+  expect_identical(n_obs(mvgaussian1_distrib(2), matrix(0, 5, 2)), 5L)
   # a bare vector is one observation
-  expect_identical(n_obs(mvgaussian_distrib(3), c(1, 2, 3)), 1L)
-  expect_identical(n_obs(mvgaussian_distrib(2), matrix(numeric(0), 0, 2)), 0L)
+  expect_identical(n_obs(mvgaussian1_distrib(3), c(1, 2, 3)), 1L)
+  expect_identical(n_obs(mvgaussian1_distrib(2), matrix(numeric(0), 0, 2)), 0L)
 })
 
 
 test_that("closed-form third and fourth derivatives match one stencil", {
   for (inv in c(FALSE, TRUE)) {
-    d <- if (inv) mvgaussian_distrib(2, omega = parameters7::log_cholesky(2))
-         else mvgaussian_distrib(2)
+    d <- if (inv) mvgaussian2_distrib(2, parameters7::log_cholesky(2))
+         else mvgaussian1_distrib(2)
     set.seed(2)
     th <- generate_random_theta(d)
     y <- distrib_rng(d, 6, th)
@@ -470,8 +473,8 @@ test_that("the mixed response-parameter block agrees with numDeriv", {
   set.seed(3)
   for (p in 2:4) {
     for (inv in c(FALSE, TRUE)) {
-      d <- if (inv) mvgaussian_distrib(p, omega = parameters7::log_cholesky(p))
-           else mvgaussian_distrib(p)
+      d <- if (inv) mvgaussian2_distrib(p, parameters7::log_cholesky(p))
+           else mvgaussian1_distrib(p)
       nm <- d@params
       v <- c(stats::rnorm(p, 0, 0.5), stats::rnorm(length(nm) - p, 0, 0.3))
       th <- stats::setNames(as.list(v), nm)
@@ -492,7 +495,7 @@ test_that("the mixed response-parameter block agrees with numDeriv", {
 
 
 test_that("the mean block of the mixed derivative is Sigma^-1 and constant", {
-  d <- mvgaussian_distrib(3)
+  d <- mvgaussian1_distrib(3)
   th <- stats::setNames(as.list(c(0.5, -1, 2, 0.1, -0.2, 0.3, 0.4, 0.1, -0.1)),
                         d@params)
   y <- matrix(stats::rnorm(12), ncol = 3)
@@ -522,7 +525,7 @@ test_that("the higher mixed response derivatives agree with one difference", {
   # nested reference reports gaps of 0.3 on correct code.
   set.seed(11)
   for (p in 2:3) {
-    d <- mvgaussian_distrib(p)
+    d <- mvgaussian1_distrib(p)
     nm <- d@params
     v <- c(stats::rnorm(p, 0, 0.4), stats::rnorm(length(nm) - p, 0, 0.25))
     th <- stats::setNames(as.list(v), nm)
@@ -573,7 +576,7 @@ test_that("the higher mixed derivatives do not depend on the order", {
   skip_if_not_installed("numDeriv")
   set.seed(12)
   p <- 3
-  d <- mvgaussian_distrib(p)
+  d <- mvgaussian1_distrib(p)
   nm <- d@params
   v <- c(stats::rnorm(p, 0, 0.4), stats::rnorm(length(nm) - p, 0, 0.25))
   th <- stats::setNames(as.list(v), nm)
@@ -590,4 +593,115 @@ test_that("the higher mixed derivatives do not depend on the order", {
     }, v[a]), p, p)
     expect_equal(hh[[k]], alt, tolerance = 1e-5, info = k)
   }
+})
+
+
+test_that("the two families are two classes under one parent", {
+  d1 <- mvgaussian1_distrib(2)
+  d2 <- mvgaussian2_distrib(2)
+  expect_true(S7::S7_inherits(d1, MvGaussian1Distrib))
+  expect_true(S7::S7_inherits(d2, MvGaussian2Distrib))
+  expect_true(S7::S7_inherits(d1, MvGaussianDistrib))
+  expect_true(S7::S7_inherits(d2, MvGaussianDistrib))
+  expect_false(S7::S7_inherits(d1, MvGaussian2Distrib))
+  expect_false(S7::S7_inherits(d2, MvGaussian1Distrib))
+})
+
+test_that("each family says which matrix its free values describe", {
+  d1 <- mvgaussian1_distrib(2)
+  d2 <- mvgaussian2_distrib(2)
+  expect_false(d1@inverted)
+  expect_true(d2@inverted)
+  expect_identical(d1@params[3:5],
+                   c("sigma_log_L1", "sigma_log_L2", "sigma_L2.1"))
+  expect_identical(d2@params[3:5],
+                   c("omega_log_L1", "omega_log_L2", "omega_L2.1"))
+  expect_identical(unname(d1@params_interpretation[3]), "covariance")
+  expect_identical(unname(d2@params_interpretation[3]), "precision")
+})
+
+test_that("a chart closed under inversion gives the two families one law", {
+  # log_cholesky is closed, so the same data reach the same maximum from
+  # either side and the split is a change of coordinates there
+  set.seed(11)
+  p <- 3
+  n <- 300
+  s <- unclass(parameters7::param_value(parameters7::ar1(p), c(0, atanh(0.5))))
+  y <- matrix(stats::rnorm(n * p), n, p) %*% chol(s)
+  y <- sweep(y, 2, c(1, -1, 0.5), "+")
+
+  f1 <- fit_distrib(mvgaussian1_distrib(p), y)
+  f2 <- fit_distrib(mvgaussian2_distrib(p), y)
+  expect_equal(as.numeric(logLik(f1)), as.numeric(logLik(f2)),
+               tolerance = 1e-6)
+  # and the fitted matrices agree, one being the other's inverse
+  expect_equal(mv_sigma(f1@distrib, as.list(coef(f1))), mv_sigma(f2@distrib, as.list(coef(f2))),
+               tolerance = 1e-5)
+})
+
+test_that("a chart NOT closed under inversion gives two different models", {
+  # THE NEGATIVE CONTROL: the inverse of an AR(1) covariance is tridiagonal
+  # and is not an AR(1) at any parameters, so imposing the pattern on the two
+  # sides is two models and the maximized likelihoods differ. Without this the
+  # split would be cosmetic.
+  set.seed(11)
+  p <- 4
+  n <- 400
+  s <- unclass(parameters7::param_value(parameters7::ar1(p), c(0, atanh(0.7))))
+  y <- matrix(stats::rnorm(n * p), n, p) %*% chol(s)
+  y <- sweep(y, 2, c(1, -1, 0.5, 0), "+")
+
+  a <- fit_distrib(mvgaussian1_distrib(p, parameters7::ar1(p)), y)
+  b <- fit_distrib(mvgaussian2_distrib(p, parameters7::ar1(p)), y)
+  expect_gt(abs(as.numeric(logLik(a)) - as.numeric(logLik(b))), 10)
+  # the covariance side is the one the data were drawn from, so it wins
+  expect_gt(as.numeric(logLik(a)), as.numeric(logLik(b)))
+})
+
+test_that("ar1_inv on the precision side is the AR(1) process again", {
+  # the same law as an AR(1) covariance, written on the other side
+  set.seed(3)
+  p <- 4
+  n <- 300
+  s <- unclass(parameters7::param_value(parameters7::ar1(p), c(0.2, atanh(0.6))))
+  y <- matrix(stats::rnorm(n * p), n, p) %*% chol(s)
+
+  a <- fit_distrib(mvgaussian1_distrib(p, parameters7::ar1(p)), y)
+  b <- fit_distrib(mvgaussian2_distrib(p, parameters7::ar1_inv(p)), y)
+  expect_equal(as.numeric(logLik(a)), as.numeric(logLik(b)), tolerance = 1e-5)
+})
+
+test_that("neither family comments on the chart it is given", {
+  # a pattern on the side it is not named for is a legitimate law, so it is
+  # built in silence: no error, no warning, no message
+  expect_silent(mvgaussian2_distrib(4, parameters7::ar1(4)))
+  expect_silent(mvgaussian1_distrib(4, parameters7::ar1_inv(4)))
+})
+
+test_that("check_distrib passes on both families", {
+  for (d in list(mvgaussian1_distrib(2), mvgaussian2_distrib(2),
+                 mvgaussian1_distrib(3, parameters7::ar1(3)),
+                 mvgaussian2_distrib(3, parameters7::ar1_inv(3)))) {
+    r <- check_distrib(d, verbose = FALSE)
+    expect_identical(sum(r$status == "FAIL"), 0L, info = d@distrib_name)
+  }
+})
+
+test_that("the marginal keeps the parametrization it came from", {
+  d1 <- mvgaussian1_distrib(3)
+  d2 <- mvgaussian2_distrib(3)
+  th1 <- as.list(stats::setNames(c(0, 1, -1, 0, 0, 0, 0.4, -0.2, 0.1),
+                                 d1@params))
+  th2 <- as.list(stats::setNames(unlist(th1), d2@params))
+
+  m1 <- mv_marginal(d1, th1, c(1, 3))
+  m2 <- mv_marginal(d2, th2, c(1, 3))
+  expect_true(S7::S7_inherits(m1$distrib, MvGaussian1Distrib))
+  expect_true(S7::S7_inherits(m2$distrib, MvGaussian2Distrib))
+
+  # and both report the right submatrix of the covariance
+  expect_equal(mv_sigma(m1$distrib, m1$theta),
+               mv_sigma(d1, th1)[c(1, 3), c(1, 3)], ignore_attr = TRUE)
+  expect_equal(mv_sigma(m2$distrib, m2$theta),
+               mv_sigma(d2, th2)[c(1, 3), c(1, 3)], ignore_attr = TRUE)
 })

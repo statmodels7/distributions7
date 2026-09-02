@@ -27,7 +27,7 @@ two apart is what allows a heavy-tailed family to be described at all.
 }
 \details{
 Where the parametrization carries the PRECISION, as
-\code{mvgaussian_distrib(omega = )} does, the matrix is inverted here, so the
+\code{mvgaussian2_distrib()} does, the matrix is inverted here, so the
 result is the covariance either way.
 
 The base-class method signals an error: not every multivariate family has a
@@ -40,13 +40,13 @@ degrees of freedom of a Student t and \eqn{p} the dimension.
 }
 
 \examples{
-d <- mvgaussian_distrib(2)
+d <- mvgaussian1_distrib(2)
 theta <- list(mu1 = 1, mu2 = -1, sigma_log_L1 = 0, sigma_log_L2 = 0,
               sigma_L2.1 = 0.5)
 mv_sigma(d, theta)
 
 # For a gaussian the matrix is the variance; for a Student t it is not.
-t2 <- mvstudent_t_distrib(2)
+t2 <- mvstudent_t1_distrib(2)
 th <- c(theta, list(nu = 6))
 all.equal(mv_sigma(d, theta), variance(d, theta))
 all.equal(variance(t2, th), (6 / 4) * mv_sigma(t2, th))

@@ -5,7 +5,7 @@
 \title{Location of a Multivariate Student t}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{theta}{A named list of parameters, one number each. Only the \eqn{p}
 location components are read.}
@@ -23,7 +23,7 @@ generic is named for a location: \code{\link[=mean.MvStudentTDistrib]{mean.MvStu
 below one degree of freedom and this returns the location regardless.
 }
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 

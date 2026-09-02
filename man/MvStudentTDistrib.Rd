@@ -15,7 +15,8 @@ MvStudentTDistrib(
   link_params = list(),
   params_smooth = logical(0),
   n_dim = integer(0),
-  param = parameters7::parameter()
+  param = parameters7::parameter(),
+  inverted = logical(0)
 )
 }
 \arguments{
@@ -40,18 +41,24 @@ MvStudentTDistrib(
 \item{n_dim}{The dimension \eqn{p} of one observation. A single positive
 integer.}
 
-\item{param}{A \pkg{parameters7} parametrization of the SCALE matrix,
-inheriting from \code{parameters7::parameter}. Its \code{n_free} free values are
-flattened into scalar parameters of the distribution.}
+\item{param}{A \pkg{parameters7} parametrization of the scale matrix or of
+its inverse, according to \code{inverted}, inheriting from
+\code{parameters7::parameter}. Its \code{n_free} free values are flattened into
+scalar parameters of the distribution.}
+
+\item{inverted}{Logical of length 1. \code{TRUE} when \code{param} carries the
+inverse scale matrix \eqn{\Sigma^{-1}} and \code{FALSE} when it carries the
+scale matrix \eqn{\Sigma}. Nothing but the sign of the log-determinant and
+one matrix inversion depends on it; the law is the same either way, and
+neither matrix is a moment of the response.}
 }
 \value{
 An S7 object of class \code{MvStudentTDistrib}, inheriting from
 \code{multivariate_distrib} and from \code{distrib}. Beyond the parent's
 \code{distrib_name}, \code{dimension}, \code{bounds}, \code{params},
 \code{params_interpretation}, \code{n_params}, \code{params_bounds}, \code{link_params},
-\code{params_smooth} and \code{n_dim}, it carries \code{param} as supplied. Unlike
-\link{MvGaussianDistrib} it has no \code{inverted} property: the scale matrix is
-always parametrized as itself.
+\code{params_smooth} and \code{n_dim}, it carries \code{param} and \code{inverted} as
+supplied.
 }
 \description{
 The S7 class of the elliptical Student t family on \eqn{\mathbb{R}^p}, with
@@ -65,7 +72,7 @@ is added last. It inherits from \code{multivariate_distrib}, so the response is
 an \eqn{n \times p} matrix and the distribution function and the quantile
 function are refused.
 
-Build one with \code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}, which fills the properties in and
+Build one with \code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}, which fills the properties in and
 checks the rank of the parametrization. This page documents the raw S7
 constructor, which validates nothing.
 }
@@ -94,7 +101,7 @@ families share.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 S7::S7_inherits(d, multivariate_distrib)
 
 # Six parameters: two locations, three free values of the scale matrix, and
@@ -109,7 +116,7 @@ vapply(d@link_params, function(l) l@link_name, character(1))
 
 }
 \seealso{
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}} to build one, \code{\link[=mvgaussian_distrib]{mvgaussian_distrib()}} for
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}} to build one, \code{\link[=mvgaussian1_distrib]{mvgaussian1_distrib()}} for
 the limit \eqn{\nu \to \infty}, \code{\link[=mv_sigma.MvStudentTDistrib]{mv_sigma.MvStudentTDistrib()}} for the
 scale matrix and \code{\link[=variance.MvStudentTDistrib]{variance.MvStudentTDistrib()}} for the covariance, which
 are different matrices here.

@@ -5,7 +5,7 @@
 \title{Multivariate Student t Third Derivative in Two Responses and One Parameter}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations. A vector of
 length \eqn{p} is read as a single observation.}
@@ -51,7 +51,7 @@ a derivative in parameter \eqn{a}.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 set.seed(1)
@@ -63,7 +63,7 @@ dim(c2$sigma_L2.1)
 # One matrix per row, so the location component is not zero as it is for a
 # gaussian.
 c2$mu1[, , 1]
-distrib_cross2_y(mvgaussian_distrib(2), y, theta[1:5])$mu1
+distrib_cross2_y(mvgaussian1_distrib(2), y, theta[1:5])$mu1
 
 # Against a difference of the response Hessian.
 h <- 1e-5

@@ -5,7 +5,7 @@
 \title{Multivariate Student t Density}
 \arguments{
 \item{distrib}{An \link{MvStudentTDistrib} object, from
-\code{\link[=mvstudent_t_distrib]{mvstudent_t_distrib()}}.}
+\code{\link[=mvstudent_t1_distrib]{mvstudent_t1_distrib()}}.}
 
 \item{y}{An \eqn{n \times p} numeric matrix of observations, one row each.
 A plain numeric vector of length \eqn{p} is read as a single observation.
@@ -45,7 +45,7 @@ Mahalanobis distance of an observation from the location.
 }
 
 \examples{
-d <- mvstudent_t_distrib(2)
+d <- mvstudent_t1_distrib(2)
 theta <- list(mu1 = 0.5, mu2 = -0.3, sigma_log_L1 = 0.1,
               sigma_log_L2 = -0.2, sigma_L2.1 = 0.4, nu = 6)
 y <- rbind(c(0, 0), c(1, -1), c(0.5, -0.3))
@@ -60,7 +60,7 @@ ref <- lgamma(4) - lgamma(3) - log(6 * pi) - 0.5 * log(det(S)) -
 all.equal(distrib_pdf(d, y, theta, log = TRUE), ref)
 
 # As nu grows the density approaches the gaussian's at the same matrix.
-g <- mvgaussian_distrib(2)
+g <- mvgaussian1_distrib(2)
 vapply(c(6, 60, 6000), function(nu) {
   t2 <- theta; t2$nu <- nu
   distrib_pdf(d, c(1, -1), t2, log = TRUE)
