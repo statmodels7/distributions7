@@ -1372,7 +1372,7 @@ trunc_hessian <- function(distrib, y, theta, scale = c("parameter", "link"), ...
 #' round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)
 #' round(vapply(EH, function(z) z[1], numeric(1)), 3)
 trunc_expected_hessian <- function(distrib, y, theta, scale = c("parameter", "link"),
-                                   approx = c("bartlett", "integrate", "mc", "opg"),
+                                   approx = c("opg", "bartlett", "integrate", "mc"),
                                    nsim = 10000, ...) {
   n <- length(y)
   m <- trunc_score_mean(distrib, theta)
@@ -2025,6 +2025,15 @@ S7::method(distrib_hessian, TruncatedDiscreteDistrib) <- trunc_hessian
 #' round(vapply(distrib_hessian(tn, ys, theta), mean, numeric(1)), 3)
 S7::method(distrib_expected_hessian, TruncatedContinuousDistrib) <- trunc_expected_hessian
 
+# NEVER exact, whatever the parent is. trunc_score_prod_mean() -- ES above --
+# calls expectation() unconditionally: the second-order block needs
+# E_T[s_i s_j], and the cdf-derivative fast route that can make the FIRST
+# order (trunc_score_mean(), m above) exact cannot separate that product from
+# E_T[l^(ij)], so at least one quadrature always runs. A method registered on
+# this class would otherwise make the default expected_hessian_exact() answer
+# TRUE for every truncated family, including ones whose parent is exact.
+S7::method(expected_hessian_exact, TruncatedContinuousDistrib) <- function(x, ...) FALSE
+
 #' @title Truncated Analytical Expected Hessian (Discrete)
 #' @name distrib_expected_hessian.TruncatedDiscreteDistrib
 #'
@@ -2078,6 +2087,10 @@ S7::method(distrib_expected_hessian, TruncatedContinuousDistrib) <- trunc_expect
 #' c(sampled = mean(distrib_hessian(ztp, ys, theta)$mu_mu),
 #'   closed = EH$mu_mu)
 S7::method(distrib_expected_hessian, TruncatedDiscreteDistrib) <- trunc_expected_hessian
+
+# See the continuous branch's registration above: NEVER exact, for the same
+# reason (trunc_score_prod_mean() always quadratures/sums).
+S7::method(expected_hessian_exact, TruncatedDiscreteDistrib) <- function(x, ...) FALSE
 
 #' @title Atoms of a Truncated Continuous Distribution
 #' @name distrib_atoms.TruncatedContinuousDistrib

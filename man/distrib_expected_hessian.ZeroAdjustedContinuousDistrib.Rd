@@ -15,11 +15,13 @@ its length.}
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic before dispatch.}
 
-\item{approx}{Ignored for the hurdle and mixed blocks. It is also not
-forwarded to the parent, which takes its own default. Present so that the
-signature matches the generic's.}
+\item{approx}{Read only by the parent block, and only where the parent has
+no closed form for it; ignored for the hurdle block, which is exact
+whatever the parent is. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers for this class
+by asking the parent, since the parent block is the one that can fail to
+be exact.}
 
-\item{nsim}{Ignored, for the same reason.}
+\item{nsim}{Read for the same reason and under the same condition.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }

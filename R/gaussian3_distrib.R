@@ -475,7 +475,7 @@ S7::method(distrib_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
 #'                          list(mu = 1, sigma = 2))$sigma_sigma
 S7::method(distrib_expected_hessian, Gaussian3Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                                                     nsim = 10000, ..., threads = 1L) {
   gaussian3_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

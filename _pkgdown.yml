@@ -120,6 +120,7 @@ reference:
   - link_scale_derivatives
   - distrib_kernel
   - expected_derivative_methods
+  - expected_hessian_exact
 
 - title: Estimation
   contents:

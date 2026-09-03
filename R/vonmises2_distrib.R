@@ -420,7 +420,7 @@ S7::method(distrib_hessian, VonMises2Distrib) <- function(distrib, y, theta,
 #' vapply(distrib_hessian(d2, z, th), mean, numeric(1))
 S7::method(distrib_expected_hessian, VonMises2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                                                     nsim = 10000, ...) {
   p <- vm2_parts(theta)
   n <- length(y)

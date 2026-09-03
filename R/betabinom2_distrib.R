@@ -519,7 +519,7 @@ S7::method(distrib_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
 #'                                        nsim = 50))
 S7::method(distrib_expected_hessian, BetaBinom2Distrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
-                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                     approx = c("opg", "bartlett", "integrate", "mc"),
                                                                      nsim = 10000, ...) {
   betabinom2_expected(distrib, y, theta, 2L)
 }

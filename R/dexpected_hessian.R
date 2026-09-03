@@ -79,7 +79,7 @@ NULL
 distrib_dexpected_hessian <- S7::new_generic(
   "distrib_dexpected_hessian", "distrib",
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000,
+           approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000,
            ...) {
     args <- check_derivative_args(distrib, y, theta)
     y <- args$y
@@ -103,7 +103,7 @@ distrib_dexpected_hessian <- S7::new_generic(
 #' @keywords internal
 S7::method(distrib_dexpected_hessian, distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   numerical_dexpected_hessian(distrib, y, theta, match.arg(scale),
                               match.arg(approx), nsim)
 }

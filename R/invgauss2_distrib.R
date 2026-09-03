@@ -495,7 +495,7 @@ S7::method(distrib_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
 #'                         function(v) v[1], numeric(1)))
 S7::method(distrib_expected_hessian, InvGauss2Distrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                                                     nsim = 10000, ..., threads = 1L) {
   invgauss2_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

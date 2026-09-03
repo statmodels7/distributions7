@@ -430,7 +430,7 @@ S7::method(distrib_hessian, VonMises1Distrib) <- function(distrib, y, theta,
 #'                                        approx = "mc", nsim = 50))
 S7::method(distrib_expected_hessian, VonMises1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                   approx = c("opg", "bartlett", "integrate", "mc"),
                                                                    nsim = 10000, ...) {
   k <- theta[[2]]
   a <- numericals7::bessel_i_ratio_derivs(k)

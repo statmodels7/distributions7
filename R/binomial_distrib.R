@@ -465,7 +465,7 @@ S7::method(distrib_hessian, BinomialDistrib) <- function(distrib, y, theta, scal
 #' rbind(observed = distrib_hessian(d, c(0, 4, 10), th, scale = "link")$mu_mu,
 #'       expected = distrib_expected_hessian(d, c(0, 4, 10), th,
 #'                                           scale = "link")$mu_mu)
-S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, BinomialDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   binomial_expected_hessian_cpp(y, theta[[1]], distrib@size, threads)
 }
 

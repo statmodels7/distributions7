@@ -598,7 +598,7 @@ S7::method(distrib_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, s
 #' set.seed(1)
 #' vapply(distrib_expected_hessian(d, y, th, approx = "mc", nsim = 200),
 #'        function(v) v[1], numeric(1))
-S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, PseudoHuberDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   n <- length(y)
   out <- expected_derivative(distrib, y, theta, order = 2L,
                              approx = match.arg(approx), nsim = nsim)

@@ -670,7 +670,7 @@ S7::method(distrib_hessian, EnetDistrib) <- function(distrib, y, theta,
 #' identical(e, distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 5))
 S7::method(distrib_expected_hessian, EnetDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   p <- .enet_parts(theta)
   zz <- .enet_logz_derivs(p)
   al <- p$al

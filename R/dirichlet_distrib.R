@@ -512,7 +512,7 @@ S7::method(distrib_hessian, DirichletDistrib) <- function(distrib, y, theta,
 #' identical(eh, distrib_expected_hessian(d, Y, th, approx = "mc", nsim = 50))
 S7::method(distrib_expected_hessian, DirichletDistrib) <- function(distrib, y, theta,
                                                                     scale = c("parameter", "link"),
-                                                                    approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                    approx = c("opg", "bartlett", "integrate", "mc"),
                                                                     nsim = 10000, ...) {
   p <- dir_parts(distrib, theta)
   n <- n_obs(distrib, y)

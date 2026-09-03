@@ -17,9 +17,11 @@ A single logical.
 A single logical.
 }
 \description{
-A generic so that a family whose registered
-\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} method is not what its owning class
-suggests can say so; \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks it and
+\code{TRUE} when the family computes its expected information in closed form,
+\code{FALSE} when a call to \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} reaches a fallback and
+the answer is therefore an approximation. It is a generic so that a family
+whose registered method is not what its owning class suggests can say so;
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks it and
 \code{\link[=expected_hessian_exact.distrib]{expected_hessian_exact.distrib()}} is the default.
 
 The question \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}} asks, as a generic, so
@@ -27,6 +29,26 @@ that a family whose registered method is not what its owner suggests can say
 so.
 }
 \details{
+The predicate is what a consumer reads to decide which information to
+report. Where it answers \code{TRUE} the expected information costs one
+evaluation and has the smaller variance, so it is the better matrix to
+invert; where it answers \code{FALSE} the choice is between an approximation and
+the observed Hessian, which every family has and which is exact. That is
+the rule \code{\link[=fit_distrib]{fit_distrib()}} follows for its standard errors and the one
+\pkg{statmodels7} follows in \code{vcov()}.
+
+Six of the shipped univariate families answer \code{FALSE}:
+\code{\link[=pig1_distrib]{pig1_distrib()}}, \code{\link[=pig2_distrib]{pig2_distrib()}}, \code{\link[=pseudohuber_distrib]{pseudohuber_distrib()}},
+\code{\link[=skewnormal1_distrib]{skewnormal1_distrib()}}, \code{\link[=skewnormal2_distrib]{skewnormal2_distrib()}} and \code{\link[=skewt_distrib]{skewt_distrib()}}.
+
+Asking the OWNING CLASS of the registered method is not enough on its own,
+which is why the generic exists: the pseudo-Huber registers a method of its
+own that calls the fallback and then patches the two components vanishing by
+symmetry, and the centered skew normal chains onto a parent whose expected
+information is itself a quadrature. Both would read as exact from the
+method's owner alone, and both cost seconds where a closed form costs
+milliseconds.
+
 The default reads the class the \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}}
 method is registered on: the base classes carry the approximating method and
 every other registration is, by default, a family that wrote the expectation
@@ -50,12 +72,15 @@ A family that chains onto another therefore answers for its parent, which is
 what the two methods registered here do.
 }
 \examples{
-distributions7:::expected_hessian_exact(gaussian1_distrib())
+# A Gaussian writes its information out; a Poisson-inverse gaussian does not.
+expected_hessian_exact(gaussian1_distrib())
+expected_hessian_exact(pig1_distrib())
 
 }
 \seealso{
-\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}},
-\code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}
+\code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}}, the wrapper that asks this;
+\code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the quantity itself, and
+\code{\link[=expected_by_opg]{expected_by_opg()}} for the fallback a \code{FALSE} answer reaches.
 
 \code{\link[=has_exact_expected_hessian]{has_exact_expected_hessian()}},
 \code{\link[=distrib_dexpected_hessian]{distrib_dexpected_hessian()}}

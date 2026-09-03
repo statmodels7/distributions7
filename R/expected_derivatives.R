@@ -262,6 +262,71 @@ expected_by_mc <- function(distrib, y, theta, order, nsim) {
   out
 }
 
+#' The Information as the Outer Product of the Observed Scores
+#'
+#' @description
+#' Returns \eqn{\ell^{(ij)} \approx -\ell^{(i)}\ell^{(j)}} evaluated at each
+#' observation, the per-observation outer product of the score. It is the
+#' BHHH estimator of the information, and unlike every other route here it
+#' takes no expectation: nothing is integrated and nothing is summed over the
+#' support, so it costs one call to [distrib_gradient()].
+#'
+#' @details
+#' The name is worth keeping apart from the identity it comes from. The second
+#' Bartlett identity states that
+#' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, and
+#' [expected_by_bartlett()] evaluates the right-hand side as written, which
+#' for a discrete family is a sum over the whole support and for a continuous
+#' one a quadrature. This function drops the expectation and reads the
+#' integrand at the observation in hand. The two agree in expectation and not
+#' in cost: measured on `pig1_distrib()` with \eqn{\mu} varying by
+#' observation, one call to the identity at \eqn{n = 1000} evaluated 1.67
+#' million rows of the family's derivative kernel and took 18.4 seconds, where
+#' this route evaluates \eqn{n} rows.
+#'
+#' What is given up is variance, not consistency.
+#' \eqn{-\ell^{(i)}\ell^{(j)}} is an unbiased estimate of the corresponding
+#' component of \eqn{\mathbb{E}[\ell^{(ij)}]} at that observation, so the sum
+#' over observations, which is what a scoring step aggregates into
+#' \eqn{X^\top W X}, estimates the information consistently. Component by
+#' component it is a rank-one matrix and correlates poorly with the exact
+#' expectation; summed it agreed with the exact route to within 10 per cent on
+#' the same measurement, and a fit driven by it reached the same maximum.
+#'
+#' Two properties make it the right default for a scoring step. It is positive
+#' semidefinite by construction, being a sum of outer products, where the
+#' observed Hessian need not be away from the optimum; and the fixed point is
+#' unchanged, because the score is exact and any positive definite matrix
+#' takes a scoring iteration to the same stationary point. What it is not
+#' suited to is a reported standard error, which is read off the observed
+#' information instead -- see [fit_distrib()] and its `vcov()` method.
+#'
+#' Order 2 only. The outer product of scores is the second-order identity and
+#' has no counterpart above it, so [expected_derivative()] routes a higher
+#' order to [expected_by_bartlett()].
+#'
+#' @param distrib An object inheriting from class `"distrib"`.
+#' @param y A numeric vector of observations.
+#' @param theta A named list of parameters.
+#'
+#' @return A named list of expected Hessian component vectors, named by
+#'   [hess_names()], each of the length of `y`.
+#'
+#' @seealso [expected_by_bartlett()] for the identity this estimates,
+#'   [expected_derivative_methods()] for the catalog of routes, and
+#'   [expected_hessian_exact()] for the predicate that says whether a family
+#'   needs any of them.
+#' @keywords internal
+expected_by_opg <- function(distrib, y, theta) {
+  g <- distrib_gradient(distrib, y, theta)
+  n <- length(y)
+  pairs <- hess_pairs(distrib@params)
+  out <- lapply(pairs, function(pr) {
+    rep_len(-g[[pr[[1L]]]] * g[[pr[[2L]]]], n)
+  })
+  stats::setNames(out, hess_names(distrib@params))
+}
+
 #' Expected Derivatives by the Bartlett Identity
 #'
 #' @description
@@ -343,10 +408,18 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
 #' `approx` and routes to the chosen strategy.
 #'
 #' @details
-#' `"opg"` is folded into `"bartlett"` here rather than implemented
-#' separately, because at order 2 the outer product of gradients *is* the
-#' Bartlett identity; the two names describe the same computation from different
-#' traditions.
+#' `"opg"` and `"bartlett"` are two readings of the second Bartlett identity
+#' and are NOT the same computation. The identity equates
+#' \eqn{\mathbb{E}[\ell^{(ij)}]} with \eqn{-\mathbb{E}[\ell^{(i)}\ell^{(j)}]};
+#' `"bartlett"` evaluates the expectation, which is a sum over the support or a
+#' quadrature, while `"opg"` reads the integrand at the observation and takes
+#' no expectation at all. They agree in expectation and differ by orders of
+#' magnitude in cost, which is why `"opg"` is the default at order 2.
+#'
+#' Above order 2 the outer product of scores is not an identity for anything,
+#' so `"opg"` there is routed to `"bartlett"` rather than refused: the
+#' argument is one setting for a whole call and an order-4 method may ask for
+#' the same strategy an order-2 one was given.
 #'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
@@ -361,11 +434,14 @@ expected_by_bartlett <- function(distrib, y, theta, order) {
 #' @seealso [expected_derivative_methods()]
 #' @keywords internal
 expected_derivative <- function(distrib, y, theta, order,
-                                approx = c("bartlett", "integrate", "mc", "opg"),
+                                approx = c("opg", "bartlett", "integrate", "mc"),
                                 nsim = 10000) {
   approx <- match.arg(approx)
-  if (approx == "opg") approx <- "bartlett"
+  # the outer product of scores is the SECOND-order identity and has no
+  # counterpart above it
+  if (approx == "opg" && order != 2L) approx <- "bartlett"
   switch(approx,
+    opg       = expected_by_opg(distrib, y, theta),
     bartlett  = expected_by_bartlett(distrib, y, theta, order),
     integrate = expected_by_integrate(distrib, y, theta, order),
     mc        = expected_by_mc(distrib, y, theta, order, nsim)

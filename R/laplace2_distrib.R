@@ -467,7 +467,7 @@ S7::method(distrib_hessian, Laplace2Distrib) <- function(distrib, y, theta, scal
 #' # I(mu) is the same number, the location being shared.
 #' -distrib_expected_hessian(laplace_distrib(), 0,
 #'                           list(mu = 0.4, sigma = 1 / 2))$mu_mu
-S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, Laplace2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   lam <- theta[[2]]
   n <- length(y)
   list(

@@ -270,21 +270,43 @@ S7::method(distrib_hessian, distrib) <- function(distrib, y, theta, scale = c("p
 #' @title Default Expected Hessian for `distrib` Objects
 #' @name distrib_expected_hessian.distrib
 #' @description
-#' Fallback method: the expected Hessian is computed as the negative Fisher
-#' information via the outer product of the score (gradient),
-#' \eqn{-\mathbb{E}[\nabla\ell\,\nabla\ell^\top]}, obtained by numerical
-#' [expectation()]. This first-Bartlett form equals \eqn{\mathbb{E}[H]}
-#' for regular (twice-differentiable) models but, unlike \eqn{\mathbb{E}[H]},
-#' remains valid when the log-likelihood is non-differentiable in a parameter
-#' (e.g. the location of a Laplace distribution), where the observed Hessian is
-#' degenerate. The score is taken from [distrib_gradient()], so it uses
-#' the analytical gradient when available and finite differences otherwise.
+#' Fallback method, for a family that does not write its expected information
+#' out. It rests on the second Bartlett identity,
+#' \eqn{\mathbb{E}[\ell^{(ij)}] = -\mathbb{E}[\ell^{(i)}\ell^{(j)}]}, which
+#' holds for a regular model and, unlike \eqn{\mathbb{E}[\ell^{(ij)}]} read
+#' directly, survives a log-likelihood that is not differentiable in a
+#' parameter -- the location of a Laplace, where the observed Hessian is
+#' degenerate while the score variance is still the information.
+#'
+#' @details
+#' `approx` says how the right-hand side is obtained, and the choice is a
+#' choice of cost. The default `"opg"` reads
+#' \eqn{-\ell^{(i)}\ell^{(j)}} at each observation and takes no expectation,
+#' so it costs one call to [distrib_gradient()]; `"bartlett"` evaluates the
+#' expectation itself, which is a sum over the support for a discrete family
+#' and a quadrature for a continuous one, and is orders of magnitude dearer.
+#' See [expected_by_opg()] for what the default gives up and what it does not.
+#'
+#' The score is taken from [distrib_gradient()], so it uses the analytical
+#' gradient where the family has one and finite differences otherwise.
+#'
 #' @param distrib An object inheriting from class `"distrib"`.
 #' @param y A numeric vector of observations.
 #' @param theta A named list of parameters.
+#' @param scale `"parameter"` or `"link"`, the scale the components are
+#'   reported on. The transformation is applied in the generic's body, so this
+#'   method always returns the parameter scale.
+#' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, the
+#'   strategy [expected_derivative()] uses. Defaults to `"opg"`.
+#' @param nsim Number of draws, read only by `approx = "mc"`.
+#' @param ... Unused, and accepted so that the signature matches the
+#'   generic's.
 #' @return A named list of expected Hessian component vectors.
+#' @seealso [expected_by_opg()] and [expected_by_bartlett()] for the two
+#'   readings of the identity, and [expected_hessian_exact()] for the
+#'   predicate that says whether a family reaches this method at all.
 #' @keywords internal
-S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   expected_derivative(distrib, y, theta, order = 2L,
                       approx = match.arg(approx), nsim = nsim)
 }

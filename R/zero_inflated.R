@@ -767,17 +767,25 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' form.
 #'
 #' @param distrib A `ZeroInflatedDistrib` object, from [zero_inflated()].
-#' @param y A numeric vector of observations. Only its length is used.
+#' @param y A numeric vector of observations. Only its length is used when the
+#'   parent's own expected information is closed form; where it is not, the
+#'   parent block reads `y` itself, through `distrib_expected_hessian(parent,
+#'   y, ...)`.
 #' @param theta A named list with the parent's parameters followed by `zi`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
 #'   generic before dispatch.
-#' @param approx Ignored: the expectation is exact. Present so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
+#'   read only where the parent has no closed form for it; every other block
+#'   is an exact combination of the parent's density, score and observed
+#'   Hessian at zero. [expected_hessian_exact()] answers for this class by
+#'   asking the parent.
+#' @param nsim Forwarded for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
-#'   [`hess_names(distrib@params)`][hess_names], each vector constant.
+#'   [`hess_names(distrib@params)`][hess_names]. Constant across observations
+#'   when the parent's own expected information is; a parent evaluated by an
+#'   approximation can vary by observation.
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\zeta} the probability of a
@@ -809,7 +817,7 @@ S7::method(distrib_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, 
 #' Hs <- distrib_hessian(d, sup, theta)
 #' rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
 #'       closed = vapply(EH, function(z) z[1], numeric(1)))
-S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   zi <- pars$mix
@@ -822,7 +830,8 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
 
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
-  h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig)
+  h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,
+                                         approx = approx, nsim = nsim)
   pairs <- hess_pairs(names(pars$orig))
 
   res <- list()
@@ -848,6 +857,16 @@ S7::method(distrib_expected_hessian, ZeroInflatedDistrib) <- function(distrib, y
   res[[paste0(zi_name, "_", zi_name)]] <- -(l0 * score_zi_0^2 + (1 - l0) * score_zi_pos^2)
 
   expand_params(res[hess_names(distrib@params)], n)
+}
+
+# `h_orig_exp` enters `contrib_pos` directly, so this wrapper's exactness IS
+# the parent's. A method registered on THIS class makes the default
+# `expected_hessian_exact()` answer TRUE regardless -- `zero_inflated(
+# pig1_distrib())` would otherwise claim an exact expected information it does
+# not have, and statmodels7's `vcov()` would report standard errors from an
+# approximation believing them exact.
+S7::method(expected_hessian_exact, ZeroInflatedDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

@@ -598,7 +598,7 @@ S7::method(distrib_hessian, GPDDistrib) <- function(distrib, y, theta,
 #'           distrib_expected_hessian(d, 0, th, approx = "mc", nsim = 10))
 S7::method(distrib_expected_hessian, GPDDistrib) <- function(distrib, y, theta,
                                                               scale = c("parameter", "link"),
-                                                              approx = c("bartlett", "integrate", "mc", "opg"),
+                                                              approx = c("opg", "bartlett", "integrate", "mc"),
                                                               nsim = 10000, ..., threads = 1L) {
   gpd_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

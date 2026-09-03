@@ -4,7 +4,15 @@
 \alias{reparam_chain}
 \title{Parameter Derivatives of a Reparametrized Distribution}
 \usage{
-reparam_chain(distrib, y, theta, order, expected = FALSE)
+reparam_chain(
+  distrib,
+  y,
+  theta,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 }
 \arguments{
 \item{distrib}{A reparametrized distribution.}

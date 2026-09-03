@@ -482,7 +482,7 @@ S7::method(distrib_hessian, ChisqDistrib) <- function(distrib, y, theta,
 #'   fisher = coef(fit_distrib(d, z, method = "fisher")))
 S7::method(distrib_expected_hessian, ChisqDistrib) <- function(distrib, y, theta,
                                                                scale = c("parameter", "link"),
-                                                               approx = c("bartlett", "integrate", "mc", "opg"),
+                                                               approx = c("opg", "bartlett", "integrate", "mc"),
                                                                nsim = 10000, ..., threads = 1L) {
   chisq_hessian_cpp(y, theta[[1]], threads)
 }

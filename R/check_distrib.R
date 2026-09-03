@@ -311,7 +311,13 @@ check_distrib <- function(distrib, theta = NULL, n = 100, nsim = 2e5,
   res[[length(res) + 1L]] <- safe_check("expected information vs Monte Carlo", {
     ys <- distrib_rng(distrib, nsim, theta)
     g <- distrib_gradient(distrib, ys, theta)
-    a <- distrib_expected_hessian(distrib, 0, theta)
+    # approx = "bartlett" IS THE POINT HERE, and must be asked for rather than
+    # left to the default. This check wants the actual EXPECTATION, to compare
+    # against an independent Monte Carlo estimate of that same expectation;
+    # "opg" (the default since 0.44.0) reads the per-observation outer product
+    # of the score at the single point y = 0 instead of averaging it, which is
+    # a different quantity and disagrees with a Monte Carlo mean almost always.
+    a <- distrib_expected_hessian(distrib, 0, theta, approx = "bartlett")
     params <- distrib@params
     worst <- 0
     for (i in seq_along(params)) {

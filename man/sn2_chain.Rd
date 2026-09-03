@@ -4,7 +4,15 @@
 \alias{sn2_chain}
 \title{Derivatives of the Skew Normal in Its Centered Parametrization}
 \usage{
-sn2_chain(distrib, y, theta, order, expected = FALSE)
+sn2_chain(
+  distrib,
+  y,
+  theta,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 }
 \arguments{
 \item{distrib}{A \link{SkewNormal2Distrib} object.}

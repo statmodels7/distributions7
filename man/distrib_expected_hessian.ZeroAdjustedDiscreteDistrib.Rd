@@ -14,16 +14,24 @@
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic before dispatch.}
 
-\item{approx}{Ignored: the expectation is exact. Present so that the
-signature matches the generic's.}
+\item{approx}{Forwarded to the parent's \code{distrib_expected_hessian()}, and
+read only where the parent has no closed form for it; every other block
+is an exact combination of the parent's density, score and observed
+Hessian at zero. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers for this class by
+asking the parent.}
 
-\item{nsim}{Ignored, for the same reason.}
+\item{nsim}{Forwarded for the same reason and under the same condition.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors of length \code{length(y)}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}. Constant across observations
+when the parent's own expected information is, which is always true for a
+family reaching this method with the default \code{approx = "opg"} and a
+closed-form parent; a parent evaluated by an approximation can vary by
+observation, \code{h_orig_exp} being read at the actual \code{y} rather than at
+zero.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form. The hurdle

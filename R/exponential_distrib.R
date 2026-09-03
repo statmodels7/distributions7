@@ -420,7 +420,7 @@ S7::method(distrib_hessian, ExponentialDistrib) <- function(distrib, y, theta,
 #'   information = -distrib_expected_hessian(d, 0, th)$mu_mu)
 S7::method(distrib_expected_hessian, ExponentialDistrib) <- function(distrib, y, theta,
                                                                      scale = c("parameter", "link"),
-                                                                     approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                     approx = c("opg", "bartlett", "integrate", "mc"),
                                                                      nsim = 10000, ..., threads = 1L) {
   exponential_expected_hessian_cpp(y, theta[[1]], threads)
 }

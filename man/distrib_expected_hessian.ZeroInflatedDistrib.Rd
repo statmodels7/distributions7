@@ -6,23 +6,30 @@
 \arguments{
 \item{distrib}{A \code{ZeroInflatedDistrib} object, from \code{\link[=zero_inflated]{zero_inflated()}}.}
 
-\item{y}{A numeric vector of observations. Only its length is used.}
+\item{y}{A numeric vector of observations. Only its length is used when the
+parent's own expected information is closed form; where it is not, the
+parent block reads \code{y} itself, through \code{distrib_expected_hessian(parent, y, ...)}.}
 
 \item{theta}{A named list with the parent's parameters followed by \code{zi}.}
 
 \item{scale}{One of \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic before dispatch.}
 
-\item{approx}{Ignored: the expectation is exact. Present so that the
-signature matches the generic's.}
+\item{approx}{Forwarded to the parent's \code{distrib_expected_hessian()}, and
+read only where the parent has no closed form for it; every other block
+is an exact combination of the parent's density, score and observed
+Hessian at zero. \code{\link[=expected_hessian_exact]{expected_hessian_exact()}} answers for this class by
+asking the parent.}
 
-\item{nsim}{Ignored, for the same reason.}
+\item{nsim}{Forwarded for the same reason and under the same condition.}
 
 \item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors of length \code{length(y)}, keyed as
-\code{\link[=hess_names]{hess_names(distrib@params)}}, each vector constant.
+\code{\link[=hess_names]{hess_names(distrib@params)}}. Constant across observations
+when the parent's own expected information is; a parent evaluated by an
+approximation can vary by observation.
 }
 \description{
 Computes the expectation of the observed Hessian in closed form, by

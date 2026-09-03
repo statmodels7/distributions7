@@ -500,7 +500,7 @@ S7::method(distrib_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
 #' round(ev$vectors[, 3], 3)   # the flat direction
 S7::method(distrib_expected_hessian, GenGamma1Distrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                   approx = c("opg", "bartlett", "integrate", "mc"),
                                                                    nsim = 10000, ..., threads = 1L) {
   gengamma_expected_hessian_cpp(y, theta[[1]], theta[[2]], theta[[3]], threads)
 }

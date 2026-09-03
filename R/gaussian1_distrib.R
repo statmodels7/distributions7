@@ -461,7 +461,7 @@ S7::method(distrib_hessian, Gaussian1Distrib) <- function(distrib, y, theta, sca
 #'
 #' # The mean and the standard deviation are orthogonal: the mixed entry is 0.
 #' distrib_expected_hessian(d, 0, th)$mu_sigma
-S7::method(distrib_expected_hessian, Gaussian1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ..., threads = 1L) {
+S7::method(distrib_expected_hessian, Gaussian1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ..., threads = 1L) {
   gaussian_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }
 

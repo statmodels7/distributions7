@@ -436,7 +436,7 @@ S7::method(distrib_hessian, GeometricDistrib) <- function(distrib, y, theta,
 #'   expected = distrib_expected_hessian(d, 0, th)$mu_mu)
 S7::method(distrib_expected_hessian, GeometricDistrib) <- function(distrib, y, theta,
                                                                    scale = c("parameter", "link"),
-                                                                   approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                   approx = c("opg", "bartlett", "integrate", "mc"),
                                                                    nsim = 10000, ..., threads = 1L) {
   geometric_expected_hessian_cpp(y, theta[[1]], threads)
 }

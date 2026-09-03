@@ -352,7 +352,8 @@ sn2_theta <- function(theta) {
 #'          error = function(e) "rejected, as documented")
 #'
 #' @keywords internal
-sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
+sn2_chain <- function(distrib, y, theta, order, expected = FALSE,
+                      approx = "opg", nsim = 10000) {
   theta <- align_theta(distrib, theta)
   if (any(theta[[3L]] == 0)) {
     stop(paste0(
@@ -372,7 +373,8 @@ sn2_chain <- function(distrib, y, theta, order, expected = FALSE) {
     maps = md_skewnormal2(theta[1:3]),
     new_params = distrib@params,
     order = order,
-    expected = expected
+    expected = expected,
+    approx = approx, nsim = nsim
   )
 }
 
@@ -794,9 +796,10 @@ S7::method(distrib_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
 #'               list(mu = 0, sigma = 1, gamma1 = 1e-6))$gamma1_gamma1)
 S7::method(distrib_expected_hessian, SkewNormal2Distrib) <- function(distrib, y, theta,
                                                                       scale = c("parameter", "link"),
-                                                                      approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                      approx = c("opg", "bartlett", "integrate", "mc"),
                                                                       nsim = 10000, ...) {
-  sn2_chain(distrib, y, theta, 2L, expected = TRUE)[hess_names(distrib@params)]
+  sn2_chain(distrib, y, theta, 2L, expected = TRUE,
+           approx = approx, nsim = nsim)[hess_names(distrib@params)]
 }
 
 #' @title The Centered Skew Normal Does Not Write Its Expected Information Out
@@ -899,7 +902,8 @@ S7::method(distrib_deriv3, SkewNormal2Distrib) <- function(distrib, y, theta, ex
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
                                                             nsim = 10000, ...) {
-  sn2_chain(distrib, y, theta, 3L, expected = expected)
+  sn2_chain(distrib, y, theta, 3L, expected = expected,
+           approx = approx, nsim = nsim)
 }
 
 #' @title Skew Normal Fourth Derivatives in the Centered Parametrization
@@ -957,7 +961,8 @@ S7::method(distrib_deriv4, SkewNormal2Distrib) <- function(distrib, y, theta, ex
                                                             scale = c("parameter", "link"),
                                                             approx = c("integrate", "bartlett", "mc", "opg"),
                                                             nsim = 10000, ...) {
-  sn2_chain(distrib, y, theta, 4L, expected = expected)
+  sn2_chain(distrib, y, theta, 4L, expected = expected,
+           approx = approx, nsim = nsim)
 }
 
 #' @title Skew Normal Response Derivative in the Centered Parametrization

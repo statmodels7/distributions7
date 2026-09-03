@@ -1154,7 +1154,7 @@ param_pair_lookup <- function(s) {
 #' @keywords internal
 S7::method(distrib_expected_hessian, MvGaussianDistrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   y <- as_mv_matrix(distrib, y)
   pc <- mvg_pieces(distrib, theta, derivs = TRUE)
   n <- nrow(y)

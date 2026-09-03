@@ -620,7 +620,7 @@ S7::method(distrib_cross_y, multivariate_distrib) <- function(distrib, y, theta,
 #' @keywords internal
 S7::method(distrib_expected_hessian, multivariate_distrib) <- function(
     distrib, y, theta, scale = c("parameter", "link"),
-    approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+    approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   approx <- match.arg(approx)
   if (identical(approx, "integrate")) {
     mv_refuse(

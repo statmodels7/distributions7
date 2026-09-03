@@ -531,13 +531,24 @@ for (.fixed_cls in list(FixedContinuousDistrib, FixedDiscreteDistrib)) {
 
   S7::method(distrib_expected_hessian, .fixed_cls) <- function(distrib, y, theta,
                                                                scale = c("parameter", "link"),
-                                                               approx = c("bartlett", "integrate", "mc", "opg"),
+                                                               approx = c("opg", "bartlett", "integrate", "mc"),
                                                                nsim = 10000, ...) {
     res <- distrib_expected_hessian(distrib@parent_distrib, y,
       fixed_full_theta(distrib, theta),
       scale = "parameter", approx = approx, nsim = nsim, ...
     )
     res[hess_names(distrib@params)]
+  }
+
+  # A METHOD REGISTERED ON THIS CLASS IS NOT BY ITSELF A CLOSED FORM. The
+  # default `expected_hessian_exact()` reads the OWNER of the registered
+  # `distrib_expected_hessian` method, and that owner is `.fixed_cls` here
+  # regardless of whether the wrapped family has one: `fixed(pig1_distrib(),
+  # sigma = 0.8)` would otherwise answer TRUE and a consumer -- statmodels7's
+  # `vcov()` among them -- would report standard errors from an approximation
+  # believing them exact. Exactness is the PARENT's.
+  S7::method(expected_hessian_exact, .fixed_cls) <- function(x, ...) {
+    expected_hessian_exact(x@parent_distrib)
   }
 
   S7::method(distrib_deriv3, .fixed_cls) <- function(distrib, y, theta,
@@ -726,7 +737,7 @@ S7::method(distrib_hessian, FixedMultivariateDistrib) <-
 
 S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
   function(distrib, y, theta, scale = c("parameter", "link"),
-           approx = c("bartlett", "integrate", "mc", "opg"),
+           approx = c("opg", "bartlett", "integrate", "mc"),
            nsim = 10000, ...) {
     out <- distrib_expected_hessian(distrib@parent_distrib, y,
                                     fixed_full_theta(distrib, theta),
@@ -734,6 +745,13 @@ S7::method(distrib_expected_hessian, FixedMultivariateDistrib) <-
                                     nsim = nsim, ...)
     out[hess_names(distrib@params)]
   }
+
+# Exactness is the parent's, not this class's own -- see the univariate
+# .fixed_cls registration above for why the default predicate gets this wrong
+# without it.
+S7::method(expected_hessian_exact, FixedMultivariateDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
+}
 
 S7::method(distrib_deriv3, FixedMultivariateDistrib) <-
   function(distrib, y, theta, expected = FALSE,

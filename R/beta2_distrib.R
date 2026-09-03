@@ -535,7 +535,7 @@ S7::method(distrib_hessian, Beta2Distrib) <- function(distrib, y, theta,
 #' distrib_expected_hessian(d, 0.5, th)$alpha_beta
 S7::method(distrib_expected_hessian, Beta2Distrib) <- function(distrib, y, theta,
                                                                 scale = c("parameter", "link"),
-                                                                approx = c("bartlett", "integrate", "mc", "opg"),
+                                                                approx = c("opg", "bartlett", "integrate", "mc"),
                                                                 nsim = 10000, ...) {
   h <- beta2_higher(theta, length(y), 2L)
   h[hess_names(distrib@params)]

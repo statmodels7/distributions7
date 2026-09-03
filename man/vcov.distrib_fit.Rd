@@ -9,20 +9,30 @@
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, matched by
 \code{\link[base:match.arg]{base::match.arg()}}; anything else signals an error.}
 
+\item{information}{Which information to invert: \code{"fit"} (the default) is
+the matrix the fit stored, \code{"observed"} the Hessian at the estimates, and
+\code{"expected"} the expected information there. The last two are recomputed.}
+
+\item{approx}{One of \code{"opg"}, \code{"bartlett"}, \code{"integrate"} or \code{"mc"}, read
+only when \code{information = "expected"} and the family has no closed form.
+Defaults to \code{"opg"}.}
+
+\item{nsim}{Number of draws, read only by \code{approx = "mc"}.}
+
 \item{...}{Unused, accepted for compatibility with \code{\link[stats:vcov]{stats::vcov()}}.}
 }
 \value{
 A symmetric numeric matrix of dimension
 \code{length(object@distrib@params)}, with both dimnames set to the parameter
-names. Its diagonal is the square of \code{object@se} on the parameter scale
-and of \code{object@se_eta} on the link scale.
+names. With \code{information = "fit"} its diagonal is the square of
+\code{object@se} on the parameter scale and of \code{object@se_eta} on the link
+scale.
 }
 \description{
 Returns the estimated variance matrix of the estimates, on either scale.
-The one the fit computes is on the link scale: the inverse of the
-information at \eqn{\hat\eta}, the expected information where the fit used
-it or the family writes it out, and the observed Hessian otherwise. The
-parameter-scale matrix is its image under the delta method,
+The one the fit computes is on the link scale, the inverse of the
+information at \eqn{\hat\eta}. The parameter-scale matrix is its image
+under the delta method,
 \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
 the Jacobian being diagonal because each parameter carries its own scalar
@@ -32,6 +42,33 @@ Every entry is \code{NA} when the information could not be evaluated or inverted
 at the optimum. The estimates stand in that case and only the uncertainty
 is missing.
 }
+\section{Which information}{
+\code{information} says which matrix is inverted, and the answer the fit stored
+is the default. That one is the expected information where the family
+writes it out, where it costs one evaluation and has the smaller variance,
+and the observed Hessian otherwise.
+
+The alternative is available because the two are different estimators and
+the choice is the reader's. They agree asymptotically and not in a sample:
+the expected one is the information averaged over the model, the observed
+one the curvature of the likelihood at the data in hand.
+
+Where a family does NOT write its expected information out, asking for
+\code{information = "expected"} reaches a fallback, and \code{approx} says which. The
+default \code{"opg"} is the outer product of the observed scores, which costs
+one gradient; \code{"bartlett"} evaluates the expectation itself, a sum over the
+support for a discrete family and a quadrature for a continuous one, and is
+orders of magnitude dearer. That difference is why a fit does not report
+standard errors from the expected information for such a family: measured
+on a Poisson-inverse gaussian regression at \eqn{n = 500}, the outer
+product gives standard errors 5.7 per cent from those of the exact
+expectation where the observed information gives 0.6 per cent. The
+expensive route is reachable, and it is not the default.
+
+A matrix asked for by \code{information} is recomputed at the optimum, so it
+costs one evaluation of that information and is not read from the fit.
+}
+
 \examples{
 set.seed(1)
 d <- gaussian1_distrib()
@@ -49,8 +86,14 @@ all.equal(unname(vcov(fit)), J \%*\% vcov(fit, "link") \%*\% J)
 # off-diagonal entry is zero rather than merely small.
 vcov(fit)[["mu", "sigma"]]
 
+# The two informations are different estimators of one quantity: close on
+# a well-specified fit of this size, and not identical.
+sqrt(diag(vcov(fit, information = "observed")))
+sqrt(diag(vcov(fit, information = "expected")))
+
 }
 \seealso{
 \code{\link[=coef.distrib_fit]{coef.distrib_fit()}} and \code{\link[=confint.distrib_fit]{confint.distrib_fit()}}, which take the
-same \code{scale}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the information itself.
+same \code{scale}; \code{\link[=distrib_expected_hessian]{distrib_expected_hessian()}} for the information itself,
+and \code{\link[=expected_by_opg]{expected_by_opg()}} for what \code{approx = "opg"} computes.
 }

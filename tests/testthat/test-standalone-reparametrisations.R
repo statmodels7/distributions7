@@ -72,8 +72,12 @@ test_that("the centered information is non-singular where the direct one is not"
   # the whole point: in the direct parametrization the score for alpha is
   # proportional to the score for the location at alpha = 0, so the information
   # loses a rank. In the centered one it does not.
+  # approx = "bartlett" throughout: the property under test (a rank the
+  # information loses, or does not, as alpha/gamma1 moves) is a property of
+  # the EXPECTATION, and the default "opg" would read the score at the single
+  # point y = 0 instead of averaging it -- see test-expected-opg.R.
   info <- function(d, theta) {
-    eh <- distrib_expected_hessian(d, 0, theta)
+    eh <- distrib_expected_hessian(d, 0, theta, approx = "bartlett")
     pr <- hess_pairs(d@params)
     I <- matrix(0, d@n_params, d@n_params)
     for (nm in names(eh)) {

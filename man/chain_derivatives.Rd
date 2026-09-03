@@ -4,7 +4,17 @@
 \alias{chain_derivatives}
 \title{The Partition Sum Itself}
 \usage{
-chain_derivatives(parent, y, th_par, maps, new_params, order, expected = FALSE)
+chain_derivatives(
+  parent,
+  y,
+  th_par,
+  maps,
+  new_params,
+  order,
+  expected = FALSE,
+  approx = "opg",
+  nsim = 10000
+)
 }
 \arguments{
 \item{parent}{The distribution whose derivatives are being carried.}

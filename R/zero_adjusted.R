@@ -638,13 +638,21 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
 #'   generic before dispatch.
-#' @param approx Ignored: the expectation is exact. Present so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx Forwarded to the parent's `distrib_expected_hessian()`, and
+#'   read only where the parent has no closed form for it; every other block
+#'   is an exact combination of the parent's density, score and observed
+#'   Hessian at zero. [expected_hessian_exact()] answers for this class by
+#'   asking the parent.
+#' @param nsim Forwarded for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
-#'   [`hess_names(distrib@params)`][hess_names], each vector constant.
+#'   [`hess_names(distrib@params)`][hess_names]. Constant across observations
+#'   when the parent's own expected information is, which is always true for a
+#'   family reaching this method with the default `approx = "opg"` and a
+#'   closed-form parent; a parent evaluated by an approximation can vary by
+#'   observation, `h_orig_exp` being read at the actual `y` rather than at
+#'   zero.
 #'
 #' @section Notation:
 #' \eqn{f} is the parent's mass function, \eqn{\pi} the probability of a zero,
@@ -674,7 +682,7 @@ S7::method(distrib_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y,
 #' Hs <- distrib_hessian(d, sup, theta)
 #' rbind(summed = vapply(Hs, function(z) sum(z * m), numeric(1)),
 #'       closed = vapply(EH, function(z) z[1], numeric(1)))
-S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   parent <- distrib@parent_distrib
   za <- pars$mix
@@ -684,7 +692,8 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   f0 <- distrib_pdf(parent, 0, pars$orig)
   grad_0 <- distrib_gradient(parent, 0, pars$orig)
   hess_0_obs <- distrib_hessian(parent, 0, pars$orig)
-  h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig)
+  h_orig_exp <- distrib_expected_hessian(parent, y, pars$orig,
+                                         approx = approx, nsim = nsim)
   denom <- 1 - f0
   pairs <- hess_pairs(names(pars$orig))
 
@@ -710,6 +719,12 @@ S7::method(distrib_expected_hessian, ZeroAdjustedDiscreteDistrib) <- function(di
   }
 
   expand_params(res[hess_names(distrib@params)], n)
+}
+
+# `h_orig_exp` enters E_trunc directly, so this wrapper's own exactness IS the
+# parent's -- see the continuous branch below for the fuller note.
+S7::method(expected_hessian_exact, ZeroAdjustedDiscreteDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
 }
 
 # ============================== CONTINUOUS ==============================
@@ -1154,10 +1169,12 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #' @param theta A named list with the parent's parameters followed by `za`.
 #' @param scale One of `"parameter"` (the default) or `"link"`, handled by the
 #'   generic before dispatch.
-#' @param approx Ignored for the hurdle and mixed blocks. It is also not
-#'   forwarded to the parent, which takes its own default. Present so that the
-#'   signature matches the generic's.
-#' @param nsim Ignored, for the same reason.
+#' @param approx Read only by the parent block, and only where the parent has
+#'   no closed form for it; ignored for the hurdle block, which is exact
+#'   whatever the parent is. [expected_hessian_exact()] answers for this class
+#'   by asking the parent, since the parent block is the one that can fail to
+#'   be exact.
+#' @param nsim Read for the same reason and under the same condition.
 #' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors of length `length(y)`, keyed as
@@ -1187,7 +1204,7 @@ S7::method(distrib_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, 
 #'
 #' # The parent block is the parent's own, weighted by 1 - pi.
 #' c(reported = EH$mu_mu[1], weighted_parent = 0.7 * (-1 / 2^2))
-S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   pars <- split_mix_theta(distrib, theta)
   za <- pars$mix
   za_name <- distrib@params[distrib@n_params]
@@ -1200,12 +1217,23 @@ S7::method(distrib_expected_hessian, ZeroAdjustedContinuousDistrib) <- function(
     res[[paste0(nm, "_", za_name)]] <- rep(0, n)
   }
 
-  h_exp_orig <- distrib_expected_hessian(distrib@parent_distrib, y, pars$orig)
+  h_exp_orig <- distrib_expected_hessian(distrib@parent_distrib, y, pars$orig,
+                                         approx = approx, nsim = nsim)
   for (nm in names(h_exp_orig)) {
     res[[nm]] <- (1 - za) * h_exp_orig[[nm]]
   }
 
   expand_params(res[hess_names(distrib@params)], n)
+}
+
+# THE PARENT'S BLOCK IS THE PARENT'S OWN, and so is its exactness: `res[[nm]]`
+# above is `(1 - za) * h_exp_orig[[nm]]` with nothing else contributed to it,
+# so this wrapper is exact exactly when the wrapped family is. Registering a
+# method on THIS class makes the default `expected_hessian_exact()` answer
+# TRUE regardless -- `zero_adjusted(pig1_distrib())` would otherwise claim an
+# exact expected information it does not have.
+S7::method(expected_hessian_exact, ZeroAdjustedContinuousDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
 }
 
 #' @title Atoms of a Zero-Adjusted Continuous Distribution

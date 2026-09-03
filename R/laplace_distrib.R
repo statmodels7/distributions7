@@ -490,7 +490,7 @@ S7::method(distrib_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale
 #' # Fisher scoring can fit the family because this matrix is nonsingular;
 #' # a Newton step on the observed Hessian would divide by zero in mu.
 #' coef(fit_distrib(d, z))
-S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, LaplaceDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   b <- theta[[2]]
   n <- length(y)
   list(

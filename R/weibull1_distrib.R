@@ -525,7 +525,7 @@ S7::method(distrib_hessian, Weibull1Distrib) <- function(distrib, y, theta, scal
 #'
 #' # The strategy argument is inert, the expectation being exact.
 #' identical(eh, distrib_expected_hessian(d, y, th, approx = "mc", nsim = 50))
-S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, Weibull1Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   mu <- theta[[1]]
   sigma <- theta[[2]]
   n <- length(y)

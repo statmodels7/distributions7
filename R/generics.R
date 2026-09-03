@@ -415,7 +415,7 @@ distrib_hessian <- S7::new_generic("distrib_hessian", "distrib", function(distri
 #' )
 #' @seealso [distrib_gradient()], [distrib_hessian()], [distrib_deriv3()], [distrib_deriv4()]
 #' @export
-distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+distrib_expected_hessian <- S7::new_generic("distrib_expected_hessian", "distrib", function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   args <- check_derivative_args(distrib, y, theta)
   y <- args$y
   theta <- args$theta
@@ -658,10 +658,33 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' Is a Family's Expected Information Written Out?
 #'
 #' @description
-#' A generic so that a family whose registered
-#' [distrib_expected_hessian()] method is not what its owning class
-#' suggests can say so; [has_exact_expected_hessian()] asks it and
+#' `TRUE` when the family computes its expected information in closed form,
+#' `FALSE` when a call to [distrib_expected_hessian()] reaches a fallback and
+#' the answer is therefore an approximation. It is a generic so that a family
+#' whose registered method is not what its owning class suggests can say so;
+#' [has_exact_expected_hessian()] asks it and
 #' [expected_hessian_exact.distrib()] is the default.
+#'
+#' @details
+#' The predicate is what a consumer reads to decide which information to
+#' report. Where it answers `TRUE` the expected information costs one
+#' evaluation and has the smaller variance, so it is the better matrix to
+#' invert; where it answers `FALSE` the choice is between an approximation and
+#' the observed Hessian, which every family has and which is exact. That is
+#' the rule [fit_distrib()] follows for its standard errors and the one
+#' \pkg{statmodels7} follows in `vcov()`.
+#'
+#' Six of the shipped univariate families answer `FALSE`:
+#' [pig1_distrib()], [pig2_distrib()], [pseudohuber_distrib()],
+#' [skewnormal1_distrib()], [skewnormal2_distrib()] and [skewt_distrib()].
+#'
+#' Asking the OWNING CLASS of the registered method is not enough on its own,
+#' which is why the generic exists: the pseudo-Huber registers a method of its
+#' own that calls the fallback and then patches the two components vanishing by
+#' symmetry, and the centered skew normal chains onto a parent whose expected
+#' information is itself a quadrature. Both would read as exact from the
+#' method's owner alone, and both cost seconds where a closed form costs
+#' milliseconds.
 #'
 #' @param x An object inheriting from class `"distrib"`.
 #' @param ... Passed to methods.
@@ -669,12 +692,15 @@ distrib_hess_cdf <- S7::new_generic("distrib_hess_cdf", "distrib", function(dist
 #' @return A single logical.
 #'
 #' @examples
-#' distributions7:::expected_hessian_exact(gaussian1_distrib())
+#' # A Gaussian writes its information out; a Poisson-inverse gaussian does not.
+#' expected_hessian_exact(gaussian1_distrib())
+#' expected_hessian_exact(pig1_distrib())
 #'
-#' @seealso [has_exact_expected_hessian()],
-#'   [distrib_dexpected_hessian()]
+#' @seealso [has_exact_expected_hessian()], the wrapper that asks this;
+#'   [distrib_expected_hessian()] for the quantity itself, and
+#'   [expected_by_opg()] for the fallback a `FALSE` answer reaches.
 #'
-#' @keywords internal
+#' @export
 expected_hessian_exact <- S7::new_generic("expected_hessian_exact", "x")
 
 #' Generate Random Parameters

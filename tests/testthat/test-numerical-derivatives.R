@@ -63,11 +63,16 @@ test_that("fallback hessian matches the analytical one, in hess_names order", {
 })
 
 test_that("fallback expected hessian matches the analytical one", {
+  # approx = "bartlett" is asked for explicitly: it evaluates the expectation,
+  # which is the quantity being checked against the closed form. "opg" (the
+  # default since 0.44.0) reads the score at each observation instead of
+  # averaging it, so it would vary across y = c(0, 1, 2) where the closed form
+  # is constant -- see test-expected-opg.R for what it agrees with and where.
   bg <- bare_gauss()
   ref <- gaussian1_distrib()
   th <- list(mu = 1.5, sigma = 2.0)
 
-  eh_num <- distrib_expected_hessian(bg, c(0, 1, 2), th)
+  eh_num <- distrib_expected_hessian(bg, c(0, 1, 2), th, approx = "bartlett")
   eh_ana <- distrib_expected_hessian(ref, c(0, 1, 2), th)
 
   expect_named(eh_num, hess_names(c("mu", "sigma")))

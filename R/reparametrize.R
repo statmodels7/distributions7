@@ -299,7 +299,8 @@ reparam_stencil_derivs <- function(map, params, parent_params) {
 #'   registrations; [reparametrize()].
 #'
 #' @keywords internal
-reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
+reparam_chain <- function(distrib, y, theta, order, expected = FALSE,
+                          approx = "opg", nsim = 10000) {
   theta <- align_theta(distrib, theta)
   n <- max(n_obs(distrib@parent_distrib, y), 1L)
   chain_derivatives(
@@ -309,7 +310,8 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
     maps = reparam_tables(distrib, theta),
     new_params = distrib@params,
     order = order,
-    expected = expected
+    expected = expected,
+    approx = approx, nsim = nsim
   )
 }
 
@@ -365,19 +367,27 @@ reparam_chain <- function(distrib, y, theta, order, expected = FALSE) {
 #'
 #' @keywords internal
 chain_derivatives <- function(parent, y, th_par, maps, new_params, order,
-                              expected = FALSE) {
+                              expected = FALSE, approx = "opg", nsim = 10000) {
   n <- max(n_obs(parent, y), 1L)
 
   # The parent's derivatives of every order up to the one asked for. Under
   # expectation the score contributes nothing, by the first Bartlett identity.
+  #
+  # approx/nsim ARE FORWARDED, which they were not until 0.44.0: a caller of
+  # the WRAPPER'S own generic (check_distrib() among them) asking for a named
+  # strategy was silently getting the PARENT's default instead, because this
+  # assembly took neither argument. That was invisible while both defaults
+  # meant the same thing (the true expectation); once "opg" -- the per-
+  # observation read -- became the default rather than "bartlett", a request
+  # explicitly overriding it here would otherwise have kept being ignored.
   D <- vector("list", order)
   for (k in seq_len(order)) {
     D[[k]] <- if (expected) {
       switch(k,
         NULL,
-        distrib_expected_hessian(parent, y, th_par),
-        distrib_deriv3(parent, y, th_par, expected = TRUE),
-        distrib_deriv4(parent, y, th_par, expected = TRUE)
+        distrib_expected_hessian(parent, y, th_par, approx = approx, nsim = nsim),
+        distrib_deriv3(parent, y, th_par, expected = TRUE, approx = approx, nsim = nsim),
+        distrib_deriv4(parent, y, th_par, expected = TRUE, approx = approx, nsim = nsim)
       )
     } else {
       switch(k,
@@ -809,14 +819,19 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' @param theta A named list of the new parameters, on the new parameter scale.
 #' @param scale Either `"parameter"` (the default) or `"link"`, handled by the
 #'   generic after this method has returned.
-#' @param ... Passed to the parent's method, which is where `approx` and
-#'   `nsim` are read for a family that approximates its expected information.
+#' @param approx,nsim Forwarded to the parent's `distrib_expected_hessian()`,
+#'   and read only where the parent has no closed form for it; a parent that
+#'   writes its expected information out ignores both, as every such family
+#'   does.
+#' @param ... Unused, and accepted so that the signature matches the generic's.
 #'
 #' @return A named list of numeric vectors keyed as [hess_names()], each the
 #'   length of `y` recycled against `theta`, in that enumeration's order.
 #'
 #' @seealso [distrib_hessian.ReparamContinuousDistrib()], which keeps the score
-#'   term; [chain_derivatives()]; [reparametrize()].
+#'   term; [chain_derivatives()]; [reparametrize()];
+#'   [expected_hessian_exact()], which answers for this class by asking the
+#'   parent.
 #'
 #' @examples
 #' d <- reparametrize(
@@ -838,12 +853,28 @@ S7::method(distrib_hessian, ReparamDiscreteDistrib) <- reparam_hessian
 #' @keywords internal
 reparam_expected_hessian <- function(distrib, y, theta,
                                      scale = c("parameter", "link"),
-                                     approx = c("bartlett", "integrate", "mc", "opg"),
+                                     approx = c("opg", "bartlett", "integrate", "mc"),
                                      nsim = 10000, ...) {
-  reparam_chain(distrib, y, theta, 2L, expected = TRUE)[hess_names(distrib@params)]
+  reparam_chain(distrib, y, theta, 2L, expected = TRUE,
+                approx = approx, nsim = nsim)[hess_names(distrib@params)]
 }
 S7::method(distrib_expected_hessian, ReparamContinuousDistrib) <- reparam_expected_hessian
 S7::method(distrib_expected_hessian, ReparamDiscreteDistrib) <- reparam_expected_hessian
+
+# "A parent with an exact expected information gives an exact one here" is the
+# description above, and it is exactly the condition expected_hessian_exact()
+# has to check: the chain rule contributes no approximation of its own, so
+# this wrapper's exactness IS the parent's. Registering a method on THIS class
+# makes the default answer TRUE regardless -- reparametrizing pig1_distrib()
+# by hand would otherwise claim a closed form it does not have. Of the four
+# shipped reparametrized families the parents (weibull1, gengamma1,
+# lognormal1, student_t1) are all exact, so this changes nothing shipped.
+S7::method(expected_hessian_exact, ReparamContinuousDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
+}
+S7::method(expected_hessian_exact, ReparamDiscreteDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
+}
 
 #' @title Third-Order Derivatives of a Reparametrized Distribution
 #' @name distrib_deriv3.ReparamContinuousDistrib
@@ -903,7 +934,8 @@ reparam_deriv3 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
                            approx = c("integrate", "bartlett", "mc", "opg"),
                            nsim = 10000, ...) {
-  reparam_chain(distrib, y, theta, 3L, expected = expected)
+  reparam_chain(distrib, y, theta, 3L, expected = expected,
+                approx = approx, nsim = nsim)
 }
 S7::method(distrib_deriv3, ReparamContinuousDistrib) <- reparam_deriv3
 S7::method(distrib_deriv3, ReparamDiscreteDistrib) <- reparam_deriv3
@@ -959,7 +991,8 @@ reparam_deriv4 <- function(distrib, y, theta, expected = FALSE,
                            scale = c("parameter", "link"),
                            approx = c("integrate", "bartlett", "mc", "opg"),
                            nsim = 10000, ...) {
-  reparam_chain(distrib, y, theta, 4L, expected = expected)
+  reparam_chain(distrib, y, theta, 4L, expected = expected,
+                approx = approx, nsim = nsim)
 }
 S7::method(distrib_deriv4, ReparamContinuousDistrib) <- reparam_deriv4
 S7::method(distrib_deriv4, ReparamDiscreteDistrib) <- reparam_deriv4

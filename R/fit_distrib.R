@@ -184,7 +184,7 @@ fit_score <- function(distrib, y, theta, threads = 1L) {
 #'   components; [fisher_scoring()], where `approx` and `nsim` are set.
 #' @keywords internal
 fit_hess_matrix <- function(distrib, y, theta, expected,
-                            approx = "bartlett", nsim = 10000, threads = 1L) {
+                            approx = "opg", nsim = 10000, threads = 1L) {
   params <- distrib@params
   p <- length(params)
   h <- if (expected) {
@@ -582,7 +582,16 @@ fit_distrib <- function(distrib, y, start = NULL,
   # A strategy chosen where it will be ignored is a mistake in the call rather
   # than a harmless redundancy: silently accepting it is how a caller comes to
   # believe a fit used a method it did not.
-  if (!is.null(fs) && !identical(fs@approx, "bartlett") &&
+  #
+  # THE DEFAULT IS READ FROM fisher_scoring() RATHER THAN COPIED. This line
+  # used to compare against the literal "bartlett", which was the default when
+  # it was written; the day that default moved to "opg" the condition became
+  # true for a plain `fisher_scoring()`, and every fit of every family with a
+  # closed form would have stopped with a message about an argument the caller
+  # had not passed. The rule is the one `crit_grad`'s tolerance already
+  # follows: a threshold that mirrors a default belongs to that default.
+  fs_default_approx <- eval(formals(fisher_scoring)$approx)[[1L]]
+  if (!is.null(fs) && !identical(fs@approx, fs_default_approx) &&
       has_exact_expected_hessian(distrib)) {
     stop(sprintf(paste0(
       "'%s' computes its expected information in closed form, so the 'approx'\n",
@@ -806,10 +815,21 @@ fit_distrib <- function(distrib, y, start = NULL,
   eta_hat <- res$eta
   theta_hat <- fit_theta_from_eta(distrib, eta_hat)
 
-  # Which information the standard errors are read off. The expected one is
-  # taken when the fit itself used it, which is Fisher scoring, or when the
-  # family writes it out and it therefore costs one evaluation; otherwise the
-  # observed one, which every family has.
+  # Which information the standard errors are read off. THE EXPECTED ONE ONLY
+  # WHERE THE FAMILY WRITES IT OUT, where it costs one evaluation and has the
+  # smaller variance; otherwise the observed one, which every family has and
+  # which is exact.
+  #
+  # The condition is about the FAMILY and not about the optimizer that ran.
+  # A scoring step may be driven by any positive definite matrix, the score
+  # being exact, so Fisher scoring on a family with no closed form is driven
+  # by the outer product of the observed scores (see expected_by_opg()) --
+  # cheap, positive semidefinite, and the same fixed point. A standard error
+  # is a different question: measured on a PIG regression at n = 500, the
+  # outer product reports standard errors 5.7 per cent from the truth where
+  # the observed information reports 0.6 per cent, for the same coefficients
+  # to 1e-06. So the step takes the cheap matrix and the report takes the
+  # accurate one.
   #
   # The condition used to be `!identical(method, "newton")`, a test against a
   # STRING, and `method` has accepted an optimizer OBJECT since the
@@ -820,8 +840,8 @@ fit_distrib <- function(distrib, y, start = NULL,
   # `method = newton()`, the same algorithm on the same data, had not
   # returned after five minutes. The `tryCatch` below does not help, a
   # quadrature that fails to converge raising nothing.
-  use_expected <- identical(method, "fisher") ||
-    (!identical(method, "newton") && has_exact_expected_hessian(distrib))
+  use_expected <- !identical(method, "newton") &&
+    has_exact_expected_hessian(distrib)
 
   # The estimates stand on their own; if the information cannot be evaluated at
   # the optimum the fit is still returned, with a missing variance matrix rather
@@ -1128,10 +1148,9 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #'
 #' @description
 #' Returns the estimated variance matrix of the estimates, on either scale.
-#' The one the fit computes is on the link scale: the inverse of the
-#' information at \eqn{\hat\eta}, the expected information where the fit used
-#' it or the family writes it out, and the observed Hessian otherwise. The
-#' parameter-scale matrix is its image under the delta method,
+#' The one the fit computes is on the link scale, the inverse of the
+#' information at \eqn{\hat\eta}. The parameter-scale matrix is its image
+#' under the delta method,
 #' \deqn{\widehat{\mathrm{Var}}(\hat\theta) = J\,\widehat{\mathrm{Var}}(\hat\eta)\,J,
 #'       \qquad J = \mathrm{diag}\!\left(\frac{dg^{-1}}{d\eta}\Big|_{\hat\eta}\right),}
 #' the Jacobian being diagonal because each parameter carries its own scalar
@@ -1141,15 +1160,51 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #' at the optimum. The estimates stand in that case and only the uncertainty
 #' is missing.
 #'
+#' @details
+#' # Which information
+#'
+#' `information` says which matrix is inverted, and the answer the fit stored
+#' is the default. That one is the expected information where the family
+#' writes it out, where it costs one evaluation and has the smaller variance,
+#' and the observed Hessian otherwise.
+#'
+#' The alternative is available because the two are different estimators and
+#' the choice is the reader's. They agree asymptotically and not in a sample:
+#' the expected one is the information averaged over the model, the observed
+#' one the curvature of the likelihood at the data in hand.
+#'
+#' Where a family does NOT write its expected information out, asking for
+#' `information = "expected"` reaches a fallback, and `approx` says which. The
+#' default `"opg"` is the outer product of the observed scores, which costs
+#' one gradient; `"bartlett"` evaluates the expectation itself, a sum over the
+#' support for a discrete family and a quadrature for a continuous one, and is
+#' orders of magnitude dearer. That difference is why a fit does not report
+#' standard errors from the expected information for such a family: measured
+#' on a Poisson-inverse gaussian regression at \eqn{n = 500}, the outer
+#' product gives standard errors 5.7 per cent from those of the exact
+#' expectation where the observed information gives 0.6 per cent. The
+#' expensive route is reachable, and it is not the default.
+#'
+#' A matrix asked for by `information` is recomputed at the optimum, so it
+#' costs one evaluation of that information and is not read from the fit.
+#'
 #' @param object A [distrib_fit()] object.
 #' @param scale Either `"parameter"` (the default) or `"link"`, matched by
 #'   [base::match.arg()]; anything else signals an error.
+#' @param information Which information to invert: `"fit"` (the default) is
+#'   the matrix the fit stored, `"observed"` the Hessian at the estimates, and
+#'   `"expected"` the expected information there. The last two are recomputed.
+#' @param approx One of `"opg"`, `"bartlett"`, `"integrate"` or `"mc"`, read
+#'   only when `information = "expected"` and the family has no closed form.
+#'   Defaults to `"opg"`.
+#' @param nsim Number of draws, read only by `approx = "mc"`.
 #' @param ... Unused, accepted for compatibility with [stats::vcov()].
 #'
 #' @return A symmetric numeric matrix of dimension
 #'   `length(object@distrib@params)`, with both dimnames set to the parameter
-#'   names. Its diagonal is the square of `object@se` on the parameter scale
-#'   and of `object@se_eta` on the link scale.
+#'   names. With `information = "fit"` its diagonal is the square of
+#'   `object@se` on the parameter scale and of `object@se_eta` on the link
+#'   scale.
 #'
 #' @examples
 #' set.seed(1)
@@ -1168,12 +1223,45 @@ S7::method(coef, distrib_fit) <- function(object, scale = c("parameter", "link")
 #' # off-diagonal entry is zero rather than merely small.
 #' vcov(fit)[["mu", "sigma"]]
 #'
+#' # The two informations are different estimators of one quantity: close on
+#' # a well-specified fit of this size, and not identical.
+#' sqrt(diag(vcov(fit, information = "observed")))
+#' sqrt(diag(vcov(fit, information = "expected")))
+#'
 #' @seealso [coef.distrib_fit()] and [confint.distrib_fit()], which take the
-#'   same `scale`; [distrib_expected_hessian()] for the information itself.
+#'   same `scale`; [distrib_expected_hessian()] for the information itself,
+#'   and [expected_by_opg()] for what `approx = "opg"` computes.
 #' @importFrom stats vcov
-S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"), ...) {
+S7::method(vcov, distrib_fit) <- function(object, scale = c("parameter", "link"),
+                                          information = c("fit", "observed", "expected"),
+                                          approx = c("opg", "bartlett", "integrate", "mc"),
+                                          nsim = 10000, ...) {
   scale <- match.arg(scale)
-  if (scale == "link") object@vcov_eta else object@vcov
+  information <- match.arg(information)
+  if (information == "fit") {
+    return(if (scale == "link") object@vcov_eta else object@vcov)
+  }
+
+  # Recomputed at the optimum. Everything needed is on the fit -- the family,
+  # the sample and the estimates -- so no refit is involved and the cost is
+  # one evaluation of the information asked for.
+  distrib <- object@distrib
+  params <- distrib@params
+  p <- length(params)
+  theta_hat <- object@coefficients
+  V_eta <- tryCatch({
+    I_eta <- -fit_hess_matrix(distrib, object@y, as.list(theta_hat),
+                              expected = identical(information, "expected"),
+                              approx = match.arg(approx), nsim = nsim)
+    solve(I_eta)
+  }, error = function(e) matrix(NA_real_, p, p))
+  dimnames(V_eta) <- list(params, params)
+  if (scale == "link") return(V_eta)
+
+  J <- fit_dtheta_deta(distrib, object@eta)
+  V_theta <- diag(J, p, p) %*% V_eta %*% diag(J, p, p)
+  dimnames(V_theta) <- list(params, params)
+  V_theta
 }
 
 #' @title Confidence Intervals for a Maximum-Likelihood Fit

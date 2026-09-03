@@ -568,7 +568,7 @@ S7::method(distrib_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale
 #'        function(t) distrib_expected_hessian(d, 0,
 #'                      list(mu = 4, theta = t))$theta_theta,
 #'        numeric(1))
-S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...,
+S7::method(distrib_expected_hessian, NegBin2Distrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...,
                                        threads = 1L) {
   negbin_expected_hessian_cpp(y, theta[[1]], theta[[2]], threads)
 }

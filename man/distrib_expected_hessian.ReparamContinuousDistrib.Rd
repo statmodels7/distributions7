@@ -11,7 +11,7 @@ reparam_expected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("bartlett", "integrate", "mc", "opg"),
+  approx = c("opg", "bartlett", "integrate", "mc"),
   nsim = 10000,
   ...
 )
@@ -28,8 +28,12 @@ information reads them.}
 \item{scale}{Either \code{"parameter"} (the default) or \code{"link"}, handled by the
 generic after this method has returned.}
 
-\item{...}{Passed to the parent's method, which is where \code{approx} and
-\code{nsim} are read for a family that approximates its expected information.}
+\item{approx, nsim}{Forwarded to the parent's \code{distrib_expected_hessian()},
+and read only where the parent has no closed form for it; a parent that
+writes its expected information out ignores both, as every such family
+does.}
+
+\item{...}{Unused, and accepted so that the signature matches the generic's.}
 }
 \value{
 A named list of numeric vectors keyed as \code{\link[=hess_names]{hess_names()}}, each the
@@ -71,6 +75,8 @@ max(abs(unlist(a[names(b)]) - unlist(b)))
 }
 \seealso{
 \code{\link[=distrib_hessian.ReparamContinuousDistrib]{distrib_hessian.ReparamContinuousDistrib()}}, which keeps the score
-term; \code{\link[=chain_derivatives]{chain_derivatives()}}; \code{\link[=reparametrize]{reparametrize()}}.
+term; \code{\link[=chain_derivatives]{chain_derivatives()}}; \code{\link[=reparametrize]{reparametrize()}};
+\code{\link[=expected_hessian_exact]{expected_hessian_exact()}}, which answers for this class by asking the
+parent.
 }
 \keyword{internal}

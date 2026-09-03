@@ -1043,8 +1043,17 @@ S7::method(distrib_hessian, TransformedDistrib) <- function(distrib, y, theta, s
 #' # So a lognormal built this way inherits the gaussian's closed form, whose
 #' # mean block is -1 / sigma^2.
 #' c(reported = EH$mu_mu[1], theory = -1 / 0.8^2)
-S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("bartlett", "integrate", "mc", "opg"), nsim = 10000, ...) {
+S7::method(distrib_expected_hessian, TransformedDistrib) <- function(distrib, y, theta, scale = c("parameter", "link"), approx = c("opg", "bartlett", "integrate", "mc"), nsim = 10000, ...) {
   distrib_expected_hessian(distrib@parent_distrib, distrib@transformer@trans_inv(y), theta)
+}
+
+# The delegation above returns exactly what the PARENT's own default route
+# gives, so this wrapper's exactness is the parent's. A method registered on
+# THIS class makes the default `expected_hessian_exact()` answer TRUE
+# regardless of the parent -- `transformation(pig1_distrib(), log_transform())`
+# would otherwise claim a closed form it does not have.
+S7::method(expected_hessian_exact, TransformedDistrib) <- function(x, ...) {
+  expected_hessian_exact(x@parent_distrib)
 }
 
 # --- CONSTRUCTOR WRAPPER ---

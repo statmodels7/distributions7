@@ -73,9 +73,14 @@ test_that("params_smooth metadata is exposed and validated", {
   expect_match(out, "non-smooth", fixed = TRUE)
 })
 
-test_that("OPG fallback yields the correct Fisher information for a bare distribution", {
-  # a user-defined gaussian with only the density: expected Hessian via OPG must
-  # match the analytical -I of the built-in gaussian
+test_that("the Bartlett fallback yields the correct Fisher information for a bare distribution", {
+  # a user-defined gaussian with only the density: expected Hessian via the
+  # score-variance identity must match the analytical -I of the built-in
+  # gaussian. approx = "bartlett" is asked for explicitly: it evaluates the
+  # expectation, which is what is being checked here. "opg" (the default since
+  # 0.44.0) reads the score at the single point y = 0 instead of averaging it,
+  # and is a different quantity -- see test-expected-opg.R for what it agrees
+  # with and where.
   BareGaussOPG <- S7::new_class("BareGaussOPG", parent = continuous_distrib, package = NULL)
   S7::method(distrib_pdf, BareGaussOPG) <- function(distrib, y, theta, log = FALSE) {
     stats::dnorm(y, theta[[1]], theta[[2]], log = log)
@@ -87,10 +92,10 @@ test_that("OPG fallback yields the correct Fisher information for a bare distrib
     link_params = list(mu = linkfunctions7::identity_link(), sigma = linkfunctions7::log_link())
   )
   th <- list(mu = 1.5, sigma = 2)
-  eh_opg <- distrib_expected_hessian(bg, 0, th)
+  eh_bartlett <- distrib_expected_hessian(bg, 0, th, approx = "bartlett")
   eh_ana <- distrib_expected_hessian(gaussian1_distrib(), 0, th)
   for (nm in names(eh_ana)) {
-    expect_equal(eh_opg[[nm]][1], eh_ana[[nm]][1], tolerance = 1e-5, label = nm)
+    expect_equal(eh_bartlett[[nm]][1], eh_ana[[nm]][1], tolerance = 1e-5, label = nm)
   }
 })
 

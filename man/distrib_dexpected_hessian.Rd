@@ -9,7 +9,7 @@ distrib_dexpected_hessian(
   y,
   theta,
   scale = c("parameter", "link"),
-  approx = c("bartlett", "integrate", "mc", "opg"),
+  approx = c("opg", "bartlett", "integrate", "mc"),
   nsim = 10000,
   ...
 )

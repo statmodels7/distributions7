@@ -163,7 +163,7 @@ FisherScoring <- S7::new_class("FisherScoring",
 #'   [distrib_expected_hessian()] for the matrix itself;
 #'   [optimizers7::newton()], whose defaults stand where this sets none.
 #' @export
-fisher_scoring <- function(approx = c("bartlett", "integrate", "mc", "opg"),
+fisher_scoring <- function(approx = c("opg", "bartlett", "integrate", "mc"),
                            nsim = 10000, criterion = NULL, maxit = NULL) {
   approx <- match.arg(approx)
   if (!is.numeric(nsim) || length(nsim) != 1L || !is.finite(nsim) || nsim < 1) {

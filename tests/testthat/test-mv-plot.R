@@ -163,9 +163,16 @@ test_that("a family is asked correctly whether its expected information is exact
   expect_silent(
     fit_distrib(skewnormal1_distrib(), ys, method = fisher_scoring(approx = "opg"))
   )
+  # A strategy the family would ignore is refused -- and it has to be a
+  # NON-DEFAULT one, "opg" being the default since 0.44.0 and therefore
+  # indistinguishable from a plain fisher_scoring(). The predicate reads the
+  # default off the constructor rather than copying it.
   expect_error(
     fit_distrib(gaussian1_distrib(), stats::rnorm(100),
-                method = fisher_scoring(approx = "opg")),
+                method = fisher_scoring(approx = "mc")),
     "closed form"
   )
+  # and the default itself is accepted on the same family
+  expect_silent(fit_distrib(gaussian1_distrib(), stats::rnorm(100),
+                            method = fisher_scoring()))
 })

@@ -96,11 +96,18 @@ test_that("the kernel derivatives match one numerical pass per order", {
 
 
 test_that("pig2's parameters are orthogonal and pig1's are not", {
+  # orthogonality is a property of the EXPECTATION, not of the score at one
+  # observation, so approx = "bartlett" is asked for explicitly: neither
+  # family writes its expected information out (see test-expected-opg.R), and
+  # the default "opg" reads the score at y = 0 alone, which need not vanish
+  # even where the true mu-alpha block does.
   d2 <- pig2_distrib()
-  eh2 <- distrib_expected_hessian(d2, 0, list(mu = 3.2, alpha = 1.4))
+  eh2 <- distrib_expected_hessian(d2, 0, list(mu = 3.2, alpha = 1.4),
+                                  approx = "bartlett")
   expect_lt(abs(eh2$mu_alpha[1]), 1e-8)
   d1 <- pig1_distrib()
-  eh1 <- distrib_expected_hessian(d1, 0, list(mu = 3.2, sigma = 0.7))
+  eh1 <- distrib_expected_hessian(d1, 0, list(mu = 3.2, sigma = 0.7),
+                                  approx = "bartlett")
   expect_gt(abs(eh1$mu_sigma[1]), 1e-3)
 })
 
